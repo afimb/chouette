@@ -8,7 +8,6 @@ import java.util.Map;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
@@ -98,11 +97,11 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 
 
 	@Override
-	public ValidationConstraints validate(Context context, Route target) throws ValidationException
+	public void validate(Context context, Route target) throws ValidationException
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
-		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
+		if (localContext == null || localContext.isEmpty()) return ;
 
 		boolean routeok = phase1(context);
 
@@ -133,7 +132,7 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 		phase6(context);
 
 
-		return new ValidationConstraints();
+		return ;
 	}
 
 

@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.validation.report;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -14,8 +15,8 @@ import javax.xml.bind.annotation.XmlType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.exchange.report.AbstractReport;
 import mobi.chouette.exchange.report.Report;
-import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -24,8 +25,8 @@ import org.codehaus.jettison.json.JSONObject;
 @ToString
 @XmlRootElement(name = "validation_report")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "result", "checkPoints" })
-public class ValidationReport implements Report {
+@XmlType(propOrder = { "result", "checkPoints", "checkPointErrors" })
+public class ValidationReport extends AbstractReport implements Report {
 
 	@XmlElement(name = "result")
 	@Getter
@@ -33,70 +34,59 @@ public class ValidationReport implements Report {
 	private String result = "NO_VALIDATION";
 
 	@XmlElement(name = "tests")
-	 @Getter
-	 @Setter
-	private List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+	@Getter
+	@Setter
+	private List<CheckPointReport> checkPoints = new ArrayList<CheckPointReport>();
+	
+	
+	@XmlElement(name = "errors")
+	@Getter
+	@Setter
+	private List<CheckPointErrorReport> checkPointErrors = new ArrayList<CheckPointErrorReport>();
 
 	@XmlTransient
 	@Getter
 	@Setter
 	private boolean maxByFile = true;
 
-	public CheckPoint findCheckPointByName(String name) {
-		for (CheckPoint checkPoint : checkPoints) {
+
+	protected void checkResult() {
+		result = checkPoints.isEmpty() ? "NO_VALIDATION" : "VALIDATION_PROCEDEED";
+	}
+	
+	public CheckPointReport findCheckPointReportByName(String name) {
+		for (CheckPointReport checkPoint : checkPoints) {
 			if (checkPoint.getName().equals(name))
 				return checkPoint;
 		}
 		return null;
 	}
-
-	public void addCheckPoint(CheckPoint checkPoint)
+	
+	public CheckPointErrorReport findCheckPointReportErrorByKey(String key) {
+		for (CheckPointErrorReport checkPointError : checkPointErrors) {
+			if (checkPointError.getKey().equals(key))
+				return checkPointError;
+		}
+		return null;
+	}
+	
+	protected void addCheckPointReport(CheckPointReport checkPoint)
 	{
 		checkPoint.setMaxByFile(maxByFile);
 		checkPoints.add(checkPoint);
 	}
-
-	public void addAllCheckPoints(Collection<CheckPoint> list)
+	
+	protected void addCheckPointErrorReport(CheckPointErrorReport checkPointError)
 	{
-		for (CheckPoint checkPoint : checkPoints) {
+		checkPointErrors.add(checkPointError);
+	}
+
+	protected void addAllCheckPoints(Collection<CheckPointReport> list)
+	{
+		for (CheckPointReport checkPoint : checkPoints) {
 			checkPoint.setMaxByFile(maxByFile);
 		}
 		checkPoints.addAll(list);
-	}
-	
-	public void addDetail(String checkPointName, Location location, String value, RESULT result) {
-		CheckPoint checkPoint = findCheckPointByName(checkPointName);
-		if (checkPoint == null) throw new NullPointerException("unknown checkPointName "+checkPointName);
-		checkPoint.setState(result);
-		checkPoint.addDetail(new Detail(checkPointName, location, value));
-	}
-	
-	public void addDetail(String checkPointName, String detail, Location location, String value, RESULT result) {
-		CheckPoint checkPoint = findCheckPointByName(checkPointName);
-		if (checkPoint == null) throw new NullPointerException("unknown checkPointName "+checkPointName);
-		checkPoint.setState(result);
-		checkPoint.addDetail(new Detail(checkPointName+"_"+detail, location, value));
-	}
-
-	public void addDetail(String checkPointName, Location location, String value, String refValue, RESULT result) {
-		CheckPoint checkPoint = findCheckPointByName(checkPointName);
-		if (checkPoint == null) throw new NullPointerException("unknown checkPointName "+checkPointName);
-		checkPoint.setState(result);
-		checkPoint.addDetail(new Detail(checkPointName, location, value,refValue));
-	}
-
-
-	public void addDetail(String checkPointName, Location[] locations, String value, RESULT result) {
-		CheckPoint checkPoint = findCheckPointByName(checkPointName);
-		if (checkPoint == null) throw new NullPointerException("unknown checkPointName "+checkPointName);
-		checkPoint.setState(result);
-		for (Location location : locations)
-			checkPoint.addDetail(new Detail(checkPointName, location, value));
-	}
-
-	public void clear() {
-		result = "NO_VALIDATION";
-		checkPoints.clear();
 	}
 
 	public JSONObject toJson() throws JSONException {
@@ -105,16 +95,41 @@ public class ValidationReport implements Report {
 		validationReport.put("result", result);
 		if (!checkPoints.isEmpty()) {
 			JSONArray tests = new JSONArray();
-			for (CheckPoint checkPoint : checkPoints) {
+			for (CheckPointReport checkPoint : checkPoints) {
 				tests.put(checkPoint.toJson());
 			}
-			validationReport.put("tests", tests);
+			validationReport.put("check_points", tests);
+		}
+		if (!checkPointErrors.isEmpty()) {
+			JSONArray tests = new JSONArray();
+			for (CheckPointErrorReport checkPointError : checkPointErrors) {
+				tests.put(checkPointError.toJson());
+			}
+			validationReport.put("errors", tests);
 		}
 		JSONObject object = new JSONObject();
 		object.put("validation_report", validationReport);
 		return object;
 	}
-
+	
+	public void print(PrintStream out)
+	{
+		print(out,1,true);
+	}
+	
+	public void print(PrintStream out, int level, boolean first)
+	{
+		StringBuilder ret = new StringBuilder();
+		level = 1;
+		result = checkPoints.isEmpty() ? "NO_VALIDATION" : "VALIDATION_PROCEDEED";
+		out.print("{\"validation_report\": {");
+		out.print(toJsonString(ret,level,"result", result, true));
+		if (!checkPoints.isEmpty())
+			printArray(out,ret, level+1,"check_points",checkPoints, false);
+		if (!checkPointErrors.isEmpty())
+			printArray(out,ret, level+1,"errors",checkPointErrors, false);
+		out.println("\n}}");
+	}
 	@Override
 	public boolean isEmpty() {
 		// used to know if report has to be saved

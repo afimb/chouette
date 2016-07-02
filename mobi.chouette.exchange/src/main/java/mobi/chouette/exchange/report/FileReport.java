@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.report;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,10 +23,9 @@ import org.codehaus.jettison.json.JSONObject;
 @XmlType(propOrder = { "name", "status", "ioType", "errors", "checkPointErrorKeys", "checkPointErrorCount",
 		"checkPointWarningCount" })
 @Data
-@EqualsAndHashCode(exclude = { "status", "errors" })
+@EqualsAndHashCode(exclude = { "status", "errors" }, callSuper=false)
 @NoArgsConstructor
-public class FileReport {
-	public static final int maxErrors = 30;
+public class FileReport extends AbstractReport{
 
 	@XmlElement(name = "name", required = true)
 	private String name;
@@ -37,7 +37,7 @@ public class FileReport {
 	private IO_TYPE ioType;
 
 	@XmlElement(name = "errors")
-	private List<FileError2> errors = new ArrayList<>();
+	private List<FileError> errors = new ArrayList<>();
 
 	@XmlElement(name = "checkpoint_errors")
 	private List<Integer> checkPointErrorKeys = new ArrayList<Integer>();
@@ -48,7 +48,7 @@ public class FileReport {
 	@XmlElement(name = "checkpoint_warning_count")
 	private int checkPointWarningCount = 0;
 
-	protected void addError(FileError2 fileError2) {
+	protected void addError(FileError fileError2) {
 		status = FILE_STATE.ERROR;
 		errors.add(fileError2);
 	}
@@ -59,12 +59,12 @@ public class FileReport {
 		this.ioType = ioType;
 	}
 
-	protected FileReport(String name, FILE_STATE state, IO_TYPE ioType, FileError2 fileError) {
+	protected FileReport(String name, FILE_STATE state, IO_TYPE ioType, FileError fileError) {
 		this(name, state, ioType);
 		errors.add(fileError);
 	}
 
-	protected FileReport(String name, FILE_STATE state, IO_TYPE ioType, List<FileError2> fileErrors) {
+	protected FileReport(String name, FILE_STATE state, IO_TYPE ioType, List<FileError> fileErrors) {
 		this(name, state, ioType);
 		errors.addAll(fileErrors);
 	}
@@ -103,7 +103,7 @@ public class FileReport {
 		if (!errors.isEmpty()) {
 			JSONArray array = new JSONArray();
 			object.put("errors", array);
-			for (FileError2 error : errors) {
+			for (FileError error : errors) {
 				array.put(error.toJson());
 			}
 		}
@@ -118,6 +118,26 @@ public class FileReport {
 		object.put("check_point_warning_count", checkPointWarningCount);
 
 		return object;
+	}
+
+	@Override
+	public void print(PrintStream out, int level, boolean first) {
+		StringBuilder ret = new StringBuilder();
+		out.print(addLevel(ret,level).append('{'));
+		out.print(toJsonString(ret,level+1,"name", name, true));
+		out.print(toJsonString(ret,level+1,"status", status, false));
+		out.print(toJsonString(ret,level+1,"io_type", ioType, false));
+		if (!errors.isEmpty()) {
+			printArray(out,ret, level+1,"errors",errors, false);
+		}
+		if (!checkPointErrorKeys.isEmpty())
+			printIntArray(out,ret, level+1,"check_point_errors",checkPointErrorKeys, false);
+		out.print(toJsonString(ret,level+1,"check_point_error_count", checkPointErrorCount, false));
+		out.print(toJsonString(ret,level+1,"check_point_warning_count", checkPointWarningCount, false));
+		ret.setLength(0);
+		out.print(addLevel(ret.append('\n'),level).append('}'));
+		
+		
 	}
 
 }

@@ -136,7 +136,7 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 					+ connectionLink.getEndOfLink().getName());
 		}
 		connectionLink.setFilled(true);
-		AbstractConverter.addLocation(context, "transfers.txt", connectionLink.getObjectId(), gtfsTransfer.getId());
+//		AbstractConverter.addLocation(context, "transfers.txt", connectionLink.getObjectId(), gtfsTransfer.getId());
 	}
 
 	static {

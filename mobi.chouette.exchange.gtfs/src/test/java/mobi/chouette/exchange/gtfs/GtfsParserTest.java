@@ -10,8 +10,8 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.importer.GtfsRouteParserCommand;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
-import mobi.chouette.exchange.report.ActionReport2;
-import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.util.Referential;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -75,8 +75,8 @@ public class GtfsParserTest  extends Arquillian implements Constant{
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
 		
-		ActionReport2 report = new ActionReport2();
-		ValidationReport2 validationReport = new ValidationReport2();
+		ActionReport report = new ActionReport();
+		ValidationReport validationReport = new ValidationReport();
 		GtfsRouteParserCommand command = (GtfsRouteParserCommand) CommandFactory.create(initialContext, GtfsRouteParserCommand.class.getName());
 		GtfsImporter importer = new GtfsImporter("src/test/data/valid");
 		context.put(PARSER, importer);

@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.validation.report;
 
+import java.io.PrintStream;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -7,7 +9,9 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import mobi.chouette.exchange.report.AbstractReport;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
@@ -25,10 +29,11 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder={"type","id"})
-public class ObjectReference {
+public class ObjectReference extends AbstractReport {
 
 	@XmlType(name="referenceType")
 	@XmlEnum
@@ -120,6 +125,17 @@ public class ObjectReference {
 		object.put("type", type);
 		object.put("id", id);
 		return object;
+	}
+
+	@Override
+	public void print(PrintStream out, int level, boolean first) {
+		StringBuilder ret = new StringBuilder();
+		out.print(addLevel(ret, level).append('{'));
+		out.print(toJsonString(ret, level + 1, "type", type, true));
+			out.print(toJsonString(ret, level + 1, "id", id, false));
+		ret.setLength(0);
+		out.print(addLevel(ret.append('\n'), level).append('}'));
+		
 	}
 
 }

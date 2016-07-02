@@ -13,13 +13,13 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneImporterCommand;
-import mobi.chouette.exchange.report.ActionReport2;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.exchange.report.ObjectReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.report.CheckPointReport;
-import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
@@ -74,8 +74,8 @@ public class ValidatorTest extends Arquillian implements Constant,ReportConstant
 
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
-		context.put(REPORT, new ActionReport2());
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(REPORT, new ActionReport());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 		NeptuneImportParameters configuration = new NeptuneImportParameters();
 		configuration.setCleanRepository(true);
 		configuration.setNoSave(false);
@@ -137,9 +137,9 @@ public class ValidatorTest extends Arquillian implements Constant,ReportConstant
 			log.error("test failed", ex);
 			throw ex;
 		}
-		ActionReport2 report = (ActionReport2) context.get(REPORT);
+		ActionReport report = (ActionReport) context.get(REPORT);
 		Reporter.log(report.toString(),true);
-		ValidationReport2 valReport = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport valReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		for (CheckPointReport cp : valReport.getCheckPoints()) 
 		{
 			if (cp.getState().equals(ValidationReporter.RESULT.NOK))

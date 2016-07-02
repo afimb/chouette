@@ -14,11 +14,11 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.report.ActionReport2;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
-import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
 
@@ -46,8 +46,8 @@ public class MainCommand implements Command, Constant {
 			ValidationParameters validationParameters = jobService.getValidationParameter();
 			if (validationParameters != null)
 			   context.put(VALIDATION, validationParameters);
-			context.put(REPORT, new ActionReport2());
-			context.put(VALIDATION_REPORT, new ValidationReport2());
+			context.put(REPORT, new ActionReport());
+			context.put(VALIDATION_REPORT, new ValidationReport());
 
 			String name = jobService.getCommandName();
 
@@ -55,7 +55,7 @@ public class MainCommand implements Command, Constant {
 			Command command = CommandFactory.create(ctx, name);
 			command.execute(context);
 
-			ActionReport2 report = (ActionReport2) context.get(REPORT);
+			ActionReport report = (ActionReport) context.get(REPORT);
 			if (report.getResult().equals(ReportConstant.STATUS_ERROR)
 					&& report.getFailure().getCode().equals(ActionReporter.ERROR_CODE.INTERNAL_ERROR))
 				jobManager.abort(jobService);
@@ -65,7 +65,7 @@ public class MainCommand implements Command, Constant {
 		} catch (javax.ejb.EJBTransactionRolledbackException ex) {
 			log.warn("exception bypassed " + ex);
 			// just ignore this exception
-			ActionReport2 report = (ActionReport2) context.get(REPORT);
+			ActionReport report = (ActionReport) context.get(REPORT);
 			if (report.getResult().equals(ReportConstant.STATUS_ERROR)
 					&& report.getFailure().getCode().equals(ActionReporter.ERROR_CODE.INTERNAL_ERROR))
 				jobManager.abort(jobService);

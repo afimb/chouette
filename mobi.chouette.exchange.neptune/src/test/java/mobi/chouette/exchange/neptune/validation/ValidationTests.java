@@ -17,12 +17,12 @@ import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneSAXParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneValidationCommand;
-import mobi.chouette.exchange.report.ActionReport2;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
 import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
-import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter.RESULT;
 import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
@@ -57,8 +57,8 @@ public class ValidationTests implements Constant, ReportConstant
 
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
-		context.put(REPORT, new ActionReport2());
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(REPORT, new ActionReport());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 		NeptuneImportParameters configuration = new NeptuneImportParameters();
 		context.put(CONFIGURATION, configuration);
 		context.put(REFERENTIAL, new Referential());
@@ -142,7 +142,7 @@ public class ValidationTests implements Constant, ReportConstant
    private void checkMandatoryTest(Context context, String mandatoryTest, SEVERITY severity,
           RESULT state)
    {
-	   ValidationReport2 valReport = (ValidationReport2) context.get(VALIDATION_REPORT);
+	   ValidationReport valReport = (ValidationReport) context.get(VALIDATION_REPORT);
       if (mandatoryTest.equals("NONE"))
       {
          for (CheckPointReport phase : valReport.getCheckPoints())
@@ -186,7 +186,7 @@ public class ValidationTests implements Constant, ReportConstant
 	 * @param detailSize (negative for not checked
 	 * @return
 	 */
-	protected List<CheckPointErrorReport> checkReportForTest(ValidationReport2 report, String key, int detailSize)
+	protected List<CheckPointErrorReport> checkReportForTest(ValidationReport report, String key, int detailSize)
 	{
 		Assert.assertFalse(report.getCheckPoints().isEmpty(), " report must have items");
 		Assert.assertNotNull(report.findCheckPointReportByName(key), " report must have 1 item on key "+key);

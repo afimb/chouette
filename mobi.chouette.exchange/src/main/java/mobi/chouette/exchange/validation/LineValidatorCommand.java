@@ -22,7 +22,7 @@ import mobi.chouette.exchange.validation.checkpoint.JourneyPatternCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.LineCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.RouteCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.VehicleJourneyCheckPoints;
-import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -45,10 +45,10 @@ public class LineValidatorCommand implements Command, Constant
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		if (report == null)
 		{
-			context.put(VALIDATION_REPORT, new ValidationReport2());
+			context.put(VALIDATION_REPORT, new ValidationReport());
 		}
 		try {
 			lineCheckPoints.validate(context, null);

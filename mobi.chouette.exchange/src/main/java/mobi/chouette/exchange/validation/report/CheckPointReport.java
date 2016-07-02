@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.validation.report;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,9 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import mobi.chouette.exchange.report.AbstractReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter.RESULT;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -17,15 +20,14 @@ import org.codehaus.jettison.json.JSONObject;
 
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 @ToString
 @XmlType(propOrder = { "name", "phase", "target", "rank", "severity", "state", "checkPointErrorCount", "checkPointErrorsKeys" })
-public class CheckPointReport {
-	public static final int maxErrors = 30;
+public class CheckPointReport extends AbstractReport{
 
 	public enum SEVERITY {
 		WARNING, ERROR, IMPROVMENT
 	};
-
 
 	@XmlElement(name = "test_id", required = true)
 	private String name;
@@ -107,4 +109,23 @@ public class CheckPointReport {
 
 		return object;
 	}
+
+	@Override
+	public void print(PrintStream out, int level, boolean first) {
+		StringBuilder ret = new StringBuilder();
+		out.print(addLevel(ret,level).append('{'));
+		out.print(toJsonString(ret,level+1,"test_id", name, true));
+		out.print(toJsonString(ret,level+1,"level", phase, false));
+		out.print(toJsonString(ret,level+1,"type", target, false));
+		out.print(toJsonString(ret,level+1,"rank", rank, false));
+		out.print(toJsonString(ret,level+1,"severity", severity, false));
+		out.print(toJsonString(ret,level+1,"result", state, false));
+		out.print(toJsonString(ret,level+1,"check_point_error_count", checkPointErrorCount, false));
+		if (!checkPointErrorsKeys.isEmpty())
+			printIntArray(out,ret, level+1,"errors",checkPointErrorsKeys, false);
+		ret.setLength(0);
+		out.print(addLevel(ret.append('\n'),level).append('}'));
+		
+	}
+
 }

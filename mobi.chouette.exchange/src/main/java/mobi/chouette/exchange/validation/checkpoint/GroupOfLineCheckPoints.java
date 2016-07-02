@@ -5,7 +5,6 @@ import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
@@ -15,12 +14,12 @@ import mobi.chouette.model.GroupOfLine;
 public class GroupOfLineCheckPoints extends AbstractValidation<GroupOfLine> implements Validator<GroupOfLine> {
 
 	@Override
-	public ValidationConstraints validate(Context context, GroupOfLine target) {
+	public void validate(Context context, GroupOfLine target) {
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		List<GroupOfLine> beans = new ArrayList<>(data.getGroupOfLines());
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		if (isEmpty(beans))
-			return null;
+			return ;
 
 		boolean test4_1 = (parameters.getCheckGroupOfLine() != 0);
 		if (test4_1) {
@@ -28,7 +27,7 @@ public class GroupOfLineCheckPoints extends AbstractValidation<GroupOfLine> impl
 			prepareCheckPoint(context, L4_GROUP_OF_LINE_1);
 		} else // no other tests for this object
 		{
-			return null;
+			return ;
 		}
 		for (int i = 0; i < beans.size(); i++) {
 			GroupOfLine bean = beans.get(i);
@@ -38,7 +37,7 @@ public class GroupOfLineCheckPoints extends AbstractValidation<GroupOfLine> impl
 				check4Generic1(context, bean, L4_GROUP_OF_LINE_1, parameters, log);
 
 		}
-		return null;
+		return ;
 	}
 
 }

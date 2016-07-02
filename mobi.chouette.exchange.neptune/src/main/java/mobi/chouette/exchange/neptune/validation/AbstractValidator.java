@@ -10,8 +10,6 @@ import mobi.chouette.exchange.neptune.model.AreaCentroid;
 import mobi.chouette.exchange.neptune.model.PTLink;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.DataLocation;
-import mobi.chouette.exchange.validation.report.LineLocation;
-import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneIdentifiedObject;
@@ -143,23 +141,6 @@ public abstract class AbstractValidator implements Constant {
 			context.put(VALIDATION_DATA,data);
 		}
 		String fileName = (String) context.get(FILE_NAME);
-		if (data != null && fileName != null) {
-			Location loc = new Location(fileName, lineNumber, columnNumber, objectId);
-			// manage neptune specific model
-			if (object instanceof PTLink) {
-				try {
-					Line line = ((PTLink) object).getRoute().getLine();
-					if (line != null)
-						loc.setLine(new LineLocation(line));
-				} catch (NullPointerException e) {
-
-				}
-			} else {
-				Location.addLineLocation(loc, object);
-				loc.setName(Location.buildName(object));
-			}
-			data.getFileLocations().put(objectId, loc);
-		}
 		if (data != null && fileName != null) {
 			DataLocation loc = new DataLocation(fileName, lineNumber, columnNumber, object);
 			// manage neptune specific model

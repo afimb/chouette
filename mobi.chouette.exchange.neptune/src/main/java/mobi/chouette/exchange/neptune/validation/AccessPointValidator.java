@@ -8,7 +8,6 @@ import java.util.Map;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
@@ -64,11 +63,11 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 
 
 	@Override
-	public ValidationConstraints validate(Context context, AccessPoint target) throws ValidationException
+	public void validate(Context context, AccessPoint target) throws ValidationException
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
-		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
+		if (localContext == null || localContext.isEmpty()) return ;
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		Context accessLinkContext = (Context) validationContext.get(AccessLinkValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
@@ -234,7 +233,7 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 				validationReporter.addCheckPointReportError(context, ACCESS_POINT_7, sourceLocation, accessPoint.getLongLatType().toString());
 			}
 		}
-		return new ValidationConstraints();
+		return ;
 	}
 
 	public static class DefaultValidatorFactory extends ValidatorFactory {

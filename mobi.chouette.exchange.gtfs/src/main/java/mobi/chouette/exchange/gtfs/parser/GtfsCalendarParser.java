@@ -281,26 +281,26 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			dayTypes.add(DayTypeEnum.Sunday);
 		timetable.setDayTypes(dayTypes);
 
-		String fileName = "calendar.txt";
+// 		String fileName = "calendar.txt";
 		if (gtfsCalendar.getStartDate() != null && gtfsCalendar.getEndDate() != null) {
 			Period period = new Period();
 			period.setStartDate(gtfsCalendar.getStartDate());
 			period.setEndDate(gtfsCalendar.getEndDate());
 			timetable.addPeriod(period);
 		}
-		else
-		{
-			// dummy calendar, created by dates
-			fileName = "calendar_dates.txt";
-		}
+//		else
+//		{
+//			// dummy calendar, created by dates
+//			fileName = "calendar_dates.txt";
+//		}
 
 		List<Period> periods = timetable.getPeriods();
 		if (periods != null)
 			Collections.sort(periods, PERIOD_COMPARATOR);
 		NamingUtil.setDefaultName(timetable);
 		timetable.setFilled(true);
-		AbstractConverter.addLocation(context, fileName, timetable.getObjectId(), gtfsCalendar.getId());
-		AbstractConverter.addLocation(context, fileName, timetable.getObjectId()+ AFTER_MIDNIGHT_SUFFIX, gtfsCalendar.getId());
+//		AbstractConverter.addLocation(context, fileName, timetable.getObjectId(), gtfsCalendar.getId());
+//		AbstractConverter.addLocation(context, fileName, timetable.getObjectId()+ AFTER_MIDNIGHT_SUFFIX, gtfsCalendar.getId());
 
 	}
 

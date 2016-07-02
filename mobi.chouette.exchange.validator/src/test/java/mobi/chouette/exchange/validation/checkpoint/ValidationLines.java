@@ -21,7 +21,7 @@ import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
 import mobi.chouette.exchange.validation.report.CheckPointReport;
-import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.exchange.validator.DummyChecker;
 import mobi.chouette.exchange.validator.JobDataTest;
@@ -165,7 +165,7 @@ public class ValidationLines extends AbstractTestValidation
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 		context.put(VALIDATION,fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		fullparameters.setCheckLine(0);
 		ValidationData data = new ValidationData();
@@ -174,14 +174,14 @@ public class ValidationLines extends AbstractTestValidation
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertTrue(report.findCheckPointReportByName("4-Line-1") == null, " report must not have item 4-Line-1");
 
 		fullparameters.setCheckLine(1);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		checkPoint.validate(context, null);
-		report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertTrue(report.findCheckPointReportByName("4-Line-1") != null, " report must have item 4-Line-1");
 		Assert.assertEquals(report.findCheckPointReportByName("4-Line-1").getCheckPointErrorCount(), 0, " checkpoint must have no detail");
 
@@ -196,7 +196,7 @@ public class ValidationLines extends AbstractTestValidation
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
 		context.put(VALIDATION,fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		fullparameters.getLine().getObjectId().setUnique(1);
 		ValidationData data = new ValidationData();
@@ -208,7 +208,7 @@ public class ValidationLines extends AbstractTestValidation
 		checkPoint.validate(context, null);
 		fullparameters.getLine().getObjectId().setUnique(0);
 		// unique
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
 		List<CheckPointErrorReport> details = checkReportForTest(report,"4-Line-1",1);
 		CheckPointErrorReport detail = details.get(0);
@@ -249,7 +249,7 @@ public class ValidationLines extends AbstractTestValidation
 		bean3.setName("line");
 
 		context.put(VALIDATION,fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		ValidationData data = new ValidationData();
 		context.put(VALIDATION_DATA, data);
@@ -261,7 +261,7 @@ public class ValidationLines extends AbstractTestValidation
 		data.setLines(lines);
 		sharedCheckPointReport.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-Line-1");
@@ -313,7 +313,7 @@ public class ValidationLines extends AbstractTestValidation
 		log.info(Color.BLUE +"3-Line-2"+ Color.NORMAL);
 		Context context = initValidatorContext();
 		context.put(VALIDATION,fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -337,7 +337,7 @@ public class ValidationLines extends AbstractTestValidation
 		data.setCurrentLine(line1);
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-Line-2");
@@ -392,11 +392,11 @@ public class ValidationLines extends AbstractTestValidation
 		data.setCurrentLine(line1);
 
 		{ // check test not required when check is false
-			context.put(VALIDATION_REPORT, new ValidationReport2());
+			context.put(VALIDATION_REPORT, new ValidationReport());
 			fullparameters.setCheckAllowedTransportModes(0);
 			context.put(VALIDATION,fullparameters);
 			checkPoint.validate(context, null);
-			ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
 			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
@@ -406,11 +406,11 @@ public class ValidationLines extends AbstractTestValidation
 		}
 
 		{ // check test required when check is true
-			context.put(VALIDATION_REPORT, new ValidationReport2());
+			context.put(VALIDATION_REPORT, new ValidationReport());
 			fullparameters.setCheckAllowedTransportModes(1);
 			context.put(VALIDATION,fullparameters);
 			checkPoint.validate(context, null);
-			ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 			
 			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
@@ -420,12 +420,12 @@ public class ValidationLines extends AbstractTestValidation
 
 		{ // check test detect invalid transport mode
 			line1.setTransportModeName(TransportModeNameEnum.Bus);
-			context.put(VALIDATION_REPORT, new ValidationReport2());
+			context.put(VALIDATION_REPORT, new ValidationReport());
 			fullparameters.getModeBus().setAllowedTransport(0);
 			context.put(VALIDATION,fullparameters);
 			checkPoint.validate(context, null);
 			
-			ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 			
 			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
@@ -477,11 +477,11 @@ public class ValidationLines extends AbstractTestValidation
 		data.setCurrentLine(line1);
 		
 		{ // check test not required when check is false
-			context.put(VALIDATION_REPORT, new ValidationReport2());
+			context.put(VALIDATION_REPORT, new ValidationReport());
 			fullparameters.setCheckLinesInGroups(0);
 			context.put(VALIDATION,fullparameters);
 			checkPoint.validate(context, null);
-			ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
 			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
@@ -493,12 +493,12 @@ public class ValidationLines extends AbstractTestValidation
 
 		GroupOfLine grp = new GroupOfLine();
 		{ // check test not required when check is false
-			context.put(VALIDATION_REPORT, new ValidationReport2());
+			context.put(VALIDATION_REPORT, new ValidationReport());
 			grp.addLine(line1);
 			fullparameters.setCheckLinesInGroups(1);
 			context.put(VALIDATION,fullparameters);
 			checkPoint.validate(context, null);
-			ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
 			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
@@ -507,13 +507,13 @@ public class ValidationLines extends AbstractTestValidation
 		}
 
 		{
-			context.put(VALIDATION_REPORT, new ValidationReport2());
+			context.put(VALIDATION_REPORT, new ValidationReport());
 			grp.removeLine(line1);
 			line1.getGroupOfLines().clear();
 			fullparameters.setCheckLinesInGroups(1);
 			context.put(VALIDATION,fullparameters);
 			checkPoint.validate(context, null);
-			ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
 			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
@@ -566,11 +566,11 @@ public class ValidationLines extends AbstractTestValidation
 
 
 		{ // check test not required when check is false
-			context.put(VALIDATION_REPORT, new ValidationReport2());
+			context.put(VALIDATION_REPORT, new ValidationReport());
 			fullparameters.setCheckLineRoutes(0);
 			context.put(VALIDATION,fullparameters);
 			checkPoint.validate(context, null);
-			ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
 			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
@@ -579,11 +579,11 @@ public class ValidationLines extends AbstractTestValidation
 		}
 
 		{ // check 2 routes in wayback
-			context.put(VALIDATION_REPORT, new ValidationReport2());
+			context.put(VALIDATION_REPORT, new ValidationReport());
 			fullparameters.setCheckLineRoutes(1);
 			context.put(VALIDATION,fullparameters);
 			checkPoint.validate(context, null);
-			ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 			
 			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
@@ -593,11 +593,11 @@ public class ValidationLines extends AbstractTestValidation
 
 		line1.getRoutes().remove(1);
 		{ // check 1 route
-			context.put(VALIDATION_REPORT, new ValidationReport2());
+			context.put(VALIDATION_REPORT, new ValidationReport());
 			fullparameters.setCheckLineRoutes(1);
 			context.put(VALIDATION,fullparameters);
 			checkPoint.validate(context, null);
-			ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 			
 			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
@@ -607,12 +607,12 @@ public class ValidationLines extends AbstractTestValidation
 
 		line1.getRoutes().add(new Route());
 		{
-			context.put(VALIDATION_REPORT, new ValidationReport2());
+			context.put(VALIDATION_REPORT, new ValidationReport());
 			fullparameters.setCheckLineRoutes(1);
 			context.put(VALIDATION,fullparameters);
 			checkPoint.validate(context, null);
 			
-			ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 			
 			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 

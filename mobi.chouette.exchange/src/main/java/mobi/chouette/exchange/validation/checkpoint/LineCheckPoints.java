@@ -2,7 +2,6 @@ package mobi.chouette.exchange.validation.checkpoint;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
@@ -15,12 +14,12 @@ import mobi.chouette.model.Route;
 public class LineCheckPoints extends AbstractValidation<Line> implements Validator<Line> {
 
 	@Override
-	public ValidationConstraints validate(Context context, Line target) {
+	public void validate(Context context, Line target) {
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		Line bean = data.getCurrentLine();
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		if (bean == null)
-			return null;
+			return ;
 		// init checkPoints : add here all defined check points for this kind of
 		// object
 		initCheckPoint(context, LINE_2, SEVERITY.E);
@@ -75,7 +74,7 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 			if (test4_4)
 				check4Line4(context, bean, parameters);
 
-		return null;
+		return ;
 
 	}
 

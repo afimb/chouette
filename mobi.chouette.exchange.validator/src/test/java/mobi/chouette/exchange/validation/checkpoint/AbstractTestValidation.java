@@ -16,7 +16,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneImporterCommand;
-import mobi.chouette.exchange.report.ActionReport2;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.exchange.report.ObjectReport;
@@ -38,7 +38,7 @@ import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.parameters.VehicleJourneyParameters;
 import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
 import mobi.chouette.exchange.validation.report.CheckPointReport;
-import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validator.JobDataTest;
 import mobi.chouette.exchange.validator.ValidateParameters;
 import mobi.chouette.model.NeptuneLocalizedObject;
@@ -75,8 +75,8 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
-		context.put(REPORT, new ActionReport2());
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(REPORT, new ActionReport());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 		NeptuneImportParameters configuration = new NeptuneImportParameters();
 		context.put(CONFIGURATION, configuration);
 		configuration.setName("name");
@@ -109,8 +109,8 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
-		context.put(REPORT, new ActionReport2());
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(REPORT, new ActionReport());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 		ValidateParameters configuration = new ValidateParameters();
 		context.put(CONFIGURATION, configuration);
 		configuration.setName("name");
@@ -162,7 +162,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 			log.error("test failed", ex);
 			throw ex;
 		}
-		ActionReport2 report = (ActionReport2) context.get(REPORT);
+		ActionReport report = (ActionReport) context.get(REPORT);
 		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
 		Assert.assertEquals(report.getFiles().size(), fileCount, "file reported");
 		Assert.assertTrue(report.getCollections().containsKey(OBJECT_TYPE.LINE), "line type reported");
@@ -217,7 +217,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 	 * @param detailSize (negative for not checked
 	 * @return
 	 */
-	protected List<CheckPointErrorReport> checkReportForTest(ValidationReport2 report, String key, int detailSize)
+	protected List<CheckPointErrorReport> checkReportForTest(ValidationReport report, String key, int detailSize)
 	{
 		Assert.assertFalse(report.getCheckPoints().isEmpty(), " report must have items");
 		Assert.assertNotNull(report.findCheckPointReportByName(key), " report must have 1 item on key "+key);

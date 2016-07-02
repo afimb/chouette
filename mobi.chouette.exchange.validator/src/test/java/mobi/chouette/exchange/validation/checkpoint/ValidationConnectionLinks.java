@@ -19,7 +19,7 @@ import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
 import mobi.chouette.exchange.validation.report.CheckPointReport;
-import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.exchange.validator.DummyChecker;
 import mobi.chouette.exchange.validator.JobDataTest;
@@ -154,7 +154,7 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		log.info(Color.BLUE + "3-ConnectionLink-1" + Color.NORMAL);
 		Context context = initValidatorContext();
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
 		utx.begin();
@@ -171,7 +171,7 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-ConnectionLink-1");
@@ -197,7 +197,7 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		log.info(Color.BLUE + "3-ConnectionLink-2" + Color.NORMAL);
 		Context context = initValidatorContext();
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
 		utx.begin();
@@ -217,7 +217,7 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-ConnectionLink-2");
@@ -242,7 +242,7 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		log.info(Color.BLUE + "3-ConnectionLink-3" + Color.NORMAL);
 		Context context = initValidatorContext();
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
 		utx.begin();
@@ -271,7 +271,7 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-ConnectionLink-3");
@@ -296,7 +296,7 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		log.info(Color.BLUE + "4-ConnectionLink-1 no test" + Color.NORMAL);
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		fullparameters.setCheckConnectionLink(0);
 		context.put(VALIDATION, fullparameters);
@@ -306,16 +306,16 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertTrue(report.findCheckPointReportByName("4-ConnectionLink-1") == null,
 				" report must not have item 4-ConnectionLink-1");
 
 
 		fullparameters.setCheckConnectionLink(1);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		checkPoint.validate(context, null);
-		report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertTrue(report.findCheckPointReportByName("4-ConnectionLink-1") != null, " report must have item 4-ConnectionLink-1");
 		Assert.assertEquals(report.findCheckPointReportByName("4-ConnectionLink-1").getCheckPointErrorCount(), 0,
 				" checkpoint must have no detail");
@@ -329,7 +329,7 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		fullparameters.setCheckConnectionLink(1);
 		fullparameters.getConnectionLink().getObjectId().setUnique(1);
@@ -341,7 +341,7 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		checkPoint.validate(context, null);
 		fullparameters.getConnectionLink().getObjectId().setUnique(0);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
 		List<CheckPointErrorReport> details = checkReportForTest(report, "4-ConnectionLink-1", 1);
 		CheckPointErrorReport detail = details.get(0);
@@ -355,7 +355,7 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		log.info(Color.BLUE + "4-ConnectionLink-2" + Color.NORMAL);
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 
 		StopArea start = new StopArea();
@@ -379,18 +379,18 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		context.put(VALIDATION_DATA, data);
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertTrue(report.findCheckPointReportByName("4-ConnectionLink-2") == null,
 				" report must not have item 4-ConnectionLink-2");
 
 		fullparameters.setCheckConnectionLinkOnPhysical(1);
 		start.setAreaType(ChouetteAreaEnum.BoardingPosition);
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 		checkPoint.validate(context, null);
 		fullparameters.setCheckConnectionLinkOnPhysical(0);
 
-		report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		report = (ValidationReport) context.get(VALIDATION_REPORT);
 		CheckPointReport checkPointReport = report.findCheckPointReportByName("4-ConnectionLink-2");
 		Assert.assertNotNull(checkPointReport, "report must contain a 4-ConnectionLink-2 checkPoint");
 		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.OK, " checkPointReport must be ok");
@@ -399,11 +399,11 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		start.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 		fullparameters.setCheckConnectionLinkOnPhysical(1);
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 		checkPoint.validate(context, null);
 		fullparameters.setCheckConnectionLinkOnPhysical(0);
 
-		report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		report = (ValidationReport) context.get(VALIDATION_REPORT);
 		checkPointReport = report.findCheckPointReportByName("4-ConnectionLink-2");
 		Assert.assertNotNull(checkPointReport, "report must contain a 4-ConnectionLink-2 checkPoint");
 		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");

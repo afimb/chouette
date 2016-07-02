@@ -23,7 +23,6 @@ import mobi.chouette.exchange.report.ActionReporter.FILE_ERROR_CODE;
 import mobi.chouette.exchange.report.ActionReporter.FILE_STATE;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.report.DataLocation;
-import mobi.chouette.exchange.validation.report.ValidationReport2;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
@@ -31,6 +30,7 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
+//import mobi.chouette.exchange.validation.report.ValidationReport2;
 
 @Log4j
 public class GtfsValidationReporter implements Constant {
@@ -40,12 +40,12 @@ public class GtfsValidationReporter implements Constant {
 
 	public GtfsValidationReporter(Context context)
 	{
-		ValidationReport2 validationReport = (ValidationReport2)context.get(VALIDATION_REPORT);
-		if (validationReport == null) {
-			validationReport = new ValidationReport2();
-			context.put(VALIDATION_REPORT, validationReport);
-		}
-		validationReport.setMaxByFile(true);
+//		ValidationReport2 validationReport = (ValidationReport2)context.get(VALIDATION_REPORT);
+//		if (validationReport == null) {
+//			validationReport = new ValidationReport2();
+//			context.put(VALIDATION_REPORT, validationReport);
+//		}
+// 		validationReport.setMaxByFile(true);
 		ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 		reporter.addItemToValidationReport(context, "1-GTFS-", "CSV", 7, "E","E","E","E","E","E","W");
 		reporter.addItemToValidationReport(context, "1-GTFS-", "Common", 16, "E","E","W","W","E","E","W","E","E","W","W","E","E","W","E","E");

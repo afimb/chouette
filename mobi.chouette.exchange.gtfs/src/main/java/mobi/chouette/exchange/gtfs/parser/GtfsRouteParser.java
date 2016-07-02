@@ -209,7 +209,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		line.setTextColor(toHexa(gtfsRoute.getRouteTextColor()));
 		line.setUrl(AbstractConverter.toString(gtfsRoute.getRouteUrl()));
 		line.setFilled(true);
-		AbstractConverter.addLocation(context, "routes.txt", line.getObjectId(), gtfsRoute.getId());
+//		AbstractConverter.addLocation(context, "routes.txt", line.getObjectId(), gtfsRoute.getId());
 	}
 
 	private TransportModeNameEnum toTransportModeNameEnum(RouteTypeEnum type)

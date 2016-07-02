@@ -13,7 +13,7 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPointReport;
-import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.exchange.validator.DummyChecker;
 import mobi.chouette.exchange.validator.JobDataTest;
@@ -126,7 +126,7 @@ public class ValidationNominal extends AbstractTestValidation {
 		Command command = (Command) CommandFactory.create(initialContext, ValidatorCommand.class.getName());
 
 		command.execute(context);
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
         Reporter.log(report.toString(),true);
 		Assert.assertFalse(report.getCheckPoints().isEmpty(), "report must have items");
 		for (CheckPointReport checkPoint : report.getCheckPoints()) {

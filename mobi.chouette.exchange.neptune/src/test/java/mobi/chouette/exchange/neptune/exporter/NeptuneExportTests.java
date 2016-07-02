@@ -22,12 +22,12 @@ import mobi.chouette.exchange.neptune.JobDataTest;
 import mobi.chouette.exchange.neptune.NeptuneTestsUtils;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneImporterCommand;
-import mobi.chouette.exchange.report.ActionReport2;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ObjectReport;
 import mobi.chouette.exchange.report.ReportConstant;
-import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.apache.commons.io.FileUtils;
@@ -140,8 +140,8 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
-		context.put(REPORT, new ActionReport2());
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(REPORT, new ActionReport());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 		NeptuneImportParameters configuration = new NeptuneImportParameters();
 		context.put(CONFIGURATION, configuration);
 		configuration.setName("name");
@@ -175,8 +175,8 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
-		context.put(REPORT, new ActionReport2());
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(REPORT, new ActionReport());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 		NeptuneExportParameters configuration = new NeptuneExportParameters();
 		context.put(CONFIGURATION, configuration);
 		configuration.setName("name");
@@ -226,7 +226,7 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 			log.error("test failed", ex);
 			throw ex;
 		}
-		ActionReport2 report = (ActionReport2) context.get(REPORT);
+		ActionReport report = (ActionReport) context.get(REPORT);
 		Assert.assertEquals(report.getResult(), STATUS_ERROR, "result");
 		Assert.assertTrue(report.getFailure().getDescription().contains("before"), "failure");
 	}
@@ -286,7 +286,7 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 			log.error("test failed", ex);
 			throw ex;
 		}
-		ActionReport2 report = (ActionReport2) context.get(REPORT);
+		ActionReport report = (ActionReport) context.get(REPORT);
 		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
 		Assert.assertEquals(report.getFiles().size(), fileCount, "file reported");
 		Assert.assertNotNull(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE), "line reported");

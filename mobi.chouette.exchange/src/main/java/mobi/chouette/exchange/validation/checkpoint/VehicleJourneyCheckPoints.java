@@ -8,7 +8,6 @@ import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
@@ -45,12 +44,12 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 	};
 
 	@Override
-	public ValidationConstraints validate(Context context, VehicleJourney target) {
+	public void validate(Context context, VehicleJourney target) {
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		List<VehicleJourney> beans = new ArrayList<>(data.getVehicleJourneys());
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		if (isEmpty(beans))
-			return null;
+			return;
 		// 3-VehicleJourney-1 : check if time progress correctly on each stop
 		// 3-VehicleJourney-2 : check speed progression
 		// 3-VehicleJourney-3 : check if two journeys progress similarly
@@ -117,7 +116,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 				check4VehicleJourney2(context, vj, parameters);
 
 		}
-		return null;
+		return ;
 	}
 
 	

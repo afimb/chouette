@@ -9,7 +9,6 @@ import java.util.Set;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
@@ -90,13 +89,13 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ValidationConstraints validate(Context context, StopArea target) throws ValidationException
+	public void validate(Context context, StopArea target) throws ValidationException
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		Set<String> objectIds = (Set<String>) validationContext.get(OBJECT_IDS);
 
-		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
+		if (localContext == null || localContext.isEmpty()) return ;
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 //		Map<String, Location> fileLocations = data.getFileLocations();
 		Map<String, DataLocation> fileLocations = data.getDataLocations();
@@ -353,7 +352,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 
 			}
 		}
-		return new ValidationConstraints();
+		return ;
 	}
 
 	public static class DefaultValidatorFactory extends ValidatorFactory {

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.report.DataLocation;
@@ -14,13 +13,13 @@ import mobi.chouette.model.Line;
 public class SharedLineCheckPoints extends AbstractValidation<Line> implements Validator<Line> {
 
 	@Override
-	public ValidationConstraints validate(Context context, Line target) {
+	public void validate(Context context, Line target) {
 		// CAUTION : here line is a shared clone with only used content
 		// if more data needed, change cloneLine in ValidationDataCollector class
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		List<Line> beans = new ArrayList<>(data.getLines());
 		if (isEmpty(beans))
-			return null;
+			return ;
 		// init checkPoints : add here all defined check points for this kind of
 		// object
 		initCheckPoint(context, LINE_1, SEVERITY.W);
@@ -36,7 +35,7 @@ public class SharedLineCheckPoints extends AbstractValidation<Line> implements V
 			// 3-Line-1 : check if two lines have same name
 			check3Line1(context,beans,  i, line1);
 		}
-		return null;
+		return ;
 
 	}
 

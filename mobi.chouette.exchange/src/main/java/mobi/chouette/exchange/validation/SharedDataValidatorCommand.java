@@ -27,7 +27,7 @@ import mobi.chouette.exchange.validation.checkpoint.NetworkCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.SharedLineCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.StopAreaCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.TimetableCheckPoints;
-import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -54,9 +54,9 @@ public class SharedDataValidatorCommand implements Command, Constant {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		if (report == null) {
-			context.put(VALIDATION_REPORT, new ValidationReport2());
+			context.put(VALIDATION_REPORT, new ValidationReport());
 		}
 		try {
 			sharedLineCheckPoints.validate(context, null);

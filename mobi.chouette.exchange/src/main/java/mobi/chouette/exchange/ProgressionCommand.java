@@ -1,6 +1,7 @@
 package mobi.chouette.exchange;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -19,8 +20,6 @@ import mobi.chouette.exchange.report.Report;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.report.StepProgression;
 import mobi.chouette.exchange.report.StepProgression.STEP;
-
-import org.apache.commons.io.FileUtils;
 
 @Log4j
 public class ProgressionCommand implements Command, Constant, ReportConstant {
@@ -66,14 +65,20 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		Path path = Paths.get(jobData.getPathName(), REPORT_FILE);
 		// pseudo pretty print
 		try {
-			String data = report.toJson().toString(2);
-			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
+			PrintStream stream = new PrintStream(path.toFile());
+			report.print(stream);
+			stream.close();
+//			String data = report.toJson().toString(2);
+//			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
 		} catch (Exception e) {
 			log.error("failed to save report", e);
 		}
 
 	}
 
+	/**
+	 * @param context
+	 */
 	public static void saveMainValidationReport(Context context) {
 		if (context.containsKey("testng"))
 			return;
@@ -85,8 +90,11 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		Path path = Paths.get(jobData.getPathName(), VALIDATION_FILE);
 
 		try {
-			String data = report.toJson().toString(2);
-			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
+			PrintStream stream = new PrintStream(path.toFile());
+			report.print(stream);
+			stream.close();
+//			String data = report.toJson().toString(2);
+//			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
 		} catch (Exception e) {
 			log.error("failed to save validation report", e);
 		}

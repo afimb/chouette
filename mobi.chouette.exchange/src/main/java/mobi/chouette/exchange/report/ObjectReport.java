@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.report;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,8 +21,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 @ToString
-public class ObjectReport {
-	public static final int maxErrors = 30;
+public class ObjectReport extends AbstractReport {
 
 	@XmlElement(name = "type", required = true)
 	@Getter
@@ -46,7 +46,7 @@ public class ObjectReport {
 
 	@XmlElement(name = "errors")
 	@Getter
-	private List<ObjectError2> errors = new ArrayList<ObjectError2>();
+	private List<ObjectError> errors = new ArrayList<ObjectError>();
 
 	@XmlElement(name = "checkpoint_errors")
 	@Getter
@@ -77,7 +77,7 @@ public class ObjectReport {
 	 * 
 	 * @param error
 	 */
-	protected void addError(ObjectError2 error) {
+	protected void addError(ObjectError error) {
 		status = OBJECT_STATE.ERROR;
 		errors.add(error);
 	}
@@ -124,7 +124,7 @@ public class ObjectReport {
 	}
 
 	/**
-	 * set stat to data type 
+	 * set stat to data type
 	 * 
 	 * @param type
 	 * @param count
@@ -154,15 +154,15 @@ public class ObjectReport {
 			JSONObject map = new JSONObject();
 			object.put("stats", map);
 			for (Entry<OBJECT_TYPE, Integer> entry : stats.entrySet()) {
-				
-				map.put(entry.getKey().toString().toLowerCase(),entry.getValue());
+
+				map.put(entry.getKey().toString().toLowerCase(), entry.getValue());
 			}
 		}
 
 		if (!errors.isEmpty()) {
 			JSONArray array = new JSONArray();
 			object.put("errors", array);
-			for (ObjectError2 error : errors) {
+			for (ObjectError error : errors) {
 				array.put(error.toJson());
 			}
 		}
@@ -178,5 +178,32 @@ public class ObjectReport {
 		object.put("check_point_error_count", checkPointErrorCount);
 		object.put("check_point_warning_count", checkPointWarningCount);
 		return object;
+	}
+
+	@Override
+	public void print(PrintStream out, int level, boolean first) {
+		StringBuilder ret = new StringBuilder();
+		out.print(addLevel(ret, level).append('{'));
+		out.print(toJsonString(ret, level + 1, "type", type.toString().toLowerCase(), true));
+		out.print(toJsonString(ret, level + 1, "description", description, false));
+		out.print(toJsonString(ret, level + 1, "objectid", objectId, false));
+		out.print(toJsonString(ret, level + 1, "status", status, false));
+		if (ioType != null)
+			out.print(toJsonString(ret, level + 1, "io_type", ioType, false));
+		if (!stats.isEmpty()) {
+			printMap(out, ret, level + 1, "stats", stats, false);
+		}
+		if (!errors.isEmpty()) {
+			printArray(out, ret, level + 1, "errors", errors, false);
+		}
+		if (!checkPointErrorKeys.isEmpty())
+			printIntArray(out, ret, level + 1, "check_point_errors", checkPointErrorKeys, false);
+
+		out.print(toJsonString(ret, level + 1, "check_point_error_count", checkPointErrorCount, false));
+		out.print(toJsonString(ret, level + 1, "check_point_warning_count", checkPointWarningCount, false));
+
+		ret.setLength(0);
+		out.print(addLevel(ret.append('\n'), level).append('}'));
+
 	}
 }

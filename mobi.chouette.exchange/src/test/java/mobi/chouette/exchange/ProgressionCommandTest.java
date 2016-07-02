@@ -10,10 +10,10 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.parameters.DummyParameter;
-import mobi.chouette.exchange.report.ActionReport2;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.report.StepProgression.STEP;
-import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 
 import org.apache.commons.io.FileUtils;
@@ -35,9 +35,9 @@ public void testProgressionInitialize() throws Exception
 	JobDataTest jobData = new JobDataTest();
 	context.put(JOB_DATA,jobData);
 	jobData.setPathName("target/referential/test");
-	context.put(REPORT, new ActionReport2());
-	ActionReport2 report = (ActionReport2)  context.get(REPORT);
-	context.put(VALIDATION_REPORT, new ValidationReport2());
+	context.put(REPORT, new ActionReport());
+	ActionReport report = (ActionReport)  context.get(REPORT);
+	context.put(VALIDATION_REPORT, new ValidationReport());
 	context.put(CONFIGURATION,new DummyParameter());
 	if (d.exists())
 		try {
@@ -65,7 +65,7 @@ public void testProgressionInitialize() throws Exception
 public void testProgressionStart() throws Exception 
 {
 	progression.start(context,2);
-	ActionReport2 report = (ActionReport2)  context.get(REPORT);
+	ActionReport report = (ActionReport)  context.get(REPORT);
 	Assert.assertNotNull(report.getProgression(), "progression should be reported");
 	Assert.assertEquals(report.getProgression().getCurrentStep(), STEP.PROCESSING.ordinal()+1, " progression should be on step processing");
 	Assert.assertEquals(report.getProgression().getSteps().get(1).getTotal(), 2," total progression should be 2");
@@ -77,13 +77,13 @@ public void testProgressionStart() throws Exception
 public void testProgressionExecute() throws Exception 
 {
 	progression.execute(context);
-	ActionReport2 report = (ActionReport2)  context.get(REPORT);
+	ActionReport report = (ActionReport)  context.get(REPORT);
 	Assert.assertNotNull(report.getProgression(), "progression should be reported");
 	Assert.assertEquals(report.getProgression().getCurrentStep(), STEP.PROCESSING.ordinal()+1, " progression should be on step processing");
 	Assert.assertEquals(report.getProgression().getSteps().get(1).getTotal(), 2," total progression should be 2");
 	Assert.assertEquals(report.getProgression().getSteps().get(1).getRealized(), 1," current progression should be 1");
 
-    ValidationReport2 validation = new ValidationReport2();
+    ValidationReport validation = new ValidationReport();
     context.put(VALIDATION_REPORT, validation);
     ValidationReporter reporter = ValidationReporter.Factory.getInstance();
     reporter.addItemToValidationReport(context, "1-TEST-1", "E");
@@ -98,7 +98,7 @@ public void testProgressionExecute() throws Exception
 public void testProgressionTerminate() throws Exception 
 {
 	progression.terminate(context,2);
-	ActionReport2 report = (ActionReport2)  context.get(REPORT);
+	ActionReport report = (ActionReport)  context.get(REPORT);
 	Assert.assertNotNull(report.getProgression(), "progression should be reported");
 	Assert.assertEquals(report.getProgression().getCurrentStep(), STEP.FINALISATION.ordinal()+1, " progression should be on step finalisation");
 	Assert.assertEquals(report.getProgression().getSteps().get(2).getTotal(), 2," total progression should be 2");
@@ -109,7 +109,7 @@ public void testProgressionTerminate() throws Exception
 public void testProgressionDispose() throws Exception 
 {
 	progression.dispose(context);
-	ActionReport2 report = (ActionReport2)  context.get(REPORT);
+	ActionReport report = (ActionReport)  context.get(REPORT);
 	Assert.assertEquals(report.getResult(), ReportConstant.STATUS_OK, " result should be ok");
 }
 

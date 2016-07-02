@@ -6,7 +6,6 @@ import java.util.Map;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.model.AreaCentroid;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
@@ -57,7 +56,7 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 
 
 	@Override
-	public ValidationConstraints validate(Context context, AreaCentroid target) throws ValidationException
+	public void validate(Context context, AreaCentroid target) throws ValidationException
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
@@ -66,7 +65,7 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 //		Map<String, Location> fileLocations = data.getFileLocations();
 		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		if (localContext == null || localContext.isEmpty())
-			return new ValidationConstraints();
+			return ;
 
 
 		// 2-NEPTUNE-AreaCentroid-1 : check reference to stoparea
@@ -111,7 +110,7 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 
 
 
-		return new ValidationConstraints();
+		return ;
 	}
 
 	public static class DefaultValidatorFactory extends ValidatorFactory {

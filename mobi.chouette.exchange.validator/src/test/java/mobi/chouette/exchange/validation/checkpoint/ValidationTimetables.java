@@ -10,11 +10,11 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.core.ChouetteException;
-import mobi.chouette.exchange.report.ActionReport2;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPointReport;
-import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validator.JobDataTest;
 import mobi.chouette.exchange.validator.ValidateParameters;
 import mobi.chouette.model.Timetable;
@@ -77,8 +77,8 @@ public class ValidationTimetables extends AbstractTestValidation {
 
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
-		context.put(REPORT, new ActionReport2());
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(REPORT, new ActionReport());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 		ValidateParameters configuration = new ValidateParameters();
 		context.put(CONFIGURATION, configuration);
 		configuration.setName("name");
@@ -110,7 +110,7 @@ public class ValidationTimetables extends AbstractTestValidation {
 		log.info(Color.BLUE + "4-Timetable-1 no test" + Color.NORMAL);
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		fullparameters.setCheckTimetable(0);
 		context.put(VALIDATION, fullparameters);
@@ -120,14 +120,14 @@ public class ValidationTimetables extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertTrue(report.findCheckPointReportByName("4-Timetable-1") == null, " report must not have item 4-Timetable-1");
 
 		fullparameters.setCheckTimetable(1);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		checkPoint.validate(context, null);
-		report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertTrue(report.findCheckPointReportByName("4-Timetable-1") != null,
 				" report must have item 4-Timetable-1");
 		Assert.assertEquals(report.findCheckPointReportByName("4-Timetable-1").getCheckPointErrorCount(), 0,
@@ -142,7 +142,7 @@ public class ValidationTimetables extends AbstractTestValidation {
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		fullparameters.setCheckTimetable(1);
 		fullparameters.getTimetable().getObjectId().setUnique(1);
@@ -154,7 +154,7 @@ public class ValidationTimetables extends AbstractTestValidation {
 		checkPoint.validate(context, null);
 		fullparameters.getTimetable().getObjectId().setUnique(0);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
         Reporter.log(report.toString(), true);
 		Assert.assertFalse(report.getCheckPoints().isEmpty(), " report must have items");

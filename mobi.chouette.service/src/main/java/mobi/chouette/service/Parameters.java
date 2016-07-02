@@ -47,6 +47,10 @@ public class Parameters {
 			{
 				command = type;
 				configuration = inputValidator.toActionParameter(elt.toString());
+				if (configuration == null)
+				{
+					throw new RequestServiceException(RequestExceptionCode.INVALID_PARAMETERS, "wrong type "+ type);
+				}
 			}
 		}
 	}

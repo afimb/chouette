@@ -6,7 +6,6 @@ import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
@@ -20,12 +19,12 @@ import mobi.chouette.model.type.ChouetteAreaEnum;
 public class ConnectionLinkCheckPoints extends AbstractValidation<ConnectionLink> implements Validator<ConnectionLink> {
 
 	@Override
-	public ValidationConstraints validate(Context context, ConnectionLink target) {
+	public void validate(Context context, ConnectionLink target) {
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		List<ConnectionLink> beans = new ArrayList<>(data.getConnectionLinks());
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		if (isEmpty(beans))
-			return null;
+			return ;
 		// init checkPoints : add here all defined check points for this kind of
 		// object
 		// 3-ConnectionLink-1 : check distance between stops of connectionLink
@@ -61,7 +60,7 @@ public class ConnectionLinkCheckPoints extends AbstractValidation<ConnectionLink
 				check4ConnectionLink2(context, connectionLink);
 
 		}
-		return null;
+		return ;
 	}
 
 	private void check3ConnectionLink1_2(Context context,  ConnectionLink connectionLink,

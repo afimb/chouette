@@ -19,9 +19,9 @@ import mobi.chouette.exchange.netex.exporter.NetexExportParameters;
 import mobi.chouette.exchange.netex.importer.NetexImportParameters;
 import mobi.chouette.exchange.parameters.AbstractExportParameter;
 import mobi.chouette.exchange.parameters.AbstractParameter;
-import mobi.chouette.exchange.report.ActionReport2;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
-import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.Referential;
 
@@ -262,23 +262,23 @@ public class CommandManager implements Constant {
 
 	private Context prepareImportContext() {
 		Context context = new Context();
-		context.put(Constant.REPORT, new ActionReport2());
+		context.put(Constant.REPORT, new ActionReport());
 		context.put(Constant.JOB_DATA, inputData);
 		context.put(CONFIGURATION, inputData.getConfiguration());
 		if (validationParameters != null)
 			context.put(VALIDATION, validationParameters);
-		context.put(REPORT, new ActionReport2());
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(REPORT, new ActionReport());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 		return context;
 	}
 
 	private Context prepareExportContext() {
 		Context context = new Context();
-		context.put(Constant.REPORT, new ActionReport2());
+		context.put(Constant.REPORT, new ActionReport());
 		context.put(Constant.JOB_DATA, outputData);
 		context.put(CONFIGURATION, outputData.getConfiguration());
 		// context.put(VALIDATION, validationParameters);
-		context.put(REPORT, new ActionReport2());
+		context.put(REPORT, new ActionReport());
 		// context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
 		return context;
 	}
@@ -304,15 +304,15 @@ public class CommandManager implements Constant {
 	public void saveReports() throws Exception {
 		if (importContext == null)
 			return;
-		ActionReport2 importReport = (ActionReport2) importContext.get(REPORT);
+		ActionReport importReport = (ActionReport) importContext.get(REPORT);
 		String data = importReport.toJson().toString(2);
 		FileUtils.writeStringToFile(Paths.get(inputData.getPathName(), "inputReport.json").toFile(), data, "UTF-8");
 
-		ValidationReport2 validationReport = (ValidationReport2) importContext.get(VALIDATION_REPORT);
+		ValidationReport validationReport = (ValidationReport) importContext.get(VALIDATION_REPORT);
 		data = validationReport.toJson().toString(2);
 		FileUtils.writeStringToFile(Paths.get(inputData.getPathName(), VALIDATION_FILE).toFile(), data, "UTF-8");
 		if (withExport()) {
-			ActionReport2 exportReport = (ActionReport2) exportContext.get(REPORT);
+			ActionReport exportReport = (ActionReport) exportContext.get(REPORT);
 			data = exportReport.toJson().toString(2);
 			FileUtils
 					.writeStringToFile(Paths.get(inputData.getPathName(), "outputReport.json").toFile(), data, "UTF-8");

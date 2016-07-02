@@ -18,11 +18,11 @@ import mobi.chouette.exchange.gtfs.importer.GtfsInitImportCommand;
 import mobi.chouette.exchange.gtfs.importer.GtfsValidationCommand;
 import mobi.chouette.exchange.gtfs.importer.GtfsValidationRulesCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
-import mobi.chouette.exchange.report.ActionReport2;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
 import mobi.chouette.exchange.validation.report.CheckPointReport;
-import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter.RESULT;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
@@ -65,8 +65,8 @@ public abstract class AbstractTests implements Constant, ReportConstant {
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
 
 		context.put(INITIAL_CONTEXT, initialContext);
-		context.put(REPORT, new ActionReport2());
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(REPORT, new ActionReport());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 		GtfsImportParameters configuration = new GtfsImportParameters();
 		context.put(CONFIGURATION, configuration);
 		configuration.setName("name");
@@ -127,7 +127,7 @@ public abstract class AbstractTests implements Constant, ReportConstant {
 	protected List<CheckPointErrorReport> getDetails(Context context, CheckPointReport checkPoint)
 	{
 		List<CheckPointErrorReport> details = new ArrayList<>();
-		ValidationReport2 valReport = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport valReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		
 		List<CheckPointErrorReport> errors = valReport.getCheckPointErrors();
 		for (Integer rank : checkPoint.getCheckPointErrorsKeys())
@@ -148,7 +148,7 @@ public abstract class AbstractTests implements Constant, ReportConstant {
 	 */
 	private CheckPointReport checkMandatoryTest(Logger log, Context context, String mandatoryTest,
 			CheckPointReport.SEVERITY severity, RESULT state) {
-		ValidationReport2 valReport = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport valReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		for (CheckPointReport phase : valReport.getCheckPoints()) {
 			if (!phase.getState().equals(RESULT.UNCHECK))
 			{

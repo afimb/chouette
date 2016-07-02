@@ -5,7 +5,6 @@ import java.util.Collection;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
@@ -19,12 +18,12 @@ import mobi.chouette.model.StopArea;
 public class AccessLinkCheckPoints extends AbstractValidation<AccessLink> implements Validator<AccessLink> {
 
 	@Override
-	public ValidationConstraints validate(Context context, AccessLink target) {
+	public void validate(Context context, AccessLink target) {
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		Collection<AccessLink> beans = data.getAccessLinks();
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		if (isEmpty(beans))
-			return null;
+			return ;
 		// init checkPoints : add here all defined check points for this kind of
 		// object
 		// 3-AccessLink-1 : check distance between ends of AccessLink
@@ -52,7 +51,7 @@ public class AccessLinkCheckPoints extends AbstractValidation<AccessLink> implem
 				check4Generic1(context,  accessLink, L4_ACCESS_LINK_1, parameters, log);
 
 		}
-		return null;
+		return ;
 	}
 
 	private void check3AccessLink1_2(Context context,  AccessLink accessLink,

@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.validation.report;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,21 +11,24 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import mobi.chouette.exchange.report.AbstractReport;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "key", "testId", "source", "targets", "value", "referenceValue" })
-public class CheckPointErrorReport {
-	
+public class CheckPointErrorReport extends AbstractReport {
+
 	@XmlElement(name = "test_id")
 	private String testId;
-	
+
 	@XmlElement(name = "source")
 	private Location source;
 
@@ -54,22 +58,23 @@ public class CheckPointErrorReport {
 	}
 
 	protected CheckPointErrorReport(String testId, String key, Location source, String value, String refValue) {
-		this(testId,key, source, value);
+		this(testId, key, source, value);
 		this.referenceValue = refValue;
 
 	}
 
 	protected CheckPointErrorReport(String testId, String key, Location source, Location... targets) {
-		this(testId,key, source);
+		this(testId, key, source);
 		this.getTargets().addAll(Arrays.asList(targets));
 	}
 
 	protected CheckPointErrorReport(String testId, String key, Location source, String value, Location... targets) {
-		this(testId,key, source, value);
+		this(testId, key, source, value);
 		this.getTargets().addAll(Arrays.asList(targets));
 	}
 
-	protected CheckPointErrorReport(String testId, String key, Location source, String value, String refValue, Location... targets) {
+	protected CheckPointErrorReport(String testId, String key, Location source, String value, String refValue,
+			Location... targets) {
 		this(testId, key, source, value, refValue);
 		this.getTargets().addAll(Arrays.asList(targets));
 	}
@@ -95,5 +100,27 @@ public class CheckPointErrorReport {
 			object.put("reference_value", referenceValue);
 		}
 		return object;
+	}
+
+	@Override
+	public void print(PrintStream out, int level, boolean first) {
+		StringBuilder ret = new StringBuilder();
+		out.print(addLevel(ret, level).append('{'));
+		out.print(toJsonString(ret, level+1, "test_id", testId, true));
+		out.print(toJsonString(ret, level+1, "error_id", key, false));
+		if (source != null)
+			printObject(out, ret, level+1, "source", source, false);
+		if (!targets.isEmpty()) {
+			printArray(out, ret, level + 1, "target", targets, false);
+		}
+		if (value != null) {
+			out.print(toJsonString(ret, level+1, "error_value", value, false));
+		}
+		if (referenceValue != null) {
+			out.print(toJsonString(ret, level+1, "reference_value", referenceValue, false));
+		}
+		ret.setLength(0);
+		out.print(addLevel(ret.append('\n'), level).append('}'));
+
 	}
 }

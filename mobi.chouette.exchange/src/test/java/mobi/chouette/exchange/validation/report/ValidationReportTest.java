@@ -2,7 +2,7 @@ package mobi.chouette.exchange.validation.report;
 
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.report.ActionReport2;
+import mobi.chouette.exchange.report.ActionReport;
 
 import org.codehaus.jettison.json.JSONObject;
 import org.testng.Assert;
@@ -13,11 +13,11 @@ public class ValidationReportTest implements Constant {
 	@Test(groups = { "CheckPoint" }, description = "checkpoint add", priority = 101)
 	public void verifyNewCheckPointAdd() throws Exception {
 		Context context = new Context();
-		context.put(VALIDATION_REPORT, new ValidationReport2());
-		context.put(REPORT, new ActionReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(REPORT, new ActionReport());
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		validationReporter.addItemToValidationReport(context, "Neptune-", "Checkpoint", 1, "W");
-		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 
 		Assert.assertNotNull(validationReport.findCheckPointReportByName("Neptune-Checkpoint-1"),
 				"checkpoint must exist in validation report");
@@ -26,13 +26,13 @@ public class ValidationReportTest implements Constant {
 	@Test(groups = { "CheckPoint" }, description = "verify existing checkpoint", priority = 102)
 	public void verifyCheckPointAdd() throws Exception {
 		Context context = new Context();
-		context.put(VALIDATION_REPORT, new ValidationReport2());
-		context.put(REPORT, new ActionReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(REPORT, new ActionReport());
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		validationReporter.addItemToValidationReport(context, "Neptune-", "Checkpoint", 1, "W");
 
 		validationReporter.addItemToValidationReport(context, "Neptune-", "Checkpoint", 1, "E");
-		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 
 		Assert.assertEquals(validationReport.findCheckPointReportByName("Neptune-Checkpoint-1").getSeverity(),
 				CheckPointReport.SEVERITY.WARNING, "Checkpoint severity must be WARNING");
@@ -41,8 +41,8 @@ public class ValidationReportTest implements Constant {
 	@Test(groups = { "CheckPointError" }, description = "checkpoint error update", priority = 103)
 	public void verifyExistingCheckPointError() throws Exception {
 		Context context = new Context();
-		context.put(VALIDATION_REPORT, new ValidationReport2());
-		context.put(REPORT, new ActionReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(REPORT, new ActionReport());
 
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		validationReporter.addItemToValidationReport(context, "Neptune-", "Checkpoint", 1, "W");
@@ -51,7 +51,7 @@ public class ValidationReportTest implements Constant {
 		// location.setFilename("filename");
 		// location.setObjectId("1234");
 		// location.setLineNumber(3);
-		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		validationReporter.addCheckPointReportError(context, "Neptune-Checkpoint-1", location, "test");
 		Assert.assertNotNull(validationReport.findCheckPointReportByName("Neptune-Checkpoint-1"),
 				"checkpoint must exist in validation report");
@@ -62,8 +62,8 @@ public class ValidationReportTest implements Constant {
 	@Test(groups = { "JsonGeneration" }, description = "Json generated", priority = 104)
 	public void verifyJsonGeneration() throws Exception {
 		Context context = new Context();
-		context.put(VALIDATION_REPORT, new ValidationReport2());
-		context.put(REPORT, new ActionReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(REPORT, new ActionReport());
 
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		validationReporter.addItemToValidationReport(context, "Neptune-", "Checkpoint", 1, "W");
@@ -72,7 +72,7 @@ public class ValidationReportTest implements Constant {
 		// location.setFilename("filename");
 		// location.setObjectId("1234");
 		// location.setLineNumber(3);
-		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 
 		String result = "{\"validation_report\":{\"result\":\"VALIDATION_PROCEDEED\",\"check_points\":" +
 				"[{\"test_id\":\"Neptune-Checkpoint-1\",\"level\":\"Neptune\",\"type\":\"Checkpoint\"," +
@@ -85,4 +85,14 @@ public class ValidationReportTest implements Constant {
 		Assert.assertEquals(validationReport.toJson().toString(), array.toString(), "Invalid validation report json");
 
 	}
+
+	@Test(groups = { "JsonGeneration" }, description = "Json string", priority = 105)
+	public void verifyJsonString() throws Exception {
+	
+		ValidationReport report = new ValidationReport();
+		StringBuilder ret = new StringBuilder();
+		Assert.assertEquals(report.toJsonString(ret, 0, "toto", "a\\ \" /", true).toString(),"\n\"toto\": \"a\\\\ \\\" \\/\"");
+	}
+
+	
 }

@@ -1,13 +1,16 @@
 package mobi.chouette.exchange.report;
 
+import java.io.PrintStream;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -16,21 +19,11 @@ import org.codehaus.jettison.json.JSONObject;
 @XmlType(propOrder={"code","description"})
 @AllArgsConstructor
 @Data
-public class ObjectError {
-	@XmlType(name="ObjectCode")
-	@XmlEnum
-	public enum CODE 
-	{
-		DATA_NOT_FOUND,
-		NO_DATA_ON_PERIOD,
-		READ_ERROR,
-		WRITE_ERROR,
-		INVALID_FORMAT,
-		INTERNAL_ERROR
-	};
+@EqualsAndHashCode(callSuper=false)
+public class ObjectError extends AbstractReport {
 	
 	@XmlElement(name="code",required=true)
-	private CODE code;
+	private ERROR_CODE code;
 	
 	@XmlElement(name="description",required=true)
 	private String description;
@@ -40,5 +33,14 @@ public class ObjectError {
 		object.put("code", code);
 		object.put("description", description);
 		return object;
+	}
+	@Override
+	public void print(PrintStream out, int level, boolean first) {
+		StringBuilder ret = new StringBuilder();
+		out.print(addLevel(ret, level).append('{'));
+		out.print(toJsonString(ret, level+1, "code", code, true));
+		out.print(toJsonString(ret, level+1, "description", description, false));
+		ret.setLength(0);
+		out.print(addLevel(ret.append('\n'), level).append('}'));		
 	}
 }

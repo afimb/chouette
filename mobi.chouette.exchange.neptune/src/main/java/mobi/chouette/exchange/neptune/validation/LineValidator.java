@@ -9,7 +9,6 @@ import java.util.Set;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
@@ -85,14 +84,14 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ValidationConstraints validate(Context context, Line target) throws ValidationException {
+	public void validate(Context context, Line target) throws ValidationException {
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 //		Map<String, Location> fileLocations = data.getFileLocations();
 		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		if (localContext == null || localContext.isEmpty())
-			return new ValidationConstraints();
+			return ;
 		Context networkContext = (Context) validationContext.get(PTNetworkValidator.LOCAL_CONTEXT);
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		Context routeContext = (Context) validationContext.get(ChouetteRouteValidator.LOCAL_CONTEXT);
@@ -204,7 +203,7 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 			}
 
 		}
-		return new ValidationConstraints();
+		return ;
 	}
 
 	public static class DefaultValidatorFactory extends ValidatorFactory {

@@ -5,7 +5,6 @@ import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
@@ -18,12 +17,12 @@ import mobi.chouette.model.StopArea;
 public class AccessPointCheckPoints extends AbstractValidation<AccessPoint> implements Validator<AccessPoint> {
 
 	@Override
-	public ValidationConstraints validate(Context context, AccessPoint target) {
+	public void validate(Context context, AccessPoint target) {
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		List<AccessPoint> beans = new ArrayList<>(data.getAccessPoints());
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		if (isEmpty(beans))
-			return null;
+			return ;
 		// init checkPoints : add here all defined check points for this kind of
 		// object
 		// 3-AccessPoint-1 : check if all access points have geolocalization
@@ -53,7 +52,7 @@ public class AccessPointCheckPoints extends AbstractValidation<AccessPoint> impl
 			}
 
 		}
-		return null;
+		return ;
 	}
 
 	private void check3AccessPoint1(Context context, AccessPoint accessPoint) {

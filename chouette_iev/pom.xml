@@ -175,6 +175,12 @@
       </dependency>
       <dependency>
          <groupId>${project.groupId}</groupId>
+         <artifactId>mobi.chouette.exchange.converter</artifactId>
+         <type>ejb</type>        
+         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.schema.checker</artifactId>
          <type>ejb</type>        
          <version>${project.version}</version>

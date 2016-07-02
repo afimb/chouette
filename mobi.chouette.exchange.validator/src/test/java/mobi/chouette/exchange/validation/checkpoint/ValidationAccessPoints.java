@@ -18,7 +18,7 @@ import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
-import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.exchange.validator.DummyChecker;
 import mobi.chouette.exchange.validator.JobDataTest;
@@ -160,7 +160,7 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 		log.info(Color.BLUE + "4-AccessPoint-1 no test" + Color.NORMAL);
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		fullparameters.setCheckAccessPoint(0);
 		context.put(VALIDATION, fullparameters);
@@ -170,15 +170,15 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertTrue(report.findCheckPointReportByName("4-AccessPoint-1") == null,
 				" report must not have item 4-AccessPoint-1");
 
 		fullparameters.setCheckAccessPoint(1);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		checkPoint.validate(context, null);
-		report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertTrue(report.findCheckPointReportByName("4-AccessPoint-1") != null,
 				" report must have item 4-AccessPoint-1");
 		Assert.assertEquals(report.findCheckPointReportByName("4-AccessPoint-1").getCheckPointErrorCount(), 0,
@@ -193,7 +193,7 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		fullparameters.setCheckAccessPoint(1);
 		fullparameters.getAccessPoint().getObjectId().setUnique(1);
@@ -205,7 +205,7 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 		checkPoint.validate(context, null);
 		fullparameters.getConnectionLink().getObjectId().setUnique(0);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
 		List<CheckPointErrorReport> details = checkReportForTest(report, "4-AccessPoint-1", 1);
 		CheckPointErrorReport detail = details.get(0);
@@ -221,7 +221,7 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 		log.info(Color.BLUE + "3-AccessPoint-1" + Color.NORMAL);
 		Context context = initValidatorContext();
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
 		utx.begin();
@@ -240,7 +240,7 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-AccessPoint-1");
@@ -264,7 +264,7 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 		log.info(Color.BLUE + "3-AccessPoint-2" + Color.NORMAL);
 		Context context = initValidatorContext();
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
 		utx.begin();
@@ -294,7 +294,7 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-AccessPoint-2");
@@ -319,7 +319,7 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 		log.info(Color.BLUE + "3-AccessPoint-2" + Color.NORMAL);
 		Context context = initValidatorContext();
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
 		utx.begin();
@@ -336,7 +336,7 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-AccessPoint-3");

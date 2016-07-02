@@ -5,7 +5,6 @@ import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
@@ -15,12 +14,12 @@ import mobi.chouette.model.Company;
 public class CompanyCheckPoints extends AbstractValidation<Company> implements Validator<Company> {
 
 	@Override
-	public ValidationConstraints validate(Context context, Company target) {
+	public void validate(Context context, Company target) {
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		List<Company> beans = new ArrayList<>(data.getCompanies());
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		if (isEmpty(beans))
-			return null;
+			return ;
 
 		boolean test4_1 = (parameters.getCheckCompany() != 0);
 		if (test4_1) {
@@ -28,7 +27,7 @@ public class CompanyCheckPoints extends AbstractValidation<Company> implements V
 			prepareCheckPoint(context, L4_COMPANY_1);
 		} else // no other tests for this object
 		{
-			return null;
+			return ;
 		}
 
 		for (int i = 0; i < beans.size(); i++) {
@@ -39,7 +38,7 @@ public class CompanyCheckPoints extends AbstractValidation<Company> implements V
 				check4Generic1(context, bean, L4_COMPANY_1, parameters, log);
 
 		}
-		return null;
+		return ;
 	}
 
 }

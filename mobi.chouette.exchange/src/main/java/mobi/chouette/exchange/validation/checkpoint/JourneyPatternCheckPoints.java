@@ -6,7 +6,6 @@ import java.util.List;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
@@ -21,12 +20,12 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 	private VehicleJourneyCheckPoints vehicleJourneyCheckPoints;
 
 	@Override
-	public ValidationConstraints validate(Context context, JourneyPattern target) {
+	public void validate(Context context, JourneyPattern target) {
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		List<JourneyPattern> beans = new ArrayList<>(data.getJourneyPatterns());
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		if (isEmpty(beans))
-			return null;
+			return ;
 		// init checkPoints : add here all defined check points for this kind of
 		// object
 
@@ -49,7 +48,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 				check4Generic1(context,jp, L4_JOURNEY_PATTERN_1, parameters, log);
 
 		}
-		return null;
+		return ;
 
 	}
 

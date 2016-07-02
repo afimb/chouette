@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.report;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 
@@ -20,10 +22,11 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "objectType", "objectReports", "stats", "ioType" })
-public class ObjectCollectionReport {
+public class ObjectCollectionReport  extends AbstractReport {
 	@XmlElement(name = "type", required = true)
 	private ActionReporter.OBJECT_TYPE objectType;
 
@@ -32,9 +35,6 @@ public class ObjectCollectionReport {
 
 	@XmlElement(name = "stats")
 	private Map<ActionReporter.OBJECT_TYPE, Integer> stats = new HashMap<ActionReporter.OBJECT_TYPE, Integer>();
-
-	@XmlElement(name = "io_type")
-	private IO_TYPE ioType;
 
 	/**
 	 * 
@@ -78,9 +78,6 @@ public class ObjectCollectionReport {
 			}
 		}
 
-		if (ioType != null)
-			object.put("io_type", ioType);
-
 		return object;
 	}
 
@@ -90,5 +87,20 @@ public class ObjectCollectionReport {
 				return object;
 		}
 		return null;
+	}
+
+	@Override
+	public void print(PrintStream out, int level, boolean first) {
+		StringBuilder ret = new StringBuilder();
+		out.print(addLevel(ret, level).append('{'));
+		out.print(toJsonString(ret, level + 1, "type", objectType.toString().toLowerCase(), true));
+		if (!objectReports.isEmpty())
+			printArray(out, ret, level + 1, "objects", objectReports, false);
+		if (!stats.isEmpty()) {
+			printMap(out, ret, level + 1, "stats", stats, false);
+		}
+		ret.setLength(0);
+		out.print(addLevel(ret.append('\n'), level).append('}'));
+	
 	}
 }

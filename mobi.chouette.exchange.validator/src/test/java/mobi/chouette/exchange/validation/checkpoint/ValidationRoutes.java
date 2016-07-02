@@ -18,7 +18,7 @@ import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
 import mobi.chouette.exchange.validation.report.CheckPointReport;
-import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.exchange.validator.DummyChecker;
 import mobi.chouette.exchange.validator.JobDataTest;
@@ -160,7 +160,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		fullparameters.setCheckRoute(0);
 		ValidationData data = new ValidationData();
@@ -169,14 +169,14 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertTrue(report.findCheckPointReportByName("4-Route-1") == null, " report must not have item 4-Route-1");
 
 		fullparameters.setCheckRoute(1);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		checkPoint.validate(context, null);
-		report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertTrue(report.findCheckPointReportByName("4-Route-1") != null, " report must have item 4-Route-1");
 		Assert.assertEquals(report.findCheckPointReportByName("4-Route-1").getCheckPointErrorCount(), 0,
 				" checkpoint must have no detail");
@@ -191,7 +191,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		fullparameters.setCheckRoute(1);
 		fullparameters.getRoute().getObjectId().setUnique(1);
@@ -203,7 +203,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		checkPoint.validate(context, null);
 		fullparameters.getRoute().getObjectId().setUnique(0);
 		// unique
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
 		List<CheckPointErrorReport> details = checkReportForTest(report, "4-Route-1", 3);
 		for (CheckPointErrorReport detail : details) {
@@ -218,7 +218,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		log.info(Color.BLUE + "3-Route-1" + Color.NORMAL);
 		Context context = initValidatorContext();
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -241,7 +241,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-Route-1");
@@ -272,7 +272,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		log.info(Color.BLUE + "3-Route-2" + Color.NORMAL);
 		Context context = initValidatorContext();
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -304,7 +304,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-Route-2");
@@ -343,7 +343,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		// 3-Route-3 : check distance between stops
 		log.info(Color.BLUE + "3-Route-3" + Color.NORMAL);
 		Context context = initValidatorContext();
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -394,7 +394,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-Route-3");
@@ -432,7 +432,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		// 3-Route-4 : check identical routes
 		log.info(Color.BLUE + "3-Route-4" + Color.NORMAL);
 		Context context = initValidatorContext();
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -467,7 +467,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-Route-4");
@@ -504,7 +504,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		// 3-Route-5 : check for potentially waybacks
 		log.info(Color.BLUE + "3-Route-5" + Color.NORMAL);
 		Context context = initValidatorContext();
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -531,7 +531,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-Route-5");
@@ -568,7 +568,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		// 3-Route-6 : check if route has minimum 2 StopPoints
 		log.info(Color.BLUE + "3-Route-6" + Color.NORMAL);
 		Context context = initValidatorContext();
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -593,7 +593,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-Route-6");
@@ -626,7 +626,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		// 3-Route-7 : check if route has minimum 1 JourneyPattern
 		log.info(Color.BLUE + "3-Route-7" + Color.NORMAL);
 		Context context = initValidatorContext();
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -651,7 +651,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-Route-7");
@@ -684,7 +684,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		// 3-Route-8 : check if all stopPoints are used by journeyPatterns
 		log.info(Color.BLUE + "3-Route-8" + Color.NORMAL);
 		Context context = initValidatorContext();
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -709,7 +709,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-Route-8");
@@ -742,7 +742,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		// 3-Route-9 : check if one journeyPattern uses all stopPoints
 		log.info(Color.BLUE + "3-Route-9" + Color.NORMAL);
 		Context context = initValidatorContext();
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -774,7 +774,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-Route-9");

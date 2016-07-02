@@ -18,7 +18,7 @@ import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
 import mobi.chouette.exchange.validation.report.CheckPointReport;
-import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.exchange.validator.DummyChecker;
 import mobi.chouette.exchange.validator.JobDataTest;
@@ -164,7 +164,7 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		fullparameters.setCheckJourneyPattern(0);
 		ValidationData data = new ValidationData();
@@ -173,15 +173,15 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertTrue(report.findCheckPointReportByName("4-JourneyPattern-1") == null, " report must not have item 4-JourneyPattern-1");
 
 		fullparameters.setCheckJourneyPattern(1);
 
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		checkPoint.validate(context, null);
-		report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertTrue(report.findCheckPointReportByName("4-JourneyPattern-1") != null, " report must have item 4-JourneyPattern-1");
 		Assert.assertEquals(report.findCheckPointReportByName("4-JourneyPattern-1").getCheckPointErrorCount(), 0,
 				" checkpoint must have no detail");
@@ -196,7 +196,7 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		fullparameters.setCheckJourneyPattern(1);
 		fullparameters.getJourneyPattern().getObjectId().setUnique(1);
@@ -208,7 +208,7 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		checkPoint.validate(context, null);
 		fullparameters.getRoute().getObjectId().setUnique(0);
 		// unique
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
 		List<CheckPointErrorReport> details = checkReportForTest(report, "4-JourneyPattern-1", 3);
 		for (CheckPointErrorReport detail : details) {
@@ -223,7 +223,7 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		log.info(Color.BLUE + "3-JourneyPattern-1" + Color.NORMAL);
 		Context context = initValidatorContext();
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -258,7 +258,7 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 		
 		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-JourneyPattern-1");

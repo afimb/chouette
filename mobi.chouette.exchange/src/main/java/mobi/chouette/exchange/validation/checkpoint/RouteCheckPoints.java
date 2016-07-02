@@ -8,7 +8,6 @@ import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.parameters.TransportModeParameters;
@@ -25,12 +24,12 @@ import mobi.chouette.model.util.NeptuneUtil;
 public class RouteCheckPoints extends AbstractValidation<Route> implements Validator<Route> {
 
 	@Override
-	public ValidationConstraints validate(Context context, Route target) {
+	public void validate(Context context, Route target) {
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		List<Route> beans = new ArrayList<>(data.getRoutes());
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		if (isEmpty(beans))
-			return null;
+			return ;
 		// init checkPoints : add here all defined check points for this kind of
 		// object
 		// 3-Route-1 : check if two successive stops are in same area
@@ -101,7 +100,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 			}
 
 		}
-		return null;
+		return ;
 	}
 
 	/**

@@ -8,7 +8,6 @@ import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
@@ -24,12 +23,12 @@ import com.vividsolutions.jts.geom.Polygon;
 public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements Validator<StopArea> {
 
 	@Override
-	public ValidationConstraints validate(Context context, StopArea target) {
+	public void validate(Context context, StopArea target) {
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		List<StopArea> beans = new ArrayList<>(data.getStopAreas());
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		if (isEmpty(beans))
-			return null;
+			return ;
 		// init checkPoints : add here all defined check points for this kind of
 		// object
 		// 3-StopArea-1 : check if all non ITL stopArea has geolocalization
@@ -88,7 +87,7 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 			}
 
 		}
-		return null;
+		return ;
 	}
 
 	private void check3StopArea1(Context context,  StopArea stopArea) {
