@@ -1,9 +1,12 @@
 package mobi.chouette.exchange.validation.report;
 
+import java.io.PrintStream;
+
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.report.ActionReport;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.codehaus.jettison.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -82,6 +85,16 @@ public class ValidationReportTest implements Constant {
 				"\"objectid\":\"1234\",\"label\":\"\"},\"error_value\":\"test\"}]}}";
 		JSONObject array = new JSONObject(result);
 		validationReporter.addCheckPointReportError(context, "Neptune-Checkpoint-1", location, "test");
+		
+		ByteArrayOutputStream oStream = new ByteArrayOutputStream();
+		PrintStream stream = new PrintStream(oStream);
+		validationReport.print(stream);
+		String text = oStream.toString();
+		JSONObject res = new JSONObject(text);
+		Assert.assertEquals(res.length(), 1 , "Report must contains 1 entry");
+		Assert.assertTrue(res.has("validation_report"), "Report must contains entry validation_report");
+		// TODO  à compléter sur les entrées directe du validationreport
+		
 		Assert.assertEquals(validationReport.toJson().toString(), array.toString(), "Invalid validation report json");
 
 	}
