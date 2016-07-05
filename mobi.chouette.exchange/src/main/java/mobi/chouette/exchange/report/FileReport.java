@@ -136,8 +136,6 @@ public class FileReport extends AbstractReport{
 		out.print(toJsonString(ret,level+1,"check_point_warning_count", checkPointWarningCount, false));
 		ret.setLength(0);
 		out.print(addLevel(ret.append('\n'),level).append('}'));
-		
-		
 	}
 
 }
