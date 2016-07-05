@@ -6,7 +6,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
@@ -30,6 +34,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		if (isEmpty(beans))
 			return ;
+//		Monitor monitor = MonitorFactory.start(this.getClass().getSimpleName());
 		// init checkPoints : add here all defined check points for this kind of
 		// object
 		// 3-Route-1 : check if two successive stops are in same area
@@ -100,6 +105,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 			}
 
 		}
+//		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 		return ;
 	}
 
@@ -202,7 +208,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 			StopArea nextArea = areas.get(i);
 			if (!firstArea.hasCoordinates() || !nextArea.hasCoordinates())
 				continue;
-			double distance = distance(firstArea, nextArea);
+			double distance = distance(firstArea, nextArea,distanceMax);
 			if (distance < distanceMin) {
 				DataLocation location = buildLocation(context, route);
 				DataLocation target1 = buildLocation(context, firstArea);

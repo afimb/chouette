@@ -3,6 +3,11 @@ package mobi.chouette.exchange.validation.checkpoint;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
@@ -10,6 +15,7 @@ import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Line;
 
+@Log4j
 public class SharedLineCheckPoints extends AbstractValidation<Line> implements Validator<Line> {
 
 	@Override
@@ -20,6 +26,7 @@ public class SharedLineCheckPoints extends AbstractValidation<Line> implements V
 		List<Line> beans = new ArrayList<>(data.getLines());
 		if (isEmpty(beans))
 			return ;
+//		Monitor monitor = MonitorFactory.start(this.getClass().getSimpleName());
 		// init checkPoints : add here all defined check points for this kind of
 		// object
 		initCheckPoint(context, LINE_1, SEVERITY.W);
@@ -35,6 +42,7 @@ public class SharedLineCheckPoints extends AbstractValidation<Line> implements V
 			// 3-Line-1 : check if two lines have same name
 			check3Line1(context,beans,  i, line1);
 		}
+//		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 		return ;
 
 	}
