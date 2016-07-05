@@ -15,7 +15,6 @@ import mobi.chouette.common.FileUtil;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.importer.NeptuneDisposeImportCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
@@ -87,7 +86,6 @@ public class NeptuneValidateExportCommand implements Command, Constant {
 					Command validation = CommandFactory
 							.create(initialContext, NeptuneValidationCommand.class.getName());
 					validation.execute(validateContext);
-					ProgressionCommand.mergeValidationReports(validateContext);
 				}
 			} catch (Exception ex) {
 				log.error("problem in validation" + ex);

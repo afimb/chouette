@@ -19,8 +19,11 @@ import mobi.chouette.model.type.ChouetteAreaEnum;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.index.quadtree.Quadtree;
 
 @Log4j
 public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements Validator<StopArea> {
@@ -29,6 +32,9 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 	private double maxLat;
 	private double minLon;
 	private double maxLon;
+	private Envelope searchEnv;
+
+	private Quadtree spatialIndex;
 
 	@Override
 	public void validate(Context context, StopArea target) {
@@ -75,6 +81,23 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 			log.error("cannot decode enveloppe " + parameters.getStopAreasArea());
 		}
 
+		// prepare quadtree index
+		Monitor monitor2 = MonitorFactory.start("spatial index");
+		spatialIndex = new Quadtree();
+		for (StopArea stopArea : beans) {
+			ChouetteAreaEnum type = stopArea.getAreaType();
+			if (type.equals(ChouetteAreaEnum.BoardingPosition) || type.equals(ChouetteAreaEnum.Quay)) {
+				if (stopArea.hasCoordinates()) {
+
+					Coordinate c = new Coordinate(stopArea.getLongitude().doubleValue(), stopArea.getLatitude()
+							.doubleValue());
+					spatialIndex.insert(Quadtree.ensureExtent(new Envelope(c),0.00001), stopArea);
+				}
+			}
+		}
+		log.info("index size = "+spatialIndex.size());
+		log.info(Color.LIGHT_GREEN + monitor2.stop() + Color.NORMAL);
+
 		for (int i = 0; i < beans.size(); i++) {
 			StopArea stopArea = beans.get(i);
 			// no test for ITL
@@ -91,22 +114,23 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 			if (test4_2)
 				check4StopArea2(context, stopArea);
 
-			updateSquare(stopArea, parameters);
+			// updateSquare(stopArea, parameters);
+			check3StopArea2env(context, stopArea, parameters);
 
 			for (int j = i + 1; j < beans.size(); j++) {
-				check3StopArea2(context, i, stopArea, j, beans.get(j), parameters);
+//				check3StopArea2(context, i, stopArea, j, beans.get(j), parameters);
 				check3StopArea3(context, i, stopArea, j, beans.get(j));
 			}
 
 		}
 		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 		{
-			// monitor = MonitorFactory.getTimeMonitor("check3StopArea1");
-			// if (monitor != null)
-			// log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
-			 monitor = MonitorFactory.getTimeMonitor("check3StopArea2");
-			 if (monitor != null)
-			 log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
+//			 monitor = MonitorFactory.getTimeMonitor("check3StopArea1");
+//			 if (monitor != null)
+//			 log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
+			monitor = MonitorFactory.getTimeMonitor("check3StopArea2");
+			if (monitor != null)
+				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
 			// monitor = MonitorFactory.getTimeMonitor("check3StopArea3");
 			// if (monitor != null)
 			// log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
@@ -138,8 +162,9 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 		maxLon = stopArea.getLongitude().doubleValue() + (distanceMin * 1.2 / rLat);
 		minLat = stopArea.getLatitude().doubleValue() - (distanceMin * 1.2 / A);
 		maxLat = stopArea.getLatitude().doubleValue() + (distanceMin * 1.2 / A);
-	}
 
+		searchEnv = new Envelope(minLon, maxLon, minLat, maxLat);
+	}
 
 	protected boolean near(StopArea area) {
 		if (area.getLongitude().doubleValue() < minLon || area.getLongitude().doubleValue() > maxLon) {
@@ -162,6 +187,46 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 			reporter.addCheckPointReportError(context, STOP_AREA_1, location);
 		}
 		// monitor.stop();
+	}
+
+	@SuppressWarnings("rawtypes")
+	private void check3StopArea2env(Context context,  StopArea stopArea, ValidationParameters parameters) {
+		// 3-StopArea-2 : check distance of stop areas with different name
+		if (!stopArea.hasCoordinates())
+			return;
+		long distanceMin = parameters.getInterStopAreaDistanceMin();
+		ChouetteAreaEnum type = stopArea.getAreaType();
+		if (type.equals(ChouetteAreaEnum.BoardingPosition) || type.equals(ChouetteAreaEnum.Quay)) {
+			updateSquare(stopArea, parameters);
+
+			Coordinate c = new Coordinate(stopArea.getLongitude().doubleValue(), stopArea.getLatitude()
+					.doubleValue());
+			spatialIndex.remove(Quadtree.ensureExtent(new Envelope(c),0.00001), stopArea);
+			List areas = spatialIndex.query(searchEnv);
+			for (Object object : areas) {
+				StopArea stopArea2 = (StopArea) object;
+				if (stopArea2.equals(stopArea))
+					continue;
+				if (!stopArea2.getAreaType().equals(type))
+					continue;
+				if (stopArea.getName().equals(stopArea2.getName()))
+					continue;
+				Monitor monitor = MonitorFactory.start("check3StopArea2");
+				double distance = computeQuickDistance(stopArea, stopArea2);
+				if (distance < distanceMin) {
+					DataLocation source = buildLocation(context, stopArea);
+					DataLocation target = buildLocation(context, stopArea2);
+
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					reporter.addCheckPointReportError(context, STOP_AREA_2, source, Integer.toString((int) distance),
+							Integer.toString((int) distanceMin), target);
+				}
+				monitor.stop();
+
+			}
+
+		}
+
 	}
 
 	private void check3StopArea2(Context context, int rank, StopArea stopArea, int rank2, StopArea stopArea2,
