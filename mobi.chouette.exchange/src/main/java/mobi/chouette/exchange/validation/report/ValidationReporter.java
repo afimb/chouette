@@ -7,6 +7,10 @@ public interface ValidationReporter {
 	public enum RESULT {
 		UNCHECK, OK, NOK
 	};
+	
+	public enum VALIDATION_RESULT {
+		NO_PROCESSING, OK, WARNING, ERROR
+	};
 		
 	/**
 	 * add a single checkpoint entry

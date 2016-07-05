@@ -259,8 +259,9 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 	@Override
 	public void clearValidationReport(Context context) {
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-		validationReport.setResult("NO_VALIDATION");
+		validationReport.setResult(VALIDATION_RESULT.NO_PROCESSING);
 		validationReport.getCheckPoints().clear();
+		validationReport.getCheckPointErrors().clear();
 	}
 
 	@Override

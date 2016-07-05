@@ -33,7 +33,7 @@ public class ActionReportTest implements Constant{
 		String text = oStream.toString();
 		JSONObject res = new JSONObject(text);
 		Assert.assertEquals(res.length(), 1 , "Report must contains 1 entry");
-		Assert.assertTrue(res.has("validation_report"), "Report must contains entry validation_report");
+		Assert.assertTrue(res.has("action_report"), "Report must contains entry action_report");
 		JSONObject vrJson = res.getJSONObject("action_report");
 	
 	}
