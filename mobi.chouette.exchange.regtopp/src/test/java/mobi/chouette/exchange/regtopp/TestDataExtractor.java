@@ -31,7 +31,7 @@ public class TestDataExtractor {
 	private final Map<String, Set<String>> referenceMap = new HashMap<String, Set<String>>();
 	private final List<String> fileExtensions = new ArrayList<String>();
 
-	public void extractLine(File sourceZipFile, File destZipFile, String adminCode, String counter, String lineId, RegtoppVersion version) throws IOException, ArchiveException {
+	public void extractLine(File sourceZipFile, File destZipFile, String adminCode, String counter, String lineId, RegtoppVersion version, String charsetEncoding) throws IOException, ArchiveException {
 
 		File tmpFolder = null;
 
@@ -99,12 +99,12 @@ public class TestDataExtractor {
 
 						// Create reader
 						FileInputStream is = new FileInputStream(f);
-						InputStreamReader isr = new InputStreamReader(is, FileContentParser.REGTOPP_CHARSET);
+						InputStreamReader isr = new InputStreamReader(is, charsetEncoding);
 						BufferedReader buffReader = new BufferedReader(isr);
 
 						// Create writer
 						FileOutputStream os = new FileOutputStream(outFile);
-						OutputStreamWriter osr = new OutputStreamWriter(os, FileContentParser.REGTOPP_CHARSET);
+						OutputStreamWriter osr = new OutputStreamWriter(os, charsetEncoding);
 						BufferedWriter buffWriter = new BufferedWriter(osr);
 
 						int lineCounter = 1;
@@ -246,19 +246,19 @@ public class TestDataExtractor {
 
 	public static void main(String[] args) throws IOException, ArchiveException {
 		new TestDataExtractor().extractLine(new File("src/test/data/fullsets/kolumbus_regtopp_20160329-20160624.zip").getAbsoluteFile(),
-				new File("src/test/data/lineextracts/kolumbus_line2306.zip").getAbsoluteFile(), "500", "1", "2306",RegtoppVersion.R12);
+				new File("src/test/data/lineextracts/kolumbus_line2306.zip").getAbsoluteFile(), "500", "1", "2306",RegtoppVersion.R12,"ISO-8859-1");
 		new TestDataExtractor().extractLine(new File("src/test/data/fullsets/kolumbus_regtopp_20160329-20160624.zip").getAbsoluteFile(),
-				new File("src/test/data/lineextracts/kolumbus_line5560.zip").getAbsoluteFile(), "500", "1", "5560",RegtoppVersion.R12);
+				new File("src/test/data/lineextracts/kolumbus_line5560.zip").getAbsoluteFile(), "500", "1", "5560",RegtoppVersion.R12,"ISO-8859-1");
 		new TestDataExtractor().extractLine(new File("src/test/data/fullsets/atb-20160118-20160619.zip").getAbsoluteFile(),
-				new File("src/test/data/lineextracts/atb_line0098.zip").getAbsoluteFile(), "161", "1", "0098",RegtoppVersion.R12);
+				new File("src/test/data/lineextracts/atb_line0098.zip").getAbsoluteFile(), "161", "1", "0098",RegtoppVersion.R12,"ISO-8859-1");
 		new TestDataExtractor().extractLine(new File("src/test/data/fullsets/atb-20160118-20160619.zip").getAbsoluteFile(),
-				new File("src/test/data/lineextracts/atb_line0076.zip").getAbsoluteFile(), "161", "1", "0076",RegtoppVersion.R12);
+				new File("src/test/data/lineextracts/atb_line0076.zip").getAbsoluteFile(), "161", "1", "0076",RegtoppVersion.R12,"ISO-8859-1");
 		new TestDataExtractor().extractLine(new File("src/test/data/fullsets/R0511_212F29Mars16_3.zip").getAbsoluteFile(),
-				new File("src/test/data/lineextracts/ot_line5001.zip").getAbsoluteFile(), "051", "1", "5001",RegtoppVersion.R12N);
+				new File("src/test/data/lineextracts/ot_line5001.zip").getAbsoluteFile(), "051", "1", "5001",RegtoppVersion.R12N,"ISO-8859-1");
 		new TestDataExtractor().extractLine(new File("src/test/data/fullsets/Troms-rutedata-tom-231216.zip").getAbsoluteFile(),
-				new File("src/test/data/lineextracts/troms_line0002.zip").getAbsoluteFile(), "190", "0", "0002",RegtoppVersion.R11D);
+				new File("src/test/data/lineextracts/troms_line0002.zip").getAbsoluteFile(), "190", "0", "0002",RegtoppVersion.R11D,"ISO-8859-1");
 		new TestDataExtractor().extractLine(new File("src/test/data/fullsets/20160229_20160320_39_v2.zip").getAbsoluteFile(),
-				new File("src/test/data/lineextracts/ruter_line0030.zip").getAbsoluteFile(), "396", "4", "0030",RegtoppVersion.R13A);
+				new File("src/test/data/lineextracts/ruter_line0030.zip").getAbsoluteFile(), "396", "4", "0030",RegtoppVersion.R13A,"ISO-8859-1");
 	}
 
 }
