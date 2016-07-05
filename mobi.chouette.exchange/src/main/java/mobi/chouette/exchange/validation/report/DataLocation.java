@@ -215,7 +215,8 @@ public class DataLocation {
 		
 		public Path(NeptuneIdentifiedObject object)
 		{
-			this(object.getClass().getSimpleName(),object.getObjectId());
+			// protection from proxy class names
+			this(object.getClass().getSimpleName().split("_")[0],object.getObjectId());
 		}
 		
 		public String toString()

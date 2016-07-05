@@ -76,7 +76,7 @@ public class AccessPointCheckPoints extends AbstractValidation<AccessPoint> impl
 			return;
 		if (accessPoint.getName().equals(accessPoint2.getName()))
 			return;
-		double distance = distance(accessPoint, accessPoint2);
+		double distance = distance(accessPoint, accessPoint2,distanceMin);
 		if (distance < distanceMin) {
 			DataLocation location = buildLocation(context,accessPoint);
 			DataLocation targetLocation = buildLocation(context,accessPoint2);
@@ -95,7 +95,7 @@ public class AccessPointCheckPoints extends AbstractValidation<AccessPoint> impl
 		StopArea stopArea = accessPoint.getContainedIn();
 		if (!stopArea.hasCoordinates())
 			return;
-		double distance = distance(accessPoint, stopArea);
+		double distance = distance(accessPoint, stopArea, distanceMax);
 		if (distance > distanceMax) {
 			DataLocation location = buildLocation(context,accessPoint);
 			DataLocation targetLocation = buildLocation(context,stopArea);

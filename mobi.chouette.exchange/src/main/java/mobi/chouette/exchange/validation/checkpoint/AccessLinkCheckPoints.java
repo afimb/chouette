@@ -67,7 +67,7 @@ public class AccessLinkCheckPoints extends AbstractValidation<AccessLink> implem
 		}
 		long distanceMax = parameters.getInterAccessLinkDistanceMax();
 
-		double distance = distance(start, end);
+		double distance = distance(start, end, distanceMax);
 		if (distance > distanceMax) {
 			
 			DataLocation location = buildLocation(context, accessLink);

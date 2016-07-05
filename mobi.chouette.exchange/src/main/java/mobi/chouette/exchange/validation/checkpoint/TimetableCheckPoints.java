@@ -3,7 +3,11 @@ package mobi.chouette.exchange.validation.checkpoint;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
@@ -28,6 +32,7 @@ public class TimetableCheckPoints extends AbstractValidation<Timetable> implemen
 		{
 			return ;
 		}
+//		Monitor monitor = MonitorFactory.start(this.getClass().getSimpleName());
 		for (int i = 0; i < beans.size(); i++) {
 			Timetable bean = beans.get(i);
 
@@ -36,6 +41,7 @@ public class TimetableCheckPoints extends AbstractValidation<Timetable> implemen
 				check4Generic1(context, bean, L4_TIME_TABLE_1, parameters, log);
 
 		}
+//		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 		return ;
 	}
 

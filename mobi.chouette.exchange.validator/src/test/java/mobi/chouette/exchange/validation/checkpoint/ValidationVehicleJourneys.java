@@ -411,7 +411,7 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on level warning");
 		
-		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 26, " checkPointReport must have 26 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 		String detailKey = "3-VehicleJourney-3".replaceAll("-", "_").toLowerCase();
 		List<CheckPointErrorReport> details = checkReportForTest(report,"3-VehicleJourney-3",-1);
 		for (CheckPointErrorReport detail : details) {

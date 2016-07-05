@@ -36,6 +36,8 @@ import mobi.chouette.model.util.NamingUtil;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LinearRing;
@@ -52,9 +54,9 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	public enum PATTERN_OPTION {
 		free, num, alpha, upper, lower
 	}
-	
+
 	public enum SEVERITY {
-		W,E
+		W, E
 	}
 
 	// test keys
@@ -153,10 +155,6 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static void initCheckPoint(Context context, String key, SEVERITY severity) {
 		ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 		reporter.addItemToValidationReport(context, key, severity.toString());
-//		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-//		if (validationReport.findCheckPointByName(key) == null) {
-//			validationReport.getCheckPoints().add(new CheckPoint(key, CheckPoint.RESULT.UNCHECK, severity));
-//		}
 
 		return;
 	}
@@ -170,26 +168,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static void prepareCheckPoint(Context context, String checkPointKey) {
 		ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 		reporter.prepareCheckPointReport(context, checkPointKey);
-//		CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointKey);
-//		if (checkPoint == null) {
-//			checkPoint = validationReport.findCheckPointByName(checkPointKey);
-//		}
-//		if (checkPoint.getDetails().isEmpty())
-//			checkPoint.setState(CheckPoint.RESULT.OK);
 	}
-
-//	/**
-//	 * add a detail on a checkpoint
-//	 * 
-//	 * @param validationReport
-//	 * @param checkPointKey
-//	 * @param item
-//	 */
-//	protected static void addValidationError(ValidationReport validationReport, String checkPointKey, Detail item) {
-//		CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointKey);
-//		checkPoint.addDetail(item);
-//
-//	}
 
 	/**
 	 * calculate distance on spheroid
@@ -200,33 +179,53 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param obj2
 	 * @return
 	 */
-	protected static double distance(NeptuneLocalizedObject obj1, NeptuneLocalizedObject obj2) {
-		if (obj1.hasCoordinates() && obj2.hasCoordinates())
+	protected static double distance(NeptuneLocalizedObject obj1, NeptuneLocalizedObject obj2, double targetDistance) {
+		if (obj1.hasCoordinates() && obj2.hasCoordinates()) {
+//			if (targetDistance > 0.1) {
+//				double d = computeQuickDistance(obj1, obj2);
+//				if (d > 1.3 * targetDistance)
+//					return d;
+//			}
 			return computeHaversineFormula(obj1, obj2);
-		else
+		} else
 			return 0;
 	}
+
+	protected static final double A = 111322.; // Length of a degree in meter on equator
+	protected static double computeQuickDistance(NeptuneLocalizedObject obj1, NeptuneLocalizedObject obj2) {
+
+// 		Monitor monitor = MonitorFactory.start("computeQuickDistance");
+		double dlon = (obj2.getLongitude().doubleValue() - obj1.getLongitude().doubleValue()) * A;
+		dlon *= Math.cos((obj2.getLatitude().doubleValue() + obj1.getLatitude().doubleValue())* toRad/2.);
+		double dlat = (obj2.getLatitude().doubleValue() - obj1.getLatitude().doubleValue()) * A;
+		double ret  = Math.sqrt(dlon * dlon + dlat * dlat);
+// 		monitor.stop();
+		return ret;
+
+	}
+
+	protected static final double R = 6371008.8; // Earth radius
+	protected static final double toRad = 0.017453292519943; // degree/rad ratio
 
 	/**
 	 * @see http://mathforum.org/library/drmath/view/51879.html
 	 */
 	private static double computeHaversineFormula(NeptuneLocalizedObject obj1, NeptuneLocalizedObject obj2) {
 
-		double lon1 = Math.toRadians(obj1.getLongitude().doubleValue());
-		double lat1 = Math.toRadians(obj1.getLatitude().doubleValue());
-		double lon2 = Math.toRadians(obj2.getLongitude().doubleValue());
-		double lat2 = Math.toRadians(obj2.getLatitude().doubleValue());
+// 		Monitor monitor = MonitorFactory.start("computeHaversineFormula");
+		double lon1 = obj1.getLongitude().doubleValue() * toRad;
+		double lat1 = obj1.getLatitude().doubleValue() * toRad;
+		double lon2 = obj2.getLongitude().doubleValue() * toRad;
+		double lat2 = obj2.getLatitude().doubleValue() * toRad;
 
-		final double R = 6371008.8;
 
-		double dlon = lon2 - lon1;
-		double dlat = lat2 - lat1;
-
-		double a = Math.pow((Math.sin(dlat / 2)), 2) + Math.cos(lat1) * Math.cos(lat2)
-				* Math.pow(Math.sin(dlon / 2), 2);
-		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		double dlon = Math.sin((lon2 - lon1)/ 2);
+		double dlat = Math.sin((lat2 - lat1)/ 2 );
+		double a = (dlat * dlat) + Math.cos(lat1) * Math.cos(lat2)
+				* (dlon * dlon);
+		double c = 2. * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 		double d = R * c;
-
+// 		monitor.stop();
 		return d;
 	}
 
@@ -326,8 +325,8 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param testCode
 	 * @param resultCode
 	 */
-	protected void checkLinkSpeed(Context context,  NeptuneIdentifiedObject object,
-			Time duration, double distance, int maxDefaultSpeed, String testCode, String resultCode) {
+	protected void checkLinkSpeed(Context context, NeptuneIdentifiedObject object, Time duration, double distance,
+			int maxDefaultSpeed, String testCode, String resultCode) {
 		if (duration != null) {
 			long time = getTimeInSeconds(duration); // in seconds
 
@@ -336,12 +335,14 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 
 				if (speed > maxDefaultSpeed) {
 					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-					
+
 					DataLocation location = buildLocation(context, object);
-					reporter.addCheckPointReportError(context, testCode, resultCode, location, Integer.toString(speed), Integer.toString(maxDefaultSpeed));
-//					Detail detail = new Detail(testCode + resultCode, location, Integer.toString(speed),
-//							Integer.toString(maxDefaultSpeed));
-//					addValidationError(report, testCode, detail);
+					reporter.addCheckPointReportError(context, testCode, resultCode, location, Integer.toString(speed),
+							Integer.toString(maxDefaultSpeed));
+					// Detail detail = new Detail(testCode + resultCode,
+					// location, Integer.toString(speed),
+					// Integer.toString(maxDefaultSpeed));
+					// addValidationError(report, testCode, detail);
 				}
 			}
 		}
@@ -354,8 +355,8 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		return millis / 1000;
 	}
 
-	protected void check4Generic1(Context context,  T object, String testName,
-			ValidationParameters parameters, Logger log) {
+	protected void check4Generic1(Context context, T object, String testName, ValidationParameters parameters,
+			Logger log) {
 
 		List<String> columnNames = ValidationParametersUtil.getFields(object);
 		String objectKey = toUnderscore(object.getClass().getSimpleName());
@@ -397,24 +398,22 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 				}
 				// uniqueness ?
 				if (colParam.getUnique() == 1) {
-					check4Generic1Unique(context,  object, testName, objectKey, column, value, log);
+					check4Generic1Unique(context, object, testName, objectKey, column, value, log);
 				}
 
 				// pattern ?
 				PATTERN_OPTION pattern_opt = PATTERN_OPTION.values()[colParam.getPattern()];
 
-				check4Generic1Pattern(context,  object, testName, column, value, pattern_opt, log);
+				check4Generic1Pattern(context, object, testName, column, value, pattern_opt, log);
 
 				// min size ?
 				if (colParam.getMinSize() != null && !colParam.getMinSize().isEmpty()) {
-					check4Generic1MinSize(context, object, testName, column, colParam, objVal, value,
-							pattern_opt, log);
+					check4Generic1MinSize(context, object, testName, column, colParam, objVal, value, pattern_opt, log);
 				}
 
 				// max_size ?
 				if (colParam.getMaxSize() != null && !colParam.getMaxSize().isEmpty() && !value.isEmpty()) {
-					check4Generic1MaxSize(context,  object, testName, column, colParam, objVal, value,
-							pattern_opt, log);
+					check4Generic1MaxSize(context, object, testName, column, colParam, objVal, value, pattern_opt, log);
 				}
 
 			} catch (Exception e) {
@@ -434,8 +433,8 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param value
 	 * @param pattern_opt
 	 */
-	private void check4Generic1MaxSize(Context context,  T object, String testName,
-			String column, FieldParameters colParam, Object objVal, String value, PATTERN_OPTION pattern_opt, Logger log) {
+	private void check4Generic1MaxSize(Context context, T object, String testName, String column,
+			FieldParameters colParam, Object objVal, String value, PATTERN_OPTION pattern_opt, Logger log) {
 		int maxSize = Integer.parseInt(colParam.getMaxSize());
 		if (maxSize != 0) {
 			if (objVal instanceof Number || objVal instanceof Time || pattern_opt == PATTERN_OPTION.num) {
@@ -444,11 +443,12 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 				if (val > maxSize) {
 					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					DataLocation location = buildLocation(context, object);
-					reporter.addCheckPointReportError(context, testName,  MAX_SIZE, location, value, column);
-//					Location location = buildLocation(context, object);
-//
-//					Detail detail = new Detail(testName + "_" + MAX_SIZE, location, value, column);
-//					addValidationError(report, testName, detail);
+					reporter.addCheckPointReportError(context, testName, MAX_SIZE, location, value, column);
+					// Location location = buildLocation(context, object);
+					//
+					// Detail detail = new Detail(testName + "_" + MAX_SIZE,
+					// location, value, column);
+					// addValidationError(report, testName, detail);
 				}
 			} else {
 				// test string size
@@ -456,10 +456,11 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					DataLocation location = buildLocation(context, object);
 					reporter.addCheckPointReportError(context, testName, MAX_SIZE, location, value, column);
-//					Location location = buildLocation(context, object);
-//
-//					Detail detail = new Detail(testName + "_" + MAX_SIZE, location, value, column);
-//					addValidationError(report, testName, detail);
+					// Location location = buildLocation(context, object);
+					//
+					// Detail detail = new Detail(testName + "_" + MAX_SIZE,
+					// location, value, column);
+					// addValidationError(report, testName, detail);
 				}
 			}
 		}
@@ -475,18 +476,19 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param value
 	 * @param pattern_opt
 	 */
-	private void check4Generic1MinSize(Context context,  T object, String testName,
-			String column, FieldParameters colParam, Object objVal, String value, PATTERN_OPTION pattern_opt, Logger log) {
+	private void check4Generic1MinSize(Context context, T object, String testName, String column,
+			FieldParameters colParam, Object objVal, String value, PATTERN_OPTION pattern_opt, Logger log) {
 		int minSize = Integer.parseInt(colParam.getMinSize());
 
 		if (minSize > 0 && value.isEmpty()) {
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 			DataLocation location = buildLocation(context, object);
-			reporter.addCheckPointReportError(context, testName,  MIN_SIZE, location, value, column);
-//			Location location = buildLocation(context, object);
-//
-//			Detail detail = new Detail(testName + "_" + MIN_SIZE, location, value, column);
-//			addValidationError(report, testName, detail);
+			reporter.addCheckPointReportError(context, testName, MIN_SIZE, location, value, column);
+			// Location location = buildLocation(context, object);
+			//
+			// Detail detail = new Detail(testName + "_" + MIN_SIZE, location,
+			// value, column);
+			// addValidationError(report, testName, detail);
 			return;
 		}
 
@@ -496,22 +498,24 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			if (val < minSize) {
 				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 				DataLocation location = buildLocation(context, object);
-				reporter.addCheckPointReportError(context, testName,  MIN_SIZE, location, value, column);
-//				Location location = buildLocation(context, object);
-//
-//				Detail detail = new Detail(testName + "_" + MIN_SIZE, location, value, column);
-//				addValidationError(report, testName, detail);
+				reporter.addCheckPointReportError(context, testName, MIN_SIZE, location, value, column);
+				// Location location = buildLocation(context, object);
+				//
+				// Detail detail = new Detail(testName + "_" + MIN_SIZE,
+				// location, value, column);
+				// addValidationError(report, testName, detail);
 			}
 		} else {
 			// test string size
 			if (value.length() < minSize) {
 				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 				DataLocation location = buildLocation(context, object);
-				reporter.addCheckPointReportError(context, testName,  MIN_SIZE, location, value, column);
-//				Location location = buildLocation(context, object);
-//
-//				Detail detail = new Detail(testName + "_" + MIN_SIZE, location, value, column);
-//				addValidationError(report, testName, detail);
+				reporter.addCheckPointReportError(context, testName, MIN_SIZE, location, value, column);
+				// Location location = buildLocation(context, object);
+				//
+				// Detail detail = new Detail(testName + "_" + MIN_SIZE,
+				// location, value, column);
+				// addValidationError(report, testName, detail);
 			}
 		}
 	}
@@ -524,8 +528,8 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param value
 	 * @param pattern_opt
 	 */
-	private void check4Generic1Pattern(Context context,  T object, String testName,
-			String column, String value, PATTERN_OPTION pattern_opt, Logger log) {
+	private void check4Generic1Pattern(Context context, T object, String testName, String column, String value,
+			PATTERN_OPTION pattern_opt, Logger log) {
 		if (!value.isEmpty()) {
 			String regex = null;
 			switch (pattern_opt) {
@@ -549,9 +553,10 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					DataLocation location = buildLocation(context, object);
 					reporter.addCheckPointReportError(context, testName, PATTERN, location, value, column);
-//					Location location = buildLocation(context, object);
-//					Detail detail = new Detail(testName + "_" + PATTERN, location, value, column);
-//					addValidationError(report, testName, detail);
+					// Location location = buildLocation(context, object);
+					// Detail detail = new Detail(testName + "_" + PATTERN,
+					// location, value, column);
+					// addValidationError(report, testName, detail);
 				}
 			}
 		}
@@ -567,8 +572,8 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param value
 	 */
 	@SuppressWarnings("unchecked")
-	private void check4Generic1Unique(Context context,  T object, String testName,
-			String objectKey, String column, String value, Logger log) {
+	private void check4Generic1Unique(Context context, T object, String testName, String objectKey, String column,
+			String value, Logger log) {
 		String context_key = objectKey + "_" + column + "_" + UNIQUE;
 
 		Map<String, DataLocation> values = (Map<String, DataLocation>) context.get(context_key);
@@ -579,11 +584,12 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		if (values.containsKey(value)) {
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 			DataLocation location = buildLocation(context, object);
-			reporter.addCheckPointReportError(context, testName,  UNIQUE, location, value, column, values.get(value));
-//			Location location = buildLocation(context, object);
-//
-//			Detail detail = new Detail(testName + "_" + UNIQUE, location, value, column, values.get(value));
-//			addValidationError(report, testName, detail);
+			reporter.addCheckPointReportError(context, testName, UNIQUE, location, value, column, values.get(value));
+			// Location location = buildLocation(context, object);
+			//
+			// Detail detail = new Detail(testName + "_" + UNIQUE, location,
+			// value, column, values.get(value));
+			// addValidationError(report, testName, detail);
 		} else {
 			values.put(value, buildLocation(context, object));
 		}
@@ -626,11 +632,11 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			return new DataLocation(object);
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		if (data == null) {
-			return new DataLocation( object);
+			return new DataLocation(object);
 		}
 		DataLocation loc = data.getDataLocations().get(object.getObjectId());
 		if (loc == null) {
-			return new DataLocation( object);
+			return new DataLocation(object);
 		}
 		if (NamingUtil.isEmpty(loc.getName())) {
 			loc.setName(DataLocation.buildName(object));
