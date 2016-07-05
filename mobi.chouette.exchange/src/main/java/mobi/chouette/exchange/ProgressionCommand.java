@@ -65,7 +65,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		Path path = Paths.get(jobData.getPathName(), REPORT_FILE);
 		// pseudo pretty print
 		try {
-			PrintStream stream = new PrintStream(path.toFile());
+			PrintStream stream = new PrintStream(path.toFile(),"UTF-8");
 			report.print(stream);
 			stream.close();
 //			String data = report.toJson().toString(2);
@@ -90,7 +90,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		Path path = Paths.get(jobData.getPathName(), VALIDATION_FILE);
 
 		try {
-			PrintStream stream = new PrintStream(path.toFile());
+			PrintStream stream = new PrintStream(path.toFile(),"UTF-8");
 			report.print(stream);
 			stream.close();
 //			String data = report.toJson().toString(2);
