@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.validation.report.ValidationReporter.VALIDATION_RESULT;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.codehaus.jettison.json.JSONArray;
@@ -45,7 +46,7 @@ public class ValidationReportTest implements Constant{
 			Assert.assertTrue(res.has("validation_report"), "Report must contains entry validation_report");
 			JSONObject vrJson = res.getJSONObject("validation_report");
 			Assert.assertNotNull(vrJson, "validation_report json object must not be null");
-			Assert.assertEquals(vrJson.getString("result"), "NO_VALIDATION", "validation_report is not empty");
+			Assert.assertEquals(vrJson.getString("result"), VALIDATION_RESULT.NO_PROCESSING.toString(), "validation_report is not empty");
 		
 		}
 		validationReporter.addItemToValidationReport(context, "Neptune-", "Checkpoint", 1, "W");
@@ -61,7 +62,7 @@ public class ValidationReportTest implements Constant{
 		Assert.assertTrue(res.has("validation_report"), "Report must contains entry validation_report");
 		JSONObject vrJson = res.getJSONObject("validation_report");
 		Assert.assertNotNull(vrJson, "validation_report json object must not be null");
-		Assert.assertEquals(vrJson.getString("result"), "VALIDATION_PROCEDEED", "validation_report is empty");
+		Assert.assertEquals(vrJson.getString("result"), VALIDATION_RESULT.WARNING.toString(), "validation_report is empty");
 		
 		JSONArray checkPointsJson = vrJson.getJSONArray("check_points");
 		Assert.assertNotNull(checkPointsJson, "checkpoint list must not be null");

@@ -51,10 +51,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 
 	public void dispose(Context context) {
 		saveReport(context);
-//		if (context.containsKey(VALIDATION_REPORT)) {
-//			mergeValidationReports(context);
 			saveMainValidationReport(context);
-//		}
 	}
 
 	public static void saveReport(Context context) {
@@ -65,7 +62,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		Path path = Paths.get(jobData.getPathName(), REPORT_FILE);
 		// pseudo pretty print
 		try {
-			PrintStream stream = new PrintStream(path.toFile());
+			PrintStream stream = new PrintStream(path.toFile(),"UTF-8");
 			report.print(stream);
 			stream.close();
 //			String data = report.toJson().toString(2);
@@ -90,7 +87,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		Path path = Paths.get(jobData.getPathName(), VALIDATION_FILE);
 
 		try {
-			PrintStream stream = new PrintStream(path.toFile());
+			PrintStream stream = new PrintStream(path.toFile(),"UTF-8");
 			report.print(stream);
 			stream.close();
 //			String data = report.toJson().toString(2);
@@ -101,47 +98,14 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 
 	}
 
-	public static void mergeValidationReports(Context context) {
-//		if (context.get(VALIDATION_REPORT) instanceof ValidationReport)
-//		{
-//		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-//		ValidationReport mainValidationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-//		for (CheckPoint checkPoint : validationReport.getCheckPoints()) {
-//			String name = checkPoint.getName();
-//			CheckPoint mainCheckPoint = mainValidationReport.findCheckPointByName(name);
-//			if (mainCheckPoint == null) {
-//				mainValidationReport.getCheckPoints().add(checkPoint);
-//			} else {
-//
-//				if (checkPoint.getSeverity().ordinal() > mainCheckPoint.getSeverity().ordinal())
-//					mainCheckPoint.setSeverity(checkPoint.getSeverity());
-//				if (checkPoint.getState().ordinal() > mainCheckPoint.getState().ordinal())
-//					mainCheckPoint.setState(checkPoint.getState());
-//				for (Detail detail : checkPoint.getDetails()) {
-//					mainCheckPoint.addDetail(detail);
-//				}
-//			}
-//		}
-//		// reset validationReport
-//        validationReport.clear();
-//		context.put(VALIDATION_REPORT, new ValidationReport());
-//		}
-	}
 
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = SUCCESS;
 
-		if (context.containsKey(VALIDATION_REPORT)) {
-//			if (context.containsKey(VALIDATION_REPORT)) {
-//				mergeValidationReports(context);
-//			}
-//			else
-//			{
-//				context.put(VALIDATION_REPORT, new ValidationReport());
-//			}
-			saveMainValidationReport(context);
-		}
+//		if (context.containsKey(VALIDATION_REPORT)) {
+//			saveMainValidationReport(context);
+//		}
 		ProgressionReport report = (ProgressionReport) context.get(REPORT);
 		StepProgression step = report.getProgression().getSteps().get(report.getProgression().getCurrentStep() - 1);
 		step.setRealized(step.getRealized() + 1);

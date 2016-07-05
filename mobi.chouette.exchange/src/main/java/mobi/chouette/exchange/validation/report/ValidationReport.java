@@ -17,6 +17,8 @@ import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.exchange.report.AbstractReport;
 import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
+import mobi.chouette.exchange.validation.report.ValidationReporter.VALIDATION_RESULT;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -31,14 +33,13 @@ public class ValidationReport extends AbstractReport implements Report {
 	@XmlElement(name = "result")
 	@Getter
 	@Setter
-	private String result = "NO_VALIDATION";
+	private VALIDATION_RESULT result = VALIDATION_RESULT.NO_PROCESSING;
 
 	@XmlElement(name = "tests")
 	@Getter
 	@Setter
 	private List<CheckPointReport> checkPoints = new ArrayList<CheckPointReport>();
-	
-	
+
 	@XmlElement(name = "errors")
 	@Getter
 	@Setter
@@ -49,11 +50,6 @@ public class ValidationReport extends AbstractReport implements Report {
 	@Setter
 	private boolean maxByFile = true;
 
-
-	protected void checkResult() {
-		result = checkPoints.isEmpty() ? "NO_VALIDATION" : "VALIDATION_PROCEDEED";
-	}
-	
 	public CheckPointReport findCheckPointReportByName(String name) {
 		for (CheckPointReport checkPoint : checkPoints) {
 			if (checkPoint.getName().equals(name))
@@ -61,7 +57,7 @@ public class ValidationReport extends AbstractReport implements Report {
 		}
 		return null;
 	}
-	
+
 	public CheckPointErrorReport findCheckPointReportErrorByKey(String key) {
 		for (CheckPointErrorReport checkPointError : checkPointErrors) {
 			if (checkPointError.getKey().equals(key))
@@ -69,28 +65,37 @@ public class ValidationReport extends AbstractReport implements Report {
 		}
 		return null;
 	}
-	
-	protected void addCheckPointReport(CheckPointReport checkPoint)
-	{
+
+	protected void addCheckPointReport(CheckPointReport checkPoint) {
 		checkPoint.setMaxByFile(maxByFile);
 		checkPoints.add(checkPoint);
-	}
-	
-	protected void addCheckPointErrorReport(CheckPointErrorReport checkPointError)
-	{
-		checkPointErrors.add(checkPointError);
+		if (result.ordinal() < VALIDATION_RESULT.OK.ordinal())
+			result = VALIDATION_RESULT.OK;
 	}
 
-	protected void addAllCheckPoints(Collection<CheckPointReport> list)
-	{
+	protected void addCheckPointErrorReport(CheckPointErrorReport checkPointError) {
+		checkPointErrors.add(checkPointError);
+		if (result != VALIDATION_RESULT.ERROR) {
+			CheckPointReport checkPoint = findCheckPointReportByName(checkPointError.getTestId());
+			if (checkPoint.getSeverity().equals(SEVERITY.WARNING)) {
+				if (result.ordinal() < VALIDATION_RESULT.WARNING.ordinal())
+					result = VALIDATION_RESULT.WARNING;
+			} else {
+				result = VALIDATION_RESULT.ERROR;
+			}
+		}
+	}
+
+	protected void addAllCheckPoints(Collection<CheckPointReport> list) {
 		for (CheckPointReport checkPoint : checkPoints) {
 			checkPoint.setMaxByFile(maxByFile);
 		}
 		checkPoints.addAll(list);
+		if (result.ordinal() < VALIDATION_RESULT.OK.ordinal())
+			result = VALIDATION_RESULT.OK;
 	}
 
 	public JSONObject toJson() throws JSONException {
-		result = checkPoints.isEmpty() ? "NO_VALIDATION" : "VALIDATION_PROCEDEED";
 		JSONObject validationReport = new JSONObject();
 		validationReport.put("result", result);
 		if (!checkPoints.isEmpty()) {
@@ -111,30 +116,28 @@ public class ValidationReport extends AbstractReport implements Report {
 		object.put("validation_report", validationReport);
 		return object;
 	}
-	
-	public void print(PrintStream out)
-	{
-		print(out,1,true);
+
+	public void print(PrintStream out) {
+		print(out, 1, true);
 	}
-	
-	public void print(PrintStream out, int level, boolean first)
-	{
+
+	public void print(PrintStream out, int level, boolean first) {
 		StringBuilder ret = new StringBuilder();
 		level = 1;
-		result = checkPoints.isEmpty() ? "NO_VALIDATION" : "VALIDATION_PROCEDEED";
 		out.print("{\"validation_report\": {");
-		out.print(toJsonString(ret,level,"result", result, true));
+		out.print(toJsonString(ret, level, "result", result, true));
 		if (!checkPoints.isEmpty())
-			printArray(out,ret, level+1,"check_points",checkPoints, false);
+			printArray(out, ret, level + 1, "check_points", checkPoints, false);
 		if (!checkPointErrors.isEmpty())
-			printArray(out,ret, level+1,"errors",checkPointErrors, false);
+			printArray(out, ret, level + 1, "errors", checkPointErrors, false);
 		out.println("\n}}");
 	}
+
 	@Override
 	public boolean isEmpty() {
 		// used to know if report has to be saved
 		// Validation Report has to be saved if checkPoints were defined
-		
+
 		return checkPoints.isEmpty();
 	}
 }
