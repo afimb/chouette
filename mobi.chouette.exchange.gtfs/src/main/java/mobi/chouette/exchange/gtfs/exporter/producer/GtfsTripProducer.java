@@ -148,7 +148,7 @@ public class GtfsTripProducer extends AbstractProducer {
 	
 	private double computeDistance(RouteSection section)
 	{
-		if (section.getNoProcessing() != null && section.getNoProcessing())
+		if (isTrue(section.getNoProcessing()) || section.getProcessedGeometry() == null)
 		{
 			double distance = section.getInputGeometry().getLength();
 			distance *= (Math.PI / 180) * 6378137;
@@ -193,9 +193,14 @@ public class GtfsTripProducer extends AbstractProducer {
 	}
 
 	private DropOffType toDropOffType(AlightingPossibilityEnum forAlighting, DropOffType defaultValue) {
+		if(forAlighting == null) {
+			// If not set on StopPoint return defaultValue (that is, the previous value) or if not set; Scheduled
+			return defaultValue == null ? DropOffType.Scheduled : defaultValue;
+		}
+		
 		switch (forAlighting) {
 		case normal:
-			return defaultValue == null ? DropOffType.Scheduled : defaultValue;
+			return DropOffType.Scheduled;
 		case forbidden:
 			return DropOffType.NoAvailable;
 		case is_flexible:
@@ -207,9 +212,14 @@ public class GtfsTripProducer extends AbstractProducer {
 	}
 
 	private PickupType toPickUpType(BoardingPossibilityEnum forBoarding, PickupType defaultValue) {
+		if(forBoarding == null) {
+			// If not set on StopPoint return defaultValue (that is, the previous value) or if not set; Scheduled
+			return defaultValue == null ? PickupType.Scheduled : defaultValue;
+		}
+		
 		switch (forBoarding) {
 		case normal:
-			return defaultValue == null ? PickupType.Scheduled : defaultValue;
+			return PickupType.Scheduled;
 		case forbidden:
 			return PickupType.NoAvailable;
 		case is_flexible:
@@ -265,7 +275,9 @@ public class GtfsTripProducer extends AbstractProducer {
 		else
 			trip.setTripShortName(null);
 
-		if (!isEmpty(jp.getPublishedName()))
+		if (!isEmpty(vj.getPublishedJourneyName()))
+			trip.setTripHeadSign(vj.getPublishedJourneyName());
+		else if (!isEmpty(jp.getPublishedName()))
 			trip.setTripHeadSign(jp.getPublishedName());
 		else
 			trip.setTripHeadSign(null);
