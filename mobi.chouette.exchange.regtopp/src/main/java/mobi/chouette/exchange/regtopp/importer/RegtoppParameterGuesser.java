@@ -52,7 +52,7 @@ public class RegtoppParameterGuesser {
 		List<Path> list = FileUtil.listFiles(path, "*");
 		for (Path fileName : list) {
 			String name = fileName.getFileName().toString().toUpperCase();
-			if (name.endsWith("HPL") || name.endsWith("LIN")|| name.endsWith("MRK")) {
+			if (name.endsWith("HPL") || name.endsWith("LIN") || name.endsWith("MRK")) {
 
 				Charset charset = detectCharset(fileName.toFile(), charsetsToBeTested);
 				if (charset != null) {
@@ -128,18 +128,27 @@ public class RegtoppParameterGuesser {
 		} else if (hasFileExtension(path, ".STP")) {
 			detectedVersion = RegtoppVersion.R13A;
 		} else {
-			int lineLength = findLineLength(encoding, path, ".HPL");
-			if (lineLength == 87) {
-				detectedVersion = RegtoppVersion.R12;
-			} else if (lineLength == 89) {
-				detectedVersion = RegtoppVersion.R12N;
+			String line = getFirstLine(encoding, path, ".HPL");
+			if (line != null) {
+				if (line.length() == 87) {
+					detectedVersion = RegtoppVersion.R12;
+				} else if (line.length() == 89) {
+					if (line.endsWith("00")) {
+						detectedVersion = RegtoppVersion.R12;
+					} else {
+						detectedVersion = RegtoppVersion.R12N;
+					}
+				} else {
+					log.error("Error detecting Regtopp version: Unexpected HPL line length: " + line.length());
+				}
 			} else {
-				log.error("Error detecting Regtopp version: Unexpected HPL line length: " + lineLength);
+				log.error("Error detecting Regtopp version: HPL is empty");
 			}
+
 		}
 	}
 
-	private int findLineLength(String charset, Path rootDir, String fileExtension) throws IOException {
+	private String getFirstLine(String charset, Path rootDir, String fileExtension) throws IOException {
 
 		List<Path> list = FileUtil.listFiles(rootDir, "*");
 		for (Path fileName : list) {
@@ -149,13 +158,12 @@ public class RegtoppParameterGuesser {
 				InputStreamReader isr = new InputStreamReader(is, charset);
 				BufferedReader buffReader = new BufferedReader(isr);
 				String line = buffReader.readLine();
-				int lineLength = line.length();
 				buffReader.close();
-				return lineLength;
+				return line;
 			}
 		}
 
-		return -1;
+		return null;
 	}
 
 	private boolean hasFileExtension(Path rootDir, String fileExtension) throws IOException {
