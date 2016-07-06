@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.beanio.BeanReader;
 import org.beanio.BeanReaderErrorHandlerSupport;
@@ -28,6 +27,7 @@ import org.joda.time.LocalDate;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.regtopp.RegtoppConstant;
 import mobi.chouette.exchange.regtopp.beanio.DepartureTimeTypeHandler;
 import mobi.chouette.exchange.regtopp.beanio.DrivingDurationTypeHandler;
 import mobi.chouette.exchange.regtopp.beanio.LocalDateTypeHandler;
@@ -38,7 +38,6 @@ import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 
 @Log4j
 public class FileContentParser<T> {
-	public static final String REGTOPP_CHARSET = "ISO-8859-1";
 	@Getter
 	private List<Object> rawContent = new ArrayList<>();
 
@@ -72,7 +71,7 @@ public class FileContentParser<T> {
 		factory.define(builder);
 
 		FileInputStream is = new FileInputStream(parseableFile.getFile());
-		InputStreamReader isr = new InputStreamReader(is, REGTOPP_CHARSET);
+		InputStreamReader isr = new InputStreamReader(is, (String) context.get(RegtoppConstant.CHARSET));
 		BufferedReader buffReader = new BufferedReader(isr);
 
 		BeanReader in = factory.createReader(streamName, buffReader);

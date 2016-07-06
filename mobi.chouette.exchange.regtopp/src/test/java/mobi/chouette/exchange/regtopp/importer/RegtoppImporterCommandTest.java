@@ -161,6 +161,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		parameters.setNoSave(false);
 		parameters.setVersion(RegtoppVersion.R12);
 		parameters.setCoordinateProjection("EPSG:32632");
+		parameters.setCharsetEncoding(RegtoppParameterGuesser.REGTOPP_DEFAULT_ENCODING);
 
 		boolean result = command.execute(context);
 		dumpReports(context);
@@ -257,6 +258,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		parameters.setNoSave(false);
 		parameters.setVersion(RegtoppVersion.R12);
 		parameters.setCoordinateProjection("EPSG:32632");
+		parameters.setCharsetEncoding(RegtoppParameterGuesser.REGTOPP_DEFAULT_ENCODING);
 
 		command.execute(context);
 		dumpReports(context);
@@ -302,6 +304,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		parameters.setNoSave(false);
 		parameters.setVersion(RegtoppVersion.R12);
 		parameters.setCoordinateProjection("EPSG:32632");
+		parameters.setCharsetEncoding(RegtoppParameterGuesser.REGTOPP_DEFAULT_ENCODING);
 
 		command.execute(context);
 		dumpReports(context);
@@ -355,6 +358,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		parameters.setNoSave(false);
 		parameters.setVersion(RegtoppVersion.R12);
 		parameters.setCoordinateProjection("EPSG:32632");
+		parameters.setCharsetEncoding(RegtoppParameterGuesser.REGTOPP_DEFAULT_ENCODING);
 
 		boolean result = command.execute(context);
 		dumpReports(context);
@@ -454,6 +458,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		parameters.setNoSave(false);
 		parameters.setVersion(RegtoppVersion.R12N);
 		parameters.setCoordinateProjection("EPSG:32632");
+		parameters.setCharsetEncoding(RegtoppParameterGuesser.REGTOPP_DEFAULT_ENCODING);
 
 		command.execute(context);
 		dumpReports(context);
@@ -508,6 +513,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		parameters.setNoSave(false);
 		parameters.setVersion(RegtoppVersion.R11D);
 		parameters.setCoordinateProjection("EPSG:32632");
+		parameters.setCharsetEncoding(RegtoppParameterGuesser.REGTOPP_DEFAULT_ENCODING);
 
 		command.execute(context);
 
@@ -564,6 +570,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		parameters.setNoSave(false);
 		parameters.setVersion(RegtoppVersion.R13A);
 		parameters.setCoordinateProjection("EPSG:32632");
+		parameters.setCharsetEncoding(RegtoppParameterGuesser.REGTOPP_DEFAULT_ENCODING);
 
 		command.execute(context);
 		dumpReports(context);
