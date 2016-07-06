@@ -53,7 +53,7 @@ public class GtfsShapeProducer extends AbstractProducer
 		      continue;
 		   }
 		   LineString ls = rs.getProcessedGeometry();
-		   if (rs.getNoProcessing() || rs.getProcessedGeometry() == null)
+		   if (isTrue(rs.getNoProcessing()) || rs.getProcessedGeometry() == null)
 		    ls = rs.getInputGeometry();
 		   if (ls == null) {
 			   result = false;
