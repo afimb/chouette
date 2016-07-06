@@ -47,11 +47,11 @@ public class ObjectReportTest {
 			
 			JSONArray errors = res.getJSONArray("errors");
 			// Test errors presence
-			Assert.assertEquals(((JSONObject)errors.get(0)).getString("name"), "object_error1", "wrong object report error name");
+			Assert.assertEquals(((JSONObject)errors.get(0)).getString("description"), "object_error1", "wrong object report error name");
 			
 			JSONArray checkPointErrorKeys = res.getJSONArray("check_point_errors");
 			// Test checkpoint error key presence
-			Assert.assertEquals(((JSONObject)checkPointErrorKeys.get(0)), 0, "checkpoint error key must be 0");
+			Assert.assertEquals((checkPointErrorKeys.get(0)), 0, "checkpoint error key must be 0");
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}	

@@ -63,14 +63,14 @@ public class FileReportTest {
 			JSONArray errorKeys = res.getJSONArray("check_point_errors");
 			
 			// Test checkpoint error number
-			Assert.assertEquals(((JSONObject)errors.get(0)).getString("name"), "file_error_1", "file report must have one error");
+			Assert.assertEquals(((JSONObject)errors.get(0)).getString("description"), "file_error_1", "file report must have one error");
 			// Test checkpoint error keys presence
-			Assert.assertEquals((JSONObject)errorKeys.get(0), 0, "file report must one checkpoint error key");
+			Assert.assertEquals(errorKeys.get(0), 0, "file report must one checkpoint error key");
 						
 			// Test checkpoint error number
 			Assert.assertEquals(res.getInt("check_point_error_count"), 1, "file report must not have errors");
 			// Test checkpoint warning number
-			Assert.assertEquals(res.getInt("check_point_warning_count"), 1, "file report must not have warnings");
+			Assert.assertEquals(res.getInt("check_point_warning_count"), 0, "file report must not have warnings");
 		}
 	}
 }
