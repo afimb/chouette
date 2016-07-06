@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
@@ -20,9 +19,6 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.TransportModeNameEnum;
-
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
 
 /**
  * check a group of coherent vehicle journeys (i.e. on the same journey pattern)
@@ -58,7 +54,6 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		if (isEmpty(beans))
 			return;
-//		Monitor monitor = MonitorFactory.start(this.getClass().getSimpleName());
 		// 3-VehicleJourney-1 : check if time progress correctly on each stop
 		// 3-VehicleJourney-2 : check speed progression
 		// 3-VehicleJourney-3 : check if two journeys progress similarly
@@ -130,25 +125,6 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		// 3-VehicleJourney-3 : check if two journeys progress similarly
 		check3VehicleJourney3stat(context, beans, parameters);
 		
-		
-//		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
-//		{
-//			monitor = MonitorFactory.getTimeMonitor("check3VehicleJourney1");
-//			if (monitor != null)
-//				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
-//			monitor = MonitorFactory.getTimeMonitor("check3VehicleJourney2");
-//			if (monitor != null)
-//				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
-//			monitor = MonitorFactory.getTimeMonitor("check3VehicleJourney3");
-//			if (monitor != null)
-//				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
-//			monitor = MonitorFactory.getTimeMonitor("check3VehicleJourney4");
-//			if (monitor != null)
-//				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
-//			monitor = MonitorFactory.getTimeMonitor("check3VehicleJourney5");
-//			if (monitor != null)
-//				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
-//		}
 		distances.clear();
 		return;
 	}
@@ -228,7 +204,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		{
 			return distances.get(key).doubleValue();
 		}
-		double distance = distance(stop1, stop2, 0);
+		double distance = distance(stop1, stop2);
 		distances.put(key,Double.valueOf(distance));
 		return distance;
 	}
@@ -236,7 +212,6 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 	private void check3VehicleJourney2(Context context, VehicleJourney vj, ValidationParameters parameters) {
 		if (isEmpty(vj.getVehicleJourneyAtStops()))
 			return;
-//		Monitor monitor = MonitorFactory.start("check3VehicleJourney2");
 		// 3-VehicleJourney-2 : check speed progression
 		TransportModeNameEnum transportMode = getTransportMode(vj);
 		long maxSpeed = getModeParameters(parameters, transportMode.toString(), log).getSpeedMax();
@@ -287,7 +262,6 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 				}
 			}
 		}
-//		monitor.stop();
 
 	}
 
@@ -308,7 +282,6 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 	private void check3VehicleJourney3stat(Context context, List<VehicleJourney> beans,
 			ValidationParameters parameters) {
 		// 3-VehicleJourney-3 : check if two journeys progress similarly
-//		Monitor monitor = MonitorFactory.start("check3VehicleJourney3");
 		Map<String,List<Long>> diffTimeByJps = new HashMap<>();
 		Map<String,Integer> journeySize = new HashMap<>();
 		
@@ -375,76 +348,71 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 				}
 			}
 		}
-//		monitor.stop();
 		
 	}
 
-	private void check3VehicleJourney3(Context context, List<VehicleJourney> beans, int rank, VehicleJourney vj0,
-			ValidationParameters parameters) {
-		if (isEmpty(vj0.getVehicleJourneyAtStops()))
-			return;
-		// 3-VehicleJourney-3 : check if two journeys progress similarly
-//		Monitor monitor = MonitorFactory.start("check3VehicleJourney3");
-
-		TransportModeNameEnum transportMode0 = getTransportMode(vj0);
-
-		prepareCheckPoint(context, VEHICLE_JOURNEY_3);
-		long maxDuration = getModeParameters(parameters, transportMode0.toString(), log)
-				.getInterStopDurationVariationMax();
-
-		List<VehicleJourneyAtStop> vjas0 = vj0.getVehicleJourneyAtStops();
-		for (int i = rank + 1; i < beans.size(); i++) {
-			VehicleJourney vj1 = beans.get(i);
-			if (vj1.getJourneyPattern().equals(vj0.getJourneyPattern())) {
-				List<VehicleJourneyAtStop> vjas1 = vj1.getVehicleJourneyAtStops();
-				if (vjas1.size() != vjas0.size()) {
-					// FATAL ERROR : TODO
-					log.error("vehicleJourney " + vj1.getObjectId() + " has different vehicleJourneyAtStop count "
-							+ vjas1.size() + " than vehicleJourney " + vj0.getObjectId());
-					break;
-				}
-				TransportModeNameEnum transportMode1 = getTransportMode(vj1);
-				if (transportMode1.equals(transportMode0)) {
-					for (int j = 1; j < vjas0.size(); j++) {
-						long duration0 = diffTime(vjas0.get(j - 1).getDepartureTime(), vjas0.get(j - 1)
-								.getDepartureDayOffset(), vjas0.get(j).getArrivalTime(), vjas0.get(j)
-								.getArrivalDayOffset());
-						/** GJT */
-						long duration1 = diffTime(vjas1.get(j - 1).getDepartureTime(), vjas1.get(j - 1)
-								.getDepartureDayOffset(), vjas1.get(j).getArrivalTime(), vjas1.get(j)
-								.getArrivalDayOffset());
-						/** GJT */
-						if (Math.abs(duration0 - duration1) > maxDuration) {
-							DataLocation source = buildLocation(context, vj0);
-							DataLocation target1 = buildLocation(context, vj1);
-							DataLocation target2 = buildLocation(context, vjas0.get(j - 1).getStopPoint()
-									.getContainedInStopArea());
-							DataLocation target3 = buildLocation(context, vjas0.get(j).getStopPoint()
-									.getContainedInStopArea());
-
-							ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-							reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_3, source,
-									Long.toString(Math.abs(duration0 - duration1)), Long.toString(maxDuration),
-									target1, target2, target3);
-						}
-					}
-				}
-			}
-		}
-//		monitor.stop();
-
-	}
+//	private void check3VehicleJourney3(Context context, List<VehicleJourney> beans, int rank, VehicleJourney vj0,
+//			ValidationParameters parameters) {
+//		if (isEmpty(vj0.getVehicleJourneyAtStops()))
+//			return;
+//		// 3-VehicleJourney-3 : check if two journeys progress similarly
+//
+//		TransportModeNameEnum transportMode0 = getTransportMode(vj0);
+//
+//		prepareCheckPoint(context, VEHICLE_JOURNEY_3);
+//		long maxDuration = getModeParameters(parameters, transportMode0.toString(), log)
+//				.getInterStopDurationVariationMax();
+//
+//		List<VehicleJourneyAtStop> vjas0 = vj0.getVehicleJourneyAtStops();
+//		for (int i = rank + 1; i < beans.size(); i++) {
+//			VehicleJourney vj1 = beans.get(i);
+//			if (vj1.getJourneyPattern().equals(vj0.getJourneyPattern())) {
+//				List<VehicleJourneyAtStop> vjas1 = vj1.getVehicleJourneyAtStops();
+//				if (vjas1.size() != vjas0.size()) {
+//					// FATAL ERROR : TODO
+//					log.error("vehicleJourney " + vj1.getObjectId() + " has different vehicleJourneyAtStop count "
+//							+ vjas1.size() + " than vehicleJourney " + vj0.getObjectId());
+//					break;
+//				}
+//				TransportModeNameEnum transportMode1 = getTransportMode(vj1);
+//				if (transportMode1.equals(transportMode0)) {
+//					for (int j = 1; j < vjas0.size(); j++) {
+//						long duration0 = diffTime(vjas0.get(j - 1).getDepartureTime(), vjas0.get(j - 1)
+//								.getDepartureDayOffset(), vjas0.get(j).getArrivalTime(), vjas0.get(j)
+//								.getArrivalDayOffset());
+//						/** GJT */
+//						long duration1 = diffTime(vjas1.get(j - 1).getDepartureTime(), vjas1.get(j - 1)
+//								.getDepartureDayOffset(), vjas1.get(j).getArrivalTime(), vjas1.get(j)
+//								.getArrivalDayOffset());
+//						/** GJT */
+//						if (Math.abs(duration0 - duration1) > maxDuration) {
+//							DataLocation source = buildLocation(context, vj0);
+//							DataLocation target1 = buildLocation(context, vj1);
+//							DataLocation target2 = buildLocation(context, vjas0.get(j - 1).getStopPoint()
+//									.getContainedInStopArea());
+//							DataLocation target3 = buildLocation(context, vjas0.get(j).getStopPoint()
+//									.getContainedInStopArea());
+//
+//							ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+//							reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_3, source,
+//									Long.toString(Math.abs(duration0 - duration1)), Long.toString(maxDuration),
+//									target1, target2, target3);
+//						}
+//					}
+//				}
+//			}
+//		}
+//
+//	}
 
 	private void check3VehicleJourney4(Context context, VehicleJourney vj) {
 		// 3-VehicleJourney-4 : check if each journey has minimum one timetable
-//		Monitor monitor = MonitorFactory.start("check3VehicleJourney4");
 		if (isEmpty(vj.getTimetables())) {
 			DataLocation location = buildLocation(context, vj);
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 			reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_4, location);
 
 		}
-//		monitor.stop();
 
 	}
 
@@ -455,8 +423,6 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 			log.error("vehicleJourney " + vj.getObjectId() + " has no vehicleJourneyAtStop");
 			return;
 		}
-
-//		Monitor monitor = MonitorFactory.start("check3VehicleJourney5");
 
 		VehicleJourneyAtStop previous_vjas = null;
 		long diffTime = 0;
@@ -531,7 +497,6 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 			previous_vjas = vjas;
 
 		}
-//		monitor.stop();
 
 	}
 

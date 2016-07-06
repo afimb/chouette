@@ -4,11 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
@@ -29,7 +25,6 @@ public class ConnectionLinkCheckPoints extends AbstractValidation<ConnectionLink
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		if (isEmpty(beans))
 			return ;
-//		Monitor monitor = MonitorFactory.start(this.getClass().getSimpleName());
 		// init checkPoints : add here all defined check points for this kind of
 		// object
 		// 3-ConnectionLink-1 : check distance between stops of connectionLink
@@ -65,7 +60,6 @@ public class ConnectionLinkCheckPoints extends AbstractValidation<ConnectionLink
 				check4ConnectionLink2(context, connectionLink);
 
 		}
-//		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 		return ;
 	}
 
@@ -80,7 +74,7 @@ public class ConnectionLinkCheckPoints extends AbstractValidation<ConnectionLink
 			return;
 		long distanceMax = parameters.getInterConnectionLinkDistanceMax();
 
-		double distance = distance(start, end, distanceMax);
+		double distance = quickDistance(start, end);
 		if (distance > distanceMax) {
 			DataLocation location = buildLocation(context,connectionLink);
 			DataLocation startLocation = buildLocation(context,start);

@@ -3,6 +3,7 @@ package mobi.chouette.exchange.validation.report;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -49,6 +50,12 @@ public class ValidationReport extends AbstractReport implements Report {
 	@Getter
 	@Setter
 	private boolean maxByFile = true;
+	
+	@XmlTransient
+	@Getter
+	@Setter
+	private Date date = new Date(0);
+
 
 	public CheckPointReport findCheckPointReportByName(String name) {
 		for (CheckPointReport checkPoint : checkPoints) {

@@ -6,11 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
@@ -208,7 +204,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 			StopArea nextArea = areas.get(i);
 			if (!firstArea.hasCoordinates() || !nextArea.hasCoordinates())
 				continue;
-			double distance = distance(firstArea, nextArea,distanceMax);
+			double distance = distance(firstArea, nextArea);
 			if (distance < distanceMin) {
 				DataLocation location = buildLocation(context, route);
 				DataLocation target1 = buildLocation(context, firstArea);

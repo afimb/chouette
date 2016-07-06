@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 
 import javax.naming.InitialContext;
 
@@ -30,45 +31,51 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		ProgressionReport report = (ProgressionReport) context.get(REPORT);
 		report.getProgression().setCurrentStep(STEP.INITIALISATION.ordinal() + 1);
 		report.getProgression().getSteps().get(STEP.INITIALISATION.ordinal()).setTotal(stepCount);
-		saveReport(context);
-		saveMainValidationReport(context);
+		saveReport(context, true);
+		saveMainValidationReport(context, true);
 	}
 
 	public void start(Context context, int stepCount) {
 		ProgressionReport report = (ProgressionReport) context.get(REPORT);
 		report.getProgression().setCurrentStep(STEP.PROCESSING.ordinal() + 1);
 		report.getProgression().getSteps().get(STEP.PROCESSING.ordinal()).setTotal(stepCount);
-		saveReport(context);
-		saveMainValidationReport(context);
+		saveReport(context, true);
+		saveMainValidationReport(context, true);
 	}
 
 	public void terminate(Context context, int stepCount) {
 		ProgressionReport report = (ProgressionReport) context.get(REPORT);
 		report.getProgression().setCurrentStep(STEP.FINALISATION.ordinal() + 1);
 		report.getProgression().getSteps().get(STEP.FINALISATION.ordinal()).setTotal(stepCount);
-		saveReport(context);
+		saveReport(context, true);
+		saveMainValidationReport(context, true);
 	}
 
 	public void dispose(Context context) {
-		saveReport(context);
-			saveMainValidationReport(context);
+		saveReport(context, true);
+		saveMainValidationReport(context, true);
 	}
 
-	public static void saveReport(Context context) {
+
+	public void saveReport(Context context, boolean force) {
 		if (context.containsKey("testng"))
 			return;
 		Report report = (Report) context.get(REPORT);
-		JobData jobData = (JobData) context.get(JOB_DATA);
-		Path path = Paths.get(jobData.getPathName(), REPORT_FILE);
-		// pseudo pretty print
-		try {
-			PrintStream stream = new PrintStream(path.toFile(),"UTF-8");
-			report.print(stream);
-			stream.close();
-//			String data = report.toJson().toString(2);
-//			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
-		} catch (Exception e) {
-			log.error("failed to save report", e);
+		Date date = new Date();
+		Date delay = new Date(date.getTime() - 3000);
+		if (force || report.getDate().before(delay)) {
+			report.setDate(date);
+			JobData jobData = (JobData) context.get(JOB_DATA);
+			Path path = Paths.get(jobData.getPathName(), REPORT_FILE);
+			// pseudo pretty print
+			try {
+				PrintStream stream = new PrintStream(path.toFile(), "UTF-8");
+				report.print(stream);
+				stream.close();
+			} catch (Exception e) {
+				log.error("failed to save report", e);
+			}
+
 		}
 
 	}
@@ -76,40 +83,43 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 	/**
 	 * @param context
 	 */
-	public static void saveMainValidationReport(Context context) {
+	public void saveMainValidationReport(Context context, boolean force) {
 		if (context.containsKey("testng"))
 			return;
 		Report report = (Report) context.get(VALIDATION_REPORT);
 		// ne pas sauver un rapport null ou vide
 		if (report == null || report.isEmpty())
 			return;
-		JobData jobData = (JobData) context.get(JOB_DATA);
-		Path path = Paths.get(jobData.getPathName(), VALIDATION_FILE);
+		Date date = new Date();
+		Date delay = new Date(date.getTime() - 3000);
+		if (force || report.getDate().before(delay)) {
+			report.setDate(date);
+			JobData jobData = (JobData) context.get(JOB_DATA);
+			Path path = Paths.get(jobData.getPathName(), VALIDATION_FILE);
 
-		try {
-			PrintStream stream = new PrintStream(path.toFile(),"UTF-8");
-			report.print(stream);
-			stream.close();
-//			String data = report.toJson().toString(2);
-//			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
-		} catch (Exception e) {
-			log.error("failed to save validation report", e);
+			try {
+				PrintStream stream = new PrintStream(path.toFile(), "UTF-8");
+				report.print(stream);
+				stream.close();
+			} catch (Exception e) {
+				log.error("failed to save validation report", e);
+			}
 		}
 
 	}
-
 
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = SUCCESS;
 
-//		if (context.containsKey(VALIDATION_REPORT)) {
-//			saveMainValidationReport(context);
-//		}
 		ProgressionReport report = (ProgressionReport) context.get(REPORT);
 		StepProgression step = report.getProgression().getSteps().get(report.getProgression().getCurrentStep() - 1);
 		step.setRealized(step.getRealized() + 1);
-		saveReport(context);
+		boolean force = report.getProgression().getCurrentStep() != STEP.PROCESSING.ordinal() + 1;
+		saveReport(context, force);
+		if (context.containsKey(VALIDATION_REPORT)) {
+			saveMainValidationReport(context, force);
+		}
 		if (context.containsKey(CANCEL_ASKED) || Thread.currentThread().isInterrupted()) {
 			log.info("Command cancelled");
 			throw new CommandCancelledException(COMMAND_CANCELLED);

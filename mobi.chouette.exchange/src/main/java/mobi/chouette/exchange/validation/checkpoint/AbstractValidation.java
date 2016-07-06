@@ -36,8 +36,6 @@ import mobi.chouette.model.util.NamingUtil;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LinearRing;
@@ -179,27 +177,27 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param obj2
 	 * @return
 	 */
-	protected static double distance(NeptuneLocalizedObject obj1, NeptuneLocalizedObject obj2, double targetDistance) {
+	protected static double distance(NeptuneLocalizedObject obj1, NeptuneLocalizedObject obj2) {
 		if (obj1.hasCoordinates() && obj2.hasCoordinates()) {
-//			if (targetDistance > 0.1) {
-//				double d = computeQuickDistance(obj1, obj2);
-//				if (d > 1.3 * targetDistance)
-//					return d;
-//			}
 			return computeHaversineFormula(obj1, obj2);
 		} else
 			return 0;
 	}
 
 	protected static final double A = 111322.; // Length of a degree in meter on equator
-	protected static double computeQuickDistance(NeptuneLocalizedObject obj1, NeptuneLocalizedObject obj2) {
+	/**
+	 * get distance for near objects (max 2kms)
+	 * 
+	 * @param obj1
+	 * @param obj2
+	 * @return
+	 */
+	protected static double quickDistance(NeptuneLocalizedObject obj1, NeptuneLocalizedObject obj2) {
 
-// 		Monitor monitor = MonitorFactory.start("computeQuickDistance");
 		double dlon = (obj2.getLongitude().doubleValue() - obj1.getLongitude().doubleValue()) * A;
 		dlon *= Math.cos((obj2.getLatitude().doubleValue() + obj1.getLatitude().doubleValue())* toRad/2.);
 		double dlat = (obj2.getLatitude().doubleValue() - obj1.getLatitude().doubleValue()) * A;
 		double ret  = Math.sqrt(dlon * dlon + dlat * dlat);
-// 		monitor.stop();
 		return ret;
 
 	}
@@ -212,7 +210,6 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 */
 	private static double computeHaversineFormula(NeptuneLocalizedObject obj1, NeptuneLocalizedObject obj2) {
 
-// 		Monitor monitor = MonitorFactory.start("computeHaversineFormula");
 		double lon1 = obj1.getLongitude().doubleValue() * toRad;
 		double lat1 = obj1.getLatitude().doubleValue() * toRad;
 		double lon2 = obj2.getLongitude().doubleValue() * toRad;
@@ -225,7 +222,6 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 				* (dlon * dlon);
 		double c = 2. * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 		double d = R * c;
-// 		monitor.stop();
 		return d;
 	}
 

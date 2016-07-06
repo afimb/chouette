@@ -1,10 +1,6 @@
 package mobi.chouette.exchange.validation.checkpoint;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
@@ -24,7 +20,6 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		if (bean == null)
 			return ;
-//		Monitor monitor = MonitorFactory.start(this.getClass().getSimpleName());
 		// init checkPoints : add here all defined check points for this kind of
 		// object
 		initCheckPoint(context, LINE_2, SEVERITY.E);
@@ -61,7 +56,7 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 
 		// en cas d'erreur, on reporte autant de detail que de lignes en
 		// erreur
-		    // 3-Line-1 : TODO lignes homonymes sur le même réseau
+		    // 3-Line-1 : lignes homonymes sur le même réseau => SharedLineCheckPoint
 		
 			// 3-Line-2 : check if line has routes
 			check3Line2(context, bean);
@@ -79,7 +74,6 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 			if (test4_4)
 				check4Line4(context, bean, parameters);
 
-//			log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 		return ;
 
 	}

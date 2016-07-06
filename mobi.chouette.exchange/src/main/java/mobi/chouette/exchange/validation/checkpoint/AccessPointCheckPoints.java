@@ -47,6 +47,8 @@ public class AccessPointCheckPoints extends AbstractValidation<AccessPoint> impl
 			// 4-AccessPoint-1 : check columns constraints
 			if (test4_1)
 				check4Generic1(context,accessPoint, L4_ACCESS_POINT_1, parameters, log);
+			
+			// need spatial index for optimization
 			for (int j = i + 1; j < beans.size(); j++) {
 				check3AccessPoint2(context, i, accessPoint, j, beans.get(j), parameters);
 			}
@@ -76,7 +78,7 @@ public class AccessPointCheckPoints extends AbstractValidation<AccessPoint> impl
 			return;
 		if (accessPoint.getName().equals(accessPoint2.getName()))
 			return;
-		double distance = distance(accessPoint, accessPoint2,distanceMin);
+		double distance = distance(accessPoint, accessPoint2);
 		if (distance < distanceMin) {
 			DataLocation location = buildLocation(context,accessPoint);
 			DataLocation targetLocation = buildLocation(context,accessPoint2);
@@ -95,7 +97,7 @@ public class AccessPointCheckPoints extends AbstractValidation<AccessPoint> impl
 		StopArea stopArea = accessPoint.getContainedIn();
 		if (!stopArea.hasCoordinates())
 			return;
-		double distance = distance(accessPoint, stopArea, distanceMax);
+		double distance = quickDistance(accessPoint, stopArea);
 		if (distance > distanceMax) {
 			DataLocation location = buildLocation(context,accessPoint);
 			DataLocation targetLocation = buildLocation(context,stopArea);

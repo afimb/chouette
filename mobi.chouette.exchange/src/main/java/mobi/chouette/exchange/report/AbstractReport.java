@@ -17,11 +17,11 @@ public abstract class AbstractReport {
 		if (value instanceof String) {
 			return jsonString(ret, (String) value);
 		} else if (value instanceof Enum) {
-			return jsonString(ret, value.toString());
+			return ret.append('"').append(value).append('"');
 		} else if (value instanceof Number) {
-			return ret.append(value.toString());
+			return ret.append(value);
 		} else if (value instanceof Boolean) {
-			return ret.append(value.toString());
+			return ret.append(value);
 		}
 		return ret.append("\"\""); // may not arrive
 	}
@@ -35,11 +35,20 @@ public abstract class AbstractReport {
 	public StringBuilder jsonString(StringBuilder ret, String value) {
 		if (value == null)
 			return ret.append("\"\"");
-		return ret
-				.append('"')
-				.append(value.replaceAll("[\\\\]", "\\\\\\\\").replaceAll("[\\/]", "\\\\/")
-						.replaceAll("[\"]", "\\\\\"")).append('"');
+		ret.append('"');
+		
+		for (char car : value.toCharArray()) {
+			if (car == '\\' || car == '/' || car == '"' )
+				ret.append('\\');
+			ret.append(car);
+		}
+		
+		return ret.append('"');
+//		return ret
+//				.append(value.replaceAll("[\\\\]", "\\\\\\\\").replaceAll("[\\/]", "\\\\/")
+//						.replaceAll("[\"]", "\\\\\"")).append('"');
 	}
+	
 
 	public void printIntArray(PrintStream out, StringBuilder ret, int level, String name,
 			Collection<? extends Number> values, boolean first) {

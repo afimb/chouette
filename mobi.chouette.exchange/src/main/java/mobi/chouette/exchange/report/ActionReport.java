@@ -2,6 +2,7 @@ package mobi.chouette.exchange.report;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
@@ -50,6 +52,9 @@ public class ActionReport extends AbstractReport implements Constant, Progressio
 	@XmlElement(name = "collections")
 	private Map<ActionReporter.OBJECT_TYPE, ObjectCollectionReport> collections = new HashMap<ActionReporter.OBJECT_TYPE, ObjectCollectionReport>();
 
+	@XmlTransient
+	private Date date = new Date(0);
+	
 	/**
 	 * Find file report from name
 	 * 
