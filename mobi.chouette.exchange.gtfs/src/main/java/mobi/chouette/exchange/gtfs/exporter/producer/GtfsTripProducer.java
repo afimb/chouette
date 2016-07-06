@@ -136,7 +136,7 @@ public class GtfsTripProducer extends AbstractProducer {
 	
 	private double computeDistance(RouteSection section)
 	{
-		if (section.getNoProcessing() != null && section.getNoProcessing())
+		if (isTrue(section.getNoProcessing()) || section.getProcessedGeometry() == null)
 		{
 			double distance = section.getInputGeometry().getLength();
 			distance *= (Math.PI / 180) * 6378137;
