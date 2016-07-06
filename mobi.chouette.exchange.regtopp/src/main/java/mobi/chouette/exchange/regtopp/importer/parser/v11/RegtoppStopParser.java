@@ -52,6 +52,11 @@ public class RegtoppStopParser implements Parser {
 	
 	protected void convertAndSetCoordinates(StopArea stopArea, BigDecimal x, BigDecimal y, String projection) {
 		
+		if(BigDecimal.ZERO.equals(x) || BigDecimal.ZERO.equals(y)) {
+			return;
+		}
+		
+		
 		BigDecimal _x = x;
 		BigDecimal _y = y;
 		
