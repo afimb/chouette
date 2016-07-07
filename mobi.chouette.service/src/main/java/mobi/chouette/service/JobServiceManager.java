@@ -21,12 +21,17 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.ws.rs.core.MediaType;
+
+import org.apache.commons.io.FileUtils;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
@@ -43,12 +48,7 @@ import mobi.chouette.model.iev.Stat;
 import mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator;
 import mobi.chouette.scheduler.Scheduler;
 
-import org.apache.commons.io.FileUtils;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-
-@Stateless(name = JobServiceManager.BEAN_NAME)
+@Singleton(name = JobServiceManager.BEAN_NAME)
 @Startup
 @Log4j
 public class JobServiceManager {
@@ -65,19 +65,14 @@ public class JobServiceManager {
 	ContenerChecker checker;
 
 	@EJB
-	JobServiceManager jobServiceManager;
-
-	@EJB
 	Scheduler scheduler;
 
 	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
 	ManagedExecutorService executor;
 
-	private static Set<Object> referentials = Collections.synchronizedSet(new HashSet<>());
+	private Set<Object> referentials = Collections.synchronizedSet(new HashSet<>());
 
-	private static int maxJobs = 5;
-
-	private static String lock = "lock";
+	private int maxJobs = 5;
 
 	private String rootDirectory;
 
@@ -131,15 +126,13 @@ public class JobServiceManager {
 			throws ServiceException {
 		// Valider les parametres
 		validateReferential(referential);
-		synchronized (lock) {
-			if (scheduler.getActivejobsCount() >= maxJobs) {
-				throw new RequestServiceException(RequestExceptionCode.TOO_MANY_ACTIVE_JOBS, "" + maxJobs
-						+ " active jobs");
-			}
-			JobService jobService = jobServiceManager.createJob(referential, action, type, inputStreamsByName);
-			scheduler.schedule(referential);
-			return jobService;
+		if (scheduler.getActivejobsCount() >= maxJobs) {
+			throw new RequestServiceException(RequestExceptionCode.TOO_MANY_ACTIVE_JOBS, "" + maxJobs
+					+ " active jobs");
 		}
+		JobService jobService = createJob(referential, action, type, inputStreamsByName);
+		scheduler.schedule(referential);
+		return jobService;
 	}
 
 	public List<Stat> getMontlyStats() throws ServiceException {
