@@ -10,6 +10,9 @@ COPY jts-1.13.jar /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/ma
 # File where sed expression has been performed:
 COPY wildfly/module.xml /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/module.xml
 
+#Copy iev.properties
+COPY wildfly/iev.properties /etc/chouette/iev/
+
 RUN touch /opt/jboss/wildfly/build.log
 RUN chmod a+w /opt/jboss/wildfly/build.log
 COPY wildfly/wildfly_db.cli /opt/jboss/wildfly/customization/
@@ -19,6 +22,7 @@ COPY wildfly/execute.sh /opt/jboss/wildfly/customization/
 RUN /opt/jboss/wildfly/customization/execute.sh
 # TODO Consider to make password for chouette iev console configurable
 RUN /opt/jboss/wildfly/bin/add-user.sh admin pingu123 --silent
+
 
 # Overriding previously installed java version:
 RUN curl -L http://jump.rutebanken.org/jdk-8u92-linux-x64.tar.gz > jdk.tgz
