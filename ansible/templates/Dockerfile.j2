@@ -39,8 +39,6 @@ RUN rm -rf /opt/jboss/wildfly/standalone/configuration/standalone_xml_history \
   && mkdir -p /opt/jboss/data \
   && chown jboss:jboss /opt/jboss/data
 
-WORKDIR /var/lib/chouette/iev
-
 #
 # The argument comes from chouette doc: https://github.com/afimb/chouette/blob/master/doc/install/wildfly.md
 #CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-c", "standalone-full.xml"]
