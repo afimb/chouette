@@ -19,6 +19,8 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.ejb.ConcurrencyManagement;
+import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -44,6 +46,7 @@ import mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator;
 import mobi.chouette.scheduler.Scheduler;
 
 @Singleton(name = JobServiceManager.BEAN_NAME)
+@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 @Startup
 @Log4j
 public class JobServiceManager {
@@ -68,12 +71,11 @@ public class JobServiceManager {
 
 	private String rootDirectory; 
 	
-	private Set<String> intializedContexts = new HashSet<>();
-
+	private String lock = "lock";
+	
 	@PostConstruct
 	public synchronized void init() {
 		String context = checker.getContext();
-		if (intializedContexts.contains(context)) return;
 		System.setProperty(context + PropertyNames.MAX_STARTED_JOBS, "5");
 		System.setProperty(context + PropertyNames.MAX_COPY_BY_JOB, "5");
 		try {
@@ -117,9 +119,14 @@ public class JobServiceManager {
 			throws ServiceException {
 		// Valider les parametres
 		validateReferential(referential);
-		if (scheduler.getActivejobsCount() >= maxJobs) {
-			throw new RequestServiceException(RequestExceptionCode.TOO_MANY_ACTIVE_JOBS, "" + maxJobs
-					+ " active jobs");
+		
+		synchronized (lock) {
+			int numActiveJobs = scheduler.getActivejobsCount();
+			log.info("Inside lock, numActiveJobs="+numActiveJobs);
+			if (numActiveJobs >= maxJobs) {
+				throw new RequestServiceException(RequestExceptionCode.TOO_MANY_ACTIVE_JOBS, "" + maxJobs
+						+ " active jobs");
+			}
 		}
 		JobService jobService = createJob(referential, action, type, inputStreamsByName);
 		scheduler.schedule(referential);
@@ -130,12 +137,12 @@ public class JobServiceManager {
 			Map<String, InputStream> inputStreamsByName) throws ServiceException {
 		JobService jobService = null;
 		try {
+			log.info("Creating job referential="+referential+" ...");
 			// Instancier le modèle du service 'upload'
 			jobService = new JobService(rootDirectory,referential, action, type);
 
 			// Enregistrer le jobService pour obtenir un id
 			jobDAO.create(jobService.getJob());
-			log.info("job " + jobService.getJob().getId() + " created");
 			// mkdir
 			if (Files.exists(jobService.getPath())) {
 				// réutilisation anormale d'un id de job (réinitialisation de la
@@ -153,14 +160,15 @@ public class JobServiceManager {
 			jobDAO.update(jobService.getJob());
 			// jobDAO.detach(jobService.getJob());
 
+			log.info("Job id=" + jobService.getJob().getId() + " referential="+referential+" created");
 			return jobService;
 
 		} catch (RequestServiceException ex) {
-			log.info("fail to create job ");
+			log.warn("fail to create job ",ex);
 			deleteBadCreatedJob(jobService);
 			throw ex;
 		} catch (Exception ex) {
-			log.info("fail to create job " + ex.getMessage() + " " + ex.getClass().getName());
+			log.warn("fail to create job " + ex.getMessage() + " " + ex.getClass().getName(),ex);
 			deleteBadCreatedJob(jobService);
 			throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, ex);
 		}
