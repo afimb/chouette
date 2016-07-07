@@ -36,7 +36,9 @@ COPY chouette.ear /opt/jboss/wildfly/standalone/deployments/
 # Copy standalone customizations
 COPY wildfly/standalone.conf /opt/jboss/wildfly/bin
 # From http://stackoverflow.com/questions/20965737/docker-jboss7-war-commit-server-boot-failed-in-an-unrecoverable-manner
-RUN rm -rf /opt/jboss/wildfly/standalone/configuration/standalone_xml_history
+RUN rm -rf /opt/jboss/wildfly/standalone/configuration/standalone_xml_history \
+  && mkdir -p /opt/jboss/data \
+  && chown jboss:jboss /opt/jboss/data
 
 #
 # The argument comes from chouette doc: https://github.com/afimb/chouette/blob/master/doc/install/wildfly.md
