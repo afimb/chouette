@@ -118,8 +118,8 @@ public class LineRegisterCommand implements Command {
 					e = e.getCause();
 				}
 				if (e instanceof SQLException) {
-					e = ((SQLException) e).getNextException();
-					LineError error = new LineError(LineError.CODE.WRITE_ERROR, e.getMessage());
+					Throwable ee = ((SQLException) e).getNextException();
+					LineError error = new LineError(LineError.CODE.WRITE_ERROR, ee == null? e.getMessage() : ee.getMessage());
 					info.addError(error);
 				} else {
 					LineError error = new LineError(LineError.CODE.INTERNAL_ERROR, e.getMessage());
