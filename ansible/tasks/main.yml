@@ -20,7 +20,7 @@
   template: src=Dockerfile.j2 dest={{chouette_root}}/Dockerfile mode=0755
 
 - name: Download postgresql jar file (renamed due to legacy reasons)
-  get_url: url=http://search.maven.org/remotecontent?filepath=org/postgresql/postgresql/9.4-1205-jdbc41/postgresql-9.4-1205-jdbc41.jar
+  get_url: url=https://jdbc.postgresql.org/download/postgresql-9.4.1208.jar
            dest={{ chouette_root }}/postgresql-9.4.jar
 
 - name: Download hibernate spatial
