@@ -3,9 +3,7 @@ package mobi.chouette.exchange.report;
 import java.io.PrintStream;
 
 import mobi.chouette.common.Constant;
-import mobi.chouette.common.Context;
 import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
-import mobi.chouette.exchange.validation.report.ValidationReport;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.codehaus.jettison.json.JSONObject;
@@ -22,7 +20,7 @@ public class ActionErrorTest implements Constant{
 		ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 		PrintStream stream = new PrintStream(oStream);
 		
-		actionError.print(stream, 1, true);
+		actionError.print(stream, new StringBuilder(), 1, true);
 		String text = oStream.toString();
 		JSONObject res = new JSONObject(text);
 		

@@ -243,8 +243,8 @@ public class Location extends AbstractReport {
 	}
 
 	@Override
-	public void print(PrintStream out, int level, boolean first) {
-		StringBuilder ret = new StringBuilder();
+	public void print(PrintStream out, StringBuilder ret , int level, boolean first) {
+		ret.setLength(0);
 		out.print(addLevel(ret, level).append('{'));
 		first = true;
 		if (file != null) {

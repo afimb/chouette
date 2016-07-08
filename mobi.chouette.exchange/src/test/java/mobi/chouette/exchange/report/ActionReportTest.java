@@ -7,9 +7,8 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
-import mobi.chouette.exchange.validation.report.CheckPointReport;
-import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -30,7 +29,8 @@ public class ActionReportTest implements Constant{
 		ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 		PrintStream stream = new PrintStream(oStream);
 		
-		actionReport.print(stream, 1, true);
+		
+		actionReport.print(stream);
 		String text = oStream.toString();
 		JSONObject res = new JSONObject(text);
 		Assert.assertEquals(res.length(), 1 , "Report must contains 1 entry");
@@ -50,7 +50,7 @@ public class ActionReportTest implements Constant{
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 			PrintStream stream = new PrintStream(oStream);
 			actionReporter.addZipReport(context, "zip1", IO_TYPE.INPUT);
-			actionReport.print(stream, 1, true);
+			actionReport.print(stream);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			Assert.assertEquals(res.length(), 1 , "Report must contains 1 entry");
@@ -65,7 +65,7 @@ public class ActionReportTest implements Constant{
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 			PrintStream stream = new PrintStream(oStream);
 			actionReporter.setActionError(context, ERROR_CODE.INVALID_FORMAT, "invalid format");
-			actionReport.print(stream, 1, true);
+			actionReport.print(stream);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			Assert.assertEquals(res.length(), 1 , "Report must contains 1 entry");
@@ -80,7 +80,7 @@ public class ActionReportTest implements Constant{
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 			PrintStream stream = new PrintStream(oStream);
 			actionReporter.setActionError(context, ERROR_CODE.INVALID_FORMAT, "invalid format");
-			actionReport.print(stream, 1, true);
+			actionReport.print(stream);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			Assert.assertEquals(res.length(), 1 , "Report must contains 1 entry");
@@ -95,7 +95,7 @@ public class ActionReportTest implements Constant{
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 			PrintStream stream = new PrintStream(oStream);
 			actionReporter.addFileReport(context, "fileName", IO_TYPE.OUTPUT);
-			actionReport.print(stream, 1, true);
+			actionReport.print(stream);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			Assert.assertEquals(res.length(), 1 , "Report must contains 1 entry");
@@ -111,7 +111,7 @@ public class ActionReportTest implements Constant{
 			PrintStream stream = new PrintStream(oStream);
 			actionReporter.addFileReport(context, "fileName", IO_TYPE.OUTPUT);
 			actionReporter.addObjectReport(context, "object1", OBJECT_TYPE.ACCESS_POINT, "access point", OBJECT_STATE.WARNING, IO_TYPE.INPUT);
-			actionReport.print(stream, 1, true);
+			actionReport.print(stream);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			Assert.assertEquals(res.length(), 1 , "Report must contains 1 entry");
@@ -128,7 +128,7 @@ public class ActionReportTest implements Constant{
 			PrintStream stream = new PrintStream(oStream);
 			actionReporter.addFileReport(context, "fileName", IO_TYPE.OUTPUT);
 			actionReporter.addObjectReport(context, "object1", OBJECT_TYPE.LINE, "line object", OBJECT_STATE.WARNING, IO_TYPE.INPUT);
-			actionReport.print(stream, 1, true);
+			actionReport.print(stream);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			Assert.assertEquals(res.length(), 1 , "Report must contains 1 entry");

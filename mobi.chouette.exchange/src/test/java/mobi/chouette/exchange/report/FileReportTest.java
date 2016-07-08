@@ -22,7 +22,7 @@ public class FileReportTest {
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 			PrintStream stream = new PrintStream(oStream);
 			
-			fileReport.print(stream, 1, true);
+			fileReport.print(stream, new StringBuilder(), 1, true);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			
@@ -48,7 +48,7 @@ public class FileReportTest {
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 			PrintStream stream = new PrintStream(oStream);
 			
-			fileReport.print(stream, 1, true);
+			fileReport.print(stream, new StringBuilder(), 1, true);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			

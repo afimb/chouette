@@ -8,6 +8,9 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
@@ -51,11 +54,11 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			int result = 1;
 			if (o1.getTimeband() != null && o2.getTimeband() != null) {
 				if (o1.getTimeband().equals(o2.getTimeband()))
-					result =  0;
+					result = 0;
 				else if (o1.getTimeband().getStartTime() == null || o1.getTimeband().getEndTime() == null)
 					result = -1;
-				else if (o1.getTimeband().getEndTime().before(o2.getTimeband().getStartTime()) ||
-						o1.getTimeband().getEndTime().equals(o2.getTimeband().getStartTime()))
+				else if (o1.getTimeband().getEndTime().before(o2.getTimeband().getStartTime())
+						|| o1.getTimeband().getEndTime().equals(o2.getTimeband().getStartTime()))
 					result = -1;
 			}
 			return result;
@@ -65,25 +68,25 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	@EJB(beanName = CompanyUpdater.BEAN_NAME)
 	private Updater<Company> companyUpdater;
 
-	@EJB 
+	@EJB
 	private CompanyDAO companyDAO;
 
-	@EJB 
-	private RouteDAO  routeDAO;
+	@EJB
+	private RouteDAO routeDAO;
 
-	@EJB 
+	@EJB
 	private StopPointDAO stopPointDAO;
 
-	@EJB 
+	@EJB
 	private VehicleJourneyAtStopDAO vehicleJourneyAtStopDAO;
 
-	@EJB 
+	@EJB
 	private TimetableDAO timetableDAO;
 
-	@EJB 
+	@EJB
 	private TimebandDAO timebandDAO;
 
-	@EJB 
+	@EJB
 	private JourneyFrequencyDAO journeyFrequencyDAO;
 
 	@EJB(beanName = TimetableUpdater.BEAN_NAME)
@@ -96,89 +99,87 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	private Updater<JourneyFrequency> journeyFrequencyUpdater;
 
 	@Override
-	public void update(Context context, VehicleJourney oldValue,
-			VehicleJourney newValue) throws Exception {
+	public void update(Context context, VehicleJourney oldValue, VehicleJourney newValue) throws Exception {
 
 		if (newValue.isSaved()) {
 			return;
 		}
 		newValue.setSaved(true);
 
+		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
 		cache.getVehicleJourneys().put(oldValue.getObjectId(), oldValue);
 
 		boolean optimized = (Boolean) context.get(OPTIMIZED);
 
-		if (newValue.getObjectId() != null
-				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
+		if (oldValue.isDetached()) {
+			// object does not exist in database
 			oldValue.setObjectId(newValue.getObjectId());
-		}
-		if (newValue.getObjectVersion() != null
-				&& !newValue.getObjectVersion().equals(
-						oldValue.getObjectVersion())) {
 			oldValue.setObjectVersion(newValue.getObjectVersion());
-		}
-		if (newValue.getCreationTime() != null
-				&& !newValue.getCreationTime().equals(
-						oldValue.getCreationTime())) {
 			oldValue.setCreationTime(newValue.getCreationTime());
-		}
-		if (newValue.getCreatorId() != null
-				&& !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
 			oldValue.setCreatorId(newValue.getCreatorId());
-		}
-		if (newValue.getComment() != null
-				&& !newValue.getComment().equals(oldValue.getComment())) {
 			oldValue.setComment(newValue.getComment());
-		}
-		if (newValue.getTransportMode() != null
-				&& !newValue.getTransportMode().equals(
-						oldValue.getTransportMode())) {
 			oldValue.setTransportMode(newValue.getTransportMode());
-		}
-		if (newValue.getPublishedJourneyName() != null
-				&& !newValue.getPublishedJourneyName().equals(
-						oldValue.getPublishedJourneyName())) {
 			oldValue.setPublishedJourneyName(newValue.getPublishedJourneyName());
-		}
-		if (newValue.getPublishedJourneyIdentifier() != null
-				&& !newValue.getPublishedJourneyIdentifier().equals(
-						oldValue.getPublishedJourneyIdentifier())) {
-			oldValue.setPublishedJourneyIdentifier(newValue
-					.getPublishedJourneyIdentifier());
-		}
-		if (newValue.getFacility() != null
-				&& !newValue.getFacility().equals(oldValue.getFacility())) {
+			oldValue.setPublishedJourneyIdentifier(newValue.getPublishedJourneyIdentifier());
 			oldValue.setFacility(newValue.getFacility());
-		}
-		if (newValue.getVehicleTypeIdentifier() != null
-				&& !newValue.getVehicleTypeIdentifier().equals(
-						oldValue.getVehicleTypeIdentifier())) {
-			oldValue.setVehicleTypeIdentifier(newValue
-					.getVehicleTypeIdentifier());
-		}
-		if (newValue.getNumber() != null
-				&& !newValue.getNumber().equals(oldValue.getNumber())) {
+			oldValue.setVehicleTypeIdentifier(newValue.getVehicleTypeIdentifier());
 			oldValue.setNumber(newValue.getNumber());
-		}
-
-		if (newValue.getMobilityRestrictedSuitability() != null
-				&& !newValue.getMobilityRestrictedSuitability().equals(
-						oldValue.getMobilityRestrictedSuitability())) {
-			oldValue.setMobilityRestrictedSuitability(newValue
-					.getMobilityRestrictedSuitability());
-		}
-		if (newValue.getFlexibleService() != null
-				&& !newValue.getFlexibleService().equals(
-						oldValue.getFlexibleService())) {
+			oldValue.setMobilityRestrictedSuitability(newValue.getMobilityRestrictedSuitability());
 			oldValue.setFlexibleService(newValue.getFlexibleService());
-		}
-		if (newValue.getJourneyCategory() != null
-				&& !newValue.getJourneyCategory().equals(
-						oldValue.getJourneyCategory())) {
 			oldValue.setJourneyCategory(newValue.getJourneyCategory());
+			oldValue.setDetached(false);
+		} else {
+			if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
+				oldValue.setObjectId(newValue.getObjectId());
+			}
+			if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
+				oldValue.setObjectVersion(newValue.getObjectVersion());
+			}
+			if (newValue.getCreationTime() != null && !newValue.getCreationTime().equals(oldValue.getCreationTime())) {
+				oldValue.setCreationTime(newValue.getCreationTime());
+			}
+			if (newValue.getCreatorId() != null && !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
+				oldValue.setCreatorId(newValue.getCreatorId());
+			}
+			if (newValue.getComment() != null && !newValue.getComment().equals(oldValue.getComment())) {
+				oldValue.setComment(newValue.getComment());
+			}
+			if (newValue.getTransportMode() != null && !newValue.getTransportMode().equals(oldValue.getTransportMode())) {
+				oldValue.setTransportMode(newValue.getTransportMode());
+			}
+			if (newValue.getPublishedJourneyName() != null
+					&& !newValue.getPublishedJourneyName().equals(oldValue.getPublishedJourneyName())) {
+				oldValue.setPublishedJourneyName(newValue.getPublishedJourneyName());
+			}
+			if (newValue.getPublishedJourneyIdentifier() != null
+					&& !newValue.getPublishedJourneyIdentifier().equals(oldValue.getPublishedJourneyIdentifier())) {
+				oldValue.setPublishedJourneyIdentifier(newValue.getPublishedJourneyIdentifier());
+			}
+			if (newValue.getFacility() != null && !newValue.getFacility().equals(oldValue.getFacility())) {
+				oldValue.setFacility(newValue.getFacility());
+			}
+			if (newValue.getVehicleTypeIdentifier() != null
+					&& !newValue.getVehicleTypeIdentifier().equals(oldValue.getVehicleTypeIdentifier())) {
+				oldValue.setVehicleTypeIdentifier(newValue.getVehicleTypeIdentifier());
+			}
+			if (newValue.getNumber() != null && !newValue.getNumber().equals(oldValue.getNumber())) {
+				oldValue.setNumber(newValue.getNumber());
+			}
+
+			if (newValue.getMobilityRestrictedSuitability() != null
+					&& !newValue.getMobilityRestrictedSuitability().equals(oldValue.getMobilityRestrictedSuitability())) {
+				oldValue.setMobilityRestrictedSuitability(newValue.getMobilityRestrictedSuitability());
+			}
+			if (newValue.getFlexibleService() != null
+					&& !newValue.getFlexibleService().equals(oldValue.getFlexibleService())) {
+				oldValue.setFlexibleService(newValue.getFlexibleService());
+			}
+			if (newValue.getJourneyCategory() != null
+					&& !newValue.getJourneyCategory().equals(oldValue.getJourneyCategory())) {
+				oldValue.setJourneyCategory(newValue.getJourneyCategory());
+			}
 		}
-			
 
 		// Company
 		if (newValue.getCompany() == null) {
@@ -197,13 +198,11 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 				company = ObjectFactory.getCompany(cache, objectId);
 			}
 			oldValue.setCompany(company);
-			companyUpdater.update(context, oldValue.getCompany(),
-					newValue.getCompany());
+			companyUpdater.update(context, oldValue.getCompany(), newValue.getCompany());
 		}
 
 		// Route
-		if (oldValue.getRoute() == null
-				|| !oldValue.getRoute().equals(newValue.getRoute())) {
+		if (oldValue.getRoute() == null || !oldValue.getRoute().equals(newValue.getRoute())) {
 
 			String objectId = newValue.getRoute().getObjectId();
 			Route route = cache.getRoutes().get(objectId);
@@ -222,33 +221,27 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		// VehicleJourneyAtStop
 		if (!optimized) {
 
-			Collection<VehicleJourneyAtStop> addedVehicleJourneyAtStop = CollectionUtil
-					.substract(newValue.getVehicleJourneyAtStops(),
-							oldValue.getVehicleJourneyAtStops(),
-							VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
+			Collection<VehicleJourneyAtStop> addedVehicleJourneyAtStop = CollectionUtil.substract(
+					newValue.getVehicleJourneyAtStops(), oldValue.getVehicleJourneyAtStops(),
+					VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
 
 			final Collection<String> objectIds = new ArrayList<String>();
 			for (VehicleJourneyAtStop vehicleJourneyAtStop : addedVehicleJourneyAtStop) {
-				objectIds
-						.add(vehicleJourneyAtStop.getStopPoint().getObjectId());
+				objectIds.add(vehicleJourneyAtStop.getStopPoint().getObjectId());
 			}
 			List<StopPoint> stopPoints = null;
 			for (VehicleJourneyAtStop item : addedVehicleJourneyAtStop) {
-				VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory
-						.getVehicleJourneyAtStop();
+				VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop();
 
-				StopPoint stopPoint = cache.getStopPoints().get(
-						item.getStopPoint().getObjectId());
+				StopPoint stopPoint = cache.getStopPoints().get(item.getStopPoint().getObjectId());
 				if (stopPoint == null) {
 					if (stopPoints == null) {
 						stopPoints = stopPointDAO.findByObjectId(objectIds);
 						for (StopPoint object : stopPoints) {
-							cache.getStopPoints().put(object.getObjectId(),
-									object);
+							cache.getStopPoints().put(object.getObjectId(), object);
 						}
 					}
-					stopPoint = cache.getStopPoints().get(
-							item.getStopPoint().getObjectId());
+					stopPoint = cache.getStopPoints().get(item.getStopPoint().getObjectId());
 				}
 
 				if (stopPoint != null) {
@@ -258,29 +251,24 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			}
 
 			Collection<Pair<VehicleJourneyAtStop, VehicleJourneyAtStop>> modifiedVehicleJourneyAtStop = CollectionUtil
-					.intersection(oldValue.getVehicleJourneyAtStops(),
-							newValue.getVehicleJourneyAtStops(),
+					.intersection(oldValue.getVehicleJourneyAtStops(), newValue.getVehicleJourneyAtStops(),
 							VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
 			for (Pair<VehicleJourneyAtStop, VehicleJourneyAtStop> pair : modifiedVehicleJourneyAtStop) {
-				vehicleJourneyAtStopUpdater.update(context, pair.getLeft(),
-						pair.getRight());
+				vehicleJourneyAtStopUpdater.update(context, pair.getLeft(), pair.getRight());
 			}
 
-			Collection<VehicleJourneyAtStop> removedVehicleJourneyAtStop = CollectionUtil
-					.substract(oldValue.getVehicleJourneyAtStops(),
-							newValue.getVehicleJourneyAtStops(),
-							VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
+			Collection<VehicleJourneyAtStop> removedVehicleJourneyAtStop = CollectionUtil.substract(
+					oldValue.getVehicleJourneyAtStops(), newValue.getVehicleJourneyAtStops(),
+					VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
 			for (VehicleJourneyAtStop vehicleJourneyAtStop : removedVehicleJourneyAtStop) {
 				vehicleJourneyAtStop.setVehicleJourney(null);
 				vehicleJourneyAtStopDAO.delete(vehicleJourneyAtStop);
 			}
 		}
-		
 
 		// Timetable
-		Collection<Timetable> addedTimetable = CollectionUtil.substract(
-				newValue.getTimetables(), oldValue.getTimetables(),
-				NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<Timetable> addedTimetable = CollectionUtil.substract(newValue.getTimetables(),
+				oldValue.getTimetables(), NeptuneIdentifiedObjectComparator.INSTANCE);
 
 		List<Timetable> timetables = null;
 		for (Timetable item : addedTimetable) {
@@ -288,8 +276,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			Timetable timetable = cache.getTimetables().get(item.getObjectId());
 			if (timetable == null) {
 				if (timetables == null) {
-					timetables = timetableDAO.findByObjectId(UpdaterUtils
-							.getObjectIds(addedTimetable));
+					timetables = timetableDAO.findByObjectId(UpdaterUtils.getObjectIds(addedTimetable));
 					for (Timetable object : timetables) {
 						cache.getTimetables().put(object.getObjectId(), object);
 					}
@@ -298,32 +285,27 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			}
 
 			if (timetable == null) {
-				timetable = ObjectFactory.getTimetable(cache,
-						item.getObjectId());
+				timetable = ObjectFactory.getTimetable(cache, item.getObjectId());
 			}
 			timetable.addVehicleJourney(oldValue);
 		}
 
-		Collection<Pair<Timetable, Timetable>> modifiedTimetable = CollectionUtil
-				.intersection(oldValue.getTimetables(),
-						newValue.getTimetables(),
-						NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<Pair<Timetable, Timetable>> modifiedTimetable = CollectionUtil.intersection(
+				oldValue.getTimetables(), newValue.getTimetables(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<Timetable, Timetable> pair : modifiedTimetable) {
 			timetableUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
-		Collection<Timetable> removedTimetable = CollectionUtil.substract(
-				oldValue.getTimetables(), newValue.getTimetables(),
-				NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<Timetable> removedTimetable = CollectionUtil.substract(oldValue.getTimetables(),
+				newValue.getTimetables(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Timetable timetable : removedTimetable) {
 			timetable.removeVehicleJourney(oldValue);
-		}		
-	
+		}
+
 		// journey frequency
-		/*if (!optimized)*/ {
+		/* if (!optimized) */{
 			Collection<JourneyFrequency> addedJourneyFrequency = CollectionUtil.substract(
-					newValue.getJourneyFrequencies(), oldValue.getJourneyFrequencies(),
-					JOURNEY_FREQUENCY_COMPARATOR);
+					newValue.getJourneyFrequencies(), oldValue.getJourneyFrequencies(), JOURNEY_FREQUENCY_COMPARATOR);
 			final Collection<String> objectIds = new ArrayList<String>();
 			for (JourneyFrequency journeyFrequency : addedJourneyFrequency) {
 				objectIds.add(journeyFrequency.getTimeband().getObjectId());
@@ -346,21 +328,21 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 				}
 				journeyFrequency.setVehicleJourney(oldValue);
 			}
-			
-			Collection<Pair<JourneyFrequency, JourneyFrequency>> modifiedJourneyFrequency = CollectionUtil.intersection(
-					oldValue.getJourneyFrequencies(), newValue.getJourneyFrequencies(),
-					JOURNEY_FREQUENCY_COMPARATOR);
+
+			Collection<Pair<JourneyFrequency, JourneyFrequency>> modifiedJourneyFrequency = CollectionUtil
+					.intersection(oldValue.getJourneyFrequencies(), newValue.getJourneyFrequencies(),
+							JOURNEY_FREQUENCY_COMPARATOR);
 			for (Pair<JourneyFrequency, JourneyFrequency> pair : modifiedJourneyFrequency) {
 				journeyFrequencyUpdater.update(context, pair.getLeft(), pair.getRight());
 			}
 
 			Collection<JourneyFrequency> removedJourneyFrequency = CollectionUtil.substract(
-					oldValue.getJourneyFrequencies(), newValue.getJourneyFrequencies(),
-					JOURNEY_FREQUENCY_COMPARATOR);
+					oldValue.getJourneyFrequencies(), newValue.getJourneyFrequencies(), JOURNEY_FREQUENCY_COMPARATOR);
 			for (JourneyFrequency journeyFrequency : removedJourneyFrequency) {
 				journeyFrequency.setVehicleJourney(null);
 				journeyFrequencyDAO.delete(journeyFrequency);
 			}
 		}
+		monitor.stop();
 	}
 }

@@ -14,7 +14,7 @@ public class FileErrorTest {
 		ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 		PrintStream stream = new PrintStream(oStream);
 		
-		fileError.print(stream, 1, true);
+		fileError.print(stream, new StringBuilder(), 1, true);
 		String text = oStream.toString();
 		JSONObject res = new JSONObject(text);
 		

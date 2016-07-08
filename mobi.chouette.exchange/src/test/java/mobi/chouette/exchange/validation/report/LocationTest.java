@@ -21,7 +21,7 @@ public class LocationTest {
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 			PrintStream stream = new PrintStream(oStream);
 			Location location = new Location("fileName", 0, 0);
-			location.print(stream, 1, true);
+			location.print(stream, new StringBuilder(), 1, true);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			
@@ -33,7 +33,7 @@ public class LocationTest {
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 			PrintStream stream = new PrintStream(oStream);
 			Location location = new Location("fileName", 0, 0, "neptune");
-			location.print(stream, 1, true);
+			location.print(stream, new StringBuilder(), 1, true);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			
@@ -45,7 +45,7 @@ public class LocationTest {
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 			PrintStream stream = new PrintStream(oStream);
 			Location location = new Location("fileName", "locationName", 0);
-			location.print(stream, 1, true);
+			location.print(stream, new StringBuilder(), 1, true);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			
@@ -66,7 +66,7 @@ public class LocationTest {
 			route.setLine(line);
 			jp.setRoute(route);
 			Location location = new Location(jp);
-			location.print(stream, 1, true);
+			location.print(stream, new StringBuilder(), 1, true);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			JSONArray objectRef = res.getJSONArray("object_path");

@@ -6,6 +6,9 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
@@ -24,18 +27,18 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 
 	public static final String BEAN_NAME = "JourneyPatternUpdater";
 
-	@EJB 
+	@EJB
 	private StopPointDAO stopPointDAO;
 
-	@EJB 
+	@EJB
 	private VehicleJourneyDAO vehicleJourneyDAO;
-	
-	@EJB 
+
+	@EJB
 	private RouteSectionDAO routeSectionDAO;
 
 	@EJB(beanName = VehicleJourneyUpdater.BEAN_NAME)
 	private Updater<VehicleJourney> vehicleJourneyUpdater;
-	
+
 	@EJB(beanName = RouteSectionUpdater.BEAN_NAME)
 	private Updater<RouteSection> routeSectionUpdater;
 
@@ -47,65 +50,73 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		}
 		newValue.setSaved(true);
 
+		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
 
-		if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
+		if (oldValue.isDetached()) {
+			// object does not exist in database
 			oldValue.setObjectId(newValue.getObjectId());
-		}
-		if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
 			oldValue.setObjectVersion(newValue.getObjectVersion());
-		}
-		if (newValue.getCreationTime() != null && !newValue.getCreationTime().equals(oldValue.getCreationTime())) {
 			oldValue.setCreationTime(newValue.getCreationTime());
-		}
-		if (newValue.getCreatorId() != null && !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
 			oldValue.setCreatorId(newValue.getCreatorId());
-		}
-		if (newValue.getName() != null && !newValue.getName().equals(oldValue.getName())) {
 			oldValue.setName(newValue.getName());
-		}
-		if (newValue.getComment() != null && !newValue.getComment().equals(oldValue.getComment())) {
 			oldValue.setComment(newValue.getComment());
-		}
-		if (newValue.getRegistrationNumber() != null
-				&& !newValue.getRegistrationNumber().equals(oldValue.getRegistrationNumber())) {
 			oldValue.setRegistrationNumber(newValue.getRegistrationNumber());
-		}
-		if (newValue.getPublishedName() != null && !newValue.getPublishedName().equals(oldValue.getPublishedName())) {
 			oldValue.setPublishedName(newValue.getPublishedName());
-		}
-
-		if (newValue.getSectionStatus() != null && !newValue.getSectionStatus().equals(oldValue.getSectionStatus())) {
 			oldValue.setSectionStatus(newValue.getSectionStatus());
+			oldValue.setDetached(false);
+		} else {
+			if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
+				oldValue.setObjectId(newValue.getObjectId());
+			}
+			if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
+				oldValue.setObjectVersion(newValue.getObjectVersion());
+			}
+			if (newValue.getCreationTime() != null && !newValue.getCreationTime().equals(oldValue.getCreationTime())) {
+				oldValue.setCreationTime(newValue.getCreationTime());
+			}
+			if (newValue.getCreatorId() != null && !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
+				oldValue.setCreatorId(newValue.getCreatorId());
+			}
+			if (newValue.getName() != null && !newValue.getName().equals(oldValue.getName())) {
+				oldValue.setName(newValue.getName());
+			}
+			if (newValue.getComment() != null && !newValue.getComment().equals(oldValue.getComment())) {
+				oldValue.setComment(newValue.getComment());
+			}
+			if (newValue.getRegistrationNumber() != null
+					&& !newValue.getRegistrationNumber().equals(oldValue.getRegistrationNumber())) {
+				oldValue.setRegistrationNumber(newValue.getRegistrationNumber());
+			}
+			if (newValue.getPublishedName() != null && !newValue.getPublishedName().equals(oldValue.getPublishedName())) {
+				oldValue.setPublishedName(newValue.getPublishedName());
+			}
+
+			if (newValue.getSectionStatus() != null && !newValue.getSectionStatus().equals(oldValue.getSectionStatus())) {
+				oldValue.setSectionStatus(newValue.getSectionStatus());
+			}
 		}
-		
 		// RouteSections
-		if (!newValue.getRouteSections().equals(oldValue.getRouteSections()))
-		{
-			// List<RouteSection> sections = routeSectionDAO.findByObjectId(UpdaterUtils.getObjectIds(newValue.getRouteSections()));
-//            for (RouteSection object : sections) {
-//				cache.getRouteSections().put(object.getObjectId(), object);
-//			}
+		if (!newValue.getRouteSections().equals(oldValue.getRouteSections())) {
+			// List<RouteSection> sections =
+			// routeSectionDAO.findByObjectId(UpdaterUtils.getObjectIds(newValue.getRouteSections()));
+			// for (RouteSection object : sections) {
+			// cache.getRouteSections().put(object.getObjectId(), object);
+			// }
 			oldValue.getRouteSections().clear();
 			for (RouteSection item : newValue.getRouteSections()) {
 				RouteSection section = cache.getRouteSections().get(item.getObjectId());
-				if (section == null)
-				{
-					section = ObjectFactory.getRouteSection(cache,
-							item.getObjectId());
+				if (section == null) {
+					section = ObjectFactory.getRouteSection(cache, item.getObjectId());
 				}
 				oldValue.getRouteSections().add(section);
 			}
 		}
-		Collection<Pair<RouteSection, RouteSection>> modifiedRouteSection = CollectionUtil
-				.intersection(oldValue.getRouteSections(),
-						newValue.getRouteSections(),
-						NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<Pair<RouteSection, RouteSection>> modifiedRouteSection = CollectionUtil.intersection(
+				oldValue.getRouteSections(), newValue.getRouteSections(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<RouteSection, RouteSection> pair : modifiedRouteSection) {
-			routeSectionUpdater.update(context, pair.getLeft(),
-					pair.getRight());
+			routeSectionUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
-		
 
 		// StopPoint
 		Collection<StopPoint> addedStopPoint = CollectionUtil.substract(newValue.getStopPoints(),
@@ -213,6 +224,8 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		// vehicleJourney.setJourneyPattern(null);
 		// vehicleJourneyDAO.delete(vehicleJourney);
 		// }
+
+		monitor.stop();
 	}
 
 }

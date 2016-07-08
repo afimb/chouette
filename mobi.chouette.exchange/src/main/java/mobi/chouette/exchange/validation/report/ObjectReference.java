@@ -128,8 +128,8 @@ public class ObjectReference extends AbstractReport {
 	}
 
 	@Override
-	public void print(PrintStream out, int level, boolean first) {
-		StringBuilder ret = new StringBuilder();
+	public void print(PrintStream out, StringBuilder ret , int level, boolean first) {
+		ret.setLength(0);
 		out.print(addLevel(ret, level).append('{'));
 		out.print(toJsonString(ret, level + 1, "type", type, true));
 			out.print(toJsonString(ret, level + 1, "id", id, false));

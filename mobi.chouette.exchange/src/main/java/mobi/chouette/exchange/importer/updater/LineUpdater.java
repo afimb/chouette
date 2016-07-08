@@ -23,6 +23,9 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 @Stateless(name = LineUpdater.BEAN_NAME)
 public class LineUpdater implements Updater<Line> {
 
@@ -46,13 +49,13 @@ public class LineUpdater implements Updater<Line> {
 	@EJB(beanName = GroupOfLineUpdater.BEAN_NAME)
 	private Updater<GroupOfLine> groupOfLineUpdater;
 
-	@EJB 
+	@EJB
 	private RouteDAO routeDAO;
 
 	@EJB(beanName = RouteUpdater.BEAN_NAME)
 	private Updater<Route> routeUpdater;
 
-	@EJB 
+	@EJB
 	private StopAreaDAO stopAreaDAO;
 
 	@EJB(beanName = StopAreaUpdater.BEAN_NAME)
@@ -65,76 +68,76 @@ public class LineUpdater implements Updater<Line> {
 			return;
 		}
 		newValue.setSaved(true);
-
+		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
 
-		if (newValue.getObjectId() != null
-				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
+		if (oldValue.isDetached()) {
+			// object does not exist in database
 			oldValue.setObjectId(newValue.getObjectId());
-		}
-		if (newValue.getObjectVersion() != null
-				&& !newValue.getObjectVersion().equals(
-						oldValue.getObjectVersion())) {
 			oldValue.setObjectVersion(newValue.getObjectVersion());
-		}
-		if (newValue.getCreationTime() != null
-				&& !newValue.getCreationTime().equals(
-						oldValue.getCreationTime())) {
 			oldValue.setCreationTime(newValue.getCreationTime());
-		}
-		if (newValue.getCreatorId() != null
-				&& !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
 			oldValue.setCreatorId(newValue.getCreatorId());
-		}
-		if (newValue.getName() != null
-				&& !newValue.getName().equals(oldValue.getName())) {
 			oldValue.setName(newValue.getName());
-		}
-		if (newValue.getComment() != null
-				&& !newValue.getComment().equals(oldValue.getComment())) {
 			oldValue.setComment(newValue.getComment());
-		}
-		if (newValue.getNumber() != null
-				&& !newValue.getNumber().equals(oldValue.getNumber())) {
 			oldValue.setNumber(newValue.getNumber());
-		}
-		if (newValue.getPublishedName() != null
-				&& !newValue.getPublishedName().equals(
-						oldValue.getPublishedName())) {
 			oldValue.setPublishedName(newValue.getPublishedName());
-		}
-		if (newValue.getRegistrationNumber() != null
-				&& !newValue.getRegistrationNumber().equals(
-						oldValue.getRegistrationNumber())) {
 			oldValue.setRegistrationNumber(newValue.getRegistrationNumber());
-		}
-		if (newValue.getTransportModeName() != null
-				&& !newValue.getTransportModeName().equals(
-						oldValue.getTransportModeName())) {
 			oldValue.setTransportModeName(newValue.getTransportModeName());
-		}
-		if (newValue.getMobilityRestrictedSuitable() != null
-				&& !newValue.getMobilityRestrictedSuitable().equals(
-						oldValue.getMobilityRestrictedSuitable())) {
-			oldValue.setMobilityRestrictedSuitable(newValue
-					.getMobilityRestrictedSuitable());
-		}
-		if (newValue.getIntUserNeeds() != null
-				&& !newValue.getIntUserNeeds().equals(
-						oldValue.getIntUserNeeds())) {
+			oldValue.setMobilityRestrictedSuitable(newValue.getMobilityRestrictedSuitable());
 			oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
-		}
-		if (newValue.getUrl() != null
-				&& !newValue.getUrl().equals(oldValue.getUrl())) {
 			oldValue.setUrl(newValue.getUrl());
-		}
-		if (newValue.getColor() != null
-				&& !newValue.getColor().equals(oldValue.getColor())) {
 			oldValue.setColor(newValue.getColor());
-		}
-		if (newValue.getTextColor() != null
-				&& !newValue.getTextColor().equals(oldValue.getTextColor())) {
 			oldValue.setTextColor(newValue.getTextColor());
+			oldValue.setDetached(false);
+		} else {
+			if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
+				oldValue.setObjectId(newValue.getObjectId());
+			}
+			if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
+				oldValue.setObjectVersion(newValue.getObjectVersion());
+			}
+			if (newValue.getCreationTime() != null && !newValue.getCreationTime().equals(oldValue.getCreationTime())) {
+				oldValue.setCreationTime(newValue.getCreationTime());
+			}
+			if (newValue.getCreatorId() != null && !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
+				oldValue.setCreatorId(newValue.getCreatorId());
+			}
+			if (newValue.getName() != null && !newValue.getName().equals(oldValue.getName())) {
+				oldValue.setName(newValue.getName());
+			}
+			if (newValue.getComment() != null && !newValue.getComment().equals(oldValue.getComment())) {
+				oldValue.setComment(newValue.getComment());
+			}
+			if (newValue.getNumber() != null && !newValue.getNumber().equals(oldValue.getNumber())) {
+				oldValue.setNumber(newValue.getNumber());
+			}
+			if (newValue.getPublishedName() != null && !newValue.getPublishedName().equals(oldValue.getPublishedName())) {
+				oldValue.setPublishedName(newValue.getPublishedName());
+			}
+			if (newValue.getRegistrationNumber() != null
+					&& !newValue.getRegistrationNumber().equals(oldValue.getRegistrationNumber())) {
+				oldValue.setRegistrationNumber(newValue.getRegistrationNumber());
+			}
+			if (newValue.getTransportModeName() != null
+					&& !newValue.getTransportModeName().equals(oldValue.getTransportModeName())) {
+				oldValue.setTransportModeName(newValue.getTransportModeName());
+			}
+			if (newValue.getMobilityRestrictedSuitable() != null
+					&& !newValue.getMobilityRestrictedSuitable().equals(oldValue.getMobilityRestrictedSuitable())) {
+				oldValue.setMobilityRestrictedSuitable(newValue.getMobilityRestrictedSuitable());
+			}
+			if (newValue.getIntUserNeeds() != null && !newValue.getIntUserNeeds().equals(oldValue.getIntUserNeeds())) {
+				oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
+			}
+			if (newValue.getUrl() != null && !newValue.getUrl().equals(oldValue.getUrl())) {
+				oldValue.setUrl(newValue.getUrl());
+			}
+			if (newValue.getColor() != null && !newValue.getColor().equals(oldValue.getColor())) {
+				oldValue.setColor(newValue.getColor());
+			}
+			if (newValue.getTextColor() != null && !newValue.getTextColor().equals(oldValue.getTextColor())) {
+				oldValue.setTextColor(newValue.getTextColor());
+			}
 		}
 
 		// PTNetwork
@@ -176,9 +179,8 @@ public class LineUpdater implements Updater<Line> {
 		}
 
 		// GroupOfLine
-		Collection<GroupOfLine> addedGroupOfLine = CollectionUtil.substract(
-				newValue.getGroupOfLines(), oldValue.getGroupOfLines(),
-				NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<GroupOfLine> addedGroupOfLine = CollectionUtil.substract(newValue.getGroupOfLines(),
+				oldValue.getGroupOfLines(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		List<GroupOfLine> groupOfLines = null;
 		for (GroupOfLine item : addedGroupOfLine) {
 			GroupOfLine groupOfLine = cache.getGroupOfLines().get(item.getObjectId());
@@ -198,22 +200,19 @@ public class LineUpdater implements Updater<Line> {
 		}
 
 		Collection<Pair<GroupOfLine, GroupOfLine>> modifiedGroupOfLine = CollectionUtil.intersection(
-				oldValue.getGroupOfLines(), newValue.getGroupOfLines(),
-				NeptuneIdentifiedObjectComparator.INSTANCE);
+				oldValue.getGroupOfLines(), newValue.getGroupOfLines(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<GroupOfLine, GroupOfLine> pair : modifiedGroupOfLine) {
 			groupOfLineUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
-		Collection<GroupOfLine> removedGroupOfLine = CollectionUtil.substract(
-				oldValue.getGroupOfLines(), newValue.getGroupOfLines(),
-				NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<GroupOfLine> removedGroupOfLine = CollectionUtil.substract(oldValue.getGroupOfLines(),
+				newValue.getGroupOfLines(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (GroupOfLine groupOfLine : removedGroupOfLine) {
 			groupOfLine.removeLine(oldValue);
 		}
 
 		// Route
-		Collection<Route> addedRoute = CollectionUtil.substract(
-				newValue.getRoutes(), oldValue.getRoutes(),
+		Collection<Route> addedRoute = CollectionUtil.substract(newValue.getRoutes(), oldValue.getRoutes(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 		List<Route> routes = null;
 		for (Route item : addedRoute) {
@@ -233,17 +232,15 @@ public class LineUpdater implements Updater<Line> {
 			route.setLine(oldValue);
 		}
 
-		Collection<Pair<Route, Route>> modifiedRoute = CollectionUtil.intersection(
-				oldValue.getRoutes(), newValue.getRoutes(),
-				NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<Pair<Route, Route>> modifiedRoute = CollectionUtil.intersection(oldValue.getRoutes(),
+				newValue.getRoutes(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<Route, Route> pair : modifiedRoute) {
 			routeUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
 		// TODO stop area list (routingConstraintLines)
-		Collection<StopArea> addedRoutingConstraint = CollectionUtil.substract(
-				newValue.getRoutingConstraints(), oldValue.getRoutingConstraints(),
-				NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<StopArea> addedRoutingConstraint = CollectionUtil.substract(newValue.getRoutingConstraints(),
+				oldValue.getRoutingConstraints(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		List<StopArea> routingConstraints = null;
 		for (StopArea item : addedRoutingConstraint) {
 			StopArea routingConstraint = cache.getStopAreas().get(item.getObjectId());
@@ -269,11 +266,11 @@ public class LineUpdater implements Updater<Line> {
 			stopAreaUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
-		Collection<StopArea> removedRoutingConstraint = CollectionUtil.substract(
-				oldValue.getRoutingConstraints(), newValue.getRoutingConstraints(),
-				NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<StopArea> removedRoutingConstraint = CollectionUtil.substract(oldValue.getRoutingConstraints(),
+				newValue.getRoutingConstraints(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (StopArea stopArea : removedRoutingConstraint) {
 			oldValue.removeRoutingConstraint(stopArea);
 		}
+		monitor.stop();
 	}
 }

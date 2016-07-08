@@ -31,7 +31,7 @@ public class GtfsStopParserCommand implements Command, Constant {
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
-		
+
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		try {
@@ -45,8 +45,7 @@ public class GtfsStopParserCommand implements Command, Constant {
 
 			// StopArea
 			if (referential.getSharedStopAreas().isEmpty()) {
-				GtfsStopParser gtfsStopParser = (GtfsStopParser) ParserFactory
-						.create(GtfsStopParser.class.getName());
+				GtfsStopParser gtfsStopParser = (GtfsStopParser) ParserFactory.create(GtfsStopParser.class.getName());
 				gtfsStopParser.parse(context);
 			}
 
@@ -58,45 +57,40 @@ public class GtfsStopParserCommand implements Command, Constant {
 					gtfsTransferParser.parse(context);
 				}
 			}
-			if (configuration.getMaxDistanceForCommercial() > 0)
-			{
+			if (configuration.getMaxDistanceForCommercial() > 0) {
 				CommercialStopGenerator commercialStopGenerator = new CommercialStopGenerator();
 				commercialStopGenerator.createCommercialStopPoints(context);
 			}
-			
-			if (configuration.getMaxDistanceForConnectionLink() > 0)
-			{
-			    ConnectionLinkGenerator connectionLinkGenerator = new ConnectionLinkGenerator();
+
+			if (configuration.getMaxDistanceForConnectionLink() > 0) {
+				ConnectionLinkGenerator connectionLinkGenerator = new ConnectionLinkGenerator();
 				connectionLinkGenerator.createConnectionLinks(context);
-				
+
 			}
-			
 
 			addStats(context, referential);
-		    
+
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error("[DSU] error : ", e);
 			throw e;
+		} finally {
+			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
-		
-		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		return result;
 	}
 
-	
 	private void addStats(Context context, Referential referential) {
 		ActionReporter reporter = ActionReporter.Factory.getInstance();
 		reporter.addObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, "connection links", OBJECT_STATE.OK,
 				IO_TYPE.INPUT);
 		reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, OBJECT_TYPE.CONNECTION_LINK,
 				referential.getSharedConnectionLinks().size());
-		reporter.addObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, "stop areas", OBJECT_STATE.OK,
-				IO_TYPE.INPUT);
-		reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, OBJECT_TYPE.STOP_AREA, referential.getSharedStopAreas().size());
+		reporter.addObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, "stop areas", OBJECT_STATE.OK, IO_TYPE.INPUT);
+		reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, OBJECT_TYPE.STOP_AREA, referential
+				.getSharedStopAreas().size());
 
 	}
-
 
 	public static class DefaultCommandFactory extends CommandFactory {
 
@@ -108,7 +102,6 @@ public class GtfsStopParserCommand implements Command, Constant {
 	}
 
 	static {
-		CommandFactory.factories.put(GtfsStopParserCommand.class.getName(),
-				new DefaultCommandFactory());
+		CommandFactory.factories.put(GtfsStopParserCommand.class.getName(), new DefaultCommandFactory());
 	}
 }

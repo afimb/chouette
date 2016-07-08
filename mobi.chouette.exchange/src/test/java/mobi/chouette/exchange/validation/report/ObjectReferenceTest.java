@@ -16,7 +16,7 @@ public class ObjectReferenceTest {
 		PrintStream stream = new PrintStream(oStream);
 		JourneyPattern jp = new JourneyPattern();
 		ObjectReference objectRef = new ObjectReference(jp);
-		objectRef.print(stream, 1, true);
+		objectRef.print(stream, new StringBuilder(), 1, true);
 		String text = oStream.toString();
 		JSONObject res = null;
 		try {

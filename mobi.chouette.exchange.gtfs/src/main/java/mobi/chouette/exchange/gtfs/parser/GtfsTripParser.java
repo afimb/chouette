@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
@@ -57,6 +58,8 @@ import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineSegment;
@@ -83,6 +86,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	}
 
 	private void validateStopTimes(Context context) throws Exception {
+		Monitor monitor = MonitorFactory.start("ValidateStopTimes");
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 		Set<String> stopIds = new HashSet<String>();
@@ -108,8 +112,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 			if (stopTimeParser == null) { // importer.getStopTimeByTrip() fails
 											// for any other reason
-				gtfsValidationReporter.throwUnknownError(context, new Exception("Cannot instantiate StopTimeByTrip class"),
-						GTFS_STOP_TIMES_FILE);
+				gtfsValidationReporter.throwUnknownError(context, new Exception(
+						"Cannot instantiate StopTimeByTrip class"), GTFS_STOP_TIMES_FILE);
 			} else {
 				gtfsValidationReporter.validate(context, GTFS_STOP_TIMES_FILE, stopTimeParser.getOkTests());
 				gtfsValidationReporter.validateUnknownError(context);
@@ -162,21 +166,25 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					Iterable<GtfsStopTime> stopTimes = stopTimeParser.values(tripId);
 					for (GtfsStopTime bean : stopTimes) {
 						Integer stopSequence = bean.getStopSequence();
-						if (stopSequence != null)
-						{
-							if (stopSequences.containsKey(stopSequence))
-							{
-								gtfsValidationReporter.reportError(context, new GtfsException(stopTimeParser.getPath(), bean.getId(), stopTimeParser.getIndex(StopTimeByTrip.FIELDS.stop_sequence.name()), StopTimeByTrip.FIELDS.trip_id.name()+","+StopTimeByTrip.FIELDS.stop_sequence.name(), GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE, null, tripId+","+stopSequence), GTFS_STOP_TIMES_FILE);
-							}
-							else
-							{
+						if (stopSequence != null) {
+							if (stopSequences.containsKey(stopSequence)) {
+								gtfsValidationReporter.reportError(
+										context,
+										new GtfsException(stopTimeParser.getPath(), bean.getId(), stopTimeParser
+												.getIndex(StopTimeByTrip.FIELDS.stop_sequence.name()),
+												StopTimeByTrip.FIELDS.trip_id.name() + ","
+														+ StopTimeByTrip.FIELDS.stop_sequence.name(),
+												GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE, null, tripId + ","
+														+ stopSequence), GTFS_STOP_TIMES_FILE);
+							} else {
 								stopSequences.put(stopSequence, bean.getId());
-								gtfsValidationReporter.validate(context, GTFS_STOP_TIMES_FILE, GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE);
+								gtfsValidationReporter.validate(context, GTFS_STOP_TIMES_FILE,
+										GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE);
 							}
 						}
 					}
 				}
-					
+
 			}
 			int i = 1;
 			boolean unsuedId = true;
@@ -200,9 +208,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			gtfsValidationReporter.reportError(context, new GtfsException(GTFS_STOP_TIMES_FILE, 1, null,
 					GtfsException.ERROR.MISSING_FILE, null, null), GTFS_STOP_TIMES_FILE);
 		}
+		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 	}
 
 	private void validateShapes(Context context) throws Exception {
+		Monitor monitor = MonitorFactory.start("ValidateShape");
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 
@@ -250,7 +260,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			GtfsException fatalException = null;
 			shapeParser.setWithValidation(true);
 
-
 			for (GtfsShape bean : shapeParser) {
 				try {
 					shapeParser.validate(bean, importer);
@@ -280,23 +289,27 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					Iterable<GtfsShape> shapes = shapeParser.values(tripId);
 					for (GtfsShape bean : shapes) {
 						Integer stopSequence = bean.getShapePtSequence();
-						if (stopSequence != null)
-						{
-							if (shapeSequences.containsKey(stopSequence))
-							{
-								gtfsValidationReporter.reportError(context, new GtfsException(shapeParser.getPath(), bean.getId(), shapeParser.getIndex(ShapeById.FIELDS.shape_pt_sequence.name()), ShapeById.FIELDS.shape_id.name()+","+ShapeById.FIELDS.shape_pt_sequence.name(), GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE, null, tripId+","+stopSequence), GTFS_SHAPES_FILE);
-							}
-							else
-							{
+						if (stopSequence != null) {
+							if (shapeSequences.containsKey(stopSequence)) {
+								gtfsValidationReporter.reportError(
+										context,
+										new GtfsException(shapeParser.getPath(), bean.getId(), shapeParser
+												.getIndex(ShapeById.FIELDS.shape_pt_sequence.name()),
+												ShapeById.FIELDS.shape_id.name() + ","
+														+ ShapeById.FIELDS.shape_pt_sequence.name(),
+												GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE, null, tripId + ","
+														+ stopSequence), GTFS_SHAPES_FILE);
+							} else {
 								shapeSequences.put(stopSequence, bean.getId());
-								gtfsValidationReporter.validate(context, GTFS_SHAPES_FILE, GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE);
+								gtfsValidationReporter.validate(context, GTFS_SHAPES_FILE,
+										GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE);
 							}
 						}
 					}
 				}
-					
+
 			}
-			
+
 			shapeParser.setWithValidation(false);
 			if (fatalException != null)
 				throw fatalException;
@@ -304,9 +317,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			gtfsValidationReporter.reportError(context, new GtfsException(GTFS_SHAPES_FILE, 1, null,
 					GtfsException.ERROR.MISSING_OPTIONAL_FILE, null, null), GTFS_SHAPES_FILE);
 		}
+		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 	}
 
 	private void validateTrips(Context context) throws Exception {
+		Monitor monitor = MonitorFactory.start("ValidateTrips");
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 		Set<String> routeIds = new HashSet<String>();
@@ -361,7 +376,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					tripParser.validate(bean, importer);
 				} catch (Exception ex) {
 					if (ex instanceof GtfsException) {
-						gtfsValidationReporter.reportError(context, bean.getRouteId(), (GtfsException) ex, GTFS_TRIPS_FILE);
+						gtfsValidationReporter.reportError(context, bean.getRouteId(), (GtfsException) ex,
+								GTFS_TRIPS_FILE);
 					} else {
 						gtfsValidationReporter.throwUnknownError(context, ex, GTFS_TRIPS_FILE);
 					}
@@ -370,7 +386,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					if (ex.isFatal())
 						fatalException = ex;
 				}
-				gtfsValidationReporter.reportErrors(context,  bean.getRouteId(), bean.getErrors(), GTFS_TRIPS_FILE);
+				gtfsValidationReporter.reportErrors(context, bean.getRouteId(), bean.getErrors(), GTFS_TRIPS_FILE);
 				gtfsValidationReporter.validate(context, GTFS_TRIPS_FILE, bean.getOkTests());
 			}
 			tripParser.setWithValidation(false);
@@ -393,9 +409,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			gtfsValidationReporter.reportError(context, new GtfsException(GTFS_TRIPS_FILE, 1, null,
 					GtfsException.ERROR.MISSING_FILE, null, null), GTFS_TRIPS_FILE);
 		}
+		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 	}
 
 	private void validateFrequencies(Context context) throws Exception {
+		Monitor monitor = MonitorFactory.start("ValidateFrequencies");
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 
@@ -420,8 +438,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 			if (frequencyParser == null) { // importer.getFrequencyByTrip()
 											// fails for any other reason
-				gtfsValidationReporter.throwUnknownError(context,
-						new Exception("Cannot instantiate FrequencyByTrip class"), GTFS_FREQUENCIES_FILE);
+				gtfsValidationReporter.throwUnknownError(context, new Exception(
+						"Cannot instantiate FrequencyByTrip class"), GTFS_FREQUENCIES_FILE);
 			} else {
 				gtfsValidationReporter.validate(context, GTFS_FREQUENCIES_FILE, frequencyParser.getOkTests());
 				gtfsValidationReporter.validateUnknownError(context);
@@ -469,6 +487,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			gtfsValidationReporter.reportError(context, new GtfsException(GTFS_FREQUENCIES_FILE, 1, null,
 					GtfsException.ERROR.MISSING_OPTIONAL_FILE, null, null), GTFS_FREQUENCIES_FILE);
 		}
+		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 	}
 
 	@Override
@@ -477,7 +496,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
-//		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
+		// GtfsValidationReporter gtfsValidationReporter =
+		// (GtfsValidationReporter) context.get(GTFS_REPORTER);
 
 		Map<String, JourneyPattern> journeyPatternByStopSequence = new HashMap<String, JourneyPattern>();
 
@@ -507,7 +527,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					VehicleJourney.VEHICLEJOURNEY_KEY, gtfsTrip.getTripId(), log);
 			VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, objectId);
 			convert(context, gtfsTrip, vehicleJourney);
-			
 
 			// VehicleJourneyAtStop
 			boolean afterMidnight = true;
@@ -558,8 +577,9 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 			vehicleJourney.setRoute(journeyPattern.getRoute());
 			vehicleJourney.setJourneyPattern(journeyPattern);
-//			Line line = journeyPattern.getRoute().getLine();
-			// gtfsValidationReporter.updateValidationReport(context, GTFS_TRIPS_FILE, gtfsTrip.getTripId(), line);
+			// Line line = journeyPattern.getRoute().getLine();
+			// gtfsValidationReporter.updateValidationReport(context,
+			// GTFS_TRIPS_FILE, gtfsTrip.getTripId(), line);
 
 			int length = journeyPattern.getStopPoints().size();
 			for (int i = 0; i < length; i++) {
@@ -589,7 +609,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			timeband.setName(getTimebandName(frequency));
 			timeband.setStartTime(frequency.getStartTime().getTime());
 			timeband.setEndTime(frequency.getEndTime().getTime());
-//			AbstractConverter.addLocation(context, "frequencies.txt", timeBandObjectId, frequency.getId());
+			// AbstractConverter.addLocation(context, "frequencies.txt",
+			// timeBandObjectId, frequency.getId());
 
 			JourneyFrequency journeyFrequency = new JourneyFrequency();
 			journeyFrequency.setExactTime(frequency.getExactTimes());
@@ -676,7 +697,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		List<LineSegment> segments = new ArrayList<>();
 		Coordinate previous = null;
 		String shapeId = null;
-// 		Integer lineNumber = null;
+		// Integer lineNumber = null;
 		for (GtfsShape gtfsShape : gtfsShapes) {
 			if (gtfsShape.getShapePtLon() == null || gtfsShape.getShapePtLat() == null) {
 				log.error("line " + gtfsShape.getId() + " missing coordinates for shape " + gtfsShape.getShapeId());
@@ -684,7 +705,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 			if (shapeId == null) {
 				shapeId = gtfsShape.getShapeId();
-//				lineNumber = gtfsShape.getId();
+				// lineNumber = gtfsShape.getId();
 			}
 			OrderedCoordinate current = new OrderedCoordinate(gtfsShape.getShapePtLon().doubleValue(), gtfsShape
 					.getShapePtLat().doubleValue(), gtfsShape.getShapePtSequence());
@@ -773,9 +794,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				if (!section.isFilled()) {
 					Coordinate[] inputCoords = new Coordinate[2];
 					section.setDeparture(previousLocation);
-					inputCoords[0] = new Coordinate(previousLocation.getLongitude().doubleValue(), previousLocation.getLatitude().doubleValue());
+					inputCoords[0] = new Coordinate(previousLocation.getLongitude().doubleValue(), previousLocation
+							.getLatitude().doubleValue());
 					section.setArrival(location);
-					inputCoords[1] = new Coordinate(location.getLongitude().doubleValue(), location.getLatitude().doubleValue());
+					inputCoords[1] = new Coordinate(location.getLongitude().doubleValue(), location.getLatitude()
+							.doubleValue());
 					section.setProcessedGeometry(factory.createLineString(coords.toArray(new Coordinate[coords.size()])));
 					section.setInputGeometry(factory.createLineString(inputCoords));
 					section.setNoProcessing(false);
@@ -794,7 +817,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 						sections.clear();
 						return sections;
 					}
-//					AbstractConverter.addLocation(context, "shapes.txt", routeSectionId, lineNumber);
+					// AbstractConverter.addLocation(context, "shapes.txt",
+					// routeSectionId, lineNumber);
 				}
 				section.setFilled(true);
 				sections.add(section);
@@ -845,8 +869,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		vehicleJourneyAtStop.setStopPoint(stopPoint);
 		vehicleJourneyAtStop.setArrivalTime(gtfsStopTime.getArrivalTime().getTime());
 		vehicleJourneyAtStop.setDepartureTime(gtfsStopTime.getDepartureTime().getTime());
-		
-		/** GJT : Setting arrival and departure offset to vehicleJourneyAtStop object */
+
+		/**
+		 * GJT : Setting arrival and departure offset to vehicleJourneyAtStop
+		 * object
+		 */
 		vehicleJourneyAtStop.setArrivalDayOffset(gtfsStopTime.getArrivalTime().getDay());
 		vehicleJourneyAtStop.setDepartureDayOffset(gtfsStopTime.getDepartureTime().getDay());
 	}
@@ -876,7 +903,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 		}
 		vehicleJourney.setFilled(true);
-//		AbstractConverter.addLocation(context, "trips.txt", vehicleJourney.getObjectId(), gtfsTrip.getId());
+		// AbstractConverter.addLocation(context, "trips.txt",
+		// vehicleJourney.getObjectId(), gtfsTrip.getId());
 
 	}
 

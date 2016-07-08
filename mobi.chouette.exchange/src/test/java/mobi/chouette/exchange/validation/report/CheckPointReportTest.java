@@ -20,7 +20,7 @@ public class CheckPointReportTest {
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 			PrintStream stream = new PrintStream(oStream);
 			CheckPointReport checkPoint = new CheckPointReport("Neptune-Checkpoint-1", RESULT.OK, SEVERITY.WARNING);
-			checkPoint.print(stream, 1, true);
+			checkPoint.print(stream, new StringBuilder(), 1, true);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			
@@ -40,7 +40,7 @@ public class CheckPointReportTest {
 			PrintStream stream = new PrintStream(oStream);
 			CheckPointReport checkPoint = new CheckPointReport("Neptune-Checkpoint-1", RESULT.OK, SEVERITY.WARNING);
 			checkPoint.addCheckPointError(0);
-			checkPoint.print(stream, 1, true);
+			checkPoint.print(stream, new StringBuilder(), 1, true);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			

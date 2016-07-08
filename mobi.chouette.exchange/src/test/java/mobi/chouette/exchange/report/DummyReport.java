@@ -2,8 +2,6 @@ package mobi.chouette.exchange.report;
 
 import java.io.PrintStream;
 
-import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
-
 
 /**
  * Dummy class used for AbstractReport method testing
@@ -19,8 +17,8 @@ public class DummyReport extends AbstractReport{
 	};
 	
 	@Override
-	public void print(PrintStream out, int level, boolean first) {
-		StringBuilder ret = new StringBuilder();
+	public void print(PrintStream out, StringBuilder ret , int level, boolean first) {
+		ret.setLength(0);
 		
 		out.print(addLevel(ret, level).append('{'));
 		out.print(toJsonString(ret, level+1, "chaine", "dummy string", true));

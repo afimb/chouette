@@ -16,7 +16,7 @@ public class StepProgressionTest {
 		ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 		PrintStream stream = new PrintStream(oStream);
 		
-		stepProgression.print(stream, 1, true);
+		stepProgression.print(stream, new StringBuilder(), 1, true);
 		String text = oStream.toString();
 		JSONObject res = new JSONObject(text);
 		

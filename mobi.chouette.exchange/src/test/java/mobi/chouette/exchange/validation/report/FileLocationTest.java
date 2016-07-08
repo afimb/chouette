@@ -15,7 +15,7 @@ public class FileLocationTest {
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 			PrintStream stream = new PrintStream(oStream);
 			FileLocation fileLocation = new FileLocation("fileName", 0, 0);
-			fileLocation.print(stream, 1, true);
+			fileLocation.print(stream, new StringBuilder(), 1, true);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			
@@ -29,7 +29,7 @@ public class FileLocationTest {
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 			PrintStream stream = new PrintStream(oStream);
 			FileLocation fileLocation = new FileLocation("fileName", 15, 0);
-			fileLocation.print(stream, 1, true);
+			fileLocation.print(stream, new StringBuilder(), 1, true);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			
@@ -43,7 +43,7 @@ public class FileLocationTest {
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 			PrintStream stream = new PrintStream(oStream);
 			FileLocation fileLocation = new FileLocation("fileName", 0, 10);
-			fileLocation.print(stream, 1, true);
+			fileLocation.print(stream, new StringBuilder(), 1, true);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			

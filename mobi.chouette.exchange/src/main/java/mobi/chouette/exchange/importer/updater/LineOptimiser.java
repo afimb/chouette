@@ -6,6 +6,9 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.dao.CompanyDAO;
@@ -85,6 +88,7 @@ public class LineOptimiser {
 
 	public void initialize(Referential cache, Referential referential) {
 
+        Monitor monitor = MonitorFactory.start("LineOptimiser");
 		initializeStopArea(cache, referential.getStopAreas().values());
 
 		initializeConnectionLink(cache, referential.getConnectionLinks().values());
@@ -103,6 +107,7 @@ public class LineOptimiser {
 		initializeVehicleJourney(cache, referential.getVehicleJourneys().values());
 
 		initializeTimeband(cache, referential.getTimebands().values());
+		monitor.stop();
 	}
 
 	private void initializeStopArea(Referential cache, Collection<StopArea> list) {

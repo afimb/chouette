@@ -2,6 +2,9 @@ package mobi.chouette.exchange.importer.updater;
 
 import javax.ejb.Stateless;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.model.GroupOfLine;
 
@@ -19,6 +22,7 @@ public class GroupOfLineUpdater implements Updater<GroupOfLine> {
 		}
 		newValue.setSaved(true);
 
+        Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
@@ -45,5 +49,6 @@ public class GroupOfLineUpdater implements Updater<GroupOfLine> {
 				&& !newValue.getComment().equals(oldValue.getComment())) {
 			oldValue.setComment(newValue.getComment());
 		}
+		monitor.stop();
 	}
 }

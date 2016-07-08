@@ -1,6 +1,10 @@
 package mobi.chouette.exchange.gtfs.parser;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
@@ -25,6 +29,7 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 	
 	@Override
 	public void validate(Context context) throws Exception {
+		Monitor monitor = MonitorFactory.start("ValidateStops");
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 		gtfsValidationReporter.getExceptions().clear();
@@ -101,6 +106,7 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 		} else {
 			gtfsValidationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, 1, null, GtfsException.ERROR.MISSING_FILE, null, null), GTFS_STOPS_FILE);
 		}
+		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 	}	
 	
 	@Override

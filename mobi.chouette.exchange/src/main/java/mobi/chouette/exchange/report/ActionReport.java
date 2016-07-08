@@ -234,8 +234,8 @@ public class ActionReport extends AbstractReport implements Constant, Progressio
 	}
 
 	@Override
-	public void print(PrintStream out, int level, boolean first) {
-		StringBuilder ret = new StringBuilder();
+	public void print(PrintStream out, StringBuilder ret , int level, boolean first) {
+		ret.setLength(0);
 		level = 0;
 		first = true;
 		out.print("{\"action_report\": {");
@@ -261,7 +261,7 @@ public class ActionReport extends AbstractReport implements Constant, Progressio
 
 	@Override
 	public void print(PrintStream stream) {
-		print(stream, 1, true);
+		print(stream, new StringBuilder() , 1, true);
 
 	}
 }

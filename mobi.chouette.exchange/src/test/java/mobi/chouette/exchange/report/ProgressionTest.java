@@ -15,7 +15,7 @@ public class ProgressionTest {
 		ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 		PrintStream stream = new PrintStream(oStream);
 		
-		progression.print(stream, 1, true);
+		progression.print(stream, new StringBuilder(), 1, true);
 		String text = oStream.toString();
 		JSONObject res = new JSONObject(text);
 		

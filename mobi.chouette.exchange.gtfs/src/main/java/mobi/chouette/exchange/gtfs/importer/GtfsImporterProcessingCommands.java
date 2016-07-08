@@ -41,8 +41,7 @@ public class GtfsImporterProcessingCommands implements ProcessingCommands, Const
 	}
 
 	static {
-		ProcessingCommandsFactory.factories.put(GtfsImporterProcessingCommands.class.getName(),
-				new DefaultFactory());
+		ProcessingCommandsFactory.factories.put(GtfsImporterProcessingCommands.class.getName(), new DefaultFactory());
 	}
 
 	@Override
@@ -72,9 +71,17 @@ public class GtfsImporterProcessingCommands implements ProcessingCommands, Const
 		boolean level3validation = context.get(VALIDATION) != null;
 		List<Command> commands = new ArrayList<>();
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
-
 		Index<GtfsRoute> index = importer.getRouteById();
 		try {
+			{
+				Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
+				chain.add(CommandFactory.create(initialContext, GtfsStopParserCommand.class.getName()));
+				if (withDao && !parameters.isNoSave()) {
+					Command saveArea = CommandFactory.create(initialContext, StopAreaRegisterCommand.class.getName());
+					chain.add(saveArea);
+				}
+				commands.add(chain);
+			}
 			for (GtfsRoute gtfsRoute : index) {
 
 				Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
@@ -100,7 +107,6 @@ public class GtfsImporterProcessingCommands implements ProcessingCommands, Const
 				}
 				commands.add(chain);
 			}
-
 		} catch (Exception e) {
 			log.error(e, e);
 			throw new RuntimeException("unable to call factories");
@@ -155,6 +161,7 @@ public class GtfsImporterProcessingCommands implements ProcessingCommands, Const
 		}
 		return commands;
 	}
+
 	@Override
 	public List<? extends Command> getDisposeCommands(Context context, boolean withDao) {
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);

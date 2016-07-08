@@ -22,6 +22,9 @@ import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.report.StepProgression;
 import mobi.chouette.exchange.report.StepProgression.STEP;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 @Log4j
 public class ProgressionCommand implements Command, Constant, ReportConstant {
 
@@ -54,6 +57,14 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 	public void dispose(Context context) {
 		saveReport(context, true);
 		saveMainValidationReport(context, true);
+		
+		Monitor monitor = MonitorFactory.getTimeMonitor("ActionReport");
+		if (monitor != null)
+			log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
+		monitor = MonitorFactory.getTimeMonitor("ValidationReport");
+		if (monitor != null)
+			log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
+		
 	}
 
 
@@ -62,9 +73,10 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 			return;
 		Report report = (Report) context.get(REPORT);
 		Date date = new Date();
-		Date delay = new Date(date.getTime() - 3000);
+		Date delay = new Date(date.getTime() - 8000);
 		if (force || report.getDate().before(delay)) {
 			report.setDate(date);
+			Monitor monitor = MonitorFactory.start("ActionReport");
 			JobData jobData = (JobData) context.get(JOB_DATA);
 			Path path = Paths.get(jobData.getPathName(), REPORT_FILE);
 			// pseudo pretty print
@@ -75,7 +87,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 			} catch (Exception e) {
 				log.error("failed to save report", e);
 			}
-
+			monitor.stop();
 		}
 
 	}
@@ -91,9 +103,10 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		if (report == null || report.isEmpty())
 			return;
 		Date date = new Date();
-		Date delay = new Date(date.getTime() - 3000);
+		Date delay = new Date(date.getTime() - 8000);
 		if (force || report.getDate().before(delay)) {
 			report.setDate(date);
+			Monitor monitor = MonitorFactory.start("ValidationReport");
 			JobData jobData = (JobData) context.get(JOB_DATA);
 			Path path = Paths.get(jobData.getPathName(), VALIDATION_FILE);
 
@@ -104,6 +117,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 			} catch (Exception e) {
 				log.error("failed to save validation report", e);
 			}
+			monitor.stop();
 		}
 
 	}
@@ -117,7 +131,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		step.setRealized(step.getRealized() + 1);
 		boolean force = report.getProgression().getCurrentStep() != STEP.PROCESSING.ordinal() + 1;
 		saveReport(context, force);
-		if (context.containsKey(VALIDATION_REPORT)) {
+		if (force && context.containsKey(VALIDATION_REPORT)) {
 			saveMainValidationReport(context, force);
 		}
 		if (context.containsKey(CANCEL_ASKED) || Thread.currentThread().isInterrupted()) {

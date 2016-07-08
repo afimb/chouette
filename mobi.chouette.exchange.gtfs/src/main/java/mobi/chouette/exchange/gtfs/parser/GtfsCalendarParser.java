@@ -6,7 +6,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendar;
@@ -41,6 +45,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 	}
 	
 	private Index<GtfsCalendar> validateCalendar(Context context) throws Exception {
+		Monitor monitor = MonitorFactory.start("ValidateCalendar");
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 			
@@ -104,10 +109,12 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			if (fatalException != null)
 				throw fatalException;
 		}
+		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 		return calendarParser;
 	}
 	
 	private void validateCalendarDates(Context context, Index<GtfsCalendar> calendarParser) throws Exception {
+		Monitor monitor = MonitorFactory.start("ValidateCalendarDates");
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 		
@@ -212,6 +219,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 //				}
 //			}
 //		}
+		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 	}
 
 	@Override

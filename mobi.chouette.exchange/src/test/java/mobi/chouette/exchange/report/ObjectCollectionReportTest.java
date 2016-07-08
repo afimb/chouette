@@ -21,7 +21,7 @@ public class ObjectCollectionReportTest {
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 			PrintStream stream = new PrintStream(oStream);
 			objectCollectionReport.setObjectType(OBJECT_TYPE.LINE);
-			objectCollectionReport.print(stream, 1, true);
+			objectCollectionReport.print(stream, new StringBuilder(), 1, true);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			
@@ -37,7 +37,7 @@ public class ObjectCollectionReportTest {
 			objectCollectionReport.setObjectType(OBJECT_TYPE.LINE);
 			objectCollectionReport.addObjectReport(new ObjectReport("line1", OBJECT_TYPE.LINE, "line_1", OBJECT_STATE.OK,IO_TYPE.INPUT));
 			objectCollectionReport.addStatTypeToObject(OBJECT_TYPE.LINE, 1);
-			objectCollectionReport.print(stream, 1, true);
+			objectCollectionReport.print(stream, new StringBuilder(), 1, true);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			

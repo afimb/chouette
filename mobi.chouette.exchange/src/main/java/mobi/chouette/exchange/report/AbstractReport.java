@@ -7,7 +7,7 @@ import java.util.Map;
 public abstract class AbstractReport {
 	public static final int maxErrors = 15;
 
-	public abstract void print(PrintStream out, int level, boolean first);
+	public abstract void print(PrintStream out, StringBuilder ret, int level, boolean first);
 
 	public StringBuilder toJsonString(StringBuilder ret, int level, String name, Object value, boolean first) {
 		ret.setLength(0);
@@ -90,7 +90,7 @@ public abstract class AbstractReport {
 			if (!first)
 				ret.append(',');
 			out.print(ret.append('\n'));
-			abstractReport.print(out, level + 1, first);
+			abstractReport.print(out, ret,  level + 1, first);
 			first = false;
 		}
 		ret.setLength(0);
@@ -104,7 +104,7 @@ public abstract class AbstractReport {
 		if (!first)
 			ret.append(',');
 		out.print(addLevel(ret.append('\n'), level).append('"').append(name).append("\":"));
-		object.print(out, level + 1, true);
+		object.print(out, ret, level + 1, true);
 		ret.setLength(0);
 	}
 

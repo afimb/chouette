@@ -22,9 +22,18 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
+import mobi.chouette.exchange.importer.updater.CompanyUpdater;
+import mobi.chouette.exchange.importer.updater.ConnectionLinkUpdater;
+import mobi.chouette.exchange.importer.updater.GroupOfLineUpdater;
+import mobi.chouette.exchange.importer.updater.JourneyPatternUpdater;
 import mobi.chouette.exchange.importer.updater.LineOptimiser;
 import mobi.chouette.exchange.importer.updater.LineUpdater;
+import mobi.chouette.exchange.importer.updater.RouteUpdater;
+import mobi.chouette.exchange.importer.updater.StopAreaUpdater;
+import mobi.chouette.exchange.importer.updater.StopPointUpdater;
+import mobi.chouette.exchange.importer.updater.TimetableUpdater;
 import mobi.chouette.exchange.importer.updater.Updater;
+import mobi.chouette.exchange.importer.updater.VehicleJourneyUpdater;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
@@ -87,6 +96,7 @@ public class LineRegisterCommand implements Command {
 			lineDAO.flush(); // to prevent SQL error outside method
 
 			if (optimized) {
+				Monitor wMonitor = MonitorFactory.start("prepareCopy");
 				StringWriter buffer = new StringWriter(1024);
 				final List<String> list = new ArrayList<String>(referential.getVehicleJourneys().keySet());
 				for (VehicleJourney item : referential.getVehicleJourneys().values()) {
@@ -103,6 +113,7 @@ public class LineRegisterCommand implements Command {
 				}
 				vehicleJourneyDAO.deleteChildren(list);
 				context.put(BUFFER, buffer.toString());
+				wMonitor.stop();
 			}
 
 			result = SUCCESS;
@@ -130,6 +141,43 @@ public class LineRegisterCommand implements Command {
 			throw ex;
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+			
+			monitor = MonitorFactory.getTimeMonitor("LineOptimiser");
+			if (monitor != null)
+				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
+			monitor = MonitorFactory.getTimeMonitor(LineUpdater.BEAN_NAME);
+			if (monitor != null)
+				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
+			monitor = MonitorFactory.getTimeMonitor(GroupOfLineUpdater.BEAN_NAME);
+			if (monitor != null)
+				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
+			monitor = MonitorFactory.getTimeMonitor(CompanyUpdater.BEAN_NAME);
+			if (monitor != null)
+				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
+			monitor = MonitorFactory.getTimeMonitor(RouteUpdater.BEAN_NAME);
+			if (monitor != null)
+				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
+			monitor = MonitorFactory.getTimeMonitor(JourneyPatternUpdater.BEAN_NAME);
+			if (monitor != null)
+				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
+			monitor = MonitorFactory.getTimeMonitor(VehicleJourneyUpdater.BEAN_NAME);
+			if (monitor != null)
+				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
+			monitor = MonitorFactory.getTimeMonitor(StopPointUpdater.BEAN_NAME);
+			if (monitor != null)
+				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
+			monitor = MonitorFactory.getTimeMonitor(StopAreaUpdater.BEAN_NAME);
+			if (monitor != null)
+				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
+			monitor = MonitorFactory.getTimeMonitor(ConnectionLinkUpdater.BEAN_NAME);
+			if (monitor != null)
+				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
+			monitor = MonitorFactory.getTimeMonitor(TimetableUpdater.BEAN_NAME);
+			if (monitor != null)
+				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
+			monitor = MonitorFactory.getTimeMonitor("prepareCopy");
+			if (monitor != null)
+				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
 		}
 		return result;
 	}
@@ -172,6 +220,7 @@ public class LineRegisterCommand implements Command {
 		// else
 		// buffer.write(NULL);
 		buffer.append('\n');
+		
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {

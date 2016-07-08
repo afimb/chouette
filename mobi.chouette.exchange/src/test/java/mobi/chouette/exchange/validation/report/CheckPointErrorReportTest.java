@@ -19,7 +19,7 @@ public class CheckPointErrorReportTest implements Constant{
 			PrintStream stream = new PrintStream(oStream);
 			Location location = new Location("filename", 3, 1, "1234");
 			CheckPointErrorReport error = new CheckPointErrorReport("Neptune-Checkpoint-1", "neptune_checkpoint_1", location, "test");
-			error.print(stream, 1, true);
+			error.print(stream, new StringBuilder(), 1, true);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			
@@ -36,7 +36,7 @@ public class CheckPointErrorReportTest implements Constant{
 			PrintStream stream = new PrintStream(oStream);
 			Location locationTarget = new Location("filename2", 2, 6, "12345");
 			CheckPointErrorReport error = new CheckPointErrorReport("Neptune-Checkpoint-1", "neptune_checkpoint_1", null, "", "ref_test", locationTarget);
-			error.print(stream, 1, true);
+			error.print(stream, new StringBuilder(), 1, true);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);
 			

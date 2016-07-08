@@ -22,7 +22,7 @@ public class ObjectReportTest {
 		objectReport.addError(new ObjectError(ERROR_CODE.INTERNAL_ERROR, "object_error1"));
 		objectReport.addCheckPointError(0, SEVERITY.ERROR);
 		objectReport.addStatTypeToObject(OBJECT_TYPE.LINE, 1);
-		objectReport.print(stream, 1, true);
+		objectReport.print(stream, new StringBuilder(), 1, true);
 		String text = oStream.toString();
 		JSONObject res;
 		try {

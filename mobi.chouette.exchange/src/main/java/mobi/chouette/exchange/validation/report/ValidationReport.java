@@ -124,12 +124,14 @@ public class ValidationReport extends AbstractReport implements Report {
 		return object;
 	}
 
+	@Override
 	public void print(PrintStream out) {
-		print(out, 1, true);
+		print(out, new StringBuilder(), 1, true);
 	}
 
-	public void print(PrintStream out, int level, boolean first) {
-		StringBuilder ret = new StringBuilder();
+	@Override
+	public void print(PrintStream out, StringBuilder ret , int level, boolean first) {
+		ret.setLength(0);
 		level = 1;
 		out.print("{\"validation_report\": {");
 		out.print(toJsonString(ret, level, "result", result, true));

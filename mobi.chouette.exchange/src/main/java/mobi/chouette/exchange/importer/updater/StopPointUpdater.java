@@ -3,6 +3,9 @@ package mobi.chouette.exchange.importer.updater;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.StopArea;
@@ -15,54 +18,57 @@ public class StopPointUpdater implements Updater<StopPoint> {
 
 	public static final String BEAN_NAME = "StopPointUpdater";
 
-	@EJB 
+	@EJB
 	private StopAreaDAO stopAreaDAO;
 
 	@EJB(beanName = StopAreaUpdater.BEAN_NAME)
 	private Updater<StopArea> stopAreaUpdater;
 
 	@Override
-	public void update(Context context, StopPoint oldValue, StopPoint newValue)
-			throws Exception {
+	public void update(Context context, StopPoint oldValue, StopPoint newValue) throws Exception {
 
 		if (newValue.isSaved()) {
 			return;
 		}
 		newValue.setSaved(true);
 
+		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
 		cache.getStopPoints().put(oldValue.getObjectId(), oldValue);
 
-		if (newValue.getObjectId() != null
-				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
+		if (oldValue.isDetached()) {
+			// object does not exist in database
 			oldValue.setObjectId(newValue.getObjectId());
-		}
-		if (newValue.getObjectVersion() != null
-				&& !newValue.getObjectVersion().equals(
-						oldValue.getObjectVersion())) {
 			oldValue.setObjectVersion(newValue.getObjectVersion());
-		}
-		if (newValue.getCreationTime() != null
-				&& !newValue.getCreationTime().equals(
-						oldValue.getCreationTime())) {
 			oldValue.setCreationTime(newValue.getCreationTime());
-		}
-		if (newValue.getCreatorId() != null
-				&& !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
 			oldValue.setCreatorId(newValue.getCreatorId());
+			oldValue.setForAlighting(newValue.getForAlighting());
+			oldValue.setForBoarding(newValue.getForBoarding());
+			oldValue.setDetached(false);
+		} else {
+			if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
+				oldValue.setObjectId(newValue.getObjectId());
+			}
+			if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
+				oldValue.setObjectVersion(newValue.getObjectVersion());
+			}
+			if (newValue.getCreationTime() != null && !newValue.getCreationTime().equals(oldValue.getCreationTime())) {
+				oldValue.setCreationTime(newValue.getCreationTime());
+			}
+			if (newValue.getCreatorId() != null && !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
+				oldValue.setCreatorId(newValue.getCreatorId());
+			}
+
+			// Boarding and alighting
+			if (newValue.getForAlighting() != null && !newValue.getForAlighting().equals(oldValue.getForAlighting())) {
+				oldValue.setForAlighting(newValue.getForAlighting());
+			}
+
+			if (newValue.getForBoarding() != null && !newValue.getForBoarding().equals(oldValue.getForBoarding())) {
+				oldValue.setForBoarding(newValue.getForBoarding());
+			}
 		}
 
-		// Boarding and alighting
-		if (newValue.getForAlighting() != null
-				&& !newValue.getForAlighting().equals(oldValue.getForAlighting())) {
-			oldValue.setForAlighting(newValue.getForAlighting());
-		}
-		
-		if (newValue.getForBoarding() != null
-				&& !newValue.getForBoarding().equals(oldValue.getForBoarding())) {
-			oldValue.setForBoarding(newValue.getForBoarding());
-		}
-		
 		// StopArea
 		if (newValue.getContainedInStopArea() == null) {
 			oldValue.setContainedInStopArea(null);
@@ -81,9 +87,10 @@ public class StopPointUpdater implements Updater<StopPoint> {
 				stopArea = ObjectFactory.getStopArea(cache, objectId);
 			}
 			oldValue.setContainedInStopArea(stopArea);
-			stopAreaUpdater.update(context, oldValue.getContainedInStopArea(),
-					newValue.getContainedInStopArea());
+			if (!context.containsKey(AREA_BLOC))
+			   stopAreaUpdater.update(context, oldValue.getContainedInStopArea(), newValue.getContainedInStopArea());
 		}
+		monitor.stop();
 
 	}
 }
