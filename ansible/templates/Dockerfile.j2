@@ -15,12 +15,12 @@ COPY wildfly/iev.properties /etc/chouette/iev/
 
 RUN touch /opt/jboss/wildfly/build.log
 RUN chmod a+w /opt/jboss/wildfly/build.log
-COPY wildfly/wildfly_db.cli /opt/jboss/wildfly/customization/
-# Not used anymore: COPY wildfly_deploy.cli /opt/jboss/wildfly/customization/
-COPY wildfly/wildfly_fsize.cli /opt/jboss/wildfly/customization/
-COPY wildfly/wildfly_bean-timeouts.cli /opt/jboss/wildfly/customization/
+
+# Wildfly container configurations, copy and execute
+COPY wildfly/*.cli /opt/jboss/wildfly/customization/
 COPY wildfly/execute.sh /opt/jboss/wildfly/customization/
 RUN /opt/jboss/wildfly/customization/execute.sh
+
 # TODO Consider to make password for chouette iev console configurable
 RUN /opt/jboss/wildfly/bin/add-user.sh admin pingu123 --silent
 
