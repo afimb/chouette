@@ -26,9 +26,6 @@ import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 @Stateless(name = LineUpdater.BEAN_NAME)
 public class LineUpdater implements Updater<Line> {
 
@@ -71,7 +68,7 @@ public class LineUpdater implements Updater<Line> {
 			return;
 		}
 		newValue.setSaved(true);
-		Monitor monitor = MonitorFactory.start(BEAN_NAME);
+//		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
 		
 		// Database test init
@@ -286,7 +283,7 @@ public class LineUpdater implements Updater<Line> {
 		for (StopArea stopArea : removedRoutingConstraint) {
 			oldValue.removeRoutingConstraint(stopArea);
 		}
-		monitor.stop();
+//		monitor.stop();
 	}
 	
 	/**

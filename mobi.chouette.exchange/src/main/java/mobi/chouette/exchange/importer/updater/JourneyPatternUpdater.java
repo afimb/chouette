@@ -6,9 +6,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
@@ -54,7 +51,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		}
 		newValue.setSaved(true);
 
-		Monitor monitor = MonitorFactory.start(BEAN_NAME);
+//		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
 		
 		// Database test init
@@ -226,16 +223,8 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			vehicleJourneyUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
-		// Collection<VehicleJourney> removedVehicleJourney = CollectionUtils
-		// .substract(oldValue.getVehicleJourneys(),
-		// newValue.getVehicleJourneys(),
-		// NeptuneIdentifiedObjectComparator.INSTANCE);
-		// for (VehicleJourney vehicleJourney : removedVehicleJourney) {
-		// vehicleJourney.setJourneyPattern(null);
-		// vehicleJourneyDAO.delete(vehicleJourney);
-		// }
 
-		monitor.stop();
+//		monitor.stop();
 	}
 	
 	/**

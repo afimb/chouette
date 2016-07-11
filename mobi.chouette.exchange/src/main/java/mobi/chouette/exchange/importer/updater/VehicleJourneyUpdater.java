@@ -8,9 +8,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
@@ -109,7 +106,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		}
 		newValue.setSaved(true);
 
-		Monitor monitor = MonitorFactory.start(BEAN_NAME);
+//		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
 		cache.getVehicleJourneys().put(oldValue.getObjectId(), oldValue);
 
@@ -354,7 +351,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 				journeyFrequencyDAO.delete(journeyFrequency);
 			}
 		}
-		monitor.stop();
+//		monitor.stop();
 	}
 	
 	

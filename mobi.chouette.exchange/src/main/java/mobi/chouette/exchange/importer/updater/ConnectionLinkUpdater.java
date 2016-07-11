@@ -130,7 +130,7 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 			String objectId = newValue.getStartOfLink().getObjectId();
 			StopArea startOfLink = cache.getStopAreas().get(objectId);
 			if (startOfLink == null) {
-				log.info("search connectionLink starts in DB "+objectId);
+				log.info("search connectionLink starts in DB " + objectId);
 				startOfLink = stopAreaDAO.findByObjectId(objectId);
 				if (startOfLink != null) {
 					cache.getStopAreas().put(objectId, startOfLink);
@@ -139,7 +139,10 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 
 			if (startOfLink != null) {
 				// log.info("update connectionLink starts"+startOfLink.getName());
-				oldValue.setStartOfLink(startOfLink);
+				if (context.containsKey(CONNECTION_LINK_BLOC))
+					oldValue.forceStartOfLink(startOfLink);
+				else
+					oldValue.setStartOfLink(startOfLink);
 			}
 		}
 
@@ -147,7 +150,7 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 			String objectId = newValue.getEndOfLink().getObjectId();
 			StopArea endOfLink = cache.getStopAreas().get(objectId);
 			if (endOfLink == null) {
-				log.info("search connectionLink ends in DB "+objectId);
+				log.info("search connectionLink ends in DB " + objectId);
 				endOfLink = stopAreaDAO.findByObjectId(objectId);
 				if (endOfLink != null) {
 					cache.getStopAreas().put(objectId, endOfLink);
@@ -156,7 +159,10 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 
 			if (endOfLink != null) {
 				// log.info("update connectionLink ends"+endOfLink.getName());
-				oldValue.setEndOfLink(endOfLink);
+				if (context.containsKey(CONNECTION_LINK_BLOC))
+					oldValue.forceEndOfLink(endOfLink);
+				else
+					oldValue.setEndOfLink(endOfLink);
 			}
 		}
 		monitor.stop();

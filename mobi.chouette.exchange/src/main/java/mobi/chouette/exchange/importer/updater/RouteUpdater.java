@@ -21,9 +21,6 @@ import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 @Stateless(name = RouteUpdater.BEAN_NAME)
 public class RouteUpdater implements Updater<Route> {
 
@@ -52,7 +49,7 @@ public class RouteUpdater implements Updater<Route> {
 		}
 		newValue.setSaved(true);
 
-		Monitor monitor = MonitorFactory.start(BEAN_NAME);
+//		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
 		
 		// Database test init
@@ -191,7 +188,7 @@ public class RouteUpdater implements Updater<Route> {
 		for (Pair<JourneyPattern, JourneyPattern> pair : modifiedJourneyPattern) {
 			journeyPatternUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
-		monitor.stop();
+//		monitor.stop();
 	}
 	
 	/**

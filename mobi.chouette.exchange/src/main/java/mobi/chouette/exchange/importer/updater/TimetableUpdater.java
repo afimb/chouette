@@ -5,9 +5,6 @@ import java.util.Comparator;
 
 import javax.ejb.Stateless;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.model.CalendarDay;
@@ -44,7 +41,7 @@ public class TimetableUpdater implements Updater<Timetable> {
 		}
 		newValue.setSaved(true);
 		
-        Monitor monitor = MonitorFactory.start(BEAN_NAME);
+//        Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		newValue.computeLimitOfPeriods();
 		// default processings
 		if (newValue.getComment() == null) {
@@ -138,7 +135,7 @@ public class TimetableUpdater implements Updater<Timetable> {
 		for (CalendarDay item : removedCalendarDays) {
 			oldValue.getCalendarDays().remove(item);
 		}
-		monitor.stop();
+//		monitor.stop();
 
 	}
 }

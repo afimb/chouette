@@ -58,8 +58,8 @@
 		<properties>
 			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.format_sql" value="true" />
-			<property name="hibernate.jdbc.batch_size" value="100" />
-			<property name="hibernate.default_batch_fetch_size" value="100" />
+			<property name="hibernate.jdbc.batch_size" value="2000" />
+			<property name="hibernate.default_batch_fetch_size" value="2000" />
 			<property name="hibernate.multiTenancy" value="SCHEMA" />
 			<property name="hibernate.connection.datasource" value="java:jboss/datasources/chouette" />
 			<property name="hibernate.tenant_identifier_resolver"

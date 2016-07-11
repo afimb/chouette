@@ -6,9 +6,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.dao.CompanyDAO;
@@ -43,52 +40,51 @@ import mobi.chouette.model.util.Referential;
 @Stateless
 public class LineOptimiser {
 
-	@EJB 
+	@EJB
 	private ConnectionLinkDAO connectionLinkDAO;
 
-	@EJB 
+	@EJB
 	private AccessLinkDAO accessLinkDAO;
 
-	@EJB 
+	@EJB
 	private AccessPointDAO accessPointDAO;
 
 	@EJB
 	private StopAreaDAO stopAreaDAO;
 
-	@EJB 
+	@EJB
 	private TimetableDAO timetableDAO;
 
-	@EJB 
+	@EJB
 	private NetworkDAO ptNetworkDAO;
 
 	@EJB
 	private CompanyDAO companyDAO;
 
-	@EJB 
+	@EJB
 	private GroupOfLineDAO groupOfLineDAO;
 
-	@EJB 
+	@EJB
 	private LineDAO lineDAO;
 
-	@EJB 
+	@EJB
 	private RouteDAO routeDAO;
 
-	@EJB 
+	@EJB
 	private JourneyPatternDAO journeyPatternDAO;
 
-	@EJB 
+	@EJB
 	private VehicleJourneyDAO vehicleJourneyDAO;
 
-	@EJB 
+	@EJB
 	private StopPointDAO stopPointDAO;
 
-	@EJB 
+	@EJB
 	private TimebandDAO timebandDAO;
-
 
 	public void initialize(Referential cache, Referential referential) {
 
-        Monitor monitor = MonitorFactory.start("LineOptimiser");
+//		Monitor monitor = MonitorFactory.start("LineOptimiser");
 		initializeStopArea(cache, referential.getStopAreas().values());
 
 		initializeConnectionLink(cache, referential.getConnectionLinks().values());
@@ -107,7 +103,7 @@ public class LineOptimiser {
 		initializeVehicleJourney(cache, referential.getVehicleJourneys().values());
 
 		initializeTimeband(cache, referential.getTimebands().values());
-		monitor.stop();
+//		monitor.stop();
 	}
 
 	private void initializeStopArea(Referential cache, Collection<StopArea> list) {
