@@ -114,7 +114,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		
 		// Database test init
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-		validationReporter.addItemToValidationReport(context, "2-", "VehicleJourney", 2, "E", "W");
+		validationReporter.addItemToValidationReport(context, "2-", "VehicleJourney", 1, "W");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 				
 				
@@ -261,7 +261,6 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 					.intersection(oldValue.getVehicleJourneyAtStops(), newValue.getVehicleJourneyAtStops(),
 							VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
 			for (Pair<VehicleJourneyAtStop, VehicleJourneyAtStop> pair : modifiedVehicleJourneyAtStop) {
-				twoVehicleJourneyOneTest(validationReporter, context, pair.getLeft(), pair.getRight(), data);
 				vehicleJourneyAtStopUpdater.update(context, pair.getLeft(), pair.getRight());
 			}
 
@@ -355,19 +354,6 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	}
 	
 	
-	/**
-	 * Test 2-VehicleJourney-1
-	 * @param validationReporter
-	 * @param context
-	 * @param oldVjas
-	 * @param newVjas
-	 */
-	private void twoVehicleJourneyOneTest(ValidationReporter validationReporter, Context context, VehicleJourneyAtStop oldVjas, VehicleJourneyAtStop newVjas, ValidationData data) {
-		if(!NeptuneUtil.sameValue(oldVjas, newVjas))
-			validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_1, data.getDataLocations().get(newVjas.getId()));
-		else
-			validationReporter.reportSuccess(context, VEHICLE_JOURNEY_1);
-	}
 	
 	/**
 	 * Test 2-VehicleJourney-2

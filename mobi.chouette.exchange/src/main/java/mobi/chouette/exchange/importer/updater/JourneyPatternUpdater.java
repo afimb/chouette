@@ -15,7 +15,6 @@ import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.JourneyPattern;
-import mobi.chouette.model.Route;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
@@ -57,6 +56,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		// Database test init
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		validationReporter.addItemToValidationReport(context, "2-", "JourneyPattern", 1, "E");
+		validationReporter.addItemToValidationReport(context, "2-", "VehicleJourney", 1, "E");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		
 		if (oldValue.isDetached()) {
@@ -220,6 +220,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 				oldValue.getVehicleJourneys(), newValue.getVehicleJourneys(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<VehicleJourney, VehicleJourney> pair : modifiedVehicleJourney) {
+			twoVehicleJourneyOneTest(validationReporter, context, pair.getLeft(), pair.getRight(), data);
 			vehicleJourneyUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
@@ -239,6 +240,22 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			validationReporter.addCheckPointReportError(context, JOURNEY_PATTERN_1, data.getDataLocations().get(newRouteSection.getObjectId()));
 		else
 			validationReporter.reportSuccess(context, JOURNEY_PATTERN_1);
+	}
+	
+	
+
+	/**
+	 * Test 2-VehicleJourney-1
+	 * @param validationReporter
+	 * @param context
+	 * @param oldVj
+	 * @param newVj
+	 */
+	private void twoVehicleJourneyOneTest(ValidationReporter validationReporter, Context context, VehicleJourney oldVj, VehicleJourney newVj, ValidationData data) {
+		if(!NeptuneUtil.sameValue(oldVj, newVj))
+			validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_1, data.getDataLocations().get(newVj.getObjectId()));
+		else
+			validationReporter.reportSuccess(context, VEHICLE_JOURNEY_1);
 	}
 
 }

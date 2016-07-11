@@ -13,9 +13,6 @@ import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 @Stateless(name = StopPointUpdater.BEAN_NAME)
 public class StopPointUpdater implements Updater<StopPoint> {
 
@@ -41,7 +38,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		
 		// Database test init
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-		validationReporter.addItemToValidationReport(context, "2-", "StopPoint", 2, "E", "W");
+		validationReporter.addItemToValidationReport(context, "2-", "StopPoint", 2, "E", "E");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		
 		twoStopPointTwoTest(validationReporter, context, oldValue, newValue, data);
@@ -113,8 +110,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	 * @param newSp
 	 */
 	private void twoStopPointTwoTest(ValidationReporter validationReporter, Context context, StopPoint oldSp, StopPoint newSp, ValidationData data) {
-		
-		if(!(oldSp.equals(null) && newSp.equals(null))) {
+		if(!oldSp.equals(null) && !newSp.equals(null)) {
 			if(!oldSp.getPosition().equals(newSp.getPosition()))
 				validationReporter.addCheckPointReportError(context, STOP_POINT_2, data.getDataLocations().get(newSp.getObjectId()));
 			else

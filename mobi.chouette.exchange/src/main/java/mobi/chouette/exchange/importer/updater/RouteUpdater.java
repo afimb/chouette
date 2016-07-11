@@ -195,8 +195,8 @@ public class RouteUpdater implements Updater<Route> {
 	 * Test 2-StopPoint-1
 	 * @param validationReporter
 	 * @param context
-	 * @param oldVjas
-	 * @param newVjas
+	 * @param oldSp
+	 * @param newSp
 	 */
 	private void twoStopPointOneTest(ValidationReporter validationReporter, Context context, StopPoint oldSp, StopPoint newSp, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldSp, newSp))
