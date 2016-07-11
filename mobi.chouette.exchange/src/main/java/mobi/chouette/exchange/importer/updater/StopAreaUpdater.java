@@ -189,7 +189,10 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			if (stopArea == null) {
 				stopArea = ObjectFactory.getStopArea(cache, objectId);
 			}
-			oldValue.setParent(stopArea);
+			if (context.containsKey(AREA_BLOC))
+			   oldValue.forceParent(stopArea);
+			else
+				oldValue.setParent(stopArea);
 			stopAreaUpdater.update(context, oldValue.getParent(), newValue.getParent());
 		}
 

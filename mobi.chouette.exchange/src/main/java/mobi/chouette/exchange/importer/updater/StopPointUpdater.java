@@ -3,9 +3,6 @@ package mobi.chouette.exchange.importer.updater;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.StopArea;
@@ -32,7 +29,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		}
 		newValue.setSaved(true);
 
-		Monitor monitor = MonitorFactory.start(BEAN_NAME);
+//		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
 		cache.getStopPoints().put(oldValue.getObjectId(), oldValue);
 
@@ -90,7 +87,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 			if (!context.containsKey(AREA_BLOC))
 			   stopAreaUpdater.update(context, oldValue.getContainedInStopArea(), newValue.getContainedInStopArea());
 		}
-		monitor.stop();
+//		monitor.stop();
 
 	}
 }

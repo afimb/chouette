@@ -297,6 +297,14 @@ public class ConnectionLink extends NeptuneIdentifiedObject {
 			stopArea.getConnectionStartLinks().add(this);
 		}
 	}
+	/**
+	 * set stopArea without updating stopArea collection
+	 * 
+	 * @param stopArea
+	 */
+	public void forceStartOfLink(StopArea stopArea) {
+		this.startOfLink = stopArea;
+	}
 
 	/**
 	 * last stop area connected to link
@@ -321,6 +329,15 @@ public class ConnectionLink extends NeptuneIdentifiedObject {
 		if (stopArea != null) {
 			stopArea.getConnectionEndLinks().add(this);
 		}
+	}
+	
+	/**
+	 * set stopArea without updating stopArea collection
+	 * 
+	 * @param stopArea
+	 */
+	public void forceEndOfLink(StopArea stopArea) {
+		this.endOfLink = stopArea;
 	}
 
 }
