@@ -14,12 +14,15 @@ import mobi.chouette.dao.GroupOfLineDAO;
 import mobi.chouette.dao.NetworkDAO;
 import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -70,7 +73,13 @@ public class LineUpdater implements Updater<Line> {
 		newValue.setSaved(true);
 		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
-
+		
+		// Database test init
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		validationReporter.addItemToValidationReport(context, "2-", "Line", 2, "W", "W");
+		validationReporter.addItemToValidationReport(context, "2-", "Route", 1, "E");
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		
 		if (oldValue.isDetached()) {
 			// object does not exist in database
 			oldValue.setObjectId(newValue.getObjectId());
@@ -139,8 +148,10 @@ public class LineUpdater implements Updater<Line> {
 				oldValue.setTextColor(newValue.getTextColor());
 			}
 		}
-
+		
 		// PTNetwork
+		twoLineOneTest(validationReporter, context, oldValue.getNetwork(), newValue.getNetwork(), data);
+		
 		if (newValue.getNetwork() == null) {
 			oldValue.setNetwork(null);
 		} else {
@@ -160,6 +171,8 @@ public class LineUpdater implements Updater<Line> {
 		}
 
 		// Company
+		twoLineTwoTest(validationReporter, context, oldValue.getCompany(), newValue.getCompany(), data);
+		
 		if (newValue.getCompany() == null) {
 			oldValue.setCompany(null);
 		} else {
@@ -175,6 +188,7 @@ public class LineUpdater implements Updater<Line> {
 				company = ObjectFactory.getCompany(cache, objectId);
 			}
 			oldValue.setCompany(company);
+			
 			companyUpdater.update(context, oldValue.getCompany(), newValue.getCompany());
 		}
 
@@ -235,6 +249,7 @@ public class LineUpdater implements Updater<Line> {
 		Collection<Pair<Route, Route>> modifiedRoute = CollectionUtil.intersection(oldValue.getRoutes(),
 				newValue.getRoutes(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<Route, Route> pair : modifiedRoute) {
+			twoRouteOneTest(validationReporter, context, pair.getLeft(), pair.getRight(), data);
 			routeUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
@@ -272,5 +287,47 @@ public class LineUpdater implements Updater<Line> {
 			oldValue.removeRoutingConstraint(stopArea);
 		}
 		monitor.stop();
+	}
+	
+	/**
+	 * Test 2-Line-1
+	 * @param validationReporter
+	 * @param context
+	 * @param oldPTNetwork
+	 * @param newPTNetwork
+	 */
+	private void twoLineOneTest(ValidationReporter validationReporter, Context context, Network oldPTNetwork, Network newPTNetwork, ValidationData data) {
+		if(!NeptuneUtil.sameValue(oldPTNetwork, newPTNetwork))
+			validationReporter.addCheckPointReportError(context, LINE_1, data.getDataLocations().get(newPTNetwork.getObjectId()));
+		else
+			validationReporter.reportSuccess(context, LINE_1);
+	}
+	
+	/**
+	 * Test 2-Line-2
+	 * @param validationReporter
+	 * @param context
+	 * @param oldCompany
+	 * @param newCompany
+	 */
+	private void twoLineTwoTest(ValidationReporter validationReporter, Context context, Company oldCompany, Company newCompany, ValidationData data) {
+		if(!NeptuneUtil.sameValue(oldCompany, newCompany))
+			validationReporter.addCheckPointReportError(context, LINE_2, data.getDataLocations().get(newCompany.getObjectId()));
+		else
+			validationReporter.reportSuccess(context, LINE_2);
+	}
+	
+	/**
+	 * Test 2-Route-1
+	 * @param validationReporter
+	 * @param context
+	 * @param oldRoute
+	 * @param newRoute
+	 */
+	private void twoRouteOneTest(ValidationReporter validationReporter, Context context, Route oldRoute, Route newRoute, ValidationData data) {
+		if(!NeptuneUtil.sameValue(oldRoute, newRoute))
+			validationReporter.addCheckPointReportError(context, ROUTE_1, data.getDataLocations().get(newRoute.getObjectId()));
+		else
+			validationReporter.reportSuccess(context, ROUTE_1);
 	}
 }

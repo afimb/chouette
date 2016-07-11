@@ -15,10 +15,14 @@ import mobi.chouette.common.Pair;
 import mobi.chouette.dao.RouteSectionDAO;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
+import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.JourneyPattern;
+import mobi.chouette.model.Route;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -52,7 +56,12 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 
 		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
-
+		
+		// Database test init
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		validationReporter.addItemToValidationReport(context, "2-", "JourneyPattern", 1, "E");
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		
 		if (oldValue.isDetached()) {
 			// object does not exist in database
 			oldValue.setObjectId(newValue.getObjectId());
@@ -115,6 +124,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		Collection<Pair<RouteSection, RouteSection>> modifiedRouteSection = CollectionUtil.intersection(
 				oldValue.getRouteSections(), newValue.getRouteSections(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<RouteSection, RouteSection> pair : modifiedRouteSection) {
+			twoJourneyPatternOneTest(validationReporter, context, pair.getLeft(), pair.getRight(), data);
 			routeSectionUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
@@ -226,6 +236,20 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		// }
 
 		monitor.stop();
+	}
+	
+	/**
+	 * Test 2-JourneyPattern-1
+	 * @param validationReporter
+	 * @param context
+	 * @param oldRouteSection
+	 * @param newRouteSection
+	 */
+	private void twoJourneyPatternOneTest(ValidationReporter validationReporter, Context context, RouteSection oldRouteSection, RouteSection newRouteSection, ValidationData data) {
+		if(!NeptuneUtil.sameValue(oldRouteSection, newRouteSection))
+			validationReporter.addCheckPointReportError(context, JOURNEY_PATTERN_1, data.getDataLocations().get(newRouteSection.getObjectId()));
+		else
+			validationReporter.reportSuccess(context, JOURNEY_PATTERN_1);
 	}
 
 }

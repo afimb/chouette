@@ -6,9 +6,12 @@ import javax.ejb.Stateless;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.NamingUtil;
+import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -33,7 +36,13 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 
 		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
-
+		
+		// Database test init
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		validationReporter.addItemToValidationReport(context, "2-", "ConnectionLink", 1, "E");
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+				
+				
 		if (newValue.getName() == null) {
 			NamingUtil.setDefaultName(newValue);
 		}
@@ -113,7 +122,9 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 				oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
 			}
 		}
-
+		
+		// Check stop areas value in correspondance update
+		twoConnectionLinkOneTest(validationReporter, context, oldValue, newValue, data);
 		if (newValue.getStartOfLink() != null) {
 
 			String objectId = newValue.getStartOfLink().getObjectId();
@@ -149,6 +160,21 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 			}
 		}
 		monitor.stop();
+	}
+	
+
+	/**
+	 * Test 2-ConnectionLink-1
+	 * @param validationReporter
+	 * @param context
+	 * @param oldCL
+	 * @param newCL
+	 */
+	private void twoConnectionLinkOneTest(ValidationReporter validationReporter, Context context, ConnectionLink oldCL, ConnectionLink newCL, ValidationData data) {
+		if(!NeptuneUtil.sameValue(oldCL.getStartOfLink(), newCL.getStartOfLink()) || !NeptuneUtil.sameValue(oldCL.getEndOfLink(), newCL.getEndOfLink()))
+			validationReporter.addCheckPointReportError(context, CONNECTION_LINK_1, data.getDataLocations().get(newCL.getObjectId()));
+		else
+			validationReporter.reportSuccess(context, CONNECTION_LINK_1);
 	}
 
 }

@@ -6,9 +6,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Color;
@@ -18,12 +15,19 @@ import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.dao.ConnectionLinkDAO;
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 
 @Stateless(name = StopAreaUpdater.BEAN_NAME)
 @Log4j
@@ -66,6 +70,12 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
 		Referential referential = (Referential) context.get(REFERENTIAL);
+		
+		// Database test init
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		validationReporter.addItemToValidationReport(context, "2-", "StopArea", 2, "W", "E");
+		validationReporter.addItemToValidationReport(context, "2-", "AccessPoint", 1, "E");
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		
 		if (newValue.getAreaType() == null) {
 			log.error("stoparea without mandatory areatype " + newValue.getObjectId());
@@ -219,6 +229,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		Collection<Pair<AccessPoint, AccessPoint>> modifiedAccessPoint = CollectionUtil.intersection(
 				oldValue.getAccessPoints(), newValue.getAccessPoints(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<AccessPoint, AccessPoint> pair : modifiedAccessPoint) {
+			twoAccessPointOneTest(validationReporter, context, pair.getLeft(), pair.getRight(), data);
 			accessPointUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
@@ -344,7 +355,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			if (!area.isDetached() || area.isFilled())
 				oldValue.getRoutingConstraintAreas().add(area);
 		}
-
+		twoStopAreaOneTest(validationReporter, context, oldValue, newValue, data);
+		twoStopAreaTwoTest(validationReporter, context, oldValue, newValue, data);
 		Collection<Pair<StopArea, StopArea>> modifiedStopArea = CollectionUtil.intersection(
 				oldValue.getRoutingConstraintAreas(), newValue.getRoutingConstraintAreas(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -353,5 +365,57 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		}
 		monitor.stop();
 
+	}
+	
+	
+	/**
+	 * Test 2-StopArea-1
+	 * @param validationReporter
+	 * @param context
+	 * @param oldParent
+	 * @param newParent
+	 */
+	private void twoStopAreaOneTest(ValidationReporter validationReporter, Context context, StopArea oldParent, StopArea newParent, ValidationData data) {
+		if(!NeptuneUtil.sameValue(oldParent, newParent))
+				validationReporter.addCheckPointReportError(context, STOP_AREA_1, data.getDataLocations().get(newParent.getObjectId()));
+			else
+				validationReporter.reportSuccess(context, STOP_AREA_1);
+	}
+
+	
+	
+	/**
+	 * Test 2-StopArea-2
+	 * @param validationReporter
+	 * @param context
+	 * @param oldSA
+	 * @param newSA
+	 */
+	private void twoStopAreaTwoTest(ValidationReporter validationReporter, Context context, StopArea oldSA, StopArea newSA, ValidationData data) {
+		
+		if(!(oldSA.equals(null) && newSA.equals(null))) {
+			if(!oldSA.getAreaType().equals(newSA.getAreaType()))
+				validationReporter.addCheckPointReportError(context, STOP_AREA_2, data.getDataLocations().get(newSA.getObjectId()));
+			else
+				validationReporter.reportSuccess(context, STOP_AREA_2);
+		}
+	}
+	
+	/**
+	 * Test 2-Access Point-1
+	 * @param validationReporter
+	 * @param context
+	 * @param oldAP
+	 * @param newAP
+	 * @param data
+	 */
+	private void twoAccessPointOneTest(ValidationReporter validationReporter, Context context, AccessPoint oldAP, AccessPoint newAP, ValidationData data) {
+		
+		if(!oldAP.equals(null) && !newAP.equals(null)) {
+			if(!NeptuneUtil.sameValue(oldAP, newAP))
+				validationReporter.addCheckPointReportError(context, ACCESS_POINT_1, data.getDataLocations().get(newAP.getObjectId()));
+			else
+				validationReporter.reportSuccess(context, ACCESS_POINT_1);
+		}
 	}
 }
