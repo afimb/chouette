@@ -5,8 +5,11 @@ import static mobi.chouette.common.Constant.PARSER;
 import static mobi.chouette.common.Constant.REFERENTIAL;
 
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -14,7 +17,9 @@ import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.Pair;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.RegtoppConstant;
@@ -42,9 +47,8 @@ import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
+@Log4j
 public class RegtoppLineParser extends LineSpecificParser {
-
-	
 
 	/*
 	 * Validation rules of type III are checked at this step.
@@ -80,9 +84,7 @@ public class RegtoppLineParser extends LineSpecificParser {
 				line.setPublishedName(regtoppLine.getName());
 			}
 		}
-		
-		
-		
+
 		List<Footnote> footnotes = line.getFootnotes();
 
 		VersionHandler versionHandler = (VersionHandler) context.get(RegtoppConstant.VERSION_HANDLER);
@@ -105,30 +107,351 @@ public class RegtoppLineParser extends LineSpecificParser {
 			f.setLine(line);
 		}
 
+		deduplicateIdenticalRoutes(referential, configuration);
+		// NOT WORKING: deduplicateSimilarRoutes(referential, configuration);
+		deduplicateIdenticalJourneyPatterns(referential, configuration);
 		// Update boarding/alighting at StopPoint
 		updateBoardingAlighting(referential, configuration);
-		updateLineName(referential,line, configuration);
-		updateNetworkDate(importer,referential,line,configuration);
+		updateLineName(referential, line, configuration);
+		updateNetworkDate(importer, referential, line, configuration);
 
 	}
 
-	private void updateNetworkDate(RegtoppImporter importer,Referential referential, Line line, RegtoppImportParameters configuration) throws Exception {
+	/**
+	 * Reduce number of duplicate routes
+	 * 
+	 * @param referential
+	 * @param configuration
+	 */
+	public void deduplicateSimilarRoutes(Referential referential, RegtoppImportParameters configuration) {
+		Pair<Route, Route> similarPair = null;
+
+		do {
+			similarPair = findSimilarRoutes(referential, configuration);
+			if (similarPair != null) {
+				mergeRoutes(referential, configuration, similarPair);
+			}
+		} while (similarPair != null);
+	}
+
+	/**
+	 * Reduce number of duplicate routes
+	 * 
+	 * @param referential
+	 * @param configuration
+	 */
+	public void deduplicateIdenticalRoutes(Referential referential, RegtoppImportParameters configuration) {
+		Pair<Route, Route> duplicatePair = null;
+
+		do {
+			duplicatePair = findDuplicateRoutes(referential, configuration);
+			if (duplicatePair != null) {
+				mergeRoutes(referential, configuration, duplicatePair);
+			}
+		} while (duplicatePair != null);
+	}
+
+	public void mergeRoutes(Referential referential, RegtoppImportParameters configuration, Pair<Route, Route> duplicatePair) {
+		// Merge routes, that means drop the "right" Route along with StopPoints and JourneyPattern
+
+		Route left = duplicatePair.getLeft();
+		Route right = duplicatePair.getRight();
+
+		log.info("Merging route " + left.getObjectId() + " and " + right.getObjectId());
+
+		// Build a map of corresponding StopPoints
+		Map<String, String> rightToLeftStopPointMap = buildStopPointConversionMap( left,  right);
+
+		// There is a 1-1 for Route -> JourneyPattern in Regtopp. Therefore routes that are equal also have equal journey patterns.
+		List<JourneyPattern> rightJourneyPatterns = right.getJourneyPatterns();
+		for (JourneyPattern jp : rightJourneyPatterns) {
+			List<VehicleJourney> rightVehicleJourneys = jp.getVehicleJourneys();
+
+			for (VehicleJourney vj : rightVehicleJourneys) {
+
+				// Update VehichleJourneyAtStopPoint
+				List<VehicleJourneyAtStop> vehicleJourneyAtStops = vj.getVehicleJourneyAtStops();
+				for (VehicleJourneyAtStop vjS : vehicleJourneyAtStops) {
+					String newStopPointId = rightToLeftStopPointMap.get(vjS.getStopPoint().getObjectId());
+					StopPoint newStopPoint = referential.getStopPoints().get(newStopPointId);
+
+					vjS.setStopPoint(newStopPoint);
+				}
+
+				// Update Route
+				vj.setRoute(left);
+			}
+
+			List<StopPoint> newStopPointsForJourneyPattern = new ArrayList<StopPoint>();
+			for (StopPoint sp : jp.getStopPoints()) {
+				String newStopPointId = rightToLeftStopPointMap.get(sp.getObjectId());
+				StopPoint newStopPoint = referential.getStopPoints().get(newStopPointId);
+				newStopPointsForJourneyPattern.add(newStopPoint);
+			}
+
+			jp.getStopPoints().clear();
+			jp.getStopPoints().addAll(newStopPointsForJourneyPattern);
+
+			if (jp.getDepartureStopPoint() != null) {
+				jp.setDepartureStopPoint(referential.getStopPoints().get(rightToLeftStopPointMap.get(jp.getDepartureStopPoint().getObjectId())));
+			}
+
+			if (jp.getArrivalStopPoint() != null) {
+				jp.setArrivalStopPoint(referential.getStopPoints().get(rightToLeftStopPointMap.get(jp.getArrivalStopPoint().getObjectId())));
+			}
+
+		}
+
+		for (int i = 0; i < rightJourneyPatterns.size(); i++) {
+			rightJourneyPatterns.get(i).setRoute(left);
+		}
+
+		// Keep opposite route if exists in any of the two
+		if (left.getOppositeRoute() == null) {
+			left.setOppositeRoute(right.getOppositeRoute());
+		}
+
+		// Clear Line reference
+		right.setLine(null);
+		right.getStopPoints().clear();
+		right.setOppositeRoute(null);
+
+		referential.getRoutes().remove(right.getObjectId());
+		// for(String obsoleteStopPointObjectId : rightToLeftStopPointMap.values()) {
+		// referential.getStopPoints().remove(obsoleteStopPointObjectId);
+		//
+		// }
+
+	}
+	
+	private Map<String,String> buildStopPointConversionMap(Route left, Route right) {
+		Map<String, String> rightToLeftStopPointMap = new HashMap<String, String>();
+
+		for(StopPoint lSp : left.getStopPoints()) {
+			for(StopPoint rSp : right.getStopPoints()) {
+				String lStopAreaId = lSp.getContainedInStopArea().getObjectId();
+				String rStopAreaId = rSp.getContainedInStopArea().getObjectId();
+				
+				if(lStopAreaId.equals(rStopAreaId)) {
+					rightToLeftStopPointMap.put(rSp.getObjectId(), lSp.getObjectId());
+				}
+			}
+		}
+		
+		return rightToLeftStopPointMap;
+		
+	}
+
+	
+
+	public void mergeJourneyPatterns(Referential referential, RegtoppImportParameters configuration, Pair<JourneyPattern, JourneyPattern> duplicatePair) {
+		// Merge routes, that means drop the "right" Route along with StopPoints and JourneyPattern
+
+		JourneyPattern left = duplicatePair.getLeft();
+		JourneyPattern right = duplicatePair.getRight();
+
+		log.info("Merging journey pattern " + left.getObjectId() + " and " + right.getObjectId());
+
+		List<VehicleJourney> vjCopy = new ArrayList<VehicleJourney>();
+		vjCopy.addAll(right.getVehicleJourneys());
+		for (int i = 0; i < vjCopy.size(); i++) {
+			vjCopy.get(i).setJourneyPattern(left);
+		}
+
+		left.getRouteSections().addAll(right.getRouteSections());
+
+		right.getVehicleJourneys().clear();
+		right.getRouteSections().clear();
+		right.setRoute(null);
+		right.getStopPoints().clear();
+		right.setDepartureStopPoint(null);
+		right.setArrivalStopPoint(null);
+
+	}
+
+	public Pair<Route, Route> findDuplicateRoutes(Referential referential, RegtoppImportParameters parameters) {
+		for (Route left : referential.getRoutes().values()) {
+			for (Route right : referential.getRoutes().values()) {
+				if (left != right) {
+					// log.info("Checking route " + left.getObjectId() + " vs " + right.getObjectId());
+					int numStopPointsLeft = left.getStopPoints().size();
+					int numStopPointsRight = right.getStopPoints().size();
+
+					if (numStopPointsLeft == numStopPointsRight) {
+						// Same number of stop points
+						boolean sameStopPointsInOrder = true;
+						for (int i = 0; i < numStopPointsLeft; i++) {
+							StopPoint l = left.getStopPoints().get(i);
+							StopPoint r = right.getStopPoints().get(i);
+
+							if (!isStopPointIdentical(l, r)) {
+								sameStopPointsInOrder = false;
+								break;
+
+							}
+						}
+
+						if (sameStopPointsInOrder) {
+							// log.info("Route " + left.getObjectId() + " and " + right.getObjectId() + " are identical");
+
+							return new Pair<Route, Route>(left, right);
+						}
+					}
+				}
+			}
+		}
+		// No more duplicates
+		return null;
+	}
+
+	public Pair<Route, Route> findSimilarRoutes(Referential referential, RegtoppImportParameters parameters) {
+		for (Route left : referential.getRoutes().values()) {
+			for (Route right : referential.getRoutes().values()) {
+				if (left != right) {
+
+					Set<String> departureStopAreas = new HashSet<String>();
+					Set<String> arrivalStopAreas = new HashSet<String>();
+					Set<String> leftStopAreas = new HashSet<String>();
+					Set<String> rightStopAreas = new HashSet<String>();
+
+					for (JourneyPattern jp : left.getJourneyPatterns()) {
+						departureStopAreas.add(jp.getDepartureStopPoint().getContainedInStopArea().getObjectId());
+						arrivalStopAreas.add(jp.getArrivalStopPoint().getContainedInStopArea().getObjectId());
+						for (StopPoint sp : jp.getStopPoints()) {
+							leftStopAreas.add(sp.getContainedInStopArea().getObjectId());
+						}
+					}
+					for (JourneyPattern jp : right.getJourneyPatterns()) {
+						departureStopAreas.add(jp.getDepartureStopPoint().getContainedInStopArea().getObjectId());
+						arrivalStopAreas.add(jp.getArrivalStopPoint().getContainedInStopArea().getObjectId());
+						for (StopPoint sp : jp.getStopPoints()) {
+							rightStopAreas.add(sp.getContainedInStopArea().getObjectId());
+						}
+					}
+
+					if (departureStopAreas.size() == 1 && arrivalStopAreas.size() == 1) {
+
+						if (leftStopAreas.containsAll(rightStopAreas) || rightStopAreas.containsAll(leftStopAreas)) {
+
+							if (rightStopAreas.size() > leftStopAreas.size()) {
+								// Merge opposite way, swap left and right
+								Route tmp = left;
+								left = right;
+								right = tmp;
+							}
+
+							log.info("Route " + left.getObjectId() + " and " + right.getObjectId() + " are similar");
+							return new Pair<Route, Route>(left, right);
+						}
+					}
+				}
+			}
+		}
+		// No more similarieties
+		return null;
+	}
+
+	/**
+	 * Reduce number of duplicate journeypatterns
+	 * 
+	 * @param referential
+	 * @param configuration
+	 */
+	public void deduplicateIdenticalJourneyPatterns(Referential referential, RegtoppImportParameters configuration) {
+
+		for (Route route : referential.getRoutes().values()) {
+			Pair<JourneyPattern, JourneyPattern> duplicatePair = null;
+
+			do {
+				duplicatePair = findDuplicateJourneyPatterns(referential, configuration, route);
+				if (duplicatePair != null) {
+					mergeJourneyPatterns(referential, configuration, duplicatePair);
+				}
+			} while (duplicatePair != null);
+
+		}
+
+	}
+
+	public Pair<JourneyPattern, JourneyPattern> findDuplicateJourneyPatterns(Referential referential, RegtoppImportParameters parameters, Route route) {
+
+		for (JourneyPattern left : route.getJourneyPatterns()) {
+			for (JourneyPattern right : route.getJourneyPatterns()) {
+				if (left != right) {
+					int numStopPointsLeft = left.getStopPoints().size();
+					int numStopPointsRight = right.getStopPoints().size();
+
+					if (numStopPointsLeft == numStopPointsRight) {
+						// Same number of stop points
+						boolean sameStopPointsInOrder = true;
+						for (int i = 0; i < numStopPointsLeft; i++) {
+							StopPoint l = left.getStopPoints().get(i);
+							StopPoint r = right.getStopPoints().get(i);
+
+							if (!isStopPointIdentical(l, r)) {
+								sameStopPointsInOrder = false;
+								break;
+
+							}
+						}
+
+						if (sameStopPointsInOrder) {
+							return new Pair<JourneyPattern, JourneyPattern>(left, right);
+						}
+					}
+
+				}
+			}
+
+		}
+
+		// No more duplicates
+		return null;
+	}
+
+	private boolean isStopPointIdentical(StopPoint left, StopPoint right) {
+		boolean identical = false;
+
+		if (left.getContainedInStopArea().getObjectId().equals(right.getContainedInStopArea().getObjectId())
+				&& left.getForAlighting() == right.getForAlighting() && left.getForBoarding() == right.getForBoarding()
+				&& left.getPosition() == right.getPosition()) {
+			identical = true;
+		}
+
+		return identical;
+
+	}
+
+	private boolean isJourneyPatternIdentical(JourneyPattern left, JourneyPattern right) {
+		if (left.getStopPoints().size() != right.getStopPoints().size()) {
+			return false;
+		} else {
+			for (int i = 0; i < left.getStopPoints().size(); i++) {
+				if (!isStopPointIdentical(left.getStopPoints().get(i), right.getStopPoints().get(i))) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	private void updateNetworkDate(RegtoppImporter importer, Referential referential, Line line, RegtoppImportParameters configuration) throws Exception {
 		DaycodeById dayCodeIndex = (DaycodeById) importer.getDayCodeById();
 
 		RegtoppDayCodeHeaderDKO header = dayCodeIndex.getHeader();
 		LocalDate calStartDate = header.getDate();
-		for(Network network : referential.getPtNetworks().values()) {
+		for (Network network : referential.getPtNetworks().values()) {
 			network.setVersionDate(calStartDate.toDateMidnight().toDate());
 		}
 	}
 
 	private void updateLineName(Referential referential, Line line, RegtoppImportParameters configuration) {
-		if(line.getName() == null) {
+		if (line.getName() == null) {
 			Set<String> routeNames = new HashSet<String>();
-			for(Route r : line.getRoutes()) {
+			for (Route r : line.getRoutes()) {
 				routeNames.add(r.getName());
 			}
-			
+
 			String lineName = StringUtils.join(routeNames, " - ");
 			line.setName(lineName);
 		}
