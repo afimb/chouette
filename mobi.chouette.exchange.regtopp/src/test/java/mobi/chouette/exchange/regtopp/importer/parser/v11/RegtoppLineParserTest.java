@@ -57,8 +57,8 @@ public class RegtoppLineParserTest {
 		ObjectFactory.getLine(referential, AbstractConverter.composeObjectId("XYZ", ObjectIdTypes.LINE_KEY, "1"));
 		
 		
-		createRouteType1(referential,"1",3,0);
-		createRouteType1(referential,"3",3,3);
+		createRoute(referential,"1",3,0);
+		createRoute(referential,"3",3,3);
 		
 		
 		
@@ -83,8 +83,8 @@ public class RegtoppLineParserTest {
 		ObjectFactory.getLine(referential, AbstractConverter.composeObjectId("XYZ", ObjectIdTypes.LINE_KEY, "1"));
 		
 		
-		createRouteType1(referential,"1",3,0);
-		createRouteType1(referential,"3",4,0);
+		createRoute(referential,"1",3,0);
+		createRoute(referential,"3",4,0);
 		
 		
 		
@@ -95,8 +95,34 @@ public class RegtoppLineParserTest {
 		Assert.assertEquals(referential.getLines().values().iterator().next().getRoutes().size(), 2);
 	}
 	
+	@Test public void testMergeSimilarRoutes() {
+
+		RegtoppImportParameters configuration = new RegtoppImportParameters();
+		Referential referential = new Referential();
+
+		RegtoppLineParser parser = new RegtoppLineParser();
+		
+		// Populate referential
+		// Add line
+		ObjectFactory.getLine(referential, AbstractConverter.composeObjectId("XYZ", ObjectIdTypes.LINE_KEY, "1"));
+		
+		
+		createRoute(referential,"1",5,0);
+		createRoute(referential,"3",5,0,2);
+		
+		
+		
+		parser.deduplicateSimilarRoutes(referential, configuration);
 	
-	private void createRouteType1(Referential referential,String id, int numStopPoints, int stopPointOffset) {
+		Assert.assertEquals(referential.getRoutes().size(), 1);
+		Assert.assertEquals(referential.getLines().values().iterator().next().getRoutes().size(), 1);
+		Assert.assertEquals(referential.getRoutes().values().iterator().next().getJourneyPatterns().size(), 2);
+	}
+	
+	
+
+	
+	private void createRoute(Referential referential,String id, int numStopPoints, int stopPointOffset, int... skipStops) {
 		
 		Route route = ObjectFactory.getRoute(referential, AbstractConverter.composeObjectId("XYZ", ObjectIdTypes.ROUTE_KEY, id));
 		route.setLine(referential.getLines().values().iterator().next());
@@ -111,6 +137,10 @@ public class RegtoppLineParserTest {
 		for(StopPoint sp : route.getStopPoints()) {
 			jp.addStopPoint(sp);
 		}
+		
+		jp.setDepartureStopPoint(jp.getStopPoints().get(0));
+		jp.setArrivalStopPoint(jp.getStopPoints().get(jp.getStopPoints().size()-1));
+		
 		
 		VehicleJourney vj = ObjectFactory.getVehicleJourney(referential, AbstractConverter.composeObjectId("XYZ", ObjectIdTypes.VEHICLEJOURNEY_KEY, id));
 	

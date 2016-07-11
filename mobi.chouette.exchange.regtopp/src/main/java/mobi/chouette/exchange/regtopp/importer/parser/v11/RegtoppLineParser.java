@@ -108,13 +108,30 @@ public class RegtoppLineParser extends LineSpecificParser {
 		}
 
 		deduplicateIdenticalRoutes(referential, configuration);
+		// NOT WORKING: deduplicateSimilarRoutes(referential, configuration);
 		deduplicateIdenticalJourneyPatterns(referential, configuration);
-
 		// Update boarding/alighting at StopPoint
 		updateBoardingAlighting(referential, configuration);
 		updateLineName(referential, line, configuration);
 		updateNetworkDate(importer, referential, line, configuration);
 
+	}
+
+	/**
+	 * Reduce number of duplicate routes
+	 * 
+	 * @param referential
+	 * @param configuration
+	 */
+	public void deduplicateSimilarRoutes(Referential referential, RegtoppImportParameters configuration) {
+		Pair<Route, Route> similarPair = null;
+
+		do {
+			similarPair = findSimilarRoutes(referential, configuration);
+			if (similarPair != null) {
+				mergeRoutes(referential, configuration, similarPair);
+			}
+		} while (similarPair != null);
 	}
 
 	/**
@@ -143,32 +160,14 @@ public class RegtoppLineParser extends LineSpecificParser {
 		log.info("Merging route " + left.getObjectId() + " and " + right.getObjectId());
 
 		// Build a map of corresponding StopPoints
-		Map<String, String> rightToLeftStopPointMap = new HashMap<String, String>();
-		for (int i = 0; i < left.getStopPoints().size(); i++) {
-			rightToLeftStopPointMap.put(right.getStopPoints().get(i).getObjectId(), left.getStopPoints().get(i).getObjectId());
-		}
+		Map<String, String> rightToLeftStopPointMap = buildStopPointConversionMap( left,  right);
 
-		for (int i = 0; i < left.getStopPoints().size(); i++) {
-			rightToLeftStopPointMap.put(right.getStopPoints().get(i).getObjectId(), left.getStopPoints().get(i).getObjectId());
-		}
-
-		Map<String, String> rightToLeftJourneyPatternMap = new HashMap<String, String>();
-		List<JourneyPattern> rightJps = right.getJourneyPatterns();
-		List<JourneyPattern> leftJps = right.getJourneyPatterns();
-		for(JourneyPattern leftJp : leftJps) {
-			for(JourneyPattern rightJp : rightJps) {
-				if(isJourneyPatternIdentical(leftJp, rightJp)) {
-					rightToLeftJourneyPatternMap.put(rightJp.getObjectId(), leftJp.getObjectId());
-				}
-			}
-		}
-		
 		// There is a 1-1 for Route -> JourneyPattern in Regtopp. Therefore routes that are equal also have equal journey patterns.
-		List<JourneyPattern> journeyPatterns = right.getJourneyPatterns();
-		for (JourneyPattern jp : journeyPatterns) {
-			List<VehicleJourney> vehicleJourneys = jp.getVehicleJourneys();
+		List<JourneyPattern> rightJourneyPatterns = right.getJourneyPatterns();
+		for (JourneyPattern jp : rightJourneyPatterns) {
+			List<VehicleJourney> rightVehicleJourneys = jp.getVehicleJourneys();
 
-			for (VehicleJourney vj : vehicleJourneys) {
+			for (VehicleJourney vj : rightVehicleJourneys) {
 
 				// Update VehichleJourneyAtStopPoint
 				List<VehicleJourneyAtStop> vehicleJourneyAtStops = vj.getVehicleJourneyAtStops();
@@ -203,8 +202,8 @@ public class RegtoppLineParser extends LineSpecificParser {
 
 		}
 
-		for (int i = 0; i < journeyPatterns.size(); i++) {
-			journeyPatterns.get(i).setRoute(left);
+		for (int i = 0; i < rightJourneyPatterns.size(); i++) {
+			rightJourneyPatterns.get(i).setRoute(left);
 		}
 
 		// Keep opposite route if exists in any of the two
@@ -224,6 +223,26 @@ public class RegtoppLineParser extends LineSpecificParser {
 		// }
 
 	}
+	
+	private Map<String,String> buildStopPointConversionMap(Route left, Route right) {
+		Map<String, String> rightToLeftStopPointMap = new HashMap<String, String>();
+
+		for(StopPoint lSp : left.getStopPoints()) {
+			for(StopPoint rSp : right.getStopPoints()) {
+				String lStopAreaId = lSp.getContainedInStopArea().getObjectId();
+				String rStopAreaId = rSp.getContainedInStopArea().getObjectId();
+				
+				if(lStopAreaId.equals(rStopAreaId)) {
+					rightToLeftStopPointMap.put(rSp.getObjectId(), lSp.getObjectId());
+				}
+			}
+		}
+		
+		return rightToLeftStopPointMap;
+		
+	}
+
+	
 
 	public void mergeJourneyPatterns(Referential referential, RegtoppImportParameters configuration, Pair<JourneyPattern, JourneyPattern> duplicatePair) {
 		// Merge routes, that means drop the "right" Route along with StopPoints and JourneyPattern
@@ -235,12 +254,12 @@ public class RegtoppLineParser extends LineSpecificParser {
 
 		List<VehicleJourney> vjCopy = new ArrayList<VehicleJourney>();
 		vjCopy.addAll(right.getVehicleJourneys());
-		for(int i=0;i<vjCopy.size();i++) {
+		for (int i = 0; i < vjCopy.size(); i++) {
 			vjCopy.get(i).setJourneyPattern(left);
 		}
-		
+
 		left.getRouteSections().addAll(right.getRouteSections());
-		
+
 		right.getVehicleJourneys().clear();
 		right.getRouteSections().clear();
 		right.setRoute(null);
@@ -284,8 +303,54 @@ public class RegtoppLineParser extends LineSpecificParser {
 		// No more duplicates
 		return null;
 	}
-	
-	
+
+	public Pair<Route, Route> findSimilarRoutes(Referential referential, RegtoppImportParameters parameters) {
+		for (Route left : referential.getRoutes().values()) {
+			for (Route right : referential.getRoutes().values()) {
+				if (left != right) {
+
+					Set<String> departureStopAreas = new HashSet<String>();
+					Set<String> arrivalStopAreas = new HashSet<String>();
+					Set<String> leftStopAreas = new HashSet<String>();
+					Set<String> rightStopAreas = new HashSet<String>();
+
+					for (JourneyPattern jp : left.getJourneyPatterns()) {
+						departureStopAreas.add(jp.getDepartureStopPoint().getContainedInStopArea().getObjectId());
+						arrivalStopAreas.add(jp.getArrivalStopPoint().getContainedInStopArea().getObjectId());
+						for (StopPoint sp : jp.getStopPoints()) {
+							leftStopAreas.add(sp.getContainedInStopArea().getObjectId());
+						}
+					}
+					for (JourneyPattern jp : right.getJourneyPatterns()) {
+						departureStopAreas.add(jp.getDepartureStopPoint().getContainedInStopArea().getObjectId());
+						arrivalStopAreas.add(jp.getArrivalStopPoint().getContainedInStopArea().getObjectId());
+						for (StopPoint sp : jp.getStopPoints()) {
+							rightStopAreas.add(sp.getContainedInStopArea().getObjectId());
+						}
+					}
+
+					if (departureStopAreas.size() == 1 && arrivalStopAreas.size() == 1) {
+
+						if (leftStopAreas.containsAll(rightStopAreas) || rightStopAreas.containsAll(leftStopAreas)) {
+
+							if (rightStopAreas.size() > leftStopAreas.size()) {
+								// Merge opposite way, swap left and right
+								Route tmp = left;
+								left = right;
+								right = tmp;
+							}
+
+							log.info("Route " + left.getObjectId() + " and " + right.getObjectId() + " are similar");
+							return new Pair<Route, Route>(left, right);
+						}
+					}
+				}
+			}
+		}
+		// No more similarieties
+		return null;
+	}
+
 	/**
 	 * Reduce number of duplicate journeypatterns
 	 * 
@@ -293,27 +358,26 @@ public class RegtoppLineParser extends LineSpecificParser {
 	 * @param configuration
 	 */
 	public void deduplicateIdenticalJourneyPatterns(Referential referential, RegtoppImportParameters configuration) {
-		
+
 		for (Route route : referential.getRoutes().values()) {
 			Pair<JourneyPattern, JourneyPattern> duplicatePair = null;
 
 			do {
-				duplicatePair = findDuplicateJourneyPatterns(referential, configuration,route);
+				duplicatePair = findDuplicateJourneyPatterns(referential, configuration, route);
 				if (duplicatePair != null) {
 					mergeJourneyPatterns(referential, configuration, duplicatePair);
 				}
 			} while (duplicatePair != null);
-			
+
 		}
-		
-		
+
 	}
-	
+
 	public Pair<JourneyPattern, JourneyPattern> findDuplicateJourneyPatterns(Referential referential, RegtoppImportParameters parameters, Route route) {
-		
-		for(JourneyPattern left : route.getJourneyPatterns()) {
-			for(JourneyPattern right : route.getJourneyPatterns()) {
-				if(left != right) {
+
+		for (JourneyPattern left : route.getJourneyPatterns()) {
+			for (JourneyPattern right : route.getJourneyPatterns()) {
+				if (left != right) {
 					int numStopPointsLeft = left.getStopPoints().size();
 					int numStopPointsRight = right.getStopPoints().size();
 
@@ -335,12 +399,12 @@ public class RegtoppLineParser extends LineSpecificParser {
 							return new Pair<JourneyPattern, JourneyPattern>(left, right);
 						}
 					}
-					
+
 				}
 			}
-			
+
 		}
-		
+
 		// No more duplicates
 		return null;
 	}
@@ -363,7 +427,7 @@ public class RegtoppLineParser extends LineSpecificParser {
 			return false;
 		} else {
 			for (int i = 0; i < left.getStopPoints().size(); i++) {
-				if(!isStopPointIdentical(left.getStopPoints().get(i), right.getStopPoints().get(i))) {
+				if (!isStopPointIdentical(left.getStopPoints().get(i), right.getStopPoints().get(i))) {
 					return false;
 				}
 			}
