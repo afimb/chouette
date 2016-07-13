@@ -16,6 +16,7 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 
@@ -135,6 +136,12 @@ public class ObjectReference extends AbstractReport {
 		this.id = object.getId();
 		if (id == null)
 			this.objectId = object.getObjectId();
+	}
+	
+	public ObjectReference(StopPoint object)
+	{
+		this.type = TYPE.stop_point;
+		this.id = object.getId();
 	}
 
 	public ObjectReference(String className, String id) {

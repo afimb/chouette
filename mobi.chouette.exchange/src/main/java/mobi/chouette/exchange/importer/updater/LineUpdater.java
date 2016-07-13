@@ -74,7 +74,7 @@ public class LineUpdater implements Updater<Line> {
 		// Database test init
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		validationReporter.addItemToValidationReport(context, "2-", "Line", 2, "W", "W");
-		validationReporter.addItemToValidationReport(context, "2-", "Route", 1, "E");
+		validationReporter.addItemToValidationReport(context, "2-Route-1", "E");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		
 		if (oldValue.isDetached()) {

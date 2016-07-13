@@ -39,7 +39,7 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 		
 		// Database test init
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-		validationReporter.addItemToValidationReport(context, "2-", "ConnectionLink", 1, "E");
+		validationReporter.addItemToValidationReport(context, "2-ConnectionLink-1", "E");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 				
 				

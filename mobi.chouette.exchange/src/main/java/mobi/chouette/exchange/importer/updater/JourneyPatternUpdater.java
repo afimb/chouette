@@ -55,8 +55,8 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		
 		// Database test init
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-		validationReporter.addItemToValidationReport(context, "2-", "JourneyPattern", 1, "E");
-		validationReporter.addItemToValidationReport(context, "2-", "VehicleJourney", 1, "E");
+		validationReporter.addItemToValidationReport(context, "2-JourneyPattern-1", "E");
+		validationReporter.addItemToValidationReport(context, "2-VehicleJourney-1", "E");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		
 		if (oldValue.isDetached()) {
