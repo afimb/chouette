@@ -88,46 +88,48 @@ public class DataLocation {
 		this.objectId = chouetteObject.getObjectId();
 		this.object = chouetteObject;
 		this.name = buildName(chouetteObject);
-		path.add(new Path(object));
-		if (chouetteObject instanceof VehicleJourney) {
-			VehicleJourney object = (VehicleJourney) chouetteObject;
-			if (object.getJourneyPattern() != null) {
-				path.add(new Path(object.getJourneyPattern()));
-				if (object.getJourneyPattern().getRoute() != null) {
-					path.add(new Path(object.getJourneyPattern().getRoute()));
-					if (object.getJourneyPattern().getRoute().getLine() != null) {
-						path.add(new Path(object.getJourneyPattern().getRoute().getLine()));
+		if (chouetteObject.getObjectId() != null) {
+			path.add(new Path(object));
+			if (chouetteObject instanceof VehicleJourney) {
+				VehicleJourney object = (VehicleJourney) chouetteObject;
+				if (object.getJourneyPattern() != null) {
+					path.add(new Path(object.getJourneyPattern()));
+					if (object.getJourneyPattern().getRoute() != null) {
+						path.add(new Path(object.getJourneyPattern().getRoute()));
+						if (object.getJourneyPattern().getRoute().getLine() != null) {
+							path.add(new Path(object.getJourneyPattern().getRoute().getLine()));
+						}
 					}
 				}
-			}
-		} else if (chouetteObject instanceof JourneyPattern) {
-			JourneyPattern object = (JourneyPattern) chouetteObject;
-			if (object.getRoute() != null) {
-				path.add(new Path(object.getRoute()));
-				if (object.getRoute().getLine() != null) {
-					path.add(new Path(object.getRoute().getLine()));
+			} else if (chouetteObject instanceof JourneyPattern) {
+				JourneyPattern object = (JourneyPattern) chouetteObject;
+				if (object.getRoute() != null) {
+					path.add(new Path(object.getRoute()));
+					if (object.getRoute().getLine() != null) {
+						path.add(new Path(object.getRoute().getLine()));
+					}
 				}
-			}
-		} else if (chouetteObject instanceof Route) {
-			Route object = (Route) chouetteObject;
-			if (object.getLine() != null) {
-				path.add(new Path(object.getLine()));
-			}
-		} else if (chouetteObject instanceof AccessLink) {
-			AccessLink object = (AccessLink) chouetteObject;
-			if (object.getAccessPoint() != null) {
-				path.add(new Path(object.getAccessPoint()));
-				if (object.getAccessPoint().getContainedIn() != null) {
-					path.add(new Path(object.getAccessPoint().getContainedIn()));
+			} else if (chouetteObject instanceof Route) {
+				Route object = (Route) chouetteObject;
+				if (object.getLine() != null) {
+					path.add(new Path(object.getLine()));
 				}
-			}
-		} else if (chouetteObject instanceof AccessPoint) {
-			AccessPoint object = (AccessPoint) chouetteObject;
-			if (object.getContainedIn() != null) {
-			path.add(new Path(object.getContainedIn()));
+			} else if (chouetteObject instanceof AccessLink) {
+				AccessLink object = (AccessLink) chouetteObject;
+				if (object.getAccessPoint() != null) {
+					path.add(new Path(object.getAccessPoint()));
+					if (object.getAccessPoint().getContainedIn() != null) {
+						path.add(new Path(object.getAccessPoint().getContainedIn()));
+					}
+				}
+			} else if (chouetteObject instanceof AccessPoint) {
+				AccessPoint object = (AccessPoint) chouetteObject;
+				if (object.getContainedIn() != null) {
+					path.add(new Path(object.getContainedIn()));
+				}
 			}
 		}
-//		addLineLocation(this, chouetteObject);
+		// addLineLocation(this, chouetteObject);
 
 	}
 
@@ -172,58 +174,55 @@ public class DataLocation {
 		return "unnammed";
 	}
 
-//	public static void addLineLocation(DataLocation loc, NeptuneIdentifiedObject chouetteObject) {
-//		if (loc.getLine() != null)
-//			return;
-//		Line line = null;
-//		try {
-//			if (chouetteObject instanceof VehicleJourney) {
-//				VehicleJourney object = (VehicleJourney) chouetteObject;
-//				line = object.getRoute().getLine();
-//			} else if (chouetteObject instanceof JourneyPattern) {
-//				JourneyPattern object = (JourneyPattern) chouetteObject;
-//				line = object.getRoute().getLine();
-//			} else if (chouetteObject instanceof StopPoint) {
-//				StopPoint object = (StopPoint) chouetteObject;
-//				line = object.getRoute().getLine();
-//			} else if (chouetteObject instanceof Route) {
-//				Route object = (Route) chouetteObject;
-//				line = object.getLine();
-//			} else if (chouetteObject instanceof Line) {
-//				line = (Line) chouetteObject;
-//			}
-//		} catch (NullPointerException ex) {
-//			// ignore line path
-//		}
-//		if (line != null)
-//			loc.setLine(line);
-//
-//	}
+	// public static void addLineLocation(DataLocation loc,
+	// NeptuneIdentifiedObject chouetteObject) {
+	// if (loc.getLine() != null)
+	// return;
+	// Line line = null;
+	// try {
+	// if (chouetteObject instanceof VehicleJourney) {
+	// VehicleJourney object = (VehicleJourney) chouetteObject;
+	// line = object.getRoute().getLine();
+	// } else if (chouetteObject instanceof JourneyPattern) {
+	// JourneyPattern object = (JourneyPattern) chouetteObject;
+	// line = object.getRoute().getLine();
+	// } else if (chouetteObject instanceof StopPoint) {
+	// StopPoint object = (StopPoint) chouetteObject;
+	// line = object.getRoute().getLine();
+	// } else if (chouetteObject instanceof Route) {
+	// Route object = (Route) chouetteObject;
+	// line = object.getLine();
+	// } else if (chouetteObject instanceof Line) {
+	// line = (Line) chouetteObject;
+	// }
+	// } catch (NullPointerException ex) {
+	// // ignore line path
+	// }
+	// if (line != null)
+	// loc.setLine(line);
+	//
+	// }
 
-	public class Path
-	{
+	public class Path {
 		@Getter
 		String objectClass;
 		@Getter
 		String objectId;
-		
-		public Path(String className,String objectId)
-		{
+
+		public Path(String className, String objectId) {
 			this.objectClass = className;
 			this.objectId = objectId;
 		}
-		
-		public Path(NeptuneIdentifiedObject object)
-		{
+
+		public Path(NeptuneIdentifiedObject object) {
 			// protection from proxy class names
-			this(object.getClass().getSimpleName().split("_")[0],object.getObjectId());
+			this(object.getClass().getSimpleName().split("_")[0], object.getObjectId());
 		}
-		
-		public String toString()
-		{
-			return "class = "+objectClass+", id = "+objectId;
+
+		public String toString() {
+			return "class = " + objectClass + ", id = " + objectId;
 		}
 
 	}
-	
+
 }

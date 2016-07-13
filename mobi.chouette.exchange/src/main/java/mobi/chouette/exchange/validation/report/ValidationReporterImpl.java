@@ -78,8 +78,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		Location detailLocation = null;
 		if (location != null)
-			detailLocation = new Location(location.getFilename(), location.getName(), location.getLineNumber(),
-					location.getColumnNumber(), location.getObjectId());
+			detailLocation = new Location(location);
 
 		CheckPointReport checkPoint = validationReport.findCheckPointReportByName(checkPointName);
 
@@ -115,8 +114,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		Location detailLocation = null;
 		if (location != null)
-			detailLocation = new Location(location.getFilename(), location.getName(), location.getLineNumber(),
-					location.getColumnNumber(), location.getObjectId());
+			detailLocation = new Location(location);
 
 		CheckPointReport checkPoint = validationReport.findCheckPointReportByName(checkPointName);
 
@@ -133,8 +131,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 
 		if (targetLocations.length > 0) {
 			for (DataLocation dataLocation : targetLocations) {
-				Location targetLocation = new Location(dataLocation.getFilename(), dataLocation.getName(),
-						dataLocation.getLineNumber(), dataLocation.getColumnNumber(), dataLocation.getObjectId());
+				Location targetLocation = new Location(dataLocation);
 				newCheckPointError.getTargets().add(targetLocation);
 			}
 		}
@@ -199,8 +196,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 
 		for (DataLocation location : locations) {
-			Location detailLocation = new Location(location.getFilename(), location.getName(),
-					location.getLineNumber(), location.getColumnNumber(), location.getObjectId());
+			Location detailLocation = new Location(location);
 			CheckPointReport checkPoint = validationReport.findCheckPointReportByName(checkPointName);
 
 			if (checkPoint == null)
@@ -299,8 +295,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		CheckPointErrorReport checkPointError = validationReport.findCheckPointReportErrorByKey(errorKey);
 		if (checkPointError != null) {
-			Location location = new Location(targetLocation.getFilename(), targetLocation.getLineNumber(),
-					targetLocation.getColumnNumber());
+			Location location = new Location(targetLocation);
 			checkPointError.getTargets().add(location);
 		}
 	}

@@ -253,12 +253,16 @@ public class GtfsValidationReporter implements Constant {
 		case MISSING_OPTIONAL_FILE:
 			// 1-GTFS-Common-1-2
 			checkPointName = checkPointName(name, GtfsException.ERROR.MISSING_OPTIONAL_FILE);
+			reporter.addFileReport(context, filenameInfo, IO_TYPE.INPUT);
+			reporter.setFileState(context, filenameInfo, IO_TYPE.INPUT, FILE_STATE.IGNORED);
 			validationReporter.addCheckPointReportError(context,checkPointName, new DataLocation(filenameInfo), filenameInfo);
 			break;
 
 		case UNUSED_FILE:
 			// 1-GTFS-Common-1-3
 			checkPointName = checkPointName(name, GtfsException.ERROR.UNUSED_FILE);
+			reporter.addFileReport(context, filenameInfo, IO_TYPE.INPUT);
+			reporter.setFileState(context, filenameInfo, IO_TYPE.INPUT, FILE_STATE.IGNORED);
 			validationReporter.addCheckPointReportError(context,checkPointName, new DataLocation(filenameInfo), filenameInfo);
 			break;
 
