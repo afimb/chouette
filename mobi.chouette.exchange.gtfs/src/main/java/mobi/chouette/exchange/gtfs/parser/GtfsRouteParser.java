@@ -31,9 +31,6 @@ import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 @Log4j
 public class GtfsRouteParser implements Parser, Validator, Constant {
 
@@ -51,7 +48,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 	// TODO. Rename this function "parse(Context context)".
 	@Override
 	public void validate(Context context) throws Exception {
-		Monitor monitor = MonitorFactory.start("ValidateRoutes");
+//		Monitor monitor = MonitorFactory.start("ValidateRoutes");
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 		Set<String> agencyIds = new HashSet<String>();
@@ -170,7 +167,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 			gtfsValidationReporter.reportError(context, new GtfsException(GTFS_ROUTES_FILE, 1, null,
 					GtfsException.ERROR.MISSING_FILE, null, null), GTFS_ROUTES_FILE);
 		}
-		log.info(mobi.chouette.common.Color.CYAN + monitor.stop() + mobi.chouette.common.Color.NORMAL);
+//		log.info(mobi.chouette.common.Color.CYAN + monitor.stop() + mobi.chouette.common.Color.NORMAL);
 	}
 
 	/**
