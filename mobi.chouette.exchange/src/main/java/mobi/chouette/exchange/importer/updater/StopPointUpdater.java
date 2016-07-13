@@ -38,7 +38,8 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		
 		// Database test init
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-		validationReporter.addItemToValidationReport(context, "2-", "StopPoint", 2, "E", "E");
+		validationReporter.addItemToValidationReport(context, "2-StopPoint-2", "E");
+		validationReporter.addItemToValidationReport(context, "2-StopPoint-3", "E");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		
 		twoStopPointTwoTest(validationReporter, context, oldValue, newValue, data);
@@ -110,11 +111,13 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	 * @param newSp
 	 */
 	private void twoStopPointTwoTest(ValidationReporter validationReporter, Context context, StopPoint oldSp, StopPoint newSp, ValidationData data) {
-		if(!oldSp.equals(null) && !newSp.equals(null)) {
-			if(!oldSp.getPosition().equals(newSp.getPosition()))
-				validationReporter.addCheckPointReportError(context, STOP_POINT_2, data.getDataLocations().get(newSp.getObjectId()));
-			else
-				validationReporter.reportSuccess(context, STOP_POINT_2);
+		if(oldSp !=null && newSp != null) {
+			if(oldSp.getPosition() != null && newSp.getPosition() != null) {
+				if(!oldSp.getPosition().equals(newSp.getPosition()))
+					validationReporter.addCheckPointReportError(context, STOP_POINT_2, data.getDataLocations().get(newSp.getObjectId()));
+				else
+					validationReporter.reportSuccess(context, STOP_POINT_2);
+			}
 		}
 	}
 	

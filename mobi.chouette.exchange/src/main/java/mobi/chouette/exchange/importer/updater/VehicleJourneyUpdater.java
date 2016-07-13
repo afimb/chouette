@@ -114,7 +114,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		
 		// Database test init
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-		validationReporter.addItemToValidationReport(context, "2-", "VehicleJourney", 1, "W");
+		validationReporter.addItemToValidationReport(context, "2-VehicleJourney-2", "W");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 				
 				

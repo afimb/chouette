@@ -73,7 +73,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		// Database test init
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		validationReporter.addItemToValidationReport(context, "2-", "StopArea", 2, "W", "E");
-		validationReporter.addItemToValidationReport(context, "2-", "AccessPoint", 1, "E");
+		validationReporter.addItemToValidationReport(context, "2-AccessPoint-1", "E");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		
 		if (newValue.getAreaType() == null) {
@@ -384,8 +384,6 @@ public class StopAreaUpdater implements Updater<StopArea> {
 				validationReporter.reportSuccess(context, STOP_AREA_1);
 	}
 
-	
-	
 	/**
 	 * Test 2-StopArea-2
 	 * @param validationReporter
@@ -394,9 +392,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	 * @param newSA
 	 */
 	private void twoStopAreaTwoTest(ValidationReporter validationReporter, Context context, StopArea oldSA, StopArea newSA, ValidationData data) {
-		
-		if(!(oldSA.equals(null) && newSA.equals(null))) {
-			if(!oldSA.getAreaType().equals(newSA.getAreaType()))
+		if(oldSA !=null && newSA != null) {
+			if(!NeptuneUtil.sameValue(oldSA.getAreaType(),newSA.getAreaType()))
 				validationReporter.addCheckPointReportError(context, STOP_AREA_2, data.getDataLocations().get(newSA.getObjectId()));
 			else
 				validationReporter.reportSuccess(context, STOP_AREA_2);
@@ -412,12 +409,9 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	 * @param data
 	 */
 	private void twoAccessPointOneTest(ValidationReporter validationReporter, Context context, AccessPoint oldAP, AccessPoint newAP, ValidationData data) {
-		
-		if(!oldAP.equals(null) && !newAP.equals(null)) {
-			if(!NeptuneUtil.sameValue(oldAP, newAP))
-				validationReporter.addCheckPointReportError(context, ACCESS_POINT_1, data.getDataLocations().get(newAP.getObjectId()));
-			else
-				validationReporter.reportSuccess(context, ACCESS_POINT_1);
-		}
+		if(!NeptuneUtil.sameValue(oldAP, newAP))
+			validationReporter.addCheckPointReportError(context, ACCESS_POINT_1, data.getDataLocations().get(newAP.getObjectId()));
+		else
+			validationReporter.reportSuccess(context, ACCESS_POINT_1);
 	}
 }

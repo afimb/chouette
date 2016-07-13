@@ -54,7 +54,7 @@ public class RouteUpdater implements Updater<Route> {
 		
 		// Database test init
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-		validationReporter.addItemToValidationReport(context, "2-", "StopPoint", 1, "E");
+		validationReporter.addItemToValidationReport(context, "2-StopPoint-1", "E");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 				
 		if (oldValue.isDetached()) {

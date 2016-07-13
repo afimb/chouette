@@ -22,6 +22,7 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 
@@ -49,7 +50,8 @@ public class ObjectReference extends AbstractReport {
 		line,
 		route,
 		journey_pattern,
-		vehicle_journey
+		vehicle_journey,
+		stop_point
 	};
 
 	@XmlElement(name = "type",required=true)
@@ -117,6 +119,12 @@ public class ObjectReference extends AbstractReport {
 	public ObjectReference(VehicleJourney object)
 	{
 		this.type = TYPE.vehicle_journey;
+		this.id = object.getId();
+	}
+	
+	public ObjectReference(StopPoint object)
+	{
+		this.type = TYPE.stop_point;
 		this.id = object.getId();
 	}
 
