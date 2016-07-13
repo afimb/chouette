@@ -153,7 +153,7 @@ public class ActionReporterImpl implements ActionReporter, Constant {
 		if (actionReport != null) {
 			if (actionReport.getObjects().containsKey(type)) {
 				ObjectReport object = actionReport.getObjects().get(type);
-				object.setStatTypeToObject(statType, -count);
+				object.setStatTypeToObject(statType, count);
 			} else if (actionReport.getCollections().containsKey(type)) {
 				ObjectReport object = actionReport.getCollections().get(type).findObjectReport(objectId);
 				if (object != null) {

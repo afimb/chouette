@@ -6,13 +6,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -21,37 +14,25 @@ import mobi.chouette.exchange.report.Report;
 import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
 import mobi.chouette.exchange.validation.report.ValidationReporter.VALIDATION_RESULT;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 @ToString
-@XmlRootElement(name = "validation_report")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "result", "checkPoints", "checkPointErrors" })
 public class ValidationReport extends AbstractReport implements Report {
 
-	@XmlElement(name = "result")
 	@Getter
 	@Setter
 	private VALIDATION_RESULT result = VALIDATION_RESULT.NO_PROCESSING;
 
-	@XmlElement(name = "tests")
 	@Getter
 	@Setter
 	private List<CheckPointReport> checkPoints = new ArrayList<CheckPointReport>();
 
-	@XmlElement(name = "errors")
 	@Getter
 	@Setter
 	private List<CheckPointErrorReport> checkPointErrors = new ArrayList<CheckPointErrorReport>();
 
-	@XmlTransient
 	@Getter
 	@Setter
 	private boolean maxByFile = true;
 	
-	@XmlTransient
 	@Getter
 	@Setter
 	private Date date = new Date(0);
@@ -102,27 +83,6 @@ public class ValidationReport extends AbstractReport implements Report {
 			result = VALIDATION_RESULT.OK;
 	}
 
-	public JSONObject toJson() throws JSONException {
-		JSONObject validationReport = new JSONObject();
-		validationReport.put("result", result);
-		if (!checkPoints.isEmpty()) {
-			JSONArray tests = new JSONArray();
-			for (CheckPointReport checkPoint : checkPoints) {
-				tests.put(checkPoint.toJson());
-			}
-			validationReport.put("check_points", tests);
-		}
-		if (!checkPointErrors.isEmpty()) {
-			JSONArray tests = new JSONArray();
-			for (CheckPointErrorReport checkPointError : checkPointErrors) {
-				tests.put(checkPointError.toJson());
-			}
-			validationReport.put("errors", tests);
-		}
-		JSONObject object = new JSONObject();
-		object.put("validation_report", validationReport);
-		return object;
-	}
 
 	@Override
 	public void print(PrintStream out) {
