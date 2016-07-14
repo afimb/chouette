@@ -36,7 +36,7 @@
   with_items:
     - { path: "net/postgis/postgis-jdbc/2.1.7.2", filename: "postgis-jdbc-2.1.7.2.jar" }
     - { path: "com/vividsolutions/jts/1.13", filename: "jts-1.13.jar" }
-    - { path: "org/postgresql/postgresql/9.4-1205-jdbc41", filename: "postgresql-9.4-1205-jdbc41.jar" }
+    - { path: "org/postgresql/postgresql/9.4-1208-jdbc42", filename: "postgresql-9.4-1208-jdbc42.jar" }
 
 - name: Build the chouette docker image
   shell: docker build --tag={{ chouette_docker_image|quote }} --force-rm=true {{chouette_root}} > {{logfile}} 2>&1

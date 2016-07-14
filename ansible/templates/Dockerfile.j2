@@ -2,7 +2,7 @@ FROM jboss/wildfly:8.2.1.Final
 
 RUN mkdir /opt/jboss/wildfly/customization/
 
-COPY postgresql-9.4-1205-jdbc41.jar /opt/jboss/wildfly/customization/postgresql-9.4.jar
+COPY postgresql-9.4-1208-jdbc42.jar /opt/jboss/wildfly/customization/postgresql-9.4.jar
 COPY postgis-jdbc-2.1.7.2.jar /opt/jboss/wildfly/customization/postgis-jdbc-2.1.7.2.jar
 COPY hibernate-spatial-4.3.jar /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/hibernate-spatial-4.3.jar
 COPY jts-1.13.jar /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/jts-1.13.jar
