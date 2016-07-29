@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -25,7 +26,9 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.PropertyNames;
+import mobi.chouette.dao.StatDAO;
 import mobi.chouette.model.iev.Job;
+import mobi.chouette.model.Stat;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
 
@@ -43,12 +46,16 @@ public class RestAdmin implements Constant {
 
 	private static String GLOBAL_KEY = "Global";
 	private static String REFERENTIAL_KEY = "Referentials";
-
+	private static String STAT_KEY = "Stats";
+	
 	@Inject
 	JobServiceManager jobServiceManager;
 	
 	@Inject 
 	ContenerChecker checker;
+	
+	@EJB
+	StatDAO statDao;
 
 	@Context
 	UriInfo uriInfo;
@@ -171,6 +178,40 @@ public class RestAdmin implements Constant {
 			result.put("scheduled_job_count", scheduledJobCount);
 			result.put("started_job_count", startedJobCount);
 			return result;
+		}
+	}
+	
+	
+	
+	// global stat listing
+	@GET
+	@Path("/get_monthly_stats")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response monthlyStats() {
+		try {
+			
+			List<Stat> lstStat = statDao.getCurrentYearStats();
+			ResponseBuilder builder = null;
+			
+			JSONObject resjson = new JSONObject();
+			JSONArray resstats = new JSONArray();
+			resjson.put(STAT_KEY, resstats);
+			for (Stat stat : lstStat) {
+				JSONObject result = new JSONObject();
+				result.put("date", stat.getDate());
+				result.put("action", stat.getAction());
+				if(stat.getFormat() != null)
+					result.put("format", stat.getFormat());
+				resstats.put(stat);
+			}
+			builder = Response.ok(resjson.toString(2)).type(MediaType.APPLICATION_JSON_TYPE);
+		
+			builder.header(api_version_key, api_version);
+
+			return builder.build();
+		} catch (Exception ex) {
+			log.error(ex.getMessage(), ex);
+			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
 		}
 	}
 

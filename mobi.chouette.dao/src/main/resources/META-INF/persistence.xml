@@ -7,7 +7,7 @@
 	<persistence-unit name="public" transaction-type="JTA">
 
 		<jta-data-source>java:jboss/datasources/chouette</jta-data-source>
-
+		<class>mobi.chouette.model.Stat</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<validation-mode>NONE</validation-mode>
 
@@ -25,6 +25,8 @@
 			<property name="hibernate.default_schema" value="public" />
          <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
 		</properties>
+		
+		
 	</persistence-unit>
 
 	<persistence-unit name="referential" transaction-type="JTA">
@@ -51,7 +53,6 @@
 		<class>mobi.chouette.model.Timetable</class>
 		<class>mobi.chouette.model.VehicleJourneyAtStop</class>
 		<class>mobi.chouette.model.VehicleJourney</class>
-
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<validation-mode>NONE</validation-mode>
 
