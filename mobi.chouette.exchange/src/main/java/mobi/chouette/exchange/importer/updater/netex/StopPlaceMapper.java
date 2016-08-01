@@ -1,10 +1,7 @@
 package mobi.chouette.exchange.importer.updater.netex;
-
 import mobi.chouette.model.StopArea;
-import no.rutebanken.netex.model.LocationStructure;
-import no.rutebanken.netex.model.MultilingualString;
-import no.rutebanken.netex.model.SimplePoint_VersionStructure;
-import no.rutebanken.netex.model.StopPlace;
+import mobi.chouette.model.type.ChouetteAreaEnum;
+import no.rutebanken.netex.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,21 +21,42 @@ public class StopPlaceMapper {
     }
 
     public StopPlace mapStopAreaToStopPlace(StopArea stopArea) {
+
         StopPlace stopPlace = new StopPlace();
 
-        stopPlace.setCentroid(
+        mapCentroid(stopArea, stopPlace);
+        mapName(stopArea, stopPlace);
+
+        if(stopArea.getAreaType().equals(ChouetteAreaEnum.StopPlace)) {
+            stopPlace.setQuays(new Quays_RelStructure());
+            stopArea.getContainedStopAreas().forEach(boardingPosition ->  {
+                        Quay quay = new Quay();
+                        mapCentroid(boardingPosition, quay);
+                        mapName(boardingPosition, quay);
+                        stopPlace.getQuays().getQuayRefOrQuay().add(quay);
+                    });
+        }
+
+        return stopPlace;
+    }
+
+    public void mapCentroid(StopArea stopArea, Zone_VersionStructure zone) {
+        zone.setCentroid(
                 new SimplePoint_VersionStructure()
                         .withLocation(
                                 new LocationStructure()
                                         .withLatitude(stopArea.getLatitude())
                                         .withLongitude(stopArea.getLongitude())));
+    }
 
-        stopPlace.setName(
+    public void mapName(StopArea stopArea, Zone_VersionStructure zone) {
+
+        zone.setName(
                 new MultilingualString()
                         .withValue(stopArea.getName())
                         .withLang("")
                         .withTextIdType(""));
 
-        return stopPlace;
     }
+
 }
