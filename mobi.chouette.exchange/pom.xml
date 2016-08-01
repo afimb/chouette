@@ -61,6 +61,7 @@
         </exclusions>         
 		</dependency>
 		
+		
 		<!-- Modules -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
