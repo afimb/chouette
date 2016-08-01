@@ -114,6 +114,7 @@ public class CheckPoint {
 
 	}
 
+	@Deprecated
 	public JSONObject toJson() throws JSONException {
 		JSONObject object = new JSONObject();
 		object.put("test_id", name);

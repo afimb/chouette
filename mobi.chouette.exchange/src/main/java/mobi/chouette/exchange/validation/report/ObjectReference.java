@@ -115,6 +115,7 @@ public class ObjectReference {
 		this.id = object.getId();
 	}
 
+	@Deprecated
 	public JSONObject toJson() throws JSONException {
 		JSONObject object = new JSONObject();
 		object.put("type", type);

@@ -40,6 +40,7 @@ public void testProgressionInitialize() throws Exception
 	context.put(REPORT, new ActionReport());
 	ActionReport report = (ActionReport)  context.get(REPORT);
 	context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
+	context.put(SAVE_MAIN_VALIDATION_REPORT, Boolean.TRUE);
 	context.put(CONFIGURATION,new DummyParameter());
 	if (d.exists())
 		try {

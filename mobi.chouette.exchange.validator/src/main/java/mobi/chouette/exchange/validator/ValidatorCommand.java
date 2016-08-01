@@ -155,6 +155,9 @@ public class ValidatorCommand implements Command, Constant {
 		// export each line
 		for (Long lineId : lines) {
 			context.put(LINE_ID, lineId);
+			if(lineCount == lines.size()-1) {
+				context.put(SAVE_MAIN_VALIDATION_REPORT, Boolean.TRUE);
+			}
 			boolean exportFailed = false;
 			List<? extends Command> lineProcessingCommands = commands.getLineProcessingCommands(context, true);
 			for (Command validateCommand : lineProcessingCommands) {

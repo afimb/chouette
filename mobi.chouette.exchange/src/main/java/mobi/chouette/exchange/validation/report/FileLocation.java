@@ -44,6 +44,7 @@ public class FileLocation {
 			this.columnNumber = Integer.valueOf(columnNumber);
 	}
 
+	@Deprecated
 	public JSONObject toJson() throws JSONException {
 		JSONObject object = new JSONObject();
 		object.put("filename", filename);

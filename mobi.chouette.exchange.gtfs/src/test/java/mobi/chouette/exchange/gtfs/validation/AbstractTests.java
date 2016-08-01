@@ -8,10 +8,15 @@ import java.util.Locale;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+import org.testng.Assert;
+
 import mobi.chouette.common.Context;
+import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.gtfs.validation.Constant;
 import mobi.chouette.exchange.gtfs.JobDataTest;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.importer.GtfsInitImportCommand;
@@ -25,12 +30,6 @@ import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
 import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.persistence.hibernate.ContextHolder;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.codehaus.jettison.json.JSONException;
-import org.testng.Assert;
 
 public abstract class AbstractTests implements Constant, ReportConstant {
 
@@ -173,8 +172,10 @@ public abstract class AbstractTests implements Constant, ReportConstant {
 				}
 			}
 			try {
-				log.info("detail :"+foundItem.toJson().toString(2));
-			} catch (JSONException e) {
+				
+				
+				log.info("detail :"+JSONUtil.serializeJAXBObjectToJSONString(foundItem));
+			} catch (IOException e) {
 				log.error("unable to convert to json");
 			}
 			return foundItem; // for extra check

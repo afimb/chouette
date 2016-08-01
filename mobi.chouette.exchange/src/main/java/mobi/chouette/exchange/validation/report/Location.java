@@ -218,6 +218,7 @@ public class Location {
 
 	}
 
+	@Deprecated
 	public JSONObject toJson() throws JSONException {
 		JSONObject object = new JSONObject();
 		if (file != null)

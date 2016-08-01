@@ -10,6 +10,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
@@ -21,8 +22,6 @@ import mobi.chouette.exchange.report.StepProgression.STEP;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.ValidationReport;
-
-import org.apache.commons.io.FileUtils;
 
 @Log4j
 public class ProgressionCommand implements Command, Constant, ReportConstant {
@@ -66,10 +65,8 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		ActionReport report = (ActionReport) context.get(REPORT);
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		Path path = Paths.get(jobData.getPathName(), REPORT_FILE);
-		// pseudo pretty print
 		try {
-			String data = report.toJson().toString(2);
-			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
+			JSONUtil.serializeJAXBObjectToJSONFile(report, path.toFile());
 		} catch (Exception e) {
 			log.error("failed to save report", e);
 		}
@@ -88,8 +85,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 
 		try {
 			report.checkResult();
-			String data = report.toJson().toString(2);
-			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
+			JSONUtil.serializeJAXBObjectToJSONFile(report, path.toFile());
 		} catch (Exception e) {
 			log.error("failed to save validation report", e);
 		}
@@ -129,7 +125,9 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 
 		if (context.containsKey(VALIDATION_REPORT)) {
 			mergeValidationReports(context);
-			saveMainValidationReport(context);
+			if(context.containsKey(SAVE_MAIN_VALIDATION_REPORT)) {
+				saveMainValidationReport(context);
+			}
 		}
 		ActionReport report = (ActionReport) context.get(REPORT);
 		StepProgression step = report.getProgression().getSteps().get(report.getProgression().getCurrentStep()-1);

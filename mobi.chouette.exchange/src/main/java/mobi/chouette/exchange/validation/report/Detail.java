@@ -83,6 +83,7 @@ public class Detail {
 
 	}
 
+	@Deprecated
 	public JSONObject toJson() throws JSONException {
 		JSONObject object = new JSONObject();
 		object.put("error_id", key);

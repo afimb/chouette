@@ -68,6 +68,7 @@ public class ValidationReport {
 		checkPoints.addAll(list);
 	}
 
+	@Deprecated
 	public JSONObject toJson() throws JSONException {
 		JSONObject validationReport = new JSONObject();
 		validationReport.put("result", result);
