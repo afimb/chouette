@@ -47,6 +47,16 @@ public class StopPlaceMapperTest {
     }
 
     @Test
+    public void stopPlaceWithId() {
+        StopArea stopPlace = createStopPlace("Hestehaugveien");
+        stopPlace.setObjectId("id");
+        StopPlace netexStopPlace = stopPlaceMapper.mapStopAreaToStopPlace(stopPlace);
+
+        assertEquals(netexStopPlace.getId(), String.valueOf(stopPlace.getObjectId()));
+    }
+
+
+    @Test
     public void boardingPositionWithoutStopPlace() {
         StopArea boardingPosition = createBoardingPosition("Borgen");
         StopPlace netexStopPlace = stopPlaceMapper.mapStopAreaToStopPlace(boardingPosition);

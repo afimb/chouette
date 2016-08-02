@@ -9,21 +9,11 @@ import java.util.Map;
 
 public class StopPlaceMapper {
 
-    public List<StopPlace> mapStopAreasToStopPlaces(Map<String, StopArea> stopAreas) {
-
-        List<StopPlace> stopPlaces = new ArrayList<>();
-        for(StopArea stopArea: stopAreas.values()) {
-            StopPlace stopPlace = mapStopAreaToStopPlace(stopArea);
-            stopPlaces.add(stopPlace);
-        }
-        return stopPlaces;
-
-    }
-
     public StopPlace mapStopAreaToStopPlace(StopArea stopArea) {
 
         StopPlace stopPlace = new StopPlace();
 
+        mapId(stopArea, stopPlace);
         mapCentroid(stopArea, stopPlace);
         mapName(stopArea, stopPlace);
 
@@ -31,6 +21,7 @@ public class StopPlaceMapper {
             stopPlace.setQuays(new Quays_RelStructure());
             stopArea.getContainedStopAreas().forEach(boardingPosition ->  {
                         Quay quay = new Quay();
+                        mapId(boardingPosition, quay);
                         mapCentroid(boardingPosition, quay);
                         mapName(boardingPosition, quay);
                         stopPlace.getQuays().getQuayRefOrQuay().add(quay);
@@ -38,6 +29,10 @@ public class StopPlaceMapper {
         }
 
         return stopPlace;
+    }
+
+    private void mapId(StopArea stopArea, Zone_VersionStructure zone) {
+        zone.setId(stopArea.getObjectId());
     }
 
     public void mapCentroid(StopArea stopArea, Zone_VersionStructure zone) {

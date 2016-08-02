@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.updater.netex.PublicationDeliveryClient;
 import mobi.chouette.exchange.importer.updater.netex.StopPlaceMapper;
+import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.StopArea;
 import no.rutebanken.netex.model.*;
 
@@ -11,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,7 +36,17 @@ public class NeTExStopPlaceRegisterUpdater implements Updater<Map<String, StopAr
 
         log.info("Received " + newValue.values().size() + " stop areas");
 
-        List<StopPlace> stopPlaces = stopPlaceMapper.mapStopAreasToStopPlaces(newValue);
+        List<StopPlace> stopPlaces = newValue.values().stream()
+                .peek(stopArea -> log.info(stopArea.getId() +" "+ stopArea.getObjectId() + " " + stopArea.getName()+ " isSaved:" + stopArea.isSaved()))
+                .filter(NeptuneIdentifiedObject::isSaved)
+                .filter(stopArea -> stopArea.getObjectId() != null)
+                .map(stopPlaceMapper::mapStopAreaToStopPlace)
+                .collect(Collectors.toList());
+
+        if(stopPlaces.isEmpty()) {
+            log.info("No stop places to update.");
+            return;
+        }
 
         SiteFrame siteFrame = new SiteFrame();
         siteFrame.setStopPlaces(
