@@ -10,6 +10,7 @@ import no.rutebanken.netex.model.*;
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,16 +20,17 @@ import java.util.stream.Collectors;
 public class NeTExStopPlaceRegisterUpdater implements Updater<Map<String, StopArea>> {
     public static final String BEAN_NAME = "NeTExStopPlaceRegisterUpdater";
     
-    private final PublicationDeliveryClient client = new PublicationDeliveryClient("http://localhost:1888/jersey/publication_delivery");
+    private final PublicationDeliveryClient client;
     private final StopPlaceMapper stopPlaceMapper = new StopPlaceMapper();
 
     private static final ObjectFactory objectFactory = new ObjectFactory();
 
     public NeTExStopPlaceRegisterUpdater() throws JAXBException {
+        client = new PublicationDeliveryClient("http://localhost:1888/jersey/publication_delivery");
     }
 
     @Override
-    public void update(Context context, Map<String, StopArea> oldValue, Map<String, StopArea> newValue) throws Exception {
+    public void update(Context context, Map<String, StopArea> oldValue, Map<String, StopArea> newValue) {
 
         log.info("Received " + newValue.values().size() + " stop areas");
 
@@ -50,7 +52,13 @@ public class NeTExStopPlaceRegisterUpdater implements Updater<Map<String, StopAr
                         new PublicationDeliveryStructure.DataObjects()
                                 .withCompositeFrameOrCommonFrame(Arrays.asList(jaxSiteFrame)));
 
-        PublicationDeliveryStructure response = client.sendPublicationDelivery(publicationDelivery);
+        PublicationDeliveryStructure response = null;
+        try {
+            response = client.sendPublicationDelivery(publicationDelivery);
+        } catch (JAXBException | IOException e) {
+            log.warn("Got exception while sending publication delivery with "+ stopPlaces.size() + " stop places", e);
+            return;
+        }
         log.info("Got publication delivery structure back with "+response.getDataObjects().getCompositeFrameOrCommonFrame().size()
                 + " composite frames or common frames");
 
