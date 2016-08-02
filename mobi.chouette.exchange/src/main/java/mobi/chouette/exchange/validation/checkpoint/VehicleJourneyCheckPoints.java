@@ -175,13 +175,15 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 					// arrêts superposés, vitesse non calculable
 				} else {
 					double speed = distance / (double) diffTime * 36 / 10; // (km/h)
+					String calculatedSpeed = (diffTime == 0 ? "NaN" :  Integer.toString((int) speed ));
+					
 					if (speed < minSpeed) {
 						// trop lent
 						Location source = buildLocation(context,vj);
 						Location target1 = buildLocation(context,vjas0.getStopPoint().getContainedInStopArea());
 						Location target2 = buildLocation(context,vjas1.getStopPoint().getContainedInStopArea());
 
-						Detail detail = new Detail(VEHICLE_JOURNEY_2 + "_2", source, Integer.toString((int) speed),
+						Detail detail = new Detail(VEHICLE_JOURNEY_2 + "_2", source, calculatedSpeed,
 								Integer.toString((int) minSpeed), target1, target2);
 						addValidationError(report, VEHICLE_JOURNEY_2, detail);
 					} else if (speed > maxSpeed) {
@@ -190,8 +192,8 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 						Location target1 = buildLocation(context,vjas0.getStopPoint().getContainedInStopArea());
 						Location target2 = buildLocation(context,vjas1.getStopPoint().getContainedInStopArea());
 
-						Detail detail = new Detail(VEHICLE_JOURNEY_2 + "_3", source, Integer.toString((int) speed),
-								Integer.toString((int) minSpeed), target1, target2);
+						Detail detail = new Detail(VEHICLE_JOURNEY_2 + "_3", source, calculatedSpeed,
+								Integer.toString((int) maxSpeed), target1, target2);
 						addValidationError(report, VEHICLE_JOURNEY_2, detail);
 					}
 				}
