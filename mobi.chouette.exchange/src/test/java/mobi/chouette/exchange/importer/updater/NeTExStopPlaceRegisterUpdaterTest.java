@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class NeTExStopPlaceRegisterUpdaterTest {
 
-    @Test(enabled = true)
+    @Test(enabled = false)
     public void exportStopArea() throws Exception {
 
         NeTExStopPlaceRegisterUpdater neTExStopPlaceRegisterUpdater = new NeTExStopPlaceRegisterUpdater();
