@@ -23,7 +23,7 @@ public class PublicationDeliveryClient {
         this.jaxbContext = JAXBContext.newInstance(PublicationDeliveryStructure.class);
     }
 
-    public PublicationDeliveryStructure sendPublicationDelivery(PublicationDeliveryStructure publicationDelivery) throws JAXBException {
+    public PublicationDeliveryStructure sendPublicationDelivery(PublicationDeliveryStructure publicationDelivery) throws JAXBException, IOException {
 
         Marshaller marshaller = jaxbContext.createMarshaller();
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
@@ -48,7 +48,7 @@ public class PublicationDeliveryClient {
 
             return element.getValue();
         } catch (IOException e) {
-            throw new RuntimeException("Error posting XML to " + publicationDeliveryUrl, e);
+            throw new IOException("Error posting XML to " + publicationDeliveryUrl, e);
         }
 
     }
