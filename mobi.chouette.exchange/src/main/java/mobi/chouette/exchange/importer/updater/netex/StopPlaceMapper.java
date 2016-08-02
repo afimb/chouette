@@ -27,7 +27,7 @@ public class StopPlaceMapper {
         mapCentroid(stopArea, stopPlace);
         mapName(stopArea, stopPlace);
 
-        if(stopArea.getAreaType().equals(ChouetteAreaEnum.StopPlace)) {
+        if(stopArea.getAreaType() != null && stopArea.getAreaType().equals(ChouetteAreaEnum.StopPlace)) {
             stopPlace.setQuays(new Quays_RelStructure());
             stopArea.getContainedStopAreas().forEach(boardingPosition ->  {
                         Quay quay = new Quay();
