@@ -24,13 +24,16 @@ public class GtfsTerminateExportCommand implements Command, Constant {
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
-
+		log.info("GtfsTerminateExportCommand 1");
 		Monitor monitor = MonitorFactory.start(COMMAND);
-
+		log.info("GtfsTerminateExportCommand 2");
 		try {
 			ActionReport report = (ActionReport) context.get(REPORT);
+			log.info("GtfsTerminateExportCommand 3");
 			GtfsExporter gtfsExporter = (GtfsExporter) context.get(GTFS_EXPORTER);
+			log.info("GtfsTerminateExportCommand 4");
 			gtfsExporter.dispose(report);
+			log.info("GtfsTerminateExportCommand 5");
 			result = SUCCESS;
 
 		} catch (Exception e) {
