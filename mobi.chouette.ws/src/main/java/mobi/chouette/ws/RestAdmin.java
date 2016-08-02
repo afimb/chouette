@@ -189,21 +189,22 @@ public class RestAdmin implements Constant {
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response monthlyStats() {
 		try {
-			
 			List<Stat> lstStat = statDao.getCurrentYearStats();
 			ResponseBuilder builder = null;
-			
 			JSONObject resjson = new JSONObject();
 			JSONArray resstats = new JSONArray();
 			resjson.put(STAT_KEY, resstats);
+			
 			for (Stat stat : lstStat) {
 				JSONObject result = new JSONObject();
 				result.put("date", stat.getDate());
+				result.put("referential", stat.getReferential());
 				result.put("action", stat.getAction());
 				if(stat.getFormat() != null)
 					result.put("format", stat.getFormat());
 				resstats.put(stat);
 			}
+			
 			builder = Response.ok(resjson.toString(2)).type(MediaType.APPLICATION_JSON_TYPE);
 		
 			builder.header(api_version_key, api_version);

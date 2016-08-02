@@ -4,5 +4,6 @@ public enum StatFormatEnum {
 	gtfs,
 	neptune,
 	netex,
-	hub
+	hub,
+	sig
 }

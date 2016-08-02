@@ -7,6 +7,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.Stat;
 import mobi.chouette.model.type.StatActionEnum;
@@ -15,10 +17,6 @@ import mobi.chouette.model.type.StatFormatEnum;
 @Stateless
 @Log4j
 public class StatDAOImpl extends GenericDAOImpl<Stat> implements StatDAO{
-	
-	private static final String SQL = "SELECT * FROM STATS ORDER BY DATE, FORMAT, ACTION";
-	
-
 	
 	public StatDAOImpl() {
 		super(Stat.class);
@@ -31,10 +29,11 @@ public class StatDAOImpl extends GenericDAOImpl<Stat> implements StatDAO{
 	}
 	
 	@Override
-	public void addStatToDatabase(Date date, String action, String type) {
+	public void addStatToDatabase(Date date, String referential, String action, String type) {
 		// Insertion des statistiques d'import, export, validation dans la table stats
 		Stat chouetteStat = new Stat();
 		
+		chouetteStat.setReferential(referential);
 		chouetteStat.setDate(date);
 		chouetteStat.setAction(StatActionEnum.valueOf(action));
 		
@@ -51,14 +50,20 @@ public class StatDAOImpl extends GenericDAOImpl<Stat> implements StatDAO{
 			log.info("chouette stat null");
 	}
 	
-	
 	@Override
 	public List<Stat> getCurrentYearStats() {
-		//Query query = em.createNativeQuery(SQL);
-		
-		//List<Stat> lstStat = query.getResultList();
-		
-		return findAll();
+		log.info("BEGIN GET CURRENT YEAR STAT");
+		TypedQuery<Stat> query = em.createQuery("SELECT s FROM Stat s ORDER BY s.referential, s.date, s.format, s.action", Stat.class);
+		log.info("GET CURRENT YEAR STAT 1");
+		List<Stat> lstStat = (List<Stat>)query.getResultList();
+		log.info("BEGIN GET CURRENT YEAR STAT 2");
+		if(lstStat != null)
+			log.info("Found " + lstStat.size() + "stats to send to IHM");
+		else
+			log.info("Error stat list is null");
+			
+		log.info("END GET CURRENT YEAR STAT");		
+		return lstStat;
 	}
 	
 	@Override

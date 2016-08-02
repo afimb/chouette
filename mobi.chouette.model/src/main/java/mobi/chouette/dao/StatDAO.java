@@ -7,7 +7,7 @@ import mobi.chouette.dao.GenericDAO;
 import mobi.chouette.model.Stat;
 
 public interface StatDAO extends GenericDAO<Stat>{
-	void addStatToDatabase(Date date, String action, String type);
+	void addStatToDatabase(Date date, String referential, String action, String type);
 	List<Stat> getCurrentYearStats();
 	void removeObsoleteStatFromDatabase(Date date);
 }

@@ -31,12 +31,26 @@ import mobi.chouette.model.type.StatFormatEnum;
 public class Stat implements Serializable {
 	private static final long serialVersionUID = -1406542013260384319L;
 	
-
+	/**
+	 * id
+	 * 
+	 * @return The actual value
+	 */
 	@Getter
 	@Setter
 	@Id @GeneratedValue
 	@Column(name = "id", nullable = false)
 	protected Long id;
+	
+	/**
+	 * referential
+	 * 
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@Column(name = "referential")
+	private String referential;
 	
 	/**
 	 * action
