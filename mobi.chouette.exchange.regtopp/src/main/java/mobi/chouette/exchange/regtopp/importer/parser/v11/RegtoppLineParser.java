@@ -107,9 +107,9 @@ public class RegtoppLineParser extends LineSpecificParser {
 			f.setLine(line);
 		}
 
-		deduplicateIdenticalRoutes(referential, configuration);
+		// NOT DETERMINISTIC: deduplicateIdenticalRoutes(referential, configuration);
 		// NOT WORKING: deduplicateSimilarRoutes(referential, configuration);
-		deduplicateIdenticalJourneyPatterns(referential, configuration);
+		// NOT DETERMINISTIC: deduplicateIdenticalJourneyPatterns(referential, configuration);
 		// Update boarding/alighting at StopPoint
 		updateBoardingAlighting(referential, configuration);
 		updateLineName(referential, line, configuration);
