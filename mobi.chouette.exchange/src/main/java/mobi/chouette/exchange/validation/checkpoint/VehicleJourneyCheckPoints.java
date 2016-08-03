@@ -174,8 +174,11 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 				if (distance < 1) {
 					// arrêts superposés, vitesse non calculable
 				} else {
+					if(diffTime == 0) {
+						diffTime = 30; // If departure is on the same minute, allow 30 seconds slack
+					}
 					double speed = distance / (double) diffTime * 36 / 10; // (km/h)
-					String calculatedSpeed = (diffTime == 0 ? "NaN" :  Integer.toString((int) speed ));
+					String calculatedSpeed = Integer.toString((int) speed );
 					
 					if (speed < minSpeed) {
 						// trop lent
