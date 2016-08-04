@@ -169,7 +169,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		assertActionReport(report, STATUS_OK, 8, 1);
-		assertStats(report.getStats(), 1, 3);
+		assertStats(report.getStats(), 1, 9);
 		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
 		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 14, 1, 40); // typo in chouette
 
@@ -182,7 +182,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		Assert.assertNotNull(line.getNetwork(), "line must have a network");
 		Assert.assertNotNull(line.getCompany(), "line must have a company");
 		Assert.assertNotNull(line.getRoutes(), "line must have routes");
-		assertEquals(line.getRoutes().size(), 3, "number of routes");
+		assertEquals(line.getRoutes().size(), 9, "number of routes");
 		Set<StopArea> bps = new HashSet<StopArea>();
 
 		int numStopPoints = 0;
@@ -217,14 +217,14 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 			}
 		}
 
-		assertEquals(numJourneyPatterns, 3, "number of journeyPatterns");
+		assertEquals(numJourneyPatterns, 9, "number of journeyPatterns");
 		assertEquals(numVehicleJourneys, 12, "number of vehicleJourneys");
-		assertEquals(numStopPoints, 137, "number of stopPoints in journeyPattern");
+		assertEquals(numStopPoints, 411, "number of stopPoints in journeyPattern");
 		assertEquals(bps.size(), 90, "number boarding positions");
 
 		// Check opposite routes
-		Route outbound = routeDao.findByObjectId("TST:Route:2306102");
-		Route inbound = routeDao.findByObjectId("TST:Route:2306201");
+		Route outbound = routeDao.findByObjectId("TST:Route:2306103");
+		Route inbound = routeDao.findByObjectId("TST:Route:2306203");
 
 		Assert.assertNotNull(outbound, "Outbound route not found");
 		Assert.assertNotNull(inbound, "Inbound route not found");
@@ -266,7 +266,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		assertActionReport(report, STATUS_OK, 8, 1);
-		assertStats(report.getStats(), 1, 23);
+		assertStats(report.getStats(), 1, 57);
 		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
 		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 15, 0, 40); // typo in chouette
 
@@ -467,7 +467,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 
 		assertActionReport(report, STATUS_OK, 8, 1);
-		assertStats(report.getStats(), 1, 6);
+		assertStats(report.getStats(), 1, 10);
 		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
 		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 14, 1, 40); // typo in chouette
 
@@ -522,7 +522,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		assertActionReport(report, STATUS_OK, 8, 1);
-		assertStats(report.getStats(), 1, 6);
+		assertStats(report.getStats(), 1, 12);
 		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
 		// TODO line below must be verified
 		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 12, 0, 43); // typo in chouette
@@ -538,14 +538,14 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		Assert.assertNotNull(line.getNetwork(), "line must have a network");
 		Assert.assertNotNull(line.getCompany(), "line must have a company");
 		Assert.assertNotNull(line.getRoutes(), "line must have routes");
-		assertEquals(line.getRoutes().size(), 6, "number of routes");
+		assertEquals(line.getRoutes().size(), 12, "number of routes");
 
 		Route route0002139 = routeDao.findByObjectId("TST:Route:0002139");
 		Assert.assertNotNull(route0002139);
 		List<JourneyPattern> journeyPatterns = route0002139.getJourneyPatterns();
 		assertEquals(journeyPatterns.size(), 1);
 		assertEquals(journeyPatterns.get(0).getStopPoints().size(), 5);
-		assertEquals(journeyPatterns.get(0).getVehicleJourneys().size(), 18);
+		assertEquals(journeyPatterns.get(0).getVehicleJourneys().size(), 2);
 
 		utx.rollback();
 
@@ -614,10 +614,10 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 			}
 		}
 
-		Assert.assertEquals(line.getRoutes().size(), 6, "routes");
+		Assert.assertEquals(line.getRoutes().size(), 8, "routes");
 		Assert.assertEquals(numVehicleJourneys, 453, "vehicleJourneys");
 		Assert.assertEquals(boardingPositions.size(), 66, "numBoardingPositions");
-		Assert.assertEquals(numStopPoints, 151, "numStopPoints");
+		Assert.assertEquals(numStopPoints, 212, "numStopPoints");
 
 		// Route route0002139 = routeDao.findByObjectId("TST:Route:0002139");
 		// Assert.assertNotNull(route0002139);

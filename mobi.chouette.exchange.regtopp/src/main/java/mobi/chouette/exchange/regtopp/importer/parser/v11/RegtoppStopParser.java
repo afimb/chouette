@@ -66,10 +66,10 @@ public class RegtoppStopParser implements Parser {
 			_x = y;
 			_y = x;
 
-			while (Math.abs(_x.doubleValue()) > 180) {
+			while (Math.abs(_x.doubleValue()) >= 180) {
 				_x = _x.divide(BigDecimal.TEN);
 			}
-			while (Math.abs(_y.doubleValue()) > 90) {
+			while (Math.abs(_y.doubleValue()) >= 90) {
 				_y = _y.divide(BigDecimal.TEN);
 			}
 
@@ -81,11 +81,21 @@ public class RegtoppStopParser implements Parser {
 			}
 
 		} else {
-			Coordinate wgs84Coordinate = CoordinateUtil.transform(projection, Coordinate.WGS84, new Coordinate(_x, _y));
-
-			stopArea.setLongitude(wgs84Coordinate.getY());
-			stopArea.setLatitude(wgs84Coordinate.getX());
-
+			// Adjust coordinates for possible decimal places
+			boolean valid = false;
+			
+			while(!valid) {
+				Coordinate wgs84Coordinate = CoordinateUtil.transform(projection, Coordinate.WGS84, new Coordinate(_x, _y));
+				if (Math.abs(wgs84Coordinate.getY().doubleValue()) >= 180 || Math.abs(wgs84Coordinate.getX().doubleValue()) >= 90) {
+					// Bogus coordinates, divide by 10 and try again
+					_x = _x.divide(BigDecimal.TEN);
+					_y = _y.divide(BigDecimal.TEN);
+				} else {
+					valid = true;
+					stopArea.setLongitude(wgs84Coordinate.getY());
+					stopArea.setLatitude(wgs84Coordinate.getX());
+				}
+			}
 		}
 
 		stopArea.setLongLatType(LongLatTypeEnum.WGS84);
