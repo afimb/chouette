@@ -1,8 +1,9 @@
 package mobi.chouette.exchange.importer.updater;
 
+import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.importer.updater.netex.PublicationDeliveryClient;
+import no.rutebanken.netex.client.PublicationDeliveryClient;
 import mobi.chouette.exchange.importer.updater.netex.StopPlaceMapper;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.StopArea;
@@ -32,12 +33,17 @@ public class NeTExStopPlaceRegisterUpdater implements Updater<Map<String, StopAr
     }
 
     @Override
-    public void update(Context context, Map<String, StopArea> oldValue, Map<String, StopArea> newValue) {
+    public void update(Context context, Map<String, StopArea> oldValue, Map<String, StopArea> newValue) throws JAXBException {
 
         log.info("Received " + newValue.values().size() + " stop areas");
 
         List<StopPlace> stopPlaces = newValue.values().stream()
-                .peek(stopArea -> log.info(stopArea.getId() +" "+ stopArea.getObjectId() + " " + stopArea.getName()+ " isSaved:" + stopArea.isSaved()))
+                .peek(stopArea -> log.info(stopArea.getId()
+                        +" "+ stopArea.getObjectId()
+                        + " " + stopArea.getName()
+                        + " type: " + stopArea.getAreaType()
+                        + " isSaved:" + stopArea.isSaved()
+                        + " is detached: " + stopArea.isDetached()))
                 .filter(NeptuneIdentifiedObject::isSaved)
                 .filter(stopArea -> stopArea.getObjectId() != null)
                 .map(stopPlaceMapper::mapStopAreaToStopPlace)
@@ -80,9 +86,6 @@ public class NeTExStopPlaceRegisterUpdater implements Updater<Map<String, StopAr
                 .flatMap(receivedSiteFrame -> receivedSiteFrame.getStopPlaces().getStopPlace().stream())
                 .peek(stopPlace -> log.info("got stop place with ID "+stopPlace.getId() + " and name "+  stopPlace.getName() + " back"))
                 .collect(Collectors.toList());
-
-
-
 
     }
 
