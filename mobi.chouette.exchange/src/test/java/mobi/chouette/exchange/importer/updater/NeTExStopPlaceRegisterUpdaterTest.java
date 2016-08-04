@@ -19,12 +19,11 @@ public class NeTExStopPlaceRegisterUpdaterTest {
     public NeTExStopPlaceRegisterUpdaterTest() throws JAXBException {
     }
 
+    /**
+     * Test for manually testing the NeTExStopPlaceRegisterUpdater.
+     */
     @Test(enabled = false)
     public void exportStopArea() throws Exception {
-
-        StopArea oldStoparea = new StopArea();
-        oldStoparea.setName("Nesbru æøå");
-        oldStoparea.setAreaType(ChouetteAreaEnum.StopPlace);
 
         StopArea stopArea = new StopArea();
         stopArea.setName("Nesbru");
@@ -32,7 +31,8 @@ public class NeTExStopPlaceRegisterUpdaterTest {
 
         stopArea.setLatitude(new BigDecimal(59.9202707));
         stopArea.setLongitude(new BigDecimal(10.7913503));
-
+        stopArea.setObjectId("123");
+        stopArea.setSaved(true);
         Context context = new Context();
 
         Map<String, StopArea> stopAreas = map(stopArea);
