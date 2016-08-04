@@ -11,6 +11,13 @@ public class StopPlaceMapper {
 
     public StopPlace mapStopAreaToStopPlace(StopArea stopArea) {
 
+        if(stopArea.getAreaType().equals(ChouetteAreaEnum.BoardingPosition)) {
+            if(stopArea.getParent() != null) {
+                StopPlace parentStopPlace = mapStopAreaToStopPlace(stopArea.getParent());
+                return parentStopPlace;
+            }
+        }
+
         StopPlace stopPlace = new StopPlace();
 
         mapId(stopArea, stopPlace);
@@ -19,6 +26,7 @@ public class StopPlaceMapper {
 
         if(stopArea.getAreaType() != null && stopArea.getAreaType().equals(ChouetteAreaEnum.StopPlace)) {
             stopPlace.setQuays(new Quays_RelStructure());
+
             stopArea.getContainedStopAreas().forEach(boardingPosition ->  {
                         Quay quay = new Quay();
                         mapId(boardingPosition, quay);

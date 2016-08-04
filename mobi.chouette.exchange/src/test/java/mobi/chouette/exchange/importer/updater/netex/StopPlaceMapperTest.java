@@ -5,6 +5,7 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import no.rutebanken.netex.model.Quay;
 import no.rutebanken.netex.model.StopPlace;
+import org.apache.velocity.runtime.directive.Stop;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -34,6 +35,23 @@ public class StopPlaceMapperTest {
         assertEquals(netexStopPlace.getQuays().getQuayRefOrQuay().size(), 3);
         Quay firstQuay = (Quay) netexStopPlace.getQuays().getQuayRefOrQuay().get(0);
         assertEquals(firstQuay.getName().getValue(), stopPlace.getName());
+    }
+
+    @Test
+    public void boardingPositionWithParentStopPlace() {
+        StopArea boardingPosition = createBoardingPosition("boarding position 1");
+
+        StopArea parentStopArea = createStopPlace("parent stop place");
+
+        boardingPosition.setParent(parentStopArea);
+
+        StopPlace netexStopPlace = stopPlaceMapper.mapStopAreaToStopPlace(boardingPosition);
+        assertEquals(netexStopPlace.getName().getValue(), parentStopArea.getName());
+
+        assertNotNull(netexStopPlace.getQuays());
+        assertNotEquals(netexStopPlace.getQuays().getQuayRefOrQuay().size(), 0);
+        assertEquals(((Quay) netexStopPlace.getQuays().getQuayRefOrQuay().get(0)).getName().getValue(), boardingPosition.getName());
+
     }
 
     @Test
