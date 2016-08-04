@@ -1,37 +1,5 @@
 package mobi.chouette.exchange.regtopp.importer;
 
-import static mobi.chouette.exchange.report.ReportConstant.STATUS_OK;
-import static org.testng.Assert.assertEquals;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.ejb.EJB;
-import javax.inject.Inject;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.UserTransaction;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.testng.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
@@ -51,16 +19,40 @@ import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
 import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.ValidationReport;
-import mobi.chouette.model.Footnote;
-import mobi.chouette.model.JourneyPattern;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.Route;
-import mobi.chouette.model.StopArea;
-import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.*;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.persistence.hibernate.ContextHolder;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.testng.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import javax.ejb.EJB;
+import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.UserTransaction;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static mobi.chouette.exchange.report.ReportConstant.STATUS_OK;
+import static org.testng.Assert.assertEquals;
 
 public class RegtoppImporterCommandTest extends Arquillian implements mobi.chouette.common.Constant {
 
@@ -100,8 +92,17 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml").resolve("mobi.chouette:mobi.chouette.exchange.regtopp", "mobi.chouette:mobi.chouette.dao")
 				.withTransitivity().asFile();
 
-		result = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml").addAsLibraries(files).addClass(DummyChecker.class)
-				.addClass(RegtoppTestUtils.class).addClass(JobDataTest.class).addAsResource(EmptyAsset.INSTANCE, "beans.xml");
+		result = ShrinkWrap.create(WebArchive.class, "test.war")
+				.addAsWebInfResource("postgres-ds.xml")
+				.addAsLibraries(files)
+				.addClass(DummyChecker.class)
+				.addClass(RegtoppTestUtils.class)
+				.addClass(JobDataTest.class)
+				.addClass(uk.org.siri.siri.ObjectFactory.class)
+				.addClass(no.rutebanken.netex.model.ObjectFactory.class)
+				.addClass(net.opengis.gml._3.ObjectFactory.class)
+				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
+
 		return result;
 
 	}
