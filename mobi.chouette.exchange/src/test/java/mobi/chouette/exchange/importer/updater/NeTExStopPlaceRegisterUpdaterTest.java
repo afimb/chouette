@@ -33,6 +33,12 @@ public class NeTExStopPlaceRegisterUpdaterTest {
         stopArea.setLongitude(new BigDecimal(10.7913503));
         stopArea.setObjectId("123");
         stopArea.setSaved(true);
+
+        StopArea boardingPosition = new StopArea();
+        boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
+        boardingPosition.setObjectId("345");
+        boardingPosition.setParent(stopArea);
+
         Context context = new Context();
 
         Map<String, StopArea> stopAreas = map(stopArea);
