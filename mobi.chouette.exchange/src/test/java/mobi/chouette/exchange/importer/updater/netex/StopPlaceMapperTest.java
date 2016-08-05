@@ -54,6 +54,24 @@ public class StopPlaceMapperTest {
 
     }
 
+    /**
+     * A single boarding position must be mapped to quay with a parent stop place.
+     */
+    @Test
+    public void boardingPositionWithoutParentStopPlace() {
+        StopArea boardingPosition = createBoardingPosition("boarding position");
+
+        StopPlace netexStopPlace = stopPlaceMapper.mapStopAreaToStopPlace(boardingPosition);
+
+        assertEquals(netexStopPlace.getName().getValue(), boardingPosition.getName());
+
+        assertNotNull(netexStopPlace.getQuays());
+        assertEquals(4netexStopPlace.getQuays().getQuayRefOrQuay().size(), 1);
+        assertEquals(((Quay) netexStopPlace.getQuays().getQuayRefOrQuay().get(0)).getName().getValue(), boardingPosition.getName());
+
+    }
+
+
     @Test
     public void stopPlaceWithoutBoardingPositions() {
         StopArea stopPlace = createStopPlace("Klavestadhaugen");

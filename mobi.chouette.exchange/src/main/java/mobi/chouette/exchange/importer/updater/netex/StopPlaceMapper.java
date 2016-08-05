@@ -13,30 +13,51 @@ public class StopPlaceMapper {
 
         if(stopArea.getAreaType().equals(ChouetteAreaEnum.BoardingPosition)) {
             if(stopArea.getParent() != null) {
+                // Boarding position with parent
+
                 StopPlace parentStopPlace = mapStopAreaToStopPlace(stopArea.getParent());
                 return parentStopPlace;
+            } else {
+                // Boarding position without parent stop place.
+
+                StopPlace stopPlace = createStopPlace(stopArea);
+                Quay quay = createQuay(stopArea);
+                stopPlace.setQuays(new Quays_RelStructure());
+                stopPlace.getQuays().getQuayRefOrQuay().add(quay);
+                return stopPlace;
             }
         }
 
-        StopPlace stopPlace = new StopPlace();
+        // StopPlace with contained stop areas
 
-        mapId(stopArea, stopPlace);
-        mapCentroid(stopArea, stopPlace);
-        mapName(stopArea, stopPlace);
+        StopPlace stopPlace = createStopPlace(stopArea);
 
         if(stopArea.getAreaType() != null && stopArea.getAreaType().equals(ChouetteAreaEnum.StopPlace)) {
             stopPlace.setQuays(new Quays_RelStructure());
 
             stopArea.getContainedStopAreas().forEach(boardingPosition ->  {
-                        Quay quay = new Quay();
-                        mapId(boardingPosition, quay);
-                        mapCentroid(boardingPosition, quay);
-                        mapName(boardingPosition, quay);
+                        Quay quay = createQuay(boardingPosition);
                         stopPlace.getQuays().getQuayRefOrQuay().add(quay);
                     });
         }
 
         return stopPlace;
+    }
+
+    private StopPlace createStopPlace(StopArea stopArea) {
+        StopPlace stopPlace = new StopPlace();
+        mapId(stopArea, stopPlace);
+        mapCentroid(stopArea, stopPlace);
+        mapName(stopArea, stopPlace);
+        return stopPlace;
+    }
+
+    private Quay createQuay(StopArea stopArea) {
+        Quay quay = new Quay();
+        mapId(stopArea, quay);
+        mapCentroid(stopArea, quay);
+        mapName(stopArea, quay);
+        return quay;
     }
 
     private void mapId(StopArea stopArea, Zone_VersionStructure zone) {

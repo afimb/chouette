@@ -22,7 +22,7 @@ public class NeTExStopPlaceRegisterUpdaterTest {
     /**
      * Test for manually testing the NeTExStopPlaceRegisterUpdater.
      */
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void exportStopArea() throws Exception {
 
         StopArea stopArea = new StopArea();
@@ -38,10 +38,12 @@ public class NeTExStopPlaceRegisterUpdaterTest {
         boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
         boardingPosition.setObjectId("345");
         boardingPosition.setParent(stopArea);
+        boardingPosition.setLatitude(new BigDecimal(59.9202707));
+        boardingPosition.setLongitude(new BigDecimal(10.7913503));
 
         Context context = new Context();
 
-        Map<String, StopArea> stopAreas = map(stopArea);
+        Map<String, StopArea> stopAreas = map(boardingPosition);
 
         neTExStopPlaceRegisterUpdater.update(context, stopAreas, stopAreas);
     }
