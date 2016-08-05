@@ -7,6 +7,7 @@ import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 
@@ -23,8 +24,10 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 		// init checkPoints : add here all defined check points for this kind of
 		// object
 		initCheckPoint(context, LINE_2, SEVERITY.E);
-
+		initCheckPoint(context, LINE_3, SEVERITY.W);
+		
 		// 3-Line-2 : check if line has routes
+		// 3-Line-3 : check if line has at least one route section (plot) or not at all
 		// 4-Line-2 : check if line has valid transport mode
 		// 4-Line-3 : check if line has one group and only one
 		// 4-Line-4 : check if line has one route or one pair (inbound/outbound)
@@ -60,6 +63,10 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 		
 			// 3-Line-2 : check if line has routes
 			check3Line2(context, bean);
+			
+			// 3-Line-3 : check if line has plots
+			check3Line3(context,  bean);
+			
 			// 4-Line-1 : check columns constraints
 			if (test4_1)
 				check4Generic1(context, bean, L4_LINE_1, parameters, log);
@@ -81,11 +88,46 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 
 	/**
 	 * @param context 
-	 * @param report
 	 * @param line1
 	 */
 	private void check3Line2(Context context,  Line line1) {
 		if (isEmpty(line1.getRoutes())) {
+			// failure encountered, add line 1
+			DataLocation location = buildLocation(context,line1);
+
+			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+			reporter.addCheckPointReportError(context, LINE_2, location);
+		}
+	}
+	
+	
+	/**
+	 * @param context 
+	 * @param line1
+	 */
+	private void check3Line3(Context context,  Line line1) {
+		if (!isEmpty(line1.getRoutes())) {
+			for(Route route: line1.getRoutes()) {
+				if(!isEmpty(route.getJourneyPatterns())) {
+					for(JourneyPattern jp: route.getJourneyPatterns()) {
+						if(!isEmpty(jp.getRouteSections())) {
+							int nbTrace = jp.getRouteSections().size();
+							// 3-Line-3 : check if line has at least one route section (plot)
+							if((nbTrace < jp.getStopPoints().size() - 1) && nbTrace > 0) {
+								DataLocation location = buildLocation(context,jp);
+
+								ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+								reporter.addCheckPointReportError(context, LINE_3, location, "Journey Pattern " + jp.getName() + " have less plots (route section) than planned ");
+							} else if (nbTrace == 0) { // 3-Line-3 : check if line doesn't have any route section (plot)
+								DataLocation location = buildLocation(context,jp);
+
+								ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+								reporter.addCheckPointReportError(context, LINE_3, location, "Line " + line1.getName() + " doesn't have any route sections (plots)");
+							}
+						}
+					}
+				}
+			}
 			// failure encountered, add line 1
 			DataLocation location = buildLocation(context,line1);
 

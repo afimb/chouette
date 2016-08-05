@@ -74,6 +74,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static final String ACCESS_LINK_3 = "3-AccessLink-3";
 	protected static final String LINE_1 = "3-Line-1";
 	protected static final String LINE_2 = "3-Line-2";
+	protected static final String LINE_3 = "3-Line-3";
 	protected static final String ROUTE_1 = "3-Route-1";
 	protected static final String ROUTE_2 = "3-Route-2";
 	protected static final String ROUTE_3 = "3-Route-3";
@@ -84,7 +85,9 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static final String ROUTE_8 = "3-Route-8";
 	protected static final String ROUTE_9 = "3-Route-9";
 	protected static final String ROUTE_10 = "3-Route-10";
+	protected static final String ROUTE_SECTION_1 = "3-RouteSection-1";
 	protected static final String JOURNEY_PATTERN_1 = "3-JourneyPattern-1";
+	protected static final String JOURNEY_PATTERN_2 = "3-JourneyPattern-2";
 	protected static final String VEHICLE_JOURNEY_1 = "3-VehicleJourney-1";
 	protected static final String VEHICLE_JOURNEY_2 = "3-VehicleJourney-2";
 	protected static final String VEHICLE_JOURNEY_3 = "3-VehicleJourney-3";

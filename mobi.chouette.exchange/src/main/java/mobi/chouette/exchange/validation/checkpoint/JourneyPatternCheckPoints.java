@@ -30,6 +30,10 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 		// object
 
 		initCheckPoint(context, JOURNEY_PATTERN_1, SEVERITY.W);
+		initCheckPoint(context, JOURNEY_PATTERN_2, SEVERITY.E);
+		// 3-JourneyPattern-1 : check if two journey patterns use same stops
+		// 3-JourneyPattern-2 : Check if journey section routes number equals to journey stops number
+		
 		boolean test4_1 = (parameters.getCheckJourneyPattern() != 0);
 		if (test4_1) {
 			initCheckPoint(context, L4_JOURNEY_PATTERN_1, SEVERITY.E);
@@ -42,6 +46,9 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 
 			// 3-JourneyPattern-1 : check if two journey patterns use same stops
 			check3JourneyPattern1(context, beans, i, jp);
+			
+			// 3-JourneyPattern-2 : Check if journey section route number equals to journey stops number
+			check3JourneyPattern2(context, beans, i, jp);
 
 			// 4-JourneyPattern-1 : check columns constraints
 			if (test4_1)
@@ -75,5 +82,29 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 		}
 
 	}
+	
+	// 3-JourneyPattern-2 : Check if journey section route number equals to journey stops number
+		private void check3JourneyPattern2(Context context, List<JourneyPattern> beans, int jpRank,
+				JourneyPattern jp) {
+			if (beans.size() <= 1)
+				return;
+			prepareCheckPoint(context, JOURNEY_PATTERN_2);
+			int routeSectionCount = jp.getRouteSections().size();
+		
+			for (int j = jpRank + 1; j < beans.size(); j++) {
+				JourneyPattern jp2 = beans.get(j);
+				
+				if (jp.equals(jp2)) {
+					// If journey section route number not equals to journey stops number
+					if(routeSectionCount != jp2.getStopPoints().size() - 1) {
+						DataLocation location = buildLocation(context,jp);
+						DataLocation targetLocation = buildLocation(context,jp2);
+
+						ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+						reporter.addCheckPointReportError(context,JOURNEY_PATTERN_2, location,  "Journey pattern "+ jp.getName() + " route section list is not complete." ,null, targetLocation);
+					}
+				}	
+			}
+		}
 
 }
