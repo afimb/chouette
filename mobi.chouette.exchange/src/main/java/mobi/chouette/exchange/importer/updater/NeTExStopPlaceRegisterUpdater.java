@@ -1,19 +1,20 @@
 package mobi.chouette.exchange.importer.updater;
 
-import lombok.ToString;
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.PropertyNames;
 import no.rutebanken.netex.client.PublicationDeliveryClient;
 import mobi.chouette.exchange.importer.updater.netex.StopPlaceMapper;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.StopArea;
 import no.rutebanken.netex.model.*;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
-import java.net.ConnectException;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,15 +23,28 @@ import java.util.stream.Collectors;
 @Stateless(name = NeTExStopPlaceRegisterUpdater.BEAN_NAME)
 public class NeTExStopPlaceRegisterUpdater implements Updater<Map<String, StopArea>> {
     public static final String BEAN_NAME = "NeTExStopPlaceRegisterUpdater";
-    
-    private final PublicationDeliveryClient client;
+
+    private PublicationDeliveryClient client;
     private final StopPlaceMapper stopPlaceMapper = new StopPlaceMapper();
 
     private static final ObjectFactory objectFactory = new ObjectFactory();
 
-    public NeTExStopPlaceRegisterUpdater() throws JAXBException {
-        client = new PublicationDeliveryClient("http://localhost:1888/jersey/publication_delivery");
+    @EJB
+    private ContenerChecker contenerChecker;
+
+    public NeTExStopPlaceRegisterUpdater(String url) throws JAXBException {
+        client = new PublicationDeliveryClient(url);
     }
+
+    public NeTExStopPlaceRegisterUpdater(PublicationDeliveryClient client) {
+        this.client = client;
+    }
+
+    public NeTExStopPlaceRegisterUpdater() throws JAXBException {
+        String url = System.getProperty(contenerChecker.getContext() + PropertyNames.STOP_PLACE_REGISTER_URL);
+        this.client = new PublicationDeliveryClient(url);
+    }
+
 
     @Override
     public void update(Context context, Map<String, StopArea> oldValue, Map<String, StopArea> newValue) throws JAXBException {

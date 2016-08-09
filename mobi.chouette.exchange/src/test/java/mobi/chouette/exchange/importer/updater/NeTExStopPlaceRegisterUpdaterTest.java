@@ -1,11 +1,17 @@
 package mobi.chouette.exchange.importer.updater;
 
+import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.Context;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
+import no.rutebanken.netex.client.PublicationDeliveryClient;
+import no.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.junit.Before;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.xml.bind.JAXBException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,9 +20,17 @@ import java.util.Map;
 
 public class NeTExStopPlaceRegisterUpdaterTest {
 
-    private NeTExStopPlaceRegisterUpdater neTExStopPlaceRegisterUpdater = new NeTExStopPlaceRegisterUpdater();
+    private static NeTExStopPlaceRegisterUpdater neTExStopPlaceRegisterUpdater;
 
-    public NeTExStopPlaceRegisterUpdaterTest() throws JAXBException {
+    @BeforeClass
+    public static void setup() throws JAXBException {
+        neTExStopPlaceRegisterUpdater = new NeTExStopPlaceRegisterUpdater(new PublicationDeliveryClient("") {
+            @Override
+            public PublicationDeliveryStructure sendPublicationDelivery(
+                    PublicationDeliveryStructure publicationDelivery) throws JAXBException, IOException {
+                return new PublicationDeliveryStructure();
+            }
+        });
     }
 
     /**
@@ -24,7 +38,6 @@ public class NeTExStopPlaceRegisterUpdaterTest {
      */
     @Test(enabled = true)
     public void exportStopArea() throws Exception {
-
         StopArea stopArea = new StopArea();
         stopArea.setName("Nesbru");
         stopArea.setAreaType(ChouetteAreaEnum.StopPlace);

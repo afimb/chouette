@@ -18,7 +18,9 @@ import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
+import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.PropertyNames;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
@@ -49,6 +51,9 @@ public class LineRegisterCommand implements Command {
 	private LineDAO lineDAO;
 
 	@EJB
+	private ContenerChecker checker;
+
+	@EJB
 	private VehicleJourneyDAO vehicleJourneyDAO;
 
 	@EJB(beanName = LineUpdater.BEAN_NAME)
@@ -73,7 +78,12 @@ public class LineRegisterCommand implements Command {
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
-		stopPlaceRegisterUpdater.update(context, referential.getStopAreas(), referential.getStopAreas());
+		boolean shouldUpdateStopPlaceRegistry = Boolean.parseBoolean(System.getProperty(checker.getContext() + PropertyNames.STOP_PLACE_REGISTER_UPDATE));
+		if(shouldUpdateStopPlaceRegistry) {
+			stopPlaceRegisterUpdater.update(context, referential.getStopAreas(), referential.getStopAreas());
+		} else {
+			log.warn("Property " + PropertyNames.STOP_PLACE_REGISTER_UPDATE + " is not set. Stop Place register will not be updated.");
+		}
 
 		Line newValue = referential.getLines().values().iterator().next();
 		log.info("register line : " + newValue.getObjectId() + " " + newValue.getName() + " vehicleJourney count = "
