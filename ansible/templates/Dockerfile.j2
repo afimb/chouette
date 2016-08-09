@@ -44,6 +44,9 @@ RUN rm -rf /opt/jboss/wildfly/standalone/configuration/standalone_xml_history \
 # The argument comes from chouette doc: https://github.com/afimb/chouette/blob/master/doc/install/wildfly.md
 #CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-c", "standalone-full.xml"]
 
+# Running as root, in order to get mounted volume writable:
+USER root
+
 # This argument comes from https://github.com/jboss-dockerfiles/wildfly
 # It enables the admin interface.
 
