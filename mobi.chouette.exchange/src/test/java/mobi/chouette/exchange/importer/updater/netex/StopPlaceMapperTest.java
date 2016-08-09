@@ -66,7 +66,7 @@ public class StopPlaceMapperTest {
         assertEquals(netexStopPlace.getName().getValue(), boardingPosition.getName());
 
         assertNotNull(netexStopPlace.getQuays());
-        assertEquals(4netexStopPlace.getQuays().getQuayRefOrQuay().size(), 1);
+        assertEquals(netexStopPlace.getQuays().getQuayRefOrQuay().size(), 1);
         assertEquals(((Quay) netexStopPlace.getQuays().getQuayRefOrQuay().get(0)).getName().getValue(), boardingPosition.getName());
 
     }

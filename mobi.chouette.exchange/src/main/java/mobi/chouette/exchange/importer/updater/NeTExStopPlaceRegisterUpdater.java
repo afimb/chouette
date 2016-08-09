@@ -35,12 +35,12 @@ public class NeTExStopPlaceRegisterUpdater implements Updater<Map<String, StopAr
     @Override
     public void update(Context context, Map<String, StopArea> oldValue, Map<String, StopArea> newValue) throws JAXBException {
 
-        log.info("Received " + newValue.values().size() + " stop areas");
+        log.info("Received " + newValue.values().size() + " stop areas to update");
 
         List<StopPlace> stopPlaces = newValue.values().stream()
-                .peek(stopArea -> log.info(stopArea.getId()
-                        +" "+ stopArea.getObjectId()
-                        + " " + stopArea.getName()
+                .peek(stopArea -> log.debug("id: " + stopArea.getId()
+                        + " objectId: "+ stopArea.getObjectId()
+                        + " name: " + stopArea.getName()
                         + " type: " + stopArea.getAreaType()
                         + " isSaved:" + stopArea.isSaved()
                         + " is detached: " + stopArea.isDetached()))
@@ -50,7 +50,7 @@ public class NeTExStopPlaceRegisterUpdater implements Updater<Map<String, StopAr
                 .collect(Collectors.toList());
 
         if(stopPlaces.isEmpty()) {
-            log.info("No stop places to update.");
+            log.info("No stop places to update. Either they do not have objectId set or, they are not saved.");
             return;
         }
 
