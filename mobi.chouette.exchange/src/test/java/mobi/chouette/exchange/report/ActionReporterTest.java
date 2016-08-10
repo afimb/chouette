@@ -2,14 +2,7 @@ package mobi.chouette.exchange.report;
 
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.ActionReporter;
-import mobi.chouette.exchange.report.IO_TYPE;
-import mobi.chouette.exchange.validation.report.DataLocation;
-import mobi.chouette.exchange.validation.report.ValidationReport;
-import mobi.chouette.exchange.validation.report.ValidationReporter;
 
-import org.codehaus.jettison.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

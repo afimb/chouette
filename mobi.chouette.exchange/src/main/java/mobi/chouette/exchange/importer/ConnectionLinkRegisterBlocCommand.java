@@ -41,6 +41,7 @@ public class ConnectionLinkRegisterBlocCommand implements Command {
 	@EJB(beanName = ConnectionLinkUpdater.BEAN_NAME)
 	private Updater<ConnectionLink> connectionLinkUpdater;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public boolean execute(Context context) throws Exception {

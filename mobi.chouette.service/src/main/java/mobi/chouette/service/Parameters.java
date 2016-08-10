@@ -20,6 +20,7 @@ public class Parameters {
 
 	private ValidationParameters validation;
 	
+	@SuppressWarnings("rawtypes")
 	public Parameters(String jsonSource,InputValidator inputValidator) throws Exception
 	{
 		if (inputValidator == null) return;

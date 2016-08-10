@@ -7,7 +7,6 @@ import javax.naming.InitialContext;
 
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
@@ -19,10 +18,10 @@ public class LineRegisterCommandTest implements Constant {
 	
 	
 	private LineRegisterCommand lineRegister = null;
-	private Context context = new Context();
 	
 	
 	
+	@SuppressWarnings("deprecation")
 	@Test (groups = { "write" }, description = "write command")
 	public void testLineRegisterWrite() throws Exception 
 	{
@@ -30,7 +29,7 @@ public class LineRegisterCommandTest implements Constant {
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
 		
-		StringWriter buffer = new StringWriter();
+		StringWriter buffer = new StringWriter(); 
 		VehicleJourney neptuneObject = new VehicleJourney();
 	    neptuneObject.setId(4321L);
 	    StopPoint sp = new StopPoint();

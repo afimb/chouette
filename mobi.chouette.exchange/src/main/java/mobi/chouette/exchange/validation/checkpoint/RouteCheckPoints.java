@@ -29,8 +29,10 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		List<Route> beans = new ArrayList<>(data.getRoutes());
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		if (isEmpty(beans))
-			return ;
-//		Monitor monitor = MonitorFactory.start(this.getClass().getSimpleName());
+			return;
+		// Monitor monitor =
+		// MonitorFactory.start(this.getClass().getSimpleName());
+		boolean sourceFile = context.get(SOURCE).equals(SOURCE_FILE);
 		// init checkPoints : add here all defined check points for this kind of
 		// object
 		// 3-Route-1 : check if two successive stops are in same area
@@ -48,14 +50,15 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		initCheckPoint(context, ROUTE_3, SEVERITY.W);
 		initCheckPoint(context, ROUTE_4, SEVERITY.W);
 		initCheckPoint(context, ROUTE_5, SEVERITY.W);
-		initCheckPoint(context, ROUTE_6, SEVERITY.E);
-		initCheckPoint(context, ROUTE_7, SEVERITY.E);
+		if (!sourceFile) {
+			initCheckPoint(context, ROUTE_6, SEVERITY.E);
+			initCheckPoint(context, ROUTE_7, SEVERITY.E);
+			// checkPoint is applicable
+			prepareCheckPoint(context, ROUTE_6);
+			prepareCheckPoint(context, ROUTE_7);
+		}
 		initCheckPoint(context, ROUTE_8, SEVERITY.W);
 		initCheckPoint(context, ROUTE_9, SEVERITY.W);
-
-		// checkPoint is applicable
-		prepareCheckPoint(context, ROUTE_6);
-		prepareCheckPoint(context, ROUTE_7);
 
 		boolean test4_1 = (parameters.getCheckRoute() != 0);
 		if (test4_1) {
@@ -68,41 +71,43 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 			Route route = beans.get(i);
 
 			// 3-Route-1 : check if two successive stops are in same area
-			check3Route1(context,route);
+			check3Route1(context, route);
 
 			// 3-Route-2 : check if two wayback routes are actually waybacks
-			check3Route2(context,  route);
+			check3Route2(context, route);
 
 			// 3-Route-3 : check distance between stops
 			check3Route3(context, route, parameters);
 
-			// 3-Route-6 : check if route has minimum 2 StopPoints
-			check3Route6(context,  route);
+			if (!sourceFile) {
+				// 3-Route-6 : check if route has minimum 2 StopPoints
+				check3Route6(context, route);
 
-			// 3-Route-7 : check if route has minimum 1 JourneyPattern
-			check3Route7(context,  route);
+				// 3-Route-7 : check if route has minimum 1 JourneyPattern
+				check3Route7(context, route);
+			}
 
 			// 3-Route-8 : check if all stopPoints are used by journeyPatterns
-			check3Route8(context,  route);
+			check3Route8(context, route);
 
 			// 3-Route-9 : check if one journeyPattern uses all stopPoints
-			check3Route9(context,  route);
+			check3Route9(context, route);
 
 			// 4-Route-1 : check columns constraints
 			if (test4_1)
-				check4Generic1(context,  route, L4_ROUTE_1, parameters, log);
+				check4Generic1(context, route, L4_ROUTE_1, parameters, log);
 
 			for (int j = i + 1; j < beans.size(); j++) {
 				// 3-Route-4 : check identical routes
-				check3Route4(context,  i, route, j, beans.get(j));
+				check3Route4(context, i, route, j, beans.get(j));
 
 				// 3-Route-5 : check for potentially waybacks
-				check3Route5(context,  i, route, j, beans.get(j));
+				check3Route5(context, i, route, j, beans.get(j));
 			}
 
 		}
-//		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
-		return ;
+		// log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
+		return;
 	}
 
 	/**
@@ -122,7 +127,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 				DataLocation targetLocation = buildLocation(context, areas.get(j));
 
 				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-				reporter.addCheckPointReportError(context,ROUTE_1, location, null,null,targetLocation);
+				reporter.addCheckPointReportError(context, ROUTE_1, location, null, null, targetLocation);
 				break;
 			}
 		}
@@ -174,11 +179,11 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 
 			}
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-			reporter.addCheckPointReportError(context,ROUTE_2, location,null,null, target1, target2);
+			reporter.addCheckPointReportError(context, ROUTE_2, location, null, null, target1, target2);
 		}
 	}
 
-	private void check3Route3(Context context,  Route route, ValidationParameters parameters) {
+	private void check3Route3(Context context, Route route, ValidationParameters parameters) {
 		List<StopArea> areas = NeptuneUtil.getStopAreaOfRoute(route);
 		if (isEmpty(areas))
 			return;
@@ -211,7 +216,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 				DataLocation target2 = buildLocation(context, nextArea);
 
 				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-				reporter.addCheckPointReportError(context,ROUTE_3 , "1", location, Integer.toString((int) distance),
+				reporter.addCheckPointReportError(context, ROUTE_3, "1", location, Integer.toString((int) distance),
 						Integer.toString((int) distanceMin), target1, target2);
 				break; // do not check for oder stops in this route
 			}
@@ -221,7 +226,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 				DataLocation target2 = buildLocation(context, nextArea);
 
 				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-				reporter.addCheckPointReportError(context,ROUTE_3 , "2", location, Integer.toString((int) distance),
+				reporter.addCheckPointReportError(context, ROUTE_3, "2", location, Integer.toString((int) distance),
 						Integer.toString((int) distanceMin), target1, target2);
 				break; // do not check for oder stops in this route
 			}
@@ -229,7 +234,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 
 	}
 
-	private void check3Route4(Context context,  int rank, Route route, int rank2, Route route2) {
+	private void check3Route4(Context context, int rank, Route route, int rank2, Route route2) {
 		// 3-Route-4 : check identical routes
 		if (isEmpty(route.getStopPoints()))
 			return;
@@ -248,7 +253,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("routeId", route2.getObjectId());
 				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-				reporter.addCheckPointReportError(context,ROUTE_4, location, null,null,target);
+				reporter.addCheckPointReportError(context, ROUTE_4, location, null, null, target);
 			}
 		}
 
@@ -260,7 +265,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 	 * @param routeRank
 	 * @param route
 	 */
-	private void check3Route5(Context context,  int rank, Route route, int rankWb, Route routeWb) {
+	private void check3Route5(Context context, int rank, Route route, int rankWb, Route routeWb) {
 		// 3-Route-5 : check for potentially waybacks
 		if (route.getOppositeRoute() != null)
 			return;
@@ -288,7 +293,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 				DataLocation target = buildLocation(context, routeWb);
 
 				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-				reporter.addCheckPointReportError(context,ROUTE_5, location, null,null,target);
+				reporter.addCheckPointReportError(context, ROUTE_5, location, null, null, target);
 			}
 		}
 	}
@@ -297,13 +302,13 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 	 * @param report
 	 * @param route
 	 */
-	private void check3Route6(Context context,  Route route) {
+	private void check3Route6(Context context, Route route) {
 		// 3-Route-6 : check if route has minimum 2 StopPoints
 		if (isEmpty(route.getStopPoints()) || route.getStopPoints().size() < 2) {
 			// failure encountered, add route 1
 			DataLocation location = buildLocation(context, route);
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-			reporter.addCheckPointReportError(context,ROUTE_6, location);
+			reporter.addCheckPointReportError(context, ROUTE_6, location);
 		}
 	}
 
@@ -317,7 +322,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 			// failure encountered, add route 1
 			DataLocation location = buildLocation(context, route);
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-			reporter.addCheckPointReportError(context,ROUTE_7, location);
+			reporter.addCheckPointReportError(context, ROUTE_7, location);
 		}
 	}
 
@@ -325,15 +330,16 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 	 * @param report
 	 * @param route
 	 */
-	private void check3Route8(Context context,  Route route) {
+	private void check3Route8(Context context, Route route) {
 		// 3-Route-8 : check if all stopPoints are used by journeyPatterns
 		if (isEmpty(route.getJourneyPatterns()))
 			return;
 		prepareCheckPoint(context, ROUTE_8);
 		List<StopPoint> points = new ArrayList<StopPoint>(route.getStopPoints());
 		for (Iterator<StopPoint> iterator = points.iterator(); iterator.hasNext();) {
-			StopPoint stopPoint =  iterator.next();
-			if (stopPoint == null) iterator.remove();
+			StopPoint stopPoint = iterator.next();
+			if (stopPoint == null)
+				iterator.remove();
 		}
 		for (JourneyPattern jp : route.getJourneyPatterns()) {
 			points.removeAll(jp.getStopPoints());
@@ -350,7 +356,8 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 			}
 			DataLocation location = buildLocation(context, route);
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-			reporter.addCheckPointReportError(context,ROUTE_8, location, Integer.toString(points.size()),null, targets);
+			reporter.addCheckPointReportError(context, ROUTE_8, location, Integer.toString(points.size()), null,
+					targets);
 		}
 	}
 
@@ -358,7 +365,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 	 * @param report
 	 * @param route
 	 */
-	private void check3Route9(Context context,  Route route) {
+	private void check3Route9(Context context, Route route) {
 		// 3-Route-9 : check if one journeyPattern uses all stopPoints
 		if (isEmpty(route.getJourneyPatterns()))
 			return;
@@ -375,9 +382,8 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 			// failure encountered, add route 1
 			DataLocation location = buildLocation(context, route);
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-			reporter.addCheckPointReportError(context,ROUTE_9, location);
+			reporter.addCheckPointReportError(context, ROUTE_9, location);
 		}
 	}
-
 
 }

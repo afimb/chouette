@@ -9,8 +9,6 @@ import java.util.Map;
 
 import javax.ejb.EJB;
 
-import lombok.extern.log4j.Log4j;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.testng.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -23,7 +21,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Log4j
 public class JobServiceManagerTest extends Arquillian {
 
 	@EJB

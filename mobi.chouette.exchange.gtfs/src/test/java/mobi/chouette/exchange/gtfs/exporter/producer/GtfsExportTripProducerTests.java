@@ -228,7 +228,8 @@ public class GtfsExportTripProducerTests
    /**
     * @return
     */
-   private VehicleJourney buildNeptuneObject(boolean full)
+   @SuppressWarnings("deprecation")
+private VehicleJourney buildNeptuneObject(boolean full)
    {
       VehicleJourney neptuneObject = new VehicleJourney();
       neptuneObject.setObjectId("GTFS:VehicleJourney:4321");

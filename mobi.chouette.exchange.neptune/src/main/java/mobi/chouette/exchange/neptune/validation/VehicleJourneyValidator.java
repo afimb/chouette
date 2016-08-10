@@ -23,27 +23,16 @@ import mobi.chouette.model.util.Referential;
 public class VehicleJourneyValidator extends AbstractValidator implements Validator<VehicleJourney> , Constant{
 
 	public static final String TIME_SLOT_ID = "timeSlotId";
-
 	public static final String ORDER = "order";
-
 	public static final String STOP_POINT_ID = "stopPointId";
-
 	public static final String VEHICLE_JOURNEY_ID = "vehicleJourneyId";
-
 	public static final String VEHICLE_JOURNEY_AT_STOPS = "vehicleJourneyAtStops";
-
 	public static final String OPERATOR_ID = "operatorId";
-
 	public static final String ROUTE_ID = "routeId";
-
 	public static final String JOURNEY_PATTERN_ID = "journeyPatternId";
-
 	public static final String LINE_ID_SHORTCUT = "lineIdShortcut";
-	
 	public static final String WAITING_TIME = "waitingTime";
-	
 	public static final String ELAPSE_DURATION = "elapseDuration";
-	
 	public static final String HEADWAY_FREQUENCY = "headwayFrequency";
 
 	public static String NAME = "VehicleJourneyValidator";

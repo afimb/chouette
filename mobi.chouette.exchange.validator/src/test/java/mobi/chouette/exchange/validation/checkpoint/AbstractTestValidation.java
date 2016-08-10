@@ -131,6 +131,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 		test.setReferential( "chouette_gui");
 		test.setAction( VALIDATOR);
 		context.put("testng", "true");
+		context.put(SOURCE, SOURCE_DATABASE);
 		context.put(OPTIMIZED, Boolean.FALSE);
 		return context;
 

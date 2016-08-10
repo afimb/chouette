@@ -45,6 +45,7 @@ public class StopAreaRegisterBlocCommand implements Command {
 	@EJB(beanName = StopAreaUpdater.BEAN_NAME)
 	private Updater<StopArea> stopUpdater;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public boolean execute(Context context) throws Exception {
