@@ -14,6 +14,7 @@ import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
 import mobi.chouette.exchange.regtopp.importer.parser.RouteKey;
+import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppStopParser;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppRouteTMS;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Footnote;
@@ -63,7 +64,7 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 				Company company = addAuthority(referential, configuration, routeSegment.getAdminCode());
 				line.setCompany(company);
 
-				// TODO Add footnoe to line
+				// TODO Add footnote to line
 				addFootnote(routeSegment.getRemarkId(), null, footnotes, importer);
 
 				// Create route
@@ -107,7 +108,7 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 		StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
 		stopPoint.setPosition(Integer.parseInt(routeSegment.getSequenceNumberStop()));
 
-		String regtoppId = routeSegment.getStopId();
+		String regtoppId = routeSegment.getStopId() + RegtoppStopParser.BOARDING_POSITION_ID_SUFFIX;
 		String chouetteStopAreaId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPAREA_KEY, regtoppId);
 
 		StopArea stopArea = ObjectFactory.getStopArea(referential, chouetteStopAreaId);

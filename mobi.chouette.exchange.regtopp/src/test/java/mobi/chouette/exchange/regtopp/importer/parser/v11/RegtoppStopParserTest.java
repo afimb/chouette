@@ -11,6 +11,7 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import org.testng.annotations.Test;
 
+import javax.ejb.EJB;
 import java.math.BigDecimal;
 
 import static org.testng.Assert.*;
@@ -22,7 +23,7 @@ public class RegtoppStopParserTest {
 
     @Test
     public void stopAreaShouldBeStopPlaceType() throws Exception {
-        AbstractRegtoppStopHPL regtoppStop = createStop("12345678");
+        AbstractRegtoppStopHPL regtoppStop = createStop("12345618");
         RegtoppImportParameters configuration = createConfig("prefix");
 
         regtoppStopParser.mapRegtoppStop(regtoppStop, configuration, referential, Coordinate.UTM_32N);
@@ -33,7 +34,7 @@ public class RegtoppStopParserTest {
 
     @Test
     public void stopAreaShouldContainBoardingPosition() throws Exception {
-        AbstractRegtoppStopHPL regtoppStop = createStop("12345678");
+        AbstractRegtoppStopHPL regtoppStop = createStop("12345680");
         RegtoppImportParameters configuration = createConfig("prefix");
 
         regtoppStopParser.mapRegtoppStop(regtoppStop, configuration, referential, Coordinate.UTM_32N);
@@ -45,15 +46,13 @@ public class RegtoppStopParserTest {
 
     @Test
     public void stopAreaShouldHaveEightDigitsId() throws Exception {
-        AbstractRegtoppStopHPL regtoppStop = createStop("12345678");
+        AbstractRegtoppStopHPL regtoppStop = createStop("12345679");
         RegtoppImportParameters configuration = createConfig("prefix");
 
         regtoppStopParser.mapRegtoppStop(regtoppStop, configuration, referential, Coordinate.UTM_32N);
 
         StopArea stopArea = getStopArea(configuration, regtoppStop.getStopId());
-        StopArea boardingPosition = stopArea.getContainedStopAreas().get(0);
-
-        assertEquals(boardingPosition.objectIdSuffix().length(), 8);
+        assertEquals(stopArea.objectIdSuffix().length(), 8);
     }
 
     @Test
@@ -64,7 +63,19 @@ public class RegtoppStopParserTest {
         regtoppStopParser.mapRegtoppStop(regtoppStop, configuration, referential, Coordinate.UTM_32N);
 
         StopArea stopArea = getStopArea(configuration, regtoppStop.getStopId());
-        assertEquals(stopArea.objectIdSuffix().length(), 10, stopArea.getObjectId());
+        assertEquals(stopArea.getContainedStopAreas().get(0).objectIdSuffix().length(), 10, stopArea.getObjectId());
+    }
+
+    @Test
+    public void parentStopAreaShouldBeSet() throws Exception {
+        AbstractRegtoppStopHPL regtoppStop = createStop("11020517");
+        RegtoppImportParameters configuration = createConfig("prefix");
+
+        regtoppStopParser.mapRegtoppStop(regtoppStop, configuration, referential, Coordinate.UTM_32N);
+
+        StopArea boardingPosition = getStopArea(configuration, regtoppStop.getStopId() + RegtoppStopParser.BOARDING_POSITION_ID_SUFFIX);
+
+        assertNotNull(boardingPosition.getParent());
     }
 
     private RegtoppImportParameters createConfig(String prefix) {

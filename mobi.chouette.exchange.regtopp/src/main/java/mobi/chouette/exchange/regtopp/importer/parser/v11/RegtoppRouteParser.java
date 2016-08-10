@@ -101,8 +101,8 @@ public class RegtoppRouteParser extends LineSpecificParser {
 						StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
 						stopPoint.setPosition(i);
 
-						String chouetteStopAreaId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPAREA_KEY,
-								routeSegment.getStopId());
+						String chouetteStopAreaId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
+								ObjectIdTypes.STOPAREA_KEY,  routeSegment.getStopId() + RegtoppStopParser.BOARDING_POSITION_ID_SUFFIX);
 
 						StopArea stopArea = ObjectFactory.getStopArea(referential, chouetteStopAreaId);
 
