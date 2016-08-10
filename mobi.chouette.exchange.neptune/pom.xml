@@ -206,6 +206,8 @@
 					</execution>
 				</executions>
 				<configuration>
+					<clearOutputDir>false</clearOutputDir>
+					<generateEpisode>false</generateEpisode>
 					<!-- <sources>
 						<source>src/main/xsd/neptune.xsd</source>
 				  </sources> -->
@@ -216,6 +218,21 @@
 						<argument>src/main/xsd/bindings.xml</argument> -->
 					</arguments>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals><goal>add-source</goal></goals>
+						<configuration>
+							<sources>
+								<source>target/generated-sources/jaxb</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
