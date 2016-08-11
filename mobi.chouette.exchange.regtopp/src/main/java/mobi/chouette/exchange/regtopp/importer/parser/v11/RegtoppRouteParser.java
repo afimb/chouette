@@ -15,6 +15,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.regtopp.RegtoppConstant;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
@@ -60,6 +61,8 @@ public class RegtoppRouteParser extends LineSpecificParser {
 
 		Index<RegtoppRouteTDA> routeIndex = importer.getRouteSegmentByLineNumber();
 		Index<AbstractRegtoppTripIndexTIX> tripIndex = importer.getTripIndex();
+		
+		String calendarStartDate = (String) context.get(RegtoppConstant.CALENDAR_START_DATE);
 
 		for (AbstractRegtoppTripIndexTIX abstractTrip : tripIndex) {
 			if (abstractTrip.getLineId().equals(lineId)) {
@@ -76,7 +79,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 				line.setCompany(company);
 
 				// Create route
-				RouteKey routeKey = new RouteKey(trip.getLineId(), trip.getDirection(), trip.getRouteIdRef());
+				RouteKey routeKey = new RouteKey(trip.getLineId(), trip.getDirection(), trip.getRouteIdRef(),calendarStartDate);
 				Route route = createRoute(context, line, trip.getDirection(), trip.getRouteIdRef(), trip.getDestinationIdDepartureRef(), routeKey);
 				
 				String chouetteJourneyPatternId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.JOURNEYPATTERN_KEY,
@@ -252,7 +255,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 		for (Route r : referential.getRoutes().values()) {
 			if (r.getOppositeRoute() == null) {
 				RouteKey key = new RouteKey(AbstractConverter.extractOriginalId(r.getObjectId()));
-				RouteKey oppositeKey = new RouteKey(key.getLineId(), key.getDirection().getOppositeDirection(), key.getRouteId());
+				RouteKey oppositeKey = new RouteKey(key.getLineId(), key.getDirection().getOppositeDirection(), key.getRouteId(),key.getCalendarStartDate());
 				String oppositeObjectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.ROUTE_KEY, oppositeKey.toString());
 				for (Route opposite : referential.getRoutes().values()) {
 					if (opposite.getObjectId().equals(oppositeObjectId)) {

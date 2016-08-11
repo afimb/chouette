@@ -223,8 +223,8 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		assertEquals(bps.size(), 90, "number boarding positions");
 
 		// Check opposite routes
-		Route outbound = routeDao.findByObjectId("TST:Route:2306103");
-		Route inbound = routeDao.findByObjectId("TST:Route:2306203");
+		Route outbound = routeDao.findByObjectId("TST:Route:2306103-2016-03-29");
+		Route inbound = routeDao.findByObjectId("TST:Route:2306203-2016-03-29");
 
 		Assert.assertNotNull(outbound, "Outbound route not found");
 		Assert.assertNotNull(inbound, "Inbound route not found");
@@ -540,7 +540,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		Assert.assertNotNull(line.getRoutes(), "line must have routes");
 		assertEquals(line.getRoutes().size(), 12, "number of routes");
 
-		Route route0002139 = routeDao.findByObjectId("TST:Route:0002139");
+		Route route0002139 = routeDao.findByObjectId("TST:Route:0002139-2016-03-04");
 		Assert.assertNotNull(route0002139);
 		List<JourneyPattern> journeyPatterns = route0002139.getJourneyPatterns();
 		assertEquals(journeyPatterns.size(), 1);

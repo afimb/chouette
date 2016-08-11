@@ -13,6 +13,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.regtopp.RegtoppConstant;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
@@ -63,6 +64,7 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 
 		DaycodeById dayCodeIndex = (DaycodeById) importer.getDayCodeById();
 		RegtoppDayCodeHeaderDKO dayCodeHeader = dayCodeIndex.getHeader();
+		String calendarStartDate = (String) context.get(RegtoppConstant.CALENDAR_START_DATE);
 
 		// Add VehicleJourneys
 		Index<AbstractRegtoppTripIndexTIX> tripIndex = importer.getTripIndex();
@@ -76,7 +78,7 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 					line.setNumber(trip.getLineNumberVisible());
 
 
-					RouteKey routeKey = new RouteKey(trip.getLineId(), trip.getDirection(), trip.getRouteIdRef());
+					RouteKey routeKey = new RouteKey(trip.getLineId(), trip.getDirection(), trip.getRouteIdRef(),calendarStartDate);
 					String chouetteRouteId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.ROUTE_KEY, routeKey.toString());
 					Route route = ObjectFactory.getRoute(referential, chouetteRouteId);
 

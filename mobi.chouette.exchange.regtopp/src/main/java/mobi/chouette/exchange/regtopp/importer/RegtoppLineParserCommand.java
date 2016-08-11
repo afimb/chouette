@@ -17,9 +17,11 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.RegtoppConstant;
+import mobi.chouette.exchange.regtopp.importer.index.v11.DaycodeById;
 import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppLineParser;
 import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppTimetableParser;
 import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.exchange.report.LineInfo;
@@ -52,6 +54,15 @@ public class RegtoppLineParserCommand implements Command {
 				log.error("Referential is null!");
 			}
 			
+			
+			String calendarStartDate = (String) context.get(RegtoppConstant.CALENDAR_START_DATE);
+			if(calendarStartDate == null) {
+				RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
+				DaycodeById dayCodeIndex = (DaycodeById) importer.getDayCodeById();
+				RegtoppDayCodeHeaderDKO header = dayCodeIndex.getHeader();
+				context.put(RegtoppConstant.CALENDAR_START_DATE,header.getDate().toString());
+
+			}
 			VersionHandler versionHandler = (VersionHandler) context.get(RegtoppConstant.VERSION_HANDLER);
 
 			if(versionHandler == null) {
