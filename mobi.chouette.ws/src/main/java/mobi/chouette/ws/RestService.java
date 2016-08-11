@@ -251,7 +251,7 @@ public class RestService implements Constant {
 	@Path("/{ref}/jobs")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response jobs(@PathParam("ref") String referential,
-			@DefaultValue("0") @QueryParam("version") final Long version, @QueryParam("action") final String action) {
+			@DefaultValue("0") @QueryParam("version") final Long version, @QueryParam("action") final String action, @QueryParam("status") final Job.STATUS... status) {
 
 		try {
 			log.info(Color.CYAN + "Call jobs referential = " + referential + ", action = " + action + ", version = "
@@ -262,7 +262,7 @@ public class RestService implements Constant {
 
 			// re factor Parameters dependencies
 			{
-				List<JobService> jobServices = jobServiceManager.jobs(referential, action, version);
+				List<JobService> jobServices = jobServiceManager.jobs(referential, action, version,status);
 				for (JobService jobService : jobServices) {
 					JobInfo jobInfo = new JobInfo(jobService, true, uriInfo);
 					result.add(jobInfo);
