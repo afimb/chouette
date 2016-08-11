@@ -9,6 +9,7 @@ import java.util.List;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.regtopp.RegtoppConstant;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
@@ -49,6 +50,8 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 		Line line = ObjectFactory.getLine(referential, chouetteLineId);
 		List<Footnote> footnotes = line.getFootnotes();
 
+		String calendarStartDate = (String) context.get(RegtoppConstant.CALENDAR_START_DATE);
+		
 		// Add routes and journey patterns
 		Index<AbstractRegtoppRouteTMS> routeIndex = importer.getRouteIndex();
 
@@ -67,7 +70,7 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 				addFootnote(routeSegment.getRemarkId(), null, footnotes, importer);
 
 				// Create route
-				RouteKey routeKey = new RouteKey(routeSegment.getLineId(), routeSegment.getDirection(), routeSegment.getRouteId());
+				RouteKey routeKey = new RouteKey(routeSegment.getLineId(), routeSegment.getDirection(), routeSegment.getRouteId(),calendarStartDate);
 				Route route = createRoute(context, line, routeSegment.getDirection(), routeSegment.getRouteId(), routeSegment.getDestinationId(), routeKey);
 
 				// Create journey pattern
