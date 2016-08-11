@@ -70,7 +70,6 @@ public class RegtoppStopParser implements Parser {
 		boardingPosition.setProjectionType(stopArea.getProjectionType());
 		boardingPosition.setName(stopArea.getName());
 
-		stopArea.setContainedStopAreas(new ArrayList<>(asList(boardingPosition)));
 		boardingPosition.setParent(stopArea);
 	}
 
