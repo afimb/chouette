@@ -454,6 +454,8 @@ public class RegtoppLineParser extends LineSpecificParser {
 
 			String lineName = StringUtils.join(routeNames, " - ");
 			line.setName(lineName);
+		} else if (line.getNumber() != null && line.getName().startsWith(line.getNumber()+" ")) {
+			line.setName(StringUtils.trim(line.getName().substring(line.getNumber().length())));
 		}
 	}
 
