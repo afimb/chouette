@@ -113,6 +113,7 @@ public class RegtoppLineParser extends LineSpecificParser {
 		// Update boarding/alighting at StopPoint
 		updateBoardingAlighting(referential, configuration);
 		updateLineName(referential, line, configuration);
+		updateRouteNames(referential, line, configuration);
 		updateNetworkDate(importer, referential, line, configuration);
 
 	}
@@ -456,6 +457,28 @@ public class RegtoppLineParser extends LineSpecificParser {
 			line.setName(lineName);
 		} else if (line.getNumber() != null && line.getName().startsWith(line.getNumber()+" ")) {
 			line.setName(StringUtils.trim(line.getName().substring(line.getNumber().length())));
+		}
+	}
+
+	private void updateRouteNames(Referential referential, Line line, RegtoppImportParameters configuration) {
+		String lineNumber = line.getNumber();
+		if(StringUtils.trimToNull(lineNumber) != null) {
+			for(Route route : line.getRoutes()) {
+				String updatedName = null;
+				if (route.getName() != null && route.getName().startsWith(line.getNumber()+" ")) {
+					route.setName(StringUtils.trim(route.getName().substring(line.getNumber().length())));
+					
+					updatedName = route.getName();
+					route.setPublishedName(updatedName);
+				}
+				
+				if(updatedName != null) {
+					for(JourneyPattern jp : route.getJourneyPatterns()) {
+						jp.setName(updatedName);
+						jp.setPublishedName(updatedName);
+					}
+				}
+			}
 		}
 	}
 
