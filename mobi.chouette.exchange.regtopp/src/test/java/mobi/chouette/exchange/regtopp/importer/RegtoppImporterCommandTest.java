@@ -328,7 +328,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		assertEquals(line.getFootnotes().size(), 1, "number of line footnotes");
 
 		// Find vehicle journey
-		VehicleJourney vehicleJourney = vjDao.findByObjectId("TST:VehicleJourney:00760015");
+		VehicleJourney vehicleJourney = vjDao.findByObjectId("TST:VehicleJourney:00760015-2016-01-18");
 		Assert.assertNotNull(vehicleJourney, "VehicleJourney not found");
 		List<Footnote> footnotes = vehicleJourney.getFootnotes();
 		Assert.assertNotNull(footnotes, "footnotes list null");
@@ -626,6 +626,41 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		// Assert.assertEquals(journeyPatterns.get(0).getStopPoints().size(), 5);
 		// Assert.assertEquals(journeyPatterns.get(0).getVehicleJourneys().size(), 2);
 
+		utx.rollback();
+
+	}
+
+	//@Test
+	public void importRuterTramDatasetV1() throws Exception {
+		// Prepare context
+		Context context = initImportContext();
+
+		File f = new File("src/test/data/fullsets/rut-20160809135717-Ruter_(Akershus-_og_Oslo_fylke)_100_20160101_20161231_31_v1.zip");
+		File dest = new File("target/referential/test");
+		FileUtils.copyFileToDirectory(f, dest);
+		JobDataTest job = (JobDataTest) context.get(JOB_DATA);
+		job.setInputFilename(f.getName());
+
+		RegtoppImporterCommand command = (RegtoppImporterCommand) CommandFactory.create(initialContext, RegtoppImporterCommand.class.getName());
+
+		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
+		parameters.setObjectIdPrefix("TST");
+		parameters.setReferencesType("line");
+		parameters.setNoSave(false);
+		parameters.setVersion(RegtoppVersion.R13A);
+		parameters.setCoordinateProjection("EPSG:32632");
+		parameters.setCharsetEncoding(RegtoppParameterGuesser.REGTOPP_DEFAULT_ENCODING);
+
+		command.execute(context);
+		dumpReports(context);
+
+		// line should be saved
+		utx.begin();
+		em.joinTransaction();
+
+		List<VehicleJourney> vehicleJourneys = vjDao.findAll();
+		
+		Assert.assertEquals(vehicleJourneys.size(), 5594);
 		utx.rollback();
 
 	}

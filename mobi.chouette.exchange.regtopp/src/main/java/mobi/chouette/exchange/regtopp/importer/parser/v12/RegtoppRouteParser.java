@@ -46,7 +46,7 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 
-		String chouetteLineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY, lineId);
+		String chouetteLineId = AbstractConverter.createLineId(configuration, lineId);
 		Line line = ObjectFactory.getLine(referential, chouetteLineId);
 		List<Footnote> footnotes = line.getFootnotes();
 
@@ -74,16 +74,14 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 				Route route = createRoute(context, line, routeSegment.getDirection(), routeSegment.getRouteId(), routeSegment.getDestinationId(), routeKey);
 
 				// Create journey pattern
-				String chouetteJourneyPatternId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.JOURNEYPATTERN_KEY,
-						routeKey.toString());
+				String chouetteJourneyPatternId = AbstractConverter.createJourneyPatternId(configuration,	routeKey);
 
 				JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, chouetteJourneyPatternId);
 				journeyPattern.setRoute(route);
 				journeyPattern.setPublishedName(route.getPublishedName());
 
 				// Create stop point
-				String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPPOINT_KEY,
-						routeKey + routeSegment.getSequenceNumberStop());
+				String chouetteStopPointId = AbstractConverter.createStopPointId(configuration,routeKey,routeSegment.getSequenceNumberStop());
 
 				// Might return null if invalid stopPoint
 				StopPoint stopPoint = createStopPoint(referential, context, routeSegment, chouetteStopPointId);
@@ -110,8 +108,7 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 		StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
 		stopPoint.setPosition(Integer.parseInt(routeSegment.getSequenceNumberStop()));
 
-		String regtoppId = routeSegment.getStopId();
-		String chouetteStopAreaId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPAREA_KEY, regtoppId);
+		String chouetteStopAreaId = AbstractConverter.createStopAreaId(configuration, routeSegment.getStopId());
 
 		StopArea stopArea = ObjectFactory.getStopArea(referential, chouetteStopAreaId);
 

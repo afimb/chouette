@@ -75,16 +75,7 @@ public class RegtoppTimetableParser implements Parser {
 
 	public Timetable convertTimetable(Referential referential, RegtoppImportParameters configuration, LocalDate calStartDate, RegtoppDayCodeDKO entry, RegtoppDayCodeHeaderDKO header) {
 		
-		String chouetteTimetableId;
-		
-		switch(configuration.getCalendarStrategy()) {
-		case ADD:
-			 chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY, entry.getAdminCode()+entry.getDayCodeId()+"-"+header.getDate().toString());
-			 break;
-		case UPDATE:
-			default:
-			chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY, entry.getAdminCode()+entry.getDayCodeId());
-		}
+		String chouetteTimetableId = AbstractConverter.createTimetableId(configuration, entry.getAdminCode(), entry.getDayCodeId(), header);
 		
 		Timetable timetable = ObjectFactory.getTimetable(referential, chouetteTimetableId);
 

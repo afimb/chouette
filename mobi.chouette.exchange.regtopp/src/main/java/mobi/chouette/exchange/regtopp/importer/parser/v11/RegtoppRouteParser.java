@@ -39,7 +39,6 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.PTDirectionEnum;
 import mobi.chouette.model.util.ObjectFactory;
-import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
@@ -56,12 +55,12 @@ public class RegtoppRouteParser extends LineSpecificParser {
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 
-		String chouetteLineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY, lineId);
+		String chouetteLineId = AbstractConverter.createLineId(configuration, lineId);
 		Line line = ObjectFactory.getLine(referential, chouetteLineId);
 
 		Index<RegtoppRouteTDA> routeIndex = importer.getRouteSegmentByLineNumber();
 		Index<AbstractRegtoppTripIndexTIX> tripIndex = importer.getTripIndex();
-		
+
 		String calendarStartDate = (String) context.get(RegtoppConstant.CALENDAR_START_DATE);
 
 		for (AbstractRegtoppTripIndexTIX abstractTrip : tripIndex) {
@@ -79,11 +78,10 @@ public class RegtoppRouteParser extends LineSpecificParser {
 				line.setCompany(company);
 
 				// Create route
-				RouteKey routeKey = new RouteKey(trip.getLineId(), trip.getDirection(), trip.getRouteIdRef(),calendarStartDate);
+				RouteKey routeKey = new RouteKey(trip.getLineId(), trip.getDirection(), trip.getRouteIdRef(), calendarStartDate);
 				Route route = createRoute(context, line, trip.getDirection(), trip.getRouteIdRef(), trip.getDestinationIdDepartureRef(), routeKey);
-				
-				String chouetteJourneyPatternId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.JOURNEYPATTERN_KEY,
-						routeKey.toString());
+
+				String chouetteJourneyPatternId = AbstractConverter.createJourneyPatternId(configuration, routeKey);
 
 				JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, chouetteJourneyPatternId);
 				if (!journeyPattern.isFilled()) {
@@ -97,15 +95,14 @@ public class RegtoppRouteParser extends LineSpecificParser {
 						// TODO use another identifier as it causes duplicate stoppoints in route
 						String lineNumber = StringUtils.leftPad("" + (Integer.parseInt(firstStop) + i), 7, "0");
 						RegtoppRouteTDA routeSegment = routeIndex.getValue(lineNumber);
-						
+
 						// Create stop point
-						String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPPOINT_KEY,
-								routeKey.toString() + i);
+						String chouetteStopPointId = AbstractConverter.createStopPointId(configuration, routeKey, ""+i);
+
 						StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
 						stopPoint.setPosition(i);
 
-						String chouetteStopAreaId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPAREA_KEY,
-								routeSegment.getStopId());
+						String chouetteStopAreaId = AbstractConverter.createStopAreaId(configuration, routeSegment.getStopId());
 
 						StopArea stopArea = ObjectFactory.getStopArea(referential, chouetteStopAreaId);
 
@@ -130,16 +127,15 @@ public class RegtoppRouteParser extends LineSpecificParser {
 
 	}
 
-	protected Route createRoute(Context context, Line line, 
-			DirectionType direction, String routeId, String destinationId,RouteKey routeKey) throws Exception {
-		
+	protected Route createRoute(Context context, Line line, DirectionType direction, String routeId, String destinationId, RouteKey routeKey) throws Exception {
+
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
-		
+
 		Index<RegtoppDestinationDST> destinationIndex = importer.getDestinationById();
-		
-		String chouetteRouteId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.ROUTE_KEY, routeKey.toString());
+
+		String chouetteRouteId = AbstractConverter.createRouteId(configuration, routeKey);
 		Route route = ObjectFactory.getRoute(referential, chouetteRouteId);
 		if (!route.isFilled()) {
 			// Filled = only a flag to indicate that we no longer should write data to this entity
@@ -165,8 +161,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 	}
 
 	protected Network addNetwork(Referential referential, RegtoppImportParameters configuration, String adminCode) {
-		String chouetteNetworkId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.PTNETWORK_KEY,
-				adminCode);
+		String chouetteNetworkId = AbstractConverter.createNetworkId(configuration, adminCode);
 		Network ptNetwork = ObjectFactory.getPTNetwork(referential, chouetteNetworkId);
 		if (!ptNetwork.isFilled()) {
 			ptNetwork.setSourceIdentifier("Regtopp");
@@ -176,10 +171,9 @@ public class RegtoppRouteParser extends LineSpecificParser {
 		}
 		return ptNetwork;
 	}
-	
+
 	protected Company addAuthority(Referential referential, RegtoppImportParameters configuration, String adminCode) {
-		String chouetteCompanyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.COMPANY_KEY,
-				adminCode);
+		String chouetteCompanyId = AbstractConverter.createAuthorityId(configuration, adminCode);
 		Company company = ObjectFactory.getCompany(referential, chouetteCompanyId);
 		if (!company.isFilled()) {
 			company.setRegistrationNumber(adminCode);
@@ -213,7 +207,6 @@ public class RegtoppRouteParser extends LineSpecificParser {
 			}
 		}
 	}
-
 
 	protected boolean footnoteAlreadyAdded(List<Footnote> addedFootnotes, String footnoteId) {
 		for (Footnote existing : addedFootnotes) {
@@ -255,8 +248,8 @@ public class RegtoppRouteParser extends LineSpecificParser {
 		for (Route r : referential.getRoutes().values()) {
 			if (r.getOppositeRoute() == null) {
 				RouteKey key = new RouteKey(AbstractConverter.extractOriginalId(r.getObjectId()));
-				RouteKey oppositeKey = new RouteKey(key.getLineId(), key.getDirection().getOppositeDirection(), key.getRouteId(),key.getCalendarStartDate());
-				String oppositeObjectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.ROUTE_KEY, oppositeKey.toString());
+				RouteKey oppositeKey = new RouteKey(key.getLineId(), key.getDirection().getOppositeDirection(), key.getRouteId(), key.getCalendarStartDate());
+				String oppositeObjectId = AbstractConverter.createRouteId(configuration, oppositeKey);
 				for (Route opposite : referential.getRoutes().values()) {
 					if (opposite.getObjectId().equals(oppositeObjectId)) {
 						// Link routes
@@ -290,7 +283,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 				List<StopPoint> stopPoints = route.getStopPoints();
 				if (stopPoints != null && !stopPoints.isEmpty()) {
 					StopArea lastStopArea = stopPoints.get(stopPoints.size() - 1).getContainedInStopArea();
-					if(lastStopArea.getParent() == null) {
+					if (lastStopArea.getParent() == null) {
 						route.setName(lastStopArea.getName());
 					} else {
 						route.setName(lastStopArea.getParent().getName());
