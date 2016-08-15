@@ -35,7 +35,6 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.ObjectFactory;
-import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
@@ -56,7 +55,7 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 
-		String chouetteLineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY, lineId);
+		String chouetteLineId = AbstractConverter.createLineId(configuration, lineId);
 		Line line = ObjectFactory.getLine(referential, chouetteLineId);
 		List<Footnote> footnotes = line.getFootnotes();
 
@@ -71,25 +70,21 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 		for (AbstractRegtoppTripIndexTIX abstractTrip : tripIndex) {
 			if (abstractTrip.getLineId().equals(lineId)) {
 				RegtoppTripIndexTIX trip = (RegtoppTripIndexTIX) abstractTrip;
-				
+
 				if (trip.getNotificationType() == AnnouncementType.Announced) {
 
 					// This is where we get the line number
 					line.setNumber(trip.getLineNumberVisible());
 
-
-					RouteKey routeKey = new RouteKey(trip.getLineId(), trip.getDirection(), trip.getRouteIdRef(),calendarStartDate);
-					String chouetteRouteId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.ROUTE_KEY, routeKey.toString());
+					RouteKey routeKey = new RouteKey(trip.getLineId(), trip.getDirection(), trip.getRouteIdRef(), calendarStartDate);
+					String chouetteRouteId = AbstractConverter.createRouteId(configuration, routeKey);
 					Route route = ObjectFactory.getRoute(referential, chouetteRouteId);
 
-					String tripKey = trip.getLineId() + trip.getTripId();
-					String chouetteVehicleJourneyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.VEHICLEJOURNEY_KEY,
-							tripKey);
-
-					String chouetteJourneyPatternId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.JOURNEYPATTERN_KEY,
-							routeKey.toString());
+					String chouetteJourneyPatternId = AbstractConverter.createJourneyPatternId(configuration, routeKey);
 					JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, chouetteJourneyPatternId);
 
+					String chouetteVehicleJourneyId = AbstractConverter.createVehicleJourneyId(configuration, trip.getLineId(), trip.getTripId(),
+							calendarStartDate);
 					VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, chouetteVehicleJourneyId);
 
 					// Add operator company
@@ -115,13 +110,13 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 					vehicleJourney.setRoute(route);
 
 					boolean byRequestOnly = false;
-					if(trip.getTypeOfService() == TransportType.FlexibleBus) {
+					if (trip.getTypeOfService() == TransportType.FlexibleBus) {
 						byRequestOnly = true;
 						line.setFlexibleService(Boolean.TRUE);
 					}
 
 					// Link to timetable
-					Duration tripDepartureTime = linkVehicleJourneyToTimetable(referential, configuration, trip, vehicleJourney,dayCodeHeader);
+					Duration tripDepartureTime = linkVehicleJourneyToTimetable(referential, configuration, trip, vehicleJourney, dayCodeHeader);
 
 					// TODO this must be precomputed instead of iterating over tens of thousands of records for each trip.
 					for (AbstractRegtoppRouteTMS vehicleStop : importer.getRouteIndex()) {
@@ -129,17 +124,15 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 							if (vehicleStop.getRouteId().equals(trip.getRouteIdRef())) {
 								if (vehicleStop.getDirection() == trip.getDirection()) {
 
-									String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
-											ObjectIdTypes.STOPPOINT_KEY, routeKey + vehicleStop.getSequenceNumberStop());
+									String chouetteStopPointId = AbstractConverter.createStopPointId(configuration, routeKey,
+											vehicleStop.getSequenceNumberStop());
 
-									
-									
 									StopPoint stopPoint = referential.getStopPoints().get(chouetteStopPointId);
-									if(stopPoint != null) {
-									addVehicleJourneyAtStop(vehicleJourney, tripDepartureTime, stopPoint,
-											vehicleStop.getDriverTimeArrival(), vehicleStop.getDriverTimeDeparture(),byRequestOnly);
+									if (stopPoint != null) {
+										addVehicleJourneyAtStop(vehicleJourney, tripDepartureTime, stopPoint, vehicleStop.getDriverTimeArrival(),
+												vehicleStop.getDriverTimeDeparture(), byRequestOnly);
 									} else {
-										log.warn("Not adding VehicleJourneyAtStop since StopPoint with id "+chouetteStopPointId+" is missing");
+										log.warn("Not adding VehicleJourneyAtStop since StopPoint with id " + chouetteStopPointId + " is missing");
 									}
 								}
 							}
@@ -154,7 +147,7 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 		}
 		estimateMissingPassingTimes(referential);
 	}
-	
+
 	static {
 		ParserFactory.register(RegtoppTripParser.class.getName(), new ParserFactory() {
 			@Override

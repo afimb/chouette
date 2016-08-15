@@ -12,7 +12,6 @@ import mobi.chouette.exchange.regtopp.model.AbstractRegtoppRouteTMS;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
-import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
@@ -27,17 +26,14 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 		StopArea stopArea = null;
 		StopPoint stopPoint = null;
 		
-		String stopAreaId = routeSegment.getStopId() + routeSegment.getStopPointIdDeparture();
-		String chouetteStopAreaId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPAREA_KEY, stopAreaId);
+		String chouetteStopAreaId = AbstractConverter.createStopAreaId(configuration,routeSegment.getStopId() + routeSegment.getStopPointIdDeparture());
 
 		if (referential.getSharedStopAreas().containsKey(chouetteStopAreaId)) {
 			stopArea = ObjectFactory.getStopArea(referential, chouetteStopAreaId);
 
 		} else {
 
-			String parentStopPlaceId = routeSegment.getStopId();
-			String chouetteParentStopAreaId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPAREA_KEY,
-					parentStopPlaceId);
+			String chouetteParentStopAreaId = AbstractConverter.createStopAreaId(configuration,routeSegment.getStopId());
 
 			if (referential.getSharedStopAreas().containsKey(chouetteParentStopAreaId)) {
 				log.info("StopPoint " + chouetteStopPointId + " is refering to non existent StopArea " + chouetteStopAreaId

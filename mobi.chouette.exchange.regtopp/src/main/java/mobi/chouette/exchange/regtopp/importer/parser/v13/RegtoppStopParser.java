@@ -41,7 +41,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 			for (AbstractRegtoppStopHPL abstractStop : importer.getStopById()) {
 				RegtoppStopHPL stop = (RegtoppStopHPL) abstractStop;
 				if (stop.getType() == StopType.Stop || (stop.getType() == StopType.Other && !"Lokasjonspunkt".equals(stop.getFullName()))) {
-					String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, stop.getStopId());
+					String objectId = AbstractConverter.createStopAreaId(configuration, stop.getStopId());
 
 					StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
 					stopArea.setName(StringUtils.trimToNull(stop.getFullName()));
@@ -52,8 +52,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 
 					List<RegtoppStopPointSTP> stopPoints = stopPointsByStopId.getValue(stop.getStopId());
 					for (RegtoppStopPointSTP regtoppStopPoint : stopPoints) {
-						String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY,
-								regtoppStopPoint.getFullStopId());
+						String chouetteStopPointId = AbstractConverter.createStopAreaId(configuration,regtoppStopPoint.getFullStopId());
 						StopArea stopPoint = ObjectFactory.getStopArea(referential, chouetteStopPointId);
 
 						convertAndSetCoordinates(stopPoint, regtoppStopPoint.getX(), regtoppStopPoint.getY(), projection);

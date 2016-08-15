@@ -35,7 +35,7 @@ public class RegtoppStopParser implements Parser {
 			String projection = configuration.getCoordinateProjection();
 
 			for (AbstractRegtoppStopHPL stop : importer.getStopById()) {
-				String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, stop.getFullStopId());
+				String objectId = AbstractConverter.createStopAreaId(configuration, stop.getFullStopId());
 
 				StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
 				stopArea.setName(stop.getFullName());

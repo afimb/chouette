@@ -50,7 +50,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 			List<StopArea> list = boardingPositionsByStopArea.get(commercialStopAreaId);
 			if (list.size() > 0) {
 				// Create parent stopArea
-				String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, commercialStopAreaId);
+				String objectId = AbstractConverter.createStopAreaId(configuration, commercialStopAreaId);
 				StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
 				stopArea.setName(list.get(0).getName()); // TODO using name of first stoppoint, should be identical for all boarding positions according to spec
 				stopArea.setAreaType(ChouetteAreaEnum.StopPlace);
