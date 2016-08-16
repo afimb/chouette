@@ -99,9 +99,15 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 
 					// TODO unsure
 					if (departureText != null && arrivalText != null) {
-						vehicleJourney.setPublishedJourneyName(arrivalText.getDestinationText() + " -> " + departureText.getDestinationText());
+						if(departureText.getDestinationText().equals(arrivalText.getDestinationText())) {
+							vehicleJourney.setPublishedJourneyName(arrivalText.getDestinationText());
+						} else {
+							vehicleJourney.setPublishedJourneyName(arrivalText.getDestinationText() + " -> " + departureText.getDestinationText());
+						}
 					} else if (departureText != null) {
 						vehicleJourney.setPublishedJourneyName(departureText.getDestinationText());
+					} else if (arrivalText != null) {
+						vehicleJourney.setPublishedJourneyName(arrivalText.getDestinationText());
 					}
 
 					vehicleJourney.setPublishedJourneyIdentifier(StringUtils.trimToNull(trip.getLineNumberVisible()));
