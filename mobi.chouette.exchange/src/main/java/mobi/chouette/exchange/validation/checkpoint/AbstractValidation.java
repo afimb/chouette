@@ -96,6 +96,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static final String FACILITY_1 = "3-Facility-1";
 	protected static final String FACILITY_2 = "3-Facility-2";
 
+	
 	protected static final String L4_NETWORK_1 = "4-Network-1";
 	protected static final String L4_COMPANY_1 = "4-Company-1";
 	protected static final String L4_GROUP_OF_LINE_1 = "4-GroupOfLine-1";

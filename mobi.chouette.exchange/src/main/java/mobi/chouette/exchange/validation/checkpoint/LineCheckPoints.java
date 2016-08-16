@@ -21,10 +21,11 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		if (bean == null)
 			return ;
-		// init checkPoints : add here all defined check points for this kind of
+		// init checkPoints :  add here all defined check points for this kind of
 		// object
 		initCheckPoint(context, LINE_2, SEVERITY.E);
 		initCheckPoint(context, LINE_3, SEVERITY.W);
+		
 		
 		// 3-Line-2 : check if line has routes
 		// 3-Line-3 : check if line has at least one route section (plot) or not at all

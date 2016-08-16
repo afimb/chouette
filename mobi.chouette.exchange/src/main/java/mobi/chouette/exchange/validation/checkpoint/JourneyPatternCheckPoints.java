@@ -11,6 +11,7 @@ import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.StopPoint;
 
