@@ -7,7 +7,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
-import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
+import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
@@ -54,7 +54,7 @@ public class RegtoppLineParserTest {
 		
 		// Populate referential
 		// Add line
-		ObjectFactory.getLine(referential, AbstractConverter.composeGenericObjectId("XYZ", ObjectIdTypes.LINE_KEY, "1"));
+		ObjectFactory.getLine(referential, ObjectIdCreator.composeGenericObjectId("XYZ", ObjectIdTypes.LINE_KEY, "1"));
 		
 		
 		createRoute(referential,"1",3,0);
@@ -80,7 +80,7 @@ public class RegtoppLineParserTest {
 		
 		// Populate referential
 		// Add line
-		ObjectFactory.getLine(referential, AbstractConverter.composeGenericObjectId("XYZ", ObjectIdTypes.LINE_KEY, "1"));
+		ObjectFactory.getLine(referential, ObjectIdCreator.composeGenericObjectId("XYZ", ObjectIdTypes.LINE_KEY, "1"));
 		
 		
 		createRoute(referential,"1",3,0);
@@ -104,7 +104,7 @@ public class RegtoppLineParserTest {
 		
 		// Populate referential
 		// Add line
-		ObjectFactory.getLine(referential, AbstractConverter.composeGenericObjectId("XYZ", ObjectIdTypes.LINE_KEY, "1"));
+		ObjectFactory.getLine(referential, ObjectIdCreator.composeGenericObjectId("XYZ", ObjectIdTypes.LINE_KEY, "1"));
 		
 		
 		createRoute(referential,"1",5,0);
@@ -124,7 +124,7 @@ public class RegtoppLineParserTest {
 	
 	private void createRoute(Referential referential,String id, int numStopPoints, int stopPointOffset, int... skipStops) {
 		
-		Route route = ObjectFactory.getRoute(referential, AbstractConverter.composeGenericObjectId("XYZ", ObjectIdTypes.ROUTE_KEY, id));
+		Route route = ObjectFactory.getRoute(referential, ObjectIdCreator.composeGenericObjectId("XYZ", ObjectIdTypes.ROUTE_KEY, id));
 		route.setLine(referential.getLines().values().iterator().next());
 		
 		for(int i=stopPointOffset;i<stopPointOffset+numStopPoints;i++) {
@@ -132,7 +132,7 @@ public class RegtoppLineParserTest {
 			
 		}
 		
-		JourneyPattern jp = ObjectFactory.getJourneyPattern(referential, AbstractConverter.composeGenericObjectId("XYZ", ObjectIdTypes.JOURNEYPATTERN_KEY, id));
+		JourneyPattern jp = ObjectFactory.getJourneyPattern(referential, ObjectIdCreator.composeGenericObjectId("XYZ", ObjectIdTypes.JOURNEYPATTERN_KEY, id));
 		jp.setRoute(route);
 		for(StopPoint sp : route.getStopPoints()) {
 			jp.addStopPoint(sp);
@@ -142,7 +142,7 @@ public class RegtoppLineParserTest {
 		jp.setArrivalStopPoint(jp.getStopPoints().get(jp.getStopPoints().size()-1));
 		
 		
-		VehicleJourney vj = ObjectFactory.getVehicleJourney(referential, AbstractConverter.composeGenericObjectId("XYZ", ObjectIdTypes.VEHICLEJOURNEY_KEY, id));
+		VehicleJourney vj = ObjectFactory.getVehicleJourney(referential, ObjectIdCreator.composeGenericObjectId("XYZ", ObjectIdTypes.VEHICLEJOURNEY_KEY, id));
 	
 		vj.setRoute(route);
 		vj.setJourneyPattern(jp);
@@ -156,13 +156,13 @@ public class RegtoppLineParserTest {
 
 
 	private StopPoint createStopPoint(Referential referential, int stopPointId, Integer position, int stopAreaId, BoardingPossibilityEnum forBoarding, AlightingPossibilityEnum forAlighting) {
-		StopPoint sp = ObjectFactory.getStopPoint(referential, AbstractConverter.composeGenericObjectId("XYZ", ObjectIdTypes.STOPPOINT_KEY, ""+stopPointId));
+		StopPoint sp = ObjectFactory.getStopPoint(referential, ObjectIdCreator.composeGenericObjectId("XYZ", ObjectIdTypes.STOPPOINT_KEY, ""+stopPointId));
 		
 		sp.setPosition(position);
 		sp.setForAlighting(forAlighting);
 		sp.setForBoarding(forBoarding);
 		
-		StopArea sa = ObjectFactory.getStopArea(referential, AbstractConverter.composeGenericObjectId("XYZ", ObjectIdTypes.STOPAREA_KEY, ""+stopAreaId));
+		StopArea sa = ObjectFactory.getStopArea(referential, ObjectIdCreator.composeGenericObjectId("XYZ", ObjectIdTypes.STOPAREA_KEY, ""+stopAreaId));
 		sp.setContainedInStopArea(sa);
 		
 		return sp;

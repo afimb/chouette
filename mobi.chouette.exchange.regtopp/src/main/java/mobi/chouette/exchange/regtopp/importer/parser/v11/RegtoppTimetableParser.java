@@ -28,7 +28,7 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.v11.DaycodeById;
-import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
+import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
 import mobi.chouette.model.CalendarDay;
@@ -75,7 +75,7 @@ public class RegtoppTimetableParser implements Parser {
 
 	public Timetable convertTimetable(Referential referential, RegtoppImportParameters configuration, LocalDate calStartDate, RegtoppDayCodeDKO entry, RegtoppDayCodeHeaderDKO header) {
 		
-		String chouetteTimetableId = AbstractConverter.createTimetableId(configuration, entry.getAdminCode(), entry.getDayCodeId(), header);
+		String chouetteTimetableId = ObjectIdCreator.createTimetableId(configuration, entry.getAdminCode(), entry.getDayCodeId(), header);
 		
 		Timetable timetable = ObjectFactory.getTimetable(referential, chouetteTimetableId);
 
