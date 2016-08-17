@@ -69,8 +69,9 @@ public class RegtoppLineParser extends LineSpecificParser {
 
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
+		String calendarStartDate = (String) context.get(RegtoppConstant.CALENDAR_START_DATE);
 
-		String chouetteLineId = ObjectIdCreator.createLineId(configuration, lineId);
+		String chouetteLineId = ObjectIdCreator.createLineId(configuration, lineId, calendarStartDate);
 
 		// Create the actual Chouette Line and put it in the "referential" space (which is later used by the LineImporterCommand)
 		Line line = ObjectFactory.getLine(referential, chouetteLineId);

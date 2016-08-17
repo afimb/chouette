@@ -54,14 +54,14 @@ public class RegtoppRouteParser extends LineSpecificParser {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
+		String calendarStartDate = (String) context.get(RegtoppConstant.CALENDAR_START_DATE);
 
-		String chouetteLineId = ObjectIdCreator.createLineId(configuration, lineId);
+		String chouetteLineId = ObjectIdCreator.createLineId(configuration, lineId,calendarStartDate);
 		Line line = ObjectFactory.getLine(referential, chouetteLineId);
 
 		Index<RegtoppRouteTDA> routeIndex = importer.getRouteSegmentByLineNumber();
 		Index<AbstractRegtoppTripIndexTIX> tripIndex = importer.getTripIndex();
 
-		String calendarStartDate = (String) context.get(RegtoppConstant.CALENDAR_START_DATE);
 
 		for (AbstractRegtoppTripIndexTIX abstractTrip : tripIndex) {
 			if (abstractTrip.getLineId().equals(lineId)) {

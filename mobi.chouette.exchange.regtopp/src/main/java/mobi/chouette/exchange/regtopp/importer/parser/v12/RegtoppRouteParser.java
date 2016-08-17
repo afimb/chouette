@@ -45,12 +45,12 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
+		String calendarStartDate = (String) context.get(RegtoppConstant.CALENDAR_START_DATE);
 
-		String chouetteLineId = ObjectIdCreator.createLineId(configuration, lineId);
+		String chouetteLineId = ObjectIdCreator.createLineId(configuration, lineId, calendarStartDate);
 		Line line = ObjectFactory.getLine(referential, chouetteLineId);
 		List<Footnote> footnotes = line.getFootnotes();
 
-		String calendarStartDate = (String) context.get(RegtoppConstant.CALENDAR_START_DATE);
 		
 		// Add routes and journey patterns
 		Index<AbstractRegtoppRouteTMS> routeIndex = importer.getRouteIndex();

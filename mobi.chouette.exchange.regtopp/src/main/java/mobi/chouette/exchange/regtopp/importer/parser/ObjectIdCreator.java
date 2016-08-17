@@ -45,8 +45,8 @@ public abstract class ObjectIdCreator {
 		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.PTNETWORK_KEY, adminCode);
 	}
 
-	public static String createLineId(RegtoppImportParameters configuration, String lineId) {
-		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.LINE_KEY, lineId);
+	public static String createLineId(RegtoppImportParameters configuration, String lineId, String calendarStartDate) {
+		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.LINE_KEY, lineId+"-"+calendarStartDate);
 	}
 
 	private static String createStopPointId(RegtoppImportParameters configuration, String stopPointId) {

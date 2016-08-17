@@ -54,8 +54,9 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
+		String calendarStartDate = (String) context.get(RegtoppConstant.CALENDAR_START_DATE);
 
-		String chouetteLineId = ObjectIdCreator.createLineId(configuration, lineId);
+		String chouetteLineId = ObjectIdCreator.createLineId(configuration, lineId, calendarStartDate);
 		Line line = ObjectFactory.getLine(referential, chouetteLineId);
 		List<Footnote> footnotes = line.getFootnotes();
 
@@ -63,7 +64,6 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 
 		DaycodeById dayCodeIndex = (DaycodeById) importer.getDayCodeById();
 		RegtoppDayCodeHeaderDKO dayCodeHeader = dayCodeIndex.getHeader();
-		String calendarStartDate = (String) context.get(RegtoppConstant.CALENDAR_START_DATE);
 
 		// Add VehicleJourneys
 		Index<AbstractRegtoppTripIndexTIX> tripIndex = importer.getTripIndex();
