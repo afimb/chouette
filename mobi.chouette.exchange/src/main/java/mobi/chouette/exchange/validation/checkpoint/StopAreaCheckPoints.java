@@ -40,6 +40,7 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		if (isEmpty(beans))
 			return;
+		boolean sourceFile = context.get(SOURCE).equals(SOURCE_FILE);
 		// init checkPoints : add here all defined check points for this kind of
 		// object
 		// 3-StopArea-1 : check if all non ITL stopArea has geolocalization
@@ -47,12 +48,14 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 		// 3-StopArea-3 : check multiple occurrence of a stopArea
 		// 3-StopArea-4 : check localization in a region
 		// 3-StopArea-5 : check distance with parent
-		initCheckPoint(context, STOP_AREA_1, SEVERITY.E);
+		if (!sourceFile) {
+			initCheckPoint(context, STOP_AREA_1, SEVERITY.E);
+			prepareCheckPoint(context, STOP_AREA_1);
+		}
 		initCheckPoint(context, STOP_AREA_2, SEVERITY.W);
 		initCheckPoint(context, STOP_AREA_3, SEVERITY.W);
 		initCheckPoint(context, STOP_AREA_4, SEVERITY.W);
 		initCheckPoint(context, STOP_AREA_5, SEVERITY.W);
-		prepareCheckPoint(context, STOP_AREA_1);
 		prepareCheckPoint(context, STOP_AREA_2);
 		prepareCheckPoint(context, STOP_AREA_3);
 		prepareCheckPoint(context, STOP_AREA_5);
@@ -86,7 +89,7 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 
 					Coordinate c = new Coordinate(stopArea.getLongitude().doubleValue(), stopArea.getLatitude()
 							.doubleValue());
-					spatialIndex.insert(Quadtree.ensureExtent(new Envelope(c),0.00001), stopArea);
+					spatialIndex.insert(Quadtree.ensureExtent(new Envelope(c), 0.00001), stopArea);
 				}
 			}
 		}
@@ -97,7 +100,9 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 			if (stopArea.getAreaType().equals(ChouetteAreaEnum.ITL))
 				continue;
 
-			check3StopArea1(context, stopArea);
+			if (!sourceFile) {
+				check3StopArea1(context, stopArea);
+			}
 			check3StopArea4(context, stopArea, enveloppe);
 			check3StopArea5(context, stopArea, parameters);
 			// 4-StopArea-1 : check columns constraints
@@ -154,7 +159,7 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 	}
 
 	@SuppressWarnings("rawtypes")
-	private void check3StopArea2(Context context,  StopArea stopArea, ValidationParameters parameters) {
+	private void check3StopArea2(Context context, StopArea stopArea, ValidationParameters parameters) {
 		// 3-StopArea-2 : check distance of stop areas with different name
 		if (!stopArea.hasCoordinates())
 			return;
@@ -163,9 +168,8 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 		if (type.equals(ChouetteAreaEnum.BoardingPosition) || type.equals(ChouetteAreaEnum.Quay)) {
 			updateSquare(stopArea, parameters);
 
-			Coordinate c = new Coordinate(stopArea.getLongitude().doubleValue(), stopArea.getLatitude()
-					.doubleValue());
-			spatialIndex.remove(Quadtree.ensureExtent(new Envelope(c),0.00001), stopArea);
+			Coordinate c = new Coordinate(stopArea.getLongitude().doubleValue(), stopArea.getLatitude().doubleValue());
+			spatialIndex.remove(Quadtree.ensureExtent(new Envelope(c), 0.00001), stopArea);
 			List areas = spatialIndex.query(searchEnv);
 			for (Object object : areas) {
 				StopArea stopArea2 = (StopArea) object;
@@ -190,7 +194,6 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 		}
 
 	}
-
 
 	private void check3StopArea3(Context context, int rank, StopArea stopArea, int rank2, StopArea stopArea2) {
 		// 3-StopArea-3 : check multiple occurrence of a stopArea of same type

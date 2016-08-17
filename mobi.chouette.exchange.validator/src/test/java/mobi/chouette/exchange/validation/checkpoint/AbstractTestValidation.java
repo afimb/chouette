@@ -2,6 +2,7 @@ package mobi.chouette.exchange.validation.checkpoint;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,12 +42,24 @@ import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validator.JobDataTest;
 import mobi.chouette.exchange.validator.ValidateParameters;
+import mobi.chouette.model.JourneyPattern;
+import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneLocalizedObject;
+import mobi.chouette.model.Route;
+import mobi.chouette.model.RouteSection;
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.testng.Arquillian;
 import org.testng.Assert;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.PrecisionModel;
 
 @Log4j
 public abstract class AbstractTestValidation  extends Arquillian implements Constant, ReportConstant {
@@ -131,6 +144,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 		test.setReferential( "chouette_gui");
 		test.setAction( VALIDATOR);
 		context.put("testng", "true");
+		context.put(SOURCE, SOURCE_DATABASE);
 		context.put(OPTIMIZED, Boolean.FALSE);
 		return context;
 
@@ -172,6 +186,58 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 		}
 
 
+	}
+	
+	protected void createRouteSection(Line line) {
+		GeometryFactory factory = new GeometryFactory(new PrecisionModel(10), 4326);
+		int cpt = 0;
+		
+		for(Route r: line.getRoutes()) {
+			for(JourneyPattern jp: r.getJourneyPatterns()) {
+				List<RouteSection> sections = jp.getRouteSections();
+				StopArea previousLocation = null;
+				for(StopPoint stop: jp.getStopPoints()) {
+					// find nearest segment and project point on it
+					StopArea location = stop.getContainedInStopArea();
+					if( previousLocation != null) {
+						cpt ++;
+						RouteSection section = new RouteSection();
+						String routeSectionId = line.objectIdPrefix() + ":" + RouteSection.ROUTE_SECTION_KEY + ":" + cpt;
+						section.setObjectId(routeSectionId);
+						if (!section.isFilled()) {
+						
+							Coordinate[] inputCoords = new Coordinate[2];
+							section.setDeparture(previousLocation);
+							inputCoords[0] = new Coordinate(previousLocation.getLongitude().doubleValue(), previousLocation
+									.getLatitude().doubleValue());
+							section.setArrival(location);
+							inputCoords[1] = new Coordinate(location.getLongitude().doubleValue(), location.getLatitude()
+									.doubleValue());
+							section.setProcessedGeometry(factory.createLineString(inputCoords));
+							section.setInputGeometry(factory.createLineString(inputCoords));
+							section.setNoProcessing(false);
+							try {
+								double distance = section.getProcessedGeometry().getLength();
+								distance *= (Math.PI / 180) * 6378137;
+								section.setDistance(BigDecimal.valueOf(distance));
+							} catch (NumberFormatException e) {
+								log.error(" : problem with section between " + previousLocation.getName() + "("
+										+ previousLocation.getObjectId() + " and " + location.getName() + "("
+										+ location.getObjectId());
+								sections.clear();
+							}
+							// AbstractConverter.addLocation(context, "shapes.txt",
+							// routeSectionId, lineNumber);
+						}
+						section.setFilled(true);
+						sections.add(section);
+					}
+					previousLocation = location;
+				}
+			}
+			
+		}
+		
 	}
 
 
@@ -352,24 +418,24 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
         ret.setCheckStopParent(0);        
         ret.setCheckConnectionLinkOnPhysical(0);
         
-        ret.setModeCoach(new TransportModeParameters(1, 500, 10000, 90, 40, 20));
-        ret.setModeAir(new TransportModeParameters(1, 200, 10000, 800, 700, 60));
-        ret.setModeWaterborne(new TransportModeParameters(1, 200, 10000, 40, 5, 60));
-        ret.setModeBus(new TransportModeParameters(1, 100, 40000, 1000, 5, 2000));
-        ret.setModeFerry(new TransportModeParameters(1, 200, 10000, 40, 5, 60));
-        ret.setModeWalk(new TransportModeParameters(1, 1, 10000, 6, 1, 10));
-        ret.setModeMetro(new TransportModeParameters(1, 300 ,20000, 500, 25, 2000));
-        ret.setModeShuttle(new TransportModeParameters(1, 500, 10000, 80, 20, 10));
-        ret.setModeRapidTransit(new TransportModeParameters(1, 2000, 500000, 300, 20, 60));
-        ret.setModeTaxi(new TransportModeParameters(1, 500, 300000, 130, 20, 60));
-        ret.setModeLocalTrain(new TransportModeParameters(1, 2000, 500000, 300, 20, 60));
-        ret.setModeTrain(new TransportModeParameters(1, 2000, 500000, 300, 20, 60));
-        ret.setModeLongDistanceTrain(new TransportModeParameters(1, 2000, 500000, 300, 20, 60));
-        ret.setModeTramway(new TransportModeParameters(1, 300,2000,50,20,30));
-        ret.setModeTrolleybus(new TransportModeParameters(1,  300,2000,50,20,30));
-        ret.setModePrivateVehicle(new TransportModeParameters(1, 500, 300000, 130, 20, 60));
-        ret.setModeBicycle(new TransportModeParameters(1, 300, 30000, 40, 10, 10));
-        ret.setModeOther(new TransportModeParameters(1, 300, 30000, 40, 10, 10));
+        ret.setModeCoach(new TransportModeParameters(1, 500, 10000, 90, 40, 20, 20));
+        ret.setModeAir(new TransportModeParameters(1, 200, 10000, 800, 700, 60, 1000));
+        ret.setModeWaterborne(new TransportModeParameters(1, 200, 10000, 40, 5, 60, 20));
+        ret.setModeBus(new TransportModeParameters(1, 100, 40000, 1000, 5, 2000, 20));
+        ret.setModeFerry(new TransportModeParameters(1, 200, 10000, 40, 5, 60, 100));
+        ret.setModeWalk(new TransportModeParameters(1, 1, 10000, 6, 1, 10, 20));
+        ret.setModeMetro(new TransportModeParameters(1, 300 ,20000, 500, 25, 2000, 100));
+        ret.setModeShuttle(new TransportModeParameters(1, 500, 10000, 80, 20, 10, 20));
+        ret.setModeRapidTransit(new TransportModeParameters(1, 2000, 500000, 300, 20, 60, 20));
+        ret.setModeTaxi(new TransportModeParameters(1, 500, 300000, 130, 20, 60, 20));
+        ret.setModeLocalTrain(new TransportModeParameters(1, 2000, 500000, 300, 20, 60, 20));
+        ret.setModeTrain(new TransportModeParameters(1, 2000, 500000, 300, 20, 60, 100));
+        ret.setModeLongDistanceTrain(new TransportModeParameters(1, 2000, 500000, 300, 20, 60, 100));
+        ret.setModeTramway(new TransportModeParameters(1, 300,2000,50,20,30, 20));
+        ret.setModeTrolleybus(new TransportModeParameters(1,  300,2000,50,20,30, 20));
+        ret.setModePrivateVehicle(new TransportModeParameters(1, 500, 300000, 130, 20, 60, 20));
+        ret.setModeBicycle(new TransportModeParameters(1, 300, 30000, 40, 10, 10, 20));
+        ret.setModeOther(new TransportModeParameters(1, 300, 30000, 40, 10, 10, 20));
 
         return ret;
 	}

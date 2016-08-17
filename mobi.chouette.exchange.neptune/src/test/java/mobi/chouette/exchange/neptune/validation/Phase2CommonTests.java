@@ -1,6 +1,5 @@
 package mobi.chouette.exchange.neptune.validation;
 
-import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
 import mobi.chouette.exchange.validation.report.ValidationReporter.RESULT;
 
 import org.testng.annotations.Test;

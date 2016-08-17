@@ -13,17 +13,14 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.gtfs.Constant;
-import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.parser.GtfsAgencyParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsCalendarParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsRouteParser;
-import mobi.chouette.exchange.gtfs.parser.GtfsStopParser;
-import mobi.chouette.exchange.gtfs.parser.GtfsTransferParser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.report.ActionReporter;
-import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.util.NamingUtil;
@@ -55,8 +52,6 @@ public class GtfsRouteParserCommand implements Command, Constant {
 			}
 
 			GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
-
-			GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 
 			ActionReporter reporter = ActionReporter.Factory.getInstance();
 
