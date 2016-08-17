@@ -11,7 +11,7 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
-import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
+import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppPathwayGAV;
 import mobi.chouette.model.ConnectionLink;
@@ -40,9 +40,9 @@ public class RegtoppConnectionLinkParser extends LineSpecificParser {
 
 			for (AbstractRegtoppPathwayGAV pathway : routeIndex) {
 
-				String chouetteStartStopAreaObjectId = AbstractConverter.createStopAreaId(configuration,pathway.getStopIdFrom());
+				String chouetteStartStopAreaObjectId = ObjectIdCreator.createStopAreaId(configuration,pathway.getStopIdFrom());
 
-				String chouetteEndStopAreaObjectId =AbstractConverter.createStopAreaId(configuration,pathway.getStopIdTo());
+				String chouetteEndStopAreaObjectId =ObjectIdCreator.createStopAreaId(configuration,pathway.getStopIdTo());
 
 				
 //				if(!referential.getSharedStopAreas().containsKey(chouetteStartStopAreaObjectId)) {
@@ -55,7 +55,7 @@ public class RegtoppConnectionLinkParser extends LineSpecificParser {
 					StopArea startStopArea = ObjectFactory.getStopArea(referential, chouetteStartStopAreaObjectId);
 					StopArea endStopArea = ObjectFactory.getStopArea(referential, chouetteEndStopAreaObjectId);
 
-					String chouetteConnectionLinkId = AbstractConverter.createConnectionLinkId(configuration,pathway.getStopIdFrom() ,pathway.getStopIdTo());
+					String chouetteConnectionLinkId = ObjectIdCreator.createConnectionLinkId(configuration,pathway.getStopIdFrom() ,pathway.getStopIdTo());
 					ConnectionLink connectionLink = ObjectFactory.getConnectionLink(referential, chouetteConnectionLinkId);
 					connectionLink.setName(pathway.getStopIdFrom()+" -> "+pathway.getStopIdTo());
 					connectionLink.setDefaultDuration(new java.sql.Time(0, pathway.getDuration(), 0));

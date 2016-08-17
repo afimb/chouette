@@ -20,7 +20,7 @@ import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.index.v11.DaycodeById;
-import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
+import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
 import mobi.chouette.exchange.regtopp.importer.parser.RouteKey;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
@@ -63,7 +63,7 @@ public class RegtoppTripParser extends LineSpecificParser {
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 
-		String chouetteLineId = AbstractConverter.createLineId(configuration, lineId);
+		String chouetteLineId = ObjectIdCreator.createLineId(configuration, lineId);
 		Line line = ObjectFactory.getLine(referential, chouetteLineId);
 		List<Footnote> footnotes = line.getFootnotes();
 
@@ -85,13 +85,13 @@ public class RegtoppTripParser extends LineSpecificParser {
 					line.setNumber(trip.getLineNumberVisible());
 
 					RouteKey routeKey = new RouteKey(trip.getLineId(), trip.getDirection(), trip.getRouteIdRef(),calendarStartDate);
-					String chouetteRouteId = AbstractConverter.createRouteId(configuration, routeKey);
+					String chouetteRouteId = ObjectIdCreator.createRouteId(configuration, routeKey);
 					Route route = ObjectFactory.getRoute(referential, chouetteRouteId);
 
-					String chouetteJourneyPatternId = AbstractConverter.createJourneyPatternId(configuration,routeKey);
+					String chouetteJourneyPatternId = ObjectIdCreator.createJourneyPatternId(configuration,routeKey);
 					JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, chouetteJourneyPatternId);
 
-					String chouetteVehicleJourneyId = AbstractConverter.createVehicleJourneyId(configuration, trip.getLineId(), trip.getTripId(), calendarStartDate);
+					String chouetteVehicleJourneyId = ObjectIdCreator.createVehicleJourneyId(configuration, trip.getLineId(), trip.getTripId(), calendarStartDate);
 					VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, chouetteVehicleJourneyId);
 
 					// Add operator company
@@ -187,7 +187,7 @@ public class RegtoppTripParser extends LineSpecificParser {
 	protected Duration linkVehicleJourneyToTimetable(Referential referential, RegtoppImportParameters configuration, AbstractRegtoppTripIndexTIX trip,
 			VehicleJourney vehicleJourney, RegtoppDayCodeHeaderDKO header) {
 
-		String chouetteTimetableId = AbstractConverter.createTimetableId(configuration, trip.getAdminCode(), trip.getDayCodeRef(), header);
+		String chouetteTimetableId = ObjectIdCreator.createTimetableId(configuration, trip.getAdminCode(), trip.getDayCodeRef(), header);
 
 		// Duration since midnight
 		Duration tripDepartureTime = trip.getDepartureTime();
@@ -201,7 +201,7 @@ public class RegtoppTripParser extends LineSpecificParser {
 	}
 
 	protected Company createOperator(Referential referential, RegtoppImportParameters configuration, String operatorCode) {
-		String chouetteOperatorId = AbstractConverter.createOperatorId(configuration, operatorCode);
+		String chouetteOperatorId = ObjectIdCreator.createOperatorId(configuration, operatorCode);
 		Company operator = ObjectFactory.getCompany(referential, chouetteOperatorId);
 		if (!operator.isFilled()) {
 			operator.setRegistrationNumber(operatorCode);

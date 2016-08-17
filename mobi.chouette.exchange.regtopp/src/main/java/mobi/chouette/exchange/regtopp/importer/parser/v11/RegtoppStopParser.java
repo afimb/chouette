@@ -12,7 +12,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
-import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
+import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppStopHPL;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -35,7 +35,7 @@ public class RegtoppStopParser implements Parser {
 			String projection = configuration.getCoordinateProjection();
 
 			for (AbstractRegtoppStopHPL stop : importer.getStopById()) {
-				String objectId = AbstractConverter.createStopAreaId(configuration, stop.getFullStopId());
+				String objectId = ObjectIdCreator.createStopAreaId(configuration, stop.getFullStopId());
 
 				StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
 				stopArea.setName(stop.getFullName());
