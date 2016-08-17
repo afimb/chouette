@@ -176,7 +176,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("TST:Line:2306");
+		Line line = lineDao.findByObjectId("TST:Line:2306-2016-03-29");
 
 		Assert.assertNotNull(line, "Line not found");
 		Assert.assertNotNull(line.getNetwork(), "line must have a network");
@@ -272,7 +272,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("TST:Line:5560");
+		Line line = lineDao.findByObjectId("TST:Line:5560-2016-03-29");
 		assertEquals(line.getTransportModeName(), TransportModeNameEnum.Ferry);
 
 		Assert.assertNotNull(line, "Line not found");
@@ -319,7 +319,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("TST:Line:0076");
+		Line line = lineDao.findByObjectId("TST:Line:0076-2016-01-18");
 
 		Assert.assertNotNull(line, "Line not found");
 
@@ -381,7 +381,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("TST:Line:0098");
+		Line line = lineDao.findByObjectId("TST:Line:0098-2016-01-18");
 
 		Assert.assertNotNull(line, "Line not found");
 		Assert.assertNotNull(line.getNetwork(), "line must have a network");
@@ -474,7 +474,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("TST:Line:5001");
+		Line line = lineDao.findByObjectId("TST:Line:5001-2016-03-29");
 
 		Assert.assertNotNull(line, "Line not found");
 
@@ -532,7 +532,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("TST:Line:0002");
+		Line line = lineDao.findByObjectId("TST:Line:0002-2016-03-04");
 
 		Assert.assertNotNull(line, "Line not found");
 		Assert.assertNotNull(line.getNetwork(), "line must have a network");
@@ -578,7 +578,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("TST:Line:0030");
+		Line line = lineDao.findByObjectId("TST:Line:0030-2016-02-29");
 
 		// 1119 Vehicle Journeys
 		// 120 stopPlace
