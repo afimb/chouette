@@ -1,6 +1,8 @@
 package mobi.chouette.exchange.validation.checkpoint;
 
 import java.io.File;
+import java.sql.Date;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,7 @@ import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.exchange.validator.DummyChecker;
 import mobi.chouette.exchange.validator.JobDataTest;
+import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -479,8 +482,244 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		utx.rollback();
 
 	}
+	
+	@Test(groups = { "vehicleJourney" }, description = "3-VehicleJourney-6",priority=7)
+	public void verifyTest3_6() throws Exception {
+		// 3-VehicleJourney-6 : check if two journey frequencies are overlapping on same vehicle journey
+		log.info(Color.BLUE + "3-VehicleJourney-6" + Color.NORMAL);
+		
+		
+		importLines("Ligne_frequence.xml", 1, 1, true);
+		
+		Context context = initValidatorContext();
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
-	@Test(groups = { "vehicleJourney" }, description = "4-VehicleJourney-2",priority=7)
+		Assert.assertNotNull(fullparameters, "no parameters for test");
+
+		
+
+		utx.begin();
+		em.joinTransaction();
+
+		List<Line> beans = lineDao.findAll();
+		Assert.assertFalse(beans.isEmpty(), "No data for test");
+		Line line1 = beans.get(0);
+
+		Route route1 = line1.getRoutes().get(0);
+		route1.setObjectId("NINOXE:Route:checkedRoute");
+		JourneyPattern jp1 = route1.getJourneyPatterns().get(0);
+		jp1.setObjectId("NINOXE:JourneyPattern:checkedJP");
+		VehicleJourney vj1 = jp1.getVehicleJourneys().get(0);
+		vj1.setObjectId("NINOXE:VehicleJourney:checkedVJ");
+		
+		List<JourneyFrequency> listJF = vj1.getJourneyFrequencies();
+		
+		ValidationData data = new ValidationData();
+		data.getVehicleJourneys().add(vj1);
+		context.put(VALIDATION_DATA, data);
+		context.put(VALIDATION, fullparameters);
+
+		checkPoint.validate(context, null);
+		
+		
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
+		
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-VehicleJourney-6");
+		Assert.assertNotNull(checkPointReport, "report must contain a 3-VehicleJourney-6 checkPoint");
+
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.OK, " checkPointReport must be ok");
+		
+		context.put(VALIDATION_REPORT, new ValidationReport());
+		
+		Time firstDepartureTime = listJF.get(1).getFirstDepartureTime();
+		Time lastDepartureTime = listJF.get(1).getLastDepartureTime();
+		Time fDTime = new Time((long) (firstDepartureTime.getTime() - 6000L));
+		Time lDTime = new Time((long) (lastDepartureTime.getTime() + 6000L));
+		
+
+		
+		listJF.get(0).setFirstDepartureTime(fDTime);
+		listJF.get(0).setLastDepartureTime(lDTime);
+		
+		data.getVehicleJourneys().add(vj1);
+		context.put(VALIDATION_DATA, data);
+		context.put(VALIDATION, fullparameters);
+
+		checkPoint.validate(context, null);
+
+		ValidationReport report2 = (ValidationReport) context.get(VALIDATION_REPORT);
+		Assert.assertNotEquals(report2.getCheckPoints().size(), 0, " report must have items");
+		
+		CheckPointReport checkPointReport2 = report2.findCheckPointReportByName("3-VehicleJourney-6");
+		Assert.assertNotNull(checkPointReport2, "report must contain a 3-VehicleJourney-6 checkPoint");
+
+		Assert.assertEquals(checkPointReport2.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+
+		utx.rollback();
+
+	}
+	
+	@Test(groups = { "vehicleJourney" }, description = "3-VehicleJourney-7",priority=8)
+	public void verifyTest3_7() throws Exception {
+		// 3-VehicleJourney-7 : check if vehicle journey is included in its associated timeband
+		log.info(Color.BLUE + "3-VehicleJourney-7" + Color.NORMAL);
+		
+		
+		importLines("Ligne_frequence.xml", 1, 1, true);
+		
+		Context context = initValidatorContext();
+		context.put(VALIDATION_REPORT, new ValidationReport());
+
+		Assert.assertNotNull(fullparameters, "no parameters for test");
+
+		
+
+		utx.begin();
+		em.joinTransaction();
+
+		List<Line> beans = lineDao.findAll();
+		Assert.assertFalse(beans.isEmpty(), "No data for test");
+		Line line1 = beans.get(0);
+
+		Route route1 = line1.getRoutes().get(0);
+		route1.setObjectId("NINOXE:Route:checkedRoute");
+		JourneyPattern jp1 = route1.getJourneyPatterns().get(0);
+		jp1.setObjectId("NINOXE:JourneyPattern:checkedJP");
+		VehicleJourney vj1 = jp1.getVehicleJourneys().get(0);
+		vj1.setObjectId("NINOXE:VehicleJourney:checkedVJ");
+		
+		List<JourneyFrequency> listJF = vj1.getJourneyFrequencies();
+		
+		
+		
+		ValidationData data = new ValidationData();
+		data.getVehicleJourneys().add(vj1);
+		context.put(VALIDATION_DATA, data);
+		context.put(VALIDATION, fullparameters);
+
+		checkPoint.validate(context, null);
+		
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
+		
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-VehicleJourney-7");
+		Assert.assertNotNull(checkPointReport, "report must contain a 3-VehicleJourney-7 checkPoint");
+
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.OK, " checkPointReport must be ok");
+		
+		context.put(VALIDATION_REPORT, new ValidationReport());
+		
+		Time firstDepartureTime = listJF.get(0).getTimeband().getStartTime();
+		Time lastDepartureTime = listJF.get(0).getTimeband().getEndTime();
+		
+		Time fDTime = new Time((long) (firstDepartureTime.getTime() - 6000L));
+		Time lDTime = new Time((long) (lastDepartureTime.getTime() + 6000L));
+		
+		listJF.get(0).setFirstDepartureTime(fDTime);
+		listJF.get(0).setLastDepartureTime(lDTime);
+		
+		data.getVehicleJourneys().add(vj1);
+		context.put(VALIDATION_DATA, data);
+		context.put(VALIDATION, fullparameters);
+		
+		checkPoint.validate(context, null);
+		
+		Assert.assertNotNull(fullparameters, "no parameters for test");
+
+		ValidationReport report2 = (ValidationReport) context.get(VALIDATION_REPORT);
+		Assert.assertNotEquals(report2.getCheckPoints().size(), 0, " report must have items");
+		
+		CheckPointReport checkPointReport2 = report2.findCheckPointReportByName("3-VehicleJourney-7");
+		Assert.assertNotNull(checkPointReport2, "report must contain a 3-VehicleJourney-7 checkPoint");
+
+		Assert.assertEquals(checkPointReport2.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+
+		utx.rollback();
+
+	}
+	
+	@Test(groups = { "vehicleJourney" }, description = "3-VehicleJourney-8",priority=9)
+	public void verifyTest3_8() throws Exception {
+		// 3-VehicleJourney-8 : check if some timesheet journey are included in frequency journeys
+		log.info(Color.BLUE + "3-VehicleJourney-8" + Color.NORMAL);
+		
+		
+		importLines("Ligne_frequence.xml", 1, 1, true);
+		
+		Context context = initValidatorContext();
+		context.put(VALIDATION_REPORT, new ValidationReport());
+
+		Assert.assertNotNull(fullparameters, "no parameters for test");
+
+		
+
+		utx.begin();
+		em.joinTransaction();
+
+		List<Line> beans = lineDao.findAll();
+		Assert.assertFalse(beans.isEmpty(), "No data for test");
+		Line line1 = beans.get(0);
+
+		Route route1 = line1.getRoutes().get(0);
+		route1.setObjectId("NINOXE:Route:checkedRoute");
+		JourneyPattern jp1 = route1.getJourneyPatterns().get(0);
+		jp1.setObjectId("NINOXE:JourneyPattern:checkedJP");
+		VehicleJourney vj1 = jp1.getVehicleJourneys().get(0);
+		vj1.setObjectId("NINOXE:VehicleJourney:checkedVJ");
+		
+		VehicleJourney vj2 = jp1.getVehicleJourneys().get(1);
+		vj2.setObjectId("NINOXE:VehicleJourney:checkedVJ2");
+		
+		
+		ValidationData data = new ValidationData();
+		data.getVehicleJourneys().addAll(jp1.getVehicleJourneys());
+		context.put(VALIDATION_DATA, data);
+		context.put(VALIDATION, fullparameters);
+
+		checkPoint.validate(context, null);
+		
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
+		
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-VehicleJourney-8");
+		Assert.assertNotNull(checkPointReport, "report must contain a 3-VehicleJourney-8 checkPoint");
+
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.OK, " checkPointReport must be ok");
+		
+		context.put(VALIDATION_REPORT, new ValidationReport());
+		
+		List<JourneyFrequency> listJF = vj1.getJourneyFrequencies();
+		List<VehicleJourneyAtStop> listVjas = vj2.getVehicleJourneyAtStops();
+		
+		Time firstDepartureTime = listJF.get(0).getFirstDepartureTime();
+		
+		Time fDTime = new Time((long) (firstDepartureTime.getTime() - 6000L));
+		
+		listVjas.get(0).setDepartureTime(fDTime);
+		
+		data.getVehicleJourneys().addAll(jp1.getVehicleJourneys());
+		context.put(VALIDATION_DATA, data);
+		context.put(VALIDATION, fullparameters);
+		
+		checkPoint.validate(context, null);
+		
+		
+		Assert.assertNotNull(fullparameters, "no parameters for test");
+
+		ValidationReport report2 = (ValidationReport) context.get(VALIDATION_REPORT);
+		Assert.assertNotEquals(report2.getCheckPoints().size(), 0, " report must have items");
+		
+		CheckPointReport checkPointReport2 = report2.findCheckPointReportByName("3-VehicleJourney-8");
+		Assert.assertNotNull(checkPointReport2, "report must contain a 3-VehicleJourney-8 checkPoint");
+
+		Assert.assertEquals(checkPointReport2.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+
+		utx.rollback();
+
+	}
+	
+	@Test(groups = { "vehicleJourney" }, description = "4-VehicleJourney-2",priority=10)
 	public void verifyTest4_2() throws Exception {
 		// 4-VehicleJourney-2 : check transport mode
 		log.info(Color.BLUE +"4-VehicleJourney-2"+ Color.NORMAL);

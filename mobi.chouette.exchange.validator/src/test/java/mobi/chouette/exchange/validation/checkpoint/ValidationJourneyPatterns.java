@@ -299,7 +299,7 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		utx.commit();
 	}
 	
-	@Test(groups = { "journeyPattern" }, description = "3-JourneyPattern-2", priority = 3)
+	@Test(groups = { "journeyPattern" }, description = "3-JourneyPattern-2", priority = 4)
 	public void verifyTestJourneyPattern_3_2() throws Exception {
 		// 3-RouteSection-1 : Check if route section distance doesn't exceed gap as parameter
 		log.info(Color.BLUE + "3-JourneyPattern-2" + Color.NORMAL);
@@ -357,7 +357,7 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		utx.rollback();
 	}
 	
-	@Test(groups = { "journeyPattern" }, description = "3-RouteSection-1", priority = 3)
+	@Test(groups = { "journeyPattern" }, description = "3-RouteSection-1", priority = 5)
 	public void verifyTestRouteSection_3_1() throws Exception {
 		// 3-RouteSection-1 : Check if route section distance doesn't exceed gap as parameter
 		log.info(Color.BLUE + "3-RouteSection-1" + Color.NORMAL);
