@@ -632,7 +632,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		}
 		DataLocation loc = data.getDataLocations().get(object.getObjectId());
 		if (loc == null) {
-			return new DataLocation(object);
+			loc =  new DataLocation(object);
 		}
 		if (NamingUtil.isEmpty(loc.getName())) {
 			loc.setName(DataLocation.buildName(object));

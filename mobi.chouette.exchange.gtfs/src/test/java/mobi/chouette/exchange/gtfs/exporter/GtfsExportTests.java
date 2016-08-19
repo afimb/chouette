@@ -244,7 +244,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		for (FileReport info : report.getFiles()) {
 		    Reporter.log(info.toString(),true);
 		}
-		Assert.assertEquals(report.getFiles().size(), 6, "file reported");
+		Assert.assertEquals(report.getFiles().size(), 9, "file reported");
 		for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
 		    Reporter.log(info.toString(),true);
 		}
@@ -337,7 +337,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 	for (FileReport info : report.getFiles()) {
 	    Reporter.log(info.toString(),true);
 	}
-	Assert.assertEquals(report.getFiles().size(), 6, "file reported");
+	Assert.assertEquals(report.getFiles().size(), 9, "file reported");
 	for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
 	    Reporter.log(info.toString(),true);
 	}

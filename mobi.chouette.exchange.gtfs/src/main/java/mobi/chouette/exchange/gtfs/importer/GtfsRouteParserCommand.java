@@ -58,9 +58,15 @@ public class GtfsRouteParserCommand implements Command, Constant {
 
 			GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 
+			ActionReporter reporter = ActionReporter.Factory.getInstance();
+
 			// PTNetwork
 			if (referential.getSharedPTNetworks().isEmpty()) {
 				createPTNetwork(referential, configuration);
+				reporter.addObjectReport(context, "merged", OBJECT_TYPE.NETWORK, "networks", OBJECT_STATE.OK,
+						IO_TYPE.INPUT);
+				reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.NETWORK, OBJECT_TYPE.NETWORK,
+						referential.getSharedPTNetworks().size());
 			}
 
 			// Company
@@ -68,42 +74,50 @@ public class GtfsRouteParserCommand implements Command, Constant {
 				GtfsAgencyParser gtfsAgencyParser = (GtfsAgencyParser) ParserFactory.create(GtfsAgencyParser.class
 						.getName());
 				gtfsAgencyParser.parse(context);
+				reporter.addObjectReport(context, "merged", OBJECT_TYPE.COMPANY, "companies", OBJECT_STATE.OK,
+						IO_TYPE.INPUT);
+				reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.COMPANY, OBJECT_TYPE.COMPANY,
+						referential.getSharedCompanies().size());
 			}
 
-			// StopArea
-			if (referential.getSharedStopAreas().isEmpty()) {
-				GtfsStopParser gtfsStopParser = (GtfsStopParser) ParserFactory.create(GtfsStopParser.class.getName());
-				gtfsStopParser.parse(context);
-			}
-
-			// ConnectionLink
-			if (importer.hasTransferImporter()) {
-				if (referential.getSharedConnectionLinks().isEmpty()) {
-					GtfsTransferParser gtfsTransferParser = (GtfsTransferParser) ParserFactory
-							.create(GtfsTransferParser.class.getName());
-					gtfsTransferParser.parse(context);
-				}
-			}
-
-			if (configuration.getMaxDistanceForCommercial() > 0)
-			{
-				CommercialStopGenerator commercialStopGenerator = new CommercialStopGenerator();
-				commercialStopGenerator.createCommercialStopPoints(context);
-				configuration.setMaxDistanceForCommercial(0);
-			}
-			
-			if (configuration.getMaxDistanceForConnectionLink() > 0)
-			{
-			    ConnectionLinkGenerator connectionLinkGenerator = new ConnectionLinkGenerator();
-				connectionLinkGenerator.createConnectionLinks(context);
-				configuration.setMaxDistanceForConnectionLink(0);
-			}
+//			// StopArea
+//			if (referential.getSharedStopAreas().isEmpty()) {
+//				GtfsStopParser gtfsStopParser = (GtfsStopParser) ParserFactory.create(GtfsStopParser.class.getName());
+//				gtfsStopParser.parse(context);
+//			}
+//
+//			// ConnectionLink
+//			if (importer.hasTransferImporter()) {
+//				if (referential.getSharedConnectionLinks().isEmpty()) {
+//					GtfsTransferParser gtfsTransferParser = (GtfsTransferParser) ParserFactory
+//							.create(GtfsTransferParser.class.getName());
+//					gtfsTransferParser.parse(context);
+//				}
+//			}
+//
+//			if (configuration.getMaxDistanceForCommercial() > 0)
+//			{
+//				CommercialStopGenerator commercialStopGenerator = new CommercialStopGenerator();
+//				commercialStopGenerator.createCommercialStopPoints(context);
+//				configuration.setMaxDistanceForCommercial(0);
+//			}
+//			
+//			if (configuration.getMaxDistanceForConnectionLink() > 0)
+//			{
+//			    ConnectionLinkGenerator connectionLinkGenerator = new ConnectionLinkGenerator();
+//				connectionLinkGenerator.createConnectionLinks(context);
+//				configuration.setMaxDistanceForConnectionLink(0);
+//			}
 			
 			// Timetable
 			if (referential.getSharedTimetables().isEmpty()) {
 				GtfsCalendarParser gtfsCalendarParser = (GtfsCalendarParser) ParserFactory
 						.create(GtfsCalendarParser.class.getName());
 				gtfsCalendarParser.parse(context);
+				reporter.addObjectReport(context, "merged", OBJECT_TYPE.TIMETABLE, "time tables", OBJECT_STATE.OK,
+						IO_TYPE.INPUT);
+				reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.TIMETABLE, OBJECT_TYPE.TIMETABLE,
+						referential.getSharedTimetables().size());
 			}
 
 			// Line

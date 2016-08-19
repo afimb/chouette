@@ -20,7 +20,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "name", "status", "ioType", "errors", "checkPointErrorKeys", "checkPointErrorCount",
+@XmlType(propOrder = { "name", "status", "ioType", "errors", "checkPointErrorKeys", "checkPointWarningKeys", "checkPointErrorCount",
 		"checkPointWarningCount" })
 @Data
 @EqualsAndHashCode(exclude = { "status", "errors" }, callSuper=false)
@@ -38,9 +38,13 @@ public class FileReport extends AbstractReport{
 
 	@XmlElement(name = "errors")
 	private List<FileError> errors = new ArrayList<>();
-
+	
+	
 	@XmlElement(name = "checkpoint_errors")
 	private List<Integer> checkPointErrorKeys = new ArrayList<Integer>();
+	
+	@XmlElement(name = "checkpoint_warnings")
+	private List<Integer> checkPointWarningKeys = new ArrayList<Integer>();
 
 	@XmlElement(name = "checkpoint_error_count")
 	private int checkPointErrorCount = 0;
@@ -77,17 +81,20 @@ public class FileReport extends AbstractReport{
 	protected boolean addCheckPointError(int checkPointErrorId, SEVERITY severity) {
 		boolean ret = false;
 
-		if (checkPointErrorCount + checkPointWarningCount < maxErrors) {
-			checkPointErrorKeys.add(new Integer(checkPointErrorId));
-			ret = true;
-		}
-
 		switch (severity) {
 		case WARNING:
+			if (checkPointWarningCount < maxErrors) {
+				checkPointWarningKeys.add(new Integer(checkPointErrorId));
+				ret = true;
+			}
 			checkPointWarningCount++;
 			break;
 
 		default: // ERROR
+			if (checkPointErrorCount < maxErrors) {
+				checkPointErrorKeys.add(new Integer(checkPointErrorId));
+				ret = true;
+			}
 			checkPointErrorCount++;
 			status = FILE_STATE.ERROR;
 			break;
@@ -127,11 +134,26 @@ public class FileReport extends AbstractReport{
 		out.print(toJsonString(ret,level+1,"name", name, true));
 		out.print(toJsonString(ret,level+1,"status", status, false));
 		out.print(toJsonString(ret,level+1,"io_type", ioType, false));
+		
 		if (!errors.isEmpty()) {
 			printArray(out,ret, level+1,"errors",errors, false);
 		}
-		if (!checkPointErrorKeys.isEmpty())
-			printIntArray(out,ret, level+1,"check_point_errors",checkPointErrorKeys, false);
+		
+		List<Integer> lstErrorKeys = new ArrayList<Integer>();
+		for(Integer numError: checkPointErrorKeys) {
+			if(lstErrorKeys.size() < maxErrors)
+				lstErrorKeys.add(numError);
+			else
+				break;
+		}
+		for(Integer numWarning: checkPointWarningKeys) {
+			if(lstErrorKeys.size() < maxErrors)
+				lstErrorKeys.add(numWarning);
+			else
+				break;
+		}
+		if (!lstErrorKeys.isEmpty())
+			printIntArray(out,ret, level+1,"check_point_errors",lstErrorKeys, false);
 		out.print(toJsonString(ret,level+1,"check_point_error_count", checkPointErrorCount, false));
 		out.print(toJsonString(ret,level+1,"check_point_warning_count", checkPointWarningCount, false));
 		ret.setLength(0);

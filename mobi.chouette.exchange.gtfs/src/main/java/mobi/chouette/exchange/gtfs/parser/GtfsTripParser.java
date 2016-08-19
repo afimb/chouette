@@ -17,7 +17,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
@@ -58,8 +57,6 @@ import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineSegment;
@@ -86,7 +83,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	}
 
 	private void validateStopTimes(Context context) throws Exception {
-		Monitor monitor = MonitorFactory.start("ValidateStopTimes");
+//		Monitor monitor = MonitorFactory.start("ValidateStopTimes");
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 		Set<String> stopIds = new HashSet<String>();
@@ -208,11 +205,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			gtfsValidationReporter.reportError(context, new GtfsException(GTFS_STOP_TIMES_FILE, 1, null,
 					GtfsException.ERROR.MISSING_FILE, null, null), GTFS_STOP_TIMES_FILE);
 		}
-		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
+//		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 	}
 
 	private void validateShapes(Context context) throws Exception {
-		Monitor monitor = MonitorFactory.start("ValidateShape");
+//		Monitor monitor = MonitorFactory.start("ValidateShape");
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 
@@ -317,11 +314,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			gtfsValidationReporter.reportError(context, new GtfsException(GTFS_SHAPES_FILE, 1, null,
 					GtfsException.ERROR.MISSING_OPTIONAL_FILE, null, null), GTFS_SHAPES_FILE);
 		}
-		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
+//		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 	}
 
 	private void validateTrips(Context context) throws Exception {
-		Monitor monitor = MonitorFactory.start("ValidateTrips");
+//		Monitor monitor = MonitorFactory.start("ValidateTrips");
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 		Set<String> routeIds = new HashSet<String>();
@@ -409,11 +406,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			gtfsValidationReporter.reportError(context, new GtfsException(GTFS_TRIPS_FILE, 1, null,
 					GtfsException.ERROR.MISSING_FILE, null, null), GTFS_TRIPS_FILE);
 		}
-		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
+//		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 	}
 
 	private void validateFrequencies(Context context) throws Exception {
-		Monitor monitor = MonitorFactory.start("ValidateFrequencies");
+//		Monitor monitor = MonitorFactory.start("ValidateFrequencies");
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 
@@ -487,7 +484,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			gtfsValidationReporter.reportError(context, new GtfsException(GTFS_FREQUENCIES_FILE, 1, null,
 					GtfsException.ERROR.MISSING_OPTIONAL_FILE, null, null), GTFS_FREQUENCIES_FILE);
 		}
-		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
+//		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 	}
 
 	@Override

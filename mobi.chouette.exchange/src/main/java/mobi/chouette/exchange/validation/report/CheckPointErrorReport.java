@@ -15,10 +15,6 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import mobi.chouette.exchange.report.AbstractReport;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 @Data
 @EqualsAndHashCode(callSuper=false)
 @ToString
@@ -79,28 +75,6 @@ public class CheckPointErrorReport extends AbstractReport {
 		this.getTargets().addAll(Arrays.asList(targets));
 	}
 
-	public JSONObject toJson() throws JSONException {
-		JSONObject object = new JSONObject();
-		object.put("test_id", testId);
-		object.put("error_id", key);
-		if (source != null) {
-			object.put("source", source.toJson());
-		}
-		if (!targets.isEmpty()) {
-			JSONArray array = new JSONArray();
-			object.put("target", array);
-			for (Location target : targets) {
-				array.put(target.toJson());
-			}
-		}
-		if (value != null) {
-			object.put("error_value", value);
-		}
-		if (referenceValue != null) {
-			object.put("reference_value", referenceValue);
-		}
-		return object;
-	}
 
 	@Override
 	public void print(PrintStream out, StringBuilder ret , int level, boolean first) {

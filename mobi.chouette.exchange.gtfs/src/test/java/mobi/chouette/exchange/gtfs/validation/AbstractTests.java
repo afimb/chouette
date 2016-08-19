@@ -29,7 +29,6 @@ import mobi.chouette.persistence.hibernate.ContextHolder;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
-import org.codehaus.jettison.json.JSONException;
 import org.testng.Assert;
 import org.testng.Reporter;
 
@@ -191,11 +190,11 @@ public abstract class AbstractTests implements Constant, ReportConstant {
 									+ detail.getKey());
 				}
 			}
-			try {
-				log.info("detail :"+foundItem.toJson().toString(2));
-			} catch (JSONException e) {
-				log.error("unable to convert to json");
-			}
+//			try {
+//				log.info("detail :"+foundItem.toJson().toString(2));
+//			} catch (JSONException e) {
+//				log.error("unable to convert to json");
+//			}
 			return foundItem; // for extra check
 		}
 	}
