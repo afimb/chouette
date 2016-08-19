@@ -188,7 +188,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		}
 
 		// Company
-		twoVehicleJourneyTwoTest(validationReporter, context, oldValue.getCompany(), newValue.getCompany(), data);
+		twoDatabaseVehicleJourneyTwoTest(validationReporter, context, oldValue.getCompany(), newValue.getCompany(), data);
 		if (newValue.getCompany() == null) {
 			oldValue.setCompany(null);
 		} else {
@@ -362,10 +362,10 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	 * @param oldCompany
 	 * @param newCompany
 	 */
-	private void twoVehicleJourneyTwoTest(ValidationReporter validationReporter, Context context, Company oldCompany,  Company newCompany, ValidationData data) {
+	private void twoDatabaseVehicleJourneyTwoTest(ValidationReporter validationReporter, Context context, Company oldCompany,  Company newCompany, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldCompany, newCompany))
-			validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, data.getDataLocations().get(newCompany.getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_VEHICLE_JOURNEY_2, data.getDataLocations().get(newCompany.getObjectId()));
 		else
-			validationReporter.reportSuccess(context, VEHICLE_JOURNEY_2);
+			validationReporter.reportSuccess(context, DATABASE_VEHICLE_JOURNEY_2);
 	}
 }

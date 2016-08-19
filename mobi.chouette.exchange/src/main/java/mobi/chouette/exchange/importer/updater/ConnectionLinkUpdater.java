@@ -124,7 +124,7 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 		}
 		
 		// Check stop areas value in correspondance update
-		twoConnectionLinkOneTest(validationReporter, context, oldValue, newValue, data);
+		twoDatabaseConnectionLinkOneTest(validationReporter, context, oldValue, newValue, data);
 		if (newValue.getStartOfLink() != null) {
 
 			String objectId = newValue.getStartOfLink().getObjectId();
@@ -176,11 +176,11 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 	 * @param oldCL
 	 * @param newCL
 	 */
-	private void twoConnectionLinkOneTest(ValidationReporter validationReporter, Context context, ConnectionLink oldCL, ConnectionLink newCL, ValidationData data) {
+	private void twoDatabaseConnectionLinkOneTest(ValidationReporter validationReporter, Context context, ConnectionLink oldCL, ConnectionLink newCL, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldCL.getStartOfLink(), newCL.getStartOfLink()) || !NeptuneUtil.sameValue(oldCL.getEndOfLink(), newCL.getEndOfLink()))
-			validationReporter.addCheckPointReportError(context, CONNECTION_LINK_1, data.getDataLocations().get(newCL.getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_CONNECTION_LINK_1, data.getDataLocations().get(newCL.getObjectId()));
 		else
-			validationReporter.reportSuccess(context, CONNECTION_LINK_1);
+			validationReporter.reportSuccess(context, DATABASE_CONNECTION_LINK_1);
 	}
 
 }

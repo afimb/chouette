@@ -147,7 +147,7 @@ public class RouteUpdater implements Updater<Route> {
 		Collection<Pair<StopPoint, StopPoint>> modifiedStopPoint = CollectionUtil.intersection(
 				oldValue.getStopPoints(), newValue.getStopPoints(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<StopPoint, StopPoint> pair : modifiedStopPoint) {
-			twoStopPointOneTest(validationReporter, context, pair.getLeft(), pair.getRight(), data);
+			twoDatabaseStopPointOneTest(validationReporter, context, pair.getLeft(), pair.getRight(), data);
 			stopPointUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
@@ -192,16 +192,16 @@ public class RouteUpdater implements Updater<Route> {
 	}
 	
 	/**
-	 * Test 2-StopPoint-1
+	 * Test 2-DATABASE-StopPoint-1
 	 * @param validationReporter
 	 * @param context
 	 * @param oldSp
 	 * @param newSp
 	 */
-	private void twoStopPointOneTest(ValidationReporter validationReporter, Context context, StopPoint oldSp, StopPoint newSp, ValidationData data) {
+	private void twoDatabaseStopPointOneTest(ValidationReporter validationReporter, Context context, StopPoint oldSp, StopPoint newSp, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldSp, newSp))
-			validationReporter.addCheckPointReportError(context, STOP_POINT_1, data.getDataLocations().get(newSp.getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_1, data.getDataLocations().get(newSp.getObjectId()));
 		else
-			validationReporter.reportSuccess(context, STOP_POINT_1);
+			validationReporter.reportSuccess(context, DATABASE_STOP_POINT_1);
 	}
 }

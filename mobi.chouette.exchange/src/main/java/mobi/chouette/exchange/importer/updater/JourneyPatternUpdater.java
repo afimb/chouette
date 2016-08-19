@@ -121,7 +121,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		Collection<Pair<RouteSection, RouteSection>> modifiedRouteSection = CollectionUtil.intersection(
 				oldValue.getRouteSections(), newValue.getRouteSections(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<RouteSection, RouteSection> pair : modifiedRouteSection) {
-			twoJourneyPatternOneTest(validationReporter, context, pair.getLeft(), pair.getRight(), data);
+			twoDatabaseJourneyPatternOneTest(validationReporter, context, pair.getLeft(), pair.getRight(), data);
 			routeSectionUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
@@ -220,7 +220,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 				oldValue.getVehicleJourneys(), newValue.getVehicleJourneys(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<VehicleJourney, VehicleJourney> pair : modifiedVehicleJourney) {
-			twoVehicleJourneyOneTest(validationReporter, context, pair.getLeft(), pair.getRight(), data);
+			twoDatabaseVehicleJourneyOneTest(validationReporter, context, pair.getLeft(), pair.getRight(), data);
 			vehicleJourneyUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
@@ -235,11 +235,11 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 	 * @param oldRouteSection
 	 * @param newRouteSection
 	 */
-	private void twoJourneyPatternOneTest(ValidationReporter validationReporter, Context context, RouteSection oldRouteSection, RouteSection newRouteSection, ValidationData data) {
+	private void twoDatabaseJourneyPatternOneTest(ValidationReporter validationReporter, Context context, RouteSection oldRouteSection, RouteSection newRouteSection, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldRouteSection, newRouteSection))
-			validationReporter.addCheckPointReportError(context, JOURNEY_PATTERN_1, data.getDataLocations().get(newRouteSection.getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_JOURNEY_PATTERN_1, data.getDataLocations().get(newRouteSection.getObjectId()));
 		else
-			validationReporter.reportSuccess(context, JOURNEY_PATTERN_1);
+			validationReporter.reportSuccess(context, DATABASE_JOURNEY_PATTERN_1);
 	}
 	
 	
@@ -251,11 +251,11 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 	 * @param oldVj
 	 * @param newVj
 	 */
-	private void twoVehicleJourneyOneTest(ValidationReporter validationReporter, Context context, VehicleJourney oldVj, VehicleJourney newVj, ValidationData data) {
+	private void twoDatabaseVehicleJourneyOneTest(ValidationReporter validationReporter, Context context, VehicleJourney oldVj, VehicleJourney newVj, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldVj, newVj))
-			validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_1, data.getDataLocations().get(newVj.getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_VEHICLE_JOURNEY_1, data.getDataLocations().get(newVj.getObjectId()));
 		else
-			validationReporter.reportSuccess(context, VEHICLE_JOURNEY_1);
+			validationReporter.reportSuccess(context, DATABASE_VEHICLE_JOURNEY_1);
 	}
 
 }

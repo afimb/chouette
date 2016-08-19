@@ -42,7 +42,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		validationReporter.addItemToValidationReport(context, "2-StopPoint-3", "E");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		
-		twoStopPointTwoTest(validationReporter, context, oldValue, newValue, data);
+		twoDatabaseStopPointTwoTest(validationReporter, context, oldValue, newValue, data);
 		if (oldValue.isDetached()) {
 			// object does not exist in database
 			oldValue.setObjectId(newValue.getObjectId());
@@ -77,7 +77,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		}
 
 		// StopArea
-		twoStopPointThreeTest(validationReporter, context, oldValue.getContainedInStopArea(), newValue.getContainedInStopArea(), data);
+		twoDatabaseStopPointThreeTest(validationReporter, context, oldValue.getContainedInStopArea(), newValue.getContainedInStopArea(), data);
 		if (newValue.getContainedInStopArea() == null) {
 			oldValue.setContainedInStopArea(null);
 		} else {
@@ -110,13 +110,13 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	 * @param oldSp
 	 * @param newSp
 	 */
-	private void twoStopPointTwoTest(ValidationReporter validationReporter, Context context, StopPoint oldSp, StopPoint newSp, ValidationData data) {
+	private void twoDatabaseStopPointTwoTest(ValidationReporter validationReporter, Context context, StopPoint oldSp, StopPoint newSp, ValidationData data) {
 		if(oldSp !=null && newSp != null) {
 			if(oldSp.getPosition() != null && newSp.getPosition() != null) {
 				if(!oldSp.getPosition().equals(newSp.getPosition()))
-					validationReporter.addCheckPointReportError(context, STOP_POINT_2, data.getDataLocations().get(newSp.getObjectId()));
+					validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_2, data.getDataLocations().get(newSp.getObjectId()));
 				else
-					validationReporter.reportSuccess(context, STOP_POINT_2);
+					validationReporter.reportSuccess(context, DATABASE_STOP_POINT_2);
 			}
 		}
 	}
@@ -129,10 +129,10 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	 * @param oldSp
 	 * @param newSp
 	 */
-	private void twoStopPointThreeTest(ValidationReporter validationReporter, Context context, StopArea oldSA, StopArea newSA, ValidationData data) {
+	private void twoDatabaseStopPointThreeTest(ValidationReporter validationReporter, Context context, StopArea oldSA, StopArea newSA, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldSA, newSA))
-			validationReporter.addCheckPointReportError(context, STOP_POINT_3, data.getDataLocations().get(newSA.getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_3, data.getDataLocations().get(newSA.getObjectId()));
 		else
-			validationReporter.reportSuccess(context, STOP_POINT_3);
+			validationReporter.reportSuccess(context, DATABASE_STOP_POINT_3);
 	}
 }

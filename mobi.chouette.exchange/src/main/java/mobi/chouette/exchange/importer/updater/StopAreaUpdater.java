@@ -231,7 +231,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		Collection<Pair<AccessPoint, AccessPoint>> modifiedAccessPoint = CollectionUtil.intersection(
 				oldValue.getAccessPoints(), newValue.getAccessPoints(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<AccessPoint, AccessPoint> pair : modifiedAccessPoint) {
-			twoAccessPointOneTest(validationReporter, context, pair.getLeft(), pair.getRight(), data);
+			twoDatabaseAccessPointOneTest(validationReporter, context, pair.getLeft(), pair.getRight(), data);
 			accessPointUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
@@ -357,8 +357,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			if (!area.isDetached() || area.isFilled())
 				oldValue.getRoutingConstraintAreas().add(area);
 		}
-		twoStopAreaOneTest(validationReporter, context, oldValue, newValue, data);
-		twoStopAreaTwoTest(validationReporter, context, oldValue, newValue, data);
+		twoDatabaseStopAreaOneTest(validationReporter, context, oldValue, newValue, data);
+		twoDatabaseStopAreaTwoTest(validationReporter, context, oldValue, newValue, data);
 		Collection<Pair<StopArea, StopArea>> modifiedStopArea = CollectionUtil.intersection(
 				oldValue.getRoutingConstraintAreas(), newValue.getRoutingConstraintAreas(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -377,11 +377,11 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	 * @param oldParent
 	 * @param newParent
 	 */
-	private void twoStopAreaOneTest(ValidationReporter validationReporter, Context context, StopArea oldParent, StopArea newParent, ValidationData data) {
+	private void twoDatabaseStopAreaOneTest(ValidationReporter validationReporter, Context context, StopArea oldParent, StopArea newParent, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldParent, newParent))
-				validationReporter.addCheckPointReportError(context, STOP_AREA_1, data.getDataLocations().get(newParent.getObjectId()));
+				validationReporter.addCheckPointReportError(context, DATABASE_STOP_AREA_1, data.getDataLocations().get(newParent.getObjectId()));
 			else
-				validationReporter.reportSuccess(context, STOP_AREA_1);
+				validationReporter.reportSuccess(context, DATABASE_STOP_AREA_1);
 	}
 
 	/**
@@ -391,12 +391,12 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	 * @param oldSA
 	 * @param newSA
 	 */
-	private void twoStopAreaTwoTest(ValidationReporter validationReporter, Context context, StopArea oldSA, StopArea newSA, ValidationData data) {
+	private void twoDatabaseStopAreaTwoTest(ValidationReporter validationReporter, Context context, StopArea oldSA, StopArea newSA, ValidationData data) {
 		if(oldSA !=null && newSA != null) {
 			if(!NeptuneUtil.sameValue(oldSA.getAreaType(),newSA.getAreaType()))
-				validationReporter.addCheckPointReportError(context, STOP_AREA_2, data.getDataLocations().get(newSA.getObjectId()));
+				validationReporter.addCheckPointReportError(context, DATABASE_STOP_AREA_2, data.getDataLocations().get(newSA.getObjectId()));
 			else
-				validationReporter.reportSuccess(context, STOP_AREA_2);
+				validationReporter.reportSuccess(context, DATABASE_STOP_AREA_2);
 		}
 	}
 	
@@ -408,10 +408,10 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	 * @param newAP
 	 * @param data
 	 */
-	private void twoAccessPointOneTest(ValidationReporter validationReporter, Context context, AccessPoint oldAP, AccessPoint newAP, ValidationData data) {
+	private void twoDatabaseAccessPointOneTest(ValidationReporter validationReporter, Context context, AccessPoint oldAP, AccessPoint newAP, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldAP, newAP))
-			validationReporter.addCheckPointReportError(context, ACCESS_POINT_1, data.getDataLocations().get(newAP.getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_ACCESS_POINT_1, data.getDataLocations().get(newAP.getObjectId()));
 		else
-			validationReporter.reportSuccess(context, ACCESS_POINT_1);
+			validationReporter.reportSuccess(context, DATABASE_ACCESS_POINT_1);
 	}
 }

@@ -147,7 +147,7 @@ public class LineUpdater implements Updater<Line> {
 		}
 		
 		// PTNetwork
-		twoLineOneTest(validationReporter, context, oldValue.getNetwork(), newValue.getNetwork(), data);
+		twoDatabaseLineOneTest(validationReporter, context, oldValue.getNetwork(), newValue.getNetwork(), data);
 		
 		if (newValue.getNetwork() == null) {
 			oldValue.setNetwork(null);
@@ -168,7 +168,7 @@ public class LineUpdater implements Updater<Line> {
 		}
 
 		// Company
-		twoLineTwoTest(validationReporter, context, oldValue.getCompany(), newValue.getCompany(), data);
+		twoDatabaseLineTwoTest(validationReporter, context, oldValue.getCompany(), newValue.getCompany(), data);
 		
 		if (newValue.getCompany() == null) {
 			oldValue.setCompany(null);
@@ -246,7 +246,7 @@ public class LineUpdater implements Updater<Line> {
 		Collection<Pair<Route, Route>> modifiedRoute = CollectionUtil.intersection(oldValue.getRoutes(),
 				newValue.getRoutes(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<Route, Route> pair : modifiedRoute) {
-			twoRouteOneTest(validationReporter, context, pair.getLeft(), pair.getRight(), data);
+			twoDatabaseRouteOneTest(validationReporter, context, pair.getLeft(), pair.getRight(), data);
 			routeUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
@@ -293,11 +293,11 @@ public class LineUpdater implements Updater<Line> {
 	 * @param oldPTNetwork
 	 * @param newPTNetwork
 	 */
-	private void twoLineOneTest(ValidationReporter validationReporter, Context context, Network oldPTNetwork, Network newPTNetwork, ValidationData data) {
+	private void twoDatabaseLineOneTest(ValidationReporter validationReporter, Context context, Network oldPTNetwork, Network newPTNetwork, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldPTNetwork, newPTNetwork))
-			validationReporter.addCheckPointReportError(context, LINE_1, data.getDataLocations().get(newPTNetwork.getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_LINE_1, data.getDataLocations().get(newPTNetwork.getObjectId()));
 		else
-			validationReporter.reportSuccess(context, LINE_1);
+			validationReporter.reportSuccess(context, DATABASE_LINE_1);
 	}
 	
 	/**
@@ -307,11 +307,11 @@ public class LineUpdater implements Updater<Line> {
 	 * @param oldCompany
 	 * @param newCompany
 	 */
-	private void twoLineTwoTest(ValidationReporter validationReporter, Context context, Company oldCompany, Company newCompany, ValidationData data) {
+	private void twoDatabaseLineTwoTest(ValidationReporter validationReporter, Context context, Company oldCompany, Company newCompany, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldCompany, newCompany))
-			validationReporter.addCheckPointReportError(context, LINE_2, data.getDataLocations().get(newCompany.getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_LINE_2, data.getDataLocations().get(newCompany.getObjectId()));
 		else
-			validationReporter.reportSuccess(context, LINE_2);
+			validationReporter.reportSuccess(context, DATABASE_LINE_2);
 	}
 	
 	/**
@@ -321,10 +321,10 @@ public class LineUpdater implements Updater<Line> {
 	 * @param oldRoute
 	 * @param newRoute
 	 */
-	private void twoRouteOneTest(ValidationReporter validationReporter, Context context, Route oldRoute, Route newRoute, ValidationData data) {
+	private void twoDatabaseRouteOneTest(ValidationReporter validationReporter, Context context, Route oldRoute, Route newRoute, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldRoute, newRoute))
-			validationReporter.addCheckPointReportError(context, ROUTE_1, data.getDataLocations().get(newRoute.getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_ROUTE_1, data.getDataLocations().get(newRoute.getObjectId()));
 		else
-			validationReporter.reportSuccess(context, ROUTE_1);
+			validationReporter.reportSuccess(context, DATABASE_ROUTE_1);
 	}
 }
