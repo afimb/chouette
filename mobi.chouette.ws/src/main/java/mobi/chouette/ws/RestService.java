@@ -48,6 +48,7 @@ import mobi.chouette.service.ServiceException;
 import mobi.chouette.service.ServiceExceptionCode;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
@@ -254,7 +255,7 @@ public class RestService implements Constant {
 			@DefaultValue("0") @QueryParam("version") final Long version, @QueryParam("action") final String[] action, @QueryParam("status") final Job.STATUS[] status) {
 
 		try {
-			log.info(Color.CYAN + "Call jobs referential = " + referential + ", action = " + action + ", version = "
+			log.info(Color.CYAN + "Call jobs referential = " + referential + ", action = " + StringUtils.join(action)+", status = " + StringUtils.join(status) + ", version = "
 					+ version + Color.NORMAL);
 
 			// create jobs listing
