@@ -417,7 +417,7 @@ public class JobServiceManager {
 	}
 
 	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public List<JobService> jobs(String referential, String action, final Long version, Job.STATUS[] status) throws ServiceException {
+	public List<JobService> jobs(String referential, String action[], final Long version, Job.STATUS[] status) throws ServiceException {
 		validateReferential(referential);
 
 		List<Job> jobs = null;
