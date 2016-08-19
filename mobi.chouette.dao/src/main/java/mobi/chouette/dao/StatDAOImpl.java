@@ -68,7 +68,7 @@ public class StatDAOImpl extends GenericDAOImpl<Stat> implements StatDAO{
 	
 	@Override
 	public void removeObsoleteStatFromDatabase(Date date) {
-		Query query = em.createNativeQuery("DELETE FROM STATS WHERE  date < (date '" + date + "' - interval '1 year')");
+		Query query = em.createNativeQuery("DELETE FROM Stats s WHERE  s.date < (date '" + date + "' - interval '1 year')");
 		query.executeUpdate();
 	}
 	
