@@ -255,7 +255,7 @@ public class RestService implements Constant {
 			@DefaultValue("0") @QueryParam("version") final Long version, @QueryParam("action") final String[] action, @QueryParam("status") final Job.STATUS[] status) {
 
 		try {
-			log.info(Color.CYAN + "Call jobs referential = " + referential + ", action = " + StringUtils.join(action)+", status = " + StringUtils.join(status) + ", version = "
+			log.info(Color.CYAN + "Call jobs referential = " + referential + ", action = " + StringUtils.join(action,',')+", status = " + StringUtils.join(status,',') + ", version = "
 					+ version + Color.NORMAL);
 
 			// create jobs listing
