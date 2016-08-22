@@ -29,7 +29,7 @@ import lombok.ToString;
 @EqualsAndHashCode(of = { "id" })
 @ToString(exclude = { "parametersAsString" })
 @Entity
-@Table(name = "jobs",indexes = {@Index(name = "i_type_status", columnList = "type,status")})
+@Table(name = "jobs",indexes = {@Index(name = "i_referential_type_status", columnList = "referential,type,status")})
 @Data
 public class Job implements Serializable {
 
