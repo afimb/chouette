@@ -4,13 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
-import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
@@ -29,7 +26,7 @@ import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
 @Log4j
-public class ValidationNetworks implements Constant{
+public class ValidationNetworks extends AbstractTestValidation{
 	private NetworkCheckPoints checkPoint = new NetworkCheckPoints();
 	private ValidationParameters fullparameters;
 	private Network bean1;
@@ -37,18 +34,12 @@ public class ValidationNetworks implements Constant{
 	private List<Network> beansFor4 = new ArrayList<>();
 
 	protected static final String path = "src/test/data/checkpoints";
-	protected ValidationParameters loadFullParameters() throws Exception
-	{
-				String filename = "fullparameterset.json";
-				File f = new File(path,filename);
-				return (ValidationParameters) JSONUtil.fromJSON(f.toPath(), ValidationParameters.class);
-	}
 
 	@BeforeGroups(groups = { "network" })
 	public void init() {
-		BasicConfigurator.configure();
 
-		Locale.setDefault(Locale.ENGLISH);
+		super.init();
+		BasicConfigurator.configure();
 		long id = 1;
 
 		fullparameters = null;
@@ -77,7 +68,7 @@ public class ValidationNetworks implements Constant{
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
 
 		Context context = new Context();
-		context.put(INITIAL_CONTEXT, null);
+		context.put(INITIAL_CONTEXT, initialContext);
 		context.put(REPORT, new ActionReport());
 		context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
 		ValidateParameters configuration = new ValidateParameters();
@@ -363,8 +354,9 @@ public class ValidationNetworks implements Constant{
 
 	/**
 	 * @param report
+	 * @return 
 	 */
-	protected void checkReportForTest4_1(ValidationReport report, String key, int detailSize) {
+	protected List<Detail> checkReportForTest4_1(ValidationReport report, String key, int detailSize) {
 		Assert.assertFalse(report.getCheckPoints().isEmpty(), " report must have items");
 		Assert.assertNotNull(report.findCheckPointByName(key), " report must have 1 item on key "+key);
 		CheckPoint checkPointReport = report.findCheckPointByName(key);
@@ -373,6 +365,7 @@ public class ValidationNetworks implements Constant{
 		Detail detail = details.get(0);
 		Assert.assertEquals(detail.getReferenceValue(), "RegistrationNumber", "detail must refer column");
 		Assert.assertEquals(detail.getValue(), bean2.getRegistrationNumber(), "detail must refer value");
+        return details;
 	}
 
 }

@@ -4,12 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.JSONUtil;
 import mobi.chouette.core.ChouetteException;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.ValidationData;
@@ -36,15 +34,10 @@ public class ValidationTimetables extends AbstractTestValidation {
 
 	protected static final String path = "src/test/data/checkpoints";
 
-	protected ValidationParameters loadFullParameters() throws Exception {
-		String filename = "fullparameterset.json";
-		File f = new File(path, filename);
-		return (ValidationParameters) JSONUtil.fromJSON(f.toPath(), ValidationParameters.class);
-	}
 
 	@BeforeGroups(groups = { "timetable" })
 	public void init() {
-		Locale.setDefault(Locale.ENGLISH);
+		super.init();
 		long id = 1;
 
 		fullparameters = null;
@@ -74,7 +67,7 @@ public class ValidationTimetables extends AbstractTestValidation {
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
 
 		Context context = new Context();
-		context.put(INITIAL_CONTEXT, null);
+		context.put(INITIAL_CONTEXT, initialContext);
 		context.put(REPORT, new ActionReport());
 		context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
 		ValidateParameters configuration = new ValidateParameters();

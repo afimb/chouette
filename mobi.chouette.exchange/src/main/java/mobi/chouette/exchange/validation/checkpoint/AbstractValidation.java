@@ -253,7 +253,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		return b.toString();
 	}
 
-	protected static TransportModeParameters getModeParameters(ValidationParameters parameters, String mode, Logger log) {
+	public static TransportModeParameters getModeParameters(ValidationParameters parameters, String mode, Logger log) {
 		// find transportMode :
 		String modeKey = MODE_PREFIX + mode;
 		try {
@@ -269,7 +269,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param parameters
 	 * @return
 	 */
-	protected Polygon getEnveloppe(ValidationParameters parameters) throws Exception {
+	public Polygon getEnveloppe(ValidationParameters parameters) throws Exception {
 		// validationPerimeter : default = France
 		String perimeter = parameters.getStopAreasArea();
 		if (perimeter == null || perimeter.isEmpty() || !perimeter.startsWith("[")) {

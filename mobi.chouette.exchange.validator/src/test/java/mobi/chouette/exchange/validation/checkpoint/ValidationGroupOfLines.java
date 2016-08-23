@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
@@ -35,8 +34,7 @@ public class ValidationGroupOfLines extends AbstractTestValidation {
 
 	@BeforeGroups(groups = { "groupOfLine" })
 	public void init() {
-		// BasicConfigurator.configure();
-		Locale.setDefault(Locale.ENGLISH);
+		super.init();
 		long id = 1;
 
 		fullparameters = null;
@@ -66,7 +64,7 @@ public class ValidationGroupOfLines extends AbstractTestValidation {
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
 
 		Context context = new Context();
-		context.put(INITIAL_CONTEXT, null);
+		context.put(INITIAL_CONTEXT, initialContext);
 		context.put(REPORT, new ActionReport());
 		context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
 		ValidateParameters configuration = new ValidateParameters();

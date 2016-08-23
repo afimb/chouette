@@ -1,3 +1,7 @@
+# Version 3.3.4 (23/08/2016)
+* Correction 
+  * Export des correspondances non typées impossible
+
 # Version 3.3.3 (24/05/2016)
 * Correction 
   * Mantis 44559: Export GTFS Shape.txt : rupture de numérotation dans la table journey_pattern_sections
