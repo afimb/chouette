@@ -389,7 +389,7 @@
         <creationTime>2007-12-16T16:59:13.000Z</creationTime>
         <name>Réserve du Jardin - Mairie</name>
         <startOfLink>NINOXE:StopArea:15625442</startOfLink>
-        <endOfLink>NINOXE:StopArea:15573202</endOfLink>
+        <endOfLink>NINOXE:StopArea:15574356</endOfLink>
         <linkDistance>200.00</linkDistance>
         <linkType>Overground</linkType>
         <defaultDuration>PT1H10M</defaultDuration>

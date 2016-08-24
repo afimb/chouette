@@ -180,7 +180,7 @@
             <creatorId>chouette</creatorId>
             <name>Général de Gaule</name>
             <contains>NINOXE:StopArea:15574353</contains>
-            <contains>NINOXE:StopArea:15574342</contains>
+            <contains>NINOXE:StopArea:1557434289</contains>
             <centroidOfArea>NINOXE:AreaCentroid:15575495</centroidOfArea>
             <comment>Les Granges de Dessia</comment>
             <StopAreaExtension>
@@ -189,7 +189,7 @@
             </StopAreaExtension>
         </StopArea>
         <StopArea>
-            <objectId>NINOXE:StopArea:15574342</objectId>
+            <objectId>NINOXE:StopArea:1557434289</objectId>
             <objectVersion>2</objectVersion>
             <creationTime>2013-07-10T12:48:49.345Z</creationTime>
             <creatorId>chouette</creatorId>
@@ -378,7 +378,7 @@
             <address>
                 <countryCode>39347</countryCode>
             </address>
-            <containedIn>NINOXE:StopArea:15574342</containedIn>
+            <containedIn>NINOXE:StopArea:1557434289</containedIn>
             <name>Général de Gaule (A)</name>
             <comment>Les Granges de Dessia</comment>
         </AreaCentroid>
@@ -537,7 +537,7 @@
             <address>
                 <countryCode>39347</countryCode>
             </address>
-            <containedIn>NINOXE:StopArea:15574342</containedIn>
+            <containedIn>NINOXE:StopArea:1557434289</containedIn>
             <name>Général de Gaule (A)</name>
 	    <lineIdShortcut>NINOXE:Line:15627090</lineIdShortcut>
             <ptNetworkIdShortcut>NINOXE:GroupOfLine:15563881</ptNetworkIdShortcut>

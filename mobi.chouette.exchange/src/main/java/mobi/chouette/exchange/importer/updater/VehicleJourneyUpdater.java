@@ -114,7 +114,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		
 		// Database test init
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-		validationReporter.addItemToValidationReport(context, "2-VehicleJourney-2", "W");
+		validationReporter.addItemToValidationReport(context, DATABASE_VEHICLE_JOURNEY_2, "W");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 				
 				
@@ -356,7 +356,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	
 	
 	/**
-	 * Test 2-VehicleJourney-2
+	 * Test 2-DATABASE-VehicleJourney-2
 	 * @param validationReporter
 	 * @param context
 	 * @param oldCompany

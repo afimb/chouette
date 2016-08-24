@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <ChouettePTNetwork>
     <PTNetwork>
-        <objectId>NINOXE:GroupOfLine:15563881</objectId>
+        <objectId>NINOXE:GroupOfLine:155638889</objectId>
         <objectVersion>2</objectVersion>
         <creationTime>2012-10-02T08:09:50.663Z</creationTime>
         <creatorId>chouette</creatorId>
@@ -31,7 +31,7 @@
     </Company>
     <ChouetteArea>
         <StopArea>
-            <objectId>NINOXE:StopArea:1557320389</objectId>
+            <objectId>NINOXE:StopArea:15573203</objectId>
             <objectVersion>2</objectVersion>
             <creationTime>2013-07-10T12:48:48.761Z</creationTime>
             <creatorId>chouette</creatorId>
@@ -213,7 +213,7 @@
             <address>
                 <countryCode>39273</countryCode>
             </address>
-            <containedIn>NINOXE:StopArea:1557320389</containedIn>
+            <containedIn>NINOXE:StopArea:15573203</containedIn>
             <name>Collège St James</name>
             <comment>Lains</comment>
         </AreaCentroid>
@@ -488,7 +488,7 @@
             <registration>
                 <registrationNumber>987654321</registrationNumber>
             </registration>
-            <ptNetworkIdShortcut>NINOXE:GroupOfLine:15563881</ptNetworkIdShortcut>
+            <ptNetworkIdShortcut>NINOXE:GroupOfLine:155638889</ptNetworkIdShortcut>
             <comment>Ligne 7 orange</comment>
         </Line>
         <ChouetteRoute>
@@ -540,7 +540,7 @@
             <containedIn>NINOXE:StopArea:15574342</containedIn>
             <name>Général de Gaule (A)</name>
 	    <lineIdShortcut>NINOXE:Line:15627090</lineIdShortcut>
-            <ptNetworkIdShortcut>NINOXE:GroupOfLine:15563881</ptNetworkIdShortcut>
+            <ptNetworkIdShortcut>NINOXE:GroupOfLine:155638889</ptNetworkIdShortcut>
         </StopPoint>
         <StopPoint>
             <objectId>NINOXE:StopPoint:15627093</objectId>

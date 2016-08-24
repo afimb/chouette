@@ -38,8 +38,8 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		
 		// Database test init
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-		validationReporter.addItemToValidationReport(context, "2-StopPoint-2", "E");
-		validationReporter.addItemToValidationReport(context, "2-StopPoint-3", "E");
+		validationReporter.addItemToValidationReport(context, DATABASE_STOP_POINT_2, "E");
+		validationReporter.addItemToValidationReport(context, DATABASE_STOP_POINT_3, "W");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		
 		twoDatabaseStopPointTwoTest(validationReporter, context, oldValue, newValue, data);
@@ -77,11 +77,11 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		}
 
 		// StopArea
-		twoDatabaseStopPointThreeTest(validationReporter, context, oldValue.getContainedInStopArea(), newValue.getContainedInStopArea(), data);
+		
 		if (newValue.getContainedInStopArea() == null) {
 			oldValue.setContainedInStopArea(null);
 		} else {
-
+			twoDatabaseStopPointThreeTest(validationReporter, context, oldValue.getContainedInStopArea(), newValue.getContainedInStopArea(), data);
 			String objectId = newValue.getContainedInStopArea().getObjectId();
 			StopArea stopArea = cache.getStopAreas().get(objectId);
 			if (stopArea == null) {
@@ -94,7 +94,9 @@ public class StopPointUpdater implements Updater<StopPoint> {
 			if (stopArea == null) {
 				stopArea = ObjectFactory.getStopArea(cache, objectId);
 			}
+			
 			oldValue.setContainedInStopArea(stopArea);
+
 			if (!context.containsKey(AREA_BLOC))
 			   stopAreaUpdater.update(context, oldValue.getContainedInStopArea(), newValue.getContainedInStopArea());
 		}
@@ -104,7 +106,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	
 	
 	/**
-	 * Test 2-StopPoint-2
+	 * Test 2-DATABASE-StopPoint-2
 	 * @param validationReporter
 	 * @param context
 	 * @param oldSp
@@ -123,7 +125,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	
 	
 	/**
-	 * Test 2-StopPoint-3
+	 * Test 2-DATABASE-StopPoint-3
 	 * @param validationReporter
 	 * @param context
 	 * @param oldSp

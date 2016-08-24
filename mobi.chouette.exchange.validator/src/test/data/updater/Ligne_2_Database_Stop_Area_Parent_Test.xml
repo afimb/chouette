@@ -31,7 +31,7 @@
     </Company>
     <ChouetteArea>
         <StopArea>
-            <objectId>NINOXE:StopArea:1557320389</objectId>
+            <objectId>NINOXE:StopArea:15573203879</objectId>
             <objectVersion>2</objectVersion>
             <creationTime>2013-07-10T12:48:48.761Z</creationTime>
             <creatorId>chouette</creatorId>
@@ -213,7 +213,7 @@
             <address>
                 <countryCode>39273</countryCode>
             </address>
-            <containedIn>NINOXE:StopArea:1557320389</containedIn>
+            <containedIn>NINOXE:StopArea:15573203879</containedIn>
             <name>Collège St James</name>
             <comment>Lains</comment>
         </AreaCentroid>

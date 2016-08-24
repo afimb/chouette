@@ -31,7 +31,7 @@
     </Company>
     <ChouetteArea>
         <StopArea>
-            <objectId>NINOXE:StopArea:1557320389</objectId>
+            <objectId>NINOXE:StopArea:15573203</objectId>
             <objectVersion>2</objectVersion>
             <creationTime>2013-07-10T12:48:48.761Z</creationTime>
             <creatorId>chouette</creatorId>
@@ -94,7 +94,7 @@
             <creationTime>2013-07-10T12:48:49.261Z</creationTime>
             <creatorId>chouette</creatorId>
             <name>Général de Gaule (R)</name>
-            <contains>NINOXE:StopPoint:15627098</contains>
+            <contains>NINOXE:StopPoint:15627097</contains>
             <centroidOfArea>NINOXE:AreaCentroid:15574353</centroidOfArea>
             <comment>Les Granges de Dessia</comment>
             <StopAreaExtension>
@@ -122,7 +122,7 @@
             <creationTime>2013-07-10T12:48:49.296Z</creationTime>
             <creatorId>chouette</creatorId>
             <name>Hôtel des poste (R)</name>
-            <contains>NINOXE:StopPoint:15627097</contains>
+            <contains>NINOXE:StopPoint:15627098</contains>
             <centroidOfArea>NINOXE:AreaCentroid:15574352</centroidOfArea>
             <comment>Sesigna (Dramelay)</comment>
             <StopAreaExtension>
@@ -213,7 +213,7 @@
             <address>
                 <countryCode>39273</countryCode>
             </address>
-            <containedIn>NINOXE:StopArea:1557320389</containedIn>
+            <containedIn>NINOXE:StopArea:15573203</containedIn>
             <name>Collège St James</name>
             <comment>Lains</comment>
         </AreaCentroid>
@@ -479,7 +479,7 @@
             <number>7</number>
             <publishedName>Ligne 7 orange</publishedName>
             <transportModeName>Bus</transportModeName>
-            <lineEnd>NINOXE:StopPoint:15627097</lineEnd>
+            <lineEnd>NINOXE:StopPoint:15627098</lineEnd>
             <lineEnd>NINOXE:StopPoint:15627100</lineEnd>
             <lineEnd>NINOXE:StopPoint:15627092</lineEnd>
             <lineEnd>NINOXE:StopPoint:15627095</lineEnd>
@@ -569,7 +569,7 @@
             <name>Hôtel des poste (A)</name>
         </StopPoint>
         <StopPoint>
-            <objectId>NINOXE:StopPoint:15627098</objectId>
+            <objectId>NINOXE:StopPoint:15627097</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:13:16.000Z</creationTime>
             <longitude>5.5044078826904300</longitude>
@@ -582,7 +582,7 @@
             <name>Général de Gaule (R)</name>
         </StopPoint>
         <StopPoint>
-            <objectId>NINOXE:StopPoint:15627097</objectId>
+            <objectId>NINOXE:StopPoint:15627098</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:13:04.000Z</creationTime>
             <longitude>5.5337619781494140</longitude>
@@ -644,8 +644,8 @@
             <objectId>NINOXE:PtLink:15627097A15627098</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2013-09-23T13:05:25.278Z</creationTime>
-            <startOfLink>NINOXE:StopPoint:15627097</startOfLink>
-            <endOfLink>NINOXE:StopPoint:15627098</endOfLink>
+            <startOfLink>NINOXE:StopPoint:15627098</startOfLink>
+            <endOfLink>NINOXE:StopPoint:15627097</endOfLink>
         </PtLink>
         <PtLink>
             <objectId>NINOXE:PtLink:15627092A15627093</objectId>
@@ -672,7 +672,7 @@
             <objectId>NINOXE:PtLink:15627098A15627099</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2013-09-23T13:05:25.278Z</creationTime>
-            <startOfLink>NINOXE:StopPoint:15627098</startOfLink>
+            <startOfLink>NINOXE:StopPoint:15627097</startOfLink>
             <endOfLink>NINOXE:StopPoint:15627099</endOfLink>
         </PtLink>
         <JourneyPattern>
@@ -693,10 +693,10 @@
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:19:30.000Z</creationTime>
             <routeId>NINOXE:Route:15627096</routeId>
-            <origin>NINOXE:StopPoint:15627097</origin>
+            <origin>NINOXE:StopPoint:15627098</origin>
             <destination>NINOXE:StopPoint:15627100</destination>
-            <stopPointList>NINOXE:StopPoint:15627097</stopPointList>
             <stopPointList>NINOXE:StopPoint:15627098</stopPointList>
+            <stopPointList>NINOXE:StopPoint:15627097</stopPointList>
             <stopPointList>NINOXE:StopPoint:15627099</stopPointList>
             <stopPointList>NINOXE:StopPoint:15627100</stopPointList>
             <lineIdShortcut>NINOXE:Line:15627090</lineIdShortcut>
@@ -750,14 +750,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627294</vehicleJourneyId>
                 <arrivalTime>13:05:00</arrivalTime>
                 <departureTime>13:05:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627294</vehicleJourneyId>
                 <arrivalTime>13:20:00</arrivalTime>
                 <departureTime>13:20:00</departureTime>
@@ -864,14 +864,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627252</vehicleJourneyId>
                 <arrivalTime>09:35:00</arrivalTime>
                 <departureTime>09:35:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627252</vehicleJourneyId>
                 <arrivalTime>09:50:00</arrivalTime>
                 <departureTime>09:50:00</departureTime>
@@ -902,14 +902,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627390</vehicleJourneyId>
                 <arrivalTime>21:05:00</arrivalTime>
                 <departureTime>21:05:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627390</vehicleJourneyId>
                 <arrivalTime>21:20:00</arrivalTime>
                 <departureTime>21:20:00</departureTime>
@@ -978,14 +978,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627324</vehicleJourneyId>
                 <arrivalTime>15:35:00</arrivalTime>
                 <departureTime>15:35:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627324</vehicleJourneyId>
                 <arrivalTime>15:50:00</arrivalTime>
                 <departureTime>15:50:00</departureTime>
@@ -1016,14 +1016,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627258</vehicleJourneyId>
                 <arrivalTime>10:05:00</arrivalTime>
                 <departureTime>10:05:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627258</vehicleJourneyId>
                 <arrivalTime>10:20:00</arrivalTime>
                 <departureTime>10:20:00</departureTime>
@@ -1130,14 +1130,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627354</vehicleJourneyId>
                 <arrivalTime>18:05:00</arrivalTime>
                 <departureTime>18:05:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627354</vehicleJourneyId>
                 <arrivalTime>18:20:00</arrivalTime>
                 <departureTime>18:20:00</departureTime>
@@ -1244,14 +1244,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627282</vehicleJourneyId>
                 <arrivalTime>12:05:00</arrivalTime>
                 <departureTime>12:05:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627282</vehicleJourneyId>
                 <arrivalTime>12:20:00</arrivalTime>
                 <departureTime>12:20:00</departureTime>
@@ -1282,14 +1282,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627342</vehicleJourneyId>
                 <arrivalTime>17:05:00</arrivalTime>
                 <departureTime>17:05:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627342</vehicleJourneyId>
                 <arrivalTime>17:20:00</arrivalTime>
                 <departureTime>17:20:00</departureTime>
@@ -1320,14 +1320,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627336</vehicleJourneyId>
                 <arrivalTime>16:35:00</arrivalTime>
                 <departureTime>16:35:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627336</vehicleJourneyId>
                 <arrivalTime>16:50:00</arrivalTime>
                 <departureTime>16:50:00</departureTime>
@@ -1358,14 +1358,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627384</vehicleJourneyId>
                 <arrivalTime>20:35:00</arrivalTime>
                 <departureTime>20:35:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627384</vehicleJourneyId>
                 <arrivalTime>20:50:00</arrivalTime>
                 <departureTime>20:50:00</departureTime>
@@ -1472,14 +1472,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627240</vehicleJourneyId>
                 <arrivalTime>08:35:00</arrivalTime>
                 <departureTime>08:35:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627240</vehicleJourneyId>
                 <arrivalTime>08:50:00</arrivalTime>
                 <departureTime>08:50:00</departureTime>
@@ -1585,14 +1585,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627246</vehicleJourneyId>
                 <arrivalTime>09:05:00</arrivalTime>
                 <departureTime>09:05:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627246</vehicleJourneyId>
                 <arrivalTime>09:20:00</arrivalTime>
                 <departureTime>09:20:00</departureTime>
@@ -1623,14 +1623,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627330</vehicleJourneyId>
                 <arrivalTime>16:05:00</arrivalTime>
                 <departureTime>16:05:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627330</vehicleJourneyId>
                 <arrivalTime>16:20:00</arrivalTime>
                 <departureTime>16:20:00</departureTime>
@@ -1737,14 +1737,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627288</vehicleJourneyId>
                 <arrivalTime>12:35:00</arrivalTime>
                 <departureTime>12:35:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627288</vehicleJourneyId>
                 <arrivalTime>12:50:00</arrivalTime>
                 <departureTime>12:50:00</departureTime>
@@ -1775,14 +1775,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627348</vehicleJourneyId>
                 <arrivalTime>17:35:00</arrivalTime>
                 <departureTime>17:35:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627348</vehicleJourneyId>
                 <arrivalTime>17:50:00</arrivalTime>
                 <departureTime>17:50:00</departureTime>
@@ -1813,14 +1813,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627276</vehicleJourneyId>
                 <arrivalTime>11:35:00</arrivalTime>
                 <departureTime>11:35:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627276</vehicleJourneyId>
                 <arrivalTime>11:50:00</arrivalTime>
                 <departureTime>11:50:00</departureTime>
@@ -1851,14 +1851,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627372</vehicleJourneyId>
                 <arrivalTime>19:35:00</arrivalTime>
                 <departureTime>19:35:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627372</vehicleJourneyId>
                 <arrivalTime>19:50:00</arrivalTime>
                 <departureTime>19:50:00</departureTime>
@@ -1889,14 +1889,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627270</vehicleJourneyId>
                 <arrivalTime>11:05:00</arrivalTime>
                 <departureTime>11:05:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627270</vehicleJourneyId>
                 <arrivalTime>11:20:00</arrivalTime>
                 <departureTime>11:20:00</departureTime>
@@ -2041,14 +2041,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627300</vehicleJourneyId>
                 <arrivalTime>13:35:00</arrivalTime>
                 <departureTime>13:35:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627300</vehicleJourneyId>
                 <arrivalTime>13:50:00</arrivalTime>
                 <departureTime>13:50:00</departureTime>
@@ -2117,14 +2117,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627306</vehicleJourneyId>
                 <arrivalTime>14:05:00</arrivalTime>
                 <departureTime>14:05:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627306</vehicleJourneyId>
                 <arrivalTime>14:20:00</arrivalTime>
                 <departureTime>14:20:00</departureTime>
@@ -2154,14 +2154,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627233</vehicleJourneyId>
                 <arrivalTime>08:05:00</arrivalTime>
                 <departureTime>08:05:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627233</vehicleJourneyId>
                 <arrivalTime>08:20:00</arrivalTime>
                 <departureTime>08:20:00</departureTime>
@@ -2230,14 +2230,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627378</vehicleJourneyId>
                 <arrivalTime>20:05:00</arrivalTime>
                 <departureTime>20:05:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627378</vehicleJourneyId>
                 <arrivalTime>20:20:00</arrivalTime>
                 <departureTime>20:20:00</departureTime>
@@ -2306,14 +2306,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627360</vehicleJourneyId>
                 <arrivalTime>18:35:00</arrivalTime>
                 <departureTime>18:35:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627360</vehicleJourneyId>
                 <arrivalTime>18:50:00</arrivalTime>
                 <departureTime>18:50:00</departureTime>
@@ -2344,14 +2344,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627264</vehicleJourneyId>
                 <arrivalTime>10:35:00</arrivalTime>
                 <departureTime>10:35:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627264</vehicleJourneyId>
                 <arrivalTime>10:50:00</arrivalTime>
                 <departureTime>10:50:00</departureTime>
@@ -2382,14 +2382,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627318</vehicleJourneyId>
                 <arrivalTime>15:05:00</arrivalTime>
                 <departureTime>15:05:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627318</vehicleJourneyId>
                 <arrivalTime>15:20:00</arrivalTime>
                 <departureTime>15:20:00</departureTime>
@@ -2458,14 +2458,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627312</vehicleJourneyId>
                 <arrivalTime>14:35:00</arrivalTime>
                 <departureTime>14:35:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627312</vehicleJourneyId>
                 <arrivalTime>14:50:00</arrivalTime>
                 <departureTime>14:50:00</departureTime>
@@ -2686,14 +2686,14 @@
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627366</vehicleJourneyId>
                 <arrivalTime>19:05:00</arrivalTime>
                 <departureTime>19:05:00</departureTime>
                 <order>1</order>
             </vehicleJourneyAtStop>
             <vehicleJourneyAtStop>
-                <stopPointId>NINOXE:StopPoint:15627098</stopPointId>
+                <stopPointId>NINOXE:StopPoint:15627097</stopPointId>
                 <vehicleJourneyId>NINOXE:VehicleJourney:15627366</vehicleJourneyId>
                 <arrivalTime>19:20:00</arrivalTime>
                 <departureTime>19:20:00</departureTime>

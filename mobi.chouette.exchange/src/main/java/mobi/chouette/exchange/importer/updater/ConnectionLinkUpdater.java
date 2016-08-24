@@ -39,7 +39,7 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 		
 		// Database test init
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-		validationReporter.addItemToValidationReport(context, "2-ConnectionLink-1", "E");
+		validationReporter.addItemToValidationReport(context, "2-DATABASE-ConnectionLink-1", "E");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 				
 				
@@ -123,8 +123,7 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 			}
 		}
 		
-		// Check stop areas value in correspondance update
-		twoDatabaseConnectionLinkOneTest(validationReporter, context, oldValue, newValue, data);
+		
 		if (newValue.getStartOfLink() != null) {
 
 			String objectId = newValue.getStartOfLink().getObjectId();
@@ -167,20 +166,4 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 		}
 		monitor.stop();
 	}
-	
-
-	/**
-	 * Test 2-ConnectionLink-1
-	 * @param validationReporter
-	 * @param context
-	 * @param oldCL
-	 * @param newCL
-	 */
-	private void twoDatabaseConnectionLinkOneTest(ValidationReporter validationReporter, Context context, ConnectionLink oldCL, ConnectionLink newCL, ValidationData data) {
-		if(!NeptuneUtil.sameValue(oldCL.getStartOfLink(), newCL.getStartOfLink()) || !NeptuneUtil.sameValue(oldCL.getEndOfLink(), newCL.getEndOfLink()))
-			validationReporter.addCheckPointReportError(context, DATABASE_CONNECTION_LINK_1, data.getDataLocations().get(newCL.getObjectId()));
-		else
-			validationReporter.reportSuccess(context, DATABASE_CONNECTION_LINK_1);
-	}
-
 }
