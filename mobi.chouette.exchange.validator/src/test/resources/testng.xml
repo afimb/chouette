@@ -61,9 +61,29 @@
          <class name="mobi.chouette.exchange.validation.checkpoint.ValidationGroupOfLines" />
       </classes>
    </test>
-   <test name="Test_L_Timetables" preserve-order="true">
+   <test name="Test_M_Timetables" preserve-order="true">
       <classes>
          <class name="mobi.chouette.exchange.validation.checkpoint.ValidationTimetables" />
+      </classes>
+  </test>
+  <test name="Test_N_Routes" preserve-order="true">
+      <classes>
+         <class name="mobi.chouette.exchange.importer.updater.ValidationRoutesUpdater" />
+      </classes>
+  </test>
+  <test name="Test_O_Lines" preserve-order="true">
+      <classes>
+         <class name="mobi.chouette.exchange.importer.updater.ValidationLinesUpdater" />
+      </classes>
+  </test> 
+  <test name="Test_P_JourneyPatterns" preserve-order="true">
+      <classes>
+         <class name="mobi.chouette.exchange.importer.updater.ValidationJourneyPatternsUpdater" />
+      </classes>
+  </test> 
+  <test name="Test_Q_VehicleJourneys" preserve-order="true">
+      <classes>
+         <class name="mobi.chouette.exchange.importer.updater.ValidationVehicleJourneysUpdater" />
       </classes>
   </test> 
 </suite> 

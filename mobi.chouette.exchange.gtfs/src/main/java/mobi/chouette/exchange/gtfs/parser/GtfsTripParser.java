@@ -83,6 +83,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	}
 
 	private void validateStopTimes(Context context) throws Exception {
+
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 		Set<String> stopIds = new HashSet<String>();

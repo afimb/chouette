@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<ChouettePTNetwork xmlns="http://www.trident.org/schema/trident" xmlns:acsb="http://www.ifopt.org.uk/acsb" xmlns:siri="http://www.siri.org.uk/siri">
+<ChouettePTNetwork>
     <PTNetwork>
         <objectId>NINOXE:GroupOfLine:15563881</objectId>
         <objectVersion>2</objectVersion>
@@ -388,7 +388,7 @@
         <objectVersion>1</objectVersion>
         <creationTime>2007-12-16T16:59:13.000Z</creationTime>
         <name>Réserve du Jardin - Mairie</name>
-        <startOfLink>NINOXE:StopArea:15625442</startOfLink>
+        <startOfLink>NINOXE:StopArea:1557320389</startOfLink>
         <endOfLink>NINOXE:StopArea:15573202</endOfLink>
         <linkDistance>200.00</linkDistance>
         <linkType>Overground</linkType>

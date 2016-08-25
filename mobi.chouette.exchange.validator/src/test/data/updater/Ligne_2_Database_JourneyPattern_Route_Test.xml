@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<ChouettePTNetwork xmlns="http://www.trident.org/schema/trident" xmlns:acsb="http://www.ifopt.org.uk/acsb" xmlns:siri="http://www.siri.org.uk/siri">
+<ChouettePTNetwork>
     <PTNetwork>
         <objectId>NINOXE:GroupOfLine:15563881</objectId>
         <objectVersion>2</objectVersion>
@@ -31,7 +31,7 @@
     </Company>
     <ChouetteArea>
         <StopArea>
-            <objectId>NINOXE:StopArea:1557320389</objectId>
+            <objectId>NINOXE:StopArea:15573203</objectId>
             <objectVersion>2</objectVersion>
             <creationTime>2013-07-10T12:48:48.761Z</creationTime>
             <creatorId>chouette</creatorId>
@@ -213,7 +213,7 @@
             <address>
                 <countryCode>39273</countryCode>
             </address>
-            <containedIn>NINOXE:StopArea:1557320389</containedIn>
+            <containedIn>NINOXE:StopArea:15573203</containedIn>
             <name>Collège St James</name>
             <comment>Lains</comment>
         </AreaCentroid>
@@ -483,7 +483,7 @@
             <lineEnd>NINOXE:StopPoint:15627100</lineEnd>
             <lineEnd>NINOXE:StopPoint:15627092</lineEnd>
             <lineEnd>NINOXE:StopPoint:15627095</lineEnd>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <routeId>NINOXE:Route:15627091</routeId>
             <registration>
                 <registrationNumber>987654321</registrationNumber>
@@ -492,7 +492,7 @@
             <comment>Ligne 7 orange</comment>
         </Line>
         <ChouetteRoute>
-            <objectId>NINOXE:Route:15627096</objectId>
+            <objectId>NINOXE:Route:156270978</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:12:49.000Z</creationTime>
             <name>Hotel des Postes-Mairie</name>
@@ -521,7 +521,7 @@
             <ptLinkId>NINOXE:PtLink:15627093A15627094</ptLinkId>
             <ptLinkId>NINOXE:PtLink:15627094A15627095</ptLinkId>
             <journeyPatternId>NINOXE:JourneyPattern:15627107</journeyPatternId>
-            <wayBackRouteId>NINOXE:Route:15627096</wayBackRouteId>
+            <wayBackRouteId>NINOXE:Route:156270978</wayBackRouteId>
             <comment>logne la ligne 1</comment>
             <RouteExtension>
                 <wayBack>A</wayBack>
@@ -692,7 +692,7 @@
             <objectId>NINOXE:JourneyPattern:15627238</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:19:30.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <origin>NINOXE:StopPoint:15627097</origin>
             <destination>NINOXE:StopPoint:15627100</destination>
             <stopPointList>NINOXE:StopPoint:15627097</stopPointList>
@@ -744,7 +744,7 @@
             <objectId>NINOXE:VehicleJourney:15627294</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:14.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -858,7 +858,7 @@
             <objectId>NINOXE:VehicleJourney:15627252</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:12.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -896,7 +896,7 @@
             <objectId>NINOXE:VehicleJourney:15627390</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:17.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -972,7 +972,7 @@
             <objectId>NINOXE:VehicleJourney:15627324</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:15.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -1010,7 +1010,7 @@
             <objectId>NINOXE:VehicleJourney:15627258</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:12.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -1124,7 +1124,7 @@
             <objectId>NINOXE:VehicleJourney:15627354</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:16.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -1238,7 +1238,7 @@
             <objectId>NINOXE:VehicleJourney:15627282</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:13.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -1276,7 +1276,7 @@
             <objectId>NINOXE:VehicleJourney:15627342</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:15.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -1314,7 +1314,7 @@
             <objectId>NINOXE:VehicleJourney:15627336</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:15.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -1352,7 +1352,7 @@
             <objectId>NINOXE:VehicleJourney:15627384</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:17.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -1466,7 +1466,7 @@
             <objectId>NINOXE:VehicleJourney:15627240</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:20:51.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -1579,7 +1579,7 @@
             <objectId>NINOXE:VehicleJourney:15627246</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:12.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -1617,7 +1617,7 @@
             <objectId>NINOXE:VehicleJourney:15627330</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:15.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -1731,7 +1731,7 @@
             <objectId>NINOXE:VehicleJourney:15627288</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:13.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -1769,7 +1769,7 @@
             <objectId>NINOXE:VehicleJourney:15627348</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:16.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -1807,7 +1807,7 @@
             <objectId>NINOXE:VehicleJourney:15627276</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:13.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -1845,7 +1845,7 @@
             <objectId>NINOXE:VehicleJourney:15627372</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:17.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -1883,7 +1883,7 @@
             <objectId>NINOXE:VehicleJourney:15627270</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:13.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -2035,7 +2035,7 @@
             <objectId>NINOXE:VehicleJourney:15627300</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:14.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -2111,7 +2111,7 @@
             <objectId>NINOXE:VehicleJourney:15627306</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:14.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -2149,7 +2149,7 @@
             <objectId>NINOXE:VehicleJourney:15627233</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:17:47.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
@@ -2224,7 +2224,7 @@
             <objectId>NINOXE:VehicleJourney:15627378</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:17.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -2300,7 +2300,7 @@
             <objectId>NINOXE:VehicleJourney:15627360</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:16.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -2338,7 +2338,7 @@
             <objectId>NINOXE:VehicleJourney:15627264</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:12.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -2376,7 +2376,7 @@
             <objectId>NINOXE:VehicleJourney:15627318</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:14.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -2452,7 +2452,7 @@
             <objectId>NINOXE:VehicleJourney:15627312</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:14.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>
@@ -2680,7 +2680,7 @@
             <objectId>NINOXE:VehicleJourney:15627366</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:21:16.000Z</creationTime>
-            <routeId>NINOXE:Route:15627096</routeId>
+            <routeId>NINOXE:Route:156270978</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627238</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <operatorId>NINOXE:Company:15563880</operatorId>

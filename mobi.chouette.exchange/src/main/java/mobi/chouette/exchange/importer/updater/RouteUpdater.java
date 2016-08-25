@@ -12,9 +12,13 @@ import mobi.chouette.common.Pair;
 import mobi.chouette.dao.JourneyPatternDAO;
 import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.dao.StopPointDAO;
+import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -48,7 +52,12 @@ public class RouteUpdater implements Updater<Route> {
 
 //		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
-
+		
+		// Database test init
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		validationReporter.addItemToValidationReport(context, DATABASE_STOP_POINT_1, "E");
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+				
 		if (oldValue.isDetached()) {
 			// object does not exist in database
 			oldValue.setObjectId(newValue.getObjectId());
@@ -129,11 +138,17 @@ public class RouteUpdater implements Updater<Route> {
 				}
 				stopPoint = cache.getStopPoints().get(item.getObjectId());
 			}
+			
 
 			if (stopPoint == null) {
 				stopPoint = ObjectFactory.getStopPoint(cache, item.getObjectId());
 			}
-			stopPoint.setRoute(oldValue);
+			// If new stop point doesn't belong to route, we add temporarly it to the route and check if old stopPoint has same route as new stopPoint
+			if(stopPoint.getRoute() != null) {
+				twoDatabaseStopPointOneTest(validationReporter, context, stopPoint, item, data);
+			} else {
+				stopPoint.setRoute(oldValue);
+			}
 		}
 
 		Collection<Pair<StopPoint, StopPoint>> modifiedStopPoint = CollectionUtil.intersection(
@@ -170,7 +185,12 @@ public class RouteUpdater implements Updater<Route> {
 			if (journeyPattern == null) {
 				journeyPattern = ObjectFactory.getJourneyPattern(cache, item.getObjectId());
 			}
-			journeyPattern.setRoute(oldValue);
+			if(journeyPattern.getRoute() != null) {
+				twoDatabaseJourneyPatternOneTest(validationReporter, context, journeyPattern, item, data);
+			} else {
+				journeyPattern.setRoute(oldValue);
+			}
+			
 		}
 
 		Collection<Pair<JourneyPattern, JourneyPattern>> modifiedJourneyPattern = CollectionUtil.intersection(
@@ -180,5 +200,33 @@ public class RouteUpdater implements Updater<Route> {
 			journeyPatternUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 //		monitor.stop();
+	}
+	
+	/**
+	 * Test 2-DATABASE-JourneyPattern-1 : // If new journey pattern doesn't belong to route, we add temporarly it to the route and check if old journey pattern has same route as new journey pattern
+	 * @param validationReporter
+	 * @param context
+	 * @param oldRouteSection
+	 * @param newRouteSection
+	 */
+	private void twoDatabaseJourneyPatternOneTest(ValidationReporter validationReporter, Context context, JourneyPattern oldValue, JourneyPattern newValue, ValidationData data) {
+		if(!NeptuneUtil.sameValue(oldValue.getRoute(), newValue.getRoute()))
+			validationReporter.addCheckPointReportError(context, DATABASE_JOURNEY_PATTERN_1, data.getDataLocations().get(newValue.getObjectId()));
+		else
+			validationReporter.reportSuccess(context, DATABASE_JOURNEY_PATTERN_1);
+	}
+	
+	/**
+	 * Test 2-DATABASE-StopPoint-1 : Check if old stop point has same route as new stop point
+	 * @param validationReporter
+	 * @param context
+	 * @param oldSp
+	 * @param newSp
+	 */
+	private void twoDatabaseStopPointOneTest(ValidationReporter validationReporter, Context context, StopPoint oldSp, StopPoint newSp, ValidationData data) {
+		if(!NeptuneUtil.sameValue(oldSp.getRoute(), newSp.getRoute()))
+			validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_1, data.getDataLocations().get(newSp.getObjectId()));
+		else
+			validationReporter.reportSuccess(context, DATABASE_STOP_POINT_1);
 	}
 }

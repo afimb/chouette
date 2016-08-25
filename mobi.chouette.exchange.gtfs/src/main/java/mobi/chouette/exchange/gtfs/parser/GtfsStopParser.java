@@ -1,6 +1,5 @@
 package mobi.chouette.exchange.gtfs.parser;
 
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;

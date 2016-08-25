@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<ChouettePTNetwork xmlns="http://www.trident.org/schema/trident" xmlns:acsb="http://www.ifopt.org.uk/acsb" xmlns:siri="http://www.siri.org.uk/siri">
+<ChouettePTNetwork>
     <PTNetwork>
         <objectId>NINOXE:GroupOfLine:15563881</objectId>
         <objectVersion>2</objectVersion>
@@ -11,7 +11,7 @@
         <registration>
             <registrationNumber>9999</registrationNumber>
         </registration>
-        <lineId>NINOXE:Line:15627090</lineId>
+        <lineId>NINOXE:Line:15627097</lineId>
     </PTNetwork>
     <Company>
         <objectId>NINOXE:Company:15563880</objectId>
@@ -31,7 +31,7 @@
     </Company>
     <ChouetteArea>
         <StopArea>
-            <objectId>NINOXE:StopArea:1557320389</objectId>
+            <objectId>NINOXE:StopArea:15573203</objectId>
             <objectVersion>2</objectVersion>
             <creationTime>2013-07-10T12:48:48.761Z</creationTime>
             <creatorId>chouette</creatorId>
@@ -213,7 +213,7 @@
             <address>
                 <countryCode>39273</countryCode>
             </address>
-            <containedIn>NINOXE:StopArea:1557320389</containedIn>
+            <containedIn>NINOXE:StopArea:15573203</containedIn>
             <name>Collège St James</name>
             <comment>Lains</comment>
         </AreaCentroid>
@@ -472,7 +472,7 @@
     </Timetable>
     <ChouetteLineDescription>
         <Line>
-            <objectId>NINOXE:Line:15627090</objectId>
+            <objectId>NINOXE:Line:15627097</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2008-10-31T11:01:58.000Z</creationTime>
             <name>Ligne 7 orange</name>
@@ -539,7 +539,7 @@
             </address>
             <containedIn>NINOXE:StopArea:15574342</containedIn>
             <name>Général de Gaule (A)</name>
-	    <lineIdShortcut>NINOXE:Line:15627090</lineIdShortcut>
+	    <lineIdShortcut>NINOXE:Line:15627097</lineIdShortcut>
             <ptNetworkIdShortcut>NINOXE:GroupOfLine:15563881</ptNetworkIdShortcut>
         </StopPoint>
         <StopPoint>
@@ -686,7 +686,7 @@
             <stopPointList>NINOXE:StopPoint:15627093</stopPointList>
             <stopPointList>NINOXE:StopPoint:15627094</stopPointList>
             <stopPointList>NINOXE:StopPoint:15627095</stopPointList>
-            <lineIdShortcut>NINOXE:Line:15627090</lineIdShortcut>
+            <lineIdShortcut>NINOXE:Line:15627097</lineIdShortcut>
         </JourneyPattern>
         <JourneyPattern>
             <objectId>NINOXE:JourneyPattern:15627238</objectId>
@@ -699,7 +699,7 @@
             <stopPointList>NINOXE:StopPoint:15627098</stopPointList>
             <stopPointList>NINOXE:StopPoint:15627099</stopPointList>
             <stopPointList>NINOXE:StopPoint:15627100</stopPointList>
-            <lineIdShortcut>NINOXE:Line:15627090</lineIdShortcut>
+            <lineIdShortcut>NINOXE:Line:15627097</lineIdShortcut>
         </JourneyPattern>
         <VehicleJourney>
             <objectId>NINOXE:VehicleJourney:15627421</objectId>
@@ -708,7 +708,7 @@
             <routeId>NINOXE:Route:15627091</routeId>
             <journeyPatternId>NINOXE:JourneyPattern:15627107</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
-            <lineIdShortcut>NINOXE:Line:15627090</lineIdShortcut>
+            <lineIdShortcut>NINOXE:Line:15627097</lineIdShortcut>
             <operatorId>NINOXE:Company:15563880</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>

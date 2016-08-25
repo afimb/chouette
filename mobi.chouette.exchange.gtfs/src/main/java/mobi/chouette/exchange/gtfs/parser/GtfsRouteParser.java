@@ -31,7 +31,6 @@ import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-
 @Log4j
 public class GtfsRouteParser implements Parser, Validator, Constant {
 

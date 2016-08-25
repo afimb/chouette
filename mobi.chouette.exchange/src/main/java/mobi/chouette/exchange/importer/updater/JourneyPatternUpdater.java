@@ -12,10 +12,14 @@ import mobi.chouette.common.Pair;
 import mobi.chouette.dao.RouteSectionDAO;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
+import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.JourneyPattern;
+import mobi.chouette.model.Route;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -49,7 +53,13 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 
 //		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
-
+		
+		// Database test init
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		validationReporter.addItemToValidationReport(context, DATABASE_JOURNEY_PATTERN_1, "E");
+		validationReporter.addItemToValidationReport(context, DATABASE_VEHICLE_JOURNEY_1, "E");
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		
 		if (oldValue.isDetached()) {
 			// object does not exist in database
 			oldValue.setObjectId(newValue.getObjectId());
@@ -93,6 +103,8 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 				oldValue.setSectionStatus(newValue.getSectionStatus());
 			}
 		}
+		
+		
 		// RouteSections
 		if (!newValue.getRouteSections().equals(oldValue.getRouteSections())) {
 			// List<RouteSection> sections =
@@ -203,7 +215,11 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			if (vehicleJourney == null) {
 				vehicleJourney = ObjectFactory.getVehicleJourney(cache, item.getObjectId());
 			}
-			vehicleJourney.setJourneyPattern(oldValue);
+			if(vehicleJourney.getJourneyPattern() != null) {
+				twoDatabaseVehicleJourneyOneTest(validationReporter, context, vehicleJourney, item, data);
+			} else {
+				vehicleJourney.setJourneyPattern(oldValue);
+			}
 		}
 
 		Collection<Pair<VehicleJourney, VehicleJourney>> modifiedVehicleJourney = CollectionUtil.intersection(
@@ -216,5 +232,20 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 
 //		monitor.stop();
 	}
-
+	
+	
+	/**
+	 * Test 2-DATABASE-VehicleJourney-1
+	 * @param validationReporter
+	 * @param context
+	 * @param oldVj
+	 * @param newVj
+	 */
+	private void twoDatabaseVehicleJourneyOneTest(ValidationReporter validationReporter, Context context, VehicleJourney oldVj, VehicleJourney newVj, ValidationData data) {
+		if(!NeptuneUtil.sameValue(oldVj.getJourneyPattern(), newVj.getJourneyPattern()))
+			validationReporter.addCheckPointReportError(context, DATABASE_VEHICLE_JOURNEY_1, data.getDataLocations().get(newVj.getObjectId()));
+		else
+			validationReporter.reportSuccess(context, DATABASE_VEHICLE_JOURNEY_1);
+	}
+	
 }

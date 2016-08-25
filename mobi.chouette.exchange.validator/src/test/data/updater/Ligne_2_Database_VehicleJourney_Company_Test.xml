@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<ChouettePTNetwork xmlns="http://www.trident.org/schema/trident" xmlns:acsb="http://www.ifopt.org.uk/acsb" xmlns:siri="http://www.siri.org.uk/siri">
+<ChouettePTNetwork>
     <PTNetwork>
         <objectId>NINOXE:GroupOfLine:15563881</objectId>
         <objectVersion>2</objectVersion>
@@ -29,9 +29,25 @@
             <registrationNumber>1234567890</registrationNumber>
         </registration>
     </Company>
+<Company>
+        <objectId>NINOXE:Company:15563881</objectId>
+        <objectVersion>2</objectVersion>
+        <creationTime>2012-04-17T13:44:43.422Z</creationTime>
+        <creatorId>chouette</creatorId>
+        <name>TATR</name>
+        <shortName>TATR</shortName>
+        <organisationalUnit>TATR</organisationalUnit>
+        <code>1234567890</code>
+        <phone>01.01.01.01.01</phone>
+        <fax>01.01.01.01.01</fax>
+        <email>nobody@cretin.fr</email>
+        <registration>
+            <registrationNumber>56786856763</registrationNumber>
+        </registration>
+    </Company>
     <ChouetteArea>
         <StopArea>
-            <objectId>NINOXE:StopArea:1557320389</objectId>
+            <objectId>NINOXE:StopArea:15573203</objectId>
             <objectVersion>2</objectVersion>
             <creationTime>2013-07-10T12:48:48.761Z</creationTime>
             <creatorId>chouette</creatorId>
@@ -213,7 +229,7 @@
             <address>
                 <countryCode>39273</countryCode>
             </address>
-            <containedIn>NINOXE:StopArea:1557320389</containedIn>
+            <containedIn>NINOXE:StopArea:15573203</containedIn>
             <name>Collège St James</name>
             <comment>Lains</comment>
         </AreaCentroid>
@@ -709,7 +725,7 @@
             <journeyPatternId>NINOXE:JourneyPattern:15627107</journeyPatternId>
             <publishedJourneyName>Pas de nom</publishedJourneyName>
             <lineIdShortcut>NINOXE:Line:15627090</lineIdShortcut>
-            <operatorId>NINOXE:Company:15563880</operatorId>
+            <operatorId>NINOXE:Company:15563881</operatorId>
             <number>0</number>
             <vehicleJourneyAtStop>
                 <stopPointId>NINOXE:StopPoint:15627092</stopPointId>
