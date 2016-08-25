@@ -70,7 +70,7 @@ public class RouteSectionCheckPoints extends AbstractValidation<RouteSection> im
 					RouteSection rs2 = lstRouteSection.get(j);
 				if (rs.equals(rs2)) {
 					double distance = distance(rs.getDeparture(), rs.getArrival());
-					// If route section distance doesn't exceed gap as parameter
+					// If route section distance doesn't exceed gap    as parameter
 					if(distance > distanceMax) {
 						DataLocation location = buildLocation(context, rs2);
 						DataLocation targetLocation = buildLocation(context, rs.getDeparture());

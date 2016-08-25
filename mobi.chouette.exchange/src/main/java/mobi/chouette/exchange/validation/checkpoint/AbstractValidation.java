@@ -93,9 +93,13 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static final String VEHICLE_JOURNEY_3 = "3-VehicleJourney-3";
 	protected static final String VEHICLE_JOURNEY_4 = "3-VehicleJourney-4";
 	protected static final String VEHICLE_JOURNEY_5 = "3-VehicleJourney-5";
+	protected static final String VEHICLE_JOURNEY_6 = "3-VehicleJourney-6";
+	protected static final String VEHICLE_JOURNEY_7 = "3-VehicleJourney-7";
+	protected static final String VEHICLE_JOURNEY_8 = "3-VehicleJourney-8";
 	protected static final String FACILITY_1 = "3-Facility-1";
 	protected static final String FACILITY_2 = "3-Facility-2";
 
+	
 	protected static final String L4_NETWORK_1 = "4-Network-1";
 	protected static final String L4_COMPANY_1 = "4-Company-1";
 	protected static final String L4_GROUP_OF_LINE_1 = "4-GroupOfLine-1";
@@ -148,7 +152,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static final String MIN_SIZE = "min_size";
 	protected static final String MAX_SIZE = "max_size";
 
-	protected static final TransportModeParameters modeDefault = new TransportModeParameters(1, 300, 30000, 40, 10, 10);
+	protected static final TransportModeParameters modeDefault = new TransportModeParameters(1, 300, 30000, 40, 10, 10, 20);
 
 	protected static final String DEFAULT_ENVELOPPE = "[[-5.2,42.25],[-5.2,51.1],[8.23,51.1],[8.23,42.25],[-5.2,42.25]]";
 	private GeometryFactory geometryFactory;
@@ -200,6 +204,24 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		double dlon = (obj2.getLongitude().doubleValue() - obj1.getLongitude().doubleValue()) * A;
 		dlon *= Math.cos((obj2.getLatitude().doubleValue() + obj1.getLatitude().doubleValue())* toRad/2.);
 		double dlat = (obj2.getLatitude().doubleValue() - obj1.getLatitude().doubleValue()) * A;
+		double ret  = Math.sqrt(dlon * dlon + dlat * dlat);
+		return ret;
+
+	}
+	
+	/**
+	 * get distance between two coordinates
+	 * @param lat1
+	 * @param lat2
+	 * @param long1
+	 * @param long2
+	 * @return
+	 */
+	public static double quickDistanceFromCoordinates(Double lat1, Double lat2, Double long1, Double long2) {
+
+		double dlon = (long2 - long1) * A;
+		dlon *= Math.cos((lat2 + lat1)* toRad/2.);
+		double dlat = (lat2 - lat1) * A;
 		double ret  = Math.sqrt(dlon * dlon + dlat * dlat);
 		return ret;
 
@@ -257,7 +279,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		return b.toString();
 	}
 
-	protected static TransportModeParameters getModeParameters(ValidationParameters parameters, String mode, Logger log) {
+	public static TransportModeParameters getModeParameters(ValidationParameters parameters, String mode, Logger log) {
 		// find transportMode :
 		String modeKey = MODE_PREFIX + mode;
 		try {
@@ -266,7 +288,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		} catch (Exception e) {
 			log.error("unknown mode " + mode, e);
 		}
-		return modeDefault;
+		return null; //modeDefault;
 	}
 
 	/**

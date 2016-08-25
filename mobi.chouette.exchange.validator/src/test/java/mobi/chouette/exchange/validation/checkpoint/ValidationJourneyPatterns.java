@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.validation.checkpoint;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +16,11 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.exchange.validation.parameters.TransportModeParameters;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
 import mobi.chouette.exchange.validation.report.CheckPointReport;
+import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.exchange.validator.DummyChecker;
@@ -25,6 +28,7 @@ import mobi.chouette.exchange.validator.JobDataTest;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RouteSection;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -118,7 +122,7 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 	}
 
 	@BeforeGroups(groups = { "journeyPattern" })
-	public void init() {
+	public void initTest() {
 		super.init();
 
 		long id = 1;
@@ -281,6 +285,151 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		}
 		utx.rollback();
 
+	}
+	
+	private void createLineRouteSection() throws Exception {
+		utx.begin();
+		em.joinTransaction();
+
+		List<Line> beans = lineDao.findAll();
+		Assert.assertFalse(beans.isEmpty(), "No data for test");
+		Line line1 = beans.get(0);
+		createRouteSection(line1);
+		
+		utx.commit();
+	}
+	
+	@Test(groups = { "journeyPattern" }, description = "3-JourneyPattern-2", priority = 4)
+	public void verifyTestJourneyPattern_3_2() throws Exception {
+		// 3-RouteSection-1 : Check if route section distance doesn't exceed gap as parameter
+		log.info(Color.BLUE + "3-JourneyPattern-2" + Color.NORMAL);
+		Assert.assertNotNull(fullparameters, "no parameters for test");
+
+		importLines("Ligne_OK.xml", 1, 1, true);
+
+		createLineRouteSection();
+		Context context = initValidatorContext();
+		context.put(VALIDATION, fullparameters);
+		context.put(VALIDATION_REPORT, new ValidationReport());
+
+		
+		utx.begin();
+		em.joinTransaction();
+		List<Line> beans = lineDao.findAll();
+		Assert.assertFalse(beans.isEmpty(), "No data for test");
+		Line line1 = beans.get(0);
+		
+		JourneyPattern jp = line1.getRoutes().get(0).getJourneyPatterns().get(0);
+		
+		List<RouteSection> rsList = jp.getRouteSections();
+		
+		
+		ValidationData data = new ValidationData();
+		data.getJourneyPatterns().add(jp);
+		context.put(VALIDATION_DATA, data);
+		
+		
+		checkPoint.validate(context, null);
+		
+		
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
+		
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-JourneyPattern-2");
+		Assert.assertNotNull(checkPointReport, "report must contain a 3-JourneyPattern-2 checkPoint");
+
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.OK, " checkPointReport must be ok");
+		
+		
+		jp.getRouteSections().remove(0);
+		context.put(VALIDATION_REPORT, new ValidationReport());
+		checkPoint.validate(context, null);
+		
+		ValidationReport report2 = (ValidationReport) context.get(VALIDATION_REPORT);
+		Assert.assertNotEquals(report2.getCheckPoints().size(), 0, " report must have items");
+		
+		CheckPointReport checkPointReport2 = report2.findCheckPointReportByName("3-JourneyPattern-2");
+		Assert.assertNotNull(checkPointReport2, "report must contain a 3-JourneyPattern-2 checkPoint");
+		
+		Assert.assertEquals(checkPointReport2.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		
+		
+		utx.rollback();
+	}
+	
+	@Test(groups = { "journeyPattern" }, description = "3-RouteSection-1", priority = 5)
+	public void verifyTestRouteSection_3_1() throws Exception {
+		// 3-RouteSection-1 : Check if route section distance doesn't exceed gap as parameter
+		log.info(Color.BLUE + "3-RouteSection-1" + Color.NORMAL);
+		Assert.assertNotNull(fullparameters, "no parameters for test");
+
+		importLines("Ligne_OK.xml", 1, 1, true);
+
+		createLineRouteSection();
+		Context context = initValidatorContext();
+		context.put(VALIDATION, fullparameters);
+		context.put(VALIDATION_REPORT, new ValidationReport());
+
+		
+		utx.begin();
+		em.joinTransaction();
+		List<Line> beans = lineDao.findAll();
+		Assert.assertFalse(beans.isEmpty(), "No data for test");
+		Line line1 = beans.get(0);
+		
+		JourneyPattern jp = line1.getRoutes().get(0).getJourneyPatterns().get(0);
+		
+		RouteSection rs = jp.getRouteSections().get(0);
+		
+		
+		ValidationData data = new ValidationData();
+		data.getJourneyPatterns().add(jp);
+		context.put(VALIDATION_DATA, data);
+		
+		double plotFirstLat = rs.getDeparture().getLatitude().doubleValue();
+		double plotLastLat = rs.getArrival().getLatitude().doubleValue();
+		double plotFirstLong = rs.getDeparture().getLongitude().doubleValue();
+		double plotLastLong = rs.getArrival().getLongitude().doubleValue();
+		double distance = 0, distance2 = 0;
+		String modeKey = jp.getRoute().getLine().getTransportModeName().toString();
+		
+		TransportModeParameters parameters = AbstractValidation.getModeParameters(fullparameters, modeKey, log);
+		rs.getDeparture().setLatitude(BigDecimal.valueOf(plotFirstLat + 0.0002));
+		// Departure
+		distance = AbstractValidation.quickDistanceFromCoordinates(rs.getDeparture().getLatitude().doubleValue(), plotFirstLat, rs.getDeparture().getLongitude().doubleValue(), plotFirstLong);
+		parameters.setRouteSectionStopAreaDistanceMax(distance * 2);
+		checkPoint.validate(context, null);
+		
+		
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
+		
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-RouteSection-1");
+		Assert.assertNotNull(checkPointReport, "report must contain a 3-RouteSection-1 checkPoint");
+
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.OK, " checkPointReport must be ok");
+		
+		
+		rs.getDeparture().setLatitude(BigDecimal.valueOf(plotFirstLat));
+		rs.getArrival().setLatitude(BigDecimal.valueOf(plotLastLat + 0.0003));
+		
+		//Arrival
+		distance2 = AbstractValidation.quickDistanceFromCoordinates(rs.getArrival().getLatitude().doubleValue(), plotLastLat, rs.getArrival().getLongitude().doubleValue(), plotLastLong);
+		// If route section distance doesn't exceed gap    as parameter
+		parameters.setRouteSectionStopAreaDistanceMax(distance2 / 2);
+		context.put(VALIDATION_REPORT, new ValidationReport());
+		checkPoint.validate(context, null);
+		
+		ValidationReport report2 = (ValidationReport) context.get(VALIDATION_REPORT);
+		Assert.assertNotEquals(report2.getCheckPoints().size(), 0, " report must have items");
+		
+		CheckPointReport checkPointReport2 = report2.findCheckPointReportByName("3-RouteSection-1");
+		Assert.assertNotNull(checkPointReport2, "report must contain a 3-RouteSection-1 checkPoint");
+		
+		Assert.assertEquals(checkPointReport2.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		
+		
+		utx.rollback();
 	}
 
 }
