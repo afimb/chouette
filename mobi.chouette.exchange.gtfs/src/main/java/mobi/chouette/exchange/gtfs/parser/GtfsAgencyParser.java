@@ -1,10 +1,6 @@
 package mobi.chouette.exchange.gtfs.parser;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
@@ -25,7 +21,6 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 
 	@Override
 	public void validate(Context context) throws Exception {
-		Monitor monitor = MonitorFactory.start("ValidateAgency");
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 		gtfsValidationReporter.getExceptions().clear();
@@ -37,11 +32,7 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 			
 			Index<GtfsAgency> parser = null;
 			try { // Read and check the header line of the file "agency.txt"
-				parser = importer.getAgencyById(); // return new AgencyById("/.../agency.txt") { /** super(...) */
-				//   IndexImpl<GtfsAgency>(_path = "/.../agency.txt", _key = "agency_id", _value = GtfsAgency.DEFAULT_ID, _unique = true) {
-				//     initialize() /** read the lines of file _path */
-				//   }
-				// }
+				parser = importer.getAgencyById(); 
 			} catch (Exception ex ) {
 				// INVALID_HEADER_FILE_FORMAT, EMPTY_HEADER_FIELD, DUPLICATE_HEADER_FIELD, DUPLICATE_DEFAULT_KEY_FIELD
 				// MISSING_FIELD, DUPLICATE_FIELD, INVALID_FILE_FORMAT, MISSING_FILE, SYSTEM,
@@ -101,7 +92,6 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 		} else { // the file "agency.txt" doesn't exist
 			gtfsValidationReporter.reportError(context, new GtfsException(GTFS_AGENCY_FILE, 1, null, GtfsException.ERROR.MISSING_FILE, null, null), GTFS_AGENCY_FILE);
 		}
-		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 	}
 	
 	@Override

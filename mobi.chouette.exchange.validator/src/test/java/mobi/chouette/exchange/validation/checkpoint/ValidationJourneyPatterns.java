@@ -20,7 +20,6 @@ import mobi.chouette.exchange.validation.parameters.TransportModeParameters;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
 import mobi.chouette.exchange.validation.report.CheckPointReport;
-import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.exchange.validator.DummyChecker;
@@ -210,11 +209,11 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		context.put(VALIDATION_DATA, data);
 
 		checkPoint.validate(context, null);
-		fullparameters.getRoute().getObjectId().setUnique(0);
+		fullparameters.getJourneyPattern().getObjectId().setUnique(0);
 		// unique
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
-		List<CheckPointErrorReport> details = checkReportForTest(report, "4-JourneyPattern-1", 3);
+		List<CheckPointErrorReport> details = checkReportForTest(report, "4-JourneyPattern-1", 1);
 		for (CheckPointErrorReport detail : details) {
 			Assert.assertEquals(detail.getReferenceValue(), "ObjectId", "detail must refer column");
 			Assert.assertEquals(detail.getValue(), bean2.getObjectId().split(":")[2], "detail must refer value");

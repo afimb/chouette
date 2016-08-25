@@ -86,8 +86,6 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		prepareCheckPoint(context, VEHICLE_JOURNEY_2);
 		prepareCheckPoint(context, VEHICLE_JOURNEY_4);
 		prepareCheckPoint(context, VEHICLE_JOURNEY_5);
-		prepareCheckPoint(context, VEHICLE_JOURNEY_6);
-		prepareCheckPoint(context, VEHICLE_JOURNEY_7);
 		
 		
 		//
@@ -532,6 +530,8 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		boolean ok = true;
 		// Si la course est de type fréquence
 		if(vj.getJourneyCategory().equals(JourneyCategoryEnum.Frequency)) {
+			prepareCheckPoint(context, VEHICLE_JOURNEY_6);
+
 			List<JourneyFrequency> lstFrequency = vj.getJourneyFrequencies();
 			
 			if(lstFrequency != null) {
@@ -581,6 +581,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		// Si la course est de type fréquence
 		if(vj.getJourneyCategory().equals(JourneyCategoryEnum.Frequency)) {
 			List<JourneyFrequency> lstFrequency = vj.getJourneyFrequencies();
+			prepareCheckPoint(context, VEHICLE_JOURNEY_7);
 			
 			if(lstFrequency != null) {
 				if(lstFrequency.size() > 1) {

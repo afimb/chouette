@@ -17,7 +17,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
@@ -58,8 +57,6 @@ import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineSegment;
@@ -86,7 +83,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	}
 
 	private void validateStopTimes(Context context) throws Exception {
-		Monitor monitor = MonitorFactory.start("ValidateStopTimes");
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 		Set<String> stopIds = new HashSet<String>();
@@ -208,11 +204,9 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			gtfsValidationReporter.reportError(context, new GtfsException(GTFS_STOP_TIMES_FILE, 1, null,
 					GtfsException.ERROR.MISSING_FILE, null, null), GTFS_STOP_TIMES_FILE);
 		}
-		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 	}
 
 	private void validateShapes(Context context) throws Exception {
-		Monitor monitor = MonitorFactory.start("ValidateShape");
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 
@@ -317,11 +311,9 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			gtfsValidationReporter.reportError(context, new GtfsException(GTFS_SHAPES_FILE, 1, null,
 					GtfsException.ERROR.MISSING_OPTIONAL_FILE, null, null), GTFS_SHAPES_FILE);
 		}
-		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 	}
 
 	private void validateTrips(Context context) throws Exception {
-		Monitor monitor = MonitorFactory.start("ValidateTrips");
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 		Set<String> routeIds = new HashSet<String>();
@@ -409,11 +401,9 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			gtfsValidationReporter.reportError(context, new GtfsException(GTFS_TRIPS_FILE, 1, null,
 					GtfsException.ERROR.MISSING_FILE, null, null), GTFS_TRIPS_FILE);
 		}
-		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 	}
 
 	private void validateFrequencies(Context context) throws Exception {
-		Monitor monitor = MonitorFactory.start("ValidateFrequencies");
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 
@@ -487,7 +477,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			gtfsValidationReporter.reportError(context, new GtfsException(GTFS_FREQUENCIES_FILE, 1, null,
 					GtfsException.ERROR.MISSING_OPTIONAL_FILE, null, null), GTFS_FREQUENCIES_FILE);
 		}
-		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 	}
 
 	@Override
@@ -496,8 +485,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
-		// GtfsValidationReporter gtfsValidationReporter =
-		// (GtfsValidationReporter) context.get(GTFS_REPORTER);
 
 		Map<String, JourneyPattern> journeyPatternByStopSequence = new HashMap<String, JourneyPattern>();
 
@@ -577,9 +564,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 			vehicleJourney.setRoute(journeyPattern.getRoute());
 			vehicleJourney.setJourneyPattern(journeyPattern);
-			// Line line = journeyPattern.getRoute().getLine();
-			// gtfsValidationReporter.updateValidationReport(context,
-			// GTFS_TRIPS_FILE, gtfsTrip.getTripId(), line);
 
 			int length = journeyPattern.getStopPoints().size();
 			for (int i = 0; i < length; i++) {
@@ -609,8 +593,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			timeband.setName(getTimebandName(frequency));
 			timeband.setStartTime(frequency.getStartTime().getTime());
 			timeband.setEndTime(frequency.getEndTime().getTime());
-			// AbstractConverter.addLocation(context, "frequencies.txt",
-			// timeBandObjectId, frequency.getId());
 
 			JourneyFrequency journeyFrequency = new JourneyFrequency();
 			journeyFrequency.setExactTime(frequency.getExactTimes());
@@ -705,17 +687,12 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 			if (shapeId == null) {
 				shapeId = gtfsShape.getShapeId();
-				// lineNumber = gtfsShape.getId();
 			}
 			OrderedCoordinate current = new OrderedCoordinate(gtfsShape.getShapePtLon().doubleValue(), gtfsShape
 					.getShapePtLat().doubleValue(), gtfsShape.getShapePtSequence());
 			if (previous != null) {
 				// remove duplicate coords
 				if (Math.abs(current.x - previous.x) < narrow && Math.abs(current.y - previous.y) < narrow) {
-					// log.warn("line " + gtfsShape.getId() +
-					// " duplicate coordinates for shape "
-					// + gtfsShape.getShapeId() + " at pt_sequence " +
-					// gtfsShape.getShapePtSequence());
 					continue;
 				}
 				coordinates.add(current);
@@ -784,10 +761,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				coords.add(projection);
 				if (lastSegmentIncluded)
 					rank++;
-				// String routeSectionId =
-				// journeyPattern.getObjectId().replace(JourneyPattern.JOURNEYPATTERN_KEY,
-				// RouteSection.ROUTE_SECTION_KEY);
-				// routeSectionId += "_" + stop.getPosition();
 				String routeSectionId = prefix + ":" + RouteSection.ROUTE_SECTION_KEY + ":" + shapeId + "_"
 						+ previousLocation.objectIdSuffix() + "_" + location.objectIdSuffix() + "_" + intFactor;
 				RouteSection section = ObjectFactory.getRouteSection(referential, routeSectionId);
@@ -817,8 +790,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 						sections.clear();
 						return sections;
 					}
-					// AbstractConverter.addLocation(context, "shapes.txt",
-					// routeSectionId, lineNumber);
 				}
 				section.setFilled(true);
 				sections.add(section);
@@ -903,8 +874,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 		}
 		vehicleJourney.setFilled(true);
-		// AbstractConverter.addLocation(context, "trips.txt",
-		// vehicleJourney.getObjectId(), gtfsTrip.getId());
 
 	}
 

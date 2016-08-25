@@ -6,11 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendar;
@@ -45,7 +41,6 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 	}
 	
 	private Index<GtfsCalendar> validateCalendar(Context context) throws Exception {
-		Monitor monitor = MonitorFactory.start("ValidateCalendar");
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 			
@@ -57,11 +52,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			gtfsValidationReporter.reportSuccess(context, GTFS_1_GTFS_Common_2, GTFS_CALENDAR_FILE);
 		
 			try { // Read and check the header line of the file "calendar.txt"
-				calendarParser = importer.getCalendarByService(); // return new CalendarByService("/.../calendar.txt", "service_id") { /** super(...) */
-				//   IndexImpl<GtfsCalendar>(_path = "/.../calendar.txt", _key = "service_id", _value = "", _unique = true) {
-				//     initialize() /** read the lines of file _path */
-				//   }
-				// }
+				calendarParser = importer.getCalendarByService(); 
 			} catch (Exception ex ) {
 				if (ex instanceof GtfsException) {
 					gtfsValidationReporter.reportError(context, (GtfsException)ex, GTFS_CALENDAR_FILE);
@@ -109,12 +100,10 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			if (fatalException != null)
 				throw fatalException;
 		}
-		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 		return calendarParser;
 	}
 	
 	private void validateCalendarDates(Context context, Index<GtfsCalendar> calendarParser) throws Exception {
-		Monitor monitor = MonitorFactory.start("ValidateCalendarDates");
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 		
@@ -125,11 +114,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			gtfsValidationReporter.reportSuccess(context, GTFS_1_GTFS_Common_2, GTFS_CALENDAR_DATES_FILE);
 		
 			try { // Read and check the header line of the file "calendar_dates.txt"
-				calendarDateParser = importer.getCalendarDateByService(); // return new CalendarDateByService("/.../calendar_dates.txt", "service_id") { /** super(...) */
-				//   IndexImpl<GtfsCalendarDate>(_path = "/.../calendar_dates.txt", _key = "service_id", _value = "", _unique = true) {
-				//     initialize() /** read the lines of file _path */
-				//   }
-				// }
+				calendarDateParser = importer.getCalendarDateByService(); 
 			} catch (Exception ex ) {
 				if (ex instanceof GtfsException) {
 					gtfsValidationReporter.reportError(context, (GtfsException)ex, GTFS_CALENDAR_DATES_FILE);
@@ -191,35 +176,6 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			gtfsValidationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, GtfsException.ERROR.FILES_WITH_NO_ENTRY);
 		}
 		
-		// TODO. EMPTY_SERVICE
-//		Set<String> serviceIds = new HashSet<>();
-//		if (calendarParser != null) {
-//			for (GtfsCalendar bean : calendarParser) {
-//				serviceIds.add(bean.getServiceId());
-//				List<Date> dates = new ArrayList<>();
-//				Date startDate = bean.getStartDate();
-//				Calendar startCal = Calendar.getInstance();
-//				startCal.setTimeInMillis(startDate.getTime());
-//				Date endDate = bean.getEndDate();
-//				Calendar endCal = Calendar.getInstance();
-//				endCal.setTimeInMillis(endDate.getTime());
-//				while (startCal.compareTo(endCal) <= 0) {
-//					switch (startCal.get(Calendar.DAY_OF_WEEK)) {
-//					case Calendar.MONDAY:
-//						if (bean.getMonday()) {
-//							if (calendarDateParser != null) {
-//								for (GtfsCalendarDate calendarDate : calendarDateParser) {
-//									if (bean.getServiceId().equals(calendarDate.getServiceId()))
-//										;
-//								}
-//							}
-//						}
-//					}
-//					startCal.add(Calendar.DAY_OF_MONTH, 1);
-//				}
-//			}
-//		}
-		log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 	}
 
 	@Override
@@ -289,26 +245,18 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			dayTypes.add(DayTypeEnum.Sunday);
 		timetable.setDayTypes(dayTypes);
 
-// 		String fileName = "calendar.txt";
 		if (gtfsCalendar.getStartDate() != null && gtfsCalendar.getEndDate() != null) {
 			Period period = new Period();
 			period.setStartDate(gtfsCalendar.getStartDate());
 			period.setEndDate(gtfsCalendar.getEndDate());
 			timetable.addPeriod(period);
 		}
-//		else
-//		{
-//			// dummy calendar, created by dates
-//			fileName = "calendar_dates.txt";
-//		}
 
 		List<Period> periods = timetable.getPeriods();
 		if (periods != null)
 			Collections.sort(periods, PERIOD_COMPARATOR);
 		NamingUtil.setDefaultName(timetable);
 		timetable.setFilled(true);
-//		AbstractConverter.addLocation(context, fileName, timetable.getObjectId(), gtfsCalendar.getId());
-//		AbstractConverter.addLocation(context, fileName, timetable.getObjectId()+ AFTER_MIDNIGHT_SUFFIX, gtfsCalendar.getId());
 
 	}
 
