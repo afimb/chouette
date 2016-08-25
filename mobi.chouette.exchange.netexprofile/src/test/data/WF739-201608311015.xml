@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PublicationDelivery xmlns="http://www.netex.org.uk/netex" version="1.0">
+    <PublicationTimestamp>2016-08-31T07:53:35.009Z</PublicationTimestamp>
+    <ParticipantRef>NSR</ParticipantRef>
+    <Description>Flight WF739 : Bodø-Trondheim</Description>
+    <dataObjects>
+        <CompositeFrame created="2016-08-31T07:53:35.009Z" version="1" id="AVI:CompositeFrame:WF739">
+            <codespaces>
+                <Codespace id="avinor">
+                    <Xmlns>AVI</Xmlns>
+                    <XmlnsUrl>http://avinor.no/</XmlnsUrl>
+                </Codespace>
+                <Codespace id="nsr">
+                    <Xmlns>NSR</Xmlns>
+                    <XmlnsUrl>http://www.nasjonaltstoppestedregister.rutebanken.no</XmlnsUrl>
+                </Codespace>
+            </codespaces>
+            <FrameDefaults>
+                <DefaultLocale>
+                    <TimeZone>UTC</TimeZone>
+                    <DefaultLanguage>no</DefaultLanguage>
+                </DefaultLocale>
+            </FrameDefaults>
+            <frames>
+                <ResourceFrame version="any" id="AVI:ResourceFrame:1">
+                    <organisations>
+                        <Authority version="any" id="AVI:Company:1">
+                            <CompanyNumber>985198292</CompanyNumber>
+                            <Name>Avinor</Name>
+                            <LegalName>AVINOR AS</LegalName>
+                            <ContactDetails>
+                                <Phone>0047 815 30 550</Phone>
+                                <Url>http://avinor.no/</Url>
+                            </ContactDetails>
+                            <OrganisationType>authority</OrganisationType>
+                        </Authority>
+                        <Operator version="any" id="Widerøe:Company:2">
+                            <CompanyNumber>917330557</CompanyNumber>
+                            <Name>Widerøe</Name>
+                            <LegalName>WIDERØE'S FLYVESELSKAP AS</LegalName>
+                            <ContactDetails>
+                                <Phone>0047 755 13 500</Phone>
+                                <Url>http://www.wideroe.no/</Url>
+                            </ContactDetails>
+                            <OrganisationType>operator</OrganisationType>
+                        </Operator>
+                    </organisations>
+                </ResourceFrame>
+                <SiteFrame version="any" id="AVI:SiteFrame:1">
+                    <stopPlaces>
+                        <StopPlace version="1" id="NSR:StopPlace:boo"/>
+                        <StopPlace version="1" id="NSR:StopPlace:mjf"/>
+                        <StopPlace version="1" id="NSR:StopPlace:osy"/>
+                        <StopPlace version="1" id="NSR:StopPlace:trd"/>
+                    </stopPlaces>
+                </SiteFrame>
+                <ServiceFrame version="any" id="AVI:ServiceFrame:1">
+                    <Network changed="2016-08-31T07:53:35.009Z" version="1" id="AVI:GroupOfLine:Avinor">
+                        <Name>Widerøe</Name>
+                    </Network>
+                    <routePoints>
+                        <RoutePoint version="any" id="AVI:RoutePoint:WF739101A0A0061101001">
+                            <projections>
+                                <PointProjection version="any" id="AVI:PointProjection:WF739101A0A0061101001">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:WF739101001" version="any"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                        <RoutePoint version="any" id="AVI:RoutePoint:WF739101A0A0061101002">
+                            <projections>
+                                <PointProjection version="any" id="AVI:PointProjection:WF739101A0A0061101002">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:WF739101002" version="any"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                        <RoutePoint version="any" id="AVI:RoutePoint:WF739101A0A0061101003">
+                            <projections>
+                                <PointProjection version="any" id="AVI:PointProjection:WF739101A0A0061101003">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:WF739101003" version="any"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                        <RoutePoint version="any" id="AVI:RoutePoint:WF739101A0A0061101004">
+                            <projections>
+                                <PointProjection version="any" id="AVI:PointProjection:WF739101A0A0061101004">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:WF739101004" version="any"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                    </routePoints>
+                    <routes>
+                        <Route version="any" id="AVI:Route:WF739101">
+                            <Name>WF739: Bodø-Trondheim</Name>
+                            <pointsInSequence>
+                                <PointOnRoute version="any" id="AVI:PointOnRoute:WF7391010011">
+                                    <RoutePointRef ref="AVI:RoutePoint:WF739101A0A0061101001"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="any" id="AVI:PointOnRoute:WF7391010012">
+                                    <RoutePointRef ref="AVI:RoutePoint:WF739101A0A0061101002"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="any" id="AVI:PointOnRoute:WF7391010013">
+                                    <RoutePointRef ref="AVI:RoutePoint:WF739101A0A0061101003"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="any" id="AVI:PointOnRoute:WF7391010014">
+                                    <RoutePointRef ref="AVI:RoutePoint:WF739101A0A0061101004"/>
+                                </PointOnRoute>
+                            </pointsInSequence>
+                        </Route>
+                    </routes>
+                    <lines>
+                        <Line version="any" id="AVI:Line:WF739">
+                            <Name>Bodø-Trondheim</Name>
+                            <TransportMode>air</TransportMode>
+                            <PublicCode>WF739</PublicCode>
+                            <OperatorRef ref="Widerøe:Company:2"/>
+                            <routes>
+                                <RouteRef ref="AVI:Route:WF739101" version="any"/>
+                            </routes>
+                        </Line>
+                    </lines>
+                    <scheduledStopPoints>
+                        <ScheduledStopPoint version="any" id="AVI:ScheduledStopPoint:WF739101001">
+                            <Name>Bodø</Name>
+                        </ScheduledStopPoint>
+                        <ScheduledStopPoint version="any" id="AVI:ScheduledStopPoint:WF739101002">
+                            <Name>Mosjøen</Name>
+                        </ScheduledStopPoint>
+                        <ScheduledStopPoint version="any" id="AVI:ScheduledStopPoint:WF739101003">
+                            <Name>Namsos</Name>
+                        </ScheduledStopPoint>
+                        <ScheduledStopPoint version="any" id="AVI:ScheduledStopPoint:WF739101004">
+                            <Name>Trondheim</Name>
+                        </ScheduledStopPoint>
+                    </scheduledStopPoints>
+                    <stopAssignments>
+                        <PassengerStopAssignment order="1" version="any" id="AVI:PassengerStopAssignment:WF739101001">
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:WF739101001" version="any"/>
+                        </PassengerStopAssignment>
+                        <PassengerStopAssignment order="2" version="any" id="AVI:PassengerStopAssignment:WF739101002">
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:WF739101002" version="any"/>
+                        </PassengerStopAssignment>
+                        <PassengerStopAssignment order="3" version="any" id="AVI:PassengerStopAssignment:WF739101003">
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:WF739101003" version="any"/>
+                        </PassengerStopAssignment>
+                        <PassengerStopAssignment order="4" version="any" id="AVI:PassengerStopAssignment:WF739101004">
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:WF739101004" version="any"/>
+                        </PassengerStopAssignment>
+                    </stopAssignments>
+                    <journeyPatterns>
+                        <JourneyPattern version="any" id="AVI:JourneyPattern:WF739101">
+                            <RouteRef ref="AVI:Route:WF739101" version="any"/>
+                            <pointsInSequence>
+                                <StopPointInJourneyPattern order="1" version="any"
+                                                           id="AVI:StopPointInJourneyPattern:WF739101001">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:WF739101001" version="any"/>
+                                    <ForAlighting>false</ForAlighting>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="2" version="any"
+                                                           id="AVI:StopPointInJourneyPattern:WF739101002">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:WF739101002" version="any"/>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="3" version="any"
+                                                           id="AVI:StopPointInJourneyPattern:WF739101003">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:WF739101003" version="any"/>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="4" version="any"
+                                                           id="AVI:StopPointInJourneyPattern:WF739101004">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:WF739101004" version="any"/>
+                                    <ForBoarding>false</ForBoarding>
+                                </StopPointInJourneyPattern>
+                            </pointsInSequence>
+                        </JourneyPattern>
+                    </journeyPatterns>
+                </ServiceFrame>
+                <TimetableFrame version="any" id="AVI:TimetableFrame:1">
+                    <validityConditions>
+                        <AvailabilityCondition version="any" id="AVI:AvailabilityCondition:1">
+                            <FromDate>2016-08-31T00:00:00Z</FromDate>
+                            <ToDate>2016-09-30T00:00:00Z</ToDate>
+                        </AvailabilityCondition>
+                    </validityConditions>
+                    <vehicleJourneys>
+                        <ServiceJourney version="any" id="AVI:ServiceJourney:WF739:1">
+                            <DepartureTime>03:29:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="WF739:DayType:weekday"/>
+                                <DayTypeRef ref="WF739:DayType:weekend"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:WF739101"/>
+                            <PublicCode>WF739</PublicCode>
+                            <LineRef ref="AVI:Line:WF739"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:WF739101001" version="any"/>
+                                    <DepartureTime>03:29:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:WF739101002" version="any"/>
+                                    <ArrivalTime>04:12:00Z</ArrivalTime>
+                                    <DepartureTime>04:29:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:WF739101003" version="any"/>
+                                    <ArrivalTime>05:05:00Z</ArrivalTime>
+                                    <DepartureTime>05:20:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:WF739101004" version="any"/>
+                                    <ArrivalTime>05:50:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                    </vehicleJourneys>
+                </TimetableFrame>
+                <ServiceCalendarFrame version="1" id="AVI:ServiceCalendarFrame:1">
+                    <dayTypes>
+                        <DayType version="any" id="WF739:DayType:weekday">
+                            <Name>Ukedager (mandag til fredag)</Name>
+                            <properties>
+                                <PropertyOfDay>
+                                    <DaysOfWeek>Monday Tuesday Wednesday Thursday Friday</DaysOfWeek>
+                                </PropertyOfDay>
+                            </properties>
+                        </DayType>
+                        <DayType version="any" id="WF739:DayType:weekend">
+                            <Name>Helgdager (lørdag og søndag)</Name>
+                            <properties>
+                                <PropertyOfDay>
+                                    <DaysOfWeek>Saturday</DaysOfWeek>
+                                </PropertyOfDay>
+                            </properties>
+                        </DayType>
+                    </dayTypes>
+                </ServiceCalendarFrame>
+            </frames>
+        </CompositeFrame>
+    </dataObjects>
+</PublicationDelivery>
