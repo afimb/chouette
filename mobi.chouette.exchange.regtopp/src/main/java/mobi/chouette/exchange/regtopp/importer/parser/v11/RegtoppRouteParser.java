@@ -1,25 +1,15 @@
 package mobi.chouette.exchange.regtopp.importer.parser.v11;
 
-import static mobi.chouette.common.Constant.CONFIGURATION;
-import static mobi.chouette.common.Constant.PARSER;
-import static mobi.chouette.common.Constant.REFERENTIAL;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.regtopp.RegtoppConstant;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
-import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
 import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
+import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.importer.parser.RouteKey;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.enums.DirectionType;
@@ -27,19 +17,18 @@ import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppRouteTDA;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppTripIndexTIX;
-import mobi.chouette.model.Company;
-import mobi.chouette.model.Footnote;
-import mobi.chouette.model.JourneyPattern;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.Network;
-import mobi.chouette.model.Route;
-import mobi.chouette.model.StopArea;
-import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.*;
 import mobi.chouette.model.type.PTDirectionEnum;
 import mobi.chouette.model.util.ObjectFactory;
-import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
+import org.apache.commons.lang.StringUtils;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import static mobi.chouette.common.Constant.*;
 
 @Log4j
 public class RegtoppRouteParser extends LineSpecificParser {
@@ -54,12 +43,14 @@ public class RegtoppRouteParser extends LineSpecificParser {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
+		String calendarStartDate = (String) context.get(RegtoppConstant.CALENDAR_START_DATE);
 
-		String chouetteLineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY, lineId);
+		String chouetteLineId = ObjectIdCreator.createLineId(configuration, lineId,calendarStartDate);
 		Line line = ObjectFactory.getLine(referential, chouetteLineId);
 
 		Index<RegtoppRouteTDA> routeIndex = importer.getRouteSegmentByLineNumber();
 		Index<AbstractRegtoppTripIndexTIX> tripIndex = importer.getTripIndex();
+
 
 		for (AbstractRegtoppTripIndexTIX abstractTrip : tripIndex) {
 			if (abstractTrip.getLineId().equals(lineId)) {
@@ -76,11 +67,10 @@ public class RegtoppRouteParser extends LineSpecificParser {
 				line.setCompany(company);
 
 				// Create route
-				RouteKey routeKey = new RouteKey(trip.getLineId(), trip.getDirection(), trip.getRouteIdRef());
+				RouteKey routeKey = new RouteKey(trip.getLineId(), trip.getDirection(), trip.getRouteIdRef(), calendarStartDate);
 				Route route = createRoute(context, line, trip.getDirection(), trip.getRouteIdRef(), trip.getDestinationIdDepartureRef(), routeKey);
-				
-				String chouetteJourneyPatternId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.JOURNEYPATTERN_KEY,
-						routeKey.toString());
+
+				String chouetteJourneyPatternId = ObjectIdCreator.createJourneyPatternId(configuration, routeKey);
 
 				JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, chouetteJourneyPatternId);
 				if (!journeyPattern.isFilled()) {
@@ -94,15 +84,14 @@ public class RegtoppRouteParser extends LineSpecificParser {
 						// TODO use another identifier as it causes duplicate stoppoints in route
 						String lineNumber = StringUtils.leftPad("" + (Integer.parseInt(firstStop) + i), 7, "0");
 						RegtoppRouteTDA routeSegment = routeIndex.getValue(lineNumber);
-						
+
 						// Create stop point
-						String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPPOINT_KEY,
-								routeKey.toString() + i);
+						String chouetteStopPointId = ObjectIdCreator.createStopPointId(configuration, routeKey, ""+i);
+
 						StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
 						stopPoint.setPosition(i);
 
-						String chouetteStopAreaId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
-								ObjectIdTypes.STOPAREA_KEY,  routeSegment.getStopId() + RegtoppStopParser.BOARDING_POSITION_ID_SUFFIX);
+						String chouetteStopAreaId = ObjectIdCreator.createStopAreaId(configuration, routeSegment.getStopId() + RegtoppStopParser.BOARDING_POSITION_ID_SUFFIX);
 
 						StopArea stopArea = ObjectFactory.getStopArea(referential, chouetteStopAreaId);
 
@@ -127,16 +116,15 @@ public class RegtoppRouteParser extends LineSpecificParser {
 
 	}
 
-	protected Route createRoute(Context context, Line line, 
-			DirectionType direction, String routeId, String destinationId,RouteKey routeKey) throws Exception {
-		
+	protected Route createRoute(Context context, Line line, DirectionType direction, String routeId, String destinationId, RouteKey routeKey) throws Exception {
+
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
-		
+
 		Index<RegtoppDestinationDST> destinationIndex = importer.getDestinationById();
-		
-		String chouetteRouteId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.ROUTE_KEY, routeKey.toString());
+
+		String chouetteRouteId = ObjectIdCreator.createRouteId(configuration, routeKey);
 		Route route = ObjectFactory.getRoute(referential, chouetteRouteId);
 		if (!route.isFilled()) {
 			// Filled = only a flag to indicate that we no longer should write data to this entity
@@ -162,8 +150,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 	}
 
 	protected Network addNetwork(Referential referential, RegtoppImportParameters configuration, String adminCode) {
-		String chouetteNetworkId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.PTNETWORK_KEY,
-				adminCode);
+		String chouetteNetworkId = ObjectIdCreator.createNetworkId(configuration, adminCode);
 		Network ptNetwork = ObjectFactory.getPTNetwork(referential, chouetteNetworkId);
 		if (!ptNetwork.isFilled()) {
 			ptNetwork.setSourceIdentifier("Regtopp");
@@ -173,10 +160,9 @@ public class RegtoppRouteParser extends LineSpecificParser {
 		}
 		return ptNetwork;
 	}
-	
+
 	protected Company addAuthority(Referential referential, RegtoppImportParameters configuration, String adminCode) {
-		String chouetteCompanyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.COMPANY_KEY,
-				adminCode);
+		String chouetteCompanyId = ObjectIdCreator.createAuthorityId(configuration, adminCode);
 		Company company = ObjectFactory.getCompany(referential, chouetteCompanyId);
 		if (!company.isFilled()) {
 			company.setRegistrationNumber(adminCode);
@@ -210,7 +196,6 @@ public class RegtoppRouteParser extends LineSpecificParser {
 			}
 		}
 	}
-
 
 	protected boolean footnoteAlreadyAdded(List<Footnote> addedFootnotes, String footnoteId) {
 		for (Footnote existing : addedFootnotes) {
@@ -251,9 +236,9 @@ public class RegtoppRouteParser extends LineSpecificParser {
 		// Link opposite routes together
 		for (Route r : referential.getRoutes().values()) {
 			if (r.getOppositeRoute() == null) {
-				RouteKey key = new RouteKey(AbstractConverter.extractOriginalId(r.getObjectId()));
-				RouteKey oppositeKey = new RouteKey(key.getLineId(), key.getDirection().getOppositeDirection(), key.getRouteId());
-				String oppositeObjectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.ROUTE_KEY, oppositeKey.toString());
+				RouteKey key = new RouteKey(ObjectIdCreator.extractOriginalId(r.getObjectId()));
+				RouteKey oppositeKey = new RouteKey(key.getLineId(), key.getDirection().getOppositeDirection(), key.getRouteId(), key.getCalendarStartDate());
+				String oppositeObjectId = ObjectIdCreator.createRouteId(configuration, oppositeKey);
 				for (Route opposite : referential.getRoutes().values()) {
 					if (opposite.getObjectId().equals(oppositeObjectId)) {
 						// Link routes
@@ -287,7 +272,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 				List<StopPoint> stopPoints = route.getStopPoints();
 				if (stopPoints != null && !stopPoints.isEmpty()) {
 					StopArea lastStopArea = stopPoints.get(stopPoints.size() - 1).getContainedInStopArea();
-					if(lastStopArea.getParent() == null) {
+					if (lastStopArea.getParent() == null) {
 						route.setName(lastStopArea.getName());
 					} else {
 						route.setName(lastStopArea.getParent().getName());

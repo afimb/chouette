@@ -12,7 +12,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
-import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
+import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.ObjectFactory;
@@ -37,7 +37,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 		// Group boarding positions by original stopId
 		Map<String, List<StopArea>> boardingPositionsByStopArea = new HashMap<String, List<StopArea>>();
 		for (StopArea sa : referential.getStopAreas().values()) {
-			String commercialStopAreaId = AbstractConverter.extractOriginalId(sa.getObjectId()).substring(0, 8);
+			String commercialStopAreaId = ObjectIdCreator.extractOriginalId(sa.getObjectId()).substring(0, 8);
 			List<StopArea> list = boardingPositionsByStopArea.get(commercialStopAreaId);
 			if (list == null) {
 				list = new ArrayList<StopArea>();
@@ -50,7 +50,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 			List<StopArea> list = boardingPositionsByStopArea.get(commercialStopAreaId);
 			if (list.size() > 0) {
 				// Create parent stopArea
-				String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, commercialStopAreaId);
+				String objectId = ObjectIdCreator.createStopAreaId(configuration, commercialStopAreaId);
 				StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
 				stopArea.setName(list.get(0).getName()); // TODO using name of first stoppoint, should be identical for all boarding positions according to spec
 				stopArea.setAreaType(ChouetteAreaEnum.StopPlace);

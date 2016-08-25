@@ -176,7 +176,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("TST:Line:2306");
+		Line line = lineDao.findByObjectId("TST:Line:2306-2016-03-29");
 
 		Assert.assertNotNull(line, "Line not found");
 		Assert.assertNotNull(line.getNetwork(), "line must have a network");
@@ -223,8 +223,8 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		assertEquals(bps.size(), 90, "number boarding positions");
 
 		// Check opposite routes
-		Route outbound = routeDao.findByObjectId("TST:Route:2306103");
-		Route inbound = routeDao.findByObjectId("TST:Route:2306203");
+		Route outbound = routeDao.findByObjectId("TST:Route:2306103-2016-03-29");
+		Route inbound = routeDao.findByObjectId("TST:Route:2306203-2016-03-29");
 
 		Assert.assertNotNull(outbound, "Outbound route not found");
 		Assert.assertNotNull(inbound, "Inbound route not found");
@@ -272,7 +272,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("TST:Line:5560");
+		Line line = lineDao.findByObjectId("TST:Line:5560-2016-03-29");
 		assertEquals(line.getTransportModeName(), TransportModeNameEnum.Ferry);
 
 		Assert.assertNotNull(line, "Line not found");
@@ -319,7 +319,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("TST:Line:0076");
+		Line line = lineDao.findByObjectId("TST:Line:0076-2016-01-18");
 
 		Assert.assertNotNull(line, "Line not found");
 
@@ -328,7 +328,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		assertEquals(line.getFootnotes().size(), 1, "number of line footnotes");
 
 		// Find vehicle journey
-		VehicleJourney vehicleJourney = vjDao.findByObjectId("TST:VehicleJourney:00760015");
+		VehicleJourney vehicleJourney = vjDao.findByObjectId("TST:VehicleJourney:00760015-2016-01-18");
 		Assert.assertNotNull(vehicleJourney, "VehicleJourney not found");
 		List<Footnote> footnotes = vehicleJourney.getFootnotes();
 		Assert.assertNotNull(footnotes, "footnotes list null");
@@ -381,7 +381,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("TST:Line:0098");
+		Line line = lineDao.findByObjectId("TST:Line:0098-2016-01-18");
 
 		Assert.assertNotNull(line, "Line not found");
 		Assert.assertNotNull(line.getNetwork(), "line must have a network");
@@ -474,7 +474,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("TST:Line:5001");
+		Line line = lineDao.findByObjectId("TST:Line:5001-2016-03-29");
 
 		Assert.assertNotNull(line, "Line not found");
 
@@ -532,7 +532,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("TST:Line:0002");
+		Line line = lineDao.findByObjectId("TST:Line:0002-2016-03-04");
 
 		Assert.assertNotNull(line, "Line not found");
 		Assert.assertNotNull(line.getNetwork(), "line must have a network");
@@ -540,7 +540,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		Assert.assertNotNull(line.getRoutes(), "line must have routes");
 		assertEquals(line.getRoutes().size(), 12, "number of routes");
 
-		Route route0002139 = routeDao.findByObjectId("TST:Route:0002139");
+		Route route0002139 = routeDao.findByObjectId("TST:Route:0002139-2016-03-04");
 		Assert.assertNotNull(route0002139);
 		List<JourneyPattern> journeyPatterns = route0002139.getJourneyPatterns();
 		assertEquals(journeyPatterns.size(), 1);
@@ -578,7 +578,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("TST:Line:0030");
+		Line line = lineDao.findByObjectId("TST:Line:0030-2016-02-29");
 
 		// 1119 Vehicle Journeys
 		// 120 stopPlace
@@ -626,6 +626,41 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		// Assert.assertEquals(journeyPatterns.get(0).getStopPoints().size(), 5);
 		// Assert.assertEquals(journeyPatterns.get(0).getVehicleJourneys().size(), 2);
 
+		utx.rollback();
+
+	}
+
+	//@Test
+	public void importRuterTramDatasetV1() throws Exception {
+		// Prepare context
+		Context context = initImportContext();
+
+		File f = new File("src/test/data/fullsets/rut-20160809135717-Ruter_(Akershus-_og_Oslo_fylke)_100_20160101_20161231_31_v1.zip");
+		File dest = new File("target/referential/test");
+		FileUtils.copyFileToDirectory(f, dest);
+		JobDataTest job = (JobDataTest) context.get(JOB_DATA);
+		job.setInputFilename(f.getName());
+
+		RegtoppImporterCommand command = (RegtoppImporterCommand) CommandFactory.create(initialContext, RegtoppImporterCommand.class.getName());
+
+		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
+		parameters.setObjectIdPrefix("TST");
+		parameters.setReferencesType("line");
+		parameters.setNoSave(false);
+		parameters.setVersion(RegtoppVersion.R13A);
+		parameters.setCoordinateProjection("EPSG:32632");
+		parameters.setCharsetEncoding(RegtoppParameterGuesser.REGTOPP_DEFAULT_ENCODING);
+
+		command.execute(context);
+		dumpReports(context);
+
+		// line should be saved
+		utx.begin();
+		em.joinTransaction();
+
+		List<VehicleJourney> vehicleJourneys = vjDao.findAll();
+		
+		Assert.assertEquals(vehicleJourneys.size(), 5594);
 		utx.rollback();
 
 	}

@@ -1,7 +1,7 @@
 package mobi.chouette.exchange.regtopp.importer.parser.v11;
 
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
-import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
+import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL;
 import mobi.chouette.model.StopArea;
@@ -86,7 +86,7 @@ public class RegtoppStopParserTest {
 
 
     private StopArea getStopArea(RegtoppImportParameters configuration, String stopId) {
-        String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, stopId);
+        String objectId = ObjectIdCreator.createStopAreaId(configuration, stopId);
         return ObjectFactory.getStopArea(referential, objectId);
     }
 

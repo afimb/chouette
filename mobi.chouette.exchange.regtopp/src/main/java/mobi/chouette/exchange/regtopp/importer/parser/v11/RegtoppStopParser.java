@@ -16,7 +16,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
-import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
+import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppStopHPL;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -51,10 +51,8 @@ public class RegtoppStopParser implements Parser {
 
 	protected void mapRegtoppStop(AbstractRegtoppStopHPL stop, RegtoppImportParameters configuration, Referential referential, String projection) {
 
-		String stopPlaceObjectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, stop.getFullStopId());
-		String boardingPositionObjectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
-											StopArea.STOPAREA_KEY,
-											stop.getFullStopId() + BOARDING_POSITION_ID_SUFFIX);
+		String stopPlaceObjectId = ObjectIdCreator.createStopAreaId(configuration, stop.getFullStopId());
+		String boardingPositionObjectId = ObjectIdCreator.createStopAreaId(configuration, stop.getFullStopId() + BOARDING_POSITION_ID_SUFFIX);
 
 		StopArea stopArea = ObjectFactory.getStopArea(referential, stopPlaceObjectId);
 		stopArea.setName(stop.getFullName());

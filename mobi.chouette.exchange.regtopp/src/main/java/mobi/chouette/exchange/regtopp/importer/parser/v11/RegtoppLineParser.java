@@ -27,7 +27,7 @@ import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.index.v11.DaycodeById;
-import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
+import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
 import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
@@ -69,8 +69,9 @@ public class RegtoppLineParser extends LineSpecificParser {
 
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
+		String calendarStartDate = (String) context.get(RegtoppConstant.CALENDAR_START_DATE);
 
-		String chouetteLineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY, lineId);
+		String chouetteLineId = ObjectIdCreator.createLineId(configuration, lineId, calendarStartDate);
 
 		// Create the actual Chouette Line and put it in the "referential" space (which is later used by the LineImporterCommand)
 		Line line = ObjectFactory.getLine(referential, chouetteLineId);
@@ -113,6 +114,7 @@ public class RegtoppLineParser extends LineSpecificParser {
 		// Update boarding/alighting at StopPoint
 		updateBoardingAlighting(referential, configuration);
 		updateLineName(referential, line, configuration);
+		removeLineNumberFromRouteAndJourneyPatternsAndVehicleJourneys(referential, line, configuration);
 		updateNetworkDate(importer, referential, line, configuration);
 
 	}
@@ -454,6 +456,42 @@ public class RegtoppLineParser extends LineSpecificParser {
 
 			String lineName = StringUtils.join(routeNames, " - ");
 			line.setName(lineName);
+		} else if (line.getNumber() != null && line.getName().startsWith(line.getNumber()+" ")) {
+			line.setName(StringUtils.trim(line.getName().substring(line.getNumber().length())));
+		}
+	}
+
+	private void removeLineNumberFromRouteAndJourneyPatternsAndVehicleJourneys(Referential referential, Line line, RegtoppImportParameters configuration) {
+		String lineNumber = line.getNumber();
+		if(StringUtils.trimToNull(lineNumber) != null) {
+			for(Route route : line.getRoutes()) {
+				String updatedName = null;
+				String originalRouteName = route.getName();
+				if (originalRouteName != null && originalRouteName.startsWith(line.getNumber()+" ")) {
+					updatedName = StringUtils.trim(route.getName().substring(line.getNumber().length()));
+					
+					route.setName(updatedName);
+					route.setPublishedName(updatedName);
+				}
+				
+				if(updatedName != null) {
+					for(JourneyPattern jp : route.getJourneyPatterns()) {
+						jp.setName(updatedName);
+						jp.setPublishedName(updatedName);
+					}
+				}
+				
+				for(JourneyPattern jp : route.getJourneyPatterns()) {
+					for(VehicleJourney vj : jp.getVehicleJourneys()) {
+						String vjName = vj.getPublishedJourneyName();
+						if(vjName != null &&vjName.startsWith(line.getNumber()+" ")) {
+							// Remove from vehicle journey if same as journey pattern
+							vj.setPublishedJourneyName(StringUtils.trim(vjName.substring(line.getNumber().length())));
+						}
+					}
+				}
+				
+			}
 		}
 	}
 

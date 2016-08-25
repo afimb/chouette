@@ -11,13 +11,12 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
-import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
+import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppPathwayGAV;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.ObjectFactory;
-import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
@@ -41,32 +40,30 @@ public class RegtoppConnectionLinkParser extends LineSpecificParser {
 
 			for (AbstractRegtoppPathwayGAV pathway : routeIndex) {
 
-				String chouetteStartStopAreaObjectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPAREA_KEY,
-						pathway.getStopIdFrom());
+				String chouetteStartStopAreaObjectId = ObjectIdCreator.createStopAreaId(configuration,pathway.getStopIdFrom());
 
-				String chouetteEndStopAreaObjectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPAREA_KEY,
-						pathway.getStopIdTo());
+				String chouetteEndStopAreaObjectId =ObjectIdCreator.createStopAreaId(configuration,pathway.getStopIdTo());
 
 				
-				if(!referential.getSharedStopAreas().containsKey(chouetteStartStopAreaObjectId)) {
-					log.error("StopArea (ConnectionLink start) "+chouetteStartStopAreaObjectId+" does not exist in shipment");
-					// TODO report with validation reporter
-				} else if(!referential.getSharedStopAreas().containsKey(chouetteEndStopAreaObjectId)) {
-					// TODO report with validation reporter
-					log.error("StopArea (ConnectionLink end) "+chouetteEndStopAreaObjectId+" does not exist in shipment");
-				} else {
+//				if(!referential.getSharedStopAreas().containsKey(chouetteStartStopAreaObjectId)) {
+//					log.error("StopArea (ConnectionLink start) "+chouetteStartStopAreaObjectId+" does not exist in shipment");
+//					// TODO report with validation reporter
+//				} else if(!referential.getSharedStopAreas().containsKey(chouetteEndStopAreaObjectId)) {
+//					// TODO report with validation reporter
+//					log.error("StopArea (ConnectionLink end) "+chouetteEndStopAreaObjectId+" does not exist in shipment");
+//				} else {
 					StopArea startStopArea = ObjectFactory.getStopArea(referential, chouetteStartStopAreaObjectId);
 					StopArea endStopArea = ObjectFactory.getStopArea(referential, chouetteEndStopAreaObjectId);
 
-					String chouetteConnectionLinkId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.CONNECTIONLINK_KEY,
-							pathway.getStopIdFrom() + "-" + pathway.getStopIdTo());
+					String chouetteConnectionLinkId = ObjectIdCreator.createConnectionLinkId(configuration,pathway.getStopIdFrom() ,pathway.getStopIdTo());
 					ConnectionLink connectionLink = ObjectFactory.getConnectionLink(referential, chouetteConnectionLinkId);
-
+					connectionLink.setName(pathway.getStopIdFrom()+" -> "+pathway.getStopIdTo());
 					connectionLink.setDefaultDuration(new java.sql.Time(0, pathway.getDuration(), 0));
 					connectionLink.setComment(pathway.getDescription());
 					connectionLink.setStartOfLink(startStopArea);
 					connectionLink.setEndOfLink(endStopArea);
-				}
+					
+//				}
 			}
 		}
 
