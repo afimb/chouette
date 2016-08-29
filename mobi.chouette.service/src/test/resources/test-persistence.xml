@@ -9,6 +9,7 @@
 
       <class>mobi.chouette.model.iev.Link</class>
       <class>mobi.chouette.model.iev.Job</class>
+      <class>mobi.chouette.model.iev.Stat</class>
 
       <exclude-unlisted-classes>true</exclude-unlisted-classes>
       <validation-mode>NONE</validation-mode>

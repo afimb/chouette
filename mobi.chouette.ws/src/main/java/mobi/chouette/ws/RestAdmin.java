@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -26,9 +25,8 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.PropertyNames;
-import mobi.chouette.dao.StatDAO;
 import mobi.chouette.model.iev.Job;
-import mobi.chouette.model.Stat;
+import mobi.chouette.model.iev.Stat;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
 
@@ -47,15 +45,12 @@ public class RestAdmin implements Constant {
 	private static String GLOBAL_KEY = "Global";
 	private static String REFERENTIAL_KEY = "Referentials";
 	private static String STAT_KEY = "Stats";
-	
+
 	@Inject
 	JobServiceManager jobServiceManager;
-	
-	@Inject 
+
+	@Inject
 	ContenerChecker checker;
-	
-	@EJB
-	StatDAO statDao;
 
 	@Context
 	UriInfo uriInfo;
@@ -67,25 +62,9 @@ public class RestAdmin implements Constant {
 	public Response activeJobs(@PathParam("format") String format, @QueryParam("key") final String authorisationKey) {
 
 		log.info(Color.BLUE + "Call Admin active_jobs" + Color.NORMAL);
-		if (authorisationKey == null || authorisationKey.isEmpty()) {
-			log.warn("admin call without key");
-			ResponseBuilder builder = Response.status(Status.UNAUTHORIZED);
-			builder.header(api_version_key, api_version);
-			return builder.build();
-		}
-		String securityToken = System.getProperty(checker.getContext()+PropertyNames.ADMIN_KEY);
-		if (securityToken == null || securityToken.isEmpty()) {
-			log.warn("admin call without property " + checker.getContext()+PropertyNames.ADMIN_KEY + " set");
-			ResponseBuilder builder = Response.status(Status.FORBIDDEN);
-			builder.header(api_version_key, api_version);
-			return builder.build();
-		}
-		if (!securityToken.equals(authorisationKey)) {
-			log.warn("admin call with invalid key = " + authorisationKey);
-			ResponseBuilder builder = Response.status(Status.UNAUTHORIZED);
-			builder.header(api_version_key, api_version);
-			return builder.build();
-		}
+		Response r = checkKey(authorisationKey);
+		if (r != null)
+			return r; // invalid key
 
 		if (format == null)
 			format = ".json";
@@ -153,6 +132,66 @@ public class RestAdmin implements Constant {
 		}
 	}
 
+	// global stat listing
+	@GET
+	@Path("/get_monthly_stats")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response monthlyStats(@QueryParam("key") final String authorisationKey) {
+		log.info(Color.BLUE + "Call Admin get_monthly_stats" + Color.NORMAL);
+		Response r = checkKey(authorisationKey);
+		if (r != null)
+			return r; // invalid key
+		try {
+			List<Stat> lstStat = jobServiceManager.getMontlyStats();
+			ResponseBuilder builder = null;
+			JSONObject resjson = new JSONObject();
+			JSONArray resstats = new JSONArray();
+			resjson.put(STAT_KEY, resstats);
+
+			for (Stat stat : lstStat) {
+				JSONObject result = new JSONObject();
+				result.put("date", stat.getDate());
+				result.put("referential", stat.getReferential());
+				result.put("action", stat.getAction());
+				if (stat.getFormat() != null)
+					result.put("format", stat.getFormat());
+				resstats.put(stat);
+			}
+
+			builder = Response.ok(resjson.toString(2)).type(MediaType.APPLICATION_JSON_TYPE);
+
+			builder.header(api_version_key, api_version);
+
+			return builder.build();
+		} catch (Exception ex) {
+			log.error(ex.getMessage(), ex);
+			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	private Response checkKey(final String authorisationKey) {
+		if (authorisationKey == null || authorisationKey.isEmpty()) {
+			log.warn("admin call without key");
+			ResponseBuilder builder = Response.status(Status.UNAUTHORIZED);
+			builder.header(api_version_key, api_version);
+			return builder.build();
+		}
+		String securityToken = System.getProperty(checker.getContext() + PropertyNames.ADMIN_KEY);
+		if (securityToken == null || securityToken.isEmpty()) {
+			log.warn("admin call without property " + checker.getContext() + PropertyNames.ADMIN_KEY + " set");
+			ResponseBuilder builder = Response.status(Status.FORBIDDEN);
+			builder.header(api_version_key, api_version);
+			return builder.build();
+		}
+		if (!securityToken.equals(authorisationKey)) {
+			log.warn("admin call with invalid key = " + authorisationKey);
+			ResponseBuilder builder = Response.status(Status.UNAUTHORIZED);
+			builder.header(api_version_key, api_version);
+			return builder.build();
+		}
+		return null;
+	}
+
 	private class JobStat {
 		String key;
 		int jobCount = 0;
@@ -178,41 +217,6 @@ public class RestAdmin implements Constant {
 			result.put("scheduled_job_count", scheduledJobCount);
 			result.put("started_job_count", startedJobCount);
 			return result;
-		}
-	}
-	
-	
-	
-	// global stat listing
-	@GET
-	@Path("/get_monthly_stats")
-	@Produces({ MediaType.APPLICATION_JSON })
-	public Response monthlyStats() {
-		try {
-			List<Stat> lstStat = statDao.getCurrentYearStats();
-			ResponseBuilder builder = null;
-			JSONObject resjson = new JSONObject();
-			JSONArray resstats = new JSONArray();
-			resjson.put(STAT_KEY, resstats);
-			
-			for (Stat stat : lstStat) {
-				JSONObject result = new JSONObject();
-				result.put("date", stat.getDate());
-				result.put("referential", stat.getReferential());
-				result.put("action", stat.getAction());
-				if(stat.getFormat() != null)
-					result.put("format", stat.getFormat());
-				resstats.put(stat);
-			}
-			
-			builder = Response.ok(resjson.toString(2)).type(MediaType.APPLICATION_JSON_TYPE);
-		
-			builder.header(api_version_key, api_version);
-
-			return builder.build();
-		} catch (Exception ex) {
-			log.error(ex.getMessage(), ex);
-			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
 		}
 	}
 

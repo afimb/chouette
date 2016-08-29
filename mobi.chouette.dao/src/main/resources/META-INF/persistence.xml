@@ -7,7 +7,6 @@
 	<persistence-unit name="public" transaction-type="JTA">
 
 		<jta-data-source>java:jboss/datasources/chouette</jta-data-source>
-		<class>mobi.chouette.model.Stat</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<validation-mode>NONE</validation-mode>
 

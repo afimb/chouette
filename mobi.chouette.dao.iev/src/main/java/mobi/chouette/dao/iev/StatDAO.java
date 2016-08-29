@@ -1,4 +1,4 @@
-package mobi.chouette.dao;
+package mobi.chouette.dao.iev;
 
 import java.sql.Date;
 import java.util.List;
@@ -10,63 +10,55 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.model.Stat;
-import mobi.chouette.model.type.StatActionEnum;
-import mobi.chouette.model.type.StatFormatEnum;
+import mobi.chouette.model.iev.Stat;
 
 @Stateless
 @Log4j
-public class StatDAOImpl extends GenericDAOImpl<Stat> implements StatDAO{
+public class StatDAO extends GenericDAOImpl<Stat> {
 	
-	public StatDAOImpl() {
+	public StatDAO() {
 		super(Stat.class);
 	}
 
-	@PersistenceContext(unitName = "public")
+	@PersistenceContext(unitName = "iev")
 	EntityManager em;
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
 	}
 	
-	@Override
 	public void addStatToDatabase(Date date, String referential, String action, String type) {
 		// Insertion des statistiques d'import, export, validation dans la table stats
 		Stat chouetteStat = new Stat();
 		
 		chouetteStat.setReferential(referential);
 		chouetteStat.setDate(date);
-		chouetteStat.setAction(StatActionEnum.valueOf(action));
+		chouetteStat.setAction(action);
 		
 		if(type != null)	
-			chouetteStat.setFormat(StatFormatEnum.valueOf(type));
+			chouetteStat.setFormat(type);
 		
-		log.info("stat object -> action : "+ chouetteStat.getAction().toString() + " type : " + chouetteStat.getFormat().toString());
+		// log.info("stat object -> action : "+ chouetteStat.getAction() + " type : " + chouetteStat.getFormat());
 		// Création de la nouvelle statistique en base de données
-		if(chouetteStat != null) {
-			log.info("chouette stat not null");
+	    // log.info("chouette stat not null");
 			save(chouetteStat);
-		}
-		else
-			log.info("chouette stat null");
+		
 	}
 	
-	@Override
 	public List<Stat> getCurrentYearStats() {
-		log.info("BEGIN GET CURRENT YEAR STAT");
+		// log.info("BEGIN GET CURRENT YEAR STAT");
 		TypedQuery<Stat> query = em.createQuery("SELECT s FROM Stat s ORDER BY s.referential, s.date, s.format, s.action", Stat.class);
-		log.info("GET CURRENT YEAR STAT 1");
+		// log.info("GET CURRENT YEAR STAT 1");
 		List<Stat> lstStat = (List<Stat>)query.getResultList();
-		log.info("BEGIN GET CURRENT YEAR STAT 2");
-		if(lstStat != null)
-			log.info("Found " + lstStat.size() + "stats to send to IHM");
-		else
-			log.info("Error stat list is null");
+		// log.info("BEGIN GET CURRENT YEAR STAT 2");
+//		if(lstStat != null)
+//			log.info("Found " + lstStat.size() + "stats to send to IHM");
+//		else
+//			log.info("Error stat list is null");
 			
-		log.info("END GET CURRENT YEAR STAT");		
+//		log.info("END GET CURRENT YEAR STAT");		
 		return lstStat;
 	}
 	
-	@Override
 	public void removeObsoleteStatFromDatabase(Date date) {
 		Query query = em.createNativeQuery("DELETE FROM Stats s WHERE  s.date < (date '" + date + "' - interval '1 year')");
 		query.executeUpdate();
@@ -81,3 +73,4 @@ public class StatDAOImpl extends GenericDAOImpl<Stat> implements StatDAO{
 		em.clear();
 	}
 }
+

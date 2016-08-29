@@ -40,7 +40,7 @@ import javax.ws.rs.core.UriInfo;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
-import mobi.chouette.dao.StatDAO;
+import mobi.chouette.dao.iev.StatDAO;
 import mobi.chouette.model.iev.Job;
 import mobi.chouette.model.iev.Job.STATUS;
 import mobi.chouette.model.iev.Link;
@@ -68,8 +68,6 @@ public class RestService implements Constant {
 	@Inject
 	JobServiceManager jobServiceManager;
 	
-	@EJB
-	StatDAO statDAO;
 	@Context
 	UriInfo uriInfo;
 
@@ -91,21 +89,7 @@ public class RestService implements Constant {
 			type = parseType(type);
 			inputStreamByName = readParts(input);
 			
-			// Ajout des statistiques d'import, export ou validation en base de données
-			if(action.equalsIgnoreCase("importer") || action.equalsIgnoreCase("exporter") || action.equalsIgnoreCase("validator")) {
-				log.info("BEGIN ADDING STAT referential : " + referential + " action : " + action + " type :" + type);
-				Date now = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-				
-				// Suppression des lignes de statistiques pour n'avoir que 12 mois glissants
-				statDAO.removeObsoleteStatFromDatabase(now);
-				
-				log.info("END DELETING OBSOLETE STATS FROM DATABASE");
-				
-				//Ajout d'une nouvelle statistique en base
-				statDAO.addStatToDatabase(now, referential, action, type);
-				
-				log.info("END ADDING STAT referential : " + referential + " action : " + action + " type :" + type);
-			}
+
 					
 					
 			// Relayer le service au JobServiceManager

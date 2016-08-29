@@ -1,26 +1,24 @@
-package mobi.chouette.model;
+package mobi.chouette.model.iev;
 
 import java.io.Serializable;
 import java.sql.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import mobi.chouette.model.type.StatActionEnum;
-import mobi.chouette.model.type.StatFormatEnum;
 
 
 /**
- * Chouette Stat : Registers chouette actions by date and author (import, export, validation)
+ * Chouette Stat : Registers chouette actions by date and author 
  * @author gjamot
  *
  */
@@ -38,7 +36,9 @@ public class Stat implements Serializable {
 	 */
 	@Getter
 	@Setter
-	@Id @GeneratedValue
+	@Id
+	@SequenceGenerator(name = "stats_seq", sequenceName = "stats_seq", allocationSize = 20)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stats_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
 	
@@ -59,9 +59,8 @@ public class Stat implements Serializable {
 	 */
 	@Getter
 	@Setter
-	@Enumerated(EnumType.STRING)
 	@Column(name = "action")
-	private StatActionEnum action;
+	private String action;
 	
 	/**
 	 * format
@@ -70,9 +69,8 @@ public class Stat implements Serializable {
 	 */
 	@Getter
 	@Setter
-	@Enumerated(EnumType.STRING)
 	@Column(name = "format")
-	private StatFormatEnum format;
+	private String format;
 	
 	/**
 	 * date
