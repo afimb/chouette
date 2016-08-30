@@ -3,12 +3,14 @@ package mobi.chouette.exchange.geojson.exporter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.AbstractInputValidator;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
+import mobi.chouette.exchange.Test;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 
@@ -106,6 +108,11 @@ public class GeojsonExporterInputValidator extends AbstractInputValidator {
 		InputValidatorFactory.factories.put(
 				GeojsonExporterInputValidator.class.getName(),
 				new DefaultFactory());
+	}
+
+	@Override
+	public List<Test> getTestList() {
+		return null;
 	}
 
 }

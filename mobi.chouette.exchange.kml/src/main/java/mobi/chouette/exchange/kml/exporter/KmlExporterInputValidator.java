@@ -3,12 +3,14 @@ package mobi.chouette.exchange.kml.exporter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.AbstractInputValidator;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
+import mobi.chouette.exchange.Test;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 @Log4j
@@ -97,6 +99,11 @@ public class KmlExporterInputValidator extends AbstractInputValidator {
 	static {
 		InputValidatorFactory.factories.put(KmlExporterInputValidator.class.getName(),
 				new DefaultFactory());
+	}
+
+	@Override
+	public List<Test> getTestList() {
+		return null;
 	}
 	
 

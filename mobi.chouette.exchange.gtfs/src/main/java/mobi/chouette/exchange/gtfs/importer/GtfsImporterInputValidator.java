@@ -2,12 +2,15 @@ package mobi.chouette.exchange.gtfs.importer;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.AbstractInputValidator;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
+import mobi.chouette.exchange.Test;
+import mobi.chouette.exchange.gtfs.validation.TestUtils;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 
@@ -83,6 +86,12 @@ public class GtfsImporterInputValidator extends AbstractInputValidator {
 
 	static {
 		InputValidatorFactory.factories.put(GtfsImporterInputValidator.class.getName(), new DefaultFactory());
+	}
+
+	@Override
+	public List<Test> getTestList() {
+		TestUtils testUtils = TestUtils.getInstance();
+		return testUtils.getTestUtilsList();
 	}
 
 }
