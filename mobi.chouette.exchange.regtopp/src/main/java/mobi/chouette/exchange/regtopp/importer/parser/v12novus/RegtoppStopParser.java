@@ -42,30 +42,18 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 
 		createBoardingPositions(importer, referential, configuration);
+		Map<String, List<StopArea>> boardingPositionsByStopArea = groupBoardingPositions(referential);
+		createParentStopArea(boardingPositionsByStopArea, configuration, referential);
+	}
 
-		// 1.2Novus specific
-
-		// Build parent stop area (commercial stop point)
-
-		// Group boarding positions by original stopId
-		Map<String, List<StopArea>> boardingPositionsByStopArea = new HashMap<String, List<StopArea>>();
-		for (StopArea sa : referential.getStopAreas().values()) {
-			String commercialStopAreaId = ObjectIdCreator.extractOriginalId(sa.getObjectId()).substring(0, 8);
-			List<StopArea> list = boardingPositionsByStopArea.get(commercialStopAreaId);
-			if (list == null) {
-				list = new ArrayList<StopArea>();
-				boardingPositionsByStopArea.put(commercialStopAreaId, list);
-			}
-			list.add(sa);
-		}
-
+	public void createParentStopArea(Map<String, List<StopArea>> boardingPositionsByStopArea, RegtoppImportParameters configuration, Referential referential) {
 		for (String commercialStopAreaId : boardingPositionsByStopArea.keySet()) {
 			List<StopArea> boardingPositions = boardingPositionsByStopArea.get(commercialStopAreaId);
 			if (boardingPositions.size() > 0) {
 				// Create parent stopArea
 				String objectId = ObjectIdCreator.createStopAreaId(configuration, commercialStopAreaId);
 				StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
-				stopArea.setName(boardingPositions.get(0).getName()); // TODO using name of first stoppoint, should be identical for all boarding positions according to spec
+				stopArea.setName(boardingPositions.get(0).getName()); // TODO using name of first stop point, should be identical for all boarding positions according to spec
 				stopArea.setAreaType(ChouetteAreaEnum.StopPlace);
 
 				for (StopArea bp : boardingPositions) {
@@ -74,8 +62,21 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 
 				centroidGenerator.generate(boardingPositions, stopArea);
 			}
-
 		}
+	}
+
+	public Map<String, List<StopArea>> groupBoardingPositions(Referential referential) {
+		Map<String, List<StopArea>> boardingPositionsByStopArea = new HashMap<>();
+		for (StopArea sa : referential.getStopAreas().values()) {
+			String commercialStopAreaId = ObjectIdCreator.extractOriginalId(sa.getObjectId()).substring(0, 8);
+			List<StopArea> list = boardingPositionsByStopArea.get(commercialStopAreaId);
+			if (list == null) {
+				list = new ArrayList<>();
+				boardingPositionsByStopArea.put(commercialStopAreaId, list);
+			}
+			list.add(sa);
+		}
+		return boardingPositionsByStopArea;
 	}
 
 	private void createBoardingPositions(RegtoppImporter importer, Referential referential, RegtoppImportParameters configuration) throws Exception {
