@@ -3,23 +3,33 @@ package mobi.chouette.exchange.regtopp.importer.parser.v12novus;
 import static mobi.chouette.common.Constant.CONFIGURATION;
 import static mobi.chouette.common.Constant.REFERENTIAL;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.vividsolutions.jts.algorithm.CentroidPoint;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.PrecisionModel;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
+import mobi.chouette.exchange.regtopp.importer.parser.CentroidGenerator;
 import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
+import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 
 public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppStopParser {
+
+	private CentroidGenerator centroidGenerator = new CentroidGenerator();
 
 	@Override
 	public void parse(Context context) throws Exception {
@@ -47,23 +57,19 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 		}
 
 		for (String commercialStopAreaId : boardingPositionsByStopArea.keySet()) {
-			List<StopArea> list = boardingPositionsByStopArea.get(commercialStopAreaId);
-			if (list.size() > 0) {
+			List<StopArea> boardingPositions = boardingPositionsByStopArea.get(commercialStopAreaId);
+			if (boardingPositions.size() > 0) {
 				// Create parent stopArea
 				String objectId = ObjectIdCreator.createStopAreaId(configuration, commercialStopAreaId);
 				StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
-				stopArea.setName(list.get(0).getName()); // TODO using name of first stoppoint, should be identical for all boarding positions according to spec
+				stopArea.setName(boardingPositions.get(0).getName()); // TODO using name of first stoppoint, should be identical for all boarding positions according to spec
 				stopArea.setAreaType(ChouetteAreaEnum.StopPlace);
 
-				for (StopArea bp : list) {
+				for (StopArea bp : boardingPositions) {
 					bp.setParent(stopArea);
 				}
 
-				// Calculate center coordinate
-				// TODO currently using only first boarding position stop coordinates. Need to be centered
-				stopArea.setLongitude(list.get(0).getLongitude());
-				stopArea.setLatitude(list.get(0).getLatitude());
-				stopArea.setLongLatType(list.get(0).getLongLatType());
+				centroidGenerator.generate(boardingPositions, stopArea);
 			}
 
 		}
