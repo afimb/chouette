@@ -439,6 +439,9 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		Assert.assertTrue(result, "Importer command execution failed: " + report.getFailure());
 	}
 
+	/**
+	 * Test import with version R12N
+     */
 	@Test
 	public void importRegtoppOpplandstrafikkLine5001StopAreaParent() throws Exception {
 		// Prepare context
