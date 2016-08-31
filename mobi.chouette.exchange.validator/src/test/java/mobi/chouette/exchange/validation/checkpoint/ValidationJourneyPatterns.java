@@ -320,8 +320,6 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		
 		JourneyPattern jp = line1.getRoutes().get(0).getJourneyPatterns().get(0);
 		
-		List<RouteSection> rsList = jp.getRouteSections();
-		
 		
 		ValidationData data = new ValidationData();
 		data.getJourneyPatterns().add(jp);
