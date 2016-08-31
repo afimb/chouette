@@ -33,14 +33,20 @@ public class CentroidGenerator {
 
     public void generate(List<? extends NeptuneLocalizedObject> localizedObjects, NeptuneLocalizedObject destination) {
         CentroidPoint centroidPoint = new CentroidPoint();
+        int pointsAdded = 0;
         for (NeptuneLocalizedObject localizedObject : localizedObjects) {
-            centroidPoint.add(geometryFactory.createPoint(new Coordinate(localizedObject.getLongitude().doubleValue(), localizedObject.getLatitude().doubleValue())));
+            if(localizedObject.hasCoordinates()) {
+                centroidPoint.add(geometryFactory.createPoint(new Coordinate(localizedObject.getLongitude().doubleValue(), localizedObject.getLatitude().doubleValue())));
+                pointsAdded++;
+            }
         }
 
-        Point point = geometryFactory.createPoint(centroidPoint.getCentroid());
+        if(pointsAdded >0) {
+            Point point = geometryFactory.createPoint(centroidPoint.getCentroid());
 
-        destination.setLatitude(BigDecimal.valueOf(point.getY()));
-        destination.setLongitude(BigDecimal.valueOf(point.getX()));
-        destination.setLongLatType(longLatType);
+            destination.setLatitude(BigDecimal.valueOf(point.getY()));
+            destination.setLongitude(BigDecimal.valueOf(point.getX()));
+            destination.setLongLatType(longLatType);
+        }
     }
 }
