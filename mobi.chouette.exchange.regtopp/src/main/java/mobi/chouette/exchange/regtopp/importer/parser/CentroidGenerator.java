@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * Generate centroid based on multiple geometry points.
- * Typically, generate centroid for a parent stop place from coordinates from many boarding positions.
+ * Typically, generate centroid for a parent stop place from coordinates from multiple boarding positions.
  */
 public class CentroidGenerator {
 
@@ -31,7 +31,7 @@ public class CentroidGenerator {
     }
 
 
-    public void generate(List<NeptuneLocalizedObject> localizedObjects, NeptuneLocalizedObject destination) {
+    public void generate(List<? extends NeptuneLocalizedObject> localizedObjects, NeptuneLocalizedObject destination) {
         CentroidPoint centroidPoint = new CentroidPoint();
         for (NeptuneLocalizedObject localizedObject : localizedObjects) {
             centroidPoint.add(geometryFactory.createPoint(new Coordinate(localizedObject.getLongitude().doubleValue(), localizedObject.getLatitude().doubleValue())));
