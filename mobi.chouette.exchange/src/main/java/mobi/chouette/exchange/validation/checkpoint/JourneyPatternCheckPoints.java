@@ -137,7 +137,6 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 				mode = modeDefault;
 			}
 		}
-		log.info("Mode key test : " + modeKey);
 		double distanceMax = mode.getRouteSectionStopAreaDistanceMax();
 		List<RouteSection> lstRouteSection = jp.getRouteSections();
 		double distance = 0;

@@ -14,10 +14,6 @@ import mobi.chouette.exchange.validation.report.ValidationReporter;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-//import mobi.chouette.exchange.validation.report.CheckPoint;
-//import mobi.chouette.exchange.validation.report.Detail;
-//import mobi.chouette.exchange.validation.report.Location;
-//import mobi.chouette.exchange.validation.report.ValidationReport;
 
 public class NeptuneSAXErrorHandler implements ErrorHandler, Constant {
 
@@ -28,7 +24,8 @@ public class NeptuneSAXErrorHandler implements ErrorHandler, Constant {
 	private Context context;
 	private String fileName;
 
-	private static String NO_NAMESPACE_ERROR = "cvc-elt.1: Cannot find the declaration of element 'ChouettePTNetwork'.";
+	private static String NO_NAMESPACE_ERROR_1 = "cvc-elt.1: Cannot find the declaration of element 'ChouettePTNetwork'.";
+	private static String NO_NAMESPACE_ERROR_2 = "cvc-elt.1.a: Cannot find the declaration of element 'ChouettePTNetwork'.";
 
 	@Getter
 	private boolean hasErrors = false;
@@ -75,9 +72,8 @@ public class NeptuneSAXErrorHandler implements ErrorHandler, Constant {
 				error.getColumnNumber());
 		location.setName(key);
 		
-		validationReporter.addCheckPointReportError(context, XML_2, location, error.getMessage());
 		validationReporter.updateCheckPointReportSeverity(context, XML_2, severity);
-		// log.info("error handled " + error.getMessage());
+		validationReporter.addCheckPointReportError(context, XML_2, location, error.getMessage());
 		return;
 	}
 
@@ -90,7 +86,7 @@ public class NeptuneSAXErrorHandler implements ErrorHandler, Constant {
 	@Override
 	public void error(SAXParseException exception) throws SAXException {
 		// forward exception if it may be a namespace declaration problem
-		if (exception.getMessage().equals(NO_NAMESPACE_ERROR))
+		if (exception.getMessage().equals(NO_NAMESPACE_ERROR_1) || exception.getMessage().equals(NO_NAMESPACE_ERROR_2))
 			throw exception;
 		handleError(exception, SEVERITY.ERROR);
 
