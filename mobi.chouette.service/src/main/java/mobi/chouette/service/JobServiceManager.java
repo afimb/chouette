@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -32,11 +33,13 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.PropertyNames;
 import mobi.chouette.dao.iev.JobDAO;
+import mobi.chouette.dao.iev.StatDAO;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.TestDescription;
 import mobi.chouette.model.iev.Job;
 import mobi.chouette.model.iev.Job.STATUS;
 import mobi.chouette.model.iev.Link;
+import mobi.chouette.model.iev.Stat;
 import mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator;
 import mobi.chouette.scheduler.Scheduler;
 
@@ -55,6 +58,9 @@ public class JobServiceManager {
 	@EJB
 	JobDAO jobDAO;
 
+	@EJB
+	StatDAO statDAO;
+
 	@EJB(beanName = ContenerChecker.NAME)
 	ContenerChecker checker;
 
@@ -72,15 +78,16 @@ public class JobServiceManager {
 	private static int maxJobs = 5;
 
 	private static String lock = "lock";
-	
-	private String rootDirectory; 
-	
+
+	private String rootDirectory;
+
 	private static Set<String> intializedContexts = new HashSet<>();
 
 	@PostConstruct
 	public synchronized void init() {
 		String context = checker.getContext();
-		if (intializedContexts.contains(context)) return;
+		if (intializedContexts.contains(context))
+			return;
 		System.setProperty(context + PropertyNames.MAX_STARTED_JOBS, "5");
 		System.setProperty(context + PropertyNames.MAX_COPY_BY_JOB, "5");
 		try {
@@ -114,7 +121,7 @@ public class JobServiceManager {
 		}
 		maxJobs = Integer.parseInt(System.getProperty(checker.getContext() + PropertyNames.MAX_STARTED_JOBS));
 		rootDirectory = System.getProperty(checker.getContext() + PropertyNames.ROOT_DIRECTORY);
-		
+
 		// migrate jobs
 		jobDAO.migrate();
 	}
@@ -135,12 +142,22 @@ public class JobServiceManager {
 		}
 	}
 
+	public List<Stat> getMontlyStats() throws ServiceException {
+		try {
+			return statDAO.getCurrentYearStats();
+
+		} catch (Exception ex) {
+			log.info("fail to read stats ",ex);
+			throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, ex);
+		}
+	}
+
 	public JobService createJob(String referential, String action, String type,
 			Map<String, InputStream> inputStreamsByName) throws ServiceException {
 		JobService jobService = null;
 		try {
 			// Instancier le modèle du service 'upload'
-			jobService = new JobService(rootDirectory,referential, action, type);
+			jobService = new JobService(rootDirectory, referential, action, type);
 
 			// Enregistrer le jobService pour obtenir un id
 			jobDAO.create(jobService.getJob());
@@ -217,9 +234,8 @@ public class JobServiceManager {
 		referentials.add(referential);
 	}
 
-	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public JobService download(String referential, Long id, String filename) throws ServiceException {
-		JobService jobService = getJobService(referential, id, true);
+		JobService jobService = getJobService(referential, id);
 
 		java.nio.file.Path path = Paths.get(jobService.getPathName(), filename);
 		if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
@@ -235,17 +251,14 @@ public class JobServiceManager {
 	 * @param referential
 	 * @return
 	 */
-	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public JobService getNextJob(String referential) {
 		Job job = jobDAO.getNextJob(referential);
 		if (job == null) {
 			return null;
 		}
-		// jobDAO.detach(job);
-		return new JobService(rootDirectory,job);
+		return new JobService(rootDirectory, job);
 	}
 
-	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void start(JobService jobService) {
 		jobService.setStatus(STATUS.STARTED);
 		jobService.setUpdated(new Date());
@@ -256,7 +269,7 @@ public class JobServiceManager {
 
 	public JobService cancel(String referential, Long id) throws ServiceException {
 		validateReferential(referential);
-		JobService jobService = getJobService(referential, id, true);
+		JobService jobService = getJobService(referential, id);
 		if (jobService.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
 
 			if (jobService.getStatus().equals(STATUS.STARTED)) {
@@ -274,12 +287,12 @@ public class JobServiceManager {
 			jobDAO.update(jobService.getJob());
 
 		}
-        return jobService;
+		return jobService;
 	}
 
 	public void remove(String referential, Long id) throws ServiceException {
 		validateReferential(referential);
-		JobService jobService = getJobService(referential, id, false);
+		JobService jobService = getJobService(referential, id);
 		if (jobService.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
 			throw new RequestServiceException(RequestExceptionCode.SCHEDULED_JOB, "referential = " + referential
 					+ " ,id = " + id);
@@ -307,8 +320,8 @@ public class JobServiceManager {
 
 		// clean directories
 		try {
-			
-			FileUtils.deleteDirectory(new File(JobService.getRootPathName(rootDirectory,referential)));
+
+			FileUtils.deleteDirectory(new File(JobService.getRootPathName(rootDirectory, referential)));
 		} catch (IOException e) {
 			log.error("fail to delete directory for" + referential, e);
 		}
@@ -321,7 +334,6 @@ public class JobServiceManager {
 
 	}
 
-	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void terminate(JobService jobService) {
 		jobService.setStatus(STATUS.TERMINATED);
 
@@ -342,13 +354,27 @@ public class JobServiceManager {
 			if (Files.exists(Paths.get(jobService.getPathName(), Constant.VALIDATION_FILE)))
 				jobService.addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_REL);
 		}
-
 		jobService.setUpdated(new Date());
 		jobDAO.update(jobService.getJob());
-
+		
+		// update statistics
+		// Ajout des statistiques d'import, export ou validation en base de données
+		{
+			// log.info("BEGIN ADDING STAT referential : " + jobService.getReferential() + " action : " + jobService.getAction() + " type :" + jobService.getType());
+			java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+			
+			// Suppression des lignes de statistiques pour n'avoir que 12 mois glissants
+			statDAO.removeObsoleteStatFromDatabase(now);
+			
+			// log.info("END DELETING OBSOLETE STATS FROM DATABASE");
+			
+			//Ajout d'une nouvelle statistique en base
+			statDAO.addStatToDatabase(now, jobService.getReferential(), jobService.getAction(), jobService.getType());
+			
+			// log.info("END ADDING STAT referential : " + jobService.getReferential() + " action : " + jobService.getAction() + " type :" + jobService.getType());
+		}
 	}
 
-	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void abort(JobService jobService) {
 
 		jobService.setStatus(STATUS.ABORTED);
@@ -373,7 +399,7 @@ public class JobServiceManager {
 		List<Job> jobs = jobDAO.findAll();
 		List<JobService> jobServices = new ArrayList<>(jobs.size());
 		for (Job job : jobs) {
-			jobServices.add(new JobService(rootDirectory,job));
+			jobServices.add(new JobService(rootDirectory, job));
 		}
 		return jobServices;
 	}
@@ -382,22 +408,20 @@ public class JobServiceManager {
 		List<Job> jobs = jobDAO.findByReferential(referential);
 		List<JobService> jobServices = new ArrayList<>(jobs.size());
 		for (Job job : jobs) {
-			jobServices.add(new JobService(rootDirectory,job));
+			jobServices.add(new JobService(rootDirectory, job));
 		}
 
 		return jobServices;
 	}
 
-	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public JobService scheduledJob(String referential, Long id) throws ServiceException {
 		validateReferential(referential);
-		return getJobService(referential, id, true);
+		return getJobService(referential, id);
 	}
 
-	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public JobService terminatedJob(String referential, Long id) throws ServiceException {
 		validateReferential(referential);
-		JobService jobService = getJobService(referential, id, true);
+		JobService jobService = getJobService(referential, id);
 
 		if (jobService.getStatus().ordinal() < STATUS.TERMINATED.ordinal()
 				|| jobService.getStatus().ordinal() == STATUS.DELETED.ordinal()) {
@@ -408,13 +432,11 @@ public class JobServiceManager {
 		return jobService;
 	}
 
-	private JobService getJobService(String referential, Long id, boolean detach) throws ServiceException {
+	private JobService getJobService(String referential, Long id) throws ServiceException {
 
 		Job job = jobDAO.find(id);
 		if (job != null && job.getReferential().equals(referential)) {
-			// if (detach)
-			// jobDAO.detach(job);
-			return new JobService(rootDirectory,job);
+			return new JobService(rootDirectory, job);
 		}
 		throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, "referential = " + referential + " ,id = "
 				+ id);
@@ -423,13 +445,11 @@ public class JobServiceManager {
 	public JobService getJobService(Long id) throws ServiceException {
 		Job job = jobDAO.find(id);
 		if (job != null) {
-			// jobDAO.detach(job);
-			return new JobService(rootDirectory,job);
+			return new JobService(rootDirectory, job);
 		}
 		throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, " id = " + id);
 	}
 
-	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public List<JobService> jobs(String referential, String action, final Long version) throws ServiceException {
 		validateReferential(referential);
 
@@ -454,13 +474,12 @@ public class JobServiceManager {
 
 		List<JobService> jobServices = new ArrayList<>(filtered.size());
 		for (Job job : filtered) {
-			jobServices.add(new JobService(rootDirectory,job));
+			jobServices.add(new JobService(rootDirectory, job));
 		}
 		return jobServices;
 	}
 
 	// administration operation
-	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public List<JobService> activeJobs() {
 
 		List<Job> jobs = jobDAO.findByStatus(Job.STATUS.STARTED);
@@ -468,7 +487,7 @@ public class JobServiceManager {
 
 		List<JobService> jobServices = new ArrayList<>(jobs.size());
 		for (Job job : jobs) {
-			jobServices.add(new JobService(rootDirectory,job));
+			jobServices.add(new JobService(rootDirectory, job));
 		}
 		return jobServices;
 	}

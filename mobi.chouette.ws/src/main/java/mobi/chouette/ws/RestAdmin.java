@@ -1,18 +1,12 @@
 package mobi.chouette.ws;
 
-import java.io.InputStream;
-import java.net.URI;
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -20,9 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
@@ -35,16 +27,13 @@ import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.PropertyNames;
 import mobi.chouette.exchange.TestDescription;
 import mobi.chouette.model.iev.Job;
+import mobi.chouette.model.iev.Stat;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
-import mobi.chouette.service.ServiceException;
-import mobi.chouette.service.ServiceExceptionCode;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 @Path("/admin")
 @Log4j
@@ -57,11 +46,12 @@ public class RestAdmin implements Constant {
 	private static String GLOBAL_KEY = "Global";
 	private static String REFERENTIAL_KEY = "Referentials";
 	private static String TEST_KEY = "Tests";
+	private static String STAT_KEY = "Stats";
 
 	@Inject
 	JobServiceManager jobServiceManager;
-	
-	@Inject 
+
+	@Inject
 	ContenerChecker checker;
 
 	@Context
@@ -74,25 +64,9 @@ public class RestAdmin implements Constant {
 	public Response activeJobs(@PathParam("format") String format, @QueryParam("key") final String authorisationKey) {
 
 		log.info(Color.BLUE + "Call Admin active_jobs" + Color.NORMAL);
-		if (authorisationKey == null || authorisationKey.isEmpty()) {
-			log.warn("admin call without key");
-			ResponseBuilder builder = Response.status(Status.UNAUTHORIZED);
-			builder.header(api_version_key, api_version);
-			return builder.build();
-		}
-		String securityToken = System.getProperty(checker.getContext()+PropertyNames.ADMIN_KEY);
-		if (securityToken == null || securityToken.isEmpty()) {
-			log.warn("admin call without property " + checker.getContext()+PropertyNames.ADMIN_KEY + " set");
-			ResponseBuilder builder = Response.status(Status.FORBIDDEN);
-			builder.header(api_version_key, api_version);
-			return builder.build();
-		}
-		if (!securityToken.equals(authorisationKey)) {
-			log.warn("admin call with invalid key = " + authorisationKey);
-			ResponseBuilder builder = Response.status(Status.UNAUTHORIZED);
-			builder.header(api_version_key, api_version);
-			return builder.build();
-		}
+		Response r = checkKey(authorisationKey);
+		if (r != null)
+			return r; // invalid key
 
 		if (format == null)
 			format = ".json";
@@ -201,6 +175,66 @@ public class RestAdmin implements Constant {
 			}
 	}
 	
+	// global stat listing
+	@GET
+	@Path("/get_monthly_stats")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response monthlyStats(@QueryParam("key") final String authorisationKey) {
+		log.info(Color.BLUE + "Call Admin get_monthly_stats" + Color.NORMAL);
+		Response r = checkKey(authorisationKey);
+		if (r != null)
+			return r; // invalid key
+		try {
+			List<Stat> lstStat = jobServiceManager.getMontlyStats();
+			ResponseBuilder builder = null;
+			JSONObject resjson = new JSONObject();
+			JSONArray resstats = new JSONArray();
+			resjson.put(STAT_KEY, resstats);
+
+			for (Stat stat : lstStat) {
+				JSONObject result = new JSONObject();
+				result.put("date", stat.getDate());
+				result.put("referential", stat.getReferential());
+				result.put("action", stat.getAction());
+				if (stat.getFormat() != null)
+					result.put("format", stat.getFormat());
+				resstats.put(stat);
+			}
+
+			builder = Response.ok(resjson.toString(2)).type(MediaType.APPLICATION_JSON_TYPE);
+
+			builder.header(api_version_key, api_version);
+
+			return builder.build();
+		} catch (Exception ex) {
+			log.error(ex.getMessage(), ex);
+			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	private Response checkKey(final String authorisationKey) {
+		if (authorisationKey == null || authorisationKey.isEmpty()) {
+			log.warn("admin call without key");
+			ResponseBuilder builder = Response.status(Status.UNAUTHORIZED);
+			builder.header(api_version_key, api_version);
+			return builder.build();
+		}
+		String securityToken = System.getProperty(checker.getContext() + PropertyNames.ADMIN_KEY);
+		if (securityToken == null || securityToken.isEmpty()) {
+			log.warn("admin call without property " + checker.getContext() + PropertyNames.ADMIN_KEY + " set");
+			ResponseBuilder builder = Response.status(Status.FORBIDDEN);
+			builder.header(api_version_key, api_version);
+			return builder.build();
+		}
+		if (!securityToken.equals(authorisationKey)) {
+			log.warn("admin call with invalid key = " + authorisationKey);
+			ResponseBuilder builder = Response.status(Status.UNAUTHORIZED);
+			builder.header(api_version_key, api_version);
+			return builder.build();
+		}
+		return null;
+	}
+
 	private class JobStat {
 		String key;
 		int jobCount = 0;
@@ -236,42 +270,6 @@ public class RestAdmin implements Constant {
 		return type;
 	}
 	
-	private Map<String, InputStream> readParts(MultipartFormDataInput input) throws Exception {
-
-		Map<String, InputStream> result = new HashMap<String, InputStream>();
-
-		for (InputPart part : input.getParts()) {
-			MultivaluedMap<String, String> headers = part.getHeaders();
-			String header = headers.getFirst(HttpHeaders.CONTENT_DISPOSITION);
-			String filename = getFilename(header);
-
-			if (filename == null) {
-				throw new ServiceException(ServiceExceptionCode.INVALID_REQUEST, "missing filename in part");
-			}
-			// protect filename from invalid url chars
-			filename = removeSpecialChars(filename);
-			result.put(filename, part.getBody(InputStream.class, null));
-		}
-		return result;
-	}
 	
-	private String removeSpecialChars(String filename) {
-		return filename.replaceAll("[^\\w-_\\.]", "_");
-	}
-	
-	private String getFilename(String header) {
-		String result = null;
-
-		if (header != null) {
-			for (String token : header.split(";")) {
-				if (token.trim().startsWith("filename")) {
-					result = token.substring(token.indexOf('=') + 1).trim().replace("\"", "");
-					break;
-				}
-			}
-		}
-		return result;
-	}
-
 
 }
