@@ -22,5 +22,5 @@ public interface InputValidator {
 	
 	boolean initReport(JobData data);
 	
-	List<Test> getTestList();
+	List<TestDescription> getTestList();
 }

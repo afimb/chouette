@@ -9,7 +9,7 @@ import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.AbstractInputValidator;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
-import mobi.chouette.exchange.Test;
+import mobi.chouette.exchange.TestDescription;
 import mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters;
@@ -196,7 +196,7 @@ public class ConverterInputValidator extends AbstractInputValidator {
 	}
 
 	@Override
-	public List<Test> getTestList() {
+	public List<TestDescription> getTestList() {
 		return null;
 	}
 	

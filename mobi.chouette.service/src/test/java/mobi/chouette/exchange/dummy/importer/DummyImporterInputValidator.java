@@ -5,7 +5,7 @@ import java.util.List;
 
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.AbstractInputValidator;
-import mobi.chouette.exchange.Test;
+import mobi.chouette.exchange.TestDescription;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 
@@ -41,7 +41,7 @@ public class DummyImporterInputValidator extends AbstractInputValidator {
 	}
 
 	@Override
-	public List<Test> getTestList() {
+	public List<TestDescription> getTestList() {
 		return null;
 	}
 

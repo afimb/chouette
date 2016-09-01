@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.TestDescription;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.FieldParameters;
 import mobi.chouette.exchange.validation.parameters.TransportModeParameters;
@@ -156,7 +157,12 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 
 	protected static final String DEFAULT_ENVELOPPE = "[[-5.2,42.25],[-5.2,51.1],[8.23,51.1],[8.23,42.25],[-5.2,42.25]]";
 	private GeometryFactory geometryFactory;
-
+	private static List<TestDescription> testLevel3FileList = null;
+	private static List<TestDescription> testLevel4FileList = null;
+	private static List<TestDescription> testLevel3DatabaseList = null;
+	private static List<TestDescription> testLevel4DatabaseList = null;
+	
+	
 	protected static void initCheckPoint(Context context, String key, SEVERITY severity) {
 		ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 		reporter.addItemToValidationReport(context, key, severity.toString());
@@ -681,6 +687,153 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			// route.unsetOppositeRoute();
 		}
 		return false;
+	}
+	
+	public static List<TestDescription> getTestLevel3FileList() {
+		if(testLevel3FileList == null) {
+			testLevel3FileList = new ArrayList<TestDescription>();
+			
+			testLevel3FileList.add(new TestDescription(3, STOP_AREA_2, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, STOP_AREA_3, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, STOP_AREA_4, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, STOP_AREA_5, "WARNING"));
+			
+			testLevel3FileList.add(new TestDescription(3, CONNECTION_LINK_1, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, CONNECTION_LINK_2, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, CONNECTION_LINK_3, "WARNING"));
+			
+			testLevel3FileList.add(new TestDescription(3, ACCESS_LINK_1, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, ACCESS_LINK_2, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, ACCESS_LINK_3, "WARNING"));
+			
+			testLevel3FileList.add(new TestDescription(3, LINE_1, "WARNING"));
+			
+			testLevel3FileList.add(new TestDescription(3, ROUTE_1, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, ROUTE_2, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, ROUTE_3, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, ROUTE_4, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, ROUTE_5, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, ROUTE_8, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, ROUTE_9, "WARNING"));
+			
+			testLevel3FileList.add(new TestDescription(3, JOURNEY_PATTERN_1, "WARNING"));
+			
+			testLevel3FileList.add(new TestDescription(3, VEHICLE_JOURNEY_1, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, VEHICLE_JOURNEY_2, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, VEHICLE_JOURNEY_3, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, VEHICLE_JOURNEY_4, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, VEHICLE_JOURNEY_5, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, VEHICLE_JOURNEY_6, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, VEHICLE_JOURNEY_7, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, VEHICLE_JOURNEY_8, "WARNING"));
+			
+			testLevel3FileList.add(new TestDescription(3, ROUTE_SECTION_1, "WARNING"));
+			
+//			testLevel3FileList.add(new TestDescription(3, FACILITY_1, "WARNING"));
+//			testLevel3FileList.add(new TestDescription(3, FACILITY_2, "WARNING"));
+		}
+		
+		return testLevel3FileList;
+	}
+	
+	public static List<TestDescription> getTestLevel4FileList() {
+		if(testLevel4FileList == null) {
+			testLevel4FileList = new ArrayList<TestDescription>();
+			testLevel4FileList.add(new TestDescription(4, L4_LINE_2, "WARNING"));
+			testLevel4FileList.add(new TestDescription(4, L4_VEHICLE_JOURNEY_2, "WARNING"));
+		}
+		
+		return testLevel4FileList;
+	}
+	
+	
+	public static List<TestDescription> getTestLevel3DatabaseList() {
+		if(testLevel3DatabaseList == null) {
+			testLevel3DatabaseList = new ArrayList<TestDescription>();
+			
+			testLevel3DatabaseList.add(new TestDescription(3, STOP_AREA_1, "ERROR"));
+			testLevel3DatabaseList.add(new TestDescription(3, STOP_AREA_2, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, STOP_AREA_3, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, STOP_AREA_4, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, STOP_AREA_5, "WARNING"));
+			
+			testLevel3DatabaseList.add(new TestDescription(3, ACCESS_POINT_1, "ERROR"));
+			testLevel3DatabaseList.add(new TestDescription(3, ACCESS_POINT_2, "ERROR"));
+			testLevel3DatabaseList.add(new TestDescription(3, ACCESS_POINT_3, "ERROR"));
+			
+			testLevel3DatabaseList.add(new TestDescription(3, CONNECTION_LINK_1, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, CONNECTION_LINK_2, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, CONNECTION_LINK_3, "WARNING"));
+			
+			testLevel3DatabaseList.add(new TestDescription(3, ACCESS_LINK_1, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, ACCESS_LINK_2, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, ACCESS_LINK_3, "WARNING"));
+			
+			testLevel3DatabaseList.add(new TestDescription(3, LINE_1, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, LINE_2, "ERROR"));
+			
+			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_1, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_2, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_3, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_4, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_5, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_6, "ERROR"));
+			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_7, "ERROR"));
+			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_8, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_9, "WARNING"));
+			
+			testLevel3DatabaseList.add(new TestDescription(3, JOURNEY_PATTERN_1, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, JOURNEY_PATTERN_2, "ERROR"));
+			
+			
+			testLevel3DatabaseList.add(new TestDescription(3, VEHICLE_JOURNEY_1, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, VEHICLE_JOURNEY_2, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, VEHICLE_JOURNEY_3, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, VEHICLE_JOURNEY_4, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, VEHICLE_JOURNEY_5, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, VEHICLE_JOURNEY_6, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, VEHICLE_JOURNEY_7, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, VEHICLE_JOURNEY_8, "WARNING"));
+			
+			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_SECTION_1, "WARNING"));
+			
+//			testLevel3DatabaseList.add(new TestDescription(3, FACILITY_1, "WARNING"));
+//			testLevel3DatabaseList.add(new TestDescription(3, FACILITY_2, "WARNING"));
+		}
+		
+		return testLevel3DatabaseList;
+	}
+	
+	public static List<TestDescription> getTestLevel4DatabaseList() {
+		if(testLevel4DatabaseList == null) {
+			testLevel4DatabaseList = new ArrayList<TestDescription>();
+			
+			testLevel4DatabaseList.add(new TestDescription(4, L4_NETWORK_1, "ERROR"));
+			testLevel4DatabaseList.add(new TestDescription(4, L4_COMPANY_1, "ERROR"));
+			testLevel4DatabaseList.add(new TestDescription(4, L4_GROUP_OF_LINE_1, "ERROR"));
+			
+			testLevel4DatabaseList.add(new TestDescription(4, L4_LINE_1, "ERROR"));
+			testLevel4DatabaseList.add(new TestDescription(4, L4_LINE_2, "WARNING"));
+			testLevel4DatabaseList.add(new TestDescription(4, L4_LINE_3, "ERROR"));
+			testLevel4DatabaseList.add(new TestDescription(4, L4_LINE_4, "ERROR"));
+			
+			testLevel4DatabaseList.add(new TestDescription(4, L4_STOP_AREA_1, "ERROR"));
+			testLevel4DatabaseList.add(new TestDescription(4, L4_STOP_AREA_2, "ERROR"));
+			
+			testLevel4DatabaseList.add(new TestDescription(4, L4_CONNECTION_LINK_1, "ERROR"));
+			testLevel4DatabaseList.add(new TestDescription(4, L4_CONNECTION_LINK_2, "ERROR"));
+			
+			testLevel4DatabaseList.add(new TestDescription(4, L4_ROUTE_1, "ERROR"));
+			
+			testLevel4DatabaseList.add(new TestDescription(4, L4_JOURNEY_PATTERN_1, "ERROR"));
+			
+			testLevel4DatabaseList.add(new TestDescription(4, L4_VEHICLE_JOURNEY_1, "ERROR"));
+			testLevel4DatabaseList.add(new TestDescription(4, L4_VEHICLE_JOURNEY_2, "WARNING"));
+			
+			testLevel4DatabaseList.add(new TestDescription(4, L4_TIME_TABLE_1, "ERROR"));
+		}
+		
+		return testLevel4DatabaseList;
 	}
 
 }

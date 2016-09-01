@@ -5,13 +5,13 @@ package mobi.chouette.exchange;
  * @author gjamot
  *
  */
-public class Test {
+public class TestDescription {
 	private int level;
 	private String code;
 	private String severity;
 	
 	
-	public Test(int level, String code, String severity) {
+	public TestDescription(int level, String code, String severity) {
 		this.level = level;
 		this.code = code;
 		this.severity = severity;

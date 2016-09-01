@@ -32,6 +32,8 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.PropertyNames;
 import mobi.chouette.dao.iev.JobDAO;
+import mobi.chouette.exchange.InputValidator;
+import mobi.chouette.exchange.TestDescription;
 import mobi.chouette.model.iev.Job;
 import mobi.chouette.model.iev.Job.STATUS;
 import mobi.chouette.model.iev.Link;
@@ -191,6 +193,17 @@ public class JobServiceManager {
 
 	}
 
+	public List<TestDescription> getTestList(String action, String type) throws ServiceException {
+		try {
+			InputValidator inputValidator = JobService.getCommandInputValidator(action, type);
+			return inputValidator.getTestList();
+
+		} catch (Exception ex) {
+			log.info("fail to read tests ",ex);
+			throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, ex);
+		}
+	}
+	
 	private void validateReferential(final String referential) throws ServiceException {
 
 		if (referentials.contains(referential))

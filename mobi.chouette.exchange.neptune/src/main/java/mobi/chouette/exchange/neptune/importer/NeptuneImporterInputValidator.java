@@ -2,6 +2,7 @@ package mobi.chouette.exchange.neptune.importer;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.log4j.Log4j;
@@ -9,9 +10,11 @@ import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.AbstractInputValidator;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
-import mobi.chouette.exchange.Test;
+import mobi.chouette.exchange.TestDescription;
+import mobi.chouette.exchange.importer.updater.DatabaseTestUtils;
 import mobi.chouette.exchange.neptune.validation.TestUtils;
 import mobi.chouette.exchange.parameters.AbstractParameter;
+import mobi.chouette.exchange.validation.checkpoint.AbstractValidation;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 
 @Log4j
@@ -84,9 +87,15 @@ public class NeptuneImporterInputValidator extends AbstractInputValidator {
 	}
 
 	@Override
-	public List<Test> getTestList() {
+	public List<TestDescription> getTestList() {
 		TestUtils testUtils = TestUtils.getInstance();
-		return testUtils.getTestUtilsList();
+		DatabaseTestUtils dbTestUtils = DatabaseTestUtils.getInstance();
+		List<TestDescription> lstTestWithDatabase = new ArrayList<TestDescription>();
+		lstTestWithDatabase.addAll(testUtils.getTestUtilsList());
+		lstTestWithDatabase.addAll(dbTestUtils.getTestUtilsList());
+		lstTestWithDatabase.addAll(AbstractValidation.getTestLevel3FileList());
+		
+		return lstTestWithDatabase;
 	}
 
 }

@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -31,17 +33,13 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.PropertyNames;
-import mobi.chouette.exchange.Test;
+import mobi.chouette.exchange.TestDescription;
 import mobi.chouette.model.iev.Job;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
-import mobi.chouette.service.RequestExceptionCode;
-import mobi.chouette.service.RequestServiceException;
 import mobi.chouette.service.ServiceException;
 import mobi.chouette.service.ServiceExceptionCode;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -163,34 +161,30 @@ public class RestAdmin implements Constant {
 	}
 	
 	@GET
-	@Path("/{action}{type:(/[^/]+?)?}")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Path("/test_list/{action}{type:(/[^/]+?)?}")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getTestList(@PathParam("action") String action,
-			@PathParam("type") String type, MultipartFormDataInput input) {
-		Map<String, InputStream> inputStreamByName = null;
-		
-			log.info(Color.CYAN + "Call getTestList action = " + action
+			@PathParam("type") String type) {
+	
+			log.info(Color.BLUE + "Call getTestList action = " + action
 					+ (type == null ? "" : ", type = " + type) + Color.NORMAL);
 			
 			// Convertir les parametres fournis
 			type = parseType(type);
-			inputStreamByName = readParts(input);
-					
 			try {
-				List<Test> lstTest = jobServiceManager.getTestList();
+				List<TestDescription> lstTest = jobServiceManager.getTestList(action, type);
 				ResponseBuilder builder = null;
 				JSONObject resjson = new JSONObject();
 				JSONArray restests = new JSONArray();
 				resjson.put(TEST_KEY, restests);
 
-				for (Test test : lstTest) {
+				for (TestDescription test : lstTest) {
 					JSONObject result = new JSONObject();
 					result.put("level", test.getLevel());
 					result.put("code", test.getCode());
 					result.put("severity", test.getSeverity());
 					
-					restests.put(test);
+					restests.put(result);
 				}
 
 				builder = Response.ok(resjson.toString(2)).type(MediaType.APPLICATION_JSON_TYPE);
@@ -201,6 +195,9 @@ public class RestAdmin implements Constant {
 			} catch (Exception ex) {
 				log.error(ex.getMessage(), ex);
 				throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
+			} finally {
+				
+				log.info(Color.BLUE + "getTestList returns" + Color.NORMAL);
 			}
 	}
 	
