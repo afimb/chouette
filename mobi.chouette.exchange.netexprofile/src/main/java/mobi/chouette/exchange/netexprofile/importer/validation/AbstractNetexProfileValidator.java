@@ -95,7 +95,19 @@ public abstract class AbstractNetexProfileValidator implements NetexProfileValid
 	 */
 	public static void validateElementPresent(Context context, XPath xpath, Document document, String expression, String errorCode, String errorMessage,
 			String checkpointName) throws XPathExpressionException {
+		validateElement(context, xpath, document, expression, 1, checkpointName);
+	}
 
+	/*
+	 * Validate that an xml element is present
+	 */
+	public static void validateElementNotPresent(Context context, XPath xpath, Document document, String expression, String errorCode, String errorMessage,
+			String checkpointName) throws XPathExpressionException {
+		validateElement(context, xpath, document, expression, 0, checkpointName);
+	}
+
+	private static void validateElement(Context context, XPath xpath, Document document, String expression, int expectedCount, String checkpointName)
+			throws XPathExpressionException {
 		ValidationReport validationReport = (ValidationReport) context.get(Constant.VALIDATION_REPORT);
 		CheckPoint checkpoint = validationReport.findCheckPointByName(checkpointName);
 		if (checkpoint == null) {
@@ -103,12 +115,11 @@ public abstract class AbstractNetexProfileValidator implements NetexProfileValid
 		}
 
 		NodeList nodes = (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
-		if (nodes.getLength() == 0) {
+		if (nodes.getLength() != expectedCount) {
 			checkpoint.setState(RESULT.NOK);
 		} else {
 			checkpoint.setState(RESULT.OK);
 		}
-
 	}
 
 	protected void addCheckpoints(Context context, String key, CheckPoint.SEVERITY severity) {
