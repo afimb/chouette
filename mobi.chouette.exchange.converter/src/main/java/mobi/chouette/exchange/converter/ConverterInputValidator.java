@@ -126,8 +126,8 @@ public class ConverterInputValidator extends AbstractInputValidator {
 			log.error("input data expected");
 			return false;
 		}
-		if (!fileName.endsWith(".zip")) {
-			log.error("Zip archive input data expected");
+		if (!fileName.endsWith(".zip") && !fileName.endsWith(".xml")) {
+			log.error("Zip archive or XML input data expected");
 			return false;
 		}
 
@@ -172,6 +172,8 @@ public class ConverterInputValidator extends AbstractInputValidator {
 			return false;
 		}
 		
+		if (!importValidator.checkFilename(fileName)) // converter CheckFile is not enough 
+			return false;
 		if (!importValidator.checkFile(fileName, pathFile, parameters.getImportConfiguration()))
 			return false;
 		return true;
