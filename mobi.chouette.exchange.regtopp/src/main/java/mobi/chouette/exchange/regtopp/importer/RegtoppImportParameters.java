@@ -21,7 +21,7 @@ import mobi.chouette.exchange.regtopp.importer.version.RegtoppVersion;
 @NoArgsConstructor
 @ToString(callSuper = true)
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "objectIdPrefix", "referencesType", "version", "coordinateProjection","calendarStrategy" })
+@XmlType(propOrder = { "objectIdPrefix", "referencesType", "version", "coordinateProjection", "charsetEncoding", "calendarStrategy" })
 public class RegtoppImportParameters extends AbstractImportParameter {
 
 	@Getter
@@ -47,12 +47,24 @@ public class RegtoppImportParameters extends AbstractImportParameter {
 	@XmlElement(name = "coordinate_projection", required = true)
 	private String coordinateProjection;
 
-	// Regtopp version
+	// Charset encoding. Some use latin1, others use MSDOS Nordic ie.
 	@Getter
 	@Setter
-	@XmlElement(name = "calendar_strategy", required = false)
-	private CalendarStrategy calendarStrategy = CalendarStrategy.OVERWRITE;
+	@XmlElement(name = "charset_encoding", required = false)
+	private String charsetEncoding;
 
+	// Regtopp version
+	@Setter
+	@XmlElement(name = "calendar_strategy", required = false)
+	private CalendarStrategy calendarStrategy = CalendarStrategy.ADD;
+
+	public CalendarStrategy getCalendarStrategy() {
+		if (calendarStrategy == null) {
+			calendarStrategy = CalendarStrategy.ADD;
+		}
+
+		return calendarStrategy;
+	}
 
 	public boolean isValid(Logger log, String[] allowedTypes) {
 		if (!super.isValid(log))

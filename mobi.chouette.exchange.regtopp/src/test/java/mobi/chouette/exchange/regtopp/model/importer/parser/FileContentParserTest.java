@@ -14,6 +14,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.FileUtil;
+import mobi.chouette.exchange.regtopp.RegtoppConstant;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.ParseableFile;
@@ -42,25 +43,25 @@ public class FileContentParserTest {
 	@Test
 	public void testAtBMappings() throws Exception {
 		File regtoppArchive = new File("src/test/data/fullsets/atb-20160118-20160619.zip");
-		parseFile(regtoppArchive);
+		parseFile(regtoppArchive,"ISO-8859-1");
 
 	}
 
 	@Test
 	public void testKolumbusMappings() throws Exception {
 		File regtoppArchive = new File("src/test/data/fullsets/kolumbus_regtopp_20160329-20160624.zip");
-		parseFile(regtoppArchive);
+		parseFile(regtoppArchive,"ISO-8859-1");
 
 	}
 
 	@Test
 	public void testVestfoldMappings() throws Exception {
 		File regtoppArchive = new File("src/test/data/fullsets/R0800.zip");
-		parseFile(regtoppArchive);
+		parseFile(regtoppArchive,"ISO-8859-1");
 
 	}
 
-	private void parseFile(File regtoppArchive) throws IOException, ArchiveException, Exception {
+	private void parseFile(File regtoppArchive,String charset) throws IOException, ArchiveException, Exception {
 		File dest = new File("target/" + System.currentTimeMillis());
 		dest.mkdirs();
 		dest.deleteOnExit();
@@ -72,6 +73,7 @@ public class FileContentParserTest {
 		for (File f : regtoppFiles) {
 
 			Context context = new Context();
+			context.put(RegtoppConstant.CHARSET	, charset);
 			ValidationReport validationReport = new ValidationReport();
 			validationReport.addAllCheckPoints(new RegtoppValidationRules().checkPoints(new RegtoppImportParameters()));
 			context.put(Constant.MAIN_VALIDATION_REPORT, validationReport);

@@ -1,9 +1,6 @@
 package mobi.chouette.exchange.regtopp.importer;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -26,7 +23,6 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.regtopp.RegtoppConstant;
-import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.version.Regtopp11DVersionHandler;
 import mobi.chouette.exchange.regtopp.importer.version.Regtopp12NovusVersionHandler;
 import mobi.chouette.exchange.regtopp.importer.version.Regtopp12VersionHandler;
@@ -59,29 +55,35 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 
 		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
 
-		
-		RegtoppVersion declaredVersion = parameters.getVersion();
-		RegtoppVersion detectedVersion = null;
-		RegtoppVersion parserVersion = null;
-		
-		
-		// Detect version
 		Path path = Paths.get(jobData.getPathName(), INPUT);
-		if (hasFileExtension(path, ".TDA")) {
-			detectedVersion = RegtoppVersion.R11D;
-		} else if (hasFileExtension(path, ".STP")) {
-			detectedVersion = RegtoppVersion.R13A;
-		} else {
-			int lineLength = findLineLength(path, ".HPL");
-			if (lineLength == 87) {
-				detectedVersion = RegtoppVersion.R12;
-			} else if (lineLength == 89) {
-				detectedVersion = RegtoppVersion.R12N;
-			} else {
-				log.error("Error detecting Regtopp version: Unexpected HPL line length: "+lineLength);
-			}
-		}
+		RegtoppParameterGuesser guesser = new RegtoppParameterGuesser(path);
 
+		RegtoppVersion declaredVersion = parameters.getVersion();
+		RegtoppVersion detectedVersion = guesser.getDetectedVersion();
+		RegtoppVersion parserVersion = null;
+
+		String declaredEncoding = parameters.getCharsetEncoding();
+		String detectedEncoding = guesser.getEncoding();
+		String parserEncoding = null;
+		
+		// Validate encoding
+		if(declaredEncoding != null) {
+			if(declaredEncoding != detectedEncoding) {
+				log.warn("Declared regtopp encoding is " + declaredEncoding + ", but detected encoding is " + detectedEncoding + ". Using declaredEncoding for parsing");
+			}
+			parserEncoding = declaredEncoding;
+		} else 	if(declaredEncoding == null) {
+			parserEncoding = detectedEncoding;
+		}
+		
+		if(parserEncoding == null) {
+			log.error("Unable to detect regtopp encoding and declaredEncoding is null. Aborting import");
+			return ERROR;
+		}
+		
+		context.put(RegtoppConstant.CHARSET,parserEncoding);
+
+		// Validate version
 		if(declaredVersion != null) {
 			if(declaredVersion != detectedVersion) {
 				log.warn("Declared regtopp version is " + declaredVersion + ", but detected version is " + detectedVersion + ". Using declaredVersion for parsing");
@@ -97,7 +99,8 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 		}
 		
 		log.info("Parsing Regtopp file=" + jobData.getInputFilename() + " referential=" + jobData.getReferential() + " declaredVersion=" + declaredVersion
-				+ " detectedVersion=" + detectedVersion);
+				+ " detectedVersion=" + detectedVersion+ " declaredEncoding=" + declaredEncoding
+				+ " detectedEncoding=" + detectedEncoding+  " calendarStrategy="+parameters.getCalendarStrategy());
 		VersionHandler versionHandler = null;
 		switch (parserVersion) {
 		case R11D:
@@ -213,42 +216,6 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 
 		return result;
 	}
-
-	private int findLineLength(Path rootDir, String fileExtension) throws IOException {
-//		log.info("Looking for files in path "+rootDir);
-
-		List<Path> list = FileUtil.listFiles(rootDir, "*");
-		for (Path fileName : list) {
-//			log.info("Matching "+fileName+" for fileExtension "+fileExtension+" to find lineLength");
-			String name = fileName.getFileName().toString().toUpperCase();
-			if (name.endsWith(fileExtension)) {
-				FileInputStream is = new FileInputStream(fileName.toFile());
-				InputStreamReader isr = new InputStreamReader(is, FileContentParser.REGTOPP_CHARSET);
-				BufferedReader buffReader = new BufferedReader(isr);
-				String line = buffReader.readLine();
-				int lineLength = line.length();
-				buffReader.close();
-				return lineLength;
-			}
-		}
-
-		return -1;
-	}
-
-	private boolean hasFileExtension(Path rootDir, String fileExtension) throws IOException {
-//		log.info("Looking for files in path "+rootDir);
-		List<Path> list = FileUtil.listFiles(rootDir, "*");
-		for (Path fileName : list) {
-//			log.info("Matching "+fileName+" for fileExtension "+fileExtension);
-			String name = fileName.getFileName().toString().toUpperCase();
-			if (name.endsWith(fileExtension)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	public static class DefaultCommandFactory extends CommandFactory {
 
 		@Override

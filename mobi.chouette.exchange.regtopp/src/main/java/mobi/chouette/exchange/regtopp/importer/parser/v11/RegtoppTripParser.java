@@ -15,11 +15,12 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.regtopp.RegtoppConstant;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.index.v11.DaycodeById;
-import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
+import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
 import mobi.chouette.exchange.regtopp.importer.parser.RouteKey;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
@@ -61,8 +62,9 @@ public class RegtoppTripParser extends LineSpecificParser {
 
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
+		String calendarStartDate = (String) context.get(RegtoppConstant.CALENDAR_START_DATE);
 
-		String chouetteLineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY, lineId);
+		String chouetteLineId = ObjectIdCreator.createLineId(configuration, lineId, calendarStartDate);
 		Line line = ObjectFactory.getLine(referential, chouetteLineId);
 		List<Footnote> footnotes = line.getFootnotes();
 
@@ -82,18 +84,14 @@ public class RegtoppTripParser extends LineSpecificParser {
 					// This is where we get the line number
 					line.setNumber(trip.getLineNumberVisible());
 
-					RouteKey routeKey = new RouteKey(trip.getLineId(), trip.getDirection(), trip.getRouteIdRef());
-					String chouetteRouteId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.ROUTE_KEY, routeKey.toString());
+					RouteKey routeKey = new RouteKey(trip.getLineId(), trip.getDirection(), trip.getRouteIdRef(),calendarStartDate);
+					String chouetteRouteId = ObjectIdCreator.createRouteId(configuration, routeKey);
 					Route route = ObjectFactory.getRoute(referential, chouetteRouteId);
 
-					String tripKey = trip.getLineId() + trip.getTripId();
-					String chouetteVehicleJourneyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.VEHICLEJOURNEY_KEY,
-							tripKey);
-
-					String chouetteJourneyPatternId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.JOURNEYPATTERN_KEY,
-							routeKey.toString());
+					String chouetteJourneyPatternId = ObjectIdCreator.createJourneyPatternId(configuration,routeKey);
 					JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, chouetteJourneyPatternId);
 
+					String chouetteVehicleJourneyId = ObjectIdCreator.createVehicleJourneyId(configuration, trip.getLineId(), trip.getTripId(), calendarStartDate);
 					VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, chouetteVehicleJourneyId);
 
 					// Add operator company
@@ -188,18 +186,8 @@ public class RegtoppTripParser extends LineSpecificParser {
 
 	protected Duration linkVehicleJourneyToTimetable(Referential referential, RegtoppImportParameters configuration, AbstractRegtoppTripIndexTIX trip,
 			VehicleJourney vehicleJourney, RegtoppDayCodeHeaderDKO header) {
-		String chouetteTimetableId;
 
-		switch (configuration.getCalendarStrategy()) {
-		case ADD:
-			chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY,
-					trip.getAdminCode() + trip.getDayCodeRef() + header.getDate().toString());
-			break;
-		case OVERWRITE:
-		default:
-			chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY,
-					trip.getAdminCode() + trip.getDayCodeRef());
-		}
+		String chouetteTimetableId = ObjectIdCreator.createTimetableId(configuration, trip.getAdminCode(), trip.getDayCodeRef(), header);
 
 		// Duration since midnight
 		Duration tripDepartureTime = trip.getDepartureTime();
@@ -213,7 +201,7 @@ public class RegtoppTripParser extends LineSpecificParser {
 	}
 
 	protected Company createOperator(Referential referential, RegtoppImportParameters configuration, String operatorCode) {
-		String chouetteOperatorId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.COMPANY_KEY, operatorCode);
+		String chouetteOperatorId = ObjectIdCreator.createOperatorId(configuration, operatorCode);
 		Company operator = ObjectFactory.getCompany(referential, chouetteOperatorId);
 		if (!operator.isFilled()) {
 			operator.setRegistrationNumber(operatorCode);
