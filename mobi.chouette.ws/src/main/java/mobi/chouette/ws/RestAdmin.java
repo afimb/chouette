@@ -193,12 +193,13 @@ public class RestAdmin implements Constant {
 
 			for (Stat stat : lstStat) {
 				JSONObject result = new JSONObject();
+				result.put("id", stat.getId());
 				result.put("date", stat.getDate());
 				result.put("referential", stat.getReferential());
 				result.put("action", stat.getAction());
 				if (stat.getFormat() != null)
 					result.put("format", stat.getFormat());
-				resstats.put(stat);
+				resstats.put(result);
 			}
 
 			builder = Response.ok(resjson.toString(2)).type(MediaType.APPLICATION_JSON_TYPE);
