@@ -32,7 +32,7 @@ public class RegtoppStopParserTest {
 
         StopArea parent = ObjectFactory.getStopArea(referential, "TST:StopArea:05010605");
 
-        assertEquals(parent.getAreaType(), ChouetteAreaEnum.StopPlace);
+        assertEquals(parent.getAreaType(), ChouetteAreaEnum.CommercialStopPoint);
         assertEquals(parent, boardingPosition.getParent());
     }
 

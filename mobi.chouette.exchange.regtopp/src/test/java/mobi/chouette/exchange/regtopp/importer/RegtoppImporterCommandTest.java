@@ -491,7 +491,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		assertEquals(containedInStopArea.getAreaType(), ChouetteAreaEnum.BoardingPosition);
 		StopArea parent = containedInStopArea.getParent();
 		Assert.assertNotNull(parent);
-		assertEquals(parent.getAreaType(), ChouetteAreaEnum.StopPlace);
+		assertEquals(parent.getAreaType(), ChouetteAreaEnum.CommercialStopPoint);
 
 		utx.rollback();
 
@@ -610,7 +610,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 					Assert.assertEquals(stopArea.getAreaType(), ChouetteAreaEnum.BoardingPosition, "stoppoint does not refer to boarding position");
 					boardingPositions.add(stopArea);
 					Assert.assertNotNull(stopArea.getParent(), "parent is null");
-					Assert.assertEquals(stopArea.getParent().getAreaType(), ChouetteAreaEnum.StopPlace,
+					Assert.assertEquals(stopArea.getParent().getAreaType(), ChouetteAreaEnum.CommercialStopPoint,
 							"stoppoint -> stoparea -> parent is not of type stopPlace");
 
 				}
