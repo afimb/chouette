@@ -29,7 +29,7 @@ public class RegtoppStopParserTest {
         regtoppStopParser.mapRegtoppStop(regtoppStop, configuration, referential, Coordinate.UTM_32N);
 
         StopArea stopArea = getStopArea(configuration, regtoppStop.getStopId());
-        assertEquals(stopArea.getAreaType(), ChouetteAreaEnum.StopPlace);
+        assertEquals(stopArea.getAreaType(), ChouetteAreaEnum.CommercialStopPoint);
     }
 
     @Test
