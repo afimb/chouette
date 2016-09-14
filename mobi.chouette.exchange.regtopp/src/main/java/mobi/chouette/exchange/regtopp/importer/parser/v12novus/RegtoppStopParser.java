@@ -82,10 +82,10 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 									   RegtoppImportParameters regtoppImportParameters, Referential referential) {
 		String objectId = ObjectIdCreator.createStopAreaId(regtoppImportParameters, stop.getFullStopId());
 
-		StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
-		stopArea.setName(stop.getFullName());
-		stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
-		convertAndSetCoordinates(stopArea, stop.getX(), stop.getY(), regtoppImportParameters.getCoordinateProjection());
+		StopArea boardingPosition = ObjectFactory.getStopArea(referential, objectId);
+		boardingPosition.setName(stop.getFullName());
+		boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
+		convertAndSetCoordinates(boardingPosition, stop.getX(), stop.getY(), regtoppImportParameters.getCoordinateProjection());
 	}
 
 	static {
