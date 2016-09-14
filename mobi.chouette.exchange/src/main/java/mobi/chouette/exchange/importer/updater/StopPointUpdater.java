@@ -42,7 +42,6 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		validationReporter.addItemToValidationReport(context, DATABASE_STOP_POINT_3, "W");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		
-		twoDatabaseStopPointTwoTest(validationReporter, context, oldValue, newValue, data);
 		if (oldValue.isDetached()) {
 			// object does not exist in database
 			oldValue.setObjectId(newValue.getObjectId());
@@ -53,6 +52,8 @@ public class StopPointUpdater implements Updater<StopPoint> {
 			oldValue.setForBoarding(newValue.getForBoarding());
 			oldValue.setDetached(false);
 		} else {
+			twoDatabaseStopPointTwoTest(validationReporter, context, oldValue, newValue, data);
+			twoDatabaseStopPointThreeTest(validationReporter, context, oldValue.getContainedInStopArea(), newValue.getContainedInStopArea(), data);
 			if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
 				oldValue.setObjectId(newValue.getObjectId());
 			}
@@ -81,7 +82,6 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		if (newValue.getContainedInStopArea() == null) {
 			oldValue.setContainedInStopArea(null);
 		} else {
-			twoDatabaseStopPointThreeTest(validationReporter, context, oldValue.getContainedInStopArea(), newValue.getContainedInStopArea(), data);
 			String objectId = newValue.getContainedInStopArea().getObjectId();
 			StopArea stopArea = cache.getStopAreas().get(objectId);
 			if (stopArea == null) {

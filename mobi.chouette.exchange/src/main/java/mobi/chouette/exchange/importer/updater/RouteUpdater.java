@@ -55,6 +55,7 @@ public class RouteUpdater implements Updater<Route> {
 		
 		// Database test init
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		validationReporter.addItemToValidationReport(context, DATABASE_JOURNEY_PATTERN_1, "E");
 		validationReporter.addItemToValidationReport(context, DATABASE_STOP_POINT_1, "E");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 				

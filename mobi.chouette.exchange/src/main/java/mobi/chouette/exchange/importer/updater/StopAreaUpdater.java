@@ -78,7 +78,6 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		validationReporter.addItemToValidationReport(context, DATABASE_CONNECTION_LINK_1_2, "W");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		
-		twoDatabaseStopAreaTwoTest(validationReporter, context, oldValue, newValue, data);
 		
 		if (newValue.getAreaType() == null) {
 			log.error("stoparea without mandatory areatype " + newValue.getObjectId());
@@ -111,6 +110,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			oldValue.setStreetName(newValue.getStreetName());
 			oldValue.setDetached(false);
 		} else {
+			twoDatabaseStopAreaTwoTest(validationReporter, context, oldValue, newValue, data);
+			twoDatabaseStopAreaOneTest(validationReporter, context, oldValue, newValue, data);
 			if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
 				oldValue.setObjectId(newValue.getObjectId());
 			}
@@ -187,7 +188,6 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			}
 		}
 		
-		twoDatabaseStopAreaOneTest(validationReporter, context, oldValue, newValue, data);
 		
 		// StopArea Parent
 		if (newValue.getParent() == null) {

@@ -136,6 +136,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			oldValue.setJourneyCategory(newValue.getJourneyCategory());
 			oldValue.setDetached(false);
 		} else {
+			twoDatabaseVehicleJourneyTwoTest(validationReporter, context, oldValue.getCompany(), newValue.getCompany(), data);
 			if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
 				oldValue.setObjectId(newValue.getObjectId());
 			}
@@ -188,7 +189,6 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		}
 
 		// Company
-		twoDatabaseVehicleJourneyTwoTest(validationReporter, context, oldValue.getCompany(), newValue.getCompany(), data);
 		if (newValue.getCompany() == null) {
 			oldValue.setCompany(null);
 		} else {

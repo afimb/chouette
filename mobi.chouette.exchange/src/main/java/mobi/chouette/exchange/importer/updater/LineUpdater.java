@@ -96,6 +96,9 @@ public class LineUpdater implements Updater<Line> {
 			oldValue.setTextColor(newValue.getTextColor());
 			oldValue.setDetached(false);
 		} else {
+			twoDatabaseLineOneTest(validationReporter, context, oldValue, newValue, data);
+			twoDatabaseLineTwoTest(validationReporter, context, oldValue, newValue, data);
+
 			if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
 				oldValue.setObjectId(newValue.getObjectId());
 			}
@@ -147,7 +150,6 @@ public class LineUpdater implements Updater<Line> {
 		}
 		
 		// PTNetwork
-		twoDatabaseLineOneTest(validationReporter, context, oldValue, newValue, data);
 		
 		if (newValue.getNetwork() == null) {
 			oldValue.setNetwork(null);
@@ -168,7 +170,6 @@ public class LineUpdater implements Updater<Line> {
 		}
 
 		// Company
-		twoDatabaseLineTwoTest(validationReporter, context, oldValue, newValue, data);
 		
 		if (newValue.getCompany() == null) {
 			oldValue.setCompany(null);
