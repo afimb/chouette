@@ -1,38 +1,19 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.JAXBElement;
-
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import no.rutebanken.netex.model.Common_VersionFrameStructure;
-import no.rutebanken.netex.model.CompositeFrame;
-import no.rutebanken.netex.model.DataManagedObjectStructure;
-import no.rutebanken.netex.model.Direction;
-import no.rutebanken.netex.model.DirectionsInFrame_RelStructure;
-import no.rutebanken.netex.model.Frames_RelStructure;
-import no.rutebanken.netex.model.LinkSequence_VersionStructure;
-import no.rutebanken.netex.model.Network;
-import no.rutebanken.netex.model.OrganisationsInFrame_RelStructure;
-import no.rutebanken.netex.model.PublicationDeliveryStructure;
-import no.rutebanken.netex.model.ResourceFrame;
-import no.rutebanken.netex.model.Route;
-import no.rutebanken.netex.model.RoutesInFrame_RelStructure;
-import no.rutebanken.netex.model.ServiceCalendarFrame;
-import no.rutebanken.netex.model.ServiceFrame;
-import no.rutebanken.netex.model.SiteFrame;
-import no.rutebanken.netex.model.StopPlace;
-import no.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
-import no.rutebanken.netex.model.TimetableFrame;
+import no.rutebanken.netex.model.*;
+
+import javax.xml.bind.JAXBElement;
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j
 public class PublicationDeliveryParser implements Parser, Constant {
@@ -114,9 +95,7 @@ public class PublicationDeliveryParser implements Parser, Constant {
 
 	}
 
-	private void parseSiteFrame(Context context, Referential referential, PublicationDeliveryStructure lineData, List<PublicationDeliveryStructure> commonData,
-			SiteFrame siteFrame) {
-		
+	private void parseSiteFrame(Context context, Referential referential, PublicationDeliveryStructure lineData, List<PublicationDeliveryStructure> commonData, SiteFrame siteFrame) {
 		StopPlacesInFrame_RelStructure stopPlacesStruct = siteFrame.getStopPlaces();
 		List<StopPlace> stopPlaces = stopPlacesStruct.getStopPlace();
 		for(StopPlace stopPlace : stopPlaces) {
@@ -129,50 +108,37 @@ public class PublicationDeliveryParser implements Parser, Constant {
 	
 
 	private void parseServiceFrame(Context context, Referential referential, PublicationDeliveryStructure lineData,
-			List<PublicationDeliveryStructure> commonData, ServiceFrame serviceFrame) {
-
+			List<PublicationDeliveryStructure> commonData, ServiceFrame serviceFrame) throws Exception {
 		// Parse network
 		Network network = serviceFrame.getNetwork();
 		mobi.chouette.model.Network ptNetwork = ObjectFactory.getPTNetwork(referential, network.getId());
 		ptNetwork.setName(network.getName().getValue());
 		
-		// Parse directions
-		DirectionsInFrame_RelStructure directions = serviceFrame.getDirections();
-		List<Direction> directionsx = directions.getDirection();
-		for(Direction d : directionsx) {
-			
-		}
-		
-		
-		// Parse routes
-		RoutesInFrame_RelStructure routes = serviceFrame.getRoutes();
-		List<JAXBElement<? extends LinkSequence_VersionStructure>> route_ = routes.getRoute_();
-		for(JAXBElement<? extends LinkSequence_VersionStructure> route : route_) {
-			Route r = (Route) route.getValue();
-		
-			mobi.chouette.model.Route cR = ObjectFactory.getRoute(referential, r.getId());
-			cR.setName(r.getName().getValue());
-		//	cR.setDi
-		
-		}
-		// TODO Auto-generated method stub
+		// Parse route points
+		RoutePointsInFrame_RelStructure routePointsStructure = serviceFrame.getRoutePoints();
+		context.put(NETEX_LINE_DATA_CONTEXT, routePointsStructure);
+		Parser routePointsParser = ParserFactory.create(RoutePointsParser.class.getName());
+		routePointsParser.parse(context);
 
+		// Parse routes
+		RoutesInFrame_RelStructure routesStructure = serviceFrame.getRoutes();
+		context.put(NETEX_LINE_DATA_CONTEXT, routesStructure);
+		Parser routesParser = ParserFactory.create(RoutesParser.class.getName());
+		routesParser.parse(context);
+
+		// Parse routes
+		LinesInFrame_RelStructure linesStructure = serviceFrame.getLines();
+		context.put(NETEX_LINE_DATA_CONTEXT, linesStructure);
+		Parser linesParser = ParserFactory.create(LinesParser.class.getName());
+		linesParser.parse(context);
 	}
 
 	private void parseResourceFrame(Context context, Referential referential, PublicationDeliveryStructure lineData,
-			List<PublicationDeliveryStructure> commonData, ResourceFrame resourceFrame) {
-
-		
-		// Instantiate OrganisationsParser
-		
+			List<PublicationDeliveryStructure> commonData, ResourceFrame resourceFrame) throws Exception {
 		OrganisationsInFrame_RelStructure organisationsStructure = resourceFrame.getOrganisations();
-		List<JAXBElement<? extends DataManagedObjectStructure>> organisation_ = organisationsStructure.getOrganisation_();
-		for(JAXBElement<? extends DataManagedObjectStructure> org : organisation_) {
-			// TODO
-			DataManagedObjectStructure value = org.getValue();
-			Company c = ObjectFactory.getCompany(referential, value.getId());
-		}
-
+		context.put(NETEX_LINE_DATA_CONTEXT, organisationsStructure);
+		Parser organisationsParser = ParserFactory.create(OrganisationsParser.class.getName());
+		organisationsParser.parse(context);
 	}
 
 

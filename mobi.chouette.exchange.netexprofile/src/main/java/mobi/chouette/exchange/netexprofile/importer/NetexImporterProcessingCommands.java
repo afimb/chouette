@@ -118,11 +118,13 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 					if (withDao && !parameters.isNoSave()) {
 
 						// register
+/*
 						Command register = CommandFactory.create(initialContext, LineRegisterCommand.class.getName());
 						chain.add(register);
 
 						Command copy = CommandFactory.create(initialContext, CopyCommand.class.getName());
 						chain.add(copy);
+*/
 					}
 					if (level3validation) {
 						// add validation

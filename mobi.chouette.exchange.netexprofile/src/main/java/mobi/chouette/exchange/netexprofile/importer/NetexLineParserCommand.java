@@ -1,15 +1,7 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
-import java.io.File;
-import java.io.IOException;
-
-import javax.naming.InitialContext;
-
-import org.w3c.dom.Document;
-
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -29,6 +21,11 @@ import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.util.Referential;
 import no.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.w3c.dom.Document;
+
+import javax.naming.InitialContext;
+import java.io.File;
+import java.io.IOException;
 
 @Log4j
 public class NetexLineParserCommand implements Command, Constant {
@@ -66,9 +63,8 @@ public class NetexLineParserCommand implements Command, Constant {
 
 			NetexImporter importer = (NetexImporter) context.get(IMPORTER);
 			Document dom = importer.parseFileToDom(file);
-			PublicationDeliveryStructure lineDeliveryStructure =importer.unmarshal(dom);
+			PublicationDeliveryStructure lineDeliveryStructure = importer.unmarshal(dom);
 
-			// Parse (convert to chouette objects)
 			context.put(NETEX_LINE_DATA_JAVA, lineDeliveryStructure);
 			context.put(NETEX_LINE_DATA_DOM, dom);
 
@@ -81,6 +77,7 @@ public class NetexLineParserCommand implements Command, Constant {
 				boolean validationOKWithNoErrors = profileValidator.validate(context);
 				// TODO handle that validation errors occur
 
+				// Parse (convert to chouette objects)
 				if(validationOKWithNoErrors) {
 					Parser parser = ParserFactory.create(PublicationDeliveryParser.class.getName());
 					parser.parse(context);
