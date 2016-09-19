@@ -126,11 +126,23 @@ public class PublicationDeliveryParser implements Parser, Constant {
 		Parser routesParser = ParserFactory.create(RoutesParser.class.getName());
 		routesParser.parse(context);
 
-		// Parse routes
+		// Parse lines
 		LinesInFrame_RelStructure linesStructure = serviceFrame.getLines();
 		context.put(NETEX_LINE_DATA_CONTEXT, linesStructure);
 		Parser linesParser = ParserFactory.create(LinesParser.class.getName());
 		linesParser.parse(context);
+
+		// Parse scheduled stop points
+		ScheduledStopPointsInFrame_RelStructure scheduledStopPointsStructure = serviceFrame.getScheduledStopPoints();
+		context.put(NETEX_LINE_DATA_CONTEXT, scheduledStopPointsStructure);
+		Parser scheduledStopPointsParser = ParserFactory.create(ScheduledStopPointsParser.class.getName());
+		scheduledStopPointsParser.parse(context);
+
+		// Parse stop assignments
+		StopAssignmentsInFrame_RelStructure stopAssignmentsStructure = serviceFrame.getStopAssignments();
+		context.put(NETEX_LINE_DATA_CONTEXT, stopAssignmentsStructure);
+		Parser stopAssignmentsParser = ParserFactory.create(StopAssignmentsParser.class.getName());
+		stopAssignmentsParser.parse(context);
 	}
 
 	private void parseResourceFrame(Context context, Referential referential, PublicationDeliveryStructure lineData,
