@@ -302,12 +302,14 @@
 						<goals>
 							<goal>delombok</goal>
 						</goals>
+<!--
 						<configuration>
 							<addOutputDirectory>false</addOutputDirectory>
 							<sourceDirectory>src/main/java</sourceDirectory>
 							<verbose>false</verbose>
 							<skip>${skipDelombok}</skip>
 						</configuration>
+-->
 					</execution>
 				</executions>
 			</plugin>

@@ -101,6 +101,7 @@ public class LineParser implements Parser, Constant {
         //Boolean monitored = netexLine.isMonitored(); // how to handle in chouette?
 
         // optional
+        // TODO: create separate parser for every RouteRefStructure instances
         RouteRefs_RelStructure routeRefsStruct = netexLine.getRoutes();
         if (routeRefsStruct != null) {
             List<RouteRefStructure> routeRefs = routeRefsStruct.getRouteRef();
@@ -111,6 +112,7 @@ public class LineParser implements Parser, Constant {
         }
 
         // mandatory
+        // TODO: create separate parser for every Suitability instances
         AccessibilityAssessment accessibilityAssessment = netexLine.getAccessibilityAssessment();
         if (accessibilityAssessment != null) {
             LimitationStatusEnumeration mobilityImpairedAccess = accessibilityAssessment.getMobilityImpairedAccess();

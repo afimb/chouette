@@ -142,6 +142,12 @@ public class PublicationDeliveryParser implements Parser, Constant {
 		context.put(NETEX_LINE_DATA_CONTEXT, stopAssignmentsStructure);
 		Parser stopAssignmentsParser = ParserFactory.create(StopAssignmentParser.class.getName());
 		stopAssignmentsParser.parse(context);
+
+		// Parse journey patterns
+        JourneyPatternsInFrame_RelStructure journeyPatternsStructure = serviceFrame.getJourneyPatterns();
+		context.put(NETEX_LINE_DATA_CONTEXT, journeyPatternsStructure);
+        Parser journeyPatternParser = ParserFactory.create(JourneyPatternParser.class.getName());
+        journeyPatternParser.parse(context);
 	}
 
 	private void parseResourceFrame(Context context, Referential referential, PublicationDeliveryStructure lineData,
