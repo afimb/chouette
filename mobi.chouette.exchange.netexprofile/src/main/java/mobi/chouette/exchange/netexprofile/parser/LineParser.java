@@ -29,6 +29,7 @@ public class LineParser implements Parser, Constant {
 
         for (JAXBElement<? extends DataManagedObjectStructure> netexLineElement : netexLineElements) {
             no.rutebanken.netex.model.Line netexLine = (no.rutebanken.netex.model.Line) netexLineElement.getValue();
+            parseLine(referential, netexLine);
         }
     }
 
@@ -98,6 +99,16 @@ public class LineParser implements Parser, Constant {
 
         // mandatory
         //Boolean monitored = netexLine.isMonitored(); // how to handle in chouette?
+
+        // optional
+        RouteRefs_RelStructure routeRefsStruct = netexLine.getRoutes();
+        if (routeRefsStruct != null) {
+            List<RouteRefStructure> routeRefs = routeRefsStruct.getRouteRef();
+            for (RouteRefStructure routeRef : routeRefs) {
+                mobi.chouette.model.Route chouetteRoute = ObjectFactory.getRoute(referential, routeRef.getRef());
+                chouetteRoute.setLine(chouetteLine);
+            }
+        }
 
         // mandatory
         AccessibilityAssessment accessibilityAssessment = netexLine.getAccessibilityAssessment();
