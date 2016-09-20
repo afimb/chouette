@@ -10,8 +10,10 @@ import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.StopArea;
 import no.rutebanken.netex.model.*;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
@@ -28,26 +30,39 @@ public class NeTExStopPlaceRegisterUpdater implements Updater<Map<String, StopAr
     private final StopPlaceMapper stopPlaceMapper = new StopPlaceMapper();
 
     private static final ObjectFactory objectFactory = new ObjectFactory();
-
-    @EJB
-    private ContenerChecker contenerChecker;
-
-    public NeTExStopPlaceRegisterUpdater(String url) throws JAXBException {
-        client = new PublicationDeliveryClient(url);
-    }
-
+    
     public NeTExStopPlaceRegisterUpdater(PublicationDeliveryClient client) {
         this.client = client;
     }
 
-    public NeTExStopPlaceRegisterUpdater() throws JAXBException {
-        String url = System.getProperty(contenerChecker.getContext() + PropertyNames.STOP_PLACE_REGISTER_URL);
-        this.client = new PublicationDeliveryClient(url);
+    @EJB
+    private ContenerChecker contenerChecker;
+
+    @PostConstruct
+    public void postConstruct() {
+        String urlPropertyKey = contenerChecker.getContext() + PropertyNames.STOP_PLACE_REGISTER_URL;
+        String url = System.getProperty(urlPropertyKey);
+        if(url == null) {
+            log.warn("Cannot read property " + urlPropertyKey + ". Will not update stop place registry.");
+            this.client = null;
+        } else {
+            try {
+                this.client = new PublicationDeliveryClient(url);
+            } catch (JAXBException e) {
+                log.warn("Cannot initialize publication delivery client", e);
+            }
+        }
     }
 
+    public NeTExStopPlaceRegisterUpdater() {
+    }
 
     @Override
     public void update(Context context, Map<String, StopArea> oldValue, Map<String, StopArea> newValue) throws JAXBException {
+
+        if(client == null) {
+            return;
+        }
 
         log.info("Received " + newValue.values().size() + " stop areas to update");
 
