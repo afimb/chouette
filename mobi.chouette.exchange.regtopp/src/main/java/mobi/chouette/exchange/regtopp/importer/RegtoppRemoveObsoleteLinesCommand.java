@@ -72,7 +72,11 @@ public class RegtoppRemoveObsoleteLinesCommand implements Command {
 			List<Line> findAll = lineDAO.findAll();
 			
 			for(Line existingLine : findAll ) {
-				if(ObjectIdCreator.getCalendarStartDate(existingLine.getObjectId()).equals(calendarStartDate)) {
+				
+				String adminCode = importer.getTripIndex().iterator().next().getAdminCode();
+				String authority = existingLine.getNetwork().getRegistrationNumber();
+				
+				if(adminCode.equals(authority) && ObjectIdCreator.getCalendarStartDate(existingLine.getObjectId()).equals(calendarStartDate)) {
 					if(!objectIdSet.contains(existingLine.getObjectId())) {
 						log.info("Delete obsolete line : " + existingLine.getObjectId() + " "+existingLine.getName());
 						lineDAO.delete(existingLine);
