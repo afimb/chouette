@@ -1,14 +1,10 @@
 package mobi.chouette.exchange.regtopp.importer.parser.v11;
 
-import static java.util.Arrays.asList;
 import static mobi.chouette.common.Constant.CONFIGURATION;
 import static mobi.chouette.common.Constant.PARSER;
 import static mobi.chouette.common.Constant.REFERENTIAL;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -30,6 +26,8 @@ import mobi.chouette.model.util.Referential;
 public class RegtoppStopParser implements Parser {
 
 	public static final String BOARDING_POSITION_ID_SUFFIX = "01";
+	
+	public static ChouetteAreaEnum PARENT_STOP_PLACE_TYPE =  ChouetteAreaEnum.CommercialStopPoint;
 
 	@Override
 	public void parse(Context context) throws Exception {
@@ -57,15 +55,17 @@ public class RegtoppStopParser implements Parser {
 		StopArea stopArea = ObjectFactory.getStopArea(referential, stopPlaceObjectId);
 		stopArea.setName(stop.getFullName());
 		// stopArea.setRegistrationNumber(stop.getShortName());
-		stopArea.setAreaType(ChouetteAreaEnum.StopPlace);
+		stopArea.setAreaType(PARENT_STOP_PLACE_TYPE);
 		convertAndSetCoordinates(stopArea, stop.getX(), stop.getY(), projection);
 
 		StopArea boardingPosition = ObjectFactory.getStopArea(referential, boardingPositionObjectId);
 		boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
-		boardingPosition.setParent(stopArea);
 		boardingPosition.setY(stopArea.getY());
 		boardingPosition.setX(stopArea.getX());
 		boardingPosition.setProjectionType(stopArea.getProjectionType());
+		boardingPosition.setLatitude(stopArea.getLatitude());
+		boardingPosition.setLongitude(stopArea.getLongitude());
+		boardingPosition.setLongLatType(stopArea.getLongLatType());
 		boardingPosition.setName(stopArea.getName());
 
 		boardingPosition.setParent(stopArea);

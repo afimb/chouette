@@ -4,17 +4,11 @@ import static mobi.chouette.common.Constant.CONFIGURATION;
 import static mobi.chouette.common.Constant.PARSER;
 import static mobi.chouette.common.Constant.REFERENTIAL;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.vividsolutions.jts.algorithm.CentroidPoint;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.PrecisionModel;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
@@ -26,7 +20,6 @@ import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppStopHPL;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
-import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -54,7 +47,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 				String objectId = ObjectIdCreator.createStopAreaId(configuration, commercialStopAreaId);
 				StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
 				stopArea.setName(boardingPositions.get(0).getName()); // TODO using name of first stop point, should be identical for all boarding positions according to spec
-				stopArea.setAreaType(ChouetteAreaEnum.StopPlace);
+				stopArea.setAreaType(PARENT_STOP_PLACE_TYPE);
 
 				for (StopArea bp : boardingPositions) {
 					bp.setParent(stopArea);
@@ -89,10 +82,10 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 									   RegtoppImportParameters regtoppImportParameters, Referential referential) {
 		String objectId = ObjectIdCreator.createStopAreaId(regtoppImportParameters, stop.getFullStopId());
 
-		StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
-		stopArea.setName(stop.getFullName());
-		stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
-		convertAndSetCoordinates(stopArea, stop.getX(), stop.getY(), regtoppImportParameters.getCoordinateProjection());
+		StopArea boardingPosition = ObjectFactory.getStopArea(referential, objectId);
+		boardingPosition.setName(stop.getFullName());
+		boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
+		convertAndSetCoordinates(boardingPosition, stop.getX(), stop.getY(), regtoppImportParameters.getCoordinateProjection());
 	}
 
 	static {

@@ -46,24 +46,25 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 					StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
 					stopArea.setName(StringUtils.trimToNull(stop.getFullName()));
 					//stopArea.setRegistrationNumber(stop.getShortName());
-					stopArea.setAreaType(ChouetteAreaEnum.StopPlace);
+					stopArea.setAreaType(PARENT_STOP_PLACE_TYPE);
 
 					convertAndSetCoordinates(stopArea, stop.getX(), stop.getY(), projection);
 
 					List<RegtoppStopPointSTP> stopPoints = stopPointsByStopId.getValue(stop.getStopId());
 					for (RegtoppStopPointSTP regtoppStopPoint : stopPoints) {
 						String chouetteStopPointId = ObjectIdCreator.createStopAreaId(configuration,regtoppStopPoint.getFullStopId());
-						StopArea stopPoint = ObjectFactory.getStopArea(referential, chouetteStopPointId);
+						StopArea boardingPosition = ObjectFactory.getStopArea(referential, chouetteStopPointId);
 
-						convertAndSetCoordinates(stopPoint, regtoppStopPoint.getX(), regtoppStopPoint.getY(), projection);
+						convertAndSetCoordinates(boardingPosition, regtoppStopPoint.getX(), regtoppStopPoint.getY(), projection);
+						boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
 
 						if(stopArea.getName() != null) {
 							// Use parent stop area name
-							stopPoint.setName(stopArea.getName());
+							boardingPosition.setName(stopArea.getName());
 						} else if(StringUtils.trimToNull(regtoppStopPoint.getDescription()) != null) {
 							// If parent is empty, use stop point description on both stop point and stop area
-							stopPoint.setName(StringUtils.trimToNull(regtoppStopPoint.getDescription()));
-							stopArea.setName(stopPoint.getName());
+							boardingPosition.setName(StringUtils.trimToNull(regtoppStopPoint.getDescription()));
+							stopArea.setName(boardingPosition.getName());
 						}
 						
 //						if (StringUtils.trimToNull(regtoppStopPoint.getDescription()) == null) {
@@ -73,9 +74,8 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 //							stopPoint.setName(regtoppStopPoint.getDescription());
 //						}
 						//stopPoint.setRegistrationNumber(stopArea.getRegistrationNumber());
-						stopPoint.setAreaType(ChouetteAreaEnum.BoardingPosition);
 
-						stopPoint.setParent(stopArea);
+						boardingPosition.setParent(stopArea);
 					}
 					
 					if(stopArea.getName() == null) {
