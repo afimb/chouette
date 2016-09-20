@@ -5,7 +5,6 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.model.Company;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -123,7 +122,7 @@ public class PublicationDeliveryParser implements Parser, Constant {
 		// Parse routes
 		RoutesInFrame_RelStructure routesStructure = serviceFrame.getRoutes();
 		context.put(NETEX_LINE_DATA_CONTEXT, routesStructure);
-		Parser routesParser = ParserFactory.create(RoutesParser.class.getName());
+		Parser routesParser = ParserFactory.create(RouteParser.class.getName());
 		routesParser.parse(context);
 
 		// Parse lines
