@@ -383,7 +383,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "line", cascade = { CascadeType.PERSIST })
+	@OneToMany(mappedBy = "line", cascade = { CascadeType.ALL })
 	private List<Route> routes = new ArrayList<Route>(0);
 
 	/**
@@ -397,7 +397,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "line", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@OneToMany(mappedBy = "line", cascade = { CascadeType.ALL })
 	private List<Footnote> footnotes = new ArrayList<>(0);
 
 	/**
@@ -409,7 +409,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 */
 	@Getter
 	@Setter
-	@ManyToMany(cascade = { CascadeType.PERSIST })
+	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "group_of_lines_lines", joinColumns = { @JoinColumn(name = "line_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "group_of_line_id", nullable = false, updatable = false) })
 	private List<GroupOfLine> groupOfLines = new ArrayList<GroupOfLine>(0);
 
