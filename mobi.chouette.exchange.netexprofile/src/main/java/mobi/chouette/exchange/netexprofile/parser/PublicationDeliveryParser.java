@@ -134,13 +134,13 @@ public class PublicationDeliveryParser implements Parser, Constant {
 		// Parse scheduled stop points
 		ScheduledStopPointsInFrame_RelStructure scheduledStopPointsStructure = serviceFrame.getScheduledStopPoints();
 		context.put(NETEX_LINE_DATA_CONTEXT, scheduledStopPointsStructure);
-		Parser scheduledStopPointsParser = ParserFactory.create(ScheduledStopPointsParser.class.getName());
+		Parser scheduledStopPointsParser = ParserFactory.create(ScheduledStopPointParser.class.getName());
 		scheduledStopPointsParser.parse(context);
 
 		// Parse stop assignments
 		StopAssignmentsInFrame_RelStructure stopAssignmentsStructure = serviceFrame.getStopAssignments();
 		context.put(NETEX_LINE_DATA_CONTEXT, stopAssignmentsStructure);
-		Parser stopAssignmentsParser = ParserFactory.create(StopAssignmentsParser.class.getName());
+		Parser stopAssignmentsParser = ParserFactory.create(StopAssignmentParser.class.getName());
 		stopAssignmentsParser.parse(context);
 	}
 
