@@ -100,6 +100,10 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 				chain.add(parser);
 				if (withDao && !parameters.isNoSave()) {
 
+					// Clean existing
+					Command clean = CommandFactory.create(initialContext, RegtoppLineDeleteCommand.class.getName());
+					chain.add(clean);
+
 					// register
 					Command register = CommandFactory.create(initialContext, LineRegisterCommand.class.getName());
 					chain.add(register);
@@ -156,6 +160,11 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 
 		List<Command> commands = new ArrayList<>();
 		try {
+			
+			// Remove old line definitions from same date
+			commands.add(CommandFactory.create(initialContext, RegtoppRemoveObsoleteLinesCommand.class.getName()));
+			
+			
 			if (level3validation && !(parameters.getReferencesType().equalsIgnoreCase("stop_area"))) {
 				// add shared data validation
 				commands.add(CommandFactory.create(initialContext, SharedDataValidatorCommand.class.getName()));

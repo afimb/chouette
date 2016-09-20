@@ -250,7 +250,7 @@ public class Route extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "route", cascade = { CascadeType.PERSIST })
+	@OneToMany(mappedBy = "route", cascade = { CascadeType.ALL })
 	private List<JourneyPattern> journeyPatterns = new ArrayList<JourneyPattern>(0);
 
 	/**
@@ -262,7 +262,7 @@ public class Route extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "route", cascade = { CascadeType.PERSIST })
+	@OneToMany(mappedBy = "route", cascade = { CascadeType.ALL })
 	@OrderColumn(name = "position", nullable = false)
 	private List<StopPoint> stopPoints = new ArrayList<StopPoint>(0);
 

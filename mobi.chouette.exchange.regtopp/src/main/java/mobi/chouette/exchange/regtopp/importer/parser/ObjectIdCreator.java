@@ -49,6 +49,11 @@ public abstract class ObjectIdCreator {
 		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.LINE_KEY, lineId+"-"+calendarStartDate);
 	}
 
+	public static String getCalendarStartDate(String objectId) {
+		// NOTE: Must be aligned with function createLineId
+		return objectId.substring(objectId.length()-10);
+	}
+	
 	private static String createStopPointId(RegtoppImportParameters configuration, String stopPointId) {
 		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPPOINT_KEY, stopPointId);
 	}
