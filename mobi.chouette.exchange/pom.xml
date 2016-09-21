@@ -15,7 +15,14 @@
    </properties>
 	<dependencies>
 
-		<!-- Default Dependencies -->
+        <dependency>
+            <groupId>no.rutebanken</groupId>
+            <artifactId>netex-java-model</artifactId>
+            <version>0.0.7</version>
+        </dependency>
+
+
+        <!-- Default Dependencies -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -118,6 +125,16 @@
          <artifactId>modelcitizen</artifactId>
          <scope>test</scope>
       </dependency>
+
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
 
 	</dependencies>
 <!--  <build> 

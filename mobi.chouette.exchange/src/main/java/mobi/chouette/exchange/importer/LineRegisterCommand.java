@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -17,21 +18,21 @@ import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
+import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.PropertyNames;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.exchange.importer.updater.LineOptimiser;
 import mobi.chouette.exchange.importer.updater.LineUpdater;
+import mobi.chouette.exchange.importer.updater.NeTExStopPlaceRegisterUpdater;
 import mobi.chouette.exchange.importer.updater.Updater;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.LineError;
 import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.VehicleJourney;
-import mobi.chouette.model.VehicleJourneyAtStop;
+import mobi.chouette.model.*;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -50,10 +51,16 @@ public class LineRegisterCommand implements Command {
 	private LineDAO lineDAO;
 
 	@EJB
+	private ContenerChecker checker;
+
+	@EJB
 	private VehicleJourneyDAO vehicleJourneyDAO;
 
 	@EJB(beanName = LineUpdater.BEAN_NAME)
 	private Updater<Line> lineUpdater;
+
+	@EJB(beanName = NeTExStopPlaceRegisterUpdater.BEAN_NAME)
+	private Updater<Map<String, StopArea>> stopPlaceRegisterUpdater;
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -70,6 +77,13 @@ public class LineRegisterCommand implements Command {
 		context.put(CACHE, cache);
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
+
+		boolean shouldUpdateStopPlaceRegistry = Boolean.parseBoolean(System.getProperty(checker.getContext() + PropertyNames.STOP_PLACE_REGISTER_UPDATE));
+		if(shouldUpdateStopPlaceRegistry) {
+			stopPlaceRegisterUpdater.update(context, referential.getStopAreas(), referential.getStopAreas());
+		} else {
+			log.warn("Property " + PropertyNames.STOP_PLACE_REGISTER_UPDATE + " is not set. Stop Place register will not be updated.");
+		}
 
 		Line newValue = referential.getLines().values().iterator().next();
 		log.info("register line : " + newValue.getObjectId() + " " + newValue.getName() + " vehicleJourney count = "

@@ -8,8 +8,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.target>1.7</maven.compiler.target>
-		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
 		<wildfly.version>8.2.0.Final</wildfly.version>
 		<version.wildfly.maven.plugin>1.0.2.Final</version.wildfly.maven.plugin>
 		<version.compiler.plugin>3.2</version.compiler.plugin>
@@ -24,6 +24,8 @@
 		<hibernate-spatial.version>4.3</hibernate-spatial.version>
 		<jts.version>1.13</jts.version>
 		<arquillian-version>1.1.7.Final</arquillian-version>
+		<lombok-version>1.16.8</lombok-version>
+		<lombok-maven-plugin-version>1.16.8.0</lombok-maven-plugin-version>
 		<project.rootDir>${project.basedir}</project.rootDir>
 	</properties>
 	<distributionManagement>
@@ -264,7 +266,7 @@
 			<plugin>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok-maven-plugin</artifactId>
-				<version>1.12.4.0</version>
+				<version>${lombok-maven-plugin-version}</version>
 				<dependencies>
 					<dependency>
 						<groupId>sun.jdk</groupId>
@@ -316,7 +318,7 @@
 							<value>http://docs.oracle.com/javase/7/docs/api/</value>
 						</property>
 					</javaApiLinks>
-					<source>1.7</source>
+					<source>1.8</source>
 					<skip>${skipDelombok}</skip>
 				</configuration>
 				<executions>
@@ -404,7 +406,7 @@
 									<pluginExecutionFilter>
 										<groupId>org.projectlombok</groupId>
 										<artifactId>lombok-maven-plugin</artifactId>
-										<versionRange>[1.12.4.0,)</versionRange>
+										<versionRange>[{lombok-maven-plugin-version},)</versionRange>
 										<goals>
 											<goal>delombok</goal>
 										</goals>
@@ -661,7 +663,7 @@
 			<dependency>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok</artifactId>
-				<version>1.14.8</version>
+				<version>${lombok-version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.jamonapi</groupId>
@@ -726,7 +728,6 @@
 				<artifactId>gt-epsg-hsql</artifactId>
 				<version>10.5</version>
 			</dependency>
-
 		</dependencies>
 
 	</dependencyManagement>
