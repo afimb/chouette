@@ -3,6 +3,7 @@ package mobi.chouette.exchange.importer.updater.netex;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
+import no.rutebanken.netex.model.BoardingPosition;
 import no.rutebanken.netex.model.Quay;
 import no.rutebanken.netex.model.StopPlace;
 import org.apache.velocity.runtime.directive.Stop;
@@ -83,6 +84,23 @@ public class StopPlaceMapperTest {
     }
 
     @Test
+    public void boardingPositionWithParentCommercialStopPoint() {
+        StopArea commercialStopPoint = createStopArea("Otto Blehrs vei", ChouetteAreaEnum.CommercialStopPoint);
+        StopArea boardingPosition = createBoardingPosition("Otto Blehrs vei");
+
+        boardingPosition.setParent(commercialStopPoint);
+
+        StopPlace netexStopPlace = stopPlaceMapper.mapStopAreaToStopPlace(boardingPosition);
+
+        assertNotNull(netexStopPlace);
+        assertEquals(netexStopPlace.getName().getValue(), commercialStopPoint.getName());
+        assertNotNull(netexStopPlace.getQuays());
+        assertNotNull(netexStopPlace.getQuays().getQuayRefOrQuay());
+        assertEquals(netexStopPlace.getQuays().getQuayRefOrQuay().size(), 1);
+    }
+
+
+    @Test
     public void stopPlaceWithId() {
         StopArea stopPlace = createStopPlace("Hestehaugveien");
         stopPlace.setObjectId("id");
@@ -90,7 +108,6 @@ public class StopPlaceMapperTest {
 
         assertEquals(netexStopPlace.getId(), String.valueOf(stopPlace.getObjectId()));
     }
-
 
     @Test
     public void boardingPositionWithoutStopPlace() {
@@ -102,11 +119,16 @@ public class StopPlaceMapperTest {
     }
 
     private StopArea createStopPlace(String name) {
+        return createStopArea(name, ChouetteAreaEnum.StopPlace);
+    }
+
+    private StopArea createStopArea(String name, ChouetteAreaEnum chouetteAreaEnum) {
         StopArea stopPlace = new StopArea();
         stopPlace.setName(name);
-        stopPlace.setAreaType(ChouetteAreaEnum.StopPlace);
+        stopPlace.setAreaType(chouetteAreaEnum);
         return stopPlace;
     }
+
 
     private StopArea createBoardingPosition(String name) {
         StopArea boardingPosition = new StopArea();

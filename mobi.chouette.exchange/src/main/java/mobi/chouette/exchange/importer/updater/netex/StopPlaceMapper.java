@@ -11,8 +11,9 @@ public class StopPlaceMapper {
 
     public StopPlace mapStopAreaToStopPlace(StopArea stopArea) {
 
-        if(stopArea.getAreaType().equals(ChouetteAreaEnum.BoardingPosition)) {
-            if(stopArea.getParent() != null) {
+        if (stopArea.getAreaType().equals(ChouetteAreaEnum.BoardingPosition)
+                || stopArea.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint)) {
+            if (stopArea.getParent() != null) {
                 // Boarding position with parent
 
                 StopPlace parentStopPlace = mapStopAreaToStopPlace(stopArea.getParent());
