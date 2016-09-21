@@ -1,3 +1,13 @@
+# Version 3.3.3 (24/05/2016)
+* Correction 
+  * Mantis 44559: Export GTFS Shape.txt : rupture de numérotation dans la table journey_pattern_sections
+
+# Version 3.3.2 (10/05/2016)
+* Correction 
+  * Mantis 43811: Export GTFS Shape.txt : inversion latitude et longitude
+  * Mantis 43813: Export GTFS: colonne shape_dist_travelled obligatoire dans shape.txt
+  * Mantis 43815: Export GTFS Shape.txt : tracés réels non pris en comptes dans certains cas
+
 # Version 3.3.1 (07/04/2016)
 * Nouvelles fonctionnalités :
   * export SIG : nouvel export combinant les format KML et GeoJson

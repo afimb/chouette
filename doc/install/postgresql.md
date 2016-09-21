@@ -30,4 +30,4 @@ use [chouette.sql](./src/main/sql/chouette.sql) script :
 ```sh
 psql -h 127.0.0.1 -U chouette -v SCH=<schema_name>  -d chouette2 -f chouette.sql
 ```
-where <schema_name> is your referential (dataspace) name (lowercase without space)
+where `<schema_name>` is your referential (dataspace) name (lowercase without space)
