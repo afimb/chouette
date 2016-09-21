@@ -83,9 +83,10 @@ public class PublicationDeliveryParser implements Parser, Constant {
 	}
 
 	private void parseTimetableFrame(Context context, Referential referential, PublicationDeliveryStructure lineData,
-			List<PublicationDeliveryStructure> commonData, TimetableFrame frame) {
-		// TODO Auto-generated method stub
-
+			List<PublicationDeliveryStructure> commonData, TimetableFrame frame) throws Exception {
+        context.put(NETEX_LINE_DATA_CONTEXT, frame);
+        Parser timetableParser = ParserFactory.create(TimetableParser.class.getName());
+        timetableParser.parse(context);
 	}
 
 	private void parseServiceCalendarFrame(Context context, Referential referential, PublicationDeliveryStructure lineData,
@@ -94,7 +95,8 @@ public class PublicationDeliveryParser implements Parser, Constant {
 
 	}
 
-	private void parseSiteFrame(Context context, Referential referential, PublicationDeliveryStructure lineData, List<PublicationDeliveryStructure> commonData, SiteFrame siteFrame) {
+	private void parseSiteFrame(Context context, Referential referential, PublicationDeliveryStructure lineData,
+            List<PublicationDeliveryStructure> commonData, SiteFrame siteFrame) {
 		StopPlacesInFrame_RelStructure stopPlacesStruct = siteFrame.getStopPlaces();
 		List<StopPlace> stopPlaces = stopPlacesStruct.getStopPlace();
 		for(StopPlace stopPlace : stopPlaces) {
@@ -103,8 +105,6 @@ public class PublicationDeliveryParser implements Parser, Constant {
 			s.setRegistrationNumber(stopPlace.getShortName().getValue());
 		}
 	}
-	
-	
 
 	private void parseServiceFrame(Context context, Referential referential, PublicationDeliveryStructure lineData,
 			List<PublicationDeliveryStructure> commonData, ServiceFrame serviceFrame) throws Exception {
