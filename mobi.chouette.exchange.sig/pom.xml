@@ -3,7 +3,7 @@
   <parent>
     <groupId>mobi.chouette</groupId>
     <artifactId>mobi.chouette</artifactId>
-    <version>3.3.3</version>
+    <version>3.4.RB-SNAPSHOT</version>
   </parent>
   <artifactId>mobi.chouette.exchange.sig</artifactId>
   <packaging>ejb</packaging>
