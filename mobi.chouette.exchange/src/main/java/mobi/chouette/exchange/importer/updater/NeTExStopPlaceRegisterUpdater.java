@@ -16,6 +16,7 @@ import javax.ejb.Stateless;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -92,7 +93,7 @@ public class NeTExStopPlaceRegisterUpdater implements Updater<Map<String, StopAr
 
         PublicationDeliveryStructure publicationDelivery = new PublicationDeliveryStructure()
                 .withDescription(new MultilingualString().withValue("Publication delivery from chouette").withLang("no").withTextIdType(""))
-                .withPublicationTimestamp(ZonedDateTime.now())
+                .withPublicationTimestamp(OffsetDateTime.now())
                 .withParticipantRef("participantRef")
                 .withDataObjects(
                         new PublicationDeliveryStructure.DataObjects()
