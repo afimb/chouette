@@ -1,18 +1,13 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.exchange.importer.ParserUtils;
+import mobi.chouette.model.type.*;
+import org.apache.commons.lang.StringUtils;
+
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.exchange.importer.ParserUtils;
-import mobi.chouette.model.type.ConnectionLinkTypeEnum;
-import mobi.chouette.model.type.DayTypeEnum;
-import mobi.chouette.model.type.PTDirectionEnum;
-import mobi.chouette.model.type.PTNetworkSourceTypeEnum;
-import mobi.chouette.model.type.TransportModeNameEnum;
-
-import org.apache.commons.lang.StringUtils;
 
 @Log4j
 public class NetexUtils extends ParserUtils {

@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 
 import javax.xml.bind.JAXBElement;
 import java.util.List;
+import java.util.Map;
 
 @Log4j
 public class RouteParser implements Parser, Constant {
@@ -24,11 +25,11 @@ public class RouteParser implements Parser, Constant {
         List<JAXBElement<? extends LinkSequence_VersionStructure>> routesStructure = contextData.getRoute_();
         for (JAXBElement<? extends LinkSequence_VersionStructure> jaxbElement : routesStructure) {
             no.rutebanken.netex.model.Route netexRoute = (no.rutebanken.netex.model.Route) jaxbElement.getValue();
-            parseRoute(referential, netexRoute);
+            parseRoute(context, referential, netexRoute);
         }
     }
 
-    private void parseRoute(Referential referential, no.rutebanken.netex.model.Route netexRoute) {
+    private void parseRoute(Context context, Referential referential, no.rutebanken.netex.model.Route netexRoute) {
         mobi.chouette.model.Route chouetteRoute = ObjectFactory.getRoute(referential, netexRoute.getId());
 
         // chouetteRoute.setName(netexRoute.getName().getValue()); // not a part of norwegian profile
@@ -45,38 +46,35 @@ public class RouteParser implements Parser, Constant {
                 }
             }
         }
-        parsePointsInSequence(referential, netexRoute, chouetteRoute);
+        parsePointsInSequence(context, referential, netexRoute, chouetteRoute);
     }
 
-    private void parsePointsInSequence(Referential referential, no.rutebanken.netex.model.Route netexRoute, mobi.chouette.model.Route chouetteRoute) {
+    private void parsePointsInSequence(Context context, Referential referential, no.rutebanken.netex.model.Route netexRoute, mobi.chouette.model.Route chouetteRoute) {
         PointsOnRoute_RelStructure pointsInSequence = netexRoute.getPointsInSequence();
         List<PointOnRoute> pointsOnRoute = pointsInSequence.getPointOnRoute();
         for (PointOnRoute pointOnRoute : pointsOnRoute) {
-            parsePointOnRoute(referential, pointOnRoute, chouetteRoute);
+            parsePointOnRoute(context, referential, pointOnRoute, chouetteRoute);
         }
     }
 
-    private void parsePointOnRoute(Referential referential, PointOnRoute pointOnRoute, mobi.chouette.model.Route chouetteRoute) {
-        StopPoint stopPoint = ObjectFactory.getStopPoint(referential, getStopPointObjectId(chouetteRoute, pointOnRoute.getId()));
-        stopPoint.setRoute(chouetteRoute);
-        stopPoint.setFilled(true);
-        // LinkSequenceRefStructure linkSequenceRefStructure = pointOnRoute.getLinkSequenceRef().getValue(); // how to handle in chouette? (optional)
-        // PointRefStructure pointRefStructure = pointOnRoute.getPointRef().getValue(); // how to handle in chouette? (mandatory)
-        // List<JAXBElement<?>> projectionRefOrProjection = pointOnRoute.getProjections().getProjectionRefOrProjection(); // how to handle in chouette? (optional)
-    }
-
-    // TODO: find out how to retrieve the stoppoint id
-    private String getStopPointObjectId(mobi.chouette.model.Route route, String pointOnRouteId) {
-/*
-        String prefix = NetexUtils.objectIdPrefix(route.getObjectId());
-        Matcher m = Pattern.compile("\\S+:\\S+:(\\S+)-\\d+$").matcher(pointOnRouteId);
-        if (!m.matches()) {
-            throw new RuntimeException("PointOnRoute.id " + pointOnRouteId);
+    private void parsePointOnRoute(Context context, Referential referential, PointOnRoute pointOnRoute, mobi.chouette.model.Route chouetteRoute) {
+        JAXBElement<? extends PointRefStructure> pointRefStructElement = pointOnRoute.getPointRef();
+        if (pointRefStructElement != null) {
+            PointRefStructure pointRefStructure = pointRefStructElement.getValue();
+            String pointRefStructureRef = pointRefStructure.getRef();
+            Map<String, Object> cachedNetexData = (Map<String, Object>) context.get(NETEX_LINE_DATA_ID_CONTEXT);
+            RoutePoint routePoint = (RoutePoint) cachedNetexData.get(pointRefStructureRef);
+            Projections_RelStructure projections = routePoint.getProjections();
+            List<JAXBElement<?>> pointProjectionElements = projections.getProjectionRefOrProjection();
+            for (JAXBElement<?> pointProjectionElement : pointProjectionElements) {
+                PointProjection pointProjection = (PointProjection) pointProjectionElement.getValue();
+                PointRefStructure projectedPointRef = pointProjection.getProjectedPointRef();
+                String projectedPointRefValue = projectedPointRef.getRef();
+                StopPoint stopPoint = ObjectFactory.getStopPoint(referential, projectedPointRefValue);
+                stopPoint.setRoute(chouetteRoute);
+                stopPoint.setFilled(true);
+            }
         }
-        String id = m.group(1);
-        return prefix + ":StopPoint:" + id;
-*/
-        return pointOnRouteId;
     }
 
     static {

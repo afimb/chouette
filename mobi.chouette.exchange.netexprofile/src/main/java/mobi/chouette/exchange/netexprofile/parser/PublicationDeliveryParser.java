@@ -6,13 +6,17 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import no.rutebanken.netex.model.*;
 
 import javax.xml.bind.JAXBElement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Log4j
 public class PublicationDeliveryParser implements Parser, Constant {
@@ -22,19 +26,22 @@ public class PublicationDeliveryParser implements Parser, Constant {
 
 		// Convert from NETEX java objects to Chouette objects
 
-		PublicationDeliveryStructure lineData = (PublicationDeliveryStructure) context.get(mobi.chouette.exchange.netexprofile.Constant.NETEX_LINE_DATA_JAVA);
+		PublicationDeliveryStructure lineData = (PublicationDeliveryStructure) context.get(NETEX_LINE_DATA_JAVA);
 		@SuppressWarnings("unchecked")
 		List<PublicationDeliveryStructure> commonData = (List<PublicationDeliveryStructure>) context
 				.get(mobi.chouette.exchange.netexprofile.Constant.NETEX_COMMON_DATA);
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
+		Map<String, Object> cachedNetexData = new HashMap<String, Object>();
+		context.put(NETEX_LINE_DATA_ID_CONTEXT, cachedNetexData);
+
 		for (Object frame : findFrames(ResourceFrame.class, lineData, commonData)) {
 			parseResourceFrame(context, referential, lineData, commonData, (ResourceFrame) frame);
 		}
 
 		for (Object frame : findFrames(SiteFrame.class, lineData, commonData)) {
-			parseSiteFrame(context, referential, lineData, commonData, (SiteFrame) frame);
+			//parseSiteFrame(context, referential, lineData, commonData, (SiteFrame) frame);
 		}
 
 		for (Object frame : findFrames(ServiceCalendarFrame.class, lineData, commonData)) {
@@ -95,55 +102,61 @@ public class PublicationDeliveryParser implements Parser, Constant {
 
 	}
 
+	// TODO: figure out all details regarding netex stopplaces, and chouette stopareas and stoppoints
 	private void parseSiteFrame(Context context, Referential referential, PublicationDeliveryStructure lineData,
             List<PublicationDeliveryStructure> commonData, SiteFrame siteFrame) {
 		StopPlacesInFrame_RelStructure stopPlacesStruct = siteFrame.getStopPlaces();
 		List<StopPlace> stopPlaces = stopPlacesStruct.getStopPlace();
 		for(StopPlace stopPlace : stopPlaces) {
-			StopArea s = ObjectFactory.getStopArea(referential, stopPlace.getId());
-			s.setName(stopPlace.getName().getValue());
-			s.setRegistrationNumber(stopPlace.getShortName().getValue());
+			StopArea stopArea = ObjectFactory.getStopArea(referential, stopPlace.getId());
+			stopArea.setName(stopPlace.getName().getValue());
+			stopArea.setRegistrationNumber(stopPlace.getShortName().getValue());
+			stopArea.setAreaType(ChouetteAreaEnum.StopPlace);
+			stopArea.setFilled(true);
+
+			// is this correct?
+			StopPoint stopPoint = ObjectFactory.getStopPoint(referential, stopPlace.getId());
+			stopPoint.setComment(stopPlace.getShortName().getValue());
+			stopPoint.setContainedInStopArea(stopArea);
+			stopPoint.setFilled(true);
 		}
 	}
 
 	private void parseServiceFrame(Context context, Referential referential, PublicationDeliveryStructure lineData,
 			List<PublicationDeliveryStructure> commonData, ServiceFrame serviceFrame) throws Exception {
-		// Parse network
+		// TODO: consider as method argument instead
+		Map<String, Object> cachedNetexData = (Map<String, Object>) context.get(NETEX_LINE_DATA_ID_CONTEXT);
+
 		Network network = serviceFrame.getNetwork();
 		mobi.chouette.model.Network ptNetwork = ObjectFactory.getPTNetwork(referential, network.getId());
 		ptNetwork.setName(network.getName().getValue());
-		
-		// Parse route points
-		RoutePointsInFrame_RelStructure routePointsStructure = serviceFrame.getRoutePoints();
-		context.put(NETEX_LINE_DATA_CONTEXT, routePointsStructure);
-		Parser routePointsParser = ParserFactory.create(RoutePointsParser.class.getName());
-		routePointsParser.parse(context);
 
-		// Parse routes
+		RoutePointsInFrame_RelStructure routePointsStructure = serviceFrame.getRoutePoints();
+		List<RoutePoint> routePoints = routePointsStructure.getRoutePoint();
+		for (RoutePoint routePoint : routePoints) {
+			cachedNetexData.put(routePoint.getId(), routePoint);
+		}
+
 		RoutesInFrame_RelStructure routesStructure = serviceFrame.getRoutes();
 		context.put(NETEX_LINE_DATA_CONTEXT, routesStructure);
 		Parser routeParser = ParserFactory.create(RouteParser.class.getName());
 		routeParser.parse(context);
 
-		// Parse lines
 		LinesInFrame_RelStructure linesStructure = serviceFrame.getLines();
 		context.put(NETEX_LINE_DATA_CONTEXT, linesStructure);
 		Parser lineParser = ParserFactory.create(LineParser.class.getName());
 		lineParser.parse(context);
 
-		// Parse scheduled stop points
 		ScheduledStopPointsInFrame_RelStructure scheduledStopPointsStructure = serviceFrame.getScheduledStopPoints();
 		context.put(NETEX_LINE_DATA_CONTEXT, scheduledStopPointsStructure);
 		Parser scheduledStopPointsParser = ParserFactory.create(ScheduledStopPointParser.class.getName());
 		scheduledStopPointsParser.parse(context);
 
-		// Parse stop assignments
 		StopAssignmentsInFrame_RelStructure stopAssignmentsStructure = serviceFrame.getStopAssignments();
 		context.put(NETEX_LINE_DATA_CONTEXT, stopAssignmentsStructure);
 		Parser stopAssignmentsParser = ParserFactory.create(StopAssignmentParser.class.getName());
 		stopAssignmentsParser.parse(context);
 
-		// Parse journey patterns
         JourneyPatternsInFrame_RelStructure journeyPatternsStructure = serviceFrame.getJourneyPatterns();
 		context.put(NETEX_LINE_DATA_CONTEXT, journeyPatternsStructure);
         Parser journeyPatternParser = ParserFactory.create(JourneyPatternParser.class.getName());
@@ -154,7 +167,7 @@ public class PublicationDeliveryParser implements Parser, Constant {
 			List<PublicationDeliveryStructure> commonData, ResourceFrame resourceFrame) throws Exception {
 		OrganisationsInFrame_RelStructure organisationsStructure = resourceFrame.getOrganisations();
 		context.put(NETEX_LINE_DATA_CONTEXT, organisationsStructure);
-		Parser organisationsParser = ParserFactory.create(OrganisationsParser.class.getName());
+		Parser organisationsParser = ParserFactory.create(OrganisationParser.class.getName());
 		organisationsParser.parse(context);
 	}
 

@@ -1,16 +1,12 @@
 package mobi.chouette.exchange.netexprofile.parser.xml;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
+
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PredefinedSchemaListClasspathResourceResolver implements LSResourceResolver {
 

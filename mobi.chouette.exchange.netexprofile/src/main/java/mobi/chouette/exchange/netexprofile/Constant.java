@@ -10,6 +10,7 @@ public interface Constant extends mobi.chouette.common.Constant {
 	public static final String NETEX_LINE_DATA_JAVA = "netex_line_data_java";
 	public static final String NETEX_LINE_DATA_DOM = "netex_line_data_dom";
 	public static final String NETEX_LINE_DATA_CONTEXT = "netex_line_data_context";
+	public static final String NETEX_LINE_DATA_ID_CONTEXT = "netex_line_data_id_context";
 	public static final String NETEX_PROFILE_VALIDATOR = "netext_profile_validator";
 
 

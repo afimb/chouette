@@ -8,13 +8,16 @@ import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.*;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.Route;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import no.rutebanken.netex.model.*;
+import org.apache.commons.lang.StringUtils;
 
 import javax.xml.bind.JAXBElement;
 import java.util.List;
+import java.util.Map;
 
 @Log4j
 public class TimetableParser implements Parser, Constant {
@@ -22,6 +25,7 @@ public class TimetableParser implements Parser, Constant {
     @Override
     public void parse(Context context) throws Exception {
         Referential referential = (Referential) context.get(REFERENTIAL);
+        PublicationDeliveryStructure lineData = (PublicationDeliveryStructure) context.get(NETEX_LINE_DATA_JAVA);
         TimetableFrame timetableFrame = (TimetableFrame) context.get(NETEX_LINE_DATA_CONTEXT);
         Timetable timetable = ObjectFactory.getTimetable(referential, timetableFrame.getId());
 
@@ -35,7 +39,7 @@ public class TimetableParser implements Parser, Constant {
         }
         JourneysInFrame_RelStructure vehicleJourneysStruct = timetableFrame.getVehicleJourneys();
         if (vehicleJourneysStruct != null) {
-            parseVehicleJourneys(referential, vehicleJourneysStruct);
+            parseVehicleJourneys(context, referential, lineData, timetable, vehicleJourneysStruct);
         }
         referential.getTimetables().put(timetable.getObjectId(), timetable);
         timetable.setFilled(true);
@@ -56,15 +60,16 @@ public class TimetableParser implements Parser, Constant {
         }
     }
 
-    private void parseVehicleJourneys(Referential referential, JourneysInFrame_RelStructure vehicleJourneysStruct) throws Exception {
+    private void parseVehicleJourneys(Context context, Referential referential, PublicationDeliveryStructure lineData, Timetable timetable, JourneysInFrame_RelStructure vehicleJourneysStruct) throws Exception {
         List<Journey_VersionStructure> serviceJourneyStructs = vehicleJourneysStruct.getDatedServiceJourneyOrDeadRunOrServiceJourney();
         for (Journey_VersionStructure serviceJourneyStruct : serviceJourneyStructs) {
             ServiceJourney serviceJourney = (ServiceJourney) serviceJourneyStruct;
-            parseServiceJourney(referential, serviceJourney);
+            parseServiceJourney(context, referential, lineData, timetable, serviceJourney);
         }
     }
 
-    private void parseServiceJourney(Referential referential, ServiceJourney serviceJourney) throws Exception {
+    // TODO: consider getting all higher-level-objects from referential instead (like Timetable in this method) of sending references forward and down the method stack
+    private void parseServiceJourney(Context context, Referential referential, PublicationDeliveryStructure lineData, Timetable timetable, ServiceJourney serviceJourney) throws Exception {
         VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, serviceJourney.getId());
         JourneyPattern journeyPattern = null;
 
@@ -92,7 +97,26 @@ public class TimetableParser implements Parser, Constant {
             vehicleJourney.setCompany(company);
         }
 
-        // TODO: consider if we should have a RouteRef in ServiceJourney instead of LineRef, chouette model only supports references to Routes
+        // We actually must have a RouteRef in each ServiceJourney instance, if not we get a np in VehicleJourneyUpdater#update:208
+        // TODO: probably need schema change too, as RouteRef is not a valid element of a ServiceJourney in the NO-profile
+        RouteRefStructure routeRefStruct = serviceJourney.getRouteRef();
+        if (routeRefStruct != null) {
+            String routeId = routeRefStruct.getRef();
+            Route route = ObjectFactory.getRoute(referential, routeId);
+            vehicleJourney.setRoute(route);
+        } else {
+            // TODO: remove temp else block, when RouteRef supported in NO-profile of netex
+            JAXBElement<? extends LineRefStructure> lineRefStructElement = serviceJourney.getLineRef();
+            if (lineRefStructElement != null) {
+                LineRefStructure lineRefStructure = lineRefStructElement.getValue();
+                String lineId = lineRefStructure.getRef();
+                Line line = ObjectFactory.getLine(referential, lineId);
+                Route route = line.getRoutes().get(0);
+                vehicleJourney.setRoute(route);
+            }
+        }
+
+        // TODO: must have a RouteRef in ServiceJourney instead of LineRef, chouette model only supports references to Routes
         JAXBElement<? extends LineRefStructure> lineRefStructElement = serviceJourney.getLineRef();
         if (lineRefStructElement != null) {
             LineRefStructure lineRefStructure = lineRefStructElement.getValue();
@@ -103,9 +127,14 @@ public class TimetableParser implements Parser, Constant {
 
         TimetabledPassingTimes_RelStructure timetabledPassingTimesStruct = serviceJourney.getPassingTimes();
         if (timetabledPassingTimesStruct != null) {
-            parsePassingTimes(referential, vehicleJourney, journeyPattern, timetabledPassingTimesStruct);
+            parsePassingTimes(context, referential, vehicleJourney, journeyPattern, timetabledPassingTimesStruct);
         }
         vehicleJourney.setFilled(true);
+
+        if (timetable != null) {
+            vehicleJourney.getTimetables().add(timetable);
+            timetable.addVehicleJourney(vehicleJourney);
+        }
     }
 
     private void parseDayTypes(Referential referential, DayTypeRefs_RelStructure dayTypesStruct) throws Exception {
@@ -117,27 +146,47 @@ public class TimetableParser implements Parser, Constant {
         }
     }
 
-    private void parsePassingTimes(Referential referential, VehicleJourney vehicleJourney, JourneyPattern journeyPattern, TimetabledPassingTimes_RelStructure timetabledPassingTimesStruct) throws Exception {
+    private void parsePassingTimes(Context context, Referential referential, VehicleJourney vehicleJourney, JourneyPattern journeyPattern, TimetabledPassingTimes_RelStructure timetabledPassingTimesStruct) throws Exception {
         List<TimetabledPassingTime> timetabledPassingTimes = timetabledPassingTimesStruct.getTimetabledPassingTime();
         if (timetabledPassingTimes != null && timetabledPassingTimes.size() > 0) {
             for (TimetabledPassingTime timetabledPassingTime : timetabledPassingTimes) {
-                VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop();
-                vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
-                JAXBElement<? extends PointInJourneyPatternRefStructure> pointInJourneyPatternRefStructElement =
-                        timetabledPassingTime.getPointInJourneyPatternRef();
-                if (pointInJourneyPatternRefStructElement != null) {
-                    PointInJourneyPatternRefStructure pointInJourneyPatternRefStruct = pointInJourneyPatternRefStructElement.getValue();
-                    String pointInJourneyPatternId = pointInJourneyPatternRefStruct.getRef();
-                    List<StopPoint> stopPoints = journeyPattern.getStopPoints();
-                    for (StopPoint stopPoint : stopPoints) {
-                        if (stopPoint.getObjectId().equals(pointInJourneyPatternId)) {
-                            vehicleJourneyAtStop.setStopPoint(stopPoint);
+                parseTimetabledPassingTime(context, referential, vehicleJourney, journeyPattern, timetabledPassingTime);
+            }
+        }
+    }
+
+    private void parseTimetabledPassingTime(Context context, Referential referential, VehicleJourney vehicleJourney,
+            JourneyPattern journeyPattern, TimetabledPassingTime timetabledPassingTime) throws Exception {
+        VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop();
+        vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
+
+        JAXBElement<? extends PointInJourneyPatternRefStructure> pointInJourneyPatternRefStructElement =
+                timetabledPassingTime.getPointInJourneyPatternRef();
+        if (pointInJourneyPatternRefStructElement != null) {
+            PointInJourneyPatternRefStructure pointInJourneyPatternRefStruct = pointInJourneyPatternRefStructElement.getValue();
+            String pointInJourneyPatternId = pointInJourneyPatternRefStruct.getRef();
+            Map<String, Object> cachedNetexData = (Map<String, Object>) context.get(NETEX_LINE_DATA_ID_CONTEXT);
+            StopPointInJourneyPattern stopPointInJourneyPattern = (StopPointInJourneyPattern) cachedNetexData.get(pointInJourneyPatternId);
+            if (stopPointInJourneyPattern != null) {
+                JAXBElement<? extends ScheduledStopPointRefStructure> scheduledStopPointRefElement = stopPointInJourneyPattern.getScheduledStopPointRef();
+                if (scheduledStopPointRefElement != null) {
+                    ScheduledStopPointRefStructure scheduledStopPointRefStruct = scheduledStopPointRefElement.getValue();
+                    if (scheduledStopPointRefStruct != null) {
+                        String scheduledStopPointRefValue= scheduledStopPointRefStruct.getRef();
+                        if (StringUtils.isNotEmpty(scheduledStopPointRefValue)) {
+                            List<StopPoint> stopPoints = journeyPattern.getStopPoints();
+                            for (StopPoint stopPoint : stopPoints) {
+                                if (stopPoint.getObjectId().equals(scheduledStopPointRefValue)) {
+                                    vehicleJourneyAtStop.setStopPoint(stopPoint);
+                                }
+                            }
                         }
                     }
                 }
-                // TODO: add arrival and departure times here, first merge with rutebanken_develop to support jdk 8, and new date/time api
             }
         }
+        vehicleJourney.getVehicleJourneyAtStops().add(vehicleJourneyAtStop);
+        // TODO: add arrival and departure times here, first merge with rutebanken_develop to support jdk 8, and new date/time api
     }
 
     static {

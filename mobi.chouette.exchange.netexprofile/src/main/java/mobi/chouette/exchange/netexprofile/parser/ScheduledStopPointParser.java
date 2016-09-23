@@ -21,16 +21,11 @@ public class ScheduledStopPointParser implements Parser, Constant {
     @Override
     public void parse(Context context) throws Exception {
         Referential referential = (Referential) context.get(REFERENTIAL);
-
-        //StopPointValidator validator = (StopPointValidator) ValidatorFactory.create(StopPointValidator.class.getName(), context); // enable this validator?
-
         ScheduledStopPointsInFrame_RelStructure contextData = (ScheduledStopPointsInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
         List<ScheduledStopPoint> scheduledStopPoints = contextData.getScheduledStopPoint();
         for (ScheduledStopPoint scheduledStopPoint : scheduledStopPoints) {
             parseScheduledStopPoint(referential, scheduledStopPoint);
         }
-
-        // validator.addLocation(context, stopPoint, lineNumber, columnNumber); // enable if validator is enabled
     }
 
     private void parseScheduledStopPoint(Referential referential, ScheduledStopPoint scheduledStopPoint) {
@@ -44,7 +39,6 @@ public class ScheduledStopPointParser implements Parser, Constant {
                 stopPoint.setComment(scheduledStopPointNameValue);
             }
         }
-
         stopPoint.setFilled(true);
     }
 

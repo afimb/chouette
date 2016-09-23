@@ -10,9 +10,11 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import no.rutebanken.netex.model.*;
+import org.apache.commons.lang.StringUtils;
 
 import javax.xml.bind.JAXBElement;
 import java.util.List;
+import java.util.Map;
 
 @Log4j
 public class JourneyPatternParser implements Parser, Constant {
@@ -24,17 +26,18 @@ public class JourneyPatternParser implements Parser, Constant {
         List<JAXBElement<?>> journeyPatternElements = contextData.getJourneyPattern_OrJourneyPatternView();
         for (JAXBElement<?> journeyPatternElement : journeyPatternElements) {
             no.rutebanken.netex.model.JourneyPattern journeyPattern = (no.rutebanken.netex.model.JourneyPattern) journeyPatternElement.getValue();
-            parseJourneyPattern(referential, journeyPattern);
+            parseJourneyPattern(context, referential, journeyPattern);
         }
     }
 
-    private void parseJourneyPattern(Referential referential, no.rutebanken.netex.model.JourneyPattern netexJourneyPattern) {
+    private void parseJourneyPattern(Context context, Referential referential, no.rutebanken.netex.model.JourneyPattern netexJourneyPattern) {
         mobi.chouette.model.JourneyPattern chouetteJourneyPattern = ObjectFactory.getJourneyPattern(referential, netexJourneyPattern.getId());
 
         // optional
         RouteRefStructure routeRefStruct = netexJourneyPattern.getRouteRef();
+        Route route = null;
         if (routeRefStruct != null) {
-            Route route = ObjectFactory.getRoute(referential, routeRefStruct.getRef());
+            route = ObjectFactory.getRoute(referential, routeRefStruct.getRef());
             chouetteJourneyPattern.setRoute(route);
         }
 
@@ -44,7 +47,9 @@ public class JourneyPatternParser implements Parser, Constant {
             List<PointInLinkSequence_VersionedChildStructure> pointsInLinkSequence = pointsInSequenceStruct.getPointInJourneyPatternOrStopPointInJourneyPatternOrTimingPointInJourneyPattern();
             for (PointInLinkSequence_VersionedChildStructure pointInLinkSequence : pointsInLinkSequence) {
                 StopPointInJourneyPattern stopPointInJourneyPattern = (StopPointInJourneyPattern) pointInLinkSequence;
-                parseStopPointInJourneyPattern(referential, stopPointInJourneyPattern, chouetteJourneyPattern);
+                Map<String, Object> cachedNetexData = (Map<String, Object>) context.get(NETEX_LINE_DATA_ID_CONTEXT);
+                cachedNetexData.put(stopPointInJourneyPattern.getId(), stopPointInJourneyPattern);
+                parseStopPointInJourneyPattern(referential, route, stopPointInJourneyPattern, chouetteJourneyPattern);
             }
         }
         List<StopPoint> stopPoints = chouetteJourneyPattern.getStopPoints();
@@ -62,8 +67,18 @@ public class JourneyPatternParser implements Parser, Constant {
         referential.getJourneyPatterns().put(chouetteJourneyPattern.getObjectId(), chouetteJourneyPattern);
     }
 
-    private void parseStopPointInJourneyPattern(Referential referential, StopPointInJourneyPattern stopPointInJourneyPattern, mobi.chouette.model.JourneyPattern chouetteJourneyPattern) {
-        StopPoint stopPoint = ObjectFactory.getStopPoint(referential, stopPointInJourneyPattern.getId());
+    private void parseStopPointInJourneyPattern(Referential referential, Route route, StopPointInJourneyPattern stopPointInJourneyPattern, mobi.chouette.model.JourneyPattern chouetteJourneyPattern) {
+        StopPoint stopPoint = null;
+        JAXBElement<? extends ScheduledStopPointRefStructure> scheduledStopPointRefElement = stopPointInJourneyPattern.getScheduledStopPointRef();
+        if (scheduledStopPointRefElement != null) {
+            ScheduledStopPointRefStructure scheduledStopPointRefStruct = scheduledStopPointRefElement.getValue();
+            if (scheduledStopPointRefStruct != null) {
+                String scheduledStopPointRefValue= scheduledStopPointRefStruct.getRef();
+                if (StringUtils.isNotEmpty(scheduledStopPointRefValue)) {
+                    stopPoint = ObjectFactory.getStopPoint(referential, scheduledStopPointRefValue);
+                }
+            }
+        }
         chouetteJourneyPattern.addStopPoint(stopPoint);
     }
 

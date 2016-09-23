@@ -19,7 +19,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 @Log4j
-public class OrganisationsParser implements Parser, Constant {
+public class OrganisationParser implements Parser, Constant {
 
     private XPathFactory factory = XPathFactory.newInstance();
 
@@ -95,8 +95,8 @@ public class OrganisationsParser implements Parser, Constant {
     }
 
     static {
-        ParserFactory.register(OrganisationsParser.class.getName(), new ParserFactory() {
-            private OrganisationsParser instance = new OrganisationsParser();
+        ParserFactory.register(OrganisationParser.class.getName(), new ParserFactory() {
+            private OrganisationParser instance = new OrganisationParser();
 
             @Override
             protected Parser create() {
