@@ -60,7 +60,7 @@ public class LineRegisterCommand implements Command {
 	private Updater<Line> lineUpdater;
 
 	@EJB(beanName = NeTExStopPlaceRegisterUpdater.BEAN_NAME)
-	private Updater<Map<String, StopArea>> stopPlaceRegisterUpdater;
+	private NeTExStopPlaceRegisterUpdater stopPlaceRegisterUpdater;
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -80,7 +80,7 @@ public class LineRegisterCommand implements Command {
 
 		boolean shouldUpdateStopPlaceRegistry = Boolean.parseBoolean(System.getProperty(checker.getContext() + PropertyNames.STOP_PLACE_REGISTER_UPDATE));
 		if(shouldUpdateStopPlaceRegistry) {
-			stopPlaceRegisterUpdater.update(context, referential.getStopAreas(), referential.getStopAreas());
+			stopPlaceRegisterUpdater.update(context, referential);
 		} else {
 			log.warn("Property " + PropertyNames.STOP_PLACE_REGISTER_UPDATE + " is not set. Stop Place register will not be updated.");
 		}
