@@ -1,9 +1,13 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
+import java.sql.Date;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.XPPUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.*;
 import mobi.chouette.model.JourneyPattern;
@@ -14,8 +18,11 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import no.rutebanken.netex.model.*;
 import org.apache.commons.lang.StringUtils;
+import org.xmlpull.v1.XmlPullParser;
 
 import javax.xml.bind.JAXBElement;
+import java.sql.Date;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +42,7 @@ public class TimetableParser implements Parser, Constant {
 
         ValidityConditions_RelStructure validityConditions = timetableFrame.getValidityConditions();
         if (validityConditions != null) {
-            parseValidityConditions(referential, validityConditions);
+            parseValidityConditions(referential, timetable, validityConditions);
         }
         JourneysInFrame_RelStructure vehicleJourneysStruct = timetableFrame.getVehicleJourneys();
         if (vehicleJourneysStruct != null) {
@@ -45,7 +52,7 @@ public class TimetableParser implements Parser, Constant {
         timetable.setFilled(true);
     }
 
-    private void parseValidityConditions(Referential referential, ValidityConditions_RelStructure validityConditions)  throws Exception {
+    private void parseValidityConditions(Referential referential, Timetable timetable, ValidityConditions_RelStructure validityConditions)  throws Exception {
         List<Object> availabilityConditionElements = validityConditions.getValidityConditionRefOrValidBetweenOrValidityCondition_();
         // should iterate all availability conditions, for now only retrieving first occurrence
 /*
@@ -55,8 +62,12 @@ public class TimetableParser implements Parser, Constant {
 */
         if (availabilityConditionElements != null && availabilityConditionElements.size() > 0) {
             AvailabilityCondition availabilityCondition = ((JAXBElement<AvailabilityCondition>) availabilityConditionElements.get(0)).getValue();
-            // TODO: solve problem with jdk 8 specific classes in netex-java-model
-            //java.time.OffsetDateTime fromDate = availabilityCondition.getFromDate();
+            OffsetDateTime fromDate = availabilityCondition.getFromDate();
+            OffsetDateTime toDate = availabilityCondition.getToDate();
+            Date startOfPeriod = ParserUtils.getSQLDate(fromDate.toString());
+            Date endOfPeriod = ParserUtils.getSQLDate(toDate.toString());
+            Period period = new Period(startOfPeriod, endOfPeriod);
+            timetable.addPeriod(period);
         }
     }
 
