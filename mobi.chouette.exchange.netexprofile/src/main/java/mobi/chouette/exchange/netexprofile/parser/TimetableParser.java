@@ -1,10 +1,7 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
-import java.sql.Date;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.XPPUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
@@ -18,16 +15,22 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import no.rutebanken.netex.model.*;
 import org.apache.commons.lang.StringUtils;
-import org.xmlpull.v1.XmlPullParser;
 
 import javax.xml.bind.JAXBElement;
 import java.sql.Date;
+import java.sql.Time;
 import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 
 @Log4j
 public class TimetableParser implements Parser, Constant {
+
+    private static final ZoneId UTC = ZoneId.of("UTC");
+    private static final ZoneId LOCAL_ZONE_ID = ZoneId.of("Europe/Oslo");
 
     @Override
     public void parse(Context context) throws Exception {
@@ -79,13 +82,12 @@ public class TimetableParser implements Parser, Constant {
         }
     }
 
-    // TODO: consider getting all higher-level-objects from referential instead (like Timetable in this method) of sending references forward and down the method stack
-    private void parseServiceJourney(Context context, Referential referential, PublicationDeliveryStructure lineData, Timetable timetable, ServiceJourney serviceJourney) throws Exception {
+    private void parseServiceJourney(Context context, Referential referential, PublicationDeliveryStructure lineData,
+            Timetable timetable, ServiceJourney serviceJourney) throws Exception {
         VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, serviceJourney.getId());
         JourneyPattern journeyPattern = null;
 
-        // java.time.OffsetTime departureTime = serviceJourney.getDepartureTime(); // how to handle in chouette (jdk 8 classes)?
-
+        OffsetTime departureTime = serviceJourney.getDepartureTime();
         DayTypeRefs_RelStructure dayTypesStruct = serviceJourney.getDayTypes();
         if (dayTypesStruct != null) {
             parseDayTypes(referential, dayTypesStruct);
@@ -197,7 +199,32 @@ public class TimetableParser implements Parser, Constant {
             }
         }
         vehicleJourney.getVehicleJourneyAtStops().add(vehicleJourneyAtStop);
-        // TODO: add arrival and departure times here, first merge with rutebanken_develop to support jdk 8, and new date/time api
+
+        // TODO: The challenge here is to treat all arrival and departure times with the correct offsets, because daylightsavings (winter/summer time)
+        // CET time (winter) 2009-12-31T16:00:00 corresponds to 2009-12-31T17:00:00 in norwegian local time, +01:00
+        // CEST TIME (summer) 2009-06-23T16:00:00 corresponds to 2009-12-31T18:00:00 in norwegian local time, +02:00
+        // We are fetching aviation data for 4 months, which means arrival and departure times can be different for the same flight in different daylightsavings
+        // consider doing the date conversion on integration part instead (extime), and set the correct localtime before converting to netex
+        // Oslo is one hour ahead of Greenwich/UTC in winter and two hours ahead in summer.
+        // The ZoneId instance for Oslo will reference two ZoneOffset instances - a +01:00 instance for winter, and a +02:00 instance for summer.
+
+        // following is a temporary solution for handling incoming data in UTC
+        OffsetTime arrivalTime = timetabledPassingTime.getArrivalTime();
+        if (arrivalTime != null) {
+            ZoneOffset zoneOffset = arrivalTime.getOffset();
+            if (zoneOffset.equals(ZoneOffset.UTC)) {
+                Time localArrivalTime = NetexUtils.convertToSqlTime(arrivalTime, NetexUtils.getZoneOffset(LOCAL_ZONE_ID));
+                vehicleJourneyAtStop.setArrivalTime(localArrivalTime);
+            }
+        }
+        OffsetTime departureTime = timetabledPassingTime.getDepartureTime();
+        if (departureTime != null) {
+            ZoneOffset zoneOffset = departureTime.getOffset();
+            if (zoneOffset.equals(ZoneOffset.UTC)) {
+                Time localDepartureTime = NetexUtils.convertToSqlTime(departureTime, NetexUtils.getZoneOffset(LOCAL_ZONE_ID));
+                vehicleJourneyAtStop.setDepartureTime(localDepartureTime);
+            }
+        }
     }
 
     static {

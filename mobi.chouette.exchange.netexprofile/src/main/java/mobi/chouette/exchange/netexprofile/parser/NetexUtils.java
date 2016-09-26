@@ -6,6 +6,8 @@ import mobi.chouette.model.type.*;
 import org.apache.commons.lang.StringUtils;
 
 import java.sql.Date;
+import java.sql.Time;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -184,5 +186,28 @@ public class NetexUtils extends ParserUtils {
 		return result;
 	}
 
+	// TODO: consider moving up to superclass
+	public static ZoneOffset getZoneOffset(ZoneId zoneId) {
+		if (zoneId == null) {
+			return null;
+		}
+		return zoneId.getRules().getOffset(Instant.now(Clock.system(zoneId)));
+	}
+
+	// TODO: consider moving up to superclass
+	public static Time convertToSqlTime(OffsetTime offsetTime) {
+		if(offsetTime == null){
+			return null;
+		}
+		return Time.valueOf(offsetTime.withOffsetSameInstant(ZoneOffset.UTC).toLocalTime());
+	}
+
+	// TODO: consider moving up to superclass
+	public static Time convertToSqlTime(OffsetTime offsetTime, ZoneOffset zoneOffset) {
+		if(offsetTime == null){
+			return null;
+		}
+		return Time.valueOf(offsetTime.withOffsetSameInstant(zoneOffset).toLocalTime());
+	}
 	
 }
