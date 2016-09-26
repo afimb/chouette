@@ -97,14 +97,16 @@ public class PublicationDeliveryParser implements Parser, Constant {
 	}
 
 	private void parseServiceCalendarFrame(Context context, Referential referential, PublicationDeliveryStructure lineData,
-			List<PublicationDeliveryStructure> commonData, ServiceCalendarFrame serviceCalendarFrame) {
-		// TODO Auto-generated method stub
-
+			List<PublicationDeliveryStructure> commonData, ServiceCalendarFrame serviceCalendarFrame)  throws Exception {
+        DayTypesInFrame_RelStructure dayTypesStruct = serviceCalendarFrame.getDayTypes();
+        context.put(NETEX_LINE_DATA_CONTEXT, dayTypesStruct);
+        Parser dayTypeParser = ParserFactory.create(DayTypeParser.class.getName());
+        dayTypeParser.parse(context);
 	}
 
 	// TODO: figure out all details regarding netex stopplaces, and chouette stopareas and stoppoints
 	private void parseSiteFrame(Context context, Referential referential, PublicationDeliveryStructure lineData,
-            List<PublicationDeliveryStructure> commonData, SiteFrame siteFrame) {
+            List<PublicationDeliveryStructure> commonData, SiteFrame siteFrame) throws Exception {
 		StopPlacesInFrame_RelStructure stopPlacesStruct = siteFrame.getStopPlaces();
 		List<StopPlace> stopPlaces = stopPlacesStruct.getStopPlace();
 		for(StopPlace stopPlace : stopPlaces) {
