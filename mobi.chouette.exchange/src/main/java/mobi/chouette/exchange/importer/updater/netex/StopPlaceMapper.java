@@ -15,8 +15,12 @@ import no.rutebanken.netex.model.Zone_VersionStructure;
 
 public class StopPlaceMapper {
 
+	/**
+	 * Map stop area with contained stop areas. Does not support mapping parent stop areas.
+	 * @param stopArea Typically stop areas of {@link ChouetteAreaEnum#StopPlace} or {@link ChouetteAreaEnum#CommercialStopPoint}
+	 * @return NeTEx stop place
+	 */
 	public StopPlace mapStopAreaToStopPlace(StopArea stopArea) {
-
 		StopPlace stopPlace = createStopPlace(stopArea);
 		if (stopArea.getContainedStopAreas().size() > 0) {
 			stopPlace.setQuays(new Quays_RelStructure());

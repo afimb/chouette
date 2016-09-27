@@ -1,16 +1,12 @@
 package mobi.chouette.exchange.importer.updater.netex;
 
 import mobi.chouette.model.StopArea;
-import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
-import no.rutebanken.netex.model.BoardingPosition;
 import no.rutebanken.netex.model.Quay;
 import no.rutebanken.netex.model.StopPlace;
-import org.apache.velocity.runtime.directive.Stop;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.testng.Assert.*;
 
