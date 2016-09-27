@@ -1,87 +1,112 @@
 package mobi.chouette.exchange.importer.updater.netex;
+
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
-import no.rutebanken.netex.model.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import mobi.chouette.model.type.LongLatTypeEnum;
+import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
+import no.rutebanken.netex.model.LocationStructure;
+import no.rutebanken.netex.model.MultilingualString;
+import no.rutebanken.netex.model.Quay;
+import no.rutebanken.netex.model.Quays_RelStructure;
+import no.rutebanken.netex.model.SimplePoint_VersionStructure;
+import no.rutebanken.netex.model.StopPlace;
+import no.rutebanken.netex.model.Zone_VersionStructure;
 
 public class StopPlaceMapper {
 
-    public StopPlace mapStopAreaToStopPlace(StopArea stopArea) {
+	/**
+	 * Map stop area with contained stop areas. Does not support mapping parent stop areas.
+	 * @param stopArea Typically stop areas of {@link ChouetteAreaEnum#StopPlace} or {@link ChouetteAreaEnum#CommercialStopPoint}
+	 * @return NeTEx stop place
+	 */
+	public StopPlace mapStopAreaToStopPlace(StopArea stopArea) {
+		StopPlace stopPlace = createStopPlace(stopArea);
+		if (stopArea.getContainedStopAreas().size() > 0) {
+			stopPlace.setQuays(new Quays_RelStructure());
+			for (StopArea children : stopArea.getContainedStopAreas()) {
+				Quay quay = createQuay(children);
+				stopPlace.getQuays().getQuayRefOrQuay().add(quay);
+			}
+		}
 
-        if (stopArea.getAreaType().equals(ChouetteAreaEnum.BoardingPosition)
-                || stopArea.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint)) {
-            if (stopArea.getParent() != null) {
-                // Boarding position with parent
+		return stopPlace;
+	}
 
-                StopPlace parentStopPlace = mapStopAreaToStopPlace(stopArea.getParent());
-                return parentStopPlace;
-            } else {
-                // Boarding position without parent stop place.
+	public StopArea mapStopPlaceToStopArea(Referential referential, StopPlace stopPlace) {
+		StopArea stopArea = createStopArea(referential, stopPlace);
 
-                StopPlace stopPlace = createStopPlace(stopArea);
-                Quay quay = createQuay(stopArea);
-                stopPlace.setQuays(new Quays_RelStructure());
-                stopPlace.getQuays().getQuayRefOrQuay().add(quay);
-                return stopPlace;
-            }
-        }
+		Quays_RelStructure quays = stopPlace.getQuays();
+		if (quays != null) {
+			for (Object q : quays.getQuayRefOrQuay()) {
+				StopArea boardingPosition = createBoardingPosition(referential, (Quay) q);
+				boardingPosition.setParent(stopArea);
+			}
+		}
 
-        // StopPlace with contained stop areas
+		return stopArea;
+	}
 
-        StopPlace stopPlace = createStopPlace(stopArea);
+	private StopArea createStopArea(Referential referential, StopPlace stopPlace) {
+		StopArea stopArea = ObjectFactory.getStopArea(referential, stopPlace.getId());
+		stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 
-        if(stopArea.getAreaType() != null && stopArea.getAreaType().equals(ChouetteAreaEnum.StopPlace)) {
-            stopPlace.setQuays(new Quays_RelStructure());
+		mapCentroid(stopPlace, stopArea);
+		mapName(stopPlace, stopArea);
 
-            stopArea.getContainedStopAreas().forEach(boardingPosition ->  {
-                        Quay quay = createQuay(boardingPosition);
-                        stopPlace.getQuays().getQuayRefOrQuay().add(quay);
-                    });
-        }
+		return stopArea;
 
-        return stopPlace;
-    }
+	}
 
-    private StopPlace createStopPlace(StopArea stopArea) {
-        StopPlace stopPlace = new StopPlace();
-        mapId(stopArea, stopPlace);
-        mapCentroid(stopArea, stopPlace);
-        mapName(stopArea, stopPlace);
-        return stopPlace;
-    }
+	private StopArea createBoardingPosition(Referential referential, Quay quay) {
 
-    private Quay createQuay(StopArea stopArea) {
-        Quay quay = new Quay();
-        mapId(stopArea, quay);
-        mapCentroid(stopArea, quay);
-        mapName(stopArea, quay);
-        return quay;
-    }
+		StopArea boardingPosition = ObjectFactory.getStopArea(referential, quay.getId());
+		boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
+		mapCentroid(quay, boardingPosition);
+		mapName(quay, boardingPosition);
+		return boardingPosition;
+	}
 
-    private void mapId(StopArea stopArea, Zone_VersionStructure zone) {
-        zone.setId(stopArea.getObjectId());
-    }
+	private StopPlace createStopPlace(StopArea stopArea) {
+		StopPlace stopPlace = new StopPlace();
+		mapId(stopArea, stopPlace);
+		mapCentroid(stopArea, stopPlace);
+		mapName(stopArea, stopPlace);
+		return stopPlace;
+	}
 
-    public void mapCentroid(StopArea stopArea, Zone_VersionStructure zone) {
-        zone.setCentroid(
-                new SimplePoint_VersionStructure()
-                        .withLocation(
-                                new LocationStructure()
-                                        .withLatitude(stopArea.getLatitude())
-                                        .withLongitude(stopArea.getLongitude())));
-    }
+	private Quay createQuay(StopArea stopArea) {
+		Quay quay = new Quay();
+		mapId(stopArea, quay);
+		mapCentroid(stopArea, quay);
+		mapName(stopArea, quay);
+		return quay;
+	}
 
-    public void mapName(StopArea stopArea, Zone_VersionStructure zone) {
+	private void mapId(StopArea stopArea, Zone_VersionStructure zone) {
+		zone.setId(stopArea.getObjectId());
+	}
 
-        zone.setName(
-                new MultilingualString()
-                        .withValue(stopArea.getName())
-                        .withLang("")
-                        .withTextIdType(""));
+	public void mapCentroid(StopArea stopArea, Zone_VersionStructure zone) {
+		zone.setCentroid(new SimplePoint_VersionStructure().withLocation(
+				new LocationStructure().withLatitude(stopArea.getLatitude()).withLongitude(stopArea.getLongitude())));
+	}
 
-    }
+	public void mapCentroid(Zone_VersionStructure zone, StopArea stopArea) {
+		LocationStructure location = zone.getCentroid().getLocation();
+		stopArea.setLatitude(location.getLatitude());
+		stopArea.setLongitude(location.getLongitude());
+		stopArea.setLongLatType(LongLatTypeEnum.WGS84);
+	}
+
+	public void mapName(StopArea stopArea, Zone_VersionStructure zone) {
+
+		zone.setName(new MultilingualString().withValue(stopArea.getName()).withLang("").withTextIdType(""));
+
+	}
+
+	public void mapName(Zone_VersionStructure zone, StopArea stopArea) {
+		stopArea.setName(zone.getName().getValue());
+	}
 
 }
