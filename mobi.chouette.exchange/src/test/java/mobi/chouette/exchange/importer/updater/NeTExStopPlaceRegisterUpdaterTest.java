@@ -37,11 +37,8 @@ import no.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
 import no.rutebanken.netex.model.Zone_VersionStructure;
 
 public class NeTExStopPlaceRegisterUpdaterTest {
-
-	/**
-	 * Test for manually testing the NeTExStopPlaceRegisterUpdater.
-	 */
-	@Test(enabled = true)
+	
+	@Test
 	public void exportStopArea() throws Exception {
 
 		Referential referential = new Referential();
