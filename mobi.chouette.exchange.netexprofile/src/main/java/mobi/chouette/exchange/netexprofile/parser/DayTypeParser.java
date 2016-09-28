@@ -30,17 +30,24 @@ public class DayTypeParser implements Parser, Constant {
     }
 
     private void parseDayType(Context context, Referential referential, DayType dayType) {
+        // TODO: generate a more sophisticated chouette id here...
         Timetable timetable = ObjectFactory.getTimetable(referential, dayType.getId());
+        MultilingualString dayTypeName = dayType.getName();
+        if (dayTypeName != null) {
+            String dayTypeNameValue = dayTypeName.getValue();
+            timetable.setComment(dayTypeNameValue);
+        }
         PropertiesOfDay_RelStructure propertiesOfDayStruct = dayType.getProperties();
         List<PropertyOfDay> propertyOfDayList = propertiesOfDayStruct.getPropertyOfDay();
         for (PropertyOfDay propertyOfDay : propertyOfDayList) {
             List<DayOfWeekEnumeration> daysOfWeek = propertyOfDay.getDaysOfWeek();
-            String[] weekDays = null;
-            for (DayOfWeekEnumeration dayOfWeekEnum : daysOfWeek) {
-                weekDays = StringUtils.splitByWholeSeparator(dayOfWeekEnum.value(), null);
+            if (daysOfWeek != null && daysOfWeek.size() > 0) {
+                // TODO: consider processing of multiple DaysOfWeek patterns
+                String[] weekDays = StringUtils.splitByWholeSeparator(daysOfWeek.get(0).value(), null);
+                List<String> weekDaysList = Arrays.asList(weekDays);
+                timetable.setDayTypes(NetexUtils.getDayTypes(weekDaysList));
             }
-            List<String> weekDaysList = Arrays.asList(weekDays);
-            timetable.setDayTypes(NetexUtils.getDayTypes(weekDaysList));
+            // TODO: add support for days of month, year, event, etc...
         }
         timetable.setFilled(true);
         referential.getTimetables().put(timetable.getObjectId(), timetable);

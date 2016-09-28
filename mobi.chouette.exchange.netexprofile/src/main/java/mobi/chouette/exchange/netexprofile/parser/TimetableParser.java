@@ -36,26 +36,20 @@ public class TimetableParser implements Parser, Constant {
     public void parse(Context context) throws Exception {
         Referential referential = (Referential) context.get(REFERENTIAL);
         PublicationDeliveryStructure lineData = (PublicationDeliveryStructure) context.get(NETEX_LINE_DATA_JAVA);
-        TimetableFrame timetableFrame = (TimetableFrame) context.get(NETEX_LINE_DATA_CONTEXT);
-        Timetable timetable = ObjectFactory.getTimetable(referential, timetableFrame.getId());
 
-        // TODO: retrieve the validityConditions from netex instead
-        //Period period = new Period(new Date(), new Date());
-        //timetable.addPeriod(period);
+        TimetableFrame timetableFrame = (TimetableFrame) context.get(NETEX_LINE_DATA_CONTEXT);
 
         ValidityConditions_RelStructure validityConditions = timetableFrame.getValidityConditions();
         if (validityConditions != null) {
-            parseValidityConditions(referential, timetable, validityConditions);
+            parseValidityConditions(referential, validityConditions);
         }
         JourneysInFrame_RelStructure vehicleJourneysStruct = timetableFrame.getVehicleJourneys();
         if (vehicleJourneysStruct != null) {
-            parseVehicleJourneys(context, referential, lineData, timetable, vehicleJourneysStruct);
+            parseVehicleJourneys(context, referential, lineData, vehicleJourneysStruct);
         }
-        referential.getTimetables().put(timetable.getObjectId(), timetable);
-        timetable.setFilled(true);
     }
 
-    private void parseValidityConditions(Referential referential, Timetable timetable, ValidityConditions_RelStructure validityConditions)  throws Exception {
+    private void parseValidityConditions(Referential referential, ValidityConditions_RelStructure validityConditions)  throws Exception {
         List<Object> availabilityConditionElements = validityConditions.getValidityConditionRefOrValidBetweenOrValidityCondition_();
         // should iterate all availability conditions, for now only retrieving first occurrence
 /*
@@ -63,6 +57,8 @@ public class TimetableParser implements Parser, Constant {
                 AvailabilityCondition value = availabilityConditionElement.getValue();
             }
 */
+        // TODO: add more sophisticated check on zoneids and zoneoffsets here
+        // how to connect the period to the right timetable instance? we can only get timetables by day type id
         if (availabilityConditionElements != null && availabilityConditionElements.size() > 0) {
             AvailabilityCondition availabilityCondition = ((JAXBElement<AvailabilityCondition>) availabilityConditionElements.get(0)).getValue();
             OffsetDateTime fromDate = availabilityCondition.getFromDate();
@@ -70,27 +66,26 @@ public class TimetableParser implements Parser, Constant {
             Date startOfPeriod = ParserUtils.getSQLDate(fromDate.toString());
             Date endOfPeriod = ParserUtils.getSQLDate(toDate.toString());
             Period period = new Period(startOfPeriod, endOfPeriod);
-            timetable.addPeriod(period);
+            //timetable.addPeriod(period);
         }
     }
 
-    private void parseVehicleJourneys(Context context, Referential referential, PublicationDeliveryStructure lineData, Timetable timetable, JourneysInFrame_RelStructure vehicleJourneysStruct) throws Exception {
+    private void parseVehicleJourneys(Context context, Referential referential, PublicationDeliveryStructure lineData, JourneysInFrame_RelStructure vehicleJourneysStruct) throws Exception {
         List<Journey_VersionStructure> serviceJourneyStructs = vehicleJourneysStruct.getDatedServiceJourneyOrDeadRunOrServiceJourney();
         for (Journey_VersionStructure serviceJourneyStruct : serviceJourneyStructs) {
             ServiceJourney serviceJourney = (ServiceJourney) serviceJourneyStruct;
-            parseServiceJourney(context, referential, lineData, timetable, serviceJourney);
+            parseServiceJourney(context, referential, lineData, serviceJourney);
         }
     }
 
-    private void parseServiceJourney(Context context, Referential referential, PublicationDeliveryStructure lineData,
-            Timetable timetable, ServiceJourney serviceJourney) throws Exception {
+    private void parseServiceJourney(Context context, Referential referential, PublicationDeliveryStructure lineData, ServiceJourney serviceJourney) throws Exception {
         VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, serviceJourney.getId());
         JourneyPattern journeyPattern = null;
 
         OffsetTime departureTime = serviceJourney.getDepartureTime();
         DayTypeRefs_RelStructure dayTypesStruct = serviceJourney.getDayTypes();
         if (dayTypesStruct != null) {
-            parseDayTypes(referential, dayTypesStruct);
+            parseDayTypes(referential, vehicleJourney, dayTypesStruct);
         }
 
         JAXBElement<? extends JourneyPatternRefStructure> journeyPatternRefStructElement = serviceJourney.getJourneyPatternRef();
@@ -143,19 +138,19 @@ public class TimetableParser implements Parser, Constant {
             parsePassingTimes(context, referential, vehicleJourney, journeyPattern, timetabledPassingTimesStruct);
         }
         vehicleJourney.setFilled(true);
-
-        if (timetable != null) {
-            vehicleJourney.getTimetables().add(timetable);
-            timetable.addVehicleJourney(vehicleJourney);
-        }
     }
 
-    private void parseDayTypes(Referential referential, DayTypeRefs_RelStructure dayTypesStruct) throws Exception {
+    private void parseDayTypes(Referential referential, VehicleJourney vehicleJourney, DayTypeRefs_RelStructure dayTypesStruct) throws Exception {
         List<JAXBElement<? extends DayTypeRefStructure>> dayTypeRefElements = dayTypesStruct.getDayTypeRef();
+
         for (JAXBElement<? extends DayTypeRefStructure> dayTypeRefElement : dayTypeRefElements) {
             DayTypeRefStructure dayTypeRefStructure = dayTypeRefElement.getValue();
             String dayTypeRef = dayTypeRefStructure.getRef();
-            // TODO: handle timetable daytypes here...
+            Timetable timetable = referential.getTimetables().get(dayTypeRef);
+
+            if (timetable != null) {
+                vehicleJourney.getTimetables().add(timetable);
+            }
         }
     }
 
@@ -216,6 +211,7 @@ public class TimetableParser implements Parser, Constant {
                 Time localArrivalTime = NetexUtils.convertToSqlTime(arrivalTime, NetexUtils.getZoneOffset(LOCAL_ZONE_ID));
                 vehicleJourneyAtStop.setArrivalTime(localArrivalTime);
             }
+            // TODO: add support for zone offsets other than utc here (like +02:00, -05:30, etc...)
         }
         OffsetTime departureTime = timetabledPassingTime.getDepartureTime();
         if (departureTime != null) {
@@ -224,6 +220,7 @@ public class TimetableParser implements Parser, Constant {
                 Time localDepartureTime = NetexUtils.convertToSqlTime(departureTime, NetexUtils.getZoneOffset(LOCAL_ZONE_ID));
                 vehicleJourneyAtStop.setDepartureTime(localDepartureTime);
             }
+            // TODO: add support for zone offsets other than utc here  (like +02:00, -05:30, etc...)
         }
     }
 
