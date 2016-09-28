@@ -6,7 +6,6 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.StopArea;
-import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -41,7 +40,7 @@ public class PublicationDeliveryParser implements Parser, Constant {
 		}
 
 		for (Object frame : findFrames(SiteFrame.class, lineData, commonData)) {
-			//parseSiteFrame(context, referential, lineData, commonData, (SiteFrame) frame);
+			parseSiteFrame(context, referential, lineData, commonData, (SiteFrame) frame);
 		}
 
 		for (Object frame : findFrames(ServiceCalendarFrame.class, lineData, commonData)) {
@@ -104,7 +103,8 @@ public class PublicationDeliveryParser implements Parser, Constant {
         dayTypeParser.parse(context);
 	}
 
-	// TODO: figure out all details regarding netex stopplaces, and chouette stopareas and stoppoints
+	// TODO: remove this parsing when NSR is in place
+	// TODO: consider extracting this code into separate parser
 	private void parseSiteFrame(Context context, Referential referential, PublicationDeliveryStructure lineData,
             List<PublicationDeliveryStructure> commonData, SiteFrame siteFrame) throws Exception {
 		StopPlacesInFrame_RelStructure stopPlacesStruct = siteFrame.getStopPlaces();
@@ -113,14 +113,10 @@ public class PublicationDeliveryParser implements Parser, Constant {
 			StopArea stopArea = ObjectFactory.getStopArea(referential, stopPlace.getId());
 			stopArea.setName(stopPlace.getName().getValue());
 			stopArea.setRegistrationNumber(stopPlace.getShortName().getValue());
-			stopArea.setAreaType(ChouetteAreaEnum.StopPlace);
+			stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 			stopArea.setFilled(true);
 
-			// is this correct?
-			StopPoint stopPoint = ObjectFactory.getStopPoint(referential, stopPlace.getId());
-			stopPoint.setComment(stopPlace.getShortName().getValue());
-			stopPoint.setContainedInStopArea(stopArea);
-			stopPoint.setFilled(true);
+			// TODO: add support for boarding positions, and connect to StopArea as parent
 		}
 	}
 
