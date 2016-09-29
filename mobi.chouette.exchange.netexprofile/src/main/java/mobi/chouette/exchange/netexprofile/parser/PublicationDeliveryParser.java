@@ -10,6 +10,7 @@ import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import no.rutebanken.netex.model.*;
+import org.apache.commons.lang.StringUtils;
 
 import javax.xml.bind.JAXBElement;
 import java.util.ArrayList;
@@ -131,6 +132,7 @@ public class PublicationDeliveryParser implements Parser, Constant {
 
 		RoutePointsInFrame_RelStructure routePointsStructure = serviceFrame.getRoutePoints();
 		List<RoutePoint> routePoints = routePointsStructure.getRoutePoint();
+
 		for (RoutePoint routePoint : routePoints) {
 			cachedNetexData.put(routePoint.getId(), routePoint);
 		}
@@ -144,6 +146,20 @@ public class PublicationDeliveryParser implements Parser, Constant {
 		context.put(NETEX_LINE_DATA_CONTEXT, linesStructure);
 		Parser lineParser = ParserFactory.create(LineParser.class.getName());
 		lineParser.parse(context);
+
+		StopAssignmentsInFrame_RelStructure stopAssignmentsStructure = serviceFrame.getStopAssignments();
+		List<JAXBElement<? extends StopAssignment_VersionStructure>> stopAssignmentElements = stopAssignmentsStructure.getStopAssignment();
+		for (JAXBElement<? extends StopAssignment_VersionStructure> stopAssignmentElement : stopAssignmentElements) {
+			PassengerStopAssignment passengerStopAssignment = (PassengerStopAssignment) stopAssignmentElement.getValue();
+
+			ScheduledStopPointRefStructure scheduledStopPointRef = passengerStopAssignment.getScheduledStopPointRef();
+			StopPlaceRefStructure stopPlaceRef = passengerStopAssignment.getStopPlaceRef();
+
+			if (scheduledStopPointRef != null && StringUtils.isNotEmpty(scheduledStopPointRef.getRef()) &&
+					stopPlaceRef != null && StringUtils.isNotEmpty(stopPlaceRef.getRef())) {
+				cachedNetexData.put(scheduledStopPointRef.getRef(), stopPlaceRef.getRef());
+			}
+		}
 
 		ScheduledStopPointsInFrame_RelStructure scheduledStopPointsStructure = serviceFrame.getScheduledStopPoints();
 		context.put(NETEX_LINE_DATA_CONTEXT, scheduledStopPointsStructure);
