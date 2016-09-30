@@ -11,9 +11,9 @@ package mobi.chouette.exchange.hub.exporter.producer;
 import java.io.IOException;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.hub.model.HubArret;
 import mobi.chouette.exchange.hub.model.exporter.HubExporterInterface;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.Coordinate;
@@ -38,7 +38,7 @@ public class HubArretProducer extends AbstractProducer {
 
 	private HubArret hubObject = new HubArret();
 
-	public boolean save(StopArea neptuneObject, ActionReport report) {
+	public boolean save(Context context, StopArea neptuneObject) {
 		// ignore StopPlaces or ITL area
 		if (neptuneObject.getAreaType().equals(ChouetteAreaEnum.StopPlace)
 				|| neptuneObject.getAreaType().equals(ChouetteAreaEnum.ITL))

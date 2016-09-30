@@ -62,24 +62,24 @@ public interface HubConverter {
 
 		@SuppressWarnings("rawtypes")
 		@Override
-		public synchronized String to(Context context, Enum field, T input, boolean required) {
+		public synchronized String to(HubContext hubContext, Enum field, T input, boolean required) {
 			String result = "";
 			if (input != null) {
 				try {
 					result = convertTo(input);
 				} catch (Exception e) {
-					context.put(Context.FIELD, field.name());
-					context.put(Context.ERROR,
+					hubContext.put(HubContext.FIELD, field.name());
+					hubContext.put(HubContext.ERROR,
 							HubException.ERROR.INVALID_FORMAT);
-					context.put(Context.CODE, "TODO");
-					context.put(Context.VALUE, input);
-					throw new HubException(context, e);
+					hubContext.put(HubContext.CODE, "TODO");
+					hubContext.put(HubContext.VALUE, input);
+					throw new HubException(hubContext, e);
 				}
 			} else if (required) {
-				context.put(Context.FIELD, field.name());
-				context.put(Context.ERROR, HubException.ERROR.MISSING_FIELD);
-				context.put(Context.CODE, "TODO");
-				throw new HubException(context);
+				hubContext.put(HubContext.FIELD, field.name());
+				hubContext.put(HubContext.ERROR, HubException.ERROR.MISSING_FIELD);
+				hubContext.put(HubContext.CODE, "TODO");
+				throw new HubException(hubContext);
 			}
 			return result;
 		}
@@ -90,14 +90,14 @@ public interface HubConverter {
 	public abstract class FieldConverter<F, T> {
 
 		@SuppressWarnings("rawtypes")
-		public abstract F to(Context context, Enum field, T input,
+		public abstract F to(HubContext hubContext, Enum field, T input,
 				boolean required);
 	}
 
 	public abstract class Converter<F, T> {
 
 
-		public abstract F to(Context context, T input);
+		public abstract F to(HubContext hubContext, T input);
 
 	}
 

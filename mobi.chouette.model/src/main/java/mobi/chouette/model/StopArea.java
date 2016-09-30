@@ -356,6 +356,10 @@ public class StopArea extends NeptuneLocalizedObject {
 			stopArea.getContainedStopAreas().add(this);
 		}
 	}
+	
+	public void forceParent(StopArea stopArea) {
+		this.parent = stopArea;
+	}
 
 	/**
 	 * lines concerned by routing constraints <br/>

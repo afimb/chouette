@@ -22,7 +22,7 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 
 	private GtfsStop bean = new GtfsStop();
 	private String[] array = new String[FIELDS.values().length];
-	private String _stopId = null;
+	// private String _stopId = null;
 
 	public StopById(String name) throws IOException {
 		super(name, KEY);

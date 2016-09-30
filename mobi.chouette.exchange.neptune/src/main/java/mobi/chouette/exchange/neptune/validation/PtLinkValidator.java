@@ -6,13 +6,12 @@ import java.util.Map;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.model.PTLink;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.exchange.validation.report.DataLocation;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 
 public class PtLinkValidator extends AbstractValidator implements Validator<PTLink> , Constant{
@@ -57,13 +56,14 @@ public class PtLinkValidator extends AbstractValidator implements Validator<PTLi
 
 
 	@Override
-	public ValidationConstraints validate(Context context, PTLink target) throws ValidationException
+	public void validate(Context context, PTLink target) throws ValidationException
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
-		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
+		if (localContext == null || localContext.isEmpty()) return ;
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Map<String, Location> fileLocations = data.getFileLocations();
+//		Map<String, Location> fileLocations = data.getFileLocations();
+		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		
 		Context stopPointsContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
 
@@ -77,23 +77,27 @@ public class PtLinkValidator extends AbstractValidator implements Validator<PTLi
 			String start = (String) objectContext.get(START_OF_LINK_ID);
 			if (!stopPointsContext.containsKey(start))
 			{
-				Detail errorItem = new Detail(
-						PT_LINK_1,
-						fileLocations.get(objectId), start, "startOfLink");
-				addValidationError(context,PT_LINK_1, errorItem);
+//				Detail errorItem = new Detail(
+//						PT_LINK_1,
+//						fileLocations.get(objectId), start, "startOfLink");
+//				addValidationError(context,PT_LINK_1, errorItem);
+				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+				validationReporter.addCheckPointReportError(context, PT_LINK_1, fileLocations.get(objectId), start, "startOfLink");
 			}
 			String end = (String) objectContext.get(END_OF_LINK_ID);
 			if (!stopPointsContext.containsKey(end))
 			{
-				Detail errorItem = new Detail(
-						PT_LINK_1,
-						fileLocations.get(objectId), end, "endOfLink");
-				addValidationError(context,PT_LINK_1, errorItem);
+//				Detail errorItem = new Detail(
+//						PT_LINK_1,
+//						fileLocations.get(objectId), end, "endOfLink");
+//				addValidationError(context,PT_LINK_1, errorItem);
+				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+				validationReporter.addCheckPointReportError(context, PT_LINK_1, fileLocations.get(objectId), end, "endOfLink");
 			}
 
 
 		}
-		return new ValidationConstraints();
+		return ;
 	}
 
 	public static class DefaultValidatorFactory extends ValidatorFactory {

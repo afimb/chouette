@@ -13,7 +13,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
@@ -27,62 +26,57 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 @Log4j
 @Stateless(name = ConnectionLinkRegisterBlocCommand.COMMAND)
 public class ConnectionLinkRegisterBlocCommand implements Command {
 
 	public static final String COMMAND = "ConnectionLinkRegisterBlocCommand";
 
-	@EJB 
+	@EJB
 	private StopAreaDAO stopAreaDAO;
 
-	@EJB 
+	@EJB
 	private ConnectionLinkDAO connectionLinkDAO;
 
 	@EJB(beanName = ConnectionLinkUpdater.BEAN_NAME)
 	private Updater<ConnectionLink> connectionLinkUpdater;
 
-
+	@SuppressWarnings("unchecked")
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public boolean execute(Context context) throws Exception {
 
 		boolean result = ERROR;
-		Monitor monitor = MonitorFactory.start(COMMAND);
+		// Monitor monitor = MonitorFactory.start(COMMAND);
 
 		try {
 			Boolean optimized = Boolean.TRUE;
-			
-			Monitor monitorInit = MonitorFactory.start(COMMAND+".init");
+
+			// Monitor monitorInit = MonitorFactory.start(COMMAND+".init");
 			context.put(OPTIMIZED, optimized);
 			Collection<ConnectionLink> connectionLinks = (Collection<ConnectionLink>) context.get(CONNECTION_LINK_BLOC);
 			Referential cache = new Referential();
 			context.put(CACHE, cache);
 			initializeStopArea(cache, connectionLinks);
 			initializeConnectionLink(cache, connectionLinks);
-			log.info(Color.CYAN + monitorInit.stop() + Color.NORMAL);
-			Monitor monitorUpdate = MonitorFactory.start(COMMAND+".update");
+			// log.info(Color.CYAN + monitorInit.stop() + Color.NORMAL);
+			// Monitor monitorUpdate = MonitorFactory.start(COMMAND+".update");
 
 			for (ConnectionLink newValue : connectionLinks) {
 				ConnectionLink oldValue = cache.getConnectionLinks().get(newValue.getObjectId());
-				connectionLinkUpdater.update(context, oldValue , newValue);
+				connectionLinkUpdater.update(context, oldValue, newValue);
 				connectionLinkDAO.create(oldValue);
 			}
-			log.info(Color.CYAN + monitorUpdate.stop() + Color.NORMAL);
-			Monitor monitorFlush = MonitorFactory.start(COMMAND + ".flush");
+			// log.info(Color.CYAN + monitorUpdate.stop() + Color.NORMAL);
+			// Monitor monitorFlush = MonitorFactory.start(COMMAND + ".flush");
 			connectionLinkDAO.flush();
-			log.info(Color.CYAN + monitorFlush.stop() + Color.NORMAL);
+//			log.info(Color.CYAN + monitorFlush.stop() + Color.NORMAL);
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error(e);
 			throw e;
-		}
-		finally
-		{
-			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+//		} finally {
+//			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 		return result;
 
@@ -101,23 +95,19 @@ public class ConnectionLinkRegisterBlocCommand implements Command {
 
 	}
 
-
-	private void initializeConnectionLink(Referential cache,
-			Collection<ConnectionLink> list) {
-		if (list.isEmpty()) return; 
+	private void initializeConnectionLink(Referential cache, Collection<ConnectionLink> list) {
+		if (list.isEmpty())
+			return;
 		Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
-		List<ConnectionLink> objects = connectionLinkDAO
-				.findByObjectId(objectIds);
+		List<ConnectionLink> objects = connectionLinkDAO.findByObjectId(objectIds);
 		for (ConnectionLink object : objects) {
 			cache.getConnectionLinks().put(object.getObjectId(), object);
 		}
 
 		for (ConnectionLink item : list) {
-			ConnectionLink object = cache.getConnectionLinks().get(
-					item.getObjectId());
+			ConnectionLink object = cache.getConnectionLinks().get(item.getObjectId());
 			if (object == null) {
-				object = ObjectFactory.getConnectionLink(cache,
-						item.getObjectId());
+				object = ObjectFactory.getConnectionLink(cache, item.getObjectId());
 			}
 		}
 	}
@@ -145,7 +135,6 @@ public class ConnectionLinkRegisterBlocCommand implements Command {
 	}
 
 	static {
-		CommandFactory.factories.put(ConnectionLinkRegisterBlocCommand.class.getName(),
-				new DefaultCommandFactory());
+		CommandFactory.factories.put(ConnectionLinkRegisterBlocCommand.class.getName(), new DefaultCommandFactory());
 	}
 }

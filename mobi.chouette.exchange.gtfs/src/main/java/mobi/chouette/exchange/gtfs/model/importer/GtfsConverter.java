@@ -246,7 +246,7 @@ public interface GtfsConverter {
 
 				int hour = value.getHours() + (input.getDay() * 24);
 				if (value.getHours() > 23) throw new IllegalArgumentException("hour > 23 : "+value.getHours());
-				if (input.getDay() > 1 ) throw new IllegalArgumentException("time day > 1 : "+input.getDay());
+				if (input.getDay() < 0 ) throw new IllegalArgumentException("time day < 0 : "+input.getDay());
 				int minute = value.getMinutes();
 				int second = value.getSeconds();
 				String hourString;

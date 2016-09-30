@@ -34,6 +34,13 @@ public class VehicleJourneyAtStopUpdater implements
 			oldValue.setDepartureTime(newValue.getDepartureTime());
 		}
 		
+		if (newValue.getArrivalDayOffset() != oldValue.getArrivalDayOffset()) {
+			oldValue.setArrivalDayOffset(newValue.getArrivalDayOffset());
+		}
+		if (newValue.getDepartureDayOffset() != oldValue.getDepartureDayOffset()) {
+			oldValue.setDepartureDayOffset(newValue.getDepartureDayOffset());
+		}
+		
 		// if (newValue.getElapseDuration() != null
 		// 		&& !newValue.getElapseDuration().equals(
 		// 				oldValue.getElapseDuration())) {

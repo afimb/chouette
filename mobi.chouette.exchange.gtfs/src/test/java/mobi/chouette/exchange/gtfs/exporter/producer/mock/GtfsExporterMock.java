@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendar;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate;
@@ -17,7 +18,6 @@ import mobi.chouette.exchange.gtfs.model.GtfsTransfer;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
 import mobi.chouette.exchange.gtfs.model.exporter.Exporter;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
-import mobi.chouette.exchange.report.ActionReport;
 
 import org.apache.commons.beanutils.BeanUtils;
 
@@ -140,7 +140,7 @@ public class GtfsExporterMock implements GtfsExporterInterface
    {
 
       @Override
-      public void dispose(ActionReport report) throws IOException
+      public void dispose(Context context) throws IOException
       {         
       }
 

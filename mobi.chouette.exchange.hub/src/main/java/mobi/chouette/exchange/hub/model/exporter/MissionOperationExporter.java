@@ -34,16 +34,16 @@ public class MissionOperationExporter extends ExporterImpl<HubMissionOperation> 
 
 
 		@Override
-		public String to(Context context, HubMissionOperation input) {
+		public String to(HubContext hubContext, HubMissionOperation input) {
 			String result = null;
 			List<String> values = new ArrayList<String>();
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.numero_mission, input.getNumeroMission(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_operation, input.getCodeOperation(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_lot, input.getCodeLot(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_activite, input.getCodeActivite(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.champ_libre_1, input.getChampLibre1(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.champ_libre_2, input.getChampLibre2(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.champ_libre_3, input.getChampLibre3(), false));
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.numero_mission, input.getNumeroMission(), true));
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_operation, input.getCodeOperation(), false));
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_lot, input.getCodeLot(), false));
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_activite, input.getCodeActivite(), false));
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.champ_libre_1, input.getChampLibre1(), false));
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.champ_libre_2, input.getChampLibre2(), false));
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.champ_libre_3, input.getChampLibre3(), false));
 			result = Tokenizer.untokenize(values);
 			return result;
 		}

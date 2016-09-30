@@ -14,11 +14,8 @@ import mobi.chouette.common.FileUtil;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.report.ActionError;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileError;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.report.ReportConstant;
 
 import org.apache.commons.io.FilenameUtils;
@@ -46,14 +43,14 @@ public class UncompressCommand implements Command, ReportConstant {
 
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 		JobData jobData = (JobData) context.get(JOB_DATA);
 
 		String path = jobData.getPathName();
 		String file = jobData.getInputFilename(); 
 		if (file == null)
 		{
-			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"Missing input file"));
+			reporter.setActionError(context, ActionReporter.ERROR_CODE.INVALID_PARAMETERS,"Missing input file");
 			return result;
 		}
 		Path filename = Paths.get(path, file);
@@ -63,16 +60,14 @@ public class UncompressCommand implements Command, ReportConstant {
 		}
 		if (FilenameUtils.getExtension(filename.toString()).equalsIgnoreCase("zip"))
 		{
-			FileInfo zip = new FileInfo(file,FILE_STATE.OK);
-
+            reporter.addZipReport(context, file,IO_TYPE.INPUT);
 			try {
-				report.setZip(zip);
 				FileUtil.uncompress(filename.toString(), target.toString());
 				result = SUCCESS;
 			} catch (Exception e) {
 				log.error(e.getMessage());
-				zip.addError(new FileError(FileError.CODE.READ_ERROR,e.getMessage()));
-				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"invalid_zip"));
+				reporter.addZipErrorInReport(context, file, ActionReporter.FILE_ERROR_CODE.READ_ERROR, e.getMessage());
+				reporter.setActionError(context, ActionReporter.ERROR_CODE.INVALID_PARAMETERS,"invalid_zip");
 			}
 		}
 		else

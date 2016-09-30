@@ -8,7 +8,6 @@ import mobi.chouette.exchange.gtfs.model.GtfsTransfer;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer.TransferType;
 import mobi.chouette.exchange.gtfs.model.exporter.TransferExporter;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 
@@ -29,7 +28,6 @@ public class GtfsExportTransferProducerTests
 
       mock.reset();
 
-      ActionReport report = new ActionReport();
       ConnectionLink neptuneObject = new ConnectionLink();
       neptuneObject.setObjectId("GTFS:ConnectionLink:1234");
       StopArea startOfLink = new StopArea();
@@ -41,7 +39,7 @@ public class GtfsExportTransferProducerTests
       Time defaultDuration = new Time(60000);
       neptuneObject.setDefaultDuration(defaultDuration);
 
-      producer.save(neptuneObject, report, "GTFS");
+      producer.save(neptuneObject,  "GTFS");
       GtfsTransfer gtfsObject = mock.getExportedTransfers().get(0);
       Reporter.log("verifyTransferProducer1");
       Reporter.log(TransferExporter.CONVERTER.to(context,gtfsObject));
@@ -60,7 +58,6 @@ public class GtfsExportTransferProducerTests
       mock.reset();
       GtfsTransferProducer producer = new GtfsTransferProducer(mock);
 
-      ActionReport report = new ActionReport();
       ConnectionLink neptuneObject = new ConnectionLink();
       neptuneObject.setObjectId("GTFS:ConnectionLink:1234");
       StopArea startOfLink = new StopArea();
@@ -72,7 +69,7 @@ public class GtfsExportTransferProducerTests
       Time defaultDuration = new Time(500);
       neptuneObject.setDefaultDuration(defaultDuration);
 
-      producer.save(neptuneObject, report, "GTFS");
+      producer.save(neptuneObject, "GTFS");
       GtfsTransfer gtfsObject = mock.getExportedTransfers().get(0);
       Reporter.log("verifyTransferProducer2");
       Reporter.log(TransferExporter.CONVERTER.to(context,gtfsObject));

@@ -5,14 +5,12 @@ import java.util.Map;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.FileLocation;
-import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.exchange.validation.report.DataLocation;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 
@@ -63,16 +61,17 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 
 
 	@Override
-	public ValidationConstraints validate(Context context, AccessLink target) throws ValidationException
+	public void validate(Context context, AccessLink target) throws ValidationException
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		Context stopAreasContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		Context accessPointsContext = (Context) validationContext.get(AccessPointValidator.LOCAL_CONTEXT);
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Map<String, Location> fileLocations = data.getFileLocations();
+//		Map<String, Location> fileLocations = data.getFileLocations();
+		Map<String, DataLocation> fileLocations = data.getDataLocations();
 
-		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
+		if (localContext == null || localContext.isEmpty()) return ;
 
 		// String fileName = (String) context.get(FILE_NAME);
 
@@ -85,7 +84,7 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 //			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
 //			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();		
 //          FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
-			Location sourceLocation = fileLocations.get(objectId);
+			DataLocation sourceLocation = fileLocations.get(objectId);
 
 			boolean step1 = true;
 
@@ -93,20 +92,26 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 			if (!stopAreasContext.containsKey(start)
 					&& !accessPointsContext.containsKey(start))
 			{
-				Detail errorItem = new Detail(
-						ACCESS_LINK_1,
-						sourceLocation /*new Location(sourceLocation,objectId)*/ , start);
-				addValidationError(context,ACCESS_LINK_1, errorItem);
+//				Detail errorItem = new Detail(
+//						ACCESS_LINK_1,
+//						sourceLocation /*new Location(sourceLocation,objectId)*/ , start);
+//				addValidationError(context,ACCESS_LINK_1, errorItem);
+				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+				validationReporter.addCheckPointReportError(context, ACCESS_LINK_1, sourceLocation, start);
 				step1 = false;
 			}
 			String end = (String) objectContext.get(END_OF_LINK_ID);
 			if (!stopAreasContext.containsKey(end)
 					&& !accessPointsContext.containsKey(end))
 			{
-				Detail errorItem = new Detail(
-						ACCESS_LINK_1,
-						sourceLocation, end);
-				addValidationError(context,ACCESS_LINK_1, errorItem);
+//				Detail errorItem = new Detail(
+//						ACCESS_LINK_1,
+//						sourceLocation, end);
+//				addValidationError(context,ACCESS_LINK_1, errorItem);
+				
+				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+				validationReporter.addCheckPointReportError(context, ACCESS_LINK_1, sourceLocation, end);
+				
 				step1 = false;
 			}
 	         if (!step1)
@@ -120,13 +125,16 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 	         if (accessPointsContext.containsKey(start)
 	               && stopAreasContext.containsKey(end))
 	            continue;
-				Detail errorItem = new Detail(
-						ACCESS_LINK_2,
-						sourceLocation, start , end);
-				addValidationError(context,ACCESS_LINK_2, errorItem);
+//				Detail errorItem = new Detail(
+//						ACCESS_LINK_2,
+//						sourceLocation, start , end);
+//				addValidationError(context,ACCESS_LINK_2, errorItem);
+				
+				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+				validationReporter.addCheckPointReportError(context, ACCESS_LINK_2, sourceLocation, start, end);
 
 		}
-		return new ValidationConstraints();
+		return ;
 	}
 
 	public static class DefaultValidatorFactory extends ValidatorFactory {

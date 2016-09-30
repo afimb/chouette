@@ -10,7 +10,6 @@ import mobi.chouette.exchange.gtfs.model.GtfsTrip.WheelchairAccessibleType;
 import mobi.chouette.exchange.gtfs.model.exporter.StopTimeExporter;
 import mobi.chouette.exchange.gtfs.model.exporter.TripExporter;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -36,10 +35,9 @@ public class GtfsExportTripProducerTests
       
       mock.reset();
 
-      ActionReport report = new ActionReport();
       VehicleJourney neptuneObject = buildNeptuneObject(true);
 
-      producer.save(neptuneObject, "tm_01", report, "GTFS", "GTFS");
+      producer.save(neptuneObject, "tm_01", "GTFS", "GTFS");
       Reporter.log("verifyTripProducerWithFullData");
 
       Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
@@ -59,27 +57,38 @@ public class GtfsExportTripProducerTests
       Assert.assertNull(gtfsObject.getBikesAllowed(), "BikesAllowed must not be set");
       
       int i = 0;
+      
+      /**
+       * Check that
+       */
       for (GtfsStopTime gtfsStopTime : mock.getExportedStopTimes())
       {
          Reporter.log(StopTimeExporter.CONVERTER.to(context,gtfsStopTime));
          Assert.assertEquals(gtfsStopTime.getTripId(), "4321", "TripId must be correctly set");
          Assert.assertEquals(gtfsStopTime.getStopId(), "SA"+i, "StopId must be correctly set");
          Assert.assertEquals(gtfsStopTime.getStopSequence(), Integer.valueOf(i*2), "StopSequence must be correctly set");
-         if (i < 2) 
+         if (i == 0) 
          {
             Assert.assertEquals(gtfsStopTime.getArrivalTime().getDay(), Integer.valueOf(0), "ArrivalTime must be today");
-            Assert.assertEquals(gtfsStopTime.getDepartureTime().getDay(), Integer.valueOf(0), "DepartureTime must be today");
+            Assert.assertEquals(gtfsStopTime.getDepartureTime().getDay(), Integer.valueOf(1), "DepartureTime must be today");
          }
+         
+         else if (i == 1) 
+         {
+             Assert.assertEquals(gtfsStopTime.getArrivalTime().getDay(), Integer.valueOf(1), "ArrivalTime must be today");
+             Assert.assertEquals(gtfsStopTime.getDepartureTime().getDay(), Integer.valueOf(1), "DepartureTime must be today");
+          }
          else if (i == 2)
          {
-            Assert.assertEquals(gtfsStopTime.getArrivalTime().getDay(), Integer.valueOf(0), "ArrivalTime must be today");
+            Assert.assertEquals(gtfsStopTime.getArrivalTime().getDay(), Integer.valueOf(1), "ArrivalTime must be today");
             Assert.assertEquals(gtfsStopTime.getDepartureTime().getDay(), Integer.valueOf(1), "DepartureTime must be tomorrow");           
          }
          else
          {
-            Assert.assertEquals(gtfsStopTime.getArrivalTime().getDay(), Integer.valueOf(1), "ArrivalTime must be tomorrow");
-            Assert.assertEquals(gtfsStopTime.getDepartureTime().getDay(), Integer.valueOf(1), "DepartureTime must be tomorrow");           
+            Assert.assertEquals(gtfsStopTime.getArrivalTime().getDay(), Integer.valueOf(2), "ArrivalTime must be tomorrow");
+            Assert.assertEquals(gtfsStopTime.getDepartureTime().getDay(), Integer.valueOf(2), "DepartureTime must be tomorrow");           
          }
+         
             
          i++;
       }
@@ -92,10 +101,9 @@ public class GtfsExportTripProducerTests
       
       mock.reset();
 
-      ActionReport report = new ActionReport();
       VehicleJourney neptuneObject = buildNeptuneObject(false);
 
-      producer.save(neptuneObject, "tm_01", report, "GTFS", "GTFS");
+      producer.save(neptuneObject, "tm_01", "GTFS", "GTFS");
       Reporter.log("verifyTripProducerWithLessData");
 
       Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
@@ -115,31 +123,42 @@ public class GtfsExportTripProducerTests
       Assert.assertNull(gtfsObject.getBikesAllowed(), "BikesAllowed must not be set");
       
       int i = 0;
+      
+      /**
+       * Check offset value on journeys during more than one day
+       */
       for (GtfsStopTime gtfsStopTime : mock.getExportedStopTimes())
       {
          Reporter.log(StopTimeExporter.CONVERTER.to(context,gtfsStopTime));
          Assert.assertEquals(gtfsStopTime.getTripId(), "4321", "TripId must be correctly set");
          Assert.assertEquals(gtfsStopTime.getStopId(), "SA"+i, "StopId must be correctly set");
          Assert.assertEquals(gtfsStopTime.getStopSequence(), Integer.valueOf(i*2), "StopSequence must be correctly set");
-         if (i < 2) 
+         if (i == 0) 
          {
             Assert.assertEquals(gtfsStopTime.getArrivalTime().getDay(), Integer.valueOf(0), "ArrivalTime must be today");
-            Assert.assertEquals(gtfsStopTime.getDepartureTime().getDay(), Integer.valueOf(0), "DepartureTime must be today");
+            Assert.assertEquals(gtfsStopTime.getDepartureTime().getDay(), Integer.valueOf(1), "DepartureTime must be tomorrow");
+            
          }
-         else if (i == 2)
-         {
-            Assert.assertEquals(gtfsStopTime.getArrivalTime().getDay(), Integer.valueOf(0), "ArrivalTime must be today");
-            Assert.assertEquals(gtfsStopTime.getDepartureTime().getDay(), Integer.valueOf(1), "DepartureTime must be tomorrow");           
-         }
-         else
+         
+         else if (i == 1)
          {
             Assert.assertEquals(gtfsStopTime.getArrivalTime().getDay(), Integer.valueOf(1), "ArrivalTime must be tomorrow");
             Assert.assertEquals(gtfsStopTime.getDepartureTime().getDay(), Integer.valueOf(1), "DepartureTime must be tomorrow");           
          }
+         else if (i == 2)
+         {
+        	 Assert.assertEquals(gtfsStopTime.getArrivalTime().getDay(), Integer.valueOf(1), "ArrivalTime must be tomorrow");
+             Assert.assertEquals(gtfsStopTime.getDepartureTime().getDay(), Integer.valueOf(1), "DepartureTime must be tomorrow");
+         }
+         else
+         {
+            Assert.assertEquals(gtfsStopTime.getArrivalTime().getDay(), Integer.valueOf(2), "ArrivalTime must be after tomorrow");
+            Assert.assertEquals(gtfsStopTime.getDepartureTime().getDay(), Integer.valueOf(2), "DepartureTime must be after tomorrow");           
+         }
+         
             
          i++;
       }
-
    }
 
    @Test(groups = { "Producers" }, description = "test trip wheelChair mapping")
@@ -148,11 +167,10 @@ public class GtfsExportTripProducerTests
       mock.reset();
       Reporter.log("verifyTripProducerForWheelChairMapping");
 
-      ActionReport report = new ActionReport();
       VehicleJourney neptuneObject = buildNeptuneObject(true);
       neptuneObject.setMobilityRestrictedSuitability(Boolean.TRUE);
 
-      producer.save(neptuneObject, "tm_01", report, "GTFS", "GTFS");
+      producer.save(neptuneObject, "tm_01",  "GTFS", "GTFS");
 
       Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
       GtfsTrip gtfsObject = mock.getExportedTrips().get(0);
@@ -161,7 +179,7 @@ public class GtfsExportTripProducerTests
 
       mock.reset();
       neptuneObject.setMobilityRestrictedSuitability(Boolean.FALSE);
-      producer.save(neptuneObject, "tm_01", report, "GTFS", "GTFS");
+      producer.save(neptuneObject, "tm_01", "GTFS", "GTFS");
       Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
       gtfsObject = mock.getExportedTrips().get(0);
       Reporter.log(TripExporter.CONVERTER.to(context,gtfsObject));
@@ -169,7 +187,7 @@ public class GtfsExportTripProducerTests
 
       mock.reset();
       neptuneObject.setMobilityRestrictedSuitability(null);
-      producer.save(neptuneObject, "tm_01", report, "GTFS", "GTFS");
+      producer.save(neptuneObject, "tm_01",  "GTFS", "GTFS");
       Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
       gtfsObject = mock.getExportedTrips().get(0);
       Reporter.log(TripExporter.CONVERTER.to(context,gtfsObject));
@@ -183,11 +201,10 @@ public class GtfsExportTripProducerTests
       mock.reset();
       Reporter.log("verifyTripProducerForDirectionMapping");
 
-      ActionReport report = new ActionReport();
       VehicleJourney neptuneObject = buildNeptuneObject(true);
       Route r = neptuneObject.getRoute();
       r.setWayBack("A");
-      producer.save(neptuneObject, "tm_01", report, "GTFS", "GTFS");
+      producer.save(neptuneObject, "tm_01", "GTFS", "GTFS");
 
       Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
       GtfsTrip gtfsObject = mock.getExportedTrips().get(0);
@@ -195,14 +212,14 @@ public class GtfsExportTripProducerTests
 
       mock.reset();
       r.setWayBack("R");
-      producer.save(neptuneObject, "tm_01", report, "GTFS", "GTFS");
+      producer.save(neptuneObject, "tm_01",  "GTFS", "GTFS");
       Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
       gtfsObject = mock.getExportedTrips().get(0);
       Assert.assertEquals(gtfsObject.getDirectionId(), DirectionType.Inbound, "DirectionId must be correctly set");
 
       mock.reset();
       r.setWayBack(null);
-      producer.save(neptuneObject, "tm_01", report, "GTFS", "GTFS");
+      producer.save(neptuneObject, "tm_01",  "GTFS", "GTFS");
       Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
       gtfsObject = mock.getExportedTrips().get(0);
       Assert.assertEquals(gtfsObject.getDirectionId(), DirectionType.Outbound, "DirectionId must be correctly set");
@@ -211,7 +228,8 @@ public class GtfsExportTripProducerTests
    /**
     * @return
     */
-   private VehicleJourney buildNeptuneObject(boolean full)
+   @SuppressWarnings("deprecation")
+private VehicleJourney buildNeptuneObject(boolean full)
    {
       VehicleJourney neptuneObject = new VehicleJourney();
       neptuneObject.setObjectId("GTFS:VehicleJourney:4321");
@@ -229,8 +247,16 @@ public class GtfsExportTripProducerTests
       route.setLine(line);
       if (full) route.setWayBack("A");
       
-      int h = 22;
+      
+      int h = 23;
       int m = 59;
+      int current_departure_offset = 0;
+      int current_arrival_offset = 0;
+      VehicleJourneyAtStop previous_vjas = null;
+      
+      /**
+       * Mocking journey during more than one day
+       */
       for (int i = 0; i < 4; i++)
       {
          StopPoint sp = new StopPoint();
@@ -241,22 +267,50 @@ public class GtfsExportTripProducerTests
          sp.setContainedInStopArea(sa);
          VehicleJourneyAtStop vjas = new VehicleJourneyAtStop();
          vjas.setStopPoint(sp);
+         vjas.setArrivalDayOffset(current_arrival_offset);
+         vjas.setDepartureDayOffset(current_departure_offset);
          vjas.setArrivalTime(new Time(h,m,0));
-         m = m + 2;
-         if (m > 60)
+         
+         h = h + 1;
+         if (h > 23)
          {
-            m -= 60;
-            h = (h+1) % 24;
+            h -= 24;
+            
          }
+      
          vjas.setDepartureTime(new Time(h,m,0));
-         m = m + 28;
-         if (m > 60)
-         {
-            m -= 60;
-            h = (h+1) % 24;
+         
+         if(previous_vjas == null) {
+        	 if(vjas.getDepartureTime().getTime() < vjas.getArrivalTime().getTime()) {
+        		 current_departure_offset = current_departure_offset + 1;
+                 vjas.setDepartureDayOffset(current_departure_offset);
+        	 }
+         } else {
+        	 if(vjas.getArrivalTime().getTime() < previous_vjas.getArrivalTime().getTime()) {
+        		 current_arrival_offset = current_arrival_offset + 1;
+                 vjas.setArrivalDayOffset(current_arrival_offset);
+        	 }
+        	 
+        	 if(vjas.getDepartureTime().getTime() < previous_vjas.getDepartureTime().getTime()) {
+        		 current_departure_offset = current_departure_offset + 1;
+                 vjas.setDepartureDayOffset(current_departure_offset);
+        	 }
          }
+         h = h + 8;
+         if (h > 23)
+         {
+            h -= 24;
+         }
+         
+         Reporter.log("Current arrival offset : " + vjas.getArrivalDayOffset(), true);
+         Reporter.log("Current departure offset : " + vjas.getDepartureDayOffset(), true);
          vjas.setVehicleJourney(neptuneObject);
+         
+         previous_vjas = vjas;
       }
+      
+      
+      
       return neptuneObject;
    }
 
