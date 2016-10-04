@@ -106,6 +106,17 @@ public abstract class AbstractNetexProfileValidator implements NetexProfileValid
 		validateElement(context, xpath, document, expression, 0, checkpointName);
 	}
 
+	/*
+	 * Validate that the occurrence(s) of an xml element conform to the correct cardinality
+	 */
+	private static void validateElementCardinality(Context context, XPath xpath, Document document, String expression,
+			int minOccurs, int maxOccurs, String checkpointName) throws XPathExpressionException {
+/*
+		String countExpression = String.format("count(%s)", expression);
+		double elementCount = (Double) xpath.evaluate(countExpression, document, XPathConstants.NUMBER);
+*/
+	}
+
 	private static void validateElement(Context context, XPath xpath, Document document, String expression, int expectedCount, String checkpointName)
 			throws XPathExpressionException {
 		ValidationReport validationReport = (ValidationReport) context.get(Constant.VALIDATION_REPORT);
