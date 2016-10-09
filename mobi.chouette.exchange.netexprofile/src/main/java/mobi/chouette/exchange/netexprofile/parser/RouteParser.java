@@ -4,7 +4,10 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
+import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
+import mobi.chouette.exchange.netexprofile.importer.validation.norway.RouteValidator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -16,7 +19,23 @@ import java.util.List;
 import java.util.Map;
 
 @Log4j
-public class RouteParser implements Parser, Constant {
+public class RouteParser extends AbstractParser implements Parser {
+
+    @Override
+    public void initializeReferentials(Context context) throws Exception {
+        NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);
+        RouteValidator validator = (RouteValidator) ValidatorFactory.create(RouteValidator.class.getName(), context);
+
+        RoutesInFrame_RelStructure routesInFrameStruct = (RoutesInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
+        List<JAXBElement<? extends LinkSequence_VersionStructure>> routeElements = routesInFrameStruct.getRoute_();
+
+        for (JAXBElement<? extends LinkSequence_VersionStructure> routeElement : routeElements) {
+            no.rutebanken.netex.model.Route route = (no.rutebanken.netex.model.Route) routeElement.getValue();
+            String objectId = route.getId();
+            NetexObjectUtil.addRouteReference(referential, objectId, route);
+            validator.addObjectReference(context, route);
+        }
+    }
 
     @Override
     public void parse(Context context) throws Exception {

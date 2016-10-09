@@ -75,6 +75,7 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 		Path path = Paths.get(jobData.getPathName(), INPUT);
 		try {
 
+			// schema validation
 			Chain schemaValidationChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 			commands.add(schemaValidationChain);
 
@@ -87,7 +88,7 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 				schemaValidationChain.add(schemaValidation);
 			}
 			
-
+			// common file parsing
 			Chain commonFilesParserChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 			commands.add(commonFilesParserChain);
 
@@ -104,13 +105,14 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 
 			}
 
+			// parsing
 			for (Path file : allFiles) {
 				String url = file.toUri().toURL().toExternalForm();
 				if (!commonFiles.contains(url)) {
 					Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 					commands.add(chain);
 
-					// parser
+					// parsing and profile validation
 					NetexLineParserCommand parser = (NetexLineParserCommand) CommandFactory.create(initialContext, NetexLineParserCommand.class.getName());
 					parser.setFile(file.toFile());
 					chain.add(parser);

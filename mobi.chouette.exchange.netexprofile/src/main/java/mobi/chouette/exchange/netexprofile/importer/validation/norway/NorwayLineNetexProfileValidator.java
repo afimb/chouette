@@ -1,24 +1,21 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-
-import javafx.scene.input.InputMethodTextRun;
-import no.rutebanken.netex.model.*;
-import org.w3c.dom.Document;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.CheckPoint.SEVERITY;
-import no.rutebanken.netex.model.PublicationDeliveryStructure.DataObjects;
+import mobi.chouette.model.util.Referential;
+import no.rutebanken.netex.model.Common_VersionFrameStructure;
+import no.rutebanken.netex.model.CompositeFrame;
+import no.rutebanken.netex.model.Frames_RelStructure;
+import no.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.w3c.dom.Document;
+
+import javax.xml.bind.JAXBElement;
+import javax.xml.xpath.XPath;
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j
 public class NorwayLineNetexProfileValidator extends AbstractNetexProfileValidator {
@@ -29,7 +26,9 @@ public class NorwayLineNetexProfileValidator extends AbstractNetexProfileValidat
 	private static final String _2_NETEX_STOPPLACE_REF = "1-NETEX-STOPPLACE-REF";
 	private static final String _2_NETEX_SITEFRAME_STOPPLACE = "1-NETEX-SITEFRAME-STOPPLACE";
 
-	protected void validate(Context context, PublicationDeliveryStructure lineDeliveryStructure, Document dom, XPath xpath) throws XPathExpressionException {
+    private static final String _2_NETEX_TIMETABLEFRAME_VEHICLEJOURNEY = "2-NETEX-TIMETABLEFRAME-VEHICLEJOURNEY";
+
+	protected void validate(Context context, PublicationDeliveryStructure lineDeliveryStructure, Document dom, XPath xpath) throws Exception {
 
 		StopRegistryIdValidator stopRegisterValidator = new StopRegistryIdValidator();
 
@@ -46,10 +45,23 @@ public class NorwayLineNetexProfileValidator extends AbstractNetexProfileValidat
 		// TODO add profile validation elements based on external reference data
 
 		// TODO add profile validation elements based on java codxe
-		DataObjects dataObjects = lineDeliveryStructure.getDataObjects();
-		List<JAXBElement<? extends Common_VersionFrameStructure>> compositeFrameOrCommonFrame = dataObjects.getCompositeFrameOrCommonFrame();
-        List<TimetableFrame> timetableFrames = getFrames(TimetableFrame.class, compositeFrameOrCommonFrame);
-	}
+
+		try {
+			Referential referential = (Referential) context.get(REFERENTIAL);
+			Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
+
+			if (validationContext != null) {
+				LineValidator lineValidator = (LineValidator) ValidatorFactory.create(LineValidator.class.getName(), context);
+				lineValidator.validate(context, null);
+			}
+		} catch (Exception e) {
+			log.error("Netex profile validation failed ", e);
+			throw e;
+		} finally {
+			AbstractValidator.resetContext(context);
+			//log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+		}
+    }
 
 	@Override
 	public void addCheckpoints(Context context) {
@@ -59,6 +71,8 @@ public class NorwayLineNetexProfileValidator extends AbstractNetexProfileValidat
 		addCheckpoints(context, _1_NETEX_TIMETABLEFRAME, SEVERITY.ERROR);
 		addCheckpoints(context, _1_NETEX_SERVICECALENDARFRAME, SEVERITY.ERROR);
 		addCheckpoints(context, _2_NETEX_STOPPLACE_REF, SEVERITY.ERROR);
+
+        addCheckpoints(context, _2_NETEX_TIMETABLEFRAME_VEHICLEJOURNEY, SEVERITY.ERROR);
 	}
 
 	private <T> List<T> getFrames(Class<T> clazz, List<JAXBElement<? extends Common_VersionFrameStructure>> compositeFrameOrCommonFrame) {

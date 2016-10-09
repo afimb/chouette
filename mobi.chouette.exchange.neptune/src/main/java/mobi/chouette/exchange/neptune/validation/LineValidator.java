@@ -25,7 +25,7 @@ import mobi.chouette.model.util.Referential;
 @Log4j
 public class LineValidator extends AbstractValidator implements Validator<Line>, Constant {
 
-	public static final String ROUTE_ID = "routeId";
+		public static final String ROUTE_ID = "routeId";
 
 	public static final String LINE_END = "lineEnd";
 

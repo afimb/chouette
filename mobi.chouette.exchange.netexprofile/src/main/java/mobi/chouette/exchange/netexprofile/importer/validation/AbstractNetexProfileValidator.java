@@ -29,7 +29,7 @@ public abstract class AbstractNetexProfileValidator implements NetexProfileValid
 	private XPathFactory factory = XPathFactory.newInstance();
 
 	@Override
-	public boolean validate(Context context) throws XPathExpressionException {
+	public boolean validate(Context context) throws Exception {
 
 		XPath xpath = factory.newXPath();
 		xpath.setNamespaceContext(new NetexNamespaceContext());
@@ -57,7 +57,7 @@ public abstract class AbstractNetexProfileValidator implements NetexProfileValid
 	}
 
 	protected abstract void validate(Context context, PublicationDeliveryStructure lineDeliveryStructure, Document dom, XPath xpath)
-			throws XPathExpressionException;
+			throws Exception;
 
 	/*
 	 * Validate that a set of references identified by the given xpath expression is valid (by calling given external validator)

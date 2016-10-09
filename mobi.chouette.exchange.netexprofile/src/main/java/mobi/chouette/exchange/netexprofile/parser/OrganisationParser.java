@@ -5,23 +5,50 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
+import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexNamespaceContext;
+import mobi.chouette.exchange.netexprofile.importer.validation.norway.OrganisationValidator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+import no.rutebanken.netex.model.DataManagedObjectStructure;
+import no.rutebanken.netex.model.Organisation;
+import no.rutebanken.netex.model.OrganisationsInFrame_RelStructure;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.xml.bind.JAXBElement;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
+import java.util.List;
 
 @Log4j
-public class OrganisationParser implements Parser, Constant {
+public class OrganisationParser extends AbstractParser implements Parser {
 
     private XPathFactory factory = XPathFactory.newInstance();
+
+    @Override
+    public void initializeReferentials(Context context) throws Exception {
+        NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);
+        OrganisationValidator validator = (OrganisationValidator) ValidatorFactory.create(OrganisationValidator.class.getName(), context);
+
+        OrganisationsInFrame_RelStructure organisationsInFrameStruct =
+                (OrganisationsInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
+        List<JAXBElement<? extends DataManagedObjectStructure>> organisationElements =
+                organisationsInFrameStruct.getOrganisation_();
+
+        for (JAXBElement<? extends DataManagedObjectStructure> organisationElement : organisationElements) {
+            Organisation organisation = (Organisation) organisationElement.getValue();
+            String objectId = organisation.getId();
+            NetexObjectUtil.addOrganisationReference(referential, objectId, organisation);
+            validator.addObjectReference(context, organisation);
+        }
+    }
 
     @Override
     public void parse(Context context) throws Exception {

@@ -1,10 +1,10 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.netexprofile.importer.validation.ExternalReferenceValidator;
+
+import java.util.Collection;
+import java.util.Collections;
 
 @Log4j
 public class StopRegistryIdValidator implements ExternalReferenceValidator {

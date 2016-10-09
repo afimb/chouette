@@ -6,6 +6,7 @@ public interface Constant extends mobi.chouette.common.Constant {
 	public static final String VERSION = "version";
 	public static final String REF = "ref";
 	public static final String NAME = "Name";
+	public static final String NETEX_REFERENTIAL = "netex_referential";
 	public static final String NETEX_COMMON_DATA = "netex_common_data";
 	public static final String NETEX_LINE_DATA_JAVA = "netex_line_data_java";
 	public static final String NETEX_LINE_DATA_DOM = "netex_line_data_dom";
