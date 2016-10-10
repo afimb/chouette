@@ -31,8 +31,7 @@ public class RouteParser extends AbstractParser implements Parser {
 
         for (JAXBElement<? extends LinkSequence_VersionStructure> routeElement : routeElements) {
             no.rutebanken.netex.model.Route route = (no.rutebanken.netex.model.Route) routeElement.getValue();
-            String objectId = route.getId();
-            NetexObjectUtil.addRouteReference(referential, objectId, route);
+            NetexObjectUtil.addRouteReference(referential, route.getId(), route);
             validator.addObjectReference(context, route);
         }
     }

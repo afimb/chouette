@@ -25,7 +25,7 @@ import no.rutebanken.netex.model.PublicationDeliveryStructure;
 
 public class NorwayLineNetexProfileValidatorTest {
 
-	@Test public void testValidateFile() throws SAXException, IOException, ParserConfigurationException, XPathExpressionException, JAXBException {
+	@Test public void testValidateFile() throws Exception {
 		
 		Context context = new Context();
 		ValidationReport vr = new ValidationReport();

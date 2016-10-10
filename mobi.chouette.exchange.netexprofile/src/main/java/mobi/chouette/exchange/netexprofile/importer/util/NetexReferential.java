@@ -18,40 +18,50 @@ public class NetexReferential implements Serializable {
 
     @Getter
     @Setter
-    private Map<String, Organisation> organisations = new HashMap<String, Organisation>();
+    private Map<String, Authority> authorities = new HashMap<>();
 
     @Getter
     @Setter
-    private Map<String, DayType> dayTypes = new HashMap<String, DayType>();
+    private Map<String, Operator> operators = new HashMap<>();
 
     @Getter
     @Setter
-    private Map<String, Route> routes = new HashMap<String, Route>();
+    private Map<String, Organisation> organisations = new HashMap<>();
 
     @Getter
     @Setter
-    private Map<String, Line> lines = new HashMap<String, Line>();
+    private Map<String, DayType> dayTypes = new HashMap<>();
 
     @Getter
     @Setter
-    private Map<String, PassengerStopAssignment> passengerStopAssignments = new HashMap<String, PassengerStopAssignment>();
+    private Map<String, Route> routes = new HashMap<>();
 
     @Getter
     @Setter
-    private Map<String, ScheduledStopPoint> scheduledStopPoints = new HashMap<String, ScheduledStopPoint>();
+    private Map<String, Line> lines = new HashMap<>();
 
     @Getter
     @Setter
-    private Map<String, JourneyPattern> journeyPatterns = new HashMap<String, JourneyPattern>();
+    private Map<String, PassengerStopAssignment> passengerStopAssignments = new HashMap<>();
+
+    @Getter
+    @Setter
+    private Map<String, ScheduledStopPoint> scheduledStopPoints = new HashMap<>();
+
+    @Getter
+    @Setter
+    private Map<String, JourneyPattern> journeyPatterns = new HashMap<>();
 
     @Getter
     @Setter
     /**
      * TODO add generics support for more generic types here, i.e. VechicleJourney or Journey
      */
-    private Map<String, ServiceJourney> serviceJourneys = new HashMap<String, ServiceJourney>();
+    private Map<String, ServiceJourney> serviceJourneys = new HashMap<>();
 
     public void clear() {
+        authorities.clear();
+        operators.clear();
         organisations.clear();
         dayTypes.clear();
         routes.clear();

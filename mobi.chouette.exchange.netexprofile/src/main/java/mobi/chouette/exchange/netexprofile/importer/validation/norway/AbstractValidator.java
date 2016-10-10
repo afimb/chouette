@@ -3,7 +3,6 @@ package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import no.rutebanken.netex.model.DataManagedObjectStructure;
 
@@ -50,10 +49,10 @@ public abstract class AbstractValidator implements Constant {
         }
     }
 
-    protected void addValidationError(Context context, String checkPointKey, Detail item) {
+    protected void addValidationError(Context context, String checkPointKey) {
         ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
         CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointKey);
-        checkPoint.addDetail(item);
+        checkPoint.setState(CheckPoint.RESULT.NOK);
     }
 
     @SuppressWarnings("unchecked")
@@ -86,8 +85,9 @@ public abstract class AbstractValidator implements Constant {
             initializeCheckPoints(context);
             checkPoint = validationReport.findCheckPointByName(checkPointKey);
         }
-        if (checkPoint.getDetails().isEmpty())
+        if (checkPoint.getState().equals(CheckPoint.RESULT.UNCHECK)) {
             checkPoint.setState(CheckPoint.RESULT.OK);
+        }
     }
 
     public abstract void addObjectReference(Context context, DataManagedObjectStructure object);

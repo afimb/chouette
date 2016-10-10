@@ -36,25 +36,22 @@ public class NetexParser extends AbstractParser implements Parser {
         }
         PublicationDeliveryStructure publicationDelivery = (PublicationDeliveryStructure) context.get(NETEX_LINE_DATA_JAVA);
         List<JAXBElement<? extends Common_VersionFrameStructure>> topLevelFrame = publicationDelivery.getDataObjects().getCompositeFrameOrCommonFrame();
-        parseResourceFrames(referential, topLevelFrame);
+        parseResourceFrames(context, referential, topLevelFrame);
         parseSiteFrames(referential, topLevelFrame);
         parseServiceCalendarFrames(referential, topLevelFrame);
         parseServiceFrames(context, referential, topLevelFrame);
         parseTimetableFrames(context, referential, topLevelFrame);
     }
 
-    private void parseResourceFrames(NetexReferential referential, List<JAXBElement<? extends Common_VersionFrameStructure>> topLevelFrame) {
+    private void parseResourceFrames(Context context, NetexReferential referential, List<JAXBElement<? extends Common_VersionFrameStructure>> topLevelFrame) throws Exception {
         List<ResourceFrame> resourceFrames = getFrames(ResourceFrame.class, topLevelFrame);
         for (ResourceFrame resourceFrame : resourceFrames) {
 
             // 1. initialize organisations
-            OrganisationsInFrame_RelStructure organisationsStruct = resourceFrame.getOrganisations();
-            List<JAXBElement<? extends DataManagedObjectStructure>> organisationElements = organisationsStruct.getOrganisation_();
-            for (JAXBElement<? extends DataManagedObjectStructure> organisationElement : organisationElements) {
-                Organisation organisation = (Organisation) organisationElement.getValue();
-                // TODO consider generating a more sophisticated id
-                NetexObjectUtil.addOrganisationReference(referential, organisation.getId(), organisation);
-            }
+            OrganisationsInFrame_RelStructure organisationsInFrameStruct = resourceFrame.getOrganisations();
+            context.put(NETEX_LINE_DATA_CONTEXT, organisationsInFrameStruct);
+            OrganisationParser organisationParser = (OrganisationParser) ParserFactory.create(OrganisationParser.class.getName());
+            organisationParser.initializeReferentials(context);
         }
     }
 
@@ -98,13 +95,10 @@ public class NetexParser extends AbstractParser implements Parser {
             }
 
             // 3. parse routes
-            RoutesInFrame_RelStructure routeStruct = serviceFrame.getRoutes();
-            List<JAXBElement<? extends LinkSequence_VersionStructure>> routeStructElements = routeStruct.getRoute_();
-            for (JAXBElement<? extends LinkSequence_VersionStructure> routeStructElement : routeStructElements) {
-                Route route = (Route) routeStructElement.getValue();
-                // TODO consider generating a more sophisticated id
-                NetexObjectUtil.addRouteReference(referential, route.getId(), route);
-            }
+            RoutesInFrame_RelStructure routesInFrameStruct = serviceFrame.getRoutes();
+            context.put(NETEX_LINE_DATA_CONTEXT, routesInFrameStruct);
+            RouteParser routeParser = (RouteParser) ParserFactory.create(RouteParser.class.getName());
+            routeParser.initializeReferentials(context);
 
             // 4. parse lines
             LinesInFrame_RelStructure linesInFrameStruct = serviceFrame.getLines();

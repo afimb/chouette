@@ -134,10 +134,11 @@ public abstract class AbstractNetexProfileValidator implements NetexProfileValid
 	}
 
 	protected void addCheckpoints(Context context, String key, CheckPoint.SEVERITY severity) {
-
 		ValidationReport validationReport = (ValidationReport) context.get(Constant.VALIDATION_REPORT);
+		CheckPoint checkPoint = validationReport.findCheckPointByName(key);
+
 		// Add checkpoints that are to be checked in the validate() method above
-		if (validationReport.findCheckPointByName(key) == null) {
+		if (checkPoint == null) {
 			log.info("Adding checkpoint " + key);
 			validationReport.addCheckPoint(new CheckPoint(key, CheckPoint.RESULT.UNCHECK, severity));
 		}

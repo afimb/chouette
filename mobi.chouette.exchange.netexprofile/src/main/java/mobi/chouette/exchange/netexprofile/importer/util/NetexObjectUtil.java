@@ -10,6 +10,40 @@ import java.util.List;
 // TODO add common methods for extracting various types of objects from netex objects...
 public class NetexObjectUtil {
 
+    public static void addAuthorityReference(NetexReferential referential, String objectId, Authority authority) {
+        if (authority == null) {
+            throw new NullPointerException("Unknown authority : " + objectId);
+        }
+        if (!referential.getAuthorities().containsKey(objectId)) {
+            referential.getAuthorities().put(objectId, authority);
+        }
+    }
+
+    public static Authority getAuthority(NetexReferential referential, String objectId) {
+        Authority authority = referential.getAuthorities().get(objectId);
+        if (authority == null) {
+            throw new NullPointerException("Unknown authority : " + objectId);
+        }
+        return authority;
+    }
+
+    public static void addOperatorReference(NetexReferential referential, String objectId, Operator operator) {
+        if (operator == null) {
+            throw new NullPointerException("Unknown operator : " + objectId);
+        }
+        if (!referential.getOperators().containsKey(objectId)) {
+            referential.getOperators().put(objectId, operator);
+        }
+    }
+
+    public static Operator getOperator(NetexReferential referential, String objectId) {
+        Operator operator = referential.getOperators().get(objectId);
+        if (operator == null) {
+            throw new NullPointerException("Unknown operator : " + objectId);
+        }
+        return operator;
+    }
+
     public static void addOrganisationReference(NetexReferential referential, String objectId, Organisation organisation) {
         if (organisation == null) {
             throw new NullPointerException("Unknown organisation : " + objectId);

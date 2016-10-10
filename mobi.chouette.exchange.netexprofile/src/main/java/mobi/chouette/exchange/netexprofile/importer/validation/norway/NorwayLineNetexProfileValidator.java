@@ -4,7 +4,9 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.CheckPoint.SEVERITY;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.util.Referential;
 import no.rutebanken.netex.model.Common_VersionFrameStructure;
 import no.rutebanken.netex.model.CompositeFrame;
@@ -62,6 +64,17 @@ public class NorwayLineNetexProfileValidator extends AbstractNetexProfileValidat
 			//log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
     }
+
+	// TODO check this out instead
+	private boolean checkValid(Context context) {
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		for (CheckPoint checkPoint : report.getCheckPoints()) {
+			if (checkPoint.getSeverity().equals(SEVERITY.ERROR) && checkPoint.getState().equals(CheckPoint.RESULT.NOK)) {
+				return ERROR;
+			}
+		}
+		return SUCCESS;
+	}
 
 	@Override
 	public void addCheckpoints(Context context) {

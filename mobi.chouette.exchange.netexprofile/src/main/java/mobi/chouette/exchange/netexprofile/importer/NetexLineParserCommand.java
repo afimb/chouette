@@ -75,7 +75,7 @@ public class NetexLineParserCommand implements Command, Constant {
 			context.put(NETEX_LINE_DATA_DOM, dom);
 
 			NetexParser netexParser = (NetexParser) ParserFactory.create(NetexParser.class.getName());
-			//netexParser.initializeReferentials(context); // TODO enable this to validate
+			netexParser.initializeReferentials(context); // TODO enable this to validate
 
 			// Profile validation
 			NetexProfileValidator profileValidator = importer.getProfileValidator(context); 

@@ -13,8 +13,9 @@ import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+import no.rutebanken.netex.model.Authority;
 import no.rutebanken.netex.model.DataManagedObjectStructure;
-import no.rutebanken.netex.model.Organisation;
+import no.rutebanken.netex.model.Operator;
 import no.rutebanken.netex.model.OrganisationsInFrame_RelStructure;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -43,10 +44,16 @@ public class OrganisationParser extends AbstractParser implements Parser {
                 organisationsInFrameStruct.getOrganisation_();
 
         for (JAXBElement<? extends DataManagedObjectStructure> organisationElement : organisationElements) {
-            Organisation organisation = (Organisation) organisationElement.getValue();
+            DataManagedObjectStructure organisation = organisationElement.getValue();
             String objectId = organisation.getId();
-            NetexObjectUtil.addOrganisationReference(referential, objectId, organisation);
-            validator.addObjectReference(context, organisation);
+
+            if (organisation instanceof Authority) {
+                NetexObjectUtil.addAuthorityReference(referential, objectId, (Authority) organisation);
+                validator.addObjectReference(context, organisation);
+            } else if (organisation instanceof Operator) {
+                NetexObjectUtil.addOperatorReference(referential, objectId, (Operator) organisation);
+                validator.addObjectReference(context, organisation);
+            }
         }
     }
 

@@ -30,10 +30,9 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
     private static final String LINE_9 = "2-NETEX-Line-9";
     private static final String LINE_10 = "2-NETEX-Line-10";
 
-    // TODO add all validation items
     @Override
     protected void initializeCheckPoints(Context context) {
-        addItemToValidation(context, PREFIX, "Line", 1, "E");
+        addItemToValidation(context, PREFIX, "Line", 10, "E", "E", "E", "E", "E", "E", "E", "E", "E", "E");
     }
 
     @Override
