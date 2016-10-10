@@ -14,8 +14,8 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProgressionCommand;
-import mobi.chouette.exchange.report.ActionError;
-import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
@@ -31,7 +31,7 @@ public class AbstractImporterCommand implements Constant {
 		boolean result = ERROR;
 		boolean disposeResult = SUCCESS;
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 
 		try {
 			// Initialization
@@ -40,8 +40,8 @@ public class AbstractImporterCommand implements Constant {
 			for (Command importCommand : preProcessingCommands) {
 				result = importCommand.execute(context);
 				if (!result) {
-					if (report.getFailure() == null)
-					   report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND, "no data to import"));
+					if (!reporter.hasActionError(context))
+					   reporter.setActionError(context, ActionReporter.ERROR_CODE.NO_DATA_FOUND, "no data to import");
 					progression.execute(context);
 					return ERROR;
 				}
@@ -117,9 +117,9 @@ public class AbstractImporterCommand implements Constant {
 				}
 			}
 
-			if (mode.equals(Mode.line) && report.getLines().size() == 0) {
-				if (report.getFailure() == null)
-					report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND, "no data"));
+			if (mode.equals(Mode.line) && !reporter.hasInfo(context, OBJECT_TYPE.LINE)) {
+				if (!reporter.hasActionError(context))
+					reporter.setActionError(context, ActionReporter.ERROR_CODE.NO_DATA_FOUND, "no data");
 			}
 		} finally {
 			// call dispose commmands

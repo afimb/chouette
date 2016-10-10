@@ -11,7 +11,6 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporter;
-import mobi.chouette.exchange.report.ActionReport;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -28,9 +27,8 @@ public class GtfsTerminateExportCommand implements Command, Constant {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		try {
-			ActionReport report = (ActionReport) context.get(REPORT);
 			GtfsExporter gtfsExporter = (GtfsExporter) context.get(GTFS_EXPORTER);
-			gtfsExporter.dispose(report);
+			gtfsExporter.dispose(context);
 			result = SUCCESS;
 
 		} catch (Exception e) {

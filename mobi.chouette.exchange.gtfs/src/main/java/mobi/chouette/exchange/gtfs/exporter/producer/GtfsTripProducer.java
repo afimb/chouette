@@ -24,7 +24,6 @@ import mobi.chouette.exchange.gtfs.model.GtfsStopTime.PickupType;
 import mobi.chouette.exchange.gtfs.model.GtfsTime;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -64,16 +63,17 @@ public class GtfsTripProducer extends AbstractProducer {
 	 * @param sharedPrefix
 	 * @return list of stoptimes
 	 */
-	private boolean saveTimes(VehicleJourney vj, ActionReport report, String prefix, String sharedPrefix) {
+	private boolean saveTimes(VehicleJourney vj, String prefix, String sharedPrefix) {
 		if (vj.getVehicleJourneyAtStops().isEmpty())
 			return false;
 		Line l = vj.getRoute().getLine();
-		Integer zero = Integer.valueOf(0);
-		Integer one = Integer.valueOf(1);
-		Integer tomorrowArrival = zero;
-		Time previousArrival = null;
-		Integer tomorrowDeparture = zero;
-		Time previousDeparture = null;
+	
+		/**
+		 * GJT : Attributes used to handle times after midnight 
+		 */
+		int departureOffset = 0;
+		int arrivalOffset = 0;
+		
 		String tripId = toGtfsId(vj.getObjectId(), prefix);
 		time.setTripId(tripId);
 		List<VehicleJourneyAtStop> lvjas = new ArrayList<>(vj.getVehicleJourneyAtStops());
@@ -89,19 +89,20 @@ public class GtfsTripProducer extends AbstractProducer {
 		for (VehicleJourneyAtStop vjas : lvjas) {
 			time.setStopId(toGtfsId(vjas.getStopPoint().getContainedInStopArea().getObjectId(), sharedPrefix));
 			Time arrival = vjas.getArrivalTime();
-			if (arrival == null)
+			arrivalOffset = vjas.getArrivalDayOffset(); /** GJT */
+			
+			if (arrival == null) {
 				arrival = vjas.getDepartureTime();
-			if (tomorrowArrival != one && previousArrival != null && previousArrival.after(arrival)) {
-				tomorrowArrival = one; // after midnight
+				arrivalOffset = vjas.getDepartureDayOffset(); /** GJT */
 			}
-			previousArrival = arrival;
-			time.setArrivalTime(new GtfsTime(arrival, tomorrowArrival));
+			
+			
+			time.setArrivalTime(new GtfsTime(arrival, arrivalOffset)); /** GJT */
 			Time departure = vjas.getDepartureTime();
-			if (tomorrowDeparture != one && previousDeparture != null && previousDeparture.after(departure)) {
-				tomorrowDeparture = one; // after midnight
-			}
-			time.setDepartureTime(new GtfsTime(departure, tomorrowDeparture));
-			previousDeparture = departure;
+			departureOffset = vjas.getDepartureDayOffset(); /** GJT */
+			
+			time.setDepartureTime(new GtfsTime(departure, departureOffset)); /** GJT */
+			
 			time.setStopSequence((int) vjas.getStopPoint().getPosition());
 
 			// time.setStopHeadsign();
@@ -114,9 +115,13 @@ public class GtfsTripProducer extends AbstractProducer {
 					index++;
 				}
 				if (index < routeSections.size()) {
-					distance += routeSections.get(index).getDistance().floatValue();
+					distance += (float) computeDistance(routeSections.get(index));
 				}
 				index++;
+			}
+			else
+			{
+			   time.setShapeDistTraveled(null);
 			}
 
 			try {
@@ -128,6 +133,22 @@ public class GtfsTripProducer extends AbstractProducer {
 
 		}
 		return true;
+	}
+	
+	private double computeDistance(RouteSection section)
+	{
+		if (isTrue(section.getNoProcessing()) || section.getProcessedGeometry() == null)
+		{
+			double distance = section.getInputGeometry().getLength();
+			distance *= (Math.PI / 180) * 6378137;
+			return distance;
+		}
+		else
+		{
+			double distance = section.getProcessedGeometry().getLength();
+			distance *= (Math.PI / 180) * 6378137;
+			return distance;
+		}
 	}
 
 	private void addDropOffAndPickUpType(GtfsStopTime time, Line l, VehicleJourney vj, VehicleJourneyAtStop vjas) {
@@ -161,9 +182,14 @@ public class GtfsTripProducer extends AbstractProducer {
 	}
 
 	private DropOffType toDropOffType(AlightingPossibilityEnum forAlighting, DropOffType defaultValue) {
+		if(forAlighting == null) {
+			// If not set on StopPoint return defaultValue (that is, the previous value) or if not set; Scheduled
+			return defaultValue == null ? DropOffType.Scheduled : defaultValue;
+		}
+		
 		switch (forAlighting) {
 		case normal:
-			return defaultValue == null ? DropOffType.Scheduled : defaultValue;
+			return DropOffType.Scheduled;
 		case forbidden:
 			return DropOffType.NoAvailable;
 		case is_flexible:
@@ -175,9 +201,14 @@ public class GtfsTripProducer extends AbstractProducer {
 	}
 
 	private PickupType toPickUpType(BoardingPossibilityEnum forBoarding, PickupType defaultValue) {
+		if(forBoarding == null) {
+			// If not set on StopPoint return defaultValue (that is, the previous value) or if not set; Scheduled
+			return defaultValue == null ? PickupType.Scheduled : defaultValue;
+		}
+		
 		switch (forBoarding) {
 		case normal:
-			return defaultValue == null ? PickupType.Scheduled : defaultValue;
+			return PickupType.Scheduled;
 		case forbidden:
 			return PickupType.NoAvailable;
 		case is_flexible:
@@ -202,7 +233,7 @@ public class GtfsTripProducer extends AbstractProducer {
 	 *            vehicle journey with multiple timetables
 	 * @return gtfs trip
 	 */
-	public boolean save(VehicleJourney vj, String serviceId, ActionReport report, String prefix, String sharedPrefix) {
+	public boolean save(VehicleJourney vj, String serviceId,  String prefix, String sharedPrefix) {
 
 		String tripId = toGtfsId(vj.getObjectId(), prefix);
 
@@ -212,6 +243,10 @@ public class GtfsTripProducer extends AbstractProducer {
 		if (jp.getSectionStatus() == SectionStatusEnum.Completed) {
 			String shapeId = toGtfsId(jp.getObjectId(), prefix);
 			trip.setShapeId(shapeId);
+		}
+		else
+		{
+			trip.setShapeId(null);
 		}
 		Route route = vj.getRoute();
 		Line line = route.getLine();
@@ -233,7 +268,9 @@ public class GtfsTripProducer extends AbstractProducer {
 		else
 			trip.setTripShortName(null);
 
-		if (!isEmpty(jp.getPublishedName()))
+		if (!isEmpty(vj.getPublishedJourneyName()))
+			trip.setTripHeadSign(vj.getPublishedJourneyName());
+		else if (!isEmpty(jp.getPublishedName()))
 			trip.setTripHeadSign(jp.getPublishedName());
 		else
 			trip.setTripHeadSign(null);
@@ -247,7 +284,7 @@ public class GtfsTripProducer extends AbstractProducer {
 		// trip.setBikeAllowed();
 
 		// add StopTimes
-		if (saveTimes(vj, report, prefix, sharedPrefix)) {
+		if (saveTimes(vj,  prefix, sharedPrefix)) {
 			try {
 				getExporter().getTripExporter().export(trip);
 			} catch (Exception e) {
@@ -285,4 +322,5 @@ public class GtfsTripProducer extends AbstractProducer {
 		cal.setTime(time);
 		return ( ( cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE) ) * 60 + cal.get(Calendar.SECOND) );
 	}
+	
 }

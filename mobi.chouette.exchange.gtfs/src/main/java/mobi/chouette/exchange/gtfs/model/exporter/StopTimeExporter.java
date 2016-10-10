@@ -53,7 +53,7 @@ public class StopTimeExporter extends ExporterImpl<GtfsStopTime> implements Gtfs
 					PickupType.Scheduled, false));
 			bean.setDropOffType(DROPOFFTYPE_CONVERTER.from(context, FIELDS.drop_off_type, values.get(i++),
 					DropOffType.Scheduled, false));
-			bean.setShapeDistTraveled(FLOAT_CONVERTER.from(context, FIELDS.shape_dist_traveled, values.get(i++), false));
+ 			bean.setShapeDistTraveled(FLOAT_CONVERTER.from(context, FIELDS.shape_dist_traveled, values.get(i++), false));
 
 			return bean;
 		}
@@ -71,7 +71,7 @@ public class StopTimeExporter extends ExporterImpl<GtfsStopTime> implements Gtfs
 			// input.getStopHeadsign(), false));
 			values.add(PICKUP_CONVERTER.to(context, FIELDS.pickup_type, input.getPickupType(), false));
 			values.add(DROPOFFTYPE_CONVERTER.to(context, FIELDS.drop_off_type, input.getDropOffType(), false));
-			values.add(FLOAT_CONVERTER.to(context, FIELDS.shape_dist_traveled, input.getShapeDistTraveled(), false));
+ 			values.add(FLOAT_CONVERTER.to(context, FIELDS.shape_dist_traveled, input.getShapeDistTraveled(), false));
 
 			result = Tokenizer.untokenize(values);
 			return result;

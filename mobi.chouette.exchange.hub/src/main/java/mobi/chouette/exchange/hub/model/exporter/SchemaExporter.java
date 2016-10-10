@@ -34,20 +34,20 @@ public class SchemaExporter extends ExporterImpl<HubSchema> implements
 
 
 		@Override
-		public String to(Context context, HubSchema input) {
+		public String to(HubContext hubContext, HubSchema input) {
 			String result = null;
 			List<String> values = new ArrayList<String>();
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_ligne,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_ligne,
 					input.getCodeLigne(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.sens,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.sens,
 					input.getSens(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.identifiant,
 					input.getIdentifiant(), false));
 			// arrêts
 			for (ArretSchema arret : input.getArrets()) {
-				values.add(STRING_CONVERTER.to(context, FIELDS.code_arret,
+				values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_arret,
 						arret.getCode(), false));
-				values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant_arret,
+				values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.identifiant_arret,
 						arret.getIdentifiant(), true));
 			}
 			result = Tokenizer.untokenize(values);

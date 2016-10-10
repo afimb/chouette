@@ -13,12 +13,12 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.exporter.SharedDataKeys;
 import mobi.chouette.exchange.neptune.Constant;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.DataStats;
-import mobi.chouette.exchange.report.LineError;
-import mobi.chouette.exchange.report.LineInfo;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.util.NeptuneUtil;
+import mobi.chouette.model.util.NamingUtil;
 
 import org.xml.sax.SAXParseException;
 
@@ -34,7 +34,7 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 
 		try {
 
@@ -42,19 +42,15 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 			NeptuneExportParameters configuration = (NeptuneExportParameters) context.get(CONFIGURATION);
 
 			ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
-			if (collection == null)
-			{
-				collection = new  ExportableData();
+			if (collection == null) {
+				collection = new ExportableData();
 				context.put(EXPORTABLE_DATA, collection);
-			}
-			else
-			{
+			} else {
 				collection.clear();
 			}
-			
+
 			SharedDataKeys sharedData = (SharedDataKeys) context.get(SHARED_DATA_KEYS);
-			if (sharedData == null)
-			{
+			if (sharedData == null) {
 				sharedData = new SharedDataKeys();
 				context.put(SHARED_DATA_KEYS, sharedData);
 			}
@@ -70,59 +66,72 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 
 			NeptuneDataCollector collector = new NeptuneDataCollector();
 			boolean cont = (collector.collect(collection, line, startDate, endDate));
-			LineInfo lineInfo = new LineInfo(line);
-			DataStats stats = lineInfo.getStats();
-			stats.setAccessPointCount(collection.getAccessPoints().size());
-			stats.setConnectionLinkCount(collection.getConnectionLinks().size());
-			stats.setJourneyPatternCount(collection.getJourneyPatterns().size());
-			stats.setRouteCount(collection.getRoutes().size());
-			stats.setStopAreaCount(collection.getStopAreas().size());
-			stats.setTimeTableCount(collection.getTimetables().size());
-			stats.setVehicleJourneyCount(collection.getVehicleJourneys().size());
-
+			reporter.addObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
+					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 0);
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
+					collection.getJourneyPatterns().size());
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, collection
+					.getRoutes().size());
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY,
+					collection.getVehicleJourneys().size());
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK,
+					collection.getConnectionLinks().size());
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.TIMETABLE,
+					collection.getTimetables().size());
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT,
+					collection.getAccessPoints().size());
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA,
+					collection.getStopAreas().size());
 
 			if (cont) {
-				try
-				{
-				ChouettePTNetworkProducer producer = new ChouettePTNetworkProducer();
-				producer.produce(context);
+				try {
+					ChouettePTNetworkProducer producer = new ChouettePTNetworkProducer();
+					producer.produce(context);
 
-				stats.setLineCount(1);
-				// merge lineStats to global ones
-				DataStats globalStats = report.getStats();
-				globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
-				globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
-				globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount()
-						+ stats.getVehicleJourneyCount());
-				globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount()
-						+ stats.getJourneyPatternCount());
-				// compute shared objects
-				sharedData.getAccessPointIds().addAll(NeptuneUtil.extractObjectIds(collection.getAccessPoints()));
-				sharedData.getConnectionLinkIds().addAll(NeptuneUtil.extractObjectIds(collection.getConnectionLinks()));
-				sharedData.getStopAreaIds().addAll(NeptuneUtil.extractObjectIds(collection.getStopAreas()));
-				sharedData.getTimetableIds().addAll(NeptuneUtil.extractObjectIds(collection.getTimetables()));
-				globalStats.setAccessPointCount(sharedData.getAccessPointIds().size());
-				globalStats.setStopAreaCount(sharedData.getStopAreaIds().size());
-				globalStats.setTimeTableCount(sharedData.getTimetableIds().size());
-				globalStats.setConnectionLinkCount(sharedData.getConnectionLinkIds().size());
-				result = SUCCESS;
+					reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+					// merge lineStats to global ones
+					reporter.addObjectReport(context, "merged", OBJECT_TYPE.NETWORK, "networks", OBJECT_STATE.OK,
+							IO_TYPE.OUTPUT);
+					reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.NETWORK, OBJECT_TYPE.NETWORK,
+							sharedData.getNetworkIds().size());
+					reporter.addObjectReport(context, "merged", OBJECT_TYPE.COMPANY, "companies", OBJECT_STATE.OK,
+							IO_TYPE.OUTPUT);
+					reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.COMPANY, OBJECT_TYPE.COMPANY,
+							sharedData.getCompanyIds().size());
+					reporter.addObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, "connection links",
+							OBJECT_STATE.OK, IO_TYPE.OUTPUT);
+					reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK,
+							OBJECT_TYPE.CONNECTION_LINK, sharedData.getConnectionLinkIds().size());
+					reporter.addObjectReport(context, "merged", OBJECT_TYPE.ACCESS_POINT, "access points",
+							OBJECT_STATE.OK, IO_TYPE.OUTPUT);
+					reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.ACCESS_POINT,
+							OBJECT_TYPE.ACCESS_POINT, sharedData.getAccessPointIds().size());
+					reporter.addObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, "stop areas", OBJECT_STATE.OK,
+							IO_TYPE.OUTPUT);
+					reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, OBJECT_TYPE.STOP_AREA,
+							sharedData.getStopAreaIds().size());
+					reporter.addObjectReport(context, "merged", OBJECT_TYPE.TIMETABLE, "calendars", OBJECT_STATE.OK,
+							IO_TYPE.OUTPUT);
+					reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.TIMETABLE, OBJECT_TYPE.TIMETABLE,
+							sharedData.getTimetableIds().size());
+					result = SUCCESS;
 				} catch (MarshalException e) {
-					if (e.getCause() != null && e.getCause() instanceof SAXParseException)
-					{
+					if (e.getCause() != null && e.getCause() instanceof SAXParseException) {
 						log.error(e.getCause().getMessage());
-						lineInfo.addError(new LineError(LineError.CODE.INVALID_FORMAT,e.getCause().getMessage()));			
-					}
-					else
-					{
-					log.error(e.getMessage());
-					lineInfo.addError(new LineError(LineError.CODE.INVALID_FORMAT,e.getMessage()));
+						reporter.addErrorToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE,
+								ActionReporter.ERROR_CODE.INVALID_FORMAT, e.getCause().getMessage());
+					} else {
+						log.error(e.getMessage());
+						reporter.addErrorToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE,
+								ActionReporter.ERROR_CODE.INVALID_FORMAT, e.getMessage());
 					}
 				}
-			
+
 			} else {
-				lineInfo.addError(new LineError(LineError.CODE.NO_DATA_ON_PERIOD,"no data on period"));				
+				reporter.addErrorToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE,
+						ActionReporter.ERROR_CODE.NO_DATA_ON_PERIOD, "no data on period");
 			}
-			report.getLines().add(lineInfo);
 
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);

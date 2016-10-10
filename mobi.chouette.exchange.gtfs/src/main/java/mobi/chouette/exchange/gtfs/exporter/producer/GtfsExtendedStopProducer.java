@@ -14,7 +14,6 @@ import java.util.TimeZone;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.WheelchairBoardingType;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 
@@ -33,7 +32,7 @@ public class GtfsExtendedStopProducer extends
       super(exporter);
    }
 
-   public boolean save(StopArea neptuneObject, ActionReport report, String prefix, Collection<StopArea> validParents)
+   public boolean save(StopArea neptuneObject,  String prefix, Collection<StopArea> validParents)
    {
       ChouetteAreaEnum chouetteAreaType = neptuneObject.getAreaType();
       if (chouetteAreaType.compareTo(ChouetteAreaEnum.BoardingPosition) == 0)

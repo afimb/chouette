@@ -4,14 +4,17 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Paths;
+import java.sql.Date;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -37,6 +40,7 @@ import javax.ws.rs.core.UriInfo;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
+import mobi.chouette.dao.iev.StatDAO;
 import mobi.chouette.model.iev.Job;
 import mobi.chouette.model.iev.Job.STATUS;
 import mobi.chouette.model.iev.Link;
@@ -63,7 +67,7 @@ public class RestService implements Constant {
 
 	@Inject
 	JobServiceManager jobServiceManager;
-
+	
 	@Context
 	UriInfo uriInfo;
 
@@ -78,14 +82,20 @@ public class RestService implements Constant {
 		try {
 			log.info(Color.CYAN + "Call upload referential = " + referential + ", action = " + action
 					+ (type == null ? "" : ", type = " + type) + Color.NORMAL);
-
+			
+			
+			
 			// Convertir les parametres fournis
 			type = parseType(type);
 			inputStreamByName = readParts(input);
+			
 
+					
+					
 			// Relayer le service au JobServiceManager
 			ResponseBuilder builder = Response.accepted();
 			{
+				
 				JobService jobService = jobServiceManager.create(referential, action, type, inputStreamByName);
 
 				// Produire la vue
@@ -118,7 +128,10 @@ public class RestService implements Constant {
 			log.info(Color.CYAN + "upload returns" + Color.NORMAL);
 		}
 	}
-
+	
+	
+	
+			
 	private WebApplicationException toWebApplicationException(ServiceException exception) {
 		return new WebApplicationException(exception.getMessage(), toWebApplicationCode(exception.getExceptionCode()));
 	}
@@ -148,6 +161,7 @@ public class RestService implements Constant {
 		case UNREADABLE_PARAMETERS:
 		case INVALID_PARAMETERS:
 		case INVALID_FILE_FORMAT:
+		case INVALID_FORMAT:
 		case ACTION_TYPE_MISMATCH:
 			return Status.BAD_REQUEST;
 		case UNKNOWN_REFERENTIAL:

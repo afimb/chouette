@@ -18,6 +18,7 @@ import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.importer.AbstractImporterCommand;
 import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ActionReporter;
 
 @Log4j
 public class RegtoppImporterCommand extends AbstractImporterCommand implements Command {
@@ -32,13 +33,12 @@ public class RegtoppImporterCommand extends AbstractImporterCommand implements C
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext, ProgressionCommand.class.getName());
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
 		try {
 			// check params
 			Object configuration = context.get(CONFIGURATION);
 			if (!(configuration instanceof RegtoppImportParameters)) {
-				report.setFailure(
-						new ActionError(ActionError.CODE.INVALID_PARAMETERS, "invalid parameters for regtopp import " + configuration.getClass().getName()));
+				actionReporter.setActionError(context, ActionReporter.ERROR_CODE.INVALID_PARAMETERS, "invalid parameters for regtopp import " + configuration.getClass().getName());
 				return ERROR;
 			}
 
@@ -50,7 +50,7 @@ public class RegtoppImporterCommand extends AbstractImporterCommand implements C
 
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Fatal :" + e));
+			actionReporter.setActionError(context, ActionReporter.ERROR_CODE.INTERNAL_ERROR, "Fatal :" + e);
 		} finally {
 			progression.dispose(context);
 			log.info(Color.YELLOW + monitor.stop() + Color.NORMAL);

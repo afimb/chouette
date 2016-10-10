@@ -1,13 +1,17 @@
 package mobi.chouette.exchange.sig.exporter;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.AbstractInputValidator;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
+import mobi.chouette.exchange.TestDescription;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 
@@ -78,6 +82,15 @@ public class SigExporterInputValidator extends AbstractInputValidator {
 		}
 		return true;
 	}
+	
+	@Override
+	public boolean checkFile(String fileName, Path filePath, AbstractParameter abstractParameter) {
+		if (fileName != null) {
+			log.error("input data not expected");
+			return false;
+		}
+		return true;
+	}
 
 	public static class DefaultFactory extends InputValidatorFactory {
 
@@ -90,6 +103,12 @@ public class SigExporterInputValidator extends AbstractInputValidator {
 
 	static {
 		InputValidatorFactory.factories.put(SigExporterInputValidator.class.getName(), new DefaultFactory());
+	}
+
+	@Override
+	public List<TestDescription> getTestList() {
+		List<TestDescription> emptyList = new ArrayList<TestDescription>();
+		return emptyList;
 	}
 
 

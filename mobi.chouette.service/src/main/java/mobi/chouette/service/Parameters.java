@@ -20,6 +20,7 @@ public class Parameters {
 
 	private ValidationParameters validation;
 	
+	@SuppressWarnings("rawtypes")
 	public Parameters(String jsonSource,InputValidator inputValidator) throws Exception
 	{
 		if (inputValidator == null) return;
@@ -47,6 +48,10 @@ public class Parameters {
 			{
 				command = type;
 				configuration = inputValidator.toActionParameter(elt.toString());
+				if (configuration == null)
+				{
+					throw new RequestServiceException(RequestExceptionCode.INVALID_PARAMETERS, "wrong type "+ type);
+				}
 			}
 		}
 	}

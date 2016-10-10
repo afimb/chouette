@@ -1,7 +1,18 @@
 package mobi.chouette.exchange.regtopp.importer;
 
-import java.io.IOException;
-import java.sql.SQLException;
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
+import mobi.chouette.common.Context;
+import mobi.chouette.common.chain.Command;
+import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.dao.LineDAO;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.util.NamingUtil;
+import mobi.chouette.model.util.Referential;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -9,21 +20,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import java.io.IOException;
+import java.sql.SQLException;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
-import mobi.chouette.common.Context;
-import mobi.chouette.common.chain.Command;
-import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.LineDAO;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.LineError;
-import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.util.Referential;
+import static mobi.chouette.exchange.report.ActionReporter.*;
 
 @Log4j
 @Stateless(name = RegtoppLineDeleteCommand.COMMAND)
@@ -56,12 +56,11 @@ public class RegtoppLineDeleteCommand implements Command {
 			result = SUCCESS;
 		} catch (Exception ex) {
 			log.error(ex.getMessage());
-			ActionReport report = (ActionReport) context.get(REPORT);
-			LineInfo info = report.findLineInfo(newLine.getObjectId());
-			if (info == null) {
-				info = new LineInfo(newLine);
-				report.getLines().add(info);
-			}
+			ActionReporter actionReporter = Factory.getInstance();
+
+			actionReporter.addObjectReport(context, newLine.getObjectId(),
+					OBJECT_TYPE.LINE, NamingUtil.getName(newLine), OBJECT_STATE.ERROR, IO_TYPE.INPUT);
+
 			if (ex.getCause() != null) {
 				Throwable e = ex.getCause();
 				while (e.getCause() != null) {
@@ -69,17 +68,14 @@ public class RegtoppLineDeleteCommand implements Command {
 					e = e.getCause();
 				}
 				if (e instanceof SQLException) {
-					Throwable ee = ((SQLException) e).getNextException();
-					LineError error = new LineError(LineError.CODE.WRITE_ERROR,
-							ee == null ? e.getMessage() : ee.getMessage());
-					info.addError(error);
+					e = ((SQLException) e).getNextException();
+					actionReporter.addErrorToObjectReport(context, newLine.getObjectId(), OBJECT_TYPE.LINE, ERROR_CODE.WRITE_ERROR,  e.getMessage());
+
 				} else {
-					LineError error = new LineError(LineError.CODE.INTERNAL_ERROR, e.getMessage());
-					info.addError(error);
+					actionReporter.addErrorToObjectReport(context, newLine.getObjectId(), OBJECT_TYPE.LINE, ERROR_CODE.INTERNAL_ERROR,  e.getMessage());
 				}
 			} else {
-				LineError error = new LineError(LineError.CODE.INTERNAL_ERROR, ex.getMessage());
-				info.addError(error);
+				actionReporter.addErrorToObjectReport(context, newLine.getObjectId(), OBJECT_TYPE.LINE, ERROR_CODE.INTERNAL_ERROR,  ex.getMessage());
 			}
 			throw ex;
 		} finally {

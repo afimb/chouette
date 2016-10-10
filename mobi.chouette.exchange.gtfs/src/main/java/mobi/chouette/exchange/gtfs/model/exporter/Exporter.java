@@ -2,10 +2,10 @@ package mobi.chouette.exchange.gtfs.model.exporter;
 
 import java.io.IOException;
 
-import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.common.Context;
 
 public interface Exporter<T> {
-	void dispose(ActionReport report) throws IOException;
+	void dispose(Context context) throws IOException;
 
 	void writeHeader() throws IOException;
 

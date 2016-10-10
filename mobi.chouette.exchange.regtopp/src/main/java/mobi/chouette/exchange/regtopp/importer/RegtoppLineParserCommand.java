@@ -1,12 +1,7 @@
 package mobi.chouette.exchange.regtopp.importer;
 
-import java.io.IOException;
-
-import javax.naming.InitialContext;
-
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -23,10 +18,16 @@ import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppTimetableParser
 import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
 import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.DataStats;
-import mobi.chouette.exchange.report.LineInfo;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
+
+import javax.naming.InitialContext;
+import java.io.IOException;
+
+import static mobi.chouette.exchange.report.ActionReporter.*;
 
 @Log4j
 public class RegtoppLineParserCommand implements Command {
@@ -93,7 +94,7 @@ public class RegtoppLineParserCommand implements Command {
 			lineParser.parse(context);
 
 
-			addStats(report, referential);
+			addStats(context, referential);
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error("Failed hard to parse line:", e);
@@ -105,26 +106,28 @@ public class RegtoppLineParserCommand implements Command {
 		return result;
 	}
 
-	private void addStats(ActionReport report, Referential referential) {
+	private void addStats(Context context, Referential referential) {
+		ActionReporter actionReporter = Factory.getInstance();
+
 		Line line = referential.getLines().values().iterator().next();
-		LineInfo lineInfo = new LineInfo(line);
-		DataStats stats = lineInfo.getStats();
-		stats.setLineCount(1);
 
-		stats.setRouteCount(referential.getRoutes().size());
-		stats.setVehicleJourneyCount(referential.getVehicleJourneys().size());
-		stats.setJourneyPatternCount(referential.getJourneyPatterns().size());
-		report.getLines().add(lineInfo);
-		DataStats globalStats = report.getStats();
-		globalStats.setConnectionLinkCount(referential.getSharedConnectionLinks().size());
-		globalStats.setStopAreaCount(referential.getSharedStopAreas().size());
-		globalStats.setTimeTableCount(referential.getSharedTimetables().size());
+		actionReporter.addObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
+				OBJECT_STATE.OK, IO_TYPE.INPUT);
 
-		globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
-		globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
-		globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount() + stats.getVehicleJourneyCount());
-		globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount() + stats.getJourneyPatternCount());
+		actionReporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+		actionReporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
+				referential.getJourneyPatterns().size());
+		actionReporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, referential
+				.getRoutes().size());
+		actionReporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY,
+				referential.getVehicleJourneys().size());
 
+		// global stats
+		actionReporter.addObjectReport(context, "global", OBJECT_TYPE.ROUTE, "routes", OBJECT_STATE.OK, IO_TYPE.OUTPUT);
+		actionReporter.addObjectReport(context, "global", OBJECT_TYPE.LINE, "lines", OBJECT_STATE.OK, IO_TYPE.OUTPUT);
+
+		actionReporter.setStatToObjectReport(context, "global", OBJECT_TYPE.ROUTE, OBJECT_TYPE.ROUTE, referential.getRoutes().size());
+		actionReporter.setStatToObjectReport(context, "global", OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, referential.getLines().size());
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {

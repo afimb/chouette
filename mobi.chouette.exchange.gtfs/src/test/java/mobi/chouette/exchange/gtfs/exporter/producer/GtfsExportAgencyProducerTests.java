@@ -7,7 +7,6 @@ import mobi.chouette.exchange.gtfs.exporter.producer.mock.GtfsExporterMock;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.exporter.AgencyExporter;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Company;
 
 import org.testng.Assert;
@@ -26,7 +25,6 @@ public class GtfsExportAgencyProducerTests
    {
       mock.reset();
       
-      ActionReport report = new ActionReport();
       Company neptuneObject = new Company();
       neptuneObject.setObjectId("GTFS:Company:1234");
       neptuneObject.setName("name");
@@ -35,7 +33,7 @@ public class GtfsExportAgencyProducerTests
       neptuneObject.setUrl("http://www.mywebsite.com");
       neptuneObject.setPhone("01 02 03 04 05");
 
-      producer.save(neptuneObject, report, "GTFS", null);
+      producer.save(neptuneObject,  "GTFS", null);
       GtfsAgency gtfsObject = mock.getExportedAgencies().get(0);
       Reporter.log("verifyAgencyProducer1");
       Reporter.log(AgencyExporter.CONVERTER.to(context, gtfsObject));
@@ -58,14 +56,13 @@ public class GtfsExportAgencyProducerTests
 
       mock.reset();
 
-      ActionReport report = new ActionReport();
       Company neptuneObject = new Company();
       neptuneObject.setObjectId("GTFS:Company:1234");
       neptuneObject.setName("name");
       neptuneObject.setShortName("short");
       neptuneObject.setPhone("01 02 03 04 05");
 
-      producer.save(neptuneObject, report, "GTFS", null);
+      producer.save(neptuneObject, "GTFS", null);
       GtfsAgency gtfsObject = mock.getExportedAgencies().get(0);
       Reporter.log("verifyAgencyProducer2");
       Reporter.log(AgencyExporter.CONVERTER.to(context, gtfsObject));
@@ -89,13 +86,12 @@ public class GtfsExportAgencyProducerTests
 
       mock.reset();
 
-      ActionReport report = new ActionReport();
       Company neptuneObject = new Company();
       neptuneObject.setObjectId("GTFS:Company:1234");
       neptuneObject.setName("name");
       neptuneObject.setPhone("01 02 03 04 05");
 
-      producer.save(neptuneObject, report, "GTFS", null);
+      producer.save(neptuneObject, "GTFS", null);
       GtfsAgency gtfsObject = mock.getExportedAgencies().get(0);
       Reporter.log("verifyAgencyProducer3");
       Reporter.log(AgencyExporter.CONVERTER.to(context, gtfsObject));
@@ -118,13 +114,12 @@ public class GtfsExportAgencyProducerTests
 
       mock.reset();
 
-      ActionReport report = new ActionReport();
       Company neptuneObject = new Company();
       neptuneObject.setObjectId("GTFS:Company:1234");
       neptuneObject.setName("name");
 
       Reporter.log("verifyAgencyProducer4");
-      producer.save(neptuneObject, report, "GTFS", TimeZone.getTimeZone("America/Montreal"));
+      producer.save(neptuneObject,  "GTFS", TimeZone.getTimeZone("America/Montreal"));
       GtfsAgency gtfsObject = mock.getExportedAgencies().get(0);
       Reporter.log(AgencyExporter.CONVERTER.to(context, gtfsObject));
 
@@ -133,7 +128,7 @@ public class GtfsExportAgencyProducerTests
       
       neptuneObject.setTimeZone("Europe/Paris");
       mock.reset();
-      producer.save(neptuneObject, report, "GTFS", TimeZone.getTimeZone("America/Montreal"));
+      producer.save(neptuneObject, "GTFS", TimeZone.getTimeZone("America/Montreal"));
       gtfsObject = mock.getExportedAgencies().get(0);
       Reporter.log(AgencyExporter.CONVERTER.to(context, gtfsObject));
       Assert.assertEquals(gtfsObject.getAgencyTimezone().getID(),"Europe/Paris" ,

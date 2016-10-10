@@ -17,9 +17,9 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.hub.model.HubModeTransport;
 import mobi.chouette.exchange.hub.model.exporter.HubExporterInterface;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Line;
 
 /**
@@ -85,7 +85,7 @@ public class HubModeTransportProducer extends AbstractProducer {
 		return true;
 	}
 
-	public boolean saveAll(ActionReport report) {
+	public boolean saveAll(Context context) {
 
 		try {
 			List<HubModeTransport> listModes = new ArrayList<>(modesTransport.values());

@@ -1,5 +1,8 @@
 package mobi.chouette.exchange.neptune.exporter.producer;
 
+import java.math.BigDecimal;
+
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
@@ -10,6 +13,7 @@ import org.trident.schema.trident.ChouettePTNetworkType;
 import org.trident.schema.trident.LongLatTypeType;
 import org.trident.schema.trident.ProjectedPointType;
 
+@Log4j
 public class StopPointProducer extends
 		AbstractJaxbNeptuneProducer<ChouettePTNetworkType.ChouetteLineDescription.StopPoint, StopPoint> implements
 		JsonExtension {
@@ -30,16 +34,23 @@ public class StopPointProducer extends
 
 
 			jaxbStopPoint.setContainedIn(getNonEmptyObjectId(stopPoint.getContainedInStopArea()));
+			if (area.hasCoordinates())
+			{
 			jaxbStopPoint.setLatitude(area.getLatitude());
 			jaxbStopPoint.setLongitude(area.getLongitude());
-
-			if (area.getLongLatType() != null) {
 				LongLatTypeEnum longLatType = area.getLongLatType();
 				try {
 					jaxbStopPoint.setLongLatType(LongLatTypeType.fromValue(longLatType.name()));
 				} catch (IllegalArgumentException e) {
 					// TODO generate report
 				}
+			}
+			else
+			{
+				log.error("missing coordinates for StopArea "+area.getObjectId()+" "+area.getName());
+				jaxbStopPoint.setLatitude(BigDecimal.ZERO);
+				jaxbStopPoint.setLongitude(BigDecimal.ZERO);
+				jaxbStopPoint.setLongLatType(LongLatTypeType.WGS_84);
 			}
 
 			if (area.hasProjection()) {

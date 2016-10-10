@@ -34,26 +34,26 @@ public class LigneExporter extends ExporterImpl<HubLigne> implements
 
 
 		@Override
-		public String to(Context context, HubLigne input) {
+		public String to(HubContext hubContext, HubLigne input) {
 			String result = null;
 			List<String> values = new ArrayList<String>();
-			values.add(STRING_CONVERTER.to(context, FIELDS.code,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code,
 					input.getCode(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_commercial,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_commercial,
 					input.getCodeCommercial(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.nom,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.nom,
 					input.getNom(), false));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.code_representation,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.code_representation,
 					input.getCodeRepresentation(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_sous_traitant,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_sous_traitant,
 					input.getCodeSousTraitant(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_transporteur,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_transporteur,
 					input.getCodeTransporteur(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_reseau,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_reseau,
 					input.getCodeReseau(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_groupe_de_ligne,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_groupe_de_ligne,
 					input.getCodeGroupeDeLigne(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.identifiant,
 					input.getIdentifiant(), false));
 			result = Tokenizer.untokenize(values);
 			return result;

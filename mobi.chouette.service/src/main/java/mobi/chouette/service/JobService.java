@@ -1,6 +1,7 @@
 package mobi.chouette.service;
 
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.file.Files;
@@ -85,7 +86,7 @@ public class JobService implements JobData, ServiceConstants {
 			StringWriter writer = new StringWriter();
 			IOUtils.copy(inputStreamsByName.get(PARAMETERS_FILE), writer, "UTF-8");
 
-			InputValidator validator = getCommandInputValidator();
+			final InputValidator validator = getCommandInputValidator(getAction(), getType());
 			setParametersAsString(writer.toString());
 			writer.close();
 			Parameters parameters = new Parameters(getParametersAsString(), validator);
@@ -110,7 +111,12 @@ public class JobService implements JobData, ServiceConstants {
 				throw new RequestServiceException(RequestExceptionCode.INVALID_PARAMETERS, "");
 			if (!validator.checkFilename(job.getInputFilename()))
 				throw new RequestServiceException(RequestExceptionCode.INVALID_FILE_FORMAT, "");
-
+			
+			if (inputStreamName != null) {
+				if (!validator.checkFile(job.getInputFilename(), filePath(inputStreamName), parameters.getConfiguration()))
+					throw new RequestServiceException(RequestExceptionCode.INVALID_FORMAT, "");
+			}
+			
 			JSONUtil.toJSON(filePath(ACTION_PARAMETERS_FILE), parameters.getConfiguration());
 			addLink(MediaType.APPLICATION_JSON, Link.ACTION_PARAMETERS_REL);
 
@@ -151,7 +157,7 @@ public class JobService implements JobData, ServiceConstants {
 	private Parameters getParameters() throws ServiceException {
 		if (jobPersisted()) {
 			try {
-				return new Parameters(getParametersAsString(), getCommandInputValidator());
+				return new Parameters(getParametersAsString(), getCommandInputValidator(getAction(), getType()));
 				// return JSONUtil.fromJSON( getParametersAsString(),
 				// Parameters.class);
 			} catch (Exception ex) {
@@ -289,13 +295,22 @@ public class JobService implements JobData, ServiceConstants {
 				+ StringUtils.capitalize(type) + StringUtils.capitalize(getAction()) + "Command";
 	}
 
-	private InputValidator getCommandInputValidator() throws Exception {
-		if (inputValidator == null) {
-			String type = getType() == null ? "" : getType();
-			inputValidator = InputValidatorFactory.create("mobi.chouette.exchange."
-					+ (type.isEmpty() ? "" : type + ".") + getAction() + "." + StringUtils.capitalize(type)
-					+ StringUtils.capitalize(getAction()) + "InputValidator");
-		}
+//	private InputValidator getCommandInputValidator() throws Exception {
+//		if (inputValidator == null) {
+//			String type = getType() == null ? "" : getType();
+//			inputValidator = InputValidatorFactory.create("mobi.chouette.exchange."
+//					+ (type.isEmpty() ? "" : type + ".") + getAction() + "." + StringUtils.capitalize(type)
+//					+ StringUtils.capitalize(getAction()) + "InputValidator");
+//		}
+//		return inputValidator;
+//	}
+	
+
+	public static InputValidator getCommandInputValidator(String actionParam, String typeParam) throws ClassNotFoundException, IOException {
+			String type = typeParam == null ? "" : typeParam;
+			final InputValidator inputValidator = InputValidatorFactory.create("mobi.chouette.exchange."
+					+ (type.isEmpty() ? "" : type + ".") + actionParam + "." + StringUtils.capitalize(type)
+					+ StringUtils.capitalize(actionParam) + "InputValidator");
 		return inputValidator;
 	}
 }

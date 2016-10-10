@@ -1,20 +1,7 @@
 package mobi.chouette.exchange.regtopp.importer;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.naming.InitialContext;
-
-import org.apache.commons.lang.StringUtils;
-
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
@@ -23,19 +10,22 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.regtopp.RegtoppConstant;
-import mobi.chouette.exchange.regtopp.importer.version.Regtopp11DVersionHandler;
-import mobi.chouette.exchange.regtopp.importer.version.Regtopp12NovusVersionHandler;
-import mobi.chouette.exchange.regtopp.importer.version.Regtopp12VersionHandler;
-import mobi.chouette.exchange.regtopp.importer.version.Regtopp13AVersionHandler;
-import mobi.chouette.exchange.regtopp.importer.version.RegtoppVersion;
-import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
+import mobi.chouette.exchange.regtopp.importer.version.*;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
-import mobi.chouette.exchange.report.ActionError;
-import mobi.chouette.exchange.report.ActionError.CODE;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileError;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
+import org.apache.commons.lang.StringUtils;
+
+import javax.naming.InitialContext;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static mobi.chouette.exchange.report.ActionReporter.FILE_STATE.IGNORED;
 
 @Log4j
 public class RegtoppFilePresenceValidationCommand implements Command {
@@ -48,7 +38,7 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
 
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		// check ignored files
@@ -147,38 +137,35 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 				}
 
 				if (!name.matches("R[0-9]{4}\\.[A-Z]{3}")) {
-					FileInfo file = new FileInfo(name, FILE_STATE.IGNORED);
-					report.getFiles().add(file);
+					actionReporter.addFileReport(context, name, IO_TYPE.INPUT);
+					actionReporter.setFileState(context, name, IO_TYPE.INPUT, IGNORED);
 				} else {
-
 					String prefix = name.substring(0, name.lastIndexOf("."));
 					String extension = name.substring(name.lastIndexOf(".") + 1);
 
 					if (!validExtensions.contains(extension)) {
 						// Ignore unknown files
-						FileInfo file = new FileInfo(name, FILE_STATE.IGNORED);
-						report.getFiles().add(file);
+						actionReporter.addFileReport(context, name, IO_TYPE.INPUT);
+						actionReporter.setFileState(context, name, IO_TYPE.INPUT, IGNORED);
 					} else {
 						// Valid file, add check that we do not include more than one admin code
 						prefixesFound.add(prefix);
 						foundExtensions.add(extension);
 
 						// Add the file with status ERROR, parser will update to OK when parsed OK
-						FileInfo file = new FileInfo(name, FILE_STATE.ERROR);
-						report.getFiles().add(file);
+						actionReporter.addFileReport(context, name, IO_TYPE.INPUT);
+						actionReporter.setFileState(context, name, IO_TYPE.INPUT, ActionReporter.FILE_STATE.ERROR);
 
 						// Register file for parsing and necessary indexes
 
-						versionHandler.registerFileForIndex(importer, fileName, extension, file);
+						versionHandler.registerFileForIndex(importer, fileName, extension);
 					}
 				}
 			}
 
 			if (prefixesFound.size() > 1) {
 				// Multiple prefixes found, should all be the same (technically it is allowed, but too complicated for now)
-				ActionError error = new ActionError(CODE.INVALID_DATA,
-						"Multiple companies or versions found in zip file: " + StringUtils.join(prefixesFound, " "));
-				report.setFailure(error);
+				actionReporter.addFileErrorInReport(context, jobData.getInputFilename(), ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, "Multiple companies or versions found in zip file: " + StringUtils.join(prefixesFound, " "));
 			} else {
 				if (!foundExtensions.containsAll(mandatoryFileExtensions)) {
 					// Check that all 4 mandatory files found
@@ -191,9 +178,7 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 					missingFiles.removeAll(foundExtensions);
 
 					for (String missingExtension : missingFiles) {
-						FileInfo fileInfo = new FileInfo(prefix + "." + missingExtension, FILE_STATE.ERROR,
-								Arrays.asList(new FileError(FileError.CODE.FILE_NOT_FOUND, "Mandatory file missing")));
-						report.getFiles().add(fileInfo);
+						actionReporter.addFileErrorInReport(context, prefix + "." + missingExtension, ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, "Mandatory file missing");
 					}
 
 				} else {
@@ -205,8 +190,7 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 			if (e.getError().equals(RegtoppException.ERROR.SYSTEM))
 				throw e;
 			else
-				report.setFailure(new ActionError(ActionError.CODE.INVALID_DATA, e.getError().name()));
-
+				actionReporter.addFileErrorInReport(context, jobData.getInputFilename(), ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, e.getError().name());
 		} catch (Exception e) {
 			log.error(e, e);
 			throw e;

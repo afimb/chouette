@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>mobi.chouette</groupId>
 	<artifactId>mobi.chouette</artifactId>
-	<version>3.3.1-SNAPSHOT</version>
+	<version>3.4.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -23,7 +23,7 @@
 		<postgis.version>2.1.7.2</postgis.version>
 		<hibernate-spatial.version>4.3</hibernate-spatial.version>
 		<jts.version>1.13</jts.version>
-		<arquillian-version>1.1.7.Final</arquillian-version>
+		<arquillian-version>1.1.11.Final</arquillian-version>
 		<project.rootDir>${project.basedir}</project.rootDir>
 	</properties>
 	<distributionManagement>
@@ -43,16 +43,22 @@
 		<repository>
 			<id>jboss</id>
 			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 		<repository>
 			<id>osgeo</id>
 			<name>Open Source Geospatial Foundation Repository</name>
 			<url>http://download.osgeo.org/webdav/geotools/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 		<repository>
-			<id>hibernate-spatial</id>
-			<name>Hibernate Spatial Repository</name>
-			<url>http://www.hibernatespatial.org/repository/</url>
+			<id>chouette-repository</id>
+			<name>Chouette Repository</name>
+			<url>http://maven.chouette.mobi/</url>
 		</repository>
 	</repositories>
 	<build>
@@ -185,11 +191,6 @@
 										${project.rootDir}/target/wildfly-${wildfly.version}/modules/system/layers/base/org/hibernate/main
 									</outputDirectory>
 								</artifactItem>
-								<!-- <artifactItem> <groupId>org.postgresql</groupId> <artifactId>postgresql</artifactId> 
-									<version>${postgresql.version}</version> <overWrite>false</overWrite> <outputDirectory>${project.rootDir}/target/wildfly-${wildfly.version}/standalone/deployments</outputDirectory> 
-									</artifactItem> <artifactItem> <groupId>net.postgis</groupId> <artifactId>postgis-jdbc</artifactId> 
-									<version>${postgis.version}</version> <overWrite>false</overWrite> <outputDirectory>${project.rootDir}/target/wildfly-${wildfly.version}/standalone/deployments</outputDirectory> 
-									</artifactItem> -->
 							</artifactItems>
 						</configuration>
 					</execution>
@@ -811,10 +812,10 @@
 		<module>mobi.chouette.exchange.neptune</module>
 		<module>mobi.chouette.exchange.netex</module>
 		<module>mobi.chouette.exchange.kml</module>
+      <module>mobi.chouette.exchange.geojson</module>
+      <module>mobi.chouette.exchange.sig</module>
 		<module>mobi.chouette.exchange.hub</module>
 		<module>mobi.chouette.exchange.gtfs</module>
-		<module>mobi.chouette.exchange.geojson</module>
-        <module>mobi.chouette.exchange.sig</module>
 		<module>mobi.chouette.exchange.regtopp</module>
 		<module>mobi.chouette.exchange.validator</module>
 		<module>mobi.chouette.exchange.converter</module>

@@ -15,8 +15,8 @@ import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.importer.AbstractImporterCommand;
 import mobi.chouette.exchange.netex.Constant;
-import mobi.chouette.exchange.report.ActionError;
-import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -33,7 +33,7 @@ public class NetexImporterCommand extends AbstractImporterCommand implements Com
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 
 		context.put(REFERENTIAL, new Referential());
 
@@ -47,8 +47,7 @@ public class NetexImporterCommand extends AbstractImporterCommand implements Com
 		if (!(configuration instanceof NetexImportParameters)) {
 			// fatal wrong parameters
 			log.error("invalid parameters for netex import " + configuration.getClass().getName());
-			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,
-					"invalid parameters for netex import " + configuration.getClass().getName()));
+			reporter.setActionError(context, ERROR_CODE.INVALID_PARAMETERS,"invalid parameters for netex import " + configuration.getClass().getName());
 			return false;
 		}
 
@@ -56,11 +55,11 @@ public class NetexImporterCommand extends AbstractImporterCommand implements Com
 		result = process(context, commands, progression, true, Mode.line);
 
 		} catch (CommandCancelledException e) {
-			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Command cancelled"));
+			reporter.setActionError(context, ERROR_CODE.INTERNAL_ERROR, "Command cancelled");
 			log.error(e.getMessage());
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Fatal :" + e));
+			reporter.setActionError(context, ERROR_CODE.INTERNAL_ERROR,"Fatal :" + e);
 
 		} finally {
 			progression.dispose(context);
