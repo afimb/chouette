@@ -44,8 +44,7 @@ public class RouteValidator extends AbstractValidator implements Validator<Route
             Context objectContext = (Context) localContext.get(objectId);
             Route route = routes.get(objectId);
         }
-
-        return null;
+        return new ValidationConstraints();
     }
 
     public static class DefaultValidatorFactory extends ValidatorFactory {

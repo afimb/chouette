@@ -87,6 +87,9 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 				schemaValidation.setFile(file.toFile());
 				schemaValidationChain.add(schemaValidation);
 			}
+
+			// TODO add level 2 validation command here... part of schema validation chain, or separate chain?
+					// or maybe part of parsing chain?
 			
 			// common file parsing
 			Chain commonFilesParserChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());

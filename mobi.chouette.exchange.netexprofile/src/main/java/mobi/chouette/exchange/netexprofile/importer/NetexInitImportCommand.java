@@ -32,11 +32,19 @@ public class NetexInitImportCommand implements Command, Constant {
 			log.info("Context on NetexInitImportCommand=" + ToStringBuilder.reflectionToString(context));
 			NetexImporter importer = new NetexImporter();
 			context.put(IMPORTER, importer);
-			NetexProfileValidator profileValidator = importer.getProfileValidator(context); 
+
+			// TODO remove profile validator init from here?
+			// TODO instead consider adding a separate command for profile validation,
+			// 		e.g. NetexProfileValidationCommand that executes before parsing
+
+/*
+			NetexProfileValidator profileValidator = importer.getProfileValidator(context);
 			if (profileValidator != null) {
 				context.put(NETEX_PROFILE_VALIDATOR, profileValidator);
 				result = SUCCESS;
 			}
+*/
+			result = SUCCESS;
 		} catch (Exception e) {
 			log.error(e, e);
 			throw e;

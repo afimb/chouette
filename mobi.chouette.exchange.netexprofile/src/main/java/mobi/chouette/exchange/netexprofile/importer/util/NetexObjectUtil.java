@@ -3,12 +3,30 @@ package mobi.chouette.exchange.netexprofile.importer.util;
 import no.rutebanken.netex.model.*;
 import org.apache.commons.lang.StringUtils;
 
+import javax.xml.bind.JAXBElement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 // TODO add common methods for extracting various types of objects from netex objects...
 public class NetexObjectUtil {
+
+    public static void addResourceFrameReference(NetexReferential referential, String objectId, ResourceFrame resourceFrame) {
+        if (resourceFrame == null) {
+            throw new NullPointerException("Unknown resource frame : " + objectId);
+        }
+        if (!referential.getResourceFrames().containsKey(objectId)) {
+            referential.getResourceFrames().put(objectId, resourceFrame);
+        }
+    }
+
+    public static ResourceFrame getResourceFrame(NetexReferential referential, String objectId) {
+        ResourceFrame resourceFrame = referential.getResourceFrames().get(objectId);
+        if (resourceFrame == null) {
+            throw new NullPointerException("Unknown resource frame : " + objectId);
+        }
+        return resourceFrame;
+    }
 
     public static void addAuthorityReference(NetexReferential referential, String objectId, Authority authority) {
         if (authority == null) {
@@ -201,6 +219,26 @@ public class NetexObjectUtil {
             throw new NullPointerException("Unknown service journey : " + objectId);
         }
         return serviceJourney;
+    }
+
+    public static <T> List<T> getFrames(Class<T> clazz, List<JAXBElement<? extends Common_VersionFrameStructure>> compositeFrameOrCommonFrame) {
+        List<T> foundFrames = new ArrayList<>();
+        for (JAXBElement<? extends Common_VersionFrameStructure> frame : compositeFrameOrCommonFrame) {
+            if (frame.getValue() instanceof CompositeFrame) {
+                CompositeFrame compositeFrame = (CompositeFrame) frame.getValue();
+                Frames_RelStructure frames = compositeFrame.getFrames();
+                List<JAXBElement<? extends Common_VersionFrameStructure>> commonFrames = frames.getCommonFrame();
+                for (JAXBElement<? extends Common_VersionFrameStructure> commonFrame : commonFrames) {
+                    T value = (T) commonFrame.getValue();
+                    if (value.getClass().equals(clazz)) {
+                        foundFrames.add(value);
+                    }
+                }
+            } else if (frame.getValue().equals(clazz)) {
+                foundFrames.add((T) frame.getValue());
+            }
+        }
+        return foundFrames;
     }
 
 }

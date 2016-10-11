@@ -44,8 +44,7 @@ public class OrganisationValidator extends AbstractValidator implements Validato
             Context objectContext = (Context) localContext.get(objectId);
             Organisation organisation = organisations.get(objectId);
         }
-
-        return null;
+        return new ValidationConstraints();
     }
 
     public static class DefaultValidatorFactory extends ValidatorFactory {

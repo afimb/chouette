@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.validation.*;
+import mobi.chouette.exchange.validation.report.Detail;
 import no.rutebanken.netex.model.DataManagedObjectStructure;
 import no.rutebanken.netex.model.Line;
 
@@ -28,11 +29,10 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
     private static final String LINE_7 = "2-NETEX-Line-7";
     private static final String LINE_8 = "2-NETEX-Line-8";
     private static final String LINE_9 = "2-NETEX-Line-9";
-    private static final String LINE_10 = "2-NETEX-Line-10";
 
     @Override
     protected void initializeCheckPoints(Context context) {
-        addItemToValidation(context, PREFIX, "Line", 10, "E", "E", "E", "E", "E", "E", "E", "E", "E", "E");
+        addItemToValidation(context, PREFIX, "Line", 9, "E", "E", "E", "E", "E", "E", "E", "E", "E");
     }
 
     @Override
@@ -84,32 +84,28 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
             // 2-NETEX-Line-1 : check presence of Name
             prepareCheckPoint(context, LINE_1);
             if (line.getName() == null || isEmpty(line.getName().getValue())) {
-                //Detail errorItem = new Detail(LINE_1, sourceLocation);
-                //addValidationError(context, LINE_1, errorItem);
+                addValidationError(context, LINE_1);
             }
 
             // TODO consider validating with xpath instead, if shorter
             // 2-NETEX-Line-2 : check presence of TransportMode
             prepareCheckPoint(context, LINE_2);
             if (line.getTransportMode() == null) {
-                //Detail errorItem = new Detail(LINE_1, sourceLocation);
-                //addValidationError(context, LINE_1, errorItem);
+                addValidationError(context, LINE_2);
             }
 
             // TODO consider validating with xpath instead, if shorter
             // 2-NETEX-Line-3 : check presence of PublicCode
             prepareCheckPoint(context, LINE_3);
             if (isEmpty(line.getPublicCode())) {
-                //Detail errorItem = new Detail(LINE_6, sourceLocation);
-                //addValidationError(context, LINE_6, errorItem);
+                addValidationError(context, LINE_3);
             }
 
             // TODO consider validating with xpath instead, if shorter
             // 2-NETEX-Line-4 : check presence of OperatorRef
             prepareCheckPoint(context, LINE_4);
             if (line.getOperatorRef() == null || isEmpty(line.getOperatorRef().getRef())) {
-                //Detail errorItem = new Detail(LINE_1, sourceLocation);
-                //addValidationError(context, LINE_1, errorItem);
+                addValidationError(context, LINE_4);
             }
 
             // 2-NETEX-Line-5 : check operator reference
@@ -117,58 +113,43 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
             List<String> operatorIds = (List<String>) objectContext.get(OPERATOR_ID);
             for (String operatorId : operatorIds) {
                 if (!operatorContext.containsKey(operatorId)) {
-                    //Detail errorItem = new Detail(LINE_4, sourceLocation, operatorId);
-                    //addValidationError(context, LINE_4, errorItem);
+                    addValidationError(context, LINE_5);
                 }
             }
 
-            // 2-NETEX-Line-6 : check operator reference
+            // 2-NETEX-Line-6 : check routes references
             prepareCheckPoint(context, LINE_6);
-            for (String operatorId : operatorContext.keySet()) {
-                if (!operatorIds.contains(operatorId)) {
-                    //Detail errorItem = new Detail(LINE_5, sourceLocation, routeId);
-                    //errorItem.getTargets().add(fileLocations.get( routeId));
-                    //addValidationError(context, LINE_5, errorItem);
+            List<String> routeIds = (List<String>) objectContext.get(ROUTE_ID);
+            for (String routeId : routeIds) {
+                if (!routeContext.containsKey(routeId)) {
+                    addValidationError(context, LINE_6);
                 }
             }
 
             // 2-NETEX-Line-7 : check routes references
             prepareCheckPoint(context, LINE_7);
-            List<String> routeIds = (List<String>) objectContext.get(ROUTE_ID);
-            for (String routeId : routeIds) {
-                if (!routeContext.containsKey(routeId)) {
-                    //Detail errorItem = new Detail(LINE_1, sourceLocation, routeId);
-                    //addValidationError(context, LINE_1, errorItem);
-                }
-            }
-
-            // 2-NETEX-Line-8 : check routes references
-            prepareCheckPoint(context, LINE_8);
             for (String routeId : routeContext.keySet()) {
                 if (!routeIds.contains(routeId)) {
-                    //Detail errorItem = new Detail(LINE_5, sourceLocation, routeId);
-                    //errorItem.getTargets().add(fileLocations.get( routeId));
-                    //addValidationError(context, LINE_5, errorItem);
+                    addValidationError(context, LINE_7);
                 }
             }
 
             // TODO consider validating with xpath instead, if shorter
             // 2-NETEX-Line-9 : check presence of Monitored
-            prepareCheckPoint(context, LINE_9);
+            prepareCheckPoint(context, LINE_8);
             if (line.isMonitored() == null) {
-                //Detail errorItem = new Detail(LINE_1, sourceLocation);
-                //addValidationError(context, LINE_1, errorItem);
+                Detail errorItem = new Detail(LINE_8, null, "Monitored is mandatory for Line");
+                addValidationError(context, LINE_8, errorItem);
             }
 
             // TODO consider validating with xpath instead, if shorter
             // 2-NETEX-Line-10 : check presence of AccessibilityAssessment
-            prepareCheckPoint(context, LINE_10);
+            prepareCheckPoint(context, LINE_9);
             if (line.getAccessibilityAssessment() == null) {
                 // TODO validate full structure/list of elements
             }
         }
-
-        return null;
+        return new ValidationConstraints();
     }
 
     public static class DefaultValidatorFactory extends ValidatorFactory {

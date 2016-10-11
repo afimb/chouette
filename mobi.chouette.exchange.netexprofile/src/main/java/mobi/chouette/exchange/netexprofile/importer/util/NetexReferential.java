@@ -18,6 +18,10 @@ public class NetexReferential implements Serializable {
 
     @Getter
     @Setter
+    private Map<String, ResourceFrame> resourceFrames = new HashMap<>();
+
+    @Getter
+    @Setter
     private Map<String, Authority> authorities = new HashMap<>();
 
     @Getter

@@ -92,10 +92,6 @@ public class NetexImporter {
 		default:
 			profileValidator = new NorwayLineNetexProfileValidator();
 		}
-
-		if (profileValidator != null) {
-			profileValidator.addCheckpoints(context);
-		}
 		return profileValidator;
 	}
 

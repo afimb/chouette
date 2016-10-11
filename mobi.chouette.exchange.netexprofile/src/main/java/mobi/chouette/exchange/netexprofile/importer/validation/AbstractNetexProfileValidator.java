@@ -2,6 +2,7 @@ package mobi.chouette.exchange.netexprofile.importer.validation;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.xpath.XPath;
@@ -9,6 +10,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import mobi.chouette.exchange.validation.report.Detail;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -48,11 +50,26 @@ public abstract class AbstractNetexProfileValidator implements NetexProfileValid
 		boolean validationOK = true;
 		for (CheckPoint c : validationReport.getCheckPoints()) {
 			if (c.getSeverity() == SEVERITY.ERROR && c.getState() == RESULT.NOK) {
+				log.error("VALIDATION FAILED FOR CHECKPOINT : " + c.getName());
+				List<Detail> details = c.getDetails();
+				if (details != null && !details.isEmpty()) {
+					for (Detail detail : details) {
+						if (detail.getValue() != null) {
+							log.error("MESSAGE : " + detail.getValue());
+						}
+					}
+				}
+			}
+		}
+		for (CheckPoint c : validationReport.getCheckPoints()) {
+			if (c.getSeverity() == SEVERITY.ERROR && c.getState() == RESULT.NOK) {
 				validationOK = false;
 				break;
 			}
 		}
 
+		String validationStatus = validationOK == true ? "SUCCESS" : "FAILURES";
+		log.info("VALIDATION COMPLETED WITH " + validationStatus);
 		return validationOK;
 	}
 

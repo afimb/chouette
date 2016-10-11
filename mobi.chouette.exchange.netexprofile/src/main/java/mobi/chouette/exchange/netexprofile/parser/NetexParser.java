@@ -46,6 +46,7 @@ public class NetexParser extends AbstractParser implements Parser {
     private void parseResourceFrames(Context context, NetexReferential referential, List<JAXBElement<? extends Common_VersionFrameStructure>> topLevelFrame) throws Exception {
         List<ResourceFrame> resourceFrames = getFrames(ResourceFrame.class, topLevelFrame);
         for (ResourceFrame resourceFrame : resourceFrames) {
+            NetexObjectUtil.addResourceFrameReference(referential, resourceFrame.getId(), resourceFrame);
 
             // 1. initialize organisations
             OrganisationsInFrame_RelStructure organisationsInFrameStruct = resourceFrame.getOrganisations();

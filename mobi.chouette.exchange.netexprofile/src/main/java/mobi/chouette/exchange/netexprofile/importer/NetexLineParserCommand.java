@@ -77,6 +77,9 @@ public class NetexLineParserCommand implements Command, Constant {
 			NetexParser netexParser = (NetexParser) ParserFactory.create(NetexParser.class.getName());
 			netexParser.initializeReferentials(context); // TODO enable this to validate
 
+			// TODO should probably implement a separate command for profile validation instead
+					// e.g. something like NetexProfileValidationCommand, executed before parsing
+
 			// Profile validation
 			NetexProfileValidator profileValidator = importer.getProfileValidator(context); 
 			if (profileValidator != null) {
