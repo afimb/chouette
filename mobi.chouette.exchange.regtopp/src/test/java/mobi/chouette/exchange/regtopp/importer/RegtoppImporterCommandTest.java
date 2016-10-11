@@ -99,7 +99,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 				.addClass(RegtoppTestUtils.class)
 				.addClass(JobDataTest.class)
 				.addClass(uk.org.siri.siri.ObjectFactory.class)
-				.addClass(no.rutebanken.netex.model.ObjectFactory.class)
+				.addClass(org.rutebanken.netex.model.ObjectFactory.class)
 				.addClass(net.opengis.gml._3.ObjectFactory.class)
 				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 

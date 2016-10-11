@@ -15,11 +15,11 @@
    </properties>
 	<dependencies>
 
-        <dependency>
-            <groupId>no.rutebanken</groupId>
-            <artifactId>netex-java-model</artifactId>
-            <version>0.0.7</version>
-        </dependency>
+    <dependency>
+        <groupId>org.rutebanken</groupId>
+        <artifactId>netex-java-model</artifactId>
+        <version>0.0.8</version>
+    </dependency>
 
 
         <!-- Default Dependencies -->
@@ -65,10 +65,10 @@
              <groupId>org.apache.struts</groupId>
              <artifactId>struts-tiles</artifactId>
           </exclusion>
-        </exclusions>         
+        </exclusions>
 		</dependency>
-		
-		
+
+
 		<!-- Modules -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -137,7 +137,7 @@
         </dependency>
 
 	</dependencies>
-<!--  <build> 
+<!--  <build>
 	<plugins>
 	<plugin>
 	<groupId>org.codehaus.mojo</groupId>

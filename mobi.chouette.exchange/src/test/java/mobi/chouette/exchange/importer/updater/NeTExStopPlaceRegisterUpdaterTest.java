@@ -22,19 +22,19 @@ import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import no.rutebanken.netex.client.PublicationDeliveryClient;
-import no.rutebanken.netex.model.KeyListStructure;
-import no.rutebanken.netex.model.KeyValueStructure;
-import no.rutebanken.netex.model.LocationStructure;
-import no.rutebanken.netex.model.MultilingualString;
-import no.rutebanken.netex.model.PublicationDeliveryStructure;
-import no.rutebanken.netex.model.Quay;
-import no.rutebanken.netex.model.Quays_RelStructure;
-import no.rutebanken.netex.model.SimplePoint_VersionStructure;
-import no.rutebanken.netex.model.SiteFrame;
-import no.rutebanken.netex.model.StopPlace;
-import no.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
-import no.rutebanken.netex.model.Zone_VersionStructure;
+import org.rutebanken.netex.client.PublicationDeliveryClient;
+import org.rutebanken.netex.model.KeyListStructure;
+import org.rutebanken.netex.model.KeyValueStructure;
+import org.rutebanken.netex.model.LocationStructure;
+import org.rutebanken.netex.model.MultilingualString;
+import org.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.rutebanken.netex.model.Quay;
+import org.rutebanken.netex.model.Quays_RelStructure;
+import org.rutebanken.netex.model.SimplePoint_VersionStructure;
+import org.rutebanken.netex.model.SiteFrame;
+import org.rutebanken.netex.model.StopPlace;
+import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
+import org.rutebanken.netex.model.Zone_VersionStructure;
 
 public class NeTExStopPlaceRegisterUpdaterTest {
 
@@ -109,7 +109,7 @@ public class NeTExStopPlaceRegisterUpdaterTest {
 						SiteFrame siteFrame = new SiteFrame();
 						siteFrame.setStopPlaces(new StopPlacesInFrame_RelStructure().withStopPlace(stopPlaces));
 
-						no.rutebanken.netex.model.ObjectFactory objectFactory = new no.rutebanken.netex.model.ObjectFactory();
+						org.rutebanken.netex.model.ObjectFactory objectFactory = new org.rutebanken.netex.model.ObjectFactory();
 						JAXBElement<SiteFrame> jaxSiteFrame = objectFactory.createSiteFrame(siteFrame);
 
 						PublicationDeliveryStructure respoonse = new PublicationDeliveryStructure()

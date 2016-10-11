@@ -2,8 +2,8 @@ package mobi.chouette.exchange.importer.updater.netex;
 
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
-import no.rutebanken.netex.model.Quay;
-import no.rutebanken.netex.model.StopPlace;
+import org.rutebanken.netex.model.Quay;
+import org.rutebanken.netex.model.StopPlace;
 import org.junit.Test;
 
 import java.util.Arrays;
