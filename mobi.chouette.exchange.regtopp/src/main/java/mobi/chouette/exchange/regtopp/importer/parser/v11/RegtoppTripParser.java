@@ -1,16 +1,5 @@
 package mobi.chouette.exchange.regtopp.importer.parser.v11;
 
-import static mobi.chouette.common.Constant.CONFIGURATION;
-import static mobi.chouette.common.Constant.PARSER;
-import static mobi.chouette.common.Constant.REFERENTIAL;
-
-import java.sql.Time;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.Duration;
-import org.joda.time.LocalTime;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
@@ -20,30 +9,25 @@ import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.index.v11.DaycodeById;
-import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
+import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.importer.parser.RouteKey;
+import mobi.chouette.exchange.regtopp.importer.parser.TripVisitTimeCalculator;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.enums.TransportType;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppRouteTDA;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppTripIndexTIX;
-import mobi.chouette.model.Company;
-import mobi.chouette.model.Footnote;
-import mobi.chouette.model.JourneyPattern;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.Route;
-import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.Timetable;
-import mobi.chouette.model.VehicleJourney;
-import mobi.chouette.model.VehicleJourneyAtStop;
+import mobi.chouette.exchange.regtopp.model.v11.*;
+import mobi.chouette.model.*;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
-import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.Duration;
+
+import java.sql.Time;
+import java.util.List;
+
+import static mobi.chouette.common.Constant.*;
 
 @Log4j
 public class RegtoppTripParser extends LineSpecificParser {
@@ -120,13 +104,13 @@ public class RegtoppTripParser extends LineSpecificParser {
 					}
 
 					// Link to timetable
-					Duration tripDepartureTime = linkVehicleJourneyToTimetable(referential, configuration, trip, vehicleJourney, dayCodeHeader);
+					linkVehicleJourneyToTimetable(referential, configuration, trip, vehicleJourney, dayCodeHeader);
 
 					for (StopPoint p : journeyPattern.getStopPoints()) {
 						// Warn: Hack. Using comment as temporary holder
 						RegtoppRouteTDA vehicleStop = routeIndex.getValue(p.getComment());
 						try {
-							addVehicleJourneyAtStop(vehicleJourney, tripDepartureTime, p, vehicleStop.getDriverTimeArrival(),
+							addVehicleJourneyAtStop(vehicleJourney, trip.getDepartureTime(), p, vehicleStop.getDriverTimeArrival(),
 									vehicleStop.getDriverTimeDeparture(), byRequestOnly);
 
 						} catch (Exception e) {
@@ -184,20 +168,14 @@ public class RegtoppTripParser extends LineSpecificParser {
 		return t;
 	}
 
-	protected Duration linkVehicleJourneyToTimetable(Referential referential, RegtoppImportParameters configuration, AbstractRegtoppTripIndexTIX trip,
+	protected void linkVehicleJourneyToTimetable(Referential referential, RegtoppImportParameters configuration, AbstractRegtoppTripIndexTIX trip,
 			VehicleJourney vehicleJourney, RegtoppDayCodeHeaderDKO header) {
 
 		String chouetteTimetableId = ObjectIdCreator.createTimetableId(configuration, trip.getAdminCode(), trip.getDayCodeRef(), header);
 
-		// Duration since midnight
-		Duration tripDepartureTime = trip.getDepartureTime();
-		if (tripDepartureTime.getStandardSeconds() >= 24 * 60 * 60) {
-			// After midnight
-			chouetteTimetableId += RegtoppTimetableParser.AFTER_MIDNIGHT_SUFFIX;
-		}
+
 		Timetable timetable = ObjectFactory.getTimetable(referential, chouetteTimetableId);
 		timetable.addVehicleJourney(vehicleJourney);
-		return tripDepartureTime;
 	}
 
 	protected Company createOperator(Referential referential, RegtoppImportParameters configuration, String operatorCode) {
@@ -225,22 +203,19 @@ public class RegtoppTripParser extends LineSpecificParser {
 			vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.NeitherBoardOrAlight);
 			// What to do with passing times?
 		} else {
-
-			// TODO verify this
 			if (driverTimeArrival != null) {
-				vehicleJourneyAtStop.setArrivalTime(calculateTripVisitTime(tripDepartureTime, driverTimeArrival));
+				setArrival(tripDepartureTime, driverTimeArrival, vehicleJourneyAtStop);
 			} else {
-				vehicleJourneyAtStop.setArrivalTime(calculateTripVisitTime(tripDepartureTime, driverTimeDeparture));
+				setArrival(tripDepartureTime, driverTimeDeparture, vehicleJourneyAtStop);
 				vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.BoardOnly);
 			}
 
 			if (driverTimeDeparture != null) {
-				vehicleJourneyAtStop.setDepartureTime(calculateTripVisitTime(tripDepartureTime, driverTimeDeparture));
+				setDeparture(tripDepartureTime, driverTimeDeparture, vehicleJourneyAtStop);
 			} else {
-				vehicleJourneyAtStop.setDepartureTime(calculateTripVisitTime(tripDepartureTime, driverTimeArrival));
+				setDeparture(tripDepartureTime, driverTimeArrival, vehicleJourneyAtStop);
 				vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.AlightOnly);
 			}
-
 		}
 
 		vehicleJourneyAtStop.setStopPoint(p);
@@ -253,16 +228,16 @@ public class RegtoppTripParser extends LineSpecificParser {
 		return vehicleJourneyAtStop;
 	}
 
-	public static Time calculateTripVisitTime(Duration tripDepartureTime, Duration timeSinceTripDepatureTime) {
-		// TODO Ugly ugly ugly
+	private void setArrival(Duration tripDepartureTime, Duration driverTimeArrival, VehicleJourneyAtStop vehicleJourneyAtStop) {
+		TripVisitTimeCalculator.TripVisitTime tripVisitTime = TripVisitTimeCalculator.calculateTripVisitTime(tripDepartureTime, driverTimeArrival);
+		vehicleJourneyAtStop.setArrivalTime(tripVisitTime.getTime());
+		vehicleJourneyAtStop.setArrivalDayOffset(tripVisitTime.getDayOffset());
+	}
 
-		LocalTime localTime = new LocalTime(0, 0, 0, 0)
-				.plusSeconds((int) (tripDepartureTime.getStandardSeconds() + timeSinceTripDepatureTime.getStandardSeconds()));
-
-		java.sql.Time sqlTime = new java.sql.Time(localTime.getHourOfDay(), localTime.getMinuteOfHour(), localTime.getSecondOfMinute());
-
-		return sqlTime;
-
+	private void setDeparture(Duration tripDepartureTime, Duration driverTimeDeparture, VehicleJourneyAtStop vehicleJourneyAtStop) {
+		TripVisitTimeCalculator.TripVisitTime tripVisitTime =  TripVisitTimeCalculator.calculateTripVisitTime(tripDepartureTime, driverTimeDeparture);
+		vehicleJourneyAtStop.setDepartureTime(tripVisitTime.getTime());
+		vehicleJourneyAtStop.setDepartureDayOffset(tripVisitTime.getDayOffset());
 	}
 
 	protected TransportModeNameEnum convertTypeOfService(TransportType typeOfService) {

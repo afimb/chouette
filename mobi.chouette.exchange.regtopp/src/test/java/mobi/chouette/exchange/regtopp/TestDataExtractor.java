@@ -1,26 +1,12 @@
 package mobi.chouette.exchange.regtopp;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import mobi.chouette.common.FileUtil;
+import mobi.chouette.exchange.regtopp.importer.version.RegtoppVersion;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
 
-import mobi.chouette.common.FileUtil;
-import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
-import mobi.chouette.exchange.regtopp.importer.version.RegtoppVersion;
+import java.io.*;
+import java.util.*;
 
 /*
  * This class extracts a single line (transmodel concept) from a regtopp1.2 dataset
@@ -259,6 +245,8 @@ public class TestDataExtractor {
 				new File("src/test/data/lineextracts/troms_line0002.zip").getAbsoluteFile(), "190", "0", "0002",RegtoppVersion.R11D,"ISO-8859-1");
 		new TestDataExtractor().extractLine(new File("src/test/data/fullsets/20160229_20160320_39_v2.zip").getAbsoluteFile(),
 				new File("src/test/data/lineextracts/ruter_line0030.zip").getAbsoluteFile(), "396", "4", "0030",RegtoppVersion.R13A,"ISO-8859-1");
+		new TestDataExtractor().extractLine(new File("src/test/data/fullsets/20160229_20160320_39_v2.zip").getAbsoluteFile(),
+				new File("src/test/data/lineextracts/ruter_line0031.zip").getAbsoluteFile(), "396", "4", "0031",RegtoppVersion.R13A,"ISO-8859-1");
 	}
 
 }

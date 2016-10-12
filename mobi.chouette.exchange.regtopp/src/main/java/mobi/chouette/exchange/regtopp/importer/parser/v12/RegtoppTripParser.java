@@ -122,7 +122,7 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 					}
 
 					// Link to timetable
-					Duration tripDepartureTime = linkVehicleJourneyToTimetable(referential, configuration, trip, vehicleJourney, dayCodeHeader);
+					linkVehicleJourneyToTimetable(referential, configuration, trip, vehicleJourney, dayCodeHeader);
 
 					// TODO this must be precomputed instead of iterating over tens of thousands of records for each trip.
 					for (AbstractRegtoppRouteTMS vehicleStop : importer.getRouteIndex()) {
@@ -135,7 +135,7 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 
 									StopPoint stopPoint = referential.getStopPoints().get(chouetteStopPointId);
 									if (stopPoint != null) {
-										addVehicleJourneyAtStop(vehicleJourney, tripDepartureTime, stopPoint, vehicleStop.getDriverTimeArrival(),
+										addVehicleJourneyAtStop(vehicleJourney, trip.getDepartureTime(), stopPoint, vehicleStop.getDriverTimeArrival(),
 												vehicleStop.getDriverTimeDeparture(), byRequestOnly);
 									} else {
 										log.warn("Not adding VehicleJourneyAtStop since StopPoint with id " + chouetteStopPointId + " is missing");
