@@ -48,7 +48,7 @@ public class RegtoppInitImportCommand implements Command {
 			if (parameters.getReferencesType() == null || parameters.getReferencesType().isEmpty()) {
 				parameters.setReferencesType("line");
 			}
-			if (context.get(VALIDATION) != null)
+//			if (context.get(VALIDATION) != null)
 				context.put(VALIDATION_DATA, new ValidationData());
 			result = SUCCESS;
 
