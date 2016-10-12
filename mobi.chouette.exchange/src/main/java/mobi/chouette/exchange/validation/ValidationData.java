@@ -18,6 +18,7 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RoutingConstraint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
@@ -34,6 +35,7 @@ public class ValidationData {
 	private Set<GroupOfLine> groupOfLines = new HashSet<>();
 	private Set<String> groupOfLineIds = new HashSet<>();
 	private Set<StopArea> stopAreas = new HashSet<>();
+	private Set<RoutingConstraint> routingConstraints = new HashSet<>();
 	private Set<StopArea> dummyStopAreas = new HashSet<>(); // for connectionLink tests
 	private Set<String> stopAreaIds = new HashSet<>();
 	private Set<ConnectionLink> connectionLinks = new HashSet<>();
@@ -72,6 +74,7 @@ public class ValidationData {
 		groupOfLines.clear();
 		groupOfLineIds.clear();
 		stopAreas.clear();
+		routingConstraints.clear();
 		dummyStopAreas.clear();
 		stopAreaIds.clear();
 		connectionLinks.clear();

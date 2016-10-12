@@ -7,9 +7,10 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.Constant;
-import mobi.chouette.exchange.neptune.validation.ITLValidator;
+import mobi.chouette.exchange.neptune.validation.RoutingConstraintValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.RoutingConstraint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -30,28 +31,32 @@ public class ITLParser implements Parser, Constant {
 		int columnNumber =  xpp.getColumnNumber();
 		int lineNumber =  xpp.getLineNumber();
 		
-		ITLValidator validator = (ITLValidator) ValidatorFactory.create(ITLValidator.class.getName(), context);
+		RoutingConstraintValidator validator = (RoutingConstraintValidator) ValidatorFactory.create(RoutingConstraintValidator.class.getName(), context);
 
 		Line line = getLine(referential);
-		StopArea stopArea = null;
+		RoutingConstraint routingConstraint = null;
 		String objectId = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("areaId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
-				stopArea = ObjectFactory.getStopArea(referential, objectId);
-				if (line != null) line.addRoutingConstraint(stopArea);
+//				TODO : Arret Netex : Delete once RoutingConstraint is implemented
+//				stopArea = ObjectFactory.getStopArea(referential, objectId);
+//				if (line != null) line.addRoutingConstraint(stopArea);
+				routingConstraint = ObjectFactory.getRoutingConstraint(referential, objectId);
+				if (line != null) line.addRoutingConstraint(routingConstraint);
 			} else if (xpp.getName().equals("lineIdShortCut")) {
 				String lineIdShortCut = ParserUtils.getText(xpp.nextText());
 				validator.addLineId(context, objectId, lineIdShortCut);
 			} else if (xpp.getName().equals("name")) {
 				String name = ParserUtils.getText(xpp.nextText());
 				validator.addName(context, objectId, name);
-				if (stopArea.getName() == null) stopArea.setName(name);
+				if (routingConstraint.getName() == null) routingConstraint.setName(name);
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
-		validator.addLocation(context, stopArea, lineNumber, columnNumber);
+//		TODO Arret Netex : ITL (RoutingConstraint) validation in ChouetteAreaParser
+		validator.addITLLocation(context, routingConstraint, lineNumber, columnNumber);
 	}
 	
 	private Line getLine(Referential referential)

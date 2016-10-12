@@ -46,6 +46,7 @@
 		<class>mobi.chouette.model.Network</class>
 		<class>mobi.chouette.model.Route</class>
       <class>mobi.chouette.model.RouteSection</class>
+      	<class>mobi.chouette.model.RoutingConstraint</class>
 		<class>mobi.chouette.model.StopArea</class>
 		<class>mobi.chouette.model.StopPoint</class>
 		<class>mobi.chouette.model.Timeband</class>

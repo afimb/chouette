@@ -128,7 +128,7 @@ public class DataCollector {
 				collection.getGroupOfLines().addAll(line.getGroupOfLines());
 			}
 			if (!line.getRoutingConstraints().isEmpty()) {
-				collection.getStopAreas().addAll(line.getRoutingConstraints());
+				collection.getRoutingConstraints().addAll(line.getRoutingConstraints());
 			}
 		}
 		completeSharedData(collection);

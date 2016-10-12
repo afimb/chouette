@@ -17,6 +17,7 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.RouteSection;
+import mobi.chouette.model.RoutingConstraint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timeband;
@@ -51,6 +52,10 @@ public class Referential implements java.io.Serializable {
 	@Getter
 	@Setter
 	private Map<String, StopArea> sharedStopAreas = new HashMap<String, StopArea>();
+	
+	@Getter
+	@Setter
+	private Map<String, RoutingConstraint> sharedRoutingConstraints = new HashMap<String, RoutingConstraint>();
 
 	@Getter
 	@Setter
@@ -113,6 +118,10 @@ public class Referential implements java.io.Serializable {
 	@Getter
 	@Setter
 	private Map<String, StopArea> stopAreas = new HashMap<String, StopArea>();
+	
+	@Getter
+	@Setter
+	private Map<String, RoutingConstraint> routingConstraints = new HashMap<String, RoutingConstraint>();
 
 	@Getter
 	@Setter

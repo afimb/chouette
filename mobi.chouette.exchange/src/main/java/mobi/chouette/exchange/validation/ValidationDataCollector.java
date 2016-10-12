@@ -15,6 +15,7 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RoutingConstraint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
@@ -115,11 +116,21 @@ public class ValidationDataCollector {
 
 	}
 
-	private void addAllRoutingConstraints(ValidationData collection, Collection<StopArea> data, Referential cache) {
-		for (StopArea object : data) {
-			updateId(object, cache.getStopAreas());
+//	Arret Netex
+//	private void addAllRoutingConstraints(ValidationData collection, Collection<StopArea> data, Referential cache) {
+//		for (StopArea object : data) {
+//			updateId(object, cache.getStopAreas());
+//			collection.getStopAreaIds().add(object.getObjectId());
+//			collection.getStopAreas().add(object);
+//		}
+//
+//	}
+	
+	private void addAllRoutingConstraints(ValidationData collection, Collection<RoutingConstraint> data, Referential cache) {
+		for (RoutingConstraint object : data) {
+			updateId(object, cache.getRoutingConstraints());
 			collection.getStopAreaIds().add(object.getObjectId());
-			collection.getStopAreas().add(object);
+			collection.getRoutingConstraints().add(object);
 		}
 
 	}

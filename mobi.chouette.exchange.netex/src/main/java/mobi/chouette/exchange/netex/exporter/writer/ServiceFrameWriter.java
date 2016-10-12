@@ -18,6 +18,7 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RoutingConstraint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 
@@ -410,20 +411,21 @@ public class ServiceFrameWriter extends AbstractWriter{
 		//  #end  
 		writer.write("  </stopAssignments>\n");
 		writer.write("  <!-- routingConstraintZone : for ITL NEPTUNE-->\n");
-		List<StopArea> routingConstraints = line.getRoutingConstraints();
+		List<RoutingConstraint> routingConstraints = line.getRoutingConstraints();
 		//  #if ( $routingConstraints && $routingConstraints.size() > 0)
 		if (nonEmpty(routingConstraints)) {
 		writer.write("  <routingConstraintZones>\n");
 		//    #foreach( $routingConstraint in $routingConstraints )     
-		for (StopArea routingConstraint : routingConstraints) {
+		for (RoutingConstraint routingConstraint : routingConstraints) {
 		writer.write("    <RoutingConstraintZone version=\"any\" id=\""+modelTranslator.netexId(routingConstraint)+"\">\n");
 		//      #if ( $routingConstraint.name)
 		if (isSet(routingConstraint.getName())) 
 		writer.write("      <Name>"+toXml(routingConstraint.getName())+"</Name>\n");		
 		//      #end
 		//      #if ( $routingConstraint.comment)
-		if (isSet(routingConstraint.getComment())) 
-		writer.write("      <Description>"+toXml(routingConstraint.getComment())+"</Description>\n");
+//		TODO : Voir avec Bruno si on rajout l'attribut Comment dans RoutingConstraint
+//		if (isSet(routingConstraint.getComment())) 
+//		writer.write("      <Description>"+toXml(routingConstraint.getComment())+"</Description>\n");
 		//      #end
 		//      #if ( $routingConstraint.registrationNumber)
 		if (isSet(routingConstraint.getRegistrationNumber())) 

@@ -10,6 +10,7 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.RouteSection;
+import mobi.chouette.model.RoutingConstraint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timeband;
@@ -166,6 +167,22 @@ public class ObjectFactory {
 		} 
 		if (!referential.getStopAreas().containsKey(objectId)) {
 			referential.getStopAreas().put(objectId, result);
+		}
+		
+		return result;
+	}
+	
+	// Arret Netex
+	public static RoutingConstraint getRoutingConstraint(Referential referential, String objectId) {
+		RoutingConstraint result = referential.getSharedRoutingConstraints().get(objectId);
+		if (result == null) {
+			result = new RoutingConstraint();
+			result.setObjectId(objectId);
+			result.setDetached(true);
+			referential.getSharedRoutingConstraints().put(objectId, result);
+		} 
+		if (!referential.getRoutingConstraints().containsKey(objectId)) {
+			referential.getRoutingConstraints().put(objectId, result);
 		}
 		
 		return result;

@@ -16,8 +16,10 @@ import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.exchange.neptune.model.AreaCentroid;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.validation.AreaCentroidValidator;
+import mobi.chouette.exchange.neptune.validation.RoutingConstraintValidator;
 import mobi.chouette.exchange.neptune.validation.StopAreaValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.model.RoutingConstraint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -71,8 +73,10 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 		int lineNumber =  xpp.getLineNumber();
 
 		StopAreaValidator validator = (StopAreaValidator) ValidatorFactory.create(StopAreaValidator.class.getName(), context);
+		RoutingConstraintValidator rcValidator = (RoutingConstraintValidator) ValidatorFactory.create(RoutingConstraintValidator.class.getName(), context);
 
 		StopArea stopArea = null;
+		RoutingConstraint routingConstraint = null;
 		List<String> contains = new ArrayList<String>();
 
 		String objectId = null;
@@ -108,10 +112,16 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 								stopPoint.setContainedInStopArea(stopArea);
 							}
 						} else if (stopArea.getAreaType() == ChouetteAreaEnum.ITL) {
+							// Arret Netex : Pass stopArea of type ITL into routingConstraint object
+							routingConstraint = ObjectFactory.getRoutingConstraint(referential, objectId);
+							routingConstraint.setName(stopArea.getName());
+							
 							for (String childId : contains) {
 								StopArea child = ObjectFactory.getStopArea(
 										referential, childId);
-								stopArea.addRoutingConstraintStopArea(child);
+//								Arret NETEX : Let Routing Constraint handle this
+//								stopArea.addRoutingConstraintStopArea(child);
+								routingConstraint.addRoutingConstraintStopArea(child);
 							}
 						} else {
 							for (String childId : contains) {
@@ -182,7 +192,11 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
-		validator.addLocation(context, stopArea, lineNumber, columnNumber);
+		// Arret Netex : If StopArea is ITL type, we use RoutingConstraintValidator
+		if (routingConstraint != null)
+			rcValidator.addStopAreaLocation(context, routingConstraint, lineNumber, columnNumber);
+		else
+			validator.addLocation(context, stopArea, lineNumber, columnNumber);
 	}
 
 	private void parseAreaCentroid(Context context, BiMap<String, String> map)

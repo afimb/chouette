@@ -423,7 +423,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	@Getter
 	@Setter
 	@ManyToMany(mappedBy = "routingConstraintLines", cascade = { CascadeType.PERSIST })
-	private List<StopArea> routingConstraints = new ArrayList<StopArea>(0);
+	private List<RoutingConstraint> routingConstraints = new ArrayList<RoutingConstraint>(0);
 
 	/* -------------------------------------- */
 
@@ -432,7 +432,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 * 
 	 * @param routingConstraint
 	 */
-	public void addRoutingConstraint(StopArea routingConstraint) {
+	public void addRoutingConstraint(RoutingConstraint routingConstraint) {
 		if (routingConstraint != null && !routingConstraints.contains(routingConstraint)) {
 			routingConstraints.add(routingConstraint);
 			routingConstraint.getRoutingConstraintLines().add(this);
@@ -445,7 +445,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 * 
 	 * @param routingConstraint
 	 */
-	public void removeRoutingConstraint(StopArea routingConstraint) {
+	public void removeRoutingConstraint(RoutingConstraint routingConstraint) {
 		if (routingConstraint != null && routingConstraints.contains(routingConstraint)) {
 			routingConstraints.remove(routingConstraint);
 			routingConstraint.getRoutingConstraintLines().remove(this);

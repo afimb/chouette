@@ -31,6 +31,7 @@ import mobi.chouette.exchange.report.ObjectReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.RoutingConstraint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.Referential;
@@ -392,14 +393,24 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 
 		Assert.assertNotNull(line.getRoutingConstraints(), "line must have routing constraints");
 		Assert.assertEquals(line.getRoutingConstraints().size(), 1, "line must have 1 routing constraint");
-		StopArea area = line.getRoutingConstraints().get(0);
-		Assert.assertEquals(area.getAreaType(), ChouetteAreaEnum.ITL, "routing constraint area must be of "
-				+ ChouetteAreaEnum.ITL + " type");
-		Assert.assertNotNull(area.getRoutingConstraintAreas(),
+//		Arret Netex
+//		StopArea area = line.getRoutingConstraints().get(0);
+//		Assert.assertEquals(area.getAreaType(), ChouetteAreaEnum.ITL, "routing constraint area must be of "
+//				+ ChouetteAreaEnum.ITL + " type");
+//		Assert.assertNotNull(area.getRoutingConstraintAreas(),
+//				"routing constraint area must have stopArea children as routing constraints");
+//		Assert.assertEquals(area.getContainedStopAreas().size(),0, "routing constraint area must not have stopArea children");
+//		Assert.assertNull(area.getParent(), "routing constraint area must not have stopArea parent");
+//		Assert.assertTrue(area.getRoutingConstraintAreas().size() > 0,
+//				"routing constraint area must have stopArea children as routing constraints");
+		
+		RoutingConstraint routingConstraint = line.getRoutingConstraints().get(0);
+		
+		Assert.assertNotNull(routingConstraint, "line must have at least one routing constraint");
+		Assert.assertNotNull(routingConstraint.getRoutingConstraintAreas(),
 				"routing constraint area must have stopArea children as routing constraints");
-		Assert.assertEquals(area.getContainedStopAreas().size(),0, "routing constraint area must not have stopArea children");
-		Assert.assertNull(area.getParent(), "routing constraint area must not have stopArea parent");
-		Assert.assertTrue(area.getRoutingConstraintAreas().size() > 0,
+		
+		Assert.assertTrue(routingConstraint.getRoutingConstraintAreas().size() > 0,
 				"routing constraint area must have stopArea children as routing constraints");
 	}
 

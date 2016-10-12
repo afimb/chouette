@@ -18,7 +18,7 @@ import mobi.chouette.exchange.neptune.validation.ChouetteRouteValidator;
 import mobi.chouette.exchange.neptune.validation.CompanyValidator;
 import mobi.chouette.exchange.neptune.validation.ConnectionLinkValidator;
 import mobi.chouette.exchange.neptune.validation.GroupOfLineValidator;
-import mobi.chouette.exchange.neptune.validation.ITLValidator;
+import mobi.chouette.exchange.neptune.validation.RoutingConstraintValidator;
 import mobi.chouette.exchange.neptune.validation.JourneyPatternValidator;
 import mobi.chouette.exchange.neptune.validation.LineValidator;
 import mobi.chouette.exchange.neptune.validation.PTNetworkValidator;
@@ -137,7 +137,7 @@ public class NeptuneValidationCommand implements Command, Constant {
 					validator.validate(context, null);
 				}
 				{
-					ITLValidator validator = (ITLValidator) ValidatorFactory.create(ITLValidator.class.getName(),
+					RoutingConstraintValidator validator = (RoutingConstraintValidator) ValidatorFactory.create(RoutingConstraintValidator.class.getName(),
 							context);
 					validator.validate(context, null);
 				}

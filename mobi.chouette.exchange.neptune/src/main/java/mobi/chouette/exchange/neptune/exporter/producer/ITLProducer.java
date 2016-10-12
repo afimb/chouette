@@ -1,18 +1,18 @@
 package mobi.chouette.exchange.neptune.exporter.producer;
 
 import mobi.chouette.model.Line;
-import mobi.chouette.model.StopArea;
+import mobi.chouette.model.RoutingConstraint;
 
 import org.trident.schema.trident.ITLType;
 
-public class RoutingConstraintProducer
+public class ITLProducer
 {
    /**
     * @param line
     * @param routingConstraint
     * @return
     */
-   public ITLType produceITL(Line line, StopArea routingConstraint, boolean addExtension)
+   public ITLType produce(Line line, RoutingConstraint routingConstraint)
    {
       ITLType jaxbITL = AbstractJaxbNeptuneProducer.tridentFactory
             .createITLType();

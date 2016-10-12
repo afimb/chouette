@@ -18,6 +18,7 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RoutingConstraint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
@@ -41,6 +42,9 @@ public class ExportableData {
 	@Getter
 	@Setter
 	private Set<StopArea> stopAreas = new HashSet<>();
+	@Getter
+	@Setter
+	private Set<RoutingConstraint> routingConstraints = new HashSet<>();
 	@Getter
 	@Setter
 	private Set<StopArea> quays = new HashSet<>();
@@ -110,6 +114,7 @@ public class ExportableData {
 		companies.clear();
 		groupOfLines.clear();
 		stopAreas.clear();
+		routingConstraints.clear();
 		quays.clear();
 		boardingPositions.clear();
 		physicalStops.clear();

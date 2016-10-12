@@ -24,6 +24,7 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RoutingConstraint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
@@ -325,12 +326,28 @@ public class ComplexModelFactory
       return journeyPatterns;
    }
 
-   public StopArea createITL(List<Line> lines, List<StopArea> stopAreas)
+//   public StopArea createITL(List<Line> lines, List<StopArea> stopAreas)
+//   {
+//      try
+//      {
+//         StopArea itl = modelFactory.createModel(StopArea.class);
+//         itl.setAreaType(ChouetteAreaEnum.ITL);
+//         itl.setRoutingConstraintLines(lines);
+//         itl.setRoutingConstraintAreas(stopAreas);
+//
+//         return itl;
+//      } catch (CreateModelException ex)
+//      {
+//         Logger.getLogger(ComplexModelFactory.class.getName()).log(
+//               Level.SEVERE, null, ex);
+//         return null;
+//      }
+//   }
+   public RoutingConstraint createITL(List<Line> lines, List<StopArea> stopAreas)
    {
       try
       {
-         StopArea itl = modelFactory.createModel(StopArea.class);
-         itl.setAreaType(ChouetteAreaEnum.ITL);
+    	 RoutingConstraint itl = modelFactory.createModel(RoutingConstraint.class);
          itl.setRoutingConstraintLines(lines);
          itl.setRoutingConstraintAreas(stopAreas);
 
@@ -343,7 +360,35 @@ public class ComplexModelFactory
       }
    }
 
-   private StopArea createLineITL(Line line)
+//   private StopArea createLineITL(Line line)
+//   {
+//      List<Line> lines = new ArrayList<Line>();
+//      lines.add(line);
+//      try
+//      {
+//         lines.add(modelFactory.createModel(Line.class));
+//      } catch (CreateModelException ex)
+//      {
+//         Logger.getLogger(ComplexModelFactory.class.getName()).log(
+//               Level.SEVERE, null, ex);
+//      }
+//      List<StopArea> stop_areas = new ArrayList<StopArea>();
+//      int index = (new Random()).nextInt(line.getRoutes().size());
+//
+//      stop_areas.add(line.getRoutes().get(index).getStopPoints().get(0)
+//            .getContainedInStopArea());
+//      try
+//      {
+//         stop_areas.add(modelFactory.createModel(StopArea.class));
+//      } catch (CreateModelException ex)
+//      {
+//         Logger.getLogger(ComplexModelFactory.class.getName()).log(
+//               Level.SEVERE, null, ex);
+//      }
+//      return createITL(lines, stop_areas);
+//   }
+   
+   private RoutingConstraint createLineITL(Line line)
    {
       List<Line> lines = new ArrayList<Line>();
       lines.add(line);
@@ -389,7 +434,7 @@ public class ComplexModelFactory
          line.getRoutes().add(nominalRoute(i, line));
       }
 
-      line.setRoutingConstraints(new ArrayList<StopArea>());
+      line.setRoutingConstraints(new ArrayList<RoutingConstraint>());
       for (int i = 0; i < routingConstraintCount; i++)
       {
 

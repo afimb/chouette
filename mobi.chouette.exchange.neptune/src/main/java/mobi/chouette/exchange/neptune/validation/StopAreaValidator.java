@@ -49,7 +49,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 		addItemToValidation(context, prefix, "StopArea", 6, "E", "E", "E", "E", "E", "E");
 
 		try {
-			ITLValidator validator = (ITLValidator) ValidatorFactory.create(ITLValidator.class.getName(), context);
+			RoutingConstraintValidator validator = (RoutingConstraintValidator) ValidatorFactory.create(RoutingConstraintValidator.class.getName(), context);
 			validator.initializeCheckPoints(context);
 		} catch (ClassNotFoundException e) {
 		}
@@ -100,7 +100,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 //		Map<String, Location> fileLocations = data.getFileLocations();
 		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		Context stopPointContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
-		Context itlContext = (Context) validationContext.get(ITLValidator.LOCAL_CONTEXT);
+		Context itlContext = (Context) validationContext.get(RoutingConstraintValidator.ITL_LOCAL_CONTEXT);
 		if (itlContext == null) itlContext = new Context(); 
 		Context areaCentroidContext = (Context) validationContext.get(AreaCentroidValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
@@ -249,60 +249,61 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 				}
 			}
 			break;
-			case ITL:
-			{
-				// 2-NEPTUNE-ITL-1 : if stoparea is ITL : check if it
-				// refers only non ITL stopAreas
-				prepareCheckPoint(context,ITL_1);
-				for (StopArea child : stopArea.getRoutingConstraintAreas()) 
-				{
-					if (localContext.containsKey(child.getObjectId())) 
-					{
-						if (child.getAreaType().equals(ChouetteAreaEnum.ITL))
-						{
-							// wrong reference type
-
-//							Detail errorItem = new Detail(
-//									ITL_1,
-//									fileLocations.get(stopArea.getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.ITL.toString());
-//							errorItem.getTargets().add(fileLocations.get(child.getObjectId()));
-//							addValidationError(context,ITL_1, errorItem);
-							ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-							validationReporter.addCheckPointReportError(context, ITL_1, fileLocations.get(stopArea.getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.ITL.toString());
-							validationReporter.addTargetLocationToCheckPointError(context, ITL_1, fileLocations.get(child.getObjectId()));
-						}
-					}
-					else if (stopPointContext.containsKey(child.getObjectId()))
-					{
-						// wrong reference type
-//						Detail errorItem = new Detail(
-//								ITL_1,
-//								fileLocations.get(stopArea.getObjectId()), "StopPoint",ChouetteAreaEnum.ITL.toString());
-//						errorItem.getTargets().add(fileLocations.get( child.getObjectId()));
-//						addValidationError(context,ITL_1, errorItem);
-						ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-						validationReporter.addCheckPointReportError(context, ITL_1, fileLocations.get(stopArea.getObjectId()), "StopPoint",ChouetteAreaEnum.ITL.toString());
-						validationReporter.addTargetLocationToCheckPointError(context, ITL_1, fileLocations.get(child.getObjectId()));
-					}
-					
-				}
-
-				// 2-NEPTUNE-ITL-2 : if stoparea is ITL : check if a ITLType
-				// object refers it
-				prepareCheckPoint(context,ITL_2);
-				Context itlData = (Context) itlContext.get(stopArea.getObjectId());
-				if (itlData == null)
-				{
-					// unused ITL Stop
-//					Detail errorItem = new Detail(
-//							ITL_2,
-//							fileLocations.get(stopArea.getObjectId()));
-//					addValidationError(context,ITL_2, errorItem);
-					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, ITL_2, fileLocations.get(stopArea.getObjectId()));
-				}
-
-			}
+//			Arret Netex : Handled in RoutingConstraintValidator
+//			case ITL:
+//			{
+//				// 2-NEPTUNE-ITL-1 : if stoparea is ITL : check if it
+//				// refers only non ITL stopAreas
+//				prepareCheckPoint(context,ITL_1);
+//				for (StopArea child : stopArea.getRoutingConstraintAreas()) 
+//				{
+//					if (localContext.containsKey(child.getObjectId())) 
+//					{
+//						if (child.getAreaType().equals(ChouetteAreaEnum.ITL))
+//						{
+//							// wrong reference type
+//
+////							Detail errorItem = new Detail(
+////									ITL_1,
+////									fileLocations.get(stopArea.getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.ITL.toString());
+////							errorItem.getTargets().add(fileLocations.get(child.getObjectId()));
+////							addValidationError(context,ITL_1, errorItem);
+//							ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+//							validationReporter.addCheckPointReportError(context, ITL_1, fileLocations.get(stopArea.getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.ITL.toString());
+//							validationReporter.addTargetLocationToCheckPointError(context, ITL_1, fileLocations.get(child.getObjectId()));
+//						}
+//					}
+//					else if (stopPointContext.containsKey(child.getObjectId()))
+//					{
+//						// wrong reference type
+////						Detail errorItem = new Detail(
+////								ITL_1,
+////								fileLocations.get(stopArea.getObjectId()), "StopPoint",ChouetteAreaEnum.ITL.toString());
+////						errorItem.getTargets().add(fileLocations.get( child.getObjectId()));
+////						addValidationError(context,ITL_1, errorItem);
+//						ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+//						validationReporter.addCheckPointReportError(context, ITL_1, fileLocations.get(stopArea.getObjectId()), "StopPoint",ChouetteAreaEnum.ITL.toString());
+//						validationReporter.addTargetLocationToCheckPointError(context, ITL_1, fileLocations.get(child.getObjectId()));
+//					}
+//					
+//				}
+//
+//				// 2-NEPTUNE-ITL-2 : if stoparea is ITL : check if a ITLType
+//				// object refers it
+//				prepareCheckPoint(context,ITL_2);
+//				Context itlData = (Context) itlContext.get(stopArea.getObjectId());
+//				if (itlData == null)
+//				{
+//					// unused ITL Stop
+////					Detail errorItem = new Detail(
+////							ITL_2,
+////							fileLocations.get(stopArea.getObjectId()));
+////					addValidationError(context,ITL_2, errorItem);
+//					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+//					validationReporter.addCheckPointReportError(context, ITL_2, fileLocations.get(stopArea.getObjectId()));
+//				}
+//
+//			}
 
 
 			}

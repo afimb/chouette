@@ -344,42 +344,42 @@ public class StopAreaUpdater implements Updater<StopArea> {
 				connectionLinkUpdater.update(context, pair.getLeft(), pair.getRight());
 			}
 		}
-
-		// TODO list routing_constraints_lines (routingConstraintLines)
-		// TODO list stop_areas_stop_areas (routingConstraintAreas)
-		Collection<StopArea> addedStopAreas = CollectionUtil.substract(newValue.getRoutingConstraintAreas(),
-				oldValue.getRoutingConstraintAreas(), NeptuneIdentifiedObjectComparator.INSTANCE);
-
-		List<StopArea> stopAreas = null;
-		for (StopArea item : addedStopAreas) {
-
-			StopArea area = cache.getStopAreas().get(item.getObjectId());
-			if (area == null) {
-				if (stopAreas == null) {
-					stopAreas = stopAreaDAO.findByObjectId(UpdaterUtils.getObjectIds(addedStopAreas));
-					for (StopArea object : addedStopAreas) {
-						cache.getStopAreas().put(object.getObjectId(), object);
-					}
-				}
-				area = cache.getStopAreas().get(item.getObjectId());
-			}
-
-			if (area == null) {
-				area = ObjectFactory.getStopArea(cache, item.getObjectId());
-			}
-			
-			if (!area.isDetached() || area.isFilled())
-				oldValue.getRoutingConstraintAreas().add(area);
-		}
-		
-		
-		
-		Collection<Pair<StopArea, StopArea>> modifiedStopArea = CollectionUtil.intersection(
-				oldValue.getRoutingConstraintAreas(), newValue.getRoutingConstraintAreas(),
-				NeptuneIdentifiedObjectComparator.INSTANCE);
-		for (Pair<StopArea, StopArea> pair : modifiedStopArea) {
-			stopAreaUpdater.update(context, pair.getLeft(), pair.getRight());
-		}
+//		Arret Netex : Switched to RoutingConstraintUpdater
+//		// TODO list routing_constraints_lines (routingConstraintLines)
+//		// TODO list stop_areas_stop_areas (routingConstraintAreas)
+//		Collection<StopArea> addedStopAreas = CollectionUtil.substract(newValue.getRoutingConstraintAreas(),
+//				oldValue.getRoutingConstraintAreas(), NeptuneIdentifiedObjectComparator.INSTANCE);
+//
+//		List<StopArea> stopAreas = null;
+//		for (StopArea item : addedStopAreas) {
+//
+//			StopArea area = cache.getStopAreas().get(item.getObjectId());
+//			if (area == null) {
+//				if (stopAreas == null) {
+//					stopAreas = stopAreaDAO.findByObjectId(UpdaterUtils.getObjectIds(addedStopAreas));
+//					for (StopArea object : addedStopAreas) {
+//						cache.getStopAreas().put(object.getObjectId(), object);
+//					}
+//				}
+//				area = cache.getStopAreas().get(item.getObjectId());
+//			}
+//
+//			if (area == null) {
+//				area = ObjectFactory.getStopArea(cache, item.getObjectId());
+//			}
+//			
+//			if (!area.isDetached() || area.isFilled())
+//				oldValue.getRoutingConstraintAreas().add(area);
+//		}
+//		
+//		
+//		
+//		Collection<Pair<StopArea, StopArea>> modifiedStopArea = CollectionUtil.intersection(
+//				oldValue.getRoutingConstraintAreas(), newValue.getRoutingConstraintAreas(),
+//				NeptuneIdentifiedObjectComparator.INSTANCE);
+//		for (Pair<StopArea, StopArea> pair : modifiedStopArea) {
+//			stopAreaUpdater.update(context, pair.getLeft(), pair.getRight());
+//		}
 		monitor.stop();
 
 	}

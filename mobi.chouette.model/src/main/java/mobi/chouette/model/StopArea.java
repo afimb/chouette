@@ -65,7 +65,7 @@ import org.hibernate.annotations.Parameter;
 @NoArgsConstructor
 @ToString(callSuper = true, exclude = { "accessLinks", "accessPoints",
 		"connectionEndLinks", "connectionStartLinks", "containedStopAreas",
-		"containedStopPoints", "routingConstraintAreas", "routingConstraintLines" })
+		"containedStopPoints"})
 public class StopArea extends NeptuneLocalizedObject {
 	private static final long serialVersionUID = 4548672479038099240L;
 
@@ -360,21 +360,36 @@ public class StopArea extends NeptuneLocalizedObject {
 	public void forceParent(StopArea stopArea) {
 		this.parent = stopArea;
 	}
-
-	/**
-	 * lines concerned by routing constraints <br/>
-	 * only for areaType = ITL
-	 * 
-	 * @param routingConstraintLines
-	 *            New value
-	 * @return The actual value
-	 */
-	@Getter
-	@Setter
-	@ManyToMany
-	@JoinTable(name = "routing_constraints_lines", joinColumns = { @JoinColumn(name = "stop_area_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "line_id", nullable = false, updatable = false) })
-	private List<Line> routingConstraintLines = new ArrayList<Line>(0);
-
+//	TODO : Delete these relations once RoutingConstraint object is implemented
+//	/**
+//	 * lines concerned by routing constraints <br/>
+//	 * only for areaType = ITL
+//	 * 
+//	 * @param routingConstraintLines
+//	 *            New value
+//	 * @return The actual value
+//	 */
+//	@Getter
+//	@Setter
+//	@ManyToMany
+//	@JoinTable(name = "routing_constraints_lines", joinColumns = { @JoinColumn(name = "stop_area_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "line_id", nullable = false, updatable = false) })
+//	private List<Line> routingConstraintLines = new ArrayList<Line>(0);
+//
+//	/**
+//	 * stops grouped in a routing constraints <br/>
+//	 * only for areaType = ITL<br/>
+//	 * stops in this list can't be of ITL type
+//	 * 
+//	 * @param routingConstraintAreas
+//	 *            New value
+//	 * @return The actual value
+//	 */
+//	@Getter
+//	@Setter
+//	@ManyToMany(cascade = { CascadeType.PERSIST})
+//	@JoinTable(name = "stop_areas_stop_areas", joinColumns = { @JoinColumn(name = "parent_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "child_id", nullable = false, updatable = false) })
+//	private List<StopArea> routingConstraintAreas = new ArrayList<StopArea>(0);
+	
 	/**
 	 * stops grouped in a routing constraints <br/>
 	 * only for areaType = ITL<br/>
@@ -387,7 +402,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	@Getter
 	@Setter
 	@ManyToMany(cascade = { CascadeType.PERSIST})
-	@JoinTable(name = "stop_areas_stop_areas", joinColumns = { @JoinColumn(name = "parent_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "child_id", nullable = false, updatable = false) })
+	@JoinTable(name = "routing_constraints_stop_areas", joinColumns = { @JoinColumn(name = "stop_area_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "routing_constraint_id", nullable = false, updatable = false) })
 	private List<StopArea> routingConstraintAreas = new ArrayList<StopArea>(0);
 
 	/**
@@ -666,27 +681,27 @@ public class StopArea extends NeptuneLocalizedObject {
 	// accessPoints.remove(accessPoint);
 	// }
 
-
-	/**
-	 * add a line if not already present
-	 * <p>
-	 * stop
-	 * 
-	 * @param area
-	 */
-	public void addRoutingConstraintStopArea(StopArea area) {
-		if (!routingConstraintAreas.contains(area))
-			routingConstraintAreas.add(area);
-	}
-
-	/**
-	 * remove a line
-	 * 
-	 * @param area
-	 */
-	public void removeRoutingConstraintArea(StopArea area) {
-		if (routingConstraintAreas.contains(area))
-			routingConstraintAreas.remove(area);
-	}
+//	TODO : Delete these methods once RoutingConstraint is implemented
+//	/**
+//	 * add a line if not already present
+//	 * <p>
+//	 * stop
+//	 * 
+//	 * @param area
+//	 */
+//	public void addRoutingConstraintStopArea(StopArea area) {
+//		if (!routingConstraintAreas.contains(area))
+//			routingConstraintAreas.add(area);
+//	}
+//
+//	/**
+//	 * remove a line
+//	 * 
+//	 * @param area
+//	 */
+//	public void removeRoutingConstraintArea(StopArea area) {
+//		if (routingConstraintAreas.contains(area))
+//			routingConstraintAreas.remove(area);
+//	}
 
 }

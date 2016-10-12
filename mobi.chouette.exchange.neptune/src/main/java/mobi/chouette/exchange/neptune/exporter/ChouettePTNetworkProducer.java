@@ -17,12 +17,13 @@ import mobi.chouette.exchange.neptune.exporter.producer.AreaCentroidProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.CompanyProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.ConnectionLinkProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.GroupOfLineProducer;
+import mobi.chouette.exchange.neptune.exporter.producer.ITLStopAreaProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.JourneyPatternProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.LineProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.PTLinkProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.PTNetworkProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.RouteProducer;
-import mobi.chouette.exchange.neptune.exporter.producer.RoutingConstraintProducer;
+import mobi.chouette.exchange.neptune.exporter.producer.ITLProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.StopAreaProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.StopPointProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.TimeSlotProducer;
@@ -42,6 +43,7 @@ import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RoutingConstraint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timeband;
@@ -77,7 +79,8 @@ public class ChouettePTNetworkProducer implements Constant {
 	private static AreaCentroidProducer areaCentroidProducer = new AreaCentroidProducer();
 	private static ConnectionLinkProducer connectionLinkProducer = new ConnectionLinkProducer();
 	private static TimetableProducer timetableProducer = new TimetableProducer();
-	private static RoutingConstraintProducer routingConstraintProducer = new RoutingConstraintProducer();
+	private static ITLProducer routingConstraintProducer = new ITLProducer();
+	private static ITLStopAreaProducer itlStopAreaProducer = new ITLStopAreaProducer();
 	private static GroupOfLineProducer groupOfLineProducer = new GroupOfLineProducer();
 	private static AccessPointProducer accessPointProducer = new AccessPointProducer();
 	private static AccessLinkProducer accessLinkProducer = new AccessLinkProducer();
@@ -122,16 +125,7 @@ public class ChouettePTNetworkProducer implements Constant {
 			stopArea.toProjection(projectionType);
 			ChouetteArea.StopArea jaxbStopArea = stopAreaProducer.produce(stopArea,addExtension);
 			// add children reference only for exported ones
-			if (stopArea.getAreaType().equals(ChouetteAreaEnum.ITL))
-			{
-				for (StopArea child : stopArea.getRoutingConstraintAreas())
-				{
-					if (collection.getStopAreas().contains(child))
-					{
-						jaxbStopArea.getContains().add(child.getObjectId());
-					}
-				}
-			} else
+			if (!(stopArea.getAreaType().equals(ChouetteAreaEnum.ITL)))
 			{
 				for (StopArea child : stopArea.getContainedStopAreas())
 				{
@@ -158,6 +152,21 @@ public class ChouettePTNetworkProducer implements Constant {
 			}
 			chouetteArea.getStopArea().add(jaxbStopArea);
 		}
+		
+		// Arret Netex
+		for (RoutingConstraint routingConstraint : collection.getRoutingConstraints()) {
+			ChouetteArea.StopArea jaxbStopArea = itlStopAreaProducer.produce(routingConstraint);
+			
+			for (StopArea child : routingConstraint.getRoutingConstraintAreas())
+			{
+				if (collection.getStopAreas().contains(child))
+				{
+					jaxbStopArea.getContains().add(child.getObjectId());
+				}
+			}
+			chouetteArea.getStopArea().add(jaxbStopArea);
+		}
+		
 		rootObject.setChouetteArea(chouetteArea); 
 
 		for (ConnectionLink connectionLink : collection.getConnectionLinks())
@@ -189,9 +198,16 @@ public class ChouettePTNetworkProducer implements Constant {
 
 		if (collection.getLine().getRoutingConstraints() != null)
 		{
-			for (StopArea routingConstraint : collection.getLine().getRoutingConstraints())
+//			Arret Netex : Produce ITL from RoutingConstraint instead of ITL typed stopArea
+//			for (StopArea routingConstraint : collection.getLine().getRoutingConstraints())
+//			{
+//				ITLType jaxbITL = routingConstraintProducer.produceITL(collection.getLine(), routingConstraint,addExtension);
+//				chouetteLineDescription.getITL().add(jaxbITL);
+//			}
+			
+			for (RoutingConstraint routingConstraint : collection.getLine().getRoutingConstraints())
 			{
-				ITLType jaxbITL = routingConstraintProducer.produceITL(collection.getLine(), routingConstraint,addExtension);
+				ITLType jaxbITL = routingConstraintProducer.produce(collection.getLine(), routingConstraint);
 				chouetteLineDescription.getITL().add(jaxbITL);
 			}
 		}
