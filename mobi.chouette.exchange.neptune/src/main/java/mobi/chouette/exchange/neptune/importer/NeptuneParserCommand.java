@@ -20,9 +20,9 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.parser.ChouettePTNetworkParser;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileError;
-import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.exchange.report.ActionReporter.FILE_ERROR_CODE;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -49,9 +49,9 @@ public class NeptuneParserCommand implements Command, Constant {
 		context.put(FILE_URL, fileURL);
 
 		// report service
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 		String fileName = new File(new URL(fileURL).toURI()).getName();
-		FileInfo fileItem = new FileInfo(fileName,FileInfo.FILE_STATE.OK);
+		reporter.addFileReport(context, fileName, IO_TYPE.INPUT);
 		context.put(FILE_NAME, fileName);
 
 		try {
@@ -86,15 +86,11 @@ public class NeptuneParserCommand implements Command, Constant {
 			Parser parser = ParserFactory.create(ChouettePTNetworkParser.class.getName());
 			parser.parse(context);
 
-			// report service
-			report.getFiles().add(fileItem);
-
 			result = SUCCESS;
 		} catch (Exception e) {
 
 			// report service
-			report.getFiles().add(fileItem);
-			fileItem.addError(new FileError(FileError.CODE.INTERNAL_ERROR, e.toString()));
+			reporter.addFileErrorInReport(context, fileName, FILE_ERROR_CODE.INTERNAL_ERROR, e.toString());
 			log.error("parsing failed ", e);
 			throw e;
 		} finally {

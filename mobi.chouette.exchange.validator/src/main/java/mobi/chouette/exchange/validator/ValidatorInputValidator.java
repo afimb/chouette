@@ -1,14 +1,19 @@
 package mobi.chouette.exchange.validator;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.AbstractInputValidator;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
+import mobi.chouette.exchange.TestDescription;
 import mobi.chouette.exchange.parameters.AbstractParameter;
+import mobi.chouette.exchange.validation.checkpoint.AbstractValidation;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 
 @Log4j
@@ -75,6 +80,15 @@ public class ValidatorInputValidator extends AbstractInputValidator {
 		return true;
 	}
 	
+	@Override
+	public boolean checkFile(String fileName, Path pathFile, AbstractParameter abstractParameter) {
+		if (fileName != null) {
+			log.error("input data not expected");
+			return false;
+		}
+		return true;
+	}
+	
 	public static class DefaultFactory extends InputValidatorFactory {
 
 		@Override
@@ -87,6 +101,15 @@ public class ValidatorInputValidator extends AbstractInputValidator {
 	static {
 		InputValidatorFactory.factories.put(ValidatorInputValidator.class.getName(),
 				new DefaultFactory());
+	}
+
+	@Override
+	public List<TestDescription> getTestList() {
+		List<TestDescription> lstResults = new ArrayList<TestDescription>();
+		
+		lstResults.addAll(AbstractValidation.getTestLevel3DatabaseList());
+		
+		return lstResults;
 	}
 	
 

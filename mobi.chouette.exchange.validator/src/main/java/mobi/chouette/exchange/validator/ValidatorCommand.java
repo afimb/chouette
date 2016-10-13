@@ -23,13 +23,14 @@ import mobi.chouette.exchange.DaoReader;
 import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.ProgressionCommand;
-import mobi.chouette.exchange.report.ActionError;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.DataStats;
-import mobi.chouette.exchange.report.LineInfo;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.util.NamingUtil;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -49,7 +50,7 @@ public class ValidatorCommand implements Command, Constant {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 
 		// initialize reporting and progression
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
@@ -61,16 +62,16 @@ public class ValidatorCommand implements Command, Constant {
 			if (!(configuration instanceof ValidateParameters)) {
 				// fatal wrong parameters
 				log.error("invalid parameters for validation " + configuration.getClass().getName());
-				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,
-						"invalid parameters for validation " + configuration.getClass().getName()));
+				reporter.setActionError(context, ActionReporter.ERROR_CODE.INVALID_PARAMETERS,
+						"invalid parameters for validation " + configuration.getClass().getName());
 				return ERROR;
 			}
 
 			ValidationParameters validationParameters = (ValidationParameters) context.get(VALIDATION);
 			if (validationParameters == null) {
 				log.error("no validation parameters for validation ");
-				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,
-						"no validation parameters for validation "));
+				reporter.setActionError(context, ActionReporter.ERROR_CODE.INVALID_PARAMETERS,
+						"no validation parameters for validation ");
 				return ERROR;
 
 			}
@@ -94,10 +95,10 @@ public class ValidatorCommand implements Command, Constant {
 
 
 		} catch (CommandCancelledException e) {
-			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Command cancelled"));
+			reporter.setActionError(context, ActionReporter.ERROR_CODE.INTERNAL_ERROR, "Command cancelled");
 			log.error(e.getMessage());
 		} catch (Exception e) {
-			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Fatal :" + e));
+			reporter.setActionError(context, ActionReporter.ERROR_CODE.INTERNAL_ERROR, "Fatal :" + e);
 			log.error(e.getMessage(), e);
 		} finally {
 			progression.dispose(context);
@@ -112,15 +113,15 @@ public class ValidatorCommand implements Command, Constant {
 
 		boolean result = ERROR;
 		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 
 		// initialisation
 		List<? extends Command> preProcessingCommands = commands.getPreProcessingCommands(context, true);
 		progression.initialize(context, preProcessingCommands.size()+1);
-		for (Command exportCommand : preProcessingCommands) {
-			result = exportCommand.execute(context);
+		for (Command command : preProcessingCommands) {
+			result = command.execute(context);
 			if (!result) {
-				report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND,"no data selected"));
+				reporter.setActionError(context, ActionReporter.ERROR_CODE.NO_DATA_FOUND,"no data selected");
 				progression.execute(context);
 				return ERROR;		
 			}
@@ -144,7 +145,7 @@ public class ValidatorCommand implements Command, Constant {
 
 		Set<Long> lines = reader.loadLines(type, ids);
 		if (lines.isEmpty()) {
-			report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND,"no data selected"));
+			reporter.setActionError(context, ActionReporter.ERROR_CODE.NO_DATA_FOUND,"no data selected");
 			return ERROR;
 
 		}
@@ -158,12 +159,12 @@ public class ValidatorCommand implements Command, Constant {
 			if(lineCount == lines.size()-1) {
 				context.put(SAVE_MAIN_VALIDATION_REPORT, Boolean.TRUE);
 			}
-			boolean exportFailed = false;
+			boolean validateFailed = false;
 			List<? extends Command> lineProcessingCommands = commands.getLineProcessingCommands(context, true);
-			for (Command validateCommand : lineProcessingCommands) {
-				result = validateCommand.execute(context);
+			for (Command command : lineProcessingCommands) {
+				result = command.execute(context);
 				if (!result) {
-					exportFailed = true;
+					validateFailed = true;
 					break;
 				}
 			}
@@ -171,29 +172,19 @@ public class ValidatorCommand implements Command, Constant {
 			// TODO a mettre dans une commande dédiée
 			ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 			Line line = data.getCurrentLine();
-			LineInfo lineInfo = new LineInfo(line);
-			DataStats stats = lineInfo.getStats();
-			stats.setLineCount(1);
-			stats.setJourneyPatternCount(data.getJourneyPatterns().size());
-			stats.setRouteCount(data.getRoutes().size());
-			stats.setVehicleJourneyCount(data.getVehicleJourneys().size());
+			reporter.addObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line), OBJECT_STATE.OK, IO_TYPE.INPUT);
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN, data.getJourneyPatterns().size());
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, data.getRoutes().size());
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY, data.getVehicleJourneys().size());
 
-			// merge lineStats to global ones
-			DataStats globalStats = report.getStats();
-			globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
-			globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
-			globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount()
-					+ stats.getVehicleJourneyCount());
-			globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount()
-					+ stats.getJourneyPatternCount());
-			report.getLines().add(lineInfo);
-			if (!exportFailed) 
+			if (!validateFailed)
 			{
 				lineCount ++;
 			}
 			else if (!continueLineProcesingOnError)
 			{
-				report.setFailure(new ActionError(ActionError.CODE.INVALID_DATA,"unable to export data"));
+				reporter.setActionError(context, ActionReporter.ERROR_CODE.INVALID_DATA,"unable to validate data");
 				return ERROR;
 			}
 		}
@@ -202,29 +193,36 @@ public class ValidatorCommand implements Command, Constant {
 		// check if data where exported
 		if (lineCount == 0) {
 			progression.terminate(context, 1);
-			report.setFailure(new ActionError(ActionError.CODE.NO_DATA_PROCEEDED,"no data exported"));
+			reporter.setActionError(context, ActionReporter.ERROR_CODE.NO_DATA_PROCEEDED,"no data validated");
 			progression.execute(context);
 			return ERROR;		
 		}
 		
 		List<? extends Command> postProcessingCommands = commands.getPostProcessingCommands(context, true);
 		progression.terminate(context, postProcessingCommands.size());
-		for (Command exportCommand : postProcessingCommands) {
-			result = exportCommand.execute(context);
+		for (Command command : postProcessingCommands) {
+			result = command.execute(context);
 			if (!result) {
-				if (report.getFailure() == null)
-				   report.setFailure(new ActionError(ActionError.CODE.NO_DATA_PROCEEDED,"no data exported"));
+				if (!reporter.hasActionError(context))
+				   reporter.setActionError(context, ActionReporter.ERROR_CODE.NO_DATA_PROCEEDED,"no data exported");
 				return ERROR;
 			}
 			progression.execute(context);
 		}	
 		// TODO a mettre dans une commande dédiée
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		DataStats globalStats = report.getStats();
-		globalStats.setConnectionLinkCount(data.getConnectionLinks().size());
-		globalStats.setAccessPointCount(data.getAccessPoints().size());
-		globalStats.setStopAreaCount(data.getStopAreas().size());
-		globalStats.setTimeTableCount(data.getTimetables().size());
+		reporter.addObjectReport(context, "merged", OBJECT_TYPE.NETWORK, "networks", OBJECT_STATE.OK, IO_TYPE.INPUT);
+		reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.NETWORK, OBJECT_TYPE.NETWORK, data.getNetworks().size());
+		reporter.addObjectReport(context, "merged", OBJECT_TYPE.COMPANY, "companies", OBJECT_STATE.OK, IO_TYPE.INPUT);
+		reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.COMPANY, OBJECT_TYPE.COMPANY, data.getCompanies().size());
+		reporter.addObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, "connection links", OBJECT_STATE.OK, IO_TYPE.INPUT);
+		reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, OBJECT_TYPE.CONNECTION_LINK, data.getConnectionLinks().size());
+		reporter.addObjectReport(context, "merged", OBJECT_TYPE.ACCESS_POINT, "access points", OBJECT_STATE.OK, IO_TYPE.INPUT);
+		reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.ACCESS_POINT, OBJECT_TYPE.ACCESS_POINT, data.getAccessPoints().size());
+		reporter.addObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, "stop areas", OBJECT_STATE.OK, IO_TYPE.INPUT);
+		reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, OBJECT_TYPE.STOP_AREA, data.getStopAreas().size());
+		reporter.addObjectReport(context, "merged", OBJECT_TYPE.TIMETABLE, "calendars", OBJECT_STATE.OK, IO_TYPE.INPUT);
+		reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.TIMETABLE, OBJECT_TYPE.TIMETABLE, data.getTimetables().size());
 		return result;
 	}
 

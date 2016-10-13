@@ -17,9 +17,12 @@ import mobi.chouette.common.Context;
 import mobi.chouette.dao.ConnectionLinkDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.Detail;
+import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
+import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.exchange.validator.DummyChecker;
+import mobi.chouette.exchange.validator.JobDataTest;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -58,7 +61,7 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 
 		EnterpriseArchive result;
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.exchange.validation").withTransitivity().asFile();
+				.resolve("mobi.chouette:mobi.chouette.exchange.validator").withTransitivity().asFile();
 		List<File> jars = new ArrayList<>();
 		List<JavaArchive> modules = new ArrayList<>();
 		for (File file : files) {
@@ -102,6 +105,9 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 			}
 		}
 		final WebArchive testWar = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
+				.addClass(DummyChecker.class)
+				.addClass(JobDataTest.class)
+				.addClass(AbstractTestValidation.class)
 				.addClass(ValidationConnectionLinks.class);
 		
 		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
@@ -168,15 +174,15 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-ConnectionLink-1");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-ConnectionLink-1");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-ConnectionLink-1 checkPoint");
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 		String detailKey = "3-ConnectionLink-1".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-ConnectionLink-1",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
@@ -214,15 +220,15 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-ConnectionLink-2");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-ConnectionLink-2");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-ConnectionLink-2 checkPoint");
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 		String detailKey = "3-ConnectionLink-2".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-ConnectionLink-2",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
@@ -268,15 +274,15 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-ConnectionLink-3");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-ConnectionLink-3");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-ConnectionLink-3 checkPoint");
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 4, " checkPointReport must have 4 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 4, " checkPointReport must have 4 item");
 		String detailKey = "3-ConnectionLink-3".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-ConnectionLink-3",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
@@ -301,7 +307,7 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		checkPoint.validate(context, null);
 
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-		Assert.assertTrue(report.findCheckPointByName("4-ConnectionLink-1") == null,
+		Assert.assertTrue(report.findCheckPointReportByName("4-ConnectionLink-1") == null,
 				" report must not have item 4-ConnectionLink-1");
 
 
@@ -310,8 +316,8 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 		report = (ValidationReport) context.get(VALIDATION_REPORT);
-		Assert.assertTrue(report.findCheckPointByName("4-ConnectionLink-1") != null, " report must have item 4-ConnectionLink-1");
-		Assert.assertEquals(report.findCheckPointByName("4-ConnectionLink-1").getDetailCount(), 0,
+		Assert.assertTrue(report.findCheckPointReportByName("4-ConnectionLink-1") != null, " report must have item 4-ConnectionLink-1");
+		Assert.assertEquals(report.findCheckPointReportByName("4-ConnectionLink-1").getCheckPointErrorCount(), 0,
 				" checkpoint must have no detail");
 
 	}
@@ -337,8 +343,8 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
-		List<Detail> details = checkReportForTest4_1(report, "4-ConnectionLink-1", 1);
-		Detail detail = details.get(0);
+		List<CheckPointErrorReport> details = checkReportForTest(report, "4-ConnectionLink-1", 1);
+		CheckPointErrorReport detail = details.get(0);
 		Assert.assertEquals(detail.getReferenceValue(), "ObjectId", "detail must refer column");
 		Assert.assertEquals(detail.getValue(), bean2.getObjectId().split(":")[2], "detail must refer value");
 	}
@@ -374,7 +380,7 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		checkPoint.validate(context, null);
 
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-		Assert.assertTrue(report.findCheckPointByName("4-ConnectionLink-2") == null,
+		Assert.assertTrue(report.findCheckPointReportByName("4-ConnectionLink-2") == null,
 				" report must not have item 4-ConnectionLink-2");
 
 		fullparameters.setCheckConnectionLinkOnPhysical(1);
@@ -385,10 +391,10 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		fullparameters.setCheckConnectionLinkOnPhysical(0);
 
 		report = (ValidationReport) context.get(VALIDATION_REPORT);
-		CheckPoint checkPointReport = report.findCheckPointByName("4-ConnectionLink-2");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("4-ConnectionLink-2");
 		Assert.assertNotNull(checkPointReport, "report must contain a 4-ConnectionLink-2 checkPoint");
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.OK, " checkPointReport must be ok");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 0, " checkPointReport must have 0 item");
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.OK, " checkPointReport must be ok");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 0, " checkPointReport must have 0 item");
 
 		start.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 		fullparameters.setCheckConnectionLinkOnPhysical(1);
@@ -398,10 +404,10 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		fullparameters.setCheckConnectionLinkOnPhysical(0);
 
 		report = (ValidationReport) context.get(VALIDATION_REPORT);
-		checkPointReport = report.findCheckPointByName("4-ConnectionLink-2");
+		checkPointReport = report.findCheckPointReportByName("4-ConnectionLink-2");
 		Assert.assertNotNull(checkPointReport, "report must contain a 4-ConnectionLink-2 checkPoint");
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 0 item");
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 0 item");
 
 	}
 

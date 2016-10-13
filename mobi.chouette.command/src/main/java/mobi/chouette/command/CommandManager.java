@@ -307,7 +307,7 @@ public class CommandManager implements Constant {
 			return;
 		ActionReport importReport = (ActionReport) importContext.get(REPORT);
 		JSONUtil.serializeJAXBObjectToJSONFile(importReport, Paths.get(inputData.getPathName(), "inputReport.json").toFile());
-		
+
 		ValidationReport validationReport = (ValidationReport) importContext.get(VALIDATION_REPORT);
 		JSONUtil.serializeJAXBObjectToJSONFile(validationReport, Paths.get(inputData.getPathName(), VALIDATION_FILE).toFile());
 

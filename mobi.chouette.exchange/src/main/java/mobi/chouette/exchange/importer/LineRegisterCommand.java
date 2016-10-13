@@ -1,21 +1,7 @@
 package mobi.chouette.exchange.importer;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.ContenerChecker;
@@ -29,14 +15,31 @@ import mobi.chouette.exchange.importer.updater.LineOptimiser;
 import mobi.chouette.exchange.importer.updater.LineUpdater;
 import mobi.chouette.exchange.importer.updater.NeTExStopPlaceRegisterUpdater;
 import mobi.chouette.exchange.importer.updater.Updater;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.LineError;
-import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.model.*;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
+import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.VehicleJourneyAtStop;
+import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j
 @Stateless(name = LineRegisterCommand.COMMAND)
@@ -98,6 +101,7 @@ public class LineRegisterCommand implements Command {
 			lineDAO.flush(); // to prevent SQL error outside method
 
 			if (optimized) {
+				Monitor wMonitor = MonitorFactory.start("prepareCopy");
 				StringWriter buffer = new StringWriter(1024);
 				final List<String> list = new ArrayList<String>(referential.getVehicleJourneys().keySet());
 				for (VehicleJourney item : referential.getVehicleJourneys().values()) {
@@ -114,17 +118,15 @@ public class LineRegisterCommand implements Command {
 				}
 				vehicleJourneyDAO.deleteChildren(list);
 				context.put(BUFFER, buffer.toString());
+				wMonitor.stop();
 			}
 
 			result = SUCCESS;
 		} catch (Exception ex) {
 			log.error(ex.getMessage());
-			ActionReport report = (ActionReport) context.get(REPORT);
-			LineInfo info = report.findLineInfo(newValue.getObjectId());
-			if (info == null) {
-				info = new LineInfo(newValue);
-				report.getLines().add(info);
-			}
+			ActionReporter reporter = ActionReporter.Factory.getInstance();
+			reporter.addObjectReport(context, newValue.getObjectId(),
+					OBJECT_TYPE.LINE, NamingUtil.getName(newValue), OBJECT_STATE.ERROR, IO_TYPE.INPUT);
 			if (ex.getCause() != null) {
 				Throwable e = ex.getCause();
 				while (e.getCause() != null) {
@@ -133,15 +135,12 @@ public class LineRegisterCommand implements Command {
 				}
 				if (e instanceof SQLException) {
 					Throwable ee = ((SQLException) e).getNextException();
-					LineError error = new LineError(LineError.CODE.WRITE_ERROR, ee == null? e.getMessage() : ee.getMessage());
-					info.addError(error);
+					reporter.addErrorToObjectReport(context, newValue.getObjectId(), OBJECT_TYPE.LINE, ERROR_CODE.WRITE_ERROR,  (ee == null) ? e.getMessage() : ee.getMessage());
 				} else {
-					LineError error = new LineError(LineError.CODE.INTERNAL_ERROR, e.getMessage());
-					info.addError(error);
+					reporter.addErrorToObjectReport(context, newValue.getObjectId(), OBJECT_TYPE.LINE, ERROR_CODE.INTERNAL_ERROR,  e.getMessage());
 				}
 			} else {
-				LineError error = new LineError(LineError.CODE.INTERNAL_ERROR, ex.getMessage());
-				info.addError(error);
+				reporter.addErrorToObjectReport(context, newValue.getObjectId(), OBJECT_TYPE.LINE, ERROR_CODE.INTERNAL_ERROR,  ex.getMessage());
 			}
 			throw ex;
 		} finally {
@@ -150,9 +149,9 @@ public class LineRegisterCommand implements Command {
 		return result;
 	}
 
-	private void write(StringWriter buffer, VehicleJourney vehicleJourney, StopPoint stopPoint,
+	protected void write(StringWriter buffer, VehicleJourney vehicleJourney, StopPoint stopPoint,
 			VehicleJourneyAtStop vehicleJourneyAtStop) throws IOException {
-		// The list of fields to sunchronize with
+		// The list of fields to synchronize with
 		// VehicleJourneyAtStopUpdater.update(Context context,
 		// VehicleJourneyAtStop oldValue,
 		// VehicleJourneyAtStop newValue)
@@ -171,18 +170,13 @@ public class LineRegisterCommand implements Command {
 			buffer.write(timeFormat.format(vehicleJourneyAtStop.getDepartureTime()));
 		else
 			buffer.write(NULL);
-		// buffer.append(SEP);
+		buffer.append(SEP);
+		buffer.write(Integer.toString(vehicleJourneyAtStop.getArrivalDayOffset()));
+		buffer.append(SEP);
+		buffer.write(Integer.toString(vehicleJourneyAtStop.getDepartureDayOffset()));
 
-		// if (vehicleJourneyAtStop.getElapseDuration() != null)
-		// buffer.write(timeFormat.format(vehicleJourneyAtStop.getElapseDuration()));
-		// else
-		// buffer.write(NULL);
-		// buffer.append(SEP);
-		// if (vehicleJourneyAtStop.getHeadwayFrequency() != null)
-		// buffer.write(timeFormat.format(vehicleJourneyAtStop.getHeadwayFrequency()));
-		// else
-		// buffer.write(NULL);
 		buffer.append('\n');
+
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {

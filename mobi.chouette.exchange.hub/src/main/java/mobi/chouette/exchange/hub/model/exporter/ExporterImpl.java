@@ -8,8 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
 
 
 public abstract class ExporterImpl<T> implements Exporter<T> {
@@ -18,13 +18,13 @@ public abstract class ExporterImpl<T> implements Exporter<T> {
 
 	private BufferedWriter _writer;
 
-	protected Context _context;
+	protected HubContext _context;
 
 	private int _total;
 
 	public ExporterImpl(String name) throws IOException {
-		_context = new Context();
-		_context.put(Context.PATH, new File(name).getName());
+		_context = new HubContext();
+		_context.put(HubContext.PATH, new File(name).getName());
 		Path path = Paths.get(name);
 		_writer = Files.newBufferedWriter(path, Charset.forName("Cp1252")); // ISO8859_15 ?
 		writeHeader();
@@ -35,16 +35,15 @@ public abstract class ExporterImpl<T> implements Exporter<T> {
 	public void write(String text) throws IOException {
 		_writer.write(text);
 		_writer.write("\r\n");
-		_context.put(Context.ID, _total++);
+		_context.put(HubContext.ID, _total++);
 	}
 
 	@Override
-	public void dispose(ActionReport report) throws IOException {
+	public void dispose(mobi.chouette.common.Context context) throws IOException {
 		_writer.close();
 		// add file info
-		FileInfo info = new FileInfo(Paths.get((String) _context.get(Context.PATH)).getFileName().toString(),
-				FileInfo.FILE_STATE.OK);
-		report.getFiles().add(info);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
+		reporter.addFileReport(context, Paths.get((String) _context.get(HubContext.PATH)).getFileName().toString(), IO_TYPE.OUTPUT);
 	}
 
 	@SuppressWarnings("rawtypes")

@@ -19,7 +19,8 @@ import mobi.chouette.exchange.geojson.Feature;
 import mobi.chouette.exchange.geojson.FeatureCollection;
 import mobi.chouette.exchange.geojson.JAXBSerializer;
 import mobi.chouette.exchange.geojson.exporter.GeojsonLineExporterCommand.SharedData;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -32,6 +33,7 @@ public class GeojsonSharedObjectExporterCommand implements Command, Constant {
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 		try {
 
 			SharedData shared = (SharedData) context.get(SHARED_DATA);
@@ -44,19 +46,19 @@ public class GeojsonSharedObjectExporterCommand implements Command, Constant {
 
 			// save features collections
 			if (save(path, "physical_stop_areas.json", shared.getPhysicalStops().values()))
-				Report.addFileInfo(context, "physical_stop_areas.json", FILE_STATE.OK);
+				reporter.addFileReport(context, "physical_stop_areas.json", IO_TYPE.OUTPUT);
 
 			if (save(path, "commercial_stop_areas.json", shared.getCommercialStops().values()))
-				Report.addFileInfo(context, "commercial_stop_areas.json", FILE_STATE.OK);
+				reporter.addFileReport(context, "commercial_stop_areas.json", IO_TYPE.OUTPUT);
 
 			if (save(path, "access_points.json", shared.getAccessPoints().values()))
-				Report.addFileInfo(context, "access_points.json", FILE_STATE.OK);
+				reporter.addFileReport(context, "access_points.json", IO_TYPE.OUTPUT);
 
 			if (save(path, "access_links.json", shared.getAccessLinks().values()))
-				Report.addFileInfo(context, "access_links.json", FILE_STATE.OK);
+				reporter.addFileReport(context, "access_links.json", IO_TYPE.OUTPUT);
 
 			if (save(path, "connection_links.json", shared.getConnectionLinks().values()))
-				Report.addFileInfo(context, "connection_links.json", FILE_STATE.OK);
+				reporter.addFileReport(context, "connection_links.json", IO_TYPE.OUTPUT);
 
 			result = SUCCESS;
 		} catch (Exception e) {

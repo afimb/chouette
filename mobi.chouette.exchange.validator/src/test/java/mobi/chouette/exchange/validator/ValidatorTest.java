@@ -14,11 +14,13 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneImporterCommand;
 import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
+import mobi.chouette.exchange.report.ObjectReport;
 import mobi.chouette.exchange.report.ReportConstant;
-import mobi.chouette.exchange.validation.report.CheckPoint;
+import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.apache.commons.io.FileUtils;
@@ -73,7 +75,7 @@ public class ValidatorTest extends Arquillian implements Constant,ReportConstant
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
 		context.put(REPORT, new ActionReport());
-		context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 		NeptuneImportParameters configuration = new NeptuneImportParameters();
 		configuration.setCleanRepository(true);
 		configuration.setNoSave(false);
@@ -137,19 +139,20 @@ public class ValidatorTest extends Arquillian implements Constant,ReportConstant
 		}
 		ActionReport report = (ActionReport) context.get(REPORT);
 		Reporter.log(report.toString(),true);
-		ValidationReport valReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-		for (CheckPoint cp : valReport.getCheckPoints()) 
+		ValidationReport valReport = (ValidationReport) context.get(VALIDATION_REPORT);
+		for (CheckPointReport cp : valReport.getCheckPoints()) 
 		{
-			if (cp.getState().equals(CheckPoint.RESULT.NOK))
+			if (cp.getState().equals(ValidationReporter.RESULT.NOK))
 			{
 				Reporter.log(cp.toString(),true);
 			}
 		}
 		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
 		Assert.assertEquals(report.getFiles().size(), fileCount, "file reported");
-		Assert.assertEquals(report.getLines().size(), lineCount, "line reported");
-		for (LineInfo info : report.getLines()) {
-			Assert.assertEquals(info.getStatus(), LINE_STATE.OK, "line status");
+		Assert.assertTrue(report.getCollections().containsKey(OBJECT_TYPE.LINE), "line type reported");
+		Assert.assertEquals(report.getCollections().get(OBJECT_TYPE.LINE).getObjectReports().size(), lineCount, "line reported");
+		for (ObjectReport info : report.getCollections().get(OBJECT_TYPE.LINE).getObjectReports()) {
+			Assert.assertEquals(info.getStatus(), OBJECT_STATE.OK, "line status");
 		}
 
 

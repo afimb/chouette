@@ -1,3 +1,14 @@
+# Version 3.4.0 (en cours)
+* Nouvelles fonctionnalités :
+  * validation à l'export : après exports Neptune ou GTFS, une validation des fichiers produits est ajoutée sur option
+  * reprise du rapport de validation pour mieux présenter les résultats
+  * imports : ajout de contrôles de compatibilité entre les objets importés et leurs précédente version déjà en base.
+  * imports : optimisation de la sauvegarde
+  * import GTFS : optimisation de l'import
+  * Admin : requêtes REST sur les statistiques d'utilisation
+  * Modèle : horaires après minuit, ajout d'un champ 'dayOffset' 
+  * Validation niveau 3 : ajout de tests sur les tracés et les courses en fréquence
+
 # Version 3.3.3 (24/05/2016)
 * Correction 
   * Mantis 44559: Export GTFS Shape.txt : rupture de numérotation dans la table journey_pattern_sections

@@ -6,13 +6,12 @@ import java.util.Map;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.model.AreaCentroid;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.exchange.validation.report.DataLocation;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.type.LongLatTypeEnum;
 
@@ -57,16 +56,16 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 
 
 	@Override
-	public ValidationConstraints validate(Context context, AreaCentroid target) throws ValidationException
+	public void validate(Context context, AreaCentroid target) throws ValidationException
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Map<String, Location> fileLocations = data.getFileLocations();
-
+//		Map<String, Location> fileLocations = data.getFileLocations();
+		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		if (localContext == null || localContext.isEmpty())
-			return new ValidationConstraints();
+			return ;
 
 
 		// 2-NEPTUNE-AreaCentroid-1 : check reference to stoparea
@@ -75,17 +74,20 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 		{
 
 			Context objectContext = (Context) localContext.get(objectId);
-			Location sourceLocation = fileLocations.get(objectId);
+//			Location sourceLocation = fileLocations.get(objectId);
+			DataLocation sourceLocation = fileLocations.get(objectId);
 
 			String containedIn = (String) objectContext.get(CONTAINED_IN);
 			if (containedIn == null)
 				continue;
 			if (!stopAreaContext.containsKey(containedIn))
 			{
-				Detail errorItem = new Detail(
-						AREA_CENTROID_1,
-						sourceLocation, containedIn);
-				addValidationError(context, AREA_CENTROID_1, errorItem);
+//				Detail errorItem = new Detail(
+//						AREA_CENTROID_1,
+//						sourceLocation, containedIn);
+//				addValidationError(context, AREA_CENTROID_1, errorItem);
+				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+				validationReporter.addCheckPointReportError(context, AREA_CENTROID_1, sourceLocation, containedIn);
 			}
 		}
 		// 2-NEPTUNE-AreaCentroid-2 : check centroid projection type as WSG84
@@ -93,19 +95,22 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 		for (String objectId : localContext.keySet()) 
 		{
 			Context objectContext = (Context) localContext.get(objectId);
-			Location sourceLocation = fileLocations.get(objectId);
-
+//			Location sourceLocation = fileLocations.get(objectId);
+			DataLocation sourceLocation = fileLocations.get(objectId);
 			if (objectContext.get(LONG_LAT_TYPE).equals(LongLatTypeEnum.WGS84))
 				continue;
-			Detail errorItem = new Detail(
-					AREA_CENTROID_2,
-					sourceLocation, objectContext.get(LONG_LAT_TYPE).toString());
-			addValidationError(context, AREA_CENTROID_2, errorItem);
+//			Detail errorItem = new Detail(
+//					AREA_CENTROID_2,
+//					sourceLocation, objectContext.get(LONG_LAT_TYPE).toString());
+//			addValidationError(context, AREA_CENTROID_2, errorItem);
+			
+			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+			validationReporter.addCheckPointReportError(context, AREA_CENTROID_2, sourceLocation, objectContext.get(LONG_LAT_TYPE).toString());
 		}
 
 
 
-		return new ValidationConstraints();
+		return ;
 	}
 
 	public static class DefaultValidatorFactory extends ValidatorFactory {

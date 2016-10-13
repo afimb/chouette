@@ -1,29 +1,57 @@
 package mobi.chouette.exchange.regtopp.validation;
 
-import static mobi.chouette.common.Constant.*;
-import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage;
-import static mobi.chouette.exchange.regtopp.validation.Constant.*;
-
-import java.util.List;
-import java.util.Set;
-
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileError;
-import mobi.chouette.exchange.report.FileError.CODE;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.Location;
-import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.exchange.validation.report.DataLocation;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
+
+import java.util.Set;
+
+import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage;
+import static mobi.chouette.exchange.regtopp.validation.Constant.*;
 
 @Log4j
 public class RegtoppValidationReporter {
 
 	@Getter
-	private Set<RegtoppException> exceptions = new RegtoppExceptionsHashSet<RegtoppException>();
+	private Set<RegtoppException> exceptions = new RegtoppExceptionsHashSet<>();
+
+	public RegtoppValidationReporter(Context context) {
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+
+		validationReporter.addItemToValidationReport(context, "1-REGTOPP-FILE-1", "W");
+		validationReporter.addItemToValidationReport(context, "1-REGTOPP-FIELD-ADMINCODES-1", "W");
+		validationReporter.addItemToValidationReport(context, "1-REGTOPP-FILE-NOENTRY-1", "W");
+		validationReporter.addItemToValidationReport(context, "1-REGTOPP-FILE-MANDATORY-1", "W");
+
+		validationReporter.addItemToValidationReport(context, "1-REGTOPP-TIX-1", "W");
+		validationReporter.addItemToValidationReport(context, "1-REGTOPP-HPL-1", "W");
+		validationReporter.addItemToValidationReport(context, "1-REGTOPP-DKO-1", "W");
+		validationReporter.addItemToValidationReport(context, "1-REGTOPP-GAV-1", "W");
+		validationReporter.addItemToValidationReport(context, "1-REGTOPP-TMS-1", "W");
+		validationReporter.addItemToValidationReport(context, "1-REGTOPP-DST-1", "W");
+		validationReporter.addItemToValidationReport(context, "1-REGTOPP-MRK-1", "W");
+		validationReporter.addItemToValidationReport(context, "1-REGTOPP-LIN-1", "W");
+		validationReporter.addItemToValidationReport(context, "1-REGTOPP-TDA-1", "W");
+		validationReporter.addItemToValidationReport(context, "1-REGTOPP-STP-1", "W");
+
+		validationReporter.addItemToValidationReport(context, "2-REGTOPP-", "TIX", 4, "W","W","W","W");
+		validationReporter.addItemToValidationReport(context, "2-REGTOPP-", "HPL", 4, "W","W","W","W");
+		validationReporter.addItemToValidationReport(context, "2-REGTOPP-", "DKO", 4, "W","W","W","W");
+		validationReporter.addItemToValidationReport(context, "2-REGTOPP-", "GAV", 4, "W","W","W","W");
+		validationReporter.addItemToValidationReport(context, "2-REGTOPP-", "TMS", 4, "W","W","W","W");
+		validationReporter.addItemToValidationReport(context, "2-REGTOPP-", "DST", 4, "W","W","W","W");
+		validationReporter.addItemToValidationReport(context, "2-REGTOPP-", "MRK", 4, "W","W","W","W");
+		validationReporter.addItemToValidationReport(context, "2-REGTOPP-", "LIN", 4, "W","W","W","W");
+		validationReporter.addItemToValidationReport(context, "2-REGTOPP-", "TDA", 4, "W","W","W","W");
+		validationReporter.addItemToValidationReport(context, "2-REGTOPP-", "STP", 4, "W","W","W","W");
+
+		validationReporter.addItemToValidationReport(context, "2-REGTOPP-VLP-1", "W");
+	}
+
 
 	public void dispose() {
 		exceptions.clear();
@@ -31,14 +59,14 @@ public class RegtoppValidationReporter {
 	}
 
 	public void throwUnknownError(Context context, Exception ex, String filenameInfo) throws Exception {
-		ActionReport report = (ActionReport) context.get(REPORT);
-		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		String checkPointName = checkPointName(RegtoppException.ERROR.SYSTEM);
 		if (filenameInfo != null && filenameInfo.indexOf('.') > 0) {
 			String errorMessage = getMessage("label.validation.fileError");
-			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.FILE_NOT_FOUND,
-					errorMessage + "\"" + filenameInfo + "\" (" + checkPointName + ") : " + ex.getMessage()));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo), ex.getMessage(), CheckPoint.RESULT.NOK);
+			actionReporter.addFileErrorInReport(context, filenameInfo, ActionReporter.FILE_ERROR_CODE.FILE_NOT_FOUND,
+					errorMessage + "\"" + filenameInfo + "\" (" + checkPointName + ") : " + ex.getMessage());
+			validationReporter.addCheckPointReportError(context, checkPointName, new DataLocation(filenameInfo), ex.getMessage());
 			String message = ex.getMessage() != null ? ex.getMessage() : ex.getClass().getName();
 			log.error(ex, ex);
 			throw new Exception(errorMessage+ "\"" + filenameInfo + "\" : " + message);
@@ -54,142 +82,142 @@ public class RegtoppValidationReporter {
 	public void reportError(Context context, RegtoppException ex, String filenameInfo) throws Exception {
 		if (!exceptions.add(ex))
 			return;
-		ActionReport actionReport = (ActionReport) context.get(REPORT);
-		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 
 		switch (ex.getError()) {
 			case SYSTEM:
-				addError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.ERROR, getMessage("label.validation.error"));
+				addError(context, actionReporter, validationReporter, filenameInfo, ex, getMessage("label.validation.error"), ActionReporter.FILE_STATE.ERROR);
 				break;
 			case MULTIPLE_ADMIN_CODES:
-				addMultipleAdminCodesError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addMultipleAdminCodesError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case MISSING_MANDATORY_FILES:
-				addMissingMandatoryFilesError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addMissingMandatoryFilesError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case FILE_WITH_NO_ENTRY:
-				addFileWithNoEntryError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addFileWithNoEntryError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 
 			case TIX_INVALID_MANDATORY_ID_REFERENCE:
-				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidMandatoryReferenceError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case TIX_INVALID_OPTIONAL_ID_REFERENCE:
-				addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidOptionalReferenceError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case TIX_INVALID_FIELD_VALUE:
-				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidFieldValueError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case TIX_DUPLICATE_KEY:
-				addDuplicateKeyError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addDuplicateKeyError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 
 			case HPL_INVALID_MANDATORY_ID_REFERENCE:
-				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidMandatoryReferenceError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case HPL_INVALID_OPTIONAL_ID_REFERENCE:
-				addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidOptionalReferenceError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case HPL_INVALID_FIELD_VALUE:
-				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidFieldValueError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case HPL_DUPLICATE_KEY:
-				addDuplicateKeyError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addDuplicateKeyError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 
 			case DKO_INVALID_MANDATORY_ID_REFERENCE:
-				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidMandatoryReferenceError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case DKO_INVALID_OPTIONAL_ID_REFERENCE:
-				addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidOptionalReferenceError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case DKO_INVALID_FIELD_VALUE:
-				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidFieldValueError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case DKO_DUPLICATE_KEY:
-				addDuplicateKeyError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addDuplicateKeyError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 
 			case GAV_INVALID_MANDATORY_ID_REFERENCE:
-				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidMandatoryReferenceError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case GAV_INVALID_OPTIONAL_ID_REFERENCE:
-				addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidOptionalReferenceError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case GAV_INVALID_FIELD_VALUE:
-				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidFieldValueError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case GAV_DUPLICATE_KEY:
-				addDuplicateKeyError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addDuplicateKeyError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 
 			case DST_INVALID_MANDATORY_ID_REFERENCE:
-				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidMandatoryReferenceError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case DST_INVALID_OPTIONAL_ID_REFERENCE:
-				addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidOptionalReferenceError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case DST_INVALID_FIELD_VALUE:
-				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidFieldValueError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case DST_DUPLICATE_KEY:
-				addDuplicateKeyError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addDuplicateKeyError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 
 			case MRK_INVALID_MANDATORY_ID_REFERENCE:
-				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidMandatoryReferenceError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case MRK_INVALID_OPTIONAL_ID_REFERENCE:
-				addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidOptionalReferenceError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case MRK_INVALID_FIELD_VALUE:
-				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidFieldValueError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case MRK_DUPLICATE_KEY:
-				addDuplicateKeyError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addDuplicateKeyError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 
 			case LIN_INVALID_MANDATORY_ID_REFERENCE:
-				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidMandatoryReferenceError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case LIN_INVALID_OPTIONAL_ID_REFERENCE:
-				addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidOptionalReferenceError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case LIN_INVALID_FIELD_VALUE:
-				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidFieldValueError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case LIN_DUPLICATE_KEY:
-				addDuplicateKeyError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addDuplicateKeyError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 
 			case TDA_INVALID_MANDATORY_ID_REFERENCE:
-				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidMandatoryReferenceError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case TDA_INVALID_OPTIONAL_ID_REFERENCE:
-				addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidOptionalReferenceError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case TDA_INVALID_FIELD_VALUE:
-				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidFieldValueError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case TDA_DUPLICATE_KEY:
-				addDuplicateKeyError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addDuplicateKeyError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 
 			case STP_INVALID_MANDATORY_ID_REFERENCE:
-				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidMandatoryReferenceError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case STP_INVALID_OPTIONAL_ID_REFERENCE:
-				addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidOptionalReferenceError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case STP_INVALID_FIELD_VALUE:
-				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidFieldValueError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 			case STP_DUPLICATE_KEY:
-				addDuplicateKeyError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addDuplicateKeyError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 
 			case VLP_INVALID_FIELD_VALUE:
-				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				addInvalidFieldValueError(context, actionReporter, validationReporter, filenameInfo, ex);
 				break;
 
 			default:
@@ -197,46 +225,44 @@ public class RegtoppValidationReporter {
 		}
 	}
 
-	private void addFileWithNoEntryError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex, CODE invalidFormat, FILE_STATE ignored) {
-		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, getMessage("label.validation.emptyFile"));
+	private void addFileWithNoEntryError(Context context, ActionReporter actionReporter, ValidationReporter validationReporter, String filenameInfo, RegtoppException ex) {
+		addIgnoredError(context, actionReporter, validationReporter, filenameInfo, ex, getMessage("label.validation.emptyFile"));
 	}
 
-	private void addMissingMandatoryFilesError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex, CODE invalidFormat, FILE_STATE ignored) {
-		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, getMessage("label.validation.missingMandatoryFile"));
+	private void addMissingMandatoryFilesError(Context context, ActionReporter actionReporter, ValidationReporter validationReporter, String filenameInfo, RegtoppException ex) {
+		addIgnoredError(context, actionReporter, validationReporter, filenameInfo, ex, getMessage("label.validation.missingMandatoryFile"));
 	}
 
-	private void addMultipleAdminCodesError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex, CODE invalidFormat, FILE_STATE ignored) {
-		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, getMessage("label.validation.multipleAdminCodes"));
+	private void addMultipleAdminCodesError(Context context, ActionReporter actionReporter, ValidationReporter validationReporter, String filenameInfo, RegtoppException ex) {
+		addIgnoredError(context, actionReporter, validationReporter, filenameInfo, ex, getMessage("label.validation.multipleAdminCodes"));
 	}
 
-	private void addDuplicateKeyError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex, CODE invalidFormat, FILE_STATE ignored) {
-		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, getMessage("label.validation.duplicateKeyError"));
+	private void addDuplicateKeyError(Context context, ActionReporter actionReporter, ValidationReporter validationReporter, String filenameInfo, RegtoppException ex) {
+		addIgnoredError(context, actionReporter, validationReporter, filenameInfo, ex, getMessage("label.validation.duplicateKeyError"));
 	}
 
-	private void addInvalidFieldValueError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex,
-			CODE invalidFormat, FILE_STATE ignored) {
-		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, getMessage("label.validation.invalidFieldValue"));
+	private void addInvalidFieldValueError(Context context, ActionReporter actionReporter, ValidationReporter validationReporter, String filenameInfo, RegtoppException ex) {
+		addIgnoredError(context, actionReporter, validationReporter, filenameInfo, ex, getMessage("label.validation.invalidFieldValue"));
 	}
 
-	private void addInvalidMandatoryReferenceError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex,
-			CODE invalidFormat, FILE_STATE ignored) {
-		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, getMessage("label.validation.invalidMandatoryReference"));
+	private void addInvalidMandatoryReferenceError(Context context, ActionReporter actionReporter, ValidationReporter validationReporter, String filenameInfo, RegtoppException ex) {
+		addIgnoredError(context, actionReporter, validationReporter, filenameInfo, ex, getMessage("label.validation.invalidMandatoryReference"));
 	}
 
-	private void addInvalidOptionalReferenceError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex,
-			CODE invalidFormat, FILE_STATE ignored) {
-		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, getMessage("label.validation.invalidOptionalReference"));
+	private void addInvalidOptionalReferenceError(Context context, ActionReporter actionReporter, ValidationReporter validationReporter, String filenameInfo, RegtoppException ex) {
+		addIgnoredError(context, actionReporter, validationReporter, filenameInfo, ex, getMessage("label.validation.invalidOptionalReference"));
 	}
 
-	private void addError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex, FileError.CODE fileErrorCode,
-			FILE_STATE fileState, String messagePrefix) {
+	private void addError(Context context, ActionReporter actionReporter, ValidationReporter validationReporter, String filenameInfo, RegtoppException ex, String messagePrefix, ActionReporter.FILE_STATE fileState) {
 		String checkPointName = checkPointName(ex.getError());
 		String message = createMessage(messagePrefix, ex, checkPointName);
-		addError(actionReport, filenameInfo, new FileError(fileErrorCode, message));
-		actionReport.addFileInfo(filenameInfo, fileState);
-		validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getField(), ex.getLineNumber(), null), ex.getValue(), ex.getField(), ex.getErrorMessage(),
-				CheckPoint.RESULT.UNCHECK);
+		actionReporter.addFileReport(context, filenameInfo, IO_TYPE.INPUT);
+		actionReporter.setFileState(context, filenameInfo, IO_TYPE.INPUT, fileState);
+		validationReporter.addCheckPointReportError(context, checkPointName, message, new DataLocation(filenameInfo, ex.getField(), ex.getLineNumber()));
+	}
 
+	private void addIgnoredError(Context context, ActionReporter actionReporter, ValidationReporter validationReporter, String filenameInfo, RegtoppException ex, String messagePrefix) {
+		addError(context, actionReporter, validationReporter, filenameInfo, ex, messagePrefix, ActionReporter.FILE_STATE.IGNORED);
 	}
 
 	private String createMessage(String messagePrefix, RegtoppException ex, String checkPointName) {
@@ -249,17 +275,6 @@ public class RegtoppValidationReporter {
 		} else {
 			String value = (ex.getValue() == null) ? "" : ex.getValue();
 			return messagePrefix + " " + fieldLabel + "='" + ex.getField() + "' " + valueLabel + "='" + value + "' (" + ruleLabel + " " + checkPointName + ")";
-		}
-	}
-
-	/* Add FileError detail manually as ActionReport does not work properly */
-	private void addError(ActionReport actionReport, String filename, FileError error) {
-		List<FileInfo> files = actionReport.getFiles();
-		for (FileInfo f : files) {
-			if (f.getName().equals(filename)) {
-				f.addError(error);
-				break;
-			}
 		}
 	}
 
@@ -282,6 +297,33 @@ public class RegtoppValidationReporter {
 				return REGTOPP_TIX_INVALID_OPTIONAL_ID_REFERENCE;
 			case TIX_DUPLICATE_KEY:
 				return REGTOPP_TIX_DUPLICATE_KEY;
+
+			case TMS_INVALID_FIELD_VALUE:
+				return REGTOPP_TMS_INVALID_FIELD_VALUE;
+			case TMS_INVALID_MANDATORY_ID_REFERENCE:
+				return REGTOPP_TMS_INVALID_MANDATORY_ID_REFERENCE;
+			case TMS_INVALID_OPTIONAL_ID_REFERENCE:
+				return REGTOPP_TMS_INVALID_OPTIONAL_ID_REFERENCE;
+			case TMS_DUPLICATE_KEY:
+				return REGTOPP_TMS_DUPLICATE_KEY;
+
+			case TDA_INVALID_FIELD_VALUE:
+				return REGTOPP_TDA_INVALID_FIELD_VALUE;
+			case TDA_INVALID_MANDATORY_ID_REFERENCE:
+				return REGTOPP_TDA_INVALID_MANDATORY_ID_REFERENCE;
+			case TDA_INVALID_OPTIONAL_ID_REFERENCE:
+				return REGTOPP_TDA_INVALID_OPTIONAL_ID_REFERENCE;
+			case TDA_DUPLICATE_KEY:
+				return REGTOPP_TDA_DUPLICATE_KEY;
+
+			case STP_INVALID_FIELD_VALUE:
+				return REGTOPP_STP_INVALID_FIELD_VALUE;
+			case STP_INVALID_MANDATORY_ID_REFERENCE:
+				return REGTOPP_STP_INVALID_MANDATORY_ID_REFERENCE;
+			case STP_INVALID_OPTIONAL_ID_REFERENCE:
+				return REGTOPP_STP_INVALID_OPTIONAL_ID_REFERENCE;
+			case STP_DUPLICATE_KEY:
+				return REGTOPP_STP_DUPLICATE_KEY;
 
 			case HPL_INVALID_FIELD_VALUE:
 				return REGTOPP_HPL_INVALID_FIELD_VALUE;
@@ -341,32 +383,27 @@ public class RegtoppValidationReporter {
 				return REGTOPP_VLP_INVALID_FIELD_VALUE;
 
 			default:
-				return null;
+				throw new IllegalArgumentException("Cannot find checkpoint for error " + errorName);
 		}
 	}
 
-	public void reportSuccess(Context context, String checkpointName, String filenameInfo) {
-		ActionReport report = (ActionReport) context.get(REPORT);
-		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 
-		report.addFileInfo(filenameInfo, FILE_STATE.OK);
-		if (validationReport.findCheckPointByName(checkpointName).getState() == CheckPoint.RESULT.UNCHECK)
-			validationReport.findCheckPointByName(checkpointName).setState(CheckPoint.RESULT.OK);
+	public void reportSuccess(Context context, String checkpointName, String filenameInfo) {
+		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+
+		actionReporter.addFileReport(context, filenameInfo, IO_TYPE.INPUT);
+		validationReporter.reportSuccess(context, checkpointName, filenameInfo);
 	}
 
 	public void validate(Context context, Set<mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR> errorCodes) {
-		if (errorCodes != null)
+		if (errorCodes != null) {
 			for (mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR errorCode : errorCodes) {
 				String checkPointName = checkPointName(errorCode);
-				ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-
-				CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointName);
-
-				if (checkPoint != null)
-                    if (checkPoint.getState() == CheckPoint.RESULT.UNCHECK)
-                        checkPoint.setState(CheckPoint.RESULT.OK);
-
+				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+				validationReporter.reportSuccess(context, checkPointName);
 			}
+		}
 	}
 
 }

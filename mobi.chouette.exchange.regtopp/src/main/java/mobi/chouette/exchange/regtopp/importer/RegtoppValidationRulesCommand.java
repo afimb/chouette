@@ -12,8 +12,10 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.regtopp.validation.RegtoppValidationRules;
+import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+
+import static mobi.chouette.exchange.regtopp.RegtoppConstant.REGTOPP_REPORTER;
 
 @Log4j
 public class RegtoppValidationRulesCommand implements Command {
@@ -24,13 +26,11 @@ public class RegtoppValidationRulesCommand implements Command {
 	public boolean execute(Context context) throws Exception {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
-		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-		if (validationReport == null) {
-			validationReport = new ValidationReport();
-			context.put(MAIN_VALIDATION_REPORT, validationReport);
+		RegtoppValidationReporter regtoppValidationReporter = (RegtoppValidationReporter) context.get(REGTOPP_REPORTER);
+		if (regtoppValidationReporter == null) {
+			regtoppValidationReporter = new RegtoppValidationReporter(context);
+			context.put(REGTOPP_REPORTER, regtoppValidationReporter);
 		}
-		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
-		validationReport.setCheckPoints((new RegtoppValidationRules()).checkPoints(parameters));
 
 		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		return SUCCESS;

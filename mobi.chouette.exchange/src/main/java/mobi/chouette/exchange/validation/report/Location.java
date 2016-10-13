@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.validation.report;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import mobi.chouette.exchange.report.AbstractReport;
+import mobi.chouette.exchange.validation.report.DataLocation.Path;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
@@ -21,27 +25,23 @@ import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
-import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.NamingUtil;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 @Data
+@EqualsAndHashCode(callSuper = false)
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "file", "line", "objectId", "name", "objectRefs" })
-public class Location {
+@XmlType(propOrder = { "file", "objectId", "name", "objectRefs" })
+public class Location extends AbstractReport {
 
 	@XmlElement(name = "file")
 	private FileLocation file;
 
-	@XmlElement(name = "line")
-	private LineLocation line;
-
+	// @XmlElement(name = "line")
+	// private LineLocation line;
+	//
 	@XmlElement(name = "objectid")
 	private String objectId = "";
 
@@ -50,6 +50,24 @@ public class Location {
 
 	@XmlElement(name = "object_path")
 	private List<ObjectReference> objectRefs = new ArrayList<>();
+
+	public Location(DataLocation dl) {
+		if (dl.getObject() != null && dl.getObject().getId() != null) {
+			init(dl.getObject());
+		} else {
+			this.name = dl.getName();
+			this.objectId = dl.getObjectId();
+			if (!dl.getPath().isEmpty()) {
+				for (Path path : dl.getPath()) {
+					if (ObjectReference.isEligible(path.getObjectClass(), path.getObjectId()))
+						objectRefs.add(new ObjectReference(path.getObjectClass(), path.getObjectId()));
+				}
+			}
+		}
+		if (dl.getFilename() != null) {
+			this.file = new FileLocation(dl);
+		}
+	}
 
 	public Location(String fileName) {
 		this.file = new FileLocation(fileName);
@@ -61,13 +79,13 @@ public class Location {
 	}
 
 	public Location(String fileName, String locationName, int lineNumber, String objectId) {
-		this.file = new FileLocation(fileName, lineNumber, -1, objectId);
+		this.file = new FileLocation(fileName, lineNumber, -1);
 		this.objectId = objectId;
 		this.name = locationName;
 	}
 
 	public Location(String fileName, String locationName, int lineNumber, int columnNumber, String objectId) {
-		this.file = new FileLocation(fileName, lineNumber, columnNumber, objectId);
+		this.file = new FileLocation(fileName, lineNumber, columnNumber);
 		this.objectId = objectId;
 		this.name = locationName;
 	}
@@ -87,6 +105,10 @@ public class Location {
 	}
 
 	public Location(NeptuneIdentifiedObject chouetteObject) {
+		init(chouetteObject);
+	}
+
+	private void init(NeptuneIdentifiedObject chouetteObject) {
 		this.objectId = chouetteObject.getObjectId();
 		this.name = buildName(chouetteObject);
 		if (chouetteObject instanceof VehicleJourney) {
@@ -138,17 +160,18 @@ public class Location {
 
 	}
 
-	public Location(FileLocation sourceLocation, String objectId) {
-		this.file = sourceLocation;
-		this.objectId = objectId;
-	}
+	// public Location(FileLocation sourceLocation, String objectId) {
+	// this.file = sourceLocation;
+	// this.objectId = objectId;
+	// }
 
-	public Location(FileLocation sourceLocation, NeptuneIdentifiedObject chouetteObject) {
-		this.file = sourceLocation;
-		this.objectId = chouetteObject.getObjectId();
-		this.name = buildName(chouetteObject);
-		addLineLocation(this,  chouetteObject);
-	}
+	// public Location(FileLocation sourceLocation, NeptuneIdentifiedObject
+	// chouetteObject) {
+	// this.file = sourceLocation;
+	// this.objectId = chouetteObject.getObjectId();
+	// this.name = buildName(chouetteObject);
+	// // addLineLocation(this, chouetteObject);
+	// }
 
 	public static String buildName(NeptuneIdentifiedObject chouetteObject) {
 		if (chouetteObject instanceof VehicleJourney) {
@@ -191,52 +214,59 @@ public class Location {
 		return "unnammed";
 	}
 
-	public static void addLineLocation(Location loc, NeptuneIdentifiedObject chouetteObject) {
-		if (loc.getLine() != null) return;
-		Line line = null;
-		try {
-			if (chouetteObject instanceof VehicleJourney) {
-				VehicleJourney object = (VehicleJourney) chouetteObject;
-				line = object.getRoute().getLine();
-			} else if (chouetteObject instanceof JourneyPattern) {
-				JourneyPattern object = (JourneyPattern) chouetteObject;
-				line = object.getRoute().getLine();
-			} else if (chouetteObject instanceof StopPoint) {
-				StopPoint object = (StopPoint) chouetteObject;
-				line = object.getRoute().getLine();
-			} else if (chouetteObject instanceof Route) {
-				Route object = (Route) chouetteObject;
-				line = object.getLine();
-			} else if (chouetteObject instanceof Line) {
-				line = (Line) chouetteObject;
-			}
-		} catch (NullPointerException ex) {
-			// ignore line path
+	// public static void addLineLocation(Location loc, NeptuneIdentifiedObject
+	// chouetteObject) {
+	// if (loc.getLine() != null)
+	// return;
+	// Line line = null;
+	// try {
+	// if (chouetteObject instanceof VehicleJourney) {
+	// VehicleJourney object = (VehicleJourney) chouetteObject;
+	// line = object.getRoute().getLine();
+	// } else if (chouetteObject instanceof JourneyPattern) {
+	// JourneyPattern object = (JourneyPattern) chouetteObject;
+	// line = object.getRoute().getLine();
+	// } else if (chouetteObject instanceof StopPoint) {
+	// StopPoint object = (StopPoint) chouetteObject;
+	// line = object.getRoute().getLine();
+	// } else if (chouetteObject instanceof Route) {
+	// Route object = (Route) chouetteObject;
+	// line = object.getLine();
+	// } else if (chouetteObject instanceof Line) {
+	// line = (Line) chouetteObject;
+	// }
+	// } catch (NullPointerException ex) {
+	// // ignore line path
+	// }
+	// if (line != null)
+	// loc.setLine(new LineLocation(line));
+	//
+	// }
+
+	@Override
+	public void print(PrintStream out, StringBuilder ret, int level, boolean first) {
+		ret.setLength(0);
+		out.print(addLevel(ret, level).append('{'));
+		first = true;
+		if (file != null) {
+			printObject(out, ret, level + 1, "file", file, first);
+			first = false;
 		}
-		if (line != null )
-	       loc.setLine(new LineLocation(line));
-
-	}
-
-	@Deprecated
-	public JSONObject toJson() throws JSONException {
-		JSONObject object = new JSONObject();
-		if (file != null)
-			object.put("file", file.toJson());
-		if (line != null)
-			object.put("line", line.toJson());
-		if (objectId != null)
-			object.put("objectid", objectId);
-		if (name != null)
-			object.put("label", name);
+		if (objectId != null) {
+			out.print(toJsonString(ret, level + 1, "objectid", objectId, first));
+			first = false;
+		}
+		if (name != null) {
+			out.print(toJsonString(ret, level + 1, "label", name, first));
+			first = false;
+		}
 		if (!objectRefs.isEmpty()) {
-			JSONArray paths = new JSONArray();
-			object.put("object_path", paths);
-			for (ObjectReference ref : objectRefs) {
-				paths.put(ref.toJson());
-			}
+			printArray(out, ret, level + 1, "object_path", objectRefs, first);
+			first = false;
 		}
-		return object;
+		ret.setLength(0);
+		out.print(addLevel(ret.append('\n'), level).append('}'));
+
 	}
 
 }

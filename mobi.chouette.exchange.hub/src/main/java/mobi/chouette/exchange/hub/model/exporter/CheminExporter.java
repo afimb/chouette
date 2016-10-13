@@ -34,32 +34,32 @@ public class CheminExporter extends ExporterImpl<HubChemin> implements
 
 
 		@Override
-		public String to(Context context, HubChemin input) {
+		public String to(HubContext hubContext, HubChemin input) {
 			String result = null;
 			List<String> values = new ArrayList<String>();
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_ligne,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_ligne,
 					input.getCodeLigne(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_chemin,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_chemin,
 					input.getCodeChemin(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.identifiant,
 					input.getIdentifiant(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.nom,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.nom,
 					input.getNom(), false));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.sens,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.sens,
 					input.getSens(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.type,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.type,
 					input.getType(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.code_representation,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.code_representation,
 					input.getCodeRepresentation(), false));
 			// arrêts
 			for (ArretChemin arret : input.getArrets()) {
-				values.add(STRING_CONVERTER.to(context, FIELDS.code,
+				values.add(STRING_CONVERTER.to(hubContext, FIELDS.code,
 						arret.getCode(), false));
-				values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
+				values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.identifiant,
 						arret.getIdentifiant(), true));
-				values.add(NUMBER_CONVERTER.to(context, FIELDS.distance,
+				values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.distance,
 						arret.getDistance(), false));
-				values.add(STRING_CONVERTER.to(context, FIELDS.type,
+				values.add(STRING_CONVERTER.to(hubContext, FIELDS.type,
 						arret.getType(), false));				
 			}
 			result = Tokenizer.untokenize(values);

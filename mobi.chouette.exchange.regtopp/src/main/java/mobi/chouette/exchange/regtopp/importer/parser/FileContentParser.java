@@ -1,29 +1,5 @@
 package mobi.chouette.exchange.regtopp.importer.parser;
 
-import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.beanio.BeanReader;
-import org.beanio.BeanReaderErrorHandlerSupport;
-import org.beanio.BeanReaderException;
-import org.beanio.InvalidRecordException;
-import org.beanio.MalformedRecordException;
-import org.beanio.RecordContext;
-import org.beanio.StreamFactory;
-import org.beanio.UnexpectedRecordException;
-import org.beanio.UnidentifiedRecordException;
-import org.beanio.builder.FixedLengthParserBuilder;
-import org.beanio.builder.StreamBuilder;
-import org.joda.time.Duration;
-import org.joda.time.LocalDate;
-
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -34,7 +10,24 @@ import mobi.chouette.exchange.regtopp.beanio.LocalDateTypeHandler;
 import mobi.chouette.exchange.regtopp.model.RegtoppObject;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
+import org.beanio.*;
+import org.beanio.builder.FixedLengthParserBuilder;
+import org.beanio.builder.StreamBuilder;
+import org.joda.time.Duration;
+import org.joda.time.LocalDate;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage;
+import static mobi.chouette.exchange.report.ActionReporter.FILE_STATE.OK;
 
 @Log4j
 public class FileContentParser<T> {
@@ -77,7 +70,7 @@ public class FileContentParser<T> {
 		BeanReader in = factory.createReader(streamName, buffReader);
 
 		final Set<RegtoppException> errors = new HashSet<RegtoppException>();
-		final String fileName = parseableFile.getFile().getName();
+		final String fileName = parseableFile.getFile().getName().toUpperCase();
 
 		in.setErrorHandler(new BeanReaderErrorHandlerSupport() {
 			@Override
@@ -157,7 +150,8 @@ public class FileContentParser<T> {
 				rawContent.add(record);
 			}
 			log.info("Parsed file OK: " + parseableFile);
-			parseableFile.getFileInfo().setStatus(FILE_STATE.OK);
+			ActionReporter actionReporter = ActionReporter.Factory.getInstance();
+			actionReporter.setFileState(context, fileName, IO_TYPE.INPUT, OK);
 		} catch (RuntimeException ex) {
 			log.error("Unexpected error while parsing", ex);
 		} finally {

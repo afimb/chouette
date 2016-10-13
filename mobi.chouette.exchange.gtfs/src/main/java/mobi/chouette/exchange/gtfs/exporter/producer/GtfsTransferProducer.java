@@ -11,7 +11,6 @@ package mobi.chouette.exchange.gtfs.exporter.producer;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.ConnectionLink;
 
 /**
@@ -28,7 +27,7 @@ public class GtfsTransferProducer extends AbstractProducer
    }
    private GtfsTransfer transfer = new GtfsTransfer();
 
-   public boolean save(ConnectionLink neptuneObject, ActionReport report,String prefix)
+   public boolean save(ConnectionLink neptuneObject, String prefix)
    {
       transfer.setFromStopId(toGtfsId(neptuneObject.getStartOfLink()
             .getObjectId(),prefix));

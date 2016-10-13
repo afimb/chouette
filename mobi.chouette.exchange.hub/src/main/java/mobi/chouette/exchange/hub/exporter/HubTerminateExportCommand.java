@@ -11,7 +11,6 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.hub.Constant;
 import mobi.chouette.exchange.hub.model.exporter.HubExporter;
-import mobi.chouette.exchange.report.ActionReport;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -29,8 +28,7 @@ public class HubTerminateExportCommand implements Command, Constant {
 
 		try {
 			HubExporter hubExporter = (HubExporter) context.get(HUB_EXPORTER);
-			ActionReport report = (ActionReport) context.get(REPORT);
-			hubExporter.dispose(report);
+			hubExporter.dispose(context);
 			result = SUCCESS;
 
 		} catch (Exception e) {

@@ -35,37 +35,37 @@ public class CourseExporter extends ExporterImpl<HubCourse> implements
 
 
 		@Override
-		public String to(Context context, HubCourse input) {
+		public String to(HubContext hubContext, HubCourse input) {
 			String result = null;
 			List<String> values = new ArrayList<String>();
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.numero,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.numero,
 					input.getNumero(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.service_voiture,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.service_voiture,
 					input.getServiceVoiture(), false));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.type_materiel,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.type_materiel,
 					input.getTypeMateriel(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_arret,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_arret,
 					input.getCodeArret(), false));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.heure,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.heure,
 					input.getHeure(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_ligne,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_ligne,
 					input.getCodeLigne(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_chemin,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_chemin,
 					input.getCodeChemin(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.type,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.type,
 					input.getType(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.sens,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.sens,
 					input.getSens(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.validite,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.validite,
 					input.getValidite(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.graphique,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.graphique,
 					input.getGraphique(), false));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant_arret,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.identifiant_arret,
 					input.getIdentifiantArret(), true));
 			StringBuffer list = new StringBuffer();
 			for (Integer idRenvoi : input.getIdentifiantsRenvoi()) {
 				list.append("|");
-				list.append(NUMBER_CONVERTER.to(context, FIELDS.identifiant_renvoi,
+				list.append(NUMBER_CONVERTER.to(hubContext, FIELDS.identifiant_renvoi,
 					idRenvoi, true));
 			}
 			if (list.length() > 0) list.deleteCharAt(0);
@@ -73,14 +73,14 @@ public class CourseExporter extends ExporterImpl<HubCourse> implements
 			list = new StringBuffer();
 			for (String code : input.getCodesPeriode()) {
 				list.append("|");
-				list.append(STRING_CONVERTER.to(context, FIELDS.code_periode,
+				list.append(STRING_CONVERTER.to(hubContext, FIELDS.code_periode,
 						code, true));
 			}
 			if (list.length() > 0) list.deleteCharAt(0);
 			values.add(list.toString());
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.categorie,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.categorie,
 					input.getCategorie(), false));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.identifiant,
 					input.getIdentifiant(), false));
 			result = Tokenizer.untokenize(values);
 			return result;

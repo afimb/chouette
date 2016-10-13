@@ -4,15 +4,15 @@ import java.sql.Time;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.exchange.neptune.Constant;
-//import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.XPPUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
+import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.model.TimeSlot;
@@ -32,6 +32,7 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
+//import mobi.chouette.common.Constant;
 
 @Log4j
 public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
@@ -77,7 +78,6 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 				objectId = ParserUtils.getText(xpp.nextText());
 				vehicleJourney = ObjectFactory.getVehicleJourney(referential, objectId);
 				vehicleJourney.setFilled(true);
-				validator.addLocation(context, vehicleJourney, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				vehicleJourney.setObjectVersion(version);
@@ -140,8 +140,10 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		validator.addLocation(context, vehicleJourney, lineNumber, columnNumber);
 
 		Collections.sort(vehicleJourney.getVehicleJourneyAtStops(), VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
+		setVehicleJourneyAtStopListOffset(vehicleJourney.getVehicleJourneyAtStops());
 		validator.addLocation(context, vehicleJourney, lineNumber, columnNumber);
 	}
 
@@ -206,6 +208,11 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		// protection from missing arrival time (mandatory for Chouette)
+		if (vehicleJourneyAtStop.getArrivalTime() == null)
+		{
+			vehicleJourneyAtStop.setArrivalTime(new Time(vehicleJourneyAtStop.getDepartureTime().getTime()));
+		}
 	}
 
 
@@ -219,4 +226,58 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 			}
 		});
 	}
+	
+	/**
+	 * Set the correct offset depending on journey stops times
+	 * @param lstVehicleJourneyAtStop
+	 */
+	private void setVehicleJourneyAtStopListOffset(List<VehicleJourneyAtStop> lstVehicleJourneyAtStop) {
+		VehicleJourneyAtStop previous_vjas = null;
+		int currentArrivalOffset = 0;
+		int currentDepartureOffset = 0;
+		
+		if (lstVehicleJourneyAtStop != null) {
+			for (VehicleJourneyAtStop vjas: lstVehicleJourneyAtStop) {
+				/** First stop */
+				if(previous_vjas == null) {
+					/** Check Offset between first arrival departure time */
+					if(checkIfDiffAfterMidnight(vjas.getArrivalTime(), vjas.getDepartureTime())) {
+						currentDepartureOffset += 1;
+					}	
+				}
+				else {
+					/** Check Offset between previous and current arrival time */
+					if(checkIfDiffAfterMidnight(previous_vjas.getArrivalTime(), vjas.getArrivalTime())) {
+						currentArrivalOffset += 1;
+					}
+					
+					/** Check Offset between previous and current departure time */
+					if(checkIfDiffAfterMidnight(previous_vjas.getDepartureTime(), vjas.getDepartureTime())) {
+						currentDepartureOffset += 1;
+					}
+				}
+				
+				vjas.setArrivalDayOffset(currentArrivalOffset);
+				vjas.setDepartureDayOffset(currentDepartureOffset);
+				
+				previous_vjas = vjas;
+				
+			}
+		}
+	}
+	
+	/**
+	 * Check if lastTime belongs to the next day
+	 * @param firstTime
+	 * @param lastTime
+	 * @return
+	 */
+	private boolean checkIfDiffAfterMidnight(Time firstTime, Time lastTime) {
+		long diffTime = lastTime.getTime() - firstTime.getTime();
+		
+		return diffTime < 0;
+	}
+	
+	
+	
 }

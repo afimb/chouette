@@ -1,41 +1,31 @@
 package mobi.chouette.exchange.regtopp.model.importer.parser;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.compress.archivers.ArchiveException;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.FileUtil;
 import mobi.chouette.exchange.regtopp.RegtoppConstant;
-import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.ParseableFile;
 import mobi.chouette.exchange.regtopp.model.RegtoppObject;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppPathwayGAV;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL;
+import mobi.chouette.exchange.regtopp.model.v11.*;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppVehicleJourneyVLP;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
-import mobi.chouette.exchange.regtopp.validation.RegtoppValidationRules;
 import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.report.FileReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j
 public class FileContentParserTest {
@@ -75,11 +65,10 @@ public class FileContentParserTest {
 			Context context = new Context();
 			context.put(RegtoppConstant.CHARSET	, charset);
 			ValidationReport validationReport = new ValidationReport();
-			validationReport.addAllCheckPoints(new RegtoppValidationRules().checkPoints(new RegtoppImportParameters()));
-			context.put(Constant.MAIN_VALIDATION_REPORT, validationReport);
+			context.put(Constant.VALIDATION_REPORT, validationReport);
 			context.put(Constant.REPORT, report);
 
-			RegtoppValidationReporter reporter = new RegtoppValidationReporter();
+			RegtoppValidationReporter reporter = new RegtoppValidationReporter(context);
 			String name = f.getName().toUpperCase();
 			String extension = name.substring(name.lastIndexOf(".") + 1);
 			List<Class> regtoppClasses = new ArrayList<Class>();
@@ -156,16 +145,14 @@ public class FileContentParserTest {
 
 			Assert.assertTrue(regtoppClasses.size() > 0, "No class registered for " + name);
 
-			FileInfo fileInfo = new FileInfo(name, FILE_STATE.ERROR);
-			report.getFiles().add(fileInfo);
-			ParseableFile parseableFile = new ParseableFile(f, regtoppClasses, error, fileInfo);
+			ParseableFile parseableFile = new ParseableFile(f, regtoppClasses, error);
 			FileContentParser parser = new FileContentParser(parseableFile);
 
 			parser.parse(context, reporter);
 		}
 
-		for (FileInfo fileInfo : report.getFiles()) {
-			if (!fileInfo.getName().equals("R1611.TIX")) {  //TODO File tested for contains error
+		for (FileReport fileReport : report.getFiles()) {
+			if (!fileReport.getName().equals("R1611.TIX")) {  //TODO File tested for contains error
 		//		Assert.assertEquals(fileInfo.getStatus(), FILE_STATE.OK , "Error parsing file '" + fileInfo.getName() + "'");
 			}
 		}

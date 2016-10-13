@@ -101,6 +101,32 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 	@Column(name = "departure_time")
 	private Time departureTime;
 
+	
+	/**
+	 * departure day offset
+	 * 
+	 * @param departureDayOffset
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@Column(name = "departure_day_offset")
+	private int departureDayOffset;
+	
+	
+	/**
+	 * arrival day offset
+	 * 
+	 * @param arrivalDayOffset
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@Column(name = "arrival_day_offset")
+	private int arrivalDayOffset;
+	
 	/*
 	 * waiting time
 	 * 

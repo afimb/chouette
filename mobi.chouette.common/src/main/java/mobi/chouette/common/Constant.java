@@ -12,6 +12,9 @@ public interface Constant {
 	public static final String ROOT_PATH = "referentials";
 	public static final String CONFIGURATION = "configuration";
 	public static final String VALIDATION = "validation";
+	public static final String SOURCE = "source";
+	public static final String SOURCE_FILE = "source_file";
+	public static final String SOURCE_DATABASE = "source_database";
 
 	public static final String OPTIMIZED = "optimized";
 	public static final String COPY_IN_PROGRESS = "copy_in_progress";
@@ -27,7 +30,6 @@ public interface Constant {
 	public static final String ACTION_PARAMETERS_FILE = "action_parameters.json";
 	public static final String VALIDATION_PARAMETERS_FILE = "validation_parameters.json";
 	public static final String REPORT = "report";
-	public static final String MAIN_VALIDATION_REPORT = "main_validation_report";
 	public static final String SAVE_MAIN_VALIDATION_REPORT = "save_main_validation_report";
 	public static final String VALIDATION_REPORT = "validation_report";
 	public static final String REPORT_FILE = "action_report.json";

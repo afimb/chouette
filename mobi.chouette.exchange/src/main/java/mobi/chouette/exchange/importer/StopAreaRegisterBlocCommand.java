@@ -12,7 +12,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
@@ -28,38 +27,36 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 @Log4j
 @Stateless(name = StopAreaRegisterBlocCommand.COMMAND)
 public class StopAreaRegisterBlocCommand implements Command {
 
 	public static final String COMMAND = "StopAreaRegisterBlocCommand";
 
-	@EJB 
+	@EJB
 	private StopAreaDAO stopAreaDAO;
 
-	@EJB 
+	@EJB
 	private AccessLinkDAO accessLinkDAO;
 
-	@EJB 
+	@EJB
 	private AccessPointDAO accessPointDAO;
 
 	@EJB(beanName = StopAreaUpdater.BEAN_NAME)
 	private Updater<StopArea> stopUpdater;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public boolean execute(Context context) throws Exception {
 
 		boolean result = ERROR;
-		Monitor monitor = MonitorFactory.start(COMMAND);
+		// Monitor monitor = MonitorFactory.start(COMMAND);
 
 		try {
 			Boolean optimized = Boolean.TRUE;
 
-			Monitor monitorInit = MonitorFactory.start(COMMAND + ".init");
+			// Monitor monitorInit = MonitorFactory.start(COMMAND + ".init");
 			context.put(OPTIMIZED, optimized);
 			Collection<StopArea> areas = (Collection<StopArea>) context.get(AREA_BLOC);
 			Referential cache = new Referential();
@@ -69,35 +66,35 @@ public class StopAreaRegisterBlocCommand implements Command {
 			initializeStopArea(cache, areas);
 			initializeAccessLink(cache, referential.getAccessLinks().values());
 			initializeAccessPoint(cache, referential.getAccessPoints().values());
-			log.info(Color.CYAN + monitorInit.stop() + Color.NORMAL);
-			Monitor monitorUpdate = MonitorFactory.start(COMMAND + ".update");
+			// log.info(Color.CYAN + monitorInit.stop() + Color.NORMAL);
+			// Monitor monitorUpdate = MonitorFactory.start(COMMAND +
+			// ".update");
 
 			for (StopArea newValue : areas) {
 				StopArea oldValue = cache.getStopAreas().get(newValue.getObjectId());
 				stopUpdater.update(context, oldValue, newValue);
 				stopAreaDAO.create(oldValue);
 			}
-			log.info(Color.CYAN + monitorUpdate.stop() + Color.NORMAL);
-			Monitor monitorFlush = MonitorFactory.start(COMMAND + ".flush");
+			// log.info(Color.CYAN + monitorUpdate.stop() + Color.NORMAL);
+			// Monitor monitorFlush = MonitorFactory.start(COMMAND + ".flush");
 			stopAreaDAO.flush();
-			log.info(Color.CYAN + monitorFlush.stop() + Color.NORMAL);
+			// log.info(Color.CYAN + monitorFlush.stop() + Color.NORMAL);
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error(e);
 			throw e;
-		} finally {
-			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+			// } finally {
+			// log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 		return result;
 
 	}
 
 	private void initializeStopArea(Referential cache, Collection<StopArea> list) {
-		Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+		// Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
 		List<StopArea> objects = stopAreaDAO.findAll();// ByObjectId(objectIds);
 		for (StopArea object : objects) {
 			cache.getStopAreas().put(object.getObjectId(), object);
-//			addParent(cache, object);
 		}
 
 		for (StopArea item : list) {
@@ -105,22 +102,12 @@ public class StopAreaRegisterBlocCommand implements Command {
 		}
 	}
 
-	private void addParent(Referential cache, StopArea object) {
-		if (object.getParent() != null) {
-			if (!cache.getStopAreas().containsKey(object.getParent().getObjectId())) {
-				cache.getStopAreas().put(object.getParent().getObjectId(), object.getParent());
-				addParent(cache, object.getParent());
-			}
-		}
-	}
-
 	private void addStopAreaIfMissing(Referential cache, StopArea item) {
 		StopArea object = cache.getStopAreas().get(item.getObjectId());
 		if (object == null) {
 			object = ObjectFactory.getStopArea(cache, item.getObjectId());
-			if (item.getParent() != null && item.getParent().getAreaType() == null)
-			{
-				log.error("areatype missing for "+item.getParent());
+			if (item.getParent() != null && item.getParent().getAreaType() == null) {
+				log.error("areatype missing for " + item.getParent());
 				return;
 			}
 			if (item.getParent() != null) {

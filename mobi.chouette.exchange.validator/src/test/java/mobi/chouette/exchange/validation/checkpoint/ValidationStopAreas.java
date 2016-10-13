@@ -16,9 +16,12 @@ import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.Detail;
+import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
+import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.exchange.validator.DummyChecker;
+import mobi.chouette.exchange.validator.JobDataTest;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 
@@ -62,7 +65,7 @@ public class ValidationStopAreas extends AbstractTestValidation {
 
 		EnterpriseArchive result;
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.exchange.validation").withTransitivity().asFile();
+				.resolve("mobi.chouette:mobi.chouette.exchange.validator").withTransitivity().asFile();
 		List<File> jars = new ArrayList<>();
 		List<JavaArchive> modules = new ArrayList<>();
 		for (File file : files) {
@@ -106,6 +109,9 @@ public class ValidationStopAreas extends AbstractTestValidation {
 			}
 		}
 		final WebArchive testWar = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
+				.addClass(DummyChecker.class)
+				.addClass(JobDataTest.class)
+				.addClass(AbstractTestValidation.class)
 				.addClass(ValidationStopAreas.class);
 		
 		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
@@ -228,20 +234,20 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-StopArea-1");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-StopArea-1");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-StopArea-1 checkPoint");
 
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.ERROR,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.ERROR,
 				" checkPointReport must be on severity error");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 		String detailKey = "3-StopArea-1".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-StopArea-1",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
-		for (Detail detail : checkPointReport.getDetails()) {
+		for (CheckPointErrorReport detail : details) {
 			log.warn(detail);
 			Assert.assertEquals(detail.getSource().getObjectId(), area1.getObjectId(), "area1 must be source of error");
 		}
@@ -292,16 +298,16 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-StopArea-2");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-StopArea-2");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-StopArea-2 checkPoint");
 
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 		String detailKey = "3-StopArea-2".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-StopArea-2",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
@@ -357,16 +363,16 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-StopArea-3");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-StopArea-3");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-StopArea-3 checkPoint");
 
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 		String detailKey = "3-StopArea-3".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-StopArea-3",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
@@ -427,16 +433,16 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-StopArea-4");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-StopArea-4");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-StopArea-4 checkPoint");
 
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 17, " checkPointReport must have 17 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 17, " checkPointReport must have 17 item");
 		String detailKey = "3-StopArea-4".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-StopArea-4",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
@@ -472,16 +478,16 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-StopArea-5");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-StopArea-5");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-StopArea-5 checkPoint");
 
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 2, " checkPointReport must have 2 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 2, " checkPointReport must have 2 item");
 		String detailKey = "3-StopArea-5".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-StopArea-5",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
@@ -507,7 +513,7 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		checkPoint.validate(context, null);
 
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-		Assert.assertTrue(report.findCheckPointByName("4-StopArea-1") == null,
+		Assert.assertTrue(report.findCheckPointReportByName("4-StopArea-1") == null,
 				" report must not have item 4-StopArea-1");
 
 		fullparameters.setCheckStopArea(1);
@@ -515,8 +521,8 @@ public class ValidationStopAreas extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 		report = (ValidationReport) context.get(VALIDATION_REPORT);
-		Assert.assertTrue(report.findCheckPointByName("4-StopArea-1") != null, " report must have item 4-StopArea-1");
-		Assert.assertEquals(report.findCheckPointByName("4-StopArea-1").getDetailCount(), 0,
+		Assert.assertTrue(report.findCheckPointReportByName("4-StopArea-1") != null, " report must have item 4-StopArea-1");
+		Assert.assertEquals(report.findCheckPointReportByName("4-StopArea-1").getCheckPointErrorCount(), 0,
 				" checkpoint must have no detail");
 
 	}
@@ -542,8 +548,8 @@ public class ValidationStopAreas extends AbstractTestValidation {
 
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
-		List<Detail> details = checkReportForTest4_1(report, "4-StopArea-1", 1);
-		Detail detail = details.get(0);
+		List<CheckPointErrorReport> details = checkReportForTest(report, "4-StopArea-1", 1);
+		CheckPointErrorReport detail = details.get(0);
 		Assert.assertEquals(detail.getReferenceValue(), "ObjectId", "detail must refer column");
 		Assert.assertEquals(detail.getValue(), bean2.getObjectId().split(":")[2], "detail must refer value");
 	}
@@ -570,7 +576,7 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		checkPoint.validate(context, null);
 
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-		Assert.assertTrue(report.findCheckPointByName("4-StopArea-2") == null,
+		Assert.assertTrue(report.findCheckPointReportByName("4-StopArea-2") == null,
 				" report must not have item 4-StopArea-2");
 
 		fullparameters.setCheckStopParent(1);
@@ -579,22 +585,22 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		checkPoint.validate(context, null);
 
 		report = (ValidationReport) context.get(VALIDATION_REPORT);
-		CheckPoint checkPointReport = report.findCheckPointByName("4-StopArea-2");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("4-StopArea-2");
 		Assert.assertNotNull(checkPointReport, "report must contain a 4-StopArea-2 checkPoint");
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.OK, " checkPointReport must be ok");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 0, " checkPointReport must have 0 item");
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.OK, " checkPointReport must be ok");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 0, " checkPointReport must have 0 item");
 
 		bean1.setParent(null);
 		context.put(VALIDATION_REPORT, new ValidationReport());
 		checkPoint.validate(context, null);
 
 		report = (ValidationReport) context.get(VALIDATION_REPORT);
-		checkPointReport = report.findCheckPointByName("4-StopArea-2");
+		checkPointReport = report.findCheckPointReportByName("4-StopArea-2");
 		Assert.assertNotNull(checkPointReport, "report must contain a 4-StopArea-2 checkPoint");
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.ERROR,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.ERROR,
 				" checkPointReport must be on severity error");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 
 	}
 

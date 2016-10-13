@@ -25,6 +25,9 @@ public class JobDAO extends GenericDAOImpl<Job> {
 	public JobDAO() {
 		super(Job.class);
 	}
+	
+	private static boolean migrated = false;
+	private static final String LOCK="";
 
 	@PersistenceContext(unitName = "iev")
 	public void setEntityManager(EntityManager em) {
@@ -126,6 +129,10 @@ public class JobDAO extends GenericDAOImpl<Job> {
 	@SuppressWarnings("deprecation")
 	public void migrate() {
 		// migrate data from previous versions
+		if (migrated) return;
+		synchronized (LOCK) {
+			
+		migrated = true;
 		log.info("migrating data");
 		List<Job> jobs = findAll();
 		for (Job job : jobs) {
@@ -137,14 +144,6 @@ public class JobDAO extends GenericDAOImpl<Job> {
 					job.setOutputFilename(job.getDataFilename());
 					job.getLinks().add(new Link("application/octet-stream",Link.OUTPUT_REL));
 				}
-				else if (job.getAction().equals("converter"))
-				{
-					// TODO : a supprimer avant livraison
-					job.setInputFilename(job.getDataFilename());
-					job.setOutputFilename(job.getDataFilename());
-					job.getLinks().add(new Link("application/octet-stream",Link.OUTPUT_REL));
-					job.getLinks().add(new Link("application/octet-stream",Link.INPUT_REL));
-				}
 				else
 				{
 					job.setInputFilename(job.getDataFilename());
@@ -152,6 +151,7 @@ public class JobDAO extends GenericDAOImpl<Job> {
 				}
 				job.setDataFilename(null);
 			}
+		}
 		}
 
 		
