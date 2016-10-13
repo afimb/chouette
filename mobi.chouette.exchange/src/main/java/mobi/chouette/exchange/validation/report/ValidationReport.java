@@ -100,24 +100,6 @@ public class ValidationReport extends AbstractReport implements Report {
 
 
 	@Override
-	public void print(PrintStream out) {
-		print(out, new StringBuilder(), 1, true);
-	}
-
-	@Override
-	public void print(PrintStream out, StringBuilder ret , int level, boolean first) {
-		ret.setLength(0);
-		level = 1;
-		out.print("{\"validation_report\": {");
-		out.print(toJsonString(ret, level, "result", result, true));
-		if (!checkPoints.isEmpty())
-			printArray(out, ret, level + 1, "check_points", checkPoints, false);
-		if (!checkPointErrors.isEmpty())
-			printArray(out, ret, level + 1, "errors", checkPointErrors, false);
-		out.println("\n}}");
-	}
-
-	@Override
 	public boolean isEmpty() {
 		// used to know if report has to be saved
 		// Validation Report has to be saved if checkPoints were defined

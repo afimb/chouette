@@ -2,21 +2,18 @@
 package mobi.chouette.exchange.report;
 
 
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder={"currentStep","stepsCount","steps"})
@@ -51,20 +48,6 @@ public class Progression extends AbstractReport {
 			array.put(step.toJson());
 		}
 		return object;
-	}
-
-	@Override
-	public void print(PrintStream out, StringBuilder ret , int level, boolean first) {
-		ret.setLength(0);
-		out.print(addLevel(ret, level).append('{'));
-		out.print(toJsonString(ret, level+1, "current_step", currentStep, true));
-		out.print(toJsonString(ret, level+1, "steps_count", stepsCount, false));
-		if (!steps.isEmpty()) {
-			printArray(out, ret, level + 1, "steps", steps, false);
-		}
-		ret.setLength(0);
-		out.print(addLevel(ret.append('\n'), level).append('}'));
-		
 	}
 
 }

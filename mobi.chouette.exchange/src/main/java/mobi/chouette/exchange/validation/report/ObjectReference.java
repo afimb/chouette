@@ -1,30 +1,12 @@
 package mobi.chouette.exchange.validation.report;
 
-import java.io.PrintStream;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlType;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import mobi.chouette.exchange.report.AbstractReport;
-import mobi.chouette.model.AccessLink;
-import mobi.chouette.model.AccessPoint;
-import mobi.chouette.model.Company;
-import mobi.chouette.model.ConnectionLink;
-import mobi.chouette.model.GroupOfLine;
-import mobi.chouette.model.JourneyPattern;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.Network;
-import mobi.chouette.model.Route;
-import mobi.chouette.model.StopArea;
-import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.Timetable;
-import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.*;
+
+import javax.xml.bind.annotation.*;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -160,21 +142,6 @@ public class ObjectReference extends AbstractReport {
 	public ObjectReference(String className, String id) {
 		this.type = TYPE.fromValue(className);
 		this.objectId = id;
-	}
-
-	@Override
-	public void print(PrintStream out, StringBuilder ret, int level, boolean first) {
-		ret.setLength(0);
-		out.print(addLevel(ret, level).append('{'));
-		out.print(toJsonString(ret, level + 1, "type", type, true));
-		if (id != null)
-			out.print(toJsonString(ret, level + 1, "id", id, false));
-		else
-			out.print(toJsonString(ret, level + 1, "objectId", objectId, false));
-
-		ret.setLength(0);
-		out.print(addLevel(ret.append('\n'), level).append('}'));
-
 	}
 
 	public static boolean isEligible(String className, String objectId) {

@@ -1,19 +1,17 @@
 package mobi.chouette.exchange.validation.report;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import mobi.chouette.exchange.report.AbstractReport;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import mobi.chouette.exchange.report.AbstractReport;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
@@ -75,26 +73,4 @@ public class CheckPointErrorReport extends AbstractReport {
 		this.getTargets().addAll(Arrays.asList(targets));
 	}
 
-
-	@Override
-	public void print(PrintStream out, StringBuilder ret , int level, boolean first) {
-		ret.setLength(0);
-		out.print(addLevel(ret, level).append('{'));
-		out.print(toJsonString(ret, level+1, "test_id", testId, true));
-		out.print(toJsonString(ret, level+1, "error_id", key, false));
-		if (source != null)
-			printObject(out, ret, level+1, "source", source, false);
-		if (!targets.isEmpty()) {
-			printArray(out, ret, level + 1, "target", targets, false);
-		}
-		if (value != null) {
-			out.print(toJsonString(ret, level+1, "error_value", value, false));
-		}
-		if (referenceValue != null) {
-			out.print(toJsonString(ret, level+1, "reference_value", referenceValue, false));
-		}
-		ret.setLength(0);
-		out.print(addLevel(ret.append('\n'), level).append('}'));
-
-	}
 }

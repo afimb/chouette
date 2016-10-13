@@ -16,17 +16,6 @@ public class DummyReportElement extends AbstractReport{
 	}
 
 
-	@Override
-	public void print(PrintStream out, StringBuilder ret , int level, boolean first) {
-		ret.setLength(0);
-		out.print(addLevel(ret, level).append('{'));
-		out.print(toJsonString(ret, level+1, "id", this.id, true));
-		out.print(toJsonString(ret, level+1, "chaine", this.chaine, false));
-		out.print(toJsonString(ret, level+1, "ok", this.ok, false));
-		ret.setLength(0);
-		out.print(addLevel(ret.append('\n'), level).append('}'));	
-	}
-	
 	protected int getId() {
 		return this.id;
 	}
