@@ -6,9 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -20,6 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.model.converter.ConnectionLinkTypeToStringConverter;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 
@@ -217,7 +217,9 @@ public class ConnectionLink extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@Enumerated(EnumType.STRING)
+	// don't use Enumerated to manage blank database values
+	@Convert(converter = ConnectionLinkTypeToStringConverter.class)
+	// @Enumerated(EnumType.STRING)
 	@Column(name = "link_type")
 	private ConnectionLinkTypeEnum linkType;
 
@@ -297,6 +299,14 @@ public class ConnectionLink extends NeptuneIdentifiedObject {
 			stopArea.getConnectionStartLinks().add(this);
 		}
 	}
+	/**
+	 * set stopArea without updating stopArea collection
+	 * 
+	 * @param stopArea
+	 */
+	public void forceStartOfLink(StopArea stopArea) {
+		this.startOfLink = stopArea;
+	}
 
 	/**
 	 * last stop area connected to link
@@ -321,6 +331,15 @@ public class ConnectionLink extends NeptuneIdentifiedObject {
 		if (stopArea != null) {
 			stopArea.getConnectionEndLinks().add(this);
 		}
+	}
+	
+	/**
+	 * set stopArea without updating stopArea collection
+	 * 
+	 * @param stopArea
+	 */
+	public void forceEndOfLink(StopArea stopArea) {
+		this.endOfLink = stopArea;
 	}
 
 }

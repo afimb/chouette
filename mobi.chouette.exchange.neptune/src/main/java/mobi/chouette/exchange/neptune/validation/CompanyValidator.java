@@ -3,7 +3,6 @@ package mobi.chouette.exchange.neptune.validation;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
@@ -35,9 +34,9 @@ public class CompanyValidator extends AbstractValidator implements Validator<Com
 	
 
 	@Override
-	public ValidationConstraints validate(Context context, Company target) throws ValidationException
+	public void validate(Context context, Company target) throws ValidationException
 	{
-		return new ValidationConstraints();
+		return ;
 	}
 
 	public static class DefaultValidatorFactory extends ValidatorFactory {

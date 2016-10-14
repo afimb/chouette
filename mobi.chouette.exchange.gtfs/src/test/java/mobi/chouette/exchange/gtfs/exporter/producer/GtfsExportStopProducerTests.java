@@ -11,7 +11,6 @@ import mobi.chouette.exchange.gtfs.model.GtfsStop.LocationType;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.WheelchairBoardingType;
 import mobi.chouette.exchange.gtfs.model.exporter.StopExporter;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
@@ -32,7 +31,6 @@ public class GtfsExportStopProducerTests
    {
       mock.reset();
 
-      ActionReport report = new ActionReport();
       StopArea neptuneObject = new StopArea();
       neptuneObject.setObjectId("GTFS:StopArea:4321");
       neptuneObject.setName("physical point");
@@ -51,7 +49,7 @@ public class GtfsExportStopProducerTests
       parents.add(parent);
       neptuneObject.setParent(parent);
 
-      producer.save(neptuneObject, report, "GTFS", parents);
+      producer.save(neptuneObject,  "GTFS", parents);
       GtfsStop gtfsObject = mock.getExportedStops().get(0);
       Reporter.log("verifyStopProducerStopWithFullData");
       Reporter.log(StopExporter.CONVERTER.to(context, gtfsObject));
@@ -79,7 +77,6 @@ public class GtfsExportStopProducerTests
    {
       mock.reset();
 
-      ActionReport report = new ActionReport();
       StopArea neptuneObject = new StopArea();
       neptuneObject.setObjectId("GTFS:StopArea:4321");
       neptuneObject.setName("physical point");
@@ -94,7 +91,7 @@ public class GtfsExportStopProducerTests
       List<StopArea> parents = new ArrayList<>();
       parents.add(parent);
 
-      producer.save(neptuneObject, report, "GTFS", parents);
+      producer.save(neptuneObject,  "GTFS", parents);
       GtfsStop gtfsObject = mock.getExportedStops().get(0);
       Reporter.log("verifyStopProducerStopWithLessData");
       Reporter.log(StopExporter.CONVERTER.to(context, gtfsObject));
@@ -121,7 +118,6 @@ public class GtfsExportStopProducerTests
    {
       mock.reset();
 
-      ActionReport report = new ActionReport();
       StopArea neptuneObject = new StopArea();
       neptuneObject.setObjectId("GTFS:StopArea:4321");
       neptuneObject.setName("Commercial point");
@@ -141,7 +137,7 @@ public class GtfsExportStopProducerTests
       parents.add(parent);
       neptuneObject.setParent(parent);
 
-      producer.save(neptuneObject, report, "GTFS", parents);
+      producer.save(neptuneObject, "GTFS", parents);
       GtfsStop gtfsObject = mock.getExportedStops().get(0);
       Reporter.log("verifyStopProducerStationWithFullData");
       Reporter.log(StopExporter.CONVERTER.to(context, gtfsObject));
@@ -170,7 +166,6 @@ public class GtfsExportStopProducerTests
    {
       mock.reset();
 
-      ActionReport report = new ActionReport();
       StopArea neptuneObject = new StopArea();
       neptuneObject.setObjectId("GTFS:StopArea:4321");
       neptuneObject.setName("Stop place");
@@ -186,7 +181,7 @@ public class GtfsExportStopProducerTests
 
       List<StopArea> parents = new ArrayList<>();
 
-      Assert.assertFalse(producer.save(neptuneObject, report, "GTFS", parents));
+      Assert.assertFalse(producer.save(neptuneObject, "GTFS", parents));
 
    }
 

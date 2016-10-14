@@ -17,9 +17,12 @@ import mobi.chouette.common.Context;
 import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.Detail;
+import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
+import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.exchange.validator.DummyChecker;
+import mobi.chouette.exchange.validator.JobDataTest;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.StopArea;
@@ -58,7 +61,7 @@ public class ValidationAccessLinks extends AbstractTestValidation {
 
 		EnterpriseArchive result;
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.exchange.validation").withTransitivity().asFile();
+				.resolve("mobi.chouette:mobi.chouette.exchange.validator").withTransitivity().asFile();
 		List<File> jars = new ArrayList<>();
 		List<JavaArchive> modules = new ArrayList<>();
 		for (File file : files) {
@@ -102,6 +105,9 @@ public class ValidationAccessLinks extends AbstractTestValidation {
 			}
 		}
 		final WebArchive testWar = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
+				.addClass(DummyChecker.class)
+				.addClass(JobDataTest.class)
+				.addClass(AbstractTestValidation.class)
 				.addClass(ValidationAccessLinks.class);
 		
 		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
@@ -176,7 +182,7 @@ public class ValidationAccessLinks extends AbstractTestValidation {
 		checkPoint.validate(context, null);
 
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-		Assert.assertTrue(report.findCheckPointByName("4-AccessLink-1") == null,
+		Assert.assertTrue(report.findCheckPointReportByName("4-AccessLink-1") == null,
 				" report must not have item 4-AccessLink-1");
 
 		fullparameters.setCheckAccessLink(1);
@@ -184,9 +190,9 @@ public class ValidationAccessLinks extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 		report = (ValidationReport) context.get(VALIDATION_REPORT);
-		Assert.assertTrue(report.findCheckPointByName("4-AccessLink-1") != null,
+		Assert.assertTrue(report.findCheckPointReportByName("4-AccessLink-1") != null,
 				" report must have item 4-AccessLink-1");
-		Assert.assertEquals(report.findCheckPointByName("4-AccessLink-1").getDetailCount(), 0,
+		Assert.assertEquals(report.findCheckPointReportByName("4-AccessLink-1").getCheckPointErrorCount(), 0,
 				" checkpoint must have no detail");
 
 	}
@@ -212,8 +218,8 @@ public class ValidationAccessLinks extends AbstractTestValidation {
 
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
-		List<Detail> details = checkReportForTest4_1(report, "4-AccessLink-1", 1);
-		Detail detail = details.get(0);
+		List<CheckPointErrorReport> details = checkReportForTest(report, "4-AccessLink-1", 1);
+		CheckPointErrorReport detail = details.get(0);
 		Assert.assertEquals(detail.getReferenceValue(), "ObjectId", "detail must refer column");
 		Assert.assertEquals(detail.getValue(), bean2.getObjectId().split(":")[2], "detail must refer value");
 	}
@@ -246,15 +252,15 @@ public class ValidationAccessLinks extends AbstractTestValidation {
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-AccessLink-1");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-AccessLink-1");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-AccessLink-1 checkPoint");
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
-		List<Detail> details = checkPointReport.getDetails();
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-AccessLink-1",-1);
 		String detailKey = "3-AccessLink-1".replaceAll("-", "_").toLowerCase();
-		for (Detail detail : details) {
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
@@ -293,15 +299,15 @@ public class ValidationAccessLinks extends AbstractTestValidation {
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-AccessLink-2");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-AccessLink-2");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-AccessLink-2 checkPoint");
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
-		List<Detail> details = checkPointReport.getDetails();
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-AccessLink-2",-1);
 		String detailKey = "3-AccessLink-2".replaceAll("-", "_").toLowerCase();
-		for (Detail detail : details) {
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
@@ -347,15 +353,15 @@ public class ValidationAccessLinks extends AbstractTestValidation {
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-AccessLink-3");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-AccessLink-3");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-AccessLink-3 checkPoint");
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 4, " checkPointReport must have 4 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 4, " checkPointReport must have 4 item");
 		String detailKey = "3-AccessLink-3".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-AccessLink-3",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}

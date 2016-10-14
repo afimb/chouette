@@ -90,7 +90,8 @@ public class VehicleJourneyDAOImpl extends GenericDAOImpl<VehicleJourney> implem
 					manager.copyIn(
 							"COPY vehicle_journey_at_stops("
 									+ "vehicle_journey_id, stop_point_id, "
-									+ "arrival_time, departure_time)"
+									+ "arrival_time, departure_time, "
+									+ "arrival_day_offset, departure_day_offset)"
 									// + "arrival_time, departure_time, "
 									// + "elapse_duration, headway_frequency)"
 									+ " FROM STDIN WITH DELIMITER '|'", from);

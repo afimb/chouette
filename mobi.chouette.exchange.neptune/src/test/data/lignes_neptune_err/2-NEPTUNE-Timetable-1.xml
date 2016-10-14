@@ -484,6 +484,18 @@
 		<vehicleJourneyId>NINOXE:VehicleJourney:2</vehicleJourneyId>
 		<comment>Dimanche</comment>
 	</Timetable>
+	<Timetable>
+		<objectId>NINOXE:Timetable:2</objectId>
+		<objectVersion>11</objectVersion>
+		<creationTime>2013-04-15T07:49:29.140Z</creationTime>
+		<creatorId>chouette</creatorId>
+		<period>
+			<startOfPeriod>2012-10-15</startOfPeriod>
+			<endOfPeriod>2014-01-31</endOfPeriod>
+		</period>
+		<dayType>Monday</dayType>
+		<comment>Lundi</comment>
+	</Timetable>
 	<ChouetteLineDescription>
 		<Line>
 			<objectId>NINOXE:Line:15627090</objectId>

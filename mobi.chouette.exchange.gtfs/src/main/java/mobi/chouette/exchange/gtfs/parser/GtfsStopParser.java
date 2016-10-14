@@ -10,7 +10,7 @@ import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
 import mobi.chouette.exchange.gtfs.validation.Constant;
-import mobi.chouette.exchange.gtfs.validation.ValidationReporter;
+import mobi.chouette.exchange.gtfs.validation.GtfsValidationReporter;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
@@ -26,45 +26,45 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 	@Override
 	public void validate(Context context) throws Exception {
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
-		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
-		validationReporter.getExceptions().clear();
+		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
+		gtfsValidationReporter.getExceptions().clear();
 		
 		// stops.txt
 		// log.info("validating stops");
 		if (importer.hasStopImporter()) { // the file "stops.txt" exists ?
-			validationReporter.reportSuccess(context, GTFS_1_GTFS_Common_1, GTFS_STOPS_FILE);
+			gtfsValidationReporter.reportSuccess(context, GTFS_1_GTFS_Common_1, GTFS_STOPS_FILE);
 
 			Index<GtfsStop> parser = null;
 			try { // Read and check the header line of the file "stops.txt"
 				parser = importer.getStopById(); 
 			} catch (Exception ex ) {
 				if (ex instanceof GtfsException) {
-					validationReporter.reportError(context, (GtfsException)ex, GTFS_STOPS_FILE);
+					gtfsValidationReporter.reportError(context, (GtfsException)ex, GTFS_STOPS_FILE);
 				} else {
-					validationReporter.throwUnknownError(context, ex, GTFS_STOPS_FILE);
+					gtfsValidationReporter.throwUnknownError(context, ex, GTFS_STOPS_FILE);
 				}
 			}
 
-			validationReporter.validateOkCSV(context, GTFS_STOPS_FILE);
+			gtfsValidationReporter.validateOkCSV(context, GTFS_STOPS_FILE);
 		
 			if (parser == null) { // importer.getStopById() fails for any other reason
-				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate StopById class"), GTFS_STOPS_FILE);
+				gtfsValidationReporter.throwUnknownError(context, new Exception("Cannot instantiate StopById class"), GTFS_STOPS_FILE);
 			} else {
-				validationReporter.validate(context, GTFS_STOPS_FILE, parser.getOkTests());
-				validationReporter.validateUnknownError(context);
+				gtfsValidationReporter.validate(context, GTFS_STOPS_FILE, parser.getOkTests());
+				gtfsValidationReporter.validateUnknownError(context);
 			}
 			
 			if (!parser.getErrors().isEmpty()) {
-				validationReporter.reportErrors(context, parser.getErrors(), GTFS_STOPS_FILE);
+				gtfsValidationReporter.reportErrors(context, parser.getErrors(), GTFS_STOPS_FILE);
 				parser.getErrors().clear();
 			}
 			
-			validationReporter.validateOKGeneralSyntax(context, GTFS_STOPS_FILE);
+			gtfsValidationReporter.validateOKGeneralSyntax(context, GTFS_STOPS_FILE);
 		
 			if (parser.getLength() == 0) {
-				validationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null), GTFS_STOPS_FILE);
+				gtfsValidationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null), GTFS_STOPS_FILE);
 			} else {
-				validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
+				gtfsValidationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
 			}
 		
 			GtfsException fatalException = null;
@@ -79,27 +79,27 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 					parser.validate(bean, importer);
 				} catch (Exception ex) {
 					if (ex instanceof GtfsException) {
-						validationReporter.reportError(context, (GtfsException)ex, GTFS_STOPS_FILE);
+						gtfsValidationReporter.reportError(context, (GtfsException)ex, GTFS_STOPS_FILE);
 					} else {
-						validationReporter.throwUnknownError(context, ex, GTFS_STOPS_FILE);
+						gtfsValidationReporter.throwUnknownError(context, ex, GTFS_STOPS_FILE);
 					}
 				}
 				for(GtfsException ex : bean.getErrors()) {
 					if (ex.isFatal())
 						fatalException = ex;
 				}
-				validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOPS_FILE);
-				validationReporter.validate(context, GTFS_STOPS_FILE, bean.getOkTests());
+				gtfsValidationReporter.reportErrors(context, bean.getErrors(), GTFS_STOPS_FILE);
+				gtfsValidationReporter.validate(context, GTFS_STOPS_FILE, bean.getOkTests());
 			}
 			parser.setWithValidation(false);
 			if (hasLocationType)
-				validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.NO_LOCATION_TYPE);
+				gtfsValidationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.NO_LOCATION_TYPE);
 			else
-				validationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, 1, null, GtfsException.ERROR.NO_LOCATION_TYPE, null, null), GTFS_STOPS_FILE);
+				gtfsValidationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, 1, null, GtfsException.ERROR.NO_LOCATION_TYPE, null, null), GTFS_STOPS_FILE);
 			if (fatalException != null)
 				throw fatalException;
 		} else {
-			validationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, 1, null, GtfsException.ERROR.MISSING_FILE, null, null), GTFS_STOPS_FILE);
+			gtfsValidationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, 1, null, GtfsException.ERROR.MISSING_FILE, null, null), GTFS_STOPS_FILE);
 		}
 	}	
 	
@@ -162,7 +162,7 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 		stopArea.setCityName(gtfsStop.getLocality());
 		stopArea.setZipCode(gtfsStop.getPostalCode());
 		stopArea.setFilled(true);
-		AbstractConverter.addLocation(context, "stops.txt", stopArea.getObjectId(), gtfsStop.getId());
+//		AbstractConverter.addLocation(context, "stops.txt", stopArea.getObjectId(), gtfsStop.getId());
 	}
 	
 	static {

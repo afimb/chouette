@@ -33,31 +33,31 @@ public class ArretExporter extends ExporterImpl<HubArret> implements
 
 
 		@Override
-		public String to(Context context, HubArret input) {
+		public String to(HubContext hubContext, HubArret input) {
 			String result = null;
 			boolean physique = input.getType().startsWith("N");
 			List<String> values = new ArrayList<String>();
-			values.add(STRING_CONVERTER.to(context, FIELDS.code,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code,
 					input.getCode(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.nom,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.nom,
 					input.getNom(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.description,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.description,
 					input.getDescription(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.type,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.type,
 					input.getType(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.nom_reduit,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.nom_reduit,
 					input.getNomReduit(), physique));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.x,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.x,
 					input.getX(), false));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.y,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.y,
 					input.getY(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.commune,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.commune,
 					input.getCommune(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.code_insee,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.code_insee,
 					input.getCodeInsee(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.commentaire,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.commentaire,
 					input.getCommentaire(), false));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.identifiant,
 					input.getIdentifiant(), physique));
 			result = Tokenizer.untokenize(values);
 			return result;

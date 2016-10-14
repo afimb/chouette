@@ -11,9 +11,9 @@ package mobi.chouette.exchange.hub.exporter.producer;
 import java.io.IOException;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.hub.model.HubSchema;
 import mobi.chouette.exchange.hub.model.exporter.HubExporterInterface;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 
@@ -34,7 +34,7 @@ public class HubSchemaProducer extends AbstractProducer {
 	
 	private HubSchema hubObject = new HubSchema();
 
-	public boolean save(Route neptuneObject, ActionReport report) {
+	public boolean save(Context context,Route neptuneObject) {
 
 		hubObject.clear();
 		hubObject.setCodeLigne(toHubId(neptuneObject.getLine()));

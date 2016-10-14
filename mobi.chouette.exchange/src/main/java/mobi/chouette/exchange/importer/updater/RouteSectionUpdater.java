@@ -3,6 +3,9 @@ package mobi.chouette.exchange.importer.updater;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.RouteSection;
@@ -23,6 +26,7 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
 			return;
 		}
 		newValue.setSaved(true);
+        Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
 
 		if (newValue.getObjectId() != null
@@ -95,5 +99,6 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
 //			routeSectionDAO.create(oldValue);
 //		else
 //			routeSectionDAO.update(oldValue);
+		monitor.stop();
 	}
 }

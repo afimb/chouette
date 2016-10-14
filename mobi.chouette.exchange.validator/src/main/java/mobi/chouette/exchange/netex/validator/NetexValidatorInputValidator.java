@@ -1,13 +1,17 @@
 package mobi.chouette.exchange.netex.validator;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
+import mobi.chouette.exchange.TestDescription;
 import mobi.chouette.exchange.netex.importer.NetexImporterInputValidator;
 import mobi.chouette.exchange.parameters.AbstractParameter;
+import mobi.chouette.exchange.validation.checkpoint.AbstractValidation;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 
 @Log4j
@@ -47,6 +51,14 @@ public class NetexValidatorInputValidator extends NetexImporterInputValidator {
 	static {
 		InputValidatorFactory.factories.put(NetexValidatorInputValidator.class.getName(),
 				new DefaultFactory());
+	}
+	
+	@Override
+	public List<TestDescription> getTestList() {
+		List<TestDescription> lstResults = new ArrayList<TestDescription>();
+		lstResults.addAll(AbstractValidation.getTestLevel3FileList());
+		
+		return lstResults;
 	}
 	
 

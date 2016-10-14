@@ -208,6 +208,7 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 				areaCentroid = factory.getAreaCentroid(objectId);
 				String areaId = inverse.get(objectId);
 				stopArea = ObjectFactory.getStopArea(referential, areaId);
+				areaCentroid.setContainedIn(stopArea);
 			} else if (xpp.getName().equals("name")) {
 				areaCentroid.setName(ParserUtils.getText(xpp.nextText()));
 				if (stopArea.getName() == null)

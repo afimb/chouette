@@ -24,9 +24,9 @@ import mobi.chouette.exchange.importer.CleanRepositoryCommand;
 import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.FILE_STATE;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.ImportedLineValidatorCommand;
 import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
 
@@ -70,7 +70,7 @@ public class NeptuneImporterProcessingCommands implements ProcessingCommands, Co
 	public List<? extends Command> getLineProcessingCommands(Context context, boolean withDao) {
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 		boolean level3validation = context.get(VALIDATION) != null;
 		List<Command> commands = new ArrayList<>();
 		JobData jobData = (JobData) context.get(JOB_DATA);
@@ -79,8 +79,7 @@ public class NeptuneImporterProcessingCommands implements ProcessingCommands, Co
 			List<Path> excluded = FileUtil.listFiles(path, "*", "*.xml");
 			if (!excluded.isEmpty()) {
 				for (Path exclude : excluded) {
-					FileInfo file = new FileInfo(exclude.getFileName().toString(),FILE_STATE.IGNORED);
-					report.getFiles().add(file);
+					reporter.setFileState(context, exclude.getFileName().toString(), IO_TYPE.INPUT,FILE_STATE.IGNORED);
 				}
 			}
 			List<Path> stream = FileUtil.listFiles(path, "*.xml", "*metadata*");

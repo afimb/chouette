@@ -351,41 +351,41 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 
 		// (routeShortName, routeLongName) != other GtfsRoute.(routeShortName,
 		// routeLongName)
-		boolean result3 = true;
+//		boolean result3 = true;
 		// (routeShortName, routeLongName) != other GtfsRoute.(routeShortName,
 		// routeLongName)
-		boolean result4 = true;
-		String routeShortName = copy_bean.getRouteShortName();
-		String routeLongName = copy_bean.getRouteLongName();
-		for (GtfsRoute another_bean : dao.getRouteById()) {
-			if (another_bean.getId() >= copy_bean.getId())
-				break;
-			if ((routeShortName != null && routeShortName.equals(another_bean.getRouteShortName()))
-					|| (routeShortName == another_bean.getRouteShortName()))
-				if ((routeLongName != null && routeLongName.equals(another_bean.getRouteLongName()))
-						|| (routeLongName == another_bean.getRouteLongName())) {
-					bean.getErrors().add(
-							new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.route_short_name.name()),
-									FIELDS.route_short_name.name(), GtfsException.ERROR.DUPLICATE_ROUTE_NAMES,
-									copy_bean.getRouteId(), another_bean.getRouteId()));
-					result3 = false;
-				}
-			if ((routeShortName != null && routeShortName.equals(another_bean.getRouteLongName()))
-					|| (routeShortName == another_bean.getRouteLongName()))
-				if ((routeLongName != null && routeLongName.equals(another_bean.getRouteShortName()))
-						|| (routeLongName == another_bean.getRouteShortName())) {
-					bean.getErrors().add(
-							new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.route_long_name.name()),
-									FIELDS.route_long_name.name(), GtfsException.ERROR.INVERSE_DUPLICATE_ROUTE_NAMES,
-									copy_bean.getRouteId(), another_bean.getRouteId()));
-					result4 = false;
-				}
-		}
-		if (result3)
-			bean.getOkTests().add(GtfsException.ERROR.DUPLICATE_ROUTE_NAMES);
-		if (result4)
-			bean.getOkTests().add(GtfsException.ERROR.INVERSE_DUPLICATE_ROUTE_NAMES);
-		result = result && result3 && result4;
+//		boolean result4 = true;
+//		String routeShortName = copy_bean.getRouteShortName();
+//		String routeLongName = copy_bean.getRouteLongName();
+//		for (GtfsRoute another_bean : dao.getRouteById()) {
+//			if (another_bean.getId() >= copy_bean.getId())
+//				break;
+//			if ((routeShortName != null && routeShortName.equals(another_bean.getRouteShortName()))
+//					|| (routeShortName == another_bean.getRouteShortName()))
+//				if ((routeLongName != null && routeLongName.equals(another_bean.getRouteLongName()))
+//						|| (routeLongName == another_bean.getRouteLongName())) {
+//					bean.getErrors().add(
+//							new GtfsException(, copy_bean.getId(), getIndex(FIELDS.route_short_name.name()),
+//									FIELDS.route_short_name.name(), GtfsException.ERROR.DUPLICATE_ROUTE_NAMES,
+//									copy_bean.getRouteId(), another_bean.getRouteId()));
+//					result3 = false;
+//				}
+//			if ((routeShortName != null && routeShortName.equals(another_bean.getRouteLongName()))
+//					|| (routeShortName == another_bean.getRouteLongName()))
+//				if ((routeLongName != null && routeLongName.equals(another_bean.getRouteShortName()))
+//						|| (routeLongName == another_bean.getRouteShortName())) {
+//					bean.getErrors().add(
+//							new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.route_long_name.name()),
+//									FIELDS.route_long_name.name(), GtfsException.ERROR.INVERSE_DUPLICATE_ROUTE_NAMES,
+//									copy_bean.getRouteId(), another_bean.getRouteId()));
+//					result4 = false;
+//				}
+//		}
+//		if (result3)
+//			bean.getOkTests().add(GtfsException.ERROR.DUPLICATE_ROUTE_NAMES);
+//		if (result4)
+//			bean.getOkTests().add(GtfsException.ERROR.INVERSE_DUPLICATE_ROUTE_NAMES);
+// 		result = result && result3 && result4;
 
 		return result;
 	}

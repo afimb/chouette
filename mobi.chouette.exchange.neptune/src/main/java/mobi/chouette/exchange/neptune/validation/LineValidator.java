@@ -9,13 +9,12 @@ import java.util.Set;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.exchange.validation.report.DataLocation;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Route;
@@ -38,7 +37,7 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 	private static final String LINE_3 = "2-NEPTUNE-Line-3";
 	private static final String LINE_4 = "2-NEPTUNE-Line-4";
 	private static final String LINE_5 = "2-NEPTUNE-Line-5";
-	private static final String LINE_6 = "2-NEPTUNE-Line-5";
+	private static final String LINE_6 = "2-NEPTUNE-Line-6";
 
 	public static final String LOCAL_CONTEXT = "NeptuneLine";
 
@@ -85,13 +84,14 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ValidationConstraints validate(Context context, Line target) throws ValidationException {
+	public void validate(Context context, Line target) throws ValidationException {
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Map<String, Location> fileLocations = data.getFileLocations();
+//		Map<String, Location> fileLocations = data.getFileLocations();
+		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		if (localContext == null || localContext.isEmpty())
-			return new ValidationConstraints();
+			return ;
 		Context networkContext = (Context) validationContext.get(PTNetworkValidator.LOCAL_CONTEXT);
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		Context routeContext = (Context) validationContext.get(ChouetteRouteValidator.LOCAL_CONTEXT);
@@ -100,7 +100,8 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 
 		for (String objectId : localContext.keySet()) {
 			Context objectContext = (Context) localContext.get(objectId);
-			Location sourceLocation = fileLocations.get(objectId);
+//			Location sourceLocation = fileLocations.get(objectId);
+			DataLocation sourceLocation = fileLocations.get(objectId);
 
 			Line line = lines.get(objectId);
 			// 2-NEPTUNE-Line-1 : check ptnetworkIdShortcut
@@ -109,8 +110,10 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 			if (ptnetworkIdShortcut != null) {
 				prepareCheckPoint(context, LINE_1);
 				if (!networkContext.containsKey(ptnetworkIdShortcut)) {
-					Detail errorItem = new Detail(LINE_1, sourceLocation, ptnetworkIdShortcut);
-					addValidationError(context, LINE_1, errorItem);
+//					Detail errorItem = new Detail(LINE_1, sourceLocation, ptnetworkIdShortcut);
+//					addValidationError(context, LINE_1, errorItem);
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, LINE_1, sourceLocation, ptnetworkIdShortcut);
 				}
 			}
 
@@ -145,14 +148,18 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 				for (String endId : lineEnds) {
 					// endId must exists as stopArea ?
 					if (!stopAreaContext.containsKey(endId)) {
-						Detail errorItem = new Detail(LINE_2, sourceLocation, endId);
-						addValidationError(context, LINE_2, errorItem);
+//						Detail errorItem = new Detail(LINE_2, sourceLocation, endId);
+//						addValidationError(context, LINE_2, errorItem);			
+						ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+						validationReporter.addCheckPointReportError(context, LINE_2, sourceLocation, endId);
 					} else {
 						// 2-NEPTUNE-Line-3 : check ends of line
 						prepareCheckPoint(context, LINE_3);
 						if (!endAreas.contains(endId)) {
-							Detail errorItem = new Detail(LINE_3, sourceLocation, endId);
-							addValidationError(context, LINE_3, errorItem);
+//							Detail errorItem = new Detail(LINE_3, sourceLocation, endId);
+//							addValidationError(context, LINE_3, errorItem);
+							ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+							validationReporter.addCheckPointReportError(context, LINE_3, sourceLocation, endId);
 						}
 					}
 				}
@@ -164,8 +171,10 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 			List<String> routeIds = (List<String>) objectContext.get(ROUTE_ID);
 			for (String routeId : routeIds) {
 				if (!routeContext.containsKey(routeId)) {
-					Detail errorItem = new Detail(LINE_4, sourceLocation, routeId);
-					addValidationError(context, LINE_4, errorItem);
+//					Detail errorItem = new Detail(LINE_4, sourceLocation, routeId);
+//					addValidationError(context, LINE_4, errorItem);
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, LINE_4, sourceLocation, routeId);
 				}
 			}
 
@@ -173,9 +182,12 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 			prepareCheckPoint(context, LINE_5);
 			for (String routeId : routeContext.keySet()) {
 				if (!routeIds.contains(routeId)) {
-					Detail errorItem = new Detail(LINE_5, sourceLocation, routeId);
-					errorItem.getTargets().add(fileLocations.get( routeId));
-					addValidationError(context, LINE_5, errorItem);
+//					Detail errorItem = new Detail(LINE_5, sourceLocation, routeId);
+//					errorItem.getTargets().add(fileLocations.get( routeId));
+//					addValidationError(context, LINE_5, errorItem);
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, LINE_5, sourceLocation, routeId);
+					validationReporter.addTargetLocationToCheckPointError(context, LINE_5, fileLocations.get(routeId));
 				}
 			}
 
@@ -184,12 +196,14 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 			prepareCheckPoint(context, LINE_6);
 
 			if (isEmpty(line.getName()) && isEmpty(line.getNumber()) && isEmpty(line.getPublishedName())) {
-				Detail errorItem = new Detail(LINE_6, sourceLocation);
-				addValidationError(context, LINE_6, errorItem);
+//				Detail errorItem = new Detail(LINE_6, sourceLocation);
+//				addValidationError(context, LINE_6, errorItem);
+				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+				validationReporter.addCheckPointReportError(context, LINE_6, sourceLocation);
 			}
 
 		}
-		return new ValidationConstraints();
+		return ;
 	}
 
 	public static class DefaultValidatorFactory extends ValidatorFactory {

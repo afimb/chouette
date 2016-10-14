@@ -20,7 +20,6 @@ import mobi.chouette.exchange.gtfs.model.GtfsTrip;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException.ERROR;
-import mobi.chouette.exchange.report.ActionReport;
 
 @Log4j
 public class GtfsExporter implements GtfsExporterInterface {
@@ -36,10 +35,10 @@ public class GtfsExporter implements GtfsExporterInterface {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public void dispose(ActionReport report) {
+	public void dispose(mobi.chouette.common.Context context) {
 		for (Exporter exporter : _map.values()) {
 			try {
-				exporter.dispose(report);
+				exporter.dispose(context);
 			} catch (IOException e) {
 				log.error(e);
 			}

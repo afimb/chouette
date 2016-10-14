@@ -33,14 +33,14 @@ public class GroupeDeLigneExporter extends ExporterImpl<HubGroupeDeLigne> implem
 
 
 		@Override
-		public String to(Context context, HubGroupeDeLigne input) {
+		public String to(HubContext hubContext, HubGroupeDeLigne input) {
 			String result = null;
 			List<String> values = new ArrayList<String>();
-			values.add(STRING_CONVERTER.to(context, FIELDS.code,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code,
 					input.getCode(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.nom,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.nom,
 					input.getNom(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.identifiant,
 					input.getIdentifiant(), false));
 			result = Tokenizer.untokenize(values);
 			return result;

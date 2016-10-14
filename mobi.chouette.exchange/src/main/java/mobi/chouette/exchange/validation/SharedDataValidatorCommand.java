@@ -53,7 +53,11 @@ public class SharedDataValidatorCommand implements Command, Constant {
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
-
+		if (!context.containsKey(SOURCE))
+		{
+			// not called from DAO
+			context.put(SOURCE, SOURCE_FILE);
+		}
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		if (report == null) {
 			context.put(VALIDATION_REPORT, new ValidationReport());

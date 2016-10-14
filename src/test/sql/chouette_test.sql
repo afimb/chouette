@@ -1170,7 +1170,9 @@ CREATE TABLE vehicle_journey_at_stops (
     arrival_time time without time zone,
     departure_time time without time zone,
     for_boarding character varying(255),
-    for_alighting character varying(255)
+    for_alighting character varying(255),
+    departure_day_offset int not null default 0,
+    arrival_day_offset int not null default 0
 );
 
 

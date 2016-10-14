@@ -13,8 +13,7 @@ import mobi.chouette.exchange.DaoReader;
 import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.parameters.AbstractExportParameter;
-import mobi.chouette.exchange.report.ActionError;
-import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ActionReporter;
 
 public class AbstractExporterCommand implements Constant {
 
@@ -28,7 +27,7 @@ public class AbstractExporterCommand implements Constant {
 			boolean continueLineProcesingOnError, Mode mode) throws Exception {
 		boolean result = ERROR;
 		AbstractExportParameter parameters = (AbstractExportParameter) context.get(CONFIGURATION);
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 
 		// initialisation
 		List<? extends Command> preProcessingCommands = commands.getPreProcessingCommands(context, true);
@@ -36,7 +35,7 @@ public class AbstractExporterCommand implements Constant {
 		for (Command exportCommand : preProcessingCommands) {
 			result = exportCommand.execute(context);
 			if (!result) {
-				report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND, "no data selected"));
+				reporter.setActionError(context, ActionReporter.ERROR_CODE.NO_DATA_FOUND, "no data selected");
 				progression.execute(context);
 				return ERROR;
 			}
@@ -61,7 +60,7 @@ public class AbstractExporterCommand implements Constant {
 
 			Set<Long> lines = reader.loadLines(type, ids);
 			if (lines.isEmpty()) {
-				report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND, "no data selected"));
+				reporter.setActionError(context, ActionReporter.ERROR_CODE.NO_DATA_FOUND, "no data selected");
 				return ERROR;
 
 			}
@@ -86,14 +85,14 @@ public class AbstractExporterCommand implements Constant {
 				if (!exportFailed) {
 					lineCount++;
 				} else if (!continueLineProcesingOnError) {
-					report.setFailure(new ActionError(ActionError.CODE.INVALID_DATA, "unable to export data"));
+					reporter.setActionError(context, ActionReporter.ERROR_CODE.INVALID_DATA, "unable to export data");
 					return ERROR;
 				}
 			}
 			// check if data where exported
 			if (lineCount == 0) {
 				progression.terminate(context, 1);
-				report.setFailure(new ActionError(ActionError.CODE.NO_DATA_PROCEEDED, "no data exported"));
+				reporter.setActionError(context, ActionReporter.ERROR_CODE.NO_DATA_PROCEEDED, "no data exported");
 				progression.execute(context);
 				return ERROR;
 			}
@@ -117,8 +116,8 @@ public class AbstractExporterCommand implements Constant {
 		for (Command exportCommand : postProcessingCommands) {
 			result = exportCommand.execute(context);
 			if (!result) {
-				if (report.getFailure() == null)
-					report.setFailure(new ActionError(ActionError.CODE.NO_DATA_PROCEEDED, "no data exported"));
+				if (!reporter.hasActionError(context))
+					reporter.setActionError(context, ActionReporter.ERROR_CODE.NO_DATA_PROCEEDED, "no data exported");
 				return ERROR;
 			}
 			progression.execute(context);

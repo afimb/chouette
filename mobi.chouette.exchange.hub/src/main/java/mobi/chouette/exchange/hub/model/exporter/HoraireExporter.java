@@ -34,22 +34,22 @@ public class HoraireExporter extends ExporterImpl<HubHoraire> implements
 
 
 		@Override
-		public String to(Context context, HubHoraire input) {
+		public String to(HubContext hubContext, HubHoraire input) {
 			String result = null;
 			List<String> values = new ArrayList<String>();
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_arret,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_arret,
 					input.getCodeArret(), false));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.heure,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.heure,
 					input.getHeure(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.type,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.type,
 					input.getType(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.numero_course,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.numero_course,
 					input.getNumeroCourse(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.numero_mission,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.numero_mission,
 					input.getNumeroMission(), false));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant_arret,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.identifiant_arret,
 					input.getIdentifiantArret(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.identifiant,
 					input.getIdentifiant(), false));
 			result = Tokenizer.untokenize(values);
 			return result;
