@@ -1,0 +1,128 @@
+package mobi.chouette.exchange.netexprofile.importer.validation.norway;
+
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
+import mobi.chouette.exchange.validation.*;
+import mobi.chouette.exchange.validation.report.Detail;
+import no.rutebanken.netex.model.*;
+
+import javax.xml.bind.JAXBElement;
+import java.util.ArrayList;
+import java.util.List;
+
+@Log4j
+public class NetworkValidator extends AbstractValidator implements Validator<Network> {
+
+    public static final String LOCAL_CONTEXT = "NetexNetwork";
+    public static final String ORGANISATION_ID = "organisationId";
+    public static String NAME = "NetworkValidator";
+
+    private static final String NETWORK_1 = "2-NETEX-Network-1";
+    private static final String NETWORK_2 = "2-NETEX-Network-2";
+    private static final String NETWORK_3 = "2-NETEX-Network-3";
+    private static final String NETWORK_4 = "2-NETEX-Network-4";
+
+    @Override
+    protected void initializeCheckPoints(Context context) {
+        addItemToValidation(context, PREFIX, "Network", 4, "E", "E", "E", "E");
+    }
+
+    @Override
+    public void addObjectReference(Context context, DataManagedObjectStructure object) {
+        addObjectReference(context, LOCAL_CONTEXT, object);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void addOrganisationReference(Context context, String objectId, String organisationId) {
+        Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
+        List<String> organisationIds = (List<String>) objectContext.get(ORGANISATION_ID);
+        if (organisationIds == null) {
+            organisationIds = new ArrayList<>();
+            objectContext.put(ORGANISATION_ID, organisationIds);
+        }
+        organisationIds.add(organisationId);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public ValidationConstraints validate(Context context, Network target) throws ValidationException {
+        // TODO validate common elements from extended types first, like id, version, etc...
+        // TODO consider using the target instance when validating single elements
+
+        Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
+        ValidationData data = (ValidationData) context.get(VALIDATION_DATA); // how should this be used?
+        Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
+
+        if (localContext == null || localContext.isEmpty()) {
+            return new ValidationConstraints();
+        }
+
+        Context organisationContext = (Context) validationContext.get(OrganisationValidator.LOCAL_CONTEXT);
+        NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);
+
+        // should probably use id from localContext keyset, and retrieve from referential by id
+        // if we get null back the id is not valid, for now validating the target
+        String objectId = target.getId();
+        Context objectContext = (Context) localContext.get(objectId);
+
+        // 2-NETEX-Network-1 : validate mandatory transport organisation element (cardinality 1:1)
+        prepareCheckPoint(context, NETWORK_1);
+        JAXBElement<? extends OrganisationRefStructure> transportOrganisationRef = target.getTransportOrganisationRef();
+
+        if (transportOrganisationRef == null) {
+            Detail errorItem = new Detail(NETWORK_1, null, "Missing mandatory element : 'OrganisationRef'");
+            addValidationError(context, NETWORK_1, errorItem);
+        } else {
+            // 2-NETEX-Network-2 : validate if transport organisation reference exists
+            prepareCheckPoint(context, NETWORK_2);
+            String organisationId = (String) objectContext.get(ORGANISATION_ID);
+
+            if (!organisationContext.containsKey(organisationId)) {
+                Detail errorItem = new Detail(NETWORK_2, null,
+                        String.format("Non-existent organisation id : '%s'", organisationId));
+                addValidationError(context, NETWORK_2, errorItem);
+            }
+        }
+
+        // 2-NETEX-Network-3 : validate mandatory groups of lines (cardinality 1:*)
+        prepareCheckPoint(context, NETWORK_3);
+        GroupsOfLinesInFrame_RelStructure groupsOfLinesStruct = target.getGroupsOfLines();
+
+        // TODO consider separating the two checks in if test
+        if (groupsOfLinesStruct == null || isCollectionEmpty(groupsOfLinesStruct.getGroupOfLines())) {
+            Detail errorItem = new Detail(NETWORK_3, null, "Missing mandatory element : 'groupsOfLines' or 'GroupOfLines'");
+            addValidationError(context, NETWORK_3, errorItem);
+        } else {
+            // TODO validate group of lines here...
+        }
+
+        // 2-NETEX-Network-4 : validate optional tariff zones (cardinality 0:*)
+        prepareCheckPoint(context, NETWORK_4);
+        TariffZoneRefs_RelStructure tariffZonesStruct = target.getTariffZones();
+
+        if (tariffZonesStruct != null && !isCollectionEmpty(tariffZonesStruct.getTariffZoneRef())) {
+            log.info("Network - Tariff Zones present");
+            // TODO validate tariff zones here...
+        }
+
+        return new ValidationConstraints();
+    }
+
+    public static class DefaultValidatorFactory extends ValidatorFactory {
+        @Override
+        protected Validator<Network> create(Context context) {
+            NetworkValidator instance = (NetworkValidator) context.get(NAME);
+            if (instance == null) {
+                instance = new NetworkValidator();
+                context.put(NAME, instance);
+            }
+            return instance;
+        }
+    }
+
+    static {
+        ValidatorFactory.factories.put(NetworkValidator.class.getName(), new NetworkValidator.DefaultValidatorFactory());
+    }
+
+}

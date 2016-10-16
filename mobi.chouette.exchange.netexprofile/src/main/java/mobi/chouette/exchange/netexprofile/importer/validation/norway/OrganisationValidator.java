@@ -4,9 +4,12 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.validation.*;
+import no.rutebanken.netex.model.Authority;
 import no.rutebanken.netex.model.DataManagedObjectStructure;
+import no.rutebanken.netex.model.Operator;
 import no.rutebanken.netex.model.Organisation;
 
+import java.util.Collection;
 import java.util.Map;
 
 @Log4j
@@ -39,6 +42,8 @@ public class OrganisationValidator extends AbstractValidator implements Validato
 
         NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);
         Map<String, Organisation> organisations = referential.getOrganisations();
+        Collection<Authority> authorities = referential.getAuthorities().values();
+        Collection<Operator> operators = referential.getOperators().values();
 
         for (String objectId : localContext.keySet()) {
             Context objectContext = (Context) localContext.get(objectId);

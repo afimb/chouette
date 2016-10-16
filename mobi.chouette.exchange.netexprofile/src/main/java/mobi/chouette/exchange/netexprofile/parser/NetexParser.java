@@ -6,7 +6,11 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
+import mobi.chouette.exchange.netexprofile.importer.validation.norway.LineValidator;
+import mobi.chouette.exchange.netexprofile.importer.validation.norway.RoutePointValidator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import no.rutebanken.netex.model.*;
+import org.apache.commons.lang.StringUtils;
 
 import javax.xml.bind.JAXBElement;
 import java.util.ArrayList;
@@ -43,6 +47,7 @@ public class NetexParser extends AbstractParser implements Parser {
         parseTimetableFrames(context, referential, topLevelFrame);
     }
 
+    // TODO rename/refactor to something more appropriate
     private void parseResourceFrames(Context context, NetexReferential referential, List<JAXBElement<? extends Common_VersionFrameStructure>> topLevelFrame) throws Exception {
         List<ResourceFrame> resourceFrames = getFrames(ResourceFrame.class, topLevelFrame);
         for (ResourceFrame resourceFrame : resourceFrames) {
@@ -56,9 +61,12 @@ public class NetexParser extends AbstractParser implements Parser {
         }
     }
 
+    // TODO rename/refactor to something more appropriate
     private void parseSiteFrames(NetexReferential referential, List<JAXBElement<? extends Common_VersionFrameStructure>> topLevelFrame) {
         List<SiteFrame> siteFrames = getFrames(SiteFrame.class, topLevelFrame);
         for (SiteFrame siteFrame : siteFrames) {
+            NetexObjectUtil.addSiteFrameReference(referential, siteFrame.getId(), siteFrame);
+
             StopPlacesInFrame_RelStructure stopPlacesStruct = siteFrame.getStopPlaces();
             List<StopPlace> stopPlaces = stopPlacesStruct.getStopPlace();
             for (StopPlace stopPlace : stopPlaces) {
@@ -67,9 +75,12 @@ public class NetexParser extends AbstractParser implements Parser {
         }
     }
 
+    // TODO rename/refactor to something more appropriate
     private void parseServiceCalendarFrames(NetexReferential referential, List<JAXBElement<? extends Common_VersionFrameStructure>> topLevelFrame) {
         List<ServiceCalendarFrame> serviceCalendarFrames = getFrames(ServiceCalendarFrame.class, topLevelFrame);
         for (ServiceCalendarFrame serviceCalendarFrame : serviceCalendarFrames) {
+            NetexObjectUtil.addServiceCalendarFrameReference(referential, serviceCalendarFrame.getId(), serviceCalendarFrame);
+
             DayTypesInFrame_RelStructure dayTypeStruct = serviceCalendarFrame.getDayTypes();
             List<JAXBElement<? extends DataManagedObjectStructure>> dayTypeStructElements = dayTypeStruct.getDayType_();
             for (JAXBElement<? extends DataManagedObjectStructure> dayTypeStructElement : dayTypeStructElements) {
@@ -80,19 +91,33 @@ public class NetexParser extends AbstractParser implements Parser {
         }
     }
 
+    // TODO rename/refactor to something more appropriate
     private void parseServiceFrames(Context context, NetexReferential referential,
             List<JAXBElement<? extends Common_VersionFrameStructure>> topLevelFrame) throws Exception {
         List<ServiceFrame> serviceFrames = getFrames(ServiceFrame.class, topLevelFrame);
         for (ServiceFrame serviceFrame : serviceFrames) {
+            NetexObjectUtil.addServiceFrameReference(referential, serviceFrame.getId(), serviceFrame);
 
             // 1. parse networks
             Network network = serviceFrame.getNetwork();
+            context.put(NETEX_LINE_DATA_CONTEXT, network);
+            NetworkParser networkParser = (NetworkParser) ParserFactory.create(NetworkParser.class.getName());
+            networkParser.initializeReferentials(context);
 
             // 2. parse route points
+            RoutePointValidator routePointValidator = (RoutePointValidator) ValidatorFactory.create(RoutePointValidator.class.getName(), context);
             RoutePointsInFrame_RelStructure routePointsStructure = serviceFrame.getRoutePoints();
             List<RoutePoint> routePoints = routePointsStructure.getRoutePoint();
             for (RoutePoint routePoint : routePoints) {
-                // TODO implement
+                String objectId = routePoint.getId();
+
+                // 1. initialize stop point references
+                List<String> stopPointIds = NetexObjectUtil.getStopPointRefsOfRoutePoint(routePoint);
+                for (String stopPointId : stopPointIds) {
+                    routePointValidator.addStopPointReference(context, objectId, stopPointId);
+                }
+                NetexObjectUtil.addRoutePointReference(referential, routePoint.getId(), routePoint);
+                routePointValidator.addObjectReference(context, routePoint);
             }
 
             // 3. parse routes
@@ -118,11 +143,9 @@ public class NetexParser extends AbstractParser implements Parser {
 
             // 6. parse scheduled stop points
             ScheduledStopPointsInFrame_RelStructure scheduledStopPointStruct = serviceFrame.getScheduledStopPoints();
-            List<ScheduledStopPoint> scheduledStopPoints = scheduledStopPointStruct.getScheduledStopPoint();
-            for (ScheduledStopPoint scheduledStopPoint : scheduledStopPoints) {
-                // TODO consider generating a more sophisticated id
-                NetexObjectUtil.addScheduledStopPointReference(referential, scheduledStopPoint.getId(), scheduledStopPoint);
-            }
+            context.put(NETEX_LINE_DATA_CONTEXT, scheduledStopPointStruct);
+            ScheduledStopPointParser scheduledStopPointParser = (ScheduledStopPointParser) ParserFactory.create(ScheduledStopPointParser.class.getName());
+            scheduledStopPointParser.initializeReferentials(context);
 
             // 7. parse journey patterns
             JourneyPatternsInFrame_RelStructure journeyPatternStruct = serviceFrame.getJourneyPatterns();
@@ -135,9 +158,12 @@ public class NetexParser extends AbstractParser implements Parser {
         }
     }
 
+    // TODO rename/refactor to something more appropriate
     private void parseTimetableFrames(Context context, NetexReferential referential, List<JAXBElement<? extends Common_VersionFrameStructure>> topLevelFrame) {
         List<TimetableFrame> timetableFrames = getFrames(TimetableFrame.class, topLevelFrame);
         for (TimetableFrame timetableFrame : timetableFrames) {
+            NetexObjectUtil.addTimetableFrameReference(referential, timetableFrame.getId(), timetableFrame);
+
             JourneysInFrame_RelStructure vehicleJourneysStruct = timetableFrame.getVehicleJourneys();
             List<Journey_VersionStructure> serviceJourneyStructs = vehicleJourneysStruct.getDatedServiceJourneyOrDeadRunOrServiceJourney();
             for (Journey_VersionStructure serviceJourneyStruct : serviceJourneyStructs) {

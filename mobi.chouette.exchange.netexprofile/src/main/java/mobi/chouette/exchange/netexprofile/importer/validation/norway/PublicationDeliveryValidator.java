@@ -20,6 +20,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -27,15 +28,19 @@ import java.util.Map;
 @Log4j
 public class PublicationDeliveryValidator extends AbstractValidator implements Validator<PublicationDeliveryStructure> {
 
-    private static final String _1_NETEX_RESOURCEFRAME = "1-NETEX-RESOURCEFRAME";
-    private static final String _1_NETEX_SITEFRAME = "1-NETEX-SITEFRAME";
-    private static final String _1_NETEX_SERVICEFRAME = "1-NETEX-SERVICEFRAME";
-    private static final String _1_NETEX_SERVICECALENDARFRAME = "1-NETEX-SERVICECALENDARFRAME";
-    private static final String _1_NETEX_TIMETABLEFRAME = "1-NETEX-TIMETABLEFRAME";
+    public static final String LOCAL_CONTEXT = "NetexPublicationDelivery";
+    public static final String NAME = "PublicationDeliveryValidator";
+    public static final String PREFIX = "1-NETEX-";
+
+    private static final String _1_NETEX_RESOURCEFRAME = "1-NETEX-Frame-1";
+    private static final String _1_NETEX_SITEFRAME = "1-NETEX-Frame-2";
+    private static final String _1_NETEX_SERVICEFRAME = "1-NETEX-Frame-3";
+    private static final String _1_NETEX_SERVICECALENDARFRAME = "1-NETEX-Frame-4";
+    private static final String _1_NETEX_TIMETABLEFRAME = "1-NETEX-Frame-5";
 
     @Override
     protected void initializeCheckPoints(Context context) {
-
+        addItemToValidation(context, PREFIX, "Frame", 5, "E", "E", "E", "E", "E");
     }
 
     @Override
@@ -60,94 +65,640 @@ public class PublicationDeliveryValidator extends AbstractValidator implements V
         PublicationDeliveryStructure.DataObjects dataObjects = lineDeliveryStructure.getDataObjects();
         List<JAXBElement<? extends Common_VersionFrameStructure>> compositeFrameOrCommonFrame = dataObjects.getCompositeFrameOrCommonFrame();
 
-        // TODO consider if its better to initialize referentials to frames also, for use both by parsers and validators, like this
-/*
+        try {
+            validateResourceFrame(context, referential);
+            validateSiteFrame(context, referential);
+            validateServiceFrame(context, referential);
+            validateServiceCalendarFrame(context, referential);
+            validateTimetableFrame(context, referential);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ValidationConstraints();
+    }
+
+    private void validateResourceFrame(Context context, NetexReferential referential) throws Exception {
         Collection<ResourceFrame> resourceFrames = referential.getResourceFrames().values();
-        if (isListEmpty(resourceFrames)) {
-            System.out.println("Add validation error...");
+        prepareCheckPoint(context, _1_NETEX_RESOURCEFRAME);
+
+        if (isCollectionEmpty(resourceFrames)) {
+            Detail errorItem = new Detail(_1_NETEX_RESOURCEFRAME, null, "No ResourceFrame");
+            addValidationError(context, _1_NETEX_RESOURCEFRAME, errorItem);
         } else {
             for (ResourceFrame resourceFrame : resourceFrames) {
-                System.out.println("Validate resource frame...");
-            }
-        }
-*/
-
-        try {
-            // 1. validate resource frame (how many frames acceptable/mandatory)
-            prepareCheckPoint(context, _1_NETEX_RESOURCEFRAME);
-            if (isElementPresent(context, "//n:ResourceFrame")) {
-                // TODO validate resource frame elements
-                List<ResourceFrame> resourceFrames = NetexObjectUtil.getFrames(ResourceFrame.class, compositeFrameOrCommonFrame);
-                ResourceFrame resourceFrame = resourceFrames.get(0);
 
                 // validate data sources
                 DataSourcesInFrame_RelStructure dataSourcesStruct = resourceFrame.getDataSources();
-                if (dataSourcesStruct != null) {
-                    // TODO validate data sources
-                    //List<DataSource> dataSources = dataSourcesStruct.getDataSource();
+                if (dataSourcesStruct != null && !isCollectionEmpty(dataSourcesStruct.getDataSource())) {
+                    log.info("DataSources present");
+                    List<DataSource> dataSources = dataSourcesStruct.getDataSource();
+                    for (DataSource dataSource : dataSources) {
+                        // TODO validate data source instance
+                    }
                 }
 
                 // validate responsibility sets
                 ResponsibilitySetsInFrame_RelStructure responsibilitySetsStruct = resourceFrame.getResponsibilitySets();
-                if (responsibilitySetsStruct != null) {
-                    // TODO validate
+                if (responsibilitySetsStruct != null && !isCollectionEmpty(responsibilitySetsStruct.getResponsibilitySet())) {
+                    log.info("ResponsibilitySets present");
+                    List<ResponsibilitySet> responsibilitySets = responsibilitySetsStruct.getResponsibilitySet();
+                    for (ResponsibilitySet responsibilitySet : responsibilitySets) {
+                        // TODO validate responsibility set instance
+                    }
                 }
 
                 TypesOfValueInFrame_RelStructure typesOfValueStruct = resourceFrame.getTypesOfValue();
-                if (typesOfValueStruct != null) {
-                    // TODO validate
+                if (typesOfValueStruct != null && !isCollectionEmpty(typesOfValueStruct.getValueSetOrTypeOfValue())) {
+                    log.info("TypesOfValues present");
+                    List<JAXBElement<? extends DataManagedObjectStructure>> typesOfValueElements = typesOfValueStruct.getValueSetOrTypeOfValue();
+                    for (JAXBElement<? extends DataManagedObjectStructure> typesOfValueElement : typesOfValueElements) {
+                        // TODO downcast and validate
+                    }
                 }
 
                 // validate organisations
-                OrganisationValidator organisationValidator = (OrganisationValidator) ValidatorFactory.create(OrganisationValidator.class.getName(), context);
-                organisationValidator.validate(context, null);
-            } else {
-                Detail errorItem = new Detail(_1_NETEX_RESOURCEFRAME, null, "No ResourceFrame");
-                addValidationError(context, _1_NETEX_RESOURCEFRAME, errorItem);
-            }
+                Collection<Organisation> organisations = referential.getOrganisations().values();
+                if (!isCollectionEmpty(organisations)) {
+                    log.info("Organisations present");
+                    // TODO consider adding the data to be validated in constant VALIDATION_DATA
+                    OrganisationValidator organisationValidator = (OrganisationValidator) ValidatorFactory.create(OrganisationValidator.class.getName(), context);
+                    organisationValidator.validate(context, null);
+                }
 
-            // 2. validate site frame
-            prepareCheckPoint(context, _1_NETEX_SITEFRAME);
-            if (isElementPresent(context, "//n:SiteFrame")) {
-                // TODO validate site frame elements
-                List<SiteFrame> siteFrames = NetexObjectUtil.getFrames(SiteFrame.class, compositeFrameOrCommonFrame);
-                SiteFrame siteFrame = siteFrames.get(0);
-            } else {
-                Detail errorItem = new Detail(_1_NETEX_SITEFRAME, null, "No SiteFrame");
-                addValidationError(context, _1_NETEX_SITEFRAME, errorItem);
-            }
+                // validate groups of operators
+                GroupsOfOperatorsInFrame_RelStructure groupsOfOperatorsStruct = resourceFrame.getGroupsOfOperators();
+                if (groupsOfOperatorsStruct != null && !isCollectionEmpty(groupsOfOperatorsStruct.getGroupOfOperators())) {
+                    log.info("GroupsOfOperators present");
+                    List<GroupOfOperators> groupOfOperatorsList = groupsOfOperatorsStruct.getGroupOfOperators();
+                    for (GroupOfOperators groupOfOperators : groupOfOperatorsList) {
+                        // TODO validate group of operators instance
+                    }
+                }
 
-            // 3. validate service frame
-            prepareCheckPoint(context, _1_NETEX_SERVICEFRAME);
-            if (isElementPresent(context, "//n:ServiceFrame")) {
-                // TODO validate service frame elements
-            } else {
-                Detail errorItem = new Detail(_1_NETEX_SERVICEFRAME, null, "No ServiceFrame");
-                addValidationError(context, _1_NETEX_SERVICEFRAME, errorItem);
-            }
+                // validate equipments
+                EquipmentsInFrame_RelStructure equipmentsStruct = resourceFrame.getEquipments();
+                if (equipmentsStruct != null && !isCollectionEmpty(equipmentsStruct.getEquipment())) {
+                    log.info("Equipments present");
+                    List<JAXBElement<? extends Equipment_VersionStructure>> equipmentElements = equipmentsStruct.getEquipment();
+                    for (JAXBElement<? extends Equipment_VersionStructure> equipmentElement : equipmentElements) {
+                        Equipment_VersionStructure equipment = equipmentElement.getValue();
+                        // TODO downcast and validate
+                    }
+                }
 
-            // 4. validate service calendar frame
-            prepareCheckPoint(context, _1_NETEX_SERVICECALENDARFRAME);
-            if (isElementPresent(context, "//n:ServiceCalendarFrame")) {
-                // TODO validate service frame elements
-            } else {
-                Detail errorItem = new Detail(_1_NETEX_SERVICECALENDARFRAME, null, "No ServiceCalendarFrame");
-                addValidationError(context, _1_NETEX_SERVICECALENDARFRAME, errorItem);
-            }
+                // validate vehichle types
+                VehicleTypesInFrame_RelStructure vehicleTypesStruct = resourceFrame.getVehicleTypes();
+                if (vehicleTypesStruct != null && !isCollectionEmpty(vehicleTypesStruct.getCompoundTrainOrTrainOrVehicleType())) {
+                    log.info("VehicleTypes present");
+                    List<VehicleType_VersionStructure> vehicleTypeStructList = vehicleTypesStruct.getCompoundTrainOrTrainOrVehicleType();
+                    for (VehicleType_VersionStructure vehicleTypeStruct : vehicleTypeStructList) {
+                        // TODO validate
+                    }
+                }
 
-            // 5. validate timetable frame
-            prepareCheckPoint(context, _1_NETEX_TIMETABLEFRAME);
-            if (isElementPresent(context, "//n:TimetableFrame")) {
-                // TODO validate timetable frame elements
-            } else {
-                Detail errorItem = new Detail(_1_NETEX_TIMETABLEFRAME, null, "No TimetableFrame");
-                addValidationError(context, _1_NETEX_TIMETABLEFRAME, errorItem);
+                // validate vehicles
+                VehiclesInFrame_RelStructure vehiclesStruct = resourceFrame.getVehicles();
+                if (vehiclesStruct != null && !isCollectionEmpty(vehiclesStruct.getTrainElementOrVehicle())) {
+                    log.info("Vehicles present");
+                    List<DataManagedObjectStructure> vehicles = vehiclesStruct.getTrainElementOrVehicle();
+                    for (DataManagedObjectStructure vehicle : vehicles) {
+                        // TODO downcast and validate
+                    }
+                }
+
+                // validate schematic maps
+                SchematicMapsInFrame_RelStructure schematicMapsStruct = resourceFrame.getSchematicMaps();
+                if (schematicMapsStruct != null && !isCollectionEmpty(schematicMapsStruct.getSchematicMap())) {
+                    log.info("SchematicMaps present");
+                    List<SchematicMap> schematicMapList = schematicMapsStruct.getSchematicMap();
+                    for (SchematicMap schematicMap : schematicMapList) {
+                        // TODO validate
+                    }
+                }
+
+                // validate groups of entities
+                GroupOfEntitiesInFrame_RelStructure groupsOfEntities = resourceFrame.getGroupsOfEntities();
+                if (groupsOfEntities != null && !isCollectionEmpty(groupsOfEntities.getGeneralGroupOfEntities())) {
+                    log.info("GroupOfEntities present");
+                    List<GeneralGroupOfEntities> generalGroupOfEntities = groupsOfEntities.getGeneralGroupOfEntities();
+                    for (GeneralGroupOfEntities generalGroupOfEntity : generalGroupOfEntities) {
+                        // TODO downcast and validate
+                    }
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+    }
 
-        return new ValidationConstraints();
+    private void validateSiteFrame(Context context, NetexReferential referential)  throws Exception {
+        Collection<SiteFrame> siteFrames = referential.getSiteFrames().values();
+        prepareCheckPoint(context, _1_NETEX_SITEFRAME);
+
+        if (isCollectionEmpty(siteFrames)) {
+            Detail errorItem = new Detail(_1_NETEX_SITEFRAME, null, "No SiteFrame");
+            addValidationError(context, _1_NETEX_SITEFRAME, errorItem);
+        } else {
+            for (SiteFrame siteFrame : siteFrames) {
+                // TODO add validation of site frame elements
+
+                // validate topographic places
+                TopographicPlacesInFrame_RelStructure topographicPlacesStruct = siteFrame.getTopographicPlaces();
+                if (topographicPlacesStruct != null && !isCollectionEmpty(topographicPlacesStruct.getTopographicPlace())) {
+                    log.info("TopographicPlace present");
+                    List<TopographicPlace> topographicPlaces = topographicPlacesStruct.getTopographicPlace();
+                    for (TopographicPlace topographicPlace : topographicPlaces) {
+                        // TODO validate
+                    }
+                }
+
+                // validate addresses
+                AddressesInFrame_RelStructure addressesStruct = siteFrame.getAddresses();
+                if (addressesStruct != null && !isCollectionEmpty(addressesStruct.getAddress())) {
+                    log.info("Addresses present");
+                    List<JAXBElement<? extends Address_VersionStructure>> addressElements = addressesStruct.getAddress();
+                    for (JAXBElement<? extends Address_VersionStructure> addressElement : addressElements) {
+                        // TODO downcast and validate
+                        //Address_VersionStructure value = addressElement.getValue();
+                    }
+                }
+
+                // validate accesses
+                AccessesInFrame_RelStructure accessesStruct = siteFrame.getAccesses();
+                if (accessesStruct != null && !isCollectionEmpty(accessesStruct.getAccess())) {
+                    log.info("Accesses present");
+                    List<Access> accesses = accessesStruct.getAccess();
+                    for (Access access : accesses) {
+                        // TODO validate access instance
+                    }
+                }
+
+                // validate stop places
+                StopPlacesInFrame_RelStructure stopPlacesStruct = siteFrame.getStopPlaces();
+                if (stopPlacesStruct != null && !isCollectionEmpty(stopPlacesStruct.getStopPlace())) {
+                    log.info("StopPlaces present");
+                    List<StopPlace> stopPlaces = stopPlacesStruct.getStopPlace();
+                    for (StopPlace stopPlace : stopPlaces) {
+                        // TODO validate stop place
+                    }
+                }
+
+                // validate flexible stop places
+                FlexibleStopPlacesInFrame_RelStructure flexibleStopPlacesStruct = siteFrame.getFlexibleStopPlaces();
+                if (flexibleStopPlacesStruct != null && !isCollectionEmpty(flexibleStopPlacesStruct.getFlexibleStopPlace())) {
+                    log.info("FlexibleStopPlaces present");
+                    List<FlexibleStopPlace> flexibleStopPlaces = flexibleStopPlacesStruct.getFlexibleStopPlace();
+                    for (FlexibleStopPlace flexibleStopPlace : flexibleStopPlaces) {
+                        // TODO validate
+                    }
+                }
+
+                // validate points of interest
+                PointsOfInterestInFrame_RelStructure pointsOfInterestStruct = siteFrame.getPointsOfInterest();
+                if (pointsOfInterestStruct != null && !isCollectionEmpty(pointsOfInterestStruct.getPointOfInterest())) {
+                    log.info("PointsOfInterest present");
+                    List<PointOfInterest> pointOfInterestList = pointsOfInterestStruct.getPointOfInterest();
+                    for (PointOfInterest pointOfInterest : pointOfInterestList) {
+                        // TODO validate
+                    }
+                }
+
+                // validate parkings
+                ParkingsInFrame_RelStructure parkingsStruct = siteFrame.getParkings();
+                if (parkingsStruct != null && !isCollectionEmpty(parkingsStruct.getParking())) {
+                    log.info("Parkings present");
+                    List<Parking> parkings = parkingsStruct.getParking();
+                    for (Parking parking : parkings) {
+                        // TODO validate
+                    }
+                }
+
+                // validate navigation paths
+                NavigationPathsInFrame_RelStructure navigationPathsStruct = siteFrame.getNavigationPaths();
+                if (navigationPathsStruct != null && !isCollectionEmpty(navigationPathsStruct.getNavigationPath())) {
+                    log.info("NavigationPaths present");
+                    List<NavigationPath> navigationPaths = navigationPathsStruct.getNavigationPath();
+                    for (NavigationPath navigationPath : navigationPaths) {
+                        // TODO validate
+                    }
+                }
+
+                // validate site facility sets
+                SiteFacilitySetsInFrame_RelStructure siteFacilitySetsStruct = siteFrame.getSiteFacilitySets();
+                if (siteFacilitySetsStruct != null && !isCollectionEmpty(siteFacilitySetsStruct.getSiteFacilitySet())) {
+                    log.info("SiteFacilitySets present");
+                    List<SiteFacilitySet> siteFacilitySets = siteFacilitySetsStruct.getSiteFacilitySet();
+                    for (SiteFacilitySet siteFacilitySet : siteFacilitySets) {
+                        // TODO validate
+                    }
+                }
+            }
+        }
+    }
+
+    private void validateServiceFrame(Context context, NetexReferential referential) throws Exception {
+        Collection<ServiceFrame> serviceFrames = referential.getServiceFrames().values();
+        prepareCheckPoint(context, _1_NETEX_SERVICEFRAME);
+
+        if (isCollectionEmpty(serviceFrames)) {
+            Detail errorItem = new Detail(_1_NETEX_SERVICEFRAME, null, "No ServiceFrame");
+            addValidationError(context, _1_NETEX_SERVICEFRAME, errorItem);
+        } else {
+            for (ServiceFrame serviceFrame : serviceFrames) {
+                // TODO validate frame elements
+
+                // validate network
+                Network network = serviceFrame.getNetwork();
+                if (network != null) {
+                    log.info("Network present");
+                    // TODO consider validating this Network instance, or instance registered in referential
+                    NetworkValidator networkValidator = (NetworkValidator) ValidatorFactory.create(NetworkValidator.class.getName(), context);
+                    networkValidator.validate(context, network);
+                }
+
+                // validate route points
+                Collection<RoutePoint> routePoints = referential.getRoutePoints().values();
+                if (!isCollectionEmpty(routePoints)) {
+                    log.info("Route points present");
+                    RoutePointValidator routePointValidator = (RoutePointValidator) ValidatorFactory.create(RoutePointValidator.class.getName(), context);
+                    routePointValidator.validate(context, null);
+                }
+
+                // validate routes
+                Collection<Route> routes = referential.getRoutes().values();
+                if (!isCollectionEmpty(routes)) {
+                    log.info("Routes present");
+                    RouteValidator routeValidator = (RouteValidator) ValidatorFactory.create(RouteValidator.class.getName(), context);
+                    routeValidator.validate(context, null);
+                }
+
+                // validate flexiblePointProperties
+                FlexiblePointProperties_RelStructure flexiblePointPropertiesStruct = serviceFrame.getFlexiblePointProperties();
+                if (flexiblePointPropertiesStruct != null && !isCollectionEmpty(flexiblePointPropertiesStruct.getFlexiblePointProperties())) {
+                    log.info("FlexiblePointProperties present");
+                    List<FlexiblePointProperties> flexiblePointProperties = flexiblePointPropertiesStruct.getFlexiblePointProperties();
+                    for (FlexiblePointProperties flexiblePointProperty : flexiblePointProperties) {
+                        // TODO validate
+                    }
+                }
+
+                // validate flexibleLinkProperties
+                FlexibleLinkProperties_RelStructure flexibleLinkPropertiesStruct = serviceFrame.getFlexibleLinkProperties();
+                if (flexibleLinkPropertiesStruct != null && !isCollectionEmpty(flexibleLinkPropertiesStruct.getFlexibleLinkProperties())) {
+                    log.info("FlexibleLinkProperties present");
+                    List<FlexibleLinkProperties> flexibleLinkProperties = flexibleLinkPropertiesStruct.getFlexibleLinkProperties();
+                    for (FlexibleLinkProperties flexibleLinkProperty : flexibleLinkProperties) {
+                        // TODO validate
+                    }
+                }
+
+                // validate commonSections
+                CommonSectionsInFrame_RelStructure commonSectionsStruct = serviceFrame.getCommonSections();
+                if (commonSectionsStruct != null && !isCollectionEmpty(commonSectionsStruct.getCommonSection())) {
+                    log.info("CommonSections present");
+                    List<CommonSection> commonSections = commonSectionsStruct.getCommonSection();
+                    for (CommonSection commonSection : commonSections) {
+                        // TODO validate
+                    }
+                }
+
+                // validate lines
+                Collection<Line> lines = referential.getLines().values();
+                if (!isCollectionEmpty(lines)) {
+                    log.info("Lines present");
+                    LineValidator lineValidator = (LineValidator) ValidatorFactory.create(LineValidator.class.getName(), context);
+                    lineValidator.validate(context, null);
+                }
+
+                // validate groups of lines
+                GroupsOfLinesInFrame_RelStructure groupsOfLinesStruct = serviceFrame.getGroupsOfLines();
+                if (groupsOfLinesStruct != null && !isCollectionEmpty(groupsOfLinesStruct.getGroupOfLines())) {
+                    log.info("GroupsOfLines present");
+                    List<GroupOfLines> groupsOfLines = groupsOfLinesStruct.getGroupOfLines();
+                    for (GroupOfLines groupOfLines : groupsOfLines) {
+                        // TODO validate
+                    }
+                }
+
+                // validate destination displays
+                DestinationDisplaysInFrame_RelStructure destinationDisplaysStruct = serviceFrame.getDestinationDisplays();
+                if (destinationDisplaysStruct != null && !isCollectionEmpty(destinationDisplaysStruct.getDestinationDisplay())) {
+                    log.info("DestinationDisplays present");
+                    List<DestinationDisplay> destinationDisplays = destinationDisplaysStruct.getDestinationDisplay();
+                    for (DestinationDisplay destinationDisplay : destinationDisplays) {
+                        // TODO validate
+                    }
+                }
+
+                // validate scheduled stop points
+                // TODO implement separate validator
+                Collection<ScheduledStopPoint> scheduledStopPoints = referential.getScheduledStopPoints().values();
+                if (!isCollectionEmpty(scheduledStopPoints)) {
+                    log.info("ScheduledStopPoints present");
+                    for (ScheduledStopPoint scheduledStopPoint : scheduledStopPoints) {
+                        // TODO validate
+                    }
+                }
+
+                // validate service patterns
+                ServicePatternsInFrame_RelStructure servicePatternsStruct = serviceFrame.getServicePatterns();
+                if (servicePatternsStruct != null && !isCollectionEmpty(servicePatternsStruct.getServicePatternOrJourneyPatternView())) {
+                    log.info("ServicePatterns present");
+                    List<Object> servicePatterns = servicePatternsStruct.getServicePatternOrJourneyPatternView();
+                    for (Object servicePattern : servicePatterns) {
+                        // TODO downcast and validate
+                    }
+                }
+
+                // validate tariff zones
+                TariffZonesInFrame_RelStructure tariffZonesStruct = serviceFrame.getTariffZones();
+                if (tariffZonesStruct != null && !isCollectionEmpty(tariffZonesStruct.getTariffZone())) {
+                    log.info("TariffZones present");
+                    List<TariffZone> tariffZones = tariffZonesStruct.getTariffZone();
+                    for (TariffZone tariffZone : tariffZones) {
+                        // TODO validate
+                    }
+                }
+
+                // validate stop assignments
+                // TODO make type more generic in referential (StopAssignment)
+                // TODO implement separate validator
+                Collection<PassengerStopAssignment> stopAssignments = referential.getPassengerStopAssignments().values();
+                if (!isCollectionEmpty(stopAssignments)) {
+                    log.info("PassengerStopAssignments present");
+                    for (PassengerStopAssignment stopAssignment : stopAssignments) {
+                        // TODO up-/downcast and validate
+                    }
+                }
+
+                // validate timing points
+                TimingPointsInFrame_RelStructure timingPointsStruct = serviceFrame.getTimingPoints();
+                if (timingPointsStruct != null && !isCollectionEmpty(timingPointsStruct.getTimingPoint())) {
+                    log.info("TimingPoints present");
+                    List<TimingPoint> timingPoints = timingPointsStruct.getTimingPoint();
+                    for (TimingPoint timingPoint : timingPoints) {
+                        // TODO validate
+                    }
+                }
+
+                // validate timing links
+                TimingLinksInFrame_RelStructure timingLinksStruct = serviceFrame.getTimingLinks();
+                if (timingLinksStruct != null && !isCollectionEmpty(timingLinksStruct.getTimingLink())) {
+                    log.info("TimingLinks present");
+                    List<TimingLink> timingLinks = timingLinksStruct.getTimingLink();
+                    for (TimingLink timingLink : timingLinks) {
+                        // TODO validate
+                    }
+                }
+
+                // validate journey patterns
+                // TODO implement separate validator for journey patterns
+                Collection<JourneyPattern> journeyPatterns = referential.getJourneyPatterns().values();
+                if (!isCollectionEmpty(journeyPatterns)) {
+                    log.info("JourneyPatterns present");
+                    for (JourneyPattern journeyPattern : journeyPatterns) {
+                        // TODO validate
+                    }
+                }
+
+                // validate service exclusions
+                ServiceExclusionsInFrame_RelStructure serviceExclusionsStruct = serviceFrame.getServiceExclusions();
+                if (serviceExclusionsStruct != null && !isCollectionEmpty(serviceExclusionsStruct.getServiceExclusion())) {
+                    log.info("ServiceExclusions present");
+                    List<ServiceExclusion> serviceExclusions = serviceExclusionsStruct.getServiceExclusion();
+                    for (ServiceExclusion serviceExclusion : serviceExclusions) {
+                        // TODO validate
+                    }
+                }
+
+                // validate notices
+                NoticesInFrame_RelStructure noticesStruct = serviceFrame.getNotices();
+                if (noticesStruct != null && !isCollectionEmpty(noticesStruct.getNotice())) {
+                    log.info("Notices present");
+                    List<Notice> notices = noticesStruct.getNotice();
+                    for (Notice notice : notices) {
+                        // TODO validate
+                    }
+                }
+
+                // validate notice assignments
+                NoticeAssignmentsInFrame_RelStructure noticeAssignmentsStruct = serviceFrame.getNoticeAssignments();
+                if (noticeAssignmentsStruct != null && !isCollectionEmpty(noticeAssignmentsStruct.getNoticeAssignment_())) {
+                    log.info("NoticeAssignments present");
+                    List<JAXBElement<? extends DataManagedObjectStructure>> noticeAssignmentElements = noticeAssignmentsStruct.getNoticeAssignment_();
+                    for (JAXBElement<? extends DataManagedObjectStructure> noticeAssignmentElement : noticeAssignmentElements) {
+                        // TODO downcast and validate
+                    }
+                }
+            }
+        }
+    }
+
+    private void validateServiceCalendarFrame(Context context, NetexReferential referential) {
+        Collection<ServiceCalendarFrame> serviceCalendarFrames = referential.getServiceCalendarFrames().values();
+        prepareCheckPoint(context, _1_NETEX_SERVICECALENDARFRAME);
+
+        if (isCollectionEmpty(serviceCalendarFrames)) {
+            Detail errorItem = new Detail(_1_NETEX_SERVICECALENDARFRAME, null, "No ServiceCalendarFrame");
+            addValidationError(context, _1_NETEX_SERVICECALENDARFRAME, errorItem);
+        } else {
+            for (ServiceCalendarFrame serviceCalendarFrame : serviceCalendarFrames) {
+
+                // validate service calendar
+                ServiceCalendar serviceCalendar = serviceCalendarFrame.getServiceCalendar();
+                if (serviceCalendar != null) {
+                    log.info("Service calendar present");
+                    // TODO validate
+                }
+
+                // validate day types
+                // TODO implement separate validator
+                Collection<DayType> dayTypes = referential.getDayTypes().values();
+                if (!isCollectionEmpty(dayTypes)) {
+                    log.info("DayTypes present");
+                    for (DayType dayType : dayTypes) {
+                        // TODO validate
+                    }
+                }
+
+                // validate timebands
+                TimebandsInFrame_RelStructure timebandsStruct = serviceCalendarFrame.getTimebands();
+                if (timebandsStruct != null && !isCollectionEmpty(timebandsStruct.getTimeband())) {
+                    log.info("Timebands present");
+                    List<Timeband> timebands = timebandsStruct.getTimeband();
+                    for (Timeband timeband : timebands) {
+                        // TODO validate
+                    }
+                }
+
+                // validate operating days
+                OperatingDaysInFrame_RelStructure operatingDaysStruct = serviceCalendarFrame.getOperatingDays();
+                if (operatingDaysStruct != null && !isCollectionEmpty(operatingDaysStruct.getOperatingDay())) {
+                    log.info("OperatingDays present");
+                    List<OperatingDay> operatingDays = operatingDaysStruct.getOperatingDay();
+                    for (OperatingDay operatingDay : operatingDays) {
+                        // TODO validate
+                    }
+                }
+
+                // validate operating periods
+                OperatingPeriodsInFrame_RelStructure operatingPeriodsStruct = serviceCalendarFrame.getOperatingPeriods();
+                if (operatingPeriodsStruct != null && !isCollectionEmpty(operatingPeriodsStruct.getOperatingPeriodOrUicOperatingPeriod())) {
+                    log.info("OperatingPeriods present");
+                    List<OperatingPeriod_VersionStructure> operatingPeriods = operatingPeriodsStruct.getOperatingPeriodOrUicOperatingPeriod();
+                    for (OperatingPeriod_VersionStructure operatingPeriod : operatingPeriods) {
+                        // TODO downcast and validate
+                    }
+                }
+
+                // validate day type assignments
+                DayTypeAssignmentsInFrame_RelStructure dayTypeAssignmentsStruct = serviceCalendarFrame.getDayTypeAssignments();
+                if (dayTypeAssignmentsStruct != null && !isCollectionEmpty(dayTypeAssignmentsStruct.getDayTypeAssignment())) {
+                    log.info("DayTypeAssignments present");
+                    List<DayTypeAssignment> dayTypeAssignments = dayTypeAssignmentsStruct.getDayTypeAssignment();
+                    for (DayTypeAssignment dayTypeAssignment : dayTypeAssignments) {
+                        // TODO validate
+                    }
+                }
+            }
+        }
+    }
+
+    private void validateTimetableFrame(Context context, NetexReferential referential) {
+        Collection<TimetableFrame> timetableFrames = referential.getTimetableFrames().values();
+        prepareCheckPoint(context, _1_NETEX_TIMETABLEFRAME);
+
+        if (isCollectionEmpty(timetableFrames)) {
+            Detail errorItem = new Detail(_1_NETEX_TIMETABLEFRAME, null, "No TimetableFrame");
+            addValidationError(context, _1_NETEX_TIMETABLEFRAME, errorItem);
+        } else {
+            for (TimetableFrame timetableFrame : timetableFrames) {
+
+                // validate bookingtimes/validityconditions, which one?
+                ContainedAvailabilityConditions_RelStructure bookingTimesStruct = timetableFrame.getBookingTimes();
+                if (bookingTimesStruct != null && !isCollectionEmpty(bookingTimesStruct.getAvailabilityCondition())) {
+                    log.info("ContainedAvailabilityConditions present");
+                    List<AvailabilityCondition> availabilityConditions = bookingTimesStruct.getAvailabilityCondition();
+                    for (AvailabilityCondition availabilityCondition : availabilityConditions) {
+                        // TODO validate
+                    }
+                }
+                // validate bookingtimes/validityconditions, which one?
+                ValidityConditions_RelStructure validityConditionsStruct = timetableFrame.getValidityConditions();
+                if (validityConditionsStruct != null && !isCollectionEmpty(validityConditionsStruct.getValidityConditionRefOrValidBetweenOrValidityCondition_())) {
+                    log.info("ValidityConditions present");
+                    List<Object> validityConditions = validityConditionsStruct.getValidityConditionRefOrValidBetweenOrValidityCondition_();
+                    for (Object validityCondition : validityConditions) {
+                        // TODO downcast and validate
+                    }
+                }
+
+                // validate vehicle journeys
+                // TODO implement separate validator
+                Collection<ServiceJourney> serviceJourneys = referential.getServiceJourneys().values();
+                if (!isCollectionEmpty(serviceJourneys)) {
+                    log.info("ServiceJourneys present");
+                    for (ServiceJourney serviceJourney : serviceJourneys) {
+                        // TODO validate
+                    }
+                }
+
+                // validate frequency groups
+                FrequencyGroupsInFrame_RelStructure frequencyGroupsStruct = timetableFrame.getFrequencyGroups();
+                if (frequencyGroupsStruct != null && !isCollectionEmpty(frequencyGroupsStruct.getHeadwayJourneyGroupOrRhythmicalJourneyGroup())) {
+                    log.info("FrequencyGroups present");
+                    List<JourneyFrequencyGroup_VersionStructure> frequencyGroups = frequencyGroupsStruct.getHeadwayJourneyGroupOrRhythmicalJourneyGroup();
+                    for (JourneyFrequencyGroup_VersionStructure frequencyGroup : frequencyGroups) {
+                        // TODO validate
+                    }
+                }
+
+                // validate groups of services
+                GroupsOfServicesInFrame_RelStructure groupsOfServicesStruct = timetableFrame.getGroupsOfServices();
+                if (groupsOfServicesStruct != null && !isCollectionEmpty(groupsOfServicesStruct.getGroupOfServices())) {
+                    log.info("GroupsOfServices present");
+                    List<GroupOfServices> groupsOfServices = groupsOfServicesStruct.getGroupOfServices();
+                    for (GroupOfServices groupOfServices : groupsOfServices) {
+                        // TODO validate
+                    }
+                }
+
+                // validate journey part couples
+                JourneyPartCouplesInFrame_RelStructure journeyPartCouplesStruct = timetableFrame.getJourneyPartCouples();
+                if (journeyPartCouplesStruct != null && !isCollectionEmpty(journeyPartCouplesStruct.getJourneyPartCouple())) {
+                    log.info("JourneyPartCouples present");
+                    List<JourneyPartCouple> journeyPartCouples = journeyPartCouplesStruct.getJourneyPartCouple();
+                    for (JourneyPartCouple journeyPartCouple : journeyPartCouples) {
+                        // TODO validate
+                    }
+                }
+
+                // validate coupled journeys
+                CoupledJourneysInFrame_RelStructure coupledJourneysStruct = timetableFrame.getCoupledJourneys();
+                if (coupledJourneysStruct != null && !isCollectionEmpty(coupledJourneysStruct.getCoupledJourney())) {
+                    log.info("CoupledJourneys present");
+                    List<CoupledJourney> coupledJourneys = coupledJourneysStruct.getCoupledJourney();
+                    for (CoupledJourney coupledJourney : coupledJourneys) {
+                        // TODO validate
+                    }
+                }
+
+                // validate service facility sets
+                ServiceFacilitySetsInFrame_RelStructure serviceFacilitySetsStruct = timetableFrame.getServiceFacilitySets();
+                if (serviceFacilitySetsStruct != null && !isCollectionEmpty(serviceFacilitySetsStruct.getServiceFacilitySet())) {
+                    log.info("ServiceFacilitySets present");
+                    List<ServiceFacilitySet> serviceFacilitySets = serviceFacilitySetsStruct.getServiceFacilitySet();
+                    for (ServiceFacilitySet serviceFacilitySet : serviceFacilitySets) {
+                        // TODO validate
+                    }
+                }
+
+                // validate flexible service properties
+                FlexibleServicePropertiesInFrame_RelStructure flexibleServicePropertiesStruct = timetableFrame.getFlexibleServiceProperties();
+                if (flexibleServicePropertiesStruct != null && !isCollectionEmpty(flexibleServicePropertiesStruct.getFlexibleServiceProperties())) {
+                    log.info("FlexibleServiceProperties present");
+                    List<FlexibleServiceProperties> flexibleServicePropertiesList = flexibleServicePropertiesStruct.getFlexibleServiceProperties();
+                    for (FlexibleServiceProperties flexibleServiceProperties : flexibleServicePropertiesList) {
+                        // TODO validate
+                    }
+                }
+
+                // validate journey meetings
+                JourneyMeetingsInFrame_RelStructure journeyMeetingsStruct = timetableFrame.getJourneyMeetings();
+                if (journeyMeetingsStruct != null && !isCollectionEmpty(journeyMeetingsStruct.getJourneyMeeting())) {
+                    log.info("JourneyMeetings present");
+                    List<JourneyMeeting> journeyMeetings = journeyMeetingsStruct.getJourneyMeeting();
+                    for (JourneyMeeting journeyMeeting : journeyMeetings) {
+                        // TODO validate
+                    }
+                }
+
+                // validate journey interchanges
+                JourneyInterchangesInFrame_RelStructure journeyInterchangesStruct = timetableFrame.getJourneyInterchanges();
+                if (journeyInterchangesStruct != null && !isCollectionEmpty(journeyInterchangesStruct.getServiceJourneyPatternInterchangeOrServiceJourneyInterchange())) {
+                    log.info("JourneyInterchanges present");
+                    List<Interchange_VersionStructure> journeyInterchanges = journeyInterchangesStruct.getServiceJourneyPatternInterchangeOrServiceJourneyInterchange();
+                    for (Interchange_VersionStructure journeyInterchange : journeyInterchanges) {
+                        // TODO downcast and validate
+                    }
+                }
+            }
+        }
+    }
+
+    public static class DefaultValidatorFactory extends ValidatorFactory {
+        @Override
+        protected Validator<PublicationDeliveryStructure> create(Context context) {
+            PublicationDeliveryValidator instance = (PublicationDeliveryValidator) context.get(NAME);
+            if (instance == null) {
+                instance = new PublicationDeliveryValidator();
+                context.put(NAME, instance);
+            }
+            return instance;
+        }
+    }
+
+    static {
+        ValidatorFactory.factories.put(PublicationDeliveryValidator.class.getName(),
+                new PublicationDeliveryValidator.DefaultValidatorFactory());
     }
 
 }

@@ -49,7 +49,7 @@ public class LineParser extends AbstractParser implements Parser {
                 validator.addRouteReference(context, objectId, routeId);
             }
 
-            NetexObjectUtil.addLineReference(referential, line.getId(), line);
+            NetexObjectUtil.addLineReference(referential, objectId, line);
             validator.addObjectReference(context, line);
         }
     }

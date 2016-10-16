@@ -13,6 +13,7 @@ import org.w3c.dom.NodeList;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -192,6 +193,10 @@ public abstract class AbstractValidator implements Constant {
 
     protected boolean isListEmpty(List<?> list) {
         return list == null || list.isEmpty();
+    }
+
+    protected boolean isCollectionEmpty(Collection<?> collection) {
+        return collection == null || collection.isEmpty();
     }
 
     protected boolean isEmpty(String text) {

@@ -22,6 +22,22 @@ public class NetexReferential implements Serializable {
 
     @Getter
     @Setter
+    private Map<String, SiteFrame> siteFrames = new HashMap<>();
+
+    @Getter
+    @Setter
+    private Map<String, ServiceFrame> serviceFrames = new HashMap<>();
+
+    @Getter
+    @Setter
+    private Map<String, ServiceCalendarFrame> serviceCalendarFrames = new HashMap<>();
+
+    @Getter
+    @Setter
+    private Map<String, TimetableFrame> timetableFrames = new HashMap<>();
+
+    @Getter
+    @Setter
     private Map<String, Authority> authorities = new HashMap<>();
 
     @Getter
@@ -35,6 +51,10 @@ public class NetexReferential implements Serializable {
     @Getter
     @Setter
     private Map<String, DayType> dayTypes = new HashMap<>();
+
+    @Getter
+    @Setter
+    private Map<String, RoutePoint> routePoints = new HashMap<>();
 
     @Getter
     @Setter
@@ -64,10 +84,16 @@ public class NetexReferential implements Serializable {
     private Map<String, ServiceJourney> serviceJourneys = new HashMap<>();
 
     public void clear() {
+        resourceFrames.clear();
+        siteFrames.clear();
+        serviceFrames.clear();
+        serviceCalendarFrames.clear();
+        timetableFrames.clear();
         authorities.clear();
         operators.clear();
         organisations.clear();
         dayTypes.clear();
+        routePoints.clear();
         routes.clear();
         lines.clear();
         passengerStopAssignments.clear();

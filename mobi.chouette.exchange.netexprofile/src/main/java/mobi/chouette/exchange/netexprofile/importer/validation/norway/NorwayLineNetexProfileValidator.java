@@ -53,8 +53,11 @@ public class NorwayLineNetexProfileValidator extends AbstractNetexProfileValidat
 			Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 
 			if (validationContext != null) {
-				LineValidator lineValidator = (LineValidator) ValidatorFactory.create(LineValidator.class.getName(), context);
-				lineValidator.validate(context, null);
+				PublicationDeliveryValidator publicationDeliveryValidator = (PublicationDeliveryValidator)
+						ValidatorFactory.create(PublicationDeliveryValidator.class.getName(), context);
+				publicationDeliveryValidator.validate(context, null);
+				//LineValidator lineValidator = (LineValidator) ValidatorFactory.create(LineValidator.class.getName(), context);
+				//lineValidator.validate(context, null);
 			}
 		} catch (Exception e) {
 			log.error("Netex profile validation failed ", e);

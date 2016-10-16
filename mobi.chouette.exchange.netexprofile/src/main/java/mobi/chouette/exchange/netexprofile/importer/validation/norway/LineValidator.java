@@ -40,6 +40,7 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
         addObjectReference(context, LOCAL_CONTEXT, object);
     }
 
+    // TODO change this to single ref. see
     public void addOperatorReference(Context context, String objectId, String operatorId) {
         Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
         List<String> operatorIds = (List<String>) objectContext.get(OPERATOR_ID);
@@ -48,6 +49,11 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
             objectContext.put(OPERATOR_ID, operatorIds);
         }
         operatorIds.add(operatorId);
+    }
+
+    public void addOperatorReference(Context context, String objectId, String operatorId) {
+        Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
+        objectContext.put(OPERATOR_ID, operatorId);
     }
 
     public void addRouteReference(Context context, String objectId, String routeId) {
@@ -62,6 +68,7 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
 
     @Override
     @SuppressWarnings("unchecked")
+    // TODO fix Detail error items on all validations
     public ValidationConstraints validate(Context context, Line target) throws ValidationException {
         Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
         ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
@@ -80,40 +87,40 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
             Context objectContext = (Context) localContext.get(objectId);
             Line line = lines.get(objectId);
 
-            // TODO consider validating with xpath instead, if shorter
             // 2-NETEX-Line-1 : check presence of Name
             prepareCheckPoint(context, LINE_1);
             if (line.getName() == null || isEmpty(line.getName().getValue())) {
                 addValidationError(context, LINE_1);
             }
 
-            // TODO consider validating with xpath instead, if shorter
             // 2-NETEX-Line-2 : check presence of TransportMode
             prepareCheckPoint(context, LINE_2);
             if (line.getTransportMode() == null) {
                 addValidationError(context, LINE_2);
             }
 
-            // TODO consider validating with xpath instead, if shorter
             // 2-NETEX-Line-3 : check presence of PublicCode
             prepareCheckPoint(context, LINE_3);
             if (isEmpty(line.getPublicCode())) {
                 addValidationError(context, LINE_3);
             }
 
-            // TODO consider validating with xpath instead, if shorter
             // 2-NETEX-Line-4 : check presence of OperatorRef
             prepareCheckPoint(context, LINE_4);
             if (line.getOperatorRef() == null || isEmpty(line.getOperatorRef().getRef())) {
                 addValidationError(context, LINE_4);
             }
 
-            // 2-NETEX-Line-5 : check operator reference
-            prepareCheckPoint(context, LINE_5);
-            List<String> operatorIds = (List<String>) objectContext.get(OPERATOR_ID);
-            for (String operatorId : operatorIds) {
-                if (!operatorContext.containsKey(operatorId)) {
-                    addValidationError(context, LINE_5);
+            if (objectContext.containsKey(OPERATOR_ID)) {
+                // 2-NETEX-Line-5 : check existence of operator
+                prepareCheckPoint(context, LINE_5);
+                if (!operatorContext.containsKey(objectContext.get(OPERATOR_ID))) {
+                    Detail errorItem = new Detail(
+                            LINE_5,
+                            null,
+                            String.format("Non-existent operatorId : '%s'", objectContext.get(OPERATOR_ID).toString())
+                    );
+                    addValidationError(context, LINE_5, errorItem);
                 }
             }
 
@@ -138,7 +145,11 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
             // 2-NETEX-Line-9 : check presence of Monitored
             prepareCheckPoint(context, LINE_8);
             if (line.isMonitored() == null) {
-                Detail errorItem = new Detail(LINE_8, null, "Monitored is mandatory for Line");
+                Detail errorItem = new Detail(
+                        LINE_8,
+                        null,
+                        "Missing mandatory element : 'Monitored'"
+                );
                 addValidationError(context, LINE_8, errorItem);
             }
 

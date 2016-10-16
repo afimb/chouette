@@ -20,6 +20,42 @@ public class NetexObjectUtil {
         }
     }
 
+    public static void addSiteFrameReference(NetexReferential referential, String objectId, SiteFrame siteFrame) {
+        if (siteFrame == null) {
+            throw new NullPointerException("Unknown site frame : " + objectId);
+        }
+        if (!referential.getSiteFrames().containsKey(objectId)) {
+            referential.getSiteFrames().put(objectId, siteFrame);
+        }
+    }
+
+    public static void addServiceFrameReference(NetexReferential referential, String objectId, ServiceFrame serviceFrame) {
+        if (serviceFrame == null) {
+            throw new NullPointerException("Unknown service frame : " + objectId);
+        }
+        if (!referential.getServiceFrames().containsKey(objectId)) {
+            referential.getServiceFrames().put(objectId, serviceFrame);
+        }
+    }
+
+    public static void addServiceCalendarFrameReference(NetexReferential referential, String objectId, ServiceCalendarFrame serviceCalendarFrame) {
+        if (serviceCalendarFrame == null) {
+            throw new NullPointerException("Unknown service calendar frame : " + objectId);
+        }
+        if (!referential.getServiceCalendarFrames().containsKey(objectId)) {
+            referential.getServiceCalendarFrames().put(objectId, serviceCalendarFrame);
+        }
+    }
+
+    public static void addTimetableFrameReference(NetexReferential referential, String objectId, TimetableFrame timetableFrame) {
+        if (timetableFrame == null) {
+            throw new NullPointerException("Unknown timetable frame : " + objectId);
+        }
+        if (!referential.getTimetableFrames().containsKey(objectId)) {
+            referential.getTimetableFrames().put(objectId, timetableFrame);
+        }
+    }
+
     public static ResourceFrame getResourceFrame(NetexReferential referential, String objectId) {
         ResourceFrame resourceFrame = referential.getResourceFrames().get(objectId);
         if (resourceFrame == null) {
@@ -96,6 +132,15 @@ public class NetexObjectUtil {
         return dayType;
     }
 
+    public static void addRoutePointReference(NetexReferential referential, String objectId, RoutePoint routePoint) {
+        if (routePoint == null) {
+            throw new NullPointerException("Unknown route point : " + objectId);
+        }
+        if (!referential.getRoutePoints().containsKey(objectId)) {
+            referential.getRoutePoints().put(objectId, routePoint);
+        }
+    }
+
     public static void addRouteReference(NetexReferential referential, String objectId, Route route) {
         if (route == null) {
             throw new NullPointerException("Unknown route : " + objectId);
@@ -135,6 +180,14 @@ public class NetexObjectUtil {
         return operatorRefStruct == null ? null : operatorRefStruct.getRef();
     }
 
+    public static String getOrganisationRefOfNetwork(Network network) {
+        if (network == null) {
+            throw new NullPointerException("Unknown network");
+        }
+        JAXBElement<? extends OrganisationRefStructure> transportOrganisationRef = network.getTransportOrganisationRef();
+        return transportOrganisationRef == null ? null : transportOrganisationRef.getValue().getRef();
+    }
+
     public static List<String> getRouteRefsOfLine(Line line) {
         List<String> routeIds = new ArrayList<>();
         RouteRefs_RelStructure routeRefsStruct = line.getRoutes();
@@ -150,6 +203,34 @@ public class NetexObjectUtil {
             }
         }
         return routeIds;
+    }
+
+    public static List<String> getStopPointRefsOfRoutePoint(RoutePoint routePoint) {
+        List<String> stopPointIds = new ArrayList<>();
+        Projections_RelStructure projectionsStruct = routePoint.getProjections();
+        if (projectionsStruct == null) {
+            return Collections.emptyList();
+        } else {
+            List<JAXBElement<?>> projectionRefElements = projectionsStruct.getProjectionRefOrProjection();
+            if (projectionRefElements != null && projectionRefElements.size() > 0) {
+                for (JAXBElement<?> projectionRefElement : projectionRefElements) {
+                    if (projectionRefElement.getValue() instanceof PointProjection) {
+                        PointProjection pointProjection = (PointProjection) projectionRefElement.getValue();
+                        PointRefStructure projectedPointRef = pointProjection.getProjectedPointRef();
+                        if (projectedPointRef != null) {
+                            stopPointIds.add(projectedPointRef.getRef().trim());
+                        }
+/*
+                        PointRefStructure projectToPointRef = pointProjection.getProjectToPointRef();
+                        if (projectToPointRef != null) {
+                            stopPointIds.add(projectToPointRef.getRef().trim());
+                        }
+*/
+                    }
+                }
+            }
+        }
+        return stopPointIds;
     }
 
 
