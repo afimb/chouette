@@ -1,13 +1,16 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.AbstractInputValidator;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
+import mobi.chouette.exchange.TestDescription;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 
@@ -72,6 +75,17 @@ public class NetexExporterInputValidator extends AbstractInputValidator {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public boolean checkFile(String fileName, Path filePath, AbstractParameter abstractParameter) {
+		// TODO
+		return true;
+	}
+
+	@Override
+	public List<TestDescription> getTestList() {
+		throw new UnsupportedOperationException();
 	}
 
 	public static class DefaultFactory extends InputValidatorFactory {

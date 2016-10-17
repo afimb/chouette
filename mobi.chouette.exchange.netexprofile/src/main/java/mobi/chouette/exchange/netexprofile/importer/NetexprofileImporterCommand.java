@@ -1,12 +1,7 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
-import java.io.IOException;
-
-import javax.naming.InitialContext;
-
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
@@ -18,9 +13,11 @@ import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.importer.AbstractImporterCommand;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.report.ActionError;
-import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.model.util.Referential;
+
+import javax.naming.InitialContext;
+import java.io.IOException;
 
 @Log4j
 public class NetexprofileImporterCommand extends AbstractImporterCommand implements Command, Constant {
@@ -33,7 +30,7 @@ public class NetexprofileImporterCommand extends AbstractImporterCommand impleme
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
 
 		context.put(REFERENTIAL, new Referential());
 
@@ -47,8 +44,7 @@ public class NetexprofileImporterCommand extends AbstractImporterCommand impleme
 		if (!(configuration instanceof NetexprofileImportParameters)) {
 			// fatal wrong parameters
 			log.error("invalid parameters for netex import " + configuration.getClass().getName());
-			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,
-					"invalid parameters for netex import " + configuration.getClass().getName()));
+			actionReporter.setActionError(context, ActionReporter.ERROR_CODE.INVALID_PARAMETERS, "invalid parameters for netex import " + configuration.getClass().getName());
 			return false;
 		}
 
@@ -56,12 +52,11 @@ public class NetexprofileImporterCommand extends AbstractImporterCommand impleme
 		result = process(context, commands, progression, true, Mode.line);
 
 		} catch (CommandCancelledException e) {
-			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Command cancelled"));
+			actionReporter.setActionError(context, ActionReporter.ERROR_CODE.INTERNAL_ERROR, "Command cancelled");
 			log.error(e.getMessage());
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Fatal :" + e));
-
+			actionReporter.setActionError(context, ActionReporter.ERROR_CODE.INTERNAL_ERROR, "Fatal :" + e);
 		} finally {
 			progression.dispose(context);
 			log.info(Color.YELLOW + monitor.stop() + Color.NORMAL);

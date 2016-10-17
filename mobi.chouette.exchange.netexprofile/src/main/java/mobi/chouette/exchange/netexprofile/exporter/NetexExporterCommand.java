@@ -1,13 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
-import java.io.IOException;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
@@ -19,12 +13,15 @@ import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.exporter.AbstractExporterCommand;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.report.ActionError;
-import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.ReportConstant;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import java.io.IOException;
 
 @Log4j
 @Stateless(name = NetexExporterCommand.COMMAND)
@@ -39,7 +36,7 @@ public class NetexExporterCommand extends AbstractExporterCommand implements Com
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
 
 		// initialize reporting and progression
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
@@ -52,15 +49,14 @@ public class NetexExporterCommand extends AbstractExporterCommand implements Com
 			if (!(configuration instanceof NetexExportParameters)) {
 				// fatal wrong parameters
 				log.error("invalid parameters for netex export " + configuration.getClass().getName());
-				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,
-						"invalid parameters for netex export " + configuration.getClass().getName()));
+				actionReporter.setActionError(context, ActionReporter.ERROR_CODE.INVALID_PARAMETERS, "invalid parameters for netex export " + configuration.getClass().getName());
 				return ERROR;
 			}
 
 			NetexExportParameters parameters = (NetexExportParameters) configuration;
 			if (parameters.getStartDate() != null && parameters.getEndDate() != null) {
 				if (parameters.getStartDate().after(parameters.getEndDate())) {
-					report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS, "end date before start date"));
+					actionReporter.setActionError(context, ActionReporter.ERROR_CODE.INVALID_PARAMETERS, "end date before start date");
 					return ERROR;
 
 				}
@@ -71,11 +67,11 @@ public class NetexExporterCommand extends AbstractExporterCommand implements Com
 			result = process(context, commands, progression, true,Mode.line);
 
 		} catch (CommandCancelledException e) {
-			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Command cancelled"));
+			actionReporter.setActionError(context, ActionReporter.ERROR_CODE.INTERNAL_ERROR, "Command cancelled");
 			log.error(e.getMessage());
 		} catch (Exception e) {
 			if (!COMMAND_CANCELLED.equals(e.getMessage())) {
-				report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Fatal :" + e));
+				actionReporter.setActionError(context, ActionReporter.ERROR_CODE.INTERNAL_ERROR,  "Fatal :" + e);
 				log.error(e.getMessage(), e);
 			}
 		} finally {

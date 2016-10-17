@@ -3,8 +3,10 @@ package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
-import mobi.chouette.exchange.validation.*;
-import mobi.chouette.exchange.validation.report.Detail;
+import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.exchange.validation.ValidationException;
+import mobi.chouette.exchange.validation.Validator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import no.rutebanken.netex.model.DataManagedObjectStructure;
 import no.rutebanken.netex.model.Line;
 
@@ -62,13 +64,13 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
 
     @Override
     @SuppressWarnings("unchecked")
-    public ValidationConstraints validate(Context context, Line target) throws ValidationException {
+    public void validate(Context context, Line target) throws ValidationException {
         Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
         ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
         Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 
         if (localContext == null || localContext.isEmpty()) {
-            return new ValidationConstraints();
+            return;
         }
 
         Context operatorContext = (Context) validationContext.get(OrganisationValidator.LOCAL_CONTEXT);
@@ -138,8 +140,7 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
             // 2-NETEX-Line-9 : check presence of Monitored
             prepareCheckPoint(context, LINE_8);
             if (line.isMonitored() == null) {
-                Detail errorItem = new Detail(LINE_8, null, "Monitored is mandatory for Line");
-                addValidationError(context, LINE_8, errorItem);
+                addValidationError(context, LINE_8);
             }
 
             // TODO consider validating with xpath instead, if shorter
@@ -149,7 +150,6 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
                 // TODO validate full structure/list of elements
             }
         }
-        return new ValidationConstraints();
     }
 
     public static class DefaultValidatorFactory extends ValidatorFactory {

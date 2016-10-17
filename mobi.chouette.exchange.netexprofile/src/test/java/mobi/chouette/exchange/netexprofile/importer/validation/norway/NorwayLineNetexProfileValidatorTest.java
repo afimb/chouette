@@ -1,27 +1,20 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
-import java.io.File;
-import java.io.IOException;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-import org.testng.Assert;
-import org.testng.annotations.Test;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.NetexImporter;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexNamespaceContext;
-import mobi.chouette.exchange.validation.report.CheckPoint;
+import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
-import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import no.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import org.w3c.dom.Document;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
+import java.io.File;
 
 public class NorwayLineNetexProfileValidatorTest {
 
@@ -44,8 +37,8 @@ public class NorwayLineNetexProfileValidatorTest {
 		validator.addCheckpoints(context);
 		boolean valid = validator.validate(context);
 		if(!valid) {
-			for(CheckPoint cp : vr.getCheckPoints()) {
-				if(cp.getState() == RESULT.NOK) {
+			for(CheckPointReport cp : vr.getCheckPoints()) {
+				if(cp.getState() == ValidationReporter.RESULT.NOK) {
 					System.err.println(cp);
 				}
 			}

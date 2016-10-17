@@ -1,18 +1,7 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.naming.InitialContext;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
-
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -21,12 +10,16 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileError;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.util.Referential;
 import no.rutebanken.netex.model.PublicationDeliveryStructure;
+
+import javax.naming.InitialContext;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j
 public class NetexCommonParserCommand implements Command, Constant {
@@ -44,9 +37,8 @@ public class NetexCommonParserCommand implements Command, Constant {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		// report service
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
 		String fileName = file.getName();
-		FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
 		context.put(FILE_NAME, fileName);
 
 		try {
@@ -73,13 +65,12 @@ public class NetexCommonParserCommand implements Command, Constant {
 			commonDeliveries.add(commonDeliveryStructure);
 			
 			// report service
-			report.getFiles().add(fileItem);
+			actionReporter.setFileState(context, fileName, IO_TYPE.INPUT, ActionReporter.FILE_STATE.OK);
 
 			result = SUCCESS;
 		} catch (Exception e) {
 			// report service
-			report.getFiles().add(fileItem);
-			fileItem.addError(new FileError(FileError.CODE.INTERNAL_ERROR, e.toString()));
+			actionReporter.addFileErrorInReport(context, fileName, ActionReporter.FILE_ERROR_CODE.INTERNAL_ERROR, e.toString());
 			log.error("parsing failed ", e);
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);

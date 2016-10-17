@@ -2,27 +2,20 @@ package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexNamespaceContext;
-import mobi.chouette.exchange.netexprofile.parser.OrganisationParser;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.exchange.validation.report.Detail;
 import no.rutebanken.netex.model.*;
 import org.w3c.dom.Document;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 @Log4j
 public class PublicationDeliveryValidator extends AbstractValidator implements Validator<PublicationDeliveryStructure> {
@@ -44,7 +37,7 @@ public class PublicationDeliveryValidator extends AbstractValidator implements V
     }
 
     @Override
-    public ValidationConstraints validate(Context context, PublicationDeliveryStructure target) throws ValidationException {
+    public void validate(Context context, PublicationDeliveryStructure target) throws ValidationException {
         // TODO move xpath instantiation to higher level in validation hierarchy
         XPath xpath = XPathFactory.newInstance().newXPath();
         xpath.setNamespaceContext(new NetexNamespaceContext());
@@ -102,8 +95,7 @@ public class PublicationDeliveryValidator extends AbstractValidator implements V
                 OrganisationValidator organisationValidator = (OrganisationValidator) ValidatorFactory.create(OrganisationValidator.class.getName(), context);
                 organisationValidator.validate(context, null);
             } else {
-                Detail errorItem = new Detail(_1_NETEX_RESOURCEFRAME, null, "No ResourceFrame");
-                addValidationError(context, _1_NETEX_RESOURCEFRAME, errorItem);
+                addValidationError(context, _1_NETEX_RESOURCEFRAME, "ResourceFrame");
             }
 
             // 2. validate site frame
@@ -113,8 +105,7 @@ public class PublicationDeliveryValidator extends AbstractValidator implements V
                 List<SiteFrame> siteFrames = NetexObjectUtil.getFrames(SiteFrame.class, compositeFrameOrCommonFrame);
                 SiteFrame siteFrame = siteFrames.get(0);
             } else {
-                Detail errorItem = new Detail(_1_NETEX_SITEFRAME, null, "No SiteFrame");
-                addValidationError(context, _1_NETEX_SITEFRAME, errorItem);
+                addValidationError(context, _1_NETEX_SITEFRAME, "SiteFrame");
             }
 
             // 3. validate service frame
@@ -122,8 +113,7 @@ public class PublicationDeliveryValidator extends AbstractValidator implements V
             if (isElementPresent(context, "//n:ServiceFrame")) {
                 // TODO validate service frame elements
             } else {
-                Detail errorItem = new Detail(_1_NETEX_SERVICEFRAME, null, "No ServiceFrame");
-                addValidationError(context, _1_NETEX_SERVICEFRAME, errorItem);
+                addValidationError(context, _1_NETEX_SERVICEFRAME, "ServiceFrame");
             }
 
             // 4. validate service calendar frame
@@ -131,8 +121,7 @@ public class PublicationDeliveryValidator extends AbstractValidator implements V
             if (isElementPresent(context, "//n:ServiceCalendarFrame")) {
                 // TODO validate service frame elements
             } else {
-                Detail errorItem = new Detail(_1_NETEX_SERVICECALENDARFRAME, null, "No ServiceCalendarFrame");
-                addValidationError(context, _1_NETEX_SERVICECALENDARFRAME, errorItem);
+                addValidationError(context, _1_NETEX_SERVICECALENDARFRAME, "ServiceCalendarFrame");
             }
 
             // 5. validate timetable frame
@@ -140,14 +129,11 @@ public class PublicationDeliveryValidator extends AbstractValidator implements V
             if (isElementPresent(context, "//n:TimetableFrame")) {
                 // TODO validate timetable frame elements
             } else {
-                Detail errorItem = new Detail(_1_NETEX_TIMETABLEFRAME, null, "No TimetableFrame");
-                addValidationError(context, _1_NETEX_TIMETABLEFRAME, errorItem);
+                addValidationError(context, _1_NETEX_TIMETABLEFRAME, "TimetableFrame");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return new ValidationConstraints();
     }
 
 }

@@ -1,20 +1,7 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
-import java.io.File;
-import java.io.IOException;
-
-import javax.naming.InitialContext;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Validator;
-
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -23,11 +10,18 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileError;
-import mobi.chouette.exchange.report.FileError.CODE;
-import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.model.util.Referential;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import javax.naming.InitialContext;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Validator;
+import java.io.File;
+import java.io.IOException;
 
 @Log4j
 public class NetexSchemaValidationCommand implements Command, Constant {
@@ -44,10 +38,9 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 		Boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
 		NetexImporter importer = (NetexImporter) context.get(IMPORTER);
 		String fileName = (String) context.get(FILE_NAME);
-		final FileInfo fileInfo = report.findFileInfo(fileName);
 		try {
 			Referential referential = (Referential) context.get(REFERENTIAL);
 
@@ -59,21 +52,17 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 				
 				@Override
 				public void warning(SAXParseException exception) throws SAXException {
-					FileError error = new FileError(CODE.READ_ERROR,exception.getMessage());
-					fileInfo.addError(error);
+					actionReporter.addFileErrorInReport(context, fileName, ActionReporter.FILE_ERROR_CODE.READ_ERROR, exception.getMessage());
 				}
 				
 				@Override
 				public void fatalError(SAXParseException exception) throws SAXException {
-					FileError error = new FileError(CODE.READ_ERROR,exception.getMessage());
-					fileInfo.addError(error);
+					actionReporter.addFileErrorInReport(context, fileName, ActionReporter.FILE_ERROR_CODE.READ_ERROR, exception.getMessage());
 				}
 				
 				@Override
 				public void error(SAXParseException exception) throws SAXException {
-					FileError error = new FileError(CODE.READ_ERROR,exception.getMessage());
-					fileInfo.addError(error);
-					
+					actionReporter.addFileErrorInReport(context, fileName, ActionReporter.FILE_ERROR_CODE.READ_ERROR, exception.getMessage());
 				}
 			});
 			
@@ -94,7 +83,7 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 		if (result == ERROR) {
-			 fileInfo.addError(new FileError(FileError.CODE.INVALID_FORMAT, "Netex compliance failed"));
+			actionReporter.addFileErrorInReport(context, fileName, ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, "Netex compliance failed");
 		}
 		return result;
 	}
