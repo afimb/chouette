@@ -14,7 +14,7 @@ import java.io.File;
 
 public class NetexLineParserCommandTest {
 
-	@Test
+	@Test(enabled = false)
 	public void testParseDocument() throws Exception {
 		Context context = new Context();
 		NetexprofileImportParameters configuration = new NetexprofileImportParameters();
