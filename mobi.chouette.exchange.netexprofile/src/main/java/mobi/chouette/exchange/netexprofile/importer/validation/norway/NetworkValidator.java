@@ -3,8 +3,11 @@ package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
-import mobi.chouette.exchange.validation.*;
-import mobi.chouette.exchange.validation.report.Detail;
+import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.exchange.validation.ValidationException;
+import mobi.chouette.exchange.validation.Validator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.exchange.validation.report.DataLocation;
 import no.rutebanken.netex.model.*;
 
 import javax.xml.bind.JAXBElement;
@@ -46,7 +49,7 @@ public class NetworkValidator extends AbstractValidator implements Validator<Net
 
     @Override
     @SuppressWarnings("unchecked")
-    public ValidationConstraints validate(Context context, Network target) throws ValidationException {
+    public void validate(Context context, Network target) throws ValidationException {
         // TODO validate common elements from extended types first, like id, version, etc...
         // TODO consider using the target instance when validating single elements
 
@@ -55,7 +58,7 @@ public class NetworkValidator extends AbstractValidator implements Validator<Net
         Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 
         if (localContext == null || localContext.isEmpty()) {
-            return new ValidationConstraints();
+            return;
         }
 
         Context organisationContext = (Context) validationContext.get(OrganisationValidator.LOCAL_CONTEXT);
@@ -71,17 +74,18 @@ public class NetworkValidator extends AbstractValidator implements Validator<Net
         JAXBElement<? extends OrganisationRefStructure> transportOrganisationRef = target.getTransportOrganisationRef();
 
         if (transportOrganisationRef == null) {
-            Detail errorItem = new Detail(NETWORK_1, null, "Missing mandatory element : 'OrganisationRef'");
-            addValidationError(context, NETWORK_1, errorItem);
+            DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
+            dataLocation.setName("OrganisationRef");
+            addValidationError(context, NETWORK_1, "Missing mandatory element : 'OrganisationRef'", dataLocation);
         } else {
             // 2-NETEX-Network-2 : validate if transport organisation reference exists
             prepareCheckPoint(context, NETWORK_2);
             String organisationId = (String) objectContext.get(ORGANISATION_ID);
 
             if (!organisationContext.containsKey(organisationId)) {
-                Detail errorItem = new Detail(NETWORK_2, null,
-                        String.format("Non-existent organisation id : '%s'", organisationId));
-                addValidationError(context, NETWORK_2, errorItem);
+                DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
+                dataLocation.setName("OrganisationId");
+                addValidationError(context, NETWORK_2, String.format("Non-existent organisation id : '%s'", organisationId), dataLocation);
             }
         }
 
@@ -91,8 +95,9 @@ public class NetworkValidator extends AbstractValidator implements Validator<Net
 
         // TODO consider separating the two checks in if test
         if (groupsOfLinesStruct == null || isCollectionEmpty(groupsOfLinesStruct.getGroupOfLines())) {
-            Detail errorItem = new Detail(NETWORK_3, null, "Missing mandatory element : 'groupsOfLines' or 'GroupOfLines'");
-            addValidationError(context, NETWORK_3, errorItem);
+            DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
+            dataLocation.setName("GroupOfLines");
+            addValidationError(context, NETWORK_3, "Missing mandatory element : 'groupsOfLines' or 'GroupOfLines'", dataLocation);
         } else {
             // TODO validate group of lines here...
         }
@@ -106,7 +111,7 @@ public class NetworkValidator extends AbstractValidator implements Validator<Net
             // TODO validate tariff zones here...
         }
 
-        return new ValidationConstraints();
+        return;
     }
 
     public static class DefaultValidatorFactory extends ValidatorFactory {

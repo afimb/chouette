@@ -1,29 +1,26 @@
 package mobi.chouette.exchange.netexprofile.importer.validation;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
+import mobi.chouette.exchange.validation.report.CheckPointReport;
+import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
+import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.exchange.validation.report.ValidationReporter.RESULT;
+import no.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
-import mobi.chouette.exchange.validation.report.Detail;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Context;
-import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
-import mobi.chouette.exchange.validation.report.CheckPoint.SEVERITY;
-import mobi.chouette.exchange.validation.report.ValidationReport;
-import no.rutebanken.netex.model.PublicationDeliveryStructure;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Log4j
 public abstract class AbstractNetexProfileValidator implements NetexProfileValidator {
@@ -48,20 +45,12 @@ public abstract class AbstractNetexProfileValidator implements NetexProfileValid
 		ValidationReport validationReport = (ValidationReport) context.get(Constant.VALIDATION_REPORT);
 
 		boolean validationOK = true;
-		for (CheckPoint c : validationReport.getCheckPoints()) {
+		for (CheckPointReport c : validationReport.getCheckPoints()) {
 			if (c.getSeverity() == SEVERITY.ERROR && c.getState() == RESULT.NOK) {
 				log.error("VALIDATION FAILED FOR CHECKPOINT : " + c.getName());
-				List<Detail> details = c.getDetails();
-				if (details != null && !details.isEmpty()) {
-					for (Detail detail : details) {
-						if (detail.getValue() != null) {
-							log.error("MESSAGE : " + detail.getValue());
-						}
-					}
-				}
 			}
 		}
-		for (CheckPoint c : validationReport.getCheckPoints()) {
+		for (CheckPointReport c : validationReport.getCheckPoints()) {
 			if (c.getSeverity() == SEVERITY.ERROR && c.getState() == RESULT.NOK) {
 				validationOK = false;
 				break;
@@ -82,8 +71,7 @@ public abstract class AbstractNetexProfileValidator implements NetexProfileValid
 	public static void validateExternalReferenceCorrect(Context context, XPath xpath, Document dom, String expression,
 			ExternalReferenceValidator externalIdValidator, String checkpointName) throws XPathExpressionException {
 
-		ValidationReport validationReport = (ValidationReport) context.get(Constant.VALIDATION_REPORT);
-		CheckPoint checkpoint = validationReport.findCheckPointByName(checkpointName);
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 
 		NodeList nodes = (NodeList) xpath.evaluate(expression, dom, XPathConstants.NODESET);
 
@@ -97,9 +85,9 @@ public abstract class AbstractNetexProfileValidator implements NetexProfileValid
 
 		Collection<String> invalidIds = externalIdValidator.validateReferenceIds(ids);
 		if (invalidIds.isEmpty()) {
-			checkpoint.setState(RESULT.OK);
+			validationReporter.updateCheckPointReportState(context, checkpointName, RESULT.OK);
 		} else {
-			checkpoint.setState(RESULT.NOK);
+			validationReporter.updateCheckPointReportState(context, checkpointName, RESULT.NOK);
 			for (String s : invalidIds) {
 				// TODO add details
 				log.error("Netex profile validation error, invalid external reference " + s);
@@ -136,28 +124,26 @@ public abstract class AbstractNetexProfileValidator implements NetexProfileValid
 
 	private static void validateElement(Context context, XPath xpath, Document document, String expression, int expectedCount, String checkpointName)
 			throws XPathExpressionException {
-		ValidationReport validationReport = (ValidationReport) context.get(Constant.VALIDATION_REPORT);
-		CheckPoint checkpoint = validationReport.findCheckPointByName(checkpointName);
-		if (checkpoint == null) {
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		if (!validationReporter.checkIfCheckPointExists(context, checkpointName)) {
 			log.error("Checkpoint " + checkpointName + " not present in ValidationReport");
 		}
 
 		NodeList nodes = (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
 		if (nodes.getLength() != expectedCount) {
-			checkpoint.setState(RESULT.NOK);
+			validationReporter.updateCheckPointReportState(context, checkpointName, RESULT.NOK);
 		} else {
-			checkpoint.setState(RESULT.OK);
+			validationReporter.updateCheckPointReportState(context, checkpointName, RESULT.OK);
 		}
 	}
 
-	protected void addCheckpoints(Context context, String key, CheckPoint.SEVERITY severity) {
-		ValidationReport validationReport = (ValidationReport) context.get(Constant.VALIDATION_REPORT);
-		CheckPoint checkPoint = validationReport.findCheckPointByName(key);
+	protected void addCheckpoints(Context context, String key, CheckPointReport.SEVERITY severity) {
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 
 		// Add checkpoints that are to be checked in the validate() method above
-		if (checkPoint == null) {
+		if (!validationReporter.checkIfCheckPointExists(context, key)) {
 			log.info("Adding checkpoint " + key);
-			validationReport.addCheckPoint(new CheckPoint(key, CheckPoint.RESULT.UNCHECK, severity));
+			validationReporter.addItemToValidationReport(context, key, (severity.equals(SEVERITY.ERROR)) ? "E" : "W");
 		}
 
 	}

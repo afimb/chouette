@@ -3,8 +3,11 @@ package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
-import mobi.chouette.exchange.validation.*;
-import mobi.chouette.exchange.validation.report.Detail;
+import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.exchange.validation.ValidationException;
+import mobi.chouette.exchange.validation.Validator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.exchange.validation.report.DataLocation;
 import no.rutebanken.netex.model.DataManagedObjectStructure;
 import no.rutebanken.netex.model.Line;
 
@@ -41,15 +44,15 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
     }
 
     // TODO change this to single ref. see
-    public void addOperatorReference(Context context, String objectId, String operatorId) {
-        Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-        List<String> operatorIds = (List<String>) objectContext.get(OPERATOR_ID);
-        if (operatorIds == null) {
-            operatorIds = new ArrayList<>();
-            objectContext.put(OPERATOR_ID, operatorIds);
-        }
-        operatorIds.add(operatorId);
-    }
+//    public void addOperatorReference(Context context, String objectId, String operatorId) {
+//        Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
+//        List<String> operatorIds = (List<String>) objectContext.get(OPERATOR_ID);
+//        if (operatorIds == null) {
+//            operatorIds = new ArrayList<>();
+//            objectContext.put(OPERATOR_ID, operatorIds);
+//        }
+//        operatorIds.add(operatorId);
+//    }
 
     public void addOperatorReference(Context context, String objectId, String operatorId) {
         Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
@@ -69,13 +72,13 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
     @Override
     @SuppressWarnings("unchecked")
     // TODO fix Detail error items on all validations
-    public ValidationConstraints validate(Context context, Line target) throws ValidationException {
+    public void validate(Context context, Line target) throws ValidationException {
         Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
         ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
         Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 
         if (localContext == null || localContext.isEmpty()) {
-            return new ValidationConstraints();
+            return;
         }
 
         Context operatorContext = (Context) validationContext.get(OrganisationValidator.LOCAL_CONTEXT);
@@ -115,12 +118,11 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
                 // 2-NETEX-Line-5 : check existence of operator
                 prepareCheckPoint(context, LINE_5);
                 if (!operatorContext.containsKey(objectContext.get(OPERATOR_ID))) {
-                    Detail errorItem = new Detail(
-                            LINE_5,
-                            null,
-                            String.format("Non-existent operatorId : '%s'", objectContext.get(OPERATOR_ID).toString())
-                    );
-                    addValidationError(context, LINE_5, errorItem);
+                    DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
+                    dataLocation.setName("operatorId");
+                    addValidationError(context, LINE_5,
+                            String.format("Non-existent operatorId : '%s'", objectContext.get(OPERATOR_ID).toString()),
+                            dataLocation);
                 }
             }
 
@@ -144,14 +146,10 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
             // TODO consider validating with xpath instead, if shorter
             // 2-NETEX-Line-9 : check presence of Monitored
             prepareCheckPoint(context, LINE_8);
-            if (line.isMonitored() == null) {
-                Detail errorItem = new Detail(
-                        LINE_8,
-                        null,
-                        "Missing mandatory element : 'Monitored'"
-                );
-                addValidationError(context, LINE_8, errorItem);
-            }
+            DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
+            dataLocation.setName("Monitored");
+            addValidationError(context, LINE_5, "Missing mandatory element : 'Monitored'", dataLocation);
+
 
             // TODO consider validating with xpath instead, if shorter
             // 2-NETEX-Line-10 : check presence of AccessibilityAssessment
@@ -160,7 +158,6 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
                 // TODO validate full structure/list of elements
             }
         }
-        return new ValidationConstraints();
     }
 
     public static class DefaultValidatorFactory extends ValidatorFactory {

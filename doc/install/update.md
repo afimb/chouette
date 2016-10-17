@@ -1,5 +1,23 @@
 # update postgres and wildfly from previous version
 
+## from chouette 3.3.x or less
+
+Old reports are not accessible with 3.4 and above versions
+
+clean all import, export and validation results : 
+- stop wildfly
+- connect on iev database with psql
+```
+delete from links;
+delete from jobs;
+exit;
+```
+- clean iev repository :
+```
+rm /var/lib/chouette/iev/referentials/*
+```
+
+
 ## from chouette 3.0.x or 3.1.x
 
 Postgres : 
@@ -7,7 +25,7 @@ install postgis 2.1+ with: `sudo apt-get install postgresql-9.3-postgis-2.1`
 
 Rails (chouette2) launch the command below:
 
-````
+```
 bundle exec rake db:gis:setup
 bundle exec rake db:migrate
 ```

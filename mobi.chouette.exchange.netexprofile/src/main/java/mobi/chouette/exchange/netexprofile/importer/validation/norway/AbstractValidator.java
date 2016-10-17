@@ -3,9 +3,8 @@ package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.DataLocation;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import no.rutebanken.netex.model.DataManagedObjectStructure;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -17,6 +16,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static mobi.chouette.exchange.validation.report.ValidationReporter.RESULT.NOK;
+import static mobi.chouette.exchange.validation.report.ValidationReporter.RESULT.OK;
 
 // TODO consider merging this class with AbstractNetexProfileValidator
 @Log4j
@@ -43,34 +45,43 @@ public abstract class AbstractValidator implements Constant {
     }
 
     protected static void addItemToValidation(Context context, String prefix, String name, int count, String... severities) {
-        ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
+        ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
         for (int i = 1; i <= count; i++) {
-            String key = prefix + name + "-" + i;
-            if (validationReport.findCheckPointByName(key) == null) {
+            String checkPointKey = prefix + name + "-" + i;
+            if (validationReporter.checkIfCheckPointExists(context, checkPointKey)) {
                 if (severities[i - 1].equals("W")) {
-                    log.info("Adding checkpoint " + key);
-                    validationReport.addCheckPoint(
-                            new CheckPoint(key, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+                    log.info("Adding checkpoint " + checkPointKey);
+                    validationReporter.addItemToValidationReport(context, checkPointKey, "W");
                 } else {
-                    log.info("Adding checkpoint " + key);
-                    validationReport.addCheckPoint(
-                            new CheckPoint(key, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+                    log.info("Adding checkpoint " + checkPointKey);
+                    validationReporter.addItemToValidationReport(context, checkPointKey, "E");
                 }
             }
         }
     }
 
     protected void addValidationError(Context context, String checkPointKey) {
-        ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-        CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointKey);
-        checkPoint.setState(CheckPoint.RESULT.NOK);
+        addValidationError(context, checkPointKey, null, (DataLocation) null);
     }
 
-    protected void addValidationError(Context context, String checkPointKey, Detail detail) {
-        ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-        CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointKey);
-        checkPoint.addDetail(detail);
-        checkPoint.setState(CheckPoint.RESULT.NOK);
+    protected void addValidationError(Context context, String checkPointKey, String detail, DataLocation dataLocation) {
+        ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+        validationReporter.addCheckPointReportError(context, checkPointKey, detail, dataLocation);
+        validationReporter.updateCheckPointReportState(context, checkPointKey, NOK);
+    }
+
+    /**
+     * @deprecated provide file name also
+     * @since 3.4.0-SNAPSHOT
+     * @param context
+     * @param checkPointKey
+     * @param locationName
+     */
+    @Deprecated
+    protected void addValidationError(Context context, String checkPointKey, String locationName) {
+        ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+        validationReporter.addCheckPointReportError(context, checkPointKey, new DataLocation(null, locationName));
+        validationReporter.updateCheckPointReportState(context, checkPointKey, NOK);
     }
 
     @SuppressWarnings("unchecked")
@@ -97,15 +108,11 @@ public abstract class AbstractValidator implements Constant {
     }
 
     protected void prepareCheckPoint(Context context, String checkPointKey) {
-        ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-        CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointKey);
-        if (checkPoint == null) {
+        ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+        if (!validationReporter.checkIfCheckPointExists(context, checkPointKey)) {
             initializeCheckPoints(context);
-            checkPoint = validationReport.findCheckPointByName(checkPointKey);
         }
-        if (checkPoint.getState().equals(CheckPoint.RESULT.UNCHECK)) {
-            checkPoint.setState(CheckPoint.RESULT.OK);
-        }
+        validationReporter.updateCheckPointReportState(context, checkPointKey, OK);
     }
 
     protected boolean isElementPresent(Context context, String expression) throws XPathExpressionException {
@@ -113,58 +120,56 @@ public abstract class AbstractValidator implements Constant {
     }
 
     protected boolean validateElementPresentNew(Context context, String expression, String errorCode,
-            String errorMessage, String checkpointName) throws XPathExpressionException {
-        return validateElementNew(context, expression, 1, checkpointName);
+            String errorMessage, String checkPointKey) throws XPathExpressionException {
+        return validateElementNew(context, expression, 1, checkPointKey);
     }
 
     protected boolean validateElementNotPresentNew(Context context, String expression,
-            String errorCode, String errorMessage, String checkpointName) throws XPathExpressionException {
-        return validateElementNew(context, expression, 0, checkpointName);
+            String errorCode, String errorMessage, String checkPointKey) throws XPathExpressionException {
+        return validateElementNew(context, expression, 0, checkPointKey);
     }
 
     protected void validateElementPresent(Context context, XPath xpath, Document document, String expression,
-            String errorCode, String errorMessage, String checkpointName) throws XPathExpressionException {
-        validateElement(context, xpath, document, expression, 1, checkpointName);
+            String errorCode, String errorMessage, String checkPointKey) throws XPathExpressionException {
+        validateElement(context, xpath, document, expression, 1, checkPointKey);
     }
 
     protected void validateElementNotPresent(Context context, XPath xpath, Document document, String expression,
-            String errorCode, String errorMessage, String checkpointName) throws XPathExpressionException {
-        validateElement(context, xpath, document, expression, 0, checkpointName);
+            String errorCode, String errorMessage, String checkPointKey) throws XPathExpressionException {
+        validateElement(context, xpath, document, expression, 0, checkPointKey);
     }
 
     private void validateElement(Context context, XPath xpath, Document document,
-            String expression, int expectedCount, String checkpointName) throws XPathExpressionException {
-        ValidationReport validationReport = (ValidationReport) context.get(Constant.VALIDATION_REPORT);
-        CheckPoint checkpoint = validationReport.findCheckPointByName(checkpointName);
-        if (checkpoint == null) {
-            log.error("Checkpoint " + checkpointName + " not present in ValidationReport");
+            String expression, int expectedCount, String checkPointKey) throws XPathExpressionException {
+        ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+        if (!validationReporter.checkIfCheckPointExists(context, checkPointKey)) {
+            log.error("Checkpoint " + checkPointKey + " not present in ValidationReport");
         }
         NodeList nodes = (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
         if (nodes.getLength() != expectedCount) {
-            checkpoint.setState(CheckPoint.RESULT.NOK);
+            validationReporter.updateCheckPointReportState(context, checkPointKey, NOK);
         } else {
-            checkpoint.setState(CheckPoint.RESULT.OK);
+            validationReporter.updateCheckPointReportState(context, checkPointKey, OK);
         }
     }
 
-    private boolean validateElementNew(Context context, String expression, int expectedCount, String checkpointName) throws XPathExpressionException {
+    private boolean validateElementNew(Context context, String expression, int expectedCount, String checkPointKey) throws XPathExpressionException {
         Document document = (Document) context.get(NETEX_LINE_DATA_DOM);
         XPath xPath = (XPath) context.get(NETEX_LINE_DATA_XPATH);
 
         boolean result;
 
-        ValidationReport validationReport = (ValidationReport) context.get(Constant.VALIDATION_REPORT);
-        CheckPoint checkpoint = validationReport.findCheckPointByName(checkpointName);
-        if (checkpoint == null) {
-            log.error("Checkpoint " + checkpointName + " not present in ValidationReport");
+        ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+        if (validationReporter.checkIfCheckPointExists(context, checkPointKey)) {
+            log.error("Checkpoint " + checkPointKey + " not present in ValidationReport");
         }
         NodeList nodes = (NodeList) xPath.evaluate(expression, document, XPathConstants.NODESET);
         if (nodes.getLength() != expectedCount) {
             result = ERROR;
-            checkpoint.setState(CheckPoint.RESULT.NOK);
+            validationReporter.updateCheckPointReportState(context, checkPointKey, NOK);
         } else {
             result = SUCCESS;
-            checkpoint.setState(CheckPoint.RESULT.OK);
+            validationReporter.updateCheckPointReportState(context, checkPointKey, OK);
         }
         return result;
     }

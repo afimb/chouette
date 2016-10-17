@@ -2,10 +2,8 @@ package mobi.chouette.exchange.hub.model.exporter;
 
 import java.io.IOException;
 
-import mobi.chouette.exchange.report.ActionReport;
-
 public interface Exporter<T> {
-	void dispose(ActionReport report) throws IOException;
+	void dispose(mobi.chouette.common.Context context) throws IOException;
 
 	void writeHeader() throws IOException;
 

@@ -1,18 +1,17 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.StopArea;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class NetexLineProducer implements Constant {
 
@@ -40,9 +39,8 @@ public class NetexLineProducer implements Constant {
 		NetexFileWriter writer = new NetexFileWriter();
 		writer.writeXmlFile(collection, file);
 
-		ActionReport report = (ActionReport) context.get(REPORT);
-		FileInfo fileItem = new FileInfo(fileName, FILE_STATE.OK);
-		report.getFiles().add(fileItem);
+		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
+		actionReporter.setFileState(context, fileName, IO_TYPE.OUTPUT, ActionReporter.FILE_STATE.OK);
 
 		if (metadata != null) {
 			metadata.getResources().add(

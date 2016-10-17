@@ -1,13 +1,19 @@
 package mobi.chouette.exchange.netex.importer;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.AbstractInputValidator;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
+import mobi.chouette.exchange.TestDescription;
+import mobi.chouette.exchange.importer.updater.DatabaseTestUtils;
 import mobi.chouette.exchange.parameters.AbstractParameter;
+import mobi.chouette.exchange.validation.checkpoint.AbstractValidation;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 
 @Log4j
@@ -60,6 +66,11 @@ public class NetexImporterInputValidator extends AbstractInputValidator {
 		return true;
 	}
 	
+	@Override
+	public boolean checkFile(String fileName, Path filePath, AbstractParameter abstractParameter) {
+		return checkFileExistenceInZip(fileName, filePath, "xml");
+	}
+	
 	public static class DefaultFactory extends InputValidatorFactory {
 
 		@Override
@@ -72,6 +83,16 @@ public class NetexImporterInputValidator extends AbstractInputValidator {
 	static {
 		InputValidatorFactory.factories.put(NetexImporterInputValidator.class.getName(),
 				new DefaultFactory());
+	}
+
+	@Override
+	public List<TestDescription> getTestList() {
+		DatabaseTestUtils dbTestUtils = DatabaseTestUtils.getInstance();
+		List<TestDescription> lstTestWithDatabase = new ArrayList<TestDescription>();
+		lstTestWithDatabase.addAll(dbTestUtils.getTestUtilsList());
+		lstTestWithDatabase.addAll(AbstractValidation.getTestLevel3FileList());
+		
+		return lstTestWithDatabase;
 	}
 	
 

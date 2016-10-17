@@ -1,30 +1,25 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-import org.testng.Assert;
-import org.testng.annotations.Test;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.NetexImporter;
 import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.ExternalReferenceValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexNamespaceContext;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
-import mobi.chouette.exchange.validation.report.CheckPoint.SEVERITY;
-import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class AbstractNetexProfileValidatorTest {
 	@Test
@@ -32,8 +27,8 @@ public class AbstractNetexProfileValidatorTest {
 		
 		
 		Context context = new Context();
-		ValidationReport vr = new ValidationReport();
-		vr.addCheckPoint(new CheckPoint("1", RESULT.UNCHECK	, SEVERITY.ERROR));
+		ValidationReporter vr = ValidationReporter.Factory.getInstance();
+		vr.addItemToValidationReport(context, "1", "E");
 		context.put(Constant.VALIDATION_REPORT	, vr);
 		XPath xpath = XPathFactory.newInstance().newXPath();
 		xpath.setNamespaceContext(new NetexNamespaceContext()) ;
@@ -57,8 +52,8 @@ public class AbstractNetexProfileValidatorTest {
 	
 	@Test public void testCheckElementCount() throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
 		Context context = new Context();
-		ValidationReport vr = new ValidationReport();
-		vr.addCheckPoint(new CheckPoint("1", RESULT.UNCHECK	, SEVERITY.ERROR));
+		ValidationReporter vr = ValidationReporter.Factory.getInstance();
+		vr.addItemToValidationReport(context, "1", "E");
 		context.put(Constant.VALIDATION_REPORT	, vr);
 		XPath xpath = XPathFactory.newInstance().newXPath();
 		xpath.setNamespaceContext(new NetexNamespaceContext()) ;

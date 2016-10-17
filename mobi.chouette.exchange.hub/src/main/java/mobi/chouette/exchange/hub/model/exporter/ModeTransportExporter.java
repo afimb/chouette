@@ -33,17 +33,17 @@ public class ModeTransportExporter extends ExporterImpl<HubModeTransport> implem
 
 
 		@Override
-		public String to(Context context, HubModeTransport input) {
+		public String to(HubContext hubContext, HubModeTransport input) {
 			String result = null;
 			List<String> values = new ArrayList<String>();
-			values.add(ENUM_CONVERTER.to(context, FIELDS.code,
+			values.add(ENUM_CONVERTER.to(hubContext, FIELDS.code,
 					input.getCode(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.commentaire,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.commentaire,
 					input.getCommentaire(), false));
 			StringBuffer list = new StringBuffer();
 			for (String code : input.getCodesLigne()) {
 				list.append("|");
-				list.append(STRING_CONVERTER.to(context, FIELDS.code_ligne,
+				list.append(STRING_CONVERTER.to(hubContext, FIELDS.code_ligne,
 						code, true));
 			}
 			if (list.length() > 0) list.deleteCharAt(0);

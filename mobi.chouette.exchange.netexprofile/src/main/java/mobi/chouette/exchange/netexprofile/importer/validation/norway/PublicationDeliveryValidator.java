@@ -2,28 +2,21 @@ package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
-import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexNamespaceContext;
-import mobi.chouette.exchange.netexprofile.parser.OrganisationParser;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.exchange.validation.report.Detail;
+import mobi.chouette.exchange.validation.report.DataLocation;
 import no.rutebanken.netex.model.*;
 import org.w3c.dom.Document;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 @Log4j
 public class PublicationDeliveryValidator extends AbstractValidator implements Validator<PublicationDeliveryStructure> {
@@ -49,7 +42,7 @@ public class PublicationDeliveryValidator extends AbstractValidator implements V
     }
 
     @Override
-    public ValidationConstraints validate(Context context, PublicationDeliveryStructure target) throws ValidationException {
+    public void validate(Context context, PublicationDeliveryStructure target) throws ValidationException {
         // TODO move xpath instantiation to higher level in validation hierarchy
         XPath xpath = XPathFactory.newInstance().newXPath();
         xpath.setNamespaceContext(new NetexNamespaceContext());
@@ -74,7 +67,7 @@ public class PublicationDeliveryValidator extends AbstractValidator implements V
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new ValidationConstraints();
+        return;
     }
 
     private void validateResourceFrame(Context context, NetexReferential referential) throws Exception {
@@ -82,8 +75,9 @@ public class PublicationDeliveryValidator extends AbstractValidator implements V
         prepareCheckPoint(context, _1_NETEX_RESOURCEFRAME);
 
         if (isCollectionEmpty(resourceFrames)) {
-            Detail errorItem = new Detail(_1_NETEX_RESOURCEFRAME, null, "No ResourceFrame");
-            addValidationError(context, _1_NETEX_RESOURCEFRAME, errorItem);
+            DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
+            dataLocation.setName("ResourceFrame");
+            addValidationError(context, _1_NETEX_RESOURCEFRAME, "No ResourceFrame", dataLocation);
         } else {
             for (ResourceFrame resourceFrame : resourceFrames) {
 
@@ -194,8 +188,9 @@ public class PublicationDeliveryValidator extends AbstractValidator implements V
         prepareCheckPoint(context, _1_NETEX_SITEFRAME);
 
         if (isCollectionEmpty(siteFrames)) {
-            Detail errorItem = new Detail(_1_NETEX_SITEFRAME, null, "No SiteFrame");
-            addValidationError(context, _1_NETEX_SITEFRAME, errorItem);
+            DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
+            dataLocation.setName("SiteFrame");
+            addValidationError(context, _1_NETEX_SITEFRAME, "No SiteFrame", dataLocation);
         } else {
             for (SiteFrame siteFrame : siteFrames) {
                 // TODO add validation of site frame elements
@@ -299,8 +294,9 @@ public class PublicationDeliveryValidator extends AbstractValidator implements V
         prepareCheckPoint(context, _1_NETEX_SERVICEFRAME);
 
         if (isCollectionEmpty(serviceFrames)) {
-            Detail errorItem = new Detail(_1_NETEX_SERVICEFRAME, null, "No ServiceFrame");
-            addValidationError(context, _1_NETEX_SERVICEFRAME, errorItem);
+            DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
+            dataLocation.setName("ServiceFrame");
+            addValidationError(context, _1_NETEX_SERVICEFRAME, "No ServiceFrame", dataLocation);
         } else {
             for (ServiceFrame serviceFrame : serviceFrames) {
                 // TODO validate frame elements
@@ -497,8 +493,9 @@ public class PublicationDeliveryValidator extends AbstractValidator implements V
         prepareCheckPoint(context, _1_NETEX_SERVICECALENDARFRAME);
 
         if (isCollectionEmpty(serviceCalendarFrames)) {
-            Detail errorItem = new Detail(_1_NETEX_SERVICECALENDARFRAME, null, "No ServiceCalendarFrame");
-            addValidationError(context, _1_NETEX_SERVICECALENDARFRAME, errorItem);
+            DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
+            dataLocation.setName("ServiceCalendarFrame");
+            addValidationError(context, _1_NETEX_SERVICECALENDARFRAME, "No ServiceCalendarFrame", dataLocation);
         } else {
             for (ServiceCalendarFrame serviceCalendarFrame : serviceCalendarFrames) {
 
@@ -567,8 +564,9 @@ public class PublicationDeliveryValidator extends AbstractValidator implements V
         prepareCheckPoint(context, _1_NETEX_TIMETABLEFRAME);
 
         if (isCollectionEmpty(timetableFrames)) {
-            Detail errorItem = new Detail(_1_NETEX_TIMETABLEFRAME, null, "No TimetableFrame");
-            addValidationError(context, _1_NETEX_TIMETABLEFRAME, errorItem);
+            DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
+            dataLocation.setName("TimetableFrame");
+            addValidationError(context, _1_NETEX_TIMETABLEFRAME, "No TimetableFrame", dataLocation);
         } else {
             for (TimetableFrame timetableFrame : timetableFrames) {
 

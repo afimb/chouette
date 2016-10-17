@@ -3,9 +3,9 @@ package mobi.chouette.exchange.hub.exporter.producer;
 import java.io.IOException;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.hub.model.HubMission;
 import mobi.chouette.exchange.hub.model.exporter.HubExporterInterface;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
@@ -24,7 +24,7 @@ public class HubMissionProducer extends AbstractProducer {
 
 	private HubMission hubObject = new HubMission();
 
-	public boolean save(VehicleJourney neptuneObject, int pmrRenvoiId, ActionReport report, int rank) {
+	public boolean save(Context context,VehicleJourney neptuneObject, int pmrRenvoiId,  int rank) {
 
 		hubObject.clear();
 		hubObject.setNumero(Integer.valueOf(rank));

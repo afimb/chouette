@@ -55,41 +55,41 @@ public class MissionExporter extends ExporterImpl<HubMission> implements HubConv
 
 
 		@Override
-		public String to(Context context, HubMission input) {
+		public String to(HubContext hubContext, HubMission input) {
 			String result = null;
 			List<String> values = new ArrayList<String>();
 			
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.numero,                    input.getNumero(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_arret_depart,         input.getCodeArretDepart(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.heure_depart,              input.getHeureDepart(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_arret_arrivee,        input.getCodeArretArrivee(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.heure_arrivee,             input.getHeureArrivee(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.categorie,                 input.getCategorie(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.service_voiture,           input.getServiceVoiture(), false));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.service_agent,             input.getServiceAgent(), false));//true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.validite,                  input.getValidite(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.forfaitise,                input.getForfaitise(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.temps_paye,                input.getTempsPaye(), false));//true)); 
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_ligne,                input.getCodeLigne(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_chemin,               input.getCodeChemin(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.nom,                       input.getNom(), false));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.distance,                  input.getDistance(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.type_materiel,             input.getTypeMateriel(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.nature,                    input.getNature(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.commentaire,               input.getCommentaire(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.type_materiel_utilise,     input.getTypeMaterielUtilise(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.graphique,                 input.getGraphique(), false));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant_arret_depart,  input.getIdentifiantArretDepart(), false));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant_arret_arrivee, input.getIdentifiantArretArrivee(), false));
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.numero,                    input.getNumero(), true));
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_arret_depart,         input.getCodeArretDepart(), true));
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.heure_depart,              input.getHeureDepart(), true));
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_arret_arrivee,        input.getCodeArretArrivee(), true));
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.heure_arrivee,             input.getHeureArrivee(), true));
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.categorie,                 input.getCategorie(), true));
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.service_voiture,           input.getServiceVoiture(), false));
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.service_agent,             input.getServiceAgent(), false));//true));
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.validite,                  input.getValidite(), true));
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.forfaitise,                input.getForfaitise(), true));
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.temps_paye,                input.getTempsPaye(), false));//true)); 
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_ligne,                input.getCodeLigne(), true));
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_chemin,               input.getCodeChemin(), false));
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.nom,                       input.getNom(), false));
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.distance,                  input.getDistance(), false));
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.type_materiel,             input.getTypeMateriel(), false));
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.nature,                    input.getNature(), false));
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.commentaire,               input.getCommentaire(), false));
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.type_materiel_utilise,     input.getTypeMaterielUtilise(), false));
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.graphique,                 input.getGraphique(), false));
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.identifiant_arret_depart,  input.getIdentifiantArretDepart(), false));
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.identifiant_arret_arrivee, input.getIdentifiantArretArrivee(), false));
 			StringBuffer list = new StringBuffer();
 			for (String code : input.getCodesPeriode()) {
 				list.append("|");
-				list.append(STRING_CONVERTER.to(context, FIELDS.code_periode, code, true));
+				list.append(STRING_CONVERTER.to(hubContext, FIELDS.code_periode, code, true));
 			}
 			if (list.length() > 0)
 				list.deleteCharAt(0);
 			values.add(list.toString());
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,               input.getIdentifiant(), false));
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.identifiant,               input.getIdentifiant(), false));
 			
 			result = Tokenizer.untokenize(values);
 			return result;

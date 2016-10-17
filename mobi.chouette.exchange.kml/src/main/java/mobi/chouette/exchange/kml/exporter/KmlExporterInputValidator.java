@@ -1,13 +1,17 @@
 package mobi.chouette.exchange.kml.exporter;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.AbstractInputValidator;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
+import mobi.chouette.exchange.TestDescription;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 @Log4j
@@ -75,6 +79,15 @@ public class KmlExporterInputValidator extends AbstractInputValidator {
 		return true;
 	}
 	
+	@Override
+	public boolean checkFile(String fileName, Path filePath, AbstractParameter abstractParameter) {
+		if (fileName != null) {
+			log.error("input data not expected");
+			return false;
+		}
+		return true;
+	}
+	
 	public static class DefaultFactory extends InputValidatorFactory {
 
 		@Override
@@ -87,6 +100,12 @@ public class KmlExporterInputValidator extends AbstractInputValidator {
 	static {
 		InputValidatorFactory.factories.put(KmlExporterInputValidator.class.getName(),
 				new DefaultFactory());
+	}
+
+	@Override
+	public List<TestDescription> getTestList() {
+		List<TestDescription> emptyList = new ArrayList<TestDescription>();
+		return emptyList;
 	}
 	
 

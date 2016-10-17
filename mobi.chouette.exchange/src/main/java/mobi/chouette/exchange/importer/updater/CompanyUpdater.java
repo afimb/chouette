@@ -2,6 +2,9 @@ package mobi.chouette.exchange.importer.updater;
 
 import javax.ejb.Stateless;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.model.Company;
 
@@ -18,6 +21,7 @@ public class CompanyUpdater implements Updater<Company> {
 		}
 		newValue.setSaved(true);
 
+        Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
@@ -84,6 +88,7 @@ public class CompanyUpdater implements Updater<Company> {
 				&& !newValue.getTimeZone().equals(oldValue.getTimeZone())) {
 			oldValue.setTimeZone(newValue.getTimeZone());
 		}
+		monitor.stop();
 	}
 
 }

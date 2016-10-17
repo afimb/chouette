@@ -8,8 +8,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import mobi.chouette.exchange.gtfs.model.importer.Context;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
 
 public abstract class ExporterImpl<T> implements Exporter<T> {
 
@@ -33,17 +33,17 @@ public abstract class ExporterImpl<T> implements Exporter<T> {
 	@Override
 	public void write(String text) throws IOException {
 		_writer.write(text);
-		_writer.write("\n");
+		_writer.write("\r\n");
 		_context.put(Context.ID, _total++);
 	}
 
 	@Override
-	public void dispose(ActionReport report) throws IOException {
+	public void dispose(mobi.chouette.common.Context context) throws IOException {
 		_writer.close();
 		// add file info
-		FileInfo info = new FileInfo(Paths.get((String) _context.get(Context.PATH)).getFileName().toString(),
-				FileInfo.FILE_STATE.OK);
-		report.getFiles().add(info);
+		
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
+		reporter.addFileReport(context, Paths.get((String) _context.get(Context.PATH)).getFileName().toString(), IO_TYPE.OUTPUT);
 	}
 
 	@SuppressWarnings("rawtypes")

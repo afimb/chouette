@@ -32,9 +32,8 @@ import mobi.chouette.exchange.neptune.exporter.util.NeptuneObjectUtil;
 import mobi.chouette.exchange.neptune.jaxb.JaxbNeptuneFileConverter;
 import mobi.chouette.exchange.neptune.model.PTLink;
 import mobi.chouette.exchange.neptune.model.TimeSlot;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
@@ -288,9 +287,8 @@ public class ChouettePTNetworkProducer implements Constant {
 		File file = new File(dir.toFile(),fileName);
 		writer.write(AbstractJaxbNeptuneProducer.tridentFactory.createChouettePTNetwork(rootObject), file );
 
-		ActionReport report = (ActionReport) context.get(REPORT);
-		FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
-		report.getFiles().add(fileItem);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
+		reporter.addFileReport(context, fileName, IO_TYPE.OUTPUT);
 
 		if (metadata != null)
 			metadata.getResources().add(metadata.new Resource(fileName, 

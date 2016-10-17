@@ -1,16 +1,16 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
-import java.io.File;
-
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.util.Referential;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import java.io.File;
 
 public class NetexLineParserCommandTest {
 
@@ -36,16 +36,13 @@ public class NetexLineParserCommandTest {
 		cmd.setFile(testFile);
 		context.put(Constant.FILE_NAME, testFile.getName());
 		
-		ActionReport report = new ActionReport();
-		report.addFileInfo(testFile.getName(), FILE_STATE.ERROR);
-		
-		context.put(Constant.REPORT, report);
-		
+		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
+		actionReporter.setFileState(context, testFile.getName(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.ERROR);
+
 		boolean result = cmd.execute(context );
 		Assert.assertTrue(result);
 		
 		//TODO Assert.assertEquals(referential.getLines().size(),1);
-		
 		
 	}
 }

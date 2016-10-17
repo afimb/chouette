@@ -25,7 +25,9 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.PropertyNames;
+import mobi.chouette.exchange.TestDescription;
 import mobi.chouette.model.iev.Job;
+import mobi.chouette.model.iev.Stat;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
 
@@ -43,11 +45,13 @@ public class RestAdmin implements Constant {
 
 	private static String GLOBAL_KEY = "Global";
 	private static String REFERENTIAL_KEY = "Referentials";
+	private static String TEST_KEY = "Tests";
+	private static String STAT_KEY = "Stats";
 
 	@Inject
 	JobServiceManager jobServiceManager;
-	
-	@Inject 
+
+	@Inject
 	ContenerChecker checker;
 
 	@Context
@@ -60,25 +64,9 @@ public class RestAdmin implements Constant {
 	public Response activeJobs(@PathParam("format") String format, @QueryParam("key") final String authorisationKey) {
 
 		log.info(Color.BLUE + "Call Admin active_jobs" + Color.NORMAL);
-		if (authorisationKey == null || authorisationKey.isEmpty()) {
-			log.warn("admin call without key");
-			ResponseBuilder builder = Response.status(Status.UNAUTHORIZED);
-			builder.header(api_version_key, api_version);
-			return builder.build();
-		}
-		String securityToken = System.getProperty(checker.getContext()+PropertyNames.ADMIN_KEY);
-		if (securityToken == null || securityToken.isEmpty()) {
-			log.warn("admin call without property " + checker.getContext()+PropertyNames.ADMIN_KEY + " set");
-			ResponseBuilder builder = Response.status(Status.FORBIDDEN);
-			builder.header(api_version_key, api_version);
-			return builder.build();
-		}
-		if (!securityToken.equals(authorisationKey)) {
-			log.warn("admin call with invalid key = " + authorisationKey);
-			ResponseBuilder builder = Response.status(Status.UNAUTHORIZED);
-			builder.header(api_version_key, api_version);
-			return builder.build();
-		}
+		Response r = checkKey(authorisationKey);
+		if (r != null)
+			return r; // invalid key
 
 		if (format == null)
 			format = ".json";
@@ -145,6 +133,108 @@ public class RestAdmin implements Constant {
 			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@GET
+	@Path("/test_list/{action}{type:(/[^/]+?)?}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getTestList(@PathParam("action") String action,
+			@PathParam("type") String type) {
+	
+			log.info(Color.BLUE + "Call getTestList action = " + action
+					+ (type == null ? "" : ", type = " + type) + Color.NORMAL);
+			
+			// Convertir les parametres fournis
+			type = parseType(type);
+			try {
+				List<TestDescription> lstTest = jobServiceManager.getTestList(action, type);
+				ResponseBuilder builder = null;
+				JSONObject resjson = new JSONObject();
+				JSONArray restests = new JSONArray();
+				resjson.put(TEST_KEY, restests);
+
+				for (TestDescription test : lstTest) {
+					JSONObject result = new JSONObject();
+					result.put("level", test.getLevel());
+					result.put("code", test.getCode());
+					result.put("severity", test.getSeverity());
+					
+					restests.put(result);
+				}
+
+				builder = Response.ok(resjson.toString(2)).type(MediaType.APPLICATION_JSON_TYPE);
+
+				builder.header(api_version_key, api_version);
+
+				return builder.build();
+			} catch (Exception ex) {
+				log.error(ex.getMessage(), ex);
+				throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
+			} finally {
+				
+				log.info(Color.BLUE + "getTestList returns" + Color.NORMAL);
+			}
+	}
+	
+	// global stat listing
+	@GET
+	@Path("/get_monthly_stats")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response monthlyStats(@QueryParam("key") final String authorisationKey) {
+		log.info(Color.BLUE + "Call Admin get_monthly_stats" + Color.NORMAL);
+		Response r = checkKey(authorisationKey);
+		if (r != null)
+			return r; // invalid key
+		try {
+			List<Stat> lstStat = jobServiceManager.getMontlyStats();
+			ResponseBuilder builder = null;
+			JSONObject resjson = new JSONObject();
+			JSONArray resstats = new JSONArray();
+			resjson.put(STAT_KEY, resstats);
+
+			for (Stat stat : lstStat) {
+				JSONObject result = new JSONObject();
+				result.put("id", stat.getId());
+				result.put("date", stat.getDate());
+				result.put("referential", stat.getReferential());
+				result.put("action", stat.getAction());
+				if (stat.getFormat() != null)
+					result.put("format", stat.getFormat());
+				resstats.put(result);
+			}
+
+			builder = Response.ok(resjson.toString(2)).type(MediaType.APPLICATION_JSON_TYPE);
+
+			builder.header(api_version_key, api_version);
+
+			return builder.build();
+		} catch (Exception ex) {
+			log.error(ex.getMessage(), ex);
+			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	private Response checkKey(final String authorisationKey) {
+		if (authorisationKey == null || authorisationKey.isEmpty()) {
+			log.warn("admin call without key");
+			ResponseBuilder builder = Response.status(Status.UNAUTHORIZED);
+			builder.header(api_version_key, api_version);
+			return builder.build();
+		}
+		String securityToken = System.getProperty(checker.getContext() + PropertyNames.ADMIN_KEY);
+		if (securityToken == null || securityToken.isEmpty()) {
+			log.warn("admin call without property " + checker.getContext() + PropertyNames.ADMIN_KEY + " set");
+			ResponseBuilder builder = Response.status(Status.FORBIDDEN);
+			builder.header(api_version_key, api_version);
+			return builder.build();
+		}
+		if (!securityToken.equals(authorisationKey)) {
+			log.warn("admin call with invalid key = " + authorisationKey);
+			ResponseBuilder builder = Response.status(Status.UNAUTHORIZED);
+			builder.header(api_version_key, api_version);
+			return builder.build();
+		}
+		return null;
+	}
 
 	private class JobStat {
 		String key;
@@ -173,5 +263,14 @@ public class RestAdmin implements Constant {
 			return result;
 		}
 	}
+	
+	private String parseType(String type) {
+		if (type != null && type.startsWith("/")) {
+			return type.substring(1);
+		}
+		return type;
+	}
+	
+	
 
 }

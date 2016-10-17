@@ -9,9 +9,9 @@
 package mobi.chouette.exchange.hub.exporter.producer;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.hub.model.HubItl;
 import mobi.chouette.exchange.hub.model.exporter.HubExporterInterface;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
@@ -33,7 +33,7 @@ public class HubItlProducer extends AbstractProducer {
 
 	private HubItl hubObject = new HubItl();
 
-	public boolean save(StopPoint neptuneObject, ActionReport report) {
+	public boolean save(Context context,StopPoint neptuneObject) {
 		// ignore StopPoint without itl information
 		if (neptuneObject.getForAlighting() == null && neptuneObject.getForBoarding() == null)
 			return true;

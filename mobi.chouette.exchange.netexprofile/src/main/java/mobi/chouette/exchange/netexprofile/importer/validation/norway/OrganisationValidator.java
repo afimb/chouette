@@ -31,13 +31,13 @@ public class OrganisationValidator extends AbstractValidator implements Validato
     }
 
     @Override
-    public ValidationConstraints validate(Context context, Organisation target) throws ValidationException {
+    public void validate(Context context, Organisation target) throws ValidationException {
         Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
         ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
         Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 
         if (localContext == null || localContext.isEmpty()) {
-            return new ValidationConstraints();
+            return;
         }
 
         NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);
@@ -49,7 +49,7 @@ public class OrganisationValidator extends AbstractValidator implements Validato
             Context objectContext = (Context) localContext.get(objectId);
             Organisation organisation = organisations.get(objectId);
         }
-        return new ValidationConstraints();
+        return;
     }
 
     public static class DefaultValidatorFactory extends ValidatorFactory {

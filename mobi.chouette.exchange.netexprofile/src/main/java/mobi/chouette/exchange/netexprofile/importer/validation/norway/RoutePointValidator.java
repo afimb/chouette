@@ -3,9 +3,14 @@ package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
-import mobi.chouette.exchange.validation.*;
-import mobi.chouette.exchange.validation.report.Detail;
-import no.rutebanken.netex.model.*;
+import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.exchange.validation.ValidationException;
+import mobi.chouette.exchange.validation.Validator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.exchange.validation.report.DataLocation;
+import no.rutebanken.netex.model.DataManagedObjectStructure;
+import no.rutebanken.netex.model.LocationStructure;
+import no.rutebanken.netex.model.RoutePoint;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
@@ -46,13 +51,13 @@ public class RoutePointValidator extends AbstractValidator implements Validator<
     }
 
     @Override
-    public ValidationConstraints validate(Context context, RoutePoint target) throws ValidationException {
+    public void validate(Context context, RoutePoint target) throws ValidationException {
         Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
         ValidationData data = (ValidationData) context.get(VALIDATION_DATA); // how should this be used?
         Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 
         if (localContext == null || localContext.isEmpty()) {
-            return new ValidationConstraints();
+            return;
         }
 
         Context stopPointContext = (Context) validationContext.get(ScheduledStopPointValidator.LOCAL_CONTEXT);
@@ -77,8 +82,9 @@ public class RoutePointValidator extends AbstractValidator implements Validator<
             LocationStructure locationStruct = routePoint.getLocation();
 
             if (locationStruct == null) {
-                Detail errorItem = new Detail(ROUTEPOINT_2, null, "Missing mandatory element : 'Location'");
-                addValidationError(context, ROUTEPOINT_2, errorItem);
+                DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
+                dataLocation.setName("Location");
+                addValidationError(context, ROUTEPOINT_2, "Missing mandatory element : 'Location'", dataLocation);
             } else {
                 // TODO validate location here...
             }
@@ -99,14 +105,11 @@ public class RoutePointValidator extends AbstractValidator implements Validator<
             @SuppressWarnings("unchecked") List<String> stopPointIds = (List<String>) objectContext.get(STOPPOINT_ID);
             for (String stopPointId : stopPointIds) {
                 if (!stopPointContext.containsKey(stopPointId)) {
-                    Detail errorItem = new Detail(ROUTEPOINT_4, null,
-                            String.format("Non-existent stop point id : '%s'", stopPointId));
-                    addValidationError(context, ROUTEPOINT_4, errorItem);
+                    DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
+                    addValidationError(context, ROUTEPOINT_4, String.format("Non-existent stop point id : '%s'", stopPointId), dataLocation);
                 }
             }
         }
-
-        return new ValidationConstraints();
     }
 
     public static class DefaultValidatorFactory extends ValidatorFactory {

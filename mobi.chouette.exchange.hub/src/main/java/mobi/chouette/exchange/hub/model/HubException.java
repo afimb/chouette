@@ -2,7 +2,7 @@ package mobi.chouette.exchange.hub.model;
 
 import lombok.Getter;
 import lombok.ToString;
-import mobi.chouette.exchange.hub.model.exporter.Context;
+import mobi.chouette.exchange.hub.model.exporter.HubContext;
 
 @ToString
 public class HubException extends RuntimeException {
@@ -27,17 +27,17 @@ public class HubException extends RuntimeException {
 	@Getter
 	private String value;
 
-	public HubException(Context context) {
-		this(context, null);
+	public HubException(HubContext hubContext) {
+		this(hubContext, null);
 	}
 
-	public HubException(Context context, Throwable cause) {
+	public HubException(HubContext hubContext, Throwable cause) {
 		super(cause);
-		this.path = (String) context.get(Context.PATH);
-		this.id = (Integer) context.get(Context.ID);
-		this.field = (String) context.get(Context.FIELD);
-		this.error = (ERROR) context.get(Context.ERROR);
-		this.value = (String) context.get(Context.VALUE);
+		this.path = (String) hubContext.get(HubContext.PATH);
+		this.id = (Integer) hubContext.get(HubContext.ID);
+		this.field = (String) hubContext.get(HubContext.FIELD);
+		this.error = (ERROR) hubContext.get(HubContext.ERROR);
+		this.value = (String) hubContext.get(HubContext.VALUE);
 	}
 
 	public HubException(String path, Integer id, String field, ERROR error,

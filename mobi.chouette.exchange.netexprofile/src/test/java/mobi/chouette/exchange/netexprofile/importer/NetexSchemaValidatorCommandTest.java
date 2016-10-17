@@ -1,15 +1,15 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
-import java.io.File;
-
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import java.io.File;
 
 public class NetexSchemaValidatorCommandTest {
 
@@ -32,10 +32,10 @@ public class NetexSchemaValidatorCommandTest {
 		cmd.setFile(testFile);
 		context.put(Constant.FILE_NAME, testFile.getName());
 		
-		ActionReport report = new ActionReport();
-		report.addFileInfo(testFile.getName(), FILE_STATE.ERROR);
+		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
+		actionReporter.setFileState(context, testFile.getName(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.ERROR);
 		
-		context.put(Constant.REPORT, report);
+		context.put(Constant.REPORT, actionReporter);
 		
 		boolean result = cmd.execute(context );
 		

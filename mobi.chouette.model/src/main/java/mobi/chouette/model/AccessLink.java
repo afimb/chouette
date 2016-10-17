@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -20,6 +21,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.model.converter.ConnectionLinkTypeToStringConverter;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.model.type.LinkOrientationEnum;
 import mobi.chouette.model.type.UserNeedEnum;
@@ -211,7 +213,9 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@Enumerated(EnumType.STRING)
+	// don't use Enumerated to manage blank database values
+	@Convert(converter = ConnectionLinkTypeToStringConverter.class)
+	// @Enumerated(EnumType.STRING)
 	@Column(name = "link_type")
 	private ConnectionLinkTypeEnum linkType;
 

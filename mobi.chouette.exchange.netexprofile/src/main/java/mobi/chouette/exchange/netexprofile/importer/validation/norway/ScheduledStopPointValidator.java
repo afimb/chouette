@@ -1,12 +1,10 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import no.rutebanken.netex.model.DataManagedObjectStructure;
-import no.rutebanken.netex.model.Network;
 import no.rutebanken.netex.model.ScheduledStopPoint;
 
 public class ScheduledStopPointValidator extends AbstractValidator implements Validator<ScheduledStopPoint> {
@@ -23,8 +21,7 @@ public class ScheduledStopPointValidator extends AbstractValidator implements Va
     }
 
     @Override
-    public ValidationConstraints validate(Context context, ScheduledStopPoint target) throws ValidationException {
-        return new ValidationConstraints();
+    public void validate(Context context, ScheduledStopPoint target) throws ValidationException {
     }
 
     public static class DefaultValidatorFactory extends ValidatorFactory {
