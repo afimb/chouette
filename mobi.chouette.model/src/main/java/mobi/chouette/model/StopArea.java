@@ -390,20 +390,20 @@ public class StopArea extends NeptuneLocalizedObject {
 //	@JoinTable(name = "stop_areas_stop_areas", joinColumns = { @JoinColumn(name = "parent_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "child_id", nullable = false, updatable = false) })
 //	private List<StopArea> routingConstraintAreas = new ArrayList<StopArea>(0);
 	
-	/**
-	 * stops grouped in a routing constraints <br/>
-	 * only for areaType = ITL<br/>
-	 * stops in this list can't be of ITL type
-	 * 
-	 * @param routingConstraintAreas
-	 *            New value
-	 * @return The actual value
-	 */
-	@Getter
-	@Setter
-	@ManyToMany(cascade = { CascadeType.PERSIST})
-	@JoinTable(name = "routing_constraints_stop_areas", joinColumns = { @JoinColumn(name = "stop_area_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "routing_constraint_id", nullable = false, updatable = false) })
-	private List<StopArea> routingConstraintAreas = new ArrayList<StopArea>(0);
+//	/**
+//	 * stops grouped in a routing constraints <br/>
+//	 * only for areaType = ITL<br/>
+//	 * stops in this list can't be of ITL type
+//	 * 
+//	 * @param routingConstraintAreas
+//	 *            New value
+//	 * @return The actual value
+//	 */
+//	@Getter
+//	@Setter
+//	@ManyToMany(cascade = { CascadeType.PERSIST})
+//	@JoinTable(name = "routing_constraints_stop_areas", joinColumns = { @JoinColumn(name = "stop_area_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "routing_constraint_id", nullable = false, updatable = false) })
+//	private List<StopArea> routingConstraintAreas = new ArrayList<StopArea>(0);
 
 	/**
 	 * stop area children<br/>

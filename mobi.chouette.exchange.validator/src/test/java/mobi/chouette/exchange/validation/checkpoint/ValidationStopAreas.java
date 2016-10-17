@@ -404,7 +404,8 @@ public class ValidationStopAreas extends AbstractTestValidation {
 			if (area.getAreaType().equals(ChouetteAreaEnum.ITL))
 			{
 				log.info("présence itl anormale : " + area.getObjectId());
-				continue;}
+				continue;
+			}
 				
 			if (area.getLatitude().doubleValue() > maxLat)
 				maxLat = area.getLatitude().doubleValue();
@@ -444,7 +445,7 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
 		// TODO Analyser pourquoi le compte a changé
-		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 18, " checkPointReport must have 17 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 17, " checkPointReport must have 17 item");
 		String detailKey = "3-StopArea-4".replaceAll("-", "_").toLowerCase();
 		List<CheckPointErrorReport> details = checkReportForTest(report,"3-StopArea-4",-1);
 		for (CheckPointErrorReport detail : details) {
