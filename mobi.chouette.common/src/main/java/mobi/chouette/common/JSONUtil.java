@@ -1,6 +1,5 @@
 package mobi.chouette.common;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
@@ -27,52 +26,7 @@ import org.codehaus.jettison.mapped.MappedNamespaceConvention;
 import org.codehaus.jettison.mapped.MappedXMLStreamReader;
 import org.codehaus.jettison.mapped.MappedXMLStreamWriter;
 
-import com.fasterxml.jackson.core.JsonEncoding;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.AnnotationIntrospector;
-import com.fasterxml.jackson.databind.MappingJsonFactory;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
-
 public class JSONUtil {
-
-	public static void serializeJAXBObjectToJSONFile(Object jaxbAnnotatedObject, File file) throws IOException {
-		ObjectMapper mapper = createJAXBObjectMapper();     
-		
-		JsonFactory jsonFactory = new MappingJsonFactory(mapper); 
-		JsonGenerator jg = jsonFactory.createGenerator(file, JsonEncoding.UTF8);
-		jg.setCodec(mapper);
-		jg.writeObject(jaxbAnnotatedObject);
-		jg.flush();
-	}
-
-	public static String serializeJAXBObjectToJSONString(Object jaxbAnnotatedObject) throws IOException {
-		ObjectMapper mapper = createJAXBObjectMapper();    
-		
-		StringWriter dest = new StringWriter();
-		
-		JsonFactory jsonFactory = new MappingJsonFactory(mapper); 
-		JsonGenerator jg = jsonFactory.createGenerator(dest); 
-		jg.setCodec(mapper);
-		jg.writeObject(jaxbAnnotatedObject);
-		jg.flush();
-		
-		return dest.toString();
-	}
-
-	public static ObjectMapper createJAXBObjectMapper() {
-		ObjectMapper mapper = new ObjectMapper();
-		AnnotationIntrospector introspector
-		    = new JaxbAnnotationIntrospector(mapper.getTypeFactory());
-		mapper.setAnnotationIntrospector(introspector);
-		mapper.enable(SerializationFeature.INDENT_OUTPUT);         
-		mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, true);
-		mapper.configure(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS, false);
-		return mapper;
-		
-	}
 
 	public static <T> T fromJSON(Path path, Class<T> type) throws IOException, JAXBException, JSONException,
 			XMLStreamException {

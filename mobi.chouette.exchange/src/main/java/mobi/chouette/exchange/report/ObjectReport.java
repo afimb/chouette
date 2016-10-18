@@ -1,28 +1,25 @@
 package mobi.chouette.exchange.report;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
-import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
-import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"type","description", "status", "stats", "ioType", "errors",
-		"checkPointErrorKeys", "checkPointWarningKeys", "checkPointErrorCount", "checkPointWarningCount"})
+import javax.xml.bind.annotation.XmlElement;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
+import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 @ToString
 public class ObjectReport extends AbstractReport {
 
@@ -195,4 +192,43 @@ public class ObjectReport extends AbstractReport {
 		return object;
 	}
 
+	@Override
+	public void print(PrintStream out, StringBuilder ret , int level, boolean first) {
+		ret.setLength(0);
+		out.print(addLevel(ret, level).append('{'));
+		out.print(toJsonString(ret, level + 1, "type", type.toString().toLowerCase(), true));
+		out.print(toJsonString(ret, level + 1, "description", description, false));
+		out.print(toJsonString(ret, level + 1, "objectid", objectId, false));
+		out.print(toJsonString(ret, level + 1, "status", status, false));
+		if (ioType != null)
+			out.print(toJsonString(ret, level + 1, "io_type", ioType, false));
+		if (!stats.isEmpty()) {
+			printMap(out, ret, level + 1, "stats", stats, false);
+		}
+		if (!errors.isEmpty()) {
+			printArray(out, ret, level + 1, "errors", errors, false);
+		}
+		List<Integer> lstErrorKeys = new ArrayList<Integer>();
+		for(Integer numError: checkPointErrorKeys) {
+			if(lstErrorKeys.size() < maxErrors)
+				lstErrorKeys.add(numError);
+			else
+				break;
+		}
+		for(Integer numWarning: checkPointWarningKeys) {
+			if(lstErrorKeys.size() < maxErrors)
+				lstErrorKeys.add(numWarning);
+			else
+				break;
+		}
+		if (!lstErrorKeys.isEmpty())
+			printIntArray(out, ret, level + 1, "check_point_errors", lstErrorKeys, false);
+
+		out.print(toJsonString(ret, level + 1, "check_point_error_count", checkPointErrorCount, false));
+		out.print(toJsonString(ret, level + 1, "check_point_warning_count", checkPointWarningCount, false));
+
+		ret.setLength(0);
+		out.print(addLevel(ret.append('\n'), level).append('}'));
+
+	}
 }

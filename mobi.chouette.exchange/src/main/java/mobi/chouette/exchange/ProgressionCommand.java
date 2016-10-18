@@ -12,7 +12,6 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
@@ -80,8 +79,11 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 			Monitor monitor = MonitorFactory.start("ActionReport");
 			JobData jobData = (JobData) context.get(JOB_DATA);
 			Path path = Paths.get(jobData.getPathName(), REPORT_FILE);
+			// pseudo pretty print
 			try {
-                JSONUtil.serializeJAXBObjectToJSONFile(report, path.toFile());
+				PrintStream stream = new PrintStream(path.toFile(), "UTF-8");
+				report.print(stream);
+				stream.close();
 			} catch (Exception e) {
 				log.error("failed to save report", e);
 			}
@@ -109,7 +111,9 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 			Path path = Paths.get(jobData.getPathName(), VALIDATION_FILE);
 
 			try {
-                JSONUtil.serializeJAXBObjectToJSONFile(report, path.toFile());
+				PrintStream stream = new PrintStream(path.toFile(), "UTF-8");
+				report.print(stream);
+				stream.close();
 			} catch (Exception e) {
 				log.error("failed to save validation report", e);
 			}
@@ -127,7 +131,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		step.setRealized(step.getRealized() + 1);
 		boolean force = report.getProgression().getCurrentStep() != STEP.PROCESSING.ordinal() + 1;
 		saveReport(context, force);
-		if (force && context.containsKey(VALIDATION_REPORT) && context.containsKey(SAVE_MAIN_VALIDATION_REPORT)) {
+		if (force && context.containsKey(VALIDATION_REPORT)) {
 			saveMainValidationReport(context, force);
 		}
 		if (context.containsKey(CANCEL_ASKED) || Thread.currentThread().isInterrupted()) {
