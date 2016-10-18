@@ -8,8 +8,8 @@ import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.NetworkValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import no.rutebanken.netex.model.Network;
-import no.rutebanken.netex.model.OrganisationRefStructure;
+import org.rutebanken.netex.model.Network;
+import org.rutebanken.netex.model.OrganisationRefStructure;
 import org.apache.commons.lang.StringUtils;
 
 import javax.xml.bind.JAXBElement;

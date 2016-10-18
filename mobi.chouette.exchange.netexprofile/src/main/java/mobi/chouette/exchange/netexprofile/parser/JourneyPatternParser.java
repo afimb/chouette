@@ -9,7 +9,7 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import no.rutebanken.netex.model.*;
+import org.rutebanken.netex.model.*;
 import org.apache.commons.lang.StringUtils;
 
 import javax.xml.bind.JAXBElement;
@@ -25,12 +25,12 @@ public class JourneyPatternParser implements Parser, Constant {
         JourneyPatternsInFrame_RelStructure contextData = (JourneyPatternsInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
         List<JAXBElement<?>> journeyPatternElements = contextData.getJourneyPattern_OrJourneyPatternView();
         for (JAXBElement<?> journeyPatternElement : journeyPatternElements) {
-            no.rutebanken.netex.model.JourneyPattern journeyPattern = (no.rutebanken.netex.model.JourneyPattern) journeyPatternElement.getValue();
+            org.rutebanken.netex.model.JourneyPattern journeyPattern = (org.rutebanken.netex.model.JourneyPattern) journeyPatternElement.getValue();
             parseJourneyPattern(context, referential, journeyPattern);
         }
     }
 
-    private void parseJourneyPattern(Context context, Referential referential, no.rutebanken.netex.model.JourneyPattern netexJourneyPattern) {
+    private void parseJourneyPattern(Context context, Referential referential, org.rutebanken.netex.model.JourneyPattern netexJourneyPattern) {
         mobi.chouette.model.JourneyPattern chouetteJourneyPattern = ObjectFactory.getJourneyPattern(referential, netexJourneyPattern.getId());
 
         // optional

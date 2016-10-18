@@ -4,10 +4,10 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.validation.*;
-import no.rutebanken.netex.model.Authority;
-import no.rutebanken.netex.model.DataManagedObjectStructure;
-import no.rutebanken.netex.model.Operator;
-import no.rutebanken.netex.model.Organisation;
+import org.rutebanken.netex.model.Authority;
+import org.rutebanken.netex.model.DataManagedObjectStructure;
+import org.rutebanken.netex.model.Operator;
+import org.rutebanken.netex.model.Organisation;
 
 import java.util.Collection;
 import java.util.Map;

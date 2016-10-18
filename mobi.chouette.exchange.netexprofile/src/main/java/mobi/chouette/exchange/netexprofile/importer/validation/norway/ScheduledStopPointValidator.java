@@ -4,8 +4,8 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import no.rutebanken.netex.model.DataManagedObjectStructure;
-import no.rutebanken.netex.model.ScheduledStopPoint;
+import org.rutebanken.netex.model.DataManagedObjectStructure;
+import org.rutebanken.netex.model.ScheduledStopPoint;
 
 public class ScheduledStopPointValidator extends AbstractValidator implements Validator<ScheduledStopPoint> {
 

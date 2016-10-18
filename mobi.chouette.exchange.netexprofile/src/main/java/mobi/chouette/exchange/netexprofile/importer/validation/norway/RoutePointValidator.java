@@ -8,9 +8,9 @@ import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.DataLocation;
-import no.rutebanken.netex.model.DataManagedObjectStructure;
-import no.rutebanken.netex.model.LocationStructure;
-import no.rutebanken.netex.model.RoutePoint;
+import org.rutebanken.netex.model.DataManagedObjectStructure;
+import org.rutebanken.netex.model.LocationStructure;
+import org.rutebanken.netex.model.RoutePoint;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;

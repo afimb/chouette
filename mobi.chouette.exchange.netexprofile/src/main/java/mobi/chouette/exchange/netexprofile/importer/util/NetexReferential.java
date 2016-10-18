@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import no.rutebanken.netex.model.*;
+import org.rutebanken.netex.model.*;
 
 import java.io.Serializable;
 import java.util.HashMap;

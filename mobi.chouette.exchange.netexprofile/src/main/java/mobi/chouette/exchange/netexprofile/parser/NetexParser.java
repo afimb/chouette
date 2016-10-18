@@ -9,7 +9,7 @@ import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.LineValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.RoutePointValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import no.rutebanken.netex.model.*;
+import org.rutebanken.netex.model.*;
 import org.apache.commons.lang.StringUtils;
 
 import javax.xml.bind.JAXBElement;
