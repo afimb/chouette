@@ -84,4 +84,23 @@ public class CheckPointReport extends AbstractReport{
 		return ret;
 	}
 
+
+	@Override
+	public void print(PrintStream out, StringBuilder ret , int level, boolean first) {
+		ret.setLength(0);
+		out.print(addLevel(ret,level).append('{'));
+		out.print(toJsonString(ret,level+1,"test_id", name, true));
+		out.print(toJsonString(ret,level+1,"level", phase, false));
+		out.print(toJsonString(ret,level+1,"type", target, false));
+		out.print(toJsonString(ret,level+1,"rank", rank, false));
+		out.print(toJsonString(ret,level+1,"severity", severity, false));
+		out.print(toJsonString(ret,level+1,"result", state, false));
+		out.print(toJsonString(ret,level+1,"check_point_error_count", checkPointErrorCount, false));
+		if (!checkPointErrorsKeys.isEmpty())
+			printIntArray(out,ret, level+1,"errors",checkPointErrorsKeys, false);
+		ret.setLength(0);
+		out.print(addLevel(ret.append('\n'),level).append('}'));
+		
+	}
+
 }

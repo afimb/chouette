@@ -233,4 +233,35 @@ public class ActionReport extends AbstractReport implements Constant, Progressio
 		return null;
 	}
 
+	@Override
+	public void print(PrintStream out, StringBuilder ret , int level, boolean first) {
+		ret.setLength(0);
+		level = 0;
+		first = true;
+		out.print("{\"action_report\": {");
+		if (progression != null) {
+			printObject(out, ret, level + 1, "progression", progression, first);
+			first = false;
+		}
+		out.print(toJsonString(ret, level+1, "result", result, first));
+
+		if (!zips.isEmpty())
+			printArray(out, ret, level + 1, "zip_files", zips, false);
+		if (failure != null)
+			printObject(out, ret, level + 1,"failure", failure,false);
+		if (!files.isEmpty())
+			printArray(out, ret, level + 1, "files", files, false);
+		if (!objects.isEmpty())
+			printArray(out, ret, level + 1, "objects", objects.values(), false);
+		if (!collections.isEmpty())
+			printArray(out, ret, level + 1, "collections", collections.values(), false);
+
+		out.println("\n}}");
+	}
+
+	@Override
+	public void print(PrintStream stream) {
+		print(stream, new StringBuilder() , 1, true);
+
+	}
 }

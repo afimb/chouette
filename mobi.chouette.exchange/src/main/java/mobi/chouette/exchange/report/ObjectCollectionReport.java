@@ -89,4 +89,18 @@ public class ObjectCollectionReport  extends AbstractReport {
 		return null;
 	}
 
+	@Override
+	public void print(PrintStream out, StringBuilder ret , int level, boolean first) {
+		ret.setLength(0);
+		out.print(addLevel(ret, level).append('{'));
+		out.print(toJsonString(ret, level + 1, "type", objectType.toString().toLowerCase(), true));
+		if (!objectReports.isEmpty())
+			printArray(out, ret, level + 1, "objects", objectReports, false);
+		if (!stats.isEmpty()) {
+			printMap(out, ret, level + 1, "stats", stats, false);
+		}
+		ret.setLength(0);
+		out.print(addLevel(ret.append('\n'), level).append('}'));
+	
+	}
 }

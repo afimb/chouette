@@ -47,4 +47,16 @@ public class StepProgression extends AbstractReport {
 		return object;
 	}
 
+	@Override
+	public void print(PrintStream out, StringBuilder ret , int level, boolean first) {
+		ret.setLength(0);
+		out.print(addLevel(ret, level).append('{'));
+		out.print(toJsonString(ret, level+1, "step", step, true));
+		out.print(toJsonString(ret, level+1, "total", total, false));
+		out.print(toJsonString(ret, level+1, "realized", realized, false));
+		ret.setLength(0);
+		out.print(addLevel(ret.append('\n'), level).append('}'));
+
+	}
+
 }
