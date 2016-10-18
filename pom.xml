@@ -589,6 +589,12 @@
 				<scope>provided</scope>
 			</dependency>
 
+      <dependency>
+  			<groupId>no.rutebanken</groupId>
+  			<artifactId>netex-java-model</artifactId>
+  			<version>0.0.8</version>
+  		</dependency>
+
 			<dependency>
 				<groupId>org.jboss.resteasy</groupId>
 				<artifactId>resteasy-cache-core</artifactId>
