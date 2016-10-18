@@ -1,12 +1,12 @@
 package mobi.chouette.command;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
@@ -306,14 +306,20 @@ public class CommandManager implements Constant {
 		if (importContext == null)
 			return;
 		ActionReport importReport = (ActionReport) importContext.get(REPORT);
-		JSONUtil.serializeJAXBObjectToJSONFile(importReport, Paths.get(inputData.getPathName(), "inputReport.json").toFile());
+		PrintStream stream = new PrintStream(Paths.get(inputData.getPathName(), "inputReport.json").toFile(), "UTF-8");
+	     importReport.print(stream);
+		stream.close();
 
 		ValidationReport validationReport = (ValidationReport) importContext.get(VALIDATION_REPORT);
-		JSONUtil.serializeJAXBObjectToJSONFile(validationReport, Paths.get(inputData.getPathName(), VALIDATION_FILE).toFile());
 
+		 stream = new PrintStream(Paths.get(inputData.getPathName(), VALIDATION_FILE).toFile(), "UTF-8");
+		validationReport.print(stream);
+		stream.close();
 		if (withExport()) {
 			ActionReport exportReport = (ActionReport) exportContext.get(REPORT);
-			JSONUtil.serializeJAXBObjectToJSONFile(exportReport, Paths.get(inputData.getPathName(), "outputReport.json").toFile());
+		     stream = new PrintStream(Paths.get(inputData.getPathName(), "outputReport.json").toFile(), "UTF-8");
+		     exportReport.print(stream);
+			stream.close();
 		}
 	}
 

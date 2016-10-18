@@ -29,7 +29,6 @@ public class LineLocation {
 		this.name = Location.buildName(line);
 	}
 
-	@Deprecated
 	public JSONObject toJson() throws JSONException {
 		JSONObject object = new JSONObject();
 		if (objectId != null)
