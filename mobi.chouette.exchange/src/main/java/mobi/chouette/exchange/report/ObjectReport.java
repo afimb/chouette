@@ -7,10 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,9 +20,6 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"type","description", "status", "stats", "ioType", "errors",
-		"checkPointErrorKeys", "checkPointWarningKeys", "checkPointErrorCount", "checkPointWarningCount"})
 @ToString
 public class ObjectReport extends AbstractReport {
 

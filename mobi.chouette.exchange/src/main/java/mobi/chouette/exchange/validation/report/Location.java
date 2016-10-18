@@ -33,7 +33,7 @@ import mobi.chouette.model.util.NamingUtil;
 @EqualsAndHashCode(callSuper = false)
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "file", "objectId", "name", "objectRefs" })
+@XmlType(propOrder = { "file", "line", "objectId", "name", "objectRefs" })
 public class Location extends AbstractReport {
 
 	@XmlElement(name = "file")

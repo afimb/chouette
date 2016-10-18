@@ -25,7 +25,7 @@ import org.codehaus.jettison.json.JSONObject;
 @EqualsAndHashCode(callSuper=false)
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "objectType", "objectReports", "stats" })
+@XmlType(propOrder = { "objectType", "objectReports", "stats", "ioType" })
 public class ObjectCollectionReport  extends AbstractReport {
 	@XmlElement(name = "type", required = true)
 	private ActionReporter.OBJECT_TYPE objectType;

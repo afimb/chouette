@@ -6,13 +6,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -22,32 +15,24 @@ import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
 import mobi.chouette.exchange.validation.report.ValidationReporter.VALIDATION_RESULT;
 
 @ToString
-@XmlRootElement(name = "validation_report")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "result", "checkPoints", "checkPointErrors" })
 public class ValidationReport extends AbstractReport implements Report {
 
-	@XmlElement(name = "result")
 	@Getter
 	@Setter
 	private VALIDATION_RESULT result = VALIDATION_RESULT.NO_PROCESSING;
 
-	@XmlElement(name = "tests")
 	@Getter
 	@Setter
-	private List<CheckPointReport> checkPoints = new ArrayList<>();
+	private List<CheckPointReport> checkPoints = new ArrayList<CheckPointReport>();
 
-	@XmlElement(name = "errors")
 	@Getter
 	@Setter
-	private List<CheckPointErrorReport> checkPointErrors = new ArrayList<>();
+	private List<CheckPointErrorReport> checkPointErrors = new ArrayList<CheckPointErrorReport>();
 
-	@XmlTransient
 	@Getter
 	@Setter
 	private boolean maxByFile = true;
 
-	@XmlTransient
 	@Getter
 	@Setter
 	private Date date = new Date(0);

@@ -22,6 +22,7 @@ import org.codehaus.jettison.json.JSONObject;
 @XmlType(propOrder={"currentStep","stepsCount","steps"})
 @Data
 @EqualsAndHashCode(callSuper=false)
+
 public class Progression extends AbstractReport {
 	
 	

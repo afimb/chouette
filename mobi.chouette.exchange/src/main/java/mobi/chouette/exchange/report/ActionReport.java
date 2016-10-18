@@ -26,7 +26,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 @XmlRootElement(name = "action_report")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "progression", "result", "zips", "files", "failure", "objects", "collections" })
+@XmlType(propOrder = { "progression", "result", "zip", "files", "lines", "stats", "failure", "objects", "collections" })
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class ActionReport extends AbstractReport implements Constant, ProgressionReport, Report {

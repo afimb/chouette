@@ -2,12 +2,6 @@ package mobi.chouette.exchange.validation.report;
 
 import java.io.PrintStream;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlType;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -29,12 +23,8 @@ import mobi.chouette.model.VehicleJourney;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ToString
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"type","id", "objectId"})
 public class ObjectReference extends AbstractReport {
 
-    @XmlType(name="referenceType")
-    @XmlEnum
 	public enum TYPE {
 		network("Network"), company("Company"), group_of_line("GroupOfLine"), stop_area("StopArea"), stop_point(
 				"StopPoint"), connection_link("ConnectionLink"), access_point("AccessPoint"), access_link("AccessLink"), time_table(
@@ -57,13 +47,10 @@ public class ObjectReference extends AbstractReport {
 		}
 	};
 
-    @XmlElement(name = "type",required=true)
 	private TYPE type;
 
-    @XmlElement(name = "id",required=true)
 	private Long id;
 
-    @XmlElement(name = "objectid",required=true)
 	private String objectId;
 
 	public ObjectReference(Network object) {
