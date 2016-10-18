@@ -13,7 +13,7 @@ import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.util.Referential;
-import no.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.rutebanken.netex.model.PublicationDeliveryStructure;
 
 import javax.naming.InitialContext;
 import java.io.File;

@@ -1,6 +1,6 @@
 package mobi.chouette.exchange.netexprofile.importer.util;
 
-import no.rutebanken.netex.model.*;
+import org.rutebanken.netex.model.*;
 import org.apache.commons.lang.StringUtils;
 
 import javax.xml.bind.JAXBElement;

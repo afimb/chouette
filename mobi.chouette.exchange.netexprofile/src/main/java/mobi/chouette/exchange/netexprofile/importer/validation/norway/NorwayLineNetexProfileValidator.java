@@ -9,10 +9,10 @@ import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.util.Referential;
-import no.rutebanken.netex.model.Common_VersionFrameStructure;
-import no.rutebanken.netex.model.CompositeFrame;
-import no.rutebanken.netex.model.Frames_RelStructure;
-import no.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.rutebanken.netex.model.Common_VersionFrameStructure;
+import org.rutebanken.netex.model.CompositeFrame;
+import org.rutebanken.netex.model.Frames_RelStructure;
+import org.rutebanken.netex.model.PublicationDeliveryStructure;
 import org.w3c.dom.Document;
 
 import javax.xml.bind.JAXBElement;

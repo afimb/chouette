@@ -7,8 +7,8 @@ import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import no.rutebanken.netex.model.DataManagedObjectStructure;
-import no.rutebanken.netex.model.Route;
+import org.rutebanken.netex.model.DataManagedObjectStructure;
+import org.rutebanken.netex.model.Route;
 
 import java.util.Map;
 

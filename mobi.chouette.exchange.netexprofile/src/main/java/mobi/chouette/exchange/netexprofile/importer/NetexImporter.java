@@ -26,7 +26,7 @@ import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.NorwayLineNetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.parser.xml.PredefinedSchemaListClasspathResourceResolver;
-import no.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.rutebanken.netex.model.PublicationDeliveryStructure;
 
 @Log4j
 public class NetexImporter {
@@ -49,7 +49,7 @@ public class NetexImporter {
 
 	public JAXBContext getNetexJaxBContext() throws JAXBException {
 		if (netexJaxBContext == null) {
-			netexJaxBContext = JAXBContext.newInstance("net.opengis.gml._3:no.rutebanken.netex.model:uk.org.siri.siri");
+			netexJaxBContext = JAXBContext.newInstance("net.opengis.gml._3:org.rutebanken.netex.model:uk.org.siri.siri");
 		}
 
 		return netexJaxBContext;

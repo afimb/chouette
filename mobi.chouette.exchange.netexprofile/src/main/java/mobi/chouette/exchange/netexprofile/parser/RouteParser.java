@@ -11,7 +11,7 @@ import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import no.rutebanken.netex.model.*;
+import org.rutebanken.netex.model.*;
 import org.apache.commons.lang.StringUtils;
 
 import javax.xml.bind.JAXBElement;
@@ -30,7 +30,7 @@ public class RouteParser extends AbstractParser implements Parser {
         List<JAXBElement<? extends LinkSequence_VersionStructure>> routeElements = routesInFrameStruct.getRoute_();
 
         for (JAXBElement<? extends LinkSequence_VersionStructure> routeElement : routeElements) {
-            no.rutebanken.netex.model.Route route = (no.rutebanken.netex.model.Route) routeElement.getValue();
+            org.rutebanken.netex.model.Route route = (org.rutebanken.netex.model.Route) routeElement.getValue();
             NetexObjectUtil.addRouteReference(referential, route.getId(), route);
             validator.addObjectReference(context, route);
         }
@@ -42,12 +42,12 @@ public class RouteParser extends AbstractParser implements Parser {
         RoutesInFrame_RelStructure contextData = (RoutesInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
         List<JAXBElement<? extends LinkSequence_VersionStructure>> routesStructure = contextData.getRoute_();
         for (JAXBElement<? extends LinkSequence_VersionStructure> jaxbElement : routesStructure) {
-            no.rutebanken.netex.model.Route netexRoute = (no.rutebanken.netex.model.Route) jaxbElement.getValue();
+            org.rutebanken.netex.model.Route netexRoute = (org.rutebanken.netex.model.Route) jaxbElement.getValue();
             parseRoute(context, referential, netexRoute);
         }
     }
 
-    private void parseRoute(Context context, Referential referential, no.rutebanken.netex.model.Route netexRoute) {
+    private void parseRoute(Context context, Referential referential, org.rutebanken.netex.model.Route netexRoute) {
         mobi.chouette.model.Route chouetteRoute = ObjectFactory.getRoute(referential, netexRoute.getId());
 
         // chouetteRoute.setName(netexRoute.getName().getValue()); // not a part of norwegian profile
@@ -67,7 +67,7 @@ public class RouteParser extends AbstractParser implements Parser {
         parsePointsInSequence(context, referential, netexRoute, chouetteRoute);
     }
 
-    private void parsePointsInSequence(Context context, Referential referential, no.rutebanken.netex.model.Route netexRoute, mobi.chouette.model.Route chouetteRoute) {
+    private void parsePointsInSequence(Context context, Referential referential, org.rutebanken.netex.model.Route netexRoute, mobi.chouette.model.Route chouetteRoute) {
         PointsOnRoute_RelStructure pointsInSequence = netexRoute.getPointsInSequence();
         List<PointOnRoute> pointsOnRoute = pointsInSequence.getPointOnRoute();
         for (PointOnRoute pointOnRoute : pointsOnRoute) {

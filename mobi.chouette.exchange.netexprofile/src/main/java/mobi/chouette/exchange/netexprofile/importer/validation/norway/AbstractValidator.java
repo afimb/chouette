@@ -5,7 +5,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
-import no.rutebanken.netex.model.DataManagedObjectStructure;
+import org.rutebanken.netex.model.DataManagedObjectStructure;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 

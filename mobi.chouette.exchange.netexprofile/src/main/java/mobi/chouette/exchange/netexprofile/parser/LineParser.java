@@ -14,7 +14,7 @@ import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import no.rutebanken.netex.model.*;
+import org.rutebanken.netex.model.*;
 import org.apache.commons.lang.StringUtils;
 
 import javax.xml.bind.JAXBElement;
@@ -34,7 +34,7 @@ public class LineParser extends AbstractParser implements Parser {
         List<JAXBElement<? extends DataManagedObjectStructure>> lineElements = linesInFrameStruct.getLine_();
 
         for (JAXBElement<? extends DataManagedObjectStructure> lineElement : lineElements) {
-            no.rutebanken.netex.model.Line line = (no.rutebanken.netex.model.Line) lineElement.getValue();
+            org.rutebanken.netex.model.Line line = (org.rutebanken.netex.model.Line) lineElement.getValue();
             String objectId = line.getId();
 
             // 1. initialize operator reference
@@ -59,8 +59,8 @@ public class LineParser extends AbstractParser implements Parser {
         Referential chouetteReferential = (Referential) context.get(REFERENTIAL);
         NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
 
-        Collection<no.rutebanken.netex.model.Line> lines = netexReferential.getLines().values();
-        for (no.rutebanken.netex.model.Line netexLine : lines) {
+        Collection<org.rutebanken.netex.model.Line> lines = netexReferential.getLines().values();
+        for (org.rutebanken.netex.model.Line netexLine : lines) {
             mobi.chouette.model.Line chouetteLine = ObjectFactory.getLine(chouetteReferential, netexLine.getId());
 
             //ModificationEnumeration modification = netexLine.getModification(); // how to handle in chouette? can be: new, delete, revise or delta

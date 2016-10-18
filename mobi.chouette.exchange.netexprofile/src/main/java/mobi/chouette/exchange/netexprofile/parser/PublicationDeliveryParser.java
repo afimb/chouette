@@ -9,7 +9,7 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import no.rutebanken.netex.model.*;
+import org.rutebanken.netex.model.*;
 import org.apache.commons.lang.StringUtils;
 
 import javax.xml.bind.JAXBElement;
