@@ -10,6 +10,12 @@ COPY jts-1.13.jar /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/ma
 # File where sed expression has been performed:
 COPY wildfly/module.xml /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/module.xml
 
+# Updated JAXB implementation to work with Netex jaxb classes
+COPY jaxb-impl-2.2.11.jar /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/jaxb-impl-2.2.11.jar
+COPY jaxb-core-2.2.11.jar /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/jaxb-core-2.2.11.jar
+COPY jaxb-xjc-2.2.11.jar /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/jaxb-xjc-2.2.11.jar
+COPY wildfly/jaxb_module.xml /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/module.xml
+
 #Copy iev.properties
 COPY wildfly/iev.properties /etc/chouette/iev/
 
