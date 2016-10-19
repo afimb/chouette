@@ -31,7 +31,7 @@ public class RoutePointValidator extends AbstractValidator implements Validator<
 
     @Override
     protected void initializeCheckPoints(Context context) {
-        addItemToValidation(context, PREFIX, "RoutePoint", 1, "E");
+        addItemToValidation(context, PREFIX, "RoutePoint", 4, "E", "E", "E", "E");
     }
 
     @Override

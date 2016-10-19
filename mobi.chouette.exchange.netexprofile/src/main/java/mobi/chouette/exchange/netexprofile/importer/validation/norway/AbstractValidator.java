@@ -48,7 +48,7 @@ public abstract class AbstractValidator implements Constant {
         ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
         for (int i = 1; i <= count; i++) {
             String checkPointKey = prefix + name + "-" + i;
-            if (validationReporter.checkIfCheckPointExists(context, checkPointKey)) {
+            if (!validationReporter.checkIfCheckPointExists(context, checkPointKey)) {
                 if (severities[i - 1].equals("W")) {
                     log.info("Adding checkpoint " + checkPointKey);
                     validationReporter.addItemToValidationReport(context, checkPointKey, "W");
