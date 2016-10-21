@@ -4,17 +4,14 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Paths;
-import java.sql.Date;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -37,10 +34,13 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.io.FilenameUtils;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
-import mobi.chouette.dao.iev.StatDAO;
 import mobi.chouette.model.iev.Job;
 import mobi.chouette.model.iev.Job.STATUS;
 import mobi.chouette.model.iev.Link;
@@ -50,10 +50,8 @@ import mobi.chouette.service.RequestExceptionCode;
 import mobi.chouette.service.RequestServiceException;
 import mobi.chouette.service.ServiceException;
 import mobi.chouette.service.ServiceExceptionCode;
-
-import org.apache.commons.io.FilenameUtils;
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import mobi.chouette.service.TransitDataStatisticsService;
+import mobi.chouette.service.TransitDataStatisticsService.LineStatistics;
 
 @Path("/referentials")
 @Log4j
@@ -67,6 +65,9 @@ public class RestService implements Constant {
 
 	@Inject
 	JobServiceManager jobServiceManager;
+	
+	@Inject
+	TransitDataStatisticsService statisticsService;
 	
 	@Context
 	UriInfo uriInfo;
@@ -495,6 +496,31 @@ public class RestService implements Constant {
 		}
 	}
 
+	@GET
+	@Path("/{ref}/lineStats")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response lineStats(@PathParam("ref") String referential) {
+		try {
+			log.info(Color.CYAN + "Call lineStats referential = " + referential  + Color.NORMAL);
+
+			LineStatistics lineStatistics = statisticsService.getLineStatistics(referential);
+			ResponseBuilder builder = Response.ok(lineStatistics);
+			builder.header(api_version_key, api_version);
+			return builder.build();
+
+		} catch (RequestServiceException ex) {
+			log.info("RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
+		} catch (ServiceException ex) {
+			log.error("Code = " + ex.getCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
+		} catch (Exception ex) {
+			log.error(ex.getMessage(), ex);
+			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
 	private String getFilename(String header) {
 		String result = null;
 
