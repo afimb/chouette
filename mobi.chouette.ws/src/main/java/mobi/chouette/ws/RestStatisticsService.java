@@ -18,9 +18,9 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.model.statistics.LineStatistics;
 import mobi.chouette.service.TransitDataStatisticsService;
 
-@Path("/statistics")
 @Log4j
 @RequestScoped
+@Path("/statistics")
 public class RestStatisticsService implements Constant {
 
 	private static String api_version_key = "X-ChouetteIEV-Media-Type";

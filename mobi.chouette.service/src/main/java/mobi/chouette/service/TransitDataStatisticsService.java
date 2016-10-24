@@ -51,7 +51,6 @@ public class TransitDataStatisticsService {
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public LineStatistics getLineStatisticsByLineNumber(String referential) throws ServiceException {
 
-		long methodStart = System.currentTimeMillis();
 		ContextHolder.setContext(referential);
 
 		Map<String, PublicLine> publicLines = new HashMap<String, PublicLine>();
@@ -140,8 +139,6 @@ public class TransitDataStatisticsService {
 		Collections.sort(pL);
 		lineStats.setPublicLines(pL);
 
-		log.info("Everything took " + (System.currentTimeMillis() - methodStart) + "ms");
-
 		return lineStats;
 	}
 
@@ -149,7 +146,6 @@ public class TransitDataStatisticsService {
 		return merge(periods);
 	}
 
-	
 
 	public List<Period> merge(List<Period> intervals) {
 

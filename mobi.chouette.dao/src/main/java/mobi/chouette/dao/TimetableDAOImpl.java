@@ -14,7 +14,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import mobi.chouette.model.Line;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.statistics.LineAndTimetable;
 
@@ -28,18 +27,6 @@ public class TimetableDAOImpl extends GenericDAOImpl<Timetable>implements Timeta
 	@PersistenceContext(unitName = "referential")
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
-	}
-
-	@Override
-	public Collection<Timetable> getTimetableForLine(Line l) {
-
-		Query q = em
-				.createQuery("select distinct vj.timetables from VehicleJourney vj where vj.route.line.id = :lineId");
-		q.setParameter("lineId", l.getId());
-
-		@SuppressWarnings("unchecked")
-		List<Timetable> resultList = q.getResultList();
-		return resultList;
 	}
 
 	@Override

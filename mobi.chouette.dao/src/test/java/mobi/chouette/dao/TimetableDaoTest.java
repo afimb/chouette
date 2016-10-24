@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 import javax.ejb.EJB;
+
 import javax.transaction.Transactional;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -36,8 +37,6 @@ public class TimetableDaoTest extends Arquillian {
 	@EJB
 	VehicleJourneyDAO vjDao;
 
-
-
 	@Deployment
 	public static WebArchive createDeployment() {
 
@@ -53,20 +52,6 @@ public class TimetableDaoTest extends Arquillian {
 			System.out.println(e.getClass().getName());
 			throw e;
 		}
-
-	}
-
-	// TODO create test data in common method
-
-	@Test
-	public void getTimetableForLineTest() {
-		ContextHolder.setContext("chouette_gui"); // set tenant schema
-
-		Line l = new Line();
-		l.setId(1L);
-
-		Collection<Timetable> timetableForLine = timetableDao.getTimetableForLine(l);
-		Assert.assertNotNull(timetableForLine);
 	}
 
 	@Test
@@ -102,9 +87,7 @@ public class TimetableDaoTest extends Arquillian {
 		t.addVehicleJourney(vj);
 		
 		lineDao.create(l);
-		//timetableDao.create(t);
 		vjDao.create(vj);
-//		timetableDao.update(t);
 		
 		
 		Collection<LineAndTimetable> allTimetableForAllLines = timetableDao.getAllTimetableForAllLines();
