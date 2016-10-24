@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import javax.naming.InitialContext;
 
+import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.model.util.Referential;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import com.jamonapi.Monitor;
@@ -32,6 +34,11 @@ public class NetexInitImportCommand implements Command, Constant {
 			log.info("Context on NetexInitImportCommand=" + ToStringBuilder.reflectionToString(context));
 			NetexImporter importer = new NetexImporter();
 			context.put(IMPORTER, importer);
+
+			context.put(REFERENTIAL, new Referential());
+			if (context.get(VALIDATION) != null)
+				context.put(VALIDATION_DATA, new ValidationData());
+
 
 			// TODO remove profile validator init from here?
 			// TODO instead consider adding a separate command for profile validation,
