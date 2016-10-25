@@ -12,7 +12,6 @@ import lombok.Getter;
 @XmlRootElement(name = "period")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "from", "to" })
-
 @Getter
 public class Period implements Comparable<Period> {
 
@@ -28,7 +27,7 @@ public class Period implements Comparable<Period> {
 	public boolean isEmpty() {
 		return from == null || to == null;
 	}
-	
+
 	@Override
 	public int compareTo(Period o) {
 		if (o == null) {

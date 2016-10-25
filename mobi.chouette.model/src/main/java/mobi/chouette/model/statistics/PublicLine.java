@@ -13,21 +13,22 @@ import lombok.Getter;
 
 @XmlRootElement(name = "lineStatistics")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "number", "effectivePeriods", "lines" })
+@XmlType(propOrder = { "lineNumber", "lineNames","effectivePeriods", "lines" })
 @Getter
 public class PublicLine implements Comparable<PublicLine> {
-	private String number;
+	private String lineNumber;
+	private List<String> lineNames = new ArrayList<>();
 	private List<Line> lines = new ArrayList<>();
 	private List<Period> effectivePeriods = new ArrayList<>();
 
 	@Override
 	public int compareTo(PublicLine o) {
-		return number.compareTo(o.number);
+		return lineNumber.compareTo(o.lineNumber);
 	}
 
 	public PublicLine(String number) {
 		super();
-		this.number = number;
+		this.lineNumber = number;
 	}
 
 	public void setEffectivePeriods(List<Period> effectivePeriods) {
