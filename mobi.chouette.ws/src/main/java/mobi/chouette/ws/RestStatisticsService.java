@@ -1,11 +1,14 @@
 package mobi.chouette.ws;
 
+import java.util.Date;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -32,11 +35,11 @@ public class RestStatisticsService implements Constant {
 	@GET
 	@Path("/{ref}/line")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response lineStats(@PathParam("ref") String referential) {
+	public Response lineStats(@PathParam("ref") String referential, @QueryParam("startDate") Date startDate, @QueryParam("minDaysValidityCategory") Integer minDaysValidityCategory[]) {
 		try {
 			log.info(Color.CYAN + "Call lineStats referential = " + referential  + Color.NORMAL);
 
-			LineStatistics lineStatistics = statisticsService.getLineStatisticsByLineNumber(referential);
+			LineStatistics lineStatistics = statisticsService.getLineStatisticsByLineNumber(referential,startDate,minDaysValidityCategory);
 			ResponseBuilder builder = Response.ok(lineStatistics);
 			builder.header(api_version_key, api_version);
 			return builder.build();
