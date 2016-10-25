@@ -34,22 +34,22 @@ public class CorrespondanceExporter extends ExporterImpl<HubCorrespondance> impl
 
 
 		@Override
-		public String to(Context context, HubCorrespondance input) {
+		public String to(HubContext hubContext, HubCorrespondance input) {
 			String result = null;
 			List<String> values = new ArrayList<String>();
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_arret_1,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_arret_1,
 					input.getCodeArret1(), false));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant_arret_1,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.identifiant_arret_1,
 					input.getIdentifiantArret1(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_arret_2,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_arret_2,
 					input.getCodeArret2(), false));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant_arret_2,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.identifiant_arret_2,
 					input.getIdentifiantArret2(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.distance,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.distance,
 					input.getDistance(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.temps_parcours,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.temps_parcours,
 					input.getTempsParcours(), false));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.identifiant,
 					input.getIdentifiant(), false));
 			result = Tokenizer.untokenize(values);
 			return result;

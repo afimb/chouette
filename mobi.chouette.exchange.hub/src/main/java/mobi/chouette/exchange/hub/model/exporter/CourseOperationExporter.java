@@ -34,24 +34,24 @@ public class CourseOperationExporter extends ExporterImpl<HubCourseOperation> im
 
 
 		@Override
-		public String to(Context context, HubCourseOperation input) {
+		public String to(HubContext hubContext, HubCourseOperation input) {
 			String result = null;
 			List<String> values = new ArrayList<String>();
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.numero_course,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.numero_course,
 					input.getNumeroCourse(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_operation,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_operation,
 					input.getCodeOperation(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_lot,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_lot,
 					input.getCodeLot(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_activite,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_activite,
 					input.getCodeActivite(), false));
-			values.add(ENUM_CONVERTER.to(context, FIELDS.mode_transport,
+			values.add(ENUM_CONVERTER.to(hubContext, FIELDS.mode_transport,
 					input.getModeTransport(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.libre1,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.libre1,
 					input.getLibre1(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.libre2,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.libre2,
 					input.getLibre2(), false));
-			values.add(STRING_CONVERTER.to(context, FIELDS.libre3,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.libre3,
 					input.getLibre3(), false));
 			result = Tokenizer.untokenize(values);
 			return result;

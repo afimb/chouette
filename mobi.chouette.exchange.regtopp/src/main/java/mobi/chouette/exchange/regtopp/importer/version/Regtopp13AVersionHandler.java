@@ -1,9 +1,5 @@
 package mobi.chouette.exchange.regtopp.importer.version;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Arrays;
-
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
@@ -18,7 +14,10 @@ import mobi.chouette.exchange.regtopp.model.v13.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.v13.RegtoppStopPointSTP;
 import mobi.chouette.exchange.regtopp.model.v13.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
-import mobi.chouette.exchange.report.FileInfo;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Arrays;
 
 public class Regtopp13AVersionHandler extends Regtopp12VersionHandler {
 
@@ -38,28 +37,28 @@ public class Regtopp13AVersionHandler extends Regtopp12VersionHandler {
 	}
 
 	@Override
-	public void registerFileForIndex(RegtoppImporter importer, Path fileName, String extension, FileInfo file) {
+	public void registerFileForIndex(RegtoppImporter importer, Path fileName, String extension) {
 		switch (extension) {
 
 		case "TIX": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppTripIndexTIX.class }), RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, file);
+			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppTripIndexTIX.class }), RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.TRIP_INDEX.name(), parseableFile);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.LINE_BY_TRIPS.name(), parseableFile);
 			break;
 		}
 		case "HPL": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppStopHPL.class }), RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE, file);
+			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppStopHPL.class }), RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.STOP_BY_ID.name(), parseableFile);
 			break;
 		}
 		case "STP": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppStopPointSTP.class }), RegtoppException.ERROR.STP_INVALID_FIELD_VALUE, file);
+			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppStopPointSTP.class }), RegtoppException.ERROR.STP_INVALID_FIELD_VALUE);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.STOPPOINT_BY_ID.name(), parseableFile);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.STOPPOINT_BY_STOP_ID.name(), parseableFile);
 			break;
 		}
 		case "TMS": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppRouteTMS.class }), RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE, file);
+			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppRouteTMS.class }), RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.ROUTE_INDEX.name(), parseableFile);
 			break;
 		}
@@ -69,8 +68,7 @@ public class Regtopp13AVersionHandler extends Regtopp12VersionHandler {
 					Arrays.asList(new Class[] {
 							mobi.chouette.exchange.regtopp.model.v11.RegtoppPathwayGAV.class,
 							mobi.chouette.exchange.regtopp.model.v13.RegtoppPathwayGAV.class }),
-					RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE,
-					file);
+					RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.PATHWAY_BY_INDEXING_KEY.name(), parseableFile);
 			break;
 		}
@@ -80,7 +78,7 @@ public class Regtopp13AVersionHandler extends Regtopp12VersionHandler {
 //			break;
 //		}
 		default:
-			super.registerFileForIndex(importer, fileName, extension, file);
+			super.registerFileForIndex(importer, fileName, extension);
 		}
 	}
 

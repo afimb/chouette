@@ -25,10 +25,9 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileError;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.exchange.report.ActionReporter.FILE_ERROR_CODE;
 
 import org.apache.commons.io.FileUtils;
 import org.xml.sax.SAXException;
@@ -54,10 +53,10 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 
 		String fileName = new File(new URL(fileURL).toURI()).getName();
-		FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
+		reporter.addFileReport(context, fileName, IO_TYPE.INPUT);
 
 		Schema schema = (Schema) context.get(SCHEMA);
 		if (schema == null) {
@@ -81,8 +80,7 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 			// validator.reset();
 			validator.validate(file);
 			if (errorHandler.isHasErrors()) {
-				report.getFiles().add(fileItem);
-				fileItem.addError(new FileError(FileError.CODE.INVALID_FORMAT,"Xml errors"));
+				reporter.addFileErrorInReport(context, fileName, FILE_ERROR_CODE.INVALID_FORMAT, "Xml errors");
 				return result;
 			}
 			result = SUCCESS;
@@ -100,13 +98,11 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 			}
 			log.error(e);
 			errorHandler.handleError(e);
-			report.getFiles().add(fileItem);
-			fileItem.addError(new FileError(FileError.CODE.INVALID_FORMAT,e.getMessage()));
+			reporter.addFileErrorInReport(context, fileName, FILE_ERROR_CODE.INVALID_FORMAT,e.getMessage());
 		} catch (Exception e) {
 
 			log.error(e);
-			report.getFiles().add(fileItem);
-			fileItem.addError(new FileError(FileError.CODE.INTERNAL_ERROR,e.getMessage()));
+			reporter.addFileErrorInReport(context, fileName, FILE_ERROR_CODE.INTERNAL_ERROR,e.getMessage());
 
 		} finally {
 			if (reader != null ) reader.close();

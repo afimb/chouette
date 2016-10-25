@@ -3,7 +3,6 @@ package mobi.chouette.exchange.neptune.validation;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.model.TimeSlot;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
@@ -28,13 +27,13 @@ public class TimeSlotValidator extends AbstractValidator implements Validator<Ti
 	}
 
 	@Override
-	public ValidationConstraints validate(Context context, TimeSlot target) throws ValidationException
+	public void validate(Context context, TimeSlot target) throws ValidationException
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		
 		if (localContext == null || localContext.isEmpty())
-			return new ValidationConstraints();
+			return ;
 		
 		if (target != null &&
 				target.getBeginningSlotTime() != null &&
@@ -77,7 +76,7 @@ public class TimeSlotValidator extends AbstractValidator implements Validator<Ti
 //
 //
 //		}
-		return new ValidationConstraints();
+		return ;
 	}
 
 	public static class DefaultValidatorFactory extends ValidatorFactory {

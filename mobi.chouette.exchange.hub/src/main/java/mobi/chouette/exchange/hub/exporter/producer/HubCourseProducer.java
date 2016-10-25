@@ -11,9 +11,9 @@ package mobi.chouette.exchange.hub.exporter.producer;
 import java.io.IOException;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.hub.model.HubCourse;
 import mobi.chouette.exchange.hub.model.exporter.HubExporterInterface;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
@@ -33,13 +33,13 @@ public class HubCourseProducer extends AbstractProducer {
 
 	private HubCourse hubObject = new HubCourse();
 
-	public boolean save(VehicleJourney neptuneObject, int pmrRenvoiId, ActionReport report, int rank) {
+	public boolean save(Context context,VehicleJourney neptuneObject, int pmrRenvoiId, int rank) {
 
 		hubObject.clear();
 		hubObject.setNumero(Integer.valueOf(rank));
 		VehicleJourneyAtStop vjas1 = neptuneObject.getVehicleJourneyAtStops().get(0);
 		hubObject.setCodeArret(toHubId(vjas1.getStopPoint().getContainedInStopArea()));
-		hubObject.setHeure(toHubTime(vjas1.getDepartureTime()));
+		hubObject.setHeure(toHubTime(vjas1.getDepartureTime()) + (86400 * vjas1.getDepartureDayOffset()));
 		hubObject.setIdentifiantArret(toInt(vjas1.getStopPoint().getContainedInStopArea().getRegistrationNumber()));
 		hubObject.setCodeLigne(toHubId(neptuneObject.getRoute().getLine()));
 		hubObject.setCodeChemin(toHubId(neptuneObject.getJourneyPattern()));
@@ -79,7 +79,7 @@ public class HubCourseProducer extends AbstractProducer {
 		VehicleJourneyAtStop vjas2 = neptuneObject.getVehicleJourneyAtStops().get(
 				neptuneObject.getVehicleJourneyAtStops().size() - 1);
 		hubObject.setCodeArret(toHubId(vjas2.getStopPoint().getContainedInStopArea()));
-		hubObject.setHeure(toHubTime(vjas2.getArrivalTime()));
+		hubObject.setHeure(toHubTime(vjas2.getArrivalTime()) + (86400 * vjas1.getArrivalDayOffset()));
 		hubObject.setType(HubCourse.TYPE_ARRIVEE);
 		hubObject.setIdentifiantArret(toInt(vjas2.getStopPoint().getContainedInStopArea().getRegistrationNumber()));
 		hubObject.setIdentifiant((vjas2.getId()).intValue());

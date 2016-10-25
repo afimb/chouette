@@ -21,7 +21,6 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendar;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
@@ -45,7 +44,7 @@ AbstractProducer
    GtfsCalendar calendar = new GtfsCalendar();
    GtfsCalendarDate calendarDate = new GtfsCalendarDate();
 
-   public boolean save(List<Timetable> timetables, ActionReport report, String prefix)
+   public boolean save(List<Timetable> timetables,  String prefix)
    {
 
       Timetable reduced = merge(timetables, prefix);
@@ -117,7 +116,7 @@ AbstractProducer
       {
          for (CalendarDay day : reduced.getCalendarDays())
          {
-            saveDay(serviceId,day,report);
+            saveDay(serviceId,day);
          }
       }
 
@@ -158,7 +157,7 @@ AbstractProducer
       return reduced;
    }
 
-   private boolean saveDay(String serviceId,CalendarDay day,ActionReport report)
+   private boolean saveDay(String serviceId,CalendarDay day)
    {
 
       calendarDate.setDate(day.getDate());

@@ -14,8 +14,8 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.ValidationReport;
@@ -47,7 +47,7 @@ public class MainCommand implements Command, Constant {
 			if (validationParameters != null)
 			   context.put(VALIDATION, validationParameters);
 			context.put(REPORT, new ActionReport());
-			context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
+			context.put(VALIDATION_REPORT, new ValidationReport());
 
 			String name = jobService.getCommandName();
 
@@ -57,7 +57,7 @@ public class MainCommand implements Command, Constant {
 
 			ActionReport report = (ActionReport) context.get(REPORT);
 			if (report.getResult().equals(ReportConstant.STATUS_ERROR)
-					&& report.getFailure().getCode().equals(ActionError.CODE.INTERNAL_ERROR))
+					&& report.getFailure().getCode().equals(ActionReporter.ERROR_CODE.INTERNAL_ERROR))
 				jobManager.abort(jobService);
 			else
 				jobManager.terminate(jobService);
@@ -67,7 +67,7 @@ public class MainCommand implements Command, Constant {
 			// just ignore this exception
 			ActionReport report = (ActionReport) context.get(REPORT);
 			if (report.getResult().equals(ReportConstant.STATUS_ERROR)
-					&& report.getFailure().getCode().equals(ActionError.CODE.INTERNAL_ERROR))
+					&& report.getFailure().getCode().equals(ActionReporter.ERROR_CODE.INTERNAL_ERROR))
 				jobManager.abort(jobService);
 			else
 				jobManager.terminate(jobService);

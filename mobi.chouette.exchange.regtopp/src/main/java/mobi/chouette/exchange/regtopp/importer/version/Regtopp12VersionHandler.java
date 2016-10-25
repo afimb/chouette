@@ -1,9 +1,5 @@
 package mobi.chouette.exchange.regtopp.importer.version;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Arrays;
-
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
@@ -16,7 +12,10 @@ import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppVehicleJourneyVLP;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
-import mobi.chouette.exchange.report.FileInfo;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Arrays;
 
 public class Regtopp12VersionHandler extends Regtopp11DVersionHandler {
 
@@ -31,23 +30,23 @@ public class Regtopp12VersionHandler extends Regtopp11DVersionHandler {
 	}
 
 	@Override
-	public void registerFileForIndex(RegtoppImporter importer, Path fileName, String extension, FileInfo file) {
+	public void registerFileForIndex(RegtoppImporter importer, Path fileName, String extension) {
 		switch (extension) {
 
 		case "TIX": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppTripIndexTIX.class }), RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, file);
+			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppTripIndexTIX.class }), RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.TRIP_INDEX.name(), parseableFile);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.LINE_BY_TRIPS.name(), parseableFile);
 			break;
 		}
 		case "TMS": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppRouteTMS.class }), RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE, file);
+			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppRouteTMS.class }), RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.ROUTE_INDEX.name(), parseableFile);
 			break;
 		}
 
 		case "VLP": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppVehicleJourneyVLP.class }), RegtoppException.ERROR.VLP_INVALID_FIELD_VALUE, file);
+			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppVehicleJourneyVLP.class }), RegtoppException.ERROR.VLP_INVALID_FIELD_VALUE);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.VEHICLE_JOURNEY.name(), parseableFile);
 			break;
 		}
@@ -62,7 +61,7 @@ public class Regtopp12VersionHandler extends Regtopp11DVersionHandler {
 //			break;
 //		}
 		default:
-			super.registerFileForIndex(importer, fileName, extension, file);
+			super.registerFileForIndex(importer, fileName, extension);
 		}
 	}
 

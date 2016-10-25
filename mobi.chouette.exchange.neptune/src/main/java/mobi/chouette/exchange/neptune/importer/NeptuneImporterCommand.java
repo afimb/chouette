@@ -15,8 +15,8 @@ import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.importer.AbstractImporterCommand;
-import mobi.chouette.exchange.report.ActionError;
-import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
 import mobi.chouette.exchange.report.ReportConstant;
 
 import com.jamonapi.Monitor;
@@ -45,7 +45,7 @@ public class NeptuneImporterCommand extends AbstractImporterCommand implements C
 
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 		
 		// initialize reporting and progression
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
@@ -58,7 +58,7 @@ public class NeptuneImporterCommand extends AbstractImporterCommand implements C
 			// fatal wrong parameters
 
 			log.error("invalid parameters for neptune import " + configuration.getClass().getName());
-			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"invalid parameters for neptune import " + configuration.getClass().getName()));
+			reporter.setActionError(context, ERROR_CODE.INVALID_PARAMETERS,"invalid parameters for neptune import " + configuration.getClass().getName());
 			return ERROR;
 		}
 		
@@ -67,11 +67,11 @@ public class NeptuneImporterCommand extends AbstractImporterCommand implements C
 		
 
 		} catch (CommandCancelledException e) {
-			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Command cancelled"));
+			reporter.setActionError(context, ERROR_CODE.INTERNAL_ERROR, "Command cancelled");
 			log.error(e.getMessage());
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR,"Fatal :" + e));
+			reporter.setActionError(context, ERROR_CODE.INTERNAL_ERROR,"Fatal :" + e);
 
 		} finally {
 			progression.dispose(context);

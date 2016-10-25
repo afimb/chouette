@@ -41,6 +41,7 @@ public class TimetableUpdater implements Updater<Timetable> {
 		}
 		newValue.setSaved(true);
 		
+//        Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		newValue.computeLimitOfPeriods();
 		// default processings
 		if (newValue.getComment() == null) {
@@ -134,6 +135,7 @@ public class TimetableUpdater implements Updater<Timetable> {
 		for (CalendarDay item : removedCalendarDays) {
 			oldValue.getCalendarDays().remove(item);
 		}
+//		monitor.stop();
 
 	}
 }

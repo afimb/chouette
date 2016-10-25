@@ -28,17 +28,13 @@ import mobi.chouette.exchange.neptune.validation.StopPointValidator;
 import mobi.chouette.exchange.neptune.validation.TimeSlotValidator;
 import mobi.chouette.exchange.neptune.validation.TimetableValidator;
 import mobi.chouette.exchange.neptune.validation.VehicleJourneyValidator;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileError;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.DataStats;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
-import mobi.chouette.exchange.validation.report.CheckPoint.SEVERITY;
-import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -55,11 +51,9 @@ public class NeptuneValidationCommand implements Command, Constant {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 
 		String fileName = (String) context.get(FILE_NAME);
-
-		FileInfo fileInfo = report.findFileInfo(fileName);
 
 		try {
 			Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
@@ -148,14 +142,14 @@ public class NeptuneValidationCommand implements Command, Constant {
 					validator.validate(context, null);
 				}
 				{
-					TimeSlotValidator validator = (TimeSlotValidator) ValidatorFactory.create(TimeSlotValidator.class.getName(),
-							context);
+					TimeSlotValidator validator = (TimeSlotValidator) ValidatorFactory.create(
+							TimeSlotValidator.class.getName(), context);
 					validator.validate(context, null);
 				}
 				// check if ok before add stats to report
-				result = checkValid(context);
+				result = !reporter.hasFileValidationErrors(context, fileName);
 				if (result)
-					addStats(report, validationContext, referential);
+					addStats(context, reporter, validationContext, referential);
 
 			}
 
@@ -167,67 +161,59 @@ public class NeptuneValidationCommand implements Command, Constant {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 		if (result == ERROR) {
-			fileInfo.addError(new FileError(FileError.CODE.INVALID_FORMAT,"Neptune compliance failed"));
+			reporter.addFileErrorInReport(context, fileName, ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT,
+					"Neptune compliance failed");
 		}
 		return result;
 	}
 
-	private void addStats(ActionReport report, Context validationContext, Referential referential) {
+	private void addStats(Context context, ActionReporter reporter, Context validationContext, Referential referential) {
 		Line line = referential.getLines().values().iterator().next();
-		LineInfo lineInfo = new LineInfo(line);
-		DataStats stats = lineInfo.getStats();
-		stats.setLineCount(1);
+		reporter.addObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
+				OBJECT_STATE.OK, IO_TYPE.INPUT);
+		reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
 		{
 			Context localContext = (Context) validationContext.get(ChouetteRouteValidator.LOCAL_CONTEXT);
-			stats.setRouteCount((localContext != null) ? localContext.size() : 0);
+			int count = (localContext != null) ? localContext.size() : 0;
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, count);
 		}
 		{
 			Context localContext = (Context) validationContext.get(ConnectionLinkValidator.LOCAL_CONTEXT);
-			stats.setConnectionLinkCount((localContext != null) ? localContext.size() : 0);
+			int count = (localContext != null) ? localContext.size() : 0;
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK,
+					count);
 		}
 		{
 			Context localContext = (Context) validationContext.get(TimetableValidator.LOCAL_CONTEXT);
-			stats.setTimeTableCount((localContext != null) ? localContext.size() : 0);
+			int count = (localContext != null) ? localContext.size() : 0;
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.TIMETABLE, count);
 		}
 		{
 			Context localContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
-			stats.setStopAreaCount((localContext != null) ? localContext.size() : 0);
+			int count = (localContext != null) ? localContext.size() : 0;
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA, count);
 		}
 		{
 			Context localContext = (Context) validationContext.get(AccessPointValidator.LOCAL_CONTEXT);
-			stats.setAccessPointCount((localContext != null) ? localContext.size() : 0);
+			int count = (localContext != null) ? localContext.size() : 0;
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT,
+					count);
 		}
 		{
 			Context localContext = (Context) validationContext.get(VehicleJourneyValidator.LOCAL_CONTEXT);
-			stats.setVehicleJourneyCount((localContext != null) ? localContext.size() : 0);
+			int count = (localContext != null) ? localContext.size() : 0;
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY,
+					count);
 		}
 		{
 			Context localContext = (Context) validationContext.get(JourneyPatternValidator.LOCAL_CONTEXT);
-			stats.setJourneyPatternCount((localContext != null) ? localContext.size() : 0);
+			int count = (localContext != null) ? localContext.size() : 0;
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
+					count);
 		}
-		report.getLines().add(lineInfo);
-		DataStats globalStats = report.getStats();
-		globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
-		globalStats.setAccessPointCount(globalStats.getAccessPointCount() + stats.getAccessPointCount());
-		globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
-		globalStats.setConnectionLinkCount(globalStats.getConnectionLinkCount() + stats.getConnectionLinkCount());
-		globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount() + stats.getVehicleJourneyCount());
-		globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount() + stats.getJourneyPatternCount());
-		globalStats.setStopAreaCount(globalStats.getStopAreaCount() + stats.getStopAreaCount());
-		globalStats.setTimeTableCount(globalStats.getTimeTableCount() + stats.getTimeTableCount());
 
 	}
 
-	private boolean checkValid(Context context) {
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-
-		for (CheckPoint checkPoint : report.getCheckPoints()) {
-			if (checkPoint.getSeverity().equals(SEVERITY.ERROR) && checkPoint.getState().equals(RESULT.NOK)) {
-				return ERROR;
-			}
-		}
-		return SUCCESS;
-	}
 
 	public static class DefaultCommandFactory extends CommandFactory {
 

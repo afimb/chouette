@@ -23,12 +23,12 @@ import mobi.chouette.exchange.gtfs.parser.GtfsRouteParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsStopParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsTransferParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsTripParser;
-import mobi.chouette.exchange.gtfs.validation.ValidationReporter;
+import mobi.chouette.exchange.gtfs.validation.GtfsValidationReporter;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.report.ActionError;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
+import mobi.chouette.exchange.report.ActionReporter.FILE_STATE;
+import mobi.chouette.exchange.report.IO_TYPE;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -57,7 +57,7 @@ public class GtfsValidationCommand implements Command, Constant {
 
 		Monitor monitor = MonitorFactory.start(COMMAND);
 		
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 		
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		// check ignored files
@@ -71,18 +71,16 @@ public class GtfsValidationCommand implements Command, Constant {
 			processableFiles = processableStopAreaFiles;
 		}
 		
-		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
+		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
 		for (Path fileName : list) {
 			if (!processableFiles.contains(fileName.getFileName().toString())) {
-				FileInfo file = new FileInfo(fileName.getFileName().toString(), FILE_STATE.IGNORED);
-				report.getFiles().add(file);
-				validationReporter.reportError(context, new GtfsException(fileName.getFileName().toString(), 1, null, GtfsException.ERROR.UNUSED_FILE, null, null), fileName.getFileName().toString());
+				reporter.setFileState(context, fileName.getFileName().toString(), IO_TYPE.INPUT,FILE_STATE.IGNORED);
+				gtfsValidationReporter.reportError(context, new GtfsException(fileName.getFileName().toString(), 1, null, GtfsException.ERROR.UNUSED_FILE, null, null), fileName.getFileName().toString());
 			}
 			else
 			{
 				// TODO : implement a new status : UNCHECKED
-				FileInfo file = new FileInfo(fileName.getFileName().toString(), FILE_STATE.IGNORED);
-				report.getFiles().add(file);				
+				reporter.setFileState(context, fileName.getFileName().toString(), IO_TYPE.INPUT,FILE_STATE.IGNORED);
 			}
 		}
 		
@@ -122,7 +120,7 @@ public class GtfsValidationCommand implements Command, Constant {
 			if (e.getError().equals(GtfsException.ERROR.SYSTEM))
 				throw e;
 			else
-				report.setFailure(new ActionError(ActionError.CODE.INVALID_DATA, e.getError().name()+" "+e.getPath()));
+				reporter.setActionError(context, ERROR_CODE.INVALID_DATA,e.getError().name()+" "+e.getPath());
 			
 		} catch (Exception e) {
 			if (e instanceof RuntimeException)

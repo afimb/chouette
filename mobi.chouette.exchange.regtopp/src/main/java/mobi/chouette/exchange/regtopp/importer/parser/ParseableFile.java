@@ -1,12 +1,11 @@
 package mobi.chouette.exchange.regtopp.importer.parser;
 
-import java.io.File;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
-import mobi.chouette.exchange.report.FileInfo;
+
+import java.io.File;
+import java.util.List;
 
 @AllArgsConstructor
 public class ParseableFile<T> {
@@ -24,8 +23,5 @@ public class ParseableFile<T> {
 	// Error to be returned when parsing detects an error
 	@Getter
 	private RegtoppException.ERROR invalidFieldValue;
-
-	@Getter
-	private FileInfo fileInfo;
 
 }

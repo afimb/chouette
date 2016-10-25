@@ -33,8 +33,10 @@ import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsExtendedStopProducer;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsTransferProducer;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporter;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.DataStats;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -46,11 +48,8 @@ import com.jamonapi.MonitorFactory;
  *
  */
 @Log4j
-
 @Stateless(name = GtfsStopAreaProducerCommand.COMMAND)
-
-public class GtfsStopAreaProducerCommand implements Command, Constant 
-{
+public class GtfsStopAreaProducerCommand implements Command, Constant {
 	public static final String COMMAND = "GtfsStopAreaProducerCommand";
 
 	@EJB
@@ -63,19 +62,16 @@ public class GtfsStopAreaProducerCommand implements Command, Constant
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		try {
-			GtfsExportParameters parameters = (GtfsExportParameters) context
-					.get(CONFIGURATION);
+			GtfsExportParameters parameters = (GtfsExportParameters) context.get(CONFIGURATION);
 
 			List<Long> ids = null;
 			if (parameters.getIds() != null) {
-				ids  = new ArrayList<Long>(parameters.getIds());
+				ids = new ArrayList<Long>(parameters.getIds());
 			}
 			Set<StopArea> stopAreas = new HashSet<>();
 			if (ids == null || ids.isEmpty()) {
 				stopAreas.addAll(stopAreaDAO.findAll());
-			}
-			else
-			{
+			} else {
 				stopAreas.addAll(stopAreaDAO.findAll(ids));
 			}
 			saveStopAreas(context, stopAreas);
@@ -90,8 +86,7 @@ public class GtfsStopAreaProducerCommand implements Command, Constant
 		return result;
 	}
 
-	public void saveStopAreas(Context context,Collection<StopArea> beans)
-	{
+	public void saveStopAreas(Context context, Collection<StopArea> beans) {
 		// Metadata metadata = (Metadata) context.get(METADATA);
 		GtfsExporter exporter = (GtfsExporter) context.get(GTFS_EXPORTER);
 		Set<StopArea> physicalStops = new HashSet<StopArea>();
@@ -99,27 +94,23 @@ public class GtfsStopAreaProducerCommand implements Command, Constant
 		Set<ConnectionLink> connectionLinks = new HashSet<ConnectionLink>();
 		GtfsExtendedStopProducer stopProducer = new GtfsExtendedStopProducer(exporter);
 		GtfsTransferProducer transferProducer = new GtfsTransferProducer(exporter);
-		ActionReport report = (ActionReport) context.get(REPORT);
-		GtfsExportParameters configuration = (GtfsExportParameters) context
-				.get(CONFIGURATION);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
+		GtfsExportParameters configuration = (GtfsExportParameters) context.get(CONFIGURATION);
 		String prefix = configuration.getObjectIdPrefix();
 		String sharedPrefix = prefix;
 		// metadata.setDescription("limited to stops and transfers");
 		int stopCount = 0;
-		for (StopArea area : beans)
-		{
-			if (area.getAreaType().equals(ChouetteAreaEnum.BoardingPosition) || area.getAreaType().equals(ChouetteAreaEnum.Quay))
-			{
-				if (area.hasCoordinates())
-				{
+		for (StopArea area : beans) {
+			if (area.getAreaType().equals(ChouetteAreaEnum.BoardingPosition)
+					|| area.getAreaType().equals(ChouetteAreaEnum.Quay)) {
+				if (area.hasCoordinates()) {
 					physicalStops.add(area);
 					if (area.getConnectionStartLinks() != null)
 						connectionLinks.addAll(area.getConnectionStartLinks());
 					if (area.getConnectionEndLinks() != null)
 						connectionLinks.addAll(area.getConnectionEndLinks());
 
-					if (area.getParent() != null && area.getParent().hasCoordinates())
-					{
+					if (area.getParent() != null && area.getParent().hasCoordinates()) {
 						commercialStops.add(area.getParent());
 						if (area.getParent().getConnectionStartLinks() != null)
 							connectionLinks.addAll(area.getParent().getConnectionStartLinks());
@@ -130,45 +121,42 @@ public class GtfsStopAreaProducerCommand implements Command, Constant
 			}
 
 		}
-		for (Iterator<StopArea> iterator = commercialStops.iterator(); iterator.hasNext();)
-		{
+		for (Iterator<StopArea> iterator = commercialStops.iterator(); iterator.hasNext();) {
 			StopArea stop = iterator.next();
-			if (!stopProducer.save(stop, report, sharedPrefix, null))
-			{
+			if (!stopProducer.save(stop, sharedPrefix, null)) {
 				iterator.remove();
-			}
-			else
-			{
+			} else {
 				stopCount++;
-				//				if (stop.hasCoordinates())
-				//					metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(), stop.getLatitude().doubleValue());
+				// if (stop.hasCoordinates())
+				// metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(),
+				// stop.getLatitude().doubleValue());
 			}
 		}
-		for (StopArea stop : physicalStops)
-		{
-			stopProducer.save(stop, report, sharedPrefix, commercialStops);
+		for (StopArea stop : physicalStops) {
+			stopProducer.save(stop, sharedPrefix, commercialStops);
 			stopCount++;
-			//			if (stop.hasCoordinates())
-			//				metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(), stop.getLatitude().doubleValue());
+			// if (stop.hasCoordinates())
+			// metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(),
+			// stop.getLatitude().doubleValue());
 		}
 		// remove incomplete connectionlinks
 		int connectionLinkCount = 0;
-		for (ConnectionLink link : connectionLinks)
-		{
-			if (!physicalStops.contains(link.getStartOfLink()) && !commercialStops.contains(link.getStartOfLink()))
-			{
+		for (ConnectionLink link : connectionLinks) {
+			if (!physicalStops.contains(link.getStartOfLink()) && !commercialStops.contains(link.getStartOfLink())) {
+				continue;
+			} else if (!physicalStops.contains(link.getEndOfLink()) && !commercialStops.contains(link.getEndOfLink())) {
 				continue;
 			}
-			else if (!physicalStops.contains(link.getEndOfLink()) && !commercialStops.contains(link.getEndOfLink()))
-			{
-				continue;
-			}
-			transferProducer.save(link, report, sharedPrefix);
+			transferProducer.save(link, sharedPrefix);
 			connectionLinkCount++;
 		}
-		DataStats globalStats = report.getStats();
-		globalStats.setConnectionLinkCount(connectionLinkCount);
-		globalStats.setStopAreaCount(stopCount);
+		reporter.addObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, "connection links", OBJECT_STATE.OK,
+				IO_TYPE.OUTPUT);
+		reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, OBJECT_TYPE.CONNECTION_LINK,
+				connectionLinkCount);
+		reporter.addObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, "stop areas", OBJECT_STATE.OK,
+				IO_TYPE.OUTPUT);
+		reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, OBJECT_TYPE.STOP_AREA, stopCount);
 
 	}
 
@@ -178,8 +166,7 @@ public class GtfsStopAreaProducerCommand implements Command, Constant
 		protected Command create(InitialContext context) throws IOException {
 			Command result = null;
 			try {
-				String name = "java:app/mobi.chouette.exchange.gtfs/"
-						+ COMMAND;
+				String name = "java:app/mobi.chouette.exchange.gtfs/" + COMMAND;
 				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
 				// try another way on test context
@@ -195,9 +182,7 @@ public class GtfsStopAreaProducerCommand implements Command, Constant
 	}
 
 	static {
-		CommandFactory.factories.put(GtfsStopAreaProducerCommand.class.getName(),
-				new DefaultCommandFactory());
+		CommandFactory.factories.put(GtfsStopAreaProducerCommand.class.getName(), new DefaultCommandFactory());
 	}
-
 
 }

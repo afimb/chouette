@@ -13,6 +13,9 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.AbstractDisposeImportCommand;
+import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
+
+import static mobi.chouette.exchange.regtopp.RegtoppConstant.REGTOPP_REPORTER;
 
 @Log4j
 public class RegtoppDisposeImportCommand extends AbstractDisposeImportCommand {
@@ -30,6 +33,10 @@ public class RegtoppDisposeImportCommand extends AbstractDisposeImportCommand {
 			RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 			if (importer != null) {
 				importer.dispose();
+			}
+			RegtoppValidationReporter regtoppValidationReporter = (RegtoppValidationReporter)context.get(REGTOPP_REPORTER);
+			if (regtoppValidationReporter != null) {
+				regtoppValidationReporter.dispose();
 			}
 
 			result = SUCCESS;

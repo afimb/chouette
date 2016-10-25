@@ -1,6 +1,7 @@
 package mobi.chouette.command;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -305,17 +306,20 @@ public class CommandManager implements Constant {
 		if (importContext == null)
 			return;
 		ActionReport importReport = (ActionReport) importContext.get(REPORT);
-		String data = importReport.toJson().toString(2);
-		FileUtils.writeStringToFile(Paths.get(inputData.getPathName(), "inputReport.json").toFile(), data, "UTF-8");
+		PrintStream stream = new PrintStream(Paths.get(inputData.getPathName(), "inputReport.json").toFile(), "UTF-8");
+	     importReport.print(stream);
+		stream.close();
 
 		ValidationReport validationReport = (ValidationReport) importContext.get(VALIDATION_REPORT);
-		data = validationReport.toJson().toString(2);
-		FileUtils.writeStringToFile(Paths.get(inputData.getPathName(), VALIDATION_FILE).toFile(), data, "UTF-8");
+		
+		 stream = new PrintStream(Paths.get(inputData.getPathName(), VALIDATION_FILE).toFile(), "UTF-8");
+		validationReport.print(stream);
+		stream.close();
 		if (withExport()) {
 			ActionReport exportReport = (ActionReport) exportContext.get(REPORT);
-			data = exportReport.toJson().toString(2);
-			FileUtils
-					.writeStringToFile(Paths.get(inputData.getPathName(), "outputReport.json").toFile(), data, "UTF-8");
+		     stream = new PrintStream(Paths.get(inputData.getPathName(), "outputReport.json").toFile(), "UTF-8");
+		     exportReport.print(stream);
+			stream.close();
 		}
 	}
 

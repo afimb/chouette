@@ -38,6 +38,11 @@ public class ImportedLineValidatorCommand implements Command, Constant {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
+		if (!context.containsKey(SOURCE))
+		{
+			// not called from DAO
+			context.put(SOURCE, SOURCE_FILE);
+		}
 
 		try {
 			Command lineValidatorCommand = CommandFactory.create(initialContext,

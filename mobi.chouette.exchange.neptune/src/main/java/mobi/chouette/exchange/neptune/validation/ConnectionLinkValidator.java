@@ -5,13 +5,12 @@ import java.util.Map;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.exchange.validation.report.DataLocation;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.util.Referential;
@@ -59,14 +58,15 @@ public class ConnectionLinkValidator extends AbstractValidator implements Valida
 
 
 	@Override
-	public ValidationConstraints validate(Context context, ConnectionLink target) throws ValidationException
+	public void validate(Context context, ConnectionLink target) throws ValidationException
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
-		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
+		if (localContext == null || localContext.isEmpty()) return ;
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Map<String, Location> fileLocations = data.getFileLocations();
+//		Map<String, Location> fileLocations = data.getFileLocations();
+		Map<String, DataLocation> fileLocations = data.getDataLocations();
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
@@ -79,13 +79,15 @@ public class ConnectionLinkValidator extends AbstractValidator implements Valida
 			if (stopAreaContext.containsKey(connectionLink.getStartOfLink().getObjectId()) 
 					|| stopAreaContext.containsKey(connectionLink.getEndOfLink().getObjectId()))
 				continue;
-			Detail errorItem = new Detail(
-					CONNECTION_LINK_1,
-					fileLocations.get(connectionLink.getObjectId()));
-			addValidationError(context, CONNECTION_LINK_1, errorItem);
+//			Detail errorItem = new Detail(
+//					CONNECTION_LINK_1,
+//					fileLocations.get(connectionLink.getObjectId()));
+//			addValidationError(context, CONNECTION_LINK_1, errorItem);
+			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+			validationReporter.addCheckPointReportError(context, CONNECTION_LINK_1, fileLocations.get(connectionLink.getObjectId()));
 
 		}
-		return new ValidationConstraints();
+		return ;
 	}
 
 	public static class DefaultValidatorFactory extends ValidatorFactory {

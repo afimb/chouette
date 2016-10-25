@@ -46,18 +46,6 @@ public class Referential implements java.io.Serializable {
 
 	@Getter
 	@Setter
-	private Map<String, Route> routes = new HashMap<String, Route>();
-
-	@Getter
-	@Setter
-	private Map<String, Line> lines = new HashMap<String, Line>();
-
-	@Getter
-	@Setter
-	private Map<String, JourneyPattern> journeyPatterns = new HashMap<String, JourneyPattern>();
-
-	@Getter
-	@Setter
 	private Map<String, ConnectionLink> sharedConnectionLinks = new HashMap<String, ConnectionLink>();
 
 	@Getter
@@ -68,13 +56,6 @@ public class Referential implements java.io.Serializable {
 	@Setter
 	private Map<String, GroupOfLine> sharedGroupOfLines = new HashMap<String, GroupOfLine>();
 
-	@Getter
-	@Setter
-	private Map<String, StopPoint> stopPoints = new HashMap<String, StopPoint>();
-
-	@Getter
-	@Setter
-	private Map<String, VehicleJourney> vehicleJourneys = new HashMap<String, VehicleJourney>();
 
 	@Getter
 	@Setter
@@ -88,59 +69,26 @@ public class Referential implements java.io.Serializable {
 	@Setter
 	private Map<String, Timeband> sharedTimebands = new HashMap<String, Timeband>();
 
-	public void clear(boolean cascade) {
-		if (cascade) {
-			for (Line line : lines.values()) {
-				line.getRoutes().clear();
-				line.getFootnotes().clear();
-				line.getRoutingConstraints().clear();
-				line.getGroupOfLines().clear();
-			}
-			for (Route route : routes.values()) {
-				route.getStopPoints().clear();
-				route.getJourneyPatterns().clear();
-			}
-			for (JourneyPattern jp : journeyPatterns.values()) {
-				jp.getStopPoints().clear();
-				jp.getVehicleJourneys().clear();
-			}
-			for (VehicleJourney vj : vehicleJourneys.values()) {
-				vj.getVehicleJourneyAtStops().clear();
-				vj.getTimetables().clear();
-				vj.getJourneyFrequencies().clear();
-			}
-			for (Timetable timetable : timetables.values()) {
-				timetable.getVehicleJourneys().clear();
-			}
-			for (Timetable timetable : sharedTimetables.values()) {
-				timetable.getVehicleJourneys().clear();
-			}
-			for (GroupOfLine group : sharedGroupOfLines.values()) {
-				group.getLines().clear();
-			}
-			for (StopArea area : sharedStopAreas.values()) {
-				area.getContainedStopPoints().clear();
-			}
-			for (Timetable timetable : sharedTimetables.values()) {
-				timetable.getVehicleJourneys().clear();
-			}
-		}
-		accessLinks.clear();
-		accessPoints.clear();
-		companies.clear();
-		connectionLinks.clear();
-		groupOfLines.clear();
-		journeyPatterns.clear();
-		lines.clear();
-		ptNetworks.clear();
-		routes.clear();
-		stopAreas.clear();
-		stopPoints.clear();
-		timebands.clear();
-		timetables.clear();
-		vehicleJourneys.clear();
-		routeSections.clear();
-	}
+
+	@Getter
+	@Setter
+	private Map<String, Route> routes = new HashMap<String, Route>();
+
+	@Getter
+	@Setter
+	private Map<String, Line> lines = new HashMap<String, Line>();
+
+	@Getter
+	@Setter
+	private Map<String, JourneyPattern> journeyPatterns = new HashMap<String, JourneyPattern>();
+
+	@Getter
+	@Setter
+	private Map<String, StopPoint> stopPoints = new HashMap<String, StopPoint>();
+
+	@Getter
+	@Setter
+	private Map<String, VehicleJourney> vehicleJourneys = new HashMap<String, VehicleJourney>();
 
 	@Getter
 	@Setter
@@ -181,6 +129,65 @@ public class Referential implements java.io.Serializable {
 	@Getter
 	@Setter
 	private Map<String, RouteSection> routeSections = new HashMap<String, RouteSection>();
+
+	public void clear(boolean cascade) {
+		if (cascade) {
+			for (Line line : lines.values()) {
+				line.getRoutes().clear();
+				line.getFootnotes().clear();
+				line.getRoutingConstraints().clear();
+				line.getGroupOfLines().clear();
+			}
+			for (Route route : routes.values()) {
+				route.getStopPoints().clear();
+				route.getJourneyPatterns().clear();
+			}
+			for (JourneyPattern jp : journeyPatterns.values()) {
+				jp.getStopPoints().clear();
+				jp.getVehicleJourneys().clear();
+				jp.getRouteSections().clear();
+			}
+			for (VehicleJourney vj : vehicleJourneys.values()) {
+				vj.getVehicleJourneyAtStops().clear();
+				vj.getTimetables().clear();
+				vj.getJourneyFrequencies().clear();
+				vj.getFootnotes().clear();
+			}
+			for (Timetable timetable : timetables.values()) {
+				timetable.getVehicleJourneys().clear();
+			}
+			for (Timetable timetable : sharedTimetables.values()) {
+				timetable.getVehicleJourneys().clear();
+			}
+			for (Timeband timeband : sharedTimebands.values()) {
+				timeband.getJourneyFrequencies().clear();
+			}
+			for (Timeband timeband : timebands.values()) {
+				timeband.getJourneyFrequencies().clear();
+			}
+			for (GroupOfLine group : sharedGroupOfLines.values()) {
+				group.getLines().clear();
+			}
+			for (StopArea area : sharedStopAreas.values()) {
+				area.getContainedStopPoints().clear();
+			}
+		}
+		accessLinks.clear();
+		accessPoints.clear();
+		companies.clear();
+		connectionLinks.clear();
+		groupOfLines.clear();
+		journeyPatterns.clear();
+		lines.clear();
+		ptNetworks.clear();
+		routes.clear();
+		stopAreas.clear();
+		stopPoints.clear();
+		timebands.clear();
+		timetables.clear();
+		vehicleJourneys.clear();
+		routeSections.clear();
+	}
 
 	public void dispose() {
 		// clear(false);

@@ -22,10 +22,9 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileError;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.exchange.report.ActionReporter.FILE_ERROR_CODE;
 
 import org.apache.commons.io.input.BOMInputStream;
 import org.xml.sax.SAXException;
@@ -51,11 +50,10 @@ public class NetexSAXParserCommand implements Command, Constant {
 
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 
 		String fileName = new File(new URL(fileURL).toURI()).getName();
-
-		FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
+		reporter.addFileReport(context, fileName, IO_TYPE.INPUT);
 
 		Schema schema = (Schema) context.get(SCHEMA);
 		if (schema == null) {
@@ -78,8 +76,7 @@ public class NetexSAXParserCommand implements Command, Constant {
 			result = SUCCESS;
 		} catch (IOException | SAXException e) {
 			log.error(e.getMessage(), e);
-			report.getFiles().add(fileItem);
-			fileItem.addError(new FileError(FileError.CODE.INVALID_FORMAT,e.getMessage()));
+			reporter.addFileErrorInReport(context, fileName, FILE_ERROR_CODE.INVALID_FORMAT,e.getMessage());
 		} finally {
 			if (reader != null ) reader.close();
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
