@@ -27,17 +27,17 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.Referential;
-import no.rutebanken.netex.client.PublicationDeliveryClient;
-import no.rutebanken.netex.model.KeyListStructure;
-import no.rutebanken.netex.model.KeyValueStructure;
-import no.rutebanken.netex.model.MultilingualString;
-import no.rutebanken.netex.model.ObjectFactory;
-import no.rutebanken.netex.model.PublicationDeliveryStructure;
-import no.rutebanken.netex.model.Quay;
-import no.rutebanken.netex.model.Quays_RelStructure;
-import no.rutebanken.netex.model.SiteFrame;
-import no.rutebanken.netex.model.StopPlace;
-import no.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
+import org.rutebanken.netex.client.PublicationDeliveryClient;
+import org.rutebanken.netex.model.KeyListStructure;
+import org.rutebanken.netex.model.KeyValueStructure;
+import org.rutebanken.netex.model.MultilingualString;
+import org.rutebanken.netex.model.ObjectFactory;
+import org.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.rutebanken.netex.model.Quay;
+import org.rutebanken.netex.model.Quays_RelStructure;
+import org.rutebanken.netex.model.SiteFrame;
+import org.rutebanken.netex.model.StopPlace;
+import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
 
 @Log4j
 @Stateless(name = NeTExStopPlaceRegisterUpdater.BEAN_NAME)
