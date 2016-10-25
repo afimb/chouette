@@ -69,15 +69,20 @@ public class TransitDataStatisticsService {
 		log.info("Gettings statistics for " + referential + " using startDate=" + startDate
 				+ " and minDaysValidityCategories=" + ToStringBuilder.reflectionToString(minDaysValidityCategories));
 
+		// Defaulting to today if not given
 		if (startDate == null) {
 			startDate = new DateMidnight().toDate();
 		}
 
 		Map<String, PublicLine> publicLines = new HashMap<String, PublicLine>();
 
-
+		// Convert Chouette internal model to the statistics model used
 		convertChouetteModelToStatisticsModel(startDate, publicLines);
-		filterEmptyLines(publicLines);
+		
+		// If Line->Timetable->Period is empty, remove Line but keep publicLine
+		filterLinesWithEmptyTimetablePeriods(publicLines);
+		
+		// Merge overlapping periods in PublicLine for readability
 		mergePeriods(publicLines);
 
 		LineStatistics lineStats = new LineStatistics();
@@ -86,9 +91,25 @@ public class TransitDataStatisticsService {
 		Collections.sort(pL);
 
 		lineStats.setPublicLines(pL);
+		
+		// Put lineNumbers into buckets depending on validity in the future
 		categorizeValidity(lineStats, startDate, minDaysValidityCategories);
+		
+		// Merge identical names to display in PublicLines
+		mergeNames(lineStats);
 
 		return lineStats;
+	}
+
+	private void mergeNames(LineStatistics lineStats) {
+		for(PublicLine pl : lineStats.getPublicLines()) {
+			Set<String> names = new TreeSet<String>();
+			for(Line l : pl.getLines()) {
+				names.add(l.getName());
+			}
+			
+			pl.getLineNames().addAll(names);
+		}
 	}
 
 	private void categorizeValidity(LineStatistics lineStats, Date startDate, Integer[] minDaysValidityCategories) {
@@ -115,14 +136,14 @@ public class TransitDataStatisticsService {
 				
 				foundCategory = isValidAtLeastNumberOfDays(pl, startDateLocal, vc.getNumDaysAtLeastValid());
 				if (foundCategory) {
-					vc.getLineNumbers().add(pl.getNumber());
+					vc.getLineNumbers().add(pl.getLineNumber());
 					break;
 				}
 				
 			}
 
 			if (!foundCategory) {
-				defaultCategory.getLineNumbers().add(pl.getNumber());
+				defaultCategory.getLineNumbers().add(pl.getLineNumber());
 			}
 		}
 
@@ -228,17 +249,14 @@ public class TransitDataStatisticsService {
 		}
 	}
 
-	protected void filterEmptyLines(Map<String, PublicLine> publicLines) {
-		// Filter away any public lines where the Line Timetable has no periods
+	protected void filterLinesWithEmptyTimetablePeriods(Map<String, PublicLine> publicLines) {
+		
 
 		List<PublicLine> filteredPublicLines = new ArrayList<>();
 
 		for (PublicLine pl : publicLines.values()) {
-
 			List<Line> filteredLines = new ArrayList<>();
-
 			for (Line l : pl.getLines()) {
-
 				List<Timetable> filteredTimetables = new ArrayList<>();
 
 				for (Timetable t : l.getTimetables()) {
@@ -253,7 +271,6 @@ public class TransitDataStatisticsService {
 				if (l.getTimetables().size() > 0) {
 					filteredLines.add(l);
 				}
-
 			}
 
 			pl.getLines().clear();
