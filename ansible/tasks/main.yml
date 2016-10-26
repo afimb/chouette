@@ -20,7 +20,7 @@
   template: src=Dockerfile.j2 dest={{chouette_root}}/Dockerfile mode=0755
 
 - name: Download postgresql jar file (renamed due to legacy reasons)
-  get_url: url=http://search.maven.org/remotecontent?filepath=org/postgresql/postgresql/9.4-1205-jdbc41/postgresql-9.4-1205-jdbc41.jar
+  get_url: url=https://jdbc.postgresql.org/download/postgresql-9.4.1208.jre7.jar
            dest={{ chouette_root }}/postgresql-9.4.jar
 
 - name: Download hibernate spatial
@@ -36,7 +36,26 @@
   with_items:
     - { path: "net/postgis/postgis-jdbc/2.1.7.2", filename: "postgis-jdbc-2.1.7.2.jar" }
     - { path: "com/vividsolutions/jts/1.13", filename: "jts-1.13.jar" }
-    - { path: "org/postgresql/postgresql/9.4-1205-jdbc41", filename: "postgresql-9.4-1205-jdbc41.jar" }
+    - { path: "org/postgresql/postgresql/9.4.1208.jre7", filename: "postgresql-9.4.1208.jre7.jar" }
+
+
+- name: Download jaxb-core 2.2.11
+  get_url:
+    url=http://central.maven.org/maven2/com/sun/xml/bind/jaxb-impl/2.2.11/jaxb-impl-2.2.11.jar
+    dest={{ chouette_root }}/jaxb-impl-2.2.11.jar
+  tags: chouette
+
+- name: Download jaxb-impl 2.2.11
+  get_url:
+    url=http://central.maven.org/maven2/com/sun/xml/bind/jaxb-core/2.2.11/jaxb-core-2.2.11.jar
+    dest={{ chouette_root }}/jaxb-core-2.2.11.jar
+  tags: chouette
+
+- name: Download jaxb-xjc 2.2.11
+  get_url:
+    url=http://central.maven.org/maven2/com/sun/xml/bind/jaxb-xjc/2.2.11/jaxb-xjc-2.2.11.jar
+    dest={{ chouette_root }}/jaxb-xjc-2.2.11.jar
+  tags: chouette
 
 - name: Build the chouette docker image
   shell: docker build --tag={{ chouette_docker_image|quote }} --force-rm=true {{chouette_root}} > {{logfile}} 2>&1

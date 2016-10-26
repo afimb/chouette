@@ -42,6 +42,17 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.Referential;
+import org.rutebanken.netex.client.PublicationDeliveryClient;
+import org.rutebanken.netex.model.KeyListStructure;
+import org.rutebanken.netex.model.KeyValueStructure;
+import org.rutebanken.netex.model.MultilingualString;
+import org.rutebanken.netex.model.ObjectFactory;
+import org.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.rutebanken.netex.model.Quay;
+import org.rutebanken.netex.model.Quays_RelStructure;
+import org.rutebanken.netex.model.SiteFrame;
+import org.rutebanken.netex.model.StopPlace;
+import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
 
 @Log4j
 @Stateless(name = NeTExStopPlaceRegisterUpdater.BEAN_NAME)

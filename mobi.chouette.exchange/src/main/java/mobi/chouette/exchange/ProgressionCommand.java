@@ -57,14 +57,14 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 	public void dispose(Context context) {
 		saveReport(context, true);
 		saveMainValidationReport(context, true);
-		
+
 		Monitor monitor = MonitorFactory.getTimeMonitor("ActionReport");
 		if (monitor != null)
 			log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
 		monitor = MonitorFactory.getTimeMonitor("ValidationReport");
 		if (monitor != null)
 			log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
-		
+
 	}
 
 

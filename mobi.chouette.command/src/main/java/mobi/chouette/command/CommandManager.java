@@ -311,7 +311,7 @@ public class CommandManager implements Constant {
 		stream.close();
 
 		ValidationReport validationReport = (ValidationReport) importContext.get(VALIDATION_REPORT);
-		
+
 		 stream = new PrintStream(Paths.get(inputData.getPathName(), VALIDATION_FILE).toFile(), "UTF-8");
 		validationReport.print(stream);
 		stream.close();

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>mobi.chouette</groupId>
 	<artifactId>mobi.chouette</artifactId>
-	<version>3.4.0-SNAPSHOT</version>
+	<version>3.4.RB-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -24,9 +24,13 @@
 		<hibernate-spatial.version>4.3</hibernate-spatial.version>
 		<jts.version>1.13</jts.version>
 		<arquillian-version>1.1.11.Final</arquillian-version>
+		<jaxb-version>2.2.11</jaxb-version>
 		<lombok-version>1.16.8</lombok-version>
 		<lombok-maven-plugin-version>1.16.8.0</lombok-maven-plugin-version>
 		<project.rootDir>${project.basedir}</project.rootDir>
+    <!-- NB: Concious choice of using snapshot version. This is to keep in
+        sync, and fail fast if incompatibilities -->
+    <netex-java-model.version>0.0.9-SNAPSHOT</netex-java-model.version>
 	</properties>
 	<distributionManagement>
 		<snapshotRepository>
@@ -191,6 +195,30 @@
 									<version>${jts.version}</version>
 									<outputDirectory>
 										${project.rootDir}/target/wildfly-${wildfly.version}/modules/system/layers/base/org/hibernate/main
+									</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.sun.xml.bind</groupId>
+									<artifactId>jaxb-impl</artifactId>
+									<version>${jaxb-version}</version>
+									<outputDirectory>
+										${project.rootDir}/target/wildfly-${wildfly.version}/modules/system/layers/base/com/sun/xml/bind/main
+									</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.sun.xml.bind</groupId>
+									<artifactId>jaxb-core</artifactId>
+									<version>${jaxb-version}</version>
+									<outputDirectory>
+										${project.rootDir}/target/wildfly-${wildfly.version}/modules/system/layers/base/com/sun/xml/bind/main
+									</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.sun.xml.bind</groupId>
+									<artifactId>jaxb-xjc</artifactId>
+									<version>${jaxb-version}</version>
+									<outputDirectory>
+										${project.rootDir}/target/wildfly-${wildfly.version}/modules/system/layers/base/com/sun/xml/bind/main
 									</outputDirectory>
 								</artifactItem>
 							</artifactItems>
@@ -509,6 +537,11 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
+				<artifactId>mobi.chouette.exchange.netexprofile</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>mobi.chouette.exchange.kml</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -559,16 +592,16 @@
 				<scope>provided</scope>
 			</dependency>
 
+      <dependency>
+  			<groupId>org.rutebanken</groupId>
+  			<artifactId>netex-java-model</artifactId>
+  			<version>${netex-java-model.version}</version>
+  		</dependency>
+
 			<dependency>
 				<groupId>org.jboss.resteasy</groupId>
 				<artifactId>resteasy-cache-core</artifactId>
 				<version>3.0.9.Final</version>
-			</dependency>
-
-			<dependency>
-				<groupId>javax.xml.bind</groupId>
-				<artifactId>jaxb-api</artifactId>
-				<version>2.2.7</version>
 			</dependency>
 
 			<!-- Test Dependencies -->
@@ -724,6 +757,22 @@
 				<artifactId>gt-epsg-hsql</artifactId>
 				<version>10.5</version>
 			</dependency>
+			<dependency>
+	            <groupId>javax.xml.bind</groupId>
+	            <artifactId>jaxb-api</artifactId>
+				<version>${jaxb-version}</version>
+			</dependency>
+			<dependency>
+ 				<groupId>com.sun.xml.bind</groupId>
+ 	            <artifactId>jaxb-impl</artifactId>
+				<version>${jaxb-version}</version>
+			</dependency>
+			<dependency>
+ 				<groupId>com.sun.xml.bind</groupId>
+ 	            <artifactId>jaxb-core</artifactId>
+				<version>${jaxb-version}</version>
+			</dependency>
+
 		</dependencies>
 
 	</dependencyManagement>
@@ -812,11 +861,12 @@
 		<module>mobi.chouette.exchange</module>
 		<module>mobi.chouette.exchange.neptune</module>
 		<module>mobi.chouette.exchange.netex</module>
+		<module>mobi.chouette.exchange.netexprofile</module>
 		<module>mobi.chouette.exchange.kml</module>
-      <module>mobi.chouette.exchange.geojson</module>
-      <module>mobi.chouette.exchange.sig</module>
 		<module>mobi.chouette.exchange.hub</module>
 		<module>mobi.chouette.exchange.gtfs</module>
+		<module>mobi.chouette.exchange.geojson</module>
+        <module>mobi.chouette.exchange.sig</module>
 		<module>mobi.chouette.exchange.regtopp</module>
 		<module>mobi.chouette.exchange.validator</module>
 		<module>mobi.chouette.exchange.converter</module>

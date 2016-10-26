@@ -10,6 +10,8 @@ import java.util.concurrent.Future;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.TransactionAttribute;
@@ -18,6 +20,9 @@ import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedTaskListener;
 import javax.naming.InitialContext;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.dao.iev.JobDAO;
@@ -25,9 +30,6 @@ import mobi.chouette.model.iev.Job.STATUS;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 
 /**
  * @author michel
@@ -52,6 +54,7 @@ public class Scheduler {
 	Map<Long,Future<STATUS>> startedFutures = new ConcurrentHashMap<>();
 	// Map<Long,Task> startedTasks = new ConcurrentHashMap<>();
 
+	@Lock(LockType.READ)
 	public int getActivejobsCount()
 	{
 		return startedFutures.size();

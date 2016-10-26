@@ -6,6 +6,6 @@ module add --name=org.postgres --resources=/opt/jboss/wildfly/customization/post
 
 data-source add --jndi-name=java:jboss/datasources/iev --name=iev --connection-url=jdbc:postgresql://chouettedb:5432/iev  --driver-name=postgresql --user-name=chouette --password=chouette
 
-data-source add --jndi-name=java:jboss/datasources/chouette --name=chouette --connection-url=jdbc:postgresql_postGIS://chouettedb:5432/chouette2 --driver-class=org.postgis.DriverWrapper --driver-name=postgresql --user-name=chouette --password=chouette --max-pool-size=30
+data-source add --jndi-name=java:jboss/datasources/chouette --name=chouette --connection-url=jdbc:postgresql_postGIS://chouettedb:5432/chouette2?preparedStatementCacheQueries=1024&preparedStatementCacheSizeMiB=15 --driver-class=org.postgis.DriverWrapper --driver-name=postgresql --user-name=chouette --password=chouette --max-pool-size=30
 
 run-batch

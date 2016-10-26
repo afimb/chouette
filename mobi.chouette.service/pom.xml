@@ -3,7 +3,7 @@
   <parent>
     <groupId>mobi.chouette</groupId>
     <artifactId>mobi.chouette</artifactId>
-    <version>3.4.0-SNAPSHOT</version>
+    <version>3.4.RB-SNAPSHOT</version>
   </parent>
   <artifactId>mobi.chouette.service</artifactId>
   <packaging>ejb</packaging>
@@ -22,6 +22,18 @@
          <scope>provided</scope>
       </dependency>
 
+       <dependency>
+           <groupId>com.sun.xml.bind</groupId>
+           <artifactId>jaxb-core</artifactId>
+       </dependency>
+       <dependency>
+           <groupId>com.sun.xml.bind</groupId>
+           <artifactId>jaxb-impl</artifactId>
+       </dependency>
+       <dependency>
+           <groupId>javax.xml.bind</groupId>
+           <artifactId>jaxb-api</artifactId>
+       </dependency>
       <!-- Others Dependencies -->
 
     <dependency>
@@ -88,8 +100,10 @@
          <artifactId>jettison</artifactId>
          <scope>provided</scope>
       </dependency>
-
-
+      <dependency>
+		<groupId>joda-time</groupId>
+		<artifactId>joda-time</artifactId>
+		</dependency>
       <!-- Modules -->
       <dependency>
          <groupId>${project.groupId}</groupId>

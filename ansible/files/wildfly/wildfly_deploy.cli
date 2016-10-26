@@ -1,3 +1,0 @@
-batch
-deploy --force /opt/jboss/wildfly/customization/chouette.ear
-run-batch

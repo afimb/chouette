@@ -62,7 +62,7 @@ public class ValidatorCommand implements Command, Constant {
 			if (!(configuration instanceof ValidateParameters)) {
 				// fatal wrong parameters
 				log.error("invalid parameters for validation " + configuration.getClass().getName());
-				reporter.setActionError(context, ActionReporter.ERROR_CODE.INVALID_PARAMETERS, 
+				reporter.setActionError(context, ActionReporter.ERROR_CODE.INVALID_PARAMETERS,
 						"invalid parameters for validation " + configuration.getClass().getName());
 				return ERROR;
 			}
@@ -175,7 +175,7 @@ public class ValidatorCommand implements Command, Constant {
 			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, data.getRoutes().size());
 			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY, data.getVehicleJourneys().size());
 
-			if (!validateFailed) 
+			if (!validateFailed)
 			{
 				lineCount ++;
 			}

@@ -32,7 +32,7 @@ public class FileLocation extends AbstractReport {
 
 	public FileLocation(DataLocation dl) {
 		this(dl.getFilename(),dl.getLineNumber(),dl.getColumnNumber());
-				
+
 	}
 
 	@Override

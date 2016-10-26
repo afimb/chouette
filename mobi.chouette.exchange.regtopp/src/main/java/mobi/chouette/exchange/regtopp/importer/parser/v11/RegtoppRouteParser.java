@@ -268,11 +268,19 @@ public class RegtoppRouteParser extends LineSpecificParser {
 
 		for (Route route : referential.getRoutes().values()) {
 			if (route.getName() == null) {
-				// Set to last stop
+				// Set to last useful stop
 				List<StopPoint> stopPoints = route.getStopPoints();
 				if (stopPoints != null && !stopPoints.isEmpty()) {
 					StopArea lastStopArea = stopPoints.get(stopPoints.size() - 1).getContainedInStopArea();
-					if (lastStopArea.getParent() == null) {
+					if (lastStopArea == null) {
+						log.warn("No route name or last stop area present on route. Trying second last etc.");
+						lastStopArea = getUsefulStopArea(stopPoints);
+					}
+					if (lastStopArea == null) {
+						log.warn("Giving up. No route name or last stop area present on route " + route);
+						return;
+					}
+					if(lastStopArea.getParent() == null) {
 						route.setName(lastStopArea.getName());
 					} else {
 						route.setName(lastStopArea.getParent().getName());
@@ -291,6 +299,17 @@ public class RegtoppRouteParser extends LineSpecificParser {
 
 			// default direction and wayback = R if opposite Route = A, else A
 		}
+	}
+
+	StopArea getUsefulStopArea(List<StopPoint> stopPoints) {
+		for (int i = stopPoints.size() - 2 ; i >= 0 ; i-- ) {
+			if (stopPoints.get(i).getContainedInStopArea() != null) {
+				return stopPoints.get(i).getContainedInStopArea();
+			} else {
+				continue;
+			}
+		}
+		return null;
 	}
 
 	protected PTDirectionEnum getOppositeDirection(PTDirectionEnum direction) {

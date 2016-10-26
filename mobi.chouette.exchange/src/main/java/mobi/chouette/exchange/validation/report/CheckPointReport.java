@@ -10,32 +10,45 @@ import lombok.ToString;
 import mobi.chouette.exchange.report.AbstractReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter.RESULT;
 
+import javax.xml.bind.annotation.*;
+
 
 @Data
 @EqualsAndHashCode(callSuper=false)
 @ToString
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = { "name", "phase", "target", "rank", "severity", "state", "checkPointErrorCount", "checkPointErrorsKeys" })
 public class CheckPointReport extends AbstractReport{
 
 	public enum SEVERITY {
 		WARNING, ERROR, IMPROVMENT
 	};
 
+	@XmlElement(name = "test_id", required = true)
 	private String name;
 
+	@XmlElement(name = "level", required = true)
 	private String phase;
 
+	@XmlElement(name = "object_type", required = true)
 	private String target;
 
+	@XmlElement(name = "rank", required = true)
 	private String rank;
 
+	@XmlElement(name = "severity", required = true)
 	private SEVERITY severity;
 
+	@XmlElement(name = "result", required = true)
 	private RESULT state;
 
+	@XmlElement(name = "error_count")
 	private int checkPointErrorCount = 0;
 
-	private List<Integer> checkPointErrorsKeys = new ArrayList<Integer>();
+	@XmlElement(name = "errors")
+	private List<Integer> checkPointErrorsKeys = new ArrayList<>();
 
+	@XmlTransient
 	private boolean maxByFile = true;
 
 	protected CheckPointReport(String name, RESULT state, SEVERITY severity) {

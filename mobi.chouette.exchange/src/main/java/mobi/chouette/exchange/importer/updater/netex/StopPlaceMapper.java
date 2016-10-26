@@ -6,8 +6,6 @@ import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-
-import org.rutebanken.netex.model.AirSubmodeEnumeration;
 import org.rutebanken.netex.model.LocationStructure;
 import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.Quay;
@@ -17,6 +15,8 @@ import org.rutebanken.netex.model.SimplePoint_VersionStructure;
 import org.rutebanken.netex.model.StopPlace;
 import org.rutebanken.netex.model.VehicleModeEnumeration;
 import org.rutebanken.netex.model.WaterSubmodeEnumeration;
+import org.rutebanken.netex.model.SimplePoint_VersionStructure;
+import org.rutebanken.netex.model.StopPlace;
 import org.rutebanken.netex.model.Zone_VersionStructure;
 
 public class StopPlaceMapper {

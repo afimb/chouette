@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Factory" verbose="5">
+	<test name="Importer">
+		<packages>
+			<package name="mobi.chouette.exchange.netexprofile.importer"/>
+		</packages>
+	</test>
+</suite>

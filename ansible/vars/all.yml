@@ -2,4 +2,4 @@
 docker_build_root: /usr/src
 build_log_directory: /usr/src/log
 chouette_root: "{{docker_build_root}}/chouette"
-chouette_docker_image: "dr.rutebanken.org/rutebanken/chouette"
+chouette_docker_image: "eu.gcr.io/carbon-1287/chouette"

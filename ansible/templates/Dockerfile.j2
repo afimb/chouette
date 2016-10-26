@@ -2,7 +2,7 @@ FROM jboss/wildfly:8.2.1.Final
 
 RUN mkdir /opt/jboss/wildfly/customization/
 
-COPY postgresql-9.4-1205-jdbc41.jar /opt/jboss/wildfly/customization/postgresql-9.4.jar
+COPY postgresql-9.4.1208.jre7.jar /opt/jboss/wildfly/customization/postgresql-9.4.jar
 COPY postgis-jdbc-2.1.7.2.jar /opt/jboss/wildfly/customization/postgis-jdbc-2.1.7.2.jar
 COPY hibernate-spatial-4.3.jar /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/hibernate-spatial-4.3.jar
 COPY jts-1.13.jar /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/jts-1.13.jar
@@ -10,20 +10,31 @@ COPY jts-1.13.jar /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/ma
 # File where sed expression has been performed:
 COPY wildfly/module.xml /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/module.xml
 
+# Updated JAXB implementation to work with Netex jaxb classes
+COPY jaxb-impl-2.2.11.jar /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/jaxb-impl-2.2.11.jar
+COPY jaxb-core-2.2.11.jar /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/jaxb-core-2.2.11.jar
+COPY jaxb-xjc-2.2.11.jar /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/jaxb-xjc-2.2.11.jar
+COPY wildfly/jaxb_module.xml /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/module.xml
+
+#Copy iev.properties
+COPY wildfly/iev.properties /etc/chouette/iev/
+
 RUN touch /opt/jboss/wildfly/build.log
 RUN chmod a+w /opt/jboss/wildfly/build.log
-COPY wildfly/wildfly_db.cli /opt/jboss/wildfly/customization/
-# Not used anymore: COPY wildfly_deploy.cli /opt/jboss/wildfly/customization/
-COPY wildfly/wildfly_fsize.cli /opt/jboss/wildfly/customization/
+
+# Wildfly container configurations, copy and execute
+COPY wildfly/*.cli /opt/jboss/wildfly/customization/
 COPY wildfly/execute.sh /opt/jboss/wildfly/customization/
 RUN /opt/jboss/wildfly/customization/execute.sh
+
 # TODO Consider to make password for chouette iev console configurable
 RUN /opt/jboss/wildfly/bin/add-user.sh admin pingu123 --silent
 
+
 # Overriding previously installed java version:
-RUN curl -L http://jump.rutebanken.org/jdk-8u92-linux-x64.tar.gz > jdk.tgz
+RUN curl -L http://jump.rutebanken.org/jdk-8u112-linux-x64.tar.gz > jdk.tgz
 RUN tar xzf jdk.tgz
-ENV JAVA_HOME /opt/jboss/jdk1.8.0_92/
+ENV JAVA_HOME /opt/jboss/jdk1.8.0_112/
 
 # Deploying by copying to deployment directory
 COPY chouette.ear /opt/jboss/wildfly/standalone/deployments/
@@ -31,11 +42,16 @@ COPY chouette.ear /opt/jboss/wildfly/standalone/deployments/
 # Copy standalone customizations
 COPY wildfly/standalone.conf /opt/jboss/wildfly/bin
 # From http://stackoverflow.com/questions/20965737/docker-jboss7-war-commit-server-boot-failed-in-an-unrecoverable-manner
-RUN rm -rf /opt/jboss/wildfly/standalone/configuration/standalone_xml_history
+RUN rm -rf /opt/jboss/wildfly/standalone/configuration/standalone_xml_history \
+  && mkdir -p /opt/jboss/data \
+  && chown jboss:jboss /opt/jboss/data
 
 #
 # The argument comes from chouette doc: https://github.com/afimb/chouette/blob/master/doc/install/wildfly.md
 #CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-c", "standalone-full.xml"]
+
+# Running as root, in order to get mounted volume writable:
+USER root
 
 # This argument comes from https://github.com/jboss-dockerfiles/wildfly
 # It enables the admin interface.

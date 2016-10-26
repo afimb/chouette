@@ -137,7 +137,7 @@ public class ObjectReference extends AbstractReport {
 		if (id == null)
 			this.objectId = object.getObjectId();
 	}
-	
+
 	public ObjectReference(StopPoint object)
 	{
 		this.type = TYPE.stop_point;

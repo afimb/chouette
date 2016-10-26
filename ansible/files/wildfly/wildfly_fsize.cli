@@ -1,4 +1,4 @@
 batch
-/subsystem=undertow/server=default-server/http-listener=default/ :write-attribute(name=max-post-size, value=80000000)
+/subsystem=undertow/server=default-server/http-listener=default/ :write-attribute(name=max-post-size, value=200000000)
 run-batch
 

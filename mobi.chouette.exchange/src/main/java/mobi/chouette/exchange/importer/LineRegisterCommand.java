@@ -18,6 +18,8 @@ import javax.naming.NamingException;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
@@ -43,6 +45,21 @@ import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Log4j
 @Stateless(name = LineRegisterCommand.COMMAND)
@@ -140,9 +157,8 @@ public class LineRegisterCommand implements Command {
 					e = e.getCause();
 				}
 				if (e instanceof SQLException) {
-					e = ((SQLException) e).getNextException();
-					reporter.addErrorToObjectReport(context, newValue.getObjectId(), OBJECT_TYPE.LINE, ERROR_CODE.WRITE_ERROR,  e.getMessage());
-
+					Throwable ee = ((SQLException) e).getNextException();
+					reporter.addErrorToObjectReport(context, newValue.getObjectId(), OBJECT_TYPE.LINE, ERROR_CODE.WRITE_ERROR,  (ee == null) ? e.getMessage() : ee.getMessage());
 				} else {
 					reporter.addErrorToObjectReport(context, newValue.getObjectId(), OBJECT_TYPE.LINE, ERROR_CODE.INTERNAL_ERROR,  e.getMessage());
 				}
@@ -152,43 +168,6 @@ public class LineRegisterCommand implements Command {
 			throw ex;
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
-
-//			monitor = MonitorFactory.getTimeMonitor("LineOptimiser");
-//			if (monitor != null)
-//				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
-//			monitor = MonitorFactory.getTimeMonitor(LineUpdater.BEAN_NAME);
-//			if (monitor != null)
-//				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
-//			monitor = MonitorFactory.getTimeMonitor(GroupOfLineUpdater.BEAN_NAME);
-//			if (monitor != null)
-//				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
-//			monitor = MonitorFactory.getTimeMonitor(CompanyUpdater.BEAN_NAME);
-//			if (monitor != null)
-//				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
-//			monitor = MonitorFactory.getTimeMonitor(RouteUpdater.BEAN_NAME);
-//			if (monitor != null)
-//				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
-//			monitor = MonitorFactory.getTimeMonitor(JourneyPatternUpdater.BEAN_NAME);
-//			if (monitor != null)
-//				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
-//			monitor = MonitorFactory.getTimeMonitor(VehicleJourneyUpdater.BEAN_NAME);
-//			if (monitor != null)
-//				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
-//			monitor = MonitorFactory.getTimeMonitor(StopPointUpdater.BEAN_NAME);
-//			if (monitor != null)
-//				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
-//			monitor = MonitorFactory.getTimeMonitor(StopAreaUpdater.BEAN_NAME);
-//			if (monitor != null)
-//				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
-//			monitor = MonitorFactory.getTimeMonitor(ConnectionLinkUpdater.BEAN_NAME);
-//			if (monitor != null)
-//				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
-//			monitor = MonitorFactory.getTimeMonitor(TimetableUpdater.BEAN_NAME);
-//			if (monitor != null)
-//				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
-//			monitor = MonitorFactory.getTimeMonitor("prepareCopy");
-//			if (monitor != null)
-//				log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
 		}
 		return result;
 	}

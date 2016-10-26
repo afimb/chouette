@@ -127,16 +127,16 @@ public abstract class AbstractTests implements Constant, ReportConstant {
 	{
 		List<CheckPointErrorReport> details = new ArrayList<>();
 		ValidationReport valReport = (ValidationReport) context.get(VALIDATION_REPORT);
-		
+
 		List<CheckPointErrorReport> errors = valReport.getCheckPointErrors();
 		for (Integer rank : checkPoint.getCheckPointErrorsKeys())
 		{
 			details.add(errors.get(rank.intValue()));
 		}
 		return details;
-		
+
 	}
-	
+
 	/**
 	 * @param log
 	 * @param mandatoryTest

@@ -1,33 +1,7 @@
 package mobi.chouette.service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.ejb.EJB;
-import javax.ejb.Startup;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.ws.rs.core.MediaType;
-
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.ContenerChecker;
@@ -42,13 +16,24 @@ import mobi.chouette.model.iev.Link;
 import mobi.chouette.model.iev.Stat;
 import mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator;
 import mobi.chouette.scheduler.Scheduler;
-
 import org.apache.commons.io.FileUtils;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.ejb.*;
+import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.ws.rs.core.MediaType;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Paths;
+import java.util.*;
 
-@Stateless(name = JobServiceManager.BEAN_NAME)
+@Singleton(name = JobServiceManager.BEAN_NAME)
+@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 @Startup
 @Log4j
 public class JobServiceManager {
@@ -65,29 +50,22 @@ public class JobServiceManager {
 	ContenerChecker checker;
 
 	@EJB
-	JobServiceManager jobServiceManager;
-
-	@EJB
 	Scheduler scheduler;
 
 	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
 	ManagedExecutorService executor;
 
-	private static Set<Object> referentials = Collections.synchronizedSet(new HashSet<>());
+	private Set<Object> referentials = Collections.synchronizedSet(new HashSet<>());
 
-	private static int maxJobs = 5;
-
-	private static String lock = "lock";
+	private int maxJobs = 5;
 
 	private String rootDirectory;
 
-	private static Set<String> intializedContexts = new HashSet<>();
+	private String lock = "lock";
 
 	@PostConstruct
 	public synchronized void init() {
 		String context = checker.getContext();
-		if (intializedContexts.contains(context))
-			return;
 		System.setProperty(context + PropertyNames.MAX_STARTED_JOBS, "5");
 		System.setProperty(context + PropertyNames.MAX_COPY_BY_JOB, "5");
 		try {
@@ -131,15 +109,18 @@ public class JobServiceManager {
 			throws ServiceException {
 		// Valider les parametres
 		validateReferential(referential);
+
 		synchronized (lock) {
-			if (scheduler.getActivejobsCount() >= maxJobs) {
+			int numActiveJobs = scheduler.getActivejobsCount();
+			log.info("Inside lock, numActiveJobs="+numActiveJobs);
+			if (numActiveJobs >= maxJobs) {
 				throw new RequestServiceException(RequestExceptionCode.TOO_MANY_ACTIVE_JOBS, "" + maxJobs
 						+ " active jobs");
 			}
-			JobService jobService = jobServiceManager.createJob(referential, action, type, inputStreamsByName);
-			scheduler.schedule(referential);
-			return jobService;
 		}
+		JobService jobService = createJob(referential, action, type, inputStreamsByName);
+		scheduler.schedule(referential);
+		return jobService;
 	}
 
 	public List<Stat> getMontlyStats() throws ServiceException {
@@ -152,16 +133,16 @@ public class JobServiceManager {
 		}
 	}
 
-	public JobService createJob(String referential, String action, String type,
+	private JobService createJob(String referential, String action, String type,
 			Map<String, InputStream> inputStreamsByName) throws ServiceException {
 		JobService jobService = null;
 		try {
+			log.info("Creating job referential="+referential+" ...");
 			// Instancier le modèle du service 'upload'
 			jobService = new JobService(rootDirectory, referential, action, type);
 
 			// Enregistrer le jobService pour obtenir un id
 			jobDAO.create(jobService.getJob());
-			log.info("job " + jobService.getJob().getId() + " created");
 			// mkdir
 			if (Files.exists(jobService.getPath())) {
 				// réutilisation anormale d'un id de job (réinitialisation de la
@@ -179,14 +160,15 @@ public class JobServiceManager {
 			jobDAO.update(jobService.getJob());
 			// jobDAO.detach(jobService.getJob());
 
+			log.info("Job id=" + jobService.getJob().getId() + " referential="+referential+" created");
 			return jobService;
 
 		} catch (RequestServiceException ex) {
-			log.info("fail to create job ");
+			log.warn("fail to create job ",ex);
 			deleteBadCreatedJob(jobService);
 			throw ex;
 		} catch (Exception ex) {
-			log.info("fail to create job " + ex.getMessage() + " " + ex.getClass().getName());
+			log.warn("fail to create job " + ex.getMessage() + " " + ex.getClass().getName(),ex);
 			deleteBadCreatedJob(jobService);
 			throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, ex);
 		}
@@ -220,7 +202,7 @@ public class JobServiceManager {
 			throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, ex);
 		}
 	}
-	
+
 	private void validateReferential(final String referential) throws ServiceException {
 
 		if (referentials.contains(referential))
@@ -356,21 +338,21 @@ public class JobServiceManager {
 		}
 		jobService.setUpdated(new Date());
 		jobDAO.update(jobService.getJob());
-		
+
 		// update statistics
 		// Ajout des statistiques d'import, export ou validation en base de données
 		{
 			// log.info("BEGIN ADDING STAT referential : " + jobService.getReferential() + " action : " + jobService.getAction() + " type :" + jobService.getType());
 			java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-			
+
 			// Suppression des lignes de statistiques pour n'avoir que 12 mois glissants
 			statDAO.removeObsoleteStatFromDatabase(now);
-			
+
 			// log.info("END DELETING OBSOLETE STATS FROM DATABASE");
-			
+
 			//Ajout d'une nouvelle statistique en base
 			statDAO.addStatToDatabase(now, jobService.getReferential(), jobService.getAction(), jobService.getType());
-			
+
 			// log.info("END ADDING STAT referential : " + jobService.getReferential() + " action : " + jobService.getAction() + " type :" + jobService.getType());
 		}
 	}
@@ -450,7 +432,7 @@ public class JobServiceManager {
 		throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, " id = " + id);
 	}
 
-	public List<JobService> jobs(String referential, String action, final Long version) throws ServiceException {
+	public List<JobService> jobs(String referential, String action[], final Long version) throws ServiceException {
 		validateReferential(referential);
 
 		List<Job> jobs = null;

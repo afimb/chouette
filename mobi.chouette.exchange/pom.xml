@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>mobi.chouette</groupId>
 		<artifactId>mobi.chouette</artifactId>
-		<version>3.4.0-SNAPSHOT</version>
+		<version>3.4.RB-SNAPSHOT</version>
 	</parent>
 	<artifactId>mobi.chouette.exchange</artifactId>
 	<packaging>ejb</packaging>
@@ -20,7 +20,6 @@
             <artifactId>netex-java-model</artifactId>
             <version>0.0.8</version>
         </dependency>
-
 
         <!-- Default Dependencies -->
 		<dependency>
@@ -42,6 +41,19 @@
          <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
       </dependency>
+
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+		</dependency>
+		<dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+		</dependency>
 
 		<!-- Others Dependencies -->
 		<dependency>
@@ -65,9 +77,10 @@
              <groupId>org.apache.struts</groupId>
              <artifactId>struts-tiles</artifactId>
           </exclusion>
-        </exclusions>         
+        </exclusions>
 		</dependency>
-		
+
+
 		<!-- Modules -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -124,19 +137,8 @@
          <artifactId>modelcitizen</artifactId>
          <scope>test</scope>
       </dependency>
-
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-        </dependency>
-
 	</dependencies>
-<!--  <build> 
+<!--  <build>
 	<plugins>
 	<plugin>
 	<groupId>org.codehaus.mojo</groupId>

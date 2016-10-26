@@ -10,7 +10,6 @@ import mobi.chouette.exchange.regtopp.JobDataTest;
 import mobi.chouette.exchange.regtopp.RegtoppTestUtils;
 import mobi.chouette.exchange.regtopp.importer.version.RegtoppVersion;
 import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.FileReport;
 import mobi.chouette.exchange.report.ObjectReport;
 import mobi.chouette.exchange.validation.ValidationData;
@@ -48,15 +47,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static mobi.chouette.exchange.report.ReportConstant.STATUS_OK;
-import static org.testng.Assert.assertEquals;
 import static mobi.chouette.exchange.report.ActionReporter.*;
 import static mobi.chouette.exchange.report.ReportConstant.STATUS_OK;
 import static mobi.chouette.exchange.validation.report.ValidationReporter.RESULT;
 import static mobi.chouette.exchange.validation.report.ValidationReporter.VALIDATION_RESULT;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-
 
 public class RegtoppImporterCommandTest extends Arquillian implements mobi.chouette.common.Constant {
 
