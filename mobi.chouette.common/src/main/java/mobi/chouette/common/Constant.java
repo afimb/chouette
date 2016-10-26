@@ -61,5 +61,7 @@ public interface Constant {
 	
 	public static final String BUFFER = "buffer";
 	
+	public static final String DISABLE_STOP_PLACE_UPDATER ="disable_stop_place_updater";
+	
 
 }

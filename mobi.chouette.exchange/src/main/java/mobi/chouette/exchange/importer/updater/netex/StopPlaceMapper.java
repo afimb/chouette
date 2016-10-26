@@ -3,21 +3,30 @@ package mobi.chouette.exchange.importer.updater.netex;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+
+import org.rutebanken.netex.model.AirSubmodeEnumeration;
 import org.rutebanken.netex.model.LocationStructure;
 import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.Quay;
 import org.rutebanken.netex.model.Quays_RelStructure;
+import org.rutebanken.netex.model.RailSubmodeEnumeration;
 import org.rutebanken.netex.model.SimplePoint_VersionStructure;
 import org.rutebanken.netex.model.StopPlace;
+import org.rutebanken.netex.model.VehicleModeEnumeration;
+import org.rutebanken.netex.model.WaterSubmodeEnumeration;
 import org.rutebanken.netex.model.Zone_VersionStructure;
 
 public class StopPlaceMapper {
 
 	/**
-	 * Map stop area with contained stop areas. Does not support mapping parent stop areas.
-	 * @param stopArea Typically stop areas of {@link ChouetteAreaEnum#StopPlace} or {@link ChouetteAreaEnum#CommercialStopPoint}
+	 * Map stop area with contained stop areas.
+	 * 
+	 * @param stopArea
+	 *            Typically stop areas of {@link ChouetteAreaEnum#StopPlace} or
+	 *            {@link ChouetteAreaEnum#CommercialStopPoint}
 	 * @return NeTEx stop place
 	 */
 	public StopPlace mapStopAreaToStopPlace(StopArea stopArea) {
@@ -107,6 +116,41 @@ public class StopPlaceMapper {
 
 	public void mapName(Zone_VersionStructure zone, StopArea stopArea) {
 		stopArea.setName(zone.getName().getValue());
+	}
+
+	public void mapTransportMode(StopPlace sp, TransportModeNameEnum mode) {
+		switch (mode) {
+		case Air:
+			sp.setTransportMode(VehicleModeEnumeration.AIR);
+			break;
+		case Train:
+		case LongDistanceTrain_2:
+		case LongDistanceTrain:
+		case LocalTrain:
+		case RapidTransit:
+			sp.setTransportMode(VehicleModeEnumeration.RAIL);
+			break;
+		case Metro:
+			sp.setTransportMode(VehicleModeEnumeration.METRO);
+			break;
+		case Tramway:
+			sp.setTransportMode(VehicleModeEnumeration.TRAM);
+			break;
+		case Shuttle:
+		case Coach:
+		case Bus:
+		case Trolleybus:
+			sp.setTransportMode(VehicleModeEnumeration.BUS);
+			break;
+		case Ferry:
+			sp.setTransportMode(VehicleModeEnumeration.FERRY);
+			break;
+		case Waterborne:
+			sp.setTransportMode(VehicleModeEnumeration.WATER);
+			break;
+		default:
+
+		}
 	}
 
 }

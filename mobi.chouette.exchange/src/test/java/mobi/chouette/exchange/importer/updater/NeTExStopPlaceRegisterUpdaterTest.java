@@ -10,18 +10,7 @@ import java.util.List;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
-import mobi.chouette.common.Context;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.Route;
-import mobi.chouette.model.StopArea;
-import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.type.ChouetteAreaEnum;
-import mobi.chouette.model.type.LongLatTypeEnum;
-import mobi.chouette.model.util.ObjectFactory;
-import mobi.chouette.model.util.Referential;
+import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.client.PublicationDeliveryClient;
 import org.rutebanken.netex.model.KeyListStructure;
 import org.rutebanken.netex.model.KeyValueStructure;
@@ -34,7 +23,18 @@ import org.rutebanken.netex.model.SimplePoint_VersionStructure;
 import org.rutebanken.netex.model.SiteFrame;
 import org.rutebanken.netex.model.StopPlace;
 import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
-import org.rutebanken.netex.model.Zone_VersionStructure;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import mobi.chouette.common.Context;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.Route;
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.type.ChouetteAreaEnum;
+import mobi.chouette.model.type.LongLatTypeEnum;
+import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
 
 public class NeTExStopPlaceRegisterUpdaterTest {
 	
@@ -68,8 +68,13 @@ public class NeTExStopPlaceRegisterUpdaterTest {
 		StopPoint sp2 = ObjectFactory.getStopPoint(referential, "AKT:StopPoint:2");
 		sp2.setContainedInStopArea(boardingPosition);
 
+		// This is a new stoppoint referring to the first stoparea
+		StopPoint sp3 = ObjectFactory.getStopPoint(referential, "AKT:StopPoint:3");
+		sp3.setContainedInStopArea(stopArea);
+
 		route.getStopPoints().add(sp1);
 		route.getStopPoints().add(sp2);
+		route.getStopPoints().add(sp3);
 
 		Context context = new Context();
 
@@ -80,6 +85,8 @@ public class NeTExStopPlaceRegisterUpdaterTest {
 					public PublicationDeliveryStructure sendPublicationDelivery(
 							PublicationDeliveryStructure publicationDelivery) throws JAXBException, IOException {
 
+						Assert.assertEquals(1, ((SiteFrame)publicationDelivery.getDataObjects().getCompositeFrameOrCommonFrame().get(0).getValue()).getStopPlaces().getStopPlace().size(),"StopPlaces not unique");
+						
 						SimplePoint_VersionStructure centroid = new SimplePoint_VersionStructure()
 								.withLocation(new LocationStructure().withLatitude(stopArea.getLatitude())
 										.withLongitude(stopArea.getLongitude()));
@@ -92,7 +99,7 @@ public class NeTExStopPlaceRegisterUpdaterTest {
 
 						Quay q = new Quay();
 						q.setId("NHR:StopArea:2");
-						q.setKeyList(createKeyListStructure("AKT:StopArea:2"));
+						q.setKeyList(createKeyListStructure(StringUtils.join(new String[] {"AKT:StopArea:2","OPP:StopArea:3"},NeTExStopPlaceRegisterUpdater.IMPORTED_ID_VALUE_SEPARATOR))); // 2 values
 						q.setName(new MultilingualString().withValue("QuayName"));
 						q.setCentroid(centroid);
 

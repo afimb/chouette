@@ -16,17 +16,8 @@ import javax.ejb.Stateless;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.ContenerChecker;
-import mobi.chouette.common.Context;
-import mobi.chouette.common.PropertyNames;
-import mobi.chouette.exchange.importer.updater.netex.StopPlaceMapper;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.Route;
-import mobi.chouette.model.StopArea;
-import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.type.ChouetteAreaEnum;
-import mobi.chouette.model.util.Referential;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.rutebanken.netex.client.PublicationDeliveryClient;
 import org.rutebanken.netex.model.KeyListStructure;
 import org.rutebanken.netex.model.KeyValueStructure;
@@ -39,6 +30,19 @@ import org.rutebanken.netex.model.SiteFrame;
 import org.rutebanken.netex.model.StopPlace;
 import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
 
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.ContenerChecker;
+import mobi.chouette.common.Context;
+import mobi.chouette.common.PropertyNames;
+import mobi.chouette.exchange.importer.updater.netex.StopPlaceMapper;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.Route;
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.type.ChouetteAreaEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.model.util.Referential;
+
 @Log4j
 @Stateless(name = NeTExStopPlaceRegisterUpdater.BEAN_NAME)
 public class NeTExStopPlaceRegisterUpdater {
@@ -47,6 +51,8 @@ public class NeTExStopPlaceRegisterUpdater {
 	public static final String IMPORTED_ID = "imported-id";
 
 	public static final String BEAN_NAME = "NeTExStopPlaceRegisterUpdater";
+	
+	public static final String IMPORTED_ID_VALUE_SEPARATOR = ",";
 
     private PublicationDeliveryClient client;
     private final StopPlaceMapper stopPlaceMapper = new StopPlaceMapper();
@@ -94,11 +100,9 @@ public class NeTExStopPlaceRegisterUpdater {
         }
         
         final Map<String,String> m = map;
-        
-        // TODO cache of existing mappings
-        
+
+        // Find and convert valid StopAreas 
         List<StopPlace> stopPlaces = referential.getStopAreas().values().stream()
-                //.filter(NeptuneIdentifiedObject::isSaved)
                 .map(stopArea -> stopArea.getParent() == null ? stopArea : stopArea.getParent())
                 .filter(stopArea -> !m.containsKey(stopArea.getObjectId()))
                 .filter(stopArea -> stopArea.getObjectId() != null)
@@ -112,11 +116,31 @@ public class NeTExStopPlaceRegisterUpdater {
                 .map(stopPlaceMapper::mapStopAreaToStopPlace)
                 .collect(Collectors.toList());
 
+        
         if(stopPlaces.isEmpty()) {
             log.warn("No stop places to update");
             return;
         }
-
+        
+        // Only keep uniqueIds to avoid duplicate processing
+        Set<String> uniqueIds = stopPlaces.stream().map(s -> s.getId()).collect(Collectors.toSet());
+        stopPlaces = stopPlaces.stream().filter(s -> uniqueIds.remove(s.getId())).collect(Collectors.toList());
+        
+        // Find transport mode for stop place
+        for(StopPlace sp : stopPlaces) {
+        	StopArea sa = referential.getStopAreas().get(sp.getId());
+        	// Recursively find all transportModes
+        	 Set<TransportModeNameEnum> transportMode = findTransportModeForStopArea(new HashSet<TransportModeNameEnum>(),sa);
+        	 if(transportMode.size() > 1) {
+        		 log.warn("Found more than one transport mode for StopArea with id "+sp.getId()+": "+ToStringBuilder.reflectionToString(transportMode)+", will use "+transportMode.iterator().next());
+        	 } else if(transportMode.size() == 1) {
+        		 stopPlaceMapper.mapTransportMode(sp,transportMode.iterator().next());
+        	 } else {
+        		 log.warn("No transport modes found for StopArea with id "+sp.getId());
+        	 }
+        }
+        
+        
         SiteFrame siteFrame = new SiteFrame();
         siteFrame.setStopPlaces(
                 new StopPlacesInFrame_RelStructure()
@@ -152,32 +176,21 @@ public class NeTExStopPlaceRegisterUpdater {
                 .collect(Collectors.toList());
 
         
-        // Create map of existing object id -> new object id
 
         StopPlaceMapper mapper = new StopPlaceMapper();
         receivedStopPlaces.stream().forEach(e -> mapper.mapStopPlaceToStopArea(referential, e));
         
         
+        // Create map of existing object id -> new object id
         for(StopPlace newStopPlace : receivedStopPlaces) {
         	KeyListStructure keyList = newStopPlace.getKeyList();
-        	List<KeyValueStructure> keyValue = keyList.getKeyValue();
-        	
-        	for(KeyValueStructure s : keyValue) {
-        		if(s.getKey().equals(IMPORTED_ID)) {
-        			map.put(s.getValue(), newStopPlace.getId());
-        		}
-        	}
+        	addIdsToLookupMap(map,keyList, newStopPlace.getId());
         	
         	Quays_RelStructure quays = newStopPlace.getQuays();
         	for(Object b : quays.getQuayRefOrQuay()) {
         		Quay q = (Quay) b;
             	KeyListStructure qKeyList = q.getKeyList();
-            	List<KeyValueStructure> qKeyValue = qKeyList.getKeyValue();
-            	for(KeyValueStructure s : qKeyValue) {
-            		if(s.getKey().equals(IMPORTED_ID)) {
-            			map.put(s.getValue(), q.getId());
-            		}
-            	}
+            	addIdsToLookupMap(map,qKeyList, q.getId());
         	}
         }
     
@@ -220,6 +233,41 @@ public class NeTExStopPlaceRegisterUpdater {
         
         
     }
+
+	private void addIdsToLookupMap(Map<String, String> map, KeyListStructure keyList, String newStopPlaceId) {
+    	List<KeyValueStructure> keyValue = keyList.getKeyValue();
+    	
+    	for(KeyValueStructure s : keyValue) {
+    		if(s.getKey().equals(IMPORTED_ID)) {
+    			// Split value
+    			String[] existingIds = StringUtils.split(s.getValue(), IMPORTED_ID_VALUE_SEPARATOR);
+    			for(String id : existingIds) {
+        			map.put(id, newStopPlaceId);
+    			}
+    		}
+    	}
+	}
+
+	protected Set<TransportModeNameEnum> findTransportModeForStopArea(Set<TransportModeNameEnum> transportModes, StopArea sa) {
+		TransportModeNameEnum transportModeName = null;
+		List<StopPoint> stopPoints = sa.getContainedStopPoints();
+		for(StopPoint stop : stopPoints) {
+			if(stop.getRoute() != null && stop.getRoute().getLine() != null) {
+				transportModeName = stop.getRoute().getLine().getTransportModeName();
+				if(transportModeName != null) {
+					transportModes.add(transportModeName);
+					break;
+				}
+			} 
+		}
+		
+		for(StopArea child : sa.getContainedStopAreas()) {
+			transportModes = findTransportModeForStopArea(transportModes, child);
+		}
+		
+		return transportModes;
+		
+	}
 
 
 

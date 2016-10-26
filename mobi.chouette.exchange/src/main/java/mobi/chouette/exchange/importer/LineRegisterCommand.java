@@ -7,7 +7,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -16,8 +15,12 @@ import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
+import mobi.chouette.common.Constant;
 import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.PropertyNames;
@@ -40,9 +43,6 @@ import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
-
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
 
 @Log4j
 @Stateless(name = LineRegisterCommand.COMMAND)
@@ -84,11 +84,14 @@ public class LineRegisterCommand implements Command {
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
-		boolean shouldUpdateStopPlaceRegistry = Boolean.parseBoolean(System.getProperty(checker.getContext() + PropertyNames.STOP_PLACE_REGISTER_UPDATE));
+		
+		// Use property based enabling of stop place updater, but allow disabling if property exist in context
+		boolean shouldUpdateStopPlaceRegistry = Boolean.parseBoolean(System.getProperty(checker.getContext() + PropertyNames.STOP_PLACE_REGISTER_UPDATE)) 
+				&& !context.containsKey(Constant.DISABLE_STOP_PLACE_UPDATER);
 		if(shouldUpdateStopPlaceRegistry) {
 			stopPlaceRegisterUpdater.update(context, referential);
 		} else {
-			log.warn("Property " + PropertyNames.STOP_PLACE_REGISTER_UPDATE + " is not set. Stop Place register will not be updated.");
+			log.warn("Property " + PropertyNames.STOP_PLACE_REGISTER_UPDATE + " is not set or this execution being skipped due to "+Constant.DISABLE_STOP_PLACE_UPDATER+" context key found. Stop Place register will not be updated.");
 		}
 
 		Line newValue = referential.getLines().values().iterator().next();

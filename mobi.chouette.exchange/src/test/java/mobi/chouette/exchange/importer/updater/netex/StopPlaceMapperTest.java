@@ -1,14 +1,16 @@
 package mobi.chouette.exchange.importer.updater.netex;
 
-import mobi.chouette.model.StopArea;
-import mobi.chouette.model.type.ChouetteAreaEnum;
-import org.rutebanken.netex.model.Quay;
-import org.rutebanken.netex.model.StopPlace;
-import org.junit.Test;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 import java.util.Arrays;
 
-import static org.testng.Assert.*;
+import org.rutebanken.netex.model.Quay;
+import org.rutebanken.netex.model.StopPlace;
+import org.testng.annotations.Test;
+
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.type.ChouetteAreaEnum;
 
 public class StopPlaceMapperTest {
 
