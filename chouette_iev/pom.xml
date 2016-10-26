@@ -12,6 +12,7 @@
       <project.rootDir>${project.basedir}/..</project.rootDir>
       <skipInitDb>true</skipInitDb>
       <earName>chouette</earName>
+      <wildfly.port>9990</wildfly.port>
    </properties>
 	<build>
       <resources>
@@ -85,7 +86,7 @@
 				<configuration>
 					<filename>${earName}.ear</filename>
 					<skip>${skipWildfly}</skip>
-                    <port>9990</port>
+                    <port>${wildfly.port}</port>
 				</configuration>
 				<executions>
 					<execution>
