@@ -90,7 +90,7 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 				if (stopPoint != null) {
 					// Add stop point to journey pattern AND route (for now)
 					journeyPattern.addStopPoint(stopPoint);
-					route.getStopPoints().add(stopPoint);
+					stopPoint.setRoute(route);
 				}
 			}
 		}
