@@ -19,28 +19,16 @@ import javax.xml.bind.JAXBException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.rutebanken.netex.client.PublicationDeliveryClient;
-import org.rutebanken.netex.client.PublicationDeliveryClient;
-import org.rutebanken.netex.model.KeyListStructure;
 import org.rutebanken.netex.model.KeyListStructure;
 import org.rutebanken.netex.model.KeyValueStructure;
-import org.rutebanken.netex.model.KeyValueStructure;
-import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.ObjectFactory;
-import org.rutebanken.netex.model.ObjectFactory;
-import org.rutebanken.netex.model.PublicationDeliveryStructure;
 import org.rutebanken.netex.model.PublicationDeliveryStructure;
 import org.rutebanken.netex.model.Quay;
-import org.rutebanken.netex.model.Quay;
-import org.rutebanken.netex.model.Quays_RelStructure;
 import org.rutebanken.netex.model.Quays_RelStructure;
 import org.rutebanken.netex.model.SiteFrame;
-import org.rutebanken.netex.model.SiteFrame;
-import org.rutebanken.netex.model.StopPlace;
 import org.rutebanken.netex.model.StopPlace;
 import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
-import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.Context;
@@ -122,6 +110,8 @@ public class NeTExStopPlaceRegisterUpdater {
 
 		)).map(stopPlaceMapper::mapStopAreaToStopPlace).collect(Collectors.toList());
 
+		
+		
 		if (!stopPlaces.isEmpty()) {
 
 			// Only keep uniqueIds to avoid duplicate processing
