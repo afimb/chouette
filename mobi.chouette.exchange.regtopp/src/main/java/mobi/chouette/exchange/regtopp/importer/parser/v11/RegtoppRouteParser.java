@@ -90,6 +90,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 
 						StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
 						stopPoint.setPosition(i);
+						stopPoint.setRoute(route);
 
 						String chouetteStopAreaId = ObjectIdCreator.createStopAreaId(configuration, routeSegment.getStopId() + RegtoppStopParser.BOARDING_POSITION_ID_SUFFIX);
 
