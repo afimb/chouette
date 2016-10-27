@@ -13,6 +13,7 @@ import org.rutebanken.netex.model.Quays_RelStructure;
 import org.rutebanken.netex.model.RailSubmodeEnumeration;
 import org.rutebanken.netex.model.SimplePoint_VersionStructure;
 import org.rutebanken.netex.model.StopPlace;
+import org.rutebanken.netex.model.StopTypeEnumeration;
 import org.rutebanken.netex.model.VehicleModeEnumeration;
 import org.rutebanken.netex.model.WaterSubmodeEnumeration;
 import org.rutebanken.netex.model.SimplePoint_VersionStructure;
@@ -121,32 +122,32 @@ public class StopPlaceMapper {
 	public void mapTransportMode(StopPlace sp, TransportModeNameEnum mode) {
 		switch (mode) {
 		case Air:
-			sp.setTransportMode(VehicleModeEnumeration.AIR);
+			sp.setStopPlaceType(StopTypeEnumeration.AIRPORT);
 			break;
 		case Train:
 		case LongDistanceTrain_2:
 		case LongDistanceTrain:
 		case LocalTrain:
 		case RapidTransit:
-			sp.setTransportMode(VehicleModeEnumeration.RAIL);
+			sp.setStopPlaceType(StopTypeEnumeration.RAIL_STATION);
 			break;
 		case Metro:
-			sp.setTransportMode(VehicleModeEnumeration.METRO);
+			sp.setStopPlaceType(StopTypeEnumeration.METRO_STATION);
 			break;
 		case Tramway:
-			sp.setTransportMode(VehicleModeEnumeration.TRAM);
+			sp.setStopPlaceType(StopTypeEnumeration.TRAM_STATION);
 			break;
 		case Shuttle:
 		case Coach:
 		case Bus:
 		case Trolleybus:
-			sp.setTransportMode(VehicleModeEnumeration.BUS);
+			sp.setStopPlaceType(StopTypeEnumeration.ONSTREET_BUS);
 			break;
 		case Ferry:
-			sp.setTransportMode(VehicleModeEnumeration.FERRY);
+			sp.setStopPlaceType(StopTypeEnumeration.FERRY_PORT);
 			break;
 		case Waterborne:
-			sp.setTransportMode(VehicleModeEnumeration.WATER);
+			sp.setStopPlaceType(StopTypeEnumeration.FERRY_STOP);
 			break;
 		default:
 
