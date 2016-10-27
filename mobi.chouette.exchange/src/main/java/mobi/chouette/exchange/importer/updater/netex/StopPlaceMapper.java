@@ -110,7 +110,7 @@ public class StopPlaceMapper {
 
 	public void mapName(StopArea stopArea, Zone_VersionStructure zone) {
 
-		zone.setName(new MultilingualString().withValue(stopArea.getName()).withLang("").withTextIdType(""));
+		zone.setName(new MultilingualString().withValue(stopArea.getName()).withLang("no").withTextIdType(""));
 
 	}
 
