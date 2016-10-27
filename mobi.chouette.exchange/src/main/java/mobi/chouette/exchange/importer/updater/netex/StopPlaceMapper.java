@@ -144,7 +144,7 @@ public class StopPlaceMapper {
 			sp.setStopPlaceType(StopTypeEnumeration.ONSTREET_BUS);
 			break;
 		case Ferry:
-			sp.setStopPlaceType(StopTypeEnumeration.FERRY_PORT);
+			sp.setStopPlaceType(StopTypeEnumeration.HARBOUR_PORT);
 			break;
 		case Waterborne:
 			sp.setStopPlaceType(StopTypeEnumeration.FERRY_STOP);
