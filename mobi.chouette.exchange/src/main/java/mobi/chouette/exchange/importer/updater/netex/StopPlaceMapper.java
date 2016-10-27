@@ -98,15 +98,19 @@ public class StopPlaceMapper {
 	}
 
 	public void mapCentroid(StopArea stopArea, Zone_VersionStructure zone) {
-		zone.setCentroid(new SimplePoint_VersionStructure().withLocation(
-				new LocationStructure().withLatitude(stopArea.getLatitude()).withLongitude(stopArea.getLongitude())));
+		if(stopArea.getLatitude() != null && stopArea.getLongitude() != null) {
+			zone.setCentroid(new SimplePoint_VersionStructure().withLocation(
+					new LocationStructure().withLatitude(stopArea.getLatitude()).withLongitude(stopArea.getLongitude())));
+		}
 	}
 
 	public void mapCentroid(Zone_VersionStructure zone, StopArea stopArea) {
-		LocationStructure location = zone.getCentroid().getLocation();
-		stopArea.setLatitude(location.getLatitude());
-		stopArea.setLongitude(location.getLongitude());
-		stopArea.setLongLatType(LongLatTypeEnum.WGS84);
+		if(zone.getCentroid() != null && zone.getCentroid().getLocation() != null) {
+			LocationStructure location = zone.getCentroid().getLocation();
+			stopArea.setLatitude(location.getLatitude());
+			stopArea.setLongitude(location.getLongitude());
+			stopArea.setLongLatType(LongLatTypeEnum.WGS84);
+		}
 	}
 
 	public void mapName(StopArea stopArea, Zone_VersionStructure zone) {
