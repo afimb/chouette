@@ -15,6 +15,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -23,17 +24,21 @@ import org.rutebanken.netex.model.KeyListStructure;
 import org.rutebanken.netex.model.KeyValueStructure;
 import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.ObjectFactory;
+import org.rutebanken.netex.model.PathLink;
 import org.rutebanken.netex.model.PublicationDeliveryStructure;
 import org.rutebanken.netex.model.Quay;
 import org.rutebanken.netex.model.Quays_RelStructure;
 import org.rutebanken.netex.model.SiteFrame;
 import org.rutebanken.netex.model.StopPlace;
 import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.PropertyNames;
+import mobi.chouette.exchange.importer.updater.netex.ConnectionLinkMapper;
 import mobi.chouette.exchange.importer.updater.netex.StopPlaceMapper;
+import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
@@ -55,11 +60,14 @@ public class NeTExStopPlaceRegisterUpdater {
 
 	private PublicationDeliveryClient client;
 	private final StopPlaceMapper stopPlaceMapper = new StopPlaceMapper();
+	
+	private final ConnectionLinkMapper connectionLinkMapper;
 
 	private static final ObjectFactory objectFactory = new ObjectFactory();
 
-	public NeTExStopPlaceRegisterUpdater(PublicationDeliveryClient client) {
+	public NeTExStopPlaceRegisterUpdater(PublicationDeliveryClient client) throws DatatypeConfigurationException {
 		this.client = client;
+		connectionLinkMapper = new ConnectionLinkMapper();
 	}
 
 	@EJB
@@ -79,12 +87,11 @@ public class NeTExStopPlaceRegisterUpdater {
 				log.warn("Cannot initialize publication delivery client", e);
 			}
 		}
+		
+		
 	}
 
-	public NeTExStopPlaceRegisterUpdater() {
-	}
-
-	public void update(Context context, Referential referential) throws JAXBException {
+	public void update(Context context, Referential referential) throws JAXBException, DatatypeConfigurationException {
 
 		if (client == null) {
 			return;
@@ -110,10 +117,17 @@ public class NeTExStopPlaceRegisterUpdater {
 
 		)).map(stopPlaceMapper::mapStopAreaToStopPlace).collect(Collectors.toList());
 
+		SiteFrame siteFrame = new SiteFrame();
 		
+		// Find and convert ConnectionLinks
+		referential.getConnectionLinks().values().stream()
+			.filter(link -> !m.containsKey(link.getObjectId()))
+			.map(link -> connectionLinkMapper.mapConnectionLinkToNavigationPath(siteFrame, link));
+			
 		
 		if (!stopPlaces.isEmpty()) {
 
+			
 			// Only keep uniqueIds to avoid duplicate processing
 			Set<String> uniqueIds = stopPlaces.stream().map(s -> s.getId()).collect(Collectors.toSet());
 			stopPlaces = stopPlaces.stream().filter(s -> uniqueIds.remove(s.getId())).collect(Collectors.toList());
@@ -140,10 +154,13 @@ public class NeTExStopPlaceRegisterUpdater {
 				}
 			}
 
-			SiteFrame siteFrame = new SiteFrame();
 			siteFrame.setStopPlaces(new StopPlacesInFrame_RelStructure().withStopPlace(stopPlaces));
 
 			log.info("Create site frame with " + stopPlaces.size() + " stop places");
+		}
+		
+		if(!stopPlaces.isEmpty() || siteFrame.getPathLinks() != null) {
+			
 			JAXBElement<SiteFrame> jaxSiteFrame = objectFactory.createSiteFrame(siteFrame);
 
 			PublicationDeliveryStructure publicationDelivery = new PublicationDeliveryStructure()
@@ -174,8 +191,8 @@ public class NeTExStopPlaceRegisterUpdater {
 
 			.collect(Collectors.toList());
 
-			StopPlaceMapper mapper = new StopPlaceMapper();
-			receivedStopPlaces.stream().forEach(e -> mapper.mapStopPlaceToStopArea(referential, e));
+			
+			receivedStopPlaces.stream().forEach(e -> stopPlaceMapper.mapStopPlaceToStopArea(referential, e));
 
 			// Create map of existing object id -> new object id
 			for (StopPlace newStopPlace : receivedStopPlaces) {
@@ -189,6 +206,27 @@ public class NeTExStopPlaceRegisterUpdater {
 					addIdsToLookupMap(map, qKeyList, q.getId());
 				}
 			}
+			
+			// Create map of existing object id -> new object id
+			List<PathLink> receivedPathLinks = response.getDataObjects().getCompositeFrameOrCommonFrame().stream()
+					.filter(jaxbElement -> jaxbElement.getValue() instanceof SiteFrame)
+					.map(jaxbElement -> (SiteFrame) jaxbElement.getValue())
+					.filter(plStucture -> plStucture.getPathLinks() != null)
+					.filter(plStructure -> plStructure.getPathLinks() != null)
+					.filter(plStructure -> plStructure.getPathLinks().getPathLink() != null) 
+					
+					.flatMap(plStructure -> plStructure.getPathLinks().getPathLink().stream())
+					.peek(pl -> log.info("got path link with ID " + pl.getId() + " back"))
+			.collect(Collectors.toList());
+			
+			receivedPathLinks.stream().forEach(e -> connectionLinkMapper.mapPathLinkToConnectionLink(referential, e));
+			
+
+			for(PathLink pl : receivedPathLinks) {
+				KeyListStructure keyList = pl.getKeyList();
+				addIdsToLookupMap(map, keyList, pl.getId());
+			}
+			
 		}
 		Set<String> discardedStopAreas = new HashSet<String>();
 
@@ -220,7 +258,10 @@ public class NeTExStopPlaceRegisterUpdater {
 				}
 			}
 		}
+		
 
+		// TODO? remove obsolete connectionLinks?
+		
 		// Clean referential from old garbage stop areas
 		// for(String obsoleteObjectId : discardedStopAreas) {
 		// referential.getStopAreas().remove(obsoleteObjectId);
