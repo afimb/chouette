@@ -1,6 +1,6 @@
 batch
 
-module add --name=org.postgres --resources=/opt/jboss/wildfly/customization/postgresql-9.4.jar:/opt/jboss/wildfly/customization/postgis-jdbc-2.1.7.2.jar --dependencies=javax.api,javax.transaction.api
+module add --name=org.postgres --resources=/opt/jboss/wildfly/customization/postgresql-9.3-1103.jdbc41.jar:/opt/jboss/wildfly/customization/postgis-jdbc-2.1.7.2.jar --dependencies=javax.api,javax.transaction.api
 
 /subsystem=datasources/jdbc-driver=postgresql:add(driver-name="postgresql",driver-module-name="org.postgres",driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource)
 
