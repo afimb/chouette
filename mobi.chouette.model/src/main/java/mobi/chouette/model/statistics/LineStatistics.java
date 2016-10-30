@@ -25,6 +25,8 @@ public class LineStatistics {
 
 	@XmlJavaTypeAdapter(DateAdapter.class)
 	private Date startDate;
+	@XmlJavaTypeAdapter(DateAdapter.class)
+	private Date endDate;
 	private List<ValidityCategory> validityCategories = new ArrayList<>();
 	private List<PublicLine> publicLines = new ArrayList<>();
 

@@ -98,7 +98,21 @@ public class TransitDataStatisticsService {
 		// Merge identical names to display in PublicLines
 		mergeNames(lineStats);
 
+		addEndDate(lineStats);
+
 		return lineStats;
+	}
+
+	private void addEndDate(LineStatistics lineStats) {
+		Date last = null;
+		for (PublicLine publicLine : lineStats.getPublicLines()) {
+			for (Period period : publicLine.getEffectivePeriods()) {
+				if (last == null || period.getTo().after(last)){
+					last = period.getTo();
+				}
+			}
+		}
+		lineStats.setEndDate(last);
 	}
 
 	private void mergeNames(LineStatistics lineStats) {
