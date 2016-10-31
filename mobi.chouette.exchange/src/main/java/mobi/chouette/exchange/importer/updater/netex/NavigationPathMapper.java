@@ -27,7 +27,7 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-public class ConnectionLinkMapper {
+public class NavigationPathMapper {
 
 	/**
 	 * Map connection link to navigationPaths
@@ -38,7 +38,7 @@ public class ConnectionLinkMapper {
 
 	private DatatypeFactory factory;
 
-	public ConnectionLinkMapper() throws DatatypeConfigurationException {
+	public NavigationPathMapper() throws DatatypeConfigurationException {
 		factory = DatatypeFactory.newInstance();
 	}
 

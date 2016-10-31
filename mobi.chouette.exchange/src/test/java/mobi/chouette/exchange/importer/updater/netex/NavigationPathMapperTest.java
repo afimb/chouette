@@ -30,7 +30,7 @@ public class NavigationPathMapperTest {
 		link.setDefaultDuration(new Time(5*60*1000)); // 5 minutes
 		link.setObjectId(from.getObjectId()+"-"+to.getObjectId());
 		
-		ConnectionLinkMapper mapper = new ConnectionLinkMapper();
+		NavigationPathMapper mapper = new NavigationPathMapper();
 		
 		SiteFrame frame = new SiteFrame();
 		

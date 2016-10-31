@@ -23,6 +23,7 @@ import org.rutebanken.netex.client.PublicationDeliveryClient;
 import org.rutebanken.netex.model.KeyListStructure;
 import org.rutebanken.netex.model.KeyValueStructure;
 import org.rutebanken.netex.model.MultilingualString;
+import org.rutebanken.netex.model.NavigationPath;
 import org.rutebanken.netex.model.ObjectFactory;
 import org.rutebanken.netex.model.PathLink;
 import org.rutebanken.netex.model.PublicationDeliveryStructure;
@@ -36,7 +37,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.PropertyNames;
-import mobi.chouette.exchange.importer.updater.netex.ConnectionLinkMapper;
+import mobi.chouette.exchange.importer.updater.netex.NavigationPathMapper;
 import mobi.chouette.exchange.importer.updater.netex.StopPlaceMapper;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.Line;
@@ -61,13 +62,17 @@ public class NeTExStopPlaceRegisterUpdater {
 	private PublicationDeliveryClient client;
 	private final StopPlaceMapper stopPlaceMapper = new StopPlaceMapper();
 	
-	private final ConnectionLinkMapper connectionLinkMapper;
+	private NavigationPathMapper navigationPathMapper = null;
 
 	private static final ObjectFactory objectFactory = new ObjectFactory();
 
 	public NeTExStopPlaceRegisterUpdater(PublicationDeliveryClient client) throws DatatypeConfigurationException {
 		this.client = client;
-		connectionLinkMapper = new ConnectionLinkMapper();
+		navigationPathMapper = new NavigationPathMapper();
+	}
+
+	public NeTExStopPlaceRegisterUpdater() throws DatatypeConfigurationException {
+		navigationPathMapper = new NavigationPathMapper();
 	}
 
 	@EJB
@@ -112,17 +117,17 @@ public class NeTExStopPlaceRegisterUpdater {
 				.filter(stopArea -> !m.containsKey(stopArea.getObjectId()))
 				.filter(stopArea -> stopArea.getObjectId() != null)
 				.filter(stopArea -> stopArea.getAreaType() == ChouetteAreaEnum.CommercialStopPoint)
-				.peek(stopArea -> log.info("id: " + stopArea.getId() + " objectId: " + stopArea.getObjectId()
-						+ " name: " + stopArea.getName() + " type: " + stopArea.getAreaType()
-
-		)).map(stopPlaceMapper::mapStopAreaToStopPlace).collect(Collectors.toList());
+				.peek(stopArea -> log.info("id: " + stopArea.getId() + " objectId: " + stopArea.getObjectId() + " name: " + stopArea.getName() + " type: " + stopArea.getAreaType()))
+				.map(stopPlaceMapper::mapStopAreaToStopPlace).collect(Collectors.toList());
 
 		SiteFrame siteFrame = new SiteFrame();
 		
 		// Find and convert ConnectionLinks
-		referential.getConnectionLinks().values().stream()
+		List<NavigationPath> nps = referential.getSharedConnectionLinks().values().stream()
 			.filter(link -> !m.containsKey(link.getObjectId()))
-			.map(link -> connectionLinkMapper.mapConnectionLinkToNavigationPath(siteFrame, link));
+			.peek(link -> log.info(link.getObjectId()))
+			.map(link -> navigationPathMapper.mapConnectionLinkToNavigationPath(siteFrame, link))
+			.collect(Collectors.toList());
 			
 		
 		if (!stopPlaces.isEmpty()) {
@@ -159,7 +164,7 @@ public class NeTExStopPlaceRegisterUpdater {
 			log.info("Create site frame with " + stopPlaces.size() + " stop places");
 		}
 		
-		if(!stopPlaces.isEmpty() || siteFrame.getPathLinks() != null) {
+		if(!stopPlaces.isEmpty() || !nps.isEmpty()) {
 			
 			JAXBElement<SiteFrame> jaxSiteFrame = objectFactory.createSiteFrame(siteFrame);
 
@@ -219,7 +224,7 @@ public class NeTExStopPlaceRegisterUpdater {
 					.peek(pl -> log.info("got path link with ID " + pl.getId() + " back"))
 			.collect(Collectors.toList());
 			
-			receivedPathLinks.stream().forEach(e -> connectionLinkMapper.mapPathLinkToConnectionLink(referential, e));
+			receivedPathLinks.stream().forEach(e -> navigationPathMapper.mapPathLinkToConnectionLink(referential, e));
 			
 
 			for(PathLink pl : receivedPathLinks) {
@@ -261,6 +266,13 @@ public class NeTExStopPlaceRegisterUpdater {
 		
 
 		// TODO? remove obsolete connectionLinks?
+		List<ConnectionLink> removedCollectionLinks = referential.getSharedConnectionLinks().values().stream()
+		.filter(e -> m.containsKey(e.getObjectId()))
+		.collect(Collectors.toList());
+		
+		removedCollectionLinks.stream()
+		.peek(e -> log.info("Removing old connectionLink with id "+e.getObjectId()))
+		.map(e -> referential.getSharedConnectionLinks().remove(e.getObjectId())).collect(Collectors.toList());
 		
 		// Clean referential from old garbage stop areas
 		// for(String obsoleteObjectId : discardedStopAreas) {
