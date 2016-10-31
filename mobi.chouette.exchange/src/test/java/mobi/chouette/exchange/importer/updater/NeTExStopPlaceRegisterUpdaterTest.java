@@ -2,6 +2,7 @@ package mobi.chouette.exchange.importer.updater;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,6 +10,8 @@ import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.client.PublicationDeliveryClient;
@@ -16,6 +19,10 @@ import org.rutebanken.netex.model.KeyListStructure;
 import org.rutebanken.netex.model.KeyValueStructure;
 import org.rutebanken.netex.model.LocationStructure;
 import org.rutebanken.netex.model.MultilingualString;
+import org.rutebanken.netex.model.PathLink;
+import org.rutebanken.netex.model.PathLinkEndStructure;
+import org.rutebanken.netex.model.PathLinksInFrame_RelStructure;
+import org.rutebanken.netex.model.PlaceRefStructure;
 import org.rutebanken.netex.model.PublicationDeliveryStructure;
 import org.rutebanken.netex.model.Quay;
 import org.rutebanken.netex.model.Quays_RelStructure;
@@ -23,10 +30,13 @@ import org.rutebanken.netex.model.SimplePoint_VersionStructure;
 import org.rutebanken.netex.model.SiteFrame;
 import org.rutebanken.netex.model.StopPlace;
 import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
+import org.rutebanken.netex.model.TransferDurationStructure;
 import org.testng.Assert;
+import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
@@ -36,25 +46,10 @@ import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-import org.rutebanken.netex.client.PublicationDeliveryClient;
-import org.rutebanken.netex.model.KeyListStructure;
-import org.rutebanken.netex.model.KeyValueStructure;
-import org.rutebanken.netex.model.LocationStructure;
-import org.rutebanken.netex.model.MultilingualString;
-import org.rutebanken.netex.model.PublicationDeliveryStructure;
-import org.rutebanken.netex.model.Quay;
-import org.rutebanken.netex.model.Quays_RelStructure;
-import org.rutebanken.netex.model.SimplePoint_VersionStructure;
-import org.rutebanken.netex.model.SiteFrame;
-import org.rutebanken.netex.model.StopPlace;
-import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
-import org.rutebanken.netex.model.Zone_VersionStructure;
-
-
 public class NeTExStopPlaceRegisterUpdaterTest {
-	
+
 	@Test
-	public void exportStopArea() throws Exception {
+	public void convertStopAreaAndConnectionLink() throws Exception {
 
 		Referential referential = new Referential();
 
@@ -90,7 +85,15 @@ public class NeTExStopPlaceRegisterUpdaterTest {
 		route.getStopPoints().add(sp1);
 		route.getStopPoints().add(sp2);
 		route.getStopPoints().add(sp3);
-
+		
+		
+		ConnectionLink link = ObjectFactory.getConnectionLink(referential, "AKT:ConnectionLink:1-2");
+		link.setDefaultDuration(new Time(5*60*1000));
+		link.setStartOfLink(stopArea);
+		link.setEndOfLink(boardingPosition);
+		
+		
+		
 		Context context = new Context();
 
 		// Build response
@@ -124,9 +127,25 @@ public class NeTExStopPlaceRegisterUpdaterTest {
 
 						List<StopPlace> stopPlaces = new ArrayList<>();
 						stopPlaces.add(stopPlace);
+						
+						PathLink pathLink = null;
+						try {
+							pathLink = new PathLink()
+									.withId("NHR:PathLink:1")
+									.withFrom(new PathLinkEndStructure().withPlaceRef(new PlaceRefStructure().withValue(stopPlace.getId())))
+									.withTo(new PathLinkEndStructure().withPlaceRef(new PlaceRefStructure().withValue(q.getId())))
+									.withTransferDuration(new TransferDurationStructure().withDefaultDuration(DatatypeFactory.newInstance().newDuration("PT5M")));
+									
+							pathLink.setKeyList(createKeyListStructure("AKT:ConnectionLink:1-2"));
+						} catch (DatatypeConfigurationException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
 
 						SiteFrame siteFrame = new SiteFrame();
 						siteFrame.setStopPlaces(new StopPlacesInFrame_RelStructure().withStopPlace(stopPlaces));
+						siteFrame.setPathLinks(new PathLinksInFrame_RelStructure().withPathLink(pathLink));
 
 						org.rutebanken.netex.model.ObjectFactory objectFactory = new org.rutebanken.netex.model.ObjectFactory();
 						JAXBElement<SiteFrame> jaxSiteFrame = objectFactory.createSiteFrame(siteFrame);
@@ -156,9 +175,11 @@ public class NeTExStopPlaceRegisterUpdaterTest {
 		neTExStopPlaceRegisterUpdater.update(context, referential);
 
 		// Assert stopPoints changed
-		Assert.assertEquals(sp1.getContainedInStopArea().getObjectId(), "NHR:StopArea:1");
-		Assert.assertEquals(sp2.getContainedInStopArea().getObjectId(), "NHR:StopArea:2");
+		AssertJUnit.assertEquals(sp1.getContainedInStopArea().getObjectId(), "NHR:StopArea:1");
+		AssertJUnit.assertEquals(sp2.getContainedInStopArea().getObjectId(), "NHR:StopArea:2");
 
+		AssertJUnit.assertEquals(referential.getSharedConnectionLinks().values().size(), 1);
+		AssertJUnit.assertEquals(referential.getSharedConnectionLinks().values().iterator().next().getObjectId(), "NHR:PathLink:1");
 	}
 
 }

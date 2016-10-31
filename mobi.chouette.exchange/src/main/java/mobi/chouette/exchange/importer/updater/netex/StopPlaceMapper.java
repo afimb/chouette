@@ -1,24 +1,20 @@
 package mobi.chouette.exchange.importer.updater.netex;
 
+import org.rutebanken.netex.model.LocationStructure;
+import org.rutebanken.netex.model.MultilingualString;
+import org.rutebanken.netex.model.Quay;
+import org.rutebanken.netex.model.Quays_RelStructure;
+import org.rutebanken.netex.model.SimplePoint_VersionStructure;
+import org.rutebanken.netex.model.StopPlace;
+import org.rutebanken.netex.model.StopTypeEnumeration;
+import org.rutebanken.netex.model.Zone_VersionStructure;
+
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import org.rutebanken.netex.model.LocationStructure;
-import org.rutebanken.netex.model.MultilingualString;
-import org.rutebanken.netex.model.Quay;
-import org.rutebanken.netex.model.Quays_RelStructure;
-import org.rutebanken.netex.model.RailSubmodeEnumeration;
-import org.rutebanken.netex.model.SimplePoint_VersionStructure;
-import org.rutebanken.netex.model.StopPlace;
-import org.rutebanken.netex.model.StopTypeEnumeration;
-import org.rutebanken.netex.model.VehicleModeEnumeration;
-import org.rutebanken.netex.model.WaterSubmodeEnumeration;
-import org.rutebanken.netex.model.SimplePoint_VersionStructure;
-import org.rutebanken.netex.model.StopPlace;
-import org.rutebanken.netex.model.Zone_VersionStructure;
 
 public class StopPlaceMapper {
 
@@ -98,15 +94,19 @@ public class StopPlaceMapper {
 	}
 
 	public void mapCentroid(StopArea stopArea, Zone_VersionStructure zone) {
-		zone.setCentroid(new SimplePoint_VersionStructure().withLocation(
-				new LocationStructure().withLatitude(stopArea.getLatitude()).withLongitude(stopArea.getLongitude())));
+		if(stopArea.getLatitude() != null && stopArea.getLongitude() != null) {
+			zone.setCentroid(new SimplePoint_VersionStructure().withLocation(
+					new LocationStructure().withLatitude(stopArea.getLatitude()).withLongitude(stopArea.getLongitude())));
+		}
 	}
 
 	public void mapCentroid(Zone_VersionStructure zone, StopArea stopArea) {
-		LocationStructure location = zone.getCentroid().getLocation();
-		stopArea.setLatitude(location.getLatitude());
-		stopArea.setLongitude(location.getLongitude());
-		stopArea.setLongLatType(LongLatTypeEnum.WGS84);
+		if(zone.getCentroid() != null && zone.getCentroid().getLocation() != null) {
+			LocationStructure location = zone.getCentroid().getLocation();
+			stopArea.setLatitude(location.getLatitude());
+			stopArea.setLongitude(location.getLongitude());
+			stopArea.setLongLatType(LongLatTypeEnum.WGS84);
+		}
 	}
 
 	public void mapName(StopArea stopArea, Zone_VersionStructure zone) {
