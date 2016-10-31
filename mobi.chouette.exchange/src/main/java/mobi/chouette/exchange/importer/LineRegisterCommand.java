@@ -34,6 +34,7 @@ import mobi.chouette.exchange.importer.updater.LineOptimiser;
 import mobi.chouette.exchange.importer.updater.LineUpdater;
 import mobi.chouette.exchange.importer.updater.NeTExStopPlaceRegisterUpdater;
 import mobi.chouette.exchange.importer.updater.Updater;
+import mobi.chouette.exchange.parameters.AbstractImportParameter;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
@@ -101,14 +102,15 @@ public class LineRegisterCommand implements Command {
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
-		
+		AbstractImportParameter importParameter = (AbstractImportParameter) context.get(CONFIGURATION);
+
 		// Use property based enabling of stop place updater, but allow disabling if property exist in context
-		boolean shouldUpdateStopPlaceRegistry = Boolean.parseBoolean(System.getProperty(checker.getContext() + PropertyNames.STOP_PLACE_REGISTER_UPDATE)) 
-				&& !context.containsKey(Constant.DISABLE_STOP_PLACE_UPDATER);
+		boolean shouldUpdateStopPlaceRegistry =
+				Boolean.parseBoolean(System.getProperty(checker.getContext() + PropertyNames.STOP_PLACE_REGISTER_UPDATE)) && importParameter.isUpdateStopPlaces();
 		if(shouldUpdateStopPlaceRegistry) {
 			stopPlaceRegisterUpdater.update(context, referential);
 		} else {
-			log.warn("Property " + PropertyNames.STOP_PLACE_REGISTER_UPDATE + " is not set or this execution being skipped due to "+Constant.DISABLE_STOP_PLACE_UPDATER+" context key found. Stop Place register will not be updated.");
+			log.warn("Stop place register will not be updated. Neither is property " + PropertyNames.STOP_PLACE_REGISTER_UPDATE + " set nor has import parameter update_stop_registry = true.");
 		}
 
 		Line newValue = referential.getLines().values().iterator().next();
