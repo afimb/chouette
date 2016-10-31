@@ -18,13 +18,14 @@ import mobi.chouette.model.util.DateAdapter;
 @NoArgsConstructor
 @XmlRootElement(name = "lineStatistics")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "startDate", "validityCategories", "publicLines" })
+@XmlType(propOrder = { "startDate", "days", "validityCategories", "publicLines" })
 @Getter
 @Setter
 public class LineStatistics {
 
 	@XmlJavaTypeAdapter(DateAdapter.class)
 	private Date startDate;
+	private int days;
 	private List<ValidityCategory> validityCategories = new ArrayList<>();
 	private List<PublicLine> publicLines = new ArrayList<>();
 

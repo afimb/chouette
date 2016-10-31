@@ -35,11 +35,11 @@ public class RestStatisticsService implements Constant {
 	@GET
 	@Path("/{ref}/line")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response lineStats(@PathParam("ref") String referential, @QueryParam("startDate") Date startDate, @QueryParam("minDaysValidityCategory") Integer minDaysValidityCategory[]) {
+	public Response lineStats(@PathParam("ref") String referential, @QueryParam("startDate") Date startDate, @QueryParam("days") int days, @QueryParam("minDaysValidityCategory") Integer minDaysValidityCategory[]) {
 		try {
 			log.info(Color.CYAN + "Call lineStats referential = " + referential  + Color.NORMAL);
 
-			LineStatistics lineStatistics = statisticsService.getLineStatisticsByLineNumber(referential,startDate,minDaysValidityCategory);
+			LineStatistics lineStatistics = statisticsService.getLineStatisticsByLineNumber(referential,startDate,days,minDaysValidityCategory);
 			ResponseBuilder builder = Response.ok(lineStatistics);
 			builder.header(api_version_key, api_version);
 			return builder.build();

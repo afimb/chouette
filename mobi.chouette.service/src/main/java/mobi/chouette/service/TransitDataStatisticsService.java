@@ -61,7 +61,7 @@ public class TransitDataStatisticsService {
 	 * @throws ServiceException
 	 */
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public LineStatistics getLineStatisticsByLineNumber(String referential, Date startDate,
+	public LineStatistics getLineStatisticsByLineNumber(String referential, Date startDate, int days,
 			Integer minDaysValidityCategories[]) throws ServiceException {
 
 		ContextHolder.setContext(referential);
@@ -87,6 +87,7 @@ public class TransitDataStatisticsService {
 
 		LineStatistics lineStats = new LineStatistics();
 		lineStats.setStartDate(startDate);
+		lineStats.setDays(days);
 		List<PublicLine> pL = new ArrayList<>(publicLines.values());
 		Collections.sort(pL);
 
