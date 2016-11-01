@@ -191,6 +191,8 @@ public class NeTExStopPlaceRegisterUpdater {
 			List<StopPlace> receivedStopPlaces = response.getDataObjects().getCompositeFrameOrCommonFrame().stream()
 					.filter(jaxbElement -> jaxbElement.getValue() instanceof SiteFrame)
 					.map(jaxbElement -> (SiteFrame) jaxbElement.getValue())
+					.filter(receivedSiteFrame -> receivedSiteFrame.getStopPlaces() != null)
+					.filter(receivedSiteFrame -> receivedSiteFrame.getStopPlaces().getStopPlace() != null)
 					.flatMap(receivedSiteFrame -> receivedSiteFrame.getStopPlaces().getStopPlace().stream())
 					.peek(stopPlace -> log.info("got stop place with ID " + stopPlace.getId() + " and name "
 							+ stopPlace.getName() + " back"))
