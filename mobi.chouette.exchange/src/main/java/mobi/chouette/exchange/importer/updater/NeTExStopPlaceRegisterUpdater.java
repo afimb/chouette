@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -190,14 +191,23 @@ public class NeTExStopPlaceRegisterUpdater {
 			List<StopPlace> receivedStopPlaces = response.getDataObjects().getCompositeFrameOrCommonFrame().stream()
 					.filter(jaxbElement -> jaxbElement.getValue() instanceof SiteFrame)
 					.map(jaxbElement -> (SiteFrame) jaxbElement.getValue())
+					.filter(receivedSiteFrame -> receivedSiteFrame.getStopPlaces() != null)
+					.filter(receivedSiteFrame -> receivedSiteFrame.getStopPlaces().getStopPlace() != null)
 					.flatMap(receivedSiteFrame -> receivedSiteFrame.getStopPlaces().getStopPlace().stream())
 					.peek(stopPlace -> log.info("got stop place with ID " + stopPlace.getId() + " and name "
 							+ stopPlace.getName() + " back"))
 
 			.collect(Collectors.toList());
 
-			
-			receivedStopPlaces.stream().forEach(e -> stopPlaceMapper.mapStopPlaceToStopArea(referential, e));
+			log.info("Collected " + receivedStopPlaces.size() + " stop places from stop place register response");
+
+			AtomicInteger mappedStopPlacesCount = new AtomicInteger();
+			receivedStopPlaces.forEach(e -> {
+				stopPlaceMapper.mapStopPlaceToStopArea(referential, e);
+				mappedStopPlacesCount.incrementAndGet();
+			});
+
+			log.info("Mapped "+ mappedStopPlacesCount.get() + " stop places into stop areas");
 
 			// Create map of existing object id -> new object id
 			for (StopPlace newStopPlace : receivedStopPlaces) {
@@ -211,6 +221,8 @@ public class NeTExStopPlaceRegisterUpdater {
 					addIdsToLookupMap(map, qKeyList, q.getId());
 				}
 			}
+
+			log.info("Map with objectId->newObjectId now contains "+ map.keySet().size() + " keys (objectIds) and "+ map.values().size() + " values (newObjectIds)");
 			
 			// Create map of existing object id -> new object id
 			List<PathLink> receivedPathLinks = response.getDataObjects().getCompositeFrameOrCommonFrame().stream()
@@ -218,13 +230,12 @@ public class NeTExStopPlaceRegisterUpdater {
 					.map(jaxbElement -> (SiteFrame) jaxbElement.getValue())
 					.filter(plStucture -> plStucture.getPathLinks() != null)
 					.filter(plStructure -> plStructure.getPathLinks() != null)
-					.filter(plStructure -> plStructure.getPathLinks().getPathLink() != null) 
-					
+					.filter(plStructure -> plStructure.getPathLinks().getPathLink() != null)
 					.flatMap(plStructure -> plStructure.getPathLinks().getPathLink().stream())
 					.peek(pl -> log.info("got path link with ID " + pl.getId() + " back"))
 			.collect(Collectors.toList());
 			
-			receivedPathLinks.stream().forEach(e -> navigationPathMapper.mapPathLinkToConnectionLink(referential, e));
+			receivedPathLinks.forEach(e -> navigationPathMapper.mapPathLinkToConnectionLink(referential, e));
 			
 
 			for(PathLink pl : receivedPathLinks) {
@@ -233,7 +244,7 @@ public class NeTExStopPlaceRegisterUpdater {
 			}
 			
 		}
-		Set<String> discardedStopAreas = new HashSet<String>();
+		Set<String> discardedStopAreas = new HashSet<>();
 
 		// Update each stopPoint
 		for (Line line : referential.getLines().values()) {
