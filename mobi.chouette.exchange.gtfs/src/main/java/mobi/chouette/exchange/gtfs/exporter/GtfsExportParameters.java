@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 @NoArgsConstructor
 @ToString(callSuper=true)
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"objectIdPrefix","timeZone"})
+@XmlType(propOrder={"objectIdPrefix","timeZone","keepOriginalId"})
 
 public class GtfsExportParameters  extends AbstractExportParameter {
 		
@@ -31,8 +31,8 @@ public class GtfsExportParameters  extends AbstractExportParameter {
 	private String objectIdPrefix;
 	
 	@Getter @Setter
-	@XmlElement(name = "keep_original_id",required = false, defaultValue = "false")
-	private boolean keepOriginalId;
+	@XmlElement(name = "keep_original_id",required = false)
+	private boolean keepOriginalId = false;
 	
 	public boolean isValid(Logger log, String[] allowedTypes)
 	{
