@@ -22,7 +22,7 @@ public abstract class AbstractProducer
    static protected String toGtfsId(String neptuneId, String prefix, boolean keepOriginal)
    {
       if(keepOriginal) {
-    	  return neptuneId;
+    	  return neptuneId.replace(':', '.');
       } else {
     	  String[] tokens = neptuneId.split(":");
 	      if (tokens[0].equals(prefix))
