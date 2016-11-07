@@ -137,9 +137,9 @@ public class GtfsLineProducerCommand implements Command, Constant {
 		// utiliser la collection
 		if (!collection.getVehicleJourneys().isEmpty()) {
 			for (VehicleJourney vj : collection.getVehicleJourneys()) {
-				String tmKey = calendarProducer.key(vj.getTimetables(), sharedPrefix);
+				String tmKey = calendarProducer.key(vj.getTimetables(), sharedPrefix, configuration.isKeepOriginalId());
 				if (tmKey != null) {
-					if (tripProducer.save(vj, tmKey, prefix, sharedPrefix)) {
+					if (tripProducer.save(vj, tmKey, prefix, sharedPrefix, configuration.isKeepOriginalId())) {
 						hasVj = true;
 						jps.add(vj.getJourneyPattern());
 						if (!timetables.containsKey(tmKey)) {
@@ -149,10 +149,10 @@ public class GtfsLineProducerCommand implements Command, Constant {
 				}
 			} // vj loop
 			for (JourneyPattern jp : jps) {
-				shapeProducer.save(jp, prefix);
+				shapeProducer.save(jp, prefix, configuration.isKeepOriginalId());
 			}
 			if (hasVj) {
-				routeProducer.save(line, prefix);
+				routeProducer.save(line, prefix, configuration.isKeepOriginalId());
 				hasLine = true;
 				if (metadata != null) {
 					metadata.getResources().add(

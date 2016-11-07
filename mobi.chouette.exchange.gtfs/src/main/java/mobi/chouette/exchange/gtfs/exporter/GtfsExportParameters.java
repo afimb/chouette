@@ -30,6 +30,10 @@ public class GtfsExportParameters  extends AbstractExportParameter {
 	@XmlElement(name = "object_id_prefix",required = true)
 	private String objectIdPrefix;
 	
+	@Getter @Setter
+	@XmlElement(name = "keep_original_id",required = false, defaultValue = "false")
+	private boolean keepOriginalId;
+	
 	public boolean isValid(Logger log, String[] allowedTypes)
 	{
 		if (!super.isValid(log,allowedTypes)) return false;

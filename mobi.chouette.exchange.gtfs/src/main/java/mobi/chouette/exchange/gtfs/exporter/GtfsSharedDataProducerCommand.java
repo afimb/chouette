@@ -115,7 +115,7 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 
 		for (Iterator<StopArea> iterator = commercialStops.iterator(); iterator.hasNext();) {
 			StopArea stop = iterator.next();
-			if (!stopProducer.save(stop, sharedPrefix, null)) {
+			if (!stopProducer.save(stop, sharedPrefix, null, configuration.isKeepOriginalId())) {
 				iterator.remove();
 			} else {
 				if (metadata != null && stop.hasCoordinates())
@@ -124,7 +124,7 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 			}
 		}
 		for (StopArea stop : physicalStops) {
-			stopProducer.save(stop, sharedPrefix, commercialStops);
+			stopProducer.save(stop, sharedPrefix, commercialStops, configuration.isKeepOriginalId());
 			if (metadata != null && stop.hasCoordinates())
 				metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(),
 						stop.getLatitude().doubleValue());
@@ -136,15 +136,15 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 			} else if (!physicalStops.contains(link.getEndOfLink()) && !commercialStops.contains(link.getEndOfLink())) {
 				continue;
 			}
-			transferProducer.save(link, sharedPrefix);
+			transferProducer.save(link, sharedPrefix, configuration.isKeepOriginalId());
 		}
 
 		for (Company company : companies) {
-			agencyProducer.save(company, prefix, timezone);
+			agencyProducer.save(company, prefix, timezone, configuration.isKeepOriginalId());
 		}
 
 		for (List<Timetable> tms : timetables.values()) {
-			calendarProducer.save(tms, sharedPrefix);
+			calendarProducer.save(tms, sharedPrefix, configuration.isKeepOriginalId());
 			if (metadata != null) {
 				for (Timetable tm : tms) {
 					metadata.getTemporalCoverage().update(tm.getStartOfPeriod(), tm.getEndOfPeriod());
