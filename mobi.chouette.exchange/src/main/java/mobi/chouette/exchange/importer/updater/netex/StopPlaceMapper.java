@@ -18,6 +18,21 @@ import mobi.chouette.model.util.Referential;
 
 public class StopPlaceMapper {
 
+	public StopArea createCommercialStopPoint(Referential referential, StopArea stopArea) {
+		StopArea parent = ObjectFactory.getStopArea(referential, stopArea.getObjectId()+"-PARENT");
+		parent.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
+		parent.setLatitude(stopArea.getLatitude());
+		parent.setLongitude(stopArea.getLongitude());
+		parent.setLongLatType(stopArea.getLongLatType());
+		parent.setName(stopArea.getName());
+		
+		stopArea.setParent(parent);
+		
+		return parent;
+		
+		
+	}
+	
 	/**
 	 * Map stop area with contained stop areas.
 	 * 
