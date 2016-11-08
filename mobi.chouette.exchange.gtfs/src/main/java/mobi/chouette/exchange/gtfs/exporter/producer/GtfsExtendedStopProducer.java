@@ -32,7 +32,7 @@ public class GtfsExtendedStopProducer extends
       super(exporter);
    }
 
-   public boolean save(StopArea neptuneObject,  String prefix, Collection<StopArea> validParents)
+   public boolean save(StopArea neptuneObject,  String prefix, Collection<StopArea> validParents, boolean keepOriginalId)
    {
       ChouetteAreaEnum chouetteAreaType = neptuneObject.getAreaType();
       if (chouetteAreaType.compareTo(ChouetteAreaEnum.BoardingPosition) == 0)
@@ -45,7 +45,7 @@ public class GtfsExtendedStopProducer extends
       // stop.setLocationType(GtfsStop.STATION);
       else
          return false; // StopPlaces and ITL type not available
-      stop.setStopId(toGtfsId(neptuneObject.getObjectId(),prefix));
+      stop.setStopId(toGtfsId(neptuneObject.getObjectId(),prefix,keepOriginalId));
       if (neptuneObject.getName() == null)
       {
 //         GtfsReportItem item = new GtfsReportItem(
@@ -96,7 +96,7 @@ public class GtfsExtendedStopProducer extends
          if (neptuneObject.getParent() != null && validParents.contains(neptuneObject.getParent()))
          {
             stop.setParentStation(toGtfsId(neptuneObject.getParent()
-                  .getObjectId(),prefix));
+                  .getObjectId(),prefix,keepOriginalId));
          }
       }
       
