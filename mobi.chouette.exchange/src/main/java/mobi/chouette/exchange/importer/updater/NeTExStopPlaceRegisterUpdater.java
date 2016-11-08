@@ -2,6 +2,7 @@ package mobi.chouette.exchange.importer.updater;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -111,6 +112,23 @@ public class NeTExStopPlaceRegisterUpdater {
 		}
 
 		final Map<String, String> m = map;
+		
+		
+		
+		List<StopArea> boardingPositionsWithoutParents = referential.getStopAreas().values().stream()
+				.filter(stopArea -> !m.containsKey(stopArea.getObjectId()))
+				.filter(stopArea -> stopArea.getAreaType() == ChouetteAreaEnum.BoardingPosition)
+				.filter(stopArea -> stopArea.getParent() == null)
+				.filter(stopArea -> stopArea.getObjectId() != null)
+				.collect(Collectors.toList());
+		
+		List<StopArea> createdParents = new ArrayList<StopArea>();
+		
+		for(StopArea bp : boardingPositionsWithoutParents) {
+			StopArea csp = stopPlaceMapper.createCommercialStopPoint(referential, bp);
+			createdParents.add(csp);
+//			log.info("created parent "+csp.getObjectId()+ " for "+bp.getObjectId());
+		}
 
 		// Find and convert valid StopAreas
 		List<StopPlace> stopPlaces = referential.getStopAreas().values().stream()
@@ -286,9 +304,13 @@ public class NeTExStopPlaceRegisterUpdater {
 		.map(e -> referential.getSharedConnectionLinks().remove(e.getObjectId())).collect(Collectors.toList());
 		
 		// Clean referential from old garbage stop areas
-		// for(String obsoleteObjectId : discardedStopAreas) {
-		// referential.getStopAreas().remove(obsoleteObjectId);
-		// }
+		 for(String obsoleteObjectId : discardedStopAreas) {
+		 referential.getStopAreas().remove(obsoleteObjectId);
+		 }
+		 
+		 for(StopArea sa : createdParents) {
+			 referential.getStopAreas().remove(sa.getObjectId());
+		 }
 
 	}
 
