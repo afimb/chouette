@@ -165,6 +165,7 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 
 			if (prefixesFound.size() > 1) {
 				// Multiple prefixes found, should all be the same (technically it is allowed, but too complicated for now)
+				actionReporter.addFileReport(context, jobData.getInputFilename(), IO_TYPE.INPUT);
 				actionReporter.addFileErrorInReport(context, jobData.getInputFilename(), ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, "Multiple companies or versions found in zip file: " + StringUtils.join(prefixesFound, " "));
 			} else {
 				if (!foundExtensions.containsAll(mandatoryFileExtensions)) {
