@@ -2,13 +2,7 @@ package mobi.chouette.exchange.importer.updater;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -182,9 +176,11 @@ public class NeTExStopPlaceRegisterUpdater {
 
 			log.info("Create site frame with " + stopPlaces.size() + " stop places");
 		}
-		
+
 		if(!stopPlaces.isEmpty() || !nps.isEmpty()) {
-			
+			siteFrame.setCreated(OffsetDateTime.now());
+			siteFrame.setId(UUID.randomUUID().toString());
+
 			JAXBElement<SiteFrame> jaxSiteFrame = objectFactory.createSiteFrame(siteFrame);
 
 			PublicationDeliveryStructure publicationDelivery = new PublicationDeliveryStructure()
