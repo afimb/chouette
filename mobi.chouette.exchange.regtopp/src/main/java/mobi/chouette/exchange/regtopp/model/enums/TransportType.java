@@ -2,9 +2,6 @@ package mobi.chouette.exchange.regtopp.model.enums;
 
 import org.apache.commons.lang.StringUtils;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 public enum TransportType {
 	// Since Regtopp 1.1
 	AirplaneOrAirportExpress(1),
@@ -26,8 +23,19 @@ public enum TransportType {
 	CarFerry(51),
 	ExpressBoat(52),
 	AirportExpressTrain(61),
-	Unknown(999);
+	Unknown(999),
+	Empty(000);
+
 	private int val;
+
+	TransportType(final int val) {
+		if ("000".equals(val)) {
+			//both 000 and 999 should be treated as Unknown
+			this.val = 999;
+		} else {
+			this.val = val;
+		}
+	}
 
 	public String toString() {
 		return StringUtils.leftPad(String.valueOf(val), 3, "0");
