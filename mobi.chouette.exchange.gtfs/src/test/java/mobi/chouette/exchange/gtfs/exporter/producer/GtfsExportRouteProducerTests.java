@@ -139,7 +139,7 @@ public class GtfsExportRouteProducerTests
       line.setCompany(company);
       line.setTransportModeName(TransportModeNameEnum.Air);
 
-      boolean result = routeProducer.save(line, new ActionReport(), "prefix");
+      boolean result = routeProducer.save(line, "prefix", false);
       Assert.assertTrue(result);
       Assert.assertEquals(mock.getExportedRoutes().size(), 1);
       Assert.assertEquals(mock.getExportedRoutes().get(0).getRouteType(), RouteTypeEnum.AirService);
