@@ -179,6 +179,7 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 					missingFiles.removeAll(foundExtensions);
 
 					for (String missingExtension : missingFiles) {
+						actionReporter.addFileReport(context, prefix + "." + missingExtension, IO_TYPE.INPUT);
 						actionReporter.addFileErrorInReport(context, prefix + "." + missingExtension, ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, "Mandatory file missing");
 					}
 
@@ -188,10 +189,12 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 			}
 		} catch (RegtoppException e) {
 			// log.error(e,e);
-			if (e.getError().equals(RegtoppException.ERROR.SYSTEM))
+			if (e.getError().equals(RegtoppException.ERROR.SYSTEM)) {
 				throw e;
-			else
+			} else {
+				actionReporter.addFileReport(context, jobData.getInputFilename(), IO_TYPE.INPUT);
 				actionReporter.addFileErrorInReport(context, jobData.getInputFilename(), ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, e.getError().name());
+			}
 		} catch (Exception e) {
 			log.error(e, e);
 			throw e;
