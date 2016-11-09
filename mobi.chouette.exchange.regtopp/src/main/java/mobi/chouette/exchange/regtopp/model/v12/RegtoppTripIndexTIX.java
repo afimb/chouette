@@ -38,7 +38,7 @@ public class RegtoppTripIndexTIX extends AbstractRegtoppTripIndexTIX implements 
 
 	@Getter
 	@Setter
-	@Field(at = 49, length = 1, regex = "[01]{1}", format = "toString")
+	@Field(at = 49, length = 1, regex = "[012]{1}", format = "toString")
 	private AnnouncementType notificationType = AnnouncementType.Announced;
 
 	@Getter
