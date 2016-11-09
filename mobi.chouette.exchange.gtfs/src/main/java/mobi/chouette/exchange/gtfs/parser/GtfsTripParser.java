@@ -569,9 +569,10 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			
 			
 			// Si la course présente un tracé
+			log.warn("Avant test tracé");
 			if (gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty()
 					&& importer.getShapeById().containsKey(gtfsTrip.getShapeId())) {
-				
+				log.warn("Course " + gtfsTrip.getTripId() + " présente un tracé");
 				for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney.getVehicleJourneyAtStops()) {
 					float shapeValue = ((VehicleJourneyAtStopWrapper) vehicleJourneyAtStop).shapeDistTraveled;
 					if(Float.valueOf(shapeValue) != null) {
@@ -584,15 +585,18 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					}
 				}
 			} else {
+				log.warn("Course " + gtfsTrip.getTripId() + " ne présente pas de tracé");
 				for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney.getVehicleJourneyAtStops()) {
 					String stopId = ((VehicleJourneyAtStopWrapper) vehicleJourneyAtStop).stopId;
 					journeyKey += "," + stopId;
 				}
 			}
 			
+			log.warn("Après test tracé");
 			
 			JourneyPattern journeyPattern = journeyPatternByStopSequence.get(journeyKey);
 			if (journeyPattern == null) {
+				log.warn("JourneyPattern " + journeyKey + " n'existe pas");
 				journeyPattern = createJourneyPattern(context, referential, configuration, gtfsTrip, gtfsShapes,
 						vehicleJourney, journeyKey, journeyPatternByStopSequence, lstNotShapedRoute);
 			}
@@ -601,7 +605,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			vehicleJourney.setJourneyPattern(journeyPattern);
 
 			int length = journeyPattern.getStopPoints().size();
-			
+			log.warn("Journey Pattern size : " + length);
 			if (gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty()
 					&& importer.getShapeById().containsKey(gtfsTrip.getShapeId())) {
 				for (int i = 0; i < length; i++) {
@@ -632,12 +636,16 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		// Fusion des routes n'ayant pas de tracé
 		for(Route route1: lstNotShapedRoute) {
 			for( Route route2: lstNotShapedRoute) {
+				log.warn("Route 1 size : "+ route1.getStopPoints().size());
+				log.warn("Route 2 size : "+ route2.getStopPoints().size());
 				if (route1.getStopPoints().size() > route2.getStopPoints().size())
 					isRouteInclude(route2, route1, lstRouteToDelete);
 				else if (route2.getStopPoints().size() > route1.getStopPoints().size())
 					isRouteInclude(route1, route2, lstRouteToDelete);
-				else
+				else {
+					log.warn("Condition non remplie pour " + route1.getObjectId() + " et " + route2.getObjectId());
 					continue;
+				}
 			}
 		}
 		
@@ -808,9 +816,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 		}
 		
-		// Si la course présente un tracé
-		if (gtfsTrip.getShapeId() == null || gtfsTrip.getShapeId().isEmpty())
+		// Si la course ne présente pas de tracé
+		if (gtfsTrip.getShapeId() == null || gtfsTrip.getShapeId().isEmpty()) {
+			log.warn("Ajout de la route " + route.getObjectId());
 			lstNotShapedRoute.add(route);
+		}
 				
 		return journeyPattern;
 	}
@@ -950,7 +960,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		return sections;
 	}
 
-	/**
+	/**git push --set-upstream origin tad_gtfs
 	 * create route for trip
 	 * 
 	 * @param referential
