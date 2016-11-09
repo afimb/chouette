@@ -50,20 +50,29 @@ public abstract class AbstractInputValidator implements InputValidator, Constant
 			try {
 				file = new File(filePath.toString());
 				zipFile = new ZipFile(file);
-				for (Enumeration<? extends ZipEntry> e = zipFile.entries();
-						e.hasMoreElements();) {
-					ZipEntry ze = e.nextElement();
-					String name = ze.getName();
-					if (name.endsWith("." + format) && !name.contains("metadata")) {
-						isZipFileValid = true;
-						break;
+				if (isEmpty(zipFile)){
+					isZipFileValid = true;
+				} else {
+					for (Enumeration<? extends ZipEntry> e = zipFile.entries();
+							e.hasMoreElements();) {
+						ZipEntry ze = e.nextElement();
+						String name = ze.getName();
+						if (name.endsWith("." + format) && !name.contains("metadata")) {
+							isZipFileValid = true;
+							break;
+						}
 					}
 				}
-			}catch (IOException e) {
+			} catch (IOException e) {
 				log.error("Erreur ouverture fichier zip " + fileName);
 			} 
 		}
 		
 		return isZipFileValid;
 	}
+
+	protected boolean isEmpty(ZipFile zipFile){
+		return !zipFile.entries().hasMoreElements();
+	}
+
 }
