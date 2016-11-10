@@ -144,7 +144,7 @@ public class NeTExStopPlaceRegisterUpdater {
 		// Find and convert ConnectionLinks
 		List<NavigationPath> nps = referential.getSharedConnectionLinks().values().stream()
 			.filter(link -> !m.containsKey(link.getObjectId()))
-			.peek(link -> log.info(link.getObjectId()))
+			.peek(link -> log.info(link.getObjectId() + " correlationId: "+correlationId))
 			.map(link -> navigationPathMapper.mapConnectionLinkToNavigationPath(siteFrame, link))
 			.collect(Collectors.toList());
 			
