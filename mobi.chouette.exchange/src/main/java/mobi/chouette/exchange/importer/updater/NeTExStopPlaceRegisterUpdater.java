@@ -98,6 +98,12 @@ public class NeTExStopPlaceRegisterUpdater {
 			return;
 		}
 
+
+		// Use a correlation ID that will be set as ID on the site frame sent to the stop place register.
+		// This correlation ID shall be defined in every log line related to this publication delivery
+		// to be able to trace logs both in chouette and the stop place register.
+		final String correlationId = UUID.randomUUID().toString();
+
 		@SuppressWarnings("unchecked")
 		Map<String, String> map = (Map<String, String>) context.get(STOP_PLACE_REGISTER_MAP);
 		if (map == null) {
@@ -130,7 +136,7 @@ public class NeTExStopPlaceRegisterUpdater {
 				.filter(stopArea -> !m.containsKey(stopArea.getObjectId()))
 				.filter(stopArea -> stopArea.getObjectId() != null)
 				.filter(stopArea -> stopArea.getAreaType() == ChouetteAreaEnum.CommercialStopPoint)
-				.peek(stopArea -> log.info("id: " + stopArea.getId() + " objectId: " + stopArea.getObjectId() + " name: " + stopArea.getName() + " type: " + stopArea.getAreaType()))
+				.peek(stopArea -> log.info("id: " + stopArea.getId() + " objectId: " + stopArea.getObjectId() + " name: " + stopArea.getName() + " type: " + stopArea.getAreaType() + ". correlationId: " + correlationId))
 				.map(stopPlaceMapper::mapStopAreaToStopPlace).collect(Collectors.toList());
 
 		SiteFrame siteFrame = new SiteFrame();
@@ -155,7 +161,7 @@ public class NeTExStopPlaceRegisterUpdater {
 
 				StopArea sa = referential.getSharedStopAreas().get(sp.getId());
 				if (sa == null) {
-					log.error("Could not find StopArea for objectId=" + ToStringBuilder.reflectionToString(sp));
+					log.error("Could not find StopArea for objectId=" + ToStringBuilder.reflectionToString(sp) + " correlationId: "+correlationId);
 				} else {
 					// Recursively find all transportModes
 					Set<TransportModeNameEnum> transportMode = findTransportModeForStopArea(
@@ -163,23 +169,23 @@ public class NeTExStopPlaceRegisterUpdater {
 					if (transportMode.size() > 1) {
 						log.warn("Found more than one transport mode for StopArea with id " + sp.getId() + ": "
 								+ ToStringBuilder.reflectionToString(transportMode) + ", will use "
-								+ transportMode.iterator().next());
+								+ transportMode.iterator().next()+ " correlationId: "+correlationId);
 					} else if (transportMode.size() == 1) {
 						stopPlaceMapper.mapTransportMode(sp, transportMode.iterator().next());
 					} else {
-						log.warn("No transport modes found for StopArea with id " + sp.getId());
+						log.warn("No transport modes found for StopArea with id " + sp.getId() + " correlationId: "+correlationId);
 					}
 				}
 			}
 
 			siteFrame.setStopPlaces(new StopPlacesInFrame_RelStructure().withStopPlace(stopPlaces));
 
-			log.info("Create site frame with " + stopPlaces.size() + " stop places");
+			log.info("Create site frame with " + stopPlaces.size() + " stop places. correlationId: "+correlationId);
 		}
 
 		if(!stopPlaces.isEmpty() || !nps.isEmpty()) {
 			siteFrame.setCreated(OffsetDateTime.now());
-			siteFrame.setId(UUID.randomUUID().toString());
+			siteFrame.setId(correlationId);
 
 			JAXBElement<SiteFrame> jaxSiteFrame = objectFactory.createSiteFrame(siteFrame);
 
@@ -194,13 +200,13 @@ public class NeTExStopPlaceRegisterUpdater {
 			try {
 				response = client.sendPublicationDelivery(publicationDelivery);
 			} catch (JAXBException | IOException e) {
-				log.warn("Got exception while sending publication delivery with " + stopPlaces.size() + " stop places",
+				log.warn("Got exception while sending publication delivery with " + stopPlaces.size() + " stop places. correlationId: "+correlationId,
 						e);
 				return;
 			}
 			log.info("Got publication delivery structure back with "
 					+ response.getDataObjects().getCompositeFrameOrCommonFrame().size()
-					+ " composite frames or common frames");
+					+ " composite frames or common frames correlationId: "+correlationId);
 
 			List<StopPlace> receivedStopPlaces = response.getDataObjects().getCompositeFrameOrCommonFrame().stream()
 					.filter(jaxbElement -> jaxbElement.getValue() instanceof SiteFrame)
@@ -209,11 +215,11 @@ public class NeTExStopPlaceRegisterUpdater {
 					.filter(receivedSiteFrame -> receivedSiteFrame.getStopPlaces().getStopPlace() != null)
 					.flatMap(receivedSiteFrame -> receivedSiteFrame.getStopPlaces().getStopPlace().stream())
 					.peek(stopPlace -> log.info("got stop place with ID " + stopPlace.getId() + " and name "
-							+ stopPlace.getName() + " back"))
+							+ stopPlace.getName() + " back. correlationId: "+correlationId))
 
 			.collect(Collectors.toList());
 
-			log.info("Collected " + receivedStopPlaces.size() + " stop places from stop place register response");
+			log.info("Collected " + receivedStopPlaces.size() + " stop places from stop place register response. correlationId: "+correlationId);
 
 			AtomicInteger mappedStopPlacesCount = new AtomicInteger();
 			receivedStopPlaces.forEach(e -> {
@@ -221,7 +227,7 @@ public class NeTExStopPlaceRegisterUpdater {
 				mappedStopPlacesCount.incrementAndGet();
 			});
 
-			log.info("Mapped "+ mappedStopPlacesCount.get() + " stop places into stop areas");
+			log.info("Mapped "+ mappedStopPlacesCount.get() + " stop places into stop areas. correlationId: "+correlationId);
 
 			// Create map of existing object id -> new object id
 			for (StopPlace newStopPlace : receivedStopPlaces) {
@@ -236,7 +242,7 @@ public class NeTExStopPlaceRegisterUpdater {
 				}
 			}
 
-			log.info("Map with objectId->newObjectId now contains "+ map.keySet().size() + " keys (objectIds) and "+ map.values().size() + " values (newObjectIds)");
+			log.info("Map with objectId->newObjectId now contains "+ map.keySet().size() + " keys (objectIds) and "+ map.values().size() + " values (newObjectIds). correlationId: "+correlationId);
 			
 			// Create map of existing object id -> new object id
 			List<PathLink> receivedPathLinks = response.getDataObjects().getCompositeFrameOrCommonFrame().stream()
@@ -246,7 +252,7 @@ public class NeTExStopPlaceRegisterUpdater {
 					.filter(plStructure -> plStructure.getPathLinks() != null)
 					.filter(plStructure -> plStructure.getPathLinks().getPathLink() != null)
 					.flatMap(plStructure -> plStructure.getPathLinks().getPathLink().stream())
-					.peek(pl -> log.info("got path link with ID " + pl.getId() + " back"))
+					.peek(pl -> log.info("got path link with ID " + pl.getId() + " back. correlationId: "+correlationId))
 			.collect(Collectors.toList());
 			
 			receivedPathLinks.forEach(e -> navigationPathMapper.mapPathLinkToConnectionLink(referential, e));
@@ -278,11 +284,11 @@ public class NeTExStopPlaceRegisterUpdater {
 							} else {
 
 								log.error("About to replace StopArea with id " + currentObjectId + " with "
-										+ newObjectId + ", but newStopArea does not exist in referential!");
+										+ newObjectId + ", but newStopArea does not exist in referential! correlationId: "+correlationId);
 							}
 						}
 					} else {
-						log.warn("Could not find mapped object for " + currentObjectId);
+						log.warn("Could not find mapped object for " + currentObjectId + ". correlationId: "+correlationId);
 					}
 
 				}
@@ -294,10 +300,10 @@ public class NeTExStopPlaceRegisterUpdater {
 		List<ConnectionLink> removedCollectionLinks = referential.getSharedConnectionLinks().values().stream()
 		.filter(e -> m.containsKey(e.getObjectId()))
 		.collect(Collectors.toList());
-		
+
 		removedCollectionLinks.stream()
-		.peek(e -> log.info("Removing old connectionLink with id "+e.getObjectId()))
-		.map(e -> referential.getSharedConnectionLinks().remove(e.getObjectId())).collect(Collectors.toList());
+				.peek(e -> log.info("Removing old connectionLink with id " + e.getObjectId() + ". correlationId: " + correlationId))
+				.map(e -> referential.getSharedConnectionLinks().remove(e.getObjectId())).collect(Collectors.toList());
 		
 		// Clean referential from old garbage stop areas
 		 for(String obsoleteObjectId : discardedStopAreas) {
