@@ -34,7 +34,7 @@ public class NetexValidationCommand implements Command, Constant {
 
             if (validationContext != null) {
                 NetexProfileValidator validator = (NetexProfileValidator) context.get(NETEX_PROFILE_VALIDATOR);
-                // validator.addCheckpoints(context); // needed?
+                validator.addCheckpoints(context); // needed?
                 validator.validate(context);
             }
             // TODO consider need for stats in report

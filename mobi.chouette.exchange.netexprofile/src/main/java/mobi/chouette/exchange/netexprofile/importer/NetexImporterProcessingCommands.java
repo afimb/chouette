@@ -95,10 +95,11 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
             // TODO consider merging schema validation loop with main loop for profile validation and parsing below
             List<Path> allFiles = FileUtil.listFiles(path, "*.xml");
             for (Path file : allFiles) {
+                String url = file.toUri().toURL().toExternalForm();
                 NetexSchemaValidationCommand schemaValidation = (NetexSchemaValidationCommand) CommandFactory.create(initialContext,
                         NetexSchemaValidationCommand.class.getName());
                 schemaValidationChain.add(schemaValidation);
-                schemaValidation.setFile(file.toFile());
+                schemaValidation.setFileURL(url);
                 schemaValidationChain.add(schemaValidation);
             }
 
@@ -127,7 +128,7 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 
                     // init referentials
                     NetexInitReferentialCommand initializer = (NetexInitReferentialCommand) CommandFactory.create(initialContext, NetexInitReferentialCommand.class.getName());
-                    initializer.setFileURL(file.toUri().toURL().toExternalForm());
+                    initializer.setFileURL(url);
                     chain.add(initializer);
 
                     // profile validation
@@ -136,7 +137,7 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 
                     // parsing
                     NetexLineParserCommand parser = (NetexLineParserCommand) CommandFactory.create(initialContext, NetexLineParserCommand.class.getName());
-                    parser.setFileURL(file.toUri().toURL().toExternalForm());
+                    parser.setFileURL(url);
                     chain.add(parser);
 
                     if (withDao && !parameters.isNoSave()) {
