@@ -12,109 +12,73 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
-import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
-import mobi.chouette.exchange.netexprofile.parser.NetexParser;
 import mobi.chouette.exchange.netexprofile.parser.PublicationDeliveryParser;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
-import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.util.Referential;
-import org.rutebanken.netex.model.PublicationDeliveryStructure;
-import org.w3c.dom.Document;
 
 import javax.naming.InitialContext;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
-import static mobi.chouette.exchange.report.ActionReporter.*;
+import static mobi.chouette.exchange.report.ActionReporter.FILE_ERROR_CODE;
 
 @Log4j
 public class NetexLineParserCommand implements Command, Constant {
 
-	public static final String COMMAND = "NetexLineParserCommand";
+    public static final String COMMAND = "NetexLineParserCommand";
 
+    @Getter
+    @Setter
+    private String fileURL;
 
-	@Getter
-	@Setter
-	private File file;
+    @Override
+    public boolean execute(Context context) throws Exception {
+        boolean result = ERROR;
+        Monitor monitor = MonitorFactory.start(COMMAND);
+        context.put(FILE_URL, fileURL);
 
-	@Override
-	public boolean execute(Context context) throws Exception {
-		boolean result = ERROR;
+        ActionReporter reporter = ActionReporter.Factory.getInstance();
+        File file = new File(new URL(fileURL).toURI());
+        String fileName = file.getName();
+        reporter.addFileReport(context, fileName, IO_TYPE.INPUT);
+        context.put(FILE_NAME, fileName);
 
-		Monitor monitor = MonitorFactory.start(COMMAND);
+        try {
+            URL url = new URL(fileURL);
+            log.info("Parsing file : " + url);
 
-		// report service
-		ActionReporter actionReporter = Factory.getInstance();
-		context.put(VALIDATION_REPORT, new ValidationReport());
-		String fileName = file.getName();
-		context.put(FILE_NAME, fileName);
-		actionReporter.setFileState(context, fileName, IO_TYPE.INPUT, FILE_STATE.OK);
+            Referential referential = (Referential) context.get(REFERENTIAL);
+            if (referential != null) {
+                referential.clear(true);
+            }
 
-		try {
-			log.info("parsing file : " + file.getAbsolutePath());
+            Parser parser = ParserFactory.create(PublicationDeliveryParser.class.getName());
+            parser.parse(context);
+            result = SUCCESS;
+        } catch (Exception e) {
+            reporter.addFileErrorInReport(context, fileName, FILE_ERROR_CODE.INTERNAL_ERROR, e.toString());
+            log.error("Parsing failed ", e);
+            throw e;
+        } finally {
+            log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+        }
 
-			Referential referential = (Referential) context.get(REFERENTIAL);
-			if (referential != null) {
-				referential.clear(true);
-			}
+        return result;
+    }
 
-			// TODO: move the following lines before init referential command is processed
-			context.put(NETEX_REFERENTIAL, new NetexReferential());
+    public static class DefaultCommandFactory extends CommandFactory {
 
-			NetexImporter importer = (NetexImporter) context.get(IMPORTER);
-			Document dom = importer.parseFileToDom(file);
-			PublicationDeliveryStructure lineDeliveryStructure = importer.unmarshal(dom);
+        @Override
+        protected Command create(InitialContext context) throws IOException {
+            Command result = new NetexLineParserCommand();
+            return result;
+        }
+    }
 
-			context.put(NETEX_LINE_DATA_JAVA, lineDeliveryStructure);
-			context.put(NETEX_LINE_DATA_DOM, dom);
-
-			//NetexParser netexParser = (NetexParser) ParserFactory.create(NetexParser.class.getName());
-			//netexParser.initializeReferentials(context); // TODO enable this to validate
-
-			// TODO should probably implement a separate command for profile validation instead
-					// e.g. something like NetexProfileValidationCommand, executed before parsing
-
-			// Profile validation
-			NetexProfileValidator profileValidator = importer.getProfileValidator(context); 
-			if (profileValidator != null) {
-				context.put(NETEX_PROFILE_VALIDATOR, profileValidator);
-				profileValidator.addCheckpoints(context);
-
-				boolean validationOKWithNoErrors = profileValidator.validate(context);
-				// TODO handle that validation errors occur
-
-				// Parse (convert to chouette objects)
-				if(validationOKWithNoErrors) {
-					Parser parser = ParserFactory.create(PublicationDeliveryParser.class.getName());
-					parser.parse(context);
-					result = SUCCESS;
-				}
-			}
-
-		} catch (Exception e) {
-			// report service
-			actionReporter.addFileErrorInReport(context, fileName, FILE_ERROR_CODE.INTERNAL_ERROR, e.toString());
-			log.error("parsing failed ", e);
-		} finally {
-			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
-		}
-
-		return result;
-	}
-
-	public static class DefaultCommandFactory extends CommandFactory {
-
-		@Override
-		protected Command create(InitialContext context) throws IOException {
-			Command result = new NetexLineParserCommand();
-			return result;
-		}
-	}
-
-	static {
-		CommandFactory.factories.put(NetexLineParserCommand.class.getName(),
-				new DefaultCommandFactory());
-	}
+    static {
+        CommandFactory.factories.put(NetexLineParserCommand.class.getName(),
+                new DefaultCommandFactory());
+    }
 }

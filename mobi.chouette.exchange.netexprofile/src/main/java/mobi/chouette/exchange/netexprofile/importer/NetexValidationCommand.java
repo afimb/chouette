@@ -8,6 +8,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.AbstractValidator;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.model.util.Referential;
@@ -32,16 +33,14 @@ public class NetexValidationCommand implements Command, Constant {
             Referential referential = (Referential) context.get(REFERENTIAL);
 
             if (validationContext != null) {
-
+                NetexProfileValidator validator = (NetexProfileValidator) context.get(NETEX_PROFILE_VALIDATOR);
+                // validator.addCheckpoints(context); // needed?
+                validator.validate(context);
             }
-
-            // do we need stats in report?
-/*
-            result = !reporter.hasFileValidationErrors(context, fileName);
-            if (result) {
-                addStats(context, reporter, validationContext, referential);
+            // TODO consider need for stats in report
+            if (!reporter.hasFileValidationErrors(context, fileName)) {
+                //addStats(context, reporter, validationContext, referential);
             }
-*/
         } catch (Exception e) {
             log.error("Netex validation failed ", e);
             throw e;
@@ -49,15 +48,10 @@ public class NetexValidationCommand implements Command, Constant {
             AbstractValidator.resetContext(context);
             log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
         }
-
-        // TODO: enable later when everything is set correctly
-/*
         if (result == ERROR) {
             reporter.addFileErrorInReport(context, fileName,
-                    ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, "Netex compliance failed");
+                    ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, "Neptune compliance failed");
         }
-*/
-
         return result;
     }
 

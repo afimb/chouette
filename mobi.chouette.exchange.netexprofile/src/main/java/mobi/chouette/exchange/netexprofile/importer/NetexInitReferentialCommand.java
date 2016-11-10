@@ -9,22 +9,19 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.netexprofile.parser.PublicationDeliveryParser;
 import mobi.chouette.exchange.report.ActionReporter;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.rutebanken.netex.model.Common_VersionFrameStructure;
+import mobi.chouette.exchange.report.IO_TYPE;
 import org.rutebanken.netex.model.PublicationDeliveryStructure;
 import org.w3c.dom.Document;
 
 import javax.naming.InitialContext;
-import javax.xml.bind.JAXBElement;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.net.URL;
 
 @Log4j
 public class NetexInitReferentialCommand implements Command, Constant {
@@ -33,47 +30,38 @@ public class NetexInitReferentialCommand implements Command, Constant {
 
     @Getter
     @Setter
-    private File file;
+    private String fileURL;
 
     @Override
     public boolean execute(Context context) throws Exception {
         boolean result = ERROR;
         Monitor monitor = MonitorFactory.start(COMMAND);
+        context.put(FILE_URL, fileURL);
 
-        // action report needed for this command?
-        //ActionReporter actionReporter = ActionReporter.Factory.getInstance();
+        ActionReporter reporter = ActionReporter.Factory.getInstance();
+        File file = new File(new URL(fileURL).toURI());
+        String fileName = file.getName();
+        reporter.addFileReport(context, fileName, IO_TYPE.INPUT);
+        context.put(FILE_NAME, fileName);
 
         try {
-            log.info("Initializing referentials for file : ");
+            URL url = new URL(fileURL);
+            log.info("Initializing referentials for file : " + url);
 
-            NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);
-
-            if (referential == null) {
-                referential = new NetexReferential();
-                context.put(NETEX_REFERENTIAL, referential);
-            } else {
-                referential.clear();
-            }
-
-            // start of init, check out where Referential is set for the first time...
-
-            //context.put(NETEX_REFERENTIAL, new NetexReferential());
-
+            context.put(NETEX_REFERENTIAL, new NetexReferential());
             NetexImporter importer = (NetexImporter) context.get(IMPORTER);
             Document dom = importer.parseFileToDom(file);
             PublicationDeliveryStructure lineDeliveryStructure = importer.unmarshal(dom);
-
             context.put(NETEX_LINE_DATA_JAVA, lineDeliveryStructure);
             context.put(NETEX_LINE_DATA_DOM, dom);
-
-            // end of init
 
             PublicationDeliveryParser parser = (PublicationDeliveryParser) ParserFactory.create(PublicationDeliveryParser.class.getName());
             parser.initReferentials(context);
 
             result = SUCCESS;
         } catch (Exception e) {
-            log.error(e, e);
+            reporter.addFileErrorInReport(context, fileName, ActionReporter.FILE_ERROR_CODE.INTERNAL_ERROR, e.toString());
+            log.error("Netex referential initialization failed ", e);
             throw e;
         } finally {
             log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
