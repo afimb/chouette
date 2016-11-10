@@ -213,7 +213,6 @@ public class LineRegisterCommand implements Command {
 				for(VehicleJourney vj : jp.getVehicleJourneys()) {
 					for(Timetable t : vj.getTimetables()) {
 						t.computeLimitOfPeriods();
-						log.info("Checking "+t.getEndOfPeriod()+ " against "+now);
 						if(!t.getEndOfPeriod().before(now)) {
 							return true;
 						}

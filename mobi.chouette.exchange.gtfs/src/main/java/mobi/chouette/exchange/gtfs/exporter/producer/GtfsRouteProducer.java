@@ -107,6 +107,9 @@ public class GtfsRouteProducer extends AbstractProducer
          case Ferry:
             route.setRouteType(RouteTypeEnum.Ferry);
             break;
+         case Air:
+            route.setRouteType(RouteTypeEnum.AirService);
+            break;
          default:
             route.setRouteType(RouteTypeEnum.Bus);
          }
