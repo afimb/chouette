@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 @Log4j
-public class ScheduledStopPointParser extends AbstractParser implements Parser {
+public class ScheduledStopPointParser implements NetexParser {
 
     @Override
-    public void initializeReferentials(Context context) throws Exception {
+    public void initReferentials(Context context) throws Exception {
         NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);
         ScheduledStopPointValidator validator = (ScheduledStopPointValidator) ValidatorFactory.create(ScheduledStopPointValidator.class.getName(), context);
 

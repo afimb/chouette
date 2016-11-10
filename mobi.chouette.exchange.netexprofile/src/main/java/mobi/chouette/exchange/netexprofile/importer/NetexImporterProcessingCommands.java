@@ -1,15 +1,5 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.naming.InitialContext;
-
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
@@ -28,6 +18,15 @@ import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.validation.ImportedLineValidatorCommand;
 import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
+
+import javax.naming.InitialContext;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Log4j
@@ -99,6 +98,8 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 			Set<String> commonUrls = new HashSet<String>();
 			for (Path file : commonFiles) {
 
+				// profile validation of common files too?
+
 				NetexCommonParserCommand parser = (NetexCommonParserCommand) CommandFactory.create(initialContext, NetexCommonParserCommand.class.getName());
 				String url = file.toUri().toURL().toExternalForm();
 				commonUrls.add(url);
@@ -107,15 +108,22 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 				commonFilesParserChain.add(parser);
 
 			}
-
-			// parsing
 			for (Path file : allFiles) {
 				String url = file.toUri().toURL().toExternalForm();
 				if (!commonFiles.contains(url)) {
 					Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 					commands.add(chain);
 
-					// parsing and profile validation
+					// init referentials
+					NetexInitReferentialCommand refInitializer = (NetexInitReferentialCommand) CommandFactory.create(initialContext, NetexInitReferentialCommand.class.getName());
+					refInitializer.setFile(file.toFile());
+					chain.add(refInitializer);
+
+					// profile validation
+					Command validation = CommandFactory.create(initialContext, NetexValidationCommand.class.getName());
+					chain.add(validation);
+
+					// parsing
 					NetexLineParserCommand parser = (NetexLineParserCommand) CommandFactory.create(initialContext, NetexLineParserCommand.class.getName());
 					parser.setFile(file.toFile());
 					chain.add(parser);

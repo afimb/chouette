@@ -59,6 +59,8 @@ public class NetexLineParserCommand implements Command, Constant {
 			if (referential != null) {
 				referential.clear(true);
 			}
+
+			// TODO: move the following lines before init referential command is processed
 			context.put(NETEX_REFERENTIAL, new NetexReferential());
 
 			NetexImporter importer = (NetexImporter) context.get(IMPORTER);
@@ -68,8 +70,8 @@ public class NetexLineParserCommand implements Command, Constant {
 			context.put(NETEX_LINE_DATA_JAVA, lineDeliveryStructure);
 			context.put(NETEX_LINE_DATA_DOM, dom);
 
-			NetexParser netexParser = (NetexParser) ParserFactory.create(NetexParser.class.getName());
-			netexParser.initializeReferentials(context); // TODO enable this to validate
+			//NetexParser netexParser = (NetexParser) ParserFactory.create(NetexParser.class.getName());
+			//netexParser.initializeReferentials(context); // TODO enable this to validate
 
 			// TODO should probably implement a separate command for profile validation instead
 					// e.g. something like NetexProfileValidationCommand, executed before parsing
@@ -101,21 +103,6 @@ public class NetexLineParserCommand implements Command, Constant {
 
 		return result;
 	}
-
-/*
-	private void preParseNetexModel(Referential referential, PublicationDeliveryStructure publicationDeliveryStruct) {
-		// pre-parse routes
-		List<JAXBElement<? extends LinkSequence_VersionStructure>> routesStructure = serviceFrame.getRoutes().getRoute_();
-		for (JAXBElement<? extends LinkSequence_VersionStructure> jaxbElement : routesStructure) {
-			Route route = (Route) jaxbElement.getValue();
-			addRouteReference(referential, route);
-		}
-	}
-
-	private void addRouteReference(Referential referential, Route route) {
-
-	}
-*/
 
 	public static class DefaultCommandFactory extends CommandFactory {
 

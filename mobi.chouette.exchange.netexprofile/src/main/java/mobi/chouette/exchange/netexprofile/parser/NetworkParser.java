@@ -15,10 +15,10 @@ import org.apache.commons.lang.StringUtils;
 import javax.xml.bind.JAXBElement;
 
 @Log4j
-public class NetworkParser extends AbstractParser implements Parser {
+public class NetworkParser implements NetexParser {
 
     @Override
-    public void initializeReferentials(Context context) throws Exception {
+    public void initReferentials(Context context) throws Exception {
         NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);
         NetworkValidator validator = (NetworkValidator) ValidatorFactory.create(NetworkValidator.class.getName(), context);
         Network network = (Network) context.get(NETEX_LINE_DATA_CONTEXT);

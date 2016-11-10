@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Map;
 
 @Log4j
-public class RouteParser extends AbstractParser implements Parser {
+public class RouteParser implements NetexParser {
 
     @Override
-    public void initializeReferentials(Context context) throws Exception {
+    public void initReferentials(Context context) throws Exception {
         NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);
         RouteValidator validator = (RouteValidator) ValidatorFactory.create(RouteValidator.class.getName(), context);
 

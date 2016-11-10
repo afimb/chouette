@@ -23,10 +23,10 @@ import java.util.Collection;
 import java.util.List;
 
 @Log4j
-public class LineParser extends AbstractParser implements Parser {
+public class LineParser implements NetexParser {
 
     @Override
-    public void initializeReferentials(Context context) throws Exception {
+    public void initReferentials(Context context) throws Exception {
         NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);
         LineValidator validator = (LineValidator) ValidatorFactory.create(LineValidator.class.getName(), context);
         LinesInFrame_RelStructure linesInFrameStruct = (LinesInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);

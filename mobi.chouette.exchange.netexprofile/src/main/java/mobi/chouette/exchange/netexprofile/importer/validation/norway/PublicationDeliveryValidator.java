@@ -75,7 +75,7 @@ public class PublicationDeliveryValidator extends AbstractValidator implements V
         prepareCheckPoint(context, _1_NETEX_RESOURCEFRAME);
 
         if (isCollectionEmpty(resourceFrames)) {
-            DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
+            DataLocation dataLocation = new DataLocation((String) context.get(FILE_NAME));
             dataLocation.setName("ResourceFrame");
             addValidationError(context, _1_NETEX_RESOURCEFRAME, "No ResourceFrame", dataLocation);
         } else {
@@ -111,6 +111,11 @@ public class PublicationDeliveryValidator extends AbstractValidator implements V
                 }
 
                 // validate organisations
+                // TODO consider if this is a problem or not, we already have all organisations of all frames in referential right?
+                // TODO this will probably cause same validation to occur multiple times, once per frame if more than one
+                // TODO this is true for all validations where we already added refs to global referential
+                // TODO in other words true for routes, lines, organisations, stoppoints etc...
+                // TODO same goes for parsing
                 Collection<Organisation> organisations = referential.getOrganisations().values();
                 if (!isCollectionEmpty(organisations)) {
                     log.info("Organisations present");

@@ -6,4 +6,9 @@
 			<package name="mobi.chouette.exchange.netexprofile.importer"/>
 		</packages>
 	</test>
+	<test name="Validation">
+		<packages>
+			<package name="mobi.chouette.exchange.netexprofile.importer.validation.norway"/>
+		</packages>
+	</test>
 </suite>
