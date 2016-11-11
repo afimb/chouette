@@ -35,7 +35,8 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
 
     @Override
     protected void initializeCheckPoints(Context context) {
-        addItemToValidation(context, PREFIX, "Line", 9, "E", "E", "E", "E", "E", "E", "E", "E", "E");
+        //addItemToValidation(context, PREFIX, "Line", 9, "E", "E", "E", "E", "E", "E", "E", "E", "E");
+        addItemToValidation(context, PREFIX, "Line", 5, "E", "E", "E", "E", "E");
     }
 
     @Override
@@ -114,6 +115,8 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
                 addValidationError(context, LINE_4);
             }
 
+            // TODO: enable when we have full control over organisation parser
+/*
             if (objectContext.containsKey(OPERATOR_ID)) {
                 // 2-NETEX-Line-5 : check existence of operator
                 prepareCheckPoint(context, LINE_5);
@@ -125,38 +128,53 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
                             dataLocation);
                 }
             }
+*/
 
+            // TODO: enable when we have full control over parsers and validators
+            // TODO: change back to LINE_6 when validator complete
             // 2-NETEX-Line-6 : check routes references
-            prepareCheckPoint(context, LINE_6);
+            //prepareCheckPoint(context, LINE_6);
+/*
+            prepareCheckPoint(context, LINE_5);
             List<String> routeIds = (List<String>) objectContext.get(ROUTE_ID);
             for (String routeId : routeIds) {
                 if (!routeContext.containsKey(routeId)) {
-                    addValidationError(context, LINE_6);
+                    //addValidationError(context, LINE_6);
+                    addValidationError(context, LINE_5);
                 }
             }
+*/
 
+            // TODO: change back LINE_7 when validator complete
             // 2-NETEX-Line-7 : check routes references
-            prepareCheckPoint(context, LINE_7);
+            //prepareCheckPoint(context, LINE_7);
+            List<String> routeIds = (List<String>) objectContext.get(ROUTE_ID);
+            prepareCheckPoint(context, LINE_5);
             for (String routeId : routeContext.keySet()) {
                 if (!routeIds.contains(routeId)) {
-                    addValidationError(context, LINE_7);
+                    //addValidationError(context, LINE_7);
+                    addValidationError(context, LINE_5);
                 }
             }
 
             // TODO consider validating with xpath instead, if shorter
             // 2-NETEX-Line-9 : check presence of Monitored
+/*
             prepareCheckPoint(context, LINE_8);
             DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
             dataLocation.setName("Monitored");
             addValidationError(context, LINE_5, "Missing mandatory element : 'Monitored'", dataLocation);
+*/
 
 
             // TODO consider validating with xpath instead, if shorter
             // 2-NETEX-Line-10 : check presence of AccessibilityAssessment
+/*
             prepareCheckPoint(context, LINE_9);
             if (line.getAccessibilityAssessment() == null) {
                 // TODO validate full structure/list of elements
             }
+*/
         }
     }
 

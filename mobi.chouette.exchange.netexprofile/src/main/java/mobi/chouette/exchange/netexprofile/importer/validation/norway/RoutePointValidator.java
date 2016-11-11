@@ -31,7 +31,8 @@ public class RoutePointValidator extends AbstractValidator implements Validator<
 
     @Override
     protected void initializeCheckPoints(Context context) {
-        addItemToValidation(context, PREFIX, "RoutePoint", 4, "E", "E", "E", "E");
+        //addItemToValidation(context, PREFIX, "RoutePoint", 4, "E", "E", "E", "E");
+        addItemToValidation(context, PREFIX, "RoutePoint", 3, "E", "E", "E");
     }
 
     @Override
@@ -77,7 +78,9 @@ public class RoutePointValidator extends AbstractValidator implements Validator<
 
             // validate name?
 
+            // disabled for now, because aviation lines not having exact locations available
             // 2-NETEX-RoutePoint-2 : validate mandatory location (cardinality 1:1)
+/*
             prepareCheckPoint(context, ROUTEPOINT_2);
             LocationStructure locationStruct = routePoint.getLocation();
 
@@ -88,9 +91,12 @@ public class RoutePointValidator extends AbstractValidator implements Validator<
             } else {
                 // TODO validate location here...
             }
+*/
 
+            // TODO: change back to ROUTEPOINT_3 when validator complete
             // 2-NETEX-RoutePoint-3 : validate optional point number (cardinality 0:1)
-            prepareCheckPoint(context, ROUTEPOINT_3);
+            //prepareCheckPoint(context, ROUTEPOINT_3);
+            prepareCheckPoint(context, ROUTEPOINT_2);
             String pointNumber = routePoint.getPointNumber();
 
             if (StringUtils.isNotEmpty(pointNumber)) {
@@ -100,13 +106,16 @@ public class RoutePointValidator extends AbstractValidator implements Validator<
 
             // TODO create a context/validator for scheduled stop points for reuse and references here
 
+            // TODO: change back to ROUTEPOINT_4 when validator complete
             // 2-NETEX-RoutePoint-4 : validate scheduled stop point references
-            prepareCheckPoint(context, ROUTEPOINT_4);
+            //prepareCheckPoint(context, ROUTEPOINT_4);
+            prepareCheckPoint(context, ROUTEPOINT_3);
             @SuppressWarnings("unchecked") List<String> stopPointIds = (List<String>) objectContext.get(STOPPOINT_ID);
             for (String stopPointId : stopPointIds) {
                 if (!stopPointContext.containsKey(stopPointId)) {
                     DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
-                    addValidationError(context, ROUTEPOINT_4, String.format("Non-existent stop point id : '%s'", stopPointId), dataLocation);
+                    //addValidationError(context, ROUTEPOINT_4, String.format("Non-existent stop point id : '%s'", stopPointId), dataLocation);
+                    addValidationError(context, ROUTEPOINT_3, String.format("Non-existent stop point id : '%s'", stopPointId), dataLocation);
                 }
             }
         }

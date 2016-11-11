@@ -158,7 +158,7 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
             }
 
         } catch (Exception e) {
-
+            // TODO: add exception handling here
         }
 
         return commands;
