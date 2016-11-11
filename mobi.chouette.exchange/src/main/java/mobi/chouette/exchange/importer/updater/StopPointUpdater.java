@@ -3,6 +3,7 @@ package mobi.chouette.exchange.importer.updater;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.exchange.validation.ValidationData;
@@ -13,6 +14,7 @@ import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
+@Log4j
 @Stateless(name = StopPointUpdater.BEAN_NAME)
 public class StopPointUpdater implements Updater<StopPoint> {
 
@@ -132,8 +134,26 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	 * @param newSp
 	 */
 	private void twoDatabaseStopPointThreeTest(ValidationReporter validationReporter, Context context, StopArea oldSA, StopArea newSA, ValidationData data) {
-		if(!NeptuneUtil.sameValue(oldSA, newSA))
-			validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_3, data.getDataLocations().get(newSA.getObjectId()));
+		if(!NeptuneUtil.sameValue(oldSA, newSA)) {
+			if(validationReporter == null) {
+				log.error("ValidationReporter (validationReporter) is null");
+			}
+			if(oldSA == null) {
+				log.error("StopArea (oldSA) is null");
+			}
+			if(newSA == null) {
+				log.error("StopArea (newSA) is null");
+			}
+			if(data == null) {
+				log.error("ValidationData (data) is null");
+			} else if(data.getDataLocations() == null) {
+				log.error("ValidationData.getDataLocations() is null");
+			}
+
+			if(validationReporter != null && newSA != null && data != null && data.getDataLocations() != null) {
+				validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_3, data.getDataLocations().get(newSA.getObjectId()));
+			}
+		}
 		else
 			validationReporter.reportSuccess(context, DATABASE_STOP_POINT_3);
 	}
