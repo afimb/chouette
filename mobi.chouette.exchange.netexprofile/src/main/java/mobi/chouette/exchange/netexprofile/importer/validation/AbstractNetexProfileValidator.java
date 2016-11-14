@@ -23,13 +23,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Log4j
-public abstract class AbstractNetexProfileValidator implements NetexProfileValidator {
+public abstract class AbstractNetexProfileValidator {//implements NetexProfileValidator {
 
-	private XPathFactory factory = XPathFactory.newInstance();
+	//private XPathFactory factory = XPathFactory.newInstance();
 
+/*
 	@Override
-	public boolean validate(Context context) throws Exception {
-
+	public void validate(Context context) throws Exception {
 		XPath xpath = factory.newXPath();
 		xpath.setNamespaceContext(new NetexNamespaceContext());
 
@@ -41,29 +41,27 @@ public abstract class AbstractNetexProfileValidator implements NetexProfileValid
 		// Call concrete validator implementation
 		validate(context, lineDeliveryStructure, dom, xpath);
 
-		// Check if validation report has errors
 		ValidationReport validationReport = (ValidationReport) context.get(Constant.VALIDATION_REPORT);
-
 		boolean validationOK = true;
 		for (CheckPointReport c : validationReport.getCheckPoints()) {
 			if (c.getSeverity() == SEVERITY.ERROR && c.getState() == RESULT.NOK) {
 				log.error("VALIDATION FAILED FOR CHECKPOINT : " + c.getName());
-			}
-		}
-		for (CheckPointReport c : validationReport.getCheckPoints()) {
-			if (c.getSeverity() == SEVERITY.ERROR && c.getState() == RESULT.NOK) {
 				validationOK = false;
 				break;
 			}
 		}
-
 		String validationStatus = validationOK == true ? "SUCCESS" : "FAILURES";
-		log.info("VALIDATION COMPLETED WITH " + validationStatus);
+		log.info("PROFILE VALIDATION COMPLETED WITH " + validationStatus);
 		return validationOK;
 	}
+*/
 
-	protected abstract void validate(Context context, PublicationDeliveryStructure lineDeliveryStructure, Document dom, XPath xpath)
-			throws Exception;
+/*
+	protected abstract void validate(Context context, PublicationDeliveryStructure lineDeliveryStructure, Document dom,
+									 XPath xpath) throws Exception;
+*/
+
+	public abstract void validate(Context context) throws Exception;
 
 	/*
 	 * Validate that a set of references identified by the given xpath expression is valid (by calling given external validator)

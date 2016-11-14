@@ -7,10 +7,14 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.neptune.validation.*;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.AbstractValidator;
 import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
 
 import javax.naming.InitialContext;
@@ -34,13 +38,18 @@ public class NetexValidationCommand implements Command, Constant {
 
             if (validationContext != null) {
                 NetexProfileValidator validator = (NetexProfileValidator) context.get(NETEX_PROFILE_VALIDATOR);
-                validator.addCheckpoints(context); // needed?
+                //validator.addCheckpoints(context); // needed? should probably be removed, as this is done in validators
                 validator.validate(context);
             }
+
+            result = !reporter.hasFileValidationErrors(context, fileName);
+
             // TODO consider need for stats in report
-            if (!reporter.hasFileValidationErrors(context, fileName)) {
-                //addStats(context, reporter, validationContext, referential);
+/*
+            if (result) {
+                addStats(context, reporter, validationContext, referential);
             }
+*/
         } catch (Exception e) {
             log.error("Netex validation failed ", e);
             throw e;
@@ -50,10 +59,15 @@ public class NetexValidationCommand implements Command, Constant {
         }
         if (result == ERROR) {
             reporter.addFileErrorInReport(context, fileName,
-                    ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, "Neptune compliance failed");
+                    ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, "Netex compliance failed");
         }
         return result;
     }
+
+    private void addStats(Context context, ActionReporter reporter, Context validationContext, Referential referential) {
+        // TODO: implement
+    }
+
 
     public static class DefaultCommandFactory extends CommandFactory {
         @Override

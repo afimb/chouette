@@ -5,10 +5,10 @@ import javax.xml.xpath.XPathExpressionException;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 
-public interface NetexProfileValidator extends Constant {
+public interface NetexProfileValidator {
 
-	void addCheckpoints(Context context);
-	
-	boolean validate(Context context) throws Exception;
+	//void addCheckpoints(Context context);
+
+	void validate(Context context) throws Exception;
 
 }

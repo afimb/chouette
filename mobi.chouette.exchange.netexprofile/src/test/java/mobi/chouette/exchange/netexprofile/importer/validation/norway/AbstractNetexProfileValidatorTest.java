@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class AbstractNetexProfileValidatorTest {
+/*
 	@Test
 	public void testCheckExternalReference() throws XPathExpressionException, SAXException, IOException, ParserConfigurationException {
 		
@@ -60,6 +61,7 @@ public class AbstractNetexProfileValidatorTest {
 		Document dom = new NetexImporter().parseFileToDom(new File("src/test/data/WF739-201608311015.xml"));
 		AbstractNetexProfileValidator.validateElementPresent(context, xpath, dom, "//n:Network", "NO_NETWORK", "No network element found","1");
 	}
+*/
 
 	
 }

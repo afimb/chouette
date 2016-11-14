@@ -3,10 +3,13 @@ package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.importer.validation.ExternalReferenceValidator;
+import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import org.rutebanken.netex.model.DataManagedObjectStructure;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPath;
@@ -26,6 +29,36 @@ public abstract class AbstractValidator implements Constant {
 
     protected static final String PREFIX = "2-NETEX-";
     protected static final String OBJECT_IDS = "encountered_ids";
+
+    /*
+     * Validate that a set of references identified by the given xpath expression is valid (by calling given external validator)
+     */
+    public static void validateExternalReferenceCorrect(Context context, XPath xpath, Document dom, String expression,
+                                                        ExternalReferenceValidator externalIdValidator, String checkpointName) throws XPathExpressionException {
+
+        ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+
+        NodeList nodes = (NodeList) xpath.evaluate(expression, dom, XPathConstants.NODESET);
+
+        Set<String> ids = new HashSet<String>();
+
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node item = nodes.item(i);
+            String id = item.getTextContent();
+            ids.add(id);
+        }
+
+        Collection<String> invalidIds = externalIdValidator.validateReferenceIds(ids);
+        if (invalidIds.isEmpty()) {
+            validationReporter.updateCheckPointReportState(context, checkpointName, ValidationReporter.RESULT.OK);
+        } else {
+            validationReporter.updateCheckPointReportState(context, checkpointName, ValidationReporter.RESULT.NOK);
+            for (String s : invalidIds) {
+                // TODO add details
+                log.error("Netex profile validation error, invalid external reference " + s);
+            }
+        }
+    }
 
     @SuppressWarnings("unchecked")
     public static void resetContext(Context context) {
@@ -185,6 +218,28 @@ public abstract class AbstractValidator implements Constant {
             result = SUCCESS;
         }
         return result;
+    }
+
+    /*
+     * Validate that the occurrence(s) of an xml element conform to the correct cardinality
+     */
+    private static void validateElementCardinality(Context context, XPath xpath, Document document, String expression,
+                                                   int minOccurs, int maxOccurs, String checkpointName) throws XPathExpressionException {
+/*
+		String countExpression = String.format("count(%s)", expression);
+		double elementCount = (Double) xpath.evaluate(countExpression, document, XPathConstants.NUMBER);
+*/
+    }
+
+    protected void addCheckpoints(Context context, String key, CheckPointReport.SEVERITY severity) {
+        ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+
+        // Add checkpoints that are to be checked in the validate() method above
+        if (!validationReporter.checkIfCheckPointExists(context, key)) {
+            log.info("Adding checkpoint " + key);
+            validationReporter.addItemToValidationReport(context, key, (severity.equals(CheckPointReport.SEVERITY.ERROR)) ? "E" : "W");
+        }
+
     }
 
     public abstract void addObjectReference(Context context, DataManagedObjectStructure object);

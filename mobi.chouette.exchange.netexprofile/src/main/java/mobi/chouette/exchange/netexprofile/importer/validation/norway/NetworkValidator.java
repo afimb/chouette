@@ -8,6 +8,7 @@ import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.DataLocation;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import org.rutebanken.netex.model.*;
 
 import javax.xml.bind.JAXBElement;
@@ -101,10 +102,14 @@ public class NetworkValidator extends AbstractValidator implements Validator<Net
 
         // TODO consider separating the two checks in if test
         if (groupsOfLinesStruct == null || isCollectionEmpty(groupsOfLinesStruct.getGroupOfLines())) {
+            // TODO: consider making data location global for validator, with only reference to file name
             DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
-            dataLocation.setName("GroupOfLines");
+            //dataLocation.setName("GroupOfLines");
             //addValidationError(context, NETWORK_3, "Missing mandatory element : 'groupsOfLines' or 'GroupOfLines'", dataLocation);
-            addValidationError(context, NETWORK_2, "Missing mandatory element : 'groupsOfLines' or 'GroupOfLines'", dataLocation);
+            //addValidationError(context, NETWORK_2, "Missing mandatory element : 'groupsOfLines' or 'GroupOfLines'", dataLocation);
+            ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+            validationReporter.addCheckPointReportError(context, NETWORK_2,
+                    "Missing mandatory element : 'groupsOfLines' or 'GroupOfLines'", dataLocation, target.getId(), target.getId());
         } else {
             // TODO validate group of lines here...
         }
