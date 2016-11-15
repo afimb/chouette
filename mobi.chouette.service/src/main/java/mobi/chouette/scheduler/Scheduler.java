@@ -95,15 +95,15 @@ public class Scheduler {
 			}
 		});
 		for (JobService jobService : scheduled) {
-			jobManager.abort(jobService);
-			
+            log.info("Processing interrupted job " + jobService.getId());
+			jobManager.processInterrupted(jobService);
 		}
 
 		// schedule created job
 		Collection<JobService> created = Collections2.filter(list, new Predicate<JobService>() {
 			@Override
 			public boolean apply(JobService job) {
-				return job.getStatus() == STATUS.SCHEDULED;
+				return job.getStatus() == STATUS.SCHEDULED || job.getStatus() == STATUS.RESCHEDULED ;
 			}
 		});
 		for (JobService jobService : created) {

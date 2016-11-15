@@ -11,4 +11,6 @@ public interface PropertyNames {
 
     /** URL to the NeTEx endpoint accepting publication deliveries */
     public static final String STOP_PLACE_REGISTER_URL = ".stop.place.register.url";
+
+    public static final String RESCHEDULE_INTERRUPTED_JOBS = ".reschedule.interrupted.jobs";
 }

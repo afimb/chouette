@@ -108,10 +108,10 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		Query query = em
 				.createQuery("from Job j where j.referential = ?1 and j.status in ( ?2 ) order by id");
 		query.setParameter(1, referential);
-		query.setParameter(2, Arrays.asList(Job.STATUS.STARTED, Job.STATUS.SCHEDULED));
+		query.setParameter(2, Arrays.asList(Job.STATUS.STARTED, Job.STATUS.SCHEDULED, Job.STATUS.RESCHEDULED));
 		List<Job> list = query.getResultList();
 		if (list != null && !list.isEmpty()) {
-			if (list.get(0).getStatus().equals(Job.STATUS.SCHEDULED)) {
+			if (list.get(0).getStatus().equals(Job.STATUS.SCHEDULED) || list.get(0).getStatus().equals(Job.STATUS.RESCHEDULED)) {
 				result = list.get(0);
 			}
 		}
