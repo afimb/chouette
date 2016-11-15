@@ -53,6 +53,7 @@ public class NetexValidationCommand implements Command, Constant {
             log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
         }
         if (result == ERROR) {
+            log.error("Netex compliance failed");
             reporter.addFileErrorInReport(context, fileName,
                     ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, "Netex compliance failed");
         }

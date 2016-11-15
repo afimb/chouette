@@ -8,6 +8,8 @@ import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.RoutePointValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import org.apache.commons.lang.StringUtils;
@@ -211,7 +213,7 @@ public class PublicationDeliveryParser implements NetexParser {
         organisationsParser.parse(context);
 
         // parse stop places (in site frames)
-        parseSiteFrames(context, netexReferential);
+        parseSiteFrames(context, referential, netexReferential);
 
         // parse day types (in service calendar frame)
         Parser dayTypeParser = ParserFactory.create(DayTypeParser.class.getName());
@@ -237,21 +239,19 @@ public class PublicationDeliveryParser implements NetexParser {
     }
 */
 
-    private void parseSiteFrames(Context context, NetexReferential referential) throws Exception {
-        Collection<SiteFrame> siteFrames = referential.getSiteFrames().values();
+    private void parseSiteFrames(Context context, Referential referential, NetexReferential netexReferential) throws Exception {
+        Collection<SiteFrame> siteFrames = netexReferential.getSiteFrames().values();
         if (!isCollectionEmpty(siteFrames)) {
             for (SiteFrame siteFrame : siteFrames) {
                 // TODO retrieve stop places from referential instead
                 StopPlacesInFrame_RelStructure stopPlacesStruct = siteFrame.getStopPlaces();
                 List<StopPlace> stopPlaces = stopPlacesStruct.getStopPlace();
                 for (StopPlace stopPlace : stopPlaces) {
-/*
                     StopArea stopArea = ObjectFactory.getStopArea(referential, stopPlace.getId());
                     stopArea.setName(stopPlace.getName().getValue());
                     stopArea.setRegistrationNumber(stopPlace.getShortName().getValue());
                     stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
                     stopArea.setFilled(true);
-*/
 
                     // TODO: add support for boarding positions, and connect to StopArea as parent
                 }
