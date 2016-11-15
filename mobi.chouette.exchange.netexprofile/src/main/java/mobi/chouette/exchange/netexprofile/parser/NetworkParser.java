@@ -4,13 +4,12 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.NetworkValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
+import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.Network;
 import org.rutebanken.netex.model.OrganisationRefStructure;
-import org.apache.commons.lang.StringUtils;
 
 import javax.xml.bind.JAXBElement;
 

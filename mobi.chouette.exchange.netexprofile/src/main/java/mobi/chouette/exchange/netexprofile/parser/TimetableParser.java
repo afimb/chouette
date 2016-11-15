@@ -13,8 +13,8 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import org.rutebanken.netex.model.*;
 import org.apache.commons.lang.StringUtils;
+import org.rutebanken.netex.model.*;
 
 import javax.xml.bind.JAXBElement;
 import java.sql.Date;

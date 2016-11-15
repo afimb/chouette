@@ -12,10 +12,10 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.ScheduledStopPoint;
 import org.rutebanken.netex.model.ScheduledStopPointsInFrame_RelStructure;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.Collection;
 import java.util.List;

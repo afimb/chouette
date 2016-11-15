@@ -14,8 +14,8 @@ import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import org.rutebanken.netex.model.*;
 import org.apache.commons.lang.StringUtils;
+import org.rutebanken.netex.model.*;
 
 import javax.xml.bind.JAXBElement;
 import java.util.ArrayList;

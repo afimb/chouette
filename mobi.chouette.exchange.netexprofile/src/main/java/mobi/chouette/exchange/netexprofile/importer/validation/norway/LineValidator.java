@@ -73,7 +73,6 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
 
     @Override
     @SuppressWarnings("unchecked")
-    // TODO fix Detail error items on all validations
     public void validate(Context context, Line target) throws ValidationException {
         Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
         ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
@@ -91,29 +90,38 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
         for (String objectId : localContext.keySet()) {
             Context objectContext = (Context) localContext.get(objectId);
             Line line = lines.get(objectId);
+            DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
 
             // 2-NETEX-Line-1 : check presence of Name
             prepareCheckPoint(context, LINE_1);
             if (line.getName() == null || isEmpty(line.getName().getValue())) {
-                addValidationError(context, LINE_1);
+                ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+                validationReporter.addCheckPointReportError(context, LINE_1,
+                        "Missing mandatory element : 'Name'", dataLocation, line.getId(), line.getId());
             }
 
             // 2-NETEX-Line-2 : check presence of TransportMode
             prepareCheckPoint(context, LINE_2);
             if (line.getTransportMode() == null) {
-                addValidationError(context, LINE_2);
+                ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+                validationReporter.addCheckPointReportError(context, LINE_2,
+                        "Missing mandatory element : 'TransportMode'", dataLocation, line.getId(), line.getId());
             }
 
             // 2-NETEX-Line-3 : check presence of PublicCode
             prepareCheckPoint(context, LINE_3);
             if (isEmpty(line.getPublicCode())) {
-                addValidationError(context, LINE_3);
+                ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+                validationReporter.addCheckPointReportError(context, LINE_3,
+                        "Missing mandatory element : 'PublicCode'", dataLocation, line.getId(), line.getId());
             }
 
             // 2-NETEX-Line-4 : check presence of OperatorRef
             prepareCheckPoint(context, LINE_4);
             if (line.getOperatorRef() == null || isEmpty(line.getOperatorRef().getRef())) {
-                addValidationError(context, LINE_4);
+                ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+                validationReporter.addCheckPointReportError(context, LINE_4,
+                        "Missing mandatory element : 'OperatorRef'", dataLocation, line.getId(), line.getId());
             }
 
             // TODO: enable when we have full control over organisation parser
@@ -153,8 +161,10 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
             prepareCheckPoint(context, LINE_5);
             for (String routeId : routeContext.keySet()) {
                 if (!routeIds.contains(routeId)) {
-                    //addValidationError(context, LINE_7);
-                    addValidationError(context, LINE_5);
+                    ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+                    validationReporter.addCheckPointReportError(context, LINE_5,
+                            String.format("Non-existent route reference for id : '%s'", routeId),
+                            dataLocation, line.getId(), line.getId());
                 }
             }
 

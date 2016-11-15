@@ -1,10 +1,9 @@
 package mobi.chouette.exchange.netexprofile.importer.validation;
 
+import javax.xml.namespace.NamespaceContext;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.xml.namespace.NamespaceContext;
 
 public class NetexNamespaceContext implements NamespaceContext {
 

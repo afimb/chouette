@@ -7,14 +7,10 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.neptune.validation.*;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.AbstractValidator;
 import mobi.chouette.exchange.report.ActionReporter;
-import mobi.chouette.exchange.report.IO_TYPE;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
 
 import javax.naming.InitialContext;
@@ -38,7 +34,6 @@ public class NetexValidationCommand implements Command, Constant {
 
             if (validationContext != null) {
                 NetexProfileValidator validator = (NetexProfileValidator) context.get(NETEX_PROFILE_VALIDATOR);
-                //validator.addCheckpoints(context); // needed? should probably be removed, as this is done in validators
                 validator.validate(context);
             }
 
