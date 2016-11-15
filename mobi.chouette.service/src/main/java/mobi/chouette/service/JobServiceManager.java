@@ -20,11 +20,7 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.EJB;
-import javax.ejb.Startup;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
+import javax.ejb.*;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.ws.rs.core.MediaType;
 
@@ -265,6 +261,32 @@ public class JobServiceManager {
 		jobService.setStarted(new Date());
 		jobService.addLink(MediaType.APPLICATION_JSON, Link.REPORT_REL);
 		jobDAO.update(jobService.getJob());
+	}
+
+	public void processInterrupted(JobService jobService) {
+		if (rescheduleJobs()) {
+			reschedule(jobService);
+		} else {
+			abort(jobService);
+		}
+	}
+
+	public void reschedule(JobService jobService) {
+		jobService.setStatus(STATUS.RESCHEDULED);
+		jobService.setUpdated(new Date());
+		jobService.setStarted(null);
+		jobService.removeLink(Link.REPORT_REL);
+		jobDAO.update(jobService.getJob());
+	}
+
+	private boolean rescheduleJobs() {
+		String propertyName = checker.getContext() + PropertyNames.RESCHEDULE_INTERRUPTED_JOBS;
+		String property = System.getProperty(propertyName);
+		if (property == null || property.trim().equals("")) {
+			log.warn("Property " + propertyName + " not set. Falling back to default behaviour, which is to abort jobs");
+			return false;
+		}
+		return Boolean.parseBoolean(property);
 	}
 
 	public JobService cancel(String referential, Long id) throws ServiceException {

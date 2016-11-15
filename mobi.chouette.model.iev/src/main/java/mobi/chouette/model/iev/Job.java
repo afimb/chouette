@@ -96,6 +96,6 @@ public class Job implements Serializable {
 	@XmlType
 	@XmlEnum(String.class)
 	public enum STATUS implements java.io.Serializable {
-		CREATED, SCHEDULED, STARTED, TERMINATED, CANCELED, ABORTED, DELETED
+		CREATED, RESCHEDULED, SCHEDULED, STARTED, TERMINATED, CANCELED, ABORTED, DELETED
 	}
 }

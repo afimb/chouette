@@ -185,7 +185,7 @@ public class JobInfo implements ServiceConstants {
 	@XmlType(name = "jobStatus")
 	@XmlEnum(String.class)
 	public enum STATUS implements java.io.Serializable {
-		SCHEDULED, STARTED, TERMINATED, CANCELED, ABORTED
+		RESCHEDULED, SCHEDULED, STARTED, TERMINATED, CANCELED, ABORTED
 	}
 
 }

@@ -9,11 +9,7 @@ import java.util.concurrent.Future;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.EJB;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
+import javax.ejb.*;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedTaskListener;
 import javax.naming.InitialContext;
@@ -59,7 +55,6 @@ public class Scheduler {
 
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void schedule(String referential) {
-		
 		log.info("schedule referential "+referential);
 		JobService jobService =  jobManager.getNextJob(referential);
 		if (jobService != null) {
@@ -92,15 +87,15 @@ public class Scheduler {
 			}
 		});
 		for (JobService jobService : scheduled) {
-			jobManager.abort(jobService);
-			
+            log.info("Processing interrupted job " + jobService.getId());
+			jobManager.processInterrupted(jobService);
 		}
 
 		// schedule created job
 		Collection<JobService> created = Collections2.filter(list, new Predicate<JobService>() {
 			@Override
 			public boolean apply(JobService job) {
-				return job.getStatus() == STATUS.SCHEDULED;
+				return job.getStatus() == STATUS.SCHEDULED || job.getStatus() == STATUS.RESCHEDULED ;
 			}
 		});
 		for (JobService jobService : created) {
@@ -128,8 +123,6 @@ public class Scheduler {
 		
 		return true;
 	}
-
-
 
 	class TaskListener implements ManagedTaskListener {
 
