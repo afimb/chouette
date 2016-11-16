@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+// TODO implement NetexParser instead and do init of referentials?
 @Log4j
 public class DayTypeParser implements Parser, Constant {
 

@@ -4,12 +4,14 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.RoutePointValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
+import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import org.apache.commons.lang.StringUtils;
@@ -20,6 +22,8 @@ import java.util.*;
 
 @Log4j
 public class PublicationDeliveryParser implements NetexParser {
+
+    private static final String BOARDING_POSITION_ID_SUFFIX = "01";
 
     @Override
     public void initReferentials(Context context) throws Exception {
@@ -139,12 +143,9 @@ public class PublicationDeliveryParser implements NetexParser {
 
             // 7. parse journey patterns
             JourneyPatternsInFrame_RelStructure journeyPatternStruct = serviceFrame.getJourneyPatterns();
-            List<JAXBElement<?>> journeyPatternElements = journeyPatternStruct.getJourneyPattern_OrJourneyPatternView();
-            for (JAXBElement<?> journeyPatternElement : journeyPatternElements) {
-                JourneyPattern journeyPattern = (JourneyPattern) journeyPatternElement.getValue();
-                // TODO consider generating a more sophisticated id
-                NetexObjectUtil.addJourneyPatternReference(referential, journeyPattern.getId(), journeyPattern);
-            }
+            context.put(NETEX_LINE_DATA_CONTEXT, journeyPatternStruct);
+            JourneyPatternParser journeyPatternParser = (JourneyPatternParser) ParserFactory.create(JourneyPatternParser.class.getName());
+            journeyPatternParser.initReferentials(context);
         }
     }
 
@@ -195,9 +196,6 @@ public class PublicationDeliveryParser implements NetexParser {
         Referential referential = (Referential) context.get(REFERENTIAL);
         NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
 
-        Map<String, Object> cachedNetexData = new HashMap<>();
-        context.put(NETEX_LINE_DATA_ID_CONTEXT, cachedNetexData);
-
         // TODO: find out how to handle common data frames, this is how it was done in previous version
 /*
         List<Object> foundFrames = new ArrayList<Object>();
@@ -240,20 +238,57 @@ public class PublicationDeliveryParser implements NetexParser {
 */
 
     private void parseSiteFrames(Context context, Referential referential, NetexReferential netexReferential) throws Exception {
+        // TODO move up the hiearchy to main parse method
+        // TODO consider where to get coordinate projection from, configuration?
+        //NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
+        //String projection = configuration.getCoordinateProjection();
+
         Collection<SiteFrame> siteFrames = netexReferential.getSiteFrames().values();
+
         if (!isCollectionEmpty(siteFrames)) {
+
             for (SiteFrame siteFrame : siteFrames) {
                 // TODO retrieve stop places from referential instead
+                // TODO retrieve stop places from NSR instead
                 StopPlacesInFrame_RelStructure stopPlacesStruct = siteFrame.getStopPlaces();
                 List<StopPlace> stopPlaces = stopPlacesStruct.getStopPlace();
+
                 for (StopPlace stopPlace : stopPlaces) {
                     StopArea stopArea = ObjectFactory.getStopArea(referential, stopPlace.getId());
                     stopArea.setName(stopPlace.getName().getValue());
                     stopArea.setRegistrationNumber(stopPlace.getShortName().getValue());
                     stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
+
+                    // TODO implement setting coordinates on stop area, see block comment below
+/*
+                    stopArea.setLongitude(_y);
+                    stopArea.setLatitude(_x);
+                    stopArea.setLongLatType(LongLatTypeEnum.WGS84);
+                    stopArea.setX(x);
+                    stopArea.setY(y);
+                    stopArea.setProjectionType(projection);
+*/
+
                     stopArea.setFilled(true);
 
-                    // TODO: add support for boarding positions, and connect to StopArea as parent
+                    // TODO implement a generic ObjectIdGenerator for use here
+                    //String boardingPositionObjectId = ObjectIdCreator.createStopAreaId(configuration, stop.getFullStopId() + BOARDING_POSITION_ID_SUFFIX);
+
+                    String boardingPositionObjectId = stopPlace.getId() + "-" + BOARDING_POSITION_ID_SUFFIX;
+                    StopArea boardingPosition = ObjectFactory.getStopArea(referential, boardingPositionObjectId);
+                    boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
+
+                    // TODO implement coordinate settings
+/*
+                    boardingPosition.setY(stopArea.getY());
+                    boardingPosition.setX(stopArea.getX());
+                    boardingPosition.setProjectionType(stopArea.getProjectionType());
+                    boardingPosition.setLatitude(stopArea.getLatitude());
+                    boardingPosition.setLongitude(stopArea.getLongitude());
+                    boardingPosition.setLongLatType(stopArea.getLongLatType());
+*/
+                    boardingPosition.setName(stopArea.getName());
+                    boardingPosition.setParent(stopArea);
                 }
             }
         }
@@ -276,19 +311,19 @@ public class PublicationDeliveryParser implements NetexParser {
 
     private void parseServiceFrame(Context context, Referential referential, PublicationDeliveryStructure lineData,
                                    List<PublicationDeliveryStructure> commonData, ServiceFrame serviceFrame) throws Exception {
-        // TODO: consider as method argument instead
-        Map<String, Object> cachedNetexData = (Map<String, Object>) context.get(NETEX_LINE_DATA_ID_CONTEXT);
-
         Network network = serviceFrame.getNetwork();
-        mobi.chouette.model.Network ptNetwork = ObjectFactory.getPTNetwork(referential, network.getId());
-        ptNetwork.setName(network.getName().getValue());
+        context.put(NETEX_LINE_DATA_CONTEXT, network);
+        Parser networkParser = ParserFactory.create(NetworkParser.class.getName());
+        networkParser.parse(context);
 
         RoutePointsInFrame_RelStructure routePointsStructure = serviceFrame.getRoutePoints();
         List<RoutePoint> routePoints = routePointsStructure.getRoutePoint();
 
+        // TODO consider parsing route points, needed?
+/*
         for (RoutePoint routePoint : routePoints) {
-            cachedNetexData.put(routePoint.getId(), routePoint);
         }
+*/
 
         RoutesInFrame_RelStructure routesStructure = serviceFrame.getRoutes();
         context.put(NETEX_LINE_DATA_CONTEXT, routesStructure);
@@ -310,7 +345,7 @@ public class PublicationDeliveryParser implements NetexParser {
 
             if (scheduledStopPointRef != null && StringUtils.isNotEmpty(scheduledStopPointRef.getRef()) &&
                     stopPlaceRef != null && StringUtils.isNotEmpty(stopPlaceRef.getRef())) {
-                cachedNetexData.put(scheduledStopPointRef.getRef(), stopPlaceRef.getRef());
+                // TODO implemenation needed?
             }
         }
 

@@ -3,12 +3,14 @@
 <suite name="exchangeNeptune" verbose="5">
    
    
+<!--
 <test name="ExportNeptune">
        <packages>
          <package name="mobi.chouette.exchange.neptune.exporter" >
          </package>
        </packages>
 </test>
+-->
 
    <test name="ImportNeptune">
        <packages>
@@ -17,6 +19,7 @@
        </packages>
    </test>
    
+<!--
    <test name="ValidationNeptune">
        <packages>
          <package name="mobi.chouette.exchange.neptune.validation" >
@@ -36,5 +39,6 @@
 	      </package>
 	    </packages>
 	</test>  
-   
+-->
+
 </suite>

@@ -132,6 +132,15 @@ public class NetexObjectUtil {
         return dayType;
     }
 
+    public static void addNetworkReference(NetexReferential referential, String objectId, Network network) {
+        if (network == null) {
+            throw new NullPointerException("Unknown network : " + objectId);
+        }
+        if (!referential.getNetworks().containsKey(objectId)) {
+            referential.getNetworks().put(objectId, network);
+        }
+    }
+
     public static void addRoutePointReference(NetexReferential referential, String objectId, RoutePoint routePoint) {
         if (routePoint == null) {
             throw new NullPointerException("Unknown route point : " + objectId);
@@ -156,6 +165,14 @@ public class NetexObjectUtil {
             throw new NullPointerException("Unknown route : " + objectId);
         }
         return route;
+    }
+
+    public static RoutePoint getRoutePoint(NetexReferential referential, String objectId) {
+        RoutePoint routePoint = referential.getRoutePoints().get(objectId);
+        if (routePoint == null) {
+            throw new NullPointerException("Unknown route point : " + objectId);
+        }
+        return routePoint;
     }
 
     public static void addLineReference(NetexReferential referential, String objectId, Line line) {
@@ -277,12 +294,29 @@ public class NetexObjectUtil {
         }
     }
 
+    public static void addStopPointInJourneyPatternReference(NetexReferential referential, String objectId, StopPointInJourneyPattern stopPointInJourneyPattern) {
+        if (stopPointInJourneyPattern == null) {
+            throw new NullPointerException("Unknown stop point in journey pattern : " + objectId);
+        }
+        if (!referential.getStopPointsInJourneyPattern().containsKey(objectId)) {
+            referential.getStopPointsInJourneyPattern().put(objectId, stopPointInJourneyPattern);
+        }
+    }
+
     public static JourneyPattern getJourneyPattern(NetexReferential referential, String objectId) {
         JourneyPattern journeyPattern = referential.getJourneyPatterns().get(objectId);
         if (journeyPattern == null) {
             throw new NullPointerException("Unknown journey pattern : " + objectId);
         }
         return journeyPattern;
+    }
+
+    public static StopPointInJourneyPattern getStopPointInJourneyPattern(NetexReferential referential, String objectId) {
+        StopPointInJourneyPattern stopPointInJourneyPattern = referential.getStopPointsInJourneyPattern().get(objectId);
+        if (stopPointInJourneyPattern == null) {
+            throw new NullPointerException("Unknown stop point in journey pattern : " + objectId);
+        }
+        return stopPointInJourneyPattern;
     }
 
     public static void addServiceJourneyReference(NetexReferential referential, String objectId, ServiceJourney serviceJourney) {

@@ -82,7 +82,7 @@ public class ValidationTests implements Constant, ReportConstant {
         file.mkdirs();
         test.setReferential("chouette_gui");
         test.setAction(IMPORTER);
-        test.setType("netex");
+        test.setType("netexprofile");
         context.put("testng", "true");
         context.put(OPTIMIZED, Boolean.FALSE);
         return context;

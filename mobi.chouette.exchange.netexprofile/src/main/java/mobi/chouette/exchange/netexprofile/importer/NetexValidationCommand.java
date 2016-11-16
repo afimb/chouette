@@ -38,13 +38,6 @@ public class NetexValidationCommand implements Command, Constant {
             }
 
             result = !reporter.hasFileValidationErrors(context, fileName);
-
-            // TODO consider need for stats in report
-/*
-            if (result) {
-                addStats(context, reporter, validationContext, referential);
-            }
-*/
         } catch (Exception e) {
             log.error("Netex validation failed ", e);
             throw e;
@@ -57,13 +50,9 @@ public class NetexValidationCommand implements Command, Constant {
             reporter.addFileErrorInReport(context, fileName,
                     ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, "Netex compliance failed");
         }
+
         return result;
     }
-
-    private void addStats(Context context, ActionReporter reporter, Context validationContext, Referential referential) {
-        // TODO: implement
-    }
-
 
     public static class DefaultCommandFactory extends CommandFactory {
         @Override

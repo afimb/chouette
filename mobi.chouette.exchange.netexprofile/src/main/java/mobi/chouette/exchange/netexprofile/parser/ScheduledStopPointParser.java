@@ -8,21 +8,21 @@ import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.ScheduledStopPointValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import org.apache.commons.lang.StringUtils;
-import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.ScheduledStopPoint;
 import org.rutebanken.netex.model.ScheduledStopPointsInFrame_RelStructure;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 @Log4j
 public class ScheduledStopPointParser implements NetexParser {
+
+    private static final String BOARDING_POSITION_ID_SUFFIX = "01";
 
     @Override
     public void initReferentials(Context context) throws Exception {
@@ -44,24 +44,57 @@ public class ScheduledStopPointParser implements NetexParser {
         NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
         Collection<ScheduledStopPoint> scheduledStopPoints = netexReferential.getScheduledStopPoints().values();
 
+        // TODO consider how to retrieve the stop points in the correct order from referential, maybe need for sorting first, also to be able to get the first stop in order
+        int index = 1;
         for (ScheduledStopPoint scheduledStopPoint : scheduledStopPoints) {
             String scheduledStopPointId = scheduledStopPoint.getId();
-            StopPoint stopPoint = ObjectFactory.getStopPoint(referential, scheduledStopPoint.getId());
+            String chouetteStopPointId =  scheduledStopPointId + "-" + index;
 
-            Map<String, Object> cachedNetexData = (Map<String, Object>) context.get(NETEX_LINE_DATA_ID_CONTEXT);
-            String stopPlaceRefId = (String) cachedNetexData.get(scheduledStopPointId);
-            StopArea containedInStopArea = ObjectFactory.getStopArea(referential, stopPlaceRefId);
-            stopPoint.setContainedInStopArea(containedInStopArea);
+            StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
+            stopPoint.setPosition(index);
 
-            // optional
-            MultilingualString scheduledStopPointName = scheduledStopPoint.getName();
-            if (scheduledStopPointName != null) {
-                String scheduledStopPointNameValue = scheduledStopPointName.getValue();
-                if (StringUtils.isNotEmpty(scheduledStopPointNameValue)) {
-                    stopPoint.setComment(scheduledStopPointNameValue);
+            // TODO find out how to get a reference to the correct route to be set on this stop point, probably we need to cache the route id in this parser in init referential command, like we do for validators
+            // the scheduled stop point ids are accessible from a route through the route points, for now using the only single route present
+            for (Route route : referential.getRoutes().values()) {
+                if (route.isFilled()) {
+                    stopPoint.setRoute(route);
                 }
             }
+
+            // TODO find out if this stop area must be the same as the actual stop place's stop area created in PublicationDeliveryParser when parsing StopPlace's
+            // TODO looks like this is searching for an existing stop area, and not creating a new if necessary, setting static value for now to test
+            //String chouetteStopAreaId = scheduledStopPointId + "-" + BOARDING_POSITION_ID_SUFFIX;
+            String chouetteStopAreaId = "NSR:StopPlace:0301152" + index + "-" + BOARDING_POSITION_ID_SUFFIX;
+            StopArea stopArea = referential.getSharedStopAreas().get(chouetteStopAreaId);
+
+            if(stopArea != null) {
+                stopPoint.setContainedInStopArea(stopArea);
+
+                // TODO find out if we need to set the line number or scheduled stop point name as a comment
+                // Warn: Using comment field as temporary storage for line pointer. Used for lookup when parsing passing times
+                //stopPoint.setComment(lineNumber);
+
+                // optional
+/*
+                MultilingualString scheduledStopPointName = scheduledStopPoint.getName();
+                if (scheduledStopPointName != null) {
+                    String scheduledStopPointNameValue = scheduledStopPointName.getValue();
+                    if (StringUtils.isNotEmpty(scheduledStopPointNameValue)) {
+                        stopPoint.setComment(scheduledStopPointNameValue);
+                    }
+                }
+*/
+
+                // TODO find out how to make this stop point available to JourneyPatternParser and RouteParser
+                // Add stop point to journey pattern AND route (for now)
+                //journeyPattern.addStopPoint(stopPoint);
+                //route.getStopPoints().add(stopPoint);
+            } else {
+                log.warn("StopArea with id " + chouetteStopAreaId + " not found ");
+            }
+
             stopPoint.setFilled(true);
+            index++;
         }
     }
 

@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 
 public class NetexSchemaValidatorCommandTest {
 
-	@Test
+	@Test(enabled = false)
 	public void testValidateDocument() throws Exception {
 		Context context = new Context();
 		NetexprofileImportParameters configuration = new NetexprofileImportParameters();

@@ -1,13 +1,13 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
+<!-- Rename suite to exchangeNetex -->
+<!-- Rename tests to ImportNetex, ValidationNetex etc... -->
 <suite name="Factory" verbose="5">
-<!--
 	<test name="Importer">
 		<packages>
 			<package name="mobi.chouette.exchange.netexprofile.importer"/>
 		</packages>
 	</test>
--->
 	<test name="Validation">
 		<packages>
 			<package name="mobi.chouette.exchange.netexprofile.importer.validation.norway"/>

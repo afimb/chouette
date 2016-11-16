@@ -54,6 +54,10 @@ public class NetexReferential implements Serializable {
 
     @Getter
     @Setter
+    private Map<String, Network> networks = new HashMap<>();
+
+    @Getter
+    @Setter
     private Map<String, RoutePoint> routePoints = new HashMap<>();
 
     @Getter
@@ -78,6 +82,10 @@ public class NetexReferential implements Serializable {
 
     @Getter
     @Setter
+    private Map<String, StopPointInJourneyPattern> stopPointsInJourneyPattern = new HashMap<>();
+
+    @Getter
+    @Setter
     /**
      * TODO add generics support for more generic types here, i.e. VechicleJourney or Journey
      */
@@ -93,12 +101,14 @@ public class NetexReferential implements Serializable {
         operators.clear();
         organisations.clear();
         dayTypes.clear();
+        networks.clear();
         routePoints.clear();
         routes.clear();
         lines.clear();
         passengerStopAssignments.clear();
         scheduledStopPoints.clear();
         journeyPatterns.clear();
+        stopPointsInJourneyPattern.clear();
         serviceJourneys.clear();
     }
 

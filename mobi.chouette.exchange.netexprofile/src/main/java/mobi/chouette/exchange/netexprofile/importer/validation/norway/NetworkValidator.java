@@ -107,11 +107,13 @@ public class NetworkValidator extends AbstractValidator implements Validator<Net
             //dataLocation.setName("GroupOfLines");
             //addValidationError(context, NETWORK_3, "Missing mandatory element : 'groupsOfLines' or 'GroupOfLines'", dataLocation);
             //addValidationError(context, NETWORK_2, "Missing mandatory element : 'groupsOfLines' or 'GroupOfLines'", dataLocation);
+            // TODO split this up in two
             ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
             validationReporter.addCheckPointReportError(context, NETWORK_2,
                     "Missing mandatory element : 'groupsOfLines' or 'GroupOfLines'", dataLocation, target.getId(), target.getId());
         } else {
             // TODO validate group of lines here...
+            // TODO also validate name element of each GroupOfLines element
         }
 
         // TODO: change back to NETWORK_4 when validator complete
