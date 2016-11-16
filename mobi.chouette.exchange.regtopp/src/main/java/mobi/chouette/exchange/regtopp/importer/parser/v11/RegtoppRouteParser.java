@@ -94,16 +94,19 @@ public class RegtoppRouteParser extends LineSpecificParser {
 
 						String chouetteStopAreaId = ObjectIdCreator.createStopAreaId(configuration, routeSegment.getStopId() + RegtoppStopParser.BOARDING_POSITION_ID_SUFFIX);
 
-						StopArea stopArea = ObjectFactory.getStopArea(referential, chouetteStopAreaId);
+						StopArea stopArea= referential.getSharedStopAreas().get(chouetteStopAreaId);
+						if(stopArea != null) {
+							stopPoint.setContainedInStopArea(stopArea);
 
-						stopPoint.setContainedInStopArea(stopArea);
+							// Warn: Using comment field as temporary storage for line pointer. Used for lookup when parsing passing times
+							stopPoint.setComment(lineNumber);
 
-						// Warn: Using comment field as temporary storage for line pointer. Used for lookup when parsing passing times
-						stopPoint.setComment(lineNumber);
-
-						// Add stop point to journey pattern AND route (for now)
-						journeyPattern.addStopPoint(stopPoint);
-						route.getStopPoints().add(stopPoint);
+							// Add stop point to journey pattern AND route (for now)
+							journeyPattern.addStopPoint(stopPoint);
+							route.getStopPoints().add(stopPoint);
+						} else {
+							log.warn("StopArea with id "+chouetteStopAreaId+" not found for JourneyPattern "+chouetteJourneyPatternId+ " in Line "+chouetteLineId);
+						}
 					}
 					journeyPattern.setFilled(true);
 				}
