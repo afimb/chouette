@@ -2,6 +2,7 @@ package mobi.chouette.model.util;
 
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
@@ -25,7 +26,9 @@ public class ObjectFactory {
 		AccessLink result = referential.getSharedAccessLinks().get(objectId);
 		if (result == null) {
 			result = new AccessLink();
-			result.setObjectId(objectId);
+			result.setChouetteId(new ChouetteId());
+			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
+			result.getChouetteId().setObjectId(objectId);
 			result.setDetached(true);
 			referential.getSharedAccessLinks().put(objectId, result);
 		}
@@ -42,7 +45,9 @@ public class ObjectFactory {
 		AccessPoint result = referential.getSharedAccessPoints().get(objectId);
 		if (result == null) {
 			result = new AccessPoint();
-			result.setObjectId(objectId);
+			result.setChouetteId(new ChouetteId());
+			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
+			result.getChouetteId().setObjectId(objectId);
 			result.setDetached(true);
 			referential.getSharedAccessPoints().put(objectId, result);
 		}
@@ -59,7 +64,9 @@ public class ObjectFactory {
 		if (result == null) {
 			result = new Timetable();
 			result.setDetached(true);
-			result.setObjectId(objectId);
+			result.setChouetteId(new ChouetteId());
+			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
+			result.getChouetteId().setObjectId(objectId);
 			referential.getSharedTimetables().put(objectId, result);
 		}
 		if (!referential.getTimetables().containsKey(objectId)) {
@@ -81,7 +88,9 @@ public class ObjectFactory {
 		if (result == null) {
 			result = new Network();
 			result.setDetached(true);
-			result.setObjectId(objectId);
+			result.setChouetteId(new ChouetteId());
+			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
+			result.getChouetteId().setObjectId(objectId);
 			referential.getSharedPTNetworks().put(objectId, result);
 		}
 		if (!referential.getPtNetworks().containsKey(objectId)) {
@@ -95,7 +104,9 @@ public class ObjectFactory {
 		Company result = referential.getSharedCompanies().get(objectId);
 		if (result == null) {
 			result = new Company();
-			result.setObjectId(objectId);
+			result.setChouetteId(new ChouetteId());
+			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
+			result.getChouetteId().setObjectId(objectId);
 			result.setDetached(true);
 			referential.getSharedCompanies().put(objectId, result);
 		}
@@ -111,7 +122,9 @@ public class ObjectFactory {
 		if (result == null) {
 			result = new Route();
 			result.setDetached(true);
-			result.setObjectId(objectId);
+			result.setChouetteId(new ChouetteId());
+			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
+			result.getChouetteId().setObjectId(objectId);
 			referential.getRoutes().put(objectId, result);
 		}
 		return result;
@@ -122,7 +135,9 @@ public class ObjectFactory {
 		if (result == null) {
 			result = new Line();
 			result.setDetached(true);
-			result.setObjectId(objectId);
+			result.setChouetteId(new ChouetteId());
+			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
+			result.getChouetteId().setObjectId(objectId);
 			referential.getLines().put(objectId, result);
 		}
 		return result;
@@ -133,7 +148,9 @@ public class ObjectFactory {
 		JourneyPattern result = referential.getJourneyPatterns().get(objectId);
 		if (result == null) {
 			result = new JourneyPattern();
-			result.setObjectId(objectId);
+			result.setChouetteId(new ChouetteId());
+			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
+			result.getChouetteId().setObjectId(objectId);
 			result.setDetached(true);
 			referential.getJourneyPatterns().put(objectId, result);
 		}
@@ -146,7 +163,9 @@ public class ObjectFactory {
 				objectId);
 		if (result == null) {
 			result = new ConnectionLink();
-			result.setObjectId(objectId);
+			result.setChouetteId(new ChouetteId());
+			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
+			result.getChouetteId().setObjectId(objectId);
 			result.setDetached(true);
 			referential.getSharedConnectionLinks().put(objectId, result);
 		}
@@ -161,7 +180,9 @@ public class ObjectFactory {
 		StopArea result = referential.getSharedStopAreas().get(objectId);
 		if (result == null) {
 			result = new StopArea();
-			result.setObjectId(objectId);
+			result.setChouetteId(new ChouetteId());
+			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
+			result.getChouetteId().setObjectId(objectId);
 			result.setDetached(true);
 			referential.getSharedStopAreas().put(objectId, result);
 		} 
@@ -177,7 +198,9 @@ public class ObjectFactory {
 		RoutingConstraint result = referential.getSharedRoutingConstraints().get(objectId);
 		if (result == null) {
 			result = new RoutingConstraint();
-			result.setObjectId(objectId);
+			result.setChouetteId(new ChouetteId());
+			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
+			result.getChouetteId().setObjectId(objectId);
 			result.setDetached(true);
 			referential.getSharedRoutingConstraints().put(objectId, result);
 		} 
@@ -193,7 +216,9 @@ public class ObjectFactory {
 		GroupOfLine result = referential.getSharedGroupOfLines().get(objectId);
 		if (result == null) {
 			result = new GroupOfLine();
-			result.setObjectId(objectId);
+			result.setChouetteId(new ChouetteId());
+			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
+			result.getChouetteId().setObjectId(objectId);
 			result.setDetached(true);
 			referential.getSharedGroupOfLines().put(objectId, result);
 		}
@@ -209,7 +234,9 @@ public class ObjectFactory {
 		StopPoint result = referential.getStopPoints().get(objectId);
 		if (result == null) {
 			result = new StopPoint();
-			result.setObjectId(objectId);
+			result.setChouetteId(new ChouetteId());
+			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
+			result.getChouetteId().setObjectId(objectId);
 			result.setDetached(true);
 			referential.getStopPoints().put(objectId, result);
 		}
@@ -221,7 +248,9 @@ public class ObjectFactory {
 		VehicleJourney result = referential.getVehicleJourneys().get(objectId);
 		if (result == null) {
 			result = new VehicleJourney();
-			result.setObjectId(objectId);
+			result.setChouetteId(new ChouetteId());
+			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
+			result.getChouetteId().setObjectId(objectId);
 			result.setDetached(true);
 			referential.getVehicleJourneys().put(objectId, result);
 		}
@@ -232,7 +261,9 @@ public class ObjectFactory {
 		Timeband timeband = referential.getTimebands().get(objectId);
 		if (timeband == null) {
 			timeband = new Timeband();
-			timeband.setObjectId(objectId);
+			timeband.setChouetteId(new ChouetteId());
+			timeband.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
+			timeband.getChouetteId().setObjectId(objectId);
 			timeband.setDetached(true);
 			referential.getTimebands().put(objectId, timeband);
 		}
@@ -244,7 +275,9 @@ public class ObjectFactory {
 		RouteSection section = referential.getRouteSections().get(objectId);
 		if (section == null) {
 			section = new RouteSection();
-			section.setObjectId(objectId);
+			section.setChouetteId(new ChouetteId());
+			section.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
+			section.getChouetteId().setObjectId(objectId);
 			section.setDetached(true);
 			referential.getRouteSections().put(objectId, section);
 		}

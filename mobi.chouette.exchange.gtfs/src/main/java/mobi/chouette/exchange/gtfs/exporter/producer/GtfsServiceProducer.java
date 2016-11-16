@@ -51,7 +51,7 @@ AbstractProducer
 
       if (reduced == null) return false;
 
-      String serviceId = toGtfsId(reduced.getObjectId(), prefix);
+      String serviceId = toGtfsId(reduced.getChouetteId().getObjectId(), prefix);
 
       if (!isEmpty(reduced.getPeriods()))
       {
@@ -263,7 +263,7 @@ AbstractProducer
 			}
             
          }
-         merged.setObjectId(prefix+":"+Timetable.TIMETABLE_KEY+":"+key(timetables,prefix));
+         merged.getChouetteId().setObjectId(prefix+":"+Timetable.TIMETABLE_KEY+":"+key(timetables,prefix));
       }
       merged.computeLimitOfPeriods();
       return merged;
@@ -291,7 +291,7 @@ AbstractProducer
       String key = "";
       for (Timetable timetable : timetables)
       {
-         key += "-"+toGtfsId(timetable.getObjectId(), prefix);
+         key += "-"+toGtfsId(timetable.getChouetteId().getObjectId(), prefix);
       }
       return key.substring(1);
    }
@@ -301,7 +301,7 @@ AbstractProducer
       @Override
       public int compare(Timetable arg0, Timetable arg1)
       {
-         return arg0.getObjectId().compareTo(arg1.getObjectId());
+         return arg0.getChouetteId().getObjectId().compareTo(arg1.getChouetteId().getObjectId());
       }
 
    }

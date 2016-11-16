@@ -169,11 +169,11 @@ public class ValidatorCommand implements Command, Constant {
 			// TODO a mettre dans une commande dédiée
 			ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 			Line line = data.getCurrentLine();
-			reporter.addObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line), OBJECT_STATE.OK, IO_TYPE.INPUT);
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN, data.getJourneyPatterns().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, data.getRoutes().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY, data.getVehicleJourneys().size());
+			reporter.addObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line), OBJECT_STATE.OK, IO_TYPE.INPUT);
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN, data.getJourneyPatterns().size());
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, data.getRoutes().size());
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY, data.getVehicleJourneys().size());
 
 			if (!validateFailed) 
 			{

@@ -36,10 +36,10 @@ public class HubGroupeDeLigneProducer extends AbstractProducer {
 
 		String name = neptuneObject.getName();
 		if (name.trim().isEmpty()) {
-			log.error("no name for " + neptuneObject.getObjectId());
+			log.error("no name for " + neptuneObject.getChouetteId().getObjectId());
 			// HubReportItem item = new HubReportItem(
 			// HubReportItem.KEY.MISSING_DATA, STATE.ERROR, "Nom",
-			// neptuneObject.getObjectId(), "Name");
+			// neptuneObject.getChouetteId().getObjectId(), "Name");
 			// report.addItem(item);
 			return false;
 		}

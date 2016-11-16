@@ -17,8 +17,6 @@ import javax.persistence.criteria.Root;
 
 import mobi.chouette.dao.GenericDAO;
 
-import org.hibernate.Session;
-
 import com.google.common.collect.Iterables;
 
 public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
@@ -77,34 +75,38 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public T findByObjectId(final String objectId) {
-		Session session = em.unwrap(Session.class);
-		T result = (T) session.bySimpleNaturalId(type).load(objectId);
-
-		return result;
-	}
-
-
-	@Override
-	public List<T> findByObjectId(final Collection<String> objectIds) {
+	// TODO : Voir si cela est nécessaire : D'ici on ne peut pas accéder aux classes du modèle
+//	@SuppressWarnings("unchecked")
+//	public T findByChouetteId(final String codeSpace, final String objectId) {
+//		Session session = em.unwrap(Session.class);
+//		T result = (T) session.byNaturalId(type)
+//						.using( "chouetteId", new ChouetteId())
+//						.using( "codeSpace", codeSpace )
+//						.using( "objectId", objectId )
+//						.load();
+//
+//		return result;
+//	}
+		
+	public List<T> findByChouetteId(final String codeSpace, final Collection<String> objectIds) {
 		// System.out.println("GenericDAOImpl.findByObjectId() : " + objectIds);
 		List<T> result = null;
-		if (objectIds.isEmpty()) return result;
-		
+		if (objectIds.isEmpty())
+			return result;
+
 		Iterable<List<String>> iterator = Iterables.partition(objectIds, 32000);
 		for (List<String> ids : iterator) {
 			CriteriaBuilder builder = em.getCriteriaBuilder();
 			CriteriaQuery<T> criteria = builder.createQuery(type);
 			Root<T> root = criteria.from(type);
-			Predicate predicate = builder.in(root.get("objectId")).value(ids);
+			Predicate predicate = builder.equal(root.get("chouetteId").get("codeSpace"), codeSpace);
+			predicate = builder.and(predicate, builder.in(root.get("chouetteId").get("objectId")).value(ids));
 			criteria.where(predicate);
 			TypedQuery<T> query = em.createQuery(criteria);
 			if (result == null)
-			   result = query.getResultList();
+				result = query.getResultList();
 			else
-			   result.addAll(query.getResultList());
+				result.addAll(query.getResultList());
 		}
 		return result;
 	}

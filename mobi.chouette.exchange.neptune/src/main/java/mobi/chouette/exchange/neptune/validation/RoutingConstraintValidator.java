@@ -139,16 +139,16 @@ public class RoutingConstraintValidator extends AbstractValidator implements Val
 			if (lineId != null)
 			{
 				prepareCheckPoint(context, ITL_5);
-				if (!lineId.equals(line.getObjectId()))
+				if (!lineId.equals(line.getChouetteId().getObjectId()))
 				{
-					Context lineData = (Context) lineContext.get(line.getObjectId());
+					Context lineData = (Context) lineContext.get(line.getChouetteId().getObjectId());
 					lineNumber = ((Integer) lineData.get(LINE_NUMBER)).intValue();
 					columnNumber = ((Integer) lineData.get(COLUMN_NUMBER)).intValue();
 
 
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, ITL_5, new DataLocation(fileName, lineNumber, columnNumber, objectId), lineId);
-					validationReporter.addTargetLocationToCheckPointError(context, ITL_5, fileLocations.get(line.getObjectId()));
+					validationReporter.addTargetLocationToCheckPointError(context, ITL_5, fileLocations.get(line.getChouetteId().getObjectId()));
 				}
 
 			}
@@ -184,36 +184,36 @@ public class RoutingConstraintValidator extends AbstractValidator implements Val
 
 			for (StopArea child : routingConstraint.getRoutingConstraintAreas()) 
 			{
-				if (routingConstraintLocalContext.containsKey(child.getObjectId())) 
+				if (routingConstraintLocalContext.containsKey(child.getChouetteId().getObjectId())) 
 				{
 					// wrong reference type
 
 					//								Detail errorItem = new Detail(
 					//										ITL_1,
-					//										fileLocations.get(stopArea.getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.ITL.toString());
-					//								errorItem.getTargets().add(fileLocations.get(child.getObjectId()));
+					//										fileLocations.get(stopArea.getChouetteId().getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.ITL.toString());
+					//								errorItem.getTargets().add(fileLocations.get(child.getChouetteId().getObjectId()));
 					//								addValidationError(context,ITL_1, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, ITL_1, fileLocations.get(routingConstraint.getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.ITL.toString());
-					validationReporter.addTargetLocationToCheckPointError(context, ITL_1, fileLocations.get(child.getObjectId()));
+					validationReporter.addCheckPointReportError(context, ITL_1, fileLocations.get(routingConstraint.getChouetteId().getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.ITL.toString());
+					validationReporter.addTargetLocationToCheckPointError(context, ITL_1, fileLocations.get(child.getChouetteId().getObjectId()));
 				}
-				else if (stopPointContext.containsKey(child.getObjectId()))
+				else if (stopPointContext.containsKey(child.getChouetteId().getObjectId()))
 				{
 					// wrong reference type
 					//							Detail errorItem = new Detail(
 					//									ITL_1,
-					//									fileLocations.get(stopArea.getObjectId()), "StopPoint",ChouetteAreaEnum.ITL.toString());
-					//							errorItem.getTargets().add(fileLocations.get( child.getObjectId()));
+					//									fileLocations.get(stopArea.getChouetteId().getObjectId()), "StopPoint",ChouetteAreaEnum.ITL.toString());
+					//							errorItem.getTargets().add(fileLocations.get( child.getChouetteId().getObjectId()));
 					//							addValidationError(context,ITL_1, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, ITL_1, fileLocations.get(routingConstraint.getObjectId()), "StopPoint",ChouetteAreaEnum.ITL.toString());
-					validationReporter.addTargetLocationToCheckPointError(context, ITL_1, fileLocations.get(child.getObjectId()));
+					validationReporter.addCheckPointReportError(context, ITL_1, fileLocations.get(routingConstraint.getChouetteId().getObjectId()), "StopPoint",ChouetteAreaEnum.ITL.toString());
+					validationReporter.addTargetLocationToCheckPointError(context, ITL_1, fileLocations.get(child.getChouetteId().getObjectId()));
 				}
 
 			}
 
 
-			Context itlData = (Context) itlLocalContext.get(routingConstraint.getObjectId());
+			Context itlData = (Context) itlLocalContext.get(routingConstraint.getChouetteId().getObjectId());
 			// 2-NEPTUNE-ITL-2 : if stoparea is ITL : check if a ITLType
 			// object refers it
 			prepareCheckPoint(context,ITL_2);
@@ -222,10 +222,10 @@ public class RoutingConstraintValidator extends AbstractValidator implements Val
 				// unused ITL Stop
 				//				Detail errorItem = new Detail(
 				//						ITL_2,
-				//						fileLocations.get(stopArea.getObjectId()));
+				//						fileLocations.get(stopArea.getChouetteId().getObjectId()));
 				//				addValidationError(context,ITL_2, errorItem);
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-				validationReporter.addCheckPointReportError(context, ITL_2, fileLocations.get(routingConstraint.getObjectId()));
+				validationReporter.addCheckPointReportError(context, ITL_2, fileLocations.get(routingConstraint.getChouetteId().getObjectId()));
 			}	
 
 			

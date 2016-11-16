@@ -4,6 +4,7 @@ import java.io.File;
 
 import javax.ejb.EJB;
 
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Line;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
@@ -61,7 +62,11 @@ public class LineDaoTest extends Arquillian
 	{
 		Line l = new Line();
 		l.setName("toto");
-		l.setObjectId("test:Line:"+id);
+//		l.getChouetteId().setObjectId("test:Line:"+id);
+		ChouetteId chouetteId = new ChouetteId();
+		chouetteId.setCodeSpace("test");
+		chouetteId.setObjectId(String.valueOf(id));
+		l.setChouetteId(chouetteId);
 		id++;
 		
 		return l;

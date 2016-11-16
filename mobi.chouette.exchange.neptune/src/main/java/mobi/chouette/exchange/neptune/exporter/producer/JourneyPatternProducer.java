@@ -18,9 +18,9 @@ public class JourneyPatternProducer extends AbstractJaxbNeptuneProducer<JourneyP
 		jaxbJourneyPattern.setName(journeyPattern.getName());
 		jaxbJourneyPattern.setPublishedName(journeyPattern.getPublishedName());
 		if (journeyPattern.getArrivalStopPoint() != null)
-			jaxbJourneyPattern.setDestination(journeyPattern.getArrivalStopPoint().getObjectId());
+			jaxbJourneyPattern.setDestination(journeyPattern.getArrivalStopPoint().getChouetteId().getObjectId());
 		if (journeyPattern.getDepartureStopPoint() != null)
-			jaxbJourneyPattern.setOrigin(journeyPattern.getDepartureStopPoint().getObjectId());
+			jaxbJourneyPattern.setOrigin(journeyPattern.getDepartureStopPoint().getChouetteId().getObjectId());
 		jaxbJourneyPattern.setRegistration(getRegistration(journeyPattern.getRegistrationNumber()));
 		jaxbJourneyPattern.setRouteId(getNonEmptyObjectId(journeyPattern.getRoute()));
 		jaxbJourneyPattern.getStopPointList()

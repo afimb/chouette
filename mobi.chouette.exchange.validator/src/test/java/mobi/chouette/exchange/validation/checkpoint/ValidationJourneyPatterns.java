@@ -133,21 +133,21 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 
 			Line line = new Line();
 			line.setId(id++);
-			line.setObjectId("test1:Line:1");
+			line.getChouetteId().setObjectId("test1:Line:1");
 			line.setName("test");
 			Route route = new Route();
 			route.setId(id++);
-			route.setObjectId("test1:Route:1");
+			route.getChouetteId().setObjectId("test1:Route:1");
 			route.setName("test1");
 			route.setLine(line);
 			bean1 = new JourneyPattern();
 			bean1.setId(id++);
-			bean1.setObjectId("test1:JourneyPattern:1");
+			bean1.getChouetteId().setObjectId("test1:JourneyPattern:1");
 			bean1.setName("test1");
 			bean1.setRoute(route);
 			bean2 = new JourneyPattern();
 			bean2.setId(id++);
-			bean2.setObjectId("test2:JourneyPattern:1");
+			bean2.getChouetteId().setObjectId("test2:JourneyPattern:1");
 			bean2.setName("test2");
 			bean2.setRoute(route);
 
@@ -216,7 +216,7 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		List<CheckPointErrorReport> details = checkReportForTest(report, "4-JourneyPattern-1", 1);
 		for (CheckPointErrorReport detail : details) {
 			Assert.assertEquals(detail.getReferenceValue(), "ObjectId", "detail must refer column");
-			Assert.assertEquals(detail.getValue(), bean2.getObjectId().split(":")[2], "detail must refer value");
+			Assert.assertEquals(detail.getValue(), bean2.getChouetteId().getObjectId().split(":")[2], "detail must refer value");
 		}
 	}
 
@@ -250,10 +250,10 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 			}
 		}
 
-		route1.setObjectId("NINOXE:Route:checkedRoute");
+		route1.getChouetteId().setObjectId("NINOXE:Route:checkedRoute");
 		JourneyPattern jp1 = route1.getJourneyPatterns().get(0);
 		
-		jp1.setObjectId("NINOXE:JourneyPattern:checkedJP");
+		jp1.getChouetteId().setObjectId("NINOXE:JourneyPattern:checkedJP");
 
 		context.put(VALIDATION_DATA, data);
 
@@ -279,7 +279,7 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
-			Assert.assertEquals(detail.getSource().getObjectId(), jp1.getObjectId(),
+			Assert.assertEquals(detail.getSource().getObjectId(), jp1.getChouetteId().getObjectId(),
 					"jp 1 must be source of error");
 		}
 		utx.rollback();

@@ -5,14 +5,16 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import mobi.chouette.common.Pair;
+
 @Local
 public interface GenericDAO<T> {
 
 	T find(Object id);
 
-	T findByObjectId(String id);
+	T findByChouetteId(String codeSpace, String objectId);
 
-	List<T> findByObjectId(Collection<String> objectIds);
+	List<T> findByChouetteId(String codeSpace, Collection<String> objectIds);
 
 	List<T> findAll();
 

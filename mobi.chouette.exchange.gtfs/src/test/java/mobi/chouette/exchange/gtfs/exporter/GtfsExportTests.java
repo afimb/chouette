@@ -311,7 +311,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
                
 	utx.begin();
 	em.joinTransaction();
-	Line myLine = lineDAO.findByObjectId("CITURA:Line:01");
+	Line myLine = lineDAO.findByChouetteId("CITURA", "01");
 	myLine.setCompany(null);
 	String myLineName = myLine.getName();
 	utx.commit();

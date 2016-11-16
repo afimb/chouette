@@ -57,11 +57,11 @@ public class ValidationNetworks extends AbstractTestValidation implements Consta
 
 			bean1 = new Network();
 			bean1.setId(id++);
-			bean1.setObjectId("test1:GroupOfLine:1");
+			bean1.getChouetteId().setObjectId("test1:GroupOfLine:1");
 			bean1.setName("test1");
 			bean2 = new Network();
 			bean2.setId(id++);
-			bean2.setObjectId("test2:GroupOfLine:1");
+			bean2.getChouetteId().setObjectId("test2:GroupOfLine:1");
 			bean2.setName("test2");
 
 			beansFor4.add(bean1);

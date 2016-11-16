@@ -76,15 +76,15 @@ public class ConnectionLinkValidator extends AbstractValidator implements Valida
 		{
 			ConnectionLink connectionLink = referential.getConnectionLinks().get(objectId);
 
-			if (stopAreaContext.containsKey(connectionLink.getStartOfLink().getObjectId()) 
-					|| stopAreaContext.containsKey(connectionLink.getEndOfLink().getObjectId()))
+			if (stopAreaContext.containsKey(connectionLink.getStartOfLink().getChouetteId().getObjectId()) 
+					|| stopAreaContext.containsKey(connectionLink.getEndOfLink().getChouetteId().getObjectId()))
 				continue;
 //			Detail errorItem = new Detail(
 //					CONNECTION_LINK_1,
-//					fileLocations.get(connectionLink.getObjectId()));
+//					fileLocations.get(connectionLink.getChouetteId().getObjectId()));
 //			addValidationError(context, CONNECTION_LINK_1, errorItem);
 			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-			validationReporter.addCheckPointReportError(context, CONNECTION_LINK_1, fileLocations.get(connectionLink.getObjectId()));
+			validationReporter.addCheckPointReportError(context, CONNECTION_LINK_1, fileLocations.get(connectionLink.getChouetteId().getObjectId()));
 
 		}
 		return ;

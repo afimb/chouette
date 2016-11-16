@@ -20,7 +20,7 @@ public class VehicleJourneyAtStopDAOImpl extends
 	}
 
 	@Override
-	public VehicleJourneyAtStop findByObjectId(String objectId) {
+	public VehicleJourneyAtStop findByChouetteId(String codeSpace, String objectId) {
 		throw new UnsupportedOperationException();
 	}
 

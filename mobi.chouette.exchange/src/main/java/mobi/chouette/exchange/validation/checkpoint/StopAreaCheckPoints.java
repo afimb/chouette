@@ -271,7 +271,7 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 
 	private Collection<String> getLines(Context context, StopArea area) {
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Set<String> lines = data.getLinesOfStopAreas().get(area.getObjectId());
+		Set<String> lines = data.getLinesOfStopAreas().get(area.getChouetteId().getObjectId());
 		if (lines == null)
 			lines = new HashSet<>();
 		return lines;

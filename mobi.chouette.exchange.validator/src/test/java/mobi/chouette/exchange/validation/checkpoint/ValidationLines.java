@@ -137,15 +137,15 @@ public class ValidationLines extends AbstractTestValidation
 
 			bean1 = new Line();
 			bean1.setId(id++);
-			bean1.setObjectId("test1:Line:1");
+			bean1.getChouetteId().setObjectId("test1:Line:1");
 			bean1.setName("test1");
 			bean2 = new Line();
 			bean2.setId(id++);
-			bean2.setObjectId("test2:Line:1");
+			bean2.getChouetteId().setObjectId("test2:Line:1");
 			bean2.setName("test2");
 			bean3 = new Line();
 			bean3.setId(id++);
-			bean3.setObjectId("test3:Line:1");
+			bean3.getChouetteId().setObjectId("test3:Line:1");
 			bean3.setName("test3");
 
 		} 
@@ -213,9 +213,9 @@ public class ValidationLines extends AbstractTestValidation
 		List<CheckPointErrorReport> details = checkReportForTest(report,"4-Line-1",1);
 		CheckPointErrorReport detail = details.get(0);
 		Assert.assertEquals(detail.getReferenceValue(),"ObjectId","detail must refer column");
-		Assert.assertEquals(detail.getValue(),bean2.getObjectId().split(":")[2],"detail must refer value");
-		Assert.assertEquals(detail.getSource().getObjectId(),bean2.getObjectId(),"detail must refer second bean as source");
-		Assert.assertEquals(detail.getTargets().get(0).getObjectId(),bean1.getObjectId(),"detail must refer fisrt bean as target");
+		Assert.assertEquals(detail.getValue(),bean2.getChouetteId().getObjectId().split(":")[2],"detail must refer value");
+		Assert.assertEquals(detail.getSource().getObjectId(),bean2.getChouetteId().getObjectId(),"detail must refer second bean as source");
+		Assert.assertEquals(detail.getTargets().get(0).getObjectId(),bean1.getChouetteId().getObjectId(),"detail must refer fisrt bean as target");
 	}
 
 
@@ -228,19 +228,19 @@ public class ValidationLines extends AbstractTestValidation
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
-		bean1.setObjectId("NINOXE:Line:modelLine");
-		bean2.setObjectId("NINOXE:Line:wrongLine");
-		bean3.setObjectId("NINOXE:Line:goodLine");
+		bean1.getChouetteId().setObjectId("NINOXE:Line:modelLine");
+		bean2.getChouetteId().setObjectId("NINOXE:Line:wrongLine");
+		bean3.getChouetteId().setObjectId("NINOXE:Line:goodLine");
 
 		Network network1 = new Network();
 		network1.setId(1L);
-		network1.setObjectId("NINOXE:GroupOfLine:testNetwork1");
+		network1.getChouetteId().setObjectId("NINOXE:GroupOfLine:testNetwork1");
 		network1.setName("test network1");
 		bean1.setNetwork(network1);
 		bean2.setNetwork(network1);
 		Network network2 = new Network();
 		network2.setId(2L);
-		network2.setObjectId("NINOXE:GroupOfLine:testNetwork2");
+		network2.getChouetteId().setObjectId("NINOXE:GroupOfLine:testNetwork2");
 		network2.setName("test network2");
 		bean3.setNetwork(network2);
 
@@ -291,11 +291,11 @@ public class ValidationLines extends AbstractTestValidation
 		boolean line3objectIdFound = false;
 		for (CheckPointErrorReport detailReport : details)
 		{
-			if (detailReport.getSource().getObjectId().equals(bean1.getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(bean1.getChouetteId().getObjectId()))
 				line1objectIdFound = true;
-			if (detailReport.getSource().getObjectId().equals(bean2.getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(bean2.getChouetteId().getObjectId()))
 				line2objectIdFound = true;
-			if (detailReport.getSource().getObjectId().equals(bean3.getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(bean3.getChouetteId().getObjectId()))
 				line3objectIdFound = true;
 		}
 		Assert.assertTrue(line1objectIdFound,
@@ -327,7 +327,7 @@ public class ValidationLines extends AbstractTestValidation
 		Line line1 = beans.get(0);
 
 		// line1 is model;
-		line1.setObjectId("NINOXE:Line:modelLine");
+		line1.getChouetteId().setObjectId("NINOXE:Line:modelLine");
 
 		line1.getRoutes().clear();
 
@@ -360,7 +360,7 @@ public class ValidationLines extends AbstractTestValidation
 		}
 		for (CheckPointErrorReport detail : details) {
 			log.warn(detail);
-			Assert.assertEquals(detail.getSource().getObjectId(),line1.getObjectId(), "line must be source of error");
+			Assert.assertEquals(detail.getSource().getObjectId(),line1.getChouetteId().getObjectId(), "line must be source of error");
 		}
 
 		utx.rollback();
@@ -386,7 +386,7 @@ public class ValidationLines extends AbstractTestValidation
 		Assert.assertFalse(beans.isEmpty(), "No data for test");
 		Line line1 = beans.get(0);
 		// line1 is model;
-		line1.setObjectId("NINOXE:Line:modelLine");
+		line1.getChouetteId().setObjectId("NINOXE:Line:modelLine");
 		ValidationData data = new ValidationData();
 		context.put(VALIDATION_DATA, data);
 		data.setCurrentLine(line1);
@@ -444,7 +444,7 @@ public class ValidationLines extends AbstractTestValidation
 			List<CheckPointErrorReport> details = checkReportForTest(report,"4-Line-2",-1);
 			for (CheckPointErrorReport detail : details) {
 				log.warn(detail);
-				Assert.assertEquals(detail.getSource().getObjectId(),line1.getObjectId(), "line must be source of error");
+				Assert.assertEquals(detail.getSource().getObjectId(),line1.getChouetteId().getObjectId(), "line must be source of error");
 			}
 		}
 		utx.rollback();
@@ -471,7 +471,7 @@ public class ValidationLines extends AbstractTestValidation
 		Line line1 = beans.get(0);
 
 		// line1 is model;
-		line1.setObjectId("NINOXE:Line:modelLine");
+		line1.getChouetteId().setObjectId("NINOXE:Line:modelLine");
 		ValidationData data = new ValidationData();
 		context.put(VALIDATION_DATA, data);
 		data.setCurrentLine(line1);
@@ -531,7 +531,7 @@ public class ValidationLines extends AbstractTestValidation
 			List<CheckPointErrorReport> details = checkReportForTest(report,"4-Line-3",-1);
 			for (CheckPointErrorReport detail : details) {
 				log.warn(detail);
-				Assert.assertEquals(detail.getSource().getObjectId(),line1.getObjectId(), "line must be source of error");
+				Assert.assertEquals(detail.getSource().getObjectId(),line1.getChouetteId().getObjectId(), "line must be source of error");
 			}
 		}
 		utx.rollback();
@@ -558,7 +558,7 @@ public class ValidationLines extends AbstractTestValidation
 		Assert.assertFalse(beans.isEmpty(), "No data for test");
 		Line line1 = beans.get(0);
 		// line1 is model;
-		line1.setObjectId("NINOXE:Line:modelLine");
+		line1.getChouetteId().setObjectId("NINOXE:Line:modelLine");
 		ValidationData data = new ValidationData();
 		context.put(VALIDATION_DATA, data);
 		data.setCurrentLine(line1);
@@ -630,7 +630,7 @@ public class ValidationLines extends AbstractTestValidation
 			List<CheckPointErrorReport> details = checkReportForTest(report,"4-Line-4",-1);
 			for (CheckPointErrorReport detail : details) {
 				log.warn(detail);
-				Assert.assertEquals(detail.getSource().getObjectId(),line1.getObjectId(), "line must be source of error");
+				Assert.assertEquals(detail.getSource().getObjectId(),line1.getChouetteId().getObjectId(), "line must be source of error");
 			}
 		}
 

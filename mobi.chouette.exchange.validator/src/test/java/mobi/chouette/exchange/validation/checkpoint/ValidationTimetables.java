@@ -56,11 +56,11 @@ public class ValidationTimetables extends AbstractTestValidation {
 
 			bean1 = new Timetable();
 			bean1.setId(id++);
-			bean1.setObjectId("test1:Timetable:1");
+			bean1.getChouetteId().setObjectId("test1:Timetable:1");
 			bean1.setComment("test1");
 			bean2 = new Timetable();
 			bean2.setId(id++);
-			bean2.setObjectId("test2:Timetable:1");
+			bean2.getChouetteId().setObjectId("test2:Timetable:1");
 			bean2.setComment("test2");
 
 			beansFor4.add(bean1);

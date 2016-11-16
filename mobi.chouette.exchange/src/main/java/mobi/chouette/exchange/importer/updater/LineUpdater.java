@@ -81,7 +81,7 @@ public class LineUpdater implements Updater<Line> {
 		
 		if (oldValue.isDetached()) {
 			// object does not exist in database
-			oldValue.setObjectId(newValue.getObjectId());
+			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 			oldValue.setCreationTime(newValue.getCreationTime());
 			oldValue.setCreatorId(newValue.getCreatorId());
@@ -101,8 +101,8 @@ public class LineUpdater implements Updater<Line> {
 			twoDatabaseLineOneTest(validationReporter, context, oldValue, newValue, data);
 			twoDatabaseLineTwoTest(validationReporter, context, oldValue, newValue, data);
 
-			if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
-				oldValue.setObjectId(newValue.getObjectId());
+			if (newValue.getChouetteId().getObjectId() != null && !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
+				oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
 			}
 			if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
 				oldValue.setObjectVersion(newValue.getObjectVersion());
@@ -156,10 +156,11 @@ public class LineUpdater implements Updater<Line> {
 		if (newValue.getNetwork() == null) {
 			oldValue.setNetwork(null);
 		} else {
-			String objectId = newValue.getNetwork().getObjectId();
+			String codeSpace = newValue.getNetwork().getChouetteId().getCodeSpace();
+			String objectId = newValue.getNetwork().getChouetteId().getObjectId();
 			Network ptNetwork = cache.getPtNetworks().get(objectId);
 			if (ptNetwork == null) {
-				ptNetwork = ptNetworkDAO.findByObjectId(objectId);
+				ptNetwork = ptNetworkDAO.findByChouetteId(codeSpace, objectId);
 				if (ptNetwork != null) {
 					cache.getPtNetworks().put(objectId, ptNetwork);
 				}
@@ -176,10 +177,11 @@ public class LineUpdater implements Updater<Line> {
 		if (newValue.getCompany() == null) {
 			oldValue.setCompany(null);
 		} else {
-			String objectId = newValue.getCompany().getObjectId();
+			String codeSpace = newValue.getCompany().getChouetteId().getCodeSpace();
+			String objectId = newValue.getCompany().getChouetteId().getObjectId();
 			Company company = cache.getCompanies().get(objectId);
 			if (company == null) {
-				company = companyDAO.findByObjectId(objectId);
+				company = companyDAO.findByChouetteId(codeSpace, objectId);
 				if (company != null) {
 					cache.getCompanies().put(objectId, company);
 				}
@@ -197,18 +199,19 @@ public class LineUpdater implements Updater<Line> {
 				oldValue.getGroupOfLines(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		List<GroupOfLine> groupOfLines = null;
 		for (GroupOfLine item : addedGroupOfLine) {
-			GroupOfLine groupOfLine = cache.getGroupOfLines().get(item.getObjectId());
+			GroupOfLine groupOfLine = cache.getGroupOfLines().get(item.getChouetteId().getObjectId());
 			if (groupOfLine == null) {
 				if (groupOfLines == null) {
-					groupOfLines = groupOfLineDAO.findByObjectId(UpdaterUtils.getObjectIds(addedGroupOfLine));
+					String codeSpace = item.getChouetteId().getCodeSpace();
+					groupOfLines = groupOfLineDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedGroupOfLine));
 					for (GroupOfLine object : groupOfLines) {
-						cache.getGroupOfLines().put(object.getObjectId(), object);
+						cache.getGroupOfLines().put(object.getChouetteId().getObjectId(), object);
 					}
 				}
-				groupOfLine = cache.getGroupOfLines().get(item.getObjectId());
+				groupOfLine = cache.getGroupOfLines().get(item.getChouetteId().getObjectId());
 			}
 			if (groupOfLine == null) {
-				groupOfLine = ObjectFactory.getGroupOfLine(cache, item.getObjectId());
+				groupOfLine = ObjectFactory.getGroupOfLine(cache, item.getChouetteId().getObjectId());
 			}
 			groupOfLine.addLine(oldValue);
 		}
@@ -230,18 +233,19 @@ public class LineUpdater implements Updater<Line> {
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 		List<Route> routes = null;
 		for (Route item : addedRoute) {
-			Route route = cache.getRoutes().get(item.getObjectId());
+			Route route = cache.getRoutes().get(item.getChouetteId().getObjectId());
 			if (route == null) {
 				if (routes == null) {
-					routes = routeDAO.findByObjectId(UpdaterUtils.getObjectIds(addedRoute));
+					String codeSpace = item.getChouetteId().getCodeSpace();
+					routes = routeDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedRoute));
 					for (Route object : routes) {
-						cache.getRoutes().put(object.getObjectId(), object);
+						cache.getRoutes().put(object.getChouetteId().getObjectId(), object);
 					}
 				}
-				route = cache.getRoutes().get(item.getObjectId());
+				route = cache.getRoutes().get(item.getChouetteId().getObjectId());
 			}
 			if (route == null) {
-				route = ObjectFactory.getRoute(cache, item.getObjectId());
+				route = ObjectFactory.getRoute(cache, item.getChouetteId().getObjectId());
 			}
 			// If new route doesn't belong to line, we add temporarly it to the line and check if old route has same line as new route
 			if(route.getLine() != null) {
@@ -263,18 +267,18 @@ public class LineUpdater implements Updater<Line> {
 //				oldValue.getRoutingConstraints(), NeptuneIdentifiedObjectComparator.INSTANCE);
 //		List<StopArea> routingConstraints = null;
 //		for (StopArea item : addedRoutingConstraint) {
-//			StopArea routingConstraint = cache.getStopAreas().get(item.getObjectId());
+//			StopArea routingConstraint = cache.getStopAreas().get(item.getChouetteId().getObjectId());
 //			if (routingConstraint == null) {
 //				if (routingConstraints == null) {
 //					routingConstraints = stopAreaDAO.findByObjectId(UpdaterUtils.getObjectIds(addedRoutingConstraint));
 //					for (StopArea object : routingConstraints) {
-//						cache.getStopAreas().put(object.getObjectId(), object);
+//						cache.getStopAreas().put(object.getChouetteId().getObjectId(), object);
 //					}
 //				}
-//				routingConstraint = cache.getStopAreas().get(item.getObjectId());
+//				routingConstraint = cache.getStopAreas().get(item.getChouetteId().getObjectId());
 //			}
 //			if (routingConstraint == null) {
-//				routingConstraint = ObjectFactory.getStopArea(cache, item.getObjectId());
+//				routingConstraint = ObjectFactory.getStopArea(cache, item.getChouetteId().getObjectId());
 //			}
 //			oldValue.addRoutingConstraint(routingConstraint);
 //		}
@@ -297,18 +301,19 @@ public class LineUpdater implements Updater<Line> {
 				oldValue.getRoutingConstraints(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		List<RoutingConstraint> routingConstraints = null;
 		for (RoutingConstraint item : addedRoutingConstraint) {
-			RoutingConstraint routingConstraint = cache.getRoutingConstraints().get(item.getObjectId());
+			RoutingConstraint routingConstraint = cache.getRoutingConstraints().get(item.getChouetteId().getObjectId());
 			if (routingConstraint == null) {
 				if (routingConstraints == null) {
-					routingConstraints = routingConstraintDAO.findByObjectId(UpdaterUtils.getObjectIds(addedRoutingConstraint));
+					String codeSpace = item.getChouetteId().getCodeSpace();
+					routingConstraints = routingConstraintDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedRoutingConstraint));
 					for (RoutingConstraint object : routingConstraints) {
-						cache.getRoutingConstraints().put(object.getObjectId(), object);
+						cache.getRoutingConstraints().put(object.getChouetteId().getObjectId(), object);
 					}
 				}
-				routingConstraint = cache.getRoutingConstraints().get(item.getObjectId());
+				routingConstraint = cache.getRoutingConstraints().get(item.getChouetteId().getObjectId());
 			}
 			if (routingConstraint == null) {
-				routingConstraint = ObjectFactory.getRoutingConstraint(cache, item.getObjectId());
+				routingConstraint = ObjectFactory.getRoutingConstraint(cache, item.getChouetteId().getObjectId());
 			}
 			oldValue.addRoutingConstraint(routingConstraint);
 		}
@@ -337,7 +342,7 @@ public class LineUpdater implements Updater<Line> {
 	 */
 	private void twoDatabaseLineOneTest(ValidationReporter validationReporter, Context context, Line oldLine, Line newLine, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldLine.getNetwork(), newLine.getNetwork()))
-			validationReporter.addCheckPointReportError(context, DATABASE_LINE_1, data.getDataLocations().get(newLine.getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_LINE_1, data.getDataLocations().get(newLine.getChouetteId().getObjectId()));
 		else
 			validationReporter.reportSuccess(context, DATABASE_LINE_1);
 	}
@@ -351,7 +356,7 @@ public class LineUpdater implements Updater<Line> {
 	 */
 	private void twoDatabaseLineTwoTest(ValidationReporter validationReporter, Context context, Line oldLine, Line newLine, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldLine.getCompany(), newLine.getCompany()))
-			validationReporter.addCheckPointReportError(context, DATABASE_LINE_2, data.getDataLocations().get(newLine.getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_LINE_2, data.getDataLocations().get(newLine.getChouetteId().getObjectId()));
 		else
 			validationReporter.reportSuccess(context, DATABASE_LINE_2);
 	}
@@ -365,7 +370,7 @@ public class LineUpdater implements Updater<Line> {
 	 */
 	private void twoDatabaseRouteOneTest(ValidationReporter validationReporter, Context context, Route oldRoute, Route newRoute, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldRoute.getLine(), newRoute.getLine()))
-			validationReporter.addCheckPointReportError(context, DATABASE_ROUTE_1, data.getDataLocations().get(newRoute.getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_ROUTE_1, data.getDataLocations().get(newRoute.getChouetteId().getObjectId()));
 		else
 			validationReporter.reportSuccess(context, DATABASE_ROUTE_1);
 	}

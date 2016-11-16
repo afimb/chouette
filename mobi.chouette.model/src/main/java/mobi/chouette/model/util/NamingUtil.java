@@ -25,49 +25,49 @@ public abstract class NamingUtil {
 	public static String getName(Network object) {
 		if (isFilled(object.getName()))
 			return object.getName();
-		return object.getObjectId();
+		return object.getChouetteId().getObjectId();
 	}
 
 	public static String getName(Company object) {
 		if (isFilled(object.getName()))
 			return object.getName();
-		return object.getObjectId();
+		return object.getChouetteId().getObjectId();
 	}
 
 	public static String getName(GroupOfLine object) {
 		if (isFilled(object.getName()))
 			return object.getName();
-		return object.getObjectId();
+		return object.getChouetteId().getObjectId();
 	}
 
 	public static String getName(StopArea object) {
 		if (isFilled(object.getName()))
 			return object.getName();
-		return object.getObjectId();
+		return object.getChouetteId().getObjectId();
 	}
 
 	public static String getName(AccessPoint object) {
 		if (isFilled(object.getName()))
 			return object.getName();
-		return object.getObjectId();
+		return object.getChouetteId().getObjectId();
 	}
 
 	public static String getName(AccessLink object) {
 		if (isFilled(object.getName()))
 			return object.getName();
-		return object.getObjectId();
+		return object.getChouetteId().getObjectId();
 	}
 
 	public static String getName(ConnectionLink object) {
 		if (isFilled(object.getName()))
 			return object.getName();
-		return object.getObjectId();
+		return object.getChouetteId().getObjectId();
 	}
 
 	public static String getName(Timetable object) {
 		if (isFilled(object.getComment()))
 			return object.getComment();
-		return object.getObjectId();
+		return object.getChouetteId().getObjectId();
 	}
 
 	public static String getName(StopPoint object) {
@@ -75,7 +75,7 @@ public abstract class NamingUtil {
 		// if (isFilled(object.getContainedInStopArea().getName()))
 		// return object.getContainedInStopArea().getName();
 		// }
-		return object.getObjectId();
+		return object.getChouetteId().getObjectId();
 	}
 
 	public static String getName(Line object) {
@@ -85,7 +85,7 @@ public abstract class NamingUtil {
 			return object.getPublishedName();
 		if (isFilled(object.getNumber()))
 			return object.getNumber();
-		return object.getObjectId();
+		return object.getChouetteId().getObjectId();
 	}
 
 	public static String getName(Route object) {
@@ -95,7 +95,7 @@ public abstract class NamingUtil {
 			return object.getPublishedName();
 		if (isFilled(object.getNumber()))
 			return object.getNumber();
-		return object.getObjectId();
+		return object.getChouetteId().getObjectId();
 	}
 
 	public static String getName(JourneyPattern object) {
@@ -103,7 +103,7 @@ public abstract class NamingUtil {
 			return object.getName();
 		if (isFilled(object.getPublishedName()))
 			return object.getPublishedName();
-		return object.getObjectId();
+		return object.getChouetteId().getObjectId();
 	}
 
 	public static String getName(VehicleJourney object) {
@@ -111,7 +111,7 @@ public abstract class NamingUtil {
 			return object.getPublishedJourneyName();
 		if (object.getNumber() != null)
 			return object.getNumber().toString();
-		return object.getObjectId();
+		return object.getChouetteId().getObjectId();
 	}
 
 	public static boolean isFilled(String data) {
@@ -199,12 +199,12 @@ public abstract class NamingUtil {
 
 		// security if timetable is empty
 		if (firstDate != null && lastDate != null) {
-			String comment = timetable.objectIdSuffix() + " : " + format.format(firstDate) + " -> "
+			String comment = timetable.getChouetteId().getObjectId() + " : " + format.format(firstDate) + " -> "
 					+ format.format(lastDate) + " : " + monday + tuesday + wednesday + thursday + friday + saturday
 					+ sunday;
 			timetable.setComment(comment);
 		} else {
-			timetable.setComment(timetable.objectIdSuffix() + " : Empty timetable");
+			timetable.setComment(timetable.getChouetteId().getObjectId() + " : Empty timetable");
 		}
 	}
 }

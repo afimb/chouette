@@ -47,7 +47,7 @@ public class StopPointProducer extends
 			}
 			else
 			{
-				log.error("missing coordinates for StopArea "+area.getObjectId()+" "+area.getName());
+				log.error("missing coordinates for StopArea "+area.getChouetteId().getObjectId()+" "+area.getName());
 				jaxbStopPoint.setLatitude(BigDecimal.ZERO);
 				jaxbStopPoint.setLongitude(BigDecimal.ZERO);
 				jaxbStopPoint.setLongLatType(LongLatTypeType.WGS_84);

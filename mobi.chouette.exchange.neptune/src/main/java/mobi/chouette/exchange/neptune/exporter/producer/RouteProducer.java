@@ -44,7 +44,7 @@ AbstractJaxbNeptuneProducer<ChouetteRoute, Route>
 
 		if (hasOppositeRoute(route, log) && exportableRoutes.contains(route.getOppositeRoute()))
 		{
-			jaxbRoute.setWayBackRouteId(route.getOppositeRoute().getObjectId());
+			jaxbRoute.setWayBackRouteId(route.getOppositeRoute().getChouetteId().getObjectId());
 		}
 
 		if (route.getWayBack() != null)

@@ -44,15 +44,15 @@ public class RoutingConstraintUpdater implements Updater<RoutingConstraint> {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		
 		if (oldValue.isDetached()) {
-			oldValue.setObjectId(newValue.getObjectId());
+			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 			oldValue.setCreationTime(newValue.getCreationTime());
 			oldValue.setCreatorId(newValue.getCreatorId());
 			oldValue.setName(newValue.getName());
 			oldValue.setDetached(false);
 		} else {
-			if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
-				oldValue.setObjectId(newValue.getObjectId());
+			if (newValue.getChouetteId().getObjectId() != null && !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
+				oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
 			}
 			if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
 				oldValue.setObjectVersion(newValue.getObjectVersion());
@@ -77,19 +77,20 @@ public class RoutingConstraintUpdater implements Updater<RoutingConstraint> {
 		List<StopArea> stopAreas = null;
 		for (StopArea item : addedStopAreas) {
 
-			StopArea area = cache.getStopAreas().get(item.getObjectId());
+			StopArea area = cache.getStopAreas().get(item.getChouetteId().getObjectId());
 			if (area == null) {
 				if (stopAreas == null) {
-					stopAreas = stopAreaDAO.findByObjectId(UpdaterUtils.getObjectIds(addedStopAreas));
+					String codeSpace = item.getChouetteId().getCodeSpace();
+					stopAreas = stopAreaDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedStopAreas));
 					for (StopArea object : addedStopAreas) {
-						cache.getStopAreas().put(object.getObjectId(), object);
+						cache.getStopAreas().put(object.getChouetteId().getObjectId(), object);
 					}
 				}
-				area = cache.getStopAreas().get(item.getObjectId());
+				area = cache.getStopAreas().get(item.getChouetteId().getObjectId());
 			}
 
 			if (area == null) {
-				area = ObjectFactory.getStopArea(cache, item.getObjectId());
+				area = ObjectFactory.getStopArea(cache, item.getChouetteId().getObjectId());
 			}
 			
 			if (!area.isDetached() || area.isFilled())

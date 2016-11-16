@@ -144,4 +144,10 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		em.clear();
 		
 	}
+
+	@Override
+	public Job findByChouetteId(String codeSpace, String objectId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

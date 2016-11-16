@@ -74,7 +74,7 @@ public class GtfsTripProducer extends AbstractProducer {
 		int departureOffset = 0;
 		int arrivalOffset = 0;
 		
-		String tripId = toGtfsId(vj.getObjectId(), prefix);
+		String tripId = toGtfsId(vj.getChouetteId().getObjectId(), prefix);
 		time.setTripId(tripId);
 		List<VehicleJourneyAtStop> lvjas = new ArrayList<>(vj.getVehicleJourneyAtStops());
 		Collections.sort(lvjas, new Comparator<VehicleJourneyAtStop>() {
@@ -87,7 +87,7 @@ public class GtfsTripProducer extends AbstractProducer {
 		List<RouteSection> routeSections = vj.getJourneyPattern().getRouteSections();
 		int index = 0;
 		for (VehicleJourneyAtStop vjas : lvjas) {
-			time.setStopId(toGtfsId(vjas.getStopPoint().getContainedInStopArea().getObjectId(), sharedPrefix));
+			time.setStopId(toGtfsId(vjas.getStopPoint().getContainedInStopArea().getChouetteId().getObjectId(), sharedPrefix));
 			Time arrival = vjas.getArrivalTime();
 			arrivalOffset = vjas.getArrivalDayOffset(); /** GJT */
 			
@@ -235,13 +235,13 @@ public class GtfsTripProducer extends AbstractProducer {
 	 */
 	public boolean save(VehicleJourney vj, String serviceId,  String prefix, String sharedPrefix) {
 
-		String tripId = toGtfsId(vj.getObjectId(), prefix);
+		String tripId = toGtfsId(vj.getChouetteId().getObjectId(), prefix);
 
 		trip.setTripId(tripId);
 
 		JourneyPattern jp = vj.getJourneyPattern();
 		if (jp.getSectionStatus() == SectionStatusEnum.Completed) {
-			String shapeId = toGtfsId(jp.getObjectId(), prefix);
+			String shapeId = toGtfsId(jp.getChouetteId().getObjectId(), prefix);
 			trip.setShapeId(shapeId);
 		}
 		else
@@ -250,7 +250,7 @@ public class GtfsTripProducer extends AbstractProducer {
 		}
 		Route route = vj.getRoute();
 		Line line = route.getLine();
-		trip.setRouteId(toGtfsId(line.getObjectId(), prefix));
+		trip.setRouteId(toGtfsId(line.getChouetteId().getObjectId(), prefix));
 		if ("R".equals(route.getWayBack())) {
 			trip.setDirectionId(GtfsTrip.DirectionType.Inbound);
 		} else {

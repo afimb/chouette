@@ -26,9 +26,9 @@ public abstract class AbstractProducer {
 	}
 
 	static protected String toHubId(NeptuneIdentifiedObject neptuneObject) {
-		if (neptuneObject == null || neptuneObject.getObjectId() == null)
+		if (neptuneObject == null || neptuneObject.getChouetteId().getObjectId() == null)
 			return null;
-		String[] tokens = neptuneObject.getObjectId().split(":");
+		String[] tokens = neptuneObject.getChouetteId().getObjectId().split(":");
 		return tokens[2];
 	}
 

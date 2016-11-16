@@ -60,7 +60,7 @@ public abstract class CopyUtil {
 	public static Timetable copy(Timetable object)
 	{
 	      Timetable tm = new Timetable();
-	      tm.setObjectId(object.getObjectId());
+	      tm.getChouetteId().setObjectId(object.getChouetteId().getObjectId());
 	      tm.setObjectVersion(object.getObjectVersion());
 	      tm.setComment(object.getComment());
 	      tm.setVersion(object.getVersion());

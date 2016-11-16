@@ -138,26 +138,26 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 
 			Line line = new Line();
 			line.setId(id++);
-			line.setObjectId("test1:Line:1");
+			line.getChouetteId().setObjectId("test1:Line:1");
 			line.setName("test");
 			Route route = new Route();
 			route.setId(id++);
-			route.setObjectId("test1:Route:1");
+			route.getChouetteId().setObjectId("test1:Route:1");
 			route.setName("test1");
 			route.setLine(line);
 			JourneyPattern jp = new JourneyPattern();
 			jp.setId(id++);
-			jp.setObjectId("test1:JourneyPattern:1");
+			jp.getChouetteId().setObjectId("test1:JourneyPattern:1");
 			jp.setName("test1");
 			jp.setRoute(route);
 			bean1 = new VehicleJourney();
 			bean1.setId(id++);
-			bean1.setObjectId("test1:VehicleJourney:1");
+			bean1.getChouetteId().setObjectId("test1:VehicleJourney:1");
 			bean1.setPublishedJourneyName("test1");
 			bean1.setJourneyPattern(jp);
 			bean2 = new VehicleJourney();
 			bean2.setId(id++);
-			bean2.setObjectId("test2:VehicleJourney:1");
+			bean2.getChouetteId().setObjectId("test2:VehicleJourney:1");
 			bean2.setPublishedJourneyName("test2");
 			bean2.setJourneyPattern(jp);
 			
@@ -226,7 +226,7 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		List<CheckPointErrorReport> details = checkReportForTest(report, "4-VehicleJourney-1", 3);
 		for (CheckPointErrorReport detail : details) {
 			Assert.assertEquals(detail.getReferenceValue(), "ObjectId", "detail must refer column");
-			Assert.assertEquals(detail.getValue(), bean2.getObjectId().split(":")[2], "detail must refer value");
+			Assert.assertEquals(detail.getValue(), bean2.getChouetteId().getObjectId().split(":")[2], "detail must refer value");
 		}
 	}
 
@@ -249,11 +249,11 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		Line line1 = beans.get(0);
 
 		Route route1 = line1.getRoutes().get(0);
-		route1.setObjectId("NINOXE:Route:checkedRoute");
+		route1.getChouetteId().setObjectId("NINOXE:Route:checkedRoute");
 		JourneyPattern jp1 = route1.getJourneyPatterns().get(0);
-		jp1.setObjectId("NINOXE:JourneyPattern:checkedJP");
+		jp1.getChouetteId().setObjectId("NINOXE:JourneyPattern:checkedJP");
 		VehicleJourney vj1 = jp1.getVehicleJourneys().get(0);
-		vj1.setObjectId("NINOXE:VehicleJourney:checkedVJ");
+		vj1.getChouetteId().setObjectId("NINOXE:VehicleJourney:checkedVJ");
 		long maxDiffTime = 0;
 		for (VehicleJourneyAtStop vjas : vj1.getVehicleJourneyAtStops()) {
 			if (vjas.getArrivalTime().equals(vjas.getDepartureTime())) {
@@ -290,7 +290,7 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		}
 		// check detail keys
 		for (CheckPointErrorReport detail : details) {
-			Assert.assertEquals(detail.getSource().getObjectId(), vj1.getObjectId(),
+			Assert.assertEquals(detail.getSource().getObjectId(), vj1.getChouetteId().getObjectId(),
 					"vj 1 must be source of error");
 		}
 
@@ -319,12 +319,12 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		// line1 is model;
 
 		Route route1 = line1.getRoutes().get(0);
-		route1.setObjectId("NINOXE:Route:checkedRoute");
+		route1.getChouetteId().setObjectId("NINOXE:Route:checkedRoute");
 		JourneyPattern jp1 = route1.getJourneyPatterns().get(0);
-		jp1.setObjectId("NINOXE:JourneyPattern:checkedJP");
+		jp1.getChouetteId().setObjectId("NINOXE:JourneyPattern:checkedJP");
 
 		VehicleJourney vj1 = jp1.getVehicleJourneys().get(0);
-		vj1.setObjectId("NINOXE:VehicleJourney:checkedVJ");
+		vj1.getChouetteId().setObjectId("NINOXE:VehicleJourney:checkedVJ");
 
 		fullparameters.getModeBus().setSpeedMax( 10);
 		fullparameters.getModeBus().setSpeedMin( 20);
@@ -382,7 +382,7 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		for (Route route : line1.getRoutes()) {
 			for (JourneyPattern jp : route.getJourneyPatterns()) {
 				for (VehicleJourney vj : jp.getVehicleJourneys()) {
-					if (vj.getObjectId().equals("NINOXE:VehicleJourney:15627288")) {
+					if (vj.getChouetteId().getObjectId().equals("NINOXE:VehicleJourney:15627288")) {
 						vj1 = vj;
 						jp1 = jp;
 					}
@@ -448,11 +448,11 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		// line1 is model;
 
 		Route route1 = line1.getRoutes().get(0);
-		route1.setObjectId("NINOXE:Route:checkedRoute");
+		route1.getChouetteId().setObjectId("NINOXE:Route:checkedRoute");
 		JourneyPattern jp1 = route1.getJourneyPatterns().get(0);
-		jp1.setObjectId("NINOXE:JourneyPattern:checkedJP");
+		jp1.getChouetteId().setObjectId("NINOXE:JourneyPattern:checkedJP");
 		VehicleJourney vj1 = jp1.getVehicleJourneys().get(0);
-		vj1.setObjectId("NINOXE:VehicleJourney:checkedVJ");
+		vj1.getChouetteId().setObjectId("NINOXE:VehicleJourney:checkedVJ");
 
 		vj1.getTimetables().clear();
 		
@@ -504,10 +504,10 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		em.joinTransaction();
 
 		
-		JourneyPattern bean = journeyPatternDao.findByObjectId("ratp:JourneyPattern:1000252_00");
+		JourneyPattern bean = journeyPatternDao.findByChouetteId("ratp", "1000252_00");
 		Assert.assertFalse(bean == null, "No data for test");
 		JourneyPattern jp1 = bean;
-		jp1.setObjectId("NINOXE:JourneyPattern:checkedJP");
+		jp1.getChouetteId().setObjectId("NINOXE:JourneyPattern:checkedJP");
 		
 		
 		ValidationData data = new ValidationData();
@@ -531,7 +531,7 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		VehicleJourney vj1 = null;
 		
 		for(VehicleJourney vj: jp1.getVehicleJourneys()) {
-			if(vj.getObjectId().equalsIgnoreCase("ratp:VehicleJourney:514572940997334-2-2")) {
+			if(vj.getChouetteId().getObjectId().equalsIgnoreCase("ratp:VehicleJourney:514572940997334-2-2")) {
 				vj1 = vj;
 				break;
 			}
@@ -591,10 +591,10 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		utx.begin();
 		em.joinTransaction();
 
-		JourneyPattern bean = journeyPatternDao.findByObjectId("ratp:JourneyPattern:1000252_00");
+		JourneyPattern bean = journeyPatternDao.findByChouetteId("ratp", "1000252_00");
 		Assert.assertFalse(bean == null, "No data for test");
 		JourneyPattern jp1 = bean;
-		jp1.setObjectId("NINOXE:JourneyPattern:checkedJP");
+		jp1.getChouetteId().setObjectId("NINOXE:JourneyPattern:checkedJP");
 		
 		
 		ValidationData data = new ValidationData();
@@ -620,7 +620,7 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		VehicleJourney vj1 = null;
 		
 		for(VehicleJourney vj: jp1.getVehicleJourneys()) {
-			if(vj.getObjectId().equalsIgnoreCase("ratp:VehicleJourney:514572940997334-2-2")) {
+			if(vj.getChouetteId().getObjectId().equalsIgnoreCase("ratp:VehicleJourney:514572940997334-2-2")) {
 				vj1 = vj;
 				break;
 			}
@@ -681,31 +681,31 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		utx.begin();
 		em.joinTransaction();
 
-		JourneyPattern bean = journeyPatternDao.findByObjectId("ratp:JourneyPattern:1000252_00");
+		JourneyPattern bean = journeyPatternDao.findByChouetteId("ratp", "1000252_00");
 		Assert.assertFalse(bean == null, "No data for test");
 		JourneyPattern jp1 = bean;
-		jp1.setObjectId("NINOXE:JourneyPattern:checkedJP");
+		jp1.getChouetteId().setObjectId("NINOXE:JourneyPattern:checkedJP");
 		
 		
 		VehicleJourney vj1 = null;
 		
 		for(VehicleJourney vj: jp1.getVehicleJourneys()) {
-			if(vj.getObjectId().equalsIgnoreCase("ratp:VehicleJourney:514572940997334-2-2")) {
+			if(vj.getChouetteId().getObjectId().equalsIgnoreCase("ratp:VehicleJourney:514572940997334-2-2")) {
 				vj1 = vj;
 				break;
 			}
 		}
-		vj1.setObjectId("NINOXE:VehicleJourney:checkedVJ");
+		vj1.getChouetteId().setObjectId("NINOXE:VehicleJourney:checkedVJ");
 		VehicleJourney vj2 = null;
 		
 		for(VehicleJourney vj: jp1.getVehicleJourneys()) {
-			if(vj.getObjectId().equalsIgnoreCase("ratp:VehicleJourney:514572940997334-2-1")) {
+			if(vj.getChouetteId().getObjectId().equalsIgnoreCase("ratp:VehicleJourney:514572940997334-2-1")) {
 				vj2 = vj;
 				break;
 			}
 		}
 	
-		vj2.setObjectId("NINOXE:VehicleJourney:checkedVJ2");
+		vj2.getChouetteId().setObjectId("NINOXE:VehicleJourney:checkedVJ2");
 		
 		
 		ValidationData data = new ValidationData();
@@ -773,7 +773,7 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 
 
 		// line1 is model;
-		line1.setObjectId("NINOXE:Line:modelLine");
+		line1.getChouetteId().setObjectId("NINOXE:Line:modelLine");
 
 		Route r1 = line1.getRoutes().get(0);
 		JourneyPattern jp1 = r1.getJourneyPatterns().get(0);

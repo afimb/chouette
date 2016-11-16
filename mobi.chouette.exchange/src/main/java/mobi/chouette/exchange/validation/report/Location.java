@@ -109,7 +109,7 @@ public class Location extends AbstractReport {
 	}
 
 	private void init(NeptuneIdentifiedObject chouetteObject) {
-		this.objectId = chouetteObject.getObjectId();
+		this.objectId = chouetteObject.getChouetteId().getObjectId();
 		this.name = buildName(chouetteObject);
 		if (chouetteObject instanceof VehicleJourney) {
 			VehicleJourney object = (VehicleJourney) chouetteObject;

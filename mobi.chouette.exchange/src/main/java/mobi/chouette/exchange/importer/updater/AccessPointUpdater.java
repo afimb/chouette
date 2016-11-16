@@ -37,9 +37,9 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 
 		Referential cache = (Referential) context.get(CACHE);
 
-		if (newValue.getObjectId() != null
-				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
-			oldValue.setObjectId(newValue.getObjectId());
+		if (newValue.getChouetteId().getObjectId() != null
+				&& !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
+			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
 		}
 		if (newValue.getObjectVersion() != null
 				&& !newValue.getObjectVersion().equals(
@@ -145,22 +145,23 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 		for (AccessLink item : addedAccessLink) {
 
 			AccessLink accessLink = cache.getAccessLinks().get(
-					item.getObjectId());
+					item.getChouetteId().getObjectId());
 			if (accessLink == null) {
 				if (accessLinks == null) {
-					accessLinks = accessLinkDAO.findByObjectId(UpdaterUtils
+					String codeSpace = item.getAccessPoint().getChouetteId().getCodeSpace();
+					accessLinks = accessLinkDAO.findByChouetteId(codeSpace, UpdaterUtils
 							.getObjectIds(addedAccessLink));
 					for (AccessLink object : accessLinks) {
 						cache.getAccessLinks()
-								.put(object.getObjectId(), object);
+								.put(object.getChouetteId().getObjectId(), object);
 					}
 				}
-				accessLink = cache.getAccessLinks().get(item.getObjectId());
+				accessLink = cache.getAccessLinks().get(item.getChouetteId().getObjectId());
 			}
 
 			if (accessLink == null) {
 				accessLink = ObjectFactory.getAccessLink(cache,
-						item.getObjectId());
+						item.getChouetteId().getObjectId());
 			}
 			accessLink.setAccessPoint(oldValue);
 		}

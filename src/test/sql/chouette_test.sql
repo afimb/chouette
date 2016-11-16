@@ -38,7 +38,9 @@ CREATE TABLE access_links (
     id bigint NOT NULL,
     access_point_id bigint,
     stop_area_id bigint,
+    codespace character varying(255) NOT NULL,
     objectid character varying(255) NOT NULL,
+    shared boolean not null default false,
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
@@ -91,7 +93,9 @@ ALTER SEQUENCE access_links_id_seq OWNED BY access_links.id;
 
 CREATE TABLE access_points (
     id bigint NOT NULL,
-    objectid character varying(255),
+    codespace character varying(255) NOT NULL,
+    objectid character varying(255) NOT NULL,
+    shared boolean not null default false,
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
@@ -149,7 +153,9 @@ ALTER SEQUENCE access_points_id_seq OWNED BY access_points.id;
 
 CREATE TABLE companies (
     id bigint NOT NULL,
+    codespace character varying(255) NOT NULL,
     objectid character varying(255) NOT NULL,
+    shared boolean not null default false,
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
@@ -202,7 +208,9 @@ CREATE TABLE connection_links (
     id bigint NOT NULL,
     departure_id bigint,
     arrival_id bigint,
+    codespace character varying(255) NOT NULL,
     objectid character varying(255) NOT NULL,
+    shared boolean not null default false,
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
@@ -259,7 +267,9 @@ CREATE TABLE facilities (
     line_id bigint,
     connection_link_id bigint,
     stop_point_id bigint,
+    codespace character varying(255) NOT NULL,
     objectid character varying(255) NOT NULL,
+    shared boolean not null default false,
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
@@ -379,7 +389,9 @@ ALTER TABLE chouette_gui.footnotes_vehicle_journeys OWNER TO chouette;
 
 CREATE TABLE group_of_lines (
     id bigint NOT NULL,
+    codespace character varying(255) NOT NULL,
     objectid character varying(255) NOT NULL,
+    shared boolean not null default false,
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
@@ -521,7 +533,9 @@ ALTER SEQUENCE journey_pattern_sections_id_seq OWNED BY journey_pattern_sections
 CREATE TABLE journey_patterns (
     id bigint NOT NULL,
     route_id bigint,
+    codespace character varying(255) NOT NULL,
     objectid character varying(255) NOT NULL,
+    shared boolean not null default false,
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
@@ -583,7 +597,9 @@ CREATE TABLE lines (
     id bigint NOT NULL,
     network_id bigint,
     company_id bigint,
+    codespace character varying(255) NOT NULL,
     objectid character varying(255) NOT NULL,
+    shared boolean not null default false,
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
@@ -636,7 +652,9 @@ ALTER SEQUENCE lines_id_seq OWNED BY lines.id;
 
 CREATE TABLE networks (
     id bigint NOT NULL,
+    codespace character varying(255) NOT NULL,
     objectid character varying(255) NOT NULL,
+    shared boolean not null default false,
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
@@ -688,7 +706,9 @@ CREATE TABLE pt_links (
     start_of_link_id bigint,
     end_of_link_id bigint,
     route_id bigint,
+    codespace character varying(255) NOT NULL,
     objectid character varying(255) NOT NULL,
+    shared boolean not null default false,
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
@@ -756,7 +776,9 @@ CREATE TABLE route_sections (
     id bigint NOT NULL,
     departure_id integer,
     arrival_id integer,
+    codespace character varying(255) NOT NULL,
     objectid character varying(255) NOT NULL,
+    shared boolean not null default false,
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
@@ -801,7 +823,9 @@ ALTER SEQUENCE route_sections_id_seq OWNED BY route_sections.id;
 CREATE TABLE routes (
     id bigint NOT NULL,
     line_id bigint,
+    codespace character varying(255) NOT NULL,
     objectid character varying(255) NOT NULL,
+    shared boolean not null default false,
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
@@ -842,7 +866,9 @@ ALTER SEQUENCE routes_id_seq OWNED BY routes.id;
 
 CREATE TABLE routing_constraints (
     id bigint NOT NULL,
+    codespace character varying(255) NOT NULL,
     objectid character varying(255) NOT NULL,
+    shared boolean not null default false,
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
@@ -897,7 +923,9 @@ ALTER TABLE chouette_gui.routing_constraints_lines OWNER TO chouette;
 CREATE TABLE stop_areas (
     id bigint NOT NULL,
     parent_id bigint,
+    codespace character varying(255) NOT NULL,
     objectid character varying(255) NOT NULL,
+    shared boolean not null default false,
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
@@ -971,7 +999,9 @@ CREATE TABLE stop_points (
     id bigint NOT NULL,
     route_id bigint,
     stop_area_id bigint,
+    codespace character varying(255) NOT NULL,
     objectid character varying(255) NOT NULL,
+    shared boolean not null default false,
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
@@ -1094,7 +1124,9 @@ ALTER SEQUENCE time_table_periods_id_seq OWNED BY time_table_periods.id;
 
 CREATE TABLE time_tables (
     id bigint NOT NULL,
+    codespace character varying(255) NOT NULL,
     objectid character varying(255) NOT NULL,
+    shared boolean not null default false,
     object_version integer DEFAULT 1,
     creation_time timestamp without time zone,
     creator_id character varying(255),
@@ -1152,7 +1184,9 @@ ALTER TABLE chouette_gui.time_tables_vehicle_journeys OWNER TO chouette;
 
 CREATE TABLE timebands (
     id bigint NOT NULL,
+    codespace character varying(255) NOT NULL,
     objectid character varying(255) NOT NULL,
+    shared boolean not null default false,
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
@@ -1246,7 +1280,9 @@ CREATE TABLE vehicle_journeys (
     route_id bigint,
     journey_pattern_id bigint,
     company_id bigint,
+    codespace character varying(255) NOT NULL,
     objectid character varying(255) NOT NULL,
+    shared boolean not null default false,
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
@@ -1706,7 +1742,7 @@ ALTER TABLE ONLY vehicle_journeys
 -- Name: access_links_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE UNIQUE INDEX access_links_objectid_key ON access_links USING btree (objectid);
+CREATE UNIQUE INDEX access_links_objectid_key ON access_links USING btree (codespace, objectid);
 
 
 --
@@ -1714,7 +1750,7 @@ CREATE UNIQUE INDEX access_links_objectid_key ON access_links USING btree (objec
 -- Name: access_points_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE UNIQUE INDEX access_points_objectid_key ON access_points USING btree (objectid);
+CREATE UNIQUE INDEX access_points_objectid_key ON access_points USING btree (codespace, objectid);
 
 
 --
@@ -1722,7 +1758,7 @@ CREATE UNIQUE INDEX access_points_objectid_key ON access_points USING btree (obj
 -- Name: companies_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE UNIQUE INDEX companies_objectid_key ON companies USING btree (objectid);
+CREATE UNIQUE INDEX companies_objectid_key ON companies USING btree (codespace, objectid);
 
 
 --
@@ -1738,7 +1774,7 @@ CREATE INDEX companies_registration_number_key ON companies USING btree (registr
 -- Name: connection_links_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE UNIQUE INDEX connection_links_objectid_key ON connection_links USING btree (objectid);
+CREATE UNIQUE INDEX connection_links_objectid_key ON connection_links USING btree (codespace, objectid);
 
 
 
@@ -1747,7 +1783,7 @@ CREATE UNIQUE INDEX connection_links_objectid_key ON connection_links USING btre
 -- Name: facilities_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE UNIQUE INDEX facilities_objectid_key ON facilities USING btree (objectid);
+CREATE UNIQUE INDEX facilities_objectid_key ON facilities USING btree (codespace, objectid);
 
 
 --
@@ -1755,7 +1791,7 @@ CREATE UNIQUE INDEX facilities_objectid_key ON facilities USING btree (objectid)
 -- Name: group_of_lines_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE UNIQUE INDEX group_of_lines_objectid_key ON group_of_lines USING btree (objectid);
+CREATE UNIQUE INDEX group_of_lines_objectid_key ON group_of_lines USING btree (codespace, objectid);
 
 
 
@@ -1877,7 +1913,7 @@ CREATE INDEX index_vehicle_journeys_on_route_id ON vehicle_journeys USING btree 
 -- Name: journey_patterns_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE UNIQUE INDEX journey_patterns_objectid_key ON journey_patterns USING btree (objectid);
+CREATE UNIQUE INDEX journey_patterns_objectid_key ON journey_patterns USING btree (codespace, objectid);
 
 
 --
@@ -1885,7 +1921,7 @@ CREATE UNIQUE INDEX journey_patterns_objectid_key ON journey_patterns USING btre
 -- Name: lines_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE UNIQUE INDEX lines_objectid_key ON lines USING btree (objectid);
+CREATE UNIQUE INDEX lines_objectid_key ON lines USING btree (codespace, objectid);
 
 
 --
@@ -1901,7 +1937,7 @@ CREATE INDEX lines_registration_number_key ON lines USING btree (registration_nu
 -- Name: networks_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE UNIQUE INDEX networks_objectid_key ON networks USING btree (objectid);
+CREATE UNIQUE INDEX networks_objectid_key ON networks USING btree (codespace, objectid);
 
 
 --
@@ -1917,7 +1953,7 @@ CREATE INDEX networks_registration_number_key ON networks USING btree (registrat
 -- Name: pt_links_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE UNIQUE INDEX pt_links_objectid_key ON pt_links USING btree (objectid);
+CREATE UNIQUE INDEX pt_links_objectid_key ON pt_links USING btree (codespace, objectid);
 
 
 --
@@ -1925,21 +1961,21 @@ CREATE UNIQUE INDEX pt_links_objectid_key ON pt_links USING btree (objectid);
 -- Name: routes_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE UNIQUE INDEX routes_objectid_key ON routes USING btree (objectid);
+CREATE UNIQUE INDEX routes_objectid_key ON routes USING btree (codespace, objectid);
 
 --
 -- TOC entry 4044 (class 1259 OID 939892)
 -- Name: routing_constraints_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE UNIQUE INDEX routing_constraints_objectid_key ON routing_constraints USING btree (objectid);
+CREATE UNIQUE INDEX routing_constraints_objectid_key ON routing_constraints USING btree (codespace, objectid);
 
 --
 -- TOC entry 4048 (class 1259 OID 939892)
 -- Name: stop_areas_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE UNIQUE INDEX stop_areas_objectid_key ON stop_areas USING btree (objectid);
+CREATE UNIQUE INDEX stop_areas_objectid_key ON stop_areas USING btree (codespace, objectid);
 
 
 --
@@ -1947,7 +1983,7 @@ CREATE UNIQUE INDEX stop_areas_objectid_key ON stop_areas USING btree (objectid)
 -- Name: stop_points_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE UNIQUE INDEX stop_points_objectid_key ON stop_points USING btree (objectid);
+CREATE UNIQUE INDEX stop_points_objectid_key ON stop_points USING btree (codespace, objectid);
 
 
 --
@@ -1955,7 +1991,7 @@ CREATE UNIQUE INDEX stop_points_objectid_key ON stop_points USING btree (objecti
 -- Name: time_tables_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE UNIQUE INDEX time_tables_objectid_key ON time_tables USING btree (objectid);
+CREATE UNIQUE INDEX time_tables_objectid_key ON time_tables USING btree (codespace, objectid);
 
 
 
@@ -1964,7 +2000,7 @@ CREATE UNIQUE INDEX time_tables_objectid_key ON time_tables USING btree (objecti
 -- Name: vehicle_journeys_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE UNIQUE INDEX vehicle_journeys_objectid_key ON vehicle_journeys USING btree (objectid);
+CREATE UNIQUE INDEX vehicle_journeys_objectid_key ON vehicle_journeys USING btree (codespace, objectid);
 
 
 --

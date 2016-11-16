@@ -596,11 +596,11 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 					// warning
 //					Detail errorItem = new Detail(
 //							ROUTE_12,
-//							fileLocations.get(objectId),startParentCommercial.getObjectId(),endParentCommercial.getObjectId());
+//							fileLocations.get(objectId),startParentCommercial.getChouetteId().getObjectId(),endParentCommercial.getChouetteId().getObjectId());
 //					errorItem.getTargets().add(fileLocations.get(wayBackRouteId));
 //					addValidationError(context,ROUTE_12, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, ROUTE_12, fileLocations.get(objectId), startParentCommercial.getObjectId(),endParentCommercial.getObjectId());
+					validationReporter.addCheckPointReportError(context, ROUTE_12, fileLocations.get(objectId), startParentCommercial.getChouetteId().getObjectId(),endParentCommercial.getChouetteId().getObjectId());
 					validationReporter.addTargetLocationToCheckPointError(context, ROUTE_12, fileLocations.get(wayBackRouteId));
 
 				}

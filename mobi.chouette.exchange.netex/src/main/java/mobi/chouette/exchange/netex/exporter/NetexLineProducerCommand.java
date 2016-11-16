@@ -68,21 +68,21 @@ public class NetexLineProducerCommand implements Command, Constant {
 
 			NetexDataCollector collector = new NetexDataCollector();
 			boolean cont = (collector.collect(collection, line, startDate, endDate));
-			reporter.addObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line), OBJECT_STATE.OK, IO_TYPE.INPUT);
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 0);
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN, collection.getJourneyPatterns().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, collection.getRoutes().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY, collection.getVehicleJourneys().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK, collection.getConnectionLinks().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.TIMETABLE, collection.getTimetables().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT, collection.getAccessPoints().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA, collection.getStopAreas().size());
+			reporter.addObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line), OBJECT_STATE.OK, IO_TYPE.INPUT);
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 0);
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN, collection.getJourneyPatterns().size());
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, collection.getRoutes().size());
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY, collection.getVehicleJourneys().size());
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK, collection.getConnectionLinks().size());
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.TIMETABLE, collection.getTimetables().size());
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT, collection.getAccessPoints().size());
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA, collection.getStopAreas().size());
 			if (cont) {
 
 				NetexLineProducer producer = new NetexLineProducer();
 				producer.produce(context);
 
-				reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+				reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
 				// merge refresh shared data
 				
 				reporter.addObjectReport(context, "merged", OBJECT_TYPE.NETWORK, "networks", OBJECT_STATE.OK, IO_TYPE.INPUT);
@@ -99,7 +99,7 @@ public class NetexLineProducerCommand implements Command, Constant {
 				reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.TIMETABLE, OBJECT_TYPE.TIMETABLE, sharedData.getTimetableIds().size());
 				result = SUCCESS;
 			} else {
-				reporter.addErrorToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, ActionReporter.ERROR_CODE.NO_DATA_ON_PERIOD, "no data on period");
+				reporter.addErrorToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, ActionReporter.ERROR_CODE.NO_DATA_ON_PERIOD, "no data on period");
 				result = ERROR;
 			}
 

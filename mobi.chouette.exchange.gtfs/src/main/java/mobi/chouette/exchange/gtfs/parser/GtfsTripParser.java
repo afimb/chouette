@@ -632,7 +632,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		Route route = createRoute(referential, configuration, gtfsTrip);
 
 		// JourneyPattern
-		String journeyPatternId = route.getObjectId().replace(Route.ROUTE_KEY, JourneyPattern.JOURNEYPATTERN_KEY);
+		String journeyPatternId = route.getChouetteId().getObjectId().replace(Route.ROUTE_KEY, JourneyPattern.JOURNEYPATTERN_KEY);
 		journeyPattern = ObjectFactory.getJourneyPattern(referential, journeyPatternId);
 		journeyPattern.setName(gtfsTrip.getTripHeadSign());
 		journeyPattern.setRoute(route);
@@ -719,7 +719,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 		int segmentRank = 0;
 		previous = null;
-		String prefix = journeyPattern.objectIdPrefix();
+		String prefix = journeyPattern.getChouetteId().getCodeSpace();
 		StopArea previousLocation = null;
 		for (StopPoint stop : journeyPattern.getStopPoints()) {
 			// find nearest segment and project point on it
@@ -763,7 +763,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				if (lastSegmentIncluded)
 					rank++;
 				String routeSectionId = prefix + ":" + RouteSection.ROUTE_SECTION_KEY + ":" + shapeId + "_"
-						+ previousLocation.objectIdSuffix() + "_" + location.objectIdSuffix() + "_" + intFactor;
+						+ previousLocation.getChouetteId().getObjectId() + "_" + location.getChouetteId().getObjectId() + "_" + intFactor;
 				RouteSection section = ObjectFactory.getRouteSection(referential, routeSectionId);
 				if (!section.isFilled()) {
 					Coordinate[] inputCoords = new Coordinate[2];
@@ -782,8 +782,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 						section.setDistance(BigDecimal.valueOf(distance));
 					} catch (NumberFormatException e) {
 						log.error(shapeId + " : problem with section between " + previousLocation.getName() + "("
-								+ previousLocation.getObjectId() + " and " + location.getName() + "("
-								+ location.getObjectId());
+								+ previousLocation.getChouetteId().getObjectId() + " and " + location.getName() + "("
+								+ location.getChouetteId().getObjectId());
 						log.error("coords (" + coords.size() + ") :");
 						for (Coordinate coordinate : coords) {
 							log.error("lat = " + coordinate.y + " , lon = " + coordinate.x);
@@ -899,7 +899,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		int position = 0;
 		for (VehicleJourneyAtStop vehicleJourneyAtStop : list) {
 			VehicleJourneyAtStopWrapper wrapper = (VehicleJourneyAtStopWrapper) vehicleJourneyAtStop;
-			String baseKey = route.getObjectId().replace(Route.ROUTE_KEY, StopPoint.STOPPOINT_KEY) + "a"
+			String baseKey = route.getChouetteId().getObjectId().replace(Route.ROUTE_KEY, StopPoint.STOPPOINT_KEY) + "a"
 					+ wrapper.stopId.trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
 			String stopKey = baseKey;
 			int dup = 1;

@@ -232,7 +232,7 @@ public class GtfsExportTripProducerTests
 private VehicleJourney buildNeptuneObject(boolean full)
    {
       VehicleJourney neptuneObject = new VehicleJourney();
-      neptuneObject.setObjectId("GTFS:VehicleJourney:4321");
+      neptuneObject.getChouetteId().setObjectId("GTFS:VehicleJourney:4321");
       // if (full) neptuneObject.setName("name");
       if (full) neptuneObject.setNumber(Long.valueOf(456));
       if (full) neptuneObject.setMobilityRestrictedSuitability(Boolean.TRUE);
@@ -242,7 +242,7 @@ private VehicleJourney buildNeptuneObject(boolean full)
       neptuneObject.setRoute(route);
       if (full) jp.setPublishedName("jp name");
       Line line = new Line();
-      line.setObjectId("GTFS:Line:0123");
+      line.getChouetteId().setObjectId("GTFS:Line:0123");
 
       route.setLine(line);
       if (full) route.setWayBack("A");
@@ -262,8 +262,8 @@ private VehicleJourney buildNeptuneObject(boolean full)
          StopPoint sp = new StopPoint();
          sp.setPosition(i*2);
          StopArea sa = new StopArea();
-         sp.setObjectId("GTFS:StopPoint:SP"+i);
-         sa.setObjectId("GTFS:StopPoint:SA"+i);
+         sp.getChouetteId().setObjectId("GTFS:StopPoint:SP"+i);
+         sa.getChouetteId().setObjectId("GTFS:StopPoint:SA"+i);
          sp.setContainedInStopArea(sa);
          VehicleJourneyAtStop vjas = new VehicleJourneyAtStop();
          vjas.setStopPoint(sp);

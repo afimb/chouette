@@ -62,7 +62,7 @@ public class CommercialStopGenerator extends AbstractGenerator {
 
 			String mergeKey = stop.getName();
 			if (stop.getParent() != null) {
-				mergeKey = stop.getParent().getObjectId();
+				mergeKey = stop.getParent().getChouetteId().getObjectId();
 			} else {
 				for (String key : keys) {
 					if (mergeKey.startsWith(key)) {
@@ -86,8 +86,8 @@ public class CommercialStopGenerator extends AbstractGenerator {
 			} else if (stop.getParent() != null) {
 				if (!area.equals(stop.getParent())) {
 					log.error("conflict between generated and setted parent");
-					log.error("stop   = " + stop.getObjectId() + " " + stop.getName());
-					log.error("parent = " + area.getObjectId() + " " + area.getName());
+					log.error("stop   = " + stop.getChouetteId().getObjectId() + " " + stop.getName());
+					log.error("parent = " + area.getChouetteId().getObjectId() + " " + area.getName());
 					continue;
 				}
 			}
@@ -98,7 +98,7 @@ public class CommercialStopGenerator extends AbstractGenerator {
 		// check distance to explode areas
 		List<StopArea> dividedAreas = new ArrayList<StopArea>();
 		for (StopArea area : areaMap.values()) {
-			explodeArea(referential, dividedAreas, area, 1, area.getObjectId(), distanceMax);
+			explodeArea(referential, dividedAreas, area, 1, area.getChouetteId().getObjectId(), distanceMax);
 		}
 
 		// save area
@@ -136,12 +136,12 @@ public class CommercialStopGenerator extends AbstractGenerator {
 	 */
 	private StopArea initArea(Referential referential, StopArea stop, String objectId) {
 		Calendar now = Calendar.getInstance();
-		String[] token = stop.getObjectId().split(":");
+		String[] token = stop.getChouetteId().getObjectId().split(":");
 		if (objectId == null)
 			objectId = token[0] + ":" + token[1] + ":COM_" + token[2];
 		StopArea area = ObjectFactory.getStopArea(referential, objectId);
 		area.setName(stop.getName());
-		area.setObjectId(objectId);
+		area.getChouetteId().setObjectId(objectId);
 		area.setObjectVersion(stop.getObjectVersion());
 		area.setCreationTime(now.getTime());
 		area.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
@@ -171,7 +171,7 @@ public class CommercialStopGenerator extends AbstractGenerator {
 
 			StopArea areaExcluded = initArea(referential, excludedList.get(0), baseId + "_" + rank);
 			// patch object id for non confusion
-			areaExcluded.setObjectId(baseId + "_" + rank);
+			areaExcluded.getChouetteId().setObjectId(baseId + "_" + rank);
 			for (StopArea excluded : excludedList) {
 				excluded.setParent(areaExcluded);
 			}

@@ -35,7 +35,7 @@ public class ServiceFrameWriter extends AbstractWriter{
 		ModelTranslator modelTranslator = new ModelTranslator();
 		writer.write("  ");
 		writer.write("<!-- ServiceFrame to map the PTNetwork  NEPTUNE Object -->\n");
-		writer.write("<ServiceFrame version=\"any\"  id=\""+line.objectIdPrefix()+":ServiceFrame:"+line.objectIdSuffix()+"\">\n");
+		writer.write("<ServiceFrame version=\"any\"  id=\""+line.getChouetteId().getCodeSpace()+":ServiceFrame:"+line.getChouetteId().getObjectId()+"\">\n");
 		writer.write("  <!-- NEPTUNE PTNetwork Mappling =========================================== -->\n");
 		writer.write("  <Network version=\""+network.getObjectVersion()+"\" changed=\""+dateFormat.format(line.getNetwork().getVersionDate())+"\" \n");
 		writer.write("           id=\""+modelTranslator.netexId(network)+"\" >\n");
@@ -67,7 +67,7 @@ public class ServiceFrameWriter extends AbstractWriter{
 		writer.write("  <directions>\n");
 		//    #foreach( $route in $line.routes )   
 		for (Route route : line.getRoutes()) {
-		writer.write("    <Direction version=\"any\" id=\""+route.objectIdPrefix()+":Route:"+route.objectIdSuffix()+":Direction\">\n");
+		writer.write("    <Direction version=\"any\" id=\""+route.getChouetteId().getCodeSpace()+":Route:"+route.getChouetteId().getObjectId()+":Direction\">\n");
 		//      #if ( $route.direction )
 		if (isSet(route.getDirection()))
 		writer.write("      <Name>"+toXml(route.getDirection())+"</Name>\n");
@@ -91,11 +91,11 @@ public class ServiceFrameWriter extends AbstractWriter{
 		//      #foreach( $stopPoint in $route.stopPoints )
 		for (StopPoint stopPoint : route.getStopPoints()) {
 			if (stopPoint == null) continue;
-		//      #set($routePointId = ${route.objectIdSuffix()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.objectIdSuffix()} )
-			String routePointId = route.objectIdSuffix() + "A" + stopPoint.getPosition()+"A"+stopPoint.objectIdSuffix();
-		writer.write("    <RoutePoint version=\""+stopPoint.getObjectVersion()+"\" id=\""+stopPoint.objectIdPrefix()+":RoutePoint:"+routePointId+"\">\n");
+		//      #set($routePointId = ${route.getChouetteId().getObjectId()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.getChouetteId().getObjectId()} )
+			String routePointId = route.getChouetteId().getObjectId() + "A" + stopPoint.getPosition()+"A"+stopPoint.getChouetteId().getObjectId();
+		writer.write("    <RoutePoint version=\""+stopPoint.getObjectVersion()+"\" id=\""+stopPoint.getChouetteId().getCodeSpace()+":RoutePoint:"+routePointId+"\">\n");
 		writer.write("      <projections>\n");
-		writer.write("        <PointProjection version=\"any\" id=\""+stopPoint.objectIdPrefix()+":PointProjection:"+routePointId+"\">\n");
+		writer.write("        <PointProjection version=\"any\" id=\""+stopPoint.getChouetteId().getCodeSpace()+":PointProjection:"+routePointId+"\">\n");
 		writer.write("          <ProjectedPointRef version=\""+stopPoint.getContainedInStopArea().getObjectVersion()+"\" ref=\""+modelTranslator.netexId(stopPoint)+"\"/>\n");
 		writer.write("        </PointProjection>\n");
 		writer.write("      </projections>\n");
@@ -141,19 +141,19 @@ public class ServiceFrameWriter extends AbstractWriter{
 		writer.write("      <ShortName>"+toXml(route.getPublishedName())+"</ShortName>\n");
 		//      #end
 		writer.write("      <!-- NEPTUNE [mapping:variable] : Route->DirectionRef reference of Direction object mapping to NEPTUNE Route->publishedName and Route->RouteExtension->wayBack -->\n");
-		writer.write("      <DirectionRef version=\"any\" ref=\""+route.objectIdPrefix()+":Route:"+route.objectIdSuffix()+":Direction\"/>\n");
+		writer.write("      <DirectionRef version=\"any\" ref=\""+route.getChouetteId().getCodeSpace()+":Route:"+route.getChouetteId().getObjectId()+":Direction\"/>\n");
 		writer.write("      <pointsInSequence>\n");                             
 		//        #foreach( $stopPoint in $route.stopPoints )
 		for (StopPoint stopPoint : route.getStopPoints()) {
 			if (stopPoint == null) continue;
-		//        #set($routePointId = ${route.objectIdSuffix()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.objectIdSuffix()} )
-			String routePointId = route.objectIdSuffix() + "A" + stopPoint.getPosition()+"A"+stopPoint.objectIdSuffix();
-		//        #set($pointOnRouteId = ${stopPoint.objectIdSuffix()} + '-' + $stopPoint.position )
-			String pointOnRouteId = stopPoint.objectIdSuffix()+"-"+stopPoint.getPosition();
+		//        #set($routePointId = ${route.getChouetteId().getObjectId()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.getChouetteId().getObjectId()} )
+			String routePointId = route.getChouetteId().getObjectId() + "A" + stopPoint.getPosition()+"A"+stopPoint.getChouetteId().getObjectId();
+		//        #set($pointOnRouteId = ${stopPoint.getChouetteId().getObjectId()} + '-' + $stopPoint.position )
+			String pointOnRouteId = stopPoint.getChouetteId().getObjectId()+"-"+stopPoint.getPosition();
 		//        #set($netex_order = 1 + $stopPoint.position)
 			int netex_order = stopPoint.getPosition() + 1;
-		writer.write("        <PointOnRoute version=\"any\" id=\""+stopPoint.objectIdPrefix()+":PointOnRoute:"+pointOnRouteId+"\" order=\""+netex_order+"\">\n");
-		writer.write("          <RoutePointRef version=\""+route.getObjectVersion()+"\" ref=\""+stopPoint.objectIdPrefix()+":RoutePoint:"+routePointId+"\"/>\n");
+		writer.write("        <PointOnRoute version=\"any\" id=\""+stopPoint.getChouetteId().getCodeSpace()+":PointOnRoute:"+pointOnRouteId+"\" order=\""+netex_order+"\">\n");
+		writer.write("          <RoutePointRef version=\""+route.getObjectVersion()+"\" ref=\""+stopPoint.getChouetteId().getCodeSpace()+":RoutePoint:"+routePointId+"\"/>\n");
 		writer.write("        </PointOnRoute>\n");
 		}
 		//        #end
@@ -277,7 +277,7 @@ public class ServiceFrameWriter extends AbstractWriter{
 		writer.write("      <pointsInSequence>\n");
 		//        #foreach( $stopPoint in $journeyPattern.stopPoints )
 		for (StopPoint stopPoint : journeyPattern.getStopPoints()) {
-		writer.write("        <StopPointInJourneyPattern version=\"1\" id=\""+stopPoint.objectIdPrefix()+":StopPointInJourneyPattern:"+stopPoint.objectIdSuffix()+"\">\n");
+		writer.write("        <StopPointInJourneyPattern version=\"1\" id=\""+stopPoint.getChouetteId().getCodeSpace()+":StopPointInJourneyPattern:"+stopPoint.getChouetteId().getObjectId()+"\">\n");
 		writer.write("          <ScheduledStopPointRef version=\""+stopPoint.getObjectVersion()+"\" ref=\""+modelTranslator.netexId(stopPoint)+"\"/>\n");
 		writer.write("        </StopPointInJourneyPattern>\n");
 		}
@@ -443,22 +443,22 @@ public class ServiceFrameWriter extends AbstractWriter{
 		}
 		//      #end
 		//      #if( ( $routingConstraint.latitude && $routingConstraint.longitude) || ( $routingConstraint.x && $routingConstraint.y && $routingConstraint.projectionType))
-		if (routingConstraint.hasCoordinates() || routingConstraint.hasProjection())
-		writer.write("      <Centroid>\n");
-		writer.write("        <Location id=\""+modelTranslator.netexMockId(routingConstraint,"Location")+"\">\n");
-		//          #if ( $routingConstraint.longitude && $routingConstraint.latitude )
-		if (routingConstraint.hasCoordinates()) {
-		writer.write("          <Longitude>"+routingConstraint.getLongitude()+"</Longitude>\n");
-		writer.write("          <Latitude>"+routingConstraint.getLatitude()+"</Latitude>\n");
-		}
-		//          #end
-		//          #if ( $routingConstraint.x && $routingConstraint.y && $routingConstraint.projectionType)
-		if (routingConstraint.hasProjection()) {
-		writer.write("          <gml:pos srsName=\""+routingConstraint.getProjectionType()+"\">"+routingConstraint.getX()+" "+routingConstraint.getY()+"</gml:pos>\n");
-		//          #end
-		writer.write("        </Location>\n");
-		writer.write("      </Centroid>\n");
-		}
+//		if (routingConstraint.hasCoordinates() || routingConstraint.hasProjection())
+//		writer.write("      <Centroid>\n");
+//		writer.write("        <Location id=\""+modelTranslator.netexMockId(routingConstraint,"Location")+"\">\n");
+//		//          #if ( $routingConstraint.longitude && $routingConstraint.latitude )
+//		if (routingConstraint.hasCoordinates()) {
+//		writer.write("          <Longitude>"+routingConstraint.getLongitude()+"</Longitude>\n");
+//		writer.write("          <Latitude>"+routingConstraint.getLatitude()+"</Latitude>\n");
+//		}
+//		//          #end
+//		//          #if ( $routingConstraint.x && $routingConstraint.y && $routingConstraint.projectionType)
+//		if (routingConstraint.hasProjection()) {
+//		writer.write("          <gml:pos srsName=\""+routingConstraint.getProjectionType()+"\">"+routingConstraint.getX()+" "+routingConstraint.getY()+"</gml:pos>\n");
+//		//          #end
+//		writer.write("        </Location>\n");
+//		writer.write("      </Centroid>\n");
+//		}
 		//      #end
 		writer.write("      <ZoneUse>cannotBoardAndAlightInSameZone</ZoneUse>\n");
 		//      #if ( $routingConstraint.routingConstraintLines && $routingConstraint.routingConstraintLines.size() > 0)

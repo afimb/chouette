@@ -148,14 +148,14 @@ public class KmlData {
 	}
 
 	public KmlItem addStopPoint(StopPoint point) {
-		KmlItem item = addNewItem(point.getObjectId());
+		KmlItem item = addNewItem(point.getChouetteId().getObjectId());
 		if (item == null) return null;
-		// item.setId(area.getObjectId());
+		// item.setId(area.getChouetteId().getObjectId());
 		StopArea area = point.getContainedInStopArea();
 		if (area != null)
 		{
 		item.addAttribute("name", area.getName());
-		item.addExtraData("objectid", area.getObjectId());
+		item.addExtraData("objectid", area.getChouetteId().getObjectId());
 		item.addExtraData("object_version", area.getObjectVersion());
 		item.addExtraData("creation_time", area.getCreationTime());
 		item.addExtraData("creator_id", area.getCreatorId());
@@ -175,18 +175,18 @@ public class KmlData {
 		item.addExtraData("lift_availability", area.getLiftAvailable());
 		item.addExtraData("int_user_needs", area.getIntUserNeeds());
 		if (area.getParent() != null)
-		   item.addExtraData("parent_objectid", area.getParent().getObjectId());
+		   item.addExtraData("parent_objectid", area.getParent().getChouetteId().getObjectId());
 		item.setPoint(area);
 		}
 		return item;
 	}
 
 	public KmlItem addStopArea(StopArea area) {
-		KmlItem item = addNewItem(area.getObjectId());
+		KmlItem item = addNewItem(area.getChouetteId().getObjectId());
 		if (item == null) return null;
-		// item.setId(area.getObjectId());
+		// item.setId(area.getChouetteId().getObjectId());
 		item.addAttribute("name", area.getName());
-		item.addExtraData("objectid", area.getObjectId());
+		item.addExtraData("objectid", area.getChouetteId().getObjectId());
 		item.addExtraData("object_version", area.getObjectVersion());
 		item.addExtraData("creation_time", area.getCreationTime());
 		item.addExtraData("creator_id", area.getCreatorId());
@@ -201,17 +201,17 @@ public class KmlData {
 		item.addExtraData("stairs_availability", area.getStairsAvailable());
 		item.addExtraData("lift_availability", area.getLiftAvailable());
 		if (area.getParent() != null)
-		   item.addExtraData("parent", area.getParent().getObjectId());
+		   item.addExtraData("parent", area.getParent().getChouetteId().getObjectId());
 		item.setPoint(area);
 		return item;
 	}
 	
 	public KmlItem addConnectionLink(ConnectionLink link) {
-		KmlItem item = addNewItem(link.getObjectId());
+		KmlItem item = addNewItem(link.getChouetteId().getObjectId());
 		if (item == null) return null;
-		// item.setId(link.getObjectId());
+		// item.setId(link.getChouetteId().getObjectId());
 		item.addAttribute("name", link.getName());
-		item.addExtraData("objectid", link.getObjectId());
+		item.addExtraData("objectid", link.getChouetteId().getObjectId());
 		item.addExtraData("object_version", link.getObjectVersion());
 		item.addExtraData("creation_time", link.getCreationTime());
 		item.addExtraData("creator_id", link.getCreatorId());
@@ -227,20 +227,20 @@ public class KmlData {
 		item.addExtraData("lift_availability", link.getLiftAvailable());
 		if (link.getStartOfLink() != null && link.getEndOfLink() != null)
 		{
-		   item.addExtraData("departure_objectid", link.getStartOfLink().getObjectId());
+		   item.addExtraData("departure_objectid", link.getStartOfLink().getChouetteId().getObjectId());
 		   item.addPoint(link.getStartOfLink());
-		   item.addExtraData("arrival_objectid", link.getEndOfLink().getObjectId());
+		   item.addExtraData("arrival_objectid", link.getEndOfLink().getChouetteId().getObjectId());
 		   item.addPoint(link.getEndOfLink());
 		}
 		return item;
 	}
 
 	public KmlItem addAccessPoint(AccessPoint point) {
-		KmlItem item = addNewItem(point.getObjectId());
+		KmlItem item = addNewItem(point.getChouetteId().getObjectId());
 		if (item == null) return null;
-		// item.setId(point.getObjectId());
+		// item.setId(point.getChouetteId().getObjectId());
 		item.addAttribute("name", point.getName());
-		item.addExtraData("objectid", point.getObjectId());
+		item.addExtraData("objectid", point.getChouetteId().getObjectId());
 		item.addExtraData("object_version", point.getObjectVersion());
 		item.addExtraData("creation_time", point.getCreationTime());
 		item.addExtraData("creator_id", point.getCreatorId());
@@ -253,18 +253,18 @@ public class KmlData {
 		item.addExtraData("mobility_restricted_suitability", point.getMobilityRestrictedSuitable());
 		item.addExtraData("stairs_availability", point.getStairsAvailable());
 		item.addExtraData("lift_availability", point.getLiftAvailable());
-		item.addExtraData("stop_area_objectid", point.getContainedIn().getObjectId());
+		item.addExtraData("stop_area_objectid", point.getContainedIn().getChouetteId().getObjectId());
 		item.setPoint(point);
 		return item;
 	}
 
 	public KmlItem addAccessLink(AccessLink link) {
-		KmlItem item = addNewItem(link.getObjectId());
+		KmlItem item = addNewItem(link.getChouetteId().getObjectId());
 		if (item == null) return null;
-		// item.setId(link.getObjectId());
+		// item.setId(link.getChouetteId().getObjectId());
 		item.addAttribute("name", link.getName());
 		item.addExtraData("access_link_type", link.getLinkType());
-		item.addExtraData("objectid", link.getObjectId());
+		item.addExtraData("objectid", link.getChouetteId().getObjectId());
 		item.addExtraData("object_version", link.getObjectVersion());
 		item.addExtraData("creation_time", link.getCreationTime());
 		item.addExtraData("creator_id", link.getCreatorId());
@@ -283,9 +283,9 @@ public class KmlData {
 		item.addExtraData("link_orientation", link.getLinkOrientation());
 		if (link.getAccessPoint() != null && link.getStopArea() != null)
 		{
-		   item.addExtraData("access_point_objectid", link.getAccessPoint().getObjectId());
+		   item.addExtraData("access_point_objectid", link.getAccessPoint().getChouetteId().getObjectId());
 		   item.addPoint(link.getAccessPoint());
-		   item.addExtraData("stop_area_objectid", link.getStopArea().getObjectId());
+		   item.addExtraData("stop_area_objectid", link.getStopArea().getChouetteId().getObjectId());
 		   item.addPoint(link.getStopArea());
 		}
 		return item;

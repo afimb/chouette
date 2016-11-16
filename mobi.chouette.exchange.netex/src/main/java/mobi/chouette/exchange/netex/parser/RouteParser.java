@@ -241,7 +241,7 @@ public class RouteParser implements Parser, Constant {
 	}
 
 	private String getStopPointObjectId(Route route, String pointOnRouteId) {
-		String prefix = NetexUtils.objectIdPrefix(route.getObjectId());
+		String prefix = NetexUtils.objectIdPrefix(route.getChouetteId().getObjectId());
 
 		Matcher m = Pattern.compile("\\S+:\\S+:(\\S+)-\\d+$").matcher(
 				pointOnRouteId);

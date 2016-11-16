@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import javax.ejb.EJB;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
@@ -57,7 +58,11 @@ public class RouteSectionDaoTest extends Arquillian
 		{
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
 		RouteSection section = new RouteSection();
-		section.setObjectId("Test:"+RouteSection.ROUTE_SECTION_KEY+":1");
+//		section.getChouetteId().setObjectId("Test:"+RouteSection.ROUTE_SECTION_KEY+":1");
+		ChouetteId chouetteId = new ChouetteId();
+		chouetteId.setCodeSpace("Test");
+		chouetteId.setObjectId("1");
+		section.setChouetteId(chouetteId);
 		GeometryFactory factory =  new GeometryFactory(new PrecisionModel(10),4326);
 		Coordinate[] coordinates = new Coordinate[2];
 		coordinates[0] = new Coordinate(2.338767,48.8612525);

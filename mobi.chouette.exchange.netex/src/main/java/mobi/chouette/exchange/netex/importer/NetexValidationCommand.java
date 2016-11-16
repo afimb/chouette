@@ -58,15 +58,15 @@ public class NetexValidationCommand implements Command, Constant {
 	private void addStats(Context context, ActionReporter reporter, Referential referential) {
 		Line line = referential.getLines().values().iterator().next();
 		
-		reporter.addObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line), OBJECT_STATE.OK, IO_TYPE.INPUT);
-		reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
-		reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN, referential.getJourneyPatterns().size());
-		reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, referential.getRoutes().size());
-		reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY, referential.getVehicleJourneys().size());
-		reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK, referential.getConnectionLinks().size());
-		reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.TIMETABLE, referential.getTimetables().size());
-		reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT, referential.getAccessPoints().size());
-		reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA, referential.getStopAreas().size());
+		reporter.addObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line), OBJECT_STATE.OK, IO_TYPE.INPUT);
+		reporter.addStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+		reporter.addStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN, referential.getJourneyPatterns().size());
+		reporter.addStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, referential.getRoutes().size());
+		reporter.addStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY, referential.getVehicleJourneys().size());
+		reporter.addStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK, referential.getConnectionLinks().size());
+		reporter.addStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.TIMETABLE, referential.getTimetables().size());
+		reporter.addStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT, referential.getAccessPoints().size());
+		reporter.addStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA, referential.getStopAreas().size());
 
 		// TODO report on end of processing
 //		report.getLines().add(lineInfo);

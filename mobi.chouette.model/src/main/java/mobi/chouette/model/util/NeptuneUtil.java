@@ -33,7 +33,7 @@ public abstract class NeptuneUtil {
 		if (neptuneObjects != null) {
 			for (NeptuneIdentifiedObject neptuneObject : neptuneObjects) {
 				if (neptuneObject != null) {
-					String objectId = neptuneObject.getObjectId();
+					String objectId = neptuneObject.getChouetteId().getObjectId();
 					if (objectId != null) {
 						objectIds.add(objectId);
 					}
@@ -56,7 +56,7 @@ public abstract class NeptuneUtil {
 		if (neptuneObjects != null) {
 			for (T neptuneObject : neptuneObjects) {
 				if (neptuneObject != null) {
-					String id = neptuneObject.getObjectId();
+					String id = neptuneObject.getChouetteId().getObjectId();
 					if (id != null) {
 						map.put(id, neptuneObject);
 					}
@@ -180,7 +180,7 @@ public abstract class NeptuneUtil {
 		} else {
 			for (StopPoint stopPoint : stopPoints) {
 				if (stopPoint.getPosition() == null) {
-					log.warn("stopPoint without position " + stopPoint.getObjectId());
+					log.warn("stopPoint without position " + stopPoint.getChouetteId().getObjectId());
 					return;
 				}
 			}

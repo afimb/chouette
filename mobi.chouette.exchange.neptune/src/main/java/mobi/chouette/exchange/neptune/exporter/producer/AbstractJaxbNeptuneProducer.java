@@ -42,7 +42,7 @@ public abstract class AbstractJaxbNeptuneProducer<T extends TridentObjectType, U
 	public void populateFromModel(T target, U source) {
 		// ObjectId : maybe null but not empty
 		// TODO : Mandatory ?
-		target.setObjectId(source.getObjectId());
+		target.setObjectId(source.getChouetteId().getObjectId());
 
 		// ObjectVersion
 		if (source.getObjectVersion() > 0)
@@ -71,7 +71,7 @@ public abstract class AbstractJaxbNeptuneProducer<T extends TridentObjectType, U
 	protected String getNonEmptyObjectId(NeptuneIdentifiedObject object) {
 		if (object == null)
 			return null;
-		return object.getObjectId();
+		return object.getChouetteId().getObjectId();
 	}
 
 	// public abstract T produce(U o, boolean addExtension);
@@ -122,7 +122,7 @@ public abstract class AbstractJaxbNeptuneProducer<T extends TridentObjectType, U
 		try {
 			Route wayBack = route.getOppositeRoute();
 			if (wayBack != null) {
-				String o = wayBack.getObjectId();
+				String o = wayBack.getChouetteId().getObjectId();
 				return true;
 			}
 		} catch (Exception ex) {

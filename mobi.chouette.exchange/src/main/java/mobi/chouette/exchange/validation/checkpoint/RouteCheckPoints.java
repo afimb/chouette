@@ -251,7 +251,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 				DataLocation location = buildLocation(context, route);
 				DataLocation target = buildLocation(context, route2);
 				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("routeId", route2.getObjectId());
+				map.put("routeId", route2.getChouetteId().getObjectId());
 				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 				reporter.addCheckPointReportError(context, ROUTE_4, location, null, null, target);
 			}

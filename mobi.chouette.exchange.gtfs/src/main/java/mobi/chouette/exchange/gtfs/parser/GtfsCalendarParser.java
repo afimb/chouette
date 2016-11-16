@@ -220,8 +220,8 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 		}
 
 		for (Timetable timetable : list) {
-			referential.getSharedTimetables().put(timetable.getObjectId(), timetable);
-			referential.getTimetables().put(timetable.getObjectId(), timetable);
+			referential.getSharedTimetables().put(timetable.getChouetteId().getObjectId(), timetable);
+			referential.getTimetables().put(timetable.getChouetteId().getObjectId(), timetable);
 		}
        list.clear();
 	}
@@ -281,7 +281,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 
 	private Timetable cloneTimetableAfterMidnight(Timetable source) {
 		Timetable timetable = new Timetable();
-		timetable.setObjectId(source.getObjectId() + AFTER_MIDNIGHT_SUFFIX);
+		timetable.getChouetteId().setObjectId(source.getChouetteId().getObjectId() + AFTER_MIDNIGHT_SUFFIX);
 		timetable.setComment(source.getComment() + " (after midnight)");
 		timetable.setVersion(source.getVersion());
 

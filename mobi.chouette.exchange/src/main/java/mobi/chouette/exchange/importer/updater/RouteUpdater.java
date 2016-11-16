@@ -61,7 +61,7 @@ public class RouteUpdater implements Updater<Route> {
 				
 		if (oldValue.isDetached()) {
 			// object does not exist in database
-			oldValue.setObjectId(newValue.getObjectId());
+			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 			oldValue.setCreationTime(newValue.getCreationTime());
 			oldValue.setCreatorId(newValue.getCreatorId());
@@ -74,8 +74,8 @@ public class RouteUpdater implements Updater<Route> {
 			oldValue.setDetached(false);
 		} else {
 
-			if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
-				oldValue.setObjectId(newValue.getObjectId());
+			if (newValue.getChouetteId().getObjectId() != null && !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
+				oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
 			}
 			if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
 				oldValue.setObjectVersion(newValue.getObjectVersion());
@@ -108,11 +108,11 @@ public class RouteUpdater implements Updater<Route> {
 
 		// OppositeRoute
 		if (newValue.getOppositeRoute() != null) {
-
-			String objectId = newValue.getOppositeRoute().getObjectId();
+			String codeSpace = newValue.getOppositeRoute().getChouetteId().getCodeSpace();
+			String objectId = newValue.getOppositeRoute().getChouetteId().getObjectId();
 			Route opposite = cache.getRoutes().get(objectId);
 			if (opposite == null) {
-				opposite = routeDAO.findByObjectId(objectId);
+				opposite = routeDAO.findByChouetteId(codeSpace, objectId);
 				if (opposite != null) {
 					cache.getRoutes().put(objectId, opposite);
 				}
@@ -129,20 +129,21 @@ public class RouteUpdater implements Updater<Route> {
 		List<StopPoint> stopPoints = null;
 		for (StopPoint item : addedStopPoint) {
 
-			StopPoint stopPoint = cache.getStopPoints().get(item.getObjectId());
+			StopPoint stopPoint = cache.getStopPoints().get(item.getChouetteId().getObjectId());
 			if (stopPoint == null) {
 				if (stopPoints == null) {
-					stopPoints = stopPointDAO.findByObjectId(UpdaterUtils.getObjectIds(addedStopPoint));
+					String codeSpace = item.getChouetteId().getCodeSpace();
+					stopPoints = stopPointDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedStopPoint));
 					for (StopPoint object : stopPoints) {
-						cache.getStopPoints().put(object.getObjectId(), object);
+						cache.getStopPoints().put(object.getChouetteId().getObjectId(), object);
 					}
 				}
-				stopPoint = cache.getStopPoints().get(item.getObjectId());
+				stopPoint = cache.getStopPoints().get(item.getChouetteId().getObjectId());
 			}
 			
 
 			if (stopPoint == null) {
-				stopPoint = ObjectFactory.getStopPoint(cache, item.getObjectId());
+				stopPoint = ObjectFactory.getStopPoint(cache, item.getChouetteId().getObjectId());
 			}
 			// If new stop point doesn't belong to route, we add temporarly it to the route and check if old stopPoint has same route as new stopPoint
 			if(stopPoint.getRoute() != null) {
@@ -172,19 +173,20 @@ public class RouteUpdater implements Updater<Route> {
 		List<JourneyPattern> journeyPatterns = null;
 		for (JourneyPattern item : addedJourneyPattern) {
 
-			JourneyPattern journeyPattern = cache.getJourneyPatterns().get(item.getObjectId());
+			JourneyPattern journeyPattern = cache.getJourneyPatterns().get(item.getChouetteId().getObjectId());
 			if (journeyPattern == null) {
 				if (journeyPatterns == null) {
-					journeyPatterns = journeyPatternDAO.findByObjectId(UpdaterUtils.getObjectIds(addedJourneyPattern));
+					String codeSpace = item.getChouetteId().getCodeSpace();
+					journeyPatterns = journeyPatternDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedJourneyPattern));
 					for (JourneyPattern object : journeyPatterns) {
-						cache.getJourneyPatterns().put(object.getObjectId(), object);
+						cache.getJourneyPatterns().put(object.getChouetteId().getObjectId(), object);
 					}
 				}
-				journeyPattern = cache.getJourneyPatterns().get(item.getObjectId());
+				journeyPattern = cache.getJourneyPatterns().get(item.getChouetteId().getObjectId());
 			}
 
 			if (journeyPattern == null) {
-				journeyPattern = ObjectFactory.getJourneyPattern(cache, item.getObjectId());
+				journeyPattern = ObjectFactory.getJourneyPattern(cache, item.getChouetteId().getObjectId());
 			}
 			if(journeyPattern.getRoute() != null) {
 				twoDatabaseJourneyPatternOneTest(validationReporter, context, journeyPattern, item, data);
@@ -212,7 +214,7 @@ public class RouteUpdater implements Updater<Route> {
 	 */
 	private void twoDatabaseJourneyPatternOneTest(ValidationReporter validationReporter, Context context, JourneyPattern oldValue, JourneyPattern newValue, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldValue.getRoute(), newValue.getRoute()))
-			validationReporter.addCheckPointReportError(context, DATABASE_JOURNEY_PATTERN_1, data.getDataLocations().get(newValue.getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_JOURNEY_PATTERN_1, data.getDataLocations().get(newValue.getChouetteId().getObjectId()));
 		else
 			validationReporter.reportSuccess(context, DATABASE_JOURNEY_PATTERN_1);
 	}
@@ -226,7 +228,7 @@ public class RouteUpdater implements Updater<Route> {
 	 */
 	private void twoDatabaseStopPointOneTest(ValidationReporter validationReporter, Context context, StopPoint oldSp, StopPoint newSp, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldSp.getRoute(), newSp.getRoute()))
-			validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_1, data.getDataLocations().get(newSp.getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_1, data.getDataLocations().get(newSp.getChouetteId().getObjectId()));
 		else
 			validationReporter.reportSuccess(context, DATABASE_STOP_POINT_1);
 	}

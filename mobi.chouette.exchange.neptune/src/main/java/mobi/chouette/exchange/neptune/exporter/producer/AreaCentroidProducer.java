@@ -25,7 +25,7 @@ public class AreaCentroidProducer extends
       //
       populateFromModel(jaxbAreaCentroid, area);
 
-      jaxbAreaCentroid.setObjectId(area.objectIdPrefix()+":AreaCentroid:"+area.objectIdSuffix());
+      jaxbAreaCentroid.setObjectId(area.getChouetteId().getCodeSpace()+":AreaCentroid:"+area.getChouetteId().getObjectId());
       jaxbAreaCentroid.setComment(getNotEmptyString(area.getComment()));
       jaxbAreaCentroid.setName(area.getName());
 
@@ -55,7 +55,7 @@ public class AreaCentroidProducer extends
       }
       else
       {
-			log.error("missing coordinates for StopArea "+area.getObjectId()+" "+area.getName());    	  
+			log.error("missing coordinates for StopArea "+area.getChouetteId().getObjectId()+" "+area.getName());    	  
     	  // longitude/latitude mmandatory
           jaxbAreaCentroid.setLatitude(BigDecimal.ZERO);
           jaxbAreaCentroid.setLongitude(BigDecimal.ZERO);

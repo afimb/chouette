@@ -9,6 +9,10 @@
 package mobi.chouette.exchange.validator;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -34,8 +38,10 @@ import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.NetworkDAO;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.dao.TimetableDAO;
+import mobi.chouette.exchange.importer.updater.UpdaterUtils;
 import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
 import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.model.Line;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -93,35 +99,75 @@ public class DaoSharedDataValidatorCommand implements Command, Constant {
 		try {
 			if (!data.getLineIds().isEmpty()) {
 				data.getLines().clear();
-				data.getLines().addAll(lineDAO.findByObjectId(data.getLineIds()));
+				Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(data.getLineIds());
+				
+				for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+				{
+					data.getLines().addAll(lineDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+				}
 			}
 			if (!data.getNetworkIds().isEmpty()) {
 				data.getNetworks().clear();
-				data.getNetworks().addAll(ptNetworkDAO.findByObjectId(data.getNetworkIds()));
+				Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(data.getNetworks());
+				
+				for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+				{
+					data.getNetworks().addAll(ptNetworkDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+				}
 			}
 			if (!data.getCompanyIds().isEmpty()) {
 				data.getCompanies().clear();
-				data.getCompanies().addAll(companyDAO.findByObjectId(data.getCompanyIds()));
+				Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(data.getCompanies());
+				
+				for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+				{
+					data.getCompanies().addAll(companyDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+				}
 			}
 			if (!data.getGroupOfLineIds().isEmpty()) {
 				data.getGroupOfLines().clear();
-				data.getGroupOfLines().addAll(groupOfLineDAO.findByObjectId(data.getGroupOfLineIds()));
+				Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(data.getGroupOfLines());
+				
+				for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+				{
+					data.getGroupOfLines().addAll(groupOfLineDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+				}
 			}
 			if (!data.getStopAreaIds().isEmpty()) {
 				data.getStopAreas().clear();
-				data.getStopAreas().addAll(stopAreaDAO.findByObjectId(data.getStopAreaIds()));
+				Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(data.getStopAreaIds());
+				
+				for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+				{
+					data.getStopAreas().addAll(stopAreaDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+				}
 			}
 			if (!data.getAccessPointIds().isEmpty()) {
 				data.getAccessPoints().clear();
-				data.getAccessPoints().addAll(accessPointDAO.findByObjectId(data.getAccessPointIds()));
+				Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(data.getAccessPointIds());
+				
+				for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+				{
+					data.getAccessPoints().addAll(accessPointDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+				}
 			}
 			if (!data.getAccessLinkIds().isEmpty()) {
 				data.getAccessLinks().clear();
-				data.getAccessLinks().addAll(accessLinkDAO.findByObjectId(data.getAccessLinkIds()));
+				Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(data.getAccessLinkIds());
+				
+				for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+				{
+					data.getAccessLinks().addAll(accessLinkDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+				}
 			}
 			if (!data.getTimetableIds().isEmpty()) {
 				data.getTimetables().clear();
-				data.getTimetables().addAll(timetableDAO.findByObjectId(data.getTimetableIds()));
+				Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(data.getTimetableIds());
+				
+				for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+				{
+					data.getTimetables().addAll(timetableDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+				}
 			}
 
 			Command validateSharedData = CommandFactory.create(initialContext,

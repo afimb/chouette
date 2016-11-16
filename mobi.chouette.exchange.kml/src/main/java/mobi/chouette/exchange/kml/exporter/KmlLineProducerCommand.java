@@ -92,17 +92,17 @@ public class KmlLineProducerCommand implements Command, Constant {
 			KmlDataCollector collector = new KmlDataCollector();
 
 			boolean cont = (collector.collect(collection, line, startDate, endDate));
-			reporter.addObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
+			reporter.addObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
 					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
 					collection.getJourneyPatterns().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, collection.getRoutes().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK,
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, collection.getRoutes().size());
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK,
 					collection.getConnectionLinks().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT,
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT,
 					collection.getAccessPoints().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA,
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA,
 					collection.getStopAreas().size());
 
 			if (cont) {
@@ -114,7 +114,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 
 				result = SUCCESS;
 			} else {
-				reporter.addErrorToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE,
+				reporter.addErrorToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE,
 						ActionReporter.ERROR_CODE.NO_DATA_ON_PERIOD, "no data on period");
 				result = ERROR;
 			}
@@ -175,10 +175,10 @@ public class KmlLineProducerCommand implements Command, Constant {
 		KmlFileWriter writer = new KmlFileWriter();
 		// prepare data for line
 		KmlData lineData = new KmlData("ligne : " + line.getName());
-		KmlItem lineItem = lineData.addNewItem(line.getObjectId());
+		KmlItem lineItem = lineData.addNewItem(line.getChouetteId().getObjectId());
 		lineItem.addAttribute("name", line.getName());
 		lineItem.addExtraData("transport_mode", line.getTransportModeName());
-		lineItem.addExtraData("objectid", line.getObjectId());
+		lineItem.addExtraData("objectid", line.getChouetteId().getObjectId());
 		lineItem.addExtraData("object_version", line.getObjectVersion());
 		lineItem.addExtraData("creation_time", line.getCreationTime());
 		lineItem.addExtraData("creator_id", line.getCreatorId());
@@ -188,24 +188,24 @@ public class KmlLineProducerCommand implements Command, Constant {
 		lineItem.addExtraData("color", line.getColor());
 		lineItem.addExtraData("text_color", line.getTextColor());
 		lineItem.addExtraData("mobility_restricted_suitability", line.getMobilityRestrictedSuitable());
-		lineItem.addExtraData("company_objectid", line.getCompany().getObjectId());
-		lineItem.addExtraData("network_objectid", line.getNetwork().getObjectId());
+		lineItem.addExtraData("company_objectid", line.getCompany().getChouetteId().getObjectId());
+		lineItem.addExtraData("network_objectid", line.getNetwork().getChouetteId().getObjectId());
 
 		Set<String> linksKey = new HashSet<>();
 		for (Route route : collection.getRoutes()) {
 			KmlData routeData = new KmlData("séquence d'arrêts : " + route.getName());
-			KmlItem routeItem = routeData.addNewItem(route.getObjectId());
+			KmlItem routeItem = routeData.addNewItem(route.getChouetteId().getObjectId());
 			if (!isEmpty(route.getName()))
 				routeItem.addAttribute("name", route.getName());
 			routeItem.addExtraData("wayback_code", route.getWayBack());
-			routeItem.addExtraData("objectid", route.getObjectId());
+			routeItem.addExtraData("objectid", route.getChouetteId().getObjectId());
 			routeItem.addExtraData("object_version", route.getObjectVersion());
 			routeItem.addExtraData("creation_time", route.getCreationTime());
 			routeItem.addExtraData("creator_id", route.getCreatorId());
 			routeItem.addExtraData("published_name", route.getPublishedName());
 			routeItem.addExtraData("number", route.getNumber());
 			routeItem.addExtraData("direction", route.getDirection());
-			routeItem.addExtraData("line_objectid", line.getObjectId());
+			routeItem.addExtraData("line_objectid", line.getChouetteId().getObjectId());
 
 			StopArea previous = null;
 			for (StopPoint point : route.getStopPoints()) {
@@ -218,8 +218,8 @@ public class KmlLineProducerCommand implements Command, Constant {
 				routeItem.addPoint(current);
 				if (previous != null) {
 
-					String key1 = previous.getObjectId() + "-" + current.getObjectId();
-					String key2 = current.getObjectId() + "-" + previous.getObjectId();
+					String key1 = previous.getChouetteId().getObjectId() + "-" + current.getChouetteId().getObjectId();
+					String key2 = current.getChouetteId().getObjectId() + "-" + previous.getChouetteId().getObjectId();
 					if (!linksKey.contains(key1)) {
 						// add link
 						lineItem.addLineString(previous, current);
@@ -233,7 +233,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 			for (JourneyPattern jp : route.getJourneyPatterns()) {
 				if (collection.getJourneyPatterns().contains(jp)) {
 					KmlData jpData = new KmlData("mission : " + jp.getName());
-					KmlItem jpItem = jpData.addNewItem(jp.getObjectId());
+					KmlItem jpItem = jpData.addNewItem(jp.getChouetteId().getObjectId());
 					if (!isEmpty(jp.getName()))
 						jpItem.addAttribute("name", jp.getName());
 					jpItem.addExtraData("object_version", jp.getObjectVersion());
@@ -241,7 +241,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 					jpItem.addExtraData("creator_id", jp.getCreatorId());
 					jpItem.addExtraData("registration_number", jp.getRegistrationNumber());
 					jpItem.addExtraData("published_name", jp.getPublishedName());
-					jpItem.addExtraData("route_objectid", route.getObjectId());
+					jpItem.addExtraData("route_objectid", route.getChouetteId().getObjectId());
 					List<RouteSection> routeSections = jp.getRouteSections();
 
 					boolean sections = false;

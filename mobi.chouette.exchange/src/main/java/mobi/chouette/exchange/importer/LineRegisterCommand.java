@@ -75,13 +75,13 @@ public class LineRegisterCommand implements Command {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		Line newValue = referential.getLines().values().iterator().next();
-		log.info("register line : " + newValue.getObjectId() + " " + newValue.getName() + " vehicleJourney count = "
+		log.info("register line : " + newValue.getChouetteId().getObjectId() + " " + newValue.getName() + " vehicleJourney count = "
 				+ referential.getVehicleJourneys().size());
 		try {
 
 			optimiser.initialize(cache, referential);
 
-			Line oldValue = cache.getLines().get(newValue.getObjectId());
+			Line oldValue = cache.getLines().get(newValue.getChouetteId().getObjectId());
 			lineUpdater.update(context, oldValue, newValue);
 			lineDAO.create(oldValue);
 			lineDAO.flush(); // to prevent SQL error outside method
@@ -91,13 +91,13 @@ public class LineRegisterCommand implements Command {
 				StringWriter buffer = new StringWriter(1024);
 				final List<String> list = new ArrayList<String>(referential.getVehicleJourneys().keySet());
 				for (VehicleJourney item : referential.getVehicleJourneys().values()) {
-					VehicleJourney vehicleJourney = cache.getVehicleJourneys().get(item.getObjectId());
+					VehicleJourney vehicleJourney = cache.getVehicleJourneys().get(item.getChouetteId().getObjectId());
 
 					List<VehicleJourneyAtStop> vehicleJourneyAtStops = item.getVehicleJourneyAtStops();
 					for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourneyAtStops) {
 
 						StopPoint stopPoint = cache.getStopPoints().get(
-								vehicleJourneyAtStop.getStopPoint().getObjectId());
+								vehicleJourneyAtStop.getStopPoint().getChouetteId().getObjectId());
 
 						write(buffer, vehicleJourney, stopPoint, vehicleJourneyAtStop);
 					}
@@ -111,7 +111,7 @@ public class LineRegisterCommand implements Command {
 		} catch (Exception ex) {
 			log.error(ex.getMessage());
 			ActionReporter reporter = ActionReporter.Factory.getInstance();
-			reporter.addObjectReport(context, newValue.getObjectId(), 
+			reporter.addObjectReport(context, newValue.getChouetteId().getObjectId(), 
 					OBJECT_TYPE.LINE, NamingUtil.getName(newValue), OBJECT_STATE.ERROR, IO_TYPE.INPUT);
 			if (ex.getCause() != null) {
 				Throwable e = ex.getCause();
@@ -121,13 +121,13 @@ public class LineRegisterCommand implements Command {
 				}
 				if (e instanceof SQLException) {
 					e = ((SQLException) e).getNextException();
-					reporter.addErrorToObjectReport(context, newValue.getObjectId(), OBJECT_TYPE.LINE, ERROR_CODE.WRITE_ERROR,  e.getMessage());
+					reporter.addErrorToObjectReport(context, newValue.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, ERROR_CODE.WRITE_ERROR,  e.getMessage());
 					
 				} else {
-					reporter.addErrorToObjectReport(context, newValue.getObjectId(), OBJECT_TYPE.LINE, ERROR_CODE.INTERNAL_ERROR,  e.getMessage());
+					reporter.addErrorToObjectReport(context, newValue.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, ERROR_CODE.INTERNAL_ERROR,  e.getMessage());
 				}
 			} else {
-				reporter.addErrorToObjectReport(context, newValue.getObjectId(), OBJECT_TYPE.LINE, ERROR_CODE.INTERNAL_ERROR,  ex.getMessage());
+				reporter.addErrorToObjectReport(context, newValue.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, ERROR_CODE.INTERNAL_ERROR,  ex.getMessage());
 			}
 			throw ex;
 		} finally {

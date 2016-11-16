@@ -57,7 +57,7 @@ public class ObjectReference extends AbstractReport {
 		this.type = TYPE.network;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getObjectId();
+			this.objectId = object.getChouetteId().getObjectId();
 
 	}
 
@@ -65,77 +65,77 @@ public class ObjectReference extends AbstractReport {
 		this.type = TYPE.company;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getObjectId();
+			this.objectId = object.getChouetteId().getObjectId();
 	}
 
 	public ObjectReference(GroupOfLine object) {
 		this.type = TYPE.group_of_line;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getObjectId();
+			this.objectId = object.getChouetteId().getObjectId();
 	}
 
 	public ObjectReference(StopArea object) {
 		this.type = TYPE.stop_area;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getObjectId();
+			this.objectId = object.getChouetteId().getObjectId();
 	}
 
 	public ObjectReference(ConnectionLink object) {
 		this.type = TYPE.connection_link;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getObjectId();
+			this.objectId = object.getChouetteId().getObjectId();
 	}
 
 	public ObjectReference(AccessPoint object) {
 		this.type = TYPE.access_point;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getObjectId();
+			this.objectId = object.getChouetteId().getObjectId();
 	}
 
 	public ObjectReference(AccessLink object) {
 		this.type = TYPE.access_link;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getObjectId();
+			this.objectId = object.getChouetteId().getObjectId();
 	}
 
 	public ObjectReference(Timetable object) {
 		this.type = TYPE.time_table;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getObjectId();
+			this.objectId = object.getChouetteId().getObjectId();
 	}
 
 	public ObjectReference(Line object) {
 		this.type = TYPE.line;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getObjectId();
+			this.objectId = object.getChouetteId().getObjectId();
 	}
 
 	public ObjectReference(Route object) {
 		this.type = TYPE.route;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getObjectId();
+			this.objectId = object.getChouetteId().getObjectId();
 	}
 
 	public ObjectReference(JourneyPattern object) {
 		this.type = TYPE.journey_pattern;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getObjectId();
+			this.objectId = object.getChouetteId().getObjectId();
 	}
 
 	public ObjectReference(VehicleJourney object) {
 		this.type = TYPE.vehicle_journey;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getObjectId();
+			this.objectId = object.getChouetteId().getObjectId();
 	}
 	
 	public ObjectReference(StopPoint object)

@@ -26,7 +26,7 @@ public class GtfsExportRouteProducerTests
       mock.reset();
 
       Line neptuneObject = new Line();
-      neptuneObject.setObjectId("GTFS:Line:4321");
+      neptuneObject.getChouetteId().setObjectId("GTFS:Line:4321");
       neptuneObject.setName("lineName");
       neptuneObject.setNumber("lineNumber");
       neptuneObject.setPublishedName("publishedLineName");
@@ -34,7 +34,7 @@ public class GtfsExportRouteProducerTests
       neptuneObject.setColor("0000FF");
       neptuneObject.setTextColor("00FF00");
       Company company = new Company();
-      company.setObjectId("GTFS:Company:1234");
+      company.getChouetteId().setObjectId("GTFS:Company:1234");
       company.setName("name");
       neptuneObject.setCompany(company);
 
@@ -62,11 +62,11 @@ public class GtfsExportRouteProducerTests
       mock.reset();
 
       Line neptuneObject = new Line();
-      neptuneObject.setObjectId("GTFS:Line:4321");
+      neptuneObject.getChouetteId().setObjectId("GTFS:Line:4321");
       neptuneObject.setName("lineNname");
       neptuneObject.setPublishedName("publishedLineName");
       Company company = new Company();
-      company.setObjectId("GTFS:Company:1234");
+      company.getChouetteId().setObjectId("GTFS:Company:1234");
       company.setName("name");
       neptuneObject.setCompany(company);
       producer.save(neptuneObject,"GTFS");
@@ -89,10 +89,10 @@ public class GtfsExportRouteProducerTests
       mock.reset();
 
       Line neptuneObject = new Line();
-      neptuneObject.setObjectId("GTFS:Line:4321");
+      neptuneObject.getChouetteId().setObjectId("GTFS:Line:4321");
       neptuneObject.setNumber("lineNumber");
       Company company = new Company();
-      company.setObjectId("GTFS:Company:1234");
+      company.getChouetteId().setObjectId("GTFS:Company:1234");
       company.setName("name");
       neptuneObject.setCompany(company);
       producer.save(neptuneObject,  "GTFS");
@@ -112,9 +112,9 @@ public class GtfsExportRouteProducerTests
       mock.reset();
 
       Line neptuneObject = new Line();
-      neptuneObject.setObjectId("GTFS:Line:4321");
+      neptuneObject.getChouetteId().setObjectId("GTFS:Line:4321");
       Company company = new Company();
-      company.setObjectId("GTFS:Company:1234");
+      company.getChouetteId().setObjectId("GTFS:Company:1234");
       company.setName("name");
       neptuneObject.setCompany(company);
       boolean state = producer.save(neptuneObject, "GTFS");

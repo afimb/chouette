@@ -19,8 +19,8 @@ public class GroupOfLineUpdater implements Updater<GroupOfLine> {
 		newValue.setSaved(true);
 
 //		Monitor monitor = MonitorFactory.start(BEAN_NAME);
-		if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
-			oldValue.setObjectId(newValue.getObjectId());
+		if (newValue.getChouetteId().getObjectId() != null && !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
+			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
 		}
 		if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
 			oldValue.setObjectVersion(newValue.getObjectVersion());

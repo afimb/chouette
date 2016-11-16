@@ -79,7 +79,7 @@ public class JourneyPatternParser implements Parser, Constant {
 			}
 		}
 
-		referential.getJourneyPatterns().put(journeyPattern.getObjectId(),
+		referential.getJourneyPatterns().put(journeyPattern.getChouetteId().getObjectId(),
 				journeyPattern);
 		journeyPattern.setFilled(true);
 	}

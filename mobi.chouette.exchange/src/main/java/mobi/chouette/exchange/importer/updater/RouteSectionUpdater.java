@@ -29,10 +29,10 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
         Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
 
-		if (newValue.getObjectId() != null
-				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
+		if (newValue.getChouetteId().getObjectId() != null
+				&& !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
 			
-			oldValue.setObjectId(newValue.getObjectId());
+			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
 		}
 		if (newValue.getObjectVersion() != null
 				&& !newValue.getObjectVersion().equals(
@@ -54,10 +54,11 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
 		}
 		if (newValue.getDeparture() != null
 				&& !newValue.getDeparture().equals(oldValue.getDeparture())) {
-			String objectId = newValue.getDeparture().getObjectId();
+			String codeSpace = newValue.getDeparture().getChouetteId().getCodeSpace();
+			String objectId = newValue.getDeparture().getChouetteId().getObjectId();
 			StopArea departure = cache.getStopAreas().get(objectId);
 			if (departure == null) {
-				departure = stopAreaDAO.findByObjectId(objectId);
+				departure = stopAreaDAO.findByChouetteId(codeSpace, objectId);
 				if (departure != null) {
 					cache.getStopAreas().put(objectId, departure);
 				}
@@ -69,10 +70,11 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
 		}
 		if (newValue.getArrival() != null
 				&& !newValue.getArrival().equals(oldValue.getArrival())) {
-			String objectId = newValue.getArrival().getObjectId();
+			String codeSpace = newValue.getDeparture().getChouetteId().getCodeSpace();
+			String objectId = newValue.getArrival().getChouetteId().getObjectId();
 			StopArea arrival = cache.getStopAreas().get(objectId);
 			if (arrival == null) {
-				arrival = stopAreaDAO.findByObjectId(objectId);
+				arrival = stopAreaDAO.findByChouetteId(codeSpace, objectId);
 				if (arrival != null) {
 					cache.getStopAreas().put(objectId, arrival);
 				}
@@ -95,7 +97,7 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
 				&& !newValue.getProcessedGeometry().equals(oldValue.getProcessedGeometry()))) {
 			oldValue.setProcessedGeometry(newValue.getProcessedGeometry());
 		}
-//		if (routeSectionDAO.findByObjectId(oldValue.getObjectId()) == null)
+//		if (routeSectionDAO.findByObjectId(oldValue.getChouetteId().getObjectId()) == null)
 //			routeSectionDAO.create(oldValue);
 //		else
 //			routeSectionDAO.update(oldValue);

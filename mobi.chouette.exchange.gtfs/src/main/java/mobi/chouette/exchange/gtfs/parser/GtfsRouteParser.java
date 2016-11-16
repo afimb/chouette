@@ -233,7 +233,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 
 		line.setTransportModeName(toTransportModeNameEnum(gtfsRoute.getRouteType()));
 
-		String[] token = line.getObjectId().split(":");
+		String[] token = line.getChouetteId().getObjectId().split(":");
 		line.setRegistrationNumber(token[2]);
 		line.setComment(gtfsRoute.getRouteDesc());
 		line.setColor(toHexa(gtfsRoute.getRouteColor()));

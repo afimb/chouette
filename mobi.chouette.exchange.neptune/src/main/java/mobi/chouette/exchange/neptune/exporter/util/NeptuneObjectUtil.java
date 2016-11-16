@@ -23,7 +23,7 @@ public class NeptuneObjectUtil extends NeptuneUtil {
 
 		List<PTLink>   ptLinks = new ArrayList<PTLink>();
 		ptLinks.clear();
-		String baseId = route.getObjectId().split(":")[0] + ":"
+		String baseId = route.getChouetteId().getObjectId().split(":")[0] + ":"
 				+ NeptuneIdentifiedObject.PTLINK_KEY + ":";
 		List<StopPoint> points = new ArrayList<>(route.getStopPoints());
 		for (Iterator<StopPoint> iterator = points.iterator(); iterator.hasNext();) {
@@ -39,10 +39,10 @@ public class NeptuneObjectUtil extends NeptuneUtil {
 			link = new PTLink();
 			link.setStartOfLink(start);
 			link.setEndOfLink(end);
-			String startId = start.getObjectId().split(":")[2];
-			String endId = end.getObjectId().split(":")[2];
+			String startId = start.getChouetteId().getObjectId().split(":")[2];
+			String endId = end.getChouetteId().getObjectId().split(":")[2];
 			String objectId = baseId + startId + "A" + endId;
-			link.setObjectId(objectId);
+			link.getChouetteId().setObjectId(objectId);
 			link.setCreationTime(new Date());
 			link.setRoute(route);
 			ptLinks.add(link);

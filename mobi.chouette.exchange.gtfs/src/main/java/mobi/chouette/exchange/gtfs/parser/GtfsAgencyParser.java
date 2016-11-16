@@ -113,11 +113,11 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 		company.setName(AbstractConverter.getNonEmptyTrimedString(gtfsAgency.getAgencyName()));
 		company.setUrl(AbstractConverter.toString(gtfsAgency.getAgencyUrl()));
 		company.setPhone(AbstractConverter.getNonEmptyTrimedString(gtfsAgency.getAgencyPhone()));
-		String[] token = company.getObjectId().split(":");
+		String[] token = company.getChouetteId().getObjectId().split(":");
 		company.setRegistrationNumber(token[2]);
 		company.setTimeZone(AbstractConverter.toString(gtfsAgency.getAgencyTimezone()));
 		company.setFilled(true);
-// 		AbstractConverter.addLocation(context, "agency.txt", company.getObjectId(), gtfsAgency.getId());
+// 		AbstractConverter.addLocation(context, "agency.txt", company.getChouetteId().getObjectId(), gtfsAgency.getId());
 	}
 
 	static {

@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import javax.ejb.EJB;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.persistence.hibernate.ContextHolder;
@@ -51,7 +52,11 @@ public class JourneyPatternDaoTest extends Arquillian {
 		try {
 			ContextHolder.setContext("chouette_gui"); // set tenant schema
 			RouteSection section = new RouteSection();
-			section.setObjectId("Test:" + RouteSection.ROUTE_SECTION_KEY + ":1");
+//			section.getChouetteId().setObjectId("Test:" + RouteSection.ROUTE_SECTION_KEY + ":1");
+			ChouetteId chouetteId = new ChouetteId();
+			chouetteId.setCodeSpace("test");
+			chouetteId.setObjectId("1");
+			section.setChouetteId(chouetteId);
 			GeometryFactory factory = new GeometryFactory(new PrecisionModel(10), 4326);
 			Coordinate[] coordinates = new Coordinate[2];
 			coordinates[0] = new Coordinate(2.338767,48.8612525);
@@ -61,7 +66,11 @@ public class JourneyPatternDaoTest extends Arquillian {
 			// routeSectionDao.create(section);
 
 			JourneyPattern jp = new JourneyPattern();
-			jp.setObjectId("Test:" + JourneyPattern.JOURNEYPATTERN_KEY + ":1");
+//			jp.getChouetteId().setObjectId("Test:" + JourneyPattern.JOURNEYPATTERN_KEY + ":1");
+			ChouetteId chouetteId2 = new ChouetteId();
+			chouetteId2.setCodeSpace("test");
+			chouetteId2.setObjectId("1");
+			jp.setChouetteId(chouetteId2);
 			jp.getRouteSections().add(section);
 			journeyPatternDao.create(jp);
 		} catch (RuntimeException ex) {

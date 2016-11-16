@@ -49,7 +49,7 @@ public class AccessPointProducer extends
          jaxbAccessPoint.setAddress(castorAddress);
       }
 
-      jaxbAccessPoint.setContainedIn(accessPoint.getContainedIn().getObjectId());
+      jaxbAccessPoint.setContainedIn(accessPoint.getContainedIn().getChouetteId().getObjectId());
 
       if (accessPoint.hasCoordinates())
       {
@@ -67,7 +67,7 @@ public class AccessPointProducer extends
       }
       else
       {
-			log.error("missing coordinates for AccessPoint "+accessPoint.getObjectId()+" "+accessPoint.getName());
+			log.error("missing coordinates for AccessPoint "+accessPoint.getChouetteId().getObjectId()+" "+accessPoint.getName());
     	  // longitude/latitude mmandatory
     	  jaxbAccessPoint.setLatitude(BigDecimal.ZERO);
     	  jaxbAccessPoint.setLongitude(BigDecimal.ZERO);

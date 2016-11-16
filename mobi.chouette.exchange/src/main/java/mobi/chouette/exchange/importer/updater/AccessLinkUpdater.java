@@ -32,9 +32,9 @@ public class AccessLinkUpdater implements Updater<AccessLink> {
 			NamingUtil.setDefaultName(newValue);
 		}
 
-		if (newValue.getObjectId() != null
-				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
-			oldValue.setObjectId(newValue.getObjectId());
+		if (newValue.getChouetteId().getObjectId() != null
+				&& !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
+			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
 		}
 		if (newValue.getObjectVersion() != null
 				&& !newValue.getObjectVersion().equals(
@@ -119,10 +119,11 @@ public class AccessLinkUpdater implements Updater<AccessLink> {
 
 		// AccessPoint
 		if (oldValue.getAccessPoint() == null) {
-			String objectId = newValue.getAccessPoint().getObjectId();
+			String codeSpace = newValue.getAccessPoint().getChouetteId().getCodeSpace();
+			String objectId = newValue.getAccessPoint().getChouetteId().getObjectId();
 			AccessPoint accessPoint = cache.getAccessPoints().get(objectId);
 			if (accessPoint == null) {
-				accessPoint = accessPointDAO.findByObjectId(objectId);
+				accessPoint = accessPointDAO.findByChouetteId(codeSpace, objectId);
 				if (accessPoint != null) {
 					cache.getAccessPoints().put(objectId, accessPoint);
 				}

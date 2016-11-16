@@ -130,28 +130,28 @@ public class ValidationAccessLinks extends AbstractTestValidation {
 
 			StopArea contain = new StopArea();
 			contain.setId(id++);
-			contain.setObjectId("test1:AccessPoint:1");
+			contain.getChouetteId().setObjectId("test1:AccessPoint:1");
 			contain.setName("test1");
 
 			AccessPoint point1 = new AccessPoint();
 			point1.setId(id++);
-			point1.setObjectId("test1:AccessPoint:1");
+			point1.getChouetteId().setObjectId("test1:AccessPoint:1");
 			point1.setName("test1");
 			point1.setContainedIn(contain);
 			bean1 = new AccessLink();
 			bean1.setId(id++);
-			bean1.setObjectId("test1:AccessLink:1");
+			bean1.getChouetteId().setObjectId("test1:AccessLink:1");
 			bean1.setAccessPoint(point1);
 			bean1.setStopArea(contain);
 			bean1.setName("test1");
 			AccessPoint point2 = new AccessPoint();
 			point2.setId(id++);
-			point2.setObjectId("test1:AccessPoint:2");
+			point2.getChouetteId().setObjectId("test1:AccessPoint:2");
 			point2.setName("test2");
 			point2.setContainedIn(contain);
 			bean2 = new AccessLink();
 			bean2.setId(id++);
-			bean2.setObjectId("test2:AccessLink:1");
+			bean2.getChouetteId().setObjectId("test2:AccessLink:1");
 			bean2.setAccessPoint(point2);
 			bean2.setStopArea(contain);
 			bean2.setName("test2");
@@ -221,7 +221,7 @@ public class ValidationAccessLinks extends AbstractTestValidation {
 		List<CheckPointErrorReport> details = checkReportForTest(report, "4-AccessLink-1", 1);
 		CheckPointErrorReport detail = details.get(0);
 		Assert.assertEquals(detail.getReferenceValue(), "ObjectId", "detail must refer column");
-		Assert.assertEquals(detail.getValue(), bean2.getObjectId().split(":")[2], "detail must refer value");
+		Assert.assertEquals(detail.getValue(), bean2.getChouetteId().getObjectId().split(":")[2], "detail must refer value");
 	}
 
 	@Test(groups = { "accessLink" }, description = "3-AccessLink-1", priority = 3)
@@ -332,7 +332,7 @@ public class ValidationAccessLinks extends AbstractTestValidation {
 
 		AccessLink link = null;
 		for (AccessLink accessLink : beans) {
-			if (accessLink.getObjectId().equals("NINOXE:AccessLink:7")) {
+			if (accessLink.getChouetteId().getObjectId().equals("NINOXE:AccessLink:7")) {
 				link = accessLink;
 				break;
 			}

@@ -18,8 +18,8 @@ public class ITLProducer
             .createITLType();
 
       jaxbITL.setName(routingConstraint.getName());
-      jaxbITL.setLineIdShortCut(line.getObjectId());
-      jaxbITL.setAreaId(routingConstraint.getObjectId());
+      jaxbITL.setLineIdShortCut(line.getChouetteId().getObjectId());
+      jaxbITL.setAreaId(routingConstraint.getChouetteId().getObjectId());
 
       return jaxbITL;
    }

@@ -72,5 +72,11 @@ public class StatDAO extends GenericDAOImpl<Stat> {
 	public void clear() {
 		em.clear();
 	}
+
+	@Override
+	public Stat findByChouetteId(String codeSpace, String objectId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
 

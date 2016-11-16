@@ -22,7 +22,7 @@ public class ObjectReferenceTest {
 		try {
 			res = new JSONObject(text);
 			Assert.assertEquals(res.getString("type") , TYPE.journey_pattern, "wrong object reference type");
-			Assert.assertEquals(res.getString("id") , jp.getObjectId(), "wrong object referenced id");
+			Assert.assertEquals(res.getString("id") , jp.getChouetteId().getObjectId(), "wrong object referenced id");
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

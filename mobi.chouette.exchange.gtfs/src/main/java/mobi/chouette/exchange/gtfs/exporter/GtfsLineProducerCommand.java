@@ -67,10 +67,10 @@ public class GtfsLineProducerCommand implements Command, Constant {
 				collection = new ExportableData();
 				context.put(EXPORTABLE_DATA, collection);
 			}
-			reporter.addObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
+			reporter.addObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
 					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
 			if (line.getCompany() == null) {
-				reporter.addErrorToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE,
+				reporter.addErrorToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE,
 						ActionReporter.ERROR_CODE.INVALID_FORMAT, "no company for this line");
 				return SUCCESS;
 			}
@@ -87,22 +87,22 @@ public class GtfsLineProducerCommand implements Command, Constant {
 
 			GtfsDataCollector collector = new GtfsDataCollector();
 			boolean cont = collector.collect(collection, line, startDate, endDate);
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 0);
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 0);
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
 					collection.getJourneyPatterns().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, collection
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, collection
 					.getRoutes().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY,
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY,
 					collection.getVehicleJourneys().size());
 
 			if (cont) {
 				context.put(EXPORTABLE_DATA, collection);
 
 				saveLine(context, line);
-				reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+				reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
 				result = SUCCESS;
 			} else {
-				reporter.addErrorToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE,
+				reporter.addErrorToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE,
 						ActionReporter.ERROR_CODE.NO_DATA_ON_PERIOD, "no data on period");
 				result = SUCCESS; // else export will stop here
 			}

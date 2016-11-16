@@ -37,16 +37,16 @@ AbstractJaxbNeptuneProducer<ChouettePTNetworkType.AccessLink, AccessLink>
 		if (accessLink.getLinkOrientation().equals(LinkOrientationEnum.AccessPointToStopArea))
 		{
 			if (accessLink.getAccessPoint() != null)
-				jaxbAccessLink.setStartOfLink(accessLink.getAccessPoint().getObjectId());
+				jaxbAccessLink.setStartOfLink(accessLink.getAccessPoint().getChouetteId().getObjectId());
 			if (accessLink.getStopArea() != null)
-				jaxbAccessLink.setEndOfLink(accessLink.getStopArea().getObjectId());
+				jaxbAccessLink.setEndOfLink(accessLink.getStopArea().getChouetteId().getObjectId());
 		}
 		else if (accessLink.getLinkOrientation().equals(LinkOrientationEnum.StopAreaToAccessPoint))
 		{
 			if (accessLink.getAccessPoint() != null)
-				jaxbAccessLink.setEndOfLink(accessLink.getAccessPoint().getObjectId());
+				jaxbAccessLink.setEndOfLink(accessLink.getAccessPoint().getChouetteId().getObjectId());
 			if (accessLink.getStopArea() != null)
-				jaxbAccessLink.setStartOfLink(accessLink.getStopArea().getObjectId());
+				jaxbAccessLink.setStartOfLink(accessLink.getStopArea().getChouetteId().getObjectId());
 		}
 
 		jaxbAccessLink.setLinkDistance(accessLink.getLinkDistance());

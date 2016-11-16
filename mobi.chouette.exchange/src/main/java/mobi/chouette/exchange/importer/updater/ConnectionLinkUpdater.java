@@ -48,7 +48,7 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 		}
 
 		if (oldValue.isDetached()) {
-			oldValue.setObjectId(newValue.getObjectId());
+			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 			oldValue.setCreationTime(newValue.getCreationTime());
 			oldValue.setCreatorId(newValue.getCreatorId());
@@ -66,8 +66,8 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 			oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
 			oldValue.setDetached(false);
 		} else {
-			if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
-				oldValue.setObjectId(newValue.getObjectId());
+			if (newValue.getChouetteId().getObjectId() != null && !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
+				oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
 			}
 			if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
 				oldValue.setObjectVersion(newValue.getObjectVersion());
@@ -125,12 +125,12 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 		
 		
 		if (newValue.getStartOfLink() != null) {
-
-			String objectId = newValue.getStartOfLink().getObjectId();
+			String codeSpace = newValue.getStartOfLink().getChouetteId().getCodeSpace();
+			String objectId = newValue.getStartOfLink().getChouetteId().getObjectId();
 			StopArea startOfLink = cache.getStopAreas().get(objectId);
 			if (startOfLink == null) {
 				log.info("search connectionLink starts in DB " + objectId);
-				startOfLink = stopAreaDAO.findByObjectId(objectId);
+				startOfLink = stopAreaDAO.findByChouetteId(codeSpace, objectId);
 				if (startOfLink != null) {
 					cache.getStopAreas().put(objectId, startOfLink);
 				}
@@ -146,11 +146,12 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 		}
 
 		if (newValue.getEndOfLink() != null) {
-			String objectId = newValue.getEndOfLink().getObjectId();
+			String codeSpace = newValue.getEndOfLink().getChouetteId().getCodeSpace();
+			String objectId = newValue.getEndOfLink().getChouetteId().getObjectId();
 			StopArea endOfLink = cache.getStopAreas().get(objectId);
 			if (endOfLink == null) {
 				log.info("search connectionLink ends in DB " + objectId);
-				endOfLink = stopAreaDAO.findByObjectId(objectId);
+				endOfLink = stopAreaDAO.findByChouetteId(codeSpace, objectId);
 				if (endOfLink != null) {
 					cache.getStopAreas().put(objectId, endOfLink);
 				}

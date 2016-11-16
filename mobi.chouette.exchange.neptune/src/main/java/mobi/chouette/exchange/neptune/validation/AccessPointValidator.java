@@ -84,11 +84,11 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 		Map<String, List<AccessLink>> mapAccessLinkByAccessPointId = new HashMap<String, List<AccessLink>>();
 		for (AccessLink link : accessLinks.values())
 		{
-			if (accessLinkContext.containsKey(link.getObjectId()))
+			if (accessLinkContext.containsKey(link.getChouetteId().getObjectId()))
 			{
 				if (link.getAccessPoint() != null) // if link is invalid, skip it
 				{
-					String id = link.getAccessPoint().getObjectId();
+					String id = link.getAccessPoint().getChouetteId().getObjectId();
 					List<AccessLink> list = mapAccessLinkByAccessPointId.get(id);
 					if (list == null)
 					{
@@ -109,8 +109,8 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 
 			Context objectContext = (Context) localContext.get(objectId);
 			AccessPoint accessPoint = accessPoints.get(objectId);
-//			Location sourceLocation = fileLocations.get(accessPoint.getObjectId());
-			DataLocation sourceLocation = fileLocations.get(accessPoint.getObjectId());
+//			Location sourceLocation = fileLocations.get(accessPoint.getChouetteId().getObjectId());
+			DataLocation sourceLocation = fileLocations.get(accessPoint.getChouetteId().getObjectId());
 			// 2-NEPTUNE-AccessPoint-1 : check existence of containedIn stopArea
 			String containedIn = (String) objectContext.get(CONTAINED_IN);
 			if (containedIn == null || !stopAreaContext.containsKey(containedIn))
@@ -148,7 +148,7 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 
 			// 2-NEPTUNE-AccessPoint-3 : check presence of access links
 			List<AccessLink> links = mapAccessLinkByAccessPointId.get(accessPoint
-					.getObjectId());
+					.getChouetteId().getObjectId());
 			if (links == null)
 			{
 //				Detail errorItem = new Detail(

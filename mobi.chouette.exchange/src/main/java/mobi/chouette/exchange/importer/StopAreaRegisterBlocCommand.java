@@ -1,8 +1,11 @@
 package mobi.chouette.exchange.importer;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -23,6 +26,7 @@ import mobi.chouette.exchange.importer.updater.Updater;
 import mobi.chouette.exchange.importer.updater.UpdaterUtils;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -71,7 +75,7 @@ public class StopAreaRegisterBlocCommand implements Command {
 			// ".update");
 
 			for (StopArea newValue : areas) {
-				StopArea oldValue = cache.getStopAreas().get(newValue.getObjectId());
+				StopArea oldValue = cache.getStopAreas().get(newValue.getChouetteId().getObjectId());
 				stopUpdater.update(context, oldValue, newValue);
 				stopAreaDAO.create(oldValue);
 			}
@@ -94,7 +98,7 @@ public class StopAreaRegisterBlocCommand implements Command {
 		// Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
 		List<StopArea> objects = stopAreaDAO.findAll();// ByObjectId(objectIds);
 		for (StopArea object : objects) {
-			cache.getStopAreas().put(object.getObjectId(), object);
+			cache.getStopAreas().put(object.getChouetteId().getObjectId(), object);
 		}
 
 		for (StopArea item : list) {
@@ -103,9 +107,9 @@ public class StopAreaRegisterBlocCommand implements Command {
 	}
 
 	private void addStopAreaIfMissing(Referential cache, StopArea item) {
-		StopArea object = cache.getStopAreas().get(item.getObjectId());
+		StopArea object = cache.getStopAreas().get(item.getChouetteId().getObjectId());
 		if (object == null) {
-			object = ObjectFactory.getStopArea(cache, item.getObjectId());
+			object = ObjectFactory.getStopArea(cache, item.getChouetteId().getObjectId());
 			if (item.getParent() != null && item.getParent().getAreaType() == null) {
 				log.error("areatype missing for " + item.getParent());
 				return;
@@ -121,15 +125,23 @@ public class StopAreaRegisterBlocCommand implements Command {
 		if (list.isEmpty())
 			return;
 		Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
-		List<AccessPoint> objects = accessPointDAO.findByObjectId(objectIds);
+		
+		Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+		List<AccessPoint> objects = new ArrayList<AccessPoint>();
+		
+		for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+		{
+		    objects.addAll(accessPointDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+		}
+		
 		for (AccessPoint object : objects) {
-			cache.getAccessPoints().put(object.getObjectId(), object);
+			cache.getAccessPoints().put(object.getChouetteId().getObjectId(), object);
 		}
 
 		for (AccessPoint item : list) {
-			AccessPoint object = cache.getAccessPoints().get(item.getObjectId());
+			AccessPoint object = cache.getAccessPoints().get(item.getChouetteId().getObjectId());
 			if (object == null) {
-				object = ObjectFactory.getAccessPoint(cache, item.getObjectId());
+				object = ObjectFactory.getAccessPoint(cache, item.getChouetteId().getObjectId());
 			}
 		}
 	}
@@ -138,15 +150,23 @@ public class StopAreaRegisterBlocCommand implements Command {
 		if (list.isEmpty())
 			return;
 		Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
-		List<AccessLink> objects = accessLinkDAO.findByObjectId(objectIds);
+		
+		Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+		List<AccessLink> objects = new ArrayList<AccessLink>();
+		
+		for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+		{
+		    objects.addAll(accessLinkDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+		}
+		
 		for (AccessLink object : objects) {
-			cache.getAccessLinks().put(object.getObjectId(), object);
+			cache.getAccessLinks().put(object.getChouetteId().getObjectId(), object);
 		}
 
 		for (AccessLink item : list) {
-			AccessLink object = cache.getAccessLinks().get(item.getObjectId());
+			AccessLink object = cache.getAccessLinks().get(item.getChouetteId().getObjectId());
 			if (object == null) {
-				object = ObjectFactory.getAccessLink(cache, item.getObjectId());
+				object = ObjectFactory.getAccessLink(cache, item.getChouetteId().getObjectId());
 			}
 		}
 	}

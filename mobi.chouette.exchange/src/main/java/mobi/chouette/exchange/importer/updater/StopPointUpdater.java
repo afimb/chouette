@@ -34,7 +34,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 
 //		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
-		cache.getStopPoints().put(oldValue.getObjectId(), oldValue);
+		cache.getStopPoints().put(oldValue.getChouetteId().getObjectId(), oldValue);
 		
 		// Database test init
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
@@ -44,7 +44,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		
 		if (oldValue.isDetached()) {
 			// object does not exist in database
-			oldValue.setObjectId(newValue.getObjectId());
+			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 			oldValue.setCreationTime(newValue.getCreationTime());
 			oldValue.setCreatorId(newValue.getCreatorId());
@@ -54,8 +54,8 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		} else {
 			twoDatabaseStopPointTwoTest(validationReporter, context, oldValue, newValue, data);
 			twoDatabaseStopPointThreeTest(validationReporter, context, oldValue.getContainedInStopArea(), newValue.getContainedInStopArea(), data);
-			if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
-				oldValue.setObjectId(newValue.getObjectId());
+			if (newValue.getChouetteId().getObjectId() != null && !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
+				oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
 			}
 			if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
 				oldValue.setObjectVersion(newValue.getObjectVersion());
@@ -82,10 +82,11 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		if (newValue.getContainedInStopArea() == null) {
 			oldValue.setContainedInStopArea(null);
 		} else {
-			String objectId = newValue.getContainedInStopArea().getObjectId();
+			String codeSpace = newValue.getContainedInStopArea().getChouetteId().getCodeSpace();
+			String objectId = newValue.getContainedInStopArea().getChouetteId().getObjectId();
 			StopArea stopArea = cache.getStopAreas().get(objectId);
 			if (stopArea == null) {
-				stopArea = stopAreaDAO.findByObjectId(objectId);
+				stopArea = stopAreaDAO.findByChouetteId(codeSpace, objectId);
 				if (stopArea != null) {
 					cache.getStopAreas().put(objectId, stopArea);
 				}
@@ -116,7 +117,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		if(oldSp !=null && newSp != null) {
 			if(oldSp.getPosition() != null && newSp.getPosition() != null) {
 				if(!oldSp.getPosition().equals(newSp.getPosition()))
-					validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_2, data.getDataLocations().get(newSp.getObjectId()));
+					validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_2, data.getDataLocations().get(newSp.getChouetteId().getObjectId()));
 				else
 					validationReporter.reportSuccess(context, DATABASE_STOP_POINT_2);
 			}
@@ -133,7 +134,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	 */
 	private void twoDatabaseStopPointThreeTest(ValidationReporter validationReporter, Context context, StopArea oldSA, StopArea newSA, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldSA, newSA))
-			validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_3, data.getDataLocations().get(newSA.getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_3, data.getDataLocations().get(newSA.getChouetteId().getObjectId()));
 		else
 			validationReporter.reportSuccess(context, DATABASE_STOP_POINT_3);
 	}

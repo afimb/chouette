@@ -7,6 +7,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Route;
 
 public class NeptuneObjectFactory {
@@ -31,7 +32,8 @@ public class NeptuneObjectFactory {
 		PTLink result = ptLink.get(objectId);
 		if (result == null) {
 			result = new PTLink();
-			result.setObjectId(objectId);
+			result.setChouetteId(new ChouetteId());
+			result.getChouetteId().setObjectId(objectId);
 			ptLink.put(objectId, result);
 		}
 		return result;
@@ -41,7 +43,8 @@ public class NeptuneObjectFactory {
 		AreaCentroid result = areaCentroid.get(objectId);
 		if (result == null) {
 			result = new AreaCentroid();
-			result.setObjectId(objectId);
+			result.setChouetteId(new ChouetteId());
+			result.getChouetteId().setObjectId(objectId);
 			areaCentroid.put(objectId, result);
 		}
 		return result;
@@ -61,7 +64,8 @@ public class NeptuneObjectFactory {
 		TimeSlot timeSlot = timeSlots.get(objectId);
 		if (timeSlot == null) {
 			timeSlot = new TimeSlot();
-			timeSlot.setObjectId(objectId);
+			timeSlot.setChouetteId(new ChouetteId());
+			timeSlot.getChouetteId().setObjectId(objectId);
 			timeSlots.put(objectId,  timeSlot);
 		}
 		return timeSlot;

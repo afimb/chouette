@@ -130,7 +130,7 @@ public abstract class AbstractValidator implements Constant {
 	 */
 	protected void addLocation(Context context, String localContext, NeptuneIdentifiedObject object, int lineNumber,
 			int columnNumber) {
-		String objectId = object.getObjectId();
+		String objectId = object.getChouetteId().getObjectId();
 		Context objectContext = getObjectContext(context, localContext, objectId);
 		objectContext.put(LINE_NUMBER, Integer.valueOf(lineNumber));
 		objectContext.put(COLUMN_NUMBER, Integer.valueOf(columnNumber));

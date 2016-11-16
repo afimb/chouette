@@ -80,12 +80,12 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		
 		
 		if (newValue.getAreaType() == null) {
-			log.error("stoparea without mandatory areatype " + newValue.getObjectId());
+			log.error("stoparea without mandatory areatype " + newValue.getChouetteId().getObjectId());
 			throw new IllegalArgumentException("area type null");
 		}
 
 		if (oldValue.isDetached()) {
-			oldValue.setObjectId(newValue.getObjectId());
+			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 			oldValue.setCreationTime(newValue.getCreationTime());
 			oldValue.setCreatorId(newValue.getCreatorId());
@@ -112,8 +112,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		} else {
 			twoDatabaseStopAreaTwoTest(validationReporter, context, oldValue, newValue, data);
 			twoDatabaseStopAreaOneTest(validationReporter, context, oldValue, newValue, data);
-			if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
-				oldValue.setObjectId(newValue.getObjectId());
+			if (newValue.getChouetteId().getObjectId() != null && !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
+				oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
 			}
 			if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
 				oldValue.setObjectVersion(newValue.getObjectVersion());
@@ -193,10 +193,11 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		if (newValue.getParent() == null) {
 			oldValue.setParent(null);
 		} else {
-			String objectId = newValue.getParent().getObjectId();
+			String codeSpace = newValue.getParent().getChouetteId().getCodeSpace();
+			String objectId = newValue.getParent().getChouetteId().getObjectId();
 			StopArea stopArea = cache.getStopAreas().get(objectId);
 			if (stopArea == null) {
-				stopArea = stopAreaDAO.findByObjectId(objectId);
+				stopArea = stopAreaDAO.findByChouetteId(codeSpace, objectId);
 				if (stopArea != null) {
 					cache.getStopAreas().put(objectId, stopArea);
 				}
@@ -218,19 +219,20 @@ public class StopAreaUpdater implements Updater<StopArea> {
 
 		List<AccessPoint> accessPoints = null;
 		for (AccessPoint item : addedAccessPoint) {
-			AccessPoint accessPoint = cache.getAccessPoints().get(item.getObjectId());
+			AccessPoint accessPoint = cache.getAccessPoints().get(item.getChouetteId().getObjectId());
 			if (accessPoint == null) {
 				if (accessPoints == null) {
-					accessPoints = accessPointDAO.findByObjectId(UpdaterUtils.getObjectIds(addedAccessPoint));
+					String codeSpace = item.getChouetteId().getCodeSpace();
+					accessPoints = accessPointDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedAccessPoint));
 					for (AccessPoint object : accessPoints) {
-						cache.getAccessPoints().put(object.getObjectId(), object);
+						cache.getAccessPoints().put(object.getChouetteId().getObjectId(), object);
 					}
 				}
-				accessPoint = cache.getAccessPoints().get(item.getObjectId());
+				accessPoint = cache.getAccessPoints().get(item.getChouetteId().getObjectId());
 			}
 
 			if (accessPoint == null) {
-				accessPoint = ObjectFactory.getAccessPoint(cache, item.getObjectId());
+				accessPoint = ObjectFactory.getAccessPoint(cache, item.getChouetteId().getObjectId());
 			} else {
 				twoDatabaseAccessPointOneTest(validationReporter, context, accessPoint, item, data);
 			}
@@ -250,19 +252,20 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		List<AccessLink> accessLinks = null;
 		for (AccessLink item : addedAccessLink) {
 
-			AccessLink accessLink = cache.getAccessLinks().get(item.getObjectId());
+			AccessLink accessLink = cache.getAccessLinks().get(item.getChouetteId().getObjectId());
 			if (accessLink == null) {
 				if (accessLinks == null) {
-					accessLinks = accessLinkDAO.findByObjectId(UpdaterUtils.getObjectIds(addedAccessLink));
+					String codeSpace = item.getChouetteId().getCodeSpace();
+					accessLinks = accessLinkDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedAccessLink));
 					for (AccessLink object : accessLinks) {
-						cache.getAccessLinks().put(object.getObjectId(), object);
+						cache.getAccessLinks().put(object.getChouetteId().getObjectId(), object);
 					}
 				}
-				accessLink = cache.getAccessLinks().get(item.getObjectId());
+				accessLink = cache.getAccessLinks().get(item.getChouetteId().getObjectId());
 			}
 
 			if (accessLink == null) {
-				accessLink = ObjectFactory.getAccessLink(cache, item.getObjectId());
+				accessLink = ObjectFactory.getAccessLink(cache, item.getChouetteId().getObjectId());
 			}
 			accessLink.setStopArea(oldValue);
 		}
@@ -280,18 +283,19 @@ public class StopAreaUpdater implements Updater<StopArea> {
 
 			for (ConnectionLink item : addedStartOfLink) {
 
-				ConnectionLink startOfLink = cache.getConnectionLinks().get(item.getObjectId());
+				ConnectionLink startOfLink = cache.getConnectionLinks().get(item.getChouetteId().getObjectId());
 				if(startOfLink == null) {
-					startOfLink = ObjectFactory.getConnectionLink(cache, item.getObjectId());
+					startOfLink = ObjectFactory.getConnectionLink(cache, item.getChouetteId().getObjectId());
 				} else {
 					twoDatabaseConnectionLinkStartOfLinkOneTest(validationReporter, context, startOfLink, item, data);
 				}
-				StopArea endOfLinkArea = cache.getStopAreas().get(item.getEndOfLink().getObjectId());
+				StopArea endOfLinkArea = cache.getStopAreas().get(item.getEndOfLink().getChouetteId().getObjectId());
 				if (endOfLinkArea == null) {
 					log.info(Color.LIGHT_CYAN + "search end stopArea for ConnectionLink" + Color.NORMAL);
-					endOfLinkArea = stopAreaDAO.findByObjectId(item.getEndOfLink().getObjectId());
+					String codeSpace = item.getChouetteId().getCodeSpace();
+					endOfLinkArea = stopAreaDAO.findByChouetteId(codeSpace, item.getEndOfLink().getChouetteId().getObjectId());
 				} else {
-					StopArea localArea = referential.getSharedStopAreas().get(endOfLinkArea.getObjectId());
+					StopArea localArea = referential.getSharedStopAreas().get(endOfLinkArea.getChouetteId().getObjectId());
 					if (!localArea.isSaved())
 						endOfLinkArea = null; // ignored if not already saved
 				}
@@ -315,18 +319,19 @@ public class StopAreaUpdater implements Updater<StopArea> {
 					oldValue.getConnectionEndLinks(), NeptuneIdentifiedObjectComparator.INSTANCE);
 
 			for (ConnectionLink item : addedEndOfLink) {
-				ConnectionLink endOfLink = cache.getConnectionLinks().get(item.getObjectId());
+				ConnectionLink endOfLink = cache.getConnectionLinks().get(item.getChouetteId().getObjectId());
 				if (endOfLink == null) {
-					endOfLink = ObjectFactory.getConnectionLink(cache, item.getObjectId());
+					endOfLink = ObjectFactory.getConnectionLink(cache, item.getChouetteId().getObjectId());
 				} else {
 					twoDatabaseConnectionLinkEndOfLinkOneTest(validationReporter, context, endOfLink, item, data);
 				}
-				StopArea startOfLinkArea = cache.getStopAreas().get(item.getStartOfLink().getObjectId());
+				StopArea startOfLinkArea = cache.getStopAreas().get(item.getStartOfLink().getChouetteId().getObjectId());
 				if (startOfLinkArea == null) {
 					log.info(Color.LIGHT_CYAN + "search start stopArea for ConnectionLink" + Color.NORMAL);
-					startOfLinkArea = stopAreaDAO.findByObjectId(item.getStartOfLink().getObjectId());
+					String codeSpace = item.getChouetteId().getCodeSpace();
+					startOfLinkArea = stopAreaDAO.findByChouetteId(codeSpace, item.getStartOfLink().getChouetteId().getObjectId());
 				} else {
-					StopArea localArea = referential.getSharedStopAreas().get(startOfLinkArea.getObjectId());
+					StopArea localArea = referential.getSharedStopAreas().get(startOfLinkArea.getChouetteId().getObjectId());
 					if (!localArea.isSaved())
 						startOfLinkArea = null; // ignored if not already saved
 				}
@@ -353,19 +358,19 @@ public class StopAreaUpdater implements Updater<StopArea> {
 //		List<StopArea> stopAreas = null;
 //		for (StopArea item : addedStopAreas) {
 //
-//			StopArea area = cache.getStopAreas().get(item.getObjectId());
+//			StopArea area = cache.getStopAreas().get(item.getChouetteId().getObjectId());
 //			if (area == null) {
 //				if (stopAreas == null) {
 //					stopAreas = stopAreaDAO.findByObjectId(UpdaterUtils.getObjectIds(addedStopAreas));
 //					for (StopArea object : addedStopAreas) {
-//						cache.getStopAreas().put(object.getObjectId(), object);
+//						cache.getStopAreas().put(object.getChouetteId().getObjectId(), object);
 //					}
 //				}
-//				area = cache.getStopAreas().get(item.getObjectId());
+//				area = cache.getStopAreas().get(item.getChouetteId().getObjectId());
 //			}
 //
 //			if (area == null) {
-//				area = ObjectFactory.getStopArea(cache, item.getObjectId());
+//				area = ObjectFactory.getStopArea(cache, item.getChouetteId().getObjectId());
 //			}
 //			
 //			if (!area.isDetached() || area.isFilled())
@@ -394,7 +399,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	 */
 	private void twoDatabaseStopAreaOneTest(ValidationReporter validationReporter, Context context, StopArea oldValue, StopArea newValue, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldValue.getParent(), newValue.getParent()))
-				validationReporter.addCheckPointReportError(context, DATABASE_STOP_AREA_1, data.getDataLocations().get(newValue.getObjectId()));
+				validationReporter.addCheckPointReportError(context, DATABASE_STOP_AREA_1, data.getDataLocations().get(newValue.getChouetteId().getObjectId()));
 			else
 				validationReporter.reportSuccess(context, DATABASE_STOP_AREA_1);
 	}
@@ -409,7 +414,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	private void twoDatabaseStopAreaTwoTest(ValidationReporter validationReporter, Context context, StopArea oldSA, StopArea newSA, ValidationData data) {
 		if(oldSA !=null && newSA != null) {
 			if(!NeptuneUtil.sameValue(oldSA.getAreaType(),newSA.getAreaType()))
-				validationReporter.addCheckPointReportError(context, DATABASE_STOP_AREA_2, data.getDataLocations().get(newSA.getObjectId()));
+				validationReporter.addCheckPointReportError(context, DATABASE_STOP_AREA_2, data.getDataLocations().get(newSA.getChouetteId().getObjectId()));
 			else
 				validationReporter.reportSuccess(context, DATABASE_STOP_AREA_2);
 		}
@@ -425,7 +430,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	 */
 	private void twoDatabaseAccessPointOneTest(ValidationReporter validationReporter, Context context, AccessPoint oldAP, AccessPoint newAP, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldAP.getContainedIn(), newAP.getContainedIn()))
-			validationReporter.addCheckPointReportError(context, DATABASE_ACCESS_POINT_1, data.getDataLocations().get(newAP.getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_ACCESS_POINT_1, data.getDataLocations().get(newAP.getChouetteId().getObjectId()));
 		else
 			validationReporter.reportSuccess(context, DATABASE_ACCESS_POINT_1);
 	}
@@ -439,7 +444,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	 */
 	private void twoDatabaseConnectionLinkStartOfLinkOneTest(ValidationReporter validationReporter, Context context, ConnectionLink oldCL, ConnectionLink newCL, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldCL.getStartOfLink(), newCL.getStartOfLink()))
-			validationReporter.addCheckPointReportError(context, DATABASE_CONNECTION_LINK_1_1, data.getDataLocations().get(newCL.getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_CONNECTION_LINK_1_1, data.getDataLocations().get(newCL.getChouetteId().getObjectId()));
 		else
 			validationReporter.reportSuccess(context, DATABASE_CONNECTION_LINK_1_1);
 	}
@@ -453,7 +458,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	 */
 	private void twoDatabaseConnectionLinkEndOfLinkOneTest(ValidationReporter validationReporter, Context context, ConnectionLink oldCL, ConnectionLink newCL, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldCL.getEndOfLink(), newCL.getEndOfLink()))
-			validationReporter.addCheckPointReportError(context, DATABASE_CONNECTION_LINK_1_2, data.getDataLocations().get(newCL.getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_CONNECTION_LINK_1_2, data.getDataLocations().get(newCL.getChouetteId().getObjectId()));
 		else
 			validationReporter.reportSuccess(context, DATABASE_CONNECTION_LINK_1_2);
 	}

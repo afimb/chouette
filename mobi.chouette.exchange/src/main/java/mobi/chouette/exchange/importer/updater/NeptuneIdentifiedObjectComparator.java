@@ -11,6 +11,6 @@ public class NeptuneIdentifiedObjectComparator implements
 	@Override
 	public int compare(NeptuneIdentifiedObject left,
 			NeptuneIdentifiedObject right) {
-		return left.getObjectId().compareTo(right.getObjectId());
+		return left.getChouetteId().getObjectId().compareTo(right.getChouetteId().getObjectId());
 	}
 }

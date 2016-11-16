@@ -29,12 +29,12 @@ public class GtfsExportTransferProducerTests
       mock.reset();
 
       ConnectionLink neptuneObject = new ConnectionLink();
-      neptuneObject.setObjectId("GTFS:ConnectionLink:1234");
+      neptuneObject.getChouetteId().setObjectId("GTFS:ConnectionLink:1234");
       StopArea startOfLink = new StopArea();
-      startOfLink.setObjectId("GTFS:StopArea:start");
+      startOfLink.getChouetteId().setObjectId("GTFS:StopArea:start");
       neptuneObject.setStartOfLink(startOfLink);
       StopArea endOfLink = new StopArea();
-      endOfLink.setObjectId("GTFS:StopArea:end");
+      endOfLink.getChouetteId().setObjectId("GTFS:StopArea:end");
       neptuneObject.setEndOfLink(endOfLink);
       Time defaultDuration = new Time(60000);
       neptuneObject.setDefaultDuration(defaultDuration);
@@ -59,12 +59,12 @@ public class GtfsExportTransferProducerTests
       GtfsTransferProducer producer = new GtfsTransferProducer(mock);
 
       ConnectionLink neptuneObject = new ConnectionLink();
-      neptuneObject.setObjectId("GTFS:ConnectionLink:1234");
+      neptuneObject.getChouetteId().setObjectId("GTFS:ConnectionLink:1234");
       StopArea startOfLink = new StopArea();
-      startOfLink.setObjectId("GTFS:StopArea:start");
+      startOfLink.getChouetteId().setObjectId("GTFS:StopArea:start");
       neptuneObject.setStartOfLink(startOfLink);
       StopArea endOfLink = new StopArea();
-      endOfLink.setObjectId("GTFS:StopArea:end");
+      endOfLink.getChouetteId().setObjectId("GTFS:StopArea:end");
       neptuneObject.setEndOfLink(endOfLink);
       Time defaultDuration = new Time(500);
       neptuneObject.setDefaultDuration(defaultDuration);

@@ -11,11 +11,11 @@ public class KmlDataCollector extends DataCollector{
 	public boolean collect(ExportableData collection, Line line, Date startDate, Date endDate) {
 		boolean res =  collect(collection,line,startDate,endDate,true,true);
 		if (line.getNetwork() == null) {
-			log.error("line " + line.getObjectId() + " : missing network");
+			log.error("line " + line.getChouetteId().getObjectId() + " : missing network");
 			return false;
 		}
 		if (line.getCompany() == null) {
-			log.error("line " + line.getObjectId() + " : missing company");
+			log.error("line " + line.getChouetteId().getObjectId() + " : missing company");
 			return false;
 		}
 		return res;

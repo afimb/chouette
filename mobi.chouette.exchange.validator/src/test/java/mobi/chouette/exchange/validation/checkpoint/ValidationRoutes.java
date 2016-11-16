@@ -131,16 +131,16 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 			Line line = new Line();
 			line.setId(id++);
-			line.setObjectId("test1:Line:1");
+			line.getChouetteId().setObjectId("test1:Line:1");
 			line.setName("test");
 			bean1 = new Route();
 			bean1.setId(id++);
-			bean1.setObjectId("test1:Route:1");
+			bean1.getChouetteId().setObjectId("test1:Route:1");
 			bean1.setName("test1");
 			bean1.setLine(line);
 			bean2 = new Route();
 			bean2.setId(id++);
-			bean2.setObjectId("test2:Route:1");
+			bean2.getChouetteId().setObjectId("test2:Route:1");
 			bean2.setName("test2");
 			bean2.setLine(line);
 
@@ -208,7 +208,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		List<CheckPointErrorReport> details = checkReportForTest(report, "4-Route-1", 3);
 		for (CheckPointErrorReport detail : details) {
 			Assert.assertEquals(detail.getReferenceValue(), "ObjectId", "detail must refer column");
-			Assert.assertEquals(detail.getValue(), bean2.getObjectId().split(":")[2], "detail must refer value");
+			Assert.assertEquals(detail.getValue(), bean2.getChouetteId().getObjectId().split(":")[2], "detail must refer value");
 		}
 	}
 
@@ -260,7 +260,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		}
 		// check detail keys
 		for (CheckPointErrorReport detail : details) {
-			Assert.assertEquals(detail.getSource().getObjectId(), route1.getObjectId(),
+			Assert.assertEquals(detail.getSource().getObjectId(), route1.getChouetteId().getObjectId(),
 					"route 1 must be source of error");
 		}
 		utx.rollback();
@@ -326,9 +326,9 @@ public class ValidationRoutes extends AbstractTestValidation {
 		boolean route2objectIdFound = false;
 		for (CheckPointErrorReport detailReport : details) {
 
-			if (detailReport.getSource().getObjectId().equals(route1.getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(route1.getChouetteId().getObjectId()))
 				route1objectIdFound = true;
-			if (detailReport.getSource().getObjectId().equals(route2.getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(route2.getChouetteId().getObjectId()))
 				route2objectIdFound = true;
 		}
 		Assert.assertTrue(route1objectIdFound, "detail report must refer route 1");
@@ -416,9 +416,9 @@ public class ValidationRoutes extends AbstractTestValidation {
 		boolean route2objectIdFound = false;
 		for (CheckPointErrorReport detailReport : details) {
 
-			if (detailReport.getSource().getObjectId().equals(route1.getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(route1.getChouetteId().getObjectId()))
 				route1objectIdFound = true;
-			if (detailReport.getSource().getObjectId().equals(route2.getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(route2.getChouetteId().getObjectId()))
 				route2objectIdFound = true;
 		}
 		Assert.assertTrue(route1objectIdFound, "detail report must refer route 1");
@@ -449,13 +449,13 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Route route2 = new Route();
 		route2.setLine(line1);
 
-		route1.setObjectId("NINOXE:Route:original");
-		route2.setObjectId("NINOXE:Route:copy");
+		route1.getChouetteId().setObjectId("NINOXE:Route:original");
+		route2.getChouetteId().setObjectId("NINOXE:Route:copy");
 
 		for (StopPoint point : route1.getStopPoints()) {
 			StopPoint pointCopy = new StopPoint();
 			pointCopy.setPosition(point.getPosition());
-			pointCopy.setObjectId("NINOXE:StopPoint:copy" + point.getPosition());
+			pointCopy.getChouetteId().setObjectId("NINOXE:StopPoint:copy" + point.getPosition());
 			pointCopy.setContainedInStopArea(point.getContainedInStopArea());
 			pointCopy.setRoute(route2);
 		}
@@ -488,9 +488,9 @@ public class ValidationRoutes extends AbstractTestValidation {
 		boolean route2objectIdFound = false;
 		for (CheckPointErrorReport detailReport : details) {
 
-			if (detailReport.getSource().getObjectId().equals(route1.getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(route1.getChouetteId().getObjectId()))
 				route1objectIdFound = true;
-			if (detailReport.getSource().getObjectId().equals(route2.getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(route2.getChouetteId().getObjectId()))
 				route2objectIdFound = true;
 		}
 		Assert.assertTrue(route1objectIdFound, "detail report must refer route 1");
@@ -519,9 +519,9 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		Route route1 = line1.getRoutes().get(0);
 		Route route2 = line1.getRoutes().get(1);
-		route1.setObjectId("NINOXE:Route:first");
+		route1.getChouetteId().setObjectId("NINOXE:Route:first");
 		route1.setOppositeRoute(null);
-		route2.setObjectId("NINOXE:Route:second");
+		route2.getChouetteId().setObjectId("NINOXE:Route:second");
 		route2.setOppositeRoute(null);
 
 		context.put(VALIDATION, fullparameters);
@@ -552,9 +552,9 @@ public class ValidationRoutes extends AbstractTestValidation {
 		boolean route2objectIdFound = false;
 		for (CheckPointErrorReport detailReport : details) {
 
-			if (detailReport.getSource().getObjectId().equals(route1.getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(route1.getChouetteId().getObjectId()))
 				route1objectIdFound = true;
-			if (detailReport.getSource().getObjectId().equals(route2.getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(route2.getChouetteId().getObjectId()))
 				route2objectIdFound = true;
 		}
 		Assert.assertTrue(route1objectIdFound, "detail report must refer route 1");
@@ -584,7 +584,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Route route1 = line1.getRoutes().get(0);
 		route1.getStopPoints().clear();
 
-		route1.setObjectId("NINOXE:Route:first");
+		route1.getChouetteId().setObjectId("NINOXE:Route:first");
 
 		context.put(VALIDATION, fullparameters);
 		ValidationData data = new ValidationData();
@@ -613,7 +613,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		boolean route1objectIdFound = false;
 		for (CheckPointErrorReport detailReport : details) {
 
-			if (detailReport.getSource().getObjectId().equals(route1.getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(route1.getChouetteId().getObjectId()))
 				route1objectIdFound = true;
 		}
 		Assert.assertTrue(route1objectIdFound, "detail report must refer route 1");
@@ -642,7 +642,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Route route1 = line1.getRoutes().get(0);
 
 		route1.getJourneyPatterns().clear();
-		route1.setObjectId("NINOXE:Route:first");
+		route1.getChouetteId().setObjectId("NINOXE:Route:first");
 
 		context.put(VALIDATION, fullparameters);
 		ValidationData data = new ValidationData();
@@ -671,7 +671,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		boolean route1objectIdFound = false;
 		for (CheckPointErrorReport detailReport : details) {
 
-			if (detailReport.getSource().getObjectId().equals(route1.getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(route1.getChouetteId().getObjectId()))
 				route1objectIdFound = true;
 		}
 		Assert.assertTrue(route1objectIdFound, "detail report must refer route 1");
@@ -700,7 +700,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Route route1 = line1.getRoutes().get(0);
 
 		route1.getJourneyPatterns().get(0).removeStopPoint(route1.getJourneyPatterns().get(0).getStopPoints().get(0));
-		route1.setObjectId("NINOXE:Route:first");
+		route1.getChouetteId().setObjectId("NINOXE:Route:first");
 
 		context.put(VALIDATION, fullparameters);
 		ValidationData data = new ValidationData();
@@ -729,7 +729,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		boolean route1objectIdFound = false;
 		for (CheckPointErrorReport detailReport : details) {
 
-			if (detailReport.getSource().getObjectId().equals(route1.getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(route1.getChouetteId().getObjectId()))
 				route1objectIdFound = true;
 		}
 		Assert.assertTrue(route1objectIdFound, "detail report must refer route 1");
@@ -757,7 +757,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		Route route1 = null;
 		for (Route route : line1.getRoutes()) {
-			if (route.getObjectId().equals("NINOXE:Route:15571498")) {
+			if (route.getChouetteId().getObjectId().equals("NINOXE:Route:15571498")) {
 				route1 = route;
 				break;
 			}
@@ -765,7 +765,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Assert.assertNotNull(route1, "route NINOXE:Route:15571498 must be in 3-Route-9.xml");
 
 		// route1.getJourneyPatterns().clear();
-		route1.setObjectId("NINOXE:Route:first");
+		route1.getChouetteId().setObjectId("NINOXE:Route:first");
 
 		context.put(VALIDATION, fullparameters);
 		ValidationData data = new ValidationData();
@@ -794,7 +794,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		boolean route1objectIdFound = false;
 		for (CheckPointErrorReport detailReport : details) {
 			log.warn(detailReport);
-			if (detailReport.getSource().getObjectId().equals(route1.getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(route1.getChouetteId().getObjectId()))
 				route1objectIdFound = true;
 		}
 		Assert.assertTrue(route1objectIdFound, "detail report must refer route 1");

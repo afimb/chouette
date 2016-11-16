@@ -162,7 +162,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 				VehicleJourneyValidator.class.getName(), context);
 
 		Context vehicleJourneyAtStopContext = validator.addVehicleJourneyAtStopContext(context,
-				vehicleJourney.getObjectId());
+				vehicleJourney.getChouetteId().getObjectId());
 		int columnNumber = xpp.getColumnNumber();
 		int lineNumber = xpp.getLineNumber();
 		validator.addVehicleJourneyAtStopLocation(vehicleJourneyAtStopContext, lineNumber, columnNumber);

@@ -64,7 +64,7 @@ public class NeptuneTestsUtils implements Constant, ReportConstant{
 					bps.add(point.getContainedInStopArea());
 
 					Assert.assertNotNull(point.getContainedInStopArea().getParent(), "StopAreas must have parent : "
-							+ point.getContainedInStopArea().getObjectId());
+							+ point.getContainedInStopArea().getChouetteId().getObjectId());
 					comms.add(point.getContainedInStopArea().getParent());
 				}
 				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0," journeyPattern should have VehicleJourneys");
@@ -206,13 +206,13 @@ public class NeptuneTestsUtils implements Constant, ReportConstant{
                 for (VehicleJourney vj : jp.getVehicleJourneys()) {
                 	Assert.assertNotEquals(vj.getTimetables().size(), 0," vehicleJourney should have timetables");
                 	Assert.assertEquals(vj.getVehicleJourneyAtStops().size(), jp.getStopPoints().size()," vehicleJourney should have correct vehicleJourneyAtStop count");
-                	if ("ratp:VehicleJourney:514572940997334".equals(vj.getObjectId())) {
+                	if ("ratp:VehicleJourney:514572940997334".equals(vj.getChouetteId().getObjectId())) {
                 		Assert.assertEquals(vj.getJourneyCategory(), JourneyCategoryEnum.Frequency, " vehicleJourney category should be frequency");
                 		Assert.assertEquals(vj.getJourneyFrequencies().size(), 1, " only one journeyFrequency");
                 	}
                 	
                 	/** GJT Check Offset coherence VehicleAtStop list on specific VehicleJourney */
-                	if ("NINOXE:VehicleJourney:15574500".equals(vj.getObjectId())) {
+                	if ("NINOXE:VehicleJourney:15574500".equals(vj.getChouetteId().getObjectId())) {
                 		Assert.assertEquals(vj.getJourneyCategory(), JourneyCategoryEnum.Timesheet, " vehicleJourney category should be timesheet");
                 		
                 		/** First stop */

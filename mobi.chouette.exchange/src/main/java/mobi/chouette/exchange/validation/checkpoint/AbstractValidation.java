@@ -661,7 +661,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		if (data == null) {
 			return new DataLocation(object);
 		}
-		DataLocation loc = data.getDataLocations().get(object.getObjectId());
+		DataLocation loc = data.getDataLocations().get(object.getChouetteId().getObjectId());
 		if (loc == null) {
 			loc =  new DataLocation(object);
 		}
@@ -678,7 +678,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		try {
 			Route wayBack = route.getOppositeRoute();
 			if (wayBack != null) {
-				String o = wayBack.getObjectId();
+				String o = wayBack.getChouetteId().getObjectId();
 				return true;
 			}
 		} catch (Exception ex) {

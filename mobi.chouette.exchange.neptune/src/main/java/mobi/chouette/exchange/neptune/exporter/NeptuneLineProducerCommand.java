@@ -66,22 +66,22 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 
 			NeptuneDataCollector collector = new NeptuneDataCollector();
 			boolean cont = (collector.collect(collection, line, startDate, endDate));
-			reporter.addObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
+			reporter.addObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
 					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 0);
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 0);
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
 					collection.getJourneyPatterns().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, collection
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, collection
 					.getRoutes().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY,
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY,
 					collection.getVehicleJourneys().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK,
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK,
 					collection.getConnectionLinks().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.TIMETABLE,
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.TIMETABLE,
 					collection.getTimetables().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT,
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT,
 					collection.getAccessPoints().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA,
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA,
 					collection.getStopAreas().size());
 
 			if (cont) {
@@ -89,7 +89,7 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 					ChouettePTNetworkProducer producer = new ChouettePTNetworkProducer();
 					producer.produce(context);
 
-					reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+					reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
 					// merge lineStats to global ones
 					reporter.addObjectReport(context, "merged", OBJECT_TYPE.NETWORK, "networks", OBJECT_STATE.OK,
 							IO_TYPE.OUTPUT);
@@ -119,17 +119,17 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 				} catch (MarshalException e) {
 					if (e.getCause() != null && e.getCause() instanceof SAXParseException) {
 						log.error(e.getCause().getMessage());
-						reporter.addErrorToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE,
+						reporter.addErrorToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE,
 								ActionReporter.ERROR_CODE.INVALID_FORMAT, e.getCause().getMessage());
 					} else {
 						log.error(e.getMessage());
-						reporter.addErrorToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE,
+						reporter.addErrorToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE,
 								ActionReporter.ERROR_CODE.INVALID_FORMAT, e.getMessage());
 					}
 				}
 
 			} else {
-				reporter.addErrorToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE,
+				reporter.addErrorToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE,
 						ActionReporter.ERROR_CODE.NO_DATA_ON_PERIOD, "no data on period");
 			}
 

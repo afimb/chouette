@@ -50,10 +50,10 @@ public class TimetableParser implements Parser, Constant {
 			}
 		}
 
-		referential.getTimetables().put(timetable.getObjectId(), timetable);
+		referential.getTimetables().put(timetable.getChouetteId().getObjectId(), timetable);
 
 		log.debug("[DSU] " + "ServiceCalendarFrame" + "\t"
-				+ timetable.getObjectId());
+				+ timetable.getChouetteId().getObjectId());
 		timetable.setFilled(true);
 	}
 
@@ -69,7 +69,7 @@ public class TimetableParser implements Parser, Constant {
 			if (xpp.getName().equals("DayType")) {
 
 				String id = xpp.getAttributeValue(null, ID);
-				timetable.setObjectId(id);
+				timetable.getChouetteId().setObjectId(id);
 
 				Integer version = Integer.valueOf(xpp.getAttributeValue(null,
 						VERSION));

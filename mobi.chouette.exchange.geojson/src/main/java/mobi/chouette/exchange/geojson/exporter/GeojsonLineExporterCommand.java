@@ -79,7 +79,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 				return result;
 			}
 
-			// log.info("[DSU] processing  : " + line.getObjectId());
+			// log.info("[DSU] processing  : " + line.getChouetteId().getObjectId());
 
 			SharedData shared = (SharedData) context.get(SHARED_DATA);
 			if (shared == null) {
@@ -89,7 +89,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 
 			// line stats
 			Keys keys = new Keys();
-			reporter.addObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
+			reporter.addObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
 					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
 
 			// create route section feature
@@ -99,35 +99,35 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 			int journeyPatternCount = 0;
 			for (Route route : routes) {
 
-				// log.info("[DSU] processing  : " + route.getObjectId());
+				// log.info("[DSU] processing  : " + route.getChouetteId().getObjectId());
 
 				routeCount++;
 
 				List<JourneyPattern> journeyPatterns = route.getJourneyPatterns();
 				for (JourneyPattern journeyPattern : journeyPatterns) {
-					String id = journeyPattern.getObjectId();
+					String id = journeyPattern.getChouetteId().getObjectId();
 
 					// log.info("[DSU] processing  : "
-					// + journeyPattern.getObjectId());
+					// + journeyPattern.getChouetteId().getObjectId());
 
 					journeyPatternCount++;
 
 					Map<String, Object> properties = new HashMap<String, Object>();
 
 					// line
-					properties.put("line_objectid", getProperty(line.getObjectId()));
+					properties.put("line_objectid", getProperty(line.getChouetteId().getObjectId()));
 					properties.put("line_name", getProperty(line.getName()));
 					properties.put("line_number", getProperty(line.getNumber()));
 					properties.put("line_published_name", getProperty(line.getPublishedName()));
-					properties.put("company_objectid", getProperty(line.getCompany().getObjectId()));
-					properties.put("network_objectid", getProperty(line.getNetwork().getObjectId()));
+					properties.put("company_objectid", getProperty(line.getCompany().getChouetteId().getObjectId()));
+					properties.put("network_objectid", getProperty(line.getNetwork().getChouetteId().getObjectId()));
 					properties.put("transport_mode", getProperty(line.getTransportModeName()));
 					properties.put("color", getProperty(line.getColor()));
 					properties.put("text_color", getProperty(line.getTextColor()));
 
 					// route
 					properties.put("route_wayback_code", getProperty(route.getWayBack()));
-					properties.put("route_objectid", getProperty(route.getObjectId()));
+					properties.put("route_objectid", getProperty(route.getChouetteId().getObjectId()));
 					properties.put("route_name", getProperty(route.getName()));
 					properties.put("route_published_name", getProperty(route.getPublishedName()));
 					properties.put("route_number", getProperty(route.getNumber()));
@@ -159,7 +159,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 								RouteSection routeSection = array[i];
 
 								// log.info("[DSU] processing  : "
-								// + routeSection.getObjectId());
+								// + routeSection.getChouetteId().getObjectId());
 
 								StopArea departure = routeSection.getDeparture();
 
@@ -190,15 +190,15 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 			}
 
 			// local stats
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
 					journeyPatternCount);
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, routeCount);
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK,
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, routeCount);
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK,
 					keys.getConnectionLinks().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT,
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT,
 					keys.getAccessPoints().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA,
+			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA,
 					keys.getStopArea().size());
 			
 			// global stats
@@ -238,12 +238,12 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 	private void createPhysicaStop(SharedData shared, Keys keys, StopArea stopArea) {
 
 		Map<String, Feature> filter = shared.getPhysicalStops();
-		if (!filter.containsKey(stopArea.getObjectId())) {
+		if (!filter.containsKey(stopArea.getChouetteId().getObjectId())) {
 			Feature feature = createFeature(stopArea);
-			filter.put(stopArea.getObjectId(), feature);
+			filter.put(stopArea.getChouetteId().getObjectId(), feature);
 		}
 
-		keys.getStopArea().add(stopArea.getObjectId());
+		keys.getStopArea().add(stopArea.getChouetteId().getObjectId());
 
 		for (ConnectionLink connectionLink : stopArea.getConnectionStartLinks()) {
 			createConnectionLink(shared, keys, connectionLink);
@@ -266,12 +266,12 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 	private void createCommercialStop(SharedData shared, Keys keys, StopArea stopArea) {
 
 		Map<String, Feature> filter = shared.getCommercialStops();
-		if (!filter.containsKey(stopArea.getObjectId())) {
+		if (!filter.containsKey(stopArea.getChouetteId().getObjectId())) {
 			Feature feature = createFeature(stopArea);
-			filter.put(stopArea.getObjectId(), feature);
+			filter.put(stopArea.getChouetteId().getObjectId(), feature);
 		}
 
-		keys.getStopArea().add(stopArea.getObjectId());
+		keys.getStopArea().add(stopArea.getChouetteId().getObjectId());
 
 		for (ConnectionLink connectionLink : stopArea.getConnectionStartLinks()) {
 			createConnectionLink(shared, keys, connectionLink);
@@ -294,7 +294,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 	private void createAccessPoint(SharedData shared, Keys keys, AccessPoint accessPoint) {
 
 		Map<String, Feature> filter = shared.getAccessPoints();
-		if (!filter.containsKey(accessPoint.getObjectId())) {
+		if (!filter.containsKey(accessPoint.getChouetteId().getObjectId())) {
 			Map<String, Object> properties = new HashMap<String, Object>();
 			properties.put("object_version", getProperty(accessPoint.getObjectVersion()));
 			properties.put("creation_time", getProperty(accessPoint.getCreationTime()));
@@ -306,7 +306,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 			properties.put("mobility_restricted_suitability", getProperty(accessPoint.getMobilityRestrictedSuitable()));
 			properties.put("stairs_availability", getProperty(accessPoint.getStairsAvailable()));
 			properties.put("lift_availability", getProperty(accessPoint.getLiftAvailable()));
-			properties.put("stop_area_objectid", getProperty(accessPoint.getContainedIn().getObjectId()));
+			properties.put("stop_area_objectid", getProperty(accessPoint.getContainedIn().getChouetteId().getObjectId()));
 
 			double[] coordinates = new double[2];
 			if (accessPoint.getLongitude() != null && accessPoint.getLatitude() != null) {
@@ -314,11 +314,11 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 				coordinates[1] = accessPoint.getLatitude().doubleValue();
 			}
 
-			Feature feature = new Feature(accessPoint.getObjectId(), new Point(coordinates), properties);
-			filter.put(accessPoint.getObjectId(), feature);
+			Feature feature = new Feature(accessPoint.getChouetteId().getObjectId(), new Point(coordinates), properties);
+			filter.put(accessPoint.getChouetteId().getObjectId(), feature);
 		}
 
-		keys.getAccessPoints().add(accessPoint.getObjectId());
+		keys.getAccessPoints().add(accessPoint.getChouetteId().getObjectId());
 
 		for (AccessLink accessLink : accessPoint.getAccessLinks()) {
 			createAccessLink(shared, accessLink);
@@ -329,7 +329,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 	private void createConnectionLink(SharedData shared, Keys keys, ConnectionLink connectionLink) {
 
 		Map<String, Feature> filter = shared.getConnectionLinks();
-		if (!filter.containsKey(connectionLink.getObjectId())) {
+		if (!filter.containsKey(connectionLink.getChouetteId().getObjectId())) {
 			Map<String, Object> properties = new HashMap<String, Object>();
 			properties.put("object_version", getProperty(connectionLink.getObjectVersion()));
 			properties.put("creation_time", getProperty(connectionLink.getCreationTime()));
@@ -350,8 +350,8 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 
 			double[][] coordinates = new double[0][2];
 			if (connectionLink.getStartOfLink() != null && connectionLink.getEndOfLink() != null) {
-				properties.put("departure_objectid", getProperty(connectionLink.getStartOfLink().getObjectId()));
-				properties.put("arrival_objectid", getProperty(connectionLink.getEndOfLink().getObjectId()));
+				properties.put("departure_objectid", getProperty(connectionLink.getStartOfLink().getChouetteId().getObjectId()));
+				properties.put("arrival_objectid", getProperty(connectionLink.getEndOfLink().getChouetteId().getObjectId()));
 				coordinates = new double[2][2];
 				coordinates[0][0] = connectionLink.getStartOfLink().getLongitude().doubleValue();
 				coordinates[0][1] = connectionLink.getStartOfLink().getLatitude().doubleValue();
@@ -359,17 +359,17 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 				coordinates[1][1] = connectionLink.getEndOfLink().getLatitude().doubleValue();
 			}
 
-			Feature feature = new Feature(connectionLink.getObjectId(), new LineString(coordinates), properties);
-			filter.put(connectionLink.getObjectId(), feature);
+			Feature feature = new Feature(connectionLink.getChouetteId().getObjectId(), new LineString(coordinates), properties);
+			filter.put(connectionLink.getChouetteId().getObjectId(), feature);
 		}
 
-		keys.getConnectionLinks().add(connectionLink.getObjectId());
+		keys.getConnectionLinks().add(connectionLink.getChouetteId().getObjectId());
 	}
 
 	private void createAccessLink(SharedData shared, AccessLink accessLink) {
 
 		Map<String, Feature> filter = shared.getAccessLinks();
-		if (!filter.containsKey(accessLink.getObjectId())) {
+		if (!filter.containsKey(accessLink.getChouetteId().getObjectId())) {
 			Map<String, Object> properties = new HashMap<String, Object>();
 			properties.put("object_version", getProperty(accessLink.getObjectVersion()));
 			properties.put("creation_time", getProperty(accessLink.getCreationTime()));
@@ -389,8 +389,8 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 
 			double[][] coordinates = new double[0][];
 			if (accessLink.getAccessPoint() != null && accessLink.getStopArea() != null) {
-				properties.put("access_point_objectid", getProperty(accessLink.getAccessPoint().getObjectId()));
-				properties.put("stop_area_objectid", getProperty(accessLink.getStopArea().getObjectId()));
+				properties.put("access_point_objectid", getProperty(accessLink.getAccessPoint().getChouetteId().getObjectId()));
+				properties.put("stop_area_objectid", getProperty(accessLink.getStopArea().getChouetteId().getObjectId()));
 
 				coordinates = new double[2][2];
 				coordinates[0][0] = accessLink.getAccessPoint().getLongitude().doubleValue();
@@ -399,8 +399,8 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 				coordinates[1][1] = accessLink.getStopArea().getLatitude().doubleValue();
 			}
 
-			Feature feature = new Feature(accessLink.getObjectId(), new LineString(coordinates), properties);
-			filter.put(accessLink.getObjectId(), feature);
+			Feature feature = new Feature(accessLink.getChouetteId().getObjectId(), new LineString(coordinates), properties);
+			filter.put(accessLink.getChouetteId().getObjectId(), feature);
 		}
 	}
 
@@ -420,12 +420,12 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 		properties.put("stairs_availability", getProperty(stopArea.getStairsAvailable()));
 		properties.put("lift_availability", getProperty(stopArea.getLiftAvailable()));
 		if (stopArea.getParent() != null)
-			properties.put("parent", getProperty(stopArea.getParent().getObjectId()));
+			properties.put("parent", getProperty(stopArea.getParent().getChouetteId().getObjectId()));
 
 		double[] coordinates = new double[2];
 		coordinates[0] = stopArea.getLongitude().doubleValue();
 		coordinates[1] = stopArea.getLatitude().doubleValue();
-		Feature feature = new Feature(stopArea.getObjectId(), new Point(coordinates), properties);
+		Feature feature = new Feature(stopArea.getChouetteId().getObjectId(), new Point(coordinates), properties);
 		return feature;
 	}
 

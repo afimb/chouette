@@ -119,7 +119,7 @@ public class StopAreaParser implements Parser, Constant {
 			} else if (xpp.getName().equals("ParentZoneRef")) {
 				String ref = xpp.getAttributeValue(null, REF);
 				if (ref != null) {
-					map.put(stopArea.getObjectId(), ref);
+					map.put(stopArea.getChouetteId().getObjectId(), ref);
 				}
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("PostalAddress")) {

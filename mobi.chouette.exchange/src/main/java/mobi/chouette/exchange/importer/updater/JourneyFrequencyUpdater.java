@@ -42,10 +42,11 @@ public class JourneyFrequencyUpdater implements Updater<JourneyFrequency> {
 		if (newValue.getTimeband() == null) {
 			oldValue.setTimeband(null);
 		}  else {
-			String objectId = newValue.getTimeband().getObjectId();
+			String codeSpace = newValue.getTimeband().getChouetteId().getCodeSpace();
+			String objectId = newValue.getTimeband().getChouetteId().getObjectId();
 			Timeband timeband = cache.getTimebands().get(objectId);
 			if (timeband == null) {
-				timeband = timebandDAO.findByObjectId(objectId);
+				timeband = timebandDAO.findByChouetteId(codeSpace, objectId);
 				if (timeband != null) {
 					cache.getTimebands().put(objectId, timeband);
 				}

@@ -85,10 +85,10 @@ public class DataLocation {
 	}
 
 	public DataLocation(NeptuneIdentifiedObject chouetteObject) {
-		this.objectId = chouetteObject.getObjectId();
+		this.objectId = chouetteObject.getChouetteId().getObjectId();
 		this.object = chouetteObject;
 		this.name = buildName(chouetteObject);
-		if (chouetteObject.getObjectId() != null) {
+		if (chouetteObject.getChouetteId().getObjectId() != null) {
 			path.add(new Path(object));
 			if (chouetteObject instanceof VehicleJourney) {
 				VehicleJourney object = (VehicleJourney) chouetteObject;
@@ -216,7 +216,7 @@ public class DataLocation {
 
 		public Path(NeptuneIdentifiedObject object) {
 			// protection from proxy class names
-			this(object.getClass().getSimpleName().split("_")[0], object.getObjectId());
+			this(object.getClass().getSimpleName().split("_")[0], object.getChouetteId().getObjectId());
 		}
 
 		public String toString() {

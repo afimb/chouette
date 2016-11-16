@@ -261,7 +261,7 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 		@Override
 		public int compare(NeptuneIdentifiedObject arg0, NeptuneIdentifiedObject arg1) {
 
-			return arg0.objectIdSuffix().compareTo(arg1.objectIdSuffix());
+			return arg0.getChouetteId().getObjectId().compareTo(arg1.getChouetteId().getObjectId());
 		}
 	}
 

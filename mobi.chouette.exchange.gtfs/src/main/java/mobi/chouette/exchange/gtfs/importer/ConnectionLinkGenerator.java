@@ -57,15 +57,15 @@ public class ConnectionLinkGenerator extends AbstractGenerator {
 				if (distance < distanceMax) {
 					boolean ok = true;
 					// eligible, check route
-//					List<String> sourceRoutes = routesForStopArea.get(source.getObjectId());
+//					List<String> sourceRoutes = routesForStopArea.get(source.getChouetteId().getObjectId());
 //					if (sourceRoutes == null) {
 //						sourceRoutes = computeRoutes(source);
-//						routesForStopArea.put(source.getObjectId(), sourceRoutes);
+//						routesForStopArea.put(source.getChouetteId().getObjectId(), sourceRoutes);
 //					}
-//					List<String> targetRoutes = routesForStopArea.get(target.getObjectId());
+//					List<String> targetRoutes = routesForStopArea.get(target.getChouetteId().getObjectId());
 //					if (targetRoutes == null) {
 //						targetRoutes = computeRoutes(target);
-//						routesForStopArea.put(target.getObjectId(), targetRoutes);
+//						routesForStopArea.put(target.getChouetteId().getObjectId(), targetRoutes);
 //					}
 //					
 //					for (String route : targetRoutes) {
@@ -76,8 +76,8 @@ public class ConnectionLinkGenerator extends AbstractGenerator {
 //					}
 					if (ok) {
 						// create connectionLink
-						String[] sourceToken = source.getObjectId().split(":");
-						String[] targetToken = target.getObjectId().split(":");
+						String[] sourceToken = source.getChouetteId().getObjectId().split(":");
+						String[] targetToken = target.getChouetteId().getObjectId().split(":");
 						String objectId = sourceToken[0] + ":" + ConnectionLink.CONNECTIONLINK_KEY + ":"
 								+ sourceToken[2] + "_" + targetToken[2];
 						String reverseId = sourceToken[0] + ":" + ConnectionLink.CONNECTIONLINK_KEY + ":"
@@ -128,7 +128,7 @@ public class ConnectionLinkGenerator extends AbstractGenerator {
 									+ "_" + sourceToken[2];
 							ConnectionLink reverseLink = ObjectFactory.getConnectionLink(referential, objectId);
 							reverseLink.setDefaultDuration(defaultDuration);
-							reverseLink.setObjectId(objectId);
+							reverseLink.getChouetteId().setObjectId(objectId);
 							reverseLink.setCreationTime(Calendar.getInstance().getTime());
 							reverseLink.setStartOfLink(target);
 							reverseLink.setEndOfLink(source);

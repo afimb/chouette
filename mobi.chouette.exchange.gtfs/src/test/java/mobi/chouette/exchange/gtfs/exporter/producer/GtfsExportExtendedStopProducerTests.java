@@ -36,7 +36,7 @@ public class GtfsExportExtendedStopProducerTests
       mock.reset();
 
       StopArea neptuneObject = new StopArea();
-      neptuneObject.setObjectId("GTFS:StopArea:4321");
+      neptuneObject.getChouetteId().setObjectId("GTFS:StopArea:4321");
       neptuneObject.setName("physical point");
       neptuneObject.setAreaType(ChouetteAreaEnum.BoardingPosition);
       neptuneObject.setRegistrationNumber("1234");
@@ -51,7 +51,7 @@ public class GtfsExportExtendedStopProducerTests
       neptuneObject.setCityName("Paris");
       
       StopArea parent = new StopArea();
-      parent.setObjectId("GTFS:StopArea:5678");
+      parent.getChouetteId().setObjectId("GTFS:StopArea:5678");
       List<StopArea> parents = new ArrayList<>();
       parents.add(parent);
       neptuneObject.setParent(parent);

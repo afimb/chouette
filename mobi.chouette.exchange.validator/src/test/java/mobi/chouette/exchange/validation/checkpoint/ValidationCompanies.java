@@ -54,11 +54,11 @@ public class ValidationCompanies extends AbstractTestValidation {
 
 			bean1 = new Company();
 			bean1.setId(id++);
-			bean1.setObjectId("test1:Company:1");
+			bean1.getChouetteId().setObjectId("test1:Company:1");
 			bean1.setName("test1");
 			bean2 = new Company();
 			bean2.setId(id++);
-			bean2.setObjectId("test2:Company:1");
+			bean2.getChouetteId().setObjectId("test2:Company:1");
 			bean2.setName("test2");
 
 			beansFor4.add(bean1);

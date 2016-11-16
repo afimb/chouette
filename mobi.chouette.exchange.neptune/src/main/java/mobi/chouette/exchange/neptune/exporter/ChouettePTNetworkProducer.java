@@ -109,7 +109,7 @@ public class ChouettePTNetworkProducer implements Constant {
 		for (GroupOfLine group : collection.getGroupOfLines())
 		{
 			GroupOfLineType jaxbObj = groupOfLineProducer.produce(group,addExtension);
-			jaxbObj.getLineId().add(collection.getLine().getObjectId());
+			jaxbObj.getLineId().add(collection.getLine().getChouetteId().getObjectId());
 			rootObject.getGroupOfLine().add(jaxbObj);
 		}
 
@@ -131,14 +131,14 @@ public class ChouettePTNetworkProducer implements Constant {
 				{
 					if (collection.getStopAreas().contains(child))
 					{
-						jaxbStopArea.getContains().add(child.getObjectId());
+						jaxbStopArea.getContains().add(child.getChouetteId().getObjectId());
 					}
 				}
 				for (StopPoint child : stopArea.getContainedStopPoints())
 				{
 					if (collection.getStopPoints().contains(child))
 					{
-						jaxbStopArea.getContains().add(child.getObjectId());
+						jaxbStopArea.getContains().add(child.getChouetteId().getObjectId());
 					}
 				}
 			}
@@ -161,7 +161,7 @@ public class ChouettePTNetworkProducer implements Constant {
 			{
 				if (collection.getStopAreas().contains(child))
 				{
-					jaxbStopArea.getContains().add(child.getObjectId());
+					jaxbStopArea.getContains().add(child.getChouetteId().getObjectId());
 				}
 			}
 			chouetteArea.getStopArea().add(jaxbStopArea);
@@ -184,7 +184,7 @@ public class ChouettePTNetworkProducer implements Constant {
 			for (VehicleJourney vehicleJourney : collection.getVehicleJourneys()) {
 				if (vehicleJourney.getTimetables().contains(timetable))
 				{
-					jaxbObj.getVehicleJourneyId().add(vehicleJourney.getObjectId());					
+					jaxbObj.getVehicleJourneyId().add(vehicleJourney.getChouetteId().getObjectId());					
 				}
 			}
 			if (metadata != null)
@@ -221,7 +221,7 @@ public class ChouettePTNetworkProducer implements Constant {
 			{
 				if (collection.getJourneyPatterns().contains(jp))
 				{
-					jaxbObj.getJourneyPatternId().add(jp.getObjectId());
+					jaxbObj.getJourneyPatternId().add(jp.getChouetteId().getObjectId());
 				}
 			}
 			// add ptLinks 
@@ -268,8 +268,8 @@ public class ChouettePTNetworkProducer implements Constant {
 					timeSlot.setLastDepartureTimeInSlot(journeyFrequency.getLastDepartureTime());
 					
 						VehicleJourneyType jaxbObj = vehicleJourneyProducer.produce(vehicleJourney, addExtension, count);
-						timeSlot.setObjectId(jaxbObj.getObjectId().replaceAll("VehicleJourney", "TimeSlot"));
-						jaxbObj.setTimeSlotId(timeSlot.getObjectId());
+						timeSlot.getChouetteId().setObjectId(jaxbObj.getObjectId().replaceAll("VehicleJourney", "TimeSlot"));
+						jaxbObj.setTimeSlotId(timeSlot.getChouetteId().getObjectId());
 						chouetteLineDescription.getVehicleJourney().add(jaxbObj);
 					
 					TimeSlotType jaxbTSObj = timeSlotProducer.produce(timeSlot, addExtension);
@@ -299,7 +299,7 @@ public class ChouettePTNetworkProducer implements Constant {
 		// sauvegarde
 		JaxbNeptuneFileConverter writer = JaxbNeptuneFileConverter.getInstance();
 		Path dir = Paths.get(rootDirectory,OUTPUT);
-		String fileName = collection.getLine().getObjectId().replaceAll(":", "-")+".xml";
+		String fileName = collection.getLine().getChouetteId().getObjectId().replaceAll(":", "-")+".xml";
 		File file = new File(dir.toFile(),fileName);
 		writer.write(AbstractJaxbNeptuneProducer.tridentFactory.createChouettePTNetwork(rootObject), file );
 

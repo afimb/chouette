@@ -25,7 +25,7 @@ public class LineLocation {
 	private String name = "";
 
 	public LineLocation(Line line) {
-		this.objectId = line.getObjectId();
+		this.objectId = line.getChouetteId().getObjectId();
 		this.name = Location.buildName(line);
 	}
 

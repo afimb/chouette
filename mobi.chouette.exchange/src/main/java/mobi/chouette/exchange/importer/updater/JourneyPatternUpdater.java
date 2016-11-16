@@ -62,7 +62,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		
 		if (oldValue.isDetached()) {
 			// object does not exist in database
-			oldValue.setObjectId(newValue.getObjectId());
+			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 			oldValue.setCreationTime(newValue.getCreationTime());
 			oldValue.setCreatorId(newValue.getCreatorId());
@@ -73,8 +73,8 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			oldValue.setSectionStatus(newValue.getSectionStatus());
 			oldValue.setDetached(false);
 		} else {
-			if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
-				oldValue.setObjectId(newValue.getObjectId());
+			if (newValue.getChouetteId().getObjectId() != null && !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
+				oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
 			}
 			if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
 				oldValue.setObjectVersion(newValue.getObjectVersion());
@@ -110,13 +110,13 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			// List<RouteSection> sections =
 			// routeSectionDAO.findByObjectId(UpdaterUtils.getObjectIds(newValue.getRouteSections()));
 			// for (RouteSection object : sections) {
-			// cache.getRouteSections().put(object.getObjectId(), object);
+			// cache.getRouteSections().put(object.getChouetteId().getObjectId(), object);
 			// }
 			oldValue.getRouteSections().clear();
 			for (RouteSection item : newValue.getRouteSections()) {
-				RouteSection section = cache.getRouteSections().get(item.getObjectId());
+				RouteSection section = cache.getRouteSections().get(item.getChouetteId().getObjectId());
 				if (section == null) {
-					section = ObjectFactory.getRouteSection(cache, item.getObjectId());
+					section = ObjectFactory.getRouteSection(cache, item.getChouetteId().getObjectId());
 				}
 				oldValue.getRouteSections().add(section);
 			}
@@ -134,15 +134,16 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		List<StopPoint> stopPoints = null;
 		for (StopPoint item : addedStopPoint) {
 
-			StopPoint stopPoint = cache.getStopPoints().get(item.getObjectId());
+			StopPoint stopPoint = cache.getStopPoints().get(item.getChouetteId().getObjectId());
 			if (stopPoint == null) {
 				if (stopPoints == null) {
-					stopPoints = stopPointDAO.findByObjectId(UpdaterUtils.getObjectIds(addedStopPoint));
+					String codeSpace = item.getChouetteId().getCodeSpace();
+					stopPoints = stopPointDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedStopPoint));
 					for (StopPoint object : stopPoints) {
-						cache.getStopPoints().put(object.getObjectId(), object);
+						cache.getStopPoints().put(object.getChouetteId().getObjectId(), object);
 					}
 				}
-				stopPoint = cache.getStopPoints().get(item.getObjectId());
+				stopPoint = cache.getStopPoints().get(item.getChouetteId().getObjectId());
 			}
 
 			if (stopPoint != null) {
@@ -160,11 +161,11 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		if (newValue.getArrivalStopPoint() == null) {
 			oldValue.setArrivalStopPoint(null);
 		} else if (!newValue.getArrivalStopPoint().equals(oldValue.getArrivalStopPoint())) {
-
-			String objectId = newValue.getArrivalStopPoint().getObjectId();
+			String codeSpace = newValue.getArrivalStopPoint().getChouetteId().getCodeSpace();
+			String objectId = newValue.getArrivalStopPoint().getChouetteId().getObjectId();
 			StopPoint stopPoint = cache.getStopPoints().get(objectId);
 			if (stopPoint == null) {
-				stopPoint = stopPointDAO.findByObjectId(objectId);
+				stopPoint = stopPointDAO.findByChouetteId(codeSpace, objectId);
 				if (stopPoint != null) {
 					cache.getStopPoints().put(objectId, stopPoint);
 				}
@@ -179,11 +180,11 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		if (newValue.getDepartureStopPoint() == null) {
 			oldValue.setDepartureStopPoint(null);
 		} else if (!newValue.getDepartureStopPoint().equals(oldValue.getDepartureStopPoint())) {
-
-			String objectId = newValue.getDepartureStopPoint().getObjectId();
+			String codeSpace = newValue.getDepartureStopPoint().getChouetteId().getCodeSpace();
+			String objectId = newValue.getDepartureStopPoint().getChouetteId().getObjectId();
 			StopPoint stopPoint = cache.getStopPoints().get(objectId);
 			if (stopPoint == null) {
-				stopPoint = stopPointDAO.findByObjectId(objectId);
+				stopPoint = stopPointDAO.findByChouetteId(codeSpace, objectId);
 				if (stopPoint != null) {
 					cache.getStopPoints().put(objectId, stopPoint);
 				}
@@ -201,19 +202,20 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		List<VehicleJourney> vehicleJourneys = null;
 		for (VehicleJourney item : addedVehicleJourney) {
 
-			VehicleJourney vehicleJourney = cache.getVehicleJourneys().get(item.getObjectId());
+			VehicleJourney vehicleJourney = cache.getVehicleJourneys().get(item.getChouetteId().getObjectId());
 			if (vehicleJourney == null) {
 				if (vehicleJourneys == null) {
-					vehicleJourneys = vehicleJourneyDAO.findByObjectId(UpdaterUtils.getObjectIds(addedVehicleJourney));
+					String codeSpace = item.getChouetteId().getCodeSpace();
+					vehicleJourneys = vehicleJourneyDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedVehicleJourney));
 					for (VehicleJourney object : vehicleJourneys) {
-						cache.getVehicleJourneys().put(object.getObjectId(), object);
+						cache.getVehicleJourneys().put(object.getChouetteId().getObjectId(), object);
 					}
 				}
-				vehicleJourney = cache.getVehicleJourneys().get(item.getObjectId());
+				vehicleJourney = cache.getVehicleJourneys().get(item.getChouetteId().getObjectId());
 			}
 
 			if (vehicleJourney == null) {
-				vehicleJourney = ObjectFactory.getVehicleJourney(cache, item.getObjectId());
+				vehicleJourney = ObjectFactory.getVehicleJourney(cache, item.getChouetteId().getObjectId());
 			}
 			if(vehicleJourney.getJourneyPattern() != null) {
 				twoDatabaseVehicleJourneyOneTest(validationReporter, context, vehicleJourney, item, data);
@@ -243,7 +245,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 	 */
 	private void twoDatabaseVehicleJourneyOneTest(ValidationReporter validationReporter, Context context, VehicleJourney oldVj, VehicleJourney newVj, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldVj.getJourneyPattern(), newVj.getJourneyPattern()))
-			validationReporter.addCheckPointReportError(context, DATABASE_VEHICLE_JOURNEY_1, data.getDataLocations().get(newVj.getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_VEHICLE_JOURNEY_1, data.getDataLocations().get(newVj.getChouetteId().getObjectId()));
 		else
 			validationReporter.reportSuccess(context, DATABASE_VEHICLE_JOURNEY_1);
 	}

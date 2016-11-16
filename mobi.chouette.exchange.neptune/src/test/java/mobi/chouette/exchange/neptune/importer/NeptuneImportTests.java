@@ -305,7 +305,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("NINOXE:Line:15574334");
+		Line line = lineDao.findByChouetteId("NINOXE", "15574334");
 		
 		NeptuneTestsUtils.checkMinimalLine(line);
 		
@@ -349,7 +349,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("NINOXE:Line:15574334");
+		Line line = lineDao.findByChouetteId("NINOXE", "15574334");
 		
 		NeptuneTestsUtils.checkMinimalLine(line);
 		

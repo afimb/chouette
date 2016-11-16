@@ -26,7 +26,7 @@ public class GtfsExportAgencyProducerTests
       mock.reset();
       
       Company neptuneObject = new Company();
-      neptuneObject.setObjectId("GTFS:Company:1234");
+      neptuneObject.getChouetteId().setObjectId("GTFS:Company:1234");
       neptuneObject.setName("name");
       neptuneObject.setShortName("short");
       neptuneObject.setRegistrationNumber("1234");
@@ -39,7 +39,7 @@ public class GtfsExportAgencyProducerTests
       Reporter.log(AgencyExporter.CONVERTER.to(context, gtfsObject));
 
       Assert.assertEquals(gtfsObject.getAgencyId(),
-            toGtfsId(neptuneObject.getObjectId()),
+            toGtfsId(neptuneObject.getChouetteId().getObjectId()),
             "agency id must be correcty set");
       Assert.assertEquals(gtfsObject.getAgencyName(), "name",
             "agency name must be correcty set");
@@ -57,7 +57,7 @@ public class GtfsExportAgencyProducerTests
       mock.reset();
 
       Company neptuneObject = new Company();
-      neptuneObject.setObjectId("GTFS:Company:1234");
+      neptuneObject.getChouetteId().setObjectId("GTFS:Company:1234");
       neptuneObject.setName("name");
       neptuneObject.setShortName("short");
       neptuneObject.setPhone("01 02 03 04 05");
@@ -68,7 +68,7 @@ public class GtfsExportAgencyProducerTests
       Reporter.log(AgencyExporter.CONVERTER.to(context, gtfsObject));
 
       Assert.assertEquals(gtfsObject.getAgencyId(),
-            toGtfsId(neptuneObject.getObjectId()),
+            toGtfsId(neptuneObject.getChouetteId().getObjectId()),
             "agency id must be correcty set");
       Assert.assertEquals(gtfsObject.getAgencyName(), "name",
             "agency name must be correcty set");
@@ -87,7 +87,7 @@ public class GtfsExportAgencyProducerTests
       mock.reset();
 
       Company neptuneObject = new Company();
-      neptuneObject.setObjectId("GTFS:Company:1234");
+      neptuneObject.getChouetteId().setObjectId("GTFS:Company:1234");
       neptuneObject.setName("name");
       neptuneObject.setPhone("01 02 03 04 05");
 
@@ -97,7 +97,7 @@ public class GtfsExportAgencyProducerTests
       Reporter.log(AgencyExporter.CONVERTER.to(context, gtfsObject));
 
       Assert.assertEquals(gtfsObject.getAgencyId(),
-            toGtfsId(neptuneObject.getObjectId()),
+            toGtfsId(neptuneObject.getChouetteId().getObjectId()),
             "agency id must be correcty set");
       Assert.assertEquals(gtfsObject.getAgencyName(), "name",
             "agency name must be correcty set");
@@ -115,7 +115,7 @@ public class GtfsExportAgencyProducerTests
       mock.reset();
 
       Company neptuneObject = new Company();
-      neptuneObject.setObjectId("GTFS:Company:1234");
+      neptuneObject.getChouetteId().setObjectId("GTFS:Company:1234");
       neptuneObject.setName("name");
 
       Reporter.log("verifyAgencyProducer4");

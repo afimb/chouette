@@ -32,9 +32,9 @@ public class ConnectionLinkProducer extends
 		jaxbConnectionLink.setComment(getNotEmptyString(connectionLink.getComment()));
 		jaxbConnectionLink.setName(connectionLink.getName());
 		if (connectionLink.getStartOfLink() != null)
-			jaxbConnectionLink.setStartOfLink(connectionLink.getStartOfLink().getObjectId());
+			jaxbConnectionLink.setStartOfLink(connectionLink.getStartOfLink().getChouetteId().getObjectId());
 		if (connectionLink.getEndOfLink() != null)
-			jaxbConnectionLink.setEndOfLink(connectionLink.getEndOfLink().getObjectId());
+			jaxbConnectionLink.setEndOfLink(connectionLink.getEndOfLink().getChouetteId().getObjectId());
 		jaxbConnectionLink.setLinkDistance(connectionLink.getLinkDistance());
 		if (connectionLink.getMobilityRestrictedSuitable() != null) {
 			jaxbConnectionLink.setMobilityRestrictedSuitability(connectionLink.getMobilityRestrictedSuitable()

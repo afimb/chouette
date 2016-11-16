@@ -1,9 +1,12 @@
 package mobi.chouette.exchange.importer;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -23,6 +26,7 @@ import mobi.chouette.exchange.importer.updater.Updater;
 import mobi.chouette.exchange.importer.updater.UpdaterUtils;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.Timeband;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -63,7 +67,7 @@ public class ConnectionLinkRegisterBlocCommand implements Command {
 			// Monitor monitorUpdate = MonitorFactory.start(COMMAND+".update");
 
 			for (ConnectionLink newValue : connectionLinks) {
-				ConnectionLink oldValue = cache.getConnectionLinks().get(newValue.getObjectId());
+				ConnectionLink oldValue = cache.getConnectionLinks().get(newValue.getChouetteId().getObjectId());
 				connectionLinkUpdater.update(context, oldValue, newValue);
 				connectionLinkDAO.create(oldValue);
 			}
@@ -85,12 +89,19 @@ public class ConnectionLinkRegisterBlocCommand implements Command {
 	private void initializeStopArea(Referential cache, Collection<ConnectionLink> list) {
 		Collection<String> objectIds = new HashSet<>();
 		for (ConnectionLink connectionLink : list) {
-			objectIds.add(connectionLink.getStartOfLink().getObjectId());
-			objectIds.add(connectionLink.getEndOfLink().getObjectId());
+			objectIds.add(connectionLink.getStartOfLink().getChouetteId().getObjectId());
+			objectIds.add(connectionLink.getEndOfLink().getChouetteId().getObjectId());
 		}
-		List<StopArea> objects = stopAreaDAO.findByObjectId(objectIds);
+		Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+		List<StopArea> objects = new ArrayList<StopArea>();
+		
+		for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+		{
+		    objects.addAll(stopAreaDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+		}
+		
 		for (StopArea object : objects) {
-			cache.getStopAreas().put(object.getObjectId(), object);
+			cache.getStopAreas().put(object.getChouetteId().getObjectId(), object);
 		}
 
 	}
@@ -99,15 +110,23 @@ public class ConnectionLinkRegisterBlocCommand implements Command {
 		if (list.isEmpty())
 			return;
 		Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
-		List<ConnectionLink> objects = connectionLinkDAO.findByObjectId(objectIds);
+		
+		Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+		List<ConnectionLink> objects = new ArrayList<ConnectionLink>();
+		
+		for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+		{
+		    objects.addAll(connectionLinkDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+		}
+		
 		for (ConnectionLink object : objects) {
-			cache.getConnectionLinks().put(object.getObjectId(), object);
+			cache.getConnectionLinks().put(object.getChouetteId().getObjectId(), object);
 		}
 
 		for (ConnectionLink item : list) {
-			ConnectionLink object = cache.getConnectionLinks().get(item.getObjectId());
+			ConnectionLink object = cache.getConnectionLinks().get(item.getChouetteId().getObjectId());
 			if (object == null) {
-				object = ObjectFactory.getConnectionLink(cache, item.getObjectId());
+				object = ObjectFactory.getConnectionLink(cache, item.getChouetteId().getObjectId());
 			}
 		}
 	}

@@ -2,6 +2,7 @@ package mobi.chouette.exchange.validation.report;
 
 import java.io.PrintStream;
 
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -58,13 +59,20 @@ public class LocationTest {
 			PrintStream stream = new PrintStream(oStream);
 			JourneyPattern jp = new JourneyPattern();
 			Route route = new Route();
-			route.setObjectId("route1");
+//			route.getChouetteId().setObjectId("route1");
+			ChouetteId chouetteId = new ChouetteId();
+			chouetteId.setObjectId("route1");
+			route.setChouetteId(chouetteId);
 			route.setName("rname");
 			Line line = new Line();
-			line.setObjectId("line1");
+//			line.getChouetteId().setObjectId("line1");
+			chouetteId.setObjectId("line1");
+			line.setChouetteId(chouetteId);
 			line.setName("lname");
 			route.setLine(line);
 			jp.setRoute(route);
+			chouetteId.setObjectId("jp1");
+			jp.setChouetteId(chouetteId);
 			Location location = new Location(jp);
 			location.print(stream, new StringBuilder(), 1, true);
 			String text = oStream.toString();

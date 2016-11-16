@@ -63,7 +63,7 @@ public class TestsUtils implements Constant, ReportConstant{
 					bps.add(point.getContainedInStopArea());
 
 					Assert.assertNotNull(point.getContainedInStopArea().getParent(), "StopAreas must have parent : "
-							+ point.getContainedInStopArea().getObjectId());
+							+ point.getContainedInStopArea().getChouetteId().getObjectId());
 					comms.add(point.getContainedInStopArea().getParent());
 				}
 			}

@@ -31,8 +31,8 @@ public class GtfsRouteProducer extends AbstractProducer
 
    public boolean save(Line neptuneObject,  String prefix)
    {
-      route.setRouteId(toGtfsId(neptuneObject.getObjectId(), prefix));
-      route.setAgencyId(toGtfsId(neptuneObject.getCompany().getObjectId(), prefix));
+      route.setRouteId(toGtfsId(neptuneObject.getChouetteId().getObjectId(), prefix));
+      route.setAgencyId(toGtfsId(neptuneObject.getCompany().getChouetteId().getObjectId(), prefix));
       route.setRouteShortName(null);
       route.setRouteLongName(null);
       if (isEmpty(neptuneObject.getNumber()))
@@ -54,7 +54,7 @@ public class GtfsRouteProducer extends AbstractProducer
       }
       if (isEmpty(route.getRouteShortName()) && isEmpty(route.getRouteLongName()))
       {
-          log.warn("no naming data for line "+neptuneObject.getObjectId());
+          log.warn("no naming data for line "+neptuneObject.getChouetteId().getObjectId());
           return false;
       }
       if (!isEmpty(route.getRouteShortName()) && route.getRouteShortName().equals(route.getRouteLongName()))
@@ -122,7 +122,7 @@ public class GtfsRouteProducer extends AbstractProducer
       }
       catch (Exception e)
       {
-         log.warn("export failed for line "+neptuneObject.getObjectId(),e);
+         log.warn("export failed for line "+neptuneObject.getChouetteId().getObjectId(),e);
          return false;
       }
 

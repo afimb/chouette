@@ -202,8 +202,8 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 					if( previousLocation != null) {
 						cpt ++;
 						RouteSection section = new RouteSection();
-						String routeSectionId = line.objectIdPrefix() + ":" + RouteSection.ROUTE_SECTION_KEY + ":" + cpt;
-						section.setObjectId(routeSectionId);
+						String routeSectionId = line.getChouetteId().getCodeSpace() + ":" + RouteSection.ROUTE_SECTION_KEY + ":" + cpt;
+						section.getChouetteId().setObjectId(routeSectionId);
 						if (!section.isFilled()) {
 						
 							Coordinate[] inputCoords = new Coordinate[2];
@@ -222,8 +222,8 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 								section.setDistance(BigDecimal.valueOf(distance));
 							} catch (NumberFormatException e) {
 								log.error(" : problem with section between " + previousLocation.getName() + "("
-										+ previousLocation.getObjectId() + " and " + location.getName() + "("
-										+ location.getObjectId());
+										+ previousLocation.getChouetteId().getObjectId() + " and " + location.getName() + "("
+										+ location.getChouetteId().getObjectId());
 								sections.clear();
 							}
 							// AbstractConverter.addLocation(context, "shapes.txt",

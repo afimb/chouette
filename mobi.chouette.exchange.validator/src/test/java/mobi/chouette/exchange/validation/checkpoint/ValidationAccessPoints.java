@@ -128,20 +128,20 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 
 			StopArea area1 = new StopArea();
 			area1.setId(id++);
-			area1.setObjectId("test1:StopArea:1");
+			area1.getChouetteId().setObjectId("test1:StopArea:1");
 			area1.setName("test1");
 			bean1 = new AccessPoint();
 			bean1.setId(id++);
-			bean1.setObjectId("test1:AccessPoint:1");
+			bean1.getChouetteId().setObjectId("test1:AccessPoint:1");
 			bean1.setName("test1");
 			bean1.setContainedIn(area1);
 			StopArea area2 = new StopArea();
 			area2.setId(id++);
-			area2.setObjectId("test1:StopArea:2");
+			area2.getChouetteId().setObjectId("test1:StopArea:2");
 			area2.setName("test2");
 			bean2 = new AccessPoint();
 			bean2.setId(id++);
-			bean2.setObjectId("test2:AccessPoint:1");
+			bean2.getChouetteId().setObjectId("test2:AccessPoint:1");
 			bean2.setName("test2");
 			bean2.setContainedIn(area2);
 
@@ -210,7 +210,7 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 		List<CheckPointErrorReport> details = checkReportForTest(report, "4-AccessPoint-1", 1);
 		CheckPointErrorReport detail = details.get(0);
 		Assert.assertEquals(detail.getReferenceValue(), "ObjectId", "detail must refer column");
-		Assert.assertEquals(detail.getValue(), bean2.getObjectId().split(":")[2], "detail must refer value");
+		Assert.assertEquals(detail.getValue(), bean2.getChouetteId().getObjectId().split(":")[2], "detail must refer value");
 	}
 
 
@@ -276,9 +276,9 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 		AccessPoint access1 = null;
 		AccessPoint access2 = null;
 		for (AccessPoint accessPoint : beans) {
-			if (accessPoint.getObjectId().equals("NINOXE:AccessPoint:6"))
+			if (accessPoint.getChouetteId().getObjectId().equals("NINOXE:AccessPoint:6"))
 				access1 = accessPoint;
-			if (accessPoint.getObjectId().equals("NINOXE:AccessPoint:7"))
+			if (accessPoint.getChouetteId().getObjectId().equals("NINOXE:AccessPoint:7"))
 				access2 = accessPoint;
 		}
 

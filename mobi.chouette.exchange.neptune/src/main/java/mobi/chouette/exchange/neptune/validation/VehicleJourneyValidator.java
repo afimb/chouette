@@ -255,7 +255,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				{
 					// affect journeyPattern for following tests
 					vj.setJourneyPattern(vj.getRoute().getJourneyPatterns().get(0));
-					journeyPatternId = vj.getJourneyPattern().getObjectId();
+					journeyPatternId = vj.getJourneyPattern().getChouetteId().getObjectId();
 				}
 			}
 			if (objectContext.containsKey(LINE_ID_SHORTCUT))

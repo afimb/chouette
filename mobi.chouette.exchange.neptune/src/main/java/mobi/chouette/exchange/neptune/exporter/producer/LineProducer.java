@@ -55,7 +55,7 @@ public class LineProducer extends AbstractJaxbNeptuneProducer<ChouettePTNetworkT
 		for (Route route : line.getRoutes()) {
 			if (exportableRoutes.contains(route))
 			{
-				jaxbLine.getRouteId().add(route.getObjectId());
+				jaxbLine.getRouteId().add(route.getChouetteId().getObjectId());
 			}
 		}
 

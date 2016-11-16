@@ -7,7 +7,7 @@ public class NeptuneObjectPresenter
 {
    public static String getName(Line line)
    {
-      String name = line.getObjectId(); // maybe name empty
+      String name = line.getChouetteId().getObjectId(); // maybe name empty
       if (!isEmpty(line.getName()))
       {
          name = line.getName();
@@ -25,7 +25,7 @@ public class NeptuneObjectPresenter
 
    public static String getName(Network network)
    {
-      String name = network.getObjectId(); // maybe name empty
+      String name = network.getChouetteId().getObjectId(); // maybe name empty
       if (!isEmpty(network.getName()))
       {
          name = network.getName();

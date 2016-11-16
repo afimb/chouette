@@ -30,9 +30,9 @@ public class GtfsTransferProducer extends AbstractProducer
    public boolean save(ConnectionLink neptuneObject, String prefix)
    {
       transfer.setFromStopId(toGtfsId(neptuneObject.getStartOfLink()
-            .getObjectId(),prefix));
+            .getChouetteId().getObjectId(),prefix));
       transfer
-            .setToStopId(toGtfsId(neptuneObject.getEndOfLink().getObjectId(),prefix));
+            .setToStopId(toGtfsId(neptuneObject.getEndOfLink().getChouetteId().getObjectId(),prefix));
       if (neptuneObject.getDefaultDuration() != null
             && neptuneObject.getDefaultDuration().getTime() > 1000)
       {

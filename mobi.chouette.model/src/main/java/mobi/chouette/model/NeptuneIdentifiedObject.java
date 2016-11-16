@@ -8,9 +8,12 @@
 package mobi.chouette.model;
 
 import java.util.Date;
-import java.util.regex.Pattern;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.EmbeddedId;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
@@ -20,7 +23,6 @@ import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.model.util.ObjectIdTypes;
 
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.NaturalId;
 
 /**
@@ -29,32 +31,19 @@ import org.hibernate.annotations.NaturalId;
  */
 @SuppressWarnings("serial")
 @MappedSuperclass
-@EqualsAndHashCode(of = { "objectId" }, callSuper = false)
+@EqualsAndHashCode(of = { "chouetteId" }, callSuper = false)
 @ToString(callSuper = true)
 public abstract class NeptuneIdentifiedObject extends NeptuneObject implements
 		ObjectIdTypes {
 
 	/**
-	 * Neptune object id <br/>
-	 * composed of 3 items separated by a colon
-	 * <ol>
-	 * <li>prefix : an alphanumerical value (underscore accepted)</li>
-	 * <li>type : a camelcase name describing object type</li>
-	 * <li>technical id: an alphanumerical value (underscore and minus accepted)
-	 * </li>
-	 * </ol>
-	 * This data must be unique in dataset
-	 * 
-	 * @return The actual value
+	 * 	Embedded id containing three fields from raw object id
 	 */
+	
+	@Embedded
 	@Getter
-	@NaturalId(mutable=true)
-	@Column(name = "objectid", nullable = false, unique = true)
-	protected String objectId;
-
-	public void setObjectId(String value) {
-		objectId = StringUtils.abbreviate(value, 255);
-	}
+	@Setter
+    private ChouetteId chouetteId;
 
 	/**
 	 * object version
@@ -111,46 +100,4 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject implements
 		return null;
 	}
 
-	/**
-	 * check if an objectId is conform to Trident
-	 * 
-	 * @param oid
-	 *            objectId to check
-	 * @return true if valid, false othewise
-	 */
-	public static boolean checkObjectId(String oid) {
-		if (oid == null)
-			return false;
-
-		Pattern p = Pattern.compile("(\\w|_)+:\\w+:([0-9A-Za-z]|_|-)+");
-		return p.matcher(oid).matches();
-	}
-
-	private String[] objectIdArray() {
-		return objectId.split(":");
-	}
-
-	/**
-	 * return prefix of objectId
-	 * 
-	 * @return String
-	 */
-	public String objectIdPrefix() {
-		if (objectIdArray().length > 2) {
-			return objectIdArray()[0].trim();
-		} else
-			return "";
-	}
-
-	/**
-	 * return suffix of objectId
-	 * 
-	 * @return String
-	 */
-	public String objectIdSuffix() {
-		if (objectIdArray().length > 2)
-			return objectIdArray()[2].trim();
-		else
-			return "";
-	}
 }
