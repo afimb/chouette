@@ -29,12 +29,12 @@ import javax.xml.xpath.XPathFactory;
 import java.util.List;
 
 @Log4j
-public class OrganisationParser extends AbstractParser implements Parser {
+public class OrganisationParser implements NetexParser {
 
     private XPathFactory factory = XPathFactory.newInstance();
 
     @Override
-    public void initializeReferentials(Context context) throws Exception {
+    public void initReferentials(Context context) throws Exception {
         NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);
         OrganisationValidator validator = (OrganisationValidator) ValidatorFactory.create(OrganisationValidator.class.getName(), context);
 

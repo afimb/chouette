@@ -11,6 +11,10 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.File;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class NetexLineParserCommandTest {
 
@@ -31,13 +35,15 @@ public class NetexLineParserCommandTest {
 		
 		NetexLineParserCommand cmd = new NetexLineParserCommand();
 		
-		File testFile = new File("src/test/data/WF739.xml");
-		Assert.assertTrue(testFile.exists());
-		cmd.setFile(testFile);
-		context.put(Constant.FILE_NAME, testFile.getName());
+		Path filePath = Paths.get("src/test/data/WF739.xml");
+		String url = filePath.toUri().toURL().toExternalForm();
+		Assert.assertTrue(Files.exists(filePath));
+		cmd.setFileURL(url);
+		File file = new File(new URL(url).toURI());
+		context.put(Constant.FILE_NAME, file.getName());
 		
 		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
-		actionReporter.setFileState(context, testFile.getName(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.ERROR);
+		actionReporter.setFileState(context, file.getName(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.ERROR);
 
 		boolean result = cmd.execute(context );
 		Assert.assertTrue(result);

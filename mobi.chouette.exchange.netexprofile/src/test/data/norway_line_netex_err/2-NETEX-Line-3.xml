@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PublicationDelivery xmlns="http://www.netex.org.uk/netex" xmlns:ns2="http://www.opengis.net/gml/3.2" xmlns:ns3="http://www.siri.org.uk/siri" version="1.0">
+    <PublicationTimestamp>2016-11-11T12:45:09.849Z</PublicationTimestamp>
+    <ParticipantRef>NSR</ParticipantRef>
+    <Description>Flight DY151 : Tromsø-Trondheim</Description>
+    <dataObjects>
+        <CompositeFrame created="2016-11-11T12:45:09.849Z" version="1" id="AVI:CompositeFrame:DY151">
+            <codespaces>
+                <Codespace id="avinor">
+                    <Xmlns>AVI</Xmlns>
+                    <XmlnsUrl>http://avinor.no/</XmlnsUrl>
+                </Codespace>
+                <Codespace id="nsr">
+                    <Xmlns>NSR</Xmlns>
+                    <XmlnsUrl>http://www.nasjonaltstoppestedregister.rutebanken.no</XmlnsUrl>
+                </Codespace>
+            </codespaces>
+            <FrameDefaults>
+                <DefaultCodespaceRef ref="avinor"/>
+                <DefaultLocale>
+                    <TimeZone>UTC</TimeZone>
+                    <DefaultLanguage>no</DefaultLanguage>
+                </DefaultLocale>
+            </FrameDefaults>
+            <frames>
+                <ResourceFrame version="any" id="AVI:ResourceFrame:1">
+                    <organisations>
+                        <Authority version="any" id="AVI:Company:1">
+                            <CompanyNumber>985198292</CompanyNumber>
+                            <Name>Avinor</Name>
+                            <LegalName>AVINOR AS</LegalName>
+                            <ContactDetails>
+                                <Phone>0047 815 30 550</Phone>
+                                <Url>http://avinor.no/</Url>
+                            </ContactDetails>
+                            <OrganisationType>authority</OrganisationType>
+                        </Authority>
+                        <Operator version="any" id="Norwegian:Company:2">
+                            <CompanyNumber>912084949</CompanyNumber>
+                            <Name>Norwegian</Name>
+                            <LegalName>NORWEGIAN AIR NORWAY AS</LegalName>
+                            <ContactDetails>
+                                <Phone>0047 815 21 815</Phone>
+                                <Url>http://www.norwegian.no/</Url>
+                            </ContactDetails>
+                            <OrganisationType>operator</OrganisationType>
+                        </Operator>
+                    </organisations>
+                </ResourceFrame>
+                <SiteFrame version="any" id="AVI:SiteFrame:1">
+                    <stopPlaces>
+                        <StopPlace version="1" id="NSR:StopPlace:03011521">
+                            <Name>Tromsø</Name>
+                            <ShortName>TOS</ShortName>
+                            <TransportMode>air</TransportMode>
+                            <StopPlaceType>airport</StopPlaceType>
+                        </StopPlace>
+                        <StopPlace version="1" id="NSR:StopPlace:03011522">
+                            <Name>Trondheim</Name>
+                            <ShortName>TRD</ShortName>
+                            <TransportMode>air</TransportMode>
+                            <StopPlaceType>airport</StopPlaceType>
+                        </StopPlace>
+                    </stopPlaces>
+                </SiteFrame>
+                <ServiceFrame version="any" id="AVI:ServiceFrame:DY151">
+                    <Network changed="2016-11-11T12:45:09.849Z" version="1" id="AVI:GroupOfLine:Avinor">
+                        <Name>Norwegian</Name>
+                        <groupsOfLines>
+                            <GroupOfLines version="any" id="AVI:GroupOfLines:1">
+                                <members>
+                                    <LineRef ref="AVI:Line:DY151" version="any">AVI:Line:DY151</LineRef>
+                                </members>
+                            </GroupOfLines>
+                        </groupsOfLines>
+                    </Network>
+                    <routePoints>
+                        <RoutePoint version="any" id="AVI:RoutePoint:DY151101A0A0061101001">
+                            <projections>
+                                <PointProjection version="any" id="AVI:PointProjection:DY151101A0A0061101001">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:DY151101001" version="any"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                        <RoutePoint version="any" id="AVI:RoutePoint:DY151101A0A0061101002">
+                            <projections>
+                                <PointProjection version="any" id="AVI:PointProjection:DY151101A0A0061101002">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:DY151101002" version="any"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                    </routePoints>
+                    <routes>
+                        <Route version="any" id="AVI:Route:DY151101">
+                            <Name>DY151: Tromsø-Trondheim</Name>
+                            <pointsInSequence>
+                                <PointOnRoute version="any" id="AVI:PointOnRoute:DY1511010011">
+                                    <RoutePointRef ref="AVI:RoutePoint:DY151101A0A0061101001"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="any" id="AVI:PointOnRoute:DY1511010012">
+                                    <RoutePointRef ref="AVI:RoutePoint:DY151101A0A0061101002"/>
+                                </PointOnRoute>
+                            </pointsInSequence>
+                        </Route>
+                    </routes>
+                    <lines>
+                        <Line version="any" id="AVI:Line:DY151">
+                            <Name>Tromsø-Trondheim</Name>
+                            <TransportMode>air</TransportMode>
+                            <!--<PublicCode>DY151</PublicCode>-->
+                            <OperatorRef ref="Norwegian:Company:2"/>
+                            <routes>
+                                <RouteRef ref="AVI:Route:DY151101" version="any"/>
+                            </routes>
+                        </Line>
+                    </lines>
+                    <scheduledStopPoints>
+                        <ScheduledStopPoint version="any" id="AVI:ScheduledStopPoint:DY151101001">
+                            <Name>Tromsø</Name>
+                        </ScheduledStopPoint>
+                        <ScheduledStopPoint version="any" id="AVI:ScheduledStopPoint:DY151101002">
+                            <Name>Trondheim</Name>
+                        </ScheduledStopPoint>
+                    </scheduledStopPoints>
+                    <stopAssignments>
+                        <PassengerStopAssignment order="1" version="any" id="AVI:PassengerStopAssignment:DY151101001">
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:DY151101001"/>
+                            <StopPlaceRef ref="NSR:StopPlace:03011521"/>
+                        </PassengerStopAssignment>
+                        <PassengerStopAssignment order="2" version="any" id="AVI:PassengerStopAssignment:DY151101002">
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:DY151101002"/>
+                            <StopPlaceRef ref="NSR:StopPlace:03011522"/>
+                        </PassengerStopAssignment>
+                    </stopAssignments>
+                    <journeyPatterns>
+                        <JourneyPattern version="any" id="AVI:JourneyPattern:DY151101">
+                            <RouteRef ref="AVI:Route:DY151101" version="any"/>
+                            <pointsInSequence>
+                                <StopPointInJourneyPattern order="1" version="any" id="AVI:StopPointInJourneyPattern:DY151101001">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:DY151101001" version="any"/>
+                                    <ForAlighting>false</ForAlighting>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="2" version="any" id="AVI:StopPointInJourneyPattern:DY151101002">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:DY151101002" version="any"/>
+                                    <ForBoarding>false</ForBoarding>
+                                </StopPointInJourneyPattern>
+                            </pointsInSequence>
+                        </JourneyPattern>
+                    </journeyPatterns>
+                </ServiceFrame>
+                <TimetableFrame version="any" id="AVI:TimetableFrame:1">
+                    <validityConditions>
+                        <AvailabilityCondition version="any" id="AVI:AvailabilityCondition:1">
+                            <FromDate>2016-11-11T00:00:00Z</FromDate>
+                            <ToDate>2016-12-11T00:00:00Z</ToDate>
+                        </AvailabilityCondition>
+                    </validityConditions>
+                    <vehicleJourneys>
+                        <ServiceJourney version="any" id="AVI:ServiceJourney:DY151">
+                            <DepartureTime>14:55:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="DY151:DayType:weekday"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:DY151101"/>
+                            <PublicCode>DY151</PublicCode>
+                            <LineRef ref="AVI:Line:DY151"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:DY151101001" version="any"/>
+                                    <DepartureTime>14:55:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:DY151101002" version="any"/>
+                                    <ArrivalTime>16:25:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                    </vehicleJourneys>
+                </TimetableFrame>
+                <ServiceCalendarFrame version="1" id="AVI:ServiceCalendarFrame:1">
+                    <dayTypes>
+                        <DayType version="any" id="DY151:DayType:weekday">
+                            <Name>Ukedager (mandag til fredag)</Name>
+                            <properties>
+                                <PropertyOfDay>
+                                    <DaysOfWeek>Monday Friday</DaysOfWeek>
+                                </PropertyOfDay>
+                            </properties>
+                        </DayType>
+                    </dayTypes>
+                </ServiceCalendarFrame>
+            </frames>
+        </CompositeFrame>
+    </dataObjects>
+</PublicationDelivery>

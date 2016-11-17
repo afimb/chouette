@@ -1,27 +1,7 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
-import mobi.chouette.common.Context;
-import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.importer.NetexImporter;
-import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
-import mobi.chouette.exchange.netexprofile.importer.validation.ExternalReferenceValidator;
-import mobi.chouette.exchange.netexprofile.importer.validation.NetexNamespaceContext;
-import mobi.chouette.exchange.validation.report.ValidationReporter;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-
-public class AbstractNetexProfileValidatorTest {
+public class AbstractValidatorTest {
+/*
 	@Test
 	public void testCheckExternalReference() throws XPathExpressionException, SAXException, IOException, ParserConfigurationException {
 		
@@ -60,6 +40,7 @@ public class AbstractNetexProfileValidatorTest {
 		Document dom = new NetexImporter().parseFileToDom(new File("src/test/data/WF739-201608311015.xml"));
 		AbstractNetexProfileValidator.validateElementPresent(context, xpath, dom, "//n:Network", "NO_NETWORK", "No network element found","1");
 	}
+*/
 
 	
 }

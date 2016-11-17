@@ -1,23 +1,8 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
-import mobi.chouette.common.Context;
-import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.importer.NetexImporter;
-import mobi.chouette.exchange.netexprofile.importer.validation.NetexNamespaceContext;
-import mobi.chouette.exchange.validation.report.CheckPointReport;
-import mobi.chouette.exchange.validation.report.ValidationReport;
-import mobi.chouette.exchange.validation.report.ValidationReporter;
-import org.rutebanken.netex.model.PublicationDeliveryStructure;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-import org.w3c.dom.Document;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathFactory;
-import java.io.File;
-
 public class NorwayLineNetexProfileValidatorTest {
 
+/*
 	@Test public void testValidateFile() throws Exception {
 		
 		Context context = new Context();
@@ -47,4 +32,5 @@ public class NorwayLineNetexProfileValidatorTest {
 		// TODO add more checks here
 		Assert.assertTrue(valid);;
 	}
+*/
 }
