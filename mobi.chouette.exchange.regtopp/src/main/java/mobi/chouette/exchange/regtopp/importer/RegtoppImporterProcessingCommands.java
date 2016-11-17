@@ -45,7 +45,8 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 	}
 
 	static {
-		ProcessingCommandsFactory.factories.put(RegtoppImporterProcessingCommands.class.getName(), new DefaultFactory());
+		ProcessingCommandsFactory.factories.put(RegtoppImporterProcessingCommands.class.getName(),
+				new DefaultFactory());
 	}
 
 	@Override
@@ -68,7 +69,8 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 			commands.add(CommandFactory.create(initialContext, RegtoppFilePresenceValidationCommand.class.getName()));
 
 			// validate file consistency
-			commands.add(CommandFactory.create(initialContext, RegtoppFileConsistencyValidationCommand.class.getName()));
+			commands.add(
+					CommandFactory.create(initialContext, RegtoppFileConsistencyValidationCommand.class.getName()));
 		} catch (Exception e) {
 			log.error(e, e);
 			throw new RuntimeException("unable to call factories", e);
@@ -86,6 +88,18 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 
 		try {
 
+			if (parameters.isBatchParse()) {
+
+				// Pull out line by line and convert to Chouette model
+				RegtoppLineParserCommand parser = (RegtoppLineParserCommand) CommandFactory.create(initialContext,
+						RegtoppLineParserCommand.class.getName());
+
+				parser.setBatchParse(true);
+
+				commands.add(parser);
+
+			}
+
 			Index<AbstractRegtoppTripIndexTIX> index = importer.getUniqueLinesByTripIndex();
 			Iterator<String> keys = index.keys();
 			while (keys.hasNext()) {
@@ -94,7 +108,8 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 				Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 
 				// Pull out line by line and convert to Chouette model
-				RegtoppLineParserCommand parser = (RegtoppLineParserCommand) CommandFactory.create(initialContext, RegtoppLineParserCommand.class.getName());
+				RegtoppLineParserCommand parser = (RegtoppLineParserCommand) CommandFactory.create(initialContext,
+						RegtoppLineParserCommand.class.getName());
 
 				parser.setLineId(lineId);
 				chain.add(parser);
@@ -113,7 +128,8 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 				}
 				if (level3validation) {
 					// add validation
-					Command validate = CommandFactory.create(initialContext, ImportedLineValidatorCommand.class.getName());
+					Command validate = CommandFactory.create(initialContext,
+							ImportedLineValidatorCommand.class.getName());
 					chain.add(validate);
 				}
 				commands.add(chain);
@@ -136,7 +152,8 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 		try {
 			Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 
-			RegtoppStopParserCommand parser = (RegtoppStopParserCommand) CommandFactory.create(initialContext, RegtoppStopParserCommand.class.getName());
+			RegtoppStopParserCommand parser = (RegtoppStopParserCommand) CommandFactory.create(initialContext,
+					RegtoppStopParserCommand.class.getName());
 			chain.add(parser);
 			if (withDao && !parameters.isNoSave()) {
 
@@ -160,11 +177,10 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 
 		List<Command> commands = new ArrayList<>();
 		try {
-			
+
 			// Remove old line definitions from same date
 			commands.add(CommandFactory.create(initialContext, RegtoppRemoveObsoleteLinesCommand.class.getName()));
-			
-			
+
 			if (level3validation && !(parameters.getReferencesType().equalsIgnoreCase("stop_area"))) {
 				// add shared data validation
 				commands.add(CommandFactory.create(initialContext, SharedDataValidatorCommand.class.getName()));
