@@ -22,46 +22,37 @@ public class CompassBearingGenerator {
 
 	public void cacluateCompassBearings(Referential referential) {
 
-		for (StopArea sa : referential.getSharedStopAreas().values()) {
+		for (StopArea boardingPosition : referential.getSharedStopAreas().values()) {
 
-			if (sa.getAreaType() == ChouetteAreaEnum.CommercialStopPoint) {
-				for (StopArea boardingPosition : sa.getContainedStopAreas()) {
-					
-					if(boardingPosition.getAreaType() == ChouetteAreaEnum.BoardingPosition && boardingPosition.getCompassBearing() == null) {
-						// Find all bearings used
-						Set<Integer> compassBearings = findCompassBearingForBoardingPosition(boardingPosition);
+			if (boardingPosition.getAreaType() == ChouetteAreaEnum.BoardingPosition
+					&& boardingPosition.getCompassBearing() == null) {
+				Set<Integer> compassBearings = findCompassBearingForBoardingPosition(boardingPosition);
 
-						if (compassBearings.size() > 1) {
-							// See if we can merge some nearly identical
-							Integer min = Collections.min(compassBearings);
-							Integer max = Collections.max(compassBearings);
-							int angle = getAngle(min, max);
-							if (Math.abs(angle) < MAX_DIFF_BEARING_DEGREES) {
-								compassBearings.clear();
-								compassBearings.add((max + (angle / 2)) % 360);
-								log.info("Average compass bearing is " + compassBearings.iterator().next()
-										+ " for BoardingPosition " + boardingPosition.getObjectId() + " and name "
-										+ boardingPosition.getName());
+				if (compassBearings.size() > 1) {
+					// See if we can merge some nearly identical
+					Integer min = Collections.min(compassBearings);
+					Integer max = Collections.max(compassBearings);
+					int angle = getAngle(min, max);
+					if (Math.abs(angle) < MAX_DIFF_BEARING_DEGREES) {
+						compassBearings.clear();
+						compassBearings.add((max + (angle / 2)) % 360);
+						log.info("Average compass bearing is " + compassBearings.iterator().next()
+								+ " for BoardingPosition " + boardingPosition.getObjectId() + " and name "
+								+ boardingPosition.getName());
 
-							}
-						}
+					}
+				}
 
-						if (compassBearings.size() == 1) {
-							// TODO set on object
-							boardingPosition.setComment("Compass bearing " + compassBearings.iterator().next());
-							
-						} else if (compassBearings.size() > 1) {
-							log.warn("Found at least 2 conflicting compass bearings "
+				if (compassBearings.size() == 1) {
+					boardingPosition.setCompassBearing(compassBearings.iterator().next());
+				} else if (compassBearings.size() > 1) {
+					log.warn(
+							"Found at least 2 conflicting compass bearings "
 									+ ToStringBuilder.reflectionToString(compassBearings.toArray(),
 											ToStringStyle.SIMPLE_STYLE)
 									+ " for BoardingPosition " + boardingPosition.getObjectId() + " and name "
 									+ boardingPosition.getName());
-						} else {
-						}
-
-						
-					}
-					
+				} else {
 				}
 
 			}
@@ -69,8 +60,6 @@ public class CompassBearingGenerator {
 		}
 
 	}
-
-	
 
 	protected Set<Integer> findCompassBearingForBoardingPosition(StopArea sa) {
 		Set<Integer> compassBearings = new TreeSet<Integer>();
