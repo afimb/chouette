@@ -10,18 +10,19 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.model.PTLink;
 import mobi.chouette.exchange.neptune.validation.PtLinkValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class PtLinkParser implements Parser, Constant {
+public class PtLinkParser extends NeptuneChouetteIdGenerator implements Parser, Constant {
 	private static final String CHILD_TAG = "PtLink";
 
 	@Override
@@ -43,7 +44,7 @@ public class PtLinkParser implements Parser, Constant {
 
 			if (xpp.getName().equals("objectId")) {
 				 objectId = ParserUtils.getText(xpp.nextText());
-				ptLink = factory.getPTLink(objectId);
+				ptLink = factory.getPTLink(toChouetteId(objectId, "default_codespace"));
 				ptLink.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -55,14 +56,14 @@ public class PtLinkParser implements Parser, Constant {
 				ptLink.setCreatorId(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("startOfLink")) {
 				String startOfLinkId = ParserUtils.getText(xpp.nextText());
-				StopPoint startOfLink = ObjectFactory.getStopPoint(referential,
-						startOfLinkId);
+				StopPoint startOfLink = NeptuneChouetteIdObjectFactory.getStopPoint(referential,
+						toChouetteId(startOfLinkId, "default_codespace"));
 				ptLink.setStartOfLink(startOfLink);
 				validator.addStartOfLinkId(context, objectId, startOfLinkId);
 			} else if (xpp.getName().equals("endOfLink")) {
 				String endOfLinkId = ParserUtils.getText(xpp.nextText());
-				StopPoint endOfLink = ObjectFactory.getStopPoint(referential,
-						endOfLinkId);
+				StopPoint endOfLink = NeptuneChouetteIdObjectFactory.getStopPoint(referential,
+						toChouetteId(endOfLinkId, "default_codespace"));
 				ptLink.setEndOfLink(endOfLink);
 				validator.addEndOfLinkId(context, objectId, endOfLinkId);
 			} else if (xpp.getName().equals("linkDistance")) {

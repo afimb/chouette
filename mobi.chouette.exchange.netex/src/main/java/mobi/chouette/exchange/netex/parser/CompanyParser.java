@@ -6,14 +6,15 @@ import mobi.chouette.common.XPPUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netex.Constant;
+import mobi.chouette.exchange.netex.NetexChouetteIdGenerator;
 import mobi.chouette.model.Company;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.netex.NetexChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class CompanyParser implements Parser, Constant {
+public class CompanyParser extends NetexChouetteIdGenerator implements Parser, Constant {
 
 	private static final String CHILD_TAG = "organisations";
 
@@ -45,7 +46,7 @@ public class CompanyParser implements Parser, Constant {
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
 		String id = xpp.getAttributeValue(null, ID);
-		Company company = ObjectFactory.getCompany(referential, id);
+		Company company = NetexChouetteIdObjectFactory.getCompany(referential, toChouetteId(id, "default_codespace"));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		company.setObjectVersion(version != null ? version : 0);

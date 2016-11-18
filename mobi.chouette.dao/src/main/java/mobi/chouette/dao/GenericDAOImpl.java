@@ -15,9 +15,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import mobi.chouette.common.Pair;
-import mobi.chouette.model.ChouetteId;
-
 import org.hibernate.Session;
 
 import com.google.common.collect.Iterables;
@@ -78,29 +75,14 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		return result;
 	}
 
-
+	@SuppressWarnings("unchecked")
 	public T findByChouetteId(final String codeSpace, final String objectId) {
 		Session session = em.unwrap(Session.class);
-		
-		List<T> result = null;
-		
-		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<T> criteria = builder.createQuery(type);
-		Root<T> root = criteria.from(type);
-		Predicate predicate = builder.equal(root.get("chouetteId").get("codeSpace"), codeSpace);
-		predicate = builder.and(predicate, builder.equal(root.get("chouetteId").get("objectId"), objectId));
-		criteria.where(predicate);
-		TypedQuery<T> query = em.createQuery(criteria);
-		
-		if (result == null)
-			result = query.getResultList();
-		
-		if (result != null) {
-			if (!result.isEmpty())
-				return result.get(0);
-		}
-		
-		return null;
+		T result = (T) session.byNaturalId(type)
+				.using( "codeSpace", codeSpace )
+				.using( "objectId", objectId )
+				.load();
+		return result;
 	}
 		
 	public List<T> findByChouetteId(final String codeSpace, final Collection<String> objectIds) {

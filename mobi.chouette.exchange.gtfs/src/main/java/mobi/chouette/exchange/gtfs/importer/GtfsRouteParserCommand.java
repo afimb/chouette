@@ -24,7 +24,7 @@ import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.util.NamingUtil;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -132,9 +132,10 @@ public class GtfsRouteParserCommand implements Command, Constant {
 	}
 
 	private Network createPTNetwork(Referential referential, GtfsImportParameters configuration) {
+		GtfsChouetteIdObjectFactory gciof = new GtfsChouetteIdObjectFactory();
 		String prefix = configuration.getObjectIdPrefix();
 		String ptNetworkId = prefix + ":" + Network.PTNETWORK_KEY + ":" + prefix;
-		Network ptNetwork = ObjectFactory.getPTNetwork(referential, ptNetworkId);
+		Network ptNetwork = GtfsChouetteIdObjectFactory.getPTNetwork(referential, gciof.toChouetteId(ptNetworkId, "default_codespace"));
 		ptNetwork.setVersionDate(Calendar.getInstance().getTime());
 		ptNetwork.setName(prefix);
 		ptNetwork.setRegistrationNumber(prefix);

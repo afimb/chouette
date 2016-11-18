@@ -8,18 +8,19 @@ import mobi.chouette.common.XPPUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netex.Constant;
+import mobi.chouette.exchange.netex.NetexChouetteIdGenerator;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.type.TransportModeNameEnum;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.netex.NetexChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class LineParser implements Parser, Constant {
+public class LineParser extends NetexChouetteIdGenerator implements Parser, Constant {
 
 	private static final String CHILD_TAG = "lines";
 
@@ -50,7 +51,7 @@ public class LineParser implements Parser, Constant {
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
 		String id = xpp.getAttributeValue(null, ID);
-		Line line = ObjectFactory.getLine(referential, id);
+		Line line = NetexChouetteIdObjectFactory.getLine(referential, toChouetteId(id, "default_codespace"));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		line.setObjectVersion(version != null ? version : 0);
@@ -74,7 +75,7 @@ public class LineParser implements Parser, Constant {
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("RouteRef")) {
 						String ref = xpp.getAttributeValue(null, REF);
-						Route route = ObjectFactory.getRoute(referential, ref);
+						Route route = NetexChouetteIdObjectFactory.getRoute(referential, toChouetteId(ref, "default_codespace"));
 						route.setLine(line);
 						XPPUtil.skipSubTree(log, xpp);
 					} else {

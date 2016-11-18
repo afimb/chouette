@@ -8,6 +8,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.NamingUtil;
@@ -127,12 +128,13 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 		if (newValue.getStartOfLink() != null) {
 			String codeSpace = newValue.getStartOfLink().getChouetteId().getCodeSpace();
 			String objectId = newValue.getStartOfLink().getChouetteId().getObjectId();
+			ChouetteId chouetteId = newValue.getStartOfLink().getChouetteId();
 			StopArea startOfLink = cache.getStopAreas().get(objectId);
 			if (startOfLink == null) {
 				log.info("search connectionLink starts in DB " + objectId);
 				startOfLink = stopAreaDAO.findByChouetteId(codeSpace, objectId);
 				if (startOfLink != null) {
-					cache.getStopAreas().put(objectId, startOfLink);
+					cache.getStopAreas().put(chouetteId, startOfLink);
 				}
 			}
 
@@ -148,12 +150,13 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 		if (newValue.getEndOfLink() != null) {
 			String codeSpace = newValue.getEndOfLink().getChouetteId().getCodeSpace();
 			String objectId = newValue.getEndOfLink().getChouetteId().getObjectId();
+			ChouetteId chouetteId = newValue.getEndOfLink().getChouetteId();
 			StopArea endOfLink = cache.getStopAreas().get(objectId);
 			if (endOfLink == null) {
 				log.info("search connectionLink ends in DB " + objectId);
 				endOfLink = stopAreaDAO.findByChouetteId(codeSpace, objectId);
 				if (endOfLink != null) {
-					cache.getStopAreas().put(objectId, endOfLink);
+					cache.getStopAreas().put(chouetteId, endOfLink);
 				}
 			}
 

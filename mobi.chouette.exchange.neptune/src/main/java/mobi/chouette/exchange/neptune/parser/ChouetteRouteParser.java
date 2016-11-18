@@ -10,6 +10,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.model.PTLink;
 import mobi.chouette.exchange.neptune.validation.ChouetteRouteValidator;
@@ -17,13 +18,13 @@ import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.type.PTDirectionEnum;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class ChouetteRouteParser implements Parser, Constant {
+public class ChouetteRouteParser extends NeptuneChouetteIdGenerator implements Parser, Constant {
 	private static final String CHILD_TAG = "ChouetteRoute";
 
 	@Override
@@ -45,7 +46,7 @@ public class ChouetteRouteParser implements Parser, Constant {
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
-				route = ObjectFactory.getRoute(referential, objectId);
+				route = NeptuneChouetteIdObjectFactory.getRoute(referential, toChouetteId(objectId, "default_codespace"));
 				route.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -63,14 +64,14 @@ public class ChouetteRouteParser implements Parser, Constant {
 			} else if (xpp.getName().equals("journeyPatternId")) {
 				String journeyPatternId = ParserUtils.getText(xpp.nextText());
 				validator.addJourneyPatternId(context, objectId, journeyPatternId);
-				JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, journeyPatternId);
+				JourneyPattern journeyPattern = NeptuneChouetteIdObjectFactory.getJourneyPattern(referential, toChouetteId(journeyPatternId, "default_codespace"));
 				journeyPattern.setRoute(route);
 			} else if (xpp.getName().equals("number")) {
 				route.setNumber(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("ptLinkId")) {
 				String ptLinkId = ParserUtils.getText(xpp.nextText());
 				validator.addPtLinkId(context, objectId, ptLinkId);
-				PTLink ptLink = factory.getPTLink(ptLinkId);
+				PTLink ptLink = factory.getPTLink(toChouetteId(ptLinkId, "default_codespace"));
 				List<PTLink> list = factory.getPTLinksOnRoute(route);
 				list.add(ptLink);
 				ptLink.setRoute(route);

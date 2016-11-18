@@ -10,16 +10,17 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.netex.Constant;
+import mobi.chouette.exchange.netex.NetexChouetteIdGenerator;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.netex.NetexChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class ConnectionLinkParser implements Parser, Constant {
+public class ConnectionLinkParser extends NetexChouetteIdGenerator implements Parser, Constant {
 
 	private static final String CHILD_TAG = "connections";
 
@@ -50,8 +51,8 @@ public class ConnectionLinkParser implements Parser, Constant {
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
 		String id = xpp.getAttributeValue(null, ID);
-		ConnectionLink connectionLink = ObjectFactory.getConnectionLink(
-				referential, id);
+		ConnectionLink connectionLink = NetexChouetteIdObjectFactory.getConnectionLink(
+				referential, toChouetteId(id, "default_codespace"));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		connectionLink.setObjectVersion(version != null ? version : 0);
@@ -98,8 +99,8 @@ public class ConnectionLinkParser implements Parser, Constant {
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("StopPlaceRef")) {
 						String ref = xpp.getAttributeValue(null, REF);
-						StopArea startOfLink = ObjectFactory.getStopArea(
-								referential, ref);
+						StopArea startOfLink = NetexChouetteIdObjectFactory.getStopArea(
+								referential, toChouetteId(ref, "default_codespace"));
 						connectionLink.setStartOfLink(startOfLink);
 						XPPUtil.skipSubTree(log, xpp);
 					} else {
@@ -111,8 +112,8 @@ public class ConnectionLinkParser implements Parser, Constant {
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("StopPlaceRef")) {
 						String ref = xpp.getAttributeValue(null, REF);
-						StopArea endOfLink = ObjectFactory.getStopArea(
-								referential, ref);
+						StopArea endOfLink = NetexChouetteIdObjectFactory.getStopArea(
+								referential, toChouetteId(ref, "default_codespace"));
 						connectionLink.setEndOfLink(endOfLink);
 						XPPUtil.skipSubTree(log, xpp);
 					} else {

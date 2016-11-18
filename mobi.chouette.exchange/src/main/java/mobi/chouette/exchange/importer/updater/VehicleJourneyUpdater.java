@@ -22,6 +22,7 @@ import mobi.chouette.dao.TimetableDAO;
 import mobi.chouette.dao.VehicleJourneyAtStopDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.Route;
@@ -31,7 +32,7 @@ import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.util.NeptuneUtil;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.ChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Stateless(name = VehicleJourneyUpdater.BEAN_NAME)
@@ -110,7 +111,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 
 //		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
-		cache.getVehicleJourneys().put(oldValue.getChouetteId().getObjectId(), oldValue);
+		cache.getVehicleJourneys().put(oldValue.getChouetteId(), oldValue);
 
 		boolean optimized = (Boolean) context.get(OPTIMIZED);
 		
@@ -196,16 +197,17 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		} else {
 			String codeSpace = newValue.getCompany().getChouetteId().getCodeSpace();
 			String objectId = newValue.getCompany().getChouetteId().getObjectId();
+			ChouetteId chouetteId = newValue.getCompany().getChouetteId();
 			Company company = cache.getCompanies().get(objectId);
 			if (company == null) {
 				company = companyDAO.findByChouetteId(codeSpace, objectId);
 				if (company != null) {
-					cache.getCompanies().put(objectId, company);
+					cache.getCompanies().put(chouetteId, company);
 				}
 			}
 
 			if (company == null) {
-				company = ObjectFactory.getCompany(cache, objectId);
+				company = ChouetteIdObjectFactory.getCompany(cache, chouetteId);
 			}
 			oldValue.setCompany(company);
 			companyUpdater.update(context, oldValue.getCompany(), newValue.getCompany());
@@ -215,11 +217,12 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		if (oldValue.getRoute() == null || !oldValue.getRoute().equals(newValue.getRoute())) {
 			String codeSpace = newValue.getRoute().getChouetteId().getCodeSpace();
 			String objectId = newValue.getRoute().getChouetteId().getObjectId();
+			ChouetteId chouetteId = newValue.getRoute().getChouetteId();
 			Route route = cache.getRoutes().get(objectId);
 			if (route == null) {
 				route = routeDAO.findByChouetteId(codeSpace, objectId);
 				if (route != null) {
-					cache.getRoutes().put(objectId, route);
+					cache.getRoutes().put(chouetteId, route);
 				}
 			}
 
@@ -242,7 +245,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
 			List<StopPoint> stopPoints = new ArrayList<StopPoint>();
 			for (VehicleJourneyAtStop item : addedVehicleJourneyAtStop) {
-				VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop();
+				VehicleJourneyAtStop vehicleJourneyAtStop = ChouetteIdObjectFactory.getVehicleJourneyAtStop();
 
 				StopPoint stopPoint = cache.getStopPoints().get(item.getStopPoint().getChouetteId().getObjectId());
 				if (stopPoint == null) {
@@ -255,7 +258,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 						}
 						
 						for (StopPoint object : stopPoints) {
-							cache.getStopPoints().put(object.getChouetteId().getObjectId(), object);
+							cache.getStopPoints().put(object.getChouetteId(), object);
 						}
 					}
 					stopPoint = cache.getStopPoints().get(item.getStopPoint().getChouetteId().getObjectId());
@@ -296,14 +299,14 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 					String codeSpace = item.getChouetteId().getCodeSpace();
 					timetables = timetableDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedTimetable));
 					for (Timetable object : timetables) {
-						cache.getTimetables().put(object.getChouetteId().getObjectId(), object);
+						cache.getTimetables().put(object.getChouetteId(), object);
 					}
 				}
 				timetable = cache.getTimetables().get(item.getChouetteId().getObjectId());
 			}
 
 			if (timetable == null) {
-				timetable = ObjectFactory.getTimetable(cache, item.getChouetteId().getObjectId());
+				timetable = ChouetteIdObjectFactory.getTimetable(cache, item.getChouetteId());
 			}
 			timetable.addVehicleJourney(oldValue);
 		}
@@ -340,7 +343,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 						}
 						
 						for (Timeband object : timebands) {
-							cache.getTimebands().put(object.getChouetteId().getObjectId(), object);
+							cache.getTimebands().put(object.getChouetteId(), object);
 						}
 					timeband = cache.getTimebands().get(item.getTimeband().getChouetteId().getObjectId());
 				}

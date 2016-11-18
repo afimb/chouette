@@ -8,6 +8,7 @@ import java.util.Set;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
@@ -42,7 +43,7 @@ public class ValidationDataCollector {
 					collection.getVehicleJourneys().add(vehicleJourney);
 					if (vehicleJourney.getCompany() != null) {
 						updateId(vehicleJourney.getCompany(), cache.getCompanies());
-						collection.getCompanyIds().add(vehicleJourney.getCompany().getChouetteId().getObjectId());
+						collection.getCompanyIds().add(vehicleJourney.getCompany().getChouetteId());
 					}
 				} // end vehicleJourney loop
 				updateId(jp, cache.getJourneyPatterns());
@@ -57,15 +58,15 @@ public class ValidationDataCollector {
 			}
 		}// end route loop
 		updateId(line, cache.getLines());
-		collection.getLineIds().add(line.getChouetteId().getObjectId());
+		collection.getLineIds().add(line.getChouetteId());
 		if (line.getNetwork() != null) {
 			updateId(line.getNetwork(), cache.getPtNetworks());
-			collection.getNetworkIds().add(line.getNetwork().getChouetteId().getObjectId());
+			collection.getNetworkIds().add(line.getNetwork().getChouetteId());
 			collection.getNetworks().add(line.getNetwork());
 		}
 		if (line.getCompany() != null) {
 			updateId(line.getCompany(), cache.getCompanies());
-			collection.getCompanyIds().add(line.getCompany().getChouetteId().getObjectId());
+			collection.getCompanyIds().add(line.getCompany().getChouetteId());
 			collection.getCompanies().add(line.getCompany());
 		}
 		if (line.getGroupOfLines() != null) {
@@ -89,7 +90,7 @@ public class ValidationDataCollector {
 		if (collection.getStopAreaIds().contains(stopArea.getChouetteId().getObjectId()))
 			return;
 		updateId(stopArea, cache.getStopAreas());
-		collection.getStopAreaIds().add(stopArea.getChouetteId().getObjectId());
+		collection.getStopAreaIds().add(stopArea.getChouetteId());
 		collection.getStopAreas().add(stopArea);
 		addAllConnectionLinks(collection, stopArea.getConnectionStartLinks(), cache);
 		addAllConnectionLinks(collection, stopArea.getConnectionEndLinks(), cache);
@@ -102,7 +103,7 @@ public class ValidationDataCollector {
 	private void addAllTimeTables(ValidationData collection, Collection<Timetable> data, Referential cache) {
 		for (Timetable object : data) {
 			updateId(object, cache.getTimetables());
-			collection.getTimetableIds().add(object.getChouetteId().getObjectId());
+			collection.getTimetableIds().add(object.getChouetteId());
 			collection.getTimetables().add(object);
 		}
 	}
@@ -110,7 +111,7 @@ public class ValidationDataCollector {
 	private void addAllGroupOfLines(ValidationData collection, Collection<GroupOfLine> data, Referential cache) {
 		for (GroupOfLine object : data) {
 			updateId(object, cache.getGroupOfLines());
-			collection.getGroupOfLineIds().add(object.getChouetteId().getObjectId());
+			collection.getGroupOfLineIds().add(object.getChouetteId());
 			collection.getGroupOfLines().add(object);
 		}
 
@@ -129,7 +130,7 @@ public class ValidationDataCollector {
 	private void addAllRoutingConstraints(ValidationData collection, Collection<RoutingConstraint> data, Referential cache) {
 		for (RoutingConstraint object : data) {
 			updateId(object, cache.getRoutingConstraints());
-			collection.getStopAreaIds().add(object.getChouetteId().getObjectId());
+			collection.getStopAreaIds().add(object.getChouetteId());
 			collection.getRoutingConstraints().add(object);
 		}
 
@@ -151,7 +152,7 @@ public class ValidationDataCollector {
 	private void addAllConnectionLinks(ValidationData collection, Collection<ConnectionLink> data, Referential cache) {
 		for (ConnectionLink object : data) {
 			updateId(object, cache.getConnectionLinks());
-			collection.getConnectionLinkIds().add(object.getChouetteId().getObjectId());
+			collection.getConnectionLinkIds().add(object.getChouetteId());
 			collection.getConnectionLinks().add(object);
 			if (object.getEndOfLink() != null)
 				collection.getDummyStopAreas().add(object.getEndOfLink());
@@ -164,7 +165,7 @@ public class ValidationDataCollector {
 	private void addAllAccessPoints(ValidationData collection, Collection<AccessPoint> data, Referential cache) {
 		for (AccessPoint object : data) {
 			updateId(object, cache.getAccessPoints());
-			collection.getAccessPointIds().add(object.getChouetteId().getObjectId());
+			collection.getAccessPointIds().add(object.getChouetteId());
 			collection.getAccessPoints().add(object);
 		}
 
@@ -173,15 +174,15 @@ public class ValidationDataCollector {
 	private void addAllAccessLinks(ValidationData collection, Collection<AccessLink> data, Referential cache) {
 		for (AccessLink object : data) {
 			updateId(object, cache.getAccessLinks());
-			collection.getAccessLinkIds().add(object.getChouetteId().getObjectId());
+			collection.getAccessLinkIds().add(object.getChouetteId());
 			collection.getAccessLinks().add(object);
 		}
 
 	}
 
-	private void updateId(NeptuneIdentifiedObject object, Map<String, ? extends NeptuneIdentifiedObject> map) {
+	private void updateId(NeptuneIdentifiedObject object, Map<ChouetteId, ? extends NeptuneIdentifiedObject> map) {
 		if (object.getId() == null) {
-			NeptuneIdentifiedObject cached = map.get(object.getChouetteId().getObjectId());
+			NeptuneIdentifiedObject cached = map.get(object.getChouetteId());
 			if (cached != null)
 				object.setId(cached.getId());
 		}

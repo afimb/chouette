@@ -14,7 +14,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
@@ -135,11 +135,12 @@ public class CommercialStopGenerator extends AbstractGenerator {
 	 * @param objectId
 	 */
 	private StopArea initArea(Referential referential, StopArea stop, String objectId) {
+		GtfsChouetteIdObjectFactory gciof = new GtfsChouetteIdObjectFactory();
 		Calendar now = Calendar.getInstance();
 		String[] token = stop.getChouetteId().getObjectId().split(":");
 		if (objectId == null)
 			objectId = token[0] + ":" + token[1] + ":COM_" + token[2];
-		StopArea area = ObjectFactory.getStopArea(referential, objectId);
+		StopArea area = GtfsChouetteIdObjectFactory.getStopArea(referential, gciof.toChouetteId(objectId, "default_codespace"));
 		area.setName(stop.getName());
 		area.getChouetteId().setObjectId(objectId);
 		area.setObjectVersion(stop.getObjectVersion());

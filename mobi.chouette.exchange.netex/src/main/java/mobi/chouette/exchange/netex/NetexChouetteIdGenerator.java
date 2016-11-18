@@ -11,7 +11,7 @@ import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 
 @Log4j
-public class NetexChouetteIdGenerator extends AbstractChouetteIdGenerator implements ObjectIdTypes{
+public class NetexChouetteIdGenerator extends AbstractChouetteIdGenerator implements NetexObjectIdTypes{
 	/**
 	 * check if an objectId is conform to Trident
 	 * 

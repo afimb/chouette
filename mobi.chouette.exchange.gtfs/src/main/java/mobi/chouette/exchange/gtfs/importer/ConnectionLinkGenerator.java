@@ -15,7 +15,7 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.model.util.NeptuneUtil;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
@@ -26,6 +26,7 @@ public class ConnectionLinkGenerator extends AbstractGenerator {
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 		Collection<ConnectionLink> fixedLinks = new ArrayList<>(referential.getConnectionLinks().values());
 		List<ConnectionLink> excludedLinks = new ArrayList<ConnectionLink>();
+		GtfsChouetteIdObjectFactory gciof = new GtfsChouetteIdObjectFactory();
 		for (ConnectionLink link : referential.getSharedConnectionLinks().values()) {
 			if ("FORBIDDEN".equals(link.getName())) {
 				excludedLinks.add(link);
@@ -113,7 +114,7 @@ public class ConnectionLinkGenerator extends AbstractGenerator {
 							}
 						} else {
 
-							ConnectionLink link = ObjectFactory.getConnectionLink(referential, objectId);
+							ConnectionLink link = GtfsChouetteIdObjectFactory.getConnectionLink(referential, gciof.toChouetteId(objectId, "default_codespace"));
 							link.setDefaultDuration(defaultDuration);
 							link.setCreationTime(Calendar.getInstance().getTime());
 							link.setStartOfLink(source);
@@ -126,7 +127,7 @@ public class ConnectionLinkGenerator extends AbstractGenerator {
 
 							objectId = sourceToken[0] + ":" + ConnectionLink.CONNECTIONLINK_KEY + ":" + targetToken[2]
 									+ "_" + sourceToken[2];
-							ConnectionLink reverseLink = ObjectFactory.getConnectionLink(referential, objectId);
+							ConnectionLink reverseLink = GtfsChouetteIdObjectFactory.getConnectionLink(referential, gciof.toChouetteId(objectId, "default_codespace"));
 							reverseLink.setDefaultDuration(defaultDuration);
 							reverseLink.getChouetteId().setObjectId(objectId);
 							reverseLink.setCreationTime(Calendar.getInstance().getTime());

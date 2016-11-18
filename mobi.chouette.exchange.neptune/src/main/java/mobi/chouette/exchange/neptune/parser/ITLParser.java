@@ -7,18 +7,18 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
 import mobi.chouette.exchange.neptune.validation.RoutingConstraintValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.RoutingConstraint;
-import mobi.chouette.model.StopArea;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class ITLParser implements Parser, Constant {
+public class ITLParser extends NeptuneChouetteIdGenerator implements Parser, Constant {
 	private static final String CHILD_TAG = "ITL";
 
 	@Override
@@ -42,7 +42,7 @@ public class ITLParser implements Parser, Constant {
 //				TODO : Arret Netex : Delete once RoutingConstraint is implemented
 //				stopArea = ObjectFactory.getStopArea(referential, objectId);
 //				if (line != null) line.addRoutingConstraint(stopArea);
-				routingConstraint = ObjectFactory.getRoutingConstraint(referential, objectId);
+				routingConstraint = NeptuneChouetteIdObjectFactory.getRoutingConstraint(referential, toChouetteId(objectId, "default_codespace"));
 				if (line != null) line.addRoutingConstraint(routingConstraint);
 			} else if (xpp.getName().equals("lineIdShortCut")) {
 				String lineIdShortCut = ParserUtils.getText(xpp.nextText());

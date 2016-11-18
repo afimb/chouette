@@ -26,8 +26,7 @@ import mobi.chouette.exchange.importer.updater.Updater;
 import mobi.chouette.exchange.importer.updater.UpdaterUtils;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
-import mobi.chouette.model.Timeband;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.ChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
@@ -101,7 +100,7 @@ public class ConnectionLinkRegisterBlocCommand implements Command {
 		}
 		
 		for (StopArea object : objects) {
-			cache.getStopAreas().put(object.getChouetteId().getObjectId(), object);
+			cache.getStopAreas().put(object.getChouetteId(), object);
 		}
 
 	}
@@ -120,13 +119,13 @@ public class ConnectionLinkRegisterBlocCommand implements Command {
 		}
 		
 		for (ConnectionLink object : objects) {
-			cache.getConnectionLinks().put(object.getChouetteId().getObjectId(), object);
+			cache.getConnectionLinks().put(object.getChouetteId(), object);
 		}
 
 		for (ConnectionLink item : list) {
 			ConnectionLink object = cache.getConnectionLinks().get(item.getChouetteId().getObjectId());
 			if (object == null) {
-				object = ObjectFactory.getConnectionLink(cache, item.getChouetteId().getObjectId());
+				object = ChouetteIdObjectFactory.getConnectionLink(cache, item.getChouetteId());
 			}
 		}
 	}

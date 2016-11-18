@@ -5,9 +5,10 @@ import javax.ejb.Stateless;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.TimebandDAO;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.Timeband;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.ChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Stateless(name = JourneyFrequencyUpdater.BEAN_NAME)
@@ -44,15 +45,16 @@ public class JourneyFrequencyUpdater implements Updater<JourneyFrequency> {
 		}  else {
 			String codeSpace = newValue.getTimeband().getChouetteId().getCodeSpace();
 			String objectId = newValue.getTimeband().getChouetteId().getObjectId();
+			ChouetteId chouetteId = newValue.getTimeband().getChouetteId();
 			Timeband timeband = cache.getTimebands().get(objectId);
 			if (timeband == null) {
 				timeband = timebandDAO.findByChouetteId(codeSpace, objectId);
 				if (timeband != null) {
-					cache.getTimebands().put(objectId, timeband);
+					cache.getTimebands().put(chouetteId, timeband);
 				}
 			}
 			if (timeband == null) {
-				timeband = ObjectFactory.getTimeband(cache, objectId);
+				timeband = ChouetteIdObjectFactory.getTimeband(cache, chouetteId);
 			}
 			oldValue.setTimeband(timeband);
 			timebandUpdater.update(context,  oldValue.getTimeband(), newValue.getTimeband());

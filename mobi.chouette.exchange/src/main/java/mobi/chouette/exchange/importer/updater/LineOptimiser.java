@@ -37,7 +37,7 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timeband;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.ChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Stateless
@@ -121,14 +121,14 @@ public class LineOptimiser {
 			}
 			
 			for (StopArea object : objects) {
-				cache.getStopAreas().put(object.getChouetteId().getObjectId(), object);
+				cache.getStopAreas().put(object.getChouetteId(), object);
 			}
 
 			// TODO check if stoparea really exists
 			for (StopArea item : list) {
 				StopArea object = cache.getStopAreas().get(item.getChouetteId().getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getStopArea(cache, item.getChouetteId().getObjectId());
+					object = ChouetteIdObjectFactory.getStopArea(cache, item.getChouetteId());
 				}
 			}
 		}
@@ -146,13 +146,13 @@ public class LineOptimiser {
 			}
 			
 			for (ConnectionLink object : objects) {
-				cache.getConnectionLinks().put(object.getChouetteId().getObjectId(), object);
+				cache.getConnectionLinks().put(object.getChouetteId(), object);
 			}
 
 			for (ConnectionLink item : list) {
 				ConnectionLink object = cache.getConnectionLinks().get(item.getChouetteId().getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getConnectionLink(cache, item.getChouetteId().getObjectId());
+					object = ChouetteIdObjectFactory.getConnectionLink(cache, item.getChouetteId());
 				}
 			}
 		}
@@ -171,13 +171,13 @@ public class LineOptimiser {
 			}
 			
 			for (AccessLink object : objects) {
-				cache.getAccessLinks().put(object.getChouetteId().getObjectId(), object);
+				cache.getAccessLinks().put(object.getChouetteId(), object);
 			}
 
 			for (AccessLink item : list) {
 				AccessLink object = cache.getAccessLinks().get(item.getChouetteId().getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getAccessLink(cache, item.getChouetteId().getObjectId());
+					object = ChouetteIdObjectFactory.getAccessLink(cache, item.getChouetteId());
 				}
 			}
 		}
@@ -196,13 +196,13 @@ public class LineOptimiser {
 			}
 			
 			for (AccessPoint object : objects) {
-				cache.getAccessPoints().put(object.getChouetteId().getObjectId(), object);
+				cache.getAccessPoints().put(object.getChouetteId(), object);
 			}
 
 			for (AccessPoint item : list) {
 				AccessPoint object = cache.getAccessPoints().get(item.getChouetteId().getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getAccessPoint(cache, item.getChouetteId().getObjectId());
+					object = ChouetteIdObjectFactory.getAccessPoint(cache, item.getChouetteId());
 				}
 			}
 		}
@@ -221,13 +221,13 @@ public class LineOptimiser {
 			}
 			
 			for (Timetable object : objects) {
-				cache.getTimetables().put(object.getChouetteId().getObjectId(), object);
+				cache.getTimetables().put(object.getChouetteId(), object);
 			}
 
 			for (Timetable item : list) {
 				Timetable object = cache.getTimetables().get(item.getChouetteId().getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getTimetable(cache, item.getChouetteId().getObjectId());
+					object = ChouetteIdObjectFactory.getTimetable(cache, item.getChouetteId());
 				}
 			}
 		}
@@ -246,13 +246,13 @@ public class LineOptimiser {
 			}
 			
 			for (Network object : objects) {
-				cache.getPtNetworks().put(object.getChouetteId().getObjectId(), object);
+				cache.getPtNetworks().put(object.getChouetteId(), object);
 			}
 
 			for (Network item : list) {
 				Network object = cache.getPtNetworks().get(item.getChouetteId().getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getPTNetwork(cache, item.getChouetteId().getObjectId());
+					object = ChouetteIdObjectFactory.getPTNetwork(cache, item.getChouetteId());
 				}
 			}
 		}
@@ -271,13 +271,13 @@ public class LineOptimiser {
 			}
 			
 			for (Company object : objects) {
-				cache.getCompanies().put(object.getChouetteId().getObjectId(), object);
+				cache.getCompanies().put(object.getChouetteId(), object);
 			}
 
 			for (Company item : list) {
 				Company object = cache.getCompanies().get(item.getChouetteId().getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getCompany(cache, item.getChouetteId().getObjectId());
+					object = ChouetteIdObjectFactory.getCompany(cache, item.getChouetteId());
 				}
 			}
 		}
@@ -296,13 +296,13 @@ public class LineOptimiser {
 			}
 			
 			for (GroupOfLine object : objects) {
-				cache.getGroupOfLines().put(object.getChouetteId().getObjectId(), object);
+				cache.getGroupOfLines().put(object.getChouetteId(), object);
 			}
 
 			for (GroupOfLine item : list) {
 				GroupOfLine object = cache.getGroupOfLines().get(item.getChouetteId().getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getGroupOfLine(cache, item.getChouetteId().getObjectId());
+					object = ChouetteIdObjectFactory.getGroupOfLine(cache, item.getChouetteId());
 				}
 			}
 		}
@@ -321,13 +321,13 @@ public class LineOptimiser {
 			}
 			
 			for (Line object : objects) {
-				cache.getLines().put(object.getChouetteId().getObjectId(), object);
+				cache.getLines().put(object.getChouetteId(), object);
 			}
 
 			for (Line item : list) {
 				Line object = cache.getLines().get(item.getChouetteId().getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getLine(cache, item.getChouetteId().getObjectId());
+					object = ChouetteIdObjectFactory.getLine(cache, item.getChouetteId());
 				}
 			}
 		}
@@ -346,13 +346,13 @@ public class LineOptimiser {
 			}
 			
 			for (Route object : objects) {
-				cache.getRoutes().put(object.getChouetteId().getObjectId(), object);
+				cache.getRoutes().put(object.getChouetteId(), object);
 			}
 
 			for (Route item : list) {
 				Route object = cache.getRoutes().get(item.getChouetteId().getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getRoute(cache, item.getChouetteId().getObjectId());
+					object = ChouetteIdObjectFactory.getRoute(cache, item.getChouetteId());
 				}
 			}
 		}
@@ -371,13 +371,13 @@ public class LineOptimiser {
 			}
 			
 			for (StopPoint object : objects) {
-				cache.getStopPoints().put(object.getChouetteId().getObjectId(), object);
+				cache.getStopPoints().put(object.getChouetteId(), object);
 			}
 
 			for (StopPoint item : list) {
 				StopPoint object = cache.getStopPoints().get(item.getChouetteId().getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getStopPoint(cache, item.getChouetteId().getObjectId());
+					object = ChouetteIdObjectFactory.getStopPoint(cache, item.getChouetteId());
 				}
 			}
 		}
@@ -396,13 +396,13 @@ public class LineOptimiser {
 			}
 			
 			for (JourneyPattern object : objects) {
-				cache.getJourneyPatterns().put(object.getChouetteId().getObjectId(), object);
+				cache.getJourneyPatterns().put(object.getChouetteId(), object);
 			}
 
 			for (JourneyPattern item : list) {
 				JourneyPattern object = cache.getJourneyPatterns().get(item.getChouetteId().getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getJourneyPattern(cache, item.getChouetteId().getObjectId());
+					object = ChouetteIdObjectFactory.getJourneyPattern(cache, item.getChouetteId());
 				}
 			}
 		}
@@ -421,13 +421,13 @@ public class LineOptimiser {
 			}
 			
 			for (VehicleJourney object : objects) {
-				cache.getVehicleJourneys().put(object.getChouetteId().getObjectId(), object);
+				cache.getVehicleJourneys().put(object.getChouetteId(), object);
 			}
 
 			for (VehicleJourney item : list) {
 				VehicleJourney object = cache.getVehicleJourneys().get(item.getChouetteId().getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getVehicleJourney(cache, item.getChouetteId().getObjectId());
+					object = ChouetteIdObjectFactory.getVehicleJourney(cache, item.getChouetteId());
 				}
 			}
 		}
@@ -445,13 +445,13 @@ public class LineOptimiser {
 			    objects.addAll(timebandDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 			}
 			for (Timeband object : objects) {
-				cache.getTimebands().put(object.getChouetteId().getObjectId(), object);
+				cache.getTimebands().put(object.getChouetteId(), object);
 			}
 
 			for (Timeband item : list) {
 				Timeband object = cache.getTimebands().get(item.getChouetteId().getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getTimeband(cache, item.getChouetteId().getObjectId());
+					object = ChouetteIdObjectFactory.getTimeband(cache, item.getChouetteId());
 				}
 			}
 		}

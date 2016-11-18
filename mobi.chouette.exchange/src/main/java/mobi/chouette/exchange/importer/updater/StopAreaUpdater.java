@@ -19,10 +19,11 @@ import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.NeptuneUtil;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.ChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -195,16 +196,17 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		} else {
 			String codeSpace = newValue.getParent().getChouetteId().getCodeSpace();
 			String objectId = newValue.getParent().getChouetteId().getObjectId();
+			ChouetteId chouetteId = newValue.getParent().getChouetteId();
 			StopArea stopArea = cache.getStopAreas().get(objectId);
 			if (stopArea == null) {
 				stopArea = stopAreaDAO.findByChouetteId(codeSpace, objectId);
 				if (stopArea != null) {
-					cache.getStopAreas().put(objectId, stopArea);
+					cache.getStopAreas().put(chouetteId, stopArea);
 				}
 			}
 
 			if (stopArea == null) {
-				stopArea = ObjectFactory.getStopArea(cache, objectId);
+				stopArea = ChouetteIdObjectFactory.getStopArea(cache, chouetteId);
 			}
 			if (context.containsKey(AREA_BLOC))
 			   oldValue.forceParent(stopArea);
@@ -225,14 +227,14 @@ public class StopAreaUpdater implements Updater<StopArea> {
 					String codeSpace = item.getChouetteId().getCodeSpace();
 					accessPoints = accessPointDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedAccessPoint));
 					for (AccessPoint object : accessPoints) {
-						cache.getAccessPoints().put(object.getChouetteId().getObjectId(), object);
+						cache.getAccessPoints().put(object.getChouetteId(), object);
 					}
 				}
 				accessPoint = cache.getAccessPoints().get(item.getChouetteId().getObjectId());
 			}
 
 			if (accessPoint == null) {
-				accessPoint = ObjectFactory.getAccessPoint(cache, item.getChouetteId().getObjectId());
+				accessPoint = ChouetteIdObjectFactory.getAccessPoint(cache, item.getChouetteId());
 			} else {
 				twoDatabaseAccessPointOneTest(validationReporter, context, accessPoint, item, data);
 			}
@@ -258,14 +260,14 @@ public class StopAreaUpdater implements Updater<StopArea> {
 					String codeSpace = item.getChouetteId().getCodeSpace();
 					accessLinks = accessLinkDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedAccessLink));
 					for (AccessLink object : accessLinks) {
-						cache.getAccessLinks().put(object.getChouetteId().getObjectId(), object);
+						cache.getAccessLinks().put(object.getChouetteId(), object);
 					}
 				}
 				accessLink = cache.getAccessLinks().get(item.getChouetteId().getObjectId());
 			}
 
 			if (accessLink == null) {
-				accessLink = ObjectFactory.getAccessLink(cache, item.getChouetteId().getObjectId());
+				accessLink = ChouetteIdObjectFactory.getAccessLink(cache, item.getChouetteId());
 			}
 			accessLink.setStopArea(oldValue);
 		}
@@ -285,7 +287,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 
 				ConnectionLink startOfLink = cache.getConnectionLinks().get(item.getChouetteId().getObjectId());
 				if(startOfLink == null) {
-					startOfLink = ObjectFactory.getConnectionLink(cache, item.getChouetteId().getObjectId());
+					startOfLink = ChouetteIdObjectFactory.getConnectionLink(cache, item.getChouetteId());
 				} else {
 					twoDatabaseConnectionLinkStartOfLinkOneTest(validationReporter, context, startOfLink, item, data);
 				}
@@ -321,11 +323,11 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			for (ConnectionLink item : addedEndOfLink) {
 				ConnectionLink endOfLink = cache.getConnectionLinks().get(item.getChouetteId().getObjectId());
 				if (endOfLink == null) {
-					endOfLink = ObjectFactory.getConnectionLink(cache, item.getChouetteId().getObjectId());
+					endOfLink = ChouetteIdObjectFactory.getConnectionLink(cache, item.getChouetteId());
 				} else {
 					twoDatabaseConnectionLinkEndOfLinkOneTest(validationReporter, context, endOfLink, item, data);
 				}
-				StopArea startOfLinkArea = cache.getStopAreas().get(item.getStartOfLink().getChouetteId().getObjectId());
+				StopArea startOfLinkArea = cache.getStopAreas().get(item.getStartOfLink().getChouetteId());
 				if (startOfLinkArea == null) {
 					log.info(Color.LIGHT_CYAN + "search start stopArea for ConnectionLink" + Color.NORMAL);
 					String codeSpace = item.getChouetteId().getCodeSpace();

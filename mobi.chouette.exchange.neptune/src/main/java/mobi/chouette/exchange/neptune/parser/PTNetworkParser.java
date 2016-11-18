@@ -13,13 +13,14 @@ import mobi.chouette.exchange.neptune.validation.PTNetworkValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.type.PTNetworkSourceTypeEnum;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class PTNetworkParser implements Parser, Constant {
+public class PTNetworkParser extends NeptuneChouetteIdGenerator implements Parser, Constant {
 	private static final String CHILD_TAG = "PTNetwork";
 
 	@Override
@@ -40,7 +41,12 @@ public class PTNetworkParser implements Parser, Constant {
 
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
-				network = ObjectFactory.getPTNetwork(referential, objectId);
+				log.info("NEPTUNE object id -> " + objectId);
+				if (toChouetteId(objectId, "default_codespace") != null) {
+					log.info(" Chouette object codespace : " + toChouetteId(objectId, "default_codespace").getCodeSpace());
+					log.info(" Chouette object objectId : " + toChouetteId(objectId, "default_codespace").getObjectId());
+				}
+				network = NeptuneChouetteIdObjectFactory.getPTNetwork(referential, toChouetteId(objectId, "default_codespace"));
 				network.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -82,6 +88,9 @@ public class PTNetworkParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		
+		if (network == null)
+			log.info("Network for " + objectId + "is null ");
 		validator.addLocation(context, network, lineNumber, columnNumber);
 	}
 	

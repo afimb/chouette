@@ -12,6 +12,7 @@ import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
@@ -64,7 +65,7 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		Context vehicleJourneyContext = (Context) validationContext.get(VehicleJourneyValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		Map<String, Timetable> timetables = referential.getTimetables();
+		Map<ChouetteId, Timetable> timetables = referential.getTimetables();
 
 		// 2-NEPTUNE-Timetable-1 : check if timetable refers at least one
 		// existing vehiclejourney (w)

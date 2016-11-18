@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationData;
@@ -13,10 +14,12 @@ import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.util.Referential;
 
+@Log4j
 public class PTNetworkValidator extends AbstractValidator implements Validator<Network> , Constant{
 
 	public static final String LINE_ID = "lineId";
@@ -38,6 +41,8 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<N
 
 	public void addLocation(Context context, NeptuneIdentifiedObject object, int lineNumber, int columnNumber)
 	{
+		if (object == null)
+			log.info("Neptune object is null");
 		addLocation( context,LOCAL_CONTEXT,  object,  lineNumber,  columnNumber);
 		
 	}
@@ -75,7 +80,7 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<N
 		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		Context lineContext = (Context) validationContext.get(LineValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		Map<String, Network> networks = referential.getPtNetworks();
+		Map<ChouetteId, Network> networks = referential.getPtNetworks();
 
 		String lineId = lineContext.keySet().iterator().next(); 
 

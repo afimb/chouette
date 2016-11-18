@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
@@ -31,113 +32,113 @@ public class Referential implements java.io.Serializable {
 
 	@Getter
 	@Setter
-	private Map<String, AccessLink> sharedAccessLinks = new HashMap<String, AccessLink>();
+	private Map<ChouetteId, AccessLink> sharedAccessLinks = new HashMap<ChouetteId, AccessLink>();
 
 	@Getter
 	@Setter
-	private Map<String, AccessPoint> sharedAccessPoints = new HashMap<String, AccessPoint>();
+	private Map<ChouetteId, AccessPoint> sharedAccessPoints = new HashMap<ChouetteId, AccessPoint>();
 
 	@Getter
 	@Setter
-	private Map<String, Network> sharedPTNetworks = new HashMap<String, Network>();
+	private Map<ChouetteId, Network> sharedPTNetworks = new HashMap<ChouetteId, Network>();
 
 	@Getter
 	@Setter
-	private Map<String, Company> sharedCompanies = new HashMap<String, Company>();
+	private Map<ChouetteId, Company> sharedCompanies = new HashMap<ChouetteId, Company>();
 
 	@Getter
 	@Setter
-	private Map<String, ConnectionLink> sharedConnectionLinks = new HashMap<String, ConnectionLink>();
+	private Map<ChouetteId, ConnectionLink> sharedConnectionLinks = new HashMap<ChouetteId, ConnectionLink>();
 
 	@Getter
 	@Setter
-	private Map<String, StopArea> sharedStopAreas = new HashMap<String, StopArea>();
+	private Map<ChouetteId, StopArea> sharedStopAreas = new HashMap<ChouetteId, StopArea>();
 	
 	@Getter
 	@Setter
-	private Map<String, RoutingConstraint> sharedRoutingConstraints = new HashMap<String, RoutingConstraint>();
+	private Map<ChouetteId, RoutingConstraint> sharedRoutingConstraints = new HashMap<ChouetteId, RoutingConstraint>();
 
 	@Getter
 	@Setter
-	private Map<String, GroupOfLine> sharedGroupOfLines = new HashMap<String, GroupOfLine>();
-
-
-	@Getter
-	@Setter
-	private Map<String, Line> sharedLines = new HashMap<String, Line>();
-
-	@Getter
-	@Setter
-	private Map<String, Timetable> sharedTimetables = new HashMap<String, Timetable>();
-
-	@Getter
-	@Setter
-	private Map<String, Timeband> sharedTimebands = new HashMap<String, Timeband>();
+	private Map<ChouetteId, GroupOfLine> sharedGroupOfLines = new HashMap<ChouetteId, GroupOfLine>();
 
 
 	@Getter
 	@Setter
-	private Map<String, Route> routes = new HashMap<String, Route>();
+	private Map<ChouetteId, Line> sharedLines = new HashMap<ChouetteId, Line>();
 
 	@Getter
 	@Setter
-	private Map<String, Line> lines = new HashMap<String, Line>();
+	private Map<ChouetteId, Timetable> sharedTimetables = new HashMap<ChouetteId, Timetable>();
 
 	@Getter
 	@Setter
-	private Map<String, JourneyPattern> journeyPatterns = new HashMap<String, JourneyPattern>();
+	private Map<ChouetteId, Timeband> sharedTimebands = new HashMap<ChouetteId, Timeband>();
+
 
 	@Getter
 	@Setter
-	private Map<String, StopPoint> stopPoints = new HashMap<String, StopPoint>();
+	private Map<ChouetteId, Route> routes = new HashMap<ChouetteId, Route>();
 
 	@Getter
 	@Setter
-	private Map<String, VehicleJourney> vehicleJourneys = new HashMap<String, VehicleJourney>();
+	private Map<ChouetteId, Line> lines = new HashMap<ChouetteId, Line>();
 
 	@Getter
 	@Setter
-	private Map<String, AccessLink> accessLinks = new HashMap<String, AccessLink>();
+	private Map<ChouetteId, JourneyPattern> journeyPatterns = new HashMap<ChouetteId, JourneyPattern>();
 
 	@Getter
 	@Setter
-	private Map<String, AccessPoint> accessPoints = new HashMap<String, AccessPoint>();
+	private Map<ChouetteId, StopPoint> stopPoints = new HashMap<ChouetteId, StopPoint>();
 
 	@Getter
 	@Setter
-	private Map<String, Network> ptNetworks = new HashMap<String, Network>();
+	private Map<ChouetteId, VehicleJourney> vehicleJourneys = new HashMap<ChouetteId, VehicleJourney>();
 
 	@Getter
 	@Setter
-	private Map<String, Company> companies = new HashMap<String, Company>();
+	private Map<ChouetteId, AccessLink> accessLinks = new HashMap<ChouetteId, AccessLink>();
 
 	@Getter
 	@Setter
-	private Map<String, ConnectionLink> connectionLinks = new HashMap<String, ConnectionLink>();
+	private Map<ChouetteId, AccessPoint> accessPoints = new HashMap<ChouetteId, AccessPoint>();
 
 	@Getter
 	@Setter
-	private Map<String, StopArea> stopAreas = new HashMap<String, StopArea>();
+	private Map<ChouetteId, Network> ptNetworks = new HashMap<ChouetteId, Network>();
+
+	@Getter
+	@Setter
+	private Map<ChouetteId, Company> companies = new HashMap<ChouetteId, Company>();
+
+	@Getter
+	@Setter
+	private Map<ChouetteId, ConnectionLink> connectionLinks = new HashMap<ChouetteId, ConnectionLink>();
+
+	@Getter
+	@Setter
+	private Map<ChouetteId, StopArea> stopAreas = new HashMap<ChouetteId, StopArea>();
 	
 	@Getter
 	@Setter
-	private Map<String, RoutingConstraint> routingConstraints = new HashMap<String, RoutingConstraint>();
+	private Map<ChouetteId, RoutingConstraint> routingConstraints = new HashMap<ChouetteId, RoutingConstraint>();
 
 	@Getter
 	@Setter
-	private Map<String, GroupOfLine> groupOfLines = new HashMap<String, GroupOfLine>();
+	private Map<ChouetteId, GroupOfLine> groupOfLines = new HashMap<ChouetteId, GroupOfLine>();
 
 	@Getter
 	@Setter
-	private Map<String, Timetable> timetables = new HashMap<String, Timetable>();
+	private Map<ChouetteId, Timetable> timetables = new HashMap<ChouetteId, Timetable>();
 
 	@Getter
 	@Setter
-	private Map<String, Timeband> timebands = new HashMap<String, Timeband>();
+	private Map<ChouetteId, Timeband> timebands = new HashMap<ChouetteId, Timeband>();
 
 	@Getter
 	@Setter
-	private Map<String, RouteSection> routeSections = new HashMap<String, RouteSection>();
+	private Map<ChouetteId, RouteSection> routeSections = new HashMap<ChouetteId, RouteSection>();
 
 	public void clear(boolean cascade) {
 		if (cascade) {

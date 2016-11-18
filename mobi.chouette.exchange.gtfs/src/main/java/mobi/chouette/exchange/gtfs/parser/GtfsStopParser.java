@@ -17,11 +17,12 @@ import mobi.chouette.exchange.importer.Validator;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class GtfsStopParser implements Parser, Validator, Constant {
+public class GtfsStopParser extends GtfsChouetteIdGenerator implements Parser, Validator, Constant {
 	
 	@Override
 	public void validate(Context context) throws Exception {
@@ -116,7 +117,7 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 				String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 						StopArea.STOPAREA_KEY, gtfsStop.getStopId(), log);
 
-				StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
+				StopArea stopArea = GtfsChouetteIdObjectFactory.getStopArea(referential, toChouetteId(objectId, "default_codespace"));
 				convert(context, gtfsStop, stopArea);
 
 			}
@@ -149,9 +150,9 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 			}
 			stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
 			if (gtfsStop.getParentStation() != null) {
-				String parenId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
+				String parentId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 						StopArea.STOPAREA_KEY, gtfsStop.getParentStation(), log);
-				StopArea parent = ObjectFactory.getStopArea(referential, parenId);
+				StopArea parent = GtfsChouetteIdObjectFactory.getStopArea(referential, toChouetteId(parentId, "default_codespace"));
 				stopArea.setParent(parent);
 			}
 		}

@@ -16,6 +16,7 @@ import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.Referential;
@@ -169,7 +170,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 		if (timeSlotsContext == null) timeSlotsContext = new Context();
 		String fileName = (String) context.get(FILE_NAME);
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		Map<String, VehicleJourney> vehicleJourneys = referential.getVehicleJourneys();
+		Map<ChouetteId, VehicleJourney> vehicleJourneys = referential.getVehicleJourneys();
 		
 		// 2-NEPTUNE-VehicleJourney-1 : check existence of route
 		prepareCheckPoint(context, VEHICLE_JOURNEY_1);

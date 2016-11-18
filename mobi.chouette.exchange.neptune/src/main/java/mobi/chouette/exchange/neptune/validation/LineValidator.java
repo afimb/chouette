@@ -15,6 +15,7 @@ import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Route;
@@ -96,7 +97,7 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		Context routeContext = (Context) validationContext.get(ChouetteRouteValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		Map<String, Line> lines = referential.getLines();
+		Map<ChouetteId, Line> lines = referential.getLines();
 
 		for (String objectId : localContext.keySet()) {
 			Context objectContext = (Context) localContext.get(objectId);

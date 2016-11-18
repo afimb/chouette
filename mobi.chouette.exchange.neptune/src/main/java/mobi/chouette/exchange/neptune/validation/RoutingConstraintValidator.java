@@ -2,6 +2,7 @@ package mobi.chouette.exchange.neptune.validation;
 
 
 import java.util.Map;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationData;
@@ -10,6 +11,7 @@ import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.RoutingConstraint;
@@ -93,7 +95,7 @@ public class RoutingConstraintValidator extends AbstractValidator implements Val
 		Context lineContext = (Context) validationContext.get(LineValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Line line = getLine(referential);
-		Map<String, RoutingConstraint> routingConstraints = referential.getRoutingConstraints();
+		Map<ChouetteId, RoutingConstraint> routingConstraints = referential.getRoutingConstraints();
 
 		String fileName = (String) context.get(FILE_NAME);
 		
@@ -171,7 +173,7 @@ public class RoutingConstraintValidator extends AbstractValidator implements Val
 		Context routingConstraintLocalContext = (Context) validationContext.get(RoutingConstraintValidator.SA_LOCAL_CONTEXT);
 		Context stopPointContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		Map<String, RoutingConstraint> routingConstraints = referential.getRoutingConstraints();
+		Map<ChouetteId, RoutingConstraint> routingConstraints = referential.getRoutingConstraints();
 
 		for( String objectId : routingConstraintLocalContext.keySet() ) 
 		{

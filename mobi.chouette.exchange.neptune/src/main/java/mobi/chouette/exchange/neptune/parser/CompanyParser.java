@@ -12,13 +12,14 @@ import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.validation.CompanyValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Company;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class CompanyParser implements Parser, Constant {
+public class CompanyParser extends NeptuneChouetteIdGenerator implements Parser, Constant {
 	private static final String CHILD_TAG = "Company";
 
 	@Override
@@ -38,7 +39,7 @@ public class CompanyParser implements Parser, Constant {
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
-				company = ObjectFactory.getCompany(referential, objectId);
+				company = NeptuneChouetteIdObjectFactory.getCompany(referential, toChouetteId(objectId, "default_codespace"));
 				company.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());

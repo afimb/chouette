@@ -17,6 +17,7 @@ import mobi.chouette.dao.RoutingConstraintDAO;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
@@ -25,7 +26,7 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.RoutingConstraint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.NeptuneUtil;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.ChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Stateless(name = LineUpdater.BEAN_NAME)
@@ -158,15 +159,16 @@ public class LineUpdater implements Updater<Line> {
 		} else {
 			String codeSpace = newValue.getNetwork().getChouetteId().getCodeSpace();
 			String objectId = newValue.getNetwork().getChouetteId().getObjectId();
+			ChouetteId chouetteId = newValue.getNetwork().getChouetteId();
 			Network ptNetwork = cache.getPtNetworks().get(objectId);
 			if (ptNetwork == null) {
 				ptNetwork = ptNetworkDAO.findByChouetteId(codeSpace, objectId);
 				if (ptNetwork != null) {
-					cache.getPtNetworks().put(objectId, ptNetwork);
+					cache.getPtNetworks().put(chouetteId, ptNetwork);
 				}
 			}
 			if (ptNetwork == null) {
-				ptNetwork = ObjectFactory.getPTNetwork(cache, objectId);
+				ptNetwork = ChouetteIdObjectFactory.getPTNetwork(cache, chouetteId);
 			}
 			oldValue.setNetwork(ptNetwork);
 			ptNetworkUpdater.update(context, oldValue.getNetwork(), newValue.getNetwork());
@@ -179,15 +181,16 @@ public class LineUpdater implements Updater<Line> {
 		} else {
 			String codeSpace = newValue.getCompany().getChouetteId().getCodeSpace();
 			String objectId = newValue.getCompany().getChouetteId().getObjectId();
+			ChouetteId chouetteId = newValue.getCompany().getChouetteId();
 			Company company = cache.getCompanies().get(objectId);
 			if (company == null) {
 				company = companyDAO.findByChouetteId(codeSpace, objectId);
 				if (company != null) {
-					cache.getCompanies().put(objectId, company);
+					cache.getCompanies().put(chouetteId, company);
 				}
 			}
 			if (company == null) {
-				company = ObjectFactory.getCompany(cache, objectId);
+				company = ChouetteIdObjectFactory.getCompany(cache, chouetteId);
 			}
 			oldValue.setCompany(company);
 			
@@ -199,19 +202,19 @@ public class LineUpdater implements Updater<Line> {
 				oldValue.getGroupOfLines(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		List<GroupOfLine> groupOfLines = null;
 		for (GroupOfLine item : addedGroupOfLine) {
-			GroupOfLine groupOfLine = cache.getGroupOfLines().get(item.getChouetteId().getObjectId());
+			GroupOfLine groupOfLine = cache.getGroupOfLines().get(item.getChouetteId());
 			if (groupOfLine == null) {
 				if (groupOfLines == null) {
 					String codeSpace = item.getChouetteId().getCodeSpace();
 					groupOfLines = groupOfLineDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedGroupOfLine));
 					for (GroupOfLine object : groupOfLines) {
-						cache.getGroupOfLines().put(object.getChouetteId().getObjectId(), object);
+						cache.getGroupOfLines().put(object.getChouetteId(), object);
 					}
 				}
 				groupOfLine = cache.getGroupOfLines().get(item.getChouetteId().getObjectId());
 			}
 			if (groupOfLine == null) {
-				groupOfLine = ObjectFactory.getGroupOfLine(cache, item.getChouetteId().getObjectId());
+				groupOfLine = ChouetteIdObjectFactory.getGroupOfLine(cache, item.getChouetteId());
 			}
 			groupOfLine.addLine(oldValue);
 		}
@@ -239,13 +242,13 @@ public class LineUpdater implements Updater<Line> {
 					String codeSpace = item.getChouetteId().getCodeSpace();
 					routes = routeDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedRoute));
 					for (Route object : routes) {
-						cache.getRoutes().put(object.getChouetteId().getObjectId(), object);
+						cache.getRoutes().put(object.getChouetteId(), object);
 					}
 				}
 				route = cache.getRoutes().get(item.getChouetteId().getObjectId());
 			}
 			if (route == null) {
-				route = ObjectFactory.getRoute(cache, item.getChouetteId().getObjectId());
+				route = ChouetteIdObjectFactory.getRoute(cache, item.getChouetteId());
 			}
 			// If new route doesn't belong to line, we add temporarly it to the line and check if old route has same line as new route
 			if(route.getLine() != null) {
@@ -278,7 +281,7 @@ public class LineUpdater implements Updater<Line> {
 //				routingConstraint = cache.getStopAreas().get(item.getChouetteId().getObjectId());
 //			}
 //			if (routingConstraint == null) {
-//				routingConstraint = ObjectFactory.getStopArea(cache, item.getChouetteId().getObjectId());
+//				routingConstraint = ChouetteIdObjectFactory.getStopArea(cache, item.getChouetteId().getObjectId());
 //			}
 //			oldValue.addRoutingConstraint(routingConstraint);
 //		}
@@ -307,13 +310,13 @@ public class LineUpdater implements Updater<Line> {
 					String codeSpace = item.getChouetteId().getCodeSpace();
 					routingConstraints = routingConstraintDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedRoutingConstraint));
 					for (RoutingConstraint object : routingConstraints) {
-						cache.getRoutingConstraints().put(object.getChouetteId().getObjectId(), object);
+						cache.getRoutingConstraints().put(object.getChouetteId(), object);
 					}
 				}
 				routingConstraint = cache.getRoutingConstraints().get(item.getChouetteId().getObjectId());
 			}
 			if (routingConstraint == null) {
-				routingConstraint = ObjectFactory.getRoutingConstraint(cache, item.getChouetteId().getObjectId());
+				routingConstraint = ChouetteIdObjectFactory.getRoutingConstraint(cache, item.getChouetteId());
 			}
 			oldValue.addRoutingConstraint(routingConstraint);
 		}

@@ -12,7 +12,7 @@ import mobi.chouette.common.Pair;
 import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.ChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Stateless(name = AccessPointUpdater.BEAN_NAME)
@@ -153,15 +153,15 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 							.getObjectIds(addedAccessLink));
 					for (AccessLink object : accessLinks) {
 						cache.getAccessLinks()
-								.put(object.getChouetteId().getObjectId(), object);
+								.put(object.getChouetteId(), object);
 					}
 				}
 				accessLink = cache.getAccessLinks().get(item.getChouetteId().getObjectId());
 			}
 
 			if (accessLink == null) {
-				accessLink = ObjectFactory.getAccessLink(cache,
-						item.getChouetteId().getObjectId());
+				accessLink = ChouetteIdObjectFactory.getAccessLink(cache,
+						item.getChouetteId());
 			}
 			accessLink.setAccessPoint(oldValue);
 		}

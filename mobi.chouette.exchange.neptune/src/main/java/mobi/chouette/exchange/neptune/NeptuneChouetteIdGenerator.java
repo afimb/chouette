@@ -14,7 +14,7 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 
 @Log4j
-public class NeptuneChouetteIdGenerator extends AbstractChouetteIdGenerator implements ObjectIdTypes{
+public class NeptuneChouetteIdGenerator extends AbstractChouetteIdGenerator implements NeptuneObjectIdTypes{
 	/**
 	 * check if an objectId is conform to Trident
 	 * 
@@ -36,6 +36,7 @@ public class NeptuneChouetteIdGenerator extends AbstractChouetteIdGenerator impl
 		
 		// If object id is conform to neptune format
 		if (checkObjectId(objectId)) {
+			log.info("Object id : " + objectId + " conforme au format neptune");
 			String [] objectIdArray = objectId.split(":");
 			String codespace = objectIdArray[0];
 			String technicalId = objectIdArray[2];
@@ -43,6 +44,8 @@ public class NeptuneChouetteIdGenerator extends AbstractChouetteIdGenerator impl
 			chouetteId = new ChouetteId();
 			chouetteId.setCodeSpace(codespace);
 			chouetteId.setObjectId(technicalId);
+		} else {
+			log.info("Object id : " + objectId + " non conforme au format neptune");
 		}
 		
 		return chouetteId;

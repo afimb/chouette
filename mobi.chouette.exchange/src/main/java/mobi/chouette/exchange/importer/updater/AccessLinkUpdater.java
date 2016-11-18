@@ -7,6 +7,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
 
@@ -121,11 +122,12 @@ public class AccessLinkUpdater implements Updater<AccessLink> {
 		if (oldValue.getAccessPoint() == null) {
 			String codeSpace = newValue.getAccessPoint().getChouetteId().getCodeSpace();
 			String objectId = newValue.getAccessPoint().getChouetteId().getObjectId();
+			ChouetteId chouetteId = newValue.getAccessPoint().getChouetteId();
 			AccessPoint accessPoint = cache.getAccessPoints().get(objectId);
 			if (accessPoint == null) {
 				accessPoint = accessPointDAO.findByChouetteId(codeSpace, objectId);
 				if (accessPoint != null) {
-					cache.getAccessPoints().put(objectId, accessPoint);
+					cache.getAccessPoints().put(chouetteId, accessPoint);
 				}
 			}
 

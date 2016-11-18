@@ -9,6 +9,7 @@ import mobi.chouette.common.XPPUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netex.Constant;
+import mobi.chouette.exchange.netex.NetexChouetteIdGenerator;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
@@ -16,14 +17,14 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.netex.NetexChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 @Log4j
-public class VehicleJourneyParser implements Parser, Constant {
+public class VehicleJourneyParser extends NetexChouetteIdGenerator implements Parser, Constant {
 
 	private static final String CHILD_TAG = "vehicleJourneys";
 
@@ -54,7 +55,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
 		String id = xpp.getAttributeValue(null, ID);
-		VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, id);
+		VehicleJourney vehicleJourney = NetexChouetteIdObjectFactory.getVehicleJourney(referential, toChouetteId(id, "default_codespace"));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		vehicleJourney.setObjectVersion(version != null ? version : 0);
@@ -68,17 +69,17 @@ public class VehicleJourneyParser implements Parser, Constant {
 				parseDayTypeRefs(context, vehicleJourney);
 			} else if (xpp.getName().equals("RouteRef")) {
 				String ref = xpp.getAttributeValue(null, REF);
-				Route route = ObjectFactory.getRoute(referential, ref);
+				Route route = NetexChouetteIdObjectFactory.getRoute(referential, toChouetteId(ref, "default_codespace"));
 				vehicleJourney.setRoute(route);
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("ServicePatternRef")) {
 				String ref = xpp.getAttributeValue(null, REF);
-				JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, ref);
+				JourneyPattern journeyPattern = NetexChouetteIdObjectFactory.getJourneyPattern(referential, toChouetteId(ref, "default_codespace"));
 				vehicleJourney.setJourneyPattern(journeyPattern);
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("OperatorRef")) {
 				String ref = xpp.getAttributeValue(null, REF);
-				Company company = ObjectFactory.getCompany(referential, ref);
+				Company company = NetexChouetteIdObjectFactory.getCompany(referential, toChouetteId(ref, "default_codespace"));
 				vehicleJourney.setCompany(company);
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("trainNumbers")) {
@@ -164,7 +165,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("ScheduledStopPointRef")) {
 				ref = xpp.getAttributeValue(null, REF);
-				StopPoint stopPoint = ObjectFactory.getStopPoint(referential, ref);
+				StopPoint stopPoint = NetexChouetteIdObjectFactory.getStopPoint(referential, toChouetteId(ref, "default_codespace"));
 				vehicleJourneyAtStop.setStopPoint(stopPoint);
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("Arrival")) {

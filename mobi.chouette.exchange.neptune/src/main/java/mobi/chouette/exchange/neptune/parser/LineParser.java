@@ -12,6 +12,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.JsonExtension;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
 import mobi.chouette.exchange.neptune.validation.LineValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Company;
@@ -20,13 +21,13 @@ import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.UserNeedEnum;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class LineParser implements Parser, Constant, JsonExtension {
+public class LineParser extends NeptuneChouetteIdGenerator implements Parser, Constant, JsonExtension {
 	private static final String CHILD_TAG = "Line";
 
 	@Override
@@ -47,7 +48,7 @@ public class LineParser implements Parser, Constant, JsonExtension {
 
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
-				line = ObjectFactory.getLine(referential, objectId);
+				line = NeptuneChouetteIdObjectFactory.getLine(referential, toChouetteId(objectId, "default_codespace"));
 				line.setFilled(true);
 				line.setNetwork(getPtNetwork(referential));
 				line.setCompany(getFirstCompany(referential));
@@ -74,7 +75,7 @@ public class LineParser implements Parser, Constant, JsonExtension {
 			} else if (xpp.getName().equals("routeId")) {
 				String routeId = ParserUtils.getText(xpp.nextText());
 				validator.addRouteId(context, objectId, routeId);
-				Route route = ObjectFactory.getRoute(referential, routeId);
+				Route route = NeptuneChouetteIdObjectFactory.getRoute(referential, toChouetteId(routeId, "default_codespace"));
 				route.setLine(line);
 			} else if (xpp.getName().equals("ptNetworkIdShortcut")) {
 				String ptNetworkIdShortcut = ParserUtils.getText(xpp.nextText());

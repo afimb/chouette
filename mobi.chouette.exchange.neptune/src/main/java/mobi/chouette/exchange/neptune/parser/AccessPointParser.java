@@ -11,19 +11,20 @@ import mobi.chouette.common.XPPUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
 import mobi.chouette.exchange.neptune.validation.AccessPointValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.AccessPointTypeEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
-import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class AccessPointParser implements Parser, Constant {
+public class AccessPointParser extends NeptuneChouetteIdGenerator implements Parser, Constant {
 	private static final String CHILD_TAG = "AccessPoint";
 
 	@Override
@@ -44,8 +45,8 @@ public class AccessPointParser implements Parser, Constant {
 
 			if (xpp.getName().equals("objectId")) {
 				 objectId = ParserUtils.getText(xpp.nextText());
-				accessPoint = ObjectFactory.getAccessPoint(referential,
-						objectId);
+				accessPoint = NeptuneChouetteIdObjectFactory.getAccessPoint(referential,
+						toChouetteId(objectId, "default_codespace"));
 				accessPoint.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -62,8 +63,8 @@ public class AccessPointParser implements Parser, Constant {
 			} else if (xpp.getName().equals("containedIn")) {
 				String containedInId = ParserUtils.getText(xpp.nextText());
 				validator.addContainedIn(context, objectId, containedInId);
-				StopArea stopArea = ObjectFactory.getStopArea(referential,
-						containedInId);
+				StopArea stopArea = NeptuneChouetteIdObjectFactory.getStopArea(referential,
+						toChouetteId(containedInId, "default_codespace"));
 				accessPoint.setContainedIn(stopArea);
 			} else if (xpp.getName().equals("address")) {
 

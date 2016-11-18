@@ -7,10 +7,11 @@ import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.NeptuneUtil;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.ChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Stateless(name = StopPointUpdater.BEAN_NAME)
@@ -34,7 +35,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 
 //		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
-		cache.getStopPoints().put(oldValue.getChouetteId().getObjectId(), oldValue);
+		cache.getStopPoints().put(oldValue.getChouetteId(), oldValue);
 		
 		// Database test init
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
@@ -84,16 +85,17 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		} else {
 			String codeSpace = newValue.getContainedInStopArea().getChouetteId().getCodeSpace();
 			String objectId = newValue.getContainedInStopArea().getChouetteId().getObjectId();
+			ChouetteId chouetteId = newValue.getContainedInStopArea().getChouetteId();
 			StopArea stopArea = cache.getStopAreas().get(objectId);
 			if (stopArea == null) {
 				stopArea = stopAreaDAO.findByChouetteId(codeSpace, objectId);
 				if (stopArea != null) {
-					cache.getStopAreas().put(objectId, stopArea);
+					cache.getStopAreas().put(chouetteId, stopArea);
 				}
 			}
 
 			if (stopArea == null) {
-				stopArea = ObjectFactory.getStopArea(cache, objectId);
+				stopArea = ChouetteIdObjectFactory.getStopArea(cache, chouetteId);
 			}
 			
 			oldValue.setContainedInStopArea(stopArea);

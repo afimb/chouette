@@ -15,16 +15,17 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.netex.Constant;
+import mobi.chouette.exchange.netex.NetexChouetteIdGenerator;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.netex.NetexChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class StopAreaParser implements Parser, Constant {
+public class StopAreaParser extends NetexChouetteIdGenerator implements Parser, Constant {
 
 	private Map<String, Properties> tariffZones;
 
@@ -55,10 +56,10 @@ public class StopAreaParser implements Parser, Constant {
 			}
 
 			for (Entry<String, String> item : map.entrySet()) {
-				StopArea child = ObjectFactory.getStopArea(referential,
-						item.getKey());
-				StopArea parent = ObjectFactory.getStopArea(referential,
-						item.getValue());
+				StopArea child = NetexChouetteIdObjectFactory.getStopArea(referential,
+						toChouetteId(item.getKey(), "default_codespace"));
+				StopArea parent = NetexChouetteIdObjectFactory.getStopArea(referential,
+						toChouetteId(item.getValue(), "default_codespace"));
 				if (parent != null) {
 					parent.setAreaType(ChouetteAreaEnum.StopPlace);
 					child.setParent(parent);
@@ -99,7 +100,7 @@ public class StopAreaParser implements Parser, Constant {
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
 		String id = xpp.getAttributeValue(null, ID);
-		StopArea stopArea = ObjectFactory.getStopArea(referential, id);
+		StopArea stopArea = NetexChouetteIdObjectFactory.getStopArea(referential, toChouetteId(id, "default_codespace"));
 		stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
@@ -150,7 +151,7 @@ public class StopAreaParser implements Parser, Constant {
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
 		String id = xpp.getAttributeValue(null, ID);
-		StopArea stopArea = ObjectFactory.getStopArea(referential, id);
+		StopArea stopArea = NetexChouetteIdObjectFactory.getStopArea(referential, toChouetteId(id, "default_codespace"));
 		stopArea.setAreaType(ChouetteAreaEnum.Quay);
 		stopArea.setParent(parent);
 

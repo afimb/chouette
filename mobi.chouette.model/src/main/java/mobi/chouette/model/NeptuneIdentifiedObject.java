@@ -23,6 +23,7 @@ import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.model.util.ObjectIdTypes;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.NaturalId;
 
 /**
@@ -31,20 +32,49 @@ import org.hibernate.annotations.NaturalId;
  */
 @SuppressWarnings("serial")
 @MappedSuperclass
-@EqualsAndHashCode(of = { "chouetteId" }, callSuper = false)
+@EqualsAndHashCode(of = { "codeSpace", "objectId" }, callSuper = false)
 @ToString(callSuper = true)
 public abstract class NeptuneIdentifiedObject extends NeptuneObject implements
 		ObjectIdTypes {
+	
+	
 
 	/**
-	 * 	Embedded id containing three fields from raw object id
+	 * 	Id containing three fields from raw object id
 	 */
+	public ChouetteId getChouetteId() {
+		return new ChouetteId(this.codeSpace, this.objectId, this.shared);
+	}
 	
-	@Embedded
+	public void setChouetteId(ChouetteId chouetteId) {
+		this.codeSpace = chouetteId.getCodeSpace();
+		this.objectId = chouetteId.getObjectId();
+		this.shared = chouetteId.isShared();
+	}
+	
+	@NaturalId
+	@Getter
+	@Column(name = "codespace", nullable = false)
+	private String codeSpace;
+
+	public void setCodeSpace(String value) {
+		codeSpace = StringUtils.abbreviate(value, 255);
+	}
+	
+	@NaturalId
+	@Getter
+	@Column(name = "objectid", nullable = false)
+	private String objectId;
+
+	public void setObjectId(String value) {
+		objectId = StringUtils.abbreviate(value, 255);
+	}
+	
 	@Getter
 	@Setter
-    private ChouetteId chouetteId;
-
+	@Column(name = "shared", nullable = false)
+	private boolean shared = false;
+	
 	/**
 	 * object version
 	 * 

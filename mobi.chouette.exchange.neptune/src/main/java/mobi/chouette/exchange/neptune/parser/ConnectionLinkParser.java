@@ -19,13 +19,14 @@ import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.model.type.UserNeedEnum;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class ConnectionLinkParser implements Parser, Constant {
+public class ConnectionLinkParser extends NeptuneChouetteIdGenerator implements Parser, Constant {
 	private static final String CHILD_TAG = "ConnectionLink";
 
 	@Override
@@ -45,8 +46,8 @@ public class ConnectionLinkParser implements Parser, Constant {
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
-				connectionLink = ObjectFactory.getConnectionLink(referential,
-						objectId);
+				connectionLink = NeptuneChouetteIdObjectFactory.getConnectionLink(referential,
+						toChouetteId(objectId, "default_codespace"));
 				connectionLink.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -63,13 +64,13 @@ public class ConnectionLinkParser implements Parser, Constant {
 				connectionLink.setComment(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("startOfLink")) {
 				String startId = ParserUtils.getText(xpp.nextText());
-				StopArea startOfLink = ObjectFactory.getStopArea(referential,
-						startId);
+				StopArea startOfLink = NeptuneChouetteIdObjectFactory.getStopArea(referential,
+						toChouetteId(startId, "default_codespace"));
 				connectionLink.setStartOfLink(startOfLink);
 			} else if (xpp.getName().equals("endOfLink")) {
 				String endId = ParserUtils.getText(xpp.nextText());
-				StopArea endOfLink = ObjectFactory.getStopArea(referential,
-						endId);
+				StopArea endOfLink = NeptuneChouetteIdObjectFactory.getStopArea(referential,
+						toChouetteId(endId, "default_codespace"));
 				connectionLink.setEndOfLink(endOfLink);
 			} else if (xpp.getName().equals("linkDistance")) {
 				BigDecimal value = ParserUtils.getBigDecimal(xpp.nextText());

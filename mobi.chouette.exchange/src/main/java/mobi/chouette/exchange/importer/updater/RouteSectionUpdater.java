@@ -8,6 +8,7 @@ import com.jamonapi.MonitorFactory;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.Referential;
@@ -56,11 +57,12 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
 				&& !newValue.getDeparture().equals(oldValue.getDeparture())) {
 			String codeSpace = newValue.getDeparture().getChouetteId().getCodeSpace();
 			String objectId = newValue.getDeparture().getChouetteId().getObjectId();
+			ChouetteId chouetteId = newValue.getDeparture().getChouetteId();
 			StopArea departure = cache.getStopAreas().get(objectId);
 			if (departure == null) {
 				departure = stopAreaDAO.findByChouetteId(codeSpace, objectId);
 				if (departure != null) {
-					cache.getStopAreas().put(objectId, departure);
+					cache.getStopAreas().put(chouetteId, departure);
 				}
 			}
 
@@ -70,13 +72,14 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
 		}
 		if (newValue.getArrival() != null
 				&& !newValue.getArrival().equals(oldValue.getArrival())) {
-			String codeSpace = newValue.getDeparture().getChouetteId().getCodeSpace();
+			String codeSpace = newValue.getArrival().getChouetteId().getCodeSpace();
 			String objectId = newValue.getArrival().getChouetteId().getObjectId();
+			ChouetteId chouetteId = newValue.getArrival().getChouetteId();
 			StopArea arrival = cache.getStopAreas().get(objectId);
 			if (arrival == null) {
 				arrival = stopAreaDAO.findByChouetteId(codeSpace, objectId);
 				if (arrival != null) {
-					cache.getStopAreas().put(objectId, arrival);
+					cache.getStopAreas().put(chouetteId, arrival);
 				}
 			}
 

@@ -10,17 +10,18 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.JsonExtension;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
 import mobi.chouette.exchange.neptune.validation.GroupOfLineValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class GroupOfLineParser implements Parser, Constant, JsonExtension {
+public class GroupOfLineParser extends NeptuneChouetteIdGenerator implements Parser, Constant, JsonExtension {
 
 	private static final String CHILD_TAG = "GroupOfLine";
 
@@ -41,8 +42,8 @@ public class GroupOfLineParser implements Parser, Constant, JsonExtension {
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
-				groupOfLine = ObjectFactory.getGroupOfLine(referential,
-						objectId);
+				groupOfLine = NeptuneChouetteIdObjectFactory.getGroupOfLine(referential,
+						toChouetteId(objectId, "default_codespace"));
 				groupOfLine.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -58,7 +59,7 @@ public class GroupOfLineParser implements Parser, Constant, JsonExtension {
 				groupOfLine.setComment(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("lineId")) {
 				String lineId = ParserUtils.getText(xpp.nextText());
-				Line line = ObjectFactory.getLine(referential, lineId);
+				Line line = NeptuneChouetteIdObjectFactory.getLine(referential, toChouetteId(lineId, "default_codespace"));
 				groupOfLine.addLine(line);
 				validator.addLineId(context, objectId, lineId);
 			} else {

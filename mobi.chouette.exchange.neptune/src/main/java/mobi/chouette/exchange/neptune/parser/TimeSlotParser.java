@@ -13,16 +13,17 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.model.TimeSlot;
 import mobi.chouette.exchange.neptune.validation.TimeSlotValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Timeband;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class TimeSlotParser implements Parser, Constant {
+public class TimeSlotParser extends NeptuneChouetteIdGenerator implements Parser, Constant {
 
 	private static final String CHILD_TAG = "TimeSlot";
 
@@ -48,10 +49,10 @@ public class TimeSlotParser implements Parser, Constant {
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("objectId")) {				
 				objectId = ParserUtils.getText(xpp.nextText());
-				timeSlot = factory.getTimeSlot(objectId);
+				timeSlot = factory.getTimeSlot(toChouetteId(objectId, "default_codespace"));
 				timeSlot.setFilled(true);
 				
-				timeband = ObjectFactory.getTimeband(referential, objectId);
+				timeband = NeptuneChouetteIdObjectFactory.getTimeband(referential, toChouetteId(objectId, "default_codespace"));
 				timeband.setFilled(true);
 
 			} else if (xpp.getName().equals("objectVersion")) {

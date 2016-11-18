@@ -13,6 +13,8 @@ import mobi.chouette.common.XPPUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
 import mobi.chouette.exchange.neptune.validation.AccessLinkValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.AccessLink;
@@ -21,13 +23,12 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.model.type.LinkOrientationEnum;
 import mobi.chouette.model.type.UserNeedEnum;
-import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class AccessLinkParser implements Parser, Constant {
+public class AccessLinkParser extends NeptuneChouetteIdGenerator implements Parser, Constant {
 	private static final String CHILD_TAG = "AccessLink";
 
 	@Override
@@ -47,7 +48,7 @@ public class AccessLinkParser implements Parser, Constant {
 
 			if (xpp.getName().equals("objectId")) {
 			    objectId = ParserUtils.getText(xpp.nextText());
-				accessLink = ObjectFactory.getAccessLink(referential, objectId);
+				accessLink = NeptuneChouetteIdObjectFactory.getAccessLink(referential, toChouetteId(objectId, "default_codespace"));
 				accessLink.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -65,14 +66,14 @@ public class AccessLinkParser implements Parser, Constant {
 				String linkId = ParserUtils.getText(xpp.nextText());
 				validator.addStartOfLinkId(context, objectId, linkId);
 				if (referential.getStopAreas().containsKey(linkId)) {
-					StopArea stopArea = ObjectFactory.getStopArea(referential,
-							linkId);
+					StopArea stopArea = NeptuneChouetteIdObjectFactory.getStopArea(referential,
+							toChouetteId(linkId, "default_codespace"));
 					accessLink.setStopArea(stopArea);
 					accessLink
 							.setLinkOrientation(LinkOrientationEnum.StopAreaToAccessPoint);
 				} else if (referential.getAccessPoints().containsKey(linkId)) {
-					AccessPoint accessPoint = ObjectFactory.getAccessPoint(
-							referential, linkId);
+					AccessPoint accessPoint = NeptuneChouetteIdObjectFactory.getAccessPoint(
+							referential, toChouetteId(linkId, "default_codespace"));
 					accessLink.setAccessPoint(accessPoint);
 					accessLink
 							.setLinkOrientation(LinkOrientationEnum.AccessPointToStopArea);
@@ -81,12 +82,12 @@ public class AccessLinkParser implements Parser, Constant {
 				String linkId = ParserUtils.getText(xpp.nextText());
 				validator.addEndOfLinkId(context, objectId, linkId);
 				if (referential.getStopAreas().containsKey(linkId)) {
-					StopArea stopArea = ObjectFactory.getStopArea(referential,
-							linkId);
+					StopArea stopArea = NeptuneChouetteIdObjectFactory.getStopArea(referential,
+							toChouetteId(linkId, "default_codespace"));
 					accessLink.setStopArea(stopArea);
 				} else if (referential.getAccessPoints().containsKey(linkId)) {
-					AccessPoint accessPoint = ObjectFactory.getAccessPoint(
-							referential, linkId);
+					AccessPoint accessPoint = NeptuneChouetteIdObjectFactory.getAccessPoint(
+							referential, toChouetteId(linkId, "default_codespace"));
 					accessLink.setAccessPoint(accessPoint);
 				}
 			} else if (xpp.getName().equals("linkDistance")) {

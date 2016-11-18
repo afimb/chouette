@@ -25,11 +25,12 @@ import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.util.NamingUtil;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class GtfsCalendarParser implements Parser, Validator, Constant {
+public class GtfsCalendarParser extends GtfsChouetteIdGenerator implements Parser, Validator, Constant {
 
 	@Override
 	public void validate(Context context) throws Exception {
@@ -190,7 +191,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 
 				String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 						Timetable.TIMETABLE_KEY, gtfsCalendar.getServiceId(), log);
-				Timetable timetable = ObjectFactory.getTimetable(referential, objectId);
+				Timetable timetable = GtfsChouetteIdObjectFactory.getTimetable(referential, toChouetteId(objectId, "default_codespace"));
 				convert(context, gtfsCalendar, timetable);
 			}
 		}
@@ -205,7 +206,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 				Timetable timetable = referential.getTimetables().get(objectId);
 				for (GtfsCalendarDate gtfsCalendarDate : importer.getCalendarDateByService().values(serviceId)) {
 					if (timetable == null) {
-						timetable = ObjectFactory.getTimetable(referential, objectId);
+						timetable = GtfsChouetteIdObjectFactory.getTimetable(referential, toChouetteId(objectId, "default_codespace"));
 						convert(context, createDummyCalandar(gtfsCalendarDate.getId()), timetable);
 					}
 					addCalendarDay(timetable, gtfsCalendarDate);
@@ -220,8 +221,8 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 		}
 
 		for (Timetable timetable : list) {
-			referential.getSharedTimetables().put(timetable.getChouetteId().getObjectId(), timetable);
-			referential.getTimetables().put(timetable.getChouetteId().getObjectId(), timetable);
+			referential.getSharedTimetables().put(timetable.getChouetteId(), timetable);
+			referential.getTimetables().put(timetable.getChouetteId(), timetable);
 		}
        list.clear();
 	}

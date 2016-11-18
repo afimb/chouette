@@ -1,6 +1,6 @@
-package mobi.chouette.exchange.netex;
+package mobi.chouette.exchange.gtfs;
 
-public interface ObjectIdTypes {
+public interface GtfsObjectIdTypes {
 	// constants for ObjectId prefixes
 	   /**
 	    * default objectId type for access points 

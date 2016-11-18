@@ -14,13 +14,14 @@ import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.NeptuneUtil;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.ChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Stateless(name = JourneyPatternUpdater.BEAN_NAME)
@@ -116,7 +117,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			for (RouteSection item : newValue.getRouteSections()) {
 				RouteSection section = cache.getRouteSections().get(item.getChouetteId().getObjectId());
 				if (section == null) {
-					section = ObjectFactory.getRouteSection(cache, item.getChouetteId().getObjectId());
+					section = ChouetteIdObjectFactory.getRouteSection(cache, item.getChouetteId());
 				}
 				oldValue.getRouteSections().add(section);
 			}
@@ -140,7 +141,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 					String codeSpace = item.getChouetteId().getCodeSpace();
 					stopPoints = stopPointDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedStopPoint));
 					for (StopPoint object : stopPoints) {
-						cache.getStopPoints().put(object.getChouetteId().getObjectId(), object);
+						cache.getStopPoints().put(object.getChouetteId(), object);
 					}
 				}
 				stopPoint = cache.getStopPoints().get(item.getChouetteId().getObjectId());
@@ -163,11 +164,12 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		} else if (!newValue.getArrivalStopPoint().equals(oldValue.getArrivalStopPoint())) {
 			String codeSpace = newValue.getArrivalStopPoint().getChouetteId().getCodeSpace();
 			String objectId = newValue.getArrivalStopPoint().getChouetteId().getObjectId();
+			ChouetteId chouetteId = newValue.getArrivalStopPoint().getChouetteId();
 			StopPoint stopPoint = cache.getStopPoints().get(objectId);
 			if (stopPoint == null) {
 				stopPoint = stopPointDAO.findByChouetteId(codeSpace, objectId);
 				if (stopPoint != null) {
-					cache.getStopPoints().put(objectId, stopPoint);
+					cache.getStopPoints().put(chouetteId, stopPoint);
 				}
 			}
 
@@ -182,11 +184,12 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		} else if (!newValue.getDepartureStopPoint().equals(oldValue.getDepartureStopPoint())) {
 			String codeSpace = newValue.getDepartureStopPoint().getChouetteId().getCodeSpace();
 			String objectId = newValue.getDepartureStopPoint().getChouetteId().getObjectId();
+			ChouetteId chouetteId = newValue.getDepartureStopPoint().getChouetteId();
 			StopPoint stopPoint = cache.getStopPoints().get(objectId);
 			if (stopPoint == null) {
 				stopPoint = stopPointDAO.findByChouetteId(codeSpace, objectId);
 				if (stopPoint != null) {
-					cache.getStopPoints().put(objectId, stopPoint);
+					cache.getStopPoints().put(chouetteId, stopPoint);
 				}
 			}
 
@@ -208,14 +211,14 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 					String codeSpace = item.getChouetteId().getCodeSpace();
 					vehicleJourneys = vehicleJourneyDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedVehicleJourney));
 					for (VehicleJourney object : vehicleJourneys) {
-						cache.getVehicleJourneys().put(object.getChouetteId().getObjectId(), object);
+						cache.getVehicleJourneys().put(object.getChouetteId(), object);
 					}
 				}
 				vehicleJourney = cache.getVehicleJourneys().get(item.getChouetteId().getObjectId());
 			}
 
 			if (vehicleJourney == null) {
-				vehicleJourney = ObjectFactory.getVehicleJourney(cache, item.getChouetteId().getObjectId());
+				vehicleJourney = ChouetteIdObjectFactory.getVehicleJourney(cache, item.getChouetteId());
 			}
 			if(vehicleJourney.getJourneyPattern() != null) {
 				twoDatabaseVehicleJourneyOneTest(validationReporter, context, vehicleJourney, item, data);

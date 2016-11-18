@@ -13,7 +13,7 @@ import mobi.chouette.common.Pair;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.RoutingConstraint;
 import mobi.chouette.model.StopArea;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.ChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -83,14 +83,14 @@ public class RoutingConstraintUpdater implements Updater<RoutingConstraint> {
 					String codeSpace = item.getChouetteId().getCodeSpace();
 					stopAreas = stopAreaDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedStopAreas));
 					for (StopArea object : addedStopAreas) {
-						cache.getStopAreas().put(object.getChouetteId().getObjectId(), object);
+						cache.getStopAreas().put(object.getChouetteId(), object);
 					}
 				}
 				area = cache.getStopAreas().get(item.getChouetteId().getObjectId());
 			}
 
 			if (area == null) {
-				area = ObjectFactory.getStopArea(cache, item.getChouetteId().getObjectId());
+				area = ChouetteIdObjectFactory.getStopArea(cache, item.getChouetteId());
 			}
 			
 			if (!area.isDetached() || area.isFilled())

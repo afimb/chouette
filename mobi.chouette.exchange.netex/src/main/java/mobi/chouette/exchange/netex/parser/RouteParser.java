@@ -12,17 +12,18 @@ import mobi.chouette.common.XPPUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netex.Constant;
+import mobi.chouette.exchange.netex.NetexChouetteIdGenerator;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.netex.NetexChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.util.XmlPullUtil;
 
 @Log4j
-public class RouteParser implements Parser, Constant {
+public class RouteParser extends NetexChouetteIdGenerator implements Parser, Constant {
 
 	private Map<String, Properties> directions;
 
@@ -115,10 +116,10 @@ public class RouteParser implements Parser, Constant {
 		}
 
 		if (stopPointId != null && stopAreaId != null) {
-			StopPoint stopPoint = ObjectFactory.getStopPoint(referential,
-					stopPointId);
-			StopArea stopArea = ObjectFactory.getStopArea(referential,
-					stopAreaId);
+			StopPoint stopPoint = NetexChouetteIdObjectFactory.getStopPoint(referential,
+					toChouetteId(stopPointId, "default_codespace"));
+			StopArea stopArea = NetexChouetteIdObjectFactory.getStopArea(referential,
+					toChouetteId(stopAreaId, "default_codespace"));
 			stopPoint.setContainedInStopArea(stopArea);
 		}
 
@@ -134,7 +135,7 @@ public class RouteParser implements Parser, Constant {
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
 		String id = xpp.getAttributeValue(null, ID);
-		Route route = ObjectFactory.getRoute(referential, id);
+		Route route = NetexChouetteIdObjectFactory.getRoute(referential, toChouetteId(id, "default_codespace"));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		route.setObjectVersion(version != null ? version : 0);
@@ -166,7 +167,7 @@ public class RouteParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("InverseRouteRef")) {
 				String ref = xpp.getAttributeValue(null, REF);
-				Route wayBackRoute = ObjectFactory.getRoute(referential, ref);
+				Route wayBackRoute = NetexChouetteIdObjectFactory.getRoute(referential, toChouetteId(ref, "default_codespace"));
 				if (wayBackRoute != null)
 				{
 					wayBackRoute.setOppositeRoute(route);
@@ -194,8 +195,8 @@ public class RouteParser implements Parser, Constant {
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("PointOnRoute")) {
 				String id = xpp.getAttributeValue(null, ID);
-				StopPoint stopPoint = ObjectFactory.getStopPoint(referential,
-						getStopPointObjectId(route, id));
+				StopPoint stopPoint = NetexChouetteIdObjectFactory.getStopPoint(referential,
+						toChouetteId(getStopPointObjectId(route, id), "default_codespace"));
 				stopPoint.setRoute(route);
 				stopPoint.setFilled(true);
 				XPPUtil.skipSubTree(log, xpp);

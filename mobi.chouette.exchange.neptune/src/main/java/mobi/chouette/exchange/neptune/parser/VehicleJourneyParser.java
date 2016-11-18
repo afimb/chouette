@@ -14,6 +14,7 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.JsonExtension;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.model.TimeSlot;
 import mobi.chouette.exchange.neptune.validation.VehicleJourneyValidator;
@@ -28,14 +29,14 @@ import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.type.JourneyCategoryEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 //import mobi.chouette.common.Constant;
 
 @Log4j
-public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
+public class VehicleJourneyParser extends NeptuneChouetteIdGenerator implements Parser, Constant, JsonExtension {
 	private static final String CHILD_TAG = "VehicleJourney";
 
 	private static final Comparator<VehicleJourneyAtStop> VEHICLE_JOURNEY_AT_STOP_COMPARATOR = new Comparator<VehicleJourneyAtStop>() {
@@ -76,7 +77,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
-				vehicleJourney = ObjectFactory.getVehicleJourney(referential, objectId);
+				vehicleJourney = NeptuneChouetteIdObjectFactory.getVehicleJourney(referential, toChouetteId(objectId, "default_codespace"));
 				vehicleJourney.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -93,7 +94,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 			} else if (xpp.getName().equals("journeyPatternId")) {
 				String journeyPatternId = ParserUtils.getText(xpp.nextText());
 				validator.addJourneyPatternId(context, objectId, journeyPatternId);
-				JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, journeyPatternId);
+				JourneyPattern journeyPattern = NeptuneChouetteIdObjectFactory.getJourneyPattern(referential, toChouetteId(journeyPatternId, "default_codespace"));
 				vehicleJourney.setJourneyPattern(journeyPattern);
 			} else if (xpp.getName().equals("number")) {
 				Long value = ParserUtils.getLong(xpp.nextText());
@@ -101,7 +102,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 			} else if (xpp.getName().equals("operatorId")) {
 				String operatorId = ParserUtils.getText(xpp.nextText());
 				validator.addOperatorId(context, objectId, operatorId);
-				Company company = ObjectFactory.getCompany(referential, operatorId);
+				Company company = NeptuneChouetteIdObjectFactory.getCompany(referential, toChouetteId(operatorId, "default_codespace"));
 				vehicleJourney.setCompany(company);
 			} else if (xpp.getName().equals("publishedJourneyIdentifier")) {
 				vehicleJourney.setPublishedJourneyIdentifier(ParserUtils.getText(xpp.nextText()));
@@ -110,7 +111,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 			} else if (xpp.getName().equals("routeId")) {
 				String routeId = ParserUtils.getText(xpp.nextText());
 				validator.addRouteId(context, objectId, routeId);
-				Route route = ObjectFactory.getRoute(referential, routeId);
+				Route route = NeptuneChouetteIdObjectFactory.getRoute(referential, toChouetteId(routeId, "default_codespace"));
 				vehicleJourney.setRoute(route);
 			} else if (xpp.getName().equals("lineIdShortcut")) {
 				String lineIdShortcut = ParserUtils.getText(xpp.nextText());
@@ -120,10 +121,10 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 				validator.addTimeSlotId(context, objectId, timeSlotId);
 				
 				vehicleJourney.setJourneyCategory(JourneyCategoryEnum.Frequency);
-				TimeSlot timeSlot = factory.getTimeSlot(timeSlotId);
+				TimeSlot timeSlot = factory.getTimeSlot(toChouetteId(timeSlotId, "defaut_codespace"));
 				journeyFrequency = new JourneyFrequency();
 				journeyFrequency.setVehicleJourney(vehicleJourney);
-				journeyFrequency.setTimeband(ObjectFactory.getTimeband(referential, timeSlotId));
+				journeyFrequency.setTimeband(NeptuneChouetteIdObjectFactory.getTimeband(referential, toChouetteId(timeSlotId, "default_codespace")));
 				journeyFrequency.setFirstDepartureTime(timeSlot.getFirstDepartureTimeInSlot());
 				journeyFrequency.setLastDepartureTime(timeSlot.getLastDepartureTimeInSlot());
 				if (headwayFrequency != null)
@@ -156,7 +157,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
-		VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop();
+		VehicleJourneyAtStop vehicleJourneyAtStop = NeptuneChouetteIdObjectFactory.getVehicleJourneyAtStop();
 
 		VehicleJourneyValidator validator = (VehicleJourneyValidator) ValidatorFactory.create(
 				VehicleJourneyValidator.class.getName(), context);
@@ -179,7 +180,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 			} else if (xpp.getName().equals("stopPointId")) {
 				stopPointId = ParserUtils.getText(xpp.nextText());
 				validator.addStopPointId(vehicleJourneyAtStopContext, stopPointId);
-				StopPoint stopPoint = ObjectFactory.getStopPoint(referential, stopPointId);
+				StopPoint stopPoint = NeptuneChouetteIdObjectFactory.getStopPoint(referential, toChouetteId(stopPointId, "default_codespace"));
 				vehicleJourneyAtStop.setStopPoint(stopPoint);
 			} else if (xpp.getName().equals("order")) {
 				Integer value = ParserUtils.getInt(xpp.nextText());

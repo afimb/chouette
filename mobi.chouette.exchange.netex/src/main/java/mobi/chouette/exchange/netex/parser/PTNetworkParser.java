@@ -6,14 +6,15 @@ import mobi.chouette.common.XPPUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netex.Constant;
+import mobi.chouette.exchange.netex.NetexChouetteIdGenerator;
 import mobi.chouette.model.Network;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.netex.NetexChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class PTNetworkParser implements Parser, Constant {
+public class PTNetworkParser extends NetexChouetteIdGenerator implements Parser, Constant {
 
 	private static final String CHILD_TAG = "Network";
 
@@ -29,7 +30,7 @@ public class PTNetworkParser implements Parser, Constant {
 
 		String id = xpp.getAttributeValue(null, ID);
 
-		Network network = ObjectFactory.getPTNetwork(referential, id);
+		Network network = NetexChouetteIdObjectFactory.getPTNetwork(referential, toChouetteId(id, "default_codespace"));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		network.setObjectVersion(version != null ? version : 0);

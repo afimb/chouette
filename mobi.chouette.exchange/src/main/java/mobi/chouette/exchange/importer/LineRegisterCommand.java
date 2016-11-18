@@ -30,6 +30,7 @@ import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
@@ -89,7 +90,7 @@ public class LineRegisterCommand implements Command {
 			if (optimized) {
 				Monitor wMonitor = MonitorFactory.start("prepareCopy");
 				StringWriter buffer = new StringWriter(1024);
-				final List<String> list = new ArrayList<String>(referential.getVehicleJourneys().keySet());
+				final List<ChouetteId> list = new ArrayList<ChouetteId>(referential.getVehicleJourneys().keySet());
 				for (VehicleJourney item : referential.getVehicleJourneys().values()) {
 					VehicleJourney vehicleJourney = cache.getVehicleJourneys().get(item.getChouetteId().getObjectId());
 

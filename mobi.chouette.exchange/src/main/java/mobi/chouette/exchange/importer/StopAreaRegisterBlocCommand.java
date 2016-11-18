@@ -28,7 +28,7 @@ import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.ChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
@@ -98,7 +98,7 @@ public class StopAreaRegisterBlocCommand implements Command {
 		// Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
 		List<StopArea> objects = stopAreaDAO.findAll();// ByObjectId(objectIds);
 		for (StopArea object : objects) {
-			cache.getStopAreas().put(object.getChouetteId().getObjectId(), object);
+			cache.getStopAreas().put(object.getChouetteId(), object);
 		}
 
 		for (StopArea item : list) {
@@ -109,7 +109,7 @@ public class StopAreaRegisterBlocCommand implements Command {
 	private void addStopAreaIfMissing(Referential cache, StopArea item) {
 		StopArea object = cache.getStopAreas().get(item.getChouetteId().getObjectId());
 		if (object == null) {
-			object = ObjectFactory.getStopArea(cache, item.getChouetteId().getObjectId());
+			object = ChouetteIdObjectFactory.getStopArea(cache, item.getChouetteId());
 			if (item.getParent() != null && item.getParent().getAreaType() == null) {
 				log.error("areatype missing for " + item.getParent());
 				return;
@@ -135,13 +135,13 @@ public class StopAreaRegisterBlocCommand implements Command {
 		}
 		
 		for (AccessPoint object : objects) {
-			cache.getAccessPoints().put(object.getChouetteId().getObjectId(), object);
+			cache.getAccessPoints().put(object.getChouetteId(), object);
 		}
 
 		for (AccessPoint item : list) {
 			AccessPoint object = cache.getAccessPoints().get(item.getChouetteId().getObjectId());
 			if (object == null) {
-				object = ObjectFactory.getAccessPoint(cache, item.getChouetteId().getObjectId());
+				object = ChouetteIdObjectFactory.getAccessPoint(cache, item.getChouetteId());
 			}
 		}
 	}
@@ -160,13 +160,13 @@ public class StopAreaRegisterBlocCommand implements Command {
 		}
 		
 		for (AccessLink object : objects) {
-			cache.getAccessLinks().put(object.getChouetteId().getObjectId(), object);
+			cache.getAccessLinks().put(object.getChouetteId(), object);
 		}
 
 		for (AccessLink item : list) {
 			AccessLink object = cache.getAccessLinks().get(item.getChouetteId().getObjectId());
 			if (object == null) {
-				object = ObjectFactory.getAccessLink(cache, item.getChouetteId().getObjectId());
+				object = ChouetteIdObjectFactory.getAccessLink(cache, item.getChouetteId());
 			}
 		}
 	}

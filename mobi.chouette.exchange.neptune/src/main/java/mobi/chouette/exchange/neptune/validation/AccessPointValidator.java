@@ -16,6 +16,7 @@ import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.AccessPointTypeEnum;
@@ -71,14 +72,14 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		Context accessLinkContext = (Context) validationContext.get(AccessLinkValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		Map<String, AccessPoint> accessPoints = referential.getAccessPoints();
+		Map<ChouetteId, AccessPoint> accessPoints = referential.getAccessPoints();
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 //		Map<String, Location> fileLocations = data.getFileLocations();
 		Map<String, DataLocation> fileLocations = data.getDataLocations();
 // 		String fileName = (String) context.get(FILE_NAME);
 
-		Map<String, StopArea> stopAreas = referential.getStopAreas();
-		Map<String, AccessLink> accessLinks = referential.getAccessLinks();
+		Map<ChouetteId, StopArea> stopAreas = referential.getStopAreas();
+		Map<ChouetteId, AccessLink> accessLinks = referential.getAccessLinks();
 
 		// build a map on link connected ids
 		Map<String, List<AccessLink>> mapAccessLinkByAccessPointId = new HashMap<String, List<AccessLink>>();

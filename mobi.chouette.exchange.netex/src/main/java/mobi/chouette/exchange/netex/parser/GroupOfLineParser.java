@@ -6,14 +6,15 @@ import mobi.chouette.common.XPPUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netex.Constant;
+import mobi.chouette.exchange.netex.NetexChouetteIdGenerator;
 import mobi.chouette.model.GroupOfLine;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.netex.NetexChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class GroupOfLineParser implements Parser, Constant {
+public class GroupOfLineParser extends NetexChouetteIdGenerator implements Parser, Constant {
 
 	private static final String CHILD_TAG = "groupsOfLines";
 
@@ -44,7 +45,7 @@ public class GroupOfLineParser implements Parser, Constant {
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
 		String id = xpp.getAttributeValue(null, ID);
-		GroupOfLine groupOfLine = ObjectFactory.getGroupOfLine(referential, id);
+		GroupOfLine groupOfLine = NetexChouetteIdObjectFactory.getGroupOfLine(referential, toChouetteId(id, "default_codespace"));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		groupOfLine.setObjectVersion(version != null ? version : 0);

@@ -1,6 +1,6 @@
-package mobi.chouette.exchange.neptune;
+package mobi.chouette.exchange.netex;
 
-public interface ObjectIdTypes {
+public interface NetexObjectIdTypes {
 	// constants for ObjectId prefixes
 	   /**
 	    * default objectId type for access points 

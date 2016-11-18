@@ -50,7 +50,7 @@ public class TimetableParser implements Parser, Constant {
 			}
 		}
 
-		referential.getTimetables().put(timetable.getChouetteId().getObjectId(), timetable);
+		referential.getTimetables().put(timetable.getChouetteId(), timetable);
 
 		log.debug("[DSU] " + "ServiceCalendarFrame" + "\t"
 				+ timetable.getChouetteId().getObjectId());

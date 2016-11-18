@@ -1,16 +1,16 @@
 package mobi.chouette.model;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.apache.commons.lang.StringUtils;
 
-@Embeddable
 @EqualsAndHashCode(of = { "codeSpace", "objectId" }, callSuper = false)
+@NoArgsConstructor
+@AllArgsConstructor
 public class ChouetteId {
 	/**
 	 * Neptune object id <br/>
@@ -26,7 +26,6 @@ public class ChouetteId {
 	 */
 
 	@Getter
-	@Column(name = "codespace", nullable = false)
 	private String codeSpace;
 
 	public void setCodeSpace(String value) {
@@ -34,7 +33,6 @@ public class ChouetteId {
 	}
 	
 	@Getter
-	@Column(name = "objectid", nullable = false)
 	private String objectId;
 
 	public void setObjectId(String value) {
@@ -43,6 +41,6 @@ public class ChouetteId {
 	
 	@Getter
 	@Setter
-	@Column(name = "shared", nullable = false)
 	private boolean shared = false;
+	
 }

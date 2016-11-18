@@ -14,11 +14,11 @@ public class NeptuneObjectFactory {
 
 	@Getter
 	@Setter
-	private Map<String, AreaCentroid> areaCentroid = new HashMap<>();
+	private Map<ChouetteId, AreaCentroid> areaCentroid = new HashMap<>();
 
 	@Getter
 	@Setter
-	private Map<String, PTLink> ptLink = new HashMap<>();
+	private Map<ChouetteId, PTLink> ptLink = new HashMap<>();
 
 	@Getter
 	@Setter
@@ -26,26 +26,26 @@ public class NeptuneObjectFactory {
 
 	@Getter
 	@Setter
-	private Map<String, TimeSlot> timeSlots = new HashMap<>();
+	private Map<ChouetteId, TimeSlot> timeSlots = new HashMap<>();
 
-	public PTLink getPTLink(String objectId) {
-		PTLink result = ptLink.get(objectId);
+	public PTLink getPTLink(ChouetteId chouetteId) {
+		PTLink result = ptLink.get(chouetteId);
 		if (result == null) {
 			result = new PTLink();
 			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setObjectId(objectId);
-			ptLink.put(objectId, result);
+			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			ptLink.put(chouetteId, result);
 		}
 		return result;
 	}
 
-	public AreaCentroid getAreaCentroid(String objectId) {
-		AreaCentroid result = areaCentroid.get(objectId);
+	public AreaCentroid getAreaCentroid(ChouetteId chouetteId) {
+		AreaCentroid result = areaCentroid.get(chouetteId);
 		if (result == null) {
 			result = new AreaCentroid();
 			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setObjectId(objectId);
-			areaCentroid.put(objectId, result);
+			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			areaCentroid.put(chouetteId, result);
 		}
 		return result;
 	}
@@ -60,13 +60,13 @@ public class NeptuneObjectFactory {
 		return result;
 	}
 	
-	public TimeSlot getTimeSlot(String objectId) {
-		TimeSlot timeSlot = timeSlots.get(objectId);
+	public TimeSlot getTimeSlot(ChouetteId chouetteId) {
+		TimeSlot timeSlot = timeSlots.get(chouetteId);
 		if (timeSlot == null) {
 			timeSlot = new TimeSlot();
 			timeSlot.setChouetteId(new ChouetteId());
-			timeSlot.getChouetteId().setObjectId(objectId);
-			timeSlots.put(objectId,  timeSlot);
+			timeSlot.getChouetteId().setObjectId(chouetteId.getObjectId());
+			timeSlots.put(chouetteId,  timeSlot);
 		}
 		return timeSlot;
 	}

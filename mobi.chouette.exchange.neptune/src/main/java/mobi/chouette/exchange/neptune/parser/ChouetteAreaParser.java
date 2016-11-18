@@ -13,6 +13,8 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.JsonExtension;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
 import mobi.chouette.exchange.neptune.model.AreaCentroid;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.validation.AreaCentroidValidator;
@@ -25,7 +27,6 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.type.UserNeedEnum;
-import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -34,7 +35,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 @Log4j
-public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
+public class ChouetteAreaParser extends NeptuneChouetteIdGenerator implements Parser, Constant, JsonExtension {
 	private static final String CHILD_TAG = "ChouetteArea";
 
 	@Override
@@ -83,7 +84,7 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
-				stopArea = ObjectFactory.getStopArea(referential, objectId);
+				stopArea = NeptuneChouetteIdObjectFactory.getStopArea(referential, toChouetteId(objectId, "default_codespace"));
 				stopArea.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -107,26 +108,26 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 						if (stopArea.getAreaType() == ChouetteAreaEnum.BoardingPosition
 								|| stopArea.getAreaType() == ChouetteAreaEnum.Quay) {
 							for (String childId : contains) {
-								StopPoint stopPoint = ObjectFactory
-										.getStopPoint(referential, childId);
+								StopPoint stopPoint = NeptuneChouetteIdObjectFactory
+										.getStopPoint(referential, toChouetteId(childId, "default_codespace"));
 								stopPoint.setContainedInStopArea(stopArea);
 							}
 						} else if (stopArea.getAreaType() == ChouetteAreaEnum.ITL) {
 							// Arret Netex : Pass stopArea of type ITL into routingConstraint object
-							routingConstraint = ObjectFactory.getRoutingConstraint(referential, objectId);
+							routingConstraint = NeptuneChouetteIdObjectFactory.getRoutingConstraint(referential, toChouetteId(objectId, "default_codespace"));
 							routingConstraint.setName(stopArea.getName());
 							
 							for (String childId : contains) {
-								StopArea child = ObjectFactory.getStopArea(
-										referential, childId);
+								StopArea child = NeptuneChouetteIdObjectFactory.getStopArea(
+										referential, toChouetteId(childId, "default_codespace"));
 //								Arret NETEX : Let Routing Constraint handle this
 //								stopArea.addRoutingConstraintStopArea(child);
 								routingConstraint.addRoutingConstraintStopArea(child);
 							}
 						} else {
 							for (String childId : contains) {
-								StopArea child = ObjectFactory.getStopArea(
-										referential, childId);
+								StopArea child = NeptuneChouetteIdObjectFactory.getStopArea(
+										referential, toChouetteId(childId, "default_codespace"));
 								child.setParent(stopArea);
 							}
 						}
@@ -219,9 +220,9 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
-				areaCentroid = factory.getAreaCentroid(objectId);
+				areaCentroid = factory.getAreaCentroid(toChouetteId(objectId, "default_codespace"));
 				String areaId = inverse.get(objectId);
-				stopArea = ObjectFactory.getStopArea(referential, areaId);
+				stopArea = NeptuneChouetteIdObjectFactory.getStopArea(referential, toChouetteId(areaId, "default_codespace"));
 				areaCentroid.setContainedIn(stopArea);
 			} else if (xpp.getName().equals("name")) {
 				areaCentroid.setName(ParserUtils.getText(xpp.nextText()));

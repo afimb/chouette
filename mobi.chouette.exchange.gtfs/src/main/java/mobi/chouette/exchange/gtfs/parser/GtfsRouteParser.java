@@ -28,11 +28,12 @@ import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.type.TransportModeNameEnum;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class GtfsRouteParser implements Parser, Validator, Constant {
+public class GtfsRouteParser extends GtfsChouetteIdGenerator implements Parser, Validator, Constant {
 
 	@Getter
 	@Setter
@@ -188,20 +189,20 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 
 		String lineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY,
 				gtfsRouteId, log);
-		Line line = ObjectFactory.getLine(referential, lineId);
+		Line line = GtfsChouetteIdObjectFactory.getLine(referential, toChouetteId(lineId, "default_codespace"));
 		convert(context, gtfsRoute, line);
 
 		// PTNetwork
 		String ptNetworkId = configuration.getObjectIdPrefix() + ":" + Network.PTNETWORK_KEY + ":"
 				+ configuration.getObjectIdPrefix();
-		Network ptNetwork = ObjectFactory.getPTNetwork(referential, ptNetworkId);
+		Network ptNetwork = GtfsChouetteIdObjectFactory.getPTNetwork(referential, toChouetteId(ptNetworkId, "default_codespace"));
 		line.setNetwork(ptNetwork);
 
 		// Company
 		if (gtfsRoute.getAgencyId() != null) {
 			String companyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 					Company.COMPANY_KEY, gtfsRoute.getAgencyId(), log);
-			Company company = ObjectFactory.getCompany(referential, companyId);
+			Company company = GtfsChouetteIdObjectFactory.getCompany(referential, toChouetteId(companyId, "default_codespace"));
 			line.setCompany(company);
 		} else if (!referential.getSharedCompanies().isEmpty()) {
 			Company company = referential.getSharedCompanies().values().iterator().next();

@@ -59,9 +59,9 @@ public class TimebandUpdater implements Updater<Timeband> {
 			oldValue.setName(sdf.format(oldValue.getStartTime())+" - "+sdf.format(oldValue.getEndTime()));
 		}
 		String codeSpace = oldValue.getChouetteId().getCodeSpace();
-//		if (timebandDAO.findByChouetteId(codeSpace, oldValue.getChouetteId().getObjectId()) == null)
-//			timebandDAO.create(oldValue);
-//		else
-//			timebandDAO.update(oldValue);
+		if (timebandDAO.findByChouetteId(codeSpace, oldValue.getChouetteId().getObjectId()) == null)
+			timebandDAO.create(oldValue);
+		else
+			timebandDAO.update(oldValue);
 	}
 }

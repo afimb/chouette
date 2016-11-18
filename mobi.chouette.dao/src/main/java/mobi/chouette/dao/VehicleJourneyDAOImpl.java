@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.VehicleJourney;
 
 import org.hibernate.Session;
@@ -33,7 +34,7 @@ public class VehicleJourneyDAOImpl extends GenericDAOImpl<VehicleJourney> implem
 	}
 
 	@Override
-	public void deleteChildren(final List<String> vehicleJourneyObjectIds) {
+	public void deleteChildren(final List<ChouetteId> vehicleJourneyObjectIds) {
 
 		Session session = em.unwrap(Session.class);
 
@@ -53,7 +54,7 @@ public class VehicleJourneyDAOImpl extends GenericDAOImpl<VehicleJourney> implem
 					for (int i = 0; i < size; i++) {
 
 						buffer.append('\'');
-						buffer.append(vehicleJourneyObjectIds.get(i));
+						buffer.append(vehicleJourneyObjectIds.get(i).getObjectId());
 						buffer.append('\'');
 						if (i != size - 1) {
 							buffer.append(',');

@@ -13,11 +13,12 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
 import mobi.chouette.model.Company;
-import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class GtfsAgencyParser implements Parser, Validator, Constant {
+public class GtfsAgencyParser extends GtfsChouetteIdGenerator implements Parser, Validator, Constant {
 
 	@Override
 	public void validate(Context context) throws Exception {
@@ -104,7 +105,7 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 		for (GtfsAgency gtfsAgency : importer.getAgencyById()) {
 			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Company.COMPANY_KEY,
 					gtfsAgency.getAgencyId(), log);
-			Company company = ObjectFactory.getCompany(referential, objectId);
+			Company company = GtfsChouetteIdObjectFactory.getCompany(referential, toChouetteId(objectId, "default_codespace"));
 			convert(context, gtfsAgency, company);
 		}
 	}
