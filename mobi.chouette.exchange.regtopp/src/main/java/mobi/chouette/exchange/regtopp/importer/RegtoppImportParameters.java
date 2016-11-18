@@ -21,7 +21,7 @@ import mobi.chouette.exchange.regtopp.importer.version.RegtoppVersion;
 @NoArgsConstructor
 @ToString(callSuper = true)
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "objectIdPrefix", "referencesType", "version", "coordinateProjection", "charsetEncoding", "calendarStrategy" })
+@XmlType(propOrder = { "objectIdPrefix", "referencesType", "version", "coordinateProjection", "charsetEncoding", "calendarStrategy", "batchParse" })
 public class RegtoppImportParameters extends AbstractImportParameter {
 
 	@Getter
@@ -57,6 +57,12 @@ public class RegtoppImportParameters extends AbstractImportParameter {
 	@Setter
 	@XmlElement(name = "calendar_strategy", required = false)
 	private CalendarStrategy calendarStrategy = CalendarStrategy.ADD;
+
+	// Batch parse whole shipment at once instead of Line by Line
+	@Getter
+	@Setter
+	@XmlElement(name = "batch_parse", required = false)
+	private boolean batchParse = false;
 
 	public CalendarStrategy getCalendarStrategy() {
 		if (calendarStrategy == null) {

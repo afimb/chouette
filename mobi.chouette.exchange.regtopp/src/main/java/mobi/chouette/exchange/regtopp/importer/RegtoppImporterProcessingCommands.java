@@ -7,6 +7,7 @@ import static mobi.chouette.common.Constant.VALIDATION;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -45,7 +46,8 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 	}
 
 	static {
-		ProcessingCommandsFactory.factories.put(RegtoppImporterProcessingCommands.class.getName(), new DefaultFactory());
+		ProcessingCommandsFactory.factories.put(RegtoppImporterProcessingCommands.class.getName(),
+				new DefaultFactory());
 	}
 
 	@Override
@@ -68,7 +70,8 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 			commands.add(CommandFactory.create(initialContext, RegtoppFilePresenceValidationCommand.class.getName()));
 
 			// validate file consistency
-			commands.add(CommandFactory.create(initialContext, RegtoppFileConsistencyValidationCommand.class.getName()));
+			commands.add(
+					CommandFactory.create(initialContext, RegtoppFileConsistencyValidationCommand.class.getName()));
 		} catch (Exception e) {
 			log.error(e, e);
 			throw new RuntimeException("unable to call factories", e);
@@ -88,18 +91,40 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 
 			Index<AbstractRegtoppTripIndexTIX> index = importer.getUniqueLinesByTripIndex();
 			Iterator<String> keys = index.keys();
+
+			if (parameters.isBatchParse()) {
+
+				RegtoppLineParserCommand parser = (RegtoppLineParserCommand) CommandFactory.create(initialContext,
+						RegtoppLineParserCommand.class.getName());
+
+				parser.setBatchParse(true);
+
+				commands.add(parser);
+			}
+			
 			while (keys.hasNext()) {
+				Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 				String lineId = keys.next();
 
-				Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
+				if (!parameters.isBatchParse()) {
+					// Pull out line by line and convert to Chouette model
+					RegtoppLineParserCommand parser = (RegtoppLineParserCommand) CommandFactory.create(initialContext,
+							RegtoppLineParserCommand.class.getName());
 
-				// Pull out line by line and convert to Chouette model
-				RegtoppLineParserCommand parser = (RegtoppLineParserCommand) CommandFactory.create(initialContext, RegtoppLineParserCommand.class.getName());
+					parser.setLineId(lineId);
+					chain.add(parser);
 
-				parser.setLineId(lineId);
-				chain.add(parser);
+				}
+
 				if (withDao && !parameters.isNoSave()) {
 
+					if (parameters.isBatchParse()) {
+
+						// Set referential
+						Command setReferential = CommandFactory.create(initialContext,
+								RegtoppSetReferentialCommand.class.getName());
+						chain.add(setReferential);
+					}
 					// Clean existing
 					Command clean = CommandFactory.create(initialContext, RegtoppLineDeleteCommand.class.getName());
 					chain.add(clean);
@@ -113,7 +138,8 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 				}
 				if (level3validation) {
 					// add validation
-					Command validate = CommandFactory.create(initialContext, ImportedLineValidatorCommand.class.getName());
+					Command validate = CommandFactory.create(initialContext,
+							ImportedLineValidatorCommand.class.getName());
 					chain.add(validate);
 				}
 				commands.add(chain);
@@ -136,7 +162,8 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 		try {
 			Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 
-			RegtoppStopParserCommand parser = (RegtoppStopParserCommand) CommandFactory.create(initialContext, RegtoppStopParserCommand.class.getName());
+			RegtoppStopParserCommand parser = (RegtoppStopParserCommand) CommandFactory.create(initialContext,
+					RegtoppStopParserCommand.class.getName());
 			chain.add(parser);
 			if (withDao && !parameters.isNoSave()) {
 
@@ -160,11 +187,10 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 
 		List<Command> commands = new ArrayList<>();
 		try {
-			
+
 			// Remove old line definitions from same date
 			commands.add(CommandFactory.create(initialContext, RegtoppRemoveObsoleteLinesCommand.class.getName()));
-			
-			
+
 			if (level3validation && !(parameters.getReferencesType().equalsIgnoreCase("stop_area"))) {
 				// add shared data validation
 				commands.add(CommandFactory.create(initialContext, SharedDataValidatorCommand.class.getName()));
