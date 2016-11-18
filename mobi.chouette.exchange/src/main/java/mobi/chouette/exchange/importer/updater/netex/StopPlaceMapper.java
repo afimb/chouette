@@ -85,7 +85,14 @@ public class StopPlaceMapper {
 		boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
 		mapCentroid(quay, boardingPosition);
 		mapName(quay, boardingPosition);
+		mapCompassBearing(quay,boardingPosition);
 		return boardingPosition;
+	}
+
+	private void mapCompassBearing(Quay quay, StopArea boardingPosition) {
+		if(quay.getCompassBearing() != null) {
+			boardingPosition.setCompassBearing(quay.getCompassBearing().intValue());
+		}
 	}
 
 	private StopPlace createStopPlace(StopArea stopArea) {
@@ -96,12 +103,20 @@ public class StopPlaceMapper {
 		return stopPlace;
 	}
 
+
 	private Quay createQuay(StopArea stopArea) {
 		Quay quay = new Quay();
 		mapId(stopArea, quay);
 		mapCentroid(stopArea, quay);
 		mapName(stopArea, quay);
+		mapCompassBearing(stopArea,quay);
 		return quay;
+	}
+
+	private void mapCompassBearing(StopArea stopArea, Quay quay) {
+		if(stopArea.getCompassBearing() != null) {
+			quay.setCompassBearing(new Float(stopArea.getCompassBearing()));
+		}
 	}
 
 	private void mapId(StopArea stopArea, Zone_VersionStructure zone) {
