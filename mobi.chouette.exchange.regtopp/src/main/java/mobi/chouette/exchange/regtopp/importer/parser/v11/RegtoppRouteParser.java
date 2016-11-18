@@ -104,8 +104,9 @@ public class RegtoppRouteParser extends LineSpecificParser {
 							// Add stop point to journey pattern AND route (for now)
 							journeyPattern.addStopPoint(stopPoint);
 							route.getStopPoints().add(stopPoint);
+							log.debug("Adding StopPoint " + chouetteStopPointId + " to JourneyPattern " + chouetteJourneyPatternId + ". ContainedInStopArea is " + chouetteStopAreaId);
 						} else {
-							log.warn("StopArea with id "+chouetteStopAreaId+" not found for JourneyPattern "+chouetteJourneyPatternId+ " in Line "+chouetteLineId);
+							log.warn("StopArea with id "+chouetteStopAreaId+" not found for JourneyPattern "+chouetteJourneyPatternId+ " in Line "+chouetteLineId + ". Not adding StopPoint " + chouetteStopPointId + " to JourneyPattern.");
 						}
 					}
 					journeyPattern.setFilled(true);
