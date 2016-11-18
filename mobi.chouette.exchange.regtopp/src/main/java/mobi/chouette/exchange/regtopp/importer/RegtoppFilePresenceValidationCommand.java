@@ -81,6 +81,7 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 			parserVersion = declaredVersion;
 		} else 	if(declaredVersion == null) {
 			parserVersion = detectedVersion;
+			log.info("Detected regtopp version is " + detectedVersion + ".");
 		}
 		
 		if(parserVersion == null) {

@@ -8,4 +8,6 @@ public interface RegtoppConstant extends mobi.chouette.common.Constant {
 	public static final String CHARSET = "charset_encoding";
 	public static final String CALENDAR_START_DATE = "calendar_start_date";
 
+	public static final String LINE_REFERENTIALS = "line_referentials";
+
 }

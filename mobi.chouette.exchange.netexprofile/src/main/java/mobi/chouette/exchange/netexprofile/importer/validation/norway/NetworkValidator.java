@@ -8,6 +8,7 @@ import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.DataLocation;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import org.rutebanken.netex.model.*;
 
 import javax.xml.bind.JAXBElement;
@@ -28,7 +29,8 @@ public class NetworkValidator extends AbstractValidator implements Validator<Net
 
     @Override
     protected void initializeCheckPoints(Context context) {
-        addItemToValidation(context, PREFIX, "Network", 4, "E", "E", "E", "E");
+        //addItemToValidation(context, PREFIX, "Network", 4, "E", "E", "E", "E");
+        addItemToValidation(context, PREFIX, "Network", 3, "E", "E", "E");
     }
 
     @Override
@@ -70,9 +72,11 @@ public class NetworkValidator extends AbstractValidator implements Validator<Net
         Context objectContext = (Context) localContext.get(objectId);
 
         // 2-NETEX-Network-1 : validate mandatory transport organisation element (cardinality 1:1)
+        // TODO: check out why schema validation requires 'abstract' attribute set to false which is not available in netex model, disabled for now
         prepareCheckPoint(context, NETWORK_1);
         JAXBElement<? extends OrganisationRefStructure> transportOrganisationRef = target.getTransportOrganisationRef();
 
+/*
         if (transportOrganisationRef == null) {
             DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
             dataLocation.setName("OrganisationRef");
@@ -88,22 +92,34 @@ public class NetworkValidator extends AbstractValidator implements Validator<Net
                 addValidationError(context, NETWORK_2, String.format("Non-existent organisation id : '%s'", organisationId), dataLocation);
             }
         }
+*/
 
+        // TODO: change back to NETWORK_3 when validator complete
         // 2-NETEX-Network-3 : validate mandatory groups of lines (cardinality 1:*)
-        prepareCheckPoint(context, NETWORK_3);
+        //prepareCheckPoint(context, NETWORK_3);
+        prepareCheckPoint(context, NETWORK_2);
         GroupsOfLinesInFrame_RelStructure groupsOfLinesStruct = target.getGroupsOfLines();
 
         // TODO consider separating the two checks in if test
         if (groupsOfLinesStruct == null || isCollectionEmpty(groupsOfLinesStruct.getGroupOfLines())) {
+            // TODO: consider making data location global for validator, with only reference to file name
             DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
-            dataLocation.setName("GroupOfLines");
-            addValidationError(context, NETWORK_3, "Missing mandatory element : 'groupsOfLines' or 'GroupOfLines'", dataLocation);
+            //dataLocation.setName("GroupOfLines");
+            //addValidationError(context, NETWORK_3, "Missing mandatory element : 'groupsOfLines' or 'GroupOfLines'", dataLocation);
+            //addValidationError(context, NETWORK_2, "Missing mandatory element : 'groupsOfLines' or 'GroupOfLines'", dataLocation);
+            // TODO split this up in two
+            ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+            validationReporter.addCheckPointReportError(context, NETWORK_2,
+                    "Missing mandatory element : 'groupsOfLines' or 'GroupOfLines'", dataLocation, target.getId(), target.getId());
         } else {
             // TODO validate group of lines here...
+            // TODO also validate name element of each GroupOfLines element
         }
 
+        // TODO: change back to NETWORK_4 when validator complete
         // 2-NETEX-Network-4 : validate optional tariff zones (cardinality 0:*)
-        prepareCheckPoint(context, NETWORK_4);
+        //prepareCheckPoint(context, NETWORK_4);
+        prepareCheckPoint(context, NETWORK_3);
         TariffZoneRefs_RelStructure tariffZonesStruct = target.getTariffZones();
 
         if (tariffZonesStruct != null && !isCollectionEmpty(tariffZonesStruct.getTariffZoneRef())) {

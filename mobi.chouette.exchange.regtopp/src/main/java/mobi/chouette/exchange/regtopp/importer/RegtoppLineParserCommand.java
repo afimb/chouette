@@ -1,7 +1,15 @@
 package mobi.chouette.exchange.regtopp.importer;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.naming.InitialContext;
+
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -9,25 +17,25 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.CompassBearingGenerator;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.RegtoppConstant;
+import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.index.v11.DaycodeById;
 import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppLineParser;
 import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppTimetableParser;
 import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
+import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.Factory;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
-
-import javax.naming.InitialContext;
-import java.io.IOException;
-
-import static mobi.chouette.exchange.report.ActionReporter.*;
 
 @Log4j
 public class RegtoppLineParserCommand implements Command {
@@ -38,6 +46,10 @@ public class RegtoppLineParserCommand implements Command {
 	@Setter
 	private String lineId;
 
+	@Getter
+	@Setter
+	private boolean batchParse;
+
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
@@ -46,7 +58,7 @@ public class RegtoppLineParserCommand implements Command {
 
 		try {
 			Referential referential = (Referential) context.get(REFERENTIAL);
-			ActionReport report = (ActionReport) context.get(REPORT);
+			RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 			if (referential != null) {
 				referential.clear(true);
 			}
@@ -55,10 +67,11 @@ public class RegtoppLineParserCommand implements Command {
 				log.error("Referential is null!");
 			}
 			
+			Map<String,Referential> lineReferentials = new HashMap<>();
+			context.put(RegtoppConstant.LINE_REFERENTIALS, lineReferentials);
 			
 			String calendarStartDate = (String) context.get(RegtoppConstant.CALENDAR_START_DATE);
 			if(calendarStartDate == null) {
-				RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 				DaycodeById dayCodeIndex = (DaycodeById) importer.getDayCodeById();
 				RegtoppDayCodeHeaderDKO header = dayCodeIndex.getHeader();
 				context.put(RegtoppConstant.CALENDAR_START_DATE,header.getDate().toString());
@@ -88,13 +101,34 @@ public class RegtoppLineParserCommand implements Command {
 				timetableParser.parse(context);
 			}
 
-			// Parse this line only
-			RegtoppLineParser lineParser = (RegtoppLineParser) ParserFactory.create(RegtoppLineParser.class.getName());
-			lineParser.setLineId(lineId);
-			lineParser.parse(context);
+			if(batchParse) {
+				Index<AbstractRegtoppTripIndexTIX> index = importer.getUniqueLinesByTripIndex();
+				Iterator<String> keys = index.keys();
+				RegtoppLineParser lineParser = (RegtoppLineParser) ParserFactory.create(RegtoppLineParser.class.getName());
+				while (keys.hasNext()) {
+					
+					Referential lineReferential = createLineReferential(referential);
+					context.put(REFERENTIAL, lineReferential);
+					
+					String lineId = keys.next();
+					lineParser.setLineId(lineId);
+					lineParser.parse(context);
+					
+					lineReferentials.put(lineId, lineReferential);
+					addStats(context, lineReferential);
+				}
+				
+				CompassBearingGenerator compassBearingGenerator = new CompassBearingGenerator();
+				compassBearingGenerator.cacluateCompassBearings(referential);
+				
+			} else {
+				// Parse this line only
+				RegtoppLineParser lineParser = (RegtoppLineParser) ParserFactory.create(RegtoppLineParser.class.getName());
+				lineParser.setLineId(lineId);
+				lineParser.parse(context);
+				addStats(context, referential);
+			}
 
-
-			addStats(context, referential);
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error("Failed hard to parse line:", e);
@@ -104,6 +138,24 @@ public class RegtoppLineParserCommand implements Command {
 
 		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		return result;
+	}
+
+	private Referential createLineReferential(Referential referential) {
+		Referential newReferential = new Referential();
+		
+		newReferential.setSharedAccessLinks(referential.getSharedAccessLinks());
+		newReferential.setSharedAccessPoints(referential.getSharedAccessPoints());
+		newReferential.setSharedCompanies(referential.getSharedCompanies());
+		newReferential.setSharedConnectionLinks(referential.getSharedConnectionLinks());
+		newReferential.setSharedGroupOfLines(referential.getSharedGroupOfLines());
+		newReferential.setSharedLines(referential.getSharedLines());
+		newReferential.setSharedPTNetworks(referential.getSharedPTNetworks());
+		newReferential.setSharedStopAreas(referential.getSharedStopAreas());
+		newReferential.setSharedTimebands(referential.getSharedTimebands());
+		newReferential.setSharedTimetables(referential.getSharedTimetables());
+		
+		return newReferential;
+
 	}
 
 	private void addStats(Context context, Referential referential) {

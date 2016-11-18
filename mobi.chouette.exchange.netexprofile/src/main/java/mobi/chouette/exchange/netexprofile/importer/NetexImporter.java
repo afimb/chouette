@@ -1,7 +1,15 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
-import java.io.File;
-import java.io.IOException;
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
+import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidatorFactory;
+import mobi.chouette.exchange.netexprofile.importer.validation.norway.NorwayLineNetexProfileValidator;
+import mobi.chouette.exchange.netexprofile.parser.xml.PredefinedSchemaListClasspathResourceResolver;
+import org.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -16,17 +24,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Context;
-import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
-import mobi.chouette.exchange.netexprofile.importer.validation.norway.NorwayLineNetexProfileValidator;
-import mobi.chouette.exchange.netexprofile.parser.xml.PredefinedSchemaListClasspathResourceResolver;
-import org.rutebanken.netex.model.PublicationDeliveryStructure;
+import java.io.File;
+import java.io.IOException;
 
 @Log4j
 public class NetexImporter {
@@ -64,14 +63,16 @@ public class NetexImporter {
 		return document;
 	}
 
-	public PublicationDeliveryStructure unmarshal(File f) throws JAXBException {
+	@SuppressWarnings("unchecked")
+	public PublicationDeliveryStructure unmarshal(File file) throws JAXBException {
 		JAXBContext netexJaxBContext = getNetexJaxBContext();
 		Unmarshaller createUnmarshaller = netexJaxBContext.createUnmarshaller();
-		JAXBElement<PublicationDeliveryStructure> commonDeliveryStructure = (JAXBElement<PublicationDeliveryStructure>) createUnmarshaller
-				.unmarshal(new StreamSource(f));
+		JAXBElement<PublicationDeliveryStructure> commonDeliveryStructure = (JAXBElement<PublicationDeliveryStructure>)
+				createUnmarshaller.unmarshal(new StreamSource(file));
 		return commonDeliveryStructure.getValue();
 	}
 
+	@SuppressWarnings("unchecked")
 	public PublicationDeliveryStructure unmarshal(Document d) throws JAXBException {
 		JAXBContext netexJaxBContext = getNetexJaxBContext();
 		Unmarshaller createUnmarshaller = netexJaxBContext.createUnmarshaller();
@@ -80,17 +81,18 @@ public class NetexImporter {
 		return commonDeliveryStructure.getValue();
 	}
 
-	public NetexProfileValidator getProfileValidator(Context context) {
+	public NetexProfileValidator getProfileValidator(Context context) throws Exception {
 		log.warn("Profile validator selector not implemented, always returning NorwayLineNetexProfileValidator");
 
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(Constant.CONFIGURATION);
-		NetexProfileValidator profileValidator = null;
+		NetexProfileValidator profileValidator;
 
 		switch (configuration.getProfileId()) {
 		// TODO add correct ids. for now defaulting to NorwayLine
 		case "norway-yadi-yadi":
 		default:
-			profileValidator = new NorwayLineNetexProfileValidator();
+			profileValidator = (NorwayLineNetexProfileValidator) NetexProfileValidatorFactory.create(
+					NorwayLineNetexProfileValidator.class.getName(), context);
 		}
 		return profileValidator;
 	}

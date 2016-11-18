@@ -14,8 +14,8 @@ import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import org.rutebanken.netex.model.*;
 import org.apache.commons.lang.StringUtils;
+import org.rutebanken.netex.model.*;
 
 import javax.xml.bind.JAXBElement;
 import java.util.ArrayList;
@@ -23,10 +23,10 @@ import java.util.Collection;
 import java.util.List;
 
 @Log4j
-public class LineParser extends AbstractParser implements Parser {
+public class LineParser implements NetexParser {
 
     @Override
-    public void initializeReferentials(Context context) throws Exception {
+    public void initReferentials(Context context) throws Exception {
         NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);
         LineValidator validator = (LineValidator) ValidatorFactory.create(LineValidator.class.getName(), context);
         LinesInFrame_RelStructure linesInFrameStruct = (LinesInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
@@ -62,6 +62,14 @@ public class LineParser extends AbstractParser implements Parser {
         Collection<org.rutebanken.netex.model.Line> lines = netexReferential.getLines().values();
         for (org.rutebanken.netex.model.Line netexLine : lines) {
             mobi.chouette.model.Line chouetteLine = ObjectFactory.getLine(chouetteReferential, netexLine.getId());
+            chouetteLine.setFilled(true);
+
+            // mandatory
+            for (mobi.chouette.model.Network network : chouetteReferential.getPtNetworks().values()) {
+                if (network.isFilled()) {
+                    chouetteLine.setNetwork(network);
+                }
+            }
 
             //ModificationEnumeration modification = netexLine.getModification(); // how to handle in chouette? can be: new, delete, revise or delta
 
@@ -159,9 +167,6 @@ public class LineParser extends AbstractParser implements Parser {
             }
 
             // TODO: add remaining, optional fields here... see: https://rutebanken.atlassian.net/wiki/display/PUBLIC/network#network-Line
-
-            // finally
-            chouetteLine.setFilled(true);
         }
     }
 

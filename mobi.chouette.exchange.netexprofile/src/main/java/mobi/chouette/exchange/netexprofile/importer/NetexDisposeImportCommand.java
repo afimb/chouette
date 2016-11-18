@@ -1,9 +1,7 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
-import java.io.IOException;
-
-import javax.naming.InitialContext;
-
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
@@ -12,8 +10,8 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.AbstractDisposeImportCommand;
 import mobi.chouette.exchange.netexprofile.Constant;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
+import javax.naming.InitialContext;
+import java.io.IOException;
 
 @Log4j
 public class NetexDisposeImportCommand extends AbstractDisposeImportCommand implements  Constant {

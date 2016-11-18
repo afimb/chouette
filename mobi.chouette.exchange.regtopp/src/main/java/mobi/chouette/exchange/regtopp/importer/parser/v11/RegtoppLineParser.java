@@ -62,11 +62,6 @@ public class RegtoppLineParser extends LineSpecificParser {
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
-		// Clear any previous data as this referential is reused / TODO
-		if (referential != null) {
-			referential.clear(true);
-		}
-
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 		String calendarStartDate = (String) context.get(RegtoppConstant.CALENDAR_START_DATE);
