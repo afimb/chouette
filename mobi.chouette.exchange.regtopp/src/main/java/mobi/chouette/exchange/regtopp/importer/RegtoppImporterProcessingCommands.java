@@ -7,6 +7,7 @@ import static mobi.chouette.common.Constant.VALIDATION;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -88,33 +89,42 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 
 		try {
 
+			Index<AbstractRegtoppTripIndexTIX> index = importer.getUniqueLinesByTripIndex();
+			Iterator<String> keys = index.keys();
+
 			if (parameters.isBatchParse()) {
 
-				// Pull out line by line and convert to Chouette model
 				RegtoppLineParserCommand parser = (RegtoppLineParserCommand) CommandFactory.create(initialContext,
 						RegtoppLineParserCommand.class.getName());
 
 				parser.setBatchParse(true);
 
 				commands.add(parser);
-
 			}
-
-			Index<AbstractRegtoppTripIndexTIX> index = importer.getUniqueLinesByTripIndex();
-			Iterator<String> keys = index.keys();
+			
 			while (keys.hasNext()) {
+				Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 				String lineId = keys.next();
 
-				Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
+				if (!parameters.isBatchParse()) {
+					// Pull out line by line and convert to Chouette model
+					RegtoppLineParserCommand parser = (RegtoppLineParserCommand) CommandFactory.create(initialContext,
+							RegtoppLineParserCommand.class.getName());
 
-				// Pull out line by line and convert to Chouette model
-				RegtoppLineParserCommand parser = (RegtoppLineParserCommand) CommandFactory.create(initialContext,
-						RegtoppLineParserCommand.class.getName());
+					parser.setLineId(lineId);
+					chain.add(parser);
 
-				parser.setLineId(lineId);
-				chain.add(parser);
+				}
+
 				if (withDao && !parameters.isNoSave()) {
 
+					if (parameters.isBatchParse()) {
+
+						// Set referential
+						Command setReferential = CommandFactory.create(initialContext,
+								RegtoppSetReferentialCommand.class.getName());
+						chain.add(setReferential);
+					}
 					// Clean existing
 					Command clean = CommandFactory.create(initialContext, RegtoppLineDeleteCommand.class.getName());
 					chain.add(clean);

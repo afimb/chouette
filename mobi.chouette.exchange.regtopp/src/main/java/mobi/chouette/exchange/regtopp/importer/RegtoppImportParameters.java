@@ -62,7 +62,7 @@ public class RegtoppImportParameters extends AbstractImportParameter {
 	@Getter
 	@Setter
 	@XmlElement(name = "batch_parse", required = false)
-	private boolean batchParse = true;
+	private boolean batchParse = false;
 
 	public CalendarStrategy getCalendarStrategy() {
 		if (calendarStrategy == null) {

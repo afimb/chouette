@@ -22,6 +22,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static mobi.chouette.exchange.report.ActionReporter.*;
 
@@ -46,13 +48,10 @@ public class RegtoppLineDeleteCommand implements Command {
 		Line newLine = referential.getLines().values().iterator().next();
 		try {
 
-			Line existingLine = lineDAO.findByObjectId(newLine.getObjectId());
-			if (existingLine != null) {
-				log.info("Delete existing line before import: " + existingLine.getObjectId() + " "+existingLine.getName());
-				lineDAO.delete(existingLine);
-				lineDAO.flush();
-			}
-
+			
+			lineDAO.deleteByObjectId(Arrays.asList(newLine.getObjectId()));
+			log.info("Delete existing line before import: " + newLine.getObjectId() + " "+newLine.getName());
+			
 			result = SUCCESS;
 		} catch (Exception ex) {
 			log.error(ex.getMessage());
