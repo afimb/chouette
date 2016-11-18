@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.NeptuneLocalizedObject;
@@ -28,20 +29,20 @@ public abstract class NeptuneUtil {
 	 *            the list to parse
 	 * @return the object ids list
 	 */
-	public static List<String> extractObjectIds(Collection<? extends NeptuneIdentifiedObject> neptuneObjects) {
-		List<String> objectIds = new ArrayList<String>();
+	public static List<ChouetteId> extractObjectIds(Collection<? extends NeptuneIdentifiedObject> neptuneObjects) {
+		List<ChouetteId> chouetteIds = new ArrayList<ChouetteId>();
 		if (neptuneObjects != null) {
 			for (NeptuneIdentifiedObject neptuneObject : neptuneObjects) {
 				if (neptuneObject != null) {
-					String objectId = neptuneObject.getChouetteId().getObjectId();
-					if (objectId != null) {
-						objectIds.add(objectId);
+					ChouetteId chouetteId = neptuneObject.getChouetteId();
+					if (chouetteId != null) {
+						chouetteIds.add(chouetteId);
 					}
 				}
 			}
 		}
 
-		return objectIds;
+		return chouetteIds;
 	}
 
 	/**
@@ -51,12 +52,12 @@ public abstract class NeptuneUtil {
 	 *            the list to parse
 	 * @return the ids map
 	 */
-	public static <T extends NeptuneIdentifiedObject> Map<String, T> mapOnObjectIds(Collection<T> neptuneObjects) {
-		Map<String, T> map = new HashMap<String, T>();
+	public static <T extends NeptuneIdentifiedObject> Map<ChouetteId, T> mapOnObjectIds(Collection<T> neptuneObjects) {
+		Map<ChouetteId, T> map = new HashMap<ChouetteId, T>();
 		if (neptuneObjects != null) {
 			for (T neptuneObject : neptuneObjects) {
 				if (neptuneObject != null) {
-					String id = neptuneObject.getChouetteId().getObjectId();
+					ChouetteId id = neptuneObject.getChouetteId();
 					if (id != null) {
 						map.put(id, neptuneObject);
 					}

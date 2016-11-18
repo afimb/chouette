@@ -10,6 +10,7 @@ import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -40,8 +41,8 @@ public class ConnectionLinkGenerator extends AbstractGenerator {
 		}
 		double distanceMax = configuration.getMaxDistanceForConnectionLink();
 		double minDistanceRejected = 1000000;
-		Map<String, ConnectionLink> fixedLinkMap = NeptuneUtil.mapOnObjectIds(fixedLinks);
-		Map<String, ConnectionLink> excludedLinkMap = NeptuneUtil.mapOnObjectIds(excludedLinks);
+		Map<ChouetteId, ConnectionLink> fixedLinkMap = NeptuneUtil.mapOnObjectIds(fixedLinks);
+		Map<ChouetteId, ConnectionLink> excludedLinkMap = NeptuneUtil.mapOnObjectIds(excludedLinks);
 
 		// build a map for CL for routes
 //		Map<String, List<String>> routesForStopArea = new HashMap<String, List<String>>();
@@ -83,6 +84,9 @@ public class ConnectionLinkGenerator extends AbstractGenerator {
 								+ sourceToken[2] + "_" + targetToken[2];
 						String reverseId = sourceToken[0] + ":" + ConnectionLink.CONNECTIONLINK_KEY + ":"
 								+ targetToken[2] + "_" + sourceToken[2];
+						
+						ChouetteId chouetteId = new ChouetteId(sourceToken[0], sourceToken[2], false);
+						ChouetteId reverseChouetteId = new ChouetteId(sourceToken[0], targetToken[2], false);
 
 						if (excludedLinkMap.containsKey(objectId))
 							continue;

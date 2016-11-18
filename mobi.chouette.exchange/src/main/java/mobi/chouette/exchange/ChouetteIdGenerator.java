@@ -1,5 +1,7 @@
 package mobi.chouette.exchange;
 
+import java.util.List;
+
 import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 
@@ -20,10 +22,25 @@ public interface ChouetteIdGenerator {
 	 */
 	public ChouetteId toChouetteId(String objectId, String defaultCodespace);
 	
-	
+	/**
+	 * Convert some object id list to chouette id list
+	 * @param lstObjectId
+	 * @param defaultCodespace
+	 * @return
+	 */
+	public List<ChouetteId> toListChouetteId(List<String> lstObjectId, String defaultCodespace);
+			
 	/**
 	 * Convert some chouette id to specific format id for export
 	 */
 	public String toSpecificFormatId(ChouetteId chouetteId, String defaultCodespace, NeptuneIdentifiedObject object);
+	
+	/**
+	 * Convert some chouette id list to specific format id list
+	 * @param lstChouetteId
+	 * @param defaultCodespace
+	 * @return
+	 */
+	public List<String> toListSpecificFormatId(List<ChouetteId> lstChouetteId, String defaultCodespace, NeptuneIdentifiedObject object);
 
 }

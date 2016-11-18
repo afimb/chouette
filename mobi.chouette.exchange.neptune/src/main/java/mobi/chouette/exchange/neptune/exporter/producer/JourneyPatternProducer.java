@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.neptune.exporter.producer;
 
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
 import mobi.chouette.exchange.neptune.exporter.util.NeptuneObjectUtil;
 import mobi.chouette.model.JourneyPattern;
 
@@ -9,6 +10,7 @@ public class JourneyPatternProducer extends AbstractJaxbNeptuneProducer<JourneyP
 
 	// @Override
 	public JourneyPatternType produce(JourneyPattern journeyPattern, boolean addExtension) {
+		NeptuneChouetteIdGenerator ncig = new NeptuneChouetteIdGenerator();
 		JourneyPatternType jaxbJourneyPattern = tridentFactory.createJourneyPatternType();
 
 		//
@@ -24,7 +26,7 @@ public class JourneyPatternProducer extends AbstractJaxbNeptuneProducer<JourneyP
 		jaxbJourneyPattern.setRegistration(getRegistration(journeyPattern.getRegistrationNumber()));
 		jaxbJourneyPattern.setRouteId(getNonEmptyObjectId(journeyPattern.getRoute()));
 		jaxbJourneyPattern.getStopPointList()
-				.addAll(NeptuneObjectUtil.extractObjectIds(journeyPattern.getStopPoints()));
+				.addAll(ncig.toListSpecificFormatId(NeptuneObjectUtil.extractObjectIds(journeyPattern.getStopPoints()), "default_codespace", journeyPattern));
 
 		return jaxbJourneyPattern;
 	}

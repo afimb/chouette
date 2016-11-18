@@ -10,6 +10,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
 import mobi.chouette.exchange.neptune.exporter.producer.AbstractJaxbNeptuneProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.AccessLinkProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.AccessPointProducer;
@@ -65,7 +66,7 @@ import org.trident.schema.trident.TimetableType;
 import org.trident.schema.trident.VehicleJourneyType;
 
 
-public class ChouettePTNetworkProducer implements Constant {
+public class ChouettePTNetworkProducer extends NeptuneChouetteIdGenerator implements Constant {
 
 	private static LineProducer lineProducer = new LineProducer();
 	private static PTNetworkProducer networkProducer = new PTNetworkProducer();
@@ -226,7 +227,7 @@ public class ChouettePTNetworkProducer implements Constant {
 			}
 			// add ptLinks 
 			List<PTLink> ptLinks = NeptuneObjectUtil.getPtLinks(route);
-			jaxbObj.getPtLinkId().addAll(NeptuneObjectUtil.extractObjectIds(ptLinks));
+			jaxbObj.getPtLinkId().addAll(toListSpecificFormatId(NeptuneObjectUtil.extractObjectIds(ptLinks), "default_codespace", route));
 			for (PTLink ptLink : ptLinks) 
 			{
 				PTLinkType jaxbLink = ptLinkProducer.produce(ptLink, addExtension);
