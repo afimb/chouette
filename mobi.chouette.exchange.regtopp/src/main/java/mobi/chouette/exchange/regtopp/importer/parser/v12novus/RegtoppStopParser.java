@@ -74,7 +74,9 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 
 	private void createBoardingPositions(RegtoppImporter importer, Referential referential, RegtoppImportParameters configuration) throws Exception {
 		for (AbstractRegtoppStopHPL stop : importer.getStopById()) {
-			createBoardingPosition(stop, configuration, referential);
+			if(shouldImportHPL(stop)) {
+				createBoardingPosition(stop, configuration, referential);
+			}
 		}
 	}
 

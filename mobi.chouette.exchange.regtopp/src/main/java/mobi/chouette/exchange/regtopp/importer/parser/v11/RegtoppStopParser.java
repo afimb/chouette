@@ -29,6 +29,18 @@ public class RegtoppStopParser implements Parser {
 	
 	public static ChouetteAreaEnum PARENT_STOP_PLACE_TYPE =  ChouetteAreaEnum.CommercialStopPoint;
 
+	protected boolean shouldImportHPL(AbstractRegtoppStopHPL stop) {
+		boolean shouldImport = true;
+		
+		if(stop.getFullName().toUpperCase().startsWith("MELD_")) {
+			shouldImport = false;
+		} else if(stop.getFullName().toUpperCase().startsWith("-- ")) {
+			shouldImport = false;
+		}
+		
+		return shouldImport;
+	}
+	
 	@Override
 	public void parse(Context context) throws Exception {
 		try {
@@ -39,7 +51,9 @@ public class RegtoppStopParser implements Parser {
 			String projection = configuration.getCoordinateProjection();
 
 			for (AbstractRegtoppStopHPL stop : importer.getStopById()) {
-				mapRegtoppStop(stop, configuration, referential, projection);
+				if(shouldImportHPL(stop)) {
+					mapRegtoppStop(stop, configuration, referential, projection);
+				}
 			}
 		} catch (Exception e) {
 			log.error("Error parsing StopArea", e);

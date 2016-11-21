@@ -96,6 +96,8 @@ public class RegtoppRouteParser extends LineSpecificParser {
 
 						StopArea stopArea= referential.getSharedStopAreas().get(chouetteStopAreaId);
 						if(stopArea != null) {
+							// Link stoparea to referential
+							ObjectFactory.getStopArea(referential, chouetteStopAreaId);
 							stopPoint.setContainedInStopArea(stopArea);
 
 							// Warn: Using comment field as temporary storage for line pointer. Used for lookup when parsing passing times
