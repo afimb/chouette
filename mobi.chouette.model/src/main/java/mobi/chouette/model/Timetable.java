@@ -427,14 +427,18 @@ public class Timetable extends NeptuneIdentifiedObject {
 	}
 
 	public boolean isActiveOnPeriod(final Date start, final Date end) {
-		Date day = new Date(start.getTime());
-		while (day.before(end)) {
-			if (isActiveOn(day))
-				return true;
-			day.setTime(day.getTime() + ONE_DAY);
-
+		if(start == null || end == null) {
+			return false;
+		} else {
+			Date day = new Date(start.getTime());
+			while (day.before(end)) {
+				if (isActiveOn(day))
+					return true;
+				day.setTime(day.getTime() + ONE_DAY);
+	
+			}
+			return isActiveOn(end);
 		}
-		return isActiveOn(end);
 	}
 
 	/**
