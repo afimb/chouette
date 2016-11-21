@@ -52,7 +52,7 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 		RegtoppVersion detectedVersion = guesser.getDetectedVersion();
 		RegtoppVersion parserVersion = null;
 
-		String declaredEncoding = parameters.getCharsetEncoding();
+		String declaredEncoding = StringUtils.trimToNull(parameters.getCharsetEncoding());
 		String detectedEncoding = guesser.getEncoding();
 		String parserEncoding = null;
 		
