@@ -3,12 +3,15 @@ package mobi.chouette.exchange.importer.updater.netex;
 import java.math.BigInteger;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 
+import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.NavigationPath;
 import org.rutebanken.netex.model.NavigationPathsInFrame_RelStructure;
 import org.rutebanken.netex.model.PathDirectionEnumeration;
@@ -53,10 +56,16 @@ public class NavigationPathMapper {
 		PathLink pl = new PathLink().withFrom(start).withTo(end).withId(link.getObjectId());
 		pl.setAllowedUse(PathDirectionEnumeration.TWO_WAY);
 
-		long time = link.getDefaultDuration().getTime();
-		Duration duration = factory.newDuration(time);
+		long time = link.getDefaultDuration().getTime(); // Returns time in GMT
+		Duration duration = factory.newDuration(time + TimeZone.getDefault().getRawOffset()); // Adjust
+																								// for
+																								// current
+																								// timezone
 
 		pl.setTransferDuration(new TransferDurationStructure().withDefaultDuration((duration)));
+		if (link.getComment() != null) {
+			pl.setDescription(new MultilingualString().withLang("no").withValue(link.getComment()));
+		}
 
 		PathLinkInSequence pathLinks = new PathLinkInSequence()
 				.withPathLinkRef(new PathLinkRefStructure().withValue(pl.getId())).withOrder(BigInteger.ONE);
@@ -80,18 +89,18 @@ public class NavigationPathMapper {
 	}
 
 	public Object mapPathLinkToConnectionLink(Referential referential, PathLink e) {
-	
+
 		ConnectionLink connectionLink = ObjectFactory.getConnectionLink(referential, e.getId());
-		
+
 		StopArea from = referential.getSharedStopAreas().get(e.getFrom().getPlaceRef().getValue());
 		StopArea to = referential.getSharedStopAreas().get(e.getTo().getPlaceRef().getValue());
-		
+
 		Duration duration = e.getTransferDuration().getDefaultDuration();
-		
+
 		connectionLink.setStartOfLink(from);
 		connectionLink.setEndOfLink(to);
 		connectionLink.setDefaultDuration(new Time(duration.getTimeInMillis(new Date(0))));
-				
+
 		return connectionLink;
 	}
 
