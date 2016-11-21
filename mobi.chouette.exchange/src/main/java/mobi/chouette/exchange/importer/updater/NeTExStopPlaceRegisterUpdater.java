@@ -136,7 +136,7 @@ public class NeTExStopPlaceRegisterUpdater {
 				.filter(stopArea -> !m.containsKey(stopArea.getObjectId()))
 				.filter(stopArea -> stopArea.getObjectId() != null)
 				.filter(stopArea -> stopArea.getAreaType() == ChouetteAreaEnum.CommercialStopPoint)
-				.peek(stopArea -> log.info("id: " + stopArea.getId() + " objectId: " + stopArea.getObjectId() + " name: " + stopArea.getName() + " type: " + stopArea.getAreaType() + ". correlationId: " + correlationId))
+				.peek(stopArea -> log.info(stopArea.getObjectId() + " name: " + stopArea.getName() + " correlationId: " + correlationId))
 				.map(stopPlaceMapper::mapStopAreaToStopPlace).collect(Collectors.toList());
 
 		SiteFrame siteFrame = new SiteFrame();
@@ -288,7 +288,7 @@ public class NeTExStopPlaceRegisterUpdater {
 							}
 						}
 					} else {
-						log.warn("Could not find mapped object for " + currentObjectId + ". correlationId: "+correlationId);
+						log.warn("Could not find mapped object for " + currentObjectId + " "+sp.getContainedInStopArea().getName()+" correlationId: "+correlationId);
 					}
 
 				}
