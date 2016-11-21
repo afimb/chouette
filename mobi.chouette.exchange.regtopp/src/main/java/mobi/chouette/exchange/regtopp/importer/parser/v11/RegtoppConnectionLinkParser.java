@@ -40,9 +40,9 @@ public class RegtoppConnectionLinkParser extends LineSpecificParser {
 
 			for (AbstractRegtoppPathwayGAV pathway : routeIndex) {
 
-				String chouetteStartStopAreaObjectId = ObjectIdCreator.createStopAreaId(configuration,pathway.getStopIdFrom());
-
-				String chouetteEndStopAreaObjectId =ObjectIdCreator.createStopAreaId(configuration,pathway.getStopIdTo());
+				// Regtopp 1.1D and 1.2 now using new parent stop structure with BOARDIN_POSITION_ID_SUFFIX appended. Not applicable for 1.2N and 1.3A
+				String chouetteStartStopAreaObjectId = createStopAreaIdForConnectionLink(configuration, pathway.getStopIdFrom());
+				String chouetteEndStopAreaObjectId =createStopAreaIdForConnectionLink(configuration,pathway.getStopIdTo());
 
 				
 //				if(!referential.getSharedStopAreas().containsKey(chouetteStartStopAreaObjectId)) {
@@ -67,6 +67,11 @@ public class RegtoppConnectionLinkParser extends LineSpecificParser {
 			}
 		}
 
+	}
+
+	protected String createStopAreaIdForConnectionLink(RegtoppImportParameters configuration,
+			String stopId) {
+		return ObjectIdCreator.createStopAreaId(configuration,stopId+RegtoppStopParser.BOARDING_POSITION_ID_SUFFIX);
 	}
 
 	static {

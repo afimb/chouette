@@ -1,19 +1,20 @@
 package mobi.chouette.exchange.regtopp.importer.version;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Arrays;
+
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
 import mobi.chouette.exchange.regtopp.importer.parser.ParseableFile;
+import mobi.chouette.exchange.regtopp.importer.parser.v12novus.RegtoppConnectionLinkParser;
 import mobi.chouette.exchange.regtopp.importer.parser.v12novus.RegtoppRouteParser;
 import mobi.chouette.exchange.regtopp.importer.parser.v12novus.RegtoppStopParser;
 import mobi.chouette.exchange.regtopp.model.v12novus.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.v12novus.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Arrays;
 
 public class Regtopp12NovusVersionHandler extends Regtopp12VersionHandler {
 
@@ -45,5 +46,10 @@ public class Regtopp12NovusVersionHandler extends Regtopp12VersionHandler {
 	@Override
 	public LineSpecificParser createRouteParser() throws ClassNotFoundException, IOException {
 		return (RegtoppRouteParser) ParserFactory.create(RegtoppRouteParser.class.getName());
+	}
+
+	@Override
+	public Parser createConnectionLinkParser() throws ClassNotFoundException, IOException {
+		return (RegtoppConnectionLinkParser) ParserFactory.create(RegtoppConnectionLinkParser.class.getName());
 	}
 }
