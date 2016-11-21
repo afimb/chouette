@@ -74,8 +74,8 @@ public class MainCommand implements Command, Constant {
 
 		} catch (Exception ex) {
 			if (!COMMAND_CANCELLED.equals(ex.getMessage())) {
-				log.error(ex,ex);
-				jobManager.abort(jobService);
+				log.error("Processing interrupted job due to unexpected exception", ex);
+				jobManager.processInterrupted(jobService);
 			}
 
 		}

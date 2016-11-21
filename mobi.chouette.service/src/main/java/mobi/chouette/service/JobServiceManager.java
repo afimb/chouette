@@ -249,6 +249,32 @@ public class JobServiceManager {
 		jobDAO.update(jobService.getJob());
 	}
 
+	public void processInterrupted(JobService jobService) {
+		if (rescheduleJobs()) {
+			reschedule(jobService);
+		} else {
+			abort(jobService);
+		}
+	}
+
+	public void reschedule(JobService jobService) {
+		jobService.setStatus(STATUS.RESCHEDULED);
+		jobService.setUpdated(new Date());
+		jobService.setStarted(null);
+		jobService.removeLink(Link.REPORT_REL);
+		jobDAO.update(jobService.getJob());
+	}
+
+	private boolean rescheduleJobs() {
+		String propertyName = checker.getContext() + PropertyNames.RESCHEDULE_INTERRUPTED_JOBS;
+		String property = System.getProperty(propertyName);
+		if (property == null || property.trim().equals("")) {
+			log.warn("Property " + propertyName + " not set. Falling back to default behaviour, which is to abort jobs");
+			return false;
+		}
+		return Boolean.parseBoolean(property);
+	}
+
 	public JobService cancel(String referential, Long id) throws ServiceException {
 		validateReferential(referential);
 		JobService jobService = getJobService(referential, id);
