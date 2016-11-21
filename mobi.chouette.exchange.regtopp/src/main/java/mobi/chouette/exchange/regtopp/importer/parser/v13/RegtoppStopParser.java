@@ -40,7 +40,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 
 			for (AbstractRegtoppStopHPL abstractStop : importer.getStopById()) {
 				RegtoppStopHPL stop = (RegtoppStopHPL) abstractStop;
-				if (stop.getType() == StopType.Stop || (stop.getType() == StopType.Other && !"Lokasjonspunkt".equals(stop.getFullName()))) {
+				if (shouldImportHPL(abstractStop) && stop.getType() == StopType.Stop || (stop.getType() == StopType.Other && !"Lokasjonspunkt".equals(stop.getFullName()))) {
 					String objectId = ObjectIdCreator.createStopAreaId(configuration, stop.getStopId());
 
 					StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);

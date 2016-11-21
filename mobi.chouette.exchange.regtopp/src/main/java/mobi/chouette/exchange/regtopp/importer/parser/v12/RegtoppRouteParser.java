@@ -6,6 +6,7 @@ import static mobi.chouette.common.Constant.REFERENTIAL;
 
 import java.util.List;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
@@ -26,10 +27,9 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
-import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
 
-
+@Log4j
 public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppRouteParser {
 
 	/*
@@ -106,16 +106,20 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 
-		StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
-		stopPoint.setPosition(Integer.parseInt(routeSegment.getSequenceNumberStop()));
-
 		String chouetteStopAreaId = ObjectIdCreator.createStopAreaId(configuration, routeSegment.getStopId() + RegtoppStopParser.BOARDING_POSITION_ID_SUFFIX);
+		if(referential.getSharedStopAreas().containsKey(chouetteStopAreaId)) {
+			StopArea stopArea = ObjectFactory.getStopArea(referential, chouetteStopAreaId);
+			
+			StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
+			stopPoint.setPosition(Integer.parseInt(routeSegment.getSequenceNumberStop()));
+	
+			stopPoint.setContainedInStopArea(stopArea);
+			return stopPoint;
+		} else {
+			log.warn("StopPoint "+chouetteStopPointId+" refers to unknown StopArea "+chouetteStopAreaId+" - skipping");
+		}
 
-		StopArea stopArea = ObjectFactory.getStopArea(referential, chouetteStopAreaId);
-
-		stopPoint.setContainedInStopArea(stopArea);
-
-		return stopPoint;
+		return null;
 	}
 
 	static {
