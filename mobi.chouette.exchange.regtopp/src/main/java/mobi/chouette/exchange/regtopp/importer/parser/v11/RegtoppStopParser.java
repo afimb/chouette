@@ -86,12 +86,7 @@ public class RegtoppStopParser implements Parser {
 				stop.getFullStopId() + BOARDING_POSITION_ID_SUFFIX);
 		StopArea boardingPosition = ObjectFactory.getStopArea(referential, boardingPositionObjectId);
 		boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
-		boardingPosition.setY(stopArea.getY());
-		boardingPosition.setX(stopArea.getX());
-		boardingPosition.setProjectionType(stopArea.getProjectionType());
-		boardingPosition.setLatitude(stopArea.getLatitude());
-		boardingPosition.setLongitude(stopArea.getLongitude());
-		boardingPosition.setLongLatType(stopArea.getLongLatType());
+		convertAndSetCoordinates(boardingPosition, stop.getX(), stop.getY(), projection);
 		boardingPosition.setName(stopArea.getName());
 
 		boardingPosition.setParent(stopArea);
