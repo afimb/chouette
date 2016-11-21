@@ -91,14 +91,19 @@ public class CompassBearingGenerator {
 					}
 				}
 
+				Integer bearing = null;
 				// Calculate general direction previous -> stop -> next
 				if (previous != null && next != null) {
 					// Use previous and next
-					compassBearings.add(bearing(previous, next));
+					bearing = bearing(previous, next);
 				} else if (previous != null) {
-					compassBearings.add(bearing(previous, stop));
+					bearing = bearing(previous, stop);
 				} else {
-					compassBearings.add(bearing(stop, next));
+					bearing = bearing(stop, next);
+				}
+				
+				if(bearing != null) {
+					compassBearings.add(bearing);
 				}
 
 			}
@@ -110,23 +115,41 @@ public class CompassBearingGenerator {
 	}
 
 	private Integer bearing(StopPoint from, StopPoint to) {
+
 		StopArea fromArea = from.getContainedInStopArea();
 		StopArea toArea = to.getContainedInStopArea();
 
-		double longitude1 = fromArea.getLongitude().doubleValue();
-		double longitude2 = toArea.getLongitude().doubleValue();
-		double latitude1 = Math.toRadians(fromArea.getLatitude().doubleValue());
-		double latitude2 = Math.toRadians(toArea.getLatitude().doubleValue());
-		double longDiff = Math.toRadians(longitude2 - longitude1);
-		double y = Math.sin(longDiff) * Math.cos(latitude2);
-		double x = Math.cos(latitude1) * Math.sin(latitude2)
-				- Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(longDiff);
+		if(fromArea != null && toArea != null && hasCoordinates(fromArea) && hasCoordinates(toArea)) {
+			
+			double longitude1 = fromArea.getLongitude().doubleValue();
+			double longitude2 = toArea.getLongitude().doubleValue();
+			double latitude1 = Math.toRadians(fromArea.getLatitude().doubleValue());
+			double latitude2 = Math.toRadians(toArea.getLatitude().doubleValue());
+			double longDiff = Math.toRadians(longitude2 - longitude1);
+			double y = Math.sin(longDiff) * Math.cos(latitude2);
+			double x = Math.cos(latitude1) * Math.sin(latitude2)
+					- Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(longDiff);
 
-		double bearing = (Math.toDegrees(Math.atan2(y, x)) + 360) % 360;
+			double bearing = (Math.toDegrees(Math.atan2(y, x)) + 360) % 360;
 
-		// 1 to 360 degrees, not 0 to 359
+			// 1 to 360 degrees, not 0 to 359
 
-		return new Integer((int) bearing + 1);
+			return new Integer((int) bearing + 1);
+		} else {
+			if(fromArea == null) {
+				log.warn("StopPoint "+from.getObjectId()+" in route "+from.getRoute().getObjectId()+" and line "+from.getRoute().getLine().getObjectId()+"/" +from.getRoute().getLine().getName()+" has no StopArea");
+			}
+			if(toArea == null) {
+				log.warn("StopPoint "+to.getObjectId()+" in route "+to.getRoute().getObjectId()+" and line "+to.getRoute().getLine().getObjectId()+"/" +to.getRoute().getLine().getName()+" has no StopArea");
+			}
+			
+			return null;
+		}
+		
+	}
+	
+	private boolean hasCoordinates(StopArea stopArea) {
+		return stopArea.getLatitude() != null && stopArea.getLongitude() != null;
 	}
 
 	private int getAngle(Integer bearing, Integer heading) {
