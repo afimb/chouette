@@ -88,16 +88,15 @@ public class RegtoppRouteParser extends LineSpecificParser {
 						// Create stop point
 						String chouetteStopPointId = ObjectIdCreator.createStopPointId(configuration, routeKey, ""+i);
 
-						StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
-						stopPoint.setPosition(i);
-						stopPoint.setRoute(route);
-
 						String chouetteStopAreaId = ObjectIdCreator.createStopAreaId(configuration, routeSegment.getStopId() + RegtoppStopParser.BOARDING_POSITION_ID_SUFFIX);
 
 						StopArea stopArea= referential.getSharedStopAreas().get(chouetteStopAreaId);
 						if(stopArea != null) {
 							// Link stoparea to referential
 							ObjectFactory.getStopArea(referential, chouetteStopAreaId);
+
+							StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
+							stopPoint.setPosition(i);
 							stopPoint.setContainedInStopArea(stopArea);
 
 							// Warn: Using comment field as temporary storage for line pointer. Used for lookup when parsing passing times
@@ -105,7 +104,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 
 							// Add stop point to journey pattern AND route (for now)
 							journeyPattern.addStopPoint(stopPoint);
-							route.getStopPoints().add(stopPoint);
+							stopPoint.setRoute(route);
 							log.debug("Adding StopPoint " + chouetteStopPointId + " to JourneyPattern " + chouetteJourneyPatternId + ". ContainedInStopArea is " + chouetteStopAreaId);
 						} else {
 							log.warn("StopArea with id "+chouetteStopAreaId+" not found for JourneyPattern "+chouetteJourneyPatternId+ " in Line "+chouetteLineId + ". Not adding StopPoint " + chouetteStopPointId + " to JourneyPattern.");
