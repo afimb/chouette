@@ -5,6 +5,8 @@ import static mobi.chouette.common.Constant.PARSER;
 import static mobi.chouette.common.Constant.REFERENTIAL;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -26,21 +28,21 @@ import mobi.chouette.model.util.Referential;
 public class RegtoppStopParser implements Parser {
 
 	public static final String BOARDING_POSITION_ID_SUFFIX = "01";
-	
-	public static ChouetteAreaEnum PARENT_STOP_PLACE_TYPE =  ChouetteAreaEnum.CommercialStopPoint;
+
+	public static ChouetteAreaEnum PARENT_STOP_PLACE_TYPE = ChouetteAreaEnum.CommercialStopPoint;
 
 	protected boolean shouldImportHPL(AbstractRegtoppStopHPL stop) {
 		boolean shouldImport = true;
-		
-		if(stop.getFullName().toUpperCase().startsWith("MELD_")) {
+
+		if (stop.getFullName().toUpperCase().startsWith("MELD_")) {
 			shouldImport = false;
-		} else if(stop.getFullName().toUpperCase().startsWith("-- ")) {
+		} else if (stop.getFullName().toUpperCase().startsWith("-- ")) {
 			shouldImport = false;
 		}
-		
+
 		return shouldImport;
 	}
-	
+
 	@Override
 	public void parse(Context context) throws Exception {
 		try {
@@ -50,28 +52,38 @@ public class RegtoppStopParser implements Parser {
 			RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 			String projection = configuration.getCoordinateProjection();
 
+			Map<String, StopArea> parentStopPlaceCache = new HashMap<String, StopArea>();
+
 			for (AbstractRegtoppStopHPL stop : importer.getStopById()) {
-				if(shouldImportHPL(stop)) {
-					mapRegtoppStop(stop, configuration, referential, projection);
+				if (shouldImportHPL(stop)) {
+					mapRegtoppStop(stop, configuration, referential, projection, parentStopPlaceCache);
 				}
 			}
+			parentStopPlaceCache.clear();
+			
 		} catch (Exception e) {
 			log.error("Error parsing StopArea", e);
 			throw e;
 		}
 	}
 
-	protected void mapRegtoppStop(AbstractRegtoppStopHPL stop, RegtoppImportParameters configuration, Referential referential, String projection) {
+	protected void mapRegtoppStop(AbstractRegtoppStopHPL stop, RegtoppImportParameters configuration,
+			Referential referential, String projection, Map<String, StopArea> parentStopPlaceCache) {
 
-		String stopPlaceObjectId = ObjectIdCreator.createStopAreaId(configuration, stop.getFullStopId());
-		String boardingPositionObjectId = ObjectIdCreator.createStopAreaId(configuration, stop.getFullStopId() + BOARDING_POSITION_ID_SUFFIX);
+		StopArea stopArea = parentStopPlaceCache.get(stop.getFullName());
+		if (stopArea == null) {
+			String stopPlaceObjectId = ObjectIdCreator.createStopAreaId(configuration, stop.getFullStopId());
+			stopArea = ObjectFactory.getStopArea(referential, stopPlaceObjectId);
+			stopArea.setName(stop.getFullName());
+			// stopArea.setRegistrationNumber(stop.getShortName());
+			stopArea.setAreaType(PARENT_STOP_PLACE_TYPE);
+			convertAndSetCoordinates(stopArea, stop.getX(), stop.getY(), projection);
 
-		StopArea stopArea = ObjectFactory.getStopArea(referential, stopPlaceObjectId);
-		stopArea.setName(stop.getFullName());
-		// stopArea.setRegistrationNumber(stop.getShortName());
-		stopArea.setAreaType(PARENT_STOP_PLACE_TYPE);
-		convertAndSetCoordinates(stopArea, stop.getX(), stop.getY(), projection);
+			parentStopPlaceCache.put(stop.getFullName(), stopArea);
+		}
 
+		String boardingPositionObjectId = ObjectIdCreator.createStopAreaId(configuration,
+				stop.getFullStopId() + BOARDING_POSITION_ID_SUFFIX);
 		StopArea boardingPosition = ObjectFactory.getStopArea(referential, boardingPositionObjectId);
 		boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
 		boardingPosition.setY(stopArea.getY());
@@ -118,10 +130,12 @@ public class RegtoppStopParser implements Parser {
 		} else {
 			// Adjust coordinates for possible decimal places
 			boolean valid = false;
-			
-			while(!valid) {
-				Coordinate wgs84Coordinate = CoordinateUtil.transform(projection, Coordinate.WGS84, new Coordinate(_x, _y));
-				if (Math.abs(wgs84Coordinate.getY().doubleValue()) >= 180 || Math.abs(wgs84Coordinate.getX().doubleValue()) >= 90) {
+
+			while (!valid) {
+				Coordinate wgs84Coordinate = CoordinateUtil.transform(projection, Coordinate.WGS84,
+						new Coordinate(_x, _y));
+				if (Math.abs(wgs84Coordinate.getY().doubleValue()) >= 180
+						|| Math.abs(wgs84Coordinate.getX().doubleValue()) >= 90) {
 					// Bogus coordinates, divide by 10 and try again
 					_x = _x.divide(BigDecimal.TEN);
 					_y = _y.divide(BigDecimal.TEN);

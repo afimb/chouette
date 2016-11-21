@@ -5,6 +5,7 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
 import mobi.chouette.exchange.regtopp.importer.parser.ParseableFile;
+import mobi.chouette.exchange.regtopp.importer.parser.v12novus.RegtoppConnectionLinkParser;
 import mobi.chouette.exchange.regtopp.importer.parser.v12novus.RegtoppRouteParser;
 import mobi.chouette.exchange.regtopp.importer.parser.v13.RegtoppStopParser;
 import mobi.chouette.exchange.regtopp.importer.parser.v13.RegtoppTripParser;
@@ -34,6 +35,11 @@ public class Regtopp13AVersionHandler extends Regtopp12VersionHandler {
 	@Override
 	public Parser createStopParser() throws ClassNotFoundException, IOException {
 		return (RegtoppStopParser) ParserFactory.create(RegtoppStopParser.class.getName());
+	}
+
+	@Override
+	public Parser createConnectionLinkParser() throws ClassNotFoundException, IOException {
+		return (RegtoppConnectionLinkParser) ParserFactory.create(RegtoppConnectionLinkParser.class.getName());
 	}
 
 	@Override
