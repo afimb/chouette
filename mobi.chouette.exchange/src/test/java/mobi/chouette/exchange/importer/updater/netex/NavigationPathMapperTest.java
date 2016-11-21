@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.importer.updater.netex;
 
 import java.sql.Time;
+import java.util.TimeZone;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -27,7 +28,7 @@ public class NavigationPathMapperTest {
 		ConnectionLink link = new ConnectionLink();
 		link.setStartOfLink(from);;
 		link.setEndOfLink(to);
-		link.setDefaultDuration(new Time(5*60*1000)); // 5 minutes
+		link.setDefaultDuration(new Time(0,5,0)); // 5 minutes
 		link.setObjectId(from.getObjectId()+"-"+to.getObjectId());
 		
 		NavigationPathMapper mapper = new NavigationPathMapper();
