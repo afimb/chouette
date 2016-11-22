@@ -885,7 +885,8 @@ CREATE TABLE stop_areas (
     zip_code character varying(255),
     city_name character varying(255),
     url character varying(255),
-    time_zone character varying(255)
+    time_zone character varying(255),
+    compass_bearing integer
 );
 
 
