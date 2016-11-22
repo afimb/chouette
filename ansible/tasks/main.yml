@@ -23,37 +23,15 @@
   get_url: url=http://jump/postgresql-9.3-1103.jdbc41.jar
            dest={{ chouette_root }}/postgresql-9.3-1103.jdbc41.jar
 
-- name: Download hibernate spatial
-  get_url:
-    url=http://www.hibernatespatial.org/repository/org/hibernate/hibernate-spatial/4.3/hibernate-spatial-4.3.jar
-    dest={{ chouette_root }}/hibernate-spatial-4.3.jar
-  tags: chouette
-
 - name: Download URLs
-  get_url:
-    url=http://search.maven.org/remotecontent?filepath={{ item.path }}/{{ item.filename }}
-    dest={{ chouette_root }}/{{ item.filename }}
+  shell: curl -s --netrc https://nexus.rutebanken.org/content/groups/public/{{ item.path }}/{{ item.filename }} -o {{ chouette_root }}/{{ item.filename }}
   with_items:
+    - { path: "org/hibernate/hibernate-spatial/4.3", filename: "hibernate-spatial-4.3.jar" }
     - { path: "net/postgis/postgis-jdbc/2.1.7.2", filename: "postgis-jdbc-2.1.7.2.jar" }
     - { path: "com/vividsolutions/jts/1.13", filename: "jts-1.13.jar" }
-
-- name: Download jaxb-core 2.2.11
-  get_url:
-    url=http://central.maven.org/maven2/com/sun/xml/bind/jaxb-impl/2.2.11/jaxb-impl-2.2.11.jar
-    dest={{ chouette_root }}/jaxb-impl-2.2.11.jar
-  tags: chouette
-
-- name: Download jaxb-impl 2.2.11
-  get_url:
-    url=http://central.maven.org/maven2/com/sun/xml/bind/jaxb-core/2.2.11/jaxb-core-2.2.11.jar
-    dest={{ chouette_root }}/jaxb-core-2.2.11.jar
-  tags: chouette
-
-- name: Download jaxb-xjc 2.2.11
-  get_url:
-    url=http://central.maven.org/maven2/com/sun/xml/bind/jaxb-xjc/2.2.11/jaxb-xjc-2.2.11.jar
-    dest={{ chouette_root }}/jaxb-xjc-2.2.11.jar
-  tags: chouette
+    - { path: "com/sun/xml/bind/jaxb-impl/2.2.11", filename: "jaxb-impl-2.2.11.jar" }
+    - { path: "com/sun/xml/bind/jaxb-core/2.2.11", filename: "jaxb-core-2.2.11.jar" }
+    - { path: "com/sun/xml/bind/jaxb-xjc/2.2.11", filename: "jaxb-xjc-2.2.11.jar" }
 
 - name: Build the chouette docker image
   shell: docker build --tag={{ chouette_docker_image|quote }} --force-rm=true {{chouette_root}} > {{logfile}} 2>&1
