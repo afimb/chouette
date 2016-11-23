@@ -11,6 +11,7 @@ import mobi.chouette.exchange.gtfs.model.GtfsStop.LocationType;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.WheelchairBoardingType;
 import mobi.chouette.exchange.gtfs.model.exporter.StopExtendedExporter;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
@@ -36,7 +37,7 @@ public class GtfsExportExtendedStopProducerTests
       mock.reset();
 
       StopArea neptuneObject = new StopArea();
-      neptuneObject.getChouetteId().setObjectId("GTFS:StopArea:4321");
+      neptuneObject.setChouetteId(new ChouetteId("GTFS","4321", false));
       neptuneObject.setName("physical point");
       neptuneObject.setAreaType(ChouetteAreaEnum.BoardingPosition);
       neptuneObject.setRegistrationNumber("1234");
@@ -51,7 +52,7 @@ public class GtfsExportExtendedStopProducerTests
       neptuneObject.setCityName("Paris");
       
       StopArea parent = new StopArea();
-      parent.getChouetteId().setObjectId("GTFS:StopArea:5678");
+      parent.setChouetteId(new ChouetteId("GTFS","5678", false));
       List<StopArea> parents = new ArrayList<>();
       parents.add(parent);
       neptuneObject.setParent(parent);
@@ -61,7 +62,7 @@ public class GtfsExportExtendedStopProducerTests
       Reporter.log("verifyExtendedStopProducerWithFullData");
       Reporter.log(StopExtendedExporter.CONVERTER.to(context, gtfsObject));
 
-      Assert.assertEquals(gtfsObject.getStopId(), "4321", "StopId must be third part of objectid");
+      Assert.assertEquals(gtfsObject.getStopId(), "4321", "StopId must be third part of chouetteid");
       Assert.assertEquals(gtfsObject.getStopCode(), neptuneObject.getRegistrationNumber(), "StopCode must be correctly set");
       Assert.assertEquals(gtfsObject.getStopName(), neptuneObject.getName(), "StopName must be correctly set");
       Assert.assertEquals(gtfsObject.getStopDesc(), neptuneObject.getComment(), "StopDesc must be correctly set");

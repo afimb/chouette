@@ -55,7 +55,7 @@ import mobi.chouette.model.type.JourneyCategoryEnum;
 import mobi.chouette.model.type.SectionStatusEnum;
 import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
-import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectFactory;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -64,7 +64,7 @@ import com.vividsolutions.jts.geom.LineSegment;
 import com.vividsolutions.jts.geom.PrecisionModel;
 
 @Log4j
-public class GtfsTripParser extends GtfsChouetteIdGenerator implements Parser, Validator, Constant {
+public class GtfsTripParser implements Parser, Validator, Constant {
 
 	private static final Comparator<OrderedCoordinate> COORDINATE_SORTER = new OrderedCoordinateComparator();
 
@@ -487,7 +487,8 @@ public class GtfsTripParser extends GtfsChouetteIdGenerator implements Parser, V
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
-
+		GtfsChouetteIdGenerator gcid = (GtfsChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		Map<String, JourneyPattern> journeyPatternByStopSequence = new HashMap<String, JourneyPattern>();
 
 		// VehicleJourney
@@ -514,7 +515,7 @@ public class GtfsTripParser extends GtfsChouetteIdGenerator implements Parser, V
 
 			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 					VehicleJourney.VEHICLEJOURNEY_KEY, gtfsTrip.getTripId(), log);
-			VehicleJourney vehicleJourney = GtfsChouetteIdObjectFactory.getVehicleJourney(referential, toChouetteId(objectId, "default_codespace"));
+			VehicleJourney vehicleJourney = GtfsChouetteIdObjectUtil.getVehicleJourney(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace()));
 			convert(context, gtfsTrip, vehicleJourney);
 
 			// VehicleJourneyAtStop
@@ -543,7 +544,7 @@ public class GtfsTripParser extends GtfsChouetteIdGenerator implements Parser, V
 			if (afterMidnight) {
 				timetableId += GtfsCalendarParser.AFTER_MIDNIGHT_SUFFIX;
 			}
-			Timetable timetable = GtfsChouetteIdObjectFactory.getTimetable(referential, toChouetteId(timetableId, "default_codespace"));
+			Timetable timetable = GtfsChouetteIdObjectUtil.getTimetable(referential, gcid.toChouetteId(timetableId, configuration.getDefaultCodespace()));
 			vehicleJourney.getTimetables().add(timetable);
 
 			// JourneyPattern
@@ -585,13 +586,14 @@ public class GtfsTripParser extends GtfsChouetteIdGenerator implements Parser, V
 
 	private void createJourneyFrequencies(Context context, Referential referential, GtfsImporter importer,
 			GtfsImportParameters configuration, GtfsTrip gtfsTrip, VehicleJourney vehicleJourney) {
+		GtfsChouetteIdGenerator gcid = (GtfsChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		int count = 0;
 		for (GtfsFrequency frequency : importer.getFrequencyByTrip().values(gtfsTrip.getTripId())) {
 			vehicleJourney.setJourneyCategory(JourneyCategoryEnum.Frequency);
 
 			String timeBandObjectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 					Timeband.TIMETABLE_KEY, gtfsTrip.getTripId() + "-" + count++, log);
-			Timeband timeband = GtfsChouetteIdObjectFactory.getTimeband(referential, toChouetteId(timeBandObjectId, "default_codespace"));
+			Timeband timeband = GtfsChouetteIdObjectUtil.getTimeband(referential, gcid.toChouetteId(timeBandObjectId, configuration.getDefaultCodespace()));
 			timeband.setName(getTimebandName(frequency));
 			timeband.setStartTime(frequency.getStartTime().getTime());
 			timeband.setEndTime(frequency.getEndTime().getTime());
@@ -627,20 +629,21 @@ public class GtfsTripParser extends GtfsChouetteIdGenerator implements Parser, V
 	private JourneyPattern createJourneyPattern(Context context, Referential referential,
 			GtfsImportParameters configuration, GtfsTrip gtfsTrip, Iterable<GtfsShape> gtfsShapes,
 			VehicleJourney vehicleJourney, String journeyKey, Map<String, JourneyPattern> journeyPatternByStopSequence) {
+		GtfsChouetteIdGenerator gcid = (GtfsChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		JourneyPattern journeyPattern;
 
 		// Route
-		Route route = createRoute(referential, configuration, gtfsTrip);
+		Route route = createRoute(context, referential, configuration, gtfsTrip);
 
 		// JourneyPattern
 		String journeyPatternId = route.getTechnicalId().replace(Route.ROUTE_KEY, JourneyPattern.JOURNEYPATTERN_KEY);
-		journeyPattern = GtfsChouetteIdObjectFactory.getJourneyPattern(referential, toChouetteId(journeyPatternId, "default_codespace"));
+		journeyPattern = GtfsChouetteIdObjectUtil.getJourneyPattern(referential, gcid.toChouetteId(journeyPatternId, configuration.getDefaultCodespace()));
 		journeyPattern.setName(gtfsTrip.getTripHeadSign());
 		journeyPattern.setRoute(route);
 		journeyPatternByStopSequence.put(journeyKey, journeyPattern);
 
 		// StopPoints
-		createStopPoint(route, journeyPattern, vehicleJourney.getVehicleJourneyAtStops(), referential, configuration);
+		createStopPoint(context, route, journeyPattern, vehicleJourney.getVehicleJourneyAtStops(), referential, configuration);
 
 		List<StopPoint> stopPoints = journeyPattern.getStopPoints();
 		journeyPattern.setDepartureStopPoint(stopPoints.get(0));
@@ -675,6 +678,7 @@ public class GtfsTripParser extends GtfsChouetteIdGenerator implements Parser, V
 	private List<RouteSection> createRouteSections(Context context, Referential referential,
 			GtfsImportParameters configuration, JourneyPattern journeyPattern, VehicleJourney vehicleJourney,
 			Iterable<GtfsShape> gtfsShapes) {
+		GtfsChouetteIdGenerator gcid = (GtfsChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		List<RouteSection> sections = new ArrayList<>();
 		GeometryFactory factory = new GeometryFactory(new PrecisionModel(10), 4326);
 		List<OrderedCoordinate> coordinates = new ArrayList<>();
@@ -764,8 +768,8 @@ public class GtfsTripParser extends GtfsChouetteIdGenerator implements Parser, V
 				if (lastSegmentIncluded)
 					rank++;
 				String routeSectionId = prefix + ":" + RouteSection.ROUTE_SECTION_KEY + ":" + shapeId + "_"
-						+ previousLocation.getChouetteId().getObjectId() + "_" + location.getChouetteId().getObjectId() + "_" + intFactor;
-				RouteSection section = GtfsChouetteIdObjectFactory.getRouteSection(referential, toChouetteId(routeSectionId, "default_codespace"));
+						+ gcid.toSpecificFormatId(previousLocation.getChouetteId(), configuration.getDefaultCodespace(), previousLocation) + "_" + gcid.toSpecificFormatId(location.getChouetteId(), configuration.getDefaultCodespace(), location) + "_" + intFactor;
+				RouteSection section = GtfsChouetteIdObjectUtil.getRouteSection(referential, gcid.toChouetteId(routeSectionId, configuration.getDefaultCodespace()));
 				if (!section.isFilled()) {
 					Coordinate[] inputCoords = new Coordinate[2];
 					section.setDeparture(previousLocation);
@@ -783,8 +787,8 @@ public class GtfsTripParser extends GtfsChouetteIdGenerator implements Parser, V
 						section.setDistance(BigDecimal.valueOf(distance));
 					} catch (NumberFormatException e) {
 						log.error(shapeId + " : problem with section between " + previousLocation.getName() + "("
-								+ previousLocation.getChouetteId().getObjectId() + " and " + location.getName() + "("
-								+ location.getChouetteId().getObjectId());
+								+ gcid.toSpecificFormatId(previousLocation.getChouetteId(), configuration.getDefaultCodespace(), previousLocation) + " and " + location.getName() + "("
+								+ gcid.toSpecificFormatId(location.getChouetteId(), configuration.getDefaultCodespace(), location));
 						log.error("coords (" + coords.size() + ") :");
 						for (Coordinate coordinate : coords) {
 							log.error("lat = " + coordinate.y + " , lon = " + coordinate.x);
@@ -813,10 +817,11 @@ public class GtfsTripParser extends GtfsChouetteIdGenerator implements Parser, V
 	 * @param gtfsTrip
 	 * @return
 	 */
-	private Route createRoute(Referential referential, GtfsImportParameters configuration, GtfsTrip gtfsTrip) {
+	private Route createRoute(Context context, Referential referential, GtfsImportParameters configuration, GtfsTrip gtfsTrip) {
 		String lineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY,
 				gtfsTrip.getRouteId(), log);
-		Line line = GtfsChouetteIdObjectFactory.getLine(referential, toChouetteId(lineId, "default_codespace"));
+		GtfsChouetteIdGenerator gcid = (GtfsChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		Line line = GtfsChouetteIdObjectUtil.getLine(referential, gcid.toChouetteId(lineId, configuration.getDefaultCodespace()));
 		String routeKey = gtfsTrip.getRouteId() + "_" + gtfsTrip.getDirectionId().ordinal();
 		if (gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty())
 			routeKey += "_" + gtfsTrip.getShapeId();
@@ -824,7 +829,7 @@ public class GtfsTripParser extends GtfsChouetteIdGenerator implements Parser, V
 		String routeId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.ROUTE_KEY,
 				routeKey, log);
 
-		Route route = GtfsChouetteIdObjectFactory.getRoute(referential, toChouetteId(routeId, "default_codespace"));
+		Route route = GtfsChouetteIdObjectUtil.getRoute(referential, gcid.toChouetteId(routeId, configuration.getDefaultCodespace()));
 		route.setLine(line);
 		String wayBack = gtfsTrip.getDirectionId().equals(DirectionType.Outbound) ? "A" : "R";
 		route.setWayBack(wayBack);
@@ -832,13 +837,14 @@ public class GtfsTripParser extends GtfsChouetteIdGenerator implements Parser, V
 	}
 
 	protected void convert(Context context, GtfsStopTime gtfsStopTime, VehicleJourneyAtStop vehicleJourneyAtStop) {
-
+		GtfsChouetteIdGenerator gcid = (GtfsChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		vehicleJourneyAtStop.setId(Long.valueOf(gtfsStopTime.getId().longValue()));
 
 		String objectId = gtfsStopTime.getStopId();
-		StopPoint stopPoint = GtfsChouetteIdObjectFactory.getStopPoint(referential, toChouetteId(objectId, "default_codespace"));
+		StopPoint stopPoint = GtfsChouetteIdObjectUtil.getStopPoint(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace()));
 		vehicleJourneyAtStop.setStopPoint(stopPoint);
 		vehicleJourneyAtStop.setArrivalTime(gtfsStopTime.getArrivalTime().getTime());
 		vehicleJourneyAtStop.setDepartureTime(gtfsStopTime.getDepartureTime().getTime());
@@ -893,14 +899,15 @@ public class GtfsTripParser extends GtfsChouetteIdGenerator implements Parser, V
 	 *            stopAreas to attach created StopPoints (parent relationship)
 	 * @return
 	 */
-	private void createStopPoint(Route route, JourneyPattern journeyPattern, List<VehicleJourneyAtStop> list,
+	private void createStopPoint(Context context, Route route, JourneyPattern journeyPattern, List<VehicleJourneyAtStop> list,
 			Referential referential, GtfsImportParameters configuration) {
 		Set<String> stopPointKeys = new HashSet<String>();
-
+		GtfsChouetteIdGenerator gcid = (GtfsChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		int position = 0;
 		for (VehicleJourneyAtStop vehicleJourneyAtStop : list) {
 			VehicleJourneyAtStopWrapper wrapper = (VehicleJourneyAtStopWrapper) vehicleJourneyAtStop;
-			String baseKey = route.getChouetteId().getObjectId().replace(Route.ROUTE_KEY, StopPoint.STOPPOINT_KEY) + "a"
+			String baseKey = gcid.toSpecificFormatId(route.getChouetteId(), configuration.getDefaultCodespace(), route).replace(Route.ROUTE_KEY, StopPoint.STOPPOINT_KEY) + "a"
 					+ wrapper.stopId.trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
 			String stopKey = baseKey;
 			int dup = 1;
@@ -909,11 +916,11 @@ public class GtfsTripParser extends GtfsChouetteIdGenerator implements Parser, V
 			}
 			stopPointKeys.add(stopKey);
 
-			StopPoint stopPoint = GtfsChouetteIdObjectFactory.getStopPoint(referential, toChouetteId(stopKey, "default_codespace"));
+			StopPoint stopPoint = GtfsChouetteIdObjectUtil.getStopPoint(referential, gcid.toChouetteId(stopKey, configuration.getDefaultCodespace()));
 
 			String stopAreaId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 					StopArea.STOPAREA_KEY, wrapper.stopId, log);
-			StopArea stopArea = GtfsChouetteIdObjectFactory.getStopArea(referential, toChouetteId(stopAreaId, "default_codespace"));
+			StopArea stopArea = GtfsChouetteIdObjectUtil.getStopArea(referential, gcid.toChouetteId(stopAreaId, configuration.getDefaultCodespace()));
 			stopPoint.setContainedInStopArea(stopArea);
 			stopPoint.setRoute(route);
 			stopPoint.setPosition(position++);

@@ -8,6 +8,7 @@ import mobi.chouette.exchange.gtfs.model.GtfsTransfer;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer.TransferType;
 import mobi.chouette.exchange.gtfs.model.exporter.TransferExporter;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 
@@ -29,12 +30,12 @@ public class GtfsExportTransferProducerTests
       mock.reset();
 
       ConnectionLink neptuneObject = new ConnectionLink();
-      neptuneObject.getChouetteId().setObjectId("GTFS:ConnectionLink:1234");
+      neptuneObject.setChouetteId(new ChouetteId("GTFS","1234", false));
       StopArea startOfLink = new StopArea();
-      startOfLink.getChouetteId().setObjectId("GTFS:StopArea:start");
+      startOfLink.setChouetteId(new ChouetteId("GTFS","start", false));
       neptuneObject.setStartOfLink(startOfLink);
       StopArea endOfLink = new StopArea();
-      endOfLink.getChouetteId().setObjectId("GTFS:StopArea:end");
+      endOfLink.setChouetteId(new ChouetteId("GTFS","end", false));
       neptuneObject.setEndOfLink(endOfLink);
       Time defaultDuration = new Time(60000);
       neptuneObject.setDefaultDuration(defaultDuration);
@@ -59,12 +60,12 @@ public class GtfsExportTransferProducerTests
       GtfsTransferProducer producer = new GtfsTransferProducer(mock);
 
       ConnectionLink neptuneObject = new ConnectionLink();
-      neptuneObject.getChouetteId().setObjectId("GTFS:ConnectionLink:1234");
+      neptuneObject.setChouetteId(new ChouetteId("GTFS","4321", false));
       StopArea startOfLink = new StopArea();
-      startOfLink.getChouetteId().setObjectId("GTFS:StopArea:start");
+      startOfLink.setChouetteId(new ChouetteId("GTFS","start", false));
       neptuneObject.setStartOfLink(startOfLink);
       StopArea endOfLink = new StopArea();
-      endOfLink.getChouetteId().setObjectId("GTFS:StopArea:end");
+      endOfLink.setChouetteId(new ChouetteId("GTFS","end", false));
       neptuneObject.setEndOfLink(endOfLink);
       Time defaultDuration = new Time(500);
       neptuneObject.setDefaultDuration(defaultDuration);

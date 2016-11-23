@@ -3,6 +3,10 @@ package mobi.chouette.exchange.neptune.exporter.producer;
 import java.math.BigDecimal;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.type.AccessPointTypeEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
@@ -14,11 +18,15 @@ import org.trident.schema.trident.ProjectedPointType;
 
 @Log4j
 public class AccessPointProducer extends
-      AbstractJaxbNeptuneProducer<PTAccessPointType, AccessPoint>
+      AbstractJaxbNeptuneProducer<PTAccessPointType, AccessPoint> implements Constant
 {
    // @Override
-   public PTAccessPointType produce(AccessPoint accessPoint, boolean addExtension)
+   public PTAccessPointType produce(Context context, AccessPoint accessPoint, boolean addExtension)
    {
+	   
+	   NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(CONFIGURATION);
+	   NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
       PTAccessPointType jaxbAccessPoint = tridentFactory
             .createPTAccessPointType();
 
@@ -49,7 +57,7 @@ public class AccessPointProducer extends
          jaxbAccessPoint.setAddress(castorAddress);
       }
 
-      jaxbAccessPoint.setContainedIn(accessPoint.getContainedIn().getChouetteId().getObjectId());
+      jaxbAccessPoint.setContainedIn(neptuneChouetteIdGenerator.toSpecificFormatId(accessPoint.getContainedIn().getChouetteId(), parameters.getDefaultCodespace(), accessPoint.getContainedIn()));
 
       if (accessPoint.hasCoordinates())
       {
@@ -67,7 +75,7 @@ public class AccessPointProducer extends
       }
       else
       {
-			log.error("missing coordinates for AccessPoint "+accessPoint.getChouetteId().getObjectId()+" "+accessPoint.getName());
+			log.error("missing coordinates for AccessPoint "+accessPoint.toString()+" "+accessPoint.getName());
     	  // longitude/latitude mmandatory
     	  jaxbAccessPoint.setLatitude(BigDecimal.ZERO);
     	  jaxbAccessPoint.setLongitude(BigDecimal.ZERO);

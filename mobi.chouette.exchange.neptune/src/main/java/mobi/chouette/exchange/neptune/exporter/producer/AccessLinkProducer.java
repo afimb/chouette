@@ -3,6 +3,10 @@ package mobi.chouette.exchange.neptune.exporter.producer;
 import java.util.ArrayList;
 import java.util.List;
 
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.model.type.LinkOrientationEnum;
@@ -20,33 +24,36 @@ import uk.org.ifopt.acsb.PyschosensoryNeedEnumeration;
 import uk.org.ifopt.acsb.UserNeedStructure;
 
 public class AccessLinkProducer extends
-AbstractJaxbNeptuneProducer<ChouettePTNetworkType.AccessLink, AccessLink>
+AbstractJaxbNeptuneProducer<ChouettePTNetworkType.AccessLink, AccessLink> implements Constant
 {
 
 	// @Override
-	public ChouettePTNetworkType.AccessLink produce(AccessLink accessLink, boolean addExtension)
+	public ChouettePTNetworkType.AccessLink produce(Context context, AccessLink accessLink, boolean addExtension)
 	{
 		ChouettePTNetworkType.AccessLink jaxbAccessLink = tridentFactory
 				.createChouettePTNetworkTypeAccessLink();
 
 		//
 		populateFromModel(jaxbAccessLink, accessLink);
-
+		
+		NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		jaxbAccessLink.setComment(getNotEmptyString(accessLink.getComment()));
 		jaxbAccessLink.setName(accessLink.getName());
 		if (accessLink.getLinkOrientation().equals(LinkOrientationEnum.AccessPointToStopArea))
 		{
 			if (accessLink.getAccessPoint() != null)
-				jaxbAccessLink.setStartOfLink(accessLink.getAccessPoint().getChouetteId().getObjectId());
+				jaxbAccessLink.setStartOfLink(neptuneChouetteIdGenerator.toSpecificFormatId(accessLink.getAccessPoint().getChouetteId(), parameters.getDefaultCodespace(), accessLink.getAccessPoint()));
 			if (accessLink.getStopArea() != null)
-				jaxbAccessLink.setEndOfLink(accessLink.getStopArea().getChouetteId().getObjectId());
+				jaxbAccessLink.setEndOfLink(neptuneChouetteIdGenerator.toSpecificFormatId(accessLink.getStopArea().getChouetteId(), parameters.getDefaultCodespace(), accessLink.getStopArea()));
 		}
 		else if (accessLink.getLinkOrientation().equals(LinkOrientationEnum.StopAreaToAccessPoint))
 		{
 			if (accessLink.getAccessPoint() != null)
-				jaxbAccessLink.setEndOfLink(accessLink.getAccessPoint().getChouetteId().getObjectId());
+				jaxbAccessLink.setEndOfLink(neptuneChouetteIdGenerator.toSpecificFormatId(accessLink.getAccessPoint().getChouetteId(), parameters.getDefaultCodespace(), accessLink.getAccessPoint()));
 			if (accessLink.getStopArea() != null)
-				jaxbAccessLink.setStartOfLink(accessLink.getStopArea().getChouetteId().getObjectId());
+				jaxbAccessLink.setStartOfLink(neptuneChouetteIdGenerator.toSpecificFormatId(accessLink.getStopArea().getChouetteId(), parameters.getDefaultCodespace(), accessLink.getStopArea()));
 		}
 
 		jaxbAccessLink.setLinkDistance(accessLink.getLinkDistance());

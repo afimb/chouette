@@ -18,11 +18,11 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
-import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectFactory;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class GtfsStopParser extends GtfsChouetteIdGenerator implements Parser, Validator, Constant {
+public class GtfsStopParser implements Parser, Validator, Constant {
 	
 	@Override
 	public void validate(Context context) throws Exception {
@@ -110,14 +110,15 @@ public class GtfsStopParser extends GtfsChouetteIdGenerator implements Parser, V
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
-
+		GtfsChouetteIdGenerator gcid = (GtfsChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		for (GtfsStop gtfsStop : importer.getStopById()) {
 			if (gtfsStop.getLocationType() != GtfsStop.LocationType.Access) {
 
 				String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 						StopArea.STOPAREA_KEY, gtfsStop.getStopId(), log);
 
-				StopArea stopArea = GtfsChouetteIdObjectFactory.getStopArea(referential, toChouetteId(objectId, "default_codespace"));
+				StopArea stopArea = GtfsChouetteIdObjectUtil.getStopArea(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace()));
 				convert(context, gtfsStop, stopArea);
 
 			}
@@ -128,7 +129,8 @@ public class GtfsStopParser extends GtfsChouetteIdGenerator implements Parser, V
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
-
+		GtfsChouetteIdGenerator gcid = (GtfsChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		stopArea.setLatitude(gtfsStop.getStopLat());
 		stopArea.setLongitude(gtfsStop.getStopLon());
 		stopArea.setLongLatType(LongLatTypeEnum.WGS84);
@@ -152,7 +154,7 @@ public class GtfsStopParser extends GtfsChouetteIdGenerator implements Parser, V
 			if (gtfsStop.getParentStation() != null) {
 				String parentId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 						StopArea.STOPAREA_KEY, gtfsStop.getParentStation(), log);
-				StopArea parent = GtfsChouetteIdObjectFactory.getStopArea(referential, toChouetteId(parentId, "default_codespace"));
+				StopArea parent = GtfsChouetteIdObjectUtil.getStopArea(referential, gcid.toChouetteId(parentId, configuration.getDefaultCodespace()));
 				stopArea.setParent(parent);
 			}
 		}

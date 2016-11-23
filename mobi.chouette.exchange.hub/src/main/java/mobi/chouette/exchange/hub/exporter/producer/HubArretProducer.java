@@ -49,7 +49,7 @@ public class HubArretProducer extends AbstractProducer {
 
 		String name = neptuneObject.getName();
 		if (name.trim().isEmpty()) {
-			log.error("no name for " + neptuneObject.getChouetteId().getObjectId());
+			log.error("no name for " + neptuneObject.getChouetteId().toString());
 			// HubReportItem item = new HubReportItem(
 			// HubReportItem.KEY.MISSING_DATA, STATE.ERROR, "Nom",
 			// neptuneObject.getChouetteId().getObjectId(), "Name");

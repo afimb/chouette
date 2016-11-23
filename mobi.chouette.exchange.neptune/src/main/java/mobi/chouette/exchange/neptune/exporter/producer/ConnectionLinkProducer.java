@@ -3,6 +3,10 @@ package mobi.chouette.exchange.neptune.exporter.producer;
 import java.util.ArrayList;
 import java.util.List;
 
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.model.type.UserNeedEnum;
@@ -19,10 +23,13 @@ import uk.org.ifopt.acsb.PyschosensoryNeedEnumeration;
 import uk.org.ifopt.acsb.UserNeedStructure;
 
 public class ConnectionLinkProducer extends
-		AbstractJaxbNeptuneProducer<ChouettePTNetworkType.ConnectionLink, ConnectionLink> {
+		AbstractJaxbNeptuneProducer<ChouettePTNetworkType.ConnectionLink, ConnectionLink> implements Constant {
 
 	// @Override
-	public ChouettePTNetworkType.ConnectionLink produce(ConnectionLink connectionLink, boolean addExtension) {
+	public ChouettePTNetworkType.ConnectionLink produce(Context context, ConnectionLink connectionLink, boolean addExtension) {
+		
+		NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(CONFIGURATION);
+		  NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		ChouettePTNetworkType.ConnectionLink jaxbConnectionLink = tridentFactory
 				.createChouettePTNetworkTypeConnectionLink();
 
@@ -32,9 +39,9 @@ public class ConnectionLinkProducer extends
 		jaxbConnectionLink.setComment(getNotEmptyString(connectionLink.getComment()));
 		jaxbConnectionLink.setName(connectionLink.getName());
 		if (connectionLink.getStartOfLink() != null)
-			jaxbConnectionLink.setStartOfLink(connectionLink.getStartOfLink().getChouetteId().getObjectId());
+			jaxbConnectionLink.setStartOfLink(neptuneChouetteIdGenerator.toSpecificFormatId(connectionLink.getStartOfLink().getChouetteId(), parameters.getDefaultCodespace(), connectionLink.getStartOfLink()));
 		if (connectionLink.getEndOfLink() != null)
-			jaxbConnectionLink.setEndOfLink(connectionLink.getEndOfLink().getChouetteId().getObjectId());
+			jaxbConnectionLink.setEndOfLink(neptuneChouetteIdGenerator.toSpecificFormatId(connectionLink.getEndOfLink().getChouetteId(), parameters.getDefaultCodespace(), connectionLink.getEndOfLink()));
 		jaxbConnectionLink.setLinkDistance(connectionLink.getLinkDistance());
 		if (connectionLink.getMobilityRestrictedSuitable() != null) {
 			jaxbConnectionLink.setMobilityRestrictedSuitability(connectionLink.getMobilityRestrictedSuitable()

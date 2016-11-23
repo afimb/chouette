@@ -26,11 +26,11 @@ import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
-import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectFactory;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class GtfsCalendarParser extends GtfsChouetteIdGenerator implements Parser, Validator, Constant {
+public class GtfsCalendarParser implements Parser, Validator, Constant {
 
 	@Override
 	public void validate(Context context) throws Exception {
@@ -185,13 +185,14 @@ public class GtfsCalendarParser extends GtfsChouetteIdGenerator implements Parse
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
-
+		GtfsChouetteIdGenerator gcid = (GtfsChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		if (importer.hasCalendarImporter()) {
 			for (GtfsCalendar gtfsCalendar : importer.getCalendarByService()) {
 
 				String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 						Timetable.TIMETABLE_KEY, gtfsCalendar.getServiceId(), log);
-				Timetable timetable = GtfsChouetteIdObjectFactory.getTimetable(referential, toChouetteId(objectId, "default_codespace"));
+				Timetable timetable = GtfsChouetteIdObjectUtil.getTimetable(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace()));
 				convert(context, gtfsCalendar, timetable);
 			}
 		}
@@ -206,7 +207,7 @@ public class GtfsCalendarParser extends GtfsChouetteIdGenerator implements Parse
 				Timetable timetable = referential.getTimetables().get(objectId);
 				for (GtfsCalendarDate gtfsCalendarDate : importer.getCalendarDateByService().values(serviceId)) {
 					if (timetable == null) {
-						timetable = GtfsChouetteIdObjectFactory.getTimetable(referential, toChouetteId(objectId, "default_codespace"));
+						timetable = GtfsChouetteIdObjectUtil.getTimetable(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace()));
 						convert(context, createDummyCalandar(gtfsCalendarDate.getId()), timetable);
 					}
 					addCalendarDay(timetable, gtfsCalendarDate);

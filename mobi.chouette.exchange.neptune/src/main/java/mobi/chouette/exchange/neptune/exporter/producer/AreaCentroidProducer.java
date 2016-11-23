@@ -3,6 +3,10 @@ package mobi.chouette.exchange.neptune.exporter.producer;
 import java.math.BigDecimal;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.LongLatTypeEnum;
 
@@ -13,19 +17,23 @@ import org.trident.schema.trident.ProjectedPointType;
 
 @Log4j
 public class AreaCentroidProducer extends
-      AbstractJaxbNeptuneProducer<ChouetteArea.AreaCentroid, StopArea>
+      AbstractJaxbNeptuneProducer<ChouetteArea.AreaCentroid, StopArea> implements Constant
 {
 
    //@Override
-   public ChouetteArea.AreaCentroid produce(StopArea area, boolean addExtension)
+   public ChouetteArea.AreaCentroid produce(Context context, StopArea area, boolean addExtension)
    {
+	   
+	   NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(CONFIGURATION);
+	   NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+	   
       ChouetteArea.AreaCentroid jaxbAreaCentroid = tridentFactory
             .createChouettePTNetworkTypeChouetteAreaAreaCentroid();
 
       //
       populateFromModel(jaxbAreaCentroid, area);
 
-      jaxbAreaCentroid.setObjectId(area.getChouetteId().getCodeSpace()+":AreaCentroid:"+area.getChouetteId().getObjectId());
+      jaxbAreaCentroid.setObjectId(area.getChouetteId().getCodeSpace()+":AreaCentroid:"+neptuneChouetteIdGenerator.toSpecificFormatId(area.getChouetteId(), parameters.getDefaultCodespace(), area));
       jaxbAreaCentroid.setComment(getNotEmptyString(area.getComment()));
       jaxbAreaCentroid.setName(area.getName());
 
@@ -55,7 +63,7 @@ public class AreaCentroidProducer extends
       }
       else
       {
-			log.error("missing coordinates for StopArea "+area.getChouetteId().getObjectId()+" "+area.getName());    	  
+			log.error("missing coordinates for StopArea "+neptuneChouetteIdGenerator.toSpecificFormatId(area.getChouetteId(), parameters.getDefaultCodespace(), area)+" "+area.getName());    	  
     	  // longitude/latitude mmandatory
           jaxbAreaCentroid.setLatitude(BigDecimal.ZERO);
           jaxbAreaCentroid.setLongitude(BigDecimal.ZERO);

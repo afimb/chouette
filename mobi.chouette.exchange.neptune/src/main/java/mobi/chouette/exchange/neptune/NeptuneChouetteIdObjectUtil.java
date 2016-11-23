@@ -27,9 +27,7 @@ public class NeptuneChouetteIdObjectUtil{
 		AccessLink result = referential.getSharedAccessLinks().get(chouetteId);
 		if (result == null) {
 			result = new AccessLink();
-			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setCodeSpace(chouetteId.getCodeSpace());
-			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			result.setChouetteId(chouetteId);
 			result.setDetached(true);
 			referential.getSharedAccessLinks().put(chouetteId, result);
 		}
@@ -46,9 +44,7 @@ public class NeptuneChouetteIdObjectUtil{
 		AccessPoint result = referential.getSharedAccessPoints().get(chouetteId);
 		if (result == null) {
 			result = new AccessPoint();
-			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setCodeSpace(chouetteId.getCodeSpace());
-			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			result.setChouetteId(chouetteId);
 			result.setDetached(true);
 			referential.getSharedAccessPoints().put(chouetteId, result);
 		}
@@ -65,9 +61,7 @@ public class NeptuneChouetteIdObjectUtil{
 		if (result == null) {
 			result = new Timetable();
 			result.setDetached(true);
-			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
-			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			result.setChouetteId(chouetteId);
 			referential.getSharedTimetables().put(chouetteId, result);
 		}
 		if (!referential.getTimetables().containsKey(chouetteId)) {

@@ -14,8 +14,9 @@ import mobi.chouette.common.Context;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
+import mobi.chouette.exchange.ChouetteIdObjectUtil;
 import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
-import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectFactory;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectUtil;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.model.util.Referential;
 
@@ -81,7 +82,7 @@ public class CommercialStopGenerator extends AbstractGenerator {
 				// check if stop has already a parent (from gtfs)
 				if (stop.getParent() == null) {
 
-					area = initArea(referential, stop, null);
+					area = initArea(gcid, parameters, referential, stop, null);
 
 					areaMap.put(mergeKey, area);
 				} else {
@@ -90,8 +91,8 @@ public class CommercialStopGenerator extends AbstractGenerator {
 			} else if (stop.getParent() != null) {
 				if (!area.equals(stop.getParent())) {
 					log.error("conflict between generated and setted parent");
-					log.error("stop   = " + stop.getChouetteId().getObjectId() + " " + stop.getName());
-					log.error("parent = " + area.getChouetteId().getObjectId() + " " + area.getName());
+					log.error("stop   = " + stop.toString() + " " + stop.getName());
+					log.error("parent = " + area.toString() + " " + area.getName());
 					continue;
 				}
 			}
@@ -102,7 +103,7 @@ public class CommercialStopGenerator extends AbstractGenerator {
 		// check distance to explode areas
 		List<StopArea> dividedAreas = new ArrayList<StopArea>();
 		for (StopArea area : areaMap.values()) {
-			explodeArea(referential, dividedAreas, area, 1, area.getChouetteId().getObjectId(), distanceMax);
+			explodeArea(gcid, parameters, referential, dividedAreas, area, 1, gcid.toSpecificFormatId(area.getChouetteId(), parameters.getDefaultCodespace(), area), distanceMax);
 		}
 
 		// save area
@@ -138,15 +139,15 @@ public class CommercialStopGenerator extends AbstractGenerator {
 	 * @param referential
 	 * @param objectId
 	 */
-	private StopArea initArea(Referential referential, StopArea stop, String objectId) {
-		GtfsChouetteIdObjectFactory gciof = new GtfsChouetteIdObjectFactory();
+	private StopArea initArea(GtfsChouetteIdGenerator gcig, GtfsImportParameters parameters, Referential referential, StopArea stop, String objectId) {
+
 		Calendar now = Calendar.getInstance();
-		String[] token = stop.getChouetteId().getObjectId().split(":");
+		String[] token = gcig.toSpecificFormatId(stop.getChouetteId(), parameters.getDefaultCodespace(), stop).split(":");
 		if (objectId == null)
 			objectId = token[0] + ":" + token[1] + ":COM_" + token[2];
-		StopArea area = GtfsChouetteIdObjectFactory.getStopArea(referential, gciof.toChouetteId(objectId, "default_codespace"));
+		StopArea area = GtfsChouetteIdObjectUtil.getStopArea(referential, gcig.toChouetteId(objectId, parameters.getDefaultCodespace()));
 		area.setName(stop.getName());
-		area.setChouetteId(objectId);
+		area.setChouetteId(gcig.toChouetteId(objectId, parameters.getDefaultCodespace()));
 		area.setObjectVersion(stop.getObjectVersion());
 		area.setCreationTime(now.getTime());
 		area.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
@@ -166,7 +167,7 @@ public class CommercialStopGenerator extends AbstractGenerator {
 	 *            rank of subdivision
 	 * @param referential
 	 */
-	private void explodeArea(Referential referential, List<StopArea> dividedAreas, StopArea area, int rank,
+	private void explodeArea(GtfsChouetteIdGenerator gcid, GtfsImportParameters parameters, Referential referential, List<StopArea> dividedAreas, StopArea area, int rank,
 			String baseId, double distanceMax) {
 		if (!checkDistance(area, distanceMax)) {
 			if (rank == 1) {
@@ -174,14 +175,14 @@ public class CommercialStopGenerator extends AbstractGenerator {
 			}
 			List<StopArea> excludedList = excludeLongDistanceStops(area, distanceMax);
 
-			StopArea areaExcluded = initArea(referential, excludedList.get(0), baseId + "_" + rank);
+			StopArea areaExcluded = initArea(gcid, parameters, referential, excludedList.get(0), baseId + "_" + rank);
 			// patch object id for non confusion
-			areaExcluded.getChouetteId().setObjectId(baseId + "_" + rank);
+			areaExcluded.setChouetteId(gcid.toChouetteId(baseId + "_" + rank, parameters.getDefaultCodespace()));
 			for (StopArea excluded : excludedList) {
 				excluded.setParent(areaExcluded);
 			}
 			dividedAreas.add(areaExcluded);
-			explodeArea(referential, dividedAreas, areaExcluded, rank + 1, baseId, distanceMax);
+			explodeArea(gcid, parameters, referential, dividedAreas, areaExcluded, rank + 1, baseId, distanceMax);
 		}
 	}
 

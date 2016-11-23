@@ -5,6 +5,7 @@ import mobi.chouette.exchange.gtfs.exporter.producer.mock.GtfsExporterMock;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.exporter.RouteExporter;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
 
@@ -26,7 +27,7 @@ public class GtfsExportRouteProducerTests
       mock.reset();
 
       Line neptuneObject = new Line();
-      neptuneObject.getChouetteId().setObjectId("GTFS:Line:4321");
+      neptuneObject.setChouetteId(new ChouetteId("GTFS","4321", false));
       neptuneObject.setName("lineName");
       neptuneObject.setNumber("lineNumber");
       neptuneObject.setPublishedName("publishedLineName");
@@ -34,7 +35,7 @@ public class GtfsExportRouteProducerTests
       neptuneObject.setColor("0000FF");
       neptuneObject.setTextColor("00FF00");
       Company company = new Company();
-      company.getChouetteId().setObjectId("GTFS:Company:1234");
+      company.setChouetteId(new ChouetteId("GTFS","1234", false));
       company.setName("name");
       neptuneObject.setCompany(company);
 
@@ -62,11 +63,11 @@ public class GtfsExportRouteProducerTests
       mock.reset();
 
       Line neptuneObject = new Line();
-      neptuneObject.getChouetteId().setObjectId("GTFS:Line:4321");
+      neptuneObject.setChouetteId(new ChouetteId("GTFS","4321", false));
       neptuneObject.setName("lineNname");
       neptuneObject.setPublishedName("publishedLineName");
       Company company = new Company();
-      company.getChouetteId().setObjectId("GTFS:Company:1234");
+      company.setChouetteId(new ChouetteId("GTFS","1234", false));
       company.setName("name");
       neptuneObject.setCompany(company);
       producer.save(neptuneObject,"GTFS");
@@ -89,10 +90,10 @@ public class GtfsExportRouteProducerTests
       mock.reset();
 
       Line neptuneObject = new Line();
-      neptuneObject.getChouetteId().setObjectId("GTFS:Line:4321");
+      neptuneObject.setChouetteId(new ChouetteId("GTFS","4321", false));
       neptuneObject.setNumber("lineNumber");
       Company company = new Company();
-      company.getChouetteId().setObjectId("GTFS:Company:1234");
+      company.setChouetteId(new ChouetteId("GTFS","1234", false));
       company.setName("name");
       neptuneObject.setCompany(company);
       producer.save(neptuneObject,  "GTFS");
@@ -112,9 +113,9 @@ public class GtfsExportRouteProducerTests
       mock.reset();
 
       Line neptuneObject = new Line();
-      neptuneObject.getChouetteId().setObjectId("GTFS:Line:4321");
+      neptuneObject.setChouetteId(new ChouetteId("GTFS","4321", false));
       Company company = new Company();
-      company.getChouetteId().setObjectId("GTFS:Company:1234");
+      company.setChouetteId(new ChouetteId("GTFS","1234", false));
       company.setName("name");
       neptuneObject.setCompany(company);
       boolean state = producer.save(neptuneObject, "GTFS");

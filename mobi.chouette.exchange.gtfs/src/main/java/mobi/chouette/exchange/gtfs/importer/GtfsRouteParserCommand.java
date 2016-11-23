@@ -14,6 +14,8 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.ChouetteIdGenerator;
 import mobi.chouette.exchange.gtfs.Constant;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectUtil;
 import mobi.chouette.exchange.gtfs.parser.GtfsAgencyParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsCalendarParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsRouteParser;
@@ -26,7 +28,6 @@ import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.util.NamingUtil;
-import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -54,12 +55,12 @@ public class GtfsRouteParserCommand implements Command, Constant {
 			}
 
 			GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
-
+			GtfsChouetteIdGenerator gcid = (GtfsChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 			ActionReporter reporter = ActionReporter.Factory.getInstance();
 
 			// PTNetwork
 			if (referential.getSharedPTNetworks().isEmpty()) {
-				createPTNetwork(referential, configuration);
+				createPTNetwork(referential, gcid, configuration);
 				reporter.addObjectReport(context, "merged", OBJECT_TYPE.NETWORK, "networks", OBJECT_STATE.OK,
 						IO_TYPE.INPUT);
 				reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.NETWORK, OBJECT_TYPE.NETWORK,
@@ -133,11 +134,11 @@ public class GtfsRouteParserCommand implements Command, Constant {
 		return result;
 	}
 
-	private Network createPTNetwork(Referential referential, GtfsImportParameters configuration) {
-		GtfsChouetteIdObjectFactory gciof = new GtfsChouetteIdObjectFactory();
+	private Network createPTNetwork(Referential referential, GtfsChouetteIdGenerator gcid, GtfsImportParameters configuration) {
+		GtfsChouetteIdObjectUtil gciof = new GtfsChouetteIdObjectUtil();
 		String prefix = configuration.getObjectIdPrefix();
 		String ptNetworkId = prefix + ":" + Network.PTNETWORK_KEY + ":" + prefix;
-		Network ptNetwork = GtfsChouetteIdObjectFactory.getPTNetwork(referential, gciof.toChouetteId(ptNetworkId, "default_codespace"));
+		Network ptNetwork = GtfsChouetteIdObjectUtil.getPTNetwork(referential, gcid.toChouetteId(ptNetworkId, configuration.getDefaultCodespace()));
 		ptNetwork.setVersionDate(Calendar.getInstance().getTime());
 		ptNetwork.setName(prefix);
 		ptNetwork.setRegistrationNumber(prefix);

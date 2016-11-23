@@ -62,7 +62,7 @@ public class GtfsTestsUtils implements Constant, ReportConstant{
 					bps.add(point.getContainedInStopArea());
 
 					Assert.assertNotNull(point.getContainedInStopArea().getParent(), "StopAreas must have parent : "
-							+ point.getContainedInStopArea().getChouetteId().getObjectId());
+							+ point.getContainedInStopArea().toString());
 					comms.add(point.getContainedInStopArea().getParent());
 				}
 			}

@@ -6,6 +6,7 @@ import java.util.Collection;
 
 import mobi.chouette.exchange.gtfs.exporter.producer.AbstractProducer;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
+import mobi.chouette.model.ChouetteId;
 
 public class GtfsDummyProducer extends AbstractProducer
 {
@@ -15,7 +16,7 @@ public class GtfsDummyProducer extends AbstractProducer
       super(exporter);
    }
    
-   public String toGtfsIdWrapper(String neptuneId, String prefix)
+   public String toGtfsIdWrapper(ChouetteId neptuneId, String prefix)
    {
       return toGtfsId(neptuneId, prefix);
    }

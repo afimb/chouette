@@ -95,6 +95,7 @@ public class ChouettePTNetworkProducer extends NeptuneChouetteIdGenerator implem
 		String rootDirectory = jobData.getPathName();
 
 		NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		boolean addExtension = parameters.isAddExtension();
 		String projectionType = parameters.getProjectionType();
 		if (projectionType != null && !projectionType.isEmpty())
@@ -110,7 +111,7 @@ public class ChouettePTNetworkProducer extends NeptuneChouetteIdGenerator implem
 		for (GroupOfLine group : collection.getGroupOfLines())
 		{
 			GroupOfLineType jaxbObj = groupOfLineProducer.produce(group,addExtension);
-			jaxbObj.getLineId().add(collection.getLine().getChouetteId().getObjectId());
+			jaxbObj.getLineId().add(neptuneChouetteIdGenerator.toSpecificFormatId(collection.getLine().getChouetteId(), parameters.getDefaultCodespace(), collection.getLine()));
 			rootObject.getGroupOfLine().add(jaxbObj);
 		}
 
@@ -132,14 +133,14 @@ public class ChouettePTNetworkProducer extends NeptuneChouetteIdGenerator implem
 				{
 					if (collection.getStopAreas().contains(child))
 					{
-						jaxbStopArea.getContains().add(child.getChouetteId().getObjectId());
+						jaxbStopArea.getContains().add(neptuneChouetteIdGenerator.toSpecificFormatId(child.getChouetteId(), parameters.getDefaultCodespace(), child));
 					}
 				}
 				for (StopPoint child : stopArea.getContainedStopPoints())
 				{
 					if (collection.getStopPoints().contains(child))
 					{
-						jaxbStopArea.getContains().add(child.getChouetteId().getObjectId());
+						jaxbStopArea.getContains().add(neptuneChouetteIdGenerator.toSpecificFormatId(child.getChouetteId(), parameters.getDefaultCodespace(), child));
 					}
 				}
 			}
@@ -162,7 +163,7 @@ public class ChouettePTNetworkProducer extends NeptuneChouetteIdGenerator implem
 			{
 				if (collection.getStopAreas().contains(child))
 				{
-					jaxbStopArea.getContains().add(child.getChouetteId().getObjectId());
+					jaxbStopArea.getContains().add(neptuneChouetteIdGenerator.toSpecificFormatId(child.getChouetteId(), parameters.getDefaultCodespace(), child));
 				}
 			}
 			chouetteArea.getStopArea().add(jaxbStopArea);
@@ -185,7 +186,7 @@ public class ChouettePTNetworkProducer extends NeptuneChouetteIdGenerator implem
 			for (VehicleJourney vehicleJourney : collection.getVehicleJourneys()) {
 				if (vehicleJourney.getTimetables().contains(timetable))
 				{
-					jaxbObj.getVehicleJourneyId().add(vehicleJourney.getChouetteId().getObjectId());					
+					jaxbObj.getVehicleJourneyId().add(neptuneChouetteIdGenerator.toSpecificFormatId(vehicleJourney.getChouetteId(), parameters.getDefaultCodespace(), vehicleJourney));					
 				}
 			}
 			if (metadata != null)
@@ -222,7 +223,7 @@ public class ChouettePTNetworkProducer extends NeptuneChouetteIdGenerator implem
 			{
 				if (collection.getJourneyPatterns().contains(jp))
 				{
-					jaxbObj.getJourneyPatternId().add(jp.getChouetteId().getObjectId());
+					jaxbObj.getJourneyPatternId().add(neptuneChouetteIdGenerator.toSpecificFormatId(jp.getChouetteId(), parameters.getDefaultCodespace(), jp));
 				}
 			}
 			// add ptLinks 
@@ -269,8 +270,8 @@ public class ChouettePTNetworkProducer extends NeptuneChouetteIdGenerator implem
 					timeSlot.setLastDepartureTimeInSlot(journeyFrequency.getLastDepartureTime());
 					
 						VehicleJourneyType jaxbObj = vehicleJourneyProducer.produce(vehicleJourney, addExtension, count);
-						timeSlot.getChouetteId().setObjectId(jaxbObj.getObjectId().replaceAll("VehicleJourney", "TimeSlot"));
-						jaxbObj.setTimeSlotId(timeSlot.getChouetteId().getObjectId());
+						timeSlot.setChouetteId(neptuneChouetteIdGenerator.toChouetteId(jaxbObj.getObjectId().replaceAll("VehicleJourney", "TimeSlot"), parameters.getDefaultCodespace()));
+						jaxbObj.setTimeSlotId(neptuneChouetteIdGenerator.toSpecificFormatId(timeSlot.getChouetteId(), parameters.getDefaultCodespace(), timeSlot));
 						chouetteLineDescription.getVehicleJourney().add(jaxbObj);
 					
 					TimeSlotType jaxbTSObj = timeSlotProducer.produce(timeSlot, addExtension);
@@ -288,19 +289,19 @@ public class ChouettePTNetworkProducer extends NeptuneChouetteIdGenerator implem
 			if (collection.getStopAreas().contains(accessLink.getStopArea()) && 
 					collection.getAccessPoints().contains(accessLink.getAccessPoint())	)
 			{
-				rootObject.getAccessLink().add(accessLinkProducer.produce(accessLink,addExtension));
+				rootObject.getAccessLink().add(accessLinkProducer.produce(context, accessLink,addExtension));
 			}
 		}
 
 		for (AccessPoint accessPoint : collection.getAccessPoints())
 		{
-			rootObject.getAccessPoint().add(accessPointProducer.produce(accessPoint,addExtension));
+			rootObject.getAccessPoint().add(accessPointProducer.produce(context, accessPoint,addExtension));
 		}
 
 		// sauvegarde
 		JaxbNeptuneFileConverter writer = JaxbNeptuneFileConverter.getInstance();
 		Path dir = Paths.get(rootDirectory,OUTPUT);
-		String fileName = collection.getLine().getChouetteId().getObjectId().replaceAll(":", "-")+".xml";
+		String fileName = neptuneChouetteIdGenerator.toSpecificFormatId(collection.getLine().getChouetteId(), parameters.getDefaultCodespace(), collection.getLine()).replaceAll(":", "-")+".xml";
 		File file = new File(dir.toFile(),fileName);
 		writer.write(AbstractJaxbNeptuneProducer.tridentFactory.createChouettePTNetwork(rootObject), file );
 

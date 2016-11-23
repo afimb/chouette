@@ -16,6 +16,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.hub.Constant;
+import mobi.chouette.exchange.hub.HubChouetteIdGenerator;
 import mobi.chouette.exchange.hub.exporter.producer.HubCheminProducer;
 import mobi.chouette.exchange.hub.exporter.producer.HubCourseOperationProducer;
 import mobi.chouette.exchange.hub.exporter.producer.HubCourseProducer;
@@ -65,7 +66,8 @@ public class HubLineProducerCommand implements Command, Constant {
 			Line line = (Line) context.get(LINE);
 
 			HubExportParameters configuration = (HubExportParameters) context.get(CONFIGURATION);
-
+			HubChouetteIdGenerator chouetteIdGenerator = (HubChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+			
 			ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 			if (collection == null) {
 				collection = new ExportableData();
@@ -83,14 +85,14 @@ public class HubLineProducerCommand implements Command, Constant {
 			HubDataCollector collector = new HubDataCollector();
 
 			boolean cont = collector.collect(collection, line, startDate, endDate);
-			reporter.addObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
+			reporter.addObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, NamingUtil.getName(line),
 					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
+			reporter.setStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+			reporter.setStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
 					collection.getJourneyPatterns().size());
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, collection
+			reporter.setStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, collection
 					.getRoutes().size());
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY,
+			reporter.setStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY,
 					collection.getVehicleJourneys().size());
 			
 			if (cont) {
@@ -107,17 +109,17 @@ public class HubLineProducerCommand implements Command, Constant {
 						msg += " code : " + ex.getCode();
 					if (ex.getValue() != null)
 						msg += " value : " + ex.getValue();
-					reporter.addErrorToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE,
+					reporter.addErrorToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE,
 							ActionReporter.ERROR_CODE.INVALID_FORMAT, msg);
 					// throw new Exception("invalid data");
 				} catch (Exception e) {
 					log.error("failure on line", e);
-					reporter.addErrorToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE,
+					reporter.addErrorToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE,
 							ActionReporter.ERROR_CODE.WRITE_ERROR, e.getMessage());
 				}
 
 			} else {
-				reporter.addErrorToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE,
+				reporter.addErrorToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE,
 						ActionReporter.ERROR_CODE.NO_DATA_ON_PERIOD, "no data on period");
 				result = SUCCESS; // else export will stop here
 			}
@@ -327,7 +329,7 @@ public class HubLineProducerCommand implements Command, Constant {
 		@Override
 		public int compare(JourneyPattern arg0, JourneyPattern arg1) {
 
-			return arg0.getChouetteId().getObjectId().compareTo(arg1.getChouetteId().getObjectId());
+			return arg0.getChouetteId().toString().compareTo(arg1.getChouetteId().toString());
 		}
 	}
 

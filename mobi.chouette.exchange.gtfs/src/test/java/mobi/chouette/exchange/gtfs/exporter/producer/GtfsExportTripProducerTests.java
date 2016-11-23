@@ -10,6 +10,7 @@ import mobi.chouette.exchange.gtfs.model.GtfsTrip.WheelchairAccessibleType;
 import mobi.chouette.exchange.gtfs.model.exporter.StopTimeExporter;
 import mobi.chouette.exchange.gtfs.model.exporter.TripExporter;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -232,7 +233,7 @@ public class GtfsExportTripProducerTests
 private VehicleJourney buildNeptuneObject(boolean full)
    {
       VehicleJourney neptuneObject = new VehicleJourney();
-      neptuneObject.getChouetteId().setObjectId("GTFS:VehicleJourney:4321");
+      neptuneObject.setChouetteId(new ChouetteId("GTFS","4321", false));
       // if (full) neptuneObject.setName("name");
       if (full) neptuneObject.setNumber(Long.valueOf(456));
       if (full) neptuneObject.setMobilityRestrictedSuitability(Boolean.TRUE);
@@ -242,7 +243,7 @@ private VehicleJourney buildNeptuneObject(boolean full)
       neptuneObject.setRoute(route);
       if (full) jp.setPublishedName("jp name");
       Line line = new Line();
-      line.getChouetteId().setObjectId("GTFS:Line:0123");
+      line.setChouetteId(new ChouetteId("GTFS","0123", false));
 
       route.setLine(line);
       if (full) route.setWayBack("A");
@@ -262,8 +263,8 @@ private VehicleJourney buildNeptuneObject(boolean full)
          StopPoint sp = new StopPoint();
          sp.setPosition(i*2);
          StopArea sa = new StopArea();
-         sp.getChouetteId().setObjectId("GTFS:StopPoint:SP"+i);
-         sa.getChouetteId().setObjectId("GTFS:StopPoint:SA"+i);
+         sp.setChouetteId(new ChouetteId("GTFS","SP"+i, false));
+         sa.setChouetteId(new ChouetteId("GTFS","SA"+i, false));
          sp.setContainedInStopArea(sa);
          VehicleJourneyAtStop vjas = new VehicleJourneyAtStop();
          vjas.setStopPoint(sp);

@@ -43,9 +43,7 @@ public class NeptuneChouetteIdGenerator extends AbstractChouetteIdGenerator impl
 			String codespace = objectIdArray[0];
 			String technicalId = objectIdArray[2];
 			
-			chouetteId = new ChouetteId();
-			chouetteId.setCodeSpace(codespace);
-			chouetteId.setObjectId(technicalId);
+			chouetteId = new ChouetteId(codespace, technicalId, false);
 		} else {
 			log.info("Object id : " + objectId + " non conforme au format neptune");
 		}
@@ -104,7 +102,7 @@ public class NeptuneChouetteIdGenerator extends AbstractChouetteIdGenerator impl
 				objectId += VEHICLEJOURNEY_KEY;
 			
 			objectId += ":";
-			objectId += chouetteId.getObjectId();
+			objectId += chouetteId.getTechnicalId();
 		} catch (ClassNotFoundException e) {
 			log.error("Class from type not found for neptune export id generation");
 		}

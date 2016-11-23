@@ -2,7 +2,8 @@ package mobi.chouette.exchange.gtfs.parser;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectUtil;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
@@ -13,14 +14,11 @@ import mobi.chouette.exchange.gtfs.validation.GtfsValidationReporter;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
-import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.model.Company;
-import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
-import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class GtfsAgencyParser extends GtfsChouetteIdGenerator implements Parser, Validator, Constant {
+public class GtfsAgencyParser implements Parser, Validator, Constant {
 
 	@Override
 	public void validate(Context context) throws Exception {
@@ -103,11 +101,12 @@ public class GtfsAgencyParser extends GtfsChouetteIdGenerator implements Parser,
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
-
+		GtfsChouetteIdGenerator gcid = (GtfsChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		for (GtfsAgency gtfsAgency : importer.getAgencyById()) {
 			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Company.COMPANY_KEY,
 					gtfsAgency.getAgencyId(), log);
-			Company company = GtfsChouetteIdObjectFactory.getCompany(referential, toChouetteId(objectId, configuration.getDefaultCodespace()));
+			Company company = GtfsChouetteIdObjectUtil.getCompany(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace()));
 			convert(context, gtfsAgency, company);
 		}
 	}

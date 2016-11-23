@@ -29,11 +29,11 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
-import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectFactory;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class GtfsRouteParser extends GtfsChouetteIdGenerator implements Parser, Validator, Constant {
+public class GtfsRouteParser implements Parser, Validator, Constant {
 
 	@Getter
 	@Setter
@@ -183,26 +183,27 @@ public class GtfsRouteParser extends GtfsChouetteIdGenerator implements Parser, 
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
-
+		GtfsChouetteIdGenerator gcid = (GtfsChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		Index<GtfsRoute> routes = importer.getRouteById();
 		GtfsRoute gtfsRoute = routes.getValue(gtfsRouteId);
 
 		String lineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY,
 				gtfsRouteId, log);
-		Line line = GtfsChouetteIdObjectFactory.getLine(referential, toChouetteId(lineId, "default_codespace"));
+		Line line = GtfsChouetteIdObjectUtil.getLine(referential, gcid.toChouetteId(lineId, configuration.getDefaultCodespace()));
 		convert(context, gtfsRoute, line);
 
 		// PTNetwork
 		String ptNetworkId = configuration.getObjectIdPrefix() + ":" + Network.PTNETWORK_KEY + ":"
 				+ configuration.getObjectIdPrefix();
-		Network ptNetwork = GtfsChouetteIdObjectFactory.getPTNetwork(referential, toChouetteId(ptNetworkId, "default_codespace"));
+		Network ptNetwork = GtfsChouetteIdObjectUtil.getPTNetwork(referential, gcid.toChouetteId(ptNetworkId, configuration.getDefaultCodespace()));
 		line.setNetwork(ptNetwork);
 
 		// Company
 		if (gtfsRoute.getAgencyId() != null) {
 			String companyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 					Company.COMPANY_KEY, gtfsRoute.getAgencyId(), log);
-			Company company = GtfsChouetteIdObjectFactory.getCompany(referential, toChouetteId(companyId, "default_codespace"));
+			Company company = GtfsChouetteIdObjectUtil.getCompany(referential, gcid.toChouetteId(companyId, configuration.getDefaultCodespace()));
 			line.setCompany(company);
 		} else if (!referential.getSharedCompanies().isEmpty()) {
 			Company company = referential.getSharedCompanies().values().iterator().next();

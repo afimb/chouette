@@ -10,13 +10,14 @@ import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectUtil;
 import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.model.util.NeptuneUtil;
-import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
@@ -25,9 +26,10 @@ public class ConnectionLinkGenerator extends AbstractGenerator {
 	public void createConnectionLinks(Context context) {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
+		GtfsChouetteIdGenerator gcid = (GtfsChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		Collection<ConnectionLink> fixedLinks = new ArrayList<>(referential.getConnectionLinks().values());
 		List<ConnectionLink> excludedLinks = new ArrayList<ConnectionLink>();
-		GtfsChouetteIdObjectFactory gciof = new GtfsChouetteIdObjectFactory();
+		GtfsChouetteIdObjectUtil gciof = new GtfsChouetteIdObjectUtil();
 		for (ConnectionLink link : referential.getSharedConnectionLinks().values()) {
 			if ("FORBIDDEN".equals(link.getName())) {
 				excludedLinks.add(link);
@@ -78,8 +80,8 @@ public class ConnectionLinkGenerator extends AbstractGenerator {
 //					}
 					if (ok) {
 						// create connectionLink
-						String[] sourceToken = source.getChouetteId().getObjectId().split(":");
-						String[] targetToken = target.getChouetteId().getObjectId().split(":");
+						String[] sourceToken = gcid.toSpecificFormatId(source.getChouetteId(), configuration.getDefaultCodespace(), source).split(":");
+						String[] targetToken = gcid.toSpecificFormatId(target.getChouetteId(), configuration.getDefaultCodespace(), target).split(":");
 						String objectId = sourceToken[0] + ":" + ConnectionLink.CONNECTIONLINK_KEY + ":"
 								+ sourceToken[2] + "_" + targetToken[2];
 						String reverseId = sourceToken[0] + ":" + ConnectionLink.CONNECTIONLINK_KEY + ":"
@@ -118,7 +120,7 @@ public class ConnectionLinkGenerator extends AbstractGenerator {
 							}
 						} else {
 
-							ConnectionLink link = GtfsChouetteIdObjectFactory.getConnectionLink(referential, gciof.toChouetteId(objectId, "default_codespace"));
+							ConnectionLink link = GtfsChouetteIdObjectUtil.getConnectionLink(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace()));
 							link.setDefaultDuration(defaultDuration);
 							link.setCreationTime(Calendar.getInstance().getTime());
 							link.setStartOfLink(source);
@@ -131,7 +133,7 @@ public class ConnectionLinkGenerator extends AbstractGenerator {
 
 							objectId = sourceToken[0] + ":" + ConnectionLink.CONNECTIONLINK_KEY + ":" + targetToken[2]
 									+ "_" + sourceToken[2];
-							ConnectionLink reverseLink = GtfsChouetteIdObjectFactory.getConnectionLink(referential, gciof.toChouetteId(objectId, "default_codespace"));
+							ConnectionLink reverseLink = GtfsChouetteIdObjectUtil.getConnectionLink(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace()));
 							reverseLink.setDefaultDuration(defaultDuration);
 							reverseLink.setChouetteId(chouetteId);
 							reverseLink.setCreationTime(Calendar.getInstance().getTime());

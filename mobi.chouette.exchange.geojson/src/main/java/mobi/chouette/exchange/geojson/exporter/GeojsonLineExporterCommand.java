@@ -29,11 +29,10 @@ import mobi.chouette.exchange.geojson.JAXBSerializer;
 import mobi.chouette.exchange.geojson.LineString;
 import mobi.chouette.exchange.geojson.MultiLineString;
 import mobi.chouette.exchange.geojson.Point;
-import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.report.ActionReporter;
-import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ConnectionLink;
@@ -75,9 +74,9 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 
 		Monitor monitor = MonitorFactory.start(COMMAND);
 		ActionReporter reporter = ActionReporter.Factory.getInstance();
-		
-		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		GeojsonExportParameters parameters = (GeojsonExportParameters) context.get(PARAMETERS_FILE);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
+		
 		
 		ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat());
 		
@@ -173,14 +172,14 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 								StopArea departure = routeSection.getDeparture();
 
 								if (departure != null && departure.hasCoordinates()) {
-									createPhysicaStop(shared, keys, departure);
+									createPhysicaStop(chouetteIdGenerator, parameters, shared, keys, departure);
 									MetaData.updateBoundingBox(context, departure.getLongitude().doubleValue(),
 											departure.getLatitude().doubleValue());
 								}
 
 								StopArea arrival = routeSection.getArrival();
 								if (arrival != null && arrival.hasCoordinates()) {
-									createPhysicaStop(shared, keys, arrival);
+									createPhysicaStop(chouetteIdGenerator, parameters, shared, keys, arrival);
 									MetaData.updateBoundingBox(context, arrival.getLongitude().doubleValue(), arrival
 											.getLatitude().doubleValue());
 								}
@@ -244,66 +243,70 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 		return result;
 	}
 
-	private void createPhysicaStop(SharedData shared, Keys keys, StopArea stopArea) {
+	private void createPhysicaStop(ChouetteIdGenerator chouetteIdGenerator, GeojsonExportParameters parameters, SharedData shared, Keys keys, StopArea stopArea) {
 		
 		Map<String, Feature> filter = shared.getPhysicalStops();
-		if (!filter.containsKey(stopArea.getChouetteId().getObjectId())) {
-			Feature feature = createFeature(stopArea);
-			filter.put(stopArea.getChouetteId().getObjectId(), feature);
+		String chouetteIdString = chouetteIdGenerator.toSpecificFormatId(stopArea.getChouetteId(), parameters.getDefaultCodespace(), stopArea);
+		if (!filter.containsKey(chouetteIdString)){
+			Feature feature = createFeature(chouetteIdGenerator, parameters, stopArea);
+			filter.put(chouetteIdString, feature);
 		}
 
-		keys.getStopArea().add(stopArea.getChouetteId().getObjectId());
+		keys.getStopArea().add(chouetteIdString);
 
 		for (ConnectionLink connectionLink : stopArea.getConnectionStartLinks()) {
-			createConnectionLink(shared, keys, connectionLink);
+			createConnectionLink(chouetteIdGenerator, parameters, shared, keys, connectionLink);
 		}
 
 		for (ConnectionLink connectionLink : stopArea.getConnectionEndLinks()) {
-			createConnectionLink(shared, keys, connectionLink);
+			createConnectionLink(chouetteIdGenerator, parameters, shared, keys, connectionLink);
 		}
 
 		for (AccessPoint accessPoint : stopArea.getAccessPoints()) {
-			createAccessPoint(shared, keys, accessPoint);
+			createAccessPoint(chouetteIdGenerator, parameters, shared, keys, accessPoint);
 		}
 
 		if (stopArea.getParent() != null) {
-			createCommercialStop(shared, keys, stopArea.getParent());
+			createCommercialStop(chouetteIdGenerator, parameters, shared, keys, stopArea.getParent());
 		}
 
 	}
 
-	private void createCommercialStop(SharedData shared, Keys keys, StopArea stopArea) {
+	private void createCommercialStop(ChouetteIdGenerator chouetteIdGenerator, GeojsonExportParameters parameters, SharedData shared, Keys keys, StopArea stopArea) {
 
 		Map<String, Feature> filter = shared.getCommercialStops();
-		if (!filter.containsKey(stopArea.getChouetteId().getObjectId())) {
-			Feature feature = createFeature(stopArea);
-			filter.put(stopArea.getChouetteId().getObjectId(), feature);
+		String chouetteIdString = chouetteIdGenerator.toSpecificFormatId(stopArea.getChouetteId(), parameters.getDefaultCodespace(), stopArea);
+		if (!filter.containsKey(chouetteIdString)) {
+			Feature feature = createFeature(chouetteIdGenerator, parameters, stopArea);
+			filter.put(chouetteIdString, feature);
 		}
 
-		keys.getStopArea().add(stopArea.getChouetteId().getObjectId());
+		keys.getStopArea().add(chouetteIdString);
 
 		for (ConnectionLink connectionLink : stopArea.getConnectionStartLinks()) {
-			createConnectionLink(shared, keys, connectionLink);
+			createConnectionLink(chouetteIdGenerator, parameters, shared, keys, connectionLink);
 		}
 
 		for (ConnectionLink connectionLink : stopArea.getConnectionEndLinks()) {
-			createConnectionLink(shared, keys, connectionLink);
+			createConnectionLink(chouetteIdGenerator, parameters, shared, keys, connectionLink);
 		}
 
 		for (AccessPoint accessPoint : stopArea.getAccessPoints()) {
-			createAccessPoint(shared, keys, accessPoint);
+			createAccessPoint(chouetteIdGenerator, parameters, shared, keys, accessPoint);
 		}
 
 		if (stopArea.getParent() != null) {
-			createCommercialStop(shared, keys, stopArea.getParent());
+			createCommercialStop(chouetteIdGenerator, parameters, shared, keys, stopArea.getParent());
 		}
 
 	}
 
-	private void createAccessPoint(SharedData shared, Keys keys, AccessPoint accessPoint) {
+	private void createAccessPoint(ChouetteIdGenerator chouetteIdGenerator, GeojsonExportParameters parameters, SharedData shared, Keys keys, AccessPoint accessPoint) {
 
 		Map<String, Feature> filter = shared.getAccessPoints();
-		if (!filter.containsKey(accessPoint.getChouetteId().getObjectId())) {
+		String chouetteIdString = chouetteIdGenerator.toSpecificFormatId(accessPoint.getChouetteId(), parameters.getDefaultCodespace(), accessPoint);
+		
+		if (!filter.containsKey(chouetteIdString)) {
 			Map<String, Object> properties = new HashMap<String, Object>();
 			properties.put("object_version", getProperty(accessPoint.getObjectVersion()));
 			properties.put("creation_time", getProperty(accessPoint.getCreationTime()));
@@ -315,7 +318,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 			properties.put("mobility_restricted_suitability", getProperty(accessPoint.getMobilityRestrictedSuitable()));
 			properties.put("stairs_availability", getProperty(accessPoint.getStairsAvailable()));
 			properties.put("lift_availability", getProperty(accessPoint.getLiftAvailable()));
-			properties.put("stop_area_objectid", getProperty(accessPoint.getContainedIn().getChouetteId().getObjectId()));
+			properties.put("stop_area_objectid", getProperty(chouetteIdGenerator.toSpecificFormatId(accessPoint.getContainedIn().getChouetteId(), parameters.getDefaultCodespace(), accessPoint.getContainedIn())));
 
 			double[] coordinates = new double[2];
 			if (accessPoint.getLongitude() != null && accessPoint.getLatitude() != null) {
@@ -323,22 +326,24 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 				coordinates[1] = accessPoint.getLatitude().doubleValue();
 			}
 
-			Feature feature = new Feature(accessPoint.getChouetteId().getObjectId(), new Point(coordinates), properties);
-			filter.put(accessPoint.getChouetteId().getObjectId(), feature);
+			Feature feature = new Feature(chouetteIdString, new Point(coordinates), properties);
+			filter.put(chouetteIdString, feature);
 		}
 
-		keys.getAccessPoints().add(accessPoint.getChouetteId().getObjectId());
+		keys.getAccessPoints().add(chouetteIdString);
 
 		for (AccessLink accessLink : accessPoint.getAccessLinks()) {
-			createAccessLink(shared, accessLink);
+			createAccessLink(chouetteIdGenerator, parameters, shared, accessLink);
 		}
 
 	}
 
-	private void createConnectionLink(SharedData shared, Keys keys, ConnectionLink connectionLink) {
+	private void createConnectionLink(ChouetteIdGenerator chouetteIdGenerator, GeojsonExportParameters parameters, SharedData shared, Keys keys, ConnectionLink connectionLink) {
 
 		Map<String, Feature> filter = shared.getConnectionLinks();
-		if (!filter.containsKey(connectionLink.getChouetteId().getObjectId())) {
+		String chouetteIdString = chouetteIdGenerator.toSpecificFormatId(connectionLink.getChouetteId(), parameters.getDefaultCodespace(), connectionLink);
+		
+		if (!filter.containsKey(chouetteIdString)) {
 			Map<String, Object> properties = new HashMap<String, Object>();
 			properties.put("object_version", getProperty(connectionLink.getObjectVersion()));
 			properties.put("creation_time", getProperty(connectionLink.getCreationTime()));
@@ -359,8 +364,8 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 
 			double[][] coordinates = new double[0][2];
 			if (connectionLink.getStartOfLink() != null && connectionLink.getEndOfLink() != null) {
-				properties.put("departure_objectid", getProperty(connectionLink.getStartOfLink().getChouetteId().getObjectId()));
-				properties.put("arrival_objectid", getProperty(connectionLink.getEndOfLink().getChouetteId().getObjectId()));
+				properties.put("departure_objectid", getProperty(chouetteIdGenerator.toSpecificFormatId(connectionLink.getStartOfLink().getChouetteId(), parameters.getDefaultCodespace(), connectionLink.getStartOfLink())));
+				properties.put("arrival_objectid", getProperty(chouetteIdGenerator.toSpecificFormatId(connectionLink.getEndOfLink().getChouetteId(), parameters.getDefaultCodespace(), connectionLink.getEndOfLink())));
 				coordinates = new double[2][2];
 				coordinates[0][0] = connectionLink.getStartOfLink().getLongitude().doubleValue();
 				coordinates[0][1] = connectionLink.getStartOfLink().getLatitude().doubleValue();
@@ -368,17 +373,19 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 				coordinates[1][1] = connectionLink.getEndOfLink().getLatitude().doubleValue();
 			}
 
-			Feature feature = new Feature(connectionLink.getChouetteId().getObjectId(), new LineString(coordinates), properties);
-			filter.put(connectionLink.getChouetteId().getObjectId(), feature);
+			Feature feature = new Feature(chouetteIdString, new LineString(coordinates), properties);
+			filter.put(chouetteIdString, feature);
 		}
 
-		keys.getConnectionLinks().add(connectionLink.getChouetteId().getObjectId());
+		keys.getConnectionLinks().add(chouetteIdString);
 	}
 
-	private void createAccessLink(SharedData shared, AccessLink accessLink) {
+	private void createAccessLink(ChouetteIdGenerator chouetteIdGenerator, GeojsonExportParameters parameters, SharedData shared, AccessLink accessLink) {
 
 		Map<String, Feature> filter = shared.getAccessLinks();
-		if (!filter.containsKey(accessLink.getChouetteId().getObjectId())) {
+		String chouetteIdString = chouetteIdGenerator.toSpecificFormatId(accessLink.getChouetteId(), parameters.getDefaultCodespace(), accessLink);
+		
+		if (!filter.containsKey(chouetteIdString)) {
 			Map<String, Object> properties = new HashMap<String, Object>();
 			properties.put("object_version", getProperty(accessLink.getObjectVersion()));
 			properties.put("creation_time", getProperty(accessLink.getCreationTime()));
@@ -398,8 +405,8 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 
 			double[][] coordinates = new double[0][];
 			if (accessLink.getAccessPoint() != null && accessLink.getStopArea() != null) {
-				properties.put("access_point_objectid", getProperty(accessLink.getAccessPoint().getChouetteId().getObjectId()));
-				properties.put("stop_area_objectid", getProperty(accessLink.getStopArea().getChouetteId().getObjectId()));
+				properties.put("access_point_objectid", getProperty(chouetteIdGenerator.toSpecificFormatId(accessLink.getAccessPoint().getChouetteId(), parameters.getDefaultCodespace(), accessLink.getAccessPoint())));
+				properties.put("stop_area_objectid", getProperty(chouetteIdGenerator.toSpecificFormatId(accessLink.getStopArea().getChouetteId(), parameters.getDefaultCodespace(), accessLink.getStopArea())));
 
 				coordinates = new double[2][2];
 				coordinates[0][0] = accessLink.getAccessPoint().getLongitude().doubleValue();
@@ -408,12 +415,12 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 				coordinates[1][1] = accessLink.getStopArea().getLatitude().doubleValue();
 			}
 
-			Feature feature = new Feature(accessLink.getChouetteId().getObjectId(), new LineString(coordinates), properties);
-			filter.put(accessLink.getChouetteId().getObjectId(), feature);
+			Feature feature = new Feature(chouetteIdString, new LineString(coordinates), properties);
+			filter.put(chouetteIdString, feature);
 		}
 	}
 
-	private Feature createFeature(StopArea stopArea) {
+	private Feature createFeature(ChouetteIdGenerator chouetteIdGenerator, GeojsonExportParameters parameters, StopArea stopArea) {
 		Map<String, Object> properties = new HashMap<String, Object>();
 		properties.put("object_version", getProperty(stopArea.getObjectVersion()));
 		properties.put("creation_time", getProperty(stopArea.getCreationTime()));
@@ -428,13 +435,17 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 		properties.put("mobility_restricted_suitability", getProperty(stopArea.getMobilityRestrictedSuitable()));
 		properties.put("stairs_availability", getProperty(stopArea.getStairsAvailable()));
 		properties.put("lift_availability", getProperty(stopArea.getLiftAvailable()));
+		
+		String chouetteIdString = chouetteIdGenerator.toSpecificFormatId(stopArea.getChouetteId(), parameters.getDefaultCodespace(), stopArea.getParent());
+		String chouetteIdParentString = chouetteIdGenerator.toSpecificFormatId(stopArea.getParent().getChouetteId(), parameters.getDefaultCodespace(), stopArea.getParent());
+		
 		if (stopArea.getParent() != null)
-			properties.put("parent", getProperty(stopArea.getParent().getChouetteId().getObjectId()));
+			properties.put("parent", getProperty(chouetteIdParentString));
 
 		double[] coordinates = new double[2];
 		coordinates[0] = stopArea.getLongitude().doubleValue();
 		coordinates[1] = stopArea.getLatitude().doubleValue();
-		Feature feature = new Feature(stopArea.getChouetteId().getObjectId(), new Point(coordinates), properties);
+		Feature feature = new Feature(chouetteIdString, new Point(coordinates), properties);
 		return feature;
 	}
 

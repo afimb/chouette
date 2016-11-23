@@ -90,7 +90,7 @@ public class HubExporterCommand extends AbstractExporterCommand implements Comma
 		@Override
 		public int compare(Line arg0, Line arg1) {
 
-			return arg0.getChouetteId().getObjectId().compareTo(arg1.getChouetteId().getObjectId());
+			return arg0.getChouetteId().toString().compareTo(arg1.getChouetteId().toString());
 		}
 	}
 

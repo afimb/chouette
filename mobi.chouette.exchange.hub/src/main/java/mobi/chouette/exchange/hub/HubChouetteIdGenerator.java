@@ -6,7 +6,6 @@ import mobi.chouette.exchange.AbstractChouetteIdGenerator;
 import mobi.chouette.exchange.ChouetteIdGenerator;
 import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
 import mobi.chouette.model.ChouetteId;
-import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 
 public class HubChouetteIdGenerator extends AbstractChouetteIdGenerator{
@@ -21,7 +20,7 @@ public class HubChouetteIdGenerator extends AbstractChouetteIdGenerator{
 			objectId += chouetteId.getCodeSpace();
 		
 		objectId += ":";
-		objectId += chouetteId.getObjectId();
+		objectId += chouetteId.getTechnicalId();
 	
 		return objectId;
 	}

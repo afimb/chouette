@@ -20,11 +20,11 @@ import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
-import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectFactory;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class GtfsTransferParser extends GtfsChouetteIdGenerator implements Parser, Validator, Constant {
+public class GtfsTransferParser implements Parser, Validator, Constant {
 
 	@Override
 	public void validate(Context context) throws Exception {
@@ -103,13 +103,14 @@ public class GtfsTransferParser extends GtfsChouetteIdGenerator implements Parse
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
-
+		GtfsChouetteIdGenerator gcid = (GtfsChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		for (GtfsTransfer gtfsTransfer : importer.getTransferByFromStop()) {
 
 			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 					ConnectionLink.CONNECTIONLINK_KEY, gtfsTransfer.getFromStopId() + "_" + gtfsTransfer.getToStopId(),
 					log);
-			ConnectionLink connectionLink = GtfsChouetteIdObjectFactory.getConnectionLink(referential, toChouetteId(objectId, "default_codespace"));
+			ConnectionLink connectionLink = GtfsChouetteIdObjectUtil.getConnectionLink(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace()));
 			convert(context, gtfsTransfer, connectionLink);
 		}
 	}
@@ -118,12 +119,13 @@ public class GtfsTransferParser extends GtfsChouetteIdGenerator implements Parse
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
-
-		StopArea startOfLink = GtfsChouetteIdObjectFactory.getStopArea(referential, toChouetteId(AbstractConverter.composeObjectId(
-				configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, gtfsTransfer.getFromStopId(), log), "default_codespace"));
+		GtfsChouetteIdGenerator gcid = (GtfsChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
+		StopArea startOfLink = GtfsChouetteIdObjectUtil.getStopArea(referential, gcid.toChouetteId(AbstractConverter.composeObjectId(
+				configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, gtfsTransfer.getFromStopId(), log), configuration.getDefaultCodespace()));
 		connectionLink.setStartOfLink(startOfLink);
-		StopArea endOfLink = GtfsChouetteIdObjectFactory.getStopArea(referential, toChouetteId(AbstractConverter.composeObjectId(
-				configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, gtfsTransfer.getToStopId(), log), "default_codespace"));
+		StopArea endOfLink = GtfsChouetteIdObjectUtil.getStopArea(referential, gcid.toChouetteId(AbstractConverter.composeObjectId(
+				configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, gtfsTransfer.getToStopId(), log), configuration.getDefaultCodespace()));
 		connectionLink.setEndOfLink(endOfLink);
 		connectionLink.setCreationTime(Calendar.getInstance().getTime());
 		connectionLink.setLinkType(ConnectionLinkTypeEnum.Overground);

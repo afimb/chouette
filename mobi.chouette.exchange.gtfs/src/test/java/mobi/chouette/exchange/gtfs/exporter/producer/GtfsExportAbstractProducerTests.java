@@ -8,6 +8,7 @@ import java.util.List;
 import mobi.chouette.core.ChouetteException;
 import mobi.chouette.exchange.gtfs.exporter.producer.mock.GtfsDummyProducer;
 import mobi.chouette.exchange.gtfs.exporter.producer.mock.GtfsExporterMock;
+import mobi.chouette.model.ChouetteId;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -22,8 +23,8 @@ public class GtfsExportAbstractProducerTests
    public void verifyToGtfsId() throws ChouetteException
    {
 
-      Assert.assertEquals(producer.toGtfsIdWrapper("GTFS:Type:1234", "GTFS"), "1234", "gtfs id must contains only third part of neptune id");
-      Assert.assertEquals(producer.toGtfsIdWrapper("GTFS:Type:1234", "TEST"), "GTFS.1234",
+      Assert.assertEquals(producer.toGtfsIdWrapper(new ChouetteId("GTFS","1234", false), "GTFS"), "1234", "gtfs id must contains only third part of neptune id");
+      Assert.assertEquals(producer.toGtfsIdWrapper(new ChouetteId("GTFS","1234", false), "TEST"), "GTFS.1234",
             "gtfs id must contains combination of first and third parts of neptune id");
 
    }
