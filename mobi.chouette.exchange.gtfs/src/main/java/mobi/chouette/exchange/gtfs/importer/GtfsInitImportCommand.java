@@ -13,6 +13,7 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.gtfs.Constant;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.model.util.Referential;
@@ -34,6 +35,7 @@ public class GtfsInitImportCommand implements Command, Constant {
 		try {
 			JobData jobData = (JobData) context.get(JOB_DATA);
 			context.put(REFERENTIAL, new Referential());
+			context.put(CHOUETTEID_GENERATOR, new GtfsChouetteIdGenerator());
 			// prepare importer
 			GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 			if (importer == null) {

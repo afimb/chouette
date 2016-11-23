@@ -121,14 +121,14 @@ public class ComplexModelFactory
 	{
 		try
 		{
-			ChouetteId chouetteId = new ChouetteId();;
+			ChouetteId chouetteId = new ChouetteId();
 			for (int i = 0; i < quayCount; i++)
 			{
 				StopArea stopAreaCommercial = modelFactory
 						.createModel(StopArea.class);
 //				stopAreaCommercial.getChouetteId().setObjectId("T:StopArea:CSP-" + i);
 				chouetteId.setCodeSpace("T");
-				chouetteId.setObjectId("StopArea:CSP-" + i);
+				chouetteId.setTechnicalId("StopArea:CSP-" + i);
 				stopAreaCommercial.setChouetteId(chouetteId);
 				stopAreaCommercial
 				.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
@@ -140,7 +140,7 @@ public class ComplexModelFactory
 							.createModel(StopArea.class);
 //					stopAreaPlace.getChouetteId().setObjectId("T:StopArea:PLC-" + i);
 					chouetteId.setCodeSpace("T");
-					chouetteId.setObjectId("PLC-" + i);
+					chouetteId.setTechnicalId("PLC-" + i);
 					stopAreaCommercial.setChouetteId(chouetteId);
 					stopAreaPlace.setAreaType(ChouetteAreaEnum.StopPlace);
 					stopPlaces.add(stopAreaPlace);
@@ -150,7 +150,7 @@ public class ComplexModelFactory
 				StopArea stopArea = modelFactory.createModel(StopArea.class);
 //				stopArea.getChouetteId().setObjectId("T:StopArea:" + i);
 				chouetteId.setCodeSpace("T");
-				chouetteId.setObjectId(String.valueOf(i));
+				chouetteId.setTechnicalId(String.valueOf(i));
 				stopAreaCommercial.setChouetteId(chouetteId);
 				stopArea.setAreaType(ChouetteAreaEnum.Quay);
 				stopArea.setParent(stopAreaCommercial);
@@ -160,7 +160,7 @@ public class ComplexModelFactory
 				for (StopArea sa : quays)
 				{
 					if (!sa.getAreaType().equals(ChouetteAreaEnum.Quay))
-						logger.info("error: " + sa.getChouetteId().getObjectId());
+						logger.info("error: " + sa.getTechnicalId());
 				}
 			}
 		} catch (CreateModelException ex)
@@ -235,7 +235,7 @@ public class ComplexModelFactory
 //			tm.getChouetteId().setObjectId("T:Timetable:" + index);
 			ChouetteId chouetteId = new ChouetteId();
 			chouetteId.setCodeSpace("T");
-			chouetteId.setObjectId(String.valueOf(index));
+			chouetteId.setTechnicalId(String.valueOf(index));
 			tm.setChouetteId(chouetteId);
 			tm.setComment("nom " + index);
 			tm.setVersion("version " + index);
@@ -285,7 +285,7 @@ public class ComplexModelFactory
 //						+ i);
 				ChouetteId chouetteId = new ChouetteId();
 				chouetteId.setCodeSpace("T");
-				chouetteId.setObjectId(route.getChouetteId().getCodeSpace() + "-" + i);
+				chouetteId.setTechnicalId(route.getCodeSpace() + "-" + i);
 				stopPoint.setChouetteId(chouetteId);
 				stopPoint = modelFactory.createModel(stopPoint);
 				stopPoint.setRoute(route);
@@ -317,7 +317,7 @@ public class ComplexModelFactory
 				
 				ChouetteId chouetteId = new ChouetteId();
 				chouetteId.setCodeSpace("T");
-				chouetteId.setObjectId(route.getChouetteId().getObjectId() + "-" + i);
+				chouetteId.setTechnicalId(route.getTechnicalId() + "-" + i);
 				journeyPattern.setChouetteId(chouetteId);
 				journeyPattern.setStopPoints(new ArrayList<StopPoint>());
 				journeyPattern.setRoute(route);
@@ -453,7 +453,7 @@ public class ComplexModelFactory
 		//      line.getChouetteId().setObjectId("T:Line:" + lineId);
 		ChouetteId chouetteId = new ChouetteId();
 		chouetteId.setCodeSpace("T");
-		chouetteId.setObjectId(lineId);
+		chouetteId.setTechnicalId(lineId);
 		line.setChouetteId(chouetteId);
 		line.setRoutes(new ArrayList<Route>(routeCount));
 		for (int i = 0; i < routeCount; i++)
@@ -492,7 +492,7 @@ public class ComplexModelFactory
 			//         route.getChouetteId().setObjectId("T:Route:" + line.getChouetteId().getObjectId() + "-" + index);
 			ChouetteId chouetteId = new ChouetteId();
 			chouetteId.setCodeSpace("T");
-			chouetteId.setObjectId(line.getChouetteId().getObjectId() + "-" + index);
+			chouetteId.setTechnicalId(line.getTechnicalId() + "-" + index);
 			line.setChouetteId(chouetteId);
 			List<StopPoint> stopPoints = stopPointList(route);
 			List<JourneyPattern> journeyPatterns = journeyPatternList(stopPoints,
@@ -529,7 +529,7 @@ public class ComplexModelFactory
 //					+ journeyPattern.getChouetteId().getObjectId() + "-" + i);
 			ChouetteId chouetteId = new ChouetteId();
 			chouetteId.setCodeSpace("T");
-			chouetteId.setObjectId(vehicle.getChouetteId().getObjectId() + "-" + i);
+			chouetteId.setTechnicalId(vehicle.getTechnicalId() + "-" + i);
 			vehicle.setChouetteId(chouetteId);
 			vehicle.getTimetables().clear();
 

@@ -20,7 +20,9 @@ import java.util.regex.Pattern;
 
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.ChouetteIdGenerator;
 import mobi.chouette.exchange.TestDescription;
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.FieldParameters;
 import mobi.chouette.exchange.validation.parameters.TransportModeParameters;
@@ -655,15 +657,18 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	}
 
 	protected DataLocation buildLocation(Context context, NeptuneIdentifiedObject object) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		if (object.getId() != null)
-			return new DataLocation(object);
+			return new DataLocation(context, object);
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		if (data == null) {
-			return new DataLocation(object);
+			return new DataLocation(context, object);
 		}
-		DataLocation loc = data.getDataLocations().get(object.getChouetteId().getObjectId());
+		DataLocation loc = data.getDataLocations().get(chouetteIdGenerator.toSpecificFormatId(object.getChouetteId(), parameters.getDefaultCodespace(), object));
 		if (loc == null) {
-			loc =  new DataLocation(object);
+			loc =  new DataLocation(context, object);
 		}
 		if (NamingUtil.isEmpty(loc.getName())) {
 			loc.setName(DataLocation.buildName(object));
@@ -678,7 +683,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		try {
 			Route wayBack = route.getOppositeRoute();
 			if (wayBack != null) {
-				String o = wayBack.getChouetteId().getObjectId();
+				String o = wayBack.getTechnicalId();
 				return true;
 			}
 		} catch (Exception ex) {

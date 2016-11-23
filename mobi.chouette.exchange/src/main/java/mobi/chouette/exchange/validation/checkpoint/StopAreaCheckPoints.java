@@ -8,11 +8,14 @@ import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 
@@ -209,8 +212,8 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 		if (stopArea.getCountryCode() != null && !stopArea.getCountryCode().equals(stopArea2.getCountryCode())) {
 			return;
 		}
-		Collection<String> lines = getLines(context, stopArea);
-		Collection<String> lines2 = getLines(context, stopArea2);
+		Collection<ChouetteId> lines = getLines(context, stopArea);
+		Collection<ChouetteId> lines2 = getLines(context, stopArea2);
 		if (lines.containsAll(lines2) && lines2.containsAll(lines)) {
 			DataLocation source = buildLocation(context, stopArea);
 			DataLocation target = buildLocation(context, stopArea2);
@@ -269,9 +272,12 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 		}
 	}
 
-	private Collection<String> getLines(Context context, StopArea area) {
+	private Collection<ChouetteId> getLines(Context context, StopArea area) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Set<String> lines = data.getLinesOfStopAreas().get(area.getChouetteId().getObjectId());
+		Set<ChouetteId> lines = data.getLinesOfStopAreas().get(chouetteIdGenerator.toSpecificFormatId(area.getChouetteId(), parameters.getDefaultCodespace(), area));
 		if (lines == null)
 			lines = new HashSet<>();
 		return lines;

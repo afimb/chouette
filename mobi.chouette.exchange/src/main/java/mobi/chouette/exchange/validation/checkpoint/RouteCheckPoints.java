@@ -8,6 +8,8 @@ import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.parameters.TransportModeParameters;
@@ -235,6 +237,9 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 	}
 
 	private void check3Route4(Context context, int rank, Route route, int rank2, Route route2) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		// 3-Route-4 : check identical routes
 		if (isEmpty(route.getStopPoints()))
 			return;
@@ -251,7 +256,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 				DataLocation location = buildLocation(context, route);
 				DataLocation target = buildLocation(context, route2);
 				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("routeId", route2.getChouetteId().getObjectId());
+				map.put("routeId", chouetteIdGenerator.toSpecificFormatId(route2.getChouetteId(), parameters.getDefaultCodespace(), route2));
 				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 				reporter.addCheckPointReportError(context, ROUTE_4, location, null, null, target);
 			}

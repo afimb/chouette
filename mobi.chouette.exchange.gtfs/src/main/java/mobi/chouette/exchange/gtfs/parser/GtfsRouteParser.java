@@ -234,8 +234,8 @@ public class GtfsRouteParser extends GtfsChouetteIdGenerator implements Parser, 
 
 		line.setTransportModeName(toTransportModeNameEnum(gtfsRoute.getRouteType()));
 
-		String[] token = line.getChouetteId().getObjectId().split(":");
-		line.setRegistrationNumber(token[2]);
+		//String[] token = line.getChouetteId().getObjectId().split(":");
+		line.setRegistrationNumber(line.getTechnicalId());
 		line.setComment(gtfsRoute.getRouteDesc());
 		line.setColor(toHexa(gtfsRoute.getRouteColor()));
 		line.setTextColor(toHexa(gtfsRoute.getRouteTextColor()));

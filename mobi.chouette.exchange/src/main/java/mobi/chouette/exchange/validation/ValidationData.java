@@ -52,8 +52,8 @@ public class ValidationData {
 	private List<Route> routes = new ArrayList<>();
 	private List<StopPoint> stopPoints = new ArrayList<>();
 	private Line currentLine;
-	private Map<String,DataLocation> dataLocations = new HashMap<>();
-	private Map<String,Set<String>> linesOfStopAreas = new HashMap<>();
+	private Map<ChouetteId,DataLocation> dataLocations = new HashMap<>();
+	private Map<ChouetteId,Set<ChouetteId>> linesOfStopAreas = new HashMap<>();
 
 	public void clear() {
 		vehicleJourneys.clear();

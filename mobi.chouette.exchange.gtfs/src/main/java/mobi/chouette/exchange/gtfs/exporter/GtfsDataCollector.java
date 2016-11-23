@@ -14,7 +14,7 @@ public class GtfsDataCollector extends DataCollector{
 	public boolean collect(ExportableData collection, Line line, Date startDate, Date endDate) {
        boolean res =  collect(collection,line,startDate,endDate,false,false);
 		if (line.getCompany() == null) {
-			log.error("line " + line.getChouetteId().getObjectId() + " : missing company");
+			log.error("line " + line.getCodeSpace() + " " + line.getTechnicalId() + " : missing company");
 			return false;
 		}
 		return res;

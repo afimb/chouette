@@ -15,6 +15,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import mobi.chouette.model.ChouetteId;
+
 import org.hibernate.Session;
 
 import com.google.common.collect.Iterables;
@@ -76,28 +78,30 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public T findByChouetteId(final String codeSpace, final String objectId) {
+	@Override
+	public T findByChouetteId(final String codeSpace, final Object chouetteId) {
 		Session session = em.unwrap(Session.class);
 		T result = (T) session.byNaturalId(type)
 				.using( "codeSpace", codeSpace )
-				.using( "objectId", objectId )
+				.using( "technicalId", ((ChouetteId) chouetteId).getTechnicalId() )
 				.load();
 		return result;
 	}
-		
-	public List<T> findByChouetteId(final String codeSpace, final Collection<String> objectIds) {
+	
+	@Override
+	public List<T> findByChouetteId(final String codeSpace, final Collection<Object> chouetteIds) {
 		// System.out.println("GenericDAOImpl.findByObjectId() : " + objectIds);
 		List<T> result = null;
-		if (objectIds.isEmpty())
+		if (chouetteIds.isEmpty())
 			return result;
 
-		Iterable<List<String>> iterator = Iterables.partition(objectIds, 32000);
-		for (List<String> ids : iterator) {
+		Iterable<List<Object>> iterator = Iterables.partition(chouetteIds, 32000);
+		for (List<Object> ids : iterator) {
 			CriteriaBuilder builder = em.getCriteriaBuilder();
 			CriteriaQuery<T> criteria = builder.createQuery(type);
 			Root<T> root = criteria.from(type);
-			Predicate predicate = builder.equal(root.get("chouetteId").get("codeSpace"), codeSpace);
-			predicate = builder.and(predicate, builder.in(root.get("chouetteId").get("objectId")).value(ids));
+			Predicate predicate = builder.equal(root.get("codeSpace"), codeSpace);
+			predicate = builder.and(predicate, builder.in(root.get("technicalId")).value(ids));
 			criteria.where(predicate);
 			TypedQuery<T> query = em.createQuery(criteria);
 			if (result == null)

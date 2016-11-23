@@ -11,9 +11,9 @@ import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.exchange.ChouetteIdObjectUtil;
 import mobi.chouette.model.RoutingConstraint;
 import mobi.chouette.model.StopArea;
-import mobi.chouette.exchange.ChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -31,6 +31,7 @@ public class RoutingConstraintUpdater implements Updater<RoutingConstraint> {
 	@EJB(beanName = StopAreaUpdater.BEAN_NAME)
 	private Updater<StopArea> stopAreaUpdater;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Context context, RoutingConstraint oldValue, RoutingConstraint newValue) throws Exception {
 
@@ -44,15 +45,15 @@ public class RoutingConstraintUpdater implements Updater<RoutingConstraint> {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		
 		if (oldValue.isDetached()) {
-			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
+			oldValue.setChouetteId(newValue.getChouetteId());
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 			oldValue.setCreationTime(newValue.getCreationTime());
 			oldValue.setCreatorId(newValue.getCreatorId());
 			oldValue.setName(newValue.getName());
 			oldValue.setDetached(false);
 		} else {
-			if (newValue.getChouetteId().getObjectId() != null && !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
-				oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
+			if (newValue.getChouetteId().getTechnicalId() != null && !(newValue.getChouetteId().getTechnicalId().equals(oldValue.getChouetteId().getTechnicalId()))) {
+				oldValue.setChouetteId(newValue.getChouetteId());
 			}
 			if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
 				oldValue.setObjectVersion(newValue.getObjectVersion());
@@ -77,20 +78,20 @@ public class RoutingConstraintUpdater implements Updater<RoutingConstraint> {
 		List<StopArea> stopAreas = null;
 		for (StopArea item : addedStopAreas) {
 
-			StopArea area = cache.getStopAreas().get(item.getChouetteId().getObjectId());
+			StopArea area = cache.getStopAreas().get(item.getChouetteId());
 			if (area == null) {
 				if (stopAreas == null) {
 					String codeSpace = item.getChouetteId().getCodeSpace();
-					stopAreas = stopAreaDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedStopAreas));
+					stopAreas = (List<StopArea>) stopAreaDAO.findByChouetteId(codeSpace, UpdaterUtils.getChouetteIds(addedStopAreas));
 					for (StopArea object : addedStopAreas) {
 						cache.getStopAreas().put(object.getChouetteId(), object);
 					}
 				}
-				area = cache.getStopAreas().get(item.getChouetteId().getObjectId());
+				area = cache.getStopAreas().get(item.getChouetteId());
 			}
 
 			if (area == null) {
-				area = ChouetteIdObjectFactory.getStopArea(cache, item.getChouetteId());
+				area = ChouetteIdObjectUtil.getStopArea(cache, item.getChouetteId());
 			}
 			
 			if (!area.isDetached() || area.isFilled())

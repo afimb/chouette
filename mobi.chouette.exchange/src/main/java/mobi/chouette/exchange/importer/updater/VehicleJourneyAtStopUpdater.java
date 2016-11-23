@@ -56,7 +56,7 @@ public class VehicleJourneyAtStopUpdater implements
 		if (oldValue.getStopPoint() == null
 				|| !oldValue.getStopPoint().equals(newValue.getStopPoint())) {
 			String codeSpace = newValue.getStopPoint().getChouetteId().getCodeSpace();
-			StopPoint stopPoint = stopPointDAO.findByChouetteId(codeSpace, newValue.getStopPoint().getChouetteId().getObjectId());
+			StopPoint stopPoint = stopPointDAO.findByChouetteId(codeSpace, newValue.getStopPoint().getTechnicalId());
 			if (stopPoint != null) {
 				oldValue.setStopPoint(stopPoint);
 			}

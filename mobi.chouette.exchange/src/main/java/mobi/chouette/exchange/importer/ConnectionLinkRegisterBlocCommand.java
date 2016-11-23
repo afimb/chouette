@@ -24,9 +24,10 @@ import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.exchange.importer.updater.ConnectionLinkUpdater;
 import mobi.chouette.exchange.importer.updater.Updater;
 import mobi.chouette.exchange.importer.updater.UpdaterUtils;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
-import mobi.chouette.exchange.ChouetteIdObjectFactory;
+import mobi.chouette.exchange.ChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
@@ -66,7 +67,7 @@ public class ConnectionLinkRegisterBlocCommand implements Command {
 			// Monitor monitorUpdate = MonitorFactory.start(COMMAND+".update");
 
 			for (ConnectionLink newValue : connectionLinks) {
-				ConnectionLink oldValue = cache.getConnectionLinks().get(newValue.getChouetteId().getObjectId());
+				ConnectionLink oldValue = cache.getConnectionLinks().get(newValue.getChouetteId());
 				connectionLinkUpdater.update(context, oldValue, newValue);
 				connectionLinkDAO.create(oldValue);
 			}
@@ -85,18 +86,19 @@ public class ConnectionLinkRegisterBlocCommand implements Command {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initializeStopArea(Referential cache, Collection<ConnectionLink> list) {
-		Collection<String> objectIds = new HashSet<>();
+		Collection<ChouetteId> chouetteIds = new HashSet<>();
 		for (ConnectionLink connectionLink : list) {
-			objectIds.add(connectionLink.getStartOfLink().getChouetteId().getObjectId());
-			objectIds.add(connectionLink.getEndOfLink().getChouetteId().getObjectId());
+			chouetteIds.add(connectionLink.getStartOfLink().getChouetteId());
+			chouetteIds.add(connectionLink.getEndOfLink().getChouetteId());
 		}
-		Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+		Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 		List<StopArea> objects = new ArrayList<StopArea>();
 		
-		for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+		for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
 		{
-		    objects.addAll(stopAreaDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+			 objects.addAll((List<StopArea>) stopAreaDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 		}
 		
 		for (StopArea object : objects) {
@@ -105,17 +107,18 @@ public class ConnectionLinkRegisterBlocCommand implements Command {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initializeConnectionLink(Referential cache, Collection<ConnectionLink> list) {
 		if (list.isEmpty())
 			return;
-		Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+		Collection<ChouetteId> objectIds = UpdaterUtils.getChouetteIds(list);
 		
-		Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+		Map<String,List<ChouetteId>> objectIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(objectIds);
 		List<ConnectionLink> objects = new ArrayList<ConnectionLink>();
 		
-		for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+		for (Entry<String, List<ChouetteId>> entry : objectIdsByCodeSpace.entrySet())
 		{
-		    objects.addAll(connectionLinkDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+		    objects.addAll((List<ConnectionLink>) connectionLinkDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 		}
 		
 		for (ConnectionLink object : objects) {
@@ -123,9 +126,9 @@ public class ConnectionLinkRegisterBlocCommand implements Command {
 		}
 
 		for (ConnectionLink item : list) {
-			ConnectionLink object = cache.getConnectionLinks().get(item.getChouetteId().getObjectId());
+			ConnectionLink object = cache.getConnectionLinks().get(item.getChouetteId());
 			if (object == null) {
-				object = ChouetteIdObjectFactory.getConnectionLink(cache, item.getChouetteId());
+				object = ChouetteIdObjectUtil.getConnectionLink(cache, item.getChouetteId());
 			}
 		}
 	}

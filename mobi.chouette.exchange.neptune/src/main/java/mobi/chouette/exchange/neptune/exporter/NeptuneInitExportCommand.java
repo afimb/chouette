@@ -18,6 +18,7 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -41,6 +42,7 @@ public class NeptuneInitExportCommand implements Command, Constant {
 			context.put(REFERENTIAL, new Referential());
 			Metadata metadata = new Metadata(); // if not asked, will be used as
 												// dummy
+			context.put(CHOUETTEID_GENERATOR, new NeptuneChouetteIdGenerator());
 			metadata.setDate(Calendar.getInstance());
 			metadata.setFormat("application/xml");
 			metadata.setTitle("Export Neptune ");

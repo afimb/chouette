@@ -24,9 +24,9 @@ public class TimebandUpdater implements Updater<Timeband> {
 		}
 		newValue.setSaved(true);
 
-		if (newValue.getChouetteId().getObjectId() != null
-				&& !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
-			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
+		if (newValue.getChouetteId().getTechnicalId() != null
+				&& !(newValue.getChouetteId().getTechnicalId().equals(oldValue.getChouetteId().getTechnicalId()))) {
+			oldValue.setChouetteId(newValue.getChouetteId());
 		}
 		if (newValue.getObjectVersion() != null
 				&& !newValue.getObjectVersion().equals(
@@ -59,7 +59,7 @@ public class TimebandUpdater implements Updater<Timeband> {
 			oldValue.setName(sdf.format(oldValue.getStartTime())+" - "+sdf.format(oldValue.getEndTime()));
 		}
 		String codeSpace = oldValue.getChouetteId().getCodeSpace();
-		if (timebandDAO.findByChouetteId(codeSpace, oldValue.getChouetteId().getObjectId()) == null)
+		if (timebandDAO.findByChouetteId(codeSpace, oldValue.getTechnicalId()) == null)
 			timebandDAO.create(oldValue);
 		else
 			timebandDAO.update(oldValue);

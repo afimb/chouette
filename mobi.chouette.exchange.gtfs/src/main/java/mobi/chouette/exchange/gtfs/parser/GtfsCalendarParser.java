@@ -282,7 +282,9 @@ public class GtfsCalendarParser extends GtfsChouetteIdGenerator implements Parse
 
 	private Timetable cloneTimetableAfterMidnight(Timetable source) {
 		Timetable timetable = new Timetable();
-		timetable.getChouetteId().setObjectId(source.getChouetteId().getObjectId() + AFTER_MIDNIGHT_SUFFIX);
+		source.setTechnicalId(source.getTechnicalId() + AFTER_MIDNIGHT_SUFFIX);
+		source.getChouetteId().setTechnicalId(source.getTechnicalId() + AFTER_MIDNIGHT_SUFFIX);
+		timetable.setChouetteId(source.getChouetteId());
 		timetable.setComment(source.getComment() + " (after midnight)");
 		timetable.setVersion(source.getVersion());
 

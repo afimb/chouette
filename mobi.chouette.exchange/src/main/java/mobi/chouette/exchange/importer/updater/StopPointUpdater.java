@@ -5,13 +5,15 @@ import javax.ejb.Stateless;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.NeptuneUtil;
-import mobi.chouette.exchange.ChouetteIdObjectFactory;
+import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.ChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 @Stateless(name = StopPointUpdater.BEAN_NAME)
@@ -45,7 +47,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		
 		if (oldValue.isDetached()) {
 			// object does not exist in database
-			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
+			oldValue.setChouetteId(newValue.getChouetteId());
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 			oldValue.setCreationTime(newValue.getCreationTime());
 			oldValue.setCreatorId(newValue.getCreatorId());
@@ -55,8 +57,8 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		} else {
 			twoDatabaseStopPointTwoTest(validationReporter, context, oldValue, newValue, data);
 			twoDatabaseStopPointThreeTest(validationReporter, context, oldValue.getContainedInStopArea(), newValue.getContainedInStopArea(), data);
-			if (newValue.getChouetteId().getObjectId() != null && !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
-				oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
+			if (newValue.getChouetteId() != null && !(newValue.getChouetteId().equals(oldValue.getChouetteId()))) {
+				oldValue.setChouetteId(newValue.getChouetteId());
 			}
 			if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
 				oldValue.setObjectVersion(newValue.getObjectVersion());
@@ -84,18 +86,18 @@ public class StopPointUpdater implements Updater<StopPoint> {
 			oldValue.setContainedInStopArea(null);
 		} else {
 			String codeSpace = newValue.getContainedInStopArea().getChouetteId().getCodeSpace();
-			String objectId = newValue.getContainedInStopArea().getChouetteId().getObjectId();
+			String technicalId = newValue.getContainedInStopArea().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getContainedInStopArea().getChouetteId();
-			StopArea stopArea = cache.getStopAreas().get(objectId);
+			StopArea stopArea = cache.getStopAreas().get(technicalId);
 			if (stopArea == null) {
-				stopArea = stopAreaDAO.findByChouetteId(codeSpace, objectId);
+				stopArea = stopAreaDAO.findByChouetteId(codeSpace, technicalId);
 				if (stopArea != null) {
 					cache.getStopAreas().put(chouetteId, stopArea);
 				}
 			}
 
 			if (stopArea == null) {
-				stopArea = ChouetteIdObjectFactory.getStopArea(cache, chouetteId);
+				stopArea = ChouetteIdObjectUtil.getStopArea(cache, chouetteId);
 			}
 			
 			oldValue.setContainedInStopArea(stopArea);
@@ -116,10 +118,13 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	 * @param newSp
 	 */
 	private void twoDatabaseStopPointTwoTest(ValidationReporter validationReporter, Context context, StopPoint oldSp, StopPoint newSp, ValidationData data) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		if(oldSp !=null && newSp != null) {
 			if(oldSp.getPosition() != null && newSp.getPosition() != null) {
 				if(!oldSp.getPosition().equals(newSp.getPosition()))
-					validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_2, data.getDataLocations().get(newSp.getChouetteId().getObjectId()));
+					validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_2, data.getDataLocations().get(chouetteIdGenerator.toSpecificFormatId(newSp.getChouetteId(), parameters.getDefaultCodespace(), newSp)));
 				else
 					validationReporter.reportSuccess(context, DATABASE_STOP_POINT_2);
 			}
@@ -135,8 +140,11 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	 * @param newSp
 	 */
 	private void twoDatabaseStopPointThreeTest(ValidationReporter validationReporter, Context context, StopArea oldSA, StopArea newSA, ValidationData data) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		if(!NeptuneUtil.sameValue(oldSA, newSA))
-			validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_3, data.getDataLocations().get(newSA.getChouetteId().getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_3, data.getDataLocations().get(chouetteIdGenerator.toSpecificFormatId(newSA.getChouetteId(), parameters.getDefaultCodespace(), newSA)));
 		else
 			validationReporter.reportSuccess(context, DATABASE_STOP_POINT_3);
 	}

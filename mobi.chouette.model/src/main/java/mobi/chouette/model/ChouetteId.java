@@ -8,7 +8,7 @@ import lombok.Setter;
 
 import org.apache.commons.lang.StringUtils;
 
-@EqualsAndHashCode(of = { "codeSpace", "objectId" }, callSuper = false)
+@EqualsAndHashCode(of = { "codeSpace", "technicalId" }, callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChouetteId {
@@ -33,14 +33,20 @@ public class ChouetteId {
 	}
 	
 	@Getter
-	private String objectId;
+	private String technicalId;
 
-	public void setObjectId(String value) {
-		objectId = StringUtils.abbreviate(value, 255);
+	public void setTechnicalId(String value) {
+		technicalId = StringUtils.abbreviate(value, 255);
 	}
 	
 	@Getter
 	@Setter
 	private boolean shared = false;
+	
+	
+	
+	public String toString() {
+		return codeSpace + ":" + technicalId;
+	}
 	
 }

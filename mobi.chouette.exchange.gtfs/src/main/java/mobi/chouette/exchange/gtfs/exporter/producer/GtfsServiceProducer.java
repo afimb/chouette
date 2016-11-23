@@ -22,6 +22,7 @@ import mobi.chouette.exchange.gtfs.model.GtfsCalendar;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
 import mobi.chouette.model.CalendarDay;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;
@@ -51,7 +52,7 @@ AbstractProducer
 
       if (reduced == null) return false;
 
-      String serviceId = toGtfsId(reduced.getChouetteId().getObjectId(), prefix);
+      String serviceId = toGtfsId(reduced.getChouetteId(), prefix);
 
       if (!isEmpty(reduced.getPeriods()))
       {
@@ -263,7 +264,7 @@ AbstractProducer
 			}
             
          }
-         merged.getChouetteId().setObjectId(prefix+":"+Timetable.TIMETABLE_KEY+":"+key(timetables,prefix));
+         merged.setChouetteId(new ChouetteId(prefix, key(timetables,prefix), false));
       }
       merged.computeLimitOfPeriods();
       return merged;
@@ -291,7 +292,7 @@ AbstractProducer
       String key = "";
       for (Timetable timetable : timetables)
       {
-         key += "-"+toGtfsId(timetable.getChouetteId().getObjectId(), prefix);
+         key += "-"+toGtfsId(timetable.getChouetteId(), prefix);
       }
       return key.substring(1);
    }
@@ -301,7 +302,7 @@ AbstractProducer
       @Override
       public int compare(Timetable arg0, Timetable arg1)
       {
-         return arg0.getChouetteId().getObjectId().compareTo(arg1.getChouetteId().getObjectId());
+         return arg0.getChouetteId().equals(arg1.getChouetteId()) ? 0:1;
       }
 
    }

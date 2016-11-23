@@ -12,9 +12,9 @@ public interface GenericDAO<T> {
 
 	T find(Object id);
 
-	T findByChouetteId(String codeSpace, String objectId);
+	T findByChouetteId(String codeSpace, Object chouetteId);
 
-	List<T> findByChouetteId(String codeSpace, Collection<String> objectIds);
+	List<T> findByChouetteId(String codeSpace, Collection<Object> chouetteIds);
 
 	List<T> findAll();
 

@@ -13,7 +13,8 @@ public abstract class ChouetteIdGeneratorFactory {
 	         throws ClassNotFoundException, IOException
 
 	   {
-		  String className = format.substring(0, 1).toUpperCase() + format.substring(1) + "ChouetteIdGenerator";
+		   String formatToLowerCase = format.toLowerCase();
+		  String className = formatToLowerCase.substring(0, 1).toUpperCase() + formatToLowerCase.substring(1) + "ChouetteIdGenerator";
 	      if (!factories.containsKey(format))
 	      {
 	         Class.forName(className);
@@ -21,6 +22,6 @@ public abstract class ChouetteIdGeneratorFactory {
 	         if (!factories.containsKey(format))
 	            throw new ClassNotFoundException(format);
 	      }
-	      return ((ChouetteIdGeneratorFactory) factories.get(className)).create();
+	      return ((ChouetteIdGeneratorFactory) factories.get(format)).create();
 	   }
 }

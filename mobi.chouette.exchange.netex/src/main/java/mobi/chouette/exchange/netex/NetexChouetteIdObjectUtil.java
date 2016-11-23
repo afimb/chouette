@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.gtfs;
+package mobi.chouette.exchange.netex;
 
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
@@ -20,7 +20,7 @@ import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.util.Referential;
 
-public class GtfsChouetteIdObjectFactory extends GtfsChouetteIdGenerator{
+public class NetexChouetteIdObjectUtil{
 
 	public static AccessLink getAccessLink(Referential referential,
 			ChouetteId chouetteId) {

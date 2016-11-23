@@ -6,6 +6,10 @@ import java.util.List;
 import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
@@ -23,7 +27,7 @@ import mobi.chouette.model.util.NamingUtil;
 
 @Data
 @ToString
-public class DataLocation {
+public class DataLocation implements Constant{
 	private String objectType; // Line route stop area..
 	private String filename;
 	private int lineNumber = -1;
@@ -77,55 +81,58 @@ public class DataLocation {
 		this.objectId = objectId;
 	}
 
-	public DataLocation(String fileName, int lineNumber, int columnNumber, NeptuneIdentifiedObject chouetteObject) {
-		this(chouetteObject);
+	public DataLocation(Context context, String fileName, int lineNumber, int columnNumber, NeptuneIdentifiedObject chouetteObject) {
+		this(context, chouetteObject);
 		this.filename = fileName;
 		this.lineNumber = lineNumber;
 		this.columnNumber = columnNumber;
 	}
 
-	public DataLocation(NeptuneIdentifiedObject chouetteObject) {
-		this.objectId = chouetteObject.getChouetteId().getObjectId();
+	public DataLocation(Context context, NeptuneIdentifiedObject chouetteObject) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
+		this.objectId = chouetteIdGenerator.toSpecificFormatId(chouetteObject.getChouetteId(), parameters.getDefaultCodespace(), chouetteObject);
 		this.object = chouetteObject;
 		this.name = buildName(chouetteObject);
-		if (chouetteObject.getChouetteId().getObjectId() != null) {
-			path.add(new Path(object));
+		if (chouetteObject.getChouetteId() != null) {
+			path.add(new Path(chouetteIdGenerator, parameters, object));
 			if (chouetteObject instanceof VehicleJourney) {
 				VehicleJourney object = (VehicleJourney) chouetteObject;
 				if (object.getJourneyPattern() != null) {
-					path.add(new Path(object.getJourneyPattern()));
+					path.add(new Path(chouetteIdGenerator, parameters,  object.getJourneyPattern()));
 					if (object.getJourneyPattern().getRoute() != null) {
-						path.add(new Path(object.getJourneyPattern().getRoute()));
+						path.add(new Path(chouetteIdGenerator, parameters,  object.getJourneyPattern().getRoute()));
 						if (object.getJourneyPattern().getRoute().getLine() != null) {
-							path.add(new Path(object.getJourneyPattern().getRoute().getLine()));
+							path.add(new Path(chouetteIdGenerator, parameters,  object.getJourneyPattern().getRoute().getLine()));
 						}
 					}
 				}
 			} else if (chouetteObject instanceof JourneyPattern) {
 				JourneyPattern object = (JourneyPattern) chouetteObject;
 				if (object.getRoute() != null) {
-					path.add(new Path(object.getRoute()));
+					path.add(new Path(chouetteIdGenerator, parameters,  object.getRoute()));
 					if (object.getRoute().getLine() != null) {
-						path.add(new Path(object.getRoute().getLine()));
+						path.add(new Path(chouetteIdGenerator, parameters,  object.getRoute().getLine()));
 					}
 				}
 			} else if (chouetteObject instanceof Route) {
 				Route object = (Route) chouetteObject;
 				if (object.getLine() != null) {
-					path.add(new Path(object.getLine()));
+					path.add(new Path(chouetteIdGenerator, parameters,  object.getLine()));
 				}
 			} else if (chouetteObject instanceof AccessLink) {
 				AccessLink object = (AccessLink) chouetteObject;
 				if (object.getAccessPoint() != null) {
-					path.add(new Path(object.getAccessPoint()));
+					path.add(new Path(chouetteIdGenerator, parameters,  object.getAccessPoint()));
 					if (object.getAccessPoint().getContainedIn() != null) {
-						path.add(new Path(object.getAccessPoint().getContainedIn()));
+						path.add(new Path(chouetteIdGenerator, parameters,  object.getAccessPoint().getContainedIn()));
 					}
 				}
 			} else if (chouetteObject instanceof AccessPoint) {
 				AccessPoint object = (AccessPoint) chouetteObject;
 				if (object.getContainedIn() != null) {
-					path.add(new Path(object.getContainedIn()));
+					path.add(new Path(chouetteIdGenerator, parameters,  object.getContainedIn()));
 				}
 			}
 		}
@@ -214,9 +221,9 @@ public class DataLocation {
 			this.objectId = objectId;
 		}
 
-		public Path(NeptuneIdentifiedObject object) {
+		public Path(ChouetteIdGenerator chouetteIdGenerator, AbstractParameter parameters, NeptuneIdentifiedObject object) {
 			// protection from proxy class names
-			this(object.getClass().getSimpleName().split("_")[0], object.getChouetteId().getObjectId());
+			this(object.getClass().getSimpleName().split("_")[0], chouetteIdGenerator.toSpecificFormatId(object.getChouetteId(), parameters.getDefaultCodespace(), object));
 		}
 
 		public String toString() {

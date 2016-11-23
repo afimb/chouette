@@ -633,7 +633,7 @@ public class GtfsTripParser extends GtfsChouetteIdGenerator implements Parser, V
 		Route route = createRoute(referential, configuration, gtfsTrip);
 
 		// JourneyPattern
-		String journeyPatternId = route.getChouetteId().getObjectId().replace(Route.ROUTE_KEY, JourneyPattern.JOURNEYPATTERN_KEY);
+		String journeyPatternId = route.getTechnicalId().replace(Route.ROUTE_KEY, JourneyPattern.JOURNEYPATTERN_KEY);
 		journeyPattern = GtfsChouetteIdObjectFactory.getJourneyPattern(referential, toChouetteId(journeyPatternId, "default_codespace"));
 		journeyPattern.setName(gtfsTrip.getTripHeadSign());
 		journeyPattern.setRoute(route);

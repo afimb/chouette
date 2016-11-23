@@ -30,10 +30,10 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
         Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
 
-		if (newValue.getChouetteId().getObjectId() != null
-				&& !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
+		if (newValue.getChouetteId().getTechnicalId() != null
+				&& !newValue.getChouetteId().getTechnicalId().equals(oldValue.getChouetteId().getTechnicalId())) {
 			
-			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
+			oldValue.setChouetteId(newValue.getChouetteId());
 		}
 		if (newValue.getObjectVersion() != null
 				&& !newValue.getObjectVersion().equals(
@@ -56,11 +56,11 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
 		if (newValue.getDeparture() != null
 				&& !newValue.getDeparture().equals(oldValue.getDeparture())) {
 			String codeSpace = newValue.getDeparture().getChouetteId().getCodeSpace();
-			String objectId = newValue.getDeparture().getChouetteId().getObjectId();
+			String technicalId = newValue.getDeparture().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getDeparture().getChouetteId();
-			StopArea departure = cache.getStopAreas().get(objectId);
+			StopArea departure = cache.getStopAreas().get(chouetteId);
 			if (departure == null) {
-				departure = stopAreaDAO.findByChouetteId(codeSpace, objectId);
+				departure = stopAreaDAO.findByChouetteId(codeSpace, technicalId);
 				if (departure != null) {
 					cache.getStopAreas().put(chouetteId, departure);
 				}
@@ -73,11 +73,11 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
 		if (newValue.getArrival() != null
 				&& !newValue.getArrival().equals(oldValue.getArrival())) {
 			String codeSpace = newValue.getArrival().getChouetteId().getCodeSpace();
-			String objectId = newValue.getArrival().getChouetteId().getObjectId();
+			String technicalId = newValue.getArrival().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getArrival().getChouetteId();
-			StopArea arrival = cache.getStopAreas().get(objectId);
+			StopArea arrival = cache.getStopAreas().get(technicalId);
 			if (arrival == null) {
-				arrival = stopAreaDAO.findByChouetteId(codeSpace, objectId);
+				arrival = stopAreaDAO.findByChouetteId(codeSpace, technicalId);
 				if (arrival != null) {
 					cache.getStopAreas().put(chouetteId, arrival);
 				}

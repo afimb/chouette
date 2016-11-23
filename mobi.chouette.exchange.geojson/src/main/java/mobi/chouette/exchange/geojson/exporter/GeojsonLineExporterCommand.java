@@ -21,12 +21,15 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
 import mobi.chouette.exchange.geojson.Feature;
 import mobi.chouette.exchange.geojson.FeatureCollection;
 import mobi.chouette.exchange.geojson.JAXBSerializer;
 import mobi.chouette.exchange.geojson.LineString;
 import mobi.chouette.exchange.geojson.MultiLineString;
 import mobi.chouette.exchange.geojson.Point;
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
@@ -72,6 +75,12 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 
 		Monitor monitor = MonitorFactory.start(COMMAND);
 		ActionReporter reporter = ActionReporter.Factory.getInstance();
+		
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		GeojsonExportParameters parameters = (GeojsonExportParameters) context.get(PARAMETERS_FILE);
+		
+		ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat());
+		
 
 		try {
 			Line line = (Line) context.get(LINE);
@@ -89,7 +98,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 
 			// line stats
 			Keys keys = new Keys();
-			reporter.addObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
+			reporter.addObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), parameters.getDefaultCodespace(), line), OBJECT_TYPE.LINE, NamingUtil.getName(line),
 					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
 
 			// create route section feature
@@ -105,7 +114,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 
 				List<JourneyPattern> journeyPatterns = route.getJourneyPatterns();
 				for (JourneyPattern journeyPattern : journeyPatterns) {
-					String id = journeyPattern.getChouetteId().getObjectId();
+					String id = chouetteIdGenerator.toSpecificFormatId(journeyPattern.getChouetteId(), parameters.getDefaultCodespace(), journeyPattern);
 
 					// log.info("[DSU] processing  : "
 					// + journeyPattern.getChouetteId().getObjectId());
@@ -115,19 +124,19 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 					Map<String, Object> properties = new HashMap<String, Object>();
 
 					// line
-					properties.put("line_objectid", getProperty(line.getChouetteId().getObjectId()));
+					properties.put("line_objectid", getProperty(chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), parameters.getDefaultCodespace(), line)));
 					properties.put("line_name", getProperty(line.getName()));
 					properties.put("line_number", getProperty(line.getNumber()));
 					properties.put("line_published_name", getProperty(line.getPublishedName()));
-					properties.put("company_objectid", getProperty(line.getCompany().getChouetteId().getObjectId()));
-					properties.put("network_objectid", getProperty(line.getNetwork().getChouetteId().getObjectId()));
+					properties.put("company_objectid", getProperty(chouetteIdGenerator.toSpecificFormatId(line.getCompany().getChouetteId(), parameters.getDefaultCodespace(), line.getCompany())));
+					properties.put("network_objectid", getProperty(chouetteIdGenerator.toSpecificFormatId(line.getNetwork().getChouetteId(), parameters.getDefaultCodespace(), line.getNetwork())));
 					properties.put("transport_mode", getProperty(line.getTransportModeName()));
 					properties.put("color", getProperty(line.getColor()));
 					properties.put("text_color", getProperty(line.getTextColor()));
 
 					// route
 					properties.put("route_wayback_code", getProperty(route.getWayBack()));
-					properties.put("route_objectid", getProperty(route.getChouetteId().getObjectId()));
+					properties.put("route_objectid", getProperty(chouetteIdGenerator.toSpecificFormatId(route.getChouetteId(), parameters.getDefaultCodespace(), route)));
 					properties.put("route_name", getProperty(route.getName()));
 					properties.put("route_published_name", getProperty(route.getPublishedName()));
 					properties.put("route_number", getProperty(route.getNumber()));
@@ -190,15 +199,15 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 			}
 
 			// local stats
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
+			reporter.setStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), parameters.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+			reporter.setStatToObjectReport(context,  chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), parameters.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
 					journeyPatternCount);
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, routeCount);
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK,
+			reporter.setStatToObjectReport(context,  chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), parameters.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, routeCount);
+			reporter.setStatToObjectReport(context,  chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), parameters.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK,
 					keys.getConnectionLinks().size());
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT,
+			reporter.setStatToObjectReport(context,  chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), parameters.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT,
 					keys.getAccessPoints().size());
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA,
+			reporter.setStatToObjectReport(context,  chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), parameters.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA,
 					keys.getStopArea().size());
 			
 			// global stats
@@ -236,7 +245,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 	}
 
 	private void createPhysicaStop(SharedData shared, Keys keys, StopArea stopArea) {
-
+		
 		Map<String, Feature> filter = shared.getPhysicalStops();
 		if (!filter.containsKey(stopArea.getChouetteId().getObjectId())) {
 			Feature feature = createFeature(stopArea);

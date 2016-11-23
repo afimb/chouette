@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 @NoArgsConstructor
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"name","userName","organisationName","referentialName","test"},name="actionParameters")
+@XmlType(propOrder={"name","userName","organisationName","referentialName","defaultCodespace", "defaultFormat", "test"},name="actionParameters")
 public class AbstractParameter {
 
 	@Getter@Setter
@@ -34,6 +34,15 @@ public class AbstractParameter {
 	@Getter@Setter
 	@XmlElement(name = "referential_name")
 	private String referentialName;
+	
+	
+	@Getter@Setter
+	@XmlElement(name = "default_codespace")
+	private String defaultCodespace;
+	
+	@Getter@Setter
+	@XmlElement(name = "default_format")
+	private String defaultFormat;
 	
 	@Getter@Setter
 	@XmlElement(name = "test")

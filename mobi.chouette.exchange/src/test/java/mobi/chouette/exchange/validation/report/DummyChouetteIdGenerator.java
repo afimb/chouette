@@ -1,12 +1,12 @@
-package mobi.chouette.exchange.gtfs;
+package mobi.chouette.exchange.validation.report;
 
 import java.util.regex.Pattern;
 
 import mobi.chouette.exchange.AbstractChouetteIdGenerator;
 import mobi.chouette.model.ChouetteId;
-import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneIdentifiedObject;
-public class GtfsChouetteIdGenerator extends AbstractChouetteIdGenerator{
+
+public class DummyChouetteIdGenerator extends AbstractChouetteIdGenerator{
 	@Override
 	public boolean checkObjectId(String oid) {
 		if (oid == null)

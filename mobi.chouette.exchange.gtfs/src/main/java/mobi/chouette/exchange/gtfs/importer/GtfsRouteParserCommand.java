@@ -12,11 +12,13 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.ChouetteIdGenerator;
 import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.parser.GtfsAgencyParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsCalendarParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsRouteParser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
@@ -145,16 +147,19 @@ public class GtfsRouteParserCommand implements Command, Constant {
 
 	private void addStats(Context context, Referential referential) {
 		ActionReporter reporter = ActionReporter.Factory.getInstance();
-
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		Line line = referential.getLines().values().iterator().next();
-		reporter.addObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
+		String objectId = chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), parameters.getDefaultCodespace(), line);
+		reporter.addObjectReport(context, objectId, OBJECT_TYPE.LINE, NamingUtil.getName(line),
 				OBJECT_STATE.OK, IO_TYPE.INPUT);
-		reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
-		reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
+		reporter.setStatToObjectReport(context, objectId, OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+		reporter.setStatToObjectReport(context, objectId, OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
 				referential.getJourneyPatterns().size());
-		reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, referential
+		reporter.setStatToObjectReport(context, objectId, OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, referential
 				.getRoutes().size());
-		reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY,
+		reporter.setStatToObjectReport(context, objectId, OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY,
 				referential.getVehicleJourneys().size());
 
 	}

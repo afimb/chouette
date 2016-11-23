@@ -1,5 +1,8 @@
 package mobi.chouette.dao;
 
+import java.util.Collection;
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -17,5 +20,4 @@ public class AccessLinkDAOImpl extends GenericDAOImpl<AccessLink> implements Acc
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
 	}
-
 }

@@ -47,7 +47,7 @@ public class GtfsShapeProducer extends AbstractProducer
 	   float distance = (float) 0.0;
 
 	   for (RouteSection rs : neptuneObject.getRouteSections() ) {
-		   shape.setShapeId(toGtfsId(neptuneObject.getChouetteId().getObjectId(), prefix));
+		   shape.setShapeId(toGtfsId(neptuneObject.getChouetteId(), prefix));
 		   if (rs == null)
 		   {
 		      continue;
@@ -77,7 +77,7 @@ public class GtfsShapeProducer extends AbstractProducer
 			   try {
 				   getExporter().getShapeExporter().export(shape);
 			   } catch (Exception e) {
-				   log.warn("export failed for line "+neptuneObject.getChouetteId().getObjectId(),e);
+				   log.warn("export failed for line "+ neptuneObject.getCodeSpace() + " " + neptuneObject.getTechnicalId(),e);
 				   return false;
 			   }
 		   }

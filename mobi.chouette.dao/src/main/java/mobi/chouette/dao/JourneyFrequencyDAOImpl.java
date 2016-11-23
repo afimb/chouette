@@ -19,7 +19,7 @@ public class JourneyFrequencyDAOImpl extends GenericDAOImpl<JourneyFrequency> im
 	}
 
 	@Override
-	public JourneyFrequency findByChouetteId(String codeSpace, String objectId) {
+	public JourneyFrequency findByChouetteId(String codeSpace, Object objectId) {
 		throw new UnsupportedOperationException();
 	}
 }

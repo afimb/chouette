@@ -12,6 +12,10 @@ import javax.xml.bind.annotation.XmlType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.report.AbstractReport;
 import mobi.chouette.exchange.validation.report.DataLocation.Path;
 import mobi.chouette.model.AccessLink;
@@ -34,7 +38,7 @@ import mobi.chouette.model.util.NamingUtil;
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "file", "line", "objectId", "name", "objectRefs" })
-public class Location extends AbstractReport {
+public class Location extends AbstractReport implements Constant {
 
 	@XmlElement(name = "file")
 	private FileLocation file;
@@ -51,9 +55,9 @@ public class Location extends AbstractReport {
 	@XmlElement(name = "object_path")
 	private List<ObjectReference> objectRefs = new ArrayList<>();
 
-	public Location(DataLocation dl) {
+	public Location(Context context, DataLocation dl) {
 		if (dl.getObject() != null && dl.getObject().getId() != null) {
-			init(dl.getObject());
+			init(context, dl.getObject());
 		} else {
 			this.name = dl.getName();
 			this.objectId = dl.getObjectId();
@@ -104,58 +108,61 @@ public class Location extends AbstractReport {
 		this.objectId = objectId;
 	}
 
-	public Location(NeptuneIdentifiedObject chouetteObject) {
-		init(chouetteObject);
+	public Location(Context context, NeptuneIdentifiedObject chouetteObject) {
+		init(context, chouetteObject);
 	}
 
-	private void init(NeptuneIdentifiedObject chouetteObject) {
-		this.objectId = chouetteObject.getChouetteId().getObjectId();
+	private void init(Context context, NeptuneIdentifiedObject chouetteObject) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
+		this.objectId = chouetteIdGenerator.toSpecificFormatId(chouetteObject.getChouetteId(), parameters.getDefaultCodespace(), chouetteObject);
 		this.name = buildName(chouetteObject);
 		if (chouetteObject instanceof VehicleJourney) {
 			VehicleJourney object = (VehicleJourney) chouetteObject;
-			objectRefs.add(new ObjectReference(object));
-			objectRefs.add(new ObjectReference(object.getJourneyPattern()));
-			objectRefs.add(new ObjectReference(object.getJourneyPattern().getRoute()));
-			objectRefs.add(new ObjectReference(object.getJourneyPattern().getRoute().getLine()));
+			objectRefs.add(new ObjectReference(context, object));
+			objectRefs.add(new ObjectReference(context, object.getJourneyPattern()));
+			objectRefs.add(new ObjectReference(context, object.getJourneyPattern().getRoute()));
+			objectRefs.add(new ObjectReference(context, object.getJourneyPattern().getRoute().getLine()));
 		} else if (chouetteObject instanceof JourneyPattern) {
 			JourneyPattern object = (JourneyPattern) chouetteObject;
-			objectRefs.add(new ObjectReference(object));
-			objectRefs.add(new ObjectReference(object.getRoute()));
-			objectRefs.add(new ObjectReference(object.getRoute().getLine()));
+			objectRefs.add(new ObjectReference(context, object));
+			objectRefs.add(new ObjectReference(context, object.getRoute()));
+			objectRefs.add(new ObjectReference(context, object.getRoute().getLine()));
 		} else if (chouetteObject instanceof Route) {
 			Route object = (Route) chouetteObject;
-			objectRefs.add(new ObjectReference(object));
-			objectRefs.add(new ObjectReference(object.getLine()));
+			objectRefs.add(new ObjectReference(context, object));
+			objectRefs.add(new ObjectReference(context, object.getLine()));
 		} else if (chouetteObject instanceof Line) {
 			Line object = (Line) chouetteObject;
-			objectRefs.add(new ObjectReference(object));
+			objectRefs.add(new ObjectReference(context, object));
 		} else if (chouetteObject instanceof AccessLink) {
 			AccessLink object = (AccessLink) chouetteObject;
-			objectRefs.add(new ObjectReference(object));
-			objectRefs.add(new ObjectReference(object.getAccessPoint()));
-			objectRefs.add(new ObjectReference(object.getAccessPoint().getContainedIn()));
+			objectRefs.add(new ObjectReference(context, object));
+			objectRefs.add(new ObjectReference(context, object.getAccessPoint()));
+			objectRefs.add(new ObjectReference(context, object.getAccessPoint().getContainedIn()));
 		} else if (chouetteObject instanceof AccessPoint) {
 			AccessPoint object = (AccessPoint) chouetteObject;
-			objectRefs.add(new ObjectReference(object));
-			objectRefs.add(new ObjectReference(object.getContainedIn()));
+			objectRefs.add(new ObjectReference(context, object));
+			objectRefs.add(new ObjectReference(context, object.getContainedIn()));
 		} else if (chouetteObject instanceof StopArea) {
 			StopArea object = (StopArea) chouetteObject;
-			objectRefs.add(new ObjectReference(object));
+			objectRefs.add(new ObjectReference(context, object));
 		} else if (chouetteObject instanceof ConnectionLink) {
 			ConnectionLink object = (ConnectionLink) chouetteObject;
-			objectRefs.add(new ObjectReference(object));
+			objectRefs.add(new ObjectReference(context, object));
 		} else if (chouetteObject instanceof Network) {
 			Network object = (Network) chouetteObject;
-			objectRefs.add(new ObjectReference(object));
+			objectRefs.add(new ObjectReference(context, object));
 		} else if (chouetteObject instanceof Company) {
 			Company object = (Company) chouetteObject;
-			objectRefs.add(new ObjectReference(object));
+			objectRefs.add(new ObjectReference(context, object));
 		} else if (chouetteObject instanceof GroupOfLine) {
 			GroupOfLine object = (GroupOfLine) chouetteObject;
-			objectRefs.add(new ObjectReference(object));
+			objectRefs.add(new ObjectReference(context, object));
 		} else if (chouetteObject instanceof Timetable) {
 			Timetable object = (Timetable) chouetteObject;
-			objectRefs.add(new ObjectReference(object));
+			objectRefs.add(new ObjectReference(context, object));
 		}
 
 	}

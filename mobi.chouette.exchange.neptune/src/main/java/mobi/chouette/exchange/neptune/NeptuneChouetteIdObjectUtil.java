@@ -20,7 +20,7 @@ import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.util.Referential;
 
-public class NeptuneChouetteIdObjectFactory extends NeptuneChouetteIdGenerator{
+public class NeptuneChouetteIdObjectUtil{
 
 	public static AccessLink getAccessLink(Referential referential,
 			ChouetteId chouetteId) {

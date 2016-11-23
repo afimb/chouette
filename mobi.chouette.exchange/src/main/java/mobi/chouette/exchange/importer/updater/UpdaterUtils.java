@@ -6,15 +6,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 
 public class UpdaterUtils {
 
-	public static Collection<String> getObjectIds(Collection<?> list) {
-		final Collection<String> result = new ArrayList<String>();
+	public static Collection<ChouetteId> getChouetteIds(Collection<?> list) {
+		final Collection<ChouetteId> result = new ArrayList<ChouetteId>();
 		for (Object o : list) {
 			if (o instanceof NeptuneIdentifiedObject) {
-				result.add(((NeptuneIdentifiedObject) o).getChouetteId().getObjectId());
+				result.add(((NeptuneIdentifiedObject) o).getChouetteId());
 			}
 		}
 		return result;
@@ -25,15 +26,15 @@ public class UpdaterUtils {
 	 * @param list
 	 * @return
 	 */
-	public static Map<String,List<String>> getObjectIdsByCodeSpace(Collection<?> list) {
-		final Map<String,List<String>> result = new HashMap<>();
+	public static Map<String,List<ChouetteId>> getChouetteIdsByCodeSpace(Collection<?> list) {
+		final Map<String,List<ChouetteId>> result = new HashMap<>();
 		for (Object o : list) {
 			if (o instanceof NeptuneIdentifiedObject) {
 				String codespace = ((NeptuneIdentifiedObject) o).getChouetteId().getCodeSpace();
 				if (!result.containsKey(codespace))
-					result.put(codespace, new ArrayList<String>());
+					result.put(codespace, new ArrayList<ChouetteId>());
 
-				result.get(codespace).add(((NeptuneIdentifiedObject) o).getChouetteId().getObjectId());
+				result.get(codespace).add(((NeptuneIdentifiedObject) o).getChouetteId());
 			}
 		}
 		return result;

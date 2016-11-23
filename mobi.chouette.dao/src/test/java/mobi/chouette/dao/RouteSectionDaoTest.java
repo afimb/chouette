@@ -59,9 +59,7 @@ public class RouteSectionDaoTest extends Arquillian
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
 		RouteSection section = new RouteSection();
 //		section.getChouetteId().setObjectId("Test:"+RouteSection.ROUTE_SECTION_KEY+":1");
-		ChouetteId chouetteId = new ChouetteId();
-		chouetteId.setCodeSpace("Test");
-		chouetteId.setObjectId("1");
+		ChouetteId chouetteId = new ChouetteId("Test", "1", false);
 		section.setChouetteId(chouetteId);
 		GeometryFactory factory =  new GeometryFactory(new PrecisionModel(10),4326);
 		Coordinate[] coordinates = new Coordinate[2];

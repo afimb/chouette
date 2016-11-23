@@ -2,6 +2,8 @@ package mobi.chouette.exchange.validation.report;
 
 import java.io.PrintStream;
 
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
 import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -13,7 +15,7 @@ import org.codehaus.jettison.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class LocationTest {
+public class LocationTest implements Constant{
 	@Test(groups = { "JsonGeneration" }, description = "Json generated", priority = 104)
 	public void verifyJsonGeneration() throws Exception {
 		
@@ -60,20 +62,24 @@ public class LocationTest {
 			JourneyPattern jp = new JourneyPattern();
 			Route route = new Route();
 //			route.getChouetteId().setObjectId("route1");
-			ChouetteId chouetteId = new ChouetteId();
-			chouetteId.setObjectId("route1");
+			ChouetteId chouetteId = new ChouetteId("route1", "1", false);
 			route.setChouetteId(chouetteId);
 			route.setName("rname");
 			Line line = new Line();
 //			line.getChouetteId().setObjectId("line1");
-			chouetteId.setObjectId("line1");
+			chouetteId.setTechnicalId("line1");
 			line.setChouetteId(chouetteId);
 			line.setName("lname");
 			route.setLine(line);
 			jp.setRoute(route);
-			chouetteId.setObjectId("jp1");
+			chouetteId.setTechnicalId("jp1");
 			jp.setChouetteId(chouetteId);
-			Location location = new Location(jp);
+			Context context = new Context();
+			context.put(CHOUETTEID_GENERATOR, new DummyChouetteIdGenerator());
+			DummyParameter dp = new DummyParameter();
+			dp.setDefaultCodespace("DEFAULT_CODESPACE");
+			context.put(PARAMETERS_FILE, dp);
+			Location location = new Location(context, jp);
 			location.print(stream, new StringBuilder(), 1, true);
 			String text = oStream.toString();
 			JSONObject res = new JSONObject(text);

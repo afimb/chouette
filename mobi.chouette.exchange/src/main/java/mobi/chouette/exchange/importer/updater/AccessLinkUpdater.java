@@ -33,9 +33,9 @@ public class AccessLinkUpdater implements Updater<AccessLink> {
 			NamingUtil.setDefaultName(newValue);
 		}
 
-		if (newValue.getChouetteId().getObjectId() != null
-				&& !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
-			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
+		if (newValue.getChouetteId().getTechnicalId() != null
+				&& !newValue.getChouetteId().getTechnicalId().equals(oldValue.getChouetteId().getTechnicalId())) {
+			oldValue.setChouetteId(newValue.getChouetteId());
 		}
 		if (newValue.getObjectVersion() != null
 				&& !newValue.getObjectVersion().equals(
@@ -121,11 +121,11 @@ public class AccessLinkUpdater implements Updater<AccessLink> {
 		// AccessPoint
 		if (oldValue.getAccessPoint() == null) {
 			String codeSpace = newValue.getAccessPoint().getChouetteId().getCodeSpace();
-			String objectId = newValue.getAccessPoint().getChouetteId().getObjectId();
+			String technicalId = newValue.getAccessPoint().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getAccessPoint().getChouetteId();
-			AccessPoint accessPoint = cache.getAccessPoints().get(objectId);
+			AccessPoint accessPoint = cache.getAccessPoints().get(technicalId);
 			if (accessPoint == null) {
-				accessPoint = accessPointDAO.findByChouetteId(codeSpace, objectId);
+				accessPoint = accessPointDAO.findByChouetteId(codeSpace, technicalId);
 				if (accessPoint != null) {
 					cache.getAccessPoints().put(chouetteId, accessPoint);
 				}

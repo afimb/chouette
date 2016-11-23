@@ -63,9 +63,7 @@ public class LineDaoTest extends Arquillian
 		Line l = new Line();
 		l.setName("toto");
 //		l.getChouetteId().setObjectId("test:Line:"+id);
-		ChouetteId chouetteId = new ChouetteId();
-		chouetteId.setCodeSpace("test");
-		chouetteId.setObjectId(String.valueOf(id));
+		ChouetteId chouetteId = new ChouetteId("test", String.valueOf(id), false);
 		l.setChouetteId(chouetteId);
 		id++;
 		

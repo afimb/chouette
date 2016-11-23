@@ -12,7 +12,7 @@ import mobi.chouette.common.Pair;
 import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
-import mobi.chouette.exchange.ChouetteIdObjectFactory;
+import mobi.chouette.exchange.ChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 @Stateless(name = AccessPointUpdater.BEAN_NAME)
@@ -26,6 +26,7 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 	@EJB(beanName = AccessLinkUpdater.BEAN_NAME)
 	private Updater<AccessLink> accessLinkUpdater;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Context context, AccessPoint oldValue,
 			AccessPoint newValue) throws Exception {
@@ -37,9 +38,9 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 
 		Referential cache = (Referential) context.get(CACHE);
 
-		if (newValue.getChouetteId().getObjectId() != null
-				&& !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
-			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
+		if (newValue.getChouetteId().getTechnicalId() != null
+				&& !newValue.getChouetteId().getTechnicalId().equals(oldValue.getChouetteId().getTechnicalId())) {
+			oldValue.setChouetteId(newValue.getChouetteId());
 		}
 		if (newValue.getObjectVersion() != null
 				&& !newValue.getObjectVersion().equals(
@@ -145,22 +146,22 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 		for (AccessLink item : addedAccessLink) {
 
 			AccessLink accessLink = cache.getAccessLinks().get(
-					item.getChouetteId().getObjectId());
+					item.getChouetteId());
 			if (accessLink == null) {
 				if (accessLinks == null) {
 					String codeSpace = item.getAccessPoint().getChouetteId().getCodeSpace();
-					accessLinks = accessLinkDAO.findByChouetteId(codeSpace, UpdaterUtils
-							.getObjectIds(addedAccessLink));
+					accessLinks = (List<AccessLink>) accessLinkDAO.findByChouetteId(codeSpace, UpdaterUtils
+							.getChouetteIds(addedAccessLink));
 					for (AccessLink object : accessLinks) {
 						cache.getAccessLinks()
 								.put(object.getChouetteId(), object);
 					}
 				}
-				accessLink = cache.getAccessLinks().get(item.getChouetteId().getObjectId());
+				accessLink = cache.getAccessLinks().get(item.getChouetteId());
 			}
 
 			if (accessLink == null) {
-				accessLink = ChouetteIdObjectFactory.getAccessLink(cache,
+				accessLink = ChouetteIdObjectUtil.getAccessLink(cache,
 						item.getChouetteId());
 			}
 			accessLink.setAccessPoint(oldValue);

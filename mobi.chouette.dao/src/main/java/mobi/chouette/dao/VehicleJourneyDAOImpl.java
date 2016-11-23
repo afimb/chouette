@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -32,9 +34,9 @@ public class VehicleJourneyDAOImpl extends GenericDAOImpl<VehicleJourney> implem
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
 	}
-
+	
 	@Override
-	public void deleteChildren(final List<ChouetteId> vehicleJourneyObjectIds) {
+	public void deleteChildren(final Map<String,List<ChouetteId>> vehicleJourneyChouetteIds) {
 
 		Session session = em.unwrap(Session.class);
 
@@ -42,31 +44,38 @@ public class VehicleJourneyDAOImpl extends GenericDAOImpl<VehicleJourney> implem
 
 			@Override
 			public void execute(Connection connection) throws SQLException {
-
+				
 				final String SQL = "DELETE FROM vehicle_journey_at_stops WHERE vehicle_journey_id IN ("
-						+ "SELECT id FROM vehicle_journeys WHERE objectid IN ( %s )"
+						+ "SELECT id FROM vehicle_journeys WHERE technicalid IN ( %s )"
 						+ ")";
+				
+				for (Entry<String, List<ChouetteId>> entry : vehicleJourneyChouetteIds.entrySet())
+				{
+				    
+					// delete
+					int size = entry.getValue().size();
+					if (size > 0) {
+						StringBuffer buffer = new StringBuffer();
+						for (int i = 0; i < size; i++) {
 
-				// delete
-				int size = vehicleJourneyObjectIds.size();
-				if (size > 0) {
-					StringBuffer buffer = new StringBuffer();
-					for (int i = 0; i < size; i++) {
-
-						buffer.append('\'');
-						buffer.append(vehicleJourneyObjectIds.get(i).getObjectId());
-						buffer.append('\'');
-						if (i != size - 1) {
-							buffer.append(',');
+							buffer.append('\'');
+							buffer.append(entry.getValue().get(i).getTechnicalId());
+							buffer.append('\'');
+							if (i != size - 1) {
+								buffer.append(',');
+							}
 						}
-					}
 
-					Statement statement = connection.createStatement();
-					String sql = String.format(SQL, buffer.toString());
-					// System.out.println("execute SQL : " + sql);
-					int count = statement.executeUpdate(sql);
-					log.info("[DSU] delete " + count + " objects.");
+						Statement statement = connection.createStatement();
+						String sql = String.format(SQL, buffer.toString());
+						// System.out.println("execute SQL : " + sql);
+						int count = statement.executeUpdate(sql);
+						log.info("[DSU] delete " + count + " objects.");
+					}
+					
 				}
+				
+				
 			}
 		});
 	}
@@ -101,6 +110,46 @@ public class VehicleJourneyDAOImpl extends GenericDAOImpl<VehicleJourney> implem
 					log.error(e);
 				}
 				// log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+			}
+		});
+	}
+
+	@Override
+	public void deleteChildren(final List<ChouetteId> vehicleJourneyChouetteIds) {
+		Session session = em.unwrap(Session.class);
+
+		session.doWork(new Work() {
+
+			@Override
+			public void execute(Connection connection) throws SQLException {
+				
+				final String SQL = "DELETE FROM vehicle_journey_at_stops WHERE vehicle_journey_id IN ("
+						+ "SELECT id FROM vehicle_journeys WHERE technicalid IN ( %s )"
+						+ ")";
+			
+					// delete
+					int size = vehicleJourneyChouetteIds.size();
+					if (size > 0) {
+						StringBuffer buffer = new StringBuffer();
+						for (int i = 0; i < size; i++) {
+
+							buffer.append('\'');
+							buffer.append(vehicleJourneyChouetteIds.get(i).getTechnicalId());
+							buffer.append('\'');
+							if (i != size - 1) {
+								buffer.append(',');
+							}
+						}
+
+						Statement statement = connection.createStatement();
+						String sql = String.format(SQL, buffer.toString());
+						// System.out.println("execute SQL : " + sql);
+						int count = statement.executeUpdate(sql);
+						log.info("[DSU] delete " + count + " objects.");
+					}
+			
+				
+				
 			}
 		});
 	}

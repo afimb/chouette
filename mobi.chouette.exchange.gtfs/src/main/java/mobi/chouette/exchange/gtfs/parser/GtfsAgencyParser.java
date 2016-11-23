@@ -2,6 +2,7 @@ package mobi.chouette.exchange.gtfs.parser;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.ChouetteIdGenerator;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
@@ -12,6 +13,7 @@ import mobi.chouette.exchange.gtfs.validation.GtfsValidationReporter;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.model.Company;
 import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
 import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectFactory;
@@ -105,17 +107,17 @@ public class GtfsAgencyParser extends GtfsChouetteIdGenerator implements Parser,
 		for (GtfsAgency gtfsAgency : importer.getAgencyById()) {
 			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Company.COMPANY_KEY,
 					gtfsAgency.getAgencyId(), log);
-			Company company = GtfsChouetteIdObjectFactory.getCompany(referential, toChouetteId(objectId, "default_codespace"));
+			Company company = GtfsChouetteIdObjectFactory.getCompany(referential, toChouetteId(objectId, configuration.getDefaultCodespace()));
 			convert(context, gtfsAgency, company);
 		}
 	}
 	
-	private void convert(Context context, GtfsAgency gtfsAgency, Company company) {
+	private void convert(Context context, GtfsAgency gtfsAgency, Company company) {		
 		company.setName(AbstractConverter.getNonEmptyTrimedString(gtfsAgency.getAgencyName()));
 		company.setUrl(AbstractConverter.toString(gtfsAgency.getAgencyUrl()));
 		company.setPhone(AbstractConverter.getNonEmptyTrimedString(gtfsAgency.getAgencyPhone()));
-		String[] token = company.getChouetteId().getObjectId().split(":");
-		company.setRegistrationNumber(token[2]);
+		//String[] token = company.getChouetteId().getObjectId().split(":");
+		company.setRegistrationNumber(company.getTechnicalId());
 		company.setTimeZone(AbstractConverter.toString(gtfsAgency.getAgencyTimezone()));
 		company.setFilled(true);
 // 		AbstractConverter.addLocation(context, "agency.txt", company.getChouetteId().getObjectId(), gtfsAgency.getId());

@@ -12,16 +12,15 @@ import mobi.chouette.common.Pair;
 import mobi.chouette.dao.RouteSectionDAO;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
+import mobi.chouette.exchange.ChouetteIdObjectUtil;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.JourneyPattern;
-import mobi.chouette.model.Route;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.NeptuneUtil;
-import mobi.chouette.exchange.ChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Stateless(name = JourneyPatternUpdater.BEAN_NAME)
@@ -44,6 +43,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 	@EJB(beanName = RouteSectionUpdater.BEAN_NAME)
 	private Updater<RouteSection> routeSectionUpdater;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Context context, JourneyPattern oldValue, JourneyPattern newValue) throws Exception {
 
@@ -63,7 +63,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		
 		if (oldValue.isDetached()) {
 			// object does not exist in database
-			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
+			oldValue.setChouetteId(newValue.getChouetteId());
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 			oldValue.setCreationTime(newValue.getCreationTime());
 			oldValue.setCreatorId(newValue.getCreatorId());
@@ -74,8 +74,8 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			oldValue.setSectionStatus(newValue.getSectionStatus());
 			oldValue.setDetached(false);
 		} else {
-			if (newValue.getChouetteId().getObjectId() != null && !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
-				oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
+			if (newValue.getChouetteId().getTechnicalId() != null && !(newValue.getChouetteId().getTechnicalId().equals(oldValue.getChouetteId().getTechnicalId()))) {
+				oldValue.setChouetteId(newValue.getChouetteId());
 			}
 			if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
 				oldValue.setObjectVersion(newValue.getObjectVersion());
@@ -115,9 +115,9 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			// }
 			oldValue.getRouteSections().clear();
 			for (RouteSection item : newValue.getRouteSections()) {
-				RouteSection section = cache.getRouteSections().get(item.getChouetteId().getObjectId());
+				RouteSection section = cache.getRouteSections().get(item.getChouetteId());
 				if (section == null) {
-					section = ChouetteIdObjectFactory.getRouteSection(cache, item.getChouetteId());
+					section = ChouetteIdObjectUtil.getRouteSection(cache, item.getChouetteId());
 				}
 				oldValue.getRouteSections().add(section);
 			}
@@ -135,16 +135,16 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		List<StopPoint> stopPoints = null;
 		for (StopPoint item : addedStopPoint) {
 
-			StopPoint stopPoint = cache.getStopPoints().get(item.getChouetteId().getObjectId());
+			StopPoint stopPoint = cache.getStopPoints().get(item.getChouetteId());
 			if (stopPoint == null) {
 				if (stopPoints == null) {
 					String codeSpace = item.getChouetteId().getCodeSpace();
-					stopPoints = stopPointDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedStopPoint));
+					stopPoints = (List<StopPoint>) stopPointDAO.findByChouetteId(codeSpace, UpdaterUtils.getChouetteIds(addedStopPoint));
 					for (StopPoint object : stopPoints) {
 						cache.getStopPoints().put(object.getChouetteId(), object);
 					}
 				}
-				stopPoint = cache.getStopPoints().get(item.getChouetteId().getObjectId());
+				stopPoint = cache.getStopPoints().get(item.getChouetteId());
 			}
 
 			if (stopPoint != null) {
@@ -163,7 +163,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			oldValue.setArrivalStopPoint(null);
 		} else if (!newValue.getArrivalStopPoint().equals(oldValue.getArrivalStopPoint())) {
 			String codeSpace = newValue.getArrivalStopPoint().getChouetteId().getCodeSpace();
-			String objectId = newValue.getArrivalStopPoint().getChouetteId().getObjectId();
+			String objectId = newValue.getArrivalStopPoint().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getArrivalStopPoint().getChouetteId();
 			StopPoint stopPoint = cache.getStopPoints().get(objectId);
 			if (stopPoint == null) {
@@ -183,7 +183,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			oldValue.setDepartureStopPoint(null);
 		} else if (!newValue.getDepartureStopPoint().equals(oldValue.getDepartureStopPoint())) {
 			String codeSpace = newValue.getDepartureStopPoint().getChouetteId().getCodeSpace();
-			String objectId = newValue.getDepartureStopPoint().getChouetteId().getObjectId();
+			String objectId = newValue.getDepartureStopPoint().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getDepartureStopPoint().getChouetteId();
 			StopPoint stopPoint = cache.getStopPoints().get(objectId);
 			if (stopPoint == null) {
@@ -205,20 +205,20 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		List<VehicleJourney> vehicleJourneys = null;
 		for (VehicleJourney item : addedVehicleJourney) {
 
-			VehicleJourney vehicleJourney = cache.getVehicleJourneys().get(item.getChouetteId().getObjectId());
+			VehicleJourney vehicleJourney = cache.getVehicleJourneys().get(item.getChouetteId());
 			if (vehicleJourney == null) {
 				if (vehicleJourneys == null) {
 					String codeSpace = item.getChouetteId().getCodeSpace();
-					vehicleJourneys = vehicleJourneyDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedVehicleJourney));
+					vehicleJourneys = (List<VehicleJourney>) vehicleJourneyDAO.findByChouetteId(codeSpace, UpdaterUtils.getChouetteIds(addedVehicleJourney));
 					for (VehicleJourney object : vehicleJourneys) {
 						cache.getVehicleJourneys().put(object.getChouetteId(), object);
 					}
 				}
-				vehicleJourney = cache.getVehicleJourneys().get(item.getChouetteId().getObjectId());
+				vehicleJourney = cache.getVehicleJourneys().get(item.getChouetteId());
 			}
 
 			if (vehicleJourney == null) {
-				vehicleJourney = ChouetteIdObjectFactory.getVehicleJourney(cache, item.getChouetteId());
+				vehicleJourney = ChouetteIdObjectUtil.getVehicleJourney(cache, item.getChouetteId());
 			}
 			if(vehicleJourney.getJourneyPattern() != null) {
 				twoDatabaseVehicleJourneyOneTest(validationReporter, context, vehicleJourney, item, data);
@@ -248,7 +248,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 	 */
 	private void twoDatabaseVehicleJourneyOneTest(ValidationReporter validationReporter, Context context, VehicleJourney oldVj, VehicleJourney newVj, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldVj.getJourneyPattern(), newVj.getJourneyPattern()))
-			validationReporter.addCheckPointReportError(context, DATABASE_VEHICLE_JOURNEY_1, data.getDataLocations().get(newVj.getChouetteId().getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_VEHICLE_JOURNEY_1, data.getDataLocations().get(newVj.getChouetteId().getTechnicalId()));
 		else
 			validationReporter.reportSuccess(context, DATABASE_VEHICLE_JOURNEY_1);
 	}

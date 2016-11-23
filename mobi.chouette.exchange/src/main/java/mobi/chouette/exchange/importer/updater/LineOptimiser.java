@@ -25,6 +25,7 @@ import mobi.chouette.dao.TimetableDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
@@ -37,7 +38,7 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timeband;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
-import mobi.chouette.exchange.ChouetteIdObjectFactory;
+import mobi.chouette.exchange.ChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 @Stateless
@@ -109,15 +110,16 @@ public class LineOptimiser {
 //		monitor.stop();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initializeStopArea(Referential cache, Collection<StopArea> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
-			Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
+			Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 			List<StopArea> objects = new ArrayList<StopArea>();
 			
-			for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+			for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
 			{
-			    objects.addAll(stopAreaDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+			    objects.addAll((List<StopArea>) stopAreaDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 			}
 			
 			for (StopArea object : objects) {
@@ -126,23 +128,24 @@ public class LineOptimiser {
 
 			// TODO check if stoparea really exists
 			for (StopArea item : list) {
-				StopArea object = cache.getStopAreas().get(item.getChouetteId().getObjectId());
+				StopArea object = cache.getStopAreas().get(item.getChouetteId());
 				if (object == null) {
-					object = ChouetteIdObjectFactory.getStopArea(cache, item.getChouetteId());
+					object = ChouetteIdObjectUtil.getStopArea(cache, item.getChouetteId());
 				}
 			}
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initializeConnectionLink(Referential cache, Collection<ConnectionLink> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
-			Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
+			Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 			List<ConnectionLink> objects = new ArrayList<ConnectionLink>();
 			
-			for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+			for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
 			{
-			    objects.addAll(connectionLinkDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+			    objects.addAll((List<ConnectionLink>) connectionLinkDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 			}
 			
 			for (ConnectionLink object : objects) {
@@ -150,24 +153,25 @@ public class LineOptimiser {
 			}
 
 			for (ConnectionLink item : list) {
-				ConnectionLink object = cache.getConnectionLinks().get(item.getChouetteId().getObjectId());
+				ConnectionLink object = cache.getConnectionLinks().get(item.getChouetteId());
 				if (object == null) {
-					object = ChouetteIdObjectFactory.getConnectionLink(cache, item.getChouetteId());
+					object = ChouetteIdObjectUtil.getConnectionLink(cache, item.getChouetteId());
 				}
 			}
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initializeAccessLink(Referential cache, Collection<AccessLink> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 			
-			Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+			Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 			List<AccessLink> objects = new ArrayList<AccessLink>();
 			
-			for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+			for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
 			{
-			    objects.addAll(accessLinkDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+			    objects.addAll((List<AccessLink>) accessLinkDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 			}
 			
 			for (AccessLink object : objects) {
@@ -175,24 +179,25 @@ public class LineOptimiser {
 			}
 
 			for (AccessLink item : list) {
-				AccessLink object = cache.getAccessLinks().get(item.getChouetteId().getObjectId());
+				AccessLink object = cache.getAccessLinks().get(item.getChouetteId());
 				if (object == null) {
-					object = ChouetteIdObjectFactory.getAccessLink(cache, item.getChouetteId());
+					object = ChouetteIdObjectUtil.getAccessLink(cache, item.getChouetteId());
 				}
 			}
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initializeAccessPoint(Referential cache, Collection<AccessPoint> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 			
-			Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+			Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 			List<AccessPoint> objects = new ArrayList<AccessPoint>();
 			
-			for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+			for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
 			{
-			    objects.addAll(accessPointDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+			    objects.addAll((List<AccessPoint>) accessPointDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 			}
 			
 			for (AccessPoint object : objects) {
@@ -200,24 +205,25 @@ public class LineOptimiser {
 			}
 
 			for (AccessPoint item : list) {
-				AccessPoint object = cache.getAccessPoints().get(item.getChouetteId().getObjectId());
+				AccessPoint object = cache.getAccessPoints().get(item.getChouetteId());
 				if (object == null) {
-					object = ChouetteIdObjectFactory.getAccessPoint(cache, item.getChouetteId());
+					object = ChouetteIdObjectUtil.getAccessPoint(cache, item.getChouetteId());
 				}
 			}
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initializeTimetable(Referential cache, Collection<Timetable> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 			
-			Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+			Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 			List<Timetable> objects = new ArrayList<Timetable>();
 			
-			for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+			for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
 			{
-			    objects.addAll(timetableDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+			    objects.addAll((List<Timetable>) timetableDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 			}
 			
 			for (Timetable object : objects) {
@@ -225,24 +231,25 @@ public class LineOptimiser {
 			}
 
 			for (Timetable item : list) {
-				Timetable object = cache.getTimetables().get(item.getChouetteId().getObjectId());
+				Timetable object = cache.getTimetables().get(item.getChouetteId());
 				if (object == null) {
-					object = ChouetteIdObjectFactory.getTimetable(cache, item.getChouetteId());
+					object = ChouetteIdObjectUtil.getTimetable(cache, item.getChouetteId());
 				}
 			}
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initializePTNetwork(Referential cache, Collection<Network> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 			
-			Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+			Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 			List<Network> objects = new ArrayList<Network>();
 			
-			for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+			for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
 			{
-			    objects.addAll(ptNetworkDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+			    objects.addAll((List<Network>) ptNetworkDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 			}
 			
 			for (Network object : objects) {
@@ -250,24 +257,25 @@ public class LineOptimiser {
 			}
 
 			for (Network item : list) {
-				Network object = cache.getPtNetworks().get(item.getChouetteId().getObjectId());
+				Network object = cache.getPtNetworks().get(item.getChouetteId());
 				if (object == null) {
-					object = ChouetteIdObjectFactory.getPTNetwork(cache, item.getChouetteId());
+					object = ChouetteIdObjectUtil.getPTNetwork(cache, item.getChouetteId());
 				}
 			}
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initializeCompany(Referential cache, Collection<Company> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 			
-			Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+			Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 			List<Company> objects = new ArrayList<Company>();
 			
-			for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+			for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
 			{
-			    objects.addAll(companyDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+			    objects.addAll((List<Company>) companyDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 			}
 			
 			for (Company object : objects) {
@@ -275,24 +283,25 @@ public class LineOptimiser {
 			}
 
 			for (Company item : list) {
-				Company object = cache.getCompanies().get(item.getChouetteId().getObjectId());
+				Company object = cache.getCompanies().get(item.getChouetteId());
 				if (object == null) {
-					object = ChouetteIdObjectFactory.getCompany(cache, item.getChouetteId());
+					object = ChouetteIdObjectUtil.getCompany(cache, item.getChouetteId());
 				}
 			}
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initializeGroupOfLine(Referential cache, Collection<GroupOfLine> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 			
-			Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+			Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 			List<GroupOfLine> objects = new ArrayList<GroupOfLine>();
 			
-			for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+			for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
 			{
-			    objects.addAll(groupOfLineDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+			    objects.addAll((List<GroupOfLine>) groupOfLineDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 			}
 			
 			for (GroupOfLine object : objects) {
@@ -300,24 +309,25 @@ public class LineOptimiser {
 			}
 
 			for (GroupOfLine item : list) {
-				GroupOfLine object = cache.getGroupOfLines().get(item.getChouetteId().getObjectId());
+				GroupOfLine object = cache.getGroupOfLines().get(item.getChouetteId());
 				if (object == null) {
-					object = ChouetteIdObjectFactory.getGroupOfLine(cache, item.getChouetteId());
+					object = ChouetteIdObjectUtil.getGroupOfLine(cache, item.getChouetteId());
 				}
 			}
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initializeLine(Referential cache, Collection<Line> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 			
-			Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+			Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 			List<Line> objects = new ArrayList<Line>();
 			
-			for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+			for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
 			{
-			    objects.addAll(lineDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+			    objects.addAll((List<Line>) lineDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 			}
 			
 			for (Line object : objects) {
@@ -325,24 +335,25 @@ public class LineOptimiser {
 			}
 
 			for (Line item : list) {
-				Line object = cache.getLines().get(item.getChouetteId().getObjectId());
+				Line object = cache.getLines().get(item.getChouetteId());
 				if (object == null) {
-					object = ChouetteIdObjectFactory.getLine(cache, item.getChouetteId());
+					object = ChouetteIdObjectUtil.getLine(cache, item.getChouetteId());
 				}
 			}
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initializeRoute(Referential cache, Collection<Route> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 			
-			Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+			Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 			List<Route> objects = new ArrayList<Route>();
 			
-			for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+			for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
 			{
-			    objects.addAll(routeDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+			    objects.addAll((List<Route>) routeDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 			}
 			
 			for (Route object : objects) {
@@ -350,24 +361,25 @@ public class LineOptimiser {
 			}
 
 			for (Route item : list) {
-				Route object = cache.getRoutes().get(item.getChouetteId().getObjectId());
+				Route object = cache.getRoutes().get(item.getChouetteId());
 				if (object == null) {
-					object = ChouetteIdObjectFactory.getRoute(cache, item.getChouetteId());
+					object = ChouetteIdObjectUtil.getRoute(cache, item.getChouetteId());
 				}
 			}
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initializeStopPoint(Referential cache, Collection<StopPoint> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 			
-			Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+			Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 			List<StopPoint> objects = new ArrayList<StopPoint>();
 			
-			for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+			for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
 			{
-			    objects.addAll(stopPointDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+			    objects.addAll((List<StopPoint>) stopPointDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 			}
 			
 			for (StopPoint object : objects) {
@@ -375,24 +387,25 @@ public class LineOptimiser {
 			}
 
 			for (StopPoint item : list) {
-				StopPoint object = cache.getStopPoints().get(item.getChouetteId().getObjectId());
+				StopPoint object = cache.getStopPoints().get(item.getChouetteId());
 				if (object == null) {
-					object = ChouetteIdObjectFactory.getStopPoint(cache, item.getChouetteId());
+					object = ChouetteIdObjectUtil.getStopPoint(cache, item.getChouetteId());
 				}
 			}
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initializeJourneyPattern(Referential cache, Collection<JourneyPattern> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 			
-			Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+			Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 			List<JourneyPattern> objects = new ArrayList<JourneyPattern>();
 			
-			for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+			for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
 			{
-			    objects.addAll(journeyPatternDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+			    objects.addAll((List<JourneyPattern>) journeyPatternDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 			}
 			
 			for (JourneyPattern object : objects) {
@@ -400,24 +413,25 @@ public class LineOptimiser {
 			}
 
 			for (JourneyPattern item : list) {
-				JourneyPattern object = cache.getJourneyPatterns().get(item.getChouetteId().getObjectId());
+				JourneyPattern object = cache.getJourneyPatterns().get(item.getChouetteId());
 				if (object == null) {
-					object = ChouetteIdObjectFactory.getJourneyPattern(cache, item.getChouetteId());
+					object = ChouetteIdObjectUtil.getJourneyPattern(cache, item.getChouetteId());
 				}
 			}
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initializeVehicleJourney(Referential cache, Collection<VehicleJourney> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 			
-			Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+			Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 			List<VehicleJourney> objects = new ArrayList<VehicleJourney>();
 			
-			for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+			for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
 			{
-			    objects.addAll(vehicleJourneyDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+			    objects.addAll((List<VehicleJourney>) vehicleJourneyDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 			}
 			
 			for (VehicleJourney object : objects) {
@@ -425,33 +439,34 @@ public class LineOptimiser {
 			}
 
 			for (VehicleJourney item : list) {
-				VehicleJourney object = cache.getVehicleJourneys().get(item.getChouetteId().getObjectId());
+				VehicleJourney object = cache.getVehicleJourneys().get(item.getChouetteId());
 				if (object == null) {
-					object = ChouetteIdObjectFactory.getVehicleJourney(cache, item.getChouetteId());
+					object = ChouetteIdObjectUtil.getVehicleJourney(cache, item.getChouetteId());
 				}
 			}
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initializeTimeband(Referential cache, Collection<Timeband> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 			
-			Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+			Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 			List<Timeband> objects = new ArrayList<Timeband>();
 			
-			for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+			for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
 			{
-			    objects.addAll(timebandDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+			    objects.addAll((List<Timeband>) timebandDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 			}
 			for (Timeband object : objects) {
 				cache.getTimebands().put(object.getChouetteId(), object);
 			}
 
 			for (Timeband item : list) {
-				Timeband object = cache.getTimebands().get(item.getChouetteId().getObjectId());
+				Timeband object = cache.getTimebands().get(item.getChouetteId());
 				if (object == null) {
-					object = ChouetteIdObjectFactory.getTimeband(cache, item.getChouetteId());
+					object = ChouetteIdObjectUtil.getTimeband(cache, item.getChouetteId());
 				}
 			}
 		}

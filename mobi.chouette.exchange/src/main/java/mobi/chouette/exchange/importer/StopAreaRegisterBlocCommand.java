@@ -21,14 +21,14 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.exchange.ChouetteIdObjectUtil;
 import mobi.chouette.exchange.importer.updater.StopAreaUpdater;
 import mobi.chouette.exchange.importer.updater.Updater;
 import mobi.chouette.exchange.importer.updater.UpdaterUtils;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
-import mobi.chouette.model.ConnectionLink;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.StopArea;
-import mobi.chouette.exchange.ChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
@@ -75,7 +75,7 @@ public class StopAreaRegisterBlocCommand implements Command {
 			// ".update");
 
 			for (StopArea newValue : areas) {
-				StopArea oldValue = cache.getStopAreas().get(newValue.getChouetteId().getObjectId());
+				StopArea oldValue = cache.getStopAreas().get(newValue.getChouetteId());
 				stopUpdater.update(context, oldValue, newValue);
 				stopAreaDAO.create(oldValue);
 			}
@@ -107,9 +107,9 @@ public class StopAreaRegisterBlocCommand implements Command {
 	}
 
 	private void addStopAreaIfMissing(Referential cache, StopArea item) {
-		StopArea object = cache.getStopAreas().get(item.getChouetteId().getObjectId());
+		StopArea object = cache.getStopAreas().get(item.getChouetteId());
 		if (object == null) {
-			object = ChouetteIdObjectFactory.getStopArea(cache, item.getChouetteId());
+			object = ChouetteIdObjectUtil.getStopArea(cache, item.getChouetteId());
 			if (item.getParent() != null && item.getParent().getAreaType() == null) {
 				log.error("areatype missing for " + item.getParent());
 				return;
@@ -121,17 +121,18 @@ public class StopAreaRegisterBlocCommand implements Command {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initializeAccessPoint(Referential cache, Collection<AccessPoint> list) {
 		if (list.isEmpty())
 			return;
-		Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+		Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 		
-		Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+		Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 		List<AccessPoint> objects = new ArrayList<AccessPoint>();
 		
-		for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+		for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
 		{
-		    objects.addAll(accessPointDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+		    objects.addAll((List<AccessPoint>) accessPointDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 		}
 		
 		for (AccessPoint object : objects) {
@@ -139,24 +140,25 @@ public class StopAreaRegisterBlocCommand implements Command {
 		}
 
 		for (AccessPoint item : list) {
-			AccessPoint object = cache.getAccessPoints().get(item.getChouetteId().getObjectId());
+			AccessPoint object = cache.getAccessPoints().get(item.getChouetteId());
 			if (object == null) {
-				object = ChouetteIdObjectFactory.getAccessPoint(cache, item.getChouetteId());
+				object = ChouetteIdObjectUtil.getAccessPoint(cache, item.getChouetteId());
 			}
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initializeAccessLink(Referential cache, Collection<AccessLink> list) {
 		if (list.isEmpty())
 			return;
-		Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+		Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 		
-		Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+		Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 		List<AccessLink> objects = new ArrayList<AccessLink>();
 		
-		for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+		for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
 		{
-		    objects.addAll(accessLinkDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+		    objects.addAll((List<AccessLink>) accessLinkDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 		}
 		
 		for (AccessLink object : objects) {
@@ -164,9 +166,9 @@ public class StopAreaRegisterBlocCommand implements Command {
 		}
 
 		for (AccessLink item : list) {
-			AccessLink object = cache.getAccessLinks().get(item.getChouetteId().getObjectId());
+			AccessLink object = cache.getAccessLinks().get(item.getChouetteId());
 			if (object == null) {
-				object = ChouetteIdObjectFactory.getAccessLink(cache, item.getChouetteId());
+				object = ChouetteIdObjectUtil.getAccessLink(cache, item.getChouetteId());
 			}
 		}
 	}

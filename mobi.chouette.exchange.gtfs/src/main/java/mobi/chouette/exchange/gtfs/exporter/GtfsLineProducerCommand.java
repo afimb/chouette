@@ -23,6 +23,7 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.ChouetteIdGenerator;
 import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsRouteProducer;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsServiceProducer;
@@ -31,6 +32,7 @@ import mobi.chouette.exchange.gtfs.exporter.producer.GtfsTripProducer;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporter;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
@@ -56,21 +58,22 @@ public class GtfsLineProducerCommand implements Command, Constant {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
 		ActionReporter reporter = ActionReporter.Factory.getInstance();
-
+		
 		try {
 
 			Line line = (Line) context.get(LINE);
+			ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 			GtfsExportParameters configuration = (GtfsExportParameters) context.get(CONFIGURATION);
-
+			String objectId = chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line);
 			ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 			if (collection == null) {
 				collection = new ExportableData();
 				context.put(EXPORTABLE_DATA, collection);
 			}
-			reporter.addObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
+			reporter.addObjectReport(context, objectId, OBJECT_TYPE.LINE, NamingUtil.getName(line),
 					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
 			if (line.getCompany() == null) {
-				reporter.addErrorToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE,
+				reporter.addErrorToObjectReport(context, objectId, OBJECT_TYPE.LINE,
 						ActionReporter.ERROR_CODE.INVALID_FORMAT, "no company for this line");
 				return SUCCESS;
 			}
@@ -87,22 +90,22 @@ public class GtfsLineProducerCommand implements Command, Constant {
 
 			GtfsDataCollector collector = new GtfsDataCollector();
 			boolean cont = collector.collect(collection, line, startDate, endDate);
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 0);
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
+			reporter.setStatToObjectReport(context, objectId, OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 0);
+			reporter.setStatToObjectReport(context, objectId, OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
 					collection.getJourneyPatterns().size());
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, collection
+			reporter.setStatToObjectReport(context, objectId, OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, collection
 					.getRoutes().size());
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY,
+			reporter.setStatToObjectReport(context, objectId, OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY,
 					collection.getVehicleJourneys().size());
 
 			if (cont) {
 				context.put(EXPORTABLE_DATA, collection);
 
 				saveLine(context, line);
-				reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+				reporter.setStatToObjectReport(context, objectId, OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
 				result = SUCCESS;
 			} else {
-				reporter.addErrorToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE,
+				reporter.addErrorToObjectReport(context, objectId, OBJECT_TYPE.LINE,
 						ActionReporter.ERROR_CODE.NO_DATA_ON_PERIOD, "no data on period");
 				result = SUCCESS; // else export will stop here
 			}

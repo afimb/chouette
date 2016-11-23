@@ -7,6 +7,7 @@ import java.util.Collection;
 
 import lombok.Getter;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
+import mobi.chouette.model.ChouetteId;
 
 public abstract class AbstractProducer
 {
@@ -19,13 +20,12 @@ public abstract class AbstractProducer
       this.exporter = exporter;
    }
 
-   static protected String toGtfsId(String neptuneId, String prefix)
+   static protected String toGtfsId(ChouetteId neptuneId, String prefix)
    {
-      String[] tokens = neptuneId.split(":");
-      if (tokens[0].equals(prefix))
-         return tokens[2];
+      if (neptuneId.getCodeSpace().equals(prefix))
+         return neptuneId.getTechnicalId();
       else
-         return tokens[0] + "." + tokens[2];
+         return neptuneId.getCodeSpace() + "." + neptuneId.getTechnicalId();
    }
 
    static protected boolean isEmpty(String s)

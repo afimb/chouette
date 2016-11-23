@@ -5,6 +5,10 @@ import java.io.PrintStream;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.report.AbstractReport;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
@@ -23,7 +27,7 @@ import mobi.chouette.model.VehicleJourney;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ToString
-public class ObjectReference extends AbstractReport {
+public class ObjectReference extends AbstractReport implements Constant{
 
 	public enum TYPE {
 		network("Network"), company("Company"), group_of_line("GroupOfLine"), stop_area("StopArea"), stop_point(
@@ -53,89 +57,125 @@ public class ObjectReference extends AbstractReport {
 
 	private String objectId;
 
-	public ObjectReference(Network object) {
+	public ObjectReference(Context context, Network object) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		this.type = TYPE.network;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getChouetteId().getObjectId();
+			this.objectId = chouetteIdGenerator.toSpecificFormatId(object.getChouetteId(), parameters.getDefaultCodespace(), object);
 
 	}
 
-	public ObjectReference(Company object) {
+	public ObjectReference(Context context, Company object) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		this.type = TYPE.company;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getChouetteId().getObjectId();
+			this.objectId = chouetteIdGenerator.toSpecificFormatId(object.getChouetteId(), parameters.getDefaultCodespace(), object);
 	}
 
-	public ObjectReference(GroupOfLine object) {
+	public ObjectReference(Context context, GroupOfLine object) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		this.type = TYPE.group_of_line;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getChouetteId().getObjectId();
+			this.objectId = chouetteIdGenerator.toSpecificFormatId(object.getChouetteId(), parameters.getDefaultCodespace(), object);
 	}
 
-	public ObjectReference(StopArea object) {
+	public ObjectReference(Context context, StopArea object) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		this.type = TYPE.stop_area;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getChouetteId().getObjectId();
+			this.objectId = chouetteIdGenerator.toSpecificFormatId(object.getChouetteId(), parameters.getDefaultCodespace(), object);
 	}
 
-	public ObjectReference(ConnectionLink object) {
+	public ObjectReference(Context context, ConnectionLink object) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		this.type = TYPE.connection_link;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getChouetteId().getObjectId();
+			this.objectId = chouetteIdGenerator.toSpecificFormatId(object.getChouetteId(), parameters.getDefaultCodespace(), object);
 	}
 
-	public ObjectReference(AccessPoint object) {
+	public ObjectReference(Context context, AccessPoint object) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		this.type = TYPE.access_point;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getChouetteId().getObjectId();
+			this.objectId = chouetteIdGenerator.toSpecificFormatId(object.getChouetteId(), parameters.getDefaultCodespace(), object);
 	}
 
-	public ObjectReference(AccessLink object) {
+	public ObjectReference(Context context, AccessLink object) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		this.type = TYPE.access_link;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getChouetteId().getObjectId();
+			this.objectId = chouetteIdGenerator.toSpecificFormatId(object.getChouetteId(), parameters.getDefaultCodespace(), object);
 	}
 
-	public ObjectReference(Timetable object) {
+	public ObjectReference(Context context, Timetable object) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		this.type = TYPE.time_table;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getChouetteId().getObjectId();
+			this.objectId = chouetteIdGenerator.toSpecificFormatId(object.getChouetteId(), parameters.getDefaultCodespace(), object);
 	}
 
-	public ObjectReference(Line object) {
+	public ObjectReference(Context context, Line object) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		this.type = TYPE.line;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getChouetteId().getObjectId();
+			this.objectId = chouetteIdGenerator.toSpecificFormatId(object.getChouetteId(), parameters.getDefaultCodespace(), object);
 	}
 
-	public ObjectReference(Route object) {
+	public ObjectReference(Context context, Route object) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		this.type = TYPE.route;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getChouetteId().getObjectId();
+			this.objectId = chouetteIdGenerator.toSpecificFormatId(object.getChouetteId(), parameters.getDefaultCodespace(), object);
 	}
 
-	public ObjectReference(JourneyPattern object) {
+	public ObjectReference(Context context, JourneyPattern object) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		this.type = TYPE.journey_pattern;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getChouetteId().getObjectId();
+			this.objectId = chouetteIdGenerator.toSpecificFormatId(object.getChouetteId(), parameters.getDefaultCodespace(), object);
 	}
 
-	public ObjectReference(VehicleJourney object) {
+	public ObjectReference(Context context, VehicleJourney object) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		this.type = TYPE.vehicle_journey;
 		this.id = object.getId();
 		if (id == null)
-			this.objectId = object.getChouetteId().getObjectId();
+			this.objectId = chouetteIdGenerator.toSpecificFormatId(object.getChouetteId(), parameters.getDefaultCodespace(), object);
 	}
 	
 	public ObjectReference(StopPoint object)

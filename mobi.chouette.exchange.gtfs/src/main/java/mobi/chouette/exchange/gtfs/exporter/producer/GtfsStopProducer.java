@@ -45,7 +45,7 @@ public class GtfsStopProducer extends AbstractProducer
 		// stop.setLocationType(GtfsStop.STATION);
 		else
 			return false; // StopPlaces and ITL type not available
-		stop.setStopId(toGtfsId(neptuneObject.getChouetteId().getObjectId(),prefix));
+		stop.setStopId(toGtfsId(neptuneObject.getChouetteId(),prefix));
 		if (neptuneObject.getName() == null)
 		{
 			//         GtfsReportItem item = new GtfsReportItem(
@@ -103,7 +103,7 @@ public class GtfsStopProducer extends AbstractProducer
 			if (neptuneObject.getParent() != null && validParents.contains(neptuneObject.getParent()))
 			{
 				stop.setParentStation(toGtfsId(neptuneObject.getParent()
-						.getChouetteId().getObjectId(),prefix));
+						.getChouetteId(),prefix));
 			}
 		}
 

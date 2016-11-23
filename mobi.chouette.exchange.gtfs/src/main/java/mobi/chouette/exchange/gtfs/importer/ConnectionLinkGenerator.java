@@ -85,8 +85,8 @@ public class ConnectionLinkGenerator extends AbstractGenerator {
 						String reverseId = sourceToken[0] + ":" + ConnectionLink.CONNECTIONLINK_KEY + ":"
 								+ targetToken[2] + "_" + sourceToken[2];
 						
-						ChouetteId chouetteId = new ChouetteId(sourceToken[0], sourceToken[2], false);
-						ChouetteId reverseChouetteId = new ChouetteId(sourceToken[0], targetToken[2], false);
+						ChouetteId chouetteId = new ChouetteId(sourceToken[0], sourceToken[2] + "_" + targetToken[2], false);
+						ChouetteId reverseChouetteId = new ChouetteId(sourceToken[0], targetToken[2] + "_" + sourceToken[2], false);
 
 						if (excludedLinkMap.containsKey(objectId))
 							continue;
@@ -96,8 +96,8 @@ public class ConnectionLinkGenerator extends AbstractGenerator {
 						// km/h
 						Time defaultDuration = getTime((long) durationInMillis);
 
-						if (fixedLinkMap.containsKey(objectId) || fixedLinkMap.containsKey(reverseId)) {
-							ConnectionLink link = fixedLinkMap.get(objectId);
+						if (fixedLinkMap.containsKey(chouetteId) || fixedLinkMap.containsKey(reverseChouetteId)) {
+							ConnectionLink link = fixedLinkMap.get(chouetteId);
 							if (link != null) {
 								if (link.getDefaultDuration() == null)
 									link.setDefaultDuration(defaultDuration);
@@ -106,7 +106,7 @@ public class ConnectionLinkGenerator extends AbstractGenerator {
 								link.setEndOfLink(target);
 								log.info("ConnectionLink " + link.getName() + " updated");
 							}
-							link = fixedLinkMap.get(reverseId);
+							link = fixedLinkMap.get(reverseChouetteId);
 							if (link != null) {
 								if (link.getDefaultDuration() == null)
 									link.setDefaultDuration(defaultDuration);
@@ -133,7 +133,7 @@ public class ConnectionLinkGenerator extends AbstractGenerator {
 									+ "_" + sourceToken[2];
 							ConnectionLink reverseLink = GtfsChouetteIdObjectFactory.getConnectionLink(referential, gciof.toChouetteId(objectId, "default_codespace"));
 							reverseLink.setDefaultDuration(defaultDuration);
-							reverseLink.getChouetteId().setObjectId(objectId);
+							reverseLink.setChouetteId(chouetteId);
 							reverseLink.setCreationTime(Calendar.getInstance().getTime());
 							reverseLink.setStartOfLink(target);
 							reverseLink.setEndOfLink(source);

@@ -35,12 +35,12 @@ public class GtfsAgencyProducer extends AbstractProducer
 
    public boolean save(Company neptuneObject, String prefix, TimeZone timeZone)
    {
-      agency.setAgencyId(toGtfsId(neptuneObject.getChouetteId().getObjectId(),prefix));
+      agency.setAgencyId(toGtfsId(neptuneObject.getChouetteId(),prefix));
 
       String name = neptuneObject.getName();
       if (name.trim().isEmpty())
       {
-         log.error("no name for " + neptuneObject.getChouetteId().getObjectId());
+         log.error("no name for " + neptuneObject.getCodeSpace() +  " " + neptuneObject.getTechnicalId());
 //         GtfsReportItem item = new GtfsReportItem(
 //               GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "Company",
 //               neptuneObject.getObjectId(), "Name");

@@ -53,9 +53,7 @@ public class JourneyPatternDaoTest extends Arquillian {
 			ContextHolder.setContext("chouette_gui"); // set tenant schema
 			RouteSection section = new RouteSection();
 //			section.getChouetteId().setObjectId("Test:" + RouteSection.ROUTE_SECTION_KEY + ":1");
-			ChouetteId chouetteId = new ChouetteId();
-			chouetteId.setCodeSpace("test");
-			chouetteId.setObjectId("1");
+			ChouetteId chouetteId = new ChouetteId("test", "1", false);
 			section.setChouetteId(chouetteId);
 			GeometryFactory factory = new GeometryFactory(new PrecisionModel(10), 4326);
 			Coordinate[] coordinates = new Coordinate[2];
@@ -67,9 +65,7 @@ public class JourneyPatternDaoTest extends Arquillian {
 
 			JourneyPattern jp = new JourneyPattern();
 //			jp.getChouetteId().setObjectId("Test:" + JourneyPattern.JOURNEYPATTERN_KEY + ":1");
-			ChouetteId chouetteId2 = new ChouetteId();
-			chouetteId2.setCodeSpace("test");
-			chouetteId2.setObjectId("1");
+			ChouetteId chouetteId2 = new ChouetteId("test", "1", false);
 			jp.setChouetteId(chouetteId2);
 			jp.getRouteSections().add(section);
 			journeyPatternDao.create(jp);

@@ -10,6 +10,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
@@ -33,6 +34,7 @@ public class NeptuneInitImportCommand implements Command, Constant {
 
 		try {
 			context.put(REFERENTIAL, new Referential());
+			context.put(CHOUETTEID_GENERATOR, new NeptuneChouetteIdGenerator());
 			if (context.get(VALIDATION) != null)
 			   context.put(VALIDATION_DATA, new ValidationData());
 			// prepare entries for shared objects 

@@ -20,6 +20,9 @@ import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.dao.TimebandDAO;
 import mobi.chouette.dao.TimetableDAO;
 import mobi.chouette.dao.VehicleJourneyAtStopDAO;
+import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.ChouetteIdObjectUtil;
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.ChouetteId;
@@ -32,7 +35,6 @@ import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.util.NeptuneUtil;
-import mobi.chouette.exchange.ChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Stateless(name = VehicleJourneyUpdater.BEAN_NAME)
@@ -101,6 +103,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	@EJB(beanName = JourneyFrequencyUpdater.BEAN_NAME)
 	private Updater<JourneyFrequency> journeyFrequencyUpdater;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Context context, VehicleJourney oldValue, VehicleJourney newValue) throws Exception {
 
@@ -123,7 +126,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 				
 		if (oldValue.isDetached()) {
 			// object does not exist in database
-			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
+			oldValue.setChouetteId(newValue.getChouetteId());
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 			oldValue.setCreationTime(newValue.getCreationTime());
 			oldValue.setCreatorId(newValue.getCreatorId());
@@ -140,8 +143,8 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			oldValue.setDetached(false);
 		} else {
 			twoDatabaseVehicleJourneyTwoTest(validationReporter, context, oldValue.getCompany(), newValue.getCompany(), data);
-			if (newValue.getChouetteId().getObjectId() != null && !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
-				oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
+			if (newValue.getChouetteId() != null && !newValue.getChouetteId().equals(oldValue.getChouetteId())) {
+				oldValue.setChouetteId(newValue.getChouetteId());
 			}
 			if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
 				oldValue.setObjectVersion(newValue.getObjectVersion());
@@ -196,18 +199,18 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			oldValue.setCompany(null);
 		} else {
 			String codeSpace = newValue.getCompany().getChouetteId().getCodeSpace();
-			String objectId = newValue.getCompany().getChouetteId().getObjectId();
+			String technicalId = newValue.getCompany().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getCompany().getChouetteId();
-			Company company = cache.getCompanies().get(objectId);
+			Company company = cache.getCompanies().get(chouetteId);
 			if (company == null) {
-				company = companyDAO.findByChouetteId(codeSpace, objectId);
+				company = companyDAO.findByChouetteId(codeSpace, technicalId);
 				if (company != null) {
 					cache.getCompanies().put(chouetteId, company);
 				}
 			}
 
 			if (company == null) {
-				company = ChouetteIdObjectFactory.getCompany(cache, chouetteId);
+				company = ChouetteIdObjectUtil.getCompany(cache, chouetteId);
 			}
 			oldValue.setCompany(company);
 			companyUpdater.update(context, oldValue.getCompany(), newValue.getCompany());
@@ -216,11 +219,11 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		// Route
 		if (oldValue.getRoute() == null || !oldValue.getRoute().equals(newValue.getRoute())) {
 			String codeSpace = newValue.getRoute().getChouetteId().getCodeSpace();
-			String objectId = newValue.getRoute().getChouetteId().getObjectId();
+			String technicalId = newValue.getRoute().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getRoute().getChouetteId();
-			Route route = cache.getRoutes().get(objectId);
+			Route route = cache.getRoutes().get(technicalId);
 			if (route == null) {
-				route = routeDAO.findByChouetteId(codeSpace, objectId);
+				route = routeDAO.findByChouetteId(codeSpace, technicalId);
 				if (route != null) {
 					cache.getRoutes().put(chouetteId, route);
 				}
@@ -238,30 +241,30 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 					newValue.getVehicleJourneyAtStops(), oldValue.getVehicleJourneyAtStops(),
 					VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
 
-			final Collection<String> objectIds = new ArrayList<String>();
+			final Collection<ChouetteId> chouetteIds = new ArrayList<ChouetteId>();
 			for (VehicleJourneyAtStop vehicleJourneyAtStop : addedVehicleJourneyAtStop) {
-				objectIds.add(vehicleJourneyAtStop.getStopPoint().getChouetteId().getObjectId());
+				chouetteIds.add(vehicleJourneyAtStop.getStopPoint().getChouetteId());
 			}
-			Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+			Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 			List<StopPoint> stopPoints = new ArrayList<StopPoint>();
 			for (VehicleJourneyAtStop item : addedVehicleJourneyAtStop) {
-				VehicleJourneyAtStop vehicleJourneyAtStop = ChouetteIdObjectFactory.getVehicleJourneyAtStop();
+				VehicleJourneyAtStop vehicleJourneyAtStop = ChouetteIdObjectUtil.getVehicleJourneyAtStop();
 
-				StopPoint stopPoint = cache.getStopPoints().get(item.getStopPoint().getChouetteId().getObjectId());
+				StopPoint stopPoint = cache.getStopPoints().get(item.getStopPoint().getChouetteId());
 				if (stopPoint == null) {
 					if (stopPoints == null) {
 						String codeSpace = item.getVehicleJourney().getChouetteId().getCodeSpace();
 						
-						for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+						for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
 						{
-							stopPoints.addAll(stopPointDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+							stopPoints.addAll((List<StopPoint>) stopPointDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 						}
 						
 						for (StopPoint object : stopPoints) {
 							cache.getStopPoints().put(object.getChouetteId(), object);
 						}
 					}
-					stopPoint = cache.getStopPoints().get(item.getStopPoint().getChouetteId().getObjectId());
+					stopPoint = cache.getStopPoints().get(item.getStopPoint().getChouetteId());
 				}
 
 				if (stopPoint != null) {
@@ -293,20 +296,20 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		List<Timetable> timetables = null;
 		for (Timetable item : addedTimetable) {
 
-			Timetable timetable = cache.getTimetables().get(item.getChouetteId().getObjectId());
+			Timetable timetable = cache.getTimetables().get(item.getChouetteId());
 			if (timetable == null) {
 				if (timetables == null) {
 					String codeSpace = item.getChouetteId().getCodeSpace();
-					timetables = timetableDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedTimetable));
+					timetables = (List<Timetable>) timetableDAO.findByChouetteId(codeSpace, UpdaterUtils.getChouetteIds(addedTimetable));
 					for (Timetable object : timetables) {
 						cache.getTimetables().put(object.getChouetteId(), object);
 					}
 				}
-				timetable = cache.getTimetables().get(item.getChouetteId().getObjectId());
+				timetable = cache.getTimetables().get(item.getChouetteId());
 			}
 
 			if (timetable == null) {
-				timetable = ChouetteIdObjectFactory.getTimetable(cache, item.getChouetteId());
+				timetable = ChouetteIdObjectUtil.getTimetable(cache, item.getChouetteId());
 			}
 			timetable.addVehicleJourney(oldValue);
 		}
@@ -327,25 +330,25 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		/* if (!optimized) */{
 			Collection<JourneyFrequency> addedJourneyFrequency = CollectionUtil.substract(
 					newValue.getJourneyFrequencies(), oldValue.getJourneyFrequencies(), JOURNEY_FREQUENCY_COMPARATOR);
-			final Collection<String> objectIds = new ArrayList<String>();
+			final Collection<ChouetteId> chouetteIds = new ArrayList<ChouetteId>();
 			for (JourneyFrequency journeyFrequency : addedJourneyFrequency) {
-				objectIds.add(journeyFrequency.getTimeband().getChouetteId().getObjectId());
+				chouetteIds.add(journeyFrequency.getTimeband().getChouetteId());
 			}
-			Map<String,List<String>> objectIdsByCodeSpace = UpdaterUtils.getObjectIdsByCodeSpace(objectIds);
+			Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 			List<Timeband> timebands = new ArrayList<Timeband>();
 			for (JourneyFrequency item : addedJourneyFrequency) {
 				JourneyFrequency journeyFrequency = new JourneyFrequency();
-				Timeband timeband = cache.getTimebands().get(item.getTimeband().getChouetteId().getObjectId());
+				Timeband timeband = cache.getTimebands().get(item.getTimeband().getChouetteId());
 				if (timeband == null) {
-						for (Entry<String, List<String>> entry : objectIdsByCodeSpace.entrySet())
+						for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
 						{
-							timebands.addAll(timebandDAO.findByChouetteId(entry.getKey(), entry.getValue()));
+							timebands.addAll((List<Timeband>) timebandDAO.findByChouetteId(entry.getKey(), entry.getValue()));
 						}
 						
 						for (Timeband object : timebands) {
 							cache.getTimebands().put(object.getChouetteId(), object);
 						}
-					timeband = cache.getTimebands().get(item.getTimeband().getChouetteId().getObjectId());
+					timeband = cache.getTimebands().get(item.getTimeband().getChouetteId());
 				}
 				if (timeband != null) {
 					journeyFrequency.setTimeband(timeband);
@@ -380,8 +383,11 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	 * @param newCompany
 	 */
 	private void twoDatabaseVehicleJourneyTwoTest(ValidationReporter validationReporter, Context context, Company oldCompany,  Company newCompany, ValidationData data) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		if(!NeptuneUtil.sameValue(oldCompany, newCompany))
-			validationReporter.addCheckPointReportError(context, DATABASE_VEHICLE_JOURNEY_2, data.getDataLocations().get(newCompany.getChouetteId().getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_VEHICLE_JOURNEY_2, data.getDataLocations().get(chouetteIdGenerator.toSpecificFormatId(newCompany.getChouetteId(), parameters.getDefaultCodespace(), newCompany)));
 		else
 			validationReporter.reportSuccess(context, DATABASE_VEHICLE_JOURNEY_2);
 	}

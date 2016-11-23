@@ -32,7 +32,7 @@ import org.hibernate.annotations.NaturalId;
  */
 @SuppressWarnings("serial")
 @MappedSuperclass
-@EqualsAndHashCode(of = { "codeSpace", "objectId" }, callSuper = false)
+@EqualsAndHashCode(of = { "codeSpace", "technicalId" }, callSuper = false)
 @ToString(callSuper = true)
 public abstract class NeptuneIdentifiedObject extends NeptuneObject implements
 		ObjectIdTypes {
@@ -43,12 +43,12 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject implements
 	 * 	Id containing three fields from raw object id
 	 */
 	public ChouetteId getChouetteId() {
-		return new ChouetteId(this.codeSpace, this.objectId, this.shared);
+		return new ChouetteId(this.codeSpace, this.technicalId, this.shared);
 	}
 	
 	public void setChouetteId(ChouetteId chouetteId) {
 		this.codeSpace = chouetteId.getCodeSpace();
-		this.objectId = chouetteId.getObjectId();
+		this.technicalId = chouetteId.getTechnicalId();
 		this.shared = chouetteId.isShared();
 	}
 	
@@ -64,10 +64,10 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject implements
 	@NaturalId
 	@Getter
 	@Column(name = "objectid", nullable = false)
-	private String objectId;
+	private String technicalId;
 
-	public void setObjectId(String value) {
-		objectId = StringUtils.abbreviate(value, 255);
+	public void setTechnicalId(String value) {
+		technicalId = StringUtils.abbreviate(value, 255);
 	}
 	
 	@Getter

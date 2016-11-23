@@ -61,5 +61,7 @@ public interface Constant {
 	
 	public static final String BUFFER = "buffer";
 	
+	public static final String CHOUETTEID_GENERATOR = "chouetteid_generator";
+	
 
 }

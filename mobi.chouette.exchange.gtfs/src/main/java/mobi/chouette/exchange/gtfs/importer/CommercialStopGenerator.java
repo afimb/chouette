@@ -14,7 +14,9 @@ import mobi.chouette.common.Context;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
 import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectFactory;
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
@@ -30,7 +32,9 @@ public class CommercialStopGenerator extends AbstractGenerator {
 	public void createCommercialStopPoints(Context context) {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
-
+		GtfsChouetteIdGenerator gcid = (GtfsChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		GtfsImportParameters parameters = (GtfsImportParameters) context.get(PARAMETERS_FILE);
+		
 		List<StopArea> boardingPositions = new ArrayList<StopArea>();
 		for (StopArea stopArea : referential.getSharedStopAreas().values()) {
 			if (stopArea.getAreaType().equals(ChouetteAreaEnum.BoardingPosition)
@@ -62,7 +66,7 @@ public class CommercialStopGenerator extends AbstractGenerator {
 
 			String mergeKey = stop.getName();
 			if (stop.getParent() != null) {
-				mergeKey = stop.getParent().getChouetteId().getObjectId();
+				mergeKey = gcid.toSpecificFormatId(stop.getParent().getChouetteId(), parameters.getDefaultCodespace(), stop.getParent());
 			} else {
 				for (String key : keys) {
 					if (mergeKey.startsWith(key)) {
@@ -142,7 +146,7 @@ public class CommercialStopGenerator extends AbstractGenerator {
 			objectId = token[0] + ":" + token[1] + ":COM_" + token[2];
 		StopArea area = GtfsChouetteIdObjectFactory.getStopArea(referential, gciof.toChouetteId(objectId, "default_codespace"));
 		area.setName(stop.getName());
-		area.getChouetteId().setObjectId(objectId);
+		area.setChouetteId(objectId);
 		area.setObjectVersion(stop.getObjectVersion());
 		area.setCreationTime(now.getTime());
 		area.setAreaType(ChouetteAreaEnum.CommercialStopPoint);

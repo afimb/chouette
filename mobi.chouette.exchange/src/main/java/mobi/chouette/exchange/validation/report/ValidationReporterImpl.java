@@ -78,7 +78,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		Location detailLocation = null;
 		if (location != null)
-			detailLocation = new Location(location);
+			detailLocation = new Location(context, location);
 
 		CheckPointReport checkPoint = validationReport.findCheckPointReportByName(checkPointName);
 
@@ -114,7 +114,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		Location detailLocation = null;
 		if (location != null)
-			detailLocation = new Location(location);
+			detailLocation = new Location(context, location);
 
 		CheckPointReport checkPoint = validationReport.findCheckPointReportByName(checkPointName);
 
@@ -131,7 +131,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 
 		if (targetLocations.length > 0) {
 			for (DataLocation dataLocation : targetLocations) {
-				Location targetLocation = new Location(dataLocation);
+				Location targetLocation = new Location(context, dataLocation);
 				newCheckPointError.getTargets().add(targetLocation);
 			}
 		}
@@ -196,7 +196,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 
 		for (DataLocation location : locations) {
-			Location detailLocation = new Location(location);
+			Location detailLocation = new Location(context, location);
 			CheckPointReport checkPoint = validationReport.findCheckPointReportByName(checkPointName);
 
 			if (checkPoint == null)
@@ -295,7 +295,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		CheckPointErrorReport checkPointError = validationReport.findCheckPointReportErrorByKey(errorKey);
 		if (checkPointError != null) {
-			Location location = new Location(targetLocation);
+			Location location = new Location(context, targetLocation);
 			checkPointError.getTargets().add(location);
 		}
 	}

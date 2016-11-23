@@ -81,13 +81,13 @@ public class ValidationDataCollector {
 
 	private void collectStopAreas(ValidationData collection, StopArea stopArea, Referential cache) {
 		// add stoparea line collection
-		Set<String> lineIds = collection.getLinesOfStopAreas().get(stopArea.getChouetteId().getObjectId());
+		Set<ChouetteId> lineIds = collection.getLinesOfStopAreas().get(stopArea.getChouetteId());
 		if (lineIds == null) {
 			lineIds = new HashSet<>();
-			collection.getLinesOfStopAreas().put(stopArea.getChouetteId().getObjectId(), lineIds);
+			collection.getLinesOfStopAreas().put(stopArea.getChouetteId(), lineIds);
 		}
-		lineIds.add(collection.getCurrentLine().getChouetteId().getObjectId());
-		if (collection.getStopAreaIds().contains(stopArea.getChouetteId().getObjectId()))
+		lineIds.add(collection.getCurrentLine().getChouetteId());
+		if (collection.getStopAreaIds().contains(stopArea.getChouetteId()))
 			return;
 		updateId(stopArea, cache.getStopAreas());
 		collection.getStopAreaIds().add(stopArea.getChouetteId());
@@ -140,7 +140,7 @@ public class ValidationDataCollector {
 		Collection<StopPoint> data = route.getStopPoints();
 		for (StopPoint object : data) {
 			if (object == null) {
-				log.error("non continous sequence order in route " + route.getChouetteId().getObjectId() + " stopPoints");
+				log.error("non continous sequence order in route " + route.getCodeSpace() + " " + route.getChouetteId() + " stopPoints");
 			} else {
 				updateId(object, cache.getStopPoints());
 				collection.getStopPoints().add(object);
@@ -192,7 +192,7 @@ public class ValidationDataCollector {
 		// clone line to prepare tests on shared lines
 		Line target = new Line();
 		target.setId(source.getId());
-		target.getChouetteId().setObjectId(source.getChouetteId().getObjectId());
+		target.setChouetteId(source.getChouetteId());
 		target.setObjectVersion(source.getObjectVersion());
 		target.setName(source.getName());
 		target.setNumber(source.getNumber());
@@ -218,7 +218,7 @@ public class ValidationDataCollector {
 			return null;
 		Network target = new Network();
 		target.setId(source.getId());
-		target.getChouetteId().setObjectId(source.getChouetteId().getObjectId());
+		target.setChouetteId(source.getChouetteId());
 		target.setObjectVersion(source.getObjectVersion());
 		target.setName(source.getName());
 		return target;

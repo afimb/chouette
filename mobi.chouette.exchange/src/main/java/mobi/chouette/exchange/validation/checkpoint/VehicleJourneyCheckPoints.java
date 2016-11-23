@@ -181,7 +181,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 	private void check3VehicleJourney1(Context context, VehicleJourney vj, ValidationParameters parameters) {
 		// 3-VehicleJourney-1 : check if time progress correctly on each stop
 		if (isEmpty(vj.getVehicleJourneyAtStops())) {
-			log.error("vehicleJourney " + vj.getChouetteId().getObjectId() + " has no vehicleJourneyAtStop");
+			log.error("vehicleJourney " +  vj.getChouetteId().getCodeSpace() + " " + vj.getChouetteId().getTechnicalId() + " has no vehicleJourneyAtStop");
 			return;
 		}
 //		Monitor monitor = MonitorFactory.start("check3VehicleJourney1");
@@ -219,12 +219,12 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 	
 	private double getDistance(StopArea stop1, StopArea stop2)
 	{
-		String key = stop1.getChouetteId().getObjectId()+"#"+stop2.getChouetteId().getObjectId();
+		String key = stop1.getChouetteId()+"#"+stop2.getChouetteId();
 		if (distances.containsKey(key))
 		{
 			return distances.get(key).doubleValue();
 		}
-		key = stop2.getChouetteId().getObjectId()+"#"+stop1.getChouetteId().getObjectId();
+		key = stop2.getChouetteId()+"#"+stop1.getChouetteId();
 		if (distances.containsKey(key))
 		{
 			return distances.get(key).doubleValue();
@@ -313,7 +313,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		prepareCheckPoint(context, VEHICLE_JOURNEY_3);
 		// compute stats
 		for (VehicleJourney vehicleJourney : beans) {
-			String key = vehicleJourney.getJourneyPattern().getChouetteId().getObjectId()+"#"+getTransportMode(vehicleJourney);
+			String key = vehicleJourney.getJourneyPattern().getChouetteId()+"#"+getTransportMode(vehicleJourney);
 			List<Long> diffTimes = diffTimeByJps.get(key);
 			if (diffTimes == null)
 			{
@@ -352,7 +352,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 			TransportModeNameEnum transportMode = getTransportMode(vehicleJourney);
 			long maxDuration = getModeParameters(parameters, transportMode.toString(), log)
 					.getInterStopDurationVariationMax();
-			String key = vehicleJourney.getJourneyPattern().getChouetteId().getObjectId()+"#"+transportMode;
+			String key = vehicleJourney.getJourneyPattern().getChouetteId()+"#"+transportMode;
 			List<Long> diffTimes = diffTimeByJps.get(key);
 			List<VehicleJourneyAtStop> vjas = vehicleJourney.getVehicleJourneyAtStops();
 			for (int j = 1; j < vjas.size(); j++) {
@@ -445,7 +445,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		// 3-VehicleJourney-5 : check if time progress correctly on each stop
 		// including offset
 		if (isEmpty(vj.getVehicleJourneyAtStops())) {
-			log.error("vehicleJourney " + vj.getChouetteId().getObjectId() + " has no vehicleJourneyAtStop");
+			log.error("vehicleJourney " + vj.getChouetteId() + " has no vehicleJourneyAtStop");
 			return;
 		}
 
@@ -618,7 +618,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 					// heure debut vjas non inclus dans jfs
 					if(vjas.getDepartureTime().getTime() < jf.getFirstDepartureTime().getTime() ||  vjas.getDepartureTime().getTime() > jf.getLastDepartureTime().getTime()) {
 						ok = false;
-						log.info("current vj : " + currentVj.getChouetteId().getObjectId() + " vj : " + vj.getChouetteId().getObjectId());
+						log.info("current vj : " + currentVj.getChouetteId() + " vj : " + vj.getChouetteId());
 					} 
 					if(!ok) {
 						DataLocation location = buildLocation(context, currentVj);

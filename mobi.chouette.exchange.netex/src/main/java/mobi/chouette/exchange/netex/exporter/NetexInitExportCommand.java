@@ -18,6 +18,7 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.netex.Constant;
+import mobi.chouette.exchange.netex.NetexChouetteIdGenerator;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -39,6 +40,7 @@ public class NetexInitExportCommand implements Command, Constant {
 			jobData.setOutputFilename("export_" + jobData.getType() + "_" + jobData.getId() + ".zip");
 
 			context.put(REFERENTIAL, new Referential());
+			context.put(CHOUETTEID_GENERATOR, new NetexChouetteIdGenerator());
 			Metadata metadata = new Metadata(); // if not asked, will be used as
 												// dummy
 	        metadata.setDate(Calendar.getInstance());

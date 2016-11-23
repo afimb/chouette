@@ -10,6 +10,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netex.Constant;
+import mobi.chouette.exchange.netex.NetexChouetteIdGenerator;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.model.util.Referential;
 
@@ -29,6 +30,7 @@ public class NetexInitImportCommand implements Command, Constant {
 
 		try {
 			context.put(REFERENTIAL, new Referential());
+			context.put(CHOUETTEID_GENERATOR, new NetexChouetteIdGenerator());
 			if (context.get(VALIDATION) != null)
 			   context.put(VALIDATION_DATA, new ValidationData());
 			result = SUCCESS;

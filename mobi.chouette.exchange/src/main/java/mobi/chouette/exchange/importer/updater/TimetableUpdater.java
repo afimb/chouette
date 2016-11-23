@@ -64,9 +64,9 @@ public class TimetableUpdater implements Updater<Timetable> {
 			newValue.removeDayType(DayTypeEnum.WeekEnd);
 		}
 
-		if (newValue.getChouetteId().getObjectId() != null
-				&& !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
-			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
+		if (newValue.getTechnicalId() != null
+				&& !newValue.getChouetteId().equals(oldValue.getChouetteId())) {
+			oldValue.setChouetteId(newValue.getChouetteId());
 		}
 		if (newValue.getObjectVersion() != null
 				&& !newValue.getObjectVersion().equals(

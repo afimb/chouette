@@ -12,7 +12,6 @@ import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.NamingUtil;
-import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -49,7 +48,7 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 		}
 
 		if (oldValue.isDetached()) {
-			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
+			oldValue.setChouetteId(newValue.getChouetteId());
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 			oldValue.setCreationTime(newValue.getCreationTime());
 			oldValue.setCreatorId(newValue.getCreatorId());
@@ -67,8 +66,8 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 			oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
 			oldValue.setDetached(false);
 		} else {
-			if (newValue.getChouetteId().getObjectId() != null && !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
-				oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
+			if (newValue.getChouetteId().getTechnicalId() != null && !(newValue.getChouetteId().getTechnicalId().equals(oldValue.getChouetteId().getTechnicalId()))) {
+				oldValue.setChouetteId(newValue.getChouetteId());
 			}
 			if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
 				oldValue.setObjectVersion(newValue.getObjectVersion());
@@ -127,7 +126,7 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 		
 		if (newValue.getStartOfLink() != null) {
 			String codeSpace = newValue.getStartOfLink().getChouetteId().getCodeSpace();
-			String objectId = newValue.getStartOfLink().getChouetteId().getObjectId();
+			String objectId = newValue.getStartOfLink().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getStartOfLink().getChouetteId();
 			StopArea startOfLink = cache.getStopAreas().get(objectId);
 			if (startOfLink == null) {
@@ -149,7 +148,7 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 
 		if (newValue.getEndOfLink() != null) {
 			String codeSpace = newValue.getEndOfLink().getChouetteId().getCodeSpace();
-			String objectId = newValue.getEndOfLink().getChouetteId().getObjectId();
+			String objectId = newValue.getEndOfLink().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getEndOfLink().getChouetteId();
 			StopArea endOfLink = cache.getStopAreas().get(objectId);
 			if (endOfLink == null) {

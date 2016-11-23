@@ -8,7 +8,7 @@ import mobi.chouette.dao.TimebandDAO;
 import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.Timeband;
-import mobi.chouette.exchange.ChouetteIdObjectFactory;
+import mobi.chouette.exchange.ChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 @Stateless(name = JourneyFrequencyUpdater.BEAN_NAME)
@@ -44,7 +44,7 @@ public class JourneyFrequencyUpdater implements Updater<JourneyFrequency> {
 			oldValue.setTimeband(null);
 		}  else {
 			String codeSpace = newValue.getTimeband().getChouetteId().getCodeSpace();
-			String objectId = newValue.getTimeband().getChouetteId().getObjectId();
+			String objectId = newValue.getTimeband().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getTimeband().getChouetteId();
 			Timeband timeband = cache.getTimebands().get(objectId);
 			if (timeband == null) {
@@ -54,7 +54,7 @@ public class JourneyFrequencyUpdater implements Updater<JourneyFrequency> {
 				}
 			}
 			if (timeband == null) {
-				timeband = ChouetteIdObjectFactory.getTimeband(cache, chouetteId);
+				timeband = ChouetteIdObjectUtil.getTimeband(cache, chouetteId);
 			}
 			oldValue.setTimeband(timeband);
 			timebandUpdater.update(context,  oldValue.getTimeband(), newValue.getTimeband());

@@ -12,15 +12,16 @@ import mobi.chouette.common.Pair;
 import mobi.chouette.dao.JourneyPatternDAO;
 import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.dao.StopPointDAO;
+import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.ChouetteIdObjectUtil;
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
-import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.NeptuneUtil;
-import mobi.chouette.exchange.ChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Stateless(name = RouteUpdater.BEAN_NAME)
@@ -43,6 +44,7 @@ public class RouteUpdater implements Updater<Route> {
 	@EJB(beanName = JourneyPatternUpdater.BEAN_NAME)
 	private Updater<JourneyPattern> journeyPatternUpdater;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Context context, Route oldValue, Route newValue) throws Exception {
 
@@ -62,7 +64,7 @@ public class RouteUpdater implements Updater<Route> {
 				
 		if (oldValue.isDetached()) {
 			// object does not exist in database
-			oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
+			oldValue.setChouetteId(newValue.getChouetteId());
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 			oldValue.setCreationTime(newValue.getCreationTime());
 			oldValue.setCreatorId(newValue.getCreatorId());
@@ -75,8 +77,8 @@ public class RouteUpdater implements Updater<Route> {
 			oldValue.setDetached(false);
 		} else {
 
-			if (newValue.getChouetteId().getObjectId() != null && !newValue.getChouetteId().getObjectId().equals(oldValue.getChouetteId().getObjectId())) {
-				oldValue.getChouetteId().setObjectId(newValue.getChouetteId().getObjectId());
+			if (newValue.getChouetteId().getTechnicalId() != null && !newValue.getChouetteId().getTechnicalId().equals(oldValue.getChouetteId().getTechnicalId())) {
+				oldValue.setChouetteId(newValue.getChouetteId());
 			}
 			if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
 				oldValue.setObjectVersion(newValue.getObjectVersion());
@@ -110,11 +112,11 @@ public class RouteUpdater implements Updater<Route> {
 		// OppositeRoute
 		if (newValue.getOppositeRoute() != null) {
 			String codeSpace = newValue.getOppositeRoute().getChouetteId().getCodeSpace();
-			String objectId = newValue.getOppositeRoute().getChouetteId().getObjectId();
+			String technicalId = newValue.getOppositeRoute().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getOppositeRoute().getChouetteId();
-			Route opposite = cache.getRoutes().get(objectId);
+			Route opposite = cache.getRoutes().get(technicalId);
 			if (opposite == null) {
-				opposite = routeDAO.findByChouetteId(codeSpace, objectId);
+				opposite = routeDAO.findByChouetteId(codeSpace, technicalId);
 				if (opposite != null) {
 					cache.getRoutes().put(chouetteId, opposite);
 				}
@@ -131,21 +133,21 @@ public class RouteUpdater implements Updater<Route> {
 		List<StopPoint> stopPoints = null;
 		for (StopPoint item : addedStopPoint) {
 
-			StopPoint stopPoint = cache.getStopPoints().get(item.getChouetteId().getObjectId());
+			StopPoint stopPoint = cache.getStopPoints().get(item.getChouetteId());
 			if (stopPoint == null) {
 				if (stopPoints == null) {
 					String codeSpace = item.getChouetteId().getCodeSpace();
-					stopPoints = stopPointDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedStopPoint));
+					stopPoints = (List<StopPoint>) stopPointDAO.findByChouetteId(codeSpace, UpdaterUtils.getChouetteIds(addedStopPoint));
 					for (StopPoint object : stopPoints) {
 						cache.getStopPoints().put(object.getChouetteId(), object);
 					}
 				}
-				stopPoint = cache.getStopPoints().get(item.getChouetteId().getObjectId());
+				stopPoint = cache.getStopPoints().get(item.getChouetteId());
 			}
 			
 
 			if (stopPoint == null) {
-				stopPoint = ChouetteIdObjectFactory.getStopPoint(cache, item.getChouetteId());
+				stopPoint = ChouetteIdObjectUtil.getStopPoint(cache, item.getChouetteId());
 			}
 			// If new stop point doesn't belong to route, we add temporarly it to the route and check if old stopPoint has same route as new stopPoint
 			if(stopPoint.getRoute() != null) {
@@ -175,20 +177,20 @@ public class RouteUpdater implements Updater<Route> {
 		List<JourneyPattern> journeyPatterns = null;
 		for (JourneyPattern item : addedJourneyPattern) {
 
-			JourneyPattern journeyPattern = cache.getJourneyPatterns().get(item.getChouetteId().getObjectId());
+			JourneyPattern journeyPattern = cache.getJourneyPatterns().get(item.getChouetteId());
 			if (journeyPattern == null) {
 				if (journeyPatterns == null) {
 					String codeSpace = item.getChouetteId().getCodeSpace();
-					journeyPatterns = journeyPatternDAO.findByChouetteId(codeSpace, UpdaterUtils.getObjectIds(addedJourneyPattern));
+					journeyPatterns = (List<JourneyPattern>) journeyPatternDAO.findByChouetteId(codeSpace, UpdaterUtils.getChouetteIds(addedJourneyPattern));
 					for (JourneyPattern object : journeyPatterns) {
 						cache.getJourneyPatterns().put(object.getChouetteId(), object);
 					}
 				}
-				journeyPattern = cache.getJourneyPatterns().get(item.getChouetteId().getObjectId());
+				journeyPattern = cache.getJourneyPatterns().get(item.getChouetteId());
 			}
 
 			if (journeyPattern == null) {
-				journeyPattern = ChouetteIdObjectFactory.getJourneyPattern(cache, item.getChouetteId());
+				journeyPattern = ChouetteIdObjectUtil.getJourneyPattern(cache, item.getChouetteId());
 			}
 			if(journeyPattern.getRoute() != null) {
 				twoDatabaseJourneyPatternOneTest(validationReporter, context, journeyPattern, item, data);
@@ -215,8 +217,11 @@ public class RouteUpdater implements Updater<Route> {
 	 * @param newRouteSection
 	 */
 	private void twoDatabaseJourneyPatternOneTest(ValidationReporter validationReporter, Context context, JourneyPattern oldValue, JourneyPattern newValue, ValidationData data) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		if(!NeptuneUtil.sameValue(oldValue.getRoute(), newValue.getRoute()))
-			validationReporter.addCheckPointReportError(context, DATABASE_JOURNEY_PATTERN_1, data.getDataLocations().get(newValue.getChouetteId().getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_JOURNEY_PATTERN_1, data.getDataLocations().get(chouetteIdGenerator.toSpecificFormatId(newValue.getChouetteId(), parameters.getDefaultCodespace(), newValue)));
 		else
 			validationReporter.reportSuccess(context, DATABASE_JOURNEY_PATTERN_1);
 	}
@@ -229,8 +234,11 @@ public class RouteUpdater implements Updater<Route> {
 	 * @param newSp
 	 */
 	private void twoDatabaseStopPointOneTest(ValidationReporter validationReporter, Context context, StopPoint oldSp, StopPoint newSp, ValidationData data) {
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		
 		if(!NeptuneUtil.sameValue(oldSp.getRoute(), newSp.getRoute()))
-			validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_1, data.getDataLocations().get(newSp.getChouetteId().getObjectId()));
+			validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_1, data.getDataLocations().get(chouetteIdGenerator.toSpecificFormatId(newSp.getChouetteId(), parameters.getDefaultCodespace(), newSp)));
 		else
 			validationReporter.reportSuccess(context, DATABASE_STOP_POINT_1);
 	}
