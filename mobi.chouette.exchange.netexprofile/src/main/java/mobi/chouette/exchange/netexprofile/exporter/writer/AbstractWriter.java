@@ -1,8 +1,8 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
-import java.util.Collection;
-
 import org.apache.commons.lang.StringEscapeUtils;
+
+import java.util.Collection;
 
 public class AbstractWriter {
 

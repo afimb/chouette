@@ -46,6 +46,10 @@ public class NetexReferential implements Serializable {
 
     @Getter
     @Setter
+    private Map<String, StopPlace> stopPlaces = new HashMap<>();
+
+    @Getter
+    @Setter
     private Map<String, Organisation> organisations = new HashMap<>();
 
     @Getter
@@ -99,6 +103,7 @@ public class NetexReferential implements Serializable {
         timetableFrames.clear();
         authorities.clear();
         operators.clear();
+        stopPlaces.clear();
         organisations.clear();
         dayTypes.clear();
         networks.clear();

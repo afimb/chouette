@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <PublicationDelivery xmlns="http://www.netex.org.uk/netex" xmlns:ns2="http://www.opengis.net/gml/3.2" xmlns:ns3="http://www.siri.org.uk/siri" version="1.0">
-    <PublicationTimestamp>2016-11-11T12:45:04.679Z</PublicationTimestamp>
-    <ParticipantRef>NSR</ParticipantRef>
-    <Description>Flight SK378 : Oslo-Trondheim</Description>
+    <PublicationTimestamp>2016-11-21T14:09:25.396Z</PublicationTimestamp>
+    <ParticipantRef>Avinor</ParticipantRef>
+    <Description>Flight DY280 : Oslo-Kristiansand</Description>
     <dataObjects>
-        <CompositeFrame created="2016-11-11T12:45:04.679Z" version="1" id="AVI:CompositeFrame:SK378">
+        <CompositeFrame created="2016-11-21T14:09:25.396Z" version="1" id="AVI:CompositeFrame:DY280">
             <codespaces>
                 <Codespace id="avinor">
                     <Xmlns>AVI</Xmlns>
@@ -16,7 +16,6 @@
                 </Codespace>
             </codespaces>
             <FrameDefaults>
-                <DefaultCodespaceRef ref="avinor"/>
                 <DefaultLocale>
                     <TimeZone>UTC</TimeZone>
                     <DefaultLanguage>no</DefaultLanguage>
@@ -25,7 +24,7 @@
             <frames>
                 <ResourceFrame version="any" id="AVI:ResourceFrame:1">
                     <organisations>
-                        <Authority version="any" id="AVI:Company:1">
+                        <Authority version="any" id="AVI:Authority:Avinor">
                             <CompanyNumber>985198292</CompanyNumber>
                             <Name>Avinor</Name>
                             <LegalName>AVINOR AS</LegalName>
@@ -35,13 +34,13 @@
                             </ContactDetails>
                             <OrganisationType>authority</OrganisationType>
                         </Authority>
-                        <Operator version="any" id="SAS:Company:2">
-                            <CompanyNumber>811176702</CompanyNumber>
-                            <Name>SAS</Name>
-                            <LegalName>SAS NORGE AS</LegalName>
+                        <Operator version="any" id="AVI:Operator:DY">
+                            <CompanyNumber>912084949</CompanyNumber>
+                            <Name>Norwegian</Name>
+                            <LegalName>NORWEGIAN AIR NORWAY AS</LegalName>
                             <ContactDetails>
-                                <Phone>0047 648 16 050</Phone>
-                                <Url>http://www.sas.no/</Url>
+                                <Phone>0047 815 21 815</Phone>
+                                <Url>http://www.norwegian.no/</Url>
                             </ContactDetails>
                             <OrganisationType>operator</OrganisationType>
                         </Operator>
@@ -49,100 +48,104 @@
                 </ResourceFrame>
                 <SiteFrame version="any" id="AVI:SiteFrame:1">
                     <stopPlaces>
-                        <StopPlace version="1" id="NSR:StopPlace:03011521">
-                            <Name>Oslo</Name>
+                        <StopPlace version="1" id="AVI:StopPlace:OSL">
+                            <Name>Oslo Lufthavn</Name>
                             <ShortName>OSL</ShortName>
-                            <TransportMode>air</TransportMode>
+                            <Centroid>
+                                <Location srsName="WGS84">
+                                    <Longitude>11.099552</Longitude>
+                                    <Latitude>60.202586</Latitude>
+                                </Location>
+                            </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
                         </StopPlace>
-                        <StopPlace version="1" id="NSR:StopPlace:03011522">
-                            <Name>Trondheim</Name>
-                            <ShortName>TRD</ShortName>
-                            <TransportMode>air</TransportMode>
+                        <StopPlace version="1" id="AVI:StopPlace:KRS">
+                            <Name>Kristiansand Lufthavn</Name>
+                            <ShortName>KRS</ShortName>
+                            <Centroid>
+                                <Location srsName="WGS84">
+                                    <Longitude>8.07991</Longitude>
+                                    <Latitude>58.20733</Latitude>
+                                </Location>
+                            </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
                         </StopPlace>
                     </stopPlaces>
                 </SiteFrame>
-                <ServiceFrame version="any" id="AVI:ServiceFrame:SK378">
-                    <Network changed="2016-11-11T12:45:04.679Z" version="1" id="AVI:GroupOfLine:Avinor">
-                        <Name>SAS</Name>
-                        <groupsOfLines>
-                            <GroupOfLines version="any" id="AVI:GroupOfLines:1">
-                                <Name>SAS:GroupOfLines:1</Name>
-                                <members>
-                                    <LineRef ref="AVI:Line:SK378" version="any">AVI:Line:SK378</LineRef>
-                                </members>
-                            </GroupOfLines>
-                        </groupsOfLines>
+                <ServiceFrame version="any" id="AVI:ServiceFrame:DY280">
+                    <Network changed="2016-11-21T14:09:25.396Z" version="1" id="AVI:Network:DY">
+                        <Name>Norwegian</Name>
                     </Network>
                     <routePoints>
-                        <RoutePoint version="any" id="AVI:RoutePoint:SK378101A0A0061101001">
+                        <RoutePoint version="any" id="AVI:RoutePoint:DY280101A0A0061101001">
                             <projections>
-                                <PointProjection version="any" id="AVI:PointProjection:SK378101A0A0061101001">
-                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:SK378101001" version="any"/>
+                                <PointProjection version="any" id="AVI:PointProjection:DY280101A0A0061101001">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:DY280101001" version="any"/>
                                 </PointProjection>
                             </projections>
                         </RoutePoint>
-                        <RoutePoint version="any" id="AVI:RoutePoint:SK378101A0A0061101002">
+                        <RoutePoint version="any" id="AVI:RoutePoint:DY280101A0A0061101002">
                             <projections>
-                                <PointProjection version="any" id="AVI:PointProjection:SK378101A0A0061101002">
-                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:SK378101002" version="any"/>
+                                <PointProjection version="any" id="AVI:PointProjection:DY280101A0A0061101002">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:DY280101002" version="any"/>
                                 </PointProjection>
                             </projections>
                         </RoutePoint>
                     </routePoints>
                     <routes>
-                        <Route version="any" id="AVI:Route:SK378101">
-                            <Name>SK378: Oslo-Trondheim</Name>
+                        <Route version="any" id="AVI:Route:DY280101">
+                            <Name>Oslo-Kristiansand</Name>
                             <pointsInSequence>
-                                <PointOnRoute version="any" id="AVI:PointOnRoute:SK3781010011">
-                                    <RoutePointRef ref="AVI:RoutePoint:SK378101A0A0061101001"/>
+                                <PointOnRoute version="any" id="AVI:PointOnRoute:DY2801010011">
+                                    <RoutePointRef ref="AVI:RoutePoint:DY280101A0A0061101001"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="any" id="AVI:PointOnRoute:SK3781010012">
-                                    <RoutePointRef ref="AVI:RoutePoint:SK378101A0A0061101002"/>
+                                <PointOnRoute version="any" id="AVI:PointOnRoute:DY2801010012">
+                                    <RoutePointRef ref="AVI:RoutePoint:DY280101A0A0061101002"/>
                                 </PointOnRoute>
                             </pointsInSequence>
                         </Route>
                     </routes>
                     <lines>
-                        <Line version="any" id="AVI:Line:SK378">
-                            <Name>Oslo-Trondheim</Name>
+                        <Line version="any" id="AVI:Line:DY280">
+                            <Name>Oslo-Kristiansand</Name>
                             <TransportMode>air</TransportMode>
-                            <PublicCode>SK378</PublicCode>
-                            <OperatorRef ref="SAS:Company:2"/>
+                            <PublicCode>DY280</PublicCode>
+                            <OperatorRef ref="AVI:Operator:DY"/>
                             <routes>
-                                <RouteRef ref="AVI:Route:SK378101" version="any"/>
+                                <RouteRef ref="AVI:Route:DY280101" version="any"/>
                             </routes>
                         </Line>
                     </lines>
                     <scheduledStopPoints>
-                        <ScheduledStopPoint version="any" id="AVI:ScheduledStopPoint:SK378101001">
+                        <ScheduledStopPoint version="any" id="AVI:ScheduledStopPoint:DY280101001">
                             <Name>Oslo</Name>
+                            <ShortName>OSL</ShortName>
                         </ScheduledStopPoint>
-                        <ScheduledStopPoint version="any" id="AVI:ScheduledStopPoint:SK378101002">
-                            <Name>Trondheim</Name>
+                        <ScheduledStopPoint version="any" id="AVI:ScheduledStopPoint:DY280101002">
+                            <Name>Kristiansand</Name>
+                            <ShortName>KRS</ShortName>
                         </ScheduledStopPoint>
                     </scheduledStopPoints>
                     <stopAssignments>
-                        <PassengerStopAssignment order="1" version="any" id="AVI:PassengerStopAssignment:SK378101001">
-                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:SK378101001"/>
-                            <StopPlaceRef ref="NSR:StopPlace:03011521"/>
+                        <PassengerStopAssignment order="1" version="any" id="AVI:PassengerStopAssignment:DY280101001">
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:DY280101001"/>
+                            <StopPlaceRef ref="AVI:StopPlace:OSL"/>
                         </PassengerStopAssignment>
-                        <PassengerStopAssignment order="2" version="any" id="AVI:PassengerStopAssignment:SK378101002">
-                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:SK378101002"/>
-                            <StopPlaceRef ref="NSR:StopPlace:03011522"/>
+                        <PassengerStopAssignment order="2" version="any" id="AVI:PassengerStopAssignment:DY280101002">
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:DY280101002"/>
+                            <StopPlaceRef ref="AVI:StopPlace:KRS"/>
                         </PassengerStopAssignment>
                     </stopAssignments>
                     <journeyPatterns>
-                        <JourneyPattern version="any" id="AVI:JourneyPattern:SK378101">
-                            <RouteRef ref="AVI:Route:SK378101" version="any"/>
+                        <JourneyPattern version="any" id="AVI:JourneyPattern:DY280101">
+                            <RouteRef ref="AVI:Route:DY280101" version="any"/>
                             <pointsInSequence>
-                                <StopPointInJourneyPattern order="1" version="any" id="AVI:StopPointInJourneyPattern:SK378101001">
-                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:SK378101001" version="any"/>
+                                <StopPointInJourneyPattern order="1" version="any" id="AVI:StopPointInJourneyPattern:DY280101001">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:DY280101001" version="any"/>
                                     <ForAlighting>false</ForAlighting>
                                 </StopPointInJourneyPattern>
-                                <StopPointInJourneyPattern order="2" version="any" id="AVI:StopPointInJourneyPattern:SK378101002">
-                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:SK378101002" version="any"/>
+                                <StopPointInJourneyPattern order="2" version="any" id="AVI:StopPointInJourneyPattern:DY280101002">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:DY280101002" version="any"/>
                                     <ForBoarding>false</ForBoarding>
                                 </StopPointInJourneyPattern>
                             </pointsInSequence>
@@ -152,27 +155,28 @@
                 <TimetableFrame version="any" id="AVI:TimetableFrame:1">
                     <validityConditions>
                         <AvailabilityCondition version="any" id="AVI:AvailabilityCondition:1">
-                            <FromDate>2016-11-11T00:00:00Z</FromDate>
-                            <ToDate>2016-12-11T00:00:00Z</ToDate>
+                            <FromDate>2016-11-21T00:00:00Z</FromDate>
+                            <ToDate>2016-12-21T00:00:00Z</ToDate>
                         </AvailabilityCondition>
                     </validityConditions>
                     <vehicleJourneys>
-                        <ServiceJourney version="any" id="AVI:ServiceJourney:SK378">
-                            <DepartureTime>20:15:00Z</DepartureTime>
+                        <ServiceJourney version="any" id="AVI:ServiceJourney:DY280">
+                            <DepartureTime>19:30:00Z</DepartureTime>
                             <dayTypes>
-                                <DayTypeRef ref="SK378:DayType:weekend"/>
+                                <DayTypeRef ref="DY280:DayType:weekday"/>
+                                <DayTypeRef ref="DY280:DayType:weekend"/>
                             </dayTypes>
-                            <JourneyPatternRef ref="AVI:JourneyPattern:SK378101"/>
-                            <PublicCode>SK378</PublicCode>
-                            <LineRef ref="AVI:Line:SK378"/>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:DY280101"/>
+                            <PublicCode>DY280</PublicCode>
+                            <LineRef ref="AVI:Line:DY280" version="any"/>
                             <passingTimes>
                                 <TimetabledPassingTime>
-                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:SK378101001" version="any"/>
-                                    <DepartureTime>20:15:00Z</DepartureTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:DY280101001" version="any"/>
+                                    <DepartureTime>19:30:00Z</DepartureTime>
                                 </TimetabledPassingTime>
                                 <TimetabledPassingTime>
-                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:SK378101002" version="any"/>
-                                    <ArrivalTime>21:10:00Z</ArrivalTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:DY280101002" version="any"/>
+                                    <ArrivalTime>20:20:00Z</ArrivalTime>
                                 </TimetabledPassingTime>
                             </passingTimes>
                         </ServiceJourney>
@@ -180,7 +184,15 @@
                 </TimetableFrame>
                 <ServiceCalendarFrame version="1" id="AVI:ServiceCalendarFrame:1">
                     <dayTypes>
-                        <DayType version="any" id="SK378:DayType:weekend">
+                        <DayType version="any" id="DY280:DayType:weekday">
+                            <Name>Ukedager (mandag til fredag)</Name>
+                            <properties>
+                                <PropertyOfDay>
+                                    <DaysOfWeek>Monday Tuesday Wednesday Thursday Friday</DaysOfWeek>
+                                </PropertyOfDay>
+                            </properties>
+                        </DayType>
+                        <DayType version="any" id="DY280:DayType:weekend">
                             <Name>Helgdager (lørdag og søndag)</Name>
                             <properties>
                                 <PropertyOfDay>

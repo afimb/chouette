@@ -1,13 +1,5 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.exchange.netexprofile.exporter.ModelTranslator;
 import mobi.chouette.model.AccessLink;
@@ -16,6 +8,13 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LinkOrientationEnum;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SiteFrameWriter extends AbstractWriter{
 	

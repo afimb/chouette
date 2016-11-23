@@ -1,16 +1,16 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
-
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.exchange.netexprofile.exporter.ModelTranslator;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TimeTableFrameWriter extends AbstractWriter{
 	

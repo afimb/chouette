@@ -1,15 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Calendar;
-
-import javax.naming.InitialContext;
-
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
@@ -20,8 +12,14 @@ import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.util.Referential;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
+import javax.naming.InitialContext;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Calendar;
 
 @Log4j
 public class NetexInitExportCommand implements Command, Constant {
