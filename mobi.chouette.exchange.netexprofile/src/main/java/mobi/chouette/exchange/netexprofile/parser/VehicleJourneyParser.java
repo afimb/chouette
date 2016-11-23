@@ -166,6 +166,18 @@ public class VehicleJourneyParser extends AbstractParser {
                             }
                         }
 */
+                        // find and match boarding/alighting for this vechicleJourneyAtStop
+
+                        Boolean forBoarding = stopPointInJourneyPattern.isForBoarding();
+                        Boolean forAlighting = stopPointInJourneyPattern.isForAlighting();
+
+                        if (forBoarding == null || !forAlighting) {
+                            vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.BoardOnly);
+                        }
+
+                        if (forAlighting == null || !forBoarding) {
+                            vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.AlightOnly);
+                        }
                     }
                 }
 
