@@ -60,7 +60,6 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 		if (localContext == null || localContext.isEmpty())
 			return;
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		// Map<String, Location> fileLocations = data.getFileLocations();
 		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		Context vehicleJourneyContext = (Context) validationContext.get(VehicleJourneyValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);

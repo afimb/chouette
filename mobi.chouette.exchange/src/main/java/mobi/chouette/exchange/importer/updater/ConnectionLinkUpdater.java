@@ -11,7 +11,6 @@ import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.NamingUtil;
-import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
