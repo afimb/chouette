@@ -44,6 +44,8 @@ public class RegtoppStopParser implements Parser {
 			shouldImport = false;
 		} else if (stop.getFullName().toUpperCase().startsWith("- - ")) {
 			shouldImport = false;
+		} else if (stop.getFullName().toUpperCase().startsWith("AVLØSNING ")) {
+			shouldImport = false;
 		} else if (!StringUtils.isNumeric(stop.getStopId())) {
 			shouldImport = false;
 		}
