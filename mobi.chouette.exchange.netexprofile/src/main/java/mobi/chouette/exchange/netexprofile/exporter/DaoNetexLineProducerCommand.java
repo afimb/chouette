@@ -1,16 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
-import java.io.IOException;
-
-import javax.annotation.Resource;
-import javax.ejb.EJB;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
@@ -20,8 +11,11 @@ import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.Line;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
+import javax.annotation.Resource;
+import javax.ejb.*;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import java.io.IOException;
 
 @Log4j
 @Stateless(name = DaoNetexLineProducerCommand.COMMAND)

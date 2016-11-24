@@ -249,7 +249,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("AVI:Line:SK378");
+		Line line = lineDao.findByObjectId("AVI:Line:DY280");
 		Assert.assertNotNull(line, "Line not found");
 
 		utx.rollback();

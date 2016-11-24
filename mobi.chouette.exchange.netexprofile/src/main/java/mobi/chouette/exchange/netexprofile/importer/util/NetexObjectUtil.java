@@ -159,6 +159,15 @@ public class NetexObjectUtil {
         }
     }
 
+    public static void addStopPlaceReference(NetexReferential referential, String objectId, StopPlace stopPlace) {
+        if (stopPlace == null) {
+            throw new NullPointerException("Unknown stop place : " + objectId);
+        }
+        if (!referential.getStopPlaces().containsKey(objectId)) {
+            referential.getStopPlaces().put(objectId, stopPlace);
+        }
+    }
+
     public static Route getRoute(NetexReferential referential, String objectId) {
         Route route = referential.getRoutes().get(objectId);
         if (route == null) {

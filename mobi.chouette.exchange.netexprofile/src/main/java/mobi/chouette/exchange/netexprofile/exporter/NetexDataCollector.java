@@ -1,10 +1,10 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
-import java.sql.Date;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.exporter.DataCollector;
 import mobi.chouette.model.Line;
+
+import java.sql.Date;
 @Log4j
 public class NetexDataCollector extends DataCollector {
 	public boolean collect(ExportableData collection, Line line, Date startDate, Date endDate) {

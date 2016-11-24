@@ -1,25 +1,17 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
+import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
+import mobi.chouette.exchange.netexprofile.exporter.ModelTranslator;
+import mobi.chouette.model.*;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-
-import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
-import mobi.chouette.exchange.netexprofile.exporter.ModelTranslator;
-import mobi.chouette.model.ConnectionLink;
-import mobi.chouette.model.GroupOfLine;
-import mobi.chouette.model.JourneyPattern;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.Network;
-import mobi.chouette.model.Route;
-import mobi.chouette.model.StopArea;
-import mobi.chouette.model.StopPoint;
 
 public class ServiceFrameWriter extends AbstractWriter{
 	

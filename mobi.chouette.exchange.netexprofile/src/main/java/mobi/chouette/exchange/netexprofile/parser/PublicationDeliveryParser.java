@@ -4,24 +4,19 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.RoutePointValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.model.StopArea;
-import mobi.chouette.model.type.ChouetteAreaEnum;
-import mobi.chouette.model.type.LongLatTypeEnum;
-import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
 
 import javax.xml.bind.JAXBElement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j
-public class PublicationDeliveryParser implements NetexParser {
+public class PublicationDeliveryParser extends AbstractParser {
 
     private static final String BOARDING_POSITION_ID_SUFFIX = "01";
 
@@ -39,7 +34,7 @@ public class PublicationDeliveryParser implements NetexParser {
         List<JAXBElement<? extends Common_VersionFrameStructure>> topLevelFrame = publicationDelivery.getDataObjects().getCompositeFrameOrCommonFrame();
 
         initResourceFrameRefs(context, referential, topLevelFrame);
-        initSiteFrameRefs(referential, topLevelFrame);
+        initSiteFrameRefs(context, referential, topLevelFrame);
         initServiceCalendarFrameRefs(referential, topLevelFrame);
         initServiceFrameRefs(context, referential, topLevelFrame);
         initTimetableFrameRefs(context, referential, topLevelFrame);
@@ -58,16 +53,16 @@ public class PublicationDeliveryParser implements NetexParser {
         }
     }
 
-    private void initSiteFrameRefs(NetexReferential referential, List<JAXBElement<? extends Common_VersionFrameStructure>> topLevelFrame) {
+    private void initSiteFrameRefs(Context context, NetexReferential referential, List<JAXBElement<? extends Common_VersionFrameStructure>> topLevelFrame) throws Exception {
         List<SiteFrame> siteFrames = getFrames(SiteFrame.class, topLevelFrame);
         for (SiteFrame siteFrame : siteFrames) {
             NetexObjectUtil.addSiteFrameReference(referential, siteFrame.getId(), siteFrame);
 
+            // 1. initialize stop places
             StopPlacesInFrame_RelStructure stopPlacesStruct = siteFrame.getStopPlaces();
-            List<StopPlace> stopPlaces = stopPlacesStruct.getStopPlace();
-            for (StopPlace stopPlace : stopPlaces) {
-                // TODO implement
-            }
+            context.put(NETEX_LINE_DATA_CONTEXT, stopPlacesStruct);
+            StopPlaceParser stopPlaceParser = (StopPlaceParser) ParserFactory.create(StopPlaceParser.class.getName());
+            stopPlaceParser.initReferentials(context);
         }
     }
 
@@ -78,9 +73,9 @@ public class PublicationDeliveryParser implements NetexParser {
 
             DayTypesInFrame_RelStructure dayTypeStruct = serviceCalendarFrame.getDayTypes();
             List<JAXBElement<? extends DataManagedObjectStructure>> dayTypeStructElements = dayTypeStruct.getDayType_();
+
             for (JAXBElement<? extends DataManagedObjectStructure> dayTypeStructElement : dayTypeStructElements) {
                 DayType dayType = (DayType) dayTypeStructElement.getValue();
-                // TODO consider generating a more sophisticated id
                 NetexObjectUtil.addDayTypeReference(referential, dayType.getId(), dayType);
             }
         }
@@ -102,6 +97,7 @@ public class PublicationDeliveryParser implements NetexParser {
             RoutePointValidator routePointValidator = (RoutePointValidator) ValidatorFactory.create(RoutePointValidator.class.getName(), context);
             RoutePointsInFrame_RelStructure routePointsStructure = serviceFrame.getRoutePoints();
             List<RoutePoint> routePoints = routePointsStructure.getRoutePoint();
+
             for (RoutePoint routePoint : routePoints) {
                 String objectId = routePoint.getId();
 
@@ -138,8 +134,12 @@ public class PublicationDeliveryParser implements NetexParser {
             // 6. parse scheduled stop points
             ScheduledStopPointsInFrame_RelStructure scheduledStopPointStruct = serviceFrame.getScheduledStopPoints();
             context.put(NETEX_LINE_DATA_CONTEXT, scheduledStopPointStruct);
+/*
             ScheduledStopPointParser scheduledStopPointParser = (ScheduledStopPointParser) ParserFactory.create(ScheduledStopPointParser.class.getName());
             scheduledStopPointParser.initReferentials(context);
+*/
+            StopPointParser stopPointParser = (StopPointParser) ParserFactory.create(StopPointParser.class.getName());
+            stopPointParser.initReferentials(context);
 
             // 7. parse journey patterns
             JourneyPatternsInFrame_RelStructure journeyPatternStruct = serviceFrame.getJourneyPatterns();
@@ -184,11 +184,11 @@ public class PublicationDeliveryParser implements NetexParser {
         return foundFrames;
     }
 
+    // TODO we must find out the correct parsing order run
     @Override
     public void parse(Context context) throws Exception {
-        @SuppressWarnings("unchecked") List<PublicationDeliveryStructure> commonData =
-                (List<PublicationDeliveryStructure>) context.get(NETEX_COMMON_DATA);
-
+        @SuppressWarnings("unchecked")
+        List<PublicationDeliveryStructure> commonData = (List<PublicationDeliveryStructure>) context.get(NETEX_COMMON_DATA);
         PublicationDeliveryStructure lineData = (PublicationDeliveryStructure) context.get(NETEX_LINE_DATA_JAVA);
         PublicationDeliveryStructure.DataObjects dataObjects = lineData.getDataObjects();
         List<JAXBElement<? extends Common_VersionFrameStructure>> compositeFrameOrCommonFrame = dataObjects.getCompositeFrameOrCommonFrame();
@@ -206,162 +206,67 @@ public class PublicationDeliveryParser implements NetexParser {
         }
 */
 
-        // parse organisations (in resource frames)
+        // Collection<ResourceFrame> resourceFrames = netexReferential.getResourceFrames().values();
         Parser organisationsParser = ParserFactory.create(OrganisationParser.class.getName());
         organisationsParser.parse(context);
 
-        // parse stop places (in site frames)
-        parseSiteFrames(context, referential, netexReferential);
+        // Collection<SiteFrame> siteFrames = netexReferential.getSiteFrames().values();
+        Parser stopPlaceParser = ParserFactory.create(StopPlaceParser.class.getName());
+        stopPlaceParser.parse(context);
 
-        // parse day types (in service calendar frame)
-        Parser dayTypeParser = ParserFactory.create(DayTypeParser.class.getName());
-        dayTypeParser.parse(context);
+        // service frame
 
-        List<ServiceFrame> serviceFrames = getFrames(ServiceFrame.class, compositeFrameOrCommonFrame);
-        for (ServiceFrame serviceFrame : serviceFrames) {
-            parseServiceFrame(context, referential, lineData, commonData, serviceFrame);
-        }
-        List<TimetableFrame> timetableFrames = getFrames(TimetableFrame.class, compositeFrameOrCommonFrame);
-        for (TimetableFrame timetableFrame : timetableFrames) {
-            parseTimetableFrame(context, referential, lineData, commonData, timetableFrame);
-        }
-    }
-
-/*
-    private void parseResourceFrames(Context context, NetexReferential referential) throws Exception {
-        Collection<ResourceFrame> resourceFrames = referential.getResourceFrames().values();
-        if (!isCollectionEmpty(resourceFrames)) {
-            for (ResourceFrame resourceFrame : resourceFrames) {
-            }
-        }
-    }
-*/
-
-    private void parseSiteFrames(Context context, Referential referential, NetexReferential netexReferential) throws Exception {
-        // TODO move up the hiearchy to main parse method
-        // TODO consider where to get coordinate projection from, configuration?
-        //NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
-        //String projection = configuration.getCoordinateProjection();
-
-        Collection<SiteFrame> siteFrames = netexReferential.getSiteFrames().values();
-
-        if (!isCollectionEmpty(siteFrames)) {
-
-            for (SiteFrame siteFrame : siteFrames) {
-                // TODO retrieve stop places from referential instead
-                // TODO retrieve stop places from NSR instead
-                StopPlacesInFrame_RelStructure stopPlacesStruct = siteFrame.getStopPlaces();
-                List<StopPlace> stopPlaces = stopPlacesStruct.getStopPlace();
-
-                for (StopPlace stopPlace : stopPlaces) {
-                    StopArea stopArea = ObjectFactory.getStopArea(referential, stopPlace.getId());
-                    stopArea.setName(stopPlace.getName().getValue());
-                    stopArea.setRegistrationNumber(stopPlace.getShortName().getValue());
-                    stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
-
-                    // TODO implement setting coordinates on stop area, see block comment below
-/*
-                    stopArea.setLongitude(_y);
-                    stopArea.setLatitude(_x);
-                    stopArea.setLongLatType(LongLatTypeEnum.WGS84);
-                    stopArea.setX(x);
-                    stopArea.setY(y);
-                    stopArea.setProjectionType(projection);
-*/
-
-                    stopArea.setFilled(true);
-
-                    // TODO implement a generic ObjectIdGenerator for use here
-                    //String boardingPositionObjectId = ObjectIdCreator.createStopAreaId(configuration, stop.getFullStopId() + BOARDING_POSITION_ID_SUFFIX);
-
-                    String boardingPositionObjectId = stopPlace.getId() + "-" + BOARDING_POSITION_ID_SUFFIX;
-                    StopArea boardingPosition = ObjectFactory.getStopArea(referential, boardingPositionObjectId);
-                    boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
-
-                    // TODO implement coordinate settings
-/*
-                    boardingPosition.setY(stopArea.getY());
-                    boardingPosition.setX(stopArea.getX());
-                    boardingPosition.setProjectionType(stopArea.getProjectionType());
-                    boardingPosition.setLatitude(stopArea.getLatitude());
-                    boardingPosition.setLongitude(stopArea.getLongitude());
-                    boardingPosition.setLongLatType(stopArea.getLongLatType());
-*/
-                    boardingPosition.setName(stopArea.getName());
-                    boardingPosition.setParent(stopArea);
-                }
-            }
-        }
-    }
-
-    private void parseTimetableFrame(Context context, Referential referential, PublicationDeliveryStructure lineData,
-                                     List<PublicationDeliveryStructure> commonData, TimetableFrame frame) throws Exception {
-        context.put(NETEX_LINE_DATA_CONTEXT, frame);
-        Parser timetableParser = ParserFactory.create(TimetableParser.class.getName());
-        timetableParser.parse(context);
-    }
-
-    private void parseServiceCalendarFrame(Context context, Referential referential, PublicationDeliveryStructure lineData,
-                                           List<PublicationDeliveryStructure> commonData, ServiceCalendarFrame serviceCalendarFrame) throws Exception {
-        DayTypesInFrame_RelStructure dayTypesStruct = serviceCalendarFrame.getDayTypes();
-        context.put(NETEX_LINE_DATA_CONTEXT, dayTypesStruct);
-        Parser dayTypeParser = ParserFactory.create(DayTypeParser.class.getName());
-        dayTypeParser.parse(context);
-    }
-
-    private void parseServiceFrame(Context context, Referential referential, PublicationDeliveryStructure lineData,
-                                   List<PublicationDeliveryStructure> commonData, ServiceFrame serviceFrame) throws Exception {
-        Network network = serviceFrame.getNetwork();
-        context.put(NETEX_LINE_DATA_CONTEXT, network);
         Parser networkParser = ParserFactory.create(NetworkParser.class.getName());
         networkParser.parse(context);
 
-        RoutePointsInFrame_RelStructure routePointsStructure = serviceFrame.getRoutePoints();
-        List<RoutePoint> routePoints = routePointsStructure.getRoutePoint();
-
-        // TODO consider parsing route points, needed?
-/*
-        for (RoutePoint routePoint : routePoints) {
-        }
-*/
-
-        RoutesInFrame_RelStructure routesStructure = serviceFrame.getRoutes();
-        context.put(NETEX_LINE_DATA_CONTEXT, routesStructure);
-        Parser routeParser = ParserFactory.create(RouteParser.class.getName());
-        routeParser.parse(context);
-
-        LinesInFrame_RelStructure linesStructure = serviceFrame.getLines();
-        context.put(NETEX_LINE_DATA_CONTEXT, linesStructure);
         Parser lineParser = ParserFactory.create(LineParser.class.getName());
         lineParser.parse(context);
 
-        StopAssignmentsInFrame_RelStructure stopAssignmentsStructure = serviceFrame.getStopAssignments();
-        List<JAXBElement<? extends StopAssignment_VersionStructure>> stopAssignmentElements = stopAssignmentsStructure.getStopAssignment();
-        for (JAXBElement<? extends StopAssignment_VersionStructure> stopAssignmentElement : stopAssignmentElements) {
-            PassengerStopAssignment passengerStopAssignment = (PassengerStopAssignment) stopAssignmentElement.getValue();
+        Parser routeParser = ParserFactory.create(RouteParser.class.getName());
+        routeParser.parse(context);
 
-            ScheduledStopPointRefStructure scheduledStopPointRef = passengerStopAssignment.getScheduledStopPointRef();
-            StopPlaceRefStructure stopPlaceRef = passengerStopAssignment.getStopPlaceRef();
+        Parser stopPointParser = ParserFactory.create(StopPointParser.class.getName());
+        stopPointParser.parse(context);
 
-            if (scheduledStopPointRef != null && StringUtils.isNotEmpty(scheduledStopPointRef.getRef()) &&
-                    stopPlaceRef != null && StringUtils.isNotEmpty(stopPlaceRef.getRef())) {
-                // TODO implemenation needed?
-            }
-        }
-
-        ScheduledStopPointsInFrame_RelStructure scheduledStopPointsStructure = serviceFrame.getScheduledStopPoints();
-        context.put(NETEX_LINE_DATA_CONTEXT, scheduledStopPointsStructure);
-        Parser scheduledStopPointsParser = ParserFactory.create(ScheduledStopPointParser.class.getName());
-        scheduledStopPointsParser.parse(context);
-
-        JourneyPatternsInFrame_RelStructure journeyPatternsStructure = serviceFrame.getJourneyPatterns();
-        context.put(NETEX_LINE_DATA_CONTEXT, journeyPatternsStructure);
         Parser journeyPatternParser = ParserFactory.create(JourneyPatternParser.class.getName());
         journeyPatternParser.parse(context);
-    }
 
-    private boolean isCollectionEmpty (Collection < ? > collection){
-        return collection == null || collection.isEmpty();
+        // timetable frame
+
+/*
+        ValidityConditions_RelStructure validityConditions = frame.getValidityConditions();
+
+        if (validityConditions != null) {
+            List<Object> availabilityConditionElements = validityConditions.getValidityConditionRefOrValidBetweenOrValidityCondition_();
+            // should iterate all availability conditions, for now only retrieving first occurrence
+*/
+/*
+            for (JAXBElement<AvailabilityCondition> availabilityConditionElement : availabilityConditionElements) {
+                AvailabilityCondition value = availabilityConditionElement.getValue();
+            }
+*//*
+
+            // TODO: add more sophisticated check on zoneids and zoneoffsets here
+            // how to connect the period to the right timetable instance? we can only get timetables by day type id
+            if (availabilityConditionElements != null && availabilityConditionElements.size() > 0) {
+                AvailabilityCondition availabilityCondition = ((JAXBElement<AvailabilityCondition>) availabilityConditionElements.get(0)).getValue();
+                OffsetDateTime fromDate = availabilityCondition.getFromDate();
+                OffsetDateTime toDate = availabilityCondition.getToDate();
+                Date startOfPeriod = ParserUtils.getSQLDate(fromDate.toString());
+                Date endOfPeriod = ParserUtils.getSQLDate(toDate.toString());
+                Period period = new Period(startOfPeriod, endOfPeriod);
+                //timetable.addPeriod(period);
+            }
+        }
+*/
+
+        Parser vehicleJourneyParser = ParserFactory.create(VehicleJourneyParser.class.getName());
+        vehicleJourneyParser.parse(context);
+
+        // Collection<ServiceCalendarFrame> serviceCalendarFrames = netexReferential.getServiceCalendarFrames().values();
+        Parser dayTypeParser = ParserFactory.create(DayTypeParser.class.getName());
+        dayTypeParser.parse(context);
+
     }
 
     static {
