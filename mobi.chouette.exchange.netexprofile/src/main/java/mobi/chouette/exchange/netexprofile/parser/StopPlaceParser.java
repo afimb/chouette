@@ -67,11 +67,8 @@ public class StopPlaceParser extends AbstractParser {
             LocationStructure locationStruct = centroidStruct.getLocation();
             stopArea.setLongLatType(NetexUtils.toLongLatTypeEnum(locationStruct.getSrsName()));
 
-            BigDecimal latitude = locationStruct.getLatitude();
-            BigDecimal longitude = locationStruct.getLongitude();
-
-            stopArea.setLongitude(latitude);
-            stopArea.setLatitude(longitude);
+            stopArea.setLatitude(locationStruct.getLatitude());
+            stopArea.setLongitude(locationStruct.getLongitude());
 
             // TODO add support for area centroid, see regtopp CentroidGenerator for an example
 /*
