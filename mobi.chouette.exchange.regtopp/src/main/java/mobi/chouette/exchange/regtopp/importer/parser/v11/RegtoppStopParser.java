@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -40,7 +40,11 @@ public class RegtoppStopParser implements Parser {
 			shouldImport = false;
 		} else if (stop.getFullName().toUpperCase().startsWith("-- ")) {
 			shouldImport = false;
+		} else if (stop.getFullName().toUpperCase().startsWith("- ")) {
+			shouldImport = false;
 		} else if (stop.getFullName().toUpperCase().startsWith("- - ")) {
+			shouldImport = false;
+		} else if (stop.getFullName().toUpperCase().startsWith("AVLØSNING ")) {
 			shouldImport = false;
 		} else if (!StringUtils.isNumeric(stop.getStopId())) {
 			shouldImport = false;
