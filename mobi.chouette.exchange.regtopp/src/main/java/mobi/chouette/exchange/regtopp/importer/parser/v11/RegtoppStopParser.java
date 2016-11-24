@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -39,6 +39,8 @@ public class RegtoppStopParser implements Parser {
 		if (stop.getFullName().toUpperCase().startsWith("MELD_")) {
 			shouldImport = false;
 		} else if (stop.getFullName().toUpperCase().startsWith("-- ")) {
+			shouldImport = false;
+		} else if (stop.getFullName().toUpperCase().startsWith("- ")) {
 			shouldImport = false;
 		} else if (stop.getFullName().toUpperCase().startsWith("- - ")) {
 			shouldImport = false;
