@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.codehaus.plexus.util.StringUtils;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
@@ -38,8 +40,16 @@ public class RegtoppStopParser implements Parser {
 			shouldImport = false;
 		} else if (stop.getFullName().toUpperCase().startsWith("-- ")) {
 			shouldImport = false;
+		} else if (stop.getFullName().toUpperCase().startsWith("- - ")) {
+			shouldImport = false;
+		} else if (!StringUtils.isNumeric(stop.getStopId())) {
+			shouldImport = false;
 		}
 
+		if(!shouldImport) {
+			log.warn("Skipping HPL with id "+stop.getStopId()+" and name "+stop.getFullName()+ " due to ignoring rules");
+		}
+		
 		return shouldImport;
 	}
 
