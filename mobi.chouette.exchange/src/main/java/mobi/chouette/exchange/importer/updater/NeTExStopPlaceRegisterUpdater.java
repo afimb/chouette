@@ -15,6 +15,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.rutebanken.netex.client.PublicationDeliveryClient;
 import org.rutebanken.netex.model.KeyListStructure;
 import org.rutebanken.netex.model.KeyValueStructure;
@@ -168,7 +169,7 @@ public class NeTExStopPlaceRegisterUpdater {
 							new HashSet<TransportModeNameEnum>(), sa);
 					if (transportMode.size() > 1) {
 						log.warn("Found more than one transport mode for StopArea with id " + sp.getId() + ": "
-								+ ToStringBuilder.reflectionToString(transportMode) + ", will use "
+								+ ToStringBuilder.reflectionToString(transportMode.toArray(),ToStringStyle.SIMPLE_STYLE) + ", will use "
 								+ transportMode.iterator().next()+ " correlationId: "+correlationId);
 					} else if (transportMode.size() == 1) {
 						stopPlaceMapper.mapTransportMode(sp, transportMode.iterator().next());
