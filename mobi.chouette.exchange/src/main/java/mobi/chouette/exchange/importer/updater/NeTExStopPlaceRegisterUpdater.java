@@ -236,10 +236,12 @@ public class NeTExStopPlaceRegisterUpdater {
 				addIdsToLookupMap(map, keyList, newStopPlace.getId());
 
 				Quays_RelStructure quays = newStopPlace.getQuays();
-				for (Object b : quays.getQuayRefOrQuay()) {
-					Quay q = (Quay) b;
-					KeyListStructure qKeyList = q.getKeyList();
-					addIdsToLookupMap(map, qKeyList, q.getId());
+				if(quays != null && quays.getQuayRefOrQuay() != null) {
+					for (Object b : quays.getQuayRefOrQuay()) {
+						Quay q = (Quay) b;
+						KeyListStructure qKeyList = q.getKeyList();
+						addIdsToLookupMap(map, qKeyList, q.getId());
+					}
 				}
 			}
 
