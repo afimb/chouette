@@ -171,11 +171,14 @@ public class VehicleJourneyParser extends AbstractParser {
                         Boolean forBoarding = stopPointInJourneyPattern.isForBoarding();
                         Boolean forAlighting = stopPointInJourneyPattern.isForAlighting();
 
-                        if (forBoarding == null || !forAlighting) {
+                        // TODO we must check for nulls before doing logic check on any of these two
+                        // TODO find out how we can do this check with nested conditional ifs instead
+                        // TODO fix, after checking the database, we can see that neither boarding nor alighting is set on any vehicle journey at stop
+                        if (forBoarding == null && forAlighting != null && !forAlighting) {
                             vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.BoardOnly);
                         }
 
-                        if (forAlighting == null || !forBoarding) {
+                        if (forAlighting == null && forBoarding != null && !forBoarding) {
                             vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.AlightOnly);
                         }
                     }
