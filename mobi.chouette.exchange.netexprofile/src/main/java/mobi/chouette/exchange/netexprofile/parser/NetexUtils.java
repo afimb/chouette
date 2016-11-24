@@ -160,6 +160,16 @@ public class NetexUtils extends ParserUtils {
 			return TransportModeNameEnum.Other;
 	}
 
+	public static LongLatTypeEnum toLongLatTypeEnum(String value) {
+		if (value == null)
+			return null;
+		else if (value.equals("WGS84"))
+			return LongLatTypeEnum.WGS84;
+		else if (value.equals("WGS92"))
+			return LongLatTypeEnum.WGS92;
+		else
+			return LongLatTypeEnum.Standard;
+	}
 
 	public static List<DayTypeEnum> getDayTypes(List<String> values) {
 		List<DayTypeEnum> result = new ArrayList<DayTypeEnum>();

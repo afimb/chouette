@@ -1,16 +1,14 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.exporter.writer.DeliveryWriter;
-
 import org.apache.commons.io.output.FileWriterWithEncoding;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import java.io.File;
+import java.io.IOException;
+import java.io.Writer;
 
 @Log4j
 public class NetexFileWriter implements Constant {

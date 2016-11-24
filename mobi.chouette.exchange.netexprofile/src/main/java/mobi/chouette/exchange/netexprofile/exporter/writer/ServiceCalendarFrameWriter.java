@@ -1,17 +1,17 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
+import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
+import mobi.chouette.exchange.netexprofile.exporter.ModelTranslator;
+import mobi.chouette.model.Period;
+import mobi.chouette.model.Timetable;
+import mobi.chouette.model.type.DayTypeEnum;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Set;
-
-import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
-import mobi.chouette.exchange.netexprofile.exporter.ModelTranslator;
-import mobi.chouette.model.Period;
-import mobi.chouette.model.Timetable;
-import mobi.chouette.model.type.DayTypeEnum;
 
 public class ServiceCalendarFrameWriter extends AbstractWriter{
 	

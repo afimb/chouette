@@ -1,11 +1,5 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.naming.InitialContext;
-
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
@@ -16,6 +10,11 @@ import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.exporter.CompressCommand;
 import mobi.chouette.exchange.exporter.SaveMetadataCommand;
+
+import javax.naming.InitialContext;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Log4j

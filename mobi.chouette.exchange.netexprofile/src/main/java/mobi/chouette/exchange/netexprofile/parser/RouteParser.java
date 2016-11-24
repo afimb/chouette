@@ -8,7 +8,8 @@ import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.RouteValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.type.PTDirectionEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import org.apache.commons.lang.StringUtils;
@@ -19,7 +20,11 @@ import java.util.Collection;
 import java.util.List;
 
 @Log4j
-public class RouteParser implements NetexParser {
+public class RouteParser extends AbstractParser {
+
+    public static final String LOCAL_CONTEXT = "RouteContext";
+    public static final String LINE_ID = "lineId";
+    public static final String ROUTE_ID = "routeId";
 
     @Override
     public void initReferentials(Context context) throws Exception {
@@ -36,31 +41,53 @@ public class RouteParser implements NetexParser {
         }
     }
 
+    public void addLineIdRef(Context context, String objectId, String lineId) {
+        Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
+        objectContext.put(LINE_ID, lineId);
+    }
+
     @Override
     public void parse(Context context) throws Exception {
         Referential chouetteReferential = (Referential) context.get(REFERENTIAL);
         NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
+        Context parsingContext = (Context) context.get(PARSING_CONTEXT);
+        Context localContext = (Context) parsingContext.get(LOCAL_CONTEXT);
+
+        StopPointParser stopPointParser = (StopPointParser) ParserFactory.create(StopPointParser.class.getName());
 
         Collection<org.rutebanken.netex.model.Route> netexRoutes = netexReferential.getRoutes().values();
+
         for (org.rutebanken.netex.model.Route netexRoute : netexRoutes) {
-            mobi.chouette.model.Route chouetteRoute = ObjectFactory.getRoute(chouetteReferential, netexRoute.getId());
+            String netexRouteId = netexRoute.getId();
+            Context objectContext = (Context) localContext.get(netexRouteId);
 
-            // TODO consider if the following should be a part of the norwegian netex profile
-/*
+            // TODO generate chouette id with creator/generator here
+            String chouetteRouteId = netexRoute.getId();
+            mobi.chouette.model.Route chouetteRoute = ObjectFactory.getRoute(chouetteReferential, chouetteRouteId);
+            addRouteIdRef(context, netexRouteId, chouetteRouteId);
+
             MultilingualString netexRouteName = netexRoute.getName();
-            if (netexRouteName != null) {
-                String netexRouteNameValue = netexRouteName.getValue();
-                if (StringUtils.isNotEmpty(netexRouteNameValue)) {
-                    chouetteRoute.setName(netexRouteNameValue);
-                }
+            if (netexRouteName != null && StringUtils.isNotEmpty(netexRouteName.getValue())) {
+                chouetteRoute.setName(netexRouteName.getValue());
+                chouetteRoute.setPublishedName(netexRouteName.getValue());
             }
-*/
-
-            // TODO consider if the following should be a part of the norwegian netex profile
-            // chouetteRoute.setLine(ObjectFactory.getLine(referential, ((LineRefStructure) netexRoute.getLineRef().getValue()))); // optional
 
             // TODO consider how to handle DirectionType, its part of property map with direction id in chouette model
+            // TODO consider if this should be set, for now setting to A
+            DirectionTypeEnumeration directionType = netexRoute.getDirectionType();
+            chouetteRoute.setDirection(directionType == null || directionType.equals(DirectionTypeEnumeration.OUTBOUND) ? PTDirectionEnum.A : PTDirectionEnum.R);
 
+            // TODO mandatory?
+            chouetteRoute.setNumber(netexRoute.getId());
+
+            String chouetteLineId = (String) objectContext.get(LINE_ID);
+            Line chouetteLine = ObjectFactory.getLine(chouetteReferential, chouetteLineId);
+            chouetteRoute.setLine(chouetteLine);
+
+            // TODO should this be set?
+            // chouetteRoute.setWayBack(directionType.equals(DirectionTypeEnumeration.OUTBOUND) ? "A" : "R");
+
+            // TODO consider how to handle the inverse route id ref, create instance here?
             // optional (cardinality 0:1)
             RouteRefStructure inverseRouteRefStructure = netexRoute.getInverseRouteRef();
             if (inverseRouteRefStructure != null) {
@@ -73,47 +100,38 @@ public class RouteParser implements NetexParser {
                 }
             }
 
-            // parse route points
+            // this is needed to get the direct reference to stop points for a route, this is the same scenario as
+            // the line -> route relation, where we have to add the lineId for every chouette route.
+            // in this case we must set the routeId for every stop point in chouette.
+
             PointsOnRoute_RelStructure pointsInSequence = netexRoute.getPointsInSequence();
             List<PointOnRoute> pointsOnRoute = pointsInSequence.getPointOnRoute();
 
-            int index = 1;
             for (PointOnRoute pointOnRoute : pointsOnRoute) {
-                JAXBElement<? extends PointRefStructure> pointRefStructElement = pointOnRoute.getPointRef();
-                if (pointRefStructElement != null) {
-                    PointRefStructure pointRefStructure = pointRefStructElement.getValue();
-                    String routePointIdRef = pointRefStructure.getRef();
+                PointRefStructure pointRefStruct = pointOnRoute.getPointRef().getValue();
+                String routePointIdRef = pointRefStruct.getRef(); // this is the route point id reference to a routePoints -> RoutePoint (different structure! parse separately?)
 
-                    if (StringUtils.isNotEmpty(routePointIdRef)) {
-                        RoutePoint routePoint = NetexObjectUtil.getRoutePoint(netexReferential, routePointIdRef);
+                // TODO maybe a candidate for adding all route points to the netex referential, because this is only a connection/reference structure, like the stopAssignments structure, check out if it already is
+                // TODO then we can just check this referential structure for a match, and get it, maybe use the NetexObjectUtil class for this?
 
-                        if (routePoint != null) {
-                            Projections_RelStructure projections = routePoint.getProjections();
-                            List<JAXBElement<?>> pointProjectionElements = projections.getProjectionRefOrProjection();
+                RoutePoint routePoint = NetexObjectUtil.getRoutePoint(netexReferential, routePointIdRef);
+                Projections_RelStructure projections = routePoint.getProjections();
+                List<JAXBElement<?>> pointProjectionElements = projections.getProjectionRefOrProjection();
 
-                            // TODO consider getting scheduled stop point refs from netex referential instead
-                            for (JAXBElement<?> pointProjectionElement : pointProjectionElements) {
-                                PointProjection pointProjection = (PointProjection) pointProjectionElement.getValue();
-                                PointRefStructure projectedPointRef = pointProjection.getProjectedPointRef();
-
-                                // TODO we probably have the same issue with ids for stop points here, as in timetable and journeypattern parsers
-
-                                String projectedPointRefValue = projectedPointRef.getRef();
-                                String chouetteStopPointId =  projectedPointRefValue + "-" + index;
-
-                                StopPoint stopPoint = ObjectFactory.getStopPoint(chouetteReferential, chouetteStopPointId);
-                                stopPoint.setRoute(chouetteRoute);
-                                stopPoint.setFilled(true);
-
-                                // TODO this is mandatory for cascading persistence, find a way how to do it!
-                                chouetteRoute.getStopPoints().add(stopPoint);
-                            }
-                        }
-                    }
+                for (JAXBElement<?> pointProjectionElement : pointProjectionElements) {
+                    PointProjection pointProjection = (PointProjection) pointProjectionElement.getValue();
+                    String stopPointIdRef = pointProjection.getProjectedPointRef().getRef();
+                    stopPointParser.addRouteIdRef(context, stopPointIdRef, chouetteRouteId);
                 }
-                index++;
             }
+
+            chouetteRoute.setFilled(true);
         }
+    }
+
+    private void addRouteIdRef(Context context, String objectId, String routeId) {
+        Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
+        objectContext.put(ROUTE_ID, routeId);
     }
 
     static {

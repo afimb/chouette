@@ -7,8 +7,6 @@ import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.exchange.validation.report.DataLocation;
-import mobi.chouette.exchange.validation.report.ValidationReporter;
 import org.rutebanken.netex.model.*;
 
 import javax.xml.bind.JAXBElement;
@@ -101,6 +99,8 @@ public class NetworkValidator extends AbstractValidator implements Validator<Net
         GroupsOfLinesInFrame_RelStructure groupsOfLinesStruct = target.getGroupsOfLines();
 
         // TODO consider separating the two checks in if test
+        // optional
+/*
         if (groupsOfLinesStruct == null || isCollectionEmpty(groupsOfLinesStruct.getGroupOfLines())) {
             // TODO: consider making data location global for validator, with only reference to file name
             DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
@@ -115,6 +115,7 @@ public class NetworkValidator extends AbstractValidator implements Validator<Net
             // TODO validate group of lines here...
             // TODO also validate name element of each GroupOfLines element
         }
+*/
 
         // TODO: change back to NETWORK_4 when validator complete
         // 2-NETEX-Network-4 : validate optional tariff zones (cardinality 0:*)

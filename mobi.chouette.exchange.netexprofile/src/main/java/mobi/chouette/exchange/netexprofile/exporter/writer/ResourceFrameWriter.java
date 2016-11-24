@@ -1,12 +1,12 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
-import java.io.IOException;
-import java.io.Writer;
-
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
+
+import java.io.IOException;
+import java.io.Writer;
 
 public class ResourceFrameWriter extends AbstractWriter{
 

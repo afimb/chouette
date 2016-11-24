@@ -6,22 +6,25 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
+import mobi.chouette.exchange.netexprofile.importer.util.ObjectIdCreator;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.NetworkValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.model.*;
+import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
-import org.rutebanken.netex.model.Network;
 
 import javax.xml.bind.JAXBElement;
 import java.util.Collection;
 import java.util.List;
 
 @Log4j
-public class NetworkParser implements NetexParser {
+public class NetworkParser extends AbstractParser {
+
+    public static final String LOCAL_CONTEXT = "NetworkContext";
+    public static final String NETWORK_ID = "networkId";
 
     @Override
     public void initReferentials(Context context) throws Exception {
@@ -51,17 +54,19 @@ public class NetworkParser implements NetexParser {
 
         Collection<org.rutebanken.netex.model.Network> netexNetworks = netexReferential.getNetworks().values();
         for (org.rutebanken.netex.model.Network netexNetwork : netexNetworks) {
-            mobi.chouette.model.Network chouetteNetwork = ObjectFactory.getPTNetwork(chouetteReferential, netexNetwork.getId());
-            chouetteNetwork.setFilled(true);
+
+            String netexNetworkId = netexNetwork.getId();
+            String chouetteNetworkId = ObjectIdCreator.createNetworkId(null, netexNetworkId);
+            mobi.chouette.model.Network chouetteNetwork = ObjectFactory.getPTNetwork(chouetteReferential, chouetteNetworkId);
+            addNetworkIdRef(context, netexNetworkId, chouetteNetworkId);
+
+            chouetteNetwork.setSourceIdentifier("NeTEx");
 
             // mandatory
-            MultilingualString networkName = netexNetwork.getName();
-            if (networkName != null) {
-                String networkNameValue = networkName.getValue();
-                if (StringUtils.isNotEmpty(networkNameValue)) {
-                    chouetteNetwork.setName(networkNameValue);
-                }
-            }
+            String networkName = netexNetwork.getName().getValue();
+            chouetteNetwork.setName(networkName);
+
+            chouetteNetwork.setRegistrationNumber(netexNetworkId.split(":")[2]);
 
             // mandatory
             GroupsOfLinesInFrame_RelStructure groupsOfLinesStruct = netexNetwork.getGroupsOfLines();
@@ -95,7 +100,14 @@ public class NetworkParser implements NetexParser {
                     }
                 }
             }
+
+            chouetteNetwork.setFilled(true);
         }
+    }
+
+    private void addNetworkIdRef(Context context, String objectId, String networkId) {
+        Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
+        objectContext.put(NETWORK_ID, networkId);
     }
 
     static {

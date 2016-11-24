@@ -1,14 +1,13 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
+import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
+import mobi.chouette.model.Line;
+
+import javax.xml.datatype.DatatypeConfigurationException;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-
-import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
-import mobi.chouette.model.Line;
 
 public class DeliveryWriter extends AbstractWriter{
 	

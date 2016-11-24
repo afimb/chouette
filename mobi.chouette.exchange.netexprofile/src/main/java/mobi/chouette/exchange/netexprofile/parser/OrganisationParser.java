@@ -7,6 +7,7 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
+import mobi.chouette.exchange.netexprofile.importer.util.ObjectIdCreator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexNamespaceContext;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.OrganisationValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
@@ -29,7 +30,10 @@ import javax.xml.xpath.XPathFactory;
 import java.util.List;
 
 @Log4j
-public class OrganisationParser implements NetexParser {
+public class OrganisationParser extends AbstractParser {
+
+    public static final String LOCAL_CONTEXT = "OrganisationContext";
+    public static final String COMPANY_ID = "companyId";
 
     private XPathFactory factory = XPathFactory.newInstance();
 
@@ -57,6 +61,7 @@ public class OrganisationParser implements NetexParser {
         }
     }
 
+    // TODO rework to only parse the contact structure with dom, top level should parse organisations from referential
     @Override
     public void parse(Context context) throws Exception {
         Referential referential = (Referential) context.get(REFERENTIAL);
@@ -67,42 +72,51 @@ public class OrganisationParser implements NetexParser {
         xpath.setNamespaceContext(new NetexNamespaceContext());
 
         NodeList list = (NodeList) xpath.evaluate("//n:ResourceFrame/n:organisations", root, XPathConstants.NODESET);
+
         for (int i = 0; i < list.getLength(); i++) {
             Element el = (Element) list.item(i);
             NodeList children = el.getChildNodes();
+
             for (int k = 0; k < children.getLength(); k++) {
                 Node child = children.item(k);
+
                 if (child.getNodeType() == Node.ELEMENT_NODE) {
                     Element organisationRoot = (Element) child;
-                    parseOrganisation(referential, organisationRoot);
-                }
-            }
-        }
-    }
+                    //parseOrganisation(referential, organisationRoot);
 
-    private void parseOrganisation(Referential referential, Element organisationRoot) {
-        Company company = ObjectFactory.getCompany(referential, organisationRoot.getAttribute(ID));
-        String companyNumber = organisationRoot.getElementsByTagName("CompanyNumber").item(0).getTextContent();
-        company.setRegistrationNumber(companyNumber);
+                    // TODO generate/create chouette id instead, e.g. substitute 'Authority' and 'Operators' with 'Company' in ids
+                    String netexOrganisationId = organisationRoot.getAttribute(ID);
+                    String chouetteCompanyId = ObjectIdCreator.createCompanyId(null, ObjectIdCreator.extractOriginalId(netexOrganisationId));
+                    Company company = ObjectFactory.getCompany(referential, chouetteCompanyId);
+                    addCompanyIdRef(context, netexOrganisationId, chouetteCompanyId);
 
-        String name = organisationRoot.getElementsByTagName(NAME).item(0).getTextContent();
-        company.setShortName(name);
+                    String companyNumber = organisationRoot.getElementsByTagName("CompanyNumber").item(0).getTextContent();
+                    company.setRegistrationNumber(companyNumber);
 
-        String legalName = organisationRoot.getElementsByTagName("LegalName").item(0).getTextContent();
-        company.setName(legalName);
+                    String name = organisationRoot.getElementsByTagName(NAME).item(0).getTextContent();
+                    company.setShortName(name);
 
-        // String organisationType = organisationRoot.getElementsByTagName("OrganisationType").item(0).getTextContent(); // do we need this, not represented in chouette Company model?
+                    String legalName = organisationRoot.getElementsByTagName("LegalName").item(0).getTextContent();
+                    company.setName(legalName);
 
-        Element contactDetailsElement = (Element) organisationRoot.getElementsByTagName("ContactDetails").item(0);
-        parseContactStructure(contactDetailsElement, company);
+                    company.setCode(netexOrganisationId.split(":")[2]);
 
-        // TODO: uncomment to support customer service contact structure, for now disabled, because chouette model does not support multiple contact structures for a Company
+                    // String organisationType = organisationRoot.getElementsByTagName("OrganisationType").item(0).getTextContent(); // do we need this, not represented in chouette Company model?
+
+                    Element contactDetailsElement = (Element) organisationRoot.getElementsByTagName("ContactDetails").item(0);
+                    parseContactStructure(contactDetailsElement, company);
+
+                    // TODO: uncomment to support customer service contact structure, for now disabled, because chouette model does not support multiple contact structures for a Company
 /*
                     Element customerServiceContactDetailsElement = (Element) eElement.getElementsByTagName("CustomerServiceContactDetails").item(0);
 					if (customerServiceContactDetailsElement != null) {
 						parseContactStructure(customerServiceContactDetailsElement, null);
 					}
 */
+                    company.setFilled(true);
+                }
+            }
+        }
     }
 
     private void parseContactStructure(Element contactStructureElement, Company company) {
@@ -126,6 +140,11 @@ public class OrganisationParser implements NetexParser {
             String url = optionalUrlNode.getTextContent();
             company.setUrl(url != null ? url : "");
         }
+    }
+
+    private void addCompanyIdRef(Context context, String objectId, String companyId) {
+        Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
+        objectContext.put(COMPANY_ID, companyId);
     }
 
     static {
