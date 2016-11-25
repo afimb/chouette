@@ -10,6 +10,8 @@ import java.util.Map;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
@@ -157,10 +159,14 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
+		
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		if (localContext == null || localContext.isEmpty()) return ;
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 //		Map<String, Location> fileLocations = data.getFileLocations();
-		Map<String, DataLocation> fileLocations = data.getDataLocations();
+		Map<ChouetteId, DataLocation> fileLocations = data.getDataLocations();
 		Context stopPointsContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
 		Context routesContext = (Context) validationContext.get(ChouetteRouteValidator.LOCAL_CONTEXT);
 		Context journeyPatternsContext = (Context) validationContext.get(JourneyPatternValidator.LOCAL_CONTEXT);
@@ -232,7 +238,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 //							fileLocations.get(objectId), objectContext.get(JOURNEY_PATTERN_ID).toString());
 //					addValidationError(context,VEHICLE_JOURNEY_2, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, fileLocations.get(objectId), objectContext.get(JOURNEY_PATTERN_ID).toString());
+					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), objectContext.get(JOURNEY_PATTERN_ID).toString());
 					fkOK = false;
 				}
 			}
@@ -249,14 +255,14 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 //							fileLocations.get(objectId));
 //					addValidationError(context,VEHICLE_JOURNEY_8, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_8, fileLocations.get(objectId));
+					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_8, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())));
 					fkOK = false;					
 				}
 				else
 				{
 					// affect journeyPattern for following tests
 					vj.setJourneyPattern(vj.getRoute().getJourneyPatterns().get(0));
-					journeyPatternId = vj.getJourneyPattern().getChouetteId().getObjectId();
+					journeyPatternId = neptuneChouetteIdGenerator.toSpecificFormatId(vj.getJourneyPattern().getChouetteId(), parameters.getDefaultCodespace(), vj.getJourneyPattern());
 				}
 			}
 			if (objectContext.containsKey(LINE_ID_SHORTCUT))

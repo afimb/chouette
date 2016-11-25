@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
@@ -43,7 +44,9 @@ public class NeptuneTestsUtils implements Constant, ReportConstant{
 		Assert.assertEquals(referential.getLines().size(), 1, "lines size");
 		Line line = referential.getLines().get("NINOXE:Line:15574334");
 		Assert.assertNotNull(line, "line");
-
+		
+	
+		
 		// comptage des objets :
 		Assert.assertNotNull(line.getNetwork(), "line must have a network");
 		Assert.assertNotNull(line.getGroupOfLines(), "line must have groupOfLines");
@@ -64,7 +67,7 @@ public class NeptuneTestsUtils implements Constant, ReportConstant{
 					bps.add(point.getContainedInStopArea());
 
 					Assert.assertNotNull(point.getContainedInStopArea().getParent(), "StopAreas must have parent : "
-							+ point.getContainedInStopArea().getChouetteId().getObjectId());
+							+ point.getContainedInStopArea().getChouetteId().toString());
 					comms.add(point.getContainedInStopArea().getParent());
 				}
 				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0," journeyPattern should have VehicleJourneys");
@@ -182,11 +185,17 @@ public class NeptuneTestsUtils implements Constant, ReportConstant{
 
 	}
 	
-	public static void checkMinimalLine(Line line)
+	public static void checkMinimalLine(Context context, Line line)
 	{
 		
 		// readed line after save 
 		Assert.assertNotNull(line, "line");
+		
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		Assert.assertNotNull(parameters, "parameters");
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		Assert.assertNotNull(neptuneChouetteIdGenerator, "neptuneChouetteIdGenerator");
+		
 
 		// comptage des objets :
 		Assert.assertNotNull(line.getNetwork(), "line must have a network");
@@ -206,13 +215,13 @@ public class NeptuneTestsUtils implements Constant, ReportConstant{
                 for (VehicleJourney vj : jp.getVehicleJourneys()) {
                 	Assert.assertNotEquals(vj.getTimetables().size(), 0," vehicleJourney should have timetables");
                 	Assert.assertEquals(vj.getVehicleJourneyAtStops().size(), jp.getStopPoints().size()," vehicleJourney should have correct vehicleJourneyAtStop count");
-                	if ("ratp:VehicleJourney:514572940997334".equals(vj.getChouetteId().getObjectId())) {
+                	if ("ratp:VehicleJourney:514572940997334".equals(neptuneChouetteIdGenerator.toSpecificFormatId(vj.getChouetteId(), parameters.getDefaultCodespace(), vj))) {
                 		Assert.assertEquals(vj.getJourneyCategory(), JourneyCategoryEnum.Frequency, " vehicleJourney category should be frequency");
                 		Assert.assertEquals(vj.getJourneyFrequencies().size(), 1, " only one journeyFrequency");
                 	}
                 	
                 	/** GJT Check Offset coherence VehicleAtStop list on specific VehicleJourney */
-                	if ("NINOXE:VehicleJourney:15574500".equals(vj.getChouetteId().getObjectId())) {
+                	if ("NINOXE:VehicleJourney:15574500".equals(neptuneChouetteIdGenerator.toSpecificFormatId(vj.getChouetteId(), parameters.getDefaultCodespace(), vj))) {
                 		Assert.assertEquals(vj.getJourneyCategory(), JourneyCategoryEnum.Timesheet, " vehicleJourney category should be timesheet");
                 		
                 		/** First stop */

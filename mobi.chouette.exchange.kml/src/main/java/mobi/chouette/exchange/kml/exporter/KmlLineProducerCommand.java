@@ -21,6 +21,8 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
 import mobi.chouette.exchange.kml.exporter.KmlData.KmlItem;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
@@ -67,6 +69,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 			Line line = (Line) context.get(LINE);
 
 			KmlExportParameters configuration = (KmlExportParameters) context.get(CONFIGURATION);
+			ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(configuration.getDefaultFormat()));
 
 			ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 			if (collection == null) {
@@ -92,17 +95,17 @@ public class KmlLineProducerCommand implements Command, Constant {
 			KmlDataCollector collector = new KmlDataCollector();
 
 			boolean cont = (collector.collect(collection, line, startDate, endDate));
-			reporter.addObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
+			reporter.addObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, NamingUtil.getName(line),
 					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
+			reporter.setStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+			reporter.setStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
 					collection.getJourneyPatterns().size());
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, collection.getRoutes().size());
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK,
+			reporter.setStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, collection.getRoutes().size());
+			reporter.setStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK,
 					collection.getConnectionLinks().size());
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT,
+			reporter.setStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT,
 					collection.getAccessPoints().size());
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA,
+			reporter.setStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA,
 					collection.getStopAreas().size());
 
 			if (cont) {
@@ -114,7 +117,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 
 				result = SUCCESS;
 			} else {
-				reporter.addErrorToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE,
+				reporter.addErrorToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE,
 						ActionReporter.ERROR_CODE.NO_DATA_ON_PERIOD, "no data on period");
 				result = ERROR;
 			}
@@ -128,22 +131,22 @@ public class KmlLineProducerCommand implements Command, Constant {
 		return result;
 	}
 
-	private void saveSharedData(Context context, ExportableData collection, SharedData shared) {
+	private void saveSharedData(Context context, ExportableData collection, SharedData shared) throws ClassNotFoundException, IOException {
 		Metadata metadata = (Metadata) context.get(METADATA);
 		for (StopArea area : collection.getBoardingPositions()) {
-			shared.getPhysicalStops().addStopArea(area);
+			shared.getPhysicalStops().addStopArea(context, area);
 			if (metadata != null && area.hasCoordinates())
 				metadata.getSpatialCoverage().update(area.getLongitude().doubleValue(),
 						area.getLatitude().doubleValue());
 		}
 		for (StopArea area : collection.getQuays()) {
-			shared.getPhysicalStops().addStopArea(area);
+			shared.getPhysicalStops().addStopArea(context, area);
 			if (metadata != null && area.hasCoordinates())
 				metadata.getSpatialCoverage().update(area.getLongitude().doubleValue(),
 						area.getLatitude().doubleValue());
 		}
 		for (StopArea area : collection.getCommercialStops()) {
-			shared.getCommercialStops().addStopArea(area);
+			shared.getCommercialStops().addStopArea(context, area);
 			if (metadata != null && area.hasCoordinates())
 				metadata.getSpatialCoverage().update(area.getLongitude().doubleValue(),
 						area.getLatitude().doubleValue());
@@ -152,13 +155,13 @@ public class KmlLineProducerCommand implements Command, Constant {
 			if (metadata != null && area.hasCoordinates())
 				metadata.getSpatialCoverage().update(area.getLongitude().doubleValue(),
 						area.getLatitude().doubleValue());
-			shared.getStopPlaces().addStopArea(area);
+			shared.getStopPlaces().addStopArea(context, area);
 		}
 		for (ConnectionLink link : collection.getConnectionLinks()) {
-			shared.getConnectionLinks().addConnectionLink(link);
+			shared.getConnectionLinks().addConnectionLink(context, link);
 		}
 		for (AccessPoint point : collection.getAccessPoints()) {
-			shared.getAccessPoints().addAccessPoint(point);
+			shared.getAccessPoints().addAccessPoint(context, point);
 		}
 	}
 
@@ -167,18 +170,22 @@ public class KmlLineProducerCommand implements Command, Constant {
 	}
 
 	private void saveLine(Context context, Line line, ExportableData collection) throws IOException,
-			DatatypeConfigurationException {
+			DatatypeConfigurationException, ClassNotFoundException {
 		ActionReporter reporter = ActionReporter.Factory.getInstance();
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		String rootDirectory = jobData.getPathName();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
 		KmlFileWriter writer = new KmlFileWriter();
+		
+		KmlExportParameters configuration = (KmlExportParameters) context.get(CONFIGURATION);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(configuration.getDefaultFormat()));
+		
 		// prepare data for line
 		KmlData lineData = new KmlData("ligne : " + line.getName());
-		KmlItem lineItem = lineData.addNewItem(line.getChouetteId().getObjectId());
+		KmlItem lineItem = lineData.addNewItem(chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line));
 		lineItem.addAttribute("name", line.getName());
 		lineItem.addExtraData("transport_mode", line.getTransportModeName());
-		lineItem.addExtraData("objectid", line.getChouetteId().getObjectId());
+		lineItem.addExtraData("objectid", chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line));
 		lineItem.addExtraData("object_version", line.getObjectVersion());
 		lineItem.addExtraData("creation_time", line.getCreationTime());
 		lineItem.addExtraData("creator_id", line.getCreatorId());
@@ -188,24 +195,24 @@ public class KmlLineProducerCommand implements Command, Constant {
 		lineItem.addExtraData("color", line.getColor());
 		lineItem.addExtraData("text_color", line.getTextColor());
 		lineItem.addExtraData("mobility_restricted_suitability", line.getMobilityRestrictedSuitable());
-		lineItem.addExtraData("company_objectid", line.getCompany().getChouetteId().getObjectId());
-		lineItem.addExtraData("network_objectid", line.getNetwork().getChouetteId().getObjectId());
+		lineItem.addExtraData("company_objectid", chouetteIdGenerator.toSpecificFormatId(line.getCompany().getChouetteId(), configuration.getDefaultCodespace(), line.getCompany()));
+		lineItem.addExtraData("network_objectid", chouetteIdGenerator.toSpecificFormatId(line.getNetwork().getChouetteId(), configuration.getDefaultCodespace(), line.getNetwork()));
 
 		Set<String> linksKey = new HashSet<>();
 		for (Route route : collection.getRoutes()) {
 			KmlData routeData = new KmlData("séquence d'arrêts : " + route.getName());
-			KmlItem routeItem = routeData.addNewItem(route.getChouetteId().getObjectId());
+			KmlItem routeItem = routeData.addNewItem(chouetteIdGenerator.toSpecificFormatId(route.getChouetteId(), configuration.getDefaultCodespace(), route));
 			if (!isEmpty(route.getName()))
 				routeItem.addAttribute("name", route.getName());
 			routeItem.addExtraData("wayback_code", route.getWayBack());
-			routeItem.addExtraData("objectid", route.getChouetteId().getObjectId());
+			routeItem.addExtraData("objectid", chouetteIdGenerator.toSpecificFormatId(route.getChouetteId(), configuration.getDefaultCodespace(), route));
 			routeItem.addExtraData("object_version", route.getObjectVersion());
 			routeItem.addExtraData("creation_time", route.getCreationTime());
 			routeItem.addExtraData("creator_id", route.getCreatorId());
 			routeItem.addExtraData("published_name", route.getPublishedName());
 			routeItem.addExtraData("number", route.getNumber());
 			routeItem.addExtraData("direction", route.getDirection());
-			routeItem.addExtraData("line_objectid", line.getChouetteId().getObjectId());
+			routeItem.addExtraData("line_objectid", chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line));
 
 			StopArea previous = null;
 			for (StopPoint point : route.getStopPoints()) {
@@ -218,8 +225,8 @@ public class KmlLineProducerCommand implements Command, Constant {
 				routeItem.addPoint(current);
 				if (previous != null) {
 
-					String key1 = previous.getChouetteId().getObjectId() + "-" + current.getChouetteId().getObjectId();
-					String key2 = current.getChouetteId().getObjectId() + "-" + previous.getChouetteId().getObjectId();
+					String key1 = chouetteIdGenerator.toSpecificFormatId(previous.getChouetteId(), configuration.getDefaultCodespace(), previous) + "-" + chouetteIdGenerator.toSpecificFormatId(current.getChouetteId(), configuration.getDefaultCodespace(), current);
+					String key2 = chouetteIdGenerator.toSpecificFormatId(current.getChouetteId(), configuration.getDefaultCodespace(), current) + "-" + chouetteIdGenerator.toSpecificFormatId(previous.getChouetteId(), configuration.getDefaultCodespace(), previous);
 					if (!linksKey.contains(key1)) {
 						// add link
 						lineItem.addLineString(previous, current);
@@ -233,7 +240,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 			for (JourneyPattern jp : route.getJourneyPatterns()) {
 				if (collection.getJourneyPatterns().contains(jp)) {
 					KmlData jpData = new KmlData("mission : " + jp.getName());
-					KmlItem jpItem = jpData.addNewItem(jp.getChouetteId().getObjectId());
+					KmlItem jpItem = jpData.addNewItem(chouetteIdGenerator.toSpecificFormatId(jp.getChouetteId(), configuration.getDefaultCodespace(), jp));
 					if (!isEmpty(jp.getName()))
 						jpItem.addAttribute("name", jp.getName());
 					jpItem.addExtraData("object_version", jp.getObjectVersion());
@@ -241,7 +248,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 					jpItem.addExtraData("creator_id", jp.getCreatorId());
 					jpItem.addExtraData("registration_number", jp.getRegistrationNumber());
 					jpItem.addExtraData("published_name", jp.getPublishedName());
-					jpItem.addExtraData("route_objectid", route.getChouetteId().getObjectId());
+					jpItem.addExtraData("route_objectid", chouetteIdGenerator.toSpecificFormatId(route.getChouetteId(), configuration.getDefaultCodespace(), route));
 					List<RouteSection> routeSections = jp.getRouteSections();
 
 					boolean sections = false;
@@ -268,7 +275,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 						if (point == null)
 							continue;
 						if (point.getContainedInStopArea().hasCoordinates()) {
-							KmlItem pointItem = jpData.addStopPoint(point);
+							KmlItem pointItem = jpData.addStopPoint(context, point);
 							pointItem.addExtraData("stop", Boolean.valueOf(jp.getStopPoints().contains(point)));
 							if (!sections)
 								jpItem.addPoint(point.getContainedInStopArea());

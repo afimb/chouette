@@ -12,7 +12,8 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
-import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectUtil;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.validation.AccessPointValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.AccessPoint;
@@ -24,7 +25,7 @@ import mobi.chouette.model.util.Referential;
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class AccessPointParser extends NeptuneChouetteIdGenerator implements Parser, Constant {
+public class AccessPointParser implements Parser, Constant {
 	private static final String CHILD_TAG = "AccessPoint";
 
 	@Override
@@ -32,6 +33,9 @@ public class AccessPointParser extends NeptuneChouetteIdGenerator implements Par
 
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
+		
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		int columnNumber =  xpp.getColumnNumber();
@@ -45,8 +49,8 @@ public class AccessPointParser extends NeptuneChouetteIdGenerator implements Par
 
 			if (xpp.getName().equals("objectId")) {
 				 objectId = ParserUtils.getText(xpp.nextText());
-				accessPoint = NeptuneChouetteIdObjectFactory.getAccessPoint(referential,
-						toChouetteId(objectId, "default_codespace"));
+				accessPoint = NeptuneChouetteIdObjectUtil.getAccessPoint(referential,
+						neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
 				accessPoint.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -63,8 +67,8 @@ public class AccessPointParser extends NeptuneChouetteIdGenerator implements Par
 			} else if (xpp.getName().equals("containedIn")) {
 				String containedInId = ParserUtils.getText(xpp.nextText());
 				validator.addContainedIn(context, objectId, containedInId);
-				StopArea stopArea = NeptuneChouetteIdObjectFactory.getStopArea(referential,
-						toChouetteId(containedInId, "default_codespace"));
+				StopArea stopArea = NeptuneChouetteIdObjectUtil.getStopArea(referential,
+						neptuneChouetteIdGenerator.toChouetteId(containedInId, parameters.getDefaultCodespace()));
 				accessPoint.setContainedIn(stopArea);
 			} else if (xpp.getName().equals("address")) {
 

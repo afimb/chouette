@@ -8,6 +8,8 @@ import java.util.Map;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
@@ -71,11 +73,15 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 		if (localContext == null || localContext.isEmpty()) return ;
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		Context accessLinkContext = (Context) validationContext.get(AccessLinkValidator.LOCAL_CONTEXT);
+		
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Map<ChouetteId, AccessPoint> accessPoints = referential.getAccessPoints();
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 //		Map<String, Location> fileLocations = data.getFileLocations();
-		Map<String, DataLocation> fileLocations = data.getDataLocations();
+		Map<ChouetteId, DataLocation> fileLocations = data.getDataLocations();
 // 		String fileName = (String) context.get(FILE_NAME);
 
 		Map<ChouetteId, StopArea> stopAreas = referential.getStopAreas();
@@ -85,11 +91,11 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 		Map<String, List<AccessLink>> mapAccessLinkByAccessPointId = new HashMap<String, List<AccessLink>>();
 		for (AccessLink link : accessLinks.values())
 		{
-			if (accessLinkContext.containsKey(link.getChouetteId().getObjectId()))
+			if (accessLinkContext.containsKey(neptuneChouetteIdGenerator.toSpecificFormatId(link.getChouetteId(), parameters.getDefaultCodespace(), link)))
 			{
 				if (link.getAccessPoint() != null) // if link is invalid, skip it
 				{
-					String id = link.getAccessPoint().getChouetteId().getObjectId();
+					String id = neptuneChouetteIdGenerator.toSpecificFormatId(link.getAccessPoint().getChouetteId(), parameters.getDefaultCodespace(), link.getAccessPoint());
 					List<AccessLink> list = mapAccessLinkByAccessPointId.get(id);
 					if (list == null)
 					{
@@ -111,7 +117,7 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 			Context objectContext = (Context) localContext.get(objectId);
 			AccessPoint accessPoint = accessPoints.get(objectId);
 //			Location sourceLocation = fileLocations.get(accessPoint.getChouetteId().getObjectId());
-			DataLocation sourceLocation = fileLocations.get(accessPoint.getChouetteId().getObjectId());
+			DataLocation sourceLocation = fileLocations.get(accessPoint.getChouetteId());
 			// 2-NEPTUNE-AccessPoint-1 : check existence of containedIn stopArea
 			String containedIn = (String) objectContext.get(CONTAINED_IN);
 			if (containedIn == null || !stopAreaContext.containsKey(containedIn))
@@ -148,8 +154,7 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 			}
 
 			// 2-NEPTUNE-AccessPoint-3 : check presence of access links
-			List<AccessLink> links = mapAccessLinkByAccessPointId.get(accessPoint
-					.getChouetteId().getObjectId());
+			List<AccessLink> links = mapAccessLinkByAccessPointId.get(neptuneChouetteIdGenerator.toSpecificFormatId(accessPoint.getChouetteId(), parameters.getDefaultCodespace(), accessPoint));
 			if (links == null)
 			{
 //				Detail errorItem = new Detail(

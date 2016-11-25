@@ -7,14 +7,15 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.netex.NetexChouetteIdGenerator;
+import mobi.chouette.exchange.netex.NetexChouetteIdObjectUtil;
+import mobi.chouette.exchange.netex.importer.NetexImportParameters;
 import mobi.chouette.model.GroupOfLine;
-import mobi.chouette.exchange.netex.NetexChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class GroupOfLineParser extends NetexChouetteIdGenerator implements Parser, Constant {
+public class GroupOfLineParser implements Parser, Constant {
 
 	private static final String CHILD_TAG = "groupsOfLines";
 
@@ -43,9 +44,12 @@ public class GroupOfLineParser extends NetexChouetteIdGenerator implements Parse
 		xpp.require(XmlPullParser.START_TAG, null, "GroupOfLine");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
+		NetexImportParameters configuration = (NetexImportParameters) context.get(CONFIGURATION);
+		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		String id = xpp.getAttributeValue(null, ID);
-		GroupOfLine groupOfLine = NetexChouetteIdObjectFactory.getGroupOfLine(referential, toChouetteId(id, "default_codespace"));
+		GroupOfLine groupOfLine = NetexChouetteIdObjectUtil.getGroupOfLine(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace()));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		groupOfLine.setObjectVersion(version != null ? version : 0);

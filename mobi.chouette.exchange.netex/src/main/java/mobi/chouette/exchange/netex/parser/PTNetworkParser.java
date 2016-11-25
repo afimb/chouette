@@ -7,14 +7,15 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.netex.NetexChouetteIdGenerator;
+import mobi.chouette.exchange.netex.NetexChouetteIdObjectUtil;
+import mobi.chouette.exchange.netex.importer.NetexImportParameters;
 import mobi.chouette.model.Network;
-import mobi.chouette.exchange.netex.NetexChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class PTNetworkParser extends NetexChouetteIdGenerator implements Parser, Constant {
+public class PTNetworkParser implements Parser, Constant {
 
 	private static final String CHILD_TAG = "Network";
 
@@ -27,10 +28,13 @@ public class PTNetworkParser extends NetexChouetteIdGenerator implements Parser,
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
+		NetexImportParameters configuration = (NetexImportParameters) context.get(CONFIGURATION);
+		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		String id = xpp.getAttributeValue(null, ID);
 
-		Network network = NetexChouetteIdObjectFactory.getPTNetwork(referential, toChouetteId(id, "default_codespace"));
+		Network network = NetexChouetteIdObjectUtil.getPTNetwork(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace()));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		network.setObjectVersion(version != null ? version : 0);

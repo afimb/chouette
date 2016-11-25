@@ -9,18 +9,19 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.netex.NetexChouetteIdGenerator;
+import mobi.chouette.exchange.netex.NetexChouetteIdObjectUtil;
+import mobi.chouette.exchange.netex.importer.NetexImportParameters;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.type.TransportModeNameEnum;
-import mobi.chouette.exchange.netex.NetexChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class LineParser extends NetexChouetteIdGenerator implements Parser, Constant {
+public class LineParser implements Parser, Constant {
 
 	private static final String CHILD_TAG = "lines";
 
@@ -49,9 +50,12 @@ public class LineParser extends NetexChouetteIdGenerator implements Parser, Cons
 		xpp.require(XmlPullParser.START_TAG, null, "Line");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
+		NetexImportParameters configuration = (NetexImportParameters) context.get(CONFIGURATION);
+		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		String id = xpp.getAttributeValue(null, ID);
-		Line line = NetexChouetteIdObjectFactory.getLine(referential, toChouetteId(id, "default_codespace"));
+		Line line = NetexChouetteIdObjectUtil.getLine(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace()));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		line.setObjectVersion(version != null ? version : 0);
@@ -75,7 +79,7 @@ public class LineParser extends NetexChouetteIdGenerator implements Parser, Cons
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("RouteRef")) {
 						String ref = xpp.getAttributeValue(null, REF);
-						Route route = NetexChouetteIdObjectFactory.getRoute(referential, toChouetteId(ref, "default_codespace"));
+						Route route = NetexChouetteIdObjectUtil.getRoute(referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace()));
 						route.setLine(line);
 						XPPUtil.skipSubTree(log, xpp);
 					} else {

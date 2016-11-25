@@ -9,6 +9,7 @@ import mobi.chouette.common.XPPUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.validation.TimetableValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.CalendarDay;
@@ -17,13 +18,13 @@ import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
-import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class TimetableParser extends NeptuneChouetteIdGenerator implements Parser, Constant {
+public class TimetableParser implements Parser, Constant {
 	private static final String CHILD_TAG = "Timetable";
 
 	@Override
@@ -31,6 +32,9 @@ public class TimetableParser extends NeptuneChouetteIdGenerator implements Parse
 
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
+		
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		int columnNumber =  xpp.getColumnNumber();
@@ -46,7 +50,7 @@ public class TimetableParser extends NeptuneChouetteIdGenerator implements Parse
 
 			if (xpp.getName().equals("objectId")) {
 				 objectId = ParserUtils.getText(xpp.nextText());
-				timetable = NeptuneChouetteIdObjectFactory.getTimetable(referential, toChouetteId(objectId, "default_codespace"));
+				timetable = NeptuneChouetteIdObjectUtil.getTimetable(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
 				timetable.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -84,8 +88,8 @@ public class TimetableParser extends NeptuneChouetteIdGenerator implements Parse
 				timetable.addPeriod(period);
 			} else if (xpp.getName().equals("vehicleJourneyId")) {
 				String vehicleJourneyId = ParserUtils.getText(xpp.nextText());
-				VehicleJourney vehicleJourney = NeptuneChouetteIdObjectFactory
-						.getVehicleJourney(referential, toChouetteId(vehicleJourneyId, "default_codespace"));
+				VehicleJourney vehicleJourney = NeptuneChouetteIdObjectUtil
+						.getVehicleJourney(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
 				timetable.addVehicleJourney(vehicleJourney);
 				validator.addVehicleJourneyId(context, objectId, vehicleJourneyId);
 			} else {

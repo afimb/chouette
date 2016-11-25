@@ -23,6 +23,7 @@ import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.exchange.validator.DummyChecker;
 import mobi.chouette.exchange.validator.JobDataTest;
 import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.StopArea;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -128,20 +129,20 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 
 			StopArea area1 = new StopArea();
 			area1.setId(id++);
-			area1.getChouetteId().setObjectId("test1:StopArea:1");
+			area1.setChouetteId(new ChouetteId("test1", "1", false));
 			area1.setName("test1");
 			bean1 = new AccessPoint();
 			bean1.setId(id++);
-			bean1.getChouetteId().setObjectId("test1:AccessPoint:1");
+			bean1.setChouetteId(new ChouetteId("test1", "1", false));
 			bean1.setName("test1");
 			bean1.setContainedIn(area1);
 			StopArea area2 = new StopArea();
 			area2.setId(id++);
-			area2.getChouetteId().setObjectId("test1:StopArea:2");
+			area2.setChouetteId(new ChouetteId("test1", "2", false));
 			area2.setName("test2");
 			bean2 = new AccessPoint();
 			bean2.setId(id++);
-			bean2.getChouetteId().setObjectId("test2:AccessPoint:1");
+			bean2.setChouetteId(new ChouetteId("test2", "1", false));
 			bean2.setName("test2");
 			bean2.setContainedIn(area2);
 
@@ -209,8 +210,8 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 
 		List<CheckPointErrorReport> details = checkReportForTest(report, "4-AccessPoint-1", 1);
 		CheckPointErrorReport detail = details.get(0);
-		Assert.assertEquals(detail.getReferenceValue(), "ObjectId", "detail must refer column");
-		Assert.assertEquals(detail.getValue(), bean2.getChouetteId().getObjectId().split(":")[2], "detail must refer value");
+		Assert.assertEquals(detail.getReferenceValue(), "TechnicalId", "detail must refer column");
+		Assert.assertEquals(detail.getValue(), bean2.getTechnicalId(), "detail must refer value");
 	}
 
 
@@ -276,9 +277,9 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 		AccessPoint access1 = null;
 		AccessPoint access2 = null;
 		for (AccessPoint accessPoint : beans) {
-			if (accessPoint.getChouetteId().getObjectId().equals("NINOXE:AccessPoint:6"))
+			if (accessPoint.getCodeSpace().equals("NINOXE") && accessPoint.getTechnicalId().equals("6"))
 				access1 = accessPoint;
-			if (accessPoint.getChouetteId().getObjectId().equals("NINOXE:AccessPoint:7"))
+			if (accessPoint.getCodeSpace().equals("NINOXE") && accessPoint.getTechnicalId().equals("7"))
 				access2 = accessPoint;
 		}
 

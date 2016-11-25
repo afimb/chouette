@@ -1,14 +1,12 @@
 package mobi.chouette.exchange.neptune.exporter.producer;
 
-import org.trident.schema.trident.ChouetteAreaType;
-import org.trident.schema.trident.StopAreaExtensionType;
-import org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea;
-
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.JsonExtension;
-import mobi.chouette.model.Line;
 import mobi.chouette.model.RoutingConstraint;
-import mobi.chouette.model.StopArea;
-import mobi.chouette.model.type.ChouetteAreaEnum;
+
+import org.trident.schema.trident.ChouetteAreaType;
+import org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea;
+import org.trident.schema.trident.StopAreaExtensionType;
 
 public class ITLStopAreaProducer extends AbstractJaxbNeptuneProducer<ChouetteArea.StopArea, RoutingConstraint> implements
 JsonExtension {
@@ -16,12 +14,12 @@ JsonExtension {
 	 * @param routingConstraint
 	 * @return
 	 */
-	public ChouetteArea.StopArea produce(RoutingConstraint routingConstraint)
+	public ChouetteArea.StopArea produce(Context context, RoutingConstraint routingConstraint)
 	{
 		ChouetteArea.StopArea jaxbStopArea = tridentFactory
 				.createChouettePTNetworkTypeChouetteAreaStopArea();
 
-		populateFromModel(jaxbStopArea, routingConstraint);
+		populateFromModel(context, jaxbStopArea, routingConstraint);
 		StopAreaExtensionType stopAreaExtension = tridentFactory.createStopAreaExtensionType();
 
 

@@ -17,6 +17,8 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.core.ChouetteException;
 import mobi.chouette.dao.LineDAO;
+import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
@@ -25,6 +27,8 @@ import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.exchange.validator.DummyChecker;
 import mobi.chouette.exchange.validator.JobDataTest;
+import mobi.chouette.exchange.validator.ValidateParameters;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
@@ -137,15 +141,15 @@ public class ValidationLines extends AbstractTestValidation
 
 			bean1 = new Line();
 			bean1.setId(id++);
-			bean1.getChouetteId().setObjectId("test1:Line:1");
+			bean1.setChouetteId(new ChouetteId("test1", "1", false));
 			bean1.setName("test1");
 			bean2 = new Line();
 			bean2.setId(id++);
-			bean2.getChouetteId().setObjectId("test2:Line:1");
+			bean2.setChouetteId(new ChouetteId("test2", "1", false));
 			bean2.setName("test2");
 			bean3 = new Line();
 			bean3.setId(id++);
-			bean3.getChouetteId().setObjectId("test3:Line:1");
+			bean3.setChouetteId(new ChouetteId("test3", "1", false));
 			bean3.setName("test3");
 
 		} 
@@ -213,9 +217,9 @@ public class ValidationLines extends AbstractTestValidation
 		List<CheckPointErrorReport> details = checkReportForTest(report,"4-Line-1",1);
 		CheckPointErrorReport detail = details.get(0);
 		Assert.assertEquals(detail.getReferenceValue(),"ObjectId","detail must refer column");
-		Assert.assertEquals(detail.getValue(),bean2.getChouetteId().getObjectId().split(":")[2],"detail must refer value");
-		Assert.assertEquals(detail.getSource().getObjectId(),bean2.getChouetteId().getObjectId(),"detail must refer second bean as source");
-		Assert.assertEquals(detail.getTargets().get(0).getObjectId(),bean1.getChouetteId().getObjectId(),"detail must refer fisrt bean as target");
+		Assert.assertEquals(detail.getValue(),bean2.getTechnicalId(),"detail must refer value");
+		Assert.assertEquals(detail.getSource().getObjectId(),bean2.getTechnicalId(),"detail must refer second bean as source");
+		Assert.assertEquals(detail.getTargets().get(0).getObjectId(),bean1.getTechnicalId(),"detail must refer fisrt bean as target");
 	}
 
 
@@ -225,22 +229,26 @@ public class ValidationLines extends AbstractTestValidation
 		// 3-Line-1 : check if two lines have same name
 		log.info(Color.BLUE +"3-Line-1"+ Color.NORMAL);
 		Context context = initValidatorContext();
-
+		
 		Assert.assertNotNull(fullparameters, "no parameters for test");
-
-		bean1.getChouetteId().setObjectId("NINOXE:Line:modelLine");
-		bean2.getChouetteId().setObjectId("NINOXE:Line:wrongLine");
-		bean3.getChouetteId().setObjectId("NINOXE:Line:goodLine");
+		
+		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
+		
+		bean1.setChouetteId(new ChouetteId("NINOXE", "modelLine", false));
+		bean2.setChouetteId(new ChouetteId("NINOXE", "wrongLine", false));
+		bean3.setChouetteId(new ChouetteId("NINOXE", "goodLine", false));
 
 		Network network1 = new Network();
 		network1.setId(1L);
-		network1.getChouetteId().setObjectId("NINOXE:GroupOfLine:testNetwork1");
+		
+		network1.setChouetteId(new ChouetteId("NINOXE", "testNetwork1", false));
 		network1.setName("test network1");
 		bean1.setNetwork(network1);
 		bean2.setNetwork(network1);
 		Network network2 = new Network();
 		network2.setId(2L);
-		network2.getChouetteId().setObjectId("NINOXE:GroupOfLine:testNetwork2");
+		network2.setChouetteId(new ChouetteId("NINOXE", "testNetwork2", false));
 		network2.setName("test network2");
 		bean3.setNetwork(network2);
 
@@ -291,11 +299,11 @@ public class ValidationLines extends AbstractTestValidation
 		boolean line3objectIdFound = false;
 		for (CheckPointErrorReport detailReport : details)
 		{
-			if (detailReport.getSource().getObjectId().equals(bean1.getChouetteId().getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(chouetteIdGenerator.toSpecificFormatId(bean1.getChouetteId(), parameters.getDefaultCodespace(), bean1)))
 				line1objectIdFound = true;
-			if (detailReport.getSource().getObjectId().equals(bean2.getChouetteId().getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(chouetteIdGenerator.toSpecificFormatId(bean2.getChouetteId(), parameters.getDefaultCodespace(), bean2)))
 				line2objectIdFound = true;
-			if (detailReport.getSource().getObjectId().equals(bean3.getChouetteId().getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(chouetteIdGenerator.toSpecificFormatId(bean3.getChouetteId(), parameters.getDefaultCodespace(), bean3)))
 				line3objectIdFound = true;
 		}
 		Assert.assertTrue(line1objectIdFound,
@@ -314,7 +322,10 @@ public class ValidationLines extends AbstractTestValidation
 		Context context = initValidatorContext();
 		context.put(VALIDATION,fullparameters);
 		context.put(VALIDATION_REPORT, new ValidationReport());
-
+		
+		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
+		
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
 		importLines("Ligne_OK.xml", 1, 1, true);
@@ -327,7 +338,7 @@ public class ValidationLines extends AbstractTestValidation
 		Line line1 = beans.get(0);
 
 		// line1 is model;
-		line1.getChouetteId().setObjectId("NINOXE:Line:modelLine");
+		line1.setChouetteId(new ChouetteId("NINOXE", "modelLine", false));
 
 		line1.getRoutes().clear();
 
@@ -360,7 +371,7 @@ public class ValidationLines extends AbstractTestValidation
 		}
 		for (CheckPointErrorReport detail : details) {
 			log.warn(detail);
-			Assert.assertEquals(detail.getSource().getObjectId(),line1.getChouetteId().getObjectId(), "line must be source of error");
+			Assert.assertEquals(detail.getSource().getObjectId(),chouetteIdGenerator.toSpecificFormatId(line1.getChouetteId(), parameters.getDefaultCodespace(), line1), "line must be source of error");
 		}
 
 		utx.rollback();
@@ -374,6 +385,10 @@ public class ValidationLines extends AbstractTestValidation
 		log.info(Color.BLUE +"4-Line-2"+ Color.NORMAL);
 		Context context = initValidatorContext();
 		context.put(VALIDATION,fullparameters);
+		
+		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
+		
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -386,7 +401,7 @@ public class ValidationLines extends AbstractTestValidation
 		Assert.assertFalse(beans.isEmpty(), "No data for test");
 		Line line1 = beans.get(0);
 		// line1 is model;
-		line1.getChouetteId().setObjectId("NINOXE:Line:modelLine");
+		line1.setChouetteId(new ChouetteId("NINOXE", "modelLine", false));
 		ValidationData data = new ValidationData();
 		context.put(VALIDATION_DATA, data);
 		data.setCurrentLine(line1);
@@ -444,7 +459,7 @@ public class ValidationLines extends AbstractTestValidation
 			List<CheckPointErrorReport> details = checkReportForTest(report,"4-Line-2",-1);
 			for (CheckPointErrorReport detail : details) {
 				log.warn(detail);
-				Assert.assertEquals(detail.getSource().getObjectId(),line1.getChouetteId().getObjectId(), "line must be source of error");
+				Assert.assertEquals(detail.getSource().getObjectId(),chouetteIdGenerator.toSpecificFormatId(line1.getChouetteId(), parameters.getDefaultCodespace(), line1), "line must be source of error");
 			}
 		}
 		utx.rollback();
@@ -458,6 +473,9 @@ public class ValidationLines extends AbstractTestValidation
 		log.info(Color.BLUE +"4-Line-3"+ Color.NORMAL);
 		Context context = initValidatorContext();
 		context.put(VALIDATION,fullparameters);
+		
+		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -471,7 +489,7 @@ public class ValidationLines extends AbstractTestValidation
 		Line line1 = beans.get(0);
 
 		// line1 is model;
-		line1.getChouetteId().setObjectId("NINOXE:Line:modelLine");
+		line1.setChouetteId(new ChouetteId("NINOXE", "modelLine", false));
 		ValidationData data = new ValidationData();
 		context.put(VALIDATION_DATA, data);
 		data.setCurrentLine(line1);
@@ -531,7 +549,7 @@ public class ValidationLines extends AbstractTestValidation
 			List<CheckPointErrorReport> details = checkReportForTest(report,"4-Line-3",-1);
 			for (CheckPointErrorReport detail : details) {
 				log.warn(detail);
-				Assert.assertEquals(detail.getSource().getObjectId(),line1.getChouetteId().getObjectId(), "line must be source of error");
+				Assert.assertEquals(detail.getSource().getObjectId(),chouetteIdGenerator.toSpecificFormatId(line1.getChouetteId(), parameters.getDefaultCodespace(), line1), "line must be source of error");
 			}
 		}
 		utx.rollback();
@@ -546,6 +564,9 @@ public class ValidationLines extends AbstractTestValidation
 		log.info(Color.BLUE +"4-Line-4"+ Color.NORMAL);
 		Context context = initValidatorContext();
 		context.put(VALIDATION,fullparameters);
+		
+		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -558,7 +579,7 @@ public class ValidationLines extends AbstractTestValidation
 		Assert.assertFalse(beans.isEmpty(), "No data for test");
 		Line line1 = beans.get(0);
 		// line1 is model;
-		line1.getChouetteId().setObjectId("NINOXE:Line:modelLine");
+		line1.setChouetteId(new ChouetteId("NINOXE", "modelLine", false));
 		ValidationData data = new ValidationData();
 		context.put(VALIDATION_DATA, data);
 		data.setCurrentLine(line1);
@@ -630,7 +651,7 @@ public class ValidationLines extends AbstractTestValidation
 			List<CheckPointErrorReport> details = checkReportForTest(report,"4-Line-4",-1);
 			for (CheckPointErrorReport detail : details) {
 				log.warn(detail);
-				Assert.assertEquals(detail.getSource().getObjectId(),line1.getChouetteId().getObjectId(), "line must be source of error");
+				Assert.assertEquals(detail.getSource().getObjectId(),chouetteIdGenerator.toSpecificFormatId(line1.getChouetteId(), parameters.getDefaultCodespace(), line1), "line must be source of error");
 			}
 		}
 

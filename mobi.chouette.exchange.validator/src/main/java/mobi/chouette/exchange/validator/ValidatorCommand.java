@@ -18,6 +18,8 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
 import mobi.chouette.exchange.CommandCancelledException;
 import mobi.chouette.exchange.DaoReader;
 import mobi.chouette.exchange.ProcessingCommands;
@@ -114,6 +116,8 @@ public class ValidatorCommand implements Command, Constant {
 		boolean result = ERROR;
 		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
 		ActionReporter reporter = ActionReporter.Factory.getInstance();
+		
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
 
 		// initialisation
 		List<? extends Command> preProcessingCommands = commands.getPreProcessingCommands(context, true);
@@ -169,11 +173,11 @@ public class ValidatorCommand implements Command, Constant {
 			// TODO a mettre dans une commande dédiée
 			ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 			Line line = data.getCurrentLine();
-			reporter.addObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line), OBJECT_STATE.OK, IO_TYPE.INPUT);
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN, data.getJourneyPatterns().size());
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, data.getRoutes().size());
-			reporter.setStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY, data.getVehicleJourneys().size());
+			reporter.addObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), parameters.getDefaultCodespace(), line), OBJECT_TYPE.LINE, NamingUtil.getName(line), OBJECT_STATE.OK, IO_TYPE.INPUT);
+			reporter.setStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), parameters.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+			reporter.setStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), parameters.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN, data.getJourneyPatterns().size());
+			reporter.setStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), parameters.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, data.getRoutes().size());
+			reporter.setStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), parameters.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY, data.getVehicleJourneys().size());
 
 			if (!validateFailed) 
 			{

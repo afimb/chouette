@@ -15,6 +15,8 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneImporterCommand;
 import mobi.chouette.exchange.report.ActionReport;
@@ -186,9 +188,12 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 
 	}
 	
-	protected void createRouteSection(Line line) {
+	protected void createRouteSection(Context context, Line line) throws ClassNotFoundException, IOException {
 		GeometryFactory factory = new GeometryFactory(new PrecisionModel(10), 4326);
 		int cpt = 0;
+		
+		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
 		
 		for(Route r: line.getRoutes()) {
 			for(JourneyPattern jp: r.getJourneyPatterns()) {
@@ -201,7 +206,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 						cpt ++;
 						RouteSection section = new RouteSection();
 						String routeSectionId = line.getChouetteId().getCodeSpace() + ":" + RouteSection.ROUTE_SECTION_KEY + ":" + cpt;
-						section.getChouetteId().setObjectId(routeSectionId);
+						section.setChouetteId(chouetteIdGenerator.toChouetteId(routeSectionId, parameters.getDefaultCodespace()));
 						if (!section.isFilled()) {
 						
 							Coordinate[] inputCoords = new Coordinate[2];
@@ -220,8 +225,8 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 								section.setDistance(BigDecimal.valueOf(distance));
 							} catch (NumberFormatException e) {
 								log.error(" : problem with section between " + previousLocation.getName() + "("
-										+ previousLocation.getChouetteId().getObjectId() + " and " + location.getName() + "("
-										+ location.getChouetteId().getObjectId());
+										+ previousLocation.getChouetteId().toString() + " and " + location.getName() + "("
+										+ location.getChouetteId().toString());
 								sections.clear();
 							}
 							// AbstractConverter.addLocation(context, "shapes.txt",

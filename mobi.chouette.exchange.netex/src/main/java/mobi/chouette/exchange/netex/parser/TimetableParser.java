@@ -12,6 +12,8 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.netex.Constant;
+import mobi.chouette.exchange.netex.NetexChouetteIdGenerator;
+import mobi.chouette.exchange.netex.importer.NetexImportParameters;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
@@ -53,7 +55,7 @@ public class TimetableParser implements Parser, Constant {
 		referential.getTimetables().put(timetable.getChouetteId(), timetable);
 
 		log.debug("[DSU] " + "ServiceCalendarFrame" + "\t"
-				+ timetable.getChouetteId().getObjectId());
+				+ timetable.getChouetteId().toString());
 		timetable.setFilled(true);
 	}
 
@@ -64,12 +66,15 @@ public class TimetableParser implements Parser, Constant {
 		xpp.require(XmlPullParser.START_TAG, null, "dayTypes");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
+		NetexImportParameters configuration = (NetexImportParameters) context.get(CONFIGURATION);
+		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("DayType")) {
 
 				String id = xpp.getAttributeValue(null, ID);
-				timetable.getChouetteId().setObjectId(id);
+				timetable.setChouetteId(chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace()));
 
 				Integer version = Integer.valueOf(xpp.getAttributeValue(null,
 						VERSION));

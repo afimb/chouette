@@ -66,7 +66,7 @@ public class DeliveryWriter extends AbstractWriter{
 		writer.write("  <dataObjects>\n");
 		writer.write("    <!-- =========================================== -->    \n");   
 		writer.write("    <CompositeFrame version=\"1\" created=\""+dateFormat.format(line.getNetwork().getVersionDate())+"\" " +
-				"id=\""+line.getChouetteId().getCodeSpace()+":Neptune:CompositeFrame:"+line.getChouetteId().getObjectId()+"\">\n");
+				"id=\""+line.getChouetteId().getCodeSpace()+":Neptune:CompositeFrame:"+line.getChouetteId().getTechnicalId()+"\">\n");
 		writer.write("      <Name>NEPTUNE Mapping Frame</Name>\n");
 		writer.write("      <!-- NEPTUNE [mapping:fixed] : This is a NEPTUNE to NeTEx mapping frame -->\n");
 		writer.write("      <TypeOfFrameRef version=\"01\" ref=\"Neptune:TypeOfFrame:CompositeFrame\"/>\n");

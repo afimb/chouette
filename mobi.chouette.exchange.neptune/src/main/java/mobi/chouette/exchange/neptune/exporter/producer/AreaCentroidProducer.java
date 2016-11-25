@@ -31,7 +31,7 @@ public class AreaCentroidProducer extends
             .createChouettePTNetworkTypeChouetteAreaAreaCentroid();
 
       //
-      populateFromModel(jaxbAreaCentroid, area);
+      populateFromModel(context, jaxbAreaCentroid, area);
 
       jaxbAreaCentroid.setObjectId(area.getChouetteId().getCodeSpace()+":AreaCentroid:"+neptuneChouetteIdGenerator.toSpecificFormatId(area.getChouetteId(), parameters.getDefaultCodespace(), area));
       jaxbAreaCentroid.setComment(getNotEmptyString(area.getComment()));
@@ -45,7 +45,7 @@ public class AreaCentroidProducer extends
          jaxbAreaCentroid.setAddress(jaxbAddress);
       }
 
-      jaxbAreaCentroid.setContainedIn(getNonEmptyObjectId(area));
+      jaxbAreaCentroid.setContainedIn(getNonEmptyObjectId(context, area));
 
       if (area.hasCoordinates())
       {

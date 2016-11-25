@@ -14,6 +14,8 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.LineDAO;
+import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
@@ -22,6 +24,8 @@ import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.exchange.validator.DummyChecker;
 import mobi.chouette.exchange.validator.JobDataTest;
+import mobi.chouette.exchange.validator.ValidateParameters;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
@@ -131,16 +135,16 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 			Line line = new Line();
 			line.setId(id++);
-			line.getChouetteId().setObjectId("test1:Line:1");
+			line.setChouetteId(new ChouetteId("test1", "1", false));
 			line.setName("test");
 			bean1 = new Route();
 			bean1.setId(id++);
-			bean1.getChouetteId().setObjectId("test1:Route:1");
+			bean1.setChouetteId(new ChouetteId("test1", "1", false));
 			bean1.setName("test1");
 			bean1.setLine(line);
 			bean2 = new Route();
 			bean2.setId(id++);
-			bean2.getChouetteId().setObjectId("test2:Route:1");
+			bean2.setChouetteId(new ChouetteId("test2", "1", false));
 			bean2.setName("test2");
 			bean2.setLine(line);
 
@@ -189,6 +193,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		log.info(Color.BLUE + "4-Route-1 unicity" + Color.NORMAL);
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
+		
 
 		context.put(VALIDATION, fullparameters);
 		context.put(VALIDATION_REPORT, new ValidationReport());
@@ -208,7 +213,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		List<CheckPointErrorReport> details = checkReportForTest(report, "4-Route-1", 3);
 		for (CheckPointErrorReport detail : details) {
 			Assert.assertEquals(detail.getReferenceValue(), "ObjectId", "detail must refer column");
-			Assert.assertEquals(detail.getValue(), bean2.getChouetteId().getObjectId().split(":")[2], "detail must refer value");
+			Assert.assertEquals(detail.getValue(), bean2.getTechnicalId(), "detail must refer value");
 		}
 	}
 
@@ -219,6 +224,9 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Context context = initValidatorContext();
 		context.put(VALIDATION, fullparameters);
 		context.put(VALIDATION_REPORT, new ValidationReport());
+		
+		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -260,7 +268,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		}
 		// check detail keys
 		for (CheckPointErrorReport detail : details) {
-			Assert.assertEquals(detail.getSource().getObjectId(), route1.getChouetteId().getObjectId(),
+			Assert.assertEquals(detail.getSource().getObjectId(), chouetteIdGenerator.toSpecificFormatId(route1.getChouetteId(), parameters.getDefaultCodespace(), route1),
 					"route 1 must be source of error");
 		}
 		utx.rollback();
@@ -275,6 +283,10 @@ public class ValidationRoutes extends AbstractTestValidation {
 		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
+		
+		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
+		
 
 		importLines("Ligne_OK.xml", 1, 1, true);
 
@@ -326,9 +338,9 @@ public class ValidationRoutes extends AbstractTestValidation {
 		boolean route2objectIdFound = false;
 		for (CheckPointErrorReport detailReport : details) {
 
-			if (detailReport.getSource().getObjectId().equals(route1.getChouetteId().getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(chouetteIdGenerator.toSpecificFormatId(route1.getChouetteId(), parameters.getDefaultCodespace(), route1)))
 				route1objectIdFound = true;
-			if (detailReport.getSource().getObjectId().equals(route2.getChouetteId().getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(chouetteIdGenerator.toSpecificFormatId(route2.getChouetteId(), parameters.getDefaultCodespace(), route2)))
 				route2objectIdFound = true;
 		}
 		Assert.assertTrue(route1objectIdFound, "detail report must refer route 1");
@@ -346,6 +358,9 @@ public class ValidationRoutes extends AbstractTestValidation {
 		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
+		
+		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
 
 		importLines("Ligne_OK.xml", 1, 1, true);
 
@@ -416,9 +431,9 @@ public class ValidationRoutes extends AbstractTestValidation {
 		boolean route2objectIdFound = false;
 		for (CheckPointErrorReport detailReport : details) {
 
-			if (detailReport.getSource().getObjectId().equals(route1.getChouetteId().getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(chouetteIdGenerator.toSpecificFormatId(route1.getChouetteId(), parameters.getDefaultCodespace(), route1)))
 				route1objectIdFound = true;
-			if (detailReport.getSource().getObjectId().equals(route2.getChouetteId().getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(chouetteIdGenerator.toSpecificFormatId(route2.getChouetteId(), parameters.getDefaultCodespace(), route2)))
 				route2objectIdFound = true;
 		}
 		Assert.assertTrue(route1objectIdFound, "detail report must refer route 1");
@@ -435,6 +450,9 @@ public class ValidationRoutes extends AbstractTestValidation {
 		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
+		
+		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
 
 		importLines("Ligne_OK.xml", 1, 1, true);
 
@@ -449,13 +467,13 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Route route2 = new Route();
 		route2.setLine(line1);
 
-		route1.getChouetteId().setObjectId("NINOXE:Route:original");
-		route2.getChouetteId().setObjectId("NINOXE:Route:copy");
+		route1.setChouetteId(new ChouetteId("NINOXE", "original", false));
+		route2.setChouetteId(new ChouetteId("NINOXE", "copy", false));
 
 		for (StopPoint point : route1.getStopPoints()) {
 			StopPoint pointCopy = new StopPoint();
 			pointCopy.setPosition(point.getPosition());
-			pointCopy.getChouetteId().setObjectId("NINOXE:StopPoint:copy" + point.getPosition());
+			pointCopy.setChouetteId(new ChouetteId("NINOXE", "copy" + point.getPosition(), false));
 			pointCopy.setContainedInStopArea(point.getContainedInStopArea());
 			pointCopy.setRoute(route2);
 		}
@@ -488,9 +506,9 @@ public class ValidationRoutes extends AbstractTestValidation {
 		boolean route2objectIdFound = false;
 		for (CheckPointErrorReport detailReport : details) {
 
-			if (detailReport.getSource().getObjectId().equals(route1.getChouetteId().getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(chouetteIdGenerator.toSpecificFormatId(route1.getChouetteId(), parameters.getDefaultCodespace(), route1)))
 				route1objectIdFound = true;
-			if (detailReport.getSource().getObjectId().equals(route2.getChouetteId().getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(chouetteIdGenerator.toSpecificFormatId(route2.getChouetteId(), parameters.getDefaultCodespace(), route2)))
 				route2objectIdFound = true;
 		}
 		Assert.assertTrue(route1objectIdFound, "detail report must refer route 1");
@@ -507,6 +525,9 @@ public class ValidationRoutes extends AbstractTestValidation {
 		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
+		
+		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
 
 		importLines("Ligne_OK.xml", 1, 1, true);
 
@@ -519,9 +540,9 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		Route route1 = line1.getRoutes().get(0);
 		Route route2 = line1.getRoutes().get(1);
-		route1.getChouetteId().setObjectId("NINOXE:Route:first");
+		route1.setChouetteId(new ChouetteId("NINOXE", "first", false));
 		route1.setOppositeRoute(null);
-		route2.getChouetteId().setObjectId("NINOXE:Route:second");
+		route2.setChouetteId(new ChouetteId("NINOXE", "second", false));
 		route2.setOppositeRoute(null);
 
 		context.put(VALIDATION, fullparameters);
@@ -552,9 +573,9 @@ public class ValidationRoutes extends AbstractTestValidation {
 		boolean route2objectIdFound = false;
 		for (CheckPointErrorReport detailReport : details) {
 
-			if (detailReport.getSource().getObjectId().equals(route1.getChouetteId().getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(chouetteIdGenerator.toSpecificFormatId(route1.getChouetteId(), parameters.getDefaultCodespace(), route1)))
 				route1objectIdFound = true;
-			if (detailReport.getSource().getObjectId().equals(route2.getChouetteId().getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(chouetteIdGenerator.toSpecificFormatId(route2.getChouetteId(), parameters.getDefaultCodespace(), route2)))
 				route2objectIdFound = true;
 		}
 		Assert.assertTrue(route1objectIdFound, "detail report must refer route 1");
@@ -573,6 +594,9 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
 		importLines("Ligne_OK.xml", 1, 1, true);
+		
+		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
 
 		utx.begin();
 		em.joinTransaction();
@@ -584,7 +608,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Route route1 = line1.getRoutes().get(0);
 		route1.getStopPoints().clear();
 
-		route1.getChouetteId().setObjectId("NINOXE:Route:first");
+		route1.setChouetteId(new ChouetteId("NINOXE", "first", false));
 
 		context.put(VALIDATION, fullparameters);
 		ValidationData data = new ValidationData();
@@ -613,7 +637,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		boolean route1objectIdFound = false;
 		for (CheckPointErrorReport detailReport : details) {
 
-			if (detailReport.getSource().getObjectId().equals(route1.getChouetteId().getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(chouetteIdGenerator.toSpecificFormatId(route1.getChouetteId(), parameters.getDefaultCodespace(), route1)))
 				route1objectIdFound = true;
 		}
 		Assert.assertTrue(route1objectIdFound, "detail report must refer route 1");
@@ -629,6 +653,9 @@ public class ValidationRoutes extends AbstractTestValidation {
 		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
+		
+		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
 
 		importLines("Ligne_OK.xml", 1, 1, true);
 
@@ -642,7 +669,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Route route1 = line1.getRoutes().get(0);
 
 		route1.getJourneyPatterns().clear();
-		route1.getChouetteId().setObjectId("NINOXE:Route:first");
+		route1.setChouetteId(new ChouetteId("NINOXE", "first", false));
 
 		context.put(VALIDATION, fullparameters);
 		ValidationData data = new ValidationData();
@@ -671,7 +698,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		boolean route1objectIdFound = false;
 		for (CheckPointErrorReport detailReport : details) {
 
-			if (detailReport.getSource().getObjectId().equals(route1.getChouetteId().getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(chouetteIdGenerator.toSpecificFormatId(route1.getChouetteId(), parameters.getDefaultCodespace(), route1)))
 				route1objectIdFound = true;
 		}
 		Assert.assertTrue(route1objectIdFound, "detail report must refer route 1");
@@ -689,6 +716,9 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
 		importLines("Ligne_OK.xml", 1, 1, true);
+		
+		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
 
 		utx.begin();
 		em.joinTransaction();
@@ -700,7 +730,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Route route1 = line1.getRoutes().get(0);
 
 		route1.getJourneyPatterns().get(0).removeStopPoint(route1.getJourneyPatterns().get(0).getStopPoints().get(0));
-		route1.getChouetteId().setObjectId("NINOXE:Route:first");
+		route1.setChouetteId(new ChouetteId("NINOXE", "first", false));
 
 		context.put(VALIDATION, fullparameters);
 		ValidationData data = new ValidationData();
@@ -729,7 +759,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		boolean route1objectIdFound = false;
 		for (CheckPointErrorReport detailReport : details) {
 
-			if (detailReport.getSource().getObjectId().equals(route1.getChouetteId().getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(chouetteIdGenerator.toSpecificFormatId(route1.getChouetteId(), parameters.getDefaultCodespace(), route1)))
 				route1objectIdFound = true;
 		}
 		Assert.assertTrue(route1objectIdFound, "detail report must refer route 1");
@@ -745,6 +775,9 @@ public class ValidationRoutes extends AbstractTestValidation {
 		context.put(VALIDATION_REPORT, new ValidationReport());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
+		
+		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
 
 		importLines("3-Route-9.xml", 1, 1, true);
 
@@ -757,7 +790,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		Route route1 = null;
 		for (Route route : line1.getRoutes()) {
-			if (route.getChouetteId().getObjectId().equals("NINOXE:Route:15571498")) {
+			if (route.getCodeSpace().equals("NINOXE") && route.getTechnicalId().equals("15571498")) {
 				route1 = route;
 				break;
 			}
@@ -765,7 +798,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Assert.assertNotNull(route1, "route NINOXE:Route:15571498 must be in 3-Route-9.xml");
 
 		// route1.getJourneyPatterns().clear();
-		route1.getChouetteId().setObjectId("NINOXE:Route:first");
+		route1.setChouetteId(new ChouetteId("NINOXE", "first", false));
 
 		context.put(VALIDATION, fullparameters);
 		ValidationData data = new ValidationData();
@@ -794,7 +827,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		boolean route1objectIdFound = false;
 		for (CheckPointErrorReport detailReport : details) {
 			log.warn(detailReport);
-			if (detailReport.getSource().getObjectId().equals(route1.getChouetteId().getObjectId()))
+			if (detailReport.getSource().getObjectId().equals(chouetteIdGenerator.toSpecificFormatId(route1.getChouetteId(), parameters.getDefaultCodespace(), route1)))
 				route1objectIdFound = true;
 		}
 		Assert.assertTrue(route1objectIdFound, "detail report must refer route 1");

@@ -34,7 +34,7 @@ AbstractJaxbNeptuneProducer<ChouettePTNetworkType.AccessLink, AccessLink> implem
 				.createChouettePTNetworkTypeAccessLink();
 
 		//
-		populateFromModel(jaxbAccessLink, accessLink);
+		populateFromModel(context, jaxbAccessLink, accessLink);
 		
 		NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(CONFIGURATION);
 		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);

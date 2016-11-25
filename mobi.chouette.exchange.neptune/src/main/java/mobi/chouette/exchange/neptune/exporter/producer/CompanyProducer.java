@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.neptune.exporter.producer;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.model.Company;
 
 import org.trident.schema.trident.CompanyType;
@@ -9,12 +10,12 @@ public class CompanyProducer extends
 {
 
    //@Override
-   public CompanyType produce(Company company, boolean addExtension)
+   public CompanyType produce(Context context, Company company, boolean addExtension)
    {
       CompanyType jaxbCompany = tridentFactory.createCompanyType();
 
       //
-      populateFromModel(jaxbCompany, company);
+      populateFromModel(context, jaxbCompany, company);
 
       jaxbCompany.setName(company.getName());
       jaxbCompany.setRegistration(getRegistration(company

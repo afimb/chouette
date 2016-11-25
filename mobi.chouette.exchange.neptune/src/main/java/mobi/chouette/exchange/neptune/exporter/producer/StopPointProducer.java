@@ -3,6 +3,7 @@ package mobi.chouette.exchange.neptune.exporter.producer;
 import java.math.BigDecimal;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
@@ -19,12 +20,12 @@ public class StopPointProducer extends
 		JsonExtension {
 
 	// @Override
-	public ChouettePTNetworkType.ChouetteLineDescription.StopPoint produce(StopPoint stopPoint, boolean addExtension) {
+	public ChouettePTNetworkType.ChouetteLineDescription.StopPoint produce(Context context, StopPoint stopPoint, boolean addExtension) {
 		ChouettePTNetworkType.ChouetteLineDescription.StopPoint jaxbStopPoint = tridentFactory
 				.createChouettePTNetworkTypeChouetteLineDescriptionStopPoint();
 
 		//
-		populateFromModel(jaxbStopPoint, stopPoint);
+		populateFromModel(context, jaxbStopPoint, stopPoint);
 
 		jaxbStopPoint.setComment(buildComment(stopPoint, addExtension));
 		if (stopPoint.getContainedInStopArea() != null) {
@@ -33,7 +34,7 @@ public class StopPointProducer extends
 			// jaxbStopPoint.setLineIdShortcut(stopPoint.getLineIdShortcut());
 
 
-			jaxbStopPoint.setContainedIn(getNonEmptyObjectId(stopPoint.getContainedInStopArea()));
+			jaxbStopPoint.setContainedIn(getNonEmptyObjectId(context, stopPoint.getContainedInStopArea()));
 			if (area.hasCoordinates())
 			{
 			jaxbStopPoint.setLatitude(area.getLatitude());
@@ -47,7 +48,7 @@ public class StopPointProducer extends
 			}
 			else
 			{
-				log.error("missing coordinates for StopArea "+area.getChouetteId().getObjectId()+" "+area.getName());
+				log.error("missing coordinates for StopArea "+area.toString()+" "+area.getName());
 				jaxbStopPoint.setLatitude(BigDecimal.ZERO);
 				jaxbStopPoint.setLongitude(BigDecimal.ZERO);
 				jaxbStopPoint.setLongLatType(LongLatTypeType.WGS_84);

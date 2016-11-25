@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.neptune.exporter.producer;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.model.GroupOfLine;
 
@@ -11,11 +12,11 @@ public class GroupOfLineProducer extends
 {
 
    //@Override
-   public GroupOfLineType produce(GroupOfLine bean, boolean addExtension)
+   public GroupOfLineType produce(Context context, GroupOfLine bean, boolean addExtension)
    {
       GroupOfLineType jaxbGroupOfLine = tridentFactory.createGroupOfLineType();
 
-      populateFromModel(jaxbGroupOfLine, bean);
+      populateFromModel(context, jaxbGroupOfLine, bean);
 
       jaxbGroupOfLine.setName(bean.getName());
       jaxbGroupOfLine.setComment(buildComment(bean, addExtension));

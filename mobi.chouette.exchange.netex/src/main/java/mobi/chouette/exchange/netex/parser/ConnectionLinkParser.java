@@ -11,16 +11,17 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.netex.NetexChouetteIdGenerator;
+import mobi.chouette.exchange.netex.NetexChouetteIdObjectUtil;
+import mobi.chouette.exchange.netex.importer.NetexImportParameters;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
-import mobi.chouette.exchange.netex.NetexChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class ConnectionLinkParser extends NetexChouetteIdGenerator implements Parser, Constant {
+public class ConnectionLinkParser implements Parser, Constant {
 
 	private static final String CHILD_TAG = "connections";
 
@@ -49,10 +50,13 @@ public class ConnectionLinkParser extends NetexChouetteIdGenerator implements Pa
 		xpp.require(XmlPullParser.START_TAG, null, "SiteConnection");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
+		NetexImportParameters configuration = (NetexImportParameters) context.get(CONFIGURATION);
+		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		String id = xpp.getAttributeValue(null, ID);
-		ConnectionLink connectionLink = NetexChouetteIdObjectFactory.getConnectionLink(
-				referential, toChouetteId(id, "default_codespace"));
+		ConnectionLink connectionLink = NetexChouetteIdObjectUtil.getConnectionLink(
+				referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace()));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		connectionLink.setObjectVersion(version != null ? version : 0);
@@ -99,8 +103,8 @@ public class ConnectionLinkParser extends NetexChouetteIdGenerator implements Pa
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("StopPlaceRef")) {
 						String ref = xpp.getAttributeValue(null, REF);
-						StopArea startOfLink = NetexChouetteIdObjectFactory.getStopArea(
-								referential, toChouetteId(ref, "default_codespace"));
+						StopArea startOfLink = NetexChouetteIdObjectUtil.getStopArea(
+								referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace()));
 						connectionLink.setStartOfLink(startOfLink);
 						XPPUtil.skipSubTree(log, xpp);
 					} else {
@@ -112,8 +116,8 @@ public class ConnectionLinkParser extends NetexChouetteIdGenerator implements Pa
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("StopPlaceRef")) {
 						String ref = xpp.getAttributeValue(null, REF);
-						StopArea endOfLink = NetexChouetteIdObjectFactory.getStopArea(
-								referential, toChouetteId(ref, "default_codespace"));
+						StopArea endOfLink = NetexChouetteIdObjectUtil.getStopArea(
+								referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace()));
 						connectionLink.setEndOfLink(endOfLink);
 						XPPUtil.skipSubTree(log, xpp);
 					} else {

@@ -14,7 +14,8 @@ import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
-import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectUtil;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.model.AreaCentroid;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.validation.AreaCentroidValidator;
@@ -35,7 +36,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 @Log4j
-public class ChouetteAreaParser extends NeptuneChouetteIdGenerator implements Parser, Constant, JsonExtension {
+public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 	private static final String CHILD_TAG = "ChouetteArea";
 
 	@Override
@@ -72,6 +73,9 @@ public class ChouetteAreaParser extends NeptuneChouetteIdGenerator implements Pa
 		xpp.require(XmlPullParser.START_TAG, null, "StopArea");
 		int columnNumber =  xpp.getColumnNumber();
 		int lineNumber =  xpp.getLineNumber();
+		
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		StopAreaValidator validator = (StopAreaValidator) ValidatorFactory.create(StopAreaValidator.class.getName(), context);
 		RoutingConstraintValidator rcValidator = (RoutingConstraintValidator) ValidatorFactory.create(RoutingConstraintValidator.class.getName(), context);
@@ -84,7 +88,7 @@ public class ChouetteAreaParser extends NeptuneChouetteIdGenerator implements Pa
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
-				stopArea = NeptuneChouetteIdObjectFactory.getStopArea(referential, toChouetteId(objectId, "default_codespace"));
+				stopArea = NeptuneChouetteIdObjectUtil.getStopArea(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
 				stopArea.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -108,26 +112,26 @@ public class ChouetteAreaParser extends NeptuneChouetteIdGenerator implements Pa
 						if (stopArea.getAreaType() == ChouetteAreaEnum.BoardingPosition
 								|| stopArea.getAreaType() == ChouetteAreaEnum.Quay) {
 							for (String childId : contains) {
-								StopPoint stopPoint = NeptuneChouetteIdObjectFactory
-										.getStopPoint(referential, toChouetteId(childId, "default_codespace"));
+								StopPoint stopPoint = NeptuneChouetteIdObjectUtil
+										.getStopPoint(referential, neptuneChouetteIdGenerator.toChouetteId(childId, parameters.getDefaultCodespace()));
 								stopPoint.setContainedInStopArea(stopArea);
 							}
 						} else if (stopArea.getAreaType() == ChouetteAreaEnum.ITL) {
 							// Arret Netex : Pass stopArea of type ITL into routingConstraint object
-							routingConstraint = NeptuneChouetteIdObjectFactory.getRoutingConstraint(referential, toChouetteId(objectId, "default_codespace"));
+							routingConstraint = NeptuneChouetteIdObjectUtil.getRoutingConstraint(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
 							routingConstraint.setName(stopArea.getName());
 							
 							for (String childId : contains) {
-								StopArea child = NeptuneChouetteIdObjectFactory.getStopArea(
-										referential, toChouetteId(childId, "default_codespace"));
+								StopArea child = NeptuneChouetteIdObjectUtil.getStopArea(
+										referential, neptuneChouetteIdGenerator.toChouetteId(childId, parameters.getDefaultCodespace()));
 //								Arret NETEX : Let Routing Constraint handle this
 //								stopArea.addRoutingConstraintStopArea(child);
 								routingConstraint.addRoutingConstraintStopArea(child);
 							}
 						} else {
 							for (String childId : contains) {
-								StopArea child = NeptuneChouetteIdObjectFactory.getStopArea(
-										referential, toChouetteId(childId, "default_codespace"));
+								StopArea child = NeptuneChouetteIdObjectUtil.getStopArea(
+										referential, neptuneChouetteIdGenerator.toChouetteId(childId, parameters.getDefaultCodespace()));
 								child.setParent(stopArea);
 							}
 						}
@@ -209,7 +213,10 @@ public class ChouetteAreaParser extends NeptuneChouetteIdGenerator implements Pa
 		xpp.require(XmlPullParser.START_TAG, null, "AreaCentroid");
 		int columnNumber =  xpp.getColumnNumber();
 		int lineNumber =  xpp.getLineNumber();
-
+		
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		AreaCentroidValidator validator = (AreaCentroidValidator) ValidatorFactory.create(AreaCentroidValidator.class.getName(), context);
 
 		BiMap<String, String> inverse = map.inverse();
@@ -220,9 +227,9 @@ public class ChouetteAreaParser extends NeptuneChouetteIdGenerator implements Pa
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
-				areaCentroid = factory.getAreaCentroid(toChouetteId(objectId, "default_codespace"));
+				areaCentroid = factory.getAreaCentroid(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
 				String areaId = inverse.get(objectId);
-				stopArea = NeptuneChouetteIdObjectFactory.getStopArea(referential, toChouetteId(areaId, "default_codespace"));
+				stopArea = NeptuneChouetteIdObjectUtil.getStopArea(referential, neptuneChouetteIdGenerator.toChouetteId(areaId, parameters.getDefaultCodespace()));
 				areaCentroid.setContainedIn(stopArea);
 			} else if (xpp.getName().equals("name")) {
 				areaCentroid.setName(ParserUtils.getText(xpp.nextText()));

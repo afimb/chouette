@@ -13,6 +13,10 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Route;
 
@@ -21,7 +25,7 @@ import org.trident.schema.trident.ObjectFactory;
 import org.trident.schema.trident.RegistrationType;
 import org.trident.schema.trident.TridentObjectType;
 
-public abstract class AbstractJaxbNeptuneProducer<T extends TridentObjectType, U extends NeptuneIdentifiedObject>
+public abstract class AbstractJaxbNeptuneProducer<T extends TridentObjectType, U extends NeptuneIdentifiedObject> implements Constant
 // implements IJaxbNeptuneProducer<T, U>
 {
 	public static DatatypeFactory typeFactory = null;
@@ -39,10 +43,13 @@ public abstract class AbstractJaxbNeptuneProducer<T extends TridentObjectType, U
 
 	}
 
-	public void populateFromModel(T target, U source) {
+	public void populateFromModel(Context context, T target, U source) {
+		NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		// ObjectId : maybe null but not empty
 		// TODO : Mandatory ?
-		target.setObjectId(source.getChouetteId().getObjectId());
+		target.setObjectId(neptuneChouetteIdGenerator.toSpecificFormatId(source.getChouetteId(), parameters.getDefaultCodespace(), source));
 
 		// ObjectVersion
 		if (source.getObjectVersion() > 0)
@@ -68,10 +75,13 @@ public abstract class AbstractJaxbNeptuneProducer<T extends TridentObjectType, U
 		return registration;
 	}
 
-	protected String getNonEmptyObjectId(NeptuneIdentifiedObject object) {
+	protected String getNonEmptyObjectId(Context context, NeptuneIdentifiedObject object) {
+		NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		if (object == null)
 			return null;
-		return object.getChouetteId().getObjectId();
+		return neptuneChouetteIdGenerator.toSpecificFormatId(object.getChouetteId(), parameters.getDefaultCodespace(), object);
 	}
 
 	// public abstract T produce(U o, boolean addExtension);
@@ -117,12 +127,15 @@ public abstract class AbstractJaxbNeptuneProducer<T extends TridentObjectType, U
 	}
 
 	@SuppressWarnings("unused")
-	protected boolean hasOppositeRoute(Route route, Logger log) {
+	protected boolean hasOppositeRoute(Context context, Route route, Logger log) {	
+		NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		// protect tests from opposite_id invalid foreign key
 		try {
 			Route wayBack = route.getOppositeRoute();
 			if (wayBack != null) {
-				String o = wayBack.getChouetteId().getObjectId();
+				String o = neptuneChouetteIdGenerator.toSpecificFormatId(wayBack.getChouetteId(), parameters.getDefaultCodespace(), wayBack);
 				return true;
 			}
 		} catch (Exception ex) {

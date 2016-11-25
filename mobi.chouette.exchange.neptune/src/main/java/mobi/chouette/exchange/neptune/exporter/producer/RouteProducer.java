@@ -3,6 +3,9 @@ package mobi.chouette.exchange.neptune.exporter.producer;
 import java.util.Collection;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.type.PTDirectionEnum;
 
@@ -16,13 +19,14 @@ AbstractJaxbNeptuneProducer<ChouetteRoute, Route>
 {
 
 	//@Override
-	public ChouetteRoute produce(Route route, Collection<Route> exportableRoutes, boolean addExtension)
+	public ChouetteRoute produce(Context context, Route route, Collection<Route> exportableRoutes, boolean addExtension)
 	{
 		ChouetteRoute jaxbRoute = tridentFactory
 				.createChouettePTNetworkTypeChouetteLineDescriptionChouetteRoute();
-
+		NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		//
-		populateFromModel(jaxbRoute, route);
+		populateFromModel(context, jaxbRoute, route);
 
 		jaxbRoute.setComment(getNotEmptyString(route.getComment()));
 		jaxbRoute.setName(route.getName());
@@ -42,9 +46,9 @@ AbstractJaxbNeptuneProducer<ChouetteRoute, Route>
 		}
 
 
-		if (hasOppositeRoute(route, log) && exportableRoutes.contains(route.getOppositeRoute()))
+		if (hasOppositeRoute(context, route, log) && exportableRoutes.contains(route.getOppositeRoute()))
 		{
-			jaxbRoute.setWayBackRouteId(route.getOppositeRoute().getChouetteId().getObjectId());
+			jaxbRoute.setWayBackRouteId(neptuneChouetteIdGenerator.toSpecificFormatId(route.getOppositeRoute().getChouetteId(), parameters.getDefaultCodespace(), route.getOppositeRoute()));
 		}
 
 		if (route.getWayBack() != null)

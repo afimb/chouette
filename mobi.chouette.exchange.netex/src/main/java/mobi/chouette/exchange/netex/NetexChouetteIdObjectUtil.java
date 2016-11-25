@@ -27,9 +27,7 @@ public class NetexChouetteIdObjectUtil{
 		AccessLink result = referential.getSharedAccessLinks().get(chouetteId);
 		if (result == null) {
 			result = new AccessLink();
-			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setCodeSpace(chouetteId.getCodeSpace());
-			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			result.setChouetteId(chouetteId);
 			result.setDetached(true);
 			referential.getSharedAccessLinks().put(chouetteId, result);
 		}
@@ -46,9 +44,7 @@ public class NetexChouetteIdObjectUtil{
 		AccessPoint result = referential.getSharedAccessPoints().get(chouetteId);
 		if (result == null) {
 			result = new AccessPoint();
-			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setCodeSpace(chouetteId.getCodeSpace());
-			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			result.setChouetteId(chouetteId);
 			result.setDetached(true);
 			referential.getSharedAccessPoints().put(chouetteId, result);
 		}
@@ -65,9 +61,7 @@ public class NetexChouetteIdObjectUtil{
 		if (result == null) {
 			result = new Timetable();
 			result.setDetached(true);
-			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
-			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			result.setChouetteId(chouetteId);
 			referential.getSharedTimetables().put(chouetteId, result);
 		}
 		if (!referential.getTimetables().containsKey(chouetteId)) {
@@ -89,9 +83,7 @@ public class NetexChouetteIdObjectUtil{
 		if (result == null) {
 			result = new Network();
 			result.setDetached(true);
-			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
-			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			result.setChouetteId(chouetteId);
 			referential.getSharedPTNetworks().put(chouetteId, result);
 		}
 		if (!referential.getPtNetworks().containsKey(chouetteId)) {
@@ -105,9 +97,7 @@ public class NetexChouetteIdObjectUtil{
 		Company result = referential.getSharedCompanies().get(chouetteId);
 		if (result == null) {
 			result = new Company();
-			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
-			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			result.setChouetteId(chouetteId);
 			result.setDetached(true);
 			referential.getSharedCompanies().put(chouetteId, result);
 		}
@@ -123,9 +113,7 @@ public class NetexChouetteIdObjectUtil{
 		if (result == null) {
 			result = new Route();
 			result.setDetached(true);
-			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
-			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			result.setChouetteId(chouetteId);
 			referential.getRoutes().put(chouetteId, result);
 		}
 		return result;
@@ -136,9 +124,7 @@ public class NetexChouetteIdObjectUtil{
 		if (result == null) {
 			result = new Line();
 			result.setDetached(true);
-			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
-			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			result.setChouetteId(chouetteId);
 			referential.getLines().put(chouetteId, result);
 		}
 		return result;
@@ -149,9 +135,7 @@ public class NetexChouetteIdObjectUtil{
 		JourneyPattern result = referential.getJourneyPatterns().get(chouetteId);
 		if (result == null) {
 			result = new JourneyPattern();
-			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
-			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			result.setChouetteId(chouetteId);
 			result.setDetached(true);
 			referential.getJourneyPatterns().put(chouetteId, result);
 		}
@@ -164,9 +148,7 @@ public class NetexChouetteIdObjectUtil{
 				chouetteId);
 		if (result == null) {
 			result = new ConnectionLink();
-			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
-			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			result.setChouetteId(chouetteId);
 			result.setDetached(true);
 			referential.getSharedConnectionLinks().put(chouetteId, result);
 		}
@@ -181,9 +163,7 @@ public class NetexChouetteIdObjectUtil{
 		StopArea result = referential.getSharedStopAreas().get(chouetteId);
 		if (result == null) {
 			result = new StopArea();
-			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
-			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			result.setChouetteId(chouetteId);
 			result.setDetached(true);
 			referential.getSharedStopAreas().put(chouetteId, result);
 		} 
@@ -199,9 +179,7 @@ public class NetexChouetteIdObjectUtil{
 		RoutingConstraint result = referential.getSharedRoutingConstraints().get(chouetteId);
 		if (result == null) {
 			result = new RoutingConstraint();
-			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
-			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			result.setChouetteId(chouetteId);
 			result.setDetached(true);
 			referential.getSharedRoutingConstraints().put(chouetteId, result);
 		} 
@@ -217,9 +195,7 @@ public class NetexChouetteIdObjectUtil{
 		GroupOfLine result = referential.getSharedGroupOfLines().get(chouetteId);
 		if (result == null) {
 			result = new GroupOfLine();
-			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
-			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			result.setChouetteId(chouetteId);
 			result.setDetached(true);
 			referential.getSharedGroupOfLines().put(chouetteId, result);
 		}
@@ -235,9 +211,7 @@ public class NetexChouetteIdObjectUtil{
 		StopPoint result = referential.getStopPoints().get(chouetteId);
 		if (result == null) {
 			result = new StopPoint();
-			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
-			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			result.setChouetteId(chouetteId);
 			result.setDetached(true);
 			referential.getStopPoints().put(chouetteId, result);
 		}
@@ -249,9 +223,7 @@ public class NetexChouetteIdObjectUtil{
 		VehicleJourney result = referential.getVehicleJourneys().get(chouetteId);
 		if (result == null) {
 			result = new VehicleJourney();
-			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
-			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			result.setChouetteId(chouetteId);
 			result.setDetached(true);
 			referential.getVehicleJourneys().put(chouetteId, result);
 		}
@@ -262,9 +234,7 @@ public class NetexChouetteIdObjectUtil{
 		Timeband timeband = referential.getTimebands().get(chouetteId);
 		if (timeband == null) {
 			timeband = new Timeband();
-			timeband.setChouetteId(new ChouetteId());
-			timeband.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
-			timeband.getChouetteId().setObjectId(chouetteId.getObjectId());
+			timeband.setChouetteId(chouetteId);
 			timeband.setDetached(true);
 			referential.getTimebands().put(chouetteId, timeband);
 		}
@@ -276,9 +246,7 @@ public class NetexChouetteIdObjectUtil{
 		RouteSection section = referential.getRouteSections().get(chouetteId);
 		if (section == null) {
 			section = new RouteSection();
-			section.setChouetteId(new ChouetteId());
-			section.getChouetteId().setCodeSpace("DEFAULT_CODESPACE");
-			section.getChouetteId().setObjectId(chouetteId.getObjectId());
+			section.setChouetteId(chouetteId);
 			section.setDetached(true);
 			referential.getRouteSections().put(chouetteId, section);
 		}

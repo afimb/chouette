@@ -8,6 +8,8 @@ import java.util.Set;
 
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
@@ -33,11 +35,15 @@ public class TestsUtils implements Constant, ReportConstant{
 		FileUtils.copyFile(srcFile, destFile);
 	}
 
-	public static void checkLine(Context context)
+	public static void checkLine(Context context) throws ClassNotFoundException, IOException
 	{
 		
 		// checl line content before save (cause connection links could not be saved
 		Referential referential = (Referential) context.get(REFERENTIAL);
+		
+		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
+		
 		Assert.assertNotNull(referential, "referential");
 		Assert.assertEquals(referential.getLines().size(), 1, "lines size");
 		Line line = referential.getLines().get("NINOXE:Line:15574334");
@@ -63,7 +69,7 @@ public class TestsUtils implements Constant, ReportConstant{
 					bps.add(point.getContainedInStopArea());
 
 					Assert.assertNotNull(point.getContainedInStopArea().getParent(), "StopAreas must have parent : "
-							+ point.getContainedInStopArea().getChouetteId().getObjectId());
+							+ chouetteIdGenerator.toSpecificFormatId(point.getContainedInStopArea().getChouetteId(), parameters.getDefaultCodespace(), point.getContainedInStopArea()));
 					comms.add(point.getContainedInStopArea().getParent());
 				}
 			}

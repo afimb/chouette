@@ -1,6 +1,8 @@
 package mobi.chouette.exchange.neptune.exporter.producer;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters;
 import mobi.chouette.exchange.neptune.exporter.util.NeptuneObjectUtil;
 import mobi.chouette.model.JourneyPattern;
 
@@ -9,24 +11,25 @@ import org.trident.schema.trident.JourneyPatternType;
 public class JourneyPatternProducer extends AbstractJaxbNeptuneProducer<JourneyPatternType, JourneyPattern> {
 
 	// @Override
-	public JourneyPatternType produce(JourneyPattern journeyPattern, boolean addExtension) {
-		NeptuneChouetteIdGenerator ncig = new NeptuneChouetteIdGenerator();
+	public JourneyPatternType produce(Context context, JourneyPattern journeyPattern, boolean addExtension) {
+		  NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(CONFIGURATION);
+		   NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		JourneyPatternType jaxbJourneyPattern = tridentFactory.createJourneyPatternType();
 
 		//
-		populateFromModel(jaxbJourneyPattern, journeyPattern);
+		populateFromModel(context, jaxbJourneyPattern, journeyPattern);
 
 		jaxbJourneyPattern.setComment(journeyPattern.getComment());
 		jaxbJourneyPattern.setName(journeyPattern.getName());
 		jaxbJourneyPattern.setPublishedName(journeyPattern.getPublishedName());
 		if (journeyPattern.getArrivalStopPoint() != null)
-			jaxbJourneyPattern.setDestination(journeyPattern.getArrivalStopPoint().getChouetteId().getObjectId());
+			jaxbJourneyPattern.setDestination(neptuneChouetteIdGenerator.toSpecificFormatId(journeyPattern.getArrivalStopPoint().getChouetteId(), parameters.getDefaultCodespace(), journeyPattern.getArrivalStopPoint()));
 		if (journeyPattern.getDepartureStopPoint() != null)
-			jaxbJourneyPattern.setOrigin(journeyPattern.getDepartureStopPoint().getChouetteId().getObjectId());
+			jaxbJourneyPattern.setOrigin(neptuneChouetteIdGenerator.toSpecificFormatId(journeyPattern.getDepartureStopPoint().getChouetteId(), parameters.getDefaultCodespace(), journeyPattern.getDepartureStopPoint()));
 		jaxbJourneyPattern.setRegistration(getRegistration(journeyPattern.getRegistrationNumber()));
-		jaxbJourneyPattern.setRouteId(getNonEmptyObjectId(journeyPattern.getRoute()));
+		jaxbJourneyPattern.setRouteId(getNonEmptyObjectId(context, journeyPattern.getRoute()));
 		jaxbJourneyPattern.getStopPointList()
-				.addAll(ncig.toListSpecificFormatId(NeptuneObjectUtil.extractObjectIds(journeyPattern.getStopPoints()), "default_codespace", journeyPattern));
+				.addAll(neptuneChouetteIdGenerator.toListSpecificFormatId(NeptuneObjectUtil.extractObjectIds(journeyPattern.getStopPoints()), "default_codespace", journeyPattern));
 
 		return jaxbJourneyPattern;
 	}

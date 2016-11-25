@@ -9,17 +9,18 @@ import mobi.chouette.common.XPPUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.validation.CompanyValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Company;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
-import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class CompanyParser extends NeptuneChouetteIdGenerator implements Parser, Constant {
+public class CompanyParser implements Parser, Constant {
 	private static final String CHILD_TAG = "Company";
 
 	@Override
@@ -32,6 +33,9 @@ public class CompanyParser extends NeptuneChouetteIdGenerator implements Parser,
 		int columnNumber =  xpp.getColumnNumber();
 		int lineNumber =  xpp.getLineNumber();
 		
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		CompanyValidator validator = (CompanyValidator) ValidatorFactory.create(CompanyValidator.class.getName(), context);
 
 		Company company = null;
@@ -39,7 +43,7 @@ public class CompanyParser extends NeptuneChouetteIdGenerator implements Parser,
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
-				company = NeptuneChouetteIdObjectFactory.getCompany(referential, toChouetteId(objectId, "default_codespace"));
+				company = NeptuneChouetteIdObjectUtil.getCompany(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
 				company.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());

@@ -121,7 +121,7 @@ public class ResourceFrameWriter extends AbstractWriter{
 		writer.write("    </TypeOfFrame>\n");
 		writer.write("  </typesOfValue>\n");
 		writer.write("  <organisations> <!-- TODO : Prendre en compte plusieurs companies -->\n");
-		writer.write("    <Operator version=\""+company.getObjectVersion()+"\" id=\""+company.getChouetteId().getCodeSpace()+":Company:"+company.getChouetteId().getObjectId()+"\">\n");
+		writer.write("    <Operator version=\""+company.getObjectVersion()+"\" id=\""+company.getChouetteId().getCodeSpace()+":Company:"+company.getChouetteId().getTechnicalId()+"\">\n");
 		//      #if ( $company.code )
 		if (isSet(company.getCode()))
 			writer.write("      <PublicCode>"+toXml(company.getCode())+"</PublicCode>\n");
@@ -161,7 +161,7 @@ public class ResourceFrameWriter extends AbstractWriter{
 		if (isSet(company.getOrganisationalUnit()))
 		{
 			writer.write("      <parts>\n");
-			writer.write("          <OrganisationPart version=\""+company.getObjectVersion()+"\" id=\""+company.getChouetteId().getCodeSpace()+":OrganisationPart:"+company.getChouetteId().getObjectId()+"\">\n");
+			writer.write("          <OrganisationPart version=\""+company.getObjectVersion()+"\" id=\""+company.getChouetteId().getCodeSpace()+":OrganisationPart:"+company.getChouetteId().getTechnicalId()+"\">\n");
 			writer.write("              <Name>"+toXml(company.getOrganisationalUnit())+"</Name>\n");
 			writer.write("          </OrganisationPart>\n");
 			writer.write("      </parts>\n");
@@ -171,7 +171,7 @@ public class ResourceFrameWriter extends AbstractWriter{
 		if (isSet(company.getOperatingDepartmentName()))
 		{
 			writer.write("      <departments>\n");
-			writer.write("          <Department id=\""+company.getChouetteId().getCodeSpace()+":Department:"+company.getChouetteId().getObjectId()+"\" version=\"1\">\n");
+			writer.write("          <Department id=\""+company.getChouetteId().getCodeSpace()+":Department:"+company.getChouetteId().getTechnicalId()+"\" version=\"1\">\n");
 			writer.write("              <Name>"+toXml(company.getOperatingDepartmentName())+"</Name>\n");
 			writer.write("          </Department>\n");
 			writer.write("      </departments>\n");

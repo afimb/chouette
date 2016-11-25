@@ -34,7 +34,7 @@ public class ConnectionLinkProducer extends
 				.createChouettePTNetworkTypeConnectionLink();
 
 		//
-		populateFromModel(jaxbConnectionLink, connectionLink);
+		populateFromModel(context, jaxbConnectionLink, connectionLink);
 
 		jaxbConnectionLink.setComment(getNotEmptyString(connectionLink.getComment()));
 		jaxbConnectionLink.setName(connectionLink.getName());

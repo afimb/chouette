@@ -6,6 +6,8 @@ import java.util.Map;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
@@ -58,11 +60,15 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 	public void validate(Context context, Timetable target) throws ValidationException {
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
+		
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		if (localContext == null || localContext.isEmpty())
 			return;
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		// Map<String, Location> fileLocations = data.getFileLocations();
-		Map<String, DataLocation> fileLocations = data.getDataLocations();
+		Map<ChouetteId, DataLocation> fileLocations = data.getDataLocations();
 		Context vehicleJourneyContext = (Context) validationContext.get(VehicleJourneyValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Map<ChouetteId, Timetable> timetables = referential.getTimetables();
@@ -89,7 +95,7 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 			}
 			if (!vjFound) {
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-				validationReporter.addCheckPointReportError(context, TIMETABLE_1, fileLocations.get(objectId));
+				validationReporter.addCheckPointReportError(context, TIMETABLE_1, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())));
 			}
 
 			Timetable timetable = timetables.get(objectId);
@@ -101,7 +107,7 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 					if (period.getEndDate().after(period.getStartDate()))
 						continue;
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, TIMETABLE_3, fileLocations.get(objectId));
+					validationReporter.addCheckPointReportError(context, TIMETABLE_3, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())));
 					break;
 				}
 
@@ -110,7 +116,7 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 		if (!unreferencedVehicleJourneys.isEmpty()) {
 			for (String vjId : unreferencedVehicleJourneys) {
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-				validationReporter.addCheckPointReportError(context, TIMETABLE_2, fileLocations.get(vjId));
+				validationReporter.addCheckPointReportError(context, TIMETABLE_2, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(vjId, parameters.getDefaultCodespace())));
 			}
 		}
 		return;

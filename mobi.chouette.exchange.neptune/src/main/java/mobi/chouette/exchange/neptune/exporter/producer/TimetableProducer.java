@@ -2,6 +2,7 @@ package mobi.chouette.exchange.neptune.exporter.producer;
 
 import java.sql.Date;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;
@@ -15,12 +16,12 @@ public class TimetableProducer extends
 {
 
    //@Override
-   public TimetableType produce(Timetable timetable, boolean addExtension)
+   public TimetableType produce(Context context, Timetable timetable, boolean addExtension)
    {
       TimetableType jaxbTimetable = tridentFactory.createTimetableType();
 
       //
-      populateFromModel(jaxbTimetable, timetable);
+      populateFromModel(context, jaxbTimetable, timetable);
 
       jaxbTimetable.setComment(getNotEmptyString(timetable.getComment()));
       jaxbTimetable.setVersion(getNotEmptyString(timetable.getVersion()));

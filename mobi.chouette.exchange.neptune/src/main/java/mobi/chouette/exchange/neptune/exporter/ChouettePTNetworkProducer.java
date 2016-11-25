@@ -107,17 +107,17 @@ public class ChouettePTNetworkProducer extends NeptuneChouetteIdGenerator implem
 
 		ChouettePTNetworkType rootObject = AbstractJaxbNeptuneProducer.tridentFactory.createChouettePTNetworkType();
         if (collection.getLine().getNetwork() != null)
-		    rootObject.setPTNetwork(networkProducer.produce(collection.getLine().getNetwork(),addExtension));
+		    rootObject.setPTNetwork(networkProducer.produce(context, collection.getLine().getNetwork(),addExtension));
 		for (GroupOfLine group : collection.getGroupOfLines())
 		{
-			GroupOfLineType jaxbObj = groupOfLineProducer.produce(group,addExtension);
+			GroupOfLineType jaxbObj = groupOfLineProducer.produce(context, group,addExtension);
 			jaxbObj.getLineId().add(neptuneChouetteIdGenerator.toSpecificFormatId(collection.getLine().getChouetteId(), parameters.getDefaultCodespace(), collection.getLine()));
 			rootObject.getGroupOfLine().add(jaxbObj);
 		}
 
 		for (Company company : collection.getCompanies())
 		{
-			CompanyType jaxbObj = companyProducer.produce(company,addExtension);
+			CompanyType jaxbObj = companyProducer.produce(context, company,addExtension);
 			rootObject.getCompany().add(jaxbObj);
 		}
 
@@ -125,7 +125,7 @@ public class ChouettePTNetworkProducer extends NeptuneChouetteIdGenerator implem
 		for (StopArea stopArea : collection.getStopAreas())
 		{
 			stopArea.toProjection(projectionType);
-			ChouetteArea.StopArea jaxbStopArea = stopAreaProducer.produce(stopArea,addExtension);
+			ChouetteArea.StopArea jaxbStopArea = stopAreaProducer.produce(context, stopArea,addExtension);
 			// add children reference only for exported ones
 			if (!(stopArea.getAreaType().equals(ChouetteAreaEnum.ITL)))
 			{
@@ -148,7 +148,7 @@ public class ChouettePTNetworkProducer extends NeptuneChouetteIdGenerator implem
 				metadata.getSpatialCoverage().update(stopArea.getLongitude().doubleValue(), stopArea.getLatitude().doubleValue());
 			if (stopArea.hasAddress() || stopArea.hasCoordinates() || stopArea.hasProjection())
 			{
-				ChouetteArea.AreaCentroid centroid = areaCentroidProducer.produce(stopArea,addExtension);
+				ChouetteArea.AreaCentroid centroid = areaCentroidProducer.produce(context, stopArea,addExtension);
 				chouetteArea.getAreaCentroid().add(centroid);
 				jaxbStopArea.setCentroidOfArea(centroid.getObjectId());
 			}
@@ -157,7 +157,7 @@ public class ChouettePTNetworkProducer extends NeptuneChouetteIdGenerator implem
 		
 		// Arret Netex
 		for (RoutingConstraint routingConstraint : collection.getRoutingConstraints()) {
-			ChouetteArea.StopArea jaxbStopArea = itlStopAreaProducer.produce(routingConstraint);
+			ChouetteArea.StopArea jaxbStopArea = itlStopAreaProducer.produce(context, routingConstraint);
 			
 			for (StopArea child : routingConstraint.getRoutingConstraintAreas())
 			{
@@ -173,14 +173,14 @@ public class ChouettePTNetworkProducer extends NeptuneChouetteIdGenerator implem
 
 		for (ConnectionLink connectionLink : collection.getConnectionLinks())
 		{
-			rootObject.getConnectionLink().add(connectionLinkProducer.produce(connectionLink,addExtension));
+			rootObject.getConnectionLink().add(connectionLinkProducer.produce(context, connectionLink,addExtension));
 		}
 
 		for (Timetable timetable : collection.getTimetables())
 		{
 			timetable.computeLimitOfPeriods();
 
-			TimetableType jaxbObj = timetableProducer.produce(timetable,addExtension);
+			TimetableType jaxbObj = timetableProducer.produce(context, timetable,addExtension);
 			rootObject.getTimetable().add(jaxbObj);
 			// add vehiclejourney only for exported ones
 			for (VehicleJourney vehicleJourney : collection.getVehicleJourneys()) {
@@ -194,7 +194,7 @@ public class ChouettePTNetworkProducer extends NeptuneChouetteIdGenerator implem
 		}
 
 		ChouetteLineDescription chouetteLineDescription = new ChouetteLineDescription();
-		ChouetteLineDescription.Line jaxbLine = lineProducer.produce(collection.getLine(),collection.getRoutes(),addExtension);
+		ChouetteLineDescription.Line jaxbLine = lineProducer.produce(context, collection.getLine(),collection.getRoutes(),addExtension);
 		chouetteLineDescription.setLine(jaxbLine);
 		rootObject.setChouetteLineDescription(chouetteLineDescription);
 
@@ -209,14 +209,14 @@ public class ChouettePTNetworkProducer extends NeptuneChouetteIdGenerator implem
 			
 			for (RoutingConstraint routingConstraint : collection.getLine().getRoutingConstraints())
 			{
-				ITLType jaxbITL = routingConstraintProducer.produce(collection.getLine(), routingConstraint);
+				ITLType jaxbITL = routingConstraintProducer.produce(context, collection.getLine(), routingConstraint);
 				chouetteLineDescription.getITL().add(jaxbITL);
 			}
 		}
 
 		for (Route route : collection.getRoutes())
 		{
-			ChouetteRoute jaxbObj = routeProducer.produce(route,collection.getRoutes(),addExtension);
+			ChouetteRoute jaxbObj = routeProducer.produce(context, route,collection.getRoutes(),addExtension);
 			// reduce journeyPatternId at exported ones
 			jaxbObj.getJourneyPatternId().clear();
 			for (JourneyPattern jp : route.getJourneyPatterns())
@@ -231,19 +231,19 @@ public class ChouettePTNetworkProducer extends NeptuneChouetteIdGenerator implem
 			jaxbObj.getPtLinkId().addAll(toListSpecificFormatId(NeptuneObjectUtil.extractObjectIds(ptLinks), "default_codespace", route));
 			for (PTLink ptLink : ptLinks) 
 			{
-				PTLinkType jaxbLink = ptLinkProducer.produce(ptLink, addExtension);
+				PTLinkType jaxbLink = ptLinkProducer.produce(context, ptLink, addExtension);
 				chouetteLineDescription.getPtLink().add(jaxbLink);
 			}
 			chouetteLineDescription.getChouetteRoute().add(jaxbObj);
 		}
 		for (JourneyPattern journeyPattern : collection.getJourneyPatterns())
 		{
-			JourneyPatternType jaxbObj = journeyPatternProducer.produce(journeyPattern,addExtension);
+			JourneyPatternType jaxbObj = journeyPatternProducer.produce(context, journeyPattern,addExtension);
 			chouetteLineDescription.getJourneyPattern().add(jaxbObj);
 		}
 		for (StopPoint stopPoint : collection.getStopPoints())
 		{
-			org.trident.schema.trident.ChouettePTNetworkType.ChouetteLineDescription.StopPoint jaxbObj = stopPointProducer.produce(stopPoint,addExtension);
+			org.trident.schema.trident.ChouettePTNetworkType.ChouetteLineDescription.StopPoint jaxbObj = stopPointProducer.produce(context, stopPoint,addExtension);
 			chouetteLineDescription.getStopPoint().add(jaxbObj);
 		}
 		for (VehicleJourney vehicleJourney : collection.getVehicleJourneys())
@@ -269,17 +269,17 @@ public class ChouettePTNetworkProducer extends NeptuneChouetteIdGenerator implem
 					timeSlot.setFirstDepartureTimeInSlot(journeyFrequency.getFirstDepartureTime());
 					timeSlot.setLastDepartureTimeInSlot(journeyFrequency.getLastDepartureTime());
 					
-						VehicleJourneyType jaxbObj = vehicleJourneyProducer.produce(vehicleJourney, addExtension, count);
+						VehicleJourneyType jaxbObj = vehicleJourneyProducer.produce(context, vehicleJourney, addExtension, count);
 						timeSlot.setChouetteId(neptuneChouetteIdGenerator.toChouetteId(jaxbObj.getObjectId().replaceAll("VehicleJourney", "TimeSlot"), parameters.getDefaultCodespace()));
 						jaxbObj.setTimeSlotId(neptuneChouetteIdGenerator.toSpecificFormatId(timeSlot.getChouetteId(), parameters.getDefaultCodespace(), timeSlot));
 						chouetteLineDescription.getVehicleJourney().add(jaxbObj);
 					
-					TimeSlotType jaxbTSObj = timeSlotProducer.produce(timeSlot, addExtension);
+					TimeSlotType jaxbTSObj = timeSlotProducer.produce(context, timeSlot, addExtension);
 					rootObject.getTimeSlot().add(jaxbTSObj);
 					count++;
 				}
 			} else {
-				VehicleJourneyType jaxbObj = vehicleJourneyProducer.produce(vehicleJourney, addExtension);
+				VehicleJourneyType jaxbObj = vehicleJourneyProducer.produce(context, vehicleJourney, addExtension);
 				chouetteLineDescription.getVehicleJourney().add(jaxbObj);
 			}
 		}

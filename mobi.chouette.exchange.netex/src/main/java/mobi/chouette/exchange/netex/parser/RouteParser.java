@@ -13,17 +13,18 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.netex.NetexChouetteIdGenerator;
+import mobi.chouette.exchange.netex.NetexChouetteIdObjectUtil;
+import mobi.chouette.exchange.netex.importer.NetexImportParameters;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
-import mobi.chouette.exchange.netex.NetexChouetteIdObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.util.XmlPullUtil;
 
 @Log4j
-public class RouteParser extends NetexChouetteIdGenerator implements Parser, Constant {
+public class RouteParser implements Parser, Constant {
 
 	private Map<String, Properties> directions;
 
@@ -90,6 +91,9 @@ public class RouteParser extends NetexChouetteIdGenerator implements Parser, Con
 	private void parsePassengerStopAssignment(Context context) throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
+		
+		NetexImportParameters configuration = (NetexImportParameters) context.get(CONFIGURATION);
+		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		xpp.require(XmlPullParser.START_TAG, null, "PassengerStopAssignment");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
@@ -116,10 +120,10 @@ public class RouteParser extends NetexChouetteIdGenerator implements Parser, Con
 		}
 
 		if (stopPointId != null && stopAreaId != null) {
-			StopPoint stopPoint = NetexChouetteIdObjectFactory.getStopPoint(referential,
-					toChouetteId(stopPointId, "default_codespace"));
-			StopArea stopArea = NetexChouetteIdObjectFactory.getStopArea(referential,
-					toChouetteId(stopAreaId, "default_codespace"));
+			StopPoint stopPoint = NetexChouetteIdObjectUtil.getStopPoint(referential,
+					chouetteIdGenerator.toChouetteId(stopPointId, configuration.getDefaultCodespace()));
+			StopArea stopArea = NetexChouetteIdObjectUtil.getStopArea(referential,
+					chouetteIdGenerator.toChouetteId(stopAreaId, configuration.getDefaultCodespace()));
 			stopPoint.setContainedInStopArea(stopArea);
 		}
 
@@ -133,9 +137,12 @@ public class RouteParser extends NetexChouetteIdGenerator implements Parser, Con
 		xpp.require(XmlPullParser.START_TAG, null, "Route");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
+		NetexImportParameters configuration = (NetexImportParameters) context.get(CONFIGURATION);
+		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		String id = xpp.getAttributeValue(null, ID);
-		Route route = NetexChouetteIdObjectFactory.getRoute(referential, toChouetteId(id, "default_codespace"));
+		Route route = NetexChouetteIdObjectUtil.getRoute(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace()));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		route.setObjectVersion(version != null ? version : 0);
@@ -167,7 +174,7 @@ public class RouteParser extends NetexChouetteIdGenerator implements Parser, Con
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("InverseRouteRef")) {
 				String ref = xpp.getAttributeValue(null, REF);
-				Route wayBackRoute = NetexChouetteIdObjectFactory.getRoute(referential, toChouetteId(ref, "default_codespace"));
+				Route wayBackRoute = NetexChouetteIdObjectUtil.getRoute(referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace()));
 				if (wayBackRoute != null)
 				{
 					wayBackRoute.setOppositeRoute(route);
@@ -191,12 +198,15 @@ public class RouteParser extends NetexChouetteIdGenerator implements Parser, Con
 		xpp.require(XmlPullParser.START_TAG, null, "pointsInSequence");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
+		NetexImportParameters configuration = (NetexImportParameters) context.get(CONFIGURATION);
+		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("PointOnRoute")) {
 				String id = xpp.getAttributeValue(null, ID);
-				StopPoint stopPoint = NetexChouetteIdObjectFactory.getStopPoint(referential,
-						toChouetteId(getStopPointObjectId(route, id), "default_codespace"));
+				StopPoint stopPoint = NetexChouetteIdObjectUtil.getStopPoint(referential,
+						chouetteIdGenerator.toChouetteId(getStopPointObjectId(context, route, id), configuration.getDefaultCodespace()));
 				stopPoint.setRoute(route);
 				stopPoint.setFilled(true);
 				XPPUtil.skipSubTree(log, xpp);
@@ -241,8 +251,11 @@ public class RouteParser extends NetexChouetteIdGenerator implements Parser, Con
 		}
 	}
 
-	private String getStopPointObjectId(Route route, String pointOnRouteId) {
-		String prefix = NetexUtils.objectIdPrefix(route.getChouetteId().getObjectId());
+	private String getStopPointObjectId(Context context, Route route, String pointOnRouteId) {
+		NetexImportParameters configuration = (NetexImportParameters) context.get(CONFIGURATION);
+		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
+		String prefix = NetexUtils.objectIdPrefix(chouetteIdGenerator.toSpecificFormatId(route.getChouetteId(), configuration.getDefaultCodespace(), route));
 
 		Matcher m = Pattern.compile("\\S+:\\S+:(\\S+)-\\d+$").matcher(
 				pointOnRouteId);

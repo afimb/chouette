@@ -19,13 +19,14 @@ import mobi.chouette.exchange.netex.NetexChouetteIdGenerator;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
-import mobi.chouette.exchange.netex.NetexChouetteIdObjectFactory;
+import mobi.chouette.exchange.netex.NetexChouetteIdObjectUtil;
+import mobi.chouette.exchange.netex.importer.NetexImportParameters;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class StopAreaParser extends NetexChouetteIdGenerator implements Parser, Constant {
+public class StopAreaParser implements Parser, Constant {
 
 	private Map<String, Properties> tariffZones;
 
@@ -34,6 +35,9 @@ public class StopAreaParser extends NetexChouetteIdGenerator implements Parser, 
 
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
+		
+		NetexImportParameters configuration = (NetexImportParameters) context.get(CONFIGURATION);
+		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		if ((xpp.getEventType() == XmlPullParser.START_TAG)
 				&& xpp.getName().equals("tariffZones")) {
@@ -56,10 +60,10 @@ public class StopAreaParser extends NetexChouetteIdGenerator implements Parser, 
 			}
 
 			for (Entry<String, String> item : map.entrySet()) {
-				StopArea child = NetexChouetteIdObjectFactory.getStopArea(referential,
-						toChouetteId(item.getKey(), "default_codespace"));
-				StopArea parent = NetexChouetteIdObjectFactory.getStopArea(referential,
-						toChouetteId(item.getValue(), "default_codespace"));
+				StopArea child = NetexChouetteIdObjectUtil.getStopArea(referential,
+						chouetteIdGenerator.toChouetteId(item.getKey(), configuration.getDefaultCodespace()));
+				StopArea parent = NetexChouetteIdObjectUtil.getStopArea(referential,
+						chouetteIdGenerator.toChouetteId(item.getValue(), configuration.getDefaultCodespace()));
 				if (parent != null) {
 					parent.setAreaType(ChouetteAreaEnum.StopPlace);
 					child.setParent(parent);
@@ -94,13 +98,16 @@ public class StopAreaParser extends NetexChouetteIdGenerator implements Parser, 
 			throws Exception, IOException, ParseException {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
+		
+		NetexImportParameters configuration = (NetexImportParameters) context.get(CONFIGURATION);
+		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		xpp.require(XmlPullParser.START_TAG, null, "StopPlace");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
 		String id = xpp.getAttributeValue(null, ID);
-		StopArea stopArea = NetexChouetteIdObjectFactory.getStopArea(referential, toChouetteId(id, "default_codespace"));
+		StopArea stopArea = NetexChouetteIdObjectUtil.getStopArea(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace()));
 		stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
@@ -120,7 +127,7 @@ public class StopAreaParser extends NetexChouetteIdGenerator implements Parser, 
 			} else if (xpp.getName().equals("ParentZoneRef")) {
 				String ref = xpp.getAttributeValue(null, REF);
 				if (ref != null) {
-					map.put(stopArea.getChouetteId().getObjectId(), ref);
+					map.put(chouetteIdGenerator.toSpecificFormatId(stopArea.getChouetteId(), configuration.getDefaultCodespace(), stopArea), ref);
 				}
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("PostalAddress")) {
@@ -149,9 +156,12 @@ public class StopAreaParser extends NetexChouetteIdGenerator implements Parser, 
 		xpp.require(XmlPullParser.START_TAG, null, "Quay");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
+		NetexImportParameters configuration = (NetexImportParameters) context.get(CONFIGURATION);
+		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		String id = xpp.getAttributeValue(null, ID);
-		StopArea stopArea = NetexChouetteIdObjectFactory.getStopArea(referential, toChouetteId(id, "default_codespace"));
+		StopArea stopArea = NetexChouetteIdObjectUtil.getStopArea(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace()));
 		stopArea.setAreaType(ChouetteAreaEnum.Quay);
 		stopArea.setParent(parent);
 

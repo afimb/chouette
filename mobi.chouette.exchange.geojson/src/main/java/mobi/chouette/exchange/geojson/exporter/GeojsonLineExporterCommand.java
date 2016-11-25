@@ -78,8 +78,6 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
 		
 		
-		ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat());
-		
 
 		try {
 			Line line = (Line) context.get(LINE);

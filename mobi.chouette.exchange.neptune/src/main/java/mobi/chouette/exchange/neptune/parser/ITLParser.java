@@ -8,17 +8,18 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.validation.RoutingConstraintValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.RoutingConstraint;
-import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class ITLParser extends NeptuneChouetteIdGenerator implements Parser, Constant {
+public class ITLParser implements Parser, Constant {
 	private static final String CHILD_TAG = "ITL";
 
 	@Override
@@ -31,6 +32,9 @@ public class ITLParser extends NeptuneChouetteIdGenerator implements Parser, Con
 		int columnNumber =  xpp.getColumnNumber();
 		int lineNumber =  xpp.getLineNumber();
 		
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		RoutingConstraintValidator validator = (RoutingConstraintValidator) ValidatorFactory.create(RoutingConstraintValidator.class.getName(), context);
 
 		Line line = getLine(referential);
@@ -42,7 +46,7 @@ public class ITLParser extends NeptuneChouetteIdGenerator implements Parser, Con
 //				TODO : Arret Netex : Delete once RoutingConstraint is implemented
 //				stopArea = ObjectFactory.getStopArea(referential, objectId);
 //				if (line != null) line.addRoutingConstraint(stopArea);
-				routingConstraint = NeptuneChouetteIdObjectFactory.getRoutingConstraint(referential, toChouetteId(objectId, "default_codespace"));
+				routingConstraint = NeptuneChouetteIdObjectUtil.getRoutingConstraint(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
 				if (line != null) line.addRoutingConstraint(routingConstraint);
 			} else if (xpp.getName().equals("lineIdShortCut")) {
 				String lineIdShortCut = ParserUtils.getText(xpp.nextText());

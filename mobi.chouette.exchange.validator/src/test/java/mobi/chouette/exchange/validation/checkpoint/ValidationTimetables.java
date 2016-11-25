@@ -17,6 +17,7 @@ import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validator.JobDataTest;
 import mobi.chouette.exchange.validator.ValidateParameters;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
@@ -56,11 +57,11 @@ public class ValidationTimetables extends AbstractTestValidation {
 
 			bean1 = new Timetable();
 			bean1.setId(id++);
-			bean1.getChouetteId().setObjectId("test1:Timetable:1");
+			bean1.setChouetteId(new ChouetteId("test1", "1", false));
 			bean1.setComment("test1");
 			bean2 = new Timetable();
 			bean2.setId(id++);
-			bean2.getChouetteId().setObjectId("test2:Timetable:1");
+			bean2.setChouetteId(new ChouetteId("test2", "1", false));
 			bean2.setComment("test2");
 
 			beansFor4.add(bean1);

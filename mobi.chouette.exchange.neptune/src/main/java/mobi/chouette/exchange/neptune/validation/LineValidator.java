@@ -9,6 +9,8 @@ import java.util.Set;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
@@ -89,8 +91,12 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 //		Map<String, Location> fileLocations = data.getFileLocations();
-		Map<String, DataLocation> fileLocations = data.getDataLocations();
+		Map<ChouetteId, DataLocation> fileLocations = data.getDataLocations();
 		if (localContext == null || localContext.isEmpty())
 			return ;
 		Context networkContext = (Context) validationContext.get(PTNetworkValidator.LOCAL_CONTEXT);
@@ -102,7 +108,7 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 		for (String objectId : localContext.keySet()) {
 			Context objectContext = (Context) localContext.get(objectId);
 //			Location sourceLocation = fileLocations.get(objectId);
-			DataLocation sourceLocation = fileLocations.get(objectId);
+			DataLocation sourceLocation = fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
 
 			Line line = lines.get(objectId);
 			// 2-NEPTUNE-Line-1 : check ptnetworkIdShortcut
@@ -128,20 +134,20 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 						StopArea area = route.getStopPoints().get(0).getContainedInStopArea();
 						if (area == null) {
 							log.error("missing stoparea for "
-									+ route.getStopPoints().get(0).getChouetteId().getObjectId());
+									+ route.getStopPoints().get(0).getChouetteId().toString());
 						} else {
-							endAreas.add(area.getChouetteId().getObjectId());
+							endAreas.add(neptuneChouetteIdGenerator.toSpecificFormatId(area.getChouetteId(), parameters.getDefaultCodespace(), area));
 							if (area.getParent() != null)
-								endAreas.add(area.getParent().getChouetteId().getObjectId());
+								endAreas.add(neptuneChouetteIdGenerator.toSpecificFormatId(area.getParent().getChouetteId(), parameters.getDefaultCodespace(), area.getParent()));
 						}
 						area = route.getStopPoints().get(route.getStopPoints().size() - 1).getContainedInStopArea();
 						if (area == null) {
 							log.error("missing stoparea for "
-									+ route.getStopPoints().get(route.getStopPoints().size() - 1).getChouetteId().getObjectId());
+									+ route.getStopPoints().get(route.getStopPoints().size() - 1).getChouetteId().toString());
 						} else {
-							endAreas.add(area.getChouetteId().getObjectId());
+							endAreas.add(neptuneChouetteIdGenerator.toSpecificFormatId(area.getChouetteId(), parameters.getDefaultCodespace(), area));
 							if (area.getParent() != null)
-								endAreas.add(area.getParent().getChouetteId().getObjectId());
+								endAreas.add(neptuneChouetteIdGenerator.toSpecificFormatId(area.getParent().getChouetteId(), parameters.getDefaultCodespace(), area.getParent()));
 						}
 					}
 				}
@@ -188,7 +194,7 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 //					addValidationError(context, LINE_5, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, LINE_5, sourceLocation, routeId);
-					validationReporter.addTargetLocationToCheckPointError(context, LINE_5, fileLocations.get(routeId));
+					validationReporter.addTargetLocationToCheckPointError(context, LINE_5, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(routeId, parameters.getDefaultCodespace())));
 				}
 			}
 

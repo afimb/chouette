@@ -9,6 +9,7 @@ import mobi.chouette.common.XPPUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.validation.JourneyPatternValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.JourneyPattern;
@@ -16,13 +17,13 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
-import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class JourneyPatternParser extends NeptuneChouetteIdGenerator implements Parser, Constant {
+public class JourneyPatternParser implements Parser, Constant {
 	private static final String CHILD_TAG = "JourneyPattern";
 
 	@Override
@@ -34,6 +35,9 @@ public class JourneyPatternParser extends NeptuneChouetteIdGenerator implements 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		int columnNumber =  xpp.getColumnNumber();
 		int lineNumber =  xpp.getLineNumber();
+		
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		JourneyPatternValidator validator = (JourneyPatternValidator) ValidatorFactory.create(JourneyPatternValidator.class.getName(), context);
 
@@ -43,8 +47,8 @@ public class JourneyPatternParser extends NeptuneChouetteIdGenerator implements 
 
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
-				journeyPattern = NeptuneChouetteIdObjectFactory.getJourneyPattern(referential,
-						toChouetteId(objectId, "default_codespace"));
+				journeyPattern = NeptuneChouetteIdObjectUtil.getJourneyPattern(referential,
+						neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
 				journeyPattern.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -63,25 +67,25 @@ public class JourneyPatternParser extends NeptuneChouetteIdGenerator implements 
 			} else if (xpp.getName().equals("routeId")) {
 				String routeId = ParserUtils.getText(xpp.nextText());
 				validator.addRouteId(context, objectId, routeId);
-				Route route = NeptuneChouetteIdObjectFactory.getRoute(referential, toChouetteId(routeId, "default_codespace"));
+				Route route = NeptuneChouetteIdObjectUtil.getRoute(referential, neptuneChouetteIdGenerator.toChouetteId(routeId, parameters.getDefaultCodespace()));
 				journeyPattern.setRoute(route);
 			} else if (xpp.getName().equals("origin")) {
 				String origin = ParserUtils.getText(xpp.nextText());
-				StopPoint departureStopPoint = NeptuneChouetteIdObjectFactory.getStopPoint(
-						referential, toChouetteId(origin, "default_codespace"));
+				StopPoint departureStopPoint = NeptuneChouetteIdObjectUtil.getStopPoint(
+						referential, neptuneChouetteIdGenerator.toChouetteId(origin, parameters.getDefaultCodespace()));
 				journeyPattern.setDepartureStopPoint(departureStopPoint);
 
 			} else if (xpp.getName().equals("destination")) {
 				String destination = ParserUtils.getText(xpp.nextText());
-				StopPoint arrivalStopPoint = NeptuneChouetteIdObjectFactory.getStopPoint(
-						referential, toChouetteId(destination, "default_codespacde"));
+				StopPoint arrivalStopPoint = NeptuneChouetteIdObjectUtil.getStopPoint(
+						referential, neptuneChouetteIdGenerator.toChouetteId(destination, parameters.getDefaultCodespace()));
 				journeyPattern.setArrivalStopPoint(arrivalStopPoint);
 
 			} else if (xpp.getName().equals("stopPointList")) {
 				String stopPointId = ParserUtils.getText(xpp.nextText());
 				validator.addStopPointList(context, objectId, stopPointId);
-				StopPoint stopPoint = NeptuneChouetteIdObjectFactory.getStopPoint(referential,
-						toChouetteId(stopPointId, "default_codespace"));
+				StopPoint stopPoint = NeptuneChouetteIdObjectUtil.getStopPoint(referential,
+						neptuneChouetteIdGenerator.toChouetteId(stopPointId, parameters.getDefaultCodespace()));
 				journeyPattern.addStopPoint(stopPoint);
 			} else if (xpp.getName().equals("registration")) {
 

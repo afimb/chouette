@@ -54,7 +54,7 @@ public class NetexChouetteIdGenerator extends AbstractChouetteIdGenerator implem
 				shared = !(objectIdArray[4].equalsIgnoreCase("LOC"));
 			}
 			chouetteId.setCodeSpace(codespace);
-			chouetteId.setObjectId(technicalId);
+			chouetteId.setTechnicalId(technicalId);
 			chouetteId.setShared(shared);
 		}
 		
@@ -111,7 +111,7 @@ public class NetexChouetteIdGenerator extends AbstractChouetteIdGenerator implem
 						objectId += VEHICLEJOURNEY_KEY;
 					
 					objectId += ":";
-					objectId += chouetteId.getObjectId();
+					objectId += chouetteId.getTechnicalId();
 				} catch (ClassNotFoundException e) {
 					log.error("Class from type not found for netex export id generation");
 				}

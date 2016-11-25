@@ -11,17 +11,18 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.validation.GroupOfLineValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
-import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class GroupOfLineParser extends NeptuneChouetteIdGenerator implements Parser, Constant, JsonExtension {
+public class GroupOfLineParser implements Parser, Constant, JsonExtension {
 
 	private static final String CHILD_TAG = "GroupOfLine";
 
@@ -30,6 +31,9 @@ public class GroupOfLineParser extends NeptuneChouetteIdGenerator implements Par
 
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
+		
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		int columnNumber =  xpp.getColumnNumber();
@@ -42,8 +46,8 @@ public class GroupOfLineParser extends NeptuneChouetteIdGenerator implements Par
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
-				groupOfLine = NeptuneChouetteIdObjectFactory.getGroupOfLine(referential,
-						toChouetteId(objectId, "default_codespace"));
+				groupOfLine = NeptuneChouetteIdObjectUtil.getGroupOfLine(referential,
+						neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
 				groupOfLine.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -59,7 +63,7 @@ public class GroupOfLineParser extends NeptuneChouetteIdGenerator implements Par
 				groupOfLine.setComment(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("lineId")) {
 				String lineId = ParserUtils.getText(xpp.nextText());
-				Line line = NeptuneChouetteIdObjectFactory.getLine(referential, toChouetteId(lineId, "default_codespace"));
+				Line line = NeptuneChouetteIdObjectUtil.getLine(referential, neptuneChouetteIdGenerator.toChouetteId(lineId, parameters.getDefaultCodespace()));
 				groupOfLine.addLine(line);
 				validator.addLineId(context, objectId, lineId);
 			} else {

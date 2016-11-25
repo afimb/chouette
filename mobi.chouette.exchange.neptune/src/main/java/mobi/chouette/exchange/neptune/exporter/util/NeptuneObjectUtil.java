@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import mobi.chouette.exchange.neptune.model.PTLink;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
@@ -23,7 +24,7 @@ public class NeptuneObjectUtil extends NeptuneUtil {
 
 		List<PTLink>   ptLinks = new ArrayList<PTLink>();
 		ptLinks.clear();
-		String baseId = route.getChouetteId().getObjectId().split(":")[0] + ":"
+		String baseId = route.getCodeSpace() + ":"
 				+ NeptuneIdentifiedObject.PTLINK_KEY + ":";
 		List<StopPoint> points = new ArrayList<>(route.getStopPoints());
 		for (Iterator<StopPoint> iterator = points.iterator(); iterator.hasNext();) {
@@ -39,10 +40,10 @@ public class NeptuneObjectUtil extends NeptuneUtil {
 			link = new PTLink();
 			link.setStartOfLink(start);
 			link.setEndOfLink(end);
-			String startId = start.getChouetteId().getObjectId().split(":")[2];
-			String endId = end.getChouetteId().getObjectId().split(":")[2];
-			String objectId = baseId + startId + "A" + endId;
-			link.getChouetteId().setObjectId(objectId);
+			String startId = start.getTechnicalId();
+			String endId = end.getTechnicalId();
+			String technicalId = baseId + startId + "A" + endId;
+			link.setChouetteId(new ChouetteId(route.getCodeSpace(), startId + "A" + endId, false));
 			link.setCreationTime(new Date());
 			link.setRoute(route);
 			ptLinks.add(link);

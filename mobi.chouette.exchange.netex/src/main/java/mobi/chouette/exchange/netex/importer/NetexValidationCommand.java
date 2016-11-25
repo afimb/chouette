@@ -10,6 +10,8 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netex.Constant;
+import mobi.chouette.exchange.netex.NetexChouetteIdGenerator;
+import mobi.chouette.exchange.netex.exporter.NetexExportParameters;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
@@ -58,15 +60,18 @@ public class NetexValidationCommand implements Command, Constant {
 	private void addStats(Context context, ActionReporter reporter, Referential referential) {
 		Line line = referential.getLines().values().iterator().next();
 		
-		reporter.addObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line), OBJECT_STATE.OK, IO_TYPE.INPUT);
-		reporter.addStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
-		reporter.addStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN, referential.getJourneyPatterns().size());
-		reporter.addStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, referential.getRoutes().size());
-		reporter.addStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY, referential.getVehicleJourneys().size());
-		reporter.addStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK, referential.getConnectionLinks().size());
-		reporter.addStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.TIMETABLE, referential.getTimetables().size());
-		reporter.addStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT, referential.getAccessPoints().size());
-		reporter.addStatToObjectReport(context, line.getChouetteId().getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA, referential.getStopAreas().size());
+		NetexExportParameters configuration = (NetexExportParameters) context.get(CONFIGURATION);
+		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
+		reporter.addObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, NamingUtil.getName(line), OBJECT_STATE.OK, IO_TYPE.INPUT);
+		reporter.addStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+		reporter.addStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN, referential.getJourneyPatterns().size());
+		reporter.addStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, referential.getRoutes().size());
+		reporter.addStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY, referential.getVehicleJourneys().size());
+		reporter.addStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK, referential.getConnectionLinks().size());
+		reporter.addStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.TIMETABLE, referential.getTimetables().size());
+		reporter.addStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT, referential.getAccessPoints().size());
+		reporter.addStatToObjectReport(context, chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA, referential.getStopAreas().size());
 
 		// TODO report on end of processing
 //		report.getLines().add(lineInfo);

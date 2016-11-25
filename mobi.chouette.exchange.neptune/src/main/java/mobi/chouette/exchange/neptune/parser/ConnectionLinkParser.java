@@ -13,6 +13,7 @@ import mobi.chouette.common.XPPUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.validation.ConnectionLinkValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.ConnectionLink;
@@ -20,13 +21,13 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
-import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class ConnectionLinkParser extends NeptuneChouetteIdGenerator implements Parser, Constant {
+public class ConnectionLinkParser implements Parser, Constant {
 	private static final String CHILD_TAG = "ConnectionLink";
 
 	@Override
@@ -34,6 +35,10 @@ public class ConnectionLinkParser extends NeptuneChouetteIdGenerator implements 
 
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
+		
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		int columnNumber =  xpp.getColumnNumber();
@@ -46,8 +51,8 @@ public class ConnectionLinkParser extends NeptuneChouetteIdGenerator implements 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
-				connectionLink = NeptuneChouetteIdObjectFactory.getConnectionLink(referential,
-						toChouetteId(objectId, "default_codespace"));
+				connectionLink = NeptuneChouetteIdObjectUtil.getConnectionLink(referential,
+						neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
 				connectionLink.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -64,13 +69,13 @@ public class ConnectionLinkParser extends NeptuneChouetteIdGenerator implements 
 				connectionLink.setComment(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("startOfLink")) {
 				String startId = ParserUtils.getText(xpp.nextText());
-				StopArea startOfLink = NeptuneChouetteIdObjectFactory.getStopArea(referential,
-						toChouetteId(startId, "default_codespace"));
+				StopArea startOfLink = NeptuneChouetteIdObjectUtil.getStopArea(referential,
+						neptuneChouetteIdGenerator.toChouetteId(startId, parameters.getDefaultCodespace()));
 				connectionLink.setStartOfLink(startOfLink);
 			} else if (xpp.getName().equals("endOfLink")) {
 				String endId = ParserUtils.getText(xpp.nextText());
-				StopArea endOfLink = NeptuneChouetteIdObjectFactory.getStopArea(referential,
-						toChouetteId(endId, "default_codespace"));
+				StopArea endOfLink = NeptuneChouetteIdObjectUtil.getStopArea(referential,
+						neptuneChouetteIdGenerator.toChouetteId(endId, parameters.getDefaultCodespace()));
 				connectionLink.setEndOfLink(endOfLink);
 			} else if (xpp.getName().equals("linkDistance")) {
 				BigDecimal value = ParserUtils.getBigDecimal(xpp.nextText());

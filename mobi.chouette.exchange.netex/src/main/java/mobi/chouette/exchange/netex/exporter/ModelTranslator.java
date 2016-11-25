@@ -45,14 +45,14 @@ public class ModelTranslator
       if (model == null)
          return null;
       return model.getChouetteId().getCodeSpace() + ":" + netexModelName(model) + ":"
-            + model.getChouetteId().getObjectId();
+            + model.getChouetteId().getTechnicalId();
    }
 
    public String netexMockId(NeptuneIdentifiedObject model, String mock)
    {
       if (model == null)
          return null;
-      return model.getChouetteId().getCodeSpace() + ":" + mock + ":" + model.getChouetteId().getObjectId();
+      return model.getChouetteId().getCodeSpace() + ":" + mock + ":" + model.getChouetteId().getTechnicalId();
    }
 
    public String trainNumberId(Long number)

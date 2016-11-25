@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.kml.exporter;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,6 +10,10 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ConnectionLink;
@@ -20,7 +25,7 @@ import org.apache.commons.collections.map.ListOrderedMap;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-public class KmlData {
+public class KmlData implements Constant{
 	@Getter
 	private String name;
 	@Getter
@@ -147,15 +152,18 @@ public class KmlData {
 		return data.toString();
 	}
 
-	public KmlItem addStopPoint(StopPoint point) {
-		KmlItem item = addNewItem(point.getChouetteId().getObjectId());
+	public KmlItem addStopPoint(Context context, StopPoint point) throws ClassNotFoundException, IOException {
+		KmlExportParameters parameters = (KmlExportParameters) context.get(PARAMETERS_FILE);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
+		
+		KmlItem item = addNewItem(chouetteIdGenerator.toSpecificFormatId(point.getChouetteId(), parameters.getDefaultCodespace(), point));
 		if (item == null) return null;
 		// item.setId(area.getChouetteId().getObjectId());
 		StopArea area = point.getContainedInStopArea();
 		if (area != null)
 		{
 		item.addAttribute("name", area.getName());
-		item.addExtraData("objectid", area.getChouetteId().getObjectId());
+		item.addExtraData("objectid", chouetteIdGenerator.toSpecificFormatId(area.getChouetteId(), parameters.getDefaultCodespace(), area));
 		item.addExtraData("object_version", area.getObjectVersion());
 		item.addExtraData("creation_time", area.getCreationTime());
 		item.addExtraData("creator_id", area.getCreatorId());
@@ -175,18 +183,21 @@ public class KmlData {
 		item.addExtraData("lift_availability", area.getLiftAvailable());
 		item.addExtraData("int_user_needs", area.getIntUserNeeds());
 		if (area.getParent() != null)
-		   item.addExtraData("parent_objectid", area.getParent().getChouetteId().getObjectId());
+		   item.addExtraData("parent_objectid", chouetteIdGenerator.toSpecificFormatId(area.getParent().getChouetteId(), parameters.getDefaultCodespace(), area.getParent()));
 		item.setPoint(area);
 		}
 		return item;
 	}
 
-	public KmlItem addStopArea(StopArea area) {
-		KmlItem item = addNewItem(area.getChouetteId().getObjectId());
+	public KmlItem addStopArea(Context context, StopArea area) throws ClassNotFoundException, IOException {
+		KmlExportParameters parameters = (KmlExportParameters) context.get(PARAMETERS_FILE);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
+		
+		KmlItem item = addNewItem(chouetteIdGenerator.toSpecificFormatId(area.getChouetteId(), parameters.getDefaultCodespace(), area));
 		if (item == null) return null;
 		// item.setId(area.getChouetteId().getObjectId());
 		item.addAttribute("name", area.getName());
-		item.addExtraData("objectid", area.getChouetteId().getObjectId());
+		item.addExtraData("objectid", chouetteIdGenerator.toSpecificFormatId(area.getChouetteId(), parameters.getDefaultCodespace(), area));
 		item.addExtraData("object_version", area.getObjectVersion());
 		item.addExtraData("creation_time", area.getCreationTime());
 		item.addExtraData("creator_id", area.getCreatorId());
@@ -201,17 +212,20 @@ public class KmlData {
 		item.addExtraData("stairs_availability", area.getStairsAvailable());
 		item.addExtraData("lift_availability", area.getLiftAvailable());
 		if (area.getParent() != null)
-		   item.addExtraData("parent", area.getParent().getChouetteId().getObjectId());
+		   item.addExtraData("parent", chouetteIdGenerator.toSpecificFormatId(area.getParent().getChouetteId(), parameters.getDefaultCodespace(), area.getParent()));
 		item.setPoint(area);
 		return item;
 	}
 	
-	public KmlItem addConnectionLink(ConnectionLink link) {
-		KmlItem item = addNewItem(link.getChouetteId().getObjectId());
+	public KmlItem addConnectionLink(Context context, ConnectionLink link) throws ClassNotFoundException, IOException {
+		KmlExportParameters parameters = (KmlExportParameters) context.get(PARAMETERS_FILE);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
+		
+		KmlItem item = addNewItem(chouetteIdGenerator.toSpecificFormatId(link.getChouetteId(), parameters.getDefaultCodespace(), link));
 		if (item == null) return null;
 		// item.setId(link.getChouetteId().getObjectId());
 		item.addAttribute("name", link.getName());
-		item.addExtraData("objectid", link.getChouetteId().getObjectId());
+		item.addExtraData("objectid", chouetteIdGenerator.toSpecificFormatId(link.getChouetteId(), parameters.getDefaultCodespace(), link));
 		item.addExtraData("object_version", link.getObjectVersion());
 		item.addExtraData("creation_time", link.getCreationTime());
 		item.addExtraData("creator_id", link.getCreatorId());
@@ -227,20 +241,23 @@ public class KmlData {
 		item.addExtraData("lift_availability", link.getLiftAvailable());
 		if (link.getStartOfLink() != null && link.getEndOfLink() != null)
 		{
-		   item.addExtraData("departure_objectid", link.getStartOfLink().getChouetteId().getObjectId());
+		   item.addExtraData("departure_objectid", chouetteIdGenerator.toSpecificFormatId(link.getStartOfLink().getChouetteId(), parameters.getDefaultCodespace(), link.getStartOfLink()));
 		   item.addPoint(link.getStartOfLink());
-		   item.addExtraData("arrival_objectid", link.getEndOfLink().getChouetteId().getObjectId());
+		   item.addExtraData("arrival_objectid", chouetteIdGenerator.toSpecificFormatId(link.getEndOfLink().getChouetteId(), parameters.getDefaultCodespace(), link.getEndOfLink()));
 		   item.addPoint(link.getEndOfLink());
 		}
 		return item;
 	}
 
-	public KmlItem addAccessPoint(AccessPoint point) {
-		KmlItem item = addNewItem(point.getChouetteId().getObjectId());
+	public KmlItem addAccessPoint(Context context, AccessPoint point) throws ClassNotFoundException, IOException {
+		KmlExportParameters parameters = (KmlExportParameters) context.get(PARAMETERS_FILE);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
+		
+		KmlItem item = addNewItem(chouetteIdGenerator.toSpecificFormatId(point.getChouetteId(), parameters.getDefaultCodespace(), point));
 		if (item == null) return null;
 		// item.setId(point.getChouetteId().getObjectId());
 		item.addAttribute("name", point.getName());
-		item.addExtraData("objectid", point.getChouetteId().getObjectId());
+		item.addExtraData("objectid", chouetteIdGenerator.toSpecificFormatId(point.getChouetteId(), parameters.getDefaultCodespace(), point));
 		item.addExtraData("object_version", point.getObjectVersion());
 		item.addExtraData("creation_time", point.getCreationTime());
 		item.addExtraData("creator_id", point.getCreatorId());
@@ -253,18 +270,21 @@ public class KmlData {
 		item.addExtraData("mobility_restricted_suitability", point.getMobilityRestrictedSuitable());
 		item.addExtraData("stairs_availability", point.getStairsAvailable());
 		item.addExtraData("lift_availability", point.getLiftAvailable());
-		item.addExtraData("stop_area_objectid", point.getContainedIn().getChouetteId().getObjectId());
+		item.addExtraData("stop_area_objectid", chouetteIdGenerator.toSpecificFormatId(point.getContainedIn().getChouetteId(), parameters.getDefaultCodespace(), point.getContainedIn()));
 		item.setPoint(point);
 		return item;
 	}
 
-	public KmlItem addAccessLink(AccessLink link) {
-		KmlItem item = addNewItem(link.getChouetteId().getObjectId());
+	public KmlItem addAccessLink(Context context, AccessLink link) throws ClassNotFoundException, IOException {
+		KmlExportParameters parameters = (KmlExportParameters) context.get(PARAMETERS_FILE);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
+		
+		KmlItem item = addNewItem(chouetteIdGenerator.toSpecificFormatId(link.getChouetteId(), parameters.getDefaultCodespace(), link));
 		if (item == null) return null;
 		// item.setId(link.getChouetteId().getObjectId());
 		item.addAttribute("name", link.getName());
 		item.addExtraData("access_link_type", link.getLinkType());
-		item.addExtraData("objectid", link.getChouetteId().getObjectId());
+		item.addExtraData("objectid", chouetteIdGenerator.toSpecificFormatId(link.getChouetteId(), parameters.getDefaultCodespace(), link));
 		item.addExtraData("object_version", link.getObjectVersion());
 		item.addExtraData("creation_time", link.getCreationTime());
 		item.addExtraData("creator_id", link.getCreatorId());
@@ -283,9 +303,9 @@ public class KmlData {
 		item.addExtraData("link_orientation", link.getLinkOrientation());
 		if (link.getAccessPoint() != null && link.getStopArea() != null)
 		{
-		   item.addExtraData("access_point_objectid", link.getAccessPoint().getChouetteId().getObjectId());
+		   item.addExtraData("access_point_objectid", chouetteIdGenerator.toSpecificFormatId(link.getAccessPoint().getChouetteId(), parameters.getDefaultCodespace(), link.getAccessPoint()));
 		   item.addPoint(link.getAccessPoint());
-		   item.addExtraData("stop_area_objectid", link.getStopArea().getChouetteId().getObjectId());
+		   item.addExtraData("stop_area_objectid", chouetteIdGenerator.toSpecificFormatId(link.getStopArea().getChouetteId(), parameters.getDefaultCodespace(), link.getStopArea()));
 		   item.addPoint(link.getStopArea());
 		}
 		return item;

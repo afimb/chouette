@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.neptune.exporter.producer;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.model.TimeSlot;
 
 import org.trident.schema.trident.TimeSlotType;
@@ -9,12 +10,12 @@ public class TimeSlotProducer extends
       AbstractJaxbNeptuneProducer<TimeSlotType, TimeSlot>
 {
    //@Override
-   public TimeSlotType produce(TimeSlot timeSlot, boolean addExtension)
+   public TimeSlotType produce(Context context, TimeSlot timeSlot, boolean addExtension)
    {
       TimeSlotType castorTimeSlot = tridentFactory.createTimeSlotType();
 
       //
-      populateFromModel(castorTimeSlot, timeSlot);
+      populateFromModel(context, castorTimeSlot, timeSlot);
 
       // beginningSlotTime mandatory
       castorTimeSlot.setBeginningSlotTime(toCalendar(timeSlot

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.model.Facility;
 import mobi.chouette.exchange.neptune.model.facility.AccessFacilityEnumeration;
 import mobi.chouette.exchange.neptune.model.facility.AccommodationFacilityEnumeration;
@@ -70,13 +71,13 @@ public class FacilityProducer extends
    }
 
    //@Override
-   public ChouetteFacilityType produce(Facility facility, boolean addExtension)
+   public ChouetteFacilityType produce(Context context, Facility facility, boolean addExtension)
    {
       ChouetteFacilityType jaxbFacility = tridentFactory
             .createChouetteFacilityType();
 
       //
-      populateFromModel(jaxbFacility, facility);
+      populateFromModel(context, jaxbFacility, facility);
 
       jaxbFacility.setComment(getNotEmptyString(facility.getComment()));
       jaxbFacility.setName(facility.getName());
@@ -126,21 +127,21 @@ public class FacilityProducer extends
 
       if (facility.getConnectionLink() != null)
       {
-         jaxbFacility.setConnectionLinkId(getNonEmptyObjectId(facility
+         jaxbFacility.setConnectionLinkId(getNonEmptyObjectId(context, facility
                .getConnectionLink()));
       }
       if (facility.getLine() != null)
       {
-         jaxbFacility.setLineId(getNonEmptyObjectId(facility.getLine()));
+         jaxbFacility.setLineId(getNonEmptyObjectId(context, facility.getLine()));
       }
       if (facility.getStopArea() != null)
       {
          jaxbFacility
-               .setStopAreaId(getNonEmptyObjectId(facility.getStopArea()));
+               .setStopAreaId(getNonEmptyObjectId(context, facility.getStopArea()));
       }
       if (facility.getStopPoint() != null)
       {
-         jaxbFacility.setStopPointId(getNonEmptyObjectId(facility
+         jaxbFacility.setStopPointId(getNonEmptyObjectId(context, facility
                .getStopPoint()));
       }
 

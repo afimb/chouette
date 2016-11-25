@@ -5,6 +5,8 @@ import java.util.Map;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
@@ -88,9 +90,12 @@ public class RoutingConstraintValidator extends AbstractValidator implements Val
 		
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context itlLocalContext = (Context) validationContext.get(ITL_LOCAL_CONTEXT);
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		if (itlLocalContext == null || itlLocalContext.isEmpty()) return ;
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Map<String, DataLocation> fileLocations = data.getDataLocations();
+		Map<ChouetteId, DataLocation> fileLocations = data.getDataLocations();
 		Context routingConstraintLocalContext = (Context) validationContext.get(RoutingConstraintValidator.SA_LOCAL_CONTEXT);
 		Context lineContext = (Context) validationContext.get(LineValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
@@ -107,7 +112,7 @@ public class RoutingConstraintValidator extends AbstractValidator implements Val
 			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
 
 			String routingConstraintId = objectId;
-			RoutingConstraint routingConstraint = routingConstraints.get(routingConstraintId);
+			RoutingConstraint routingConstraint = routingConstraints.get(neptuneChouetteIdGenerator.toChouetteId(routingConstraintId, parameters.getDefaultCodespace()));
 			// 2-NEPTUNE-ITL-3 : Check if ITL refers existing StopArea
 			prepareCheckPoint(context, ITL_3);
 			
@@ -141,16 +146,16 @@ public class RoutingConstraintValidator extends AbstractValidator implements Val
 			if (lineId != null)
 			{
 				prepareCheckPoint(context, ITL_5);
-				if (!lineId.equals(line.getChouetteId().getObjectId()))
+				if (!lineId.equals(neptuneChouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), parameters.getDefaultCodespace(), line)))
 				{
-					Context lineData = (Context) lineContext.get(line.getChouetteId().getObjectId());
+					Context lineData = (Context) lineContext.get(neptuneChouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), parameters.getDefaultCodespace(), line));
 					lineNumber = ((Integer) lineData.get(LINE_NUMBER)).intValue();
 					columnNumber = ((Integer) lineData.get(COLUMN_NUMBER)).intValue();
 
 
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, ITL_5, new DataLocation(fileName, lineNumber, columnNumber, objectId), lineId);
-					validationReporter.addTargetLocationToCheckPointError(context, ITL_5, fileLocations.get(line.getChouetteId().getObjectId()));
+					validationReporter.addTargetLocationToCheckPointError(context, ITL_5, fileLocations.get(neptuneChouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), parameters.getDefaultCodespace(), line)));
 				}
 
 			}
@@ -167,9 +172,12 @@ public class RoutingConstraintValidator extends AbstractValidator implements Val
 		
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context itlLocalContext = (Context) validationContext.get(ITL_LOCAL_CONTEXT);
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		if (itlLocalContext == null || itlLocalContext.isEmpty()) return ;
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Map<String, DataLocation> fileLocations = data.getDataLocations();
+		Map<ChouetteId, DataLocation> fileLocations = data.getDataLocations();
 		Context routingConstraintLocalContext = (Context) validationContext.get(RoutingConstraintValidator.SA_LOCAL_CONTEXT);
 		Context stopPointContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
@@ -186,7 +194,7 @@ public class RoutingConstraintValidator extends AbstractValidator implements Val
 
 			for (StopArea child : routingConstraint.getRoutingConstraintAreas()) 
 			{
-				if (routingConstraintLocalContext.containsKey(child.getChouetteId().getObjectId())) 
+				if (routingConstraintLocalContext.containsKey(neptuneChouetteIdGenerator.toSpecificFormatId(child.getChouetteId(), parameters.getDefaultCodespace(), child))) 
 				{
 					// wrong reference type
 
@@ -196,10 +204,10 @@ public class RoutingConstraintValidator extends AbstractValidator implements Val
 					//								errorItem.getTargets().add(fileLocations.get(child.getChouetteId().getObjectId()));
 					//								addValidationError(context,ITL_1, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, ITL_1, fileLocations.get(routingConstraint.getChouetteId().getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.ITL.toString());
-					validationReporter.addTargetLocationToCheckPointError(context, ITL_1, fileLocations.get(child.getChouetteId().getObjectId()));
+					validationReporter.addCheckPointReportError(context, ITL_1, fileLocations.get(routingConstraint.getChouetteId()), child.getAreaType().toString(),ChouetteAreaEnum.ITL.toString());
+					validationReporter.addTargetLocationToCheckPointError(context, ITL_1, fileLocations.get(child.getChouetteId()));
 				}
-				else if (stopPointContext.containsKey(child.getChouetteId().getObjectId()))
+				else if (stopPointContext.containsKey(neptuneChouetteIdGenerator.toSpecificFormatId(child.getChouetteId(), parameters.getDefaultCodespace(), child)))
 				{
 					// wrong reference type
 					//							Detail errorItem = new Detail(
@@ -208,14 +216,14 @@ public class RoutingConstraintValidator extends AbstractValidator implements Val
 					//							errorItem.getTargets().add(fileLocations.get( child.getChouetteId().getObjectId()));
 					//							addValidationError(context,ITL_1, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, ITL_1, fileLocations.get(routingConstraint.getChouetteId().getObjectId()), "StopPoint",ChouetteAreaEnum.ITL.toString());
-					validationReporter.addTargetLocationToCheckPointError(context, ITL_1, fileLocations.get(child.getChouetteId().getObjectId()));
+					validationReporter.addCheckPointReportError(context, ITL_1, fileLocations.get(routingConstraint.getChouetteId()), "StopPoint",ChouetteAreaEnum.ITL.toString());
+					validationReporter.addTargetLocationToCheckPointError(context, ITL_1, fileLocations.get(child.getChouetteId()));
 				}
 
 			}
 
 
-			Context itlData = (Context) itlLocalContext.get(routingConstraint.getChouetteId().getObjectId());
+			Context itlData = (Context) itlLocalContext.get(neptuneChouetteIdGenerator.toSpecificFormatId(routingConstraint.getChouetteId(), parameters.getDefaultCodespace(), routingConstraint));
 			// 2-NEPTUNE-ITL-2 : if stoparea is ITL : check if a ITLType
 			// object refers it
 			prepareCheckPoint(context,ITL_2);
@@ -227,7 +235,7 @@ public class RoutingConstraintValidator extends AbstractValidator implements Val
 				//						fileLocations.get(stopArea.getChouetteId().getObjectId()));
 				//				addValidationError(context,ITL_2, errorItem);
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-				validationReporter.addCheckPointReportError(context, ITL_2, fileLocations.get(routingConstraint.getChouetteId().getObjectId()));
+				validationReporter.addCheckPointReportError(context, ITL_2, fileLocations.get(routingConstraint.getChouetteId()));
 			}	
 
 			

@@ -15,6 +15,8 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.LineDAO;
+import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.TransportModeParameters;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
@@ -24,6 +26,8 @@ import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.exchange.validator.DummyChecker;
 import mobi.chouette.exchange.validator.JobDataTest;
+import mobi.chouette.exchange.validator.ValidateParameters;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -133,21 +137,21 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 
 			Line line = new Line();
 			line.setId(id++);
-			line.getChouetteId().setObjectId("test1:Line:1");
+			line.setChouetteId(new ChouetteId("test1", "1", false));
 			line.setName("test");
 			Route route = new Route();
 			route.setId(id++);
-			route.getChouetteId().setObjectId("test1:Route:1");
+			route.setChouetteId(new ChouetteId("test1", "1", false));
 			route.setName("test1");
 			route.setLine(line);
 			bean1 = new JourneyPattern();
 			bean1.setId(id++);
-			bean1.getChouetteId().setObjectId("test1:JourneyPattern:1");
+			bean1.setChouetteId(new ChouetteId("test1", "1", false));
 			bean1.setName("test1");
 			bean1.setRoute(route);
 			bean2 = new JourneyPattern();
 			bean2.setId(id++);
-			bean2.getChouetteId().setObjectId("test2:JourneyPattern:1");
+			bean2.setChouetteId(new ChouetteId("test2", "1", false));
 			bean2.setName("test2");
 			bean2.setRoute(route);
 
@@ -216,7 +220,7 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		List<CheckPointErrorReport> details = checkReportForTest(report, "4-JourneyPattern-1", 1);
 		for (CheckPointErrorReport detail : details) {
 			Assert.assertEquals(detail.getReferenceValue(), "ObjectId", "detail must refer column");
-			Assert.assertEquals(detail.getValue(), bean2.getChouetteId().getObjectId().split(":")[2], "detail must refer value");
+			Assert.assertEquals(detail.getValue(), bean2.getTechnicalId(), "detail must refer value");
 		}
 	}
 
@@ -227,6 +231,9 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		Context context = initValidatorContext();
 		context.put(VALIDATION, fullparameters);
 		context.put(VALIDATION_REPORT, new ValidationReport());
+		
+		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -250,10 +257,10 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 			}
 		}
 
-		route1.getChouetteId().setObjectId("NINOXE:Route:checkedRoute");
+		route1.setChouetteId(new ChouetteId("NINOXE", "checkedRoute", false));
 		JourneyPattern jp1 = route1.getJourneyPatterns().get(0);
 		
-		jp1.getChouetteId().setObjectId("NINOXE:JourneyPattern:checkedJP");
+		jp1.setChouetteId(new ChouetteId("NINOXE", "checkedJP", false));
 
 		context.put(VALIDATION_DATA, data);
 
@@ -279,21 +286,21 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
-			Assert.assertEquals(detail.getSource().getObjectId(), jp1.getChouetteId().getObjectId(),
+			Assert.assertEquals(detail.getSource().getObjectId(), chouetteIdGenerator.toSpecificFormatId(jp1.getChouetteId(), parameters.getDefaultCodespace(), jp1),
 					"jp 1 must be source of error");
 		}
 		utx.rollback();
 
 	}
 	
-	private void createLineRouteSection() throws Exception {
+	private void createLineRouteSection(Context context) throws Exception {
 		utx.begin();
 		em.joinTransaction();
 
 		List<Line> beans = lineDao.findAll();
 		Assert.assertFalse(beans.isEmpty(), "No data for test");
 		Line line1 = beans.get(0);
-		createRouteSection(line1);
+		createRouteSection(context, line1);
 		
 		utx.commit();
 	}
@@ -306,11 +313,12 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 
 		importLines("Ligne_OK.xml", 1, 1, true);
 
-		createLineRouteSection();
+		
 		Context context = initValidatorContext();
 		context.put(VALIDATION, fullparameters);
 		context.put(VALIDATION_REPORT, new ValidationReport());
 
+		createLineRouteSection(context);
 		
 		utx.begin();
 		em.joinTransaction();
@@ -362,12 +370,12 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 
 		importLines("Ligne_OK.xml", 1, 1, true);
 
-		createLineRouteSection();
+		
 		Context context = initValidatorContext();
 		context.put(VALIDATION, fullparameters);
 		context.put(VALIDATION_REPORT, new ValidationReport());
 
-		
+		createLineRouteSection(context);
 		utx.begin();
 		em.joinTransaction();
 		List<Line> beans = lineDao.findAll();

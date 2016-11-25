@@ -17,14 +17,15 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
-import mobi.chouette.exchange.netex.NetexChouetteIdObjectFactory;
+import mobi.chouette.exchange.netex.NetexChouetteIdObjectUtil;
+import mobi.chouette.exchange.netex.importer.NetexImportParameters;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 @Log4j
-public class VehicleJourneyParser extends NetexChouetteIdGenerator implements Parser, Constant {
+public class VehicleJourneyParser implements Parser, Constant {
 
 	private static final String CHILD_TAG = "vehicleJourneys";
 
@@ -53,9 +54,12 @@ public class VehicleJourneyParser extends NetexChouetteIdGenerator implements Pa
 		xpp.require(XmlPullParser.START_TAG, null, "ServiceJourney");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
+		NetexImportParameters configuration = (NetexImportParameters) context.get(CONFIGURATION);
+		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		String id = xpp.getAttributeValue(null, ID);
-		VehicleJourney vehicleJourney = NetexChouetteIdObjectFactory.getVehicleJourney(referential, toChouetteId(id, "default_codespace"));
+		VehicleJourney vehicleJourney = NetexChouetteIdObjectUtil.getVehicleJourney(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace()));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		vehicleJourney.setObjectVersion(version != null ? version : 0);
@@ -69,17 +73,17 @@ public class VehicleJourneyParser extends NetexChouetteIdGenerator implements Pa
 				parseDayTypeRefs(context, vehicleJourney);
 			} else if (xpp.getName().equals("RouteRef")) {
 				String ref = xpp.getAttributeValue(null, REF);
-				Route route = NetexChouetteIdObjectFactory.getRoute(referential, toChouetteId(ref, "default_codespace"));
+				Route route = NetexChouetteIdObjectUtil.getRoute(referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace()));
 				vehicleJourney.setRoute(route);
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("ServicePatternRef")) {
 				String ref = xpp.getAttributeValue(null, REF);
-				JourneyPattern journeyPattern = NetexChouetteIdObjectFactory.getJourneyPattern(referential, toChouetteId(ref, "default_codespace"));
+				JourneyPattern journeyPattern = NetexChouetteIdObjectUtil.getJourneyPattern(referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace()));
 				vehicleJourney.setJourneyPattern(journeyPattern);
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("OperatorRef")) {
 				String ref = xpp.getAttributeValue(null, REF);
-				Company company = NetexChouetteIdObjectFactory.getCompany(referential, toChouetteId(ref, "default_codespace"));
+				Company company = NetexChouetteIdObjectUtil.getCompany(referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace()));
 				vehicleJourney.setCompany(company);
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("trainNumbers")) {
@@ -158,6 +162,9 @@ public class VehicleJourneyParser extends NetexChouetteIdGenerator implements Pa
 		xpp.require(XmlPullParser.START_TAG, null, "Call");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
+		NetexImportParameters configuration = (NetexImportParameters) context.get(CONFIGURATION);
+		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		VehicleJourneyAtStop vehicleJourneyAtStop = new VehicleJourneyAtStop();
 
@@ -165,7 +172,7 @@ public class VehicleJourneyParser extends NetexChouetteIdGenerator implements Pa
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("ScheduledStopPointRef")) {
 				ref = xpp.getAttributeValue(null, REF);
-				StopPoint stopPoint = NetexChouetteIdObjectFactory.getStopPoint(referential, toChouetteId(ref, "default_codespace"));
+				StopPoint stopPoint = NetexChouetteIdObjectUtil.getStopPoint(referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace()));
 				vehicleJourneyAtStop.setStopPoint(stopPoint);
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("Arrival")) {

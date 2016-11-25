@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.JsonExtension;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -28,18 +31,19 @@ public class LineProducer extends AbstractJaxbNeptuneProducer<ChouettePTNetworkT
 		implements JsonExtension {
 
 	//@Override
-	public ChouettePTNetworkType.ChouetteLineDescription.Line produce(Line line, Collection<Route> exportableRoutes, boolean addExtension) {
+	public ChouettePTNetworkType.ChouetteLineDescription.Line produce(Context context, Line line, Collection<Route> exportableRoutes, boolean addExtension) {
 		ChouettePTNetworkType.ChouetteLineDescription.Line jaxbLine = tridentFactory
 				.createChouettePTNetworkTypeChouetteLineDescriptionLine();
-
+		  NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(CONFIGURATION);
+		   NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		//
-		populateFromModel(jaxbLine, line);
+		populateFromModel(context, jaxbLine, line);
 
 		jaxbLine.setComment(buildComment(line, addExtension));
 		jaxbLine.setName(line.getName());
 		jaxbLine.setNumber(line.getNumber());
 		jaxbLine.setPublishedName(line.getPublishedName());
-		jaxbLine.setPtNetworkIdShortcut(getNonEmptyObjectId(line.getNetwork()));
+		jaxbLine.setPtNetworkIdShortcut(getNonEmptyObjectId(context, line.getNetwork()));
 
 		try {
 			TransportModeNameEnum transportModeName = line.getTransportModeName();
@@ -55,7 +59,7 @@ public class LineProducer extends AbstractJaxbNeptuneProducer<ChouettePTNetworkT
 		for (Route route : line.getRoutes()) {
 			if (exportableRoutes.contains(route))
 			{
-				jaxbLine.getRouteId().add(route.getChouetteId().getObjectId());
+				jaxbLine.getRouteId().add(neptuneChouetteIdGenerator.toSpecificFormatId(route.getChouetteId(), parameters.getDefaultCodespace(), route));
 			}
 		}
 

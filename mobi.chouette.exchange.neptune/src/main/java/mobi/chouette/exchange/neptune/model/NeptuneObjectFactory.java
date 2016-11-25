@@ -32,8 +32,7 @@ public class NeptuneObjectFactory {
 		PTLink result = ptLink.get(chouetteId);
 		if (result == null) {
 			result = new PTLink();
-			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			result.setChouetteId(chouetteId);
 			ptLink.put(chouetteId, result);
 		}
 		return result;
@@ -43,8 +42,7 @@ public class NeptuneObjectFactory {
 		AreaCentroid result = areaCentroid.get(chouetteId);
 		if (result == null) {
 			result = new AreaCentroid();
-			result.setChouetteId(new ChouetteId());
-			result.getChouetteId().setObjectId(chouetteId.getObjectId());
+			result.setChouetteId(chouetteId);
 			areaCentroid.put(chouetteId, result);
 		}
 		return result;
@@ -64,8 +62,7 @@ public class NeptuneObjectFactory {
 		TimeSlot timeSlot = timeSlots.get(chouetteId);
 		if (timeSlot == null) {
 			timeSlot = new TimeSlot();
-			timeSlot.setChouetteId(new ChouetteId());
-			timeSlot.getChouetteId().setObjectId(chouetteId.getObjectId());
+			timeSlot.setChouetteId(chouetteId);
 			timeSlots.put(chouetteId,  timeSlot);
 		}
 		return timeSlot;

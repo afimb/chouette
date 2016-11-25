@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.model.Footnote;
@@ -36,29 +37,29 @@ public class VehicleJourneyProducer extends AbstractJaxbNeptuneProducer<VehicleJ
 	};
 	
 	// @Override
-	public VehicleJourneyType produce(VehicleJourney vehicleJourney, boolean addExtension) {
-		return produce(vehicleJourney, addExtension, 0);
+	public VehicleJourneyType produce(Context context, VehicleJourney vehicleJourney, boolean addExtension) {
+		return produce(context, vehicleJourney, addExtension, 0);
 	}
 
-	public VehicleJourneyType produce(VehicleJourney vehicleJourney, boolean addExtension, int count) {
+	public VehicleJourneyType produce(Context context, VehicleJourney vehicleJourney, boolean addExtension, int count) {
 		VehicleJourneyType jaxbVehicleJourney = tridentFactory.createVehicleJourneyType();
 
 		//
-		populateFromModel(jaxbVehicleJourney, vehicleJourney);
+		populateFromModel(context, jaxbVehicleJourney, vehicleJourney);
 		if (count > 0)
 			jaxbVehicleJourney.setObjectId(jaxbVehicleJourney.getObjectId()+"-"+count);
 
 		jaxbVehicleJourney.setComment(buildComment(vehicleJourney, addExtension));
 
 		jaxbVehicleJourney.setFacility(getNotEmptyString(vehicleJourney.getFacility()));
-		jaxbVehicleJourney.setJourneyPatternId(getNonEmptyObjectId(vehicleJourney.getJourneyPattern()));
+		jaxbVehicleJourney.setJourneyPatternId(getNonEmptyObjectId(context, vehicleJourney.getJourneyPattern()));
 		if (vehicleJourney.getNumber() != null)
 			jaxbVehicleJourney.setNumber(BigInteger.valueOf(vehicleJourney.getNumber().longValue()));
-		jaxbVehicleJourney.setOperatorId(getNonEmptyObjectId(vehicleJourney.getCompany()));
+		jaxbVehicleJourney.setOperatorId(getNonEmptyObjectId(context, vehicleJourney.getCompany()));
 		jaxbVehicleJourney.setPublishedJourneyIdentifier(getNotEmptyString(vehicleJourney
 				.getPublishedJourneyIdentifier()));
 		jaxbVehicleJourney.setPublishedJourneyName(getNotEmptyString(vehicleJourney.getPublishedJourneyName()));
-		jaxbVehicleJourney.setRouteId(getNonEmptyObjectId(vehicleJourney.getRoute()));
+		jaxbVehicleJourney.setRouteId(getNonEmptyObjectId(context, vehicleJourney.getRoute()));
 
 		// jaxbVehicleJourney.setTimeSlotId(getNonEmptyObjectId(vehicleJourney
 		// .getTimeSlot()));
@@ -82,7 +83,7 @@ public class VehicleJourneyProducer extends AbstractJaxbNeptuneProducer<VehicleJ
 					VehicleJourneyAtStopType jaxbVehicleJourneyAtStop = tridentFactory.createVehicleJourneyAtStopType();
 					jaxbVehicleJourneyAtStop.setBoardingAlightingPossibility(buildBoardingAndAlightingPossibility(vehicleJourneyAtStop.getStopPoint()));
 					jaxbVehicleJourneyAtStop.setOrder(BigInteger.valueOf(order++));
-					jaxbVehicleJourneyAtStop.setStopPointId(getNonEmptyObjectId(vehicleJourneyAtStop.getStopPoint()));
+					jaxbVehicleJourneyAtStop.setStopPointId(getNonEmptyObjectId(context, vehicleJourneyAtStop.getStopPoint()));
 					jaxbVehicleJourneyAtStop.setVehicleJourneyId(jaxbVehicleJourney.getObjectId());
 					switch(vehicleJourney.getJourneyCategory()) {
 					case Timesheet:

@@ -32,8 +32,6 @@ import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.RoutingConstraint;
-import mobi.chouette.model.StopArea;
-import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
@@ -307,7 +305,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		em.joinTransaction();
 		Line line = lineDao.findByChouetteId("NINOXE", "15574334");
 		
-		NeptuneTestsUtils.checkMinimalLine(line);
+		NeptuneTestsUtils.checkMinimalLine(context, line);
 		
 		utx.rollback();
 
@@ -351,7 +349,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		em.joinTransaction();
 		Line line = lineDao.findByChouetteId("NINOXE", "15574334");
 		
-		NeptuneTestsUtils.checkMinimalLine(line);
+		NeptuneTestsUtils.checkMinimalLine(context, line);
 		
 		utx.rollback();
 

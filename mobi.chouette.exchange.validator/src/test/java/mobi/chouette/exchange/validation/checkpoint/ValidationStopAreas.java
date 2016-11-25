@@ -14,6 +14,8 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
@@ -22,6 +24,8 @@ import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.exchange.validator.DummyChecker;
 import mobi.chouette.exchange.validator.JobDataTest;
+import mobi.chouette.exchange.validator.ValidateParameters;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 
@@ -136,35 +140,35 @@ public class ValidationStopAreas extends AbstractTestValidation {
 
 			bean1 = new StopArea();
 			bean1.setId(id++);
-			bean1.getChouetteId().setObjectId("test1:StopArea:1");
+			bean1.setChouetteId(new ChouetteId("test1", "1", false));
 			bean1.setName("test1");
 			bean1.setAreaType(ChouetteAreaEnum.BoardingPosition);
 			bean1.setCountryCode("60124");
 			bean1.setCityName("Ville1");
 			bean2 = new StopArea();
 			bean2.setId(id++);
-			bean2.getChouetteId().setObjectId("test2:StopArea:1");
+			bean2.setChouetteId(new ChouetteId("test2", "1", false));
 			bean2.setName("test2");
 			bean2.setAreaType(ChouetteAreaEnum.BoardingPosition);
 			bean2.setCountryCode("60123");
 			bean2.setCityName("Ville1");
 			bean3 = new StopArea();
 			bean3.setId(id++);
-			bean3.getChouetteId().setObjectId("test2:StopArea:3");
+			bean3.setChouetteId(new ChouetteId("test2", "3", false));
 			bean3.setName("test2");
 			bean3.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 			bean3.setCountryCode("60124");
 			bean3.setCityName("Ville1");
 			bean4 = new StopArea();
 			bean4.setId(id++);
-			bean4.getChouetteId().setObjectId("test2:StopArea:4");
+			bean4.setChouetteId(new ChouetteId("test2", "4", false));
 			bean4.setName("test4");
 			bean4.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 			bean4.setCountryCode("60124");
 			bean4.setCityName("Ville2");
 			bean5 = new StopArea();
 			bean5.setId(id++);
-			bean5.getChouetteId().setObjectId("test2:StopArea:4");
+			bean5.setChouetteId(new ChouetteId("test2", "4", false));
 			bean5.setName("test4");
 			bean5.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 			bean5.setCountryCode("50124");
@@ -212,6 +216,9 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		Context context = initValidatorContext();
 		context.put(VALIDATION, fullparameters);
 		context.put(VALIDATION_REPORT, new ValidationReport());
+		
+		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -249,7 +256,7 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		}
 		for (CheckPointErrorReport detail : details) {
 			log.warn(detail);
-			Assert.assertEquals(detail.getSource().getObjectId(), area1.getChouetteId().getObjectId(), "area1 must be source of error");
+			Assert.assertEquals(detail.getSource().getObjectId(), chouetteIdGenerator.toSpecificFormatId(area1.getChouetteId(), parameters.getDefaultCodespace(), area1), "area1 must be source of error");
 		}
 
 		utx.rollback();
@@ -281,7 +288,8 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		}
 		StopArea area2 = new StopArea();
 		area2.setId(1000000L);
-		area2.getChouetteId().setObjectId("NINOXE:StopArea:1000000");
+		
+		area2.setChouetteId(new ChouetteId("NINOXE", "1000000", false));
 		area2.setName("Doublon " + area1.getName());
 		area2.setAreaType(area1.getAreaType());
 		area2.setLongLatType(area1.getLongLatType());
@@ -334,12 +342,12 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		StopArea area1 = null;
 		StopArea area2 = null;
 		for (StopArea stopArea : beans) {
-			if (stopArea.getChouetteId().getObjectId().equals("NINOXE:StopArea:15568801")) // St
+			if (stopArea.getCodeSpace().equals("NINOXE") && stopArea.getTechnicalId().equals("15568801")) // St
 			// Paul
 			{
 				area1 = stopArea;
 			}
-			if (stopArea.getChouetteId().getObjectId().equals("NINOXE:StopArea:15568802")) // place
+			if (stopArea.getCodeSpace().equals("NINOXE") && stopArea.getTechnicalId().equals("15568802")) // place
 			// de
 			// verdun
 			{
@@ -403,7 +411,7 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		for (StopArea area : beans) {
 			if (area.getAreaType().equals(ChouetteAreaEnum.ITL))
 			{
-				log.info("présence itl anormale : " + area.getChouetteId().getObjectId());
+				log.info("présence itl anormale : " + area.getChouetteId().toString());
 				continue;
 			}
 				
@@ -557,7 +565,7 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		List<CheckPointErrorReport> details = checkReportForTest(report, "4-StopArea-1", 1);
 		CheckPointErrorReport detail = details.get(0);
 		Assert.assertEquals(detail.getReferenceValue(), "ObjectId", "detail must refer column");
-		Assert.assertEquals(detail.getValue(), bean2.getChouetteId().getObjectId().split(":")[2], "detail must refer value");
+		Assert.assertEquals(detail.getValue(), bean2.getTechnicalId(), "detail must refer value");
 	}
 
 	@Test(groups = { "StopArea" }, description = "4-StopArea-2", priority = 9)

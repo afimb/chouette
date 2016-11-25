@@ -7,6 +7,8 @@ import java.util.Set;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.model.AreaCentroid;
 import mobi.chouette.exchange.neptune.model.PTLink;
 import mobi.chouette.exchange.validation.ValidationData;
@@ -142,7 +144,10 @@ public abstract class AbstractValidator implements Constant {
 	 */
 	protected void addLocation(Context context, String localContext, NeptuneIdentifiedObject object, int lineNumber,
 			int columnNumber) {
-		String objectId = object.getChouetteId().getObjectId();
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
+		String objectId = neptuneChouetteIdGenerator.toSpecificFormatId(object.getChouetteId(), parameters.getDefaultCodespace(), object);
 		if (object == null) 
 			log.info("object in parsing is null ");
 		
@@ -178,14 +183,14 @@ public abstract class AbstractValidator implements Constant {
 			log.info("OK6");
 			if (data != null && fileName != null) {
 				log.info("OK7");
-				DataLocation loc = new DataLocation(fileName, lineNumber, columnNumber, object);
+				DataLocation loc = new DataLocation(context, fileName, lineNumber, columnNumber, object);
 				// manage neptune specific model
 				if (object instanceof PTLink) {
 					try {
 						List<DataLocation.Path> path = loc.getPath();
-						path.add(loc.new Path(object));
-						path.add(loc.new Path(((PTLink) object).getRoute()));
-						path.add(loc.new Path(((PTLink) object).getRoute().getLine()));
+						path.add(loc.new Path(neptuneChouetteIdGenerator, parameters, object));
+						path.add(loc.new Path(neptuneChouetteIdGenerator, parameters, ((PTLink) object).getRoute()));
+						path.add(loc.new Path(neptuneChouetteIdGenerator, parameters, ((PTLink) object).getRoute().getLine()));
 	
 	//					Line line = ((PTLink) object).getRoute().getLine();
 	//					if (line != null)
@@ -196,8 +201,8 @@ public abstract class AbstractValidator implements Constant {
 				} else if (object instanceof AreaCentroid) {
 					try {
 						List<DataLocation.Path> path = loc.getPath();
-						path.add(loc.new Path(object));
-						path.add(loc.new Path(((AreaCentroid) object).getContainedIn()));
+						path.add(loc.new Path(neptuneChouetteIdGenerator, parameters, object));
+						path.add(loc.new Path(neptuneChouetteIdGenerator, parameters, ((AreaCentroid) object).getContainedIn()));
 					} catch (NullPointerException e) {
 	
 					}
@@ -207,7 +212,7 @@ public abstract class AbstractValidator implements Constant {
 					loc.setName(DataLocation.buildName(object));
 				}
 				log.info("OK9");
-				data.getDataLocations().put(objectId, loc);
+				data.getDataLocations().put(object.getChouetteId(), loc);
 				log.info("OK10");
 			}
 		}

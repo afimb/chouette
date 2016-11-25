@@ -15,6 +15,7 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.model.PTLink;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.util.Referential;
 
@@ -97,18 +98,18 @@ public class ChouetteLineDescriptionParser implements Parser, Constant {
 	private List<PTLink> sortPtLinks(List<PTLink> ptLinks) {
 		if (ptLinks == null || ptLinks.isEmpty())
 			return ptLinks;
-		Map<String, PTLink> linkByStart = new HashMap<String, PTLink>();
-		Map<String, PTLink> linkByEnd = new HashMap<String, PTLink>();
-
+		Map<ChouetteId, PTLink> linkByStart = new HashMap<ChouetteId, PTLink>();
+		Map<ChouetteId, PTLink> linkByEnd = new HashMap<ChouetteId, PTLink>();
+		
 		for (PTLink ptLink : ptLinks) {
 			if (ptLink.getStartOfLink() != null)
-				linkByStart.put(ptLink.getStartOfLink().getChouetteId().getObjectId(), ptLink);
+				linkByStart.put(ptLink.getStartOfLink().getChouetteId(), ptLink);
 			if (ptLink.getEndOfLink() != null)
-				linkByEnd.put(ptLink.getEndOfLink().getChouetteId().getObjectId(), ptLink);
+				linkByEnd.put(ptLink.getEndOfLink().getChouetteId(), ptLink);
 		}
 
 		// find first stop id
-		Set<String> starts = new HashSet<String>();
+		Set<ChouetteId> starts = new HashSet<ChouetteId>();
 		starts.addAll(linkByStart.keySet());
 		starts.removeAll(linkByEnd.keySet());
 		// starts must contains only first stop
@@ -116,11 +117,11 @@ public class ChouetteLineDescriptionParser implements Parser, Constant {
 		List<PTLink> sortedLinks = new ArrayList<PTLink>();
 
 		if (!starts.isEmpty()) {
-			String start = starts.toArray(new String[0])[0];
+			ChouetteId start = (ChouetteId)starts.toArray()[0];
 			PTLink link = linkByStart.get(start);
 			while (link != null) {
 				sortedLinks.add(link);
-				start = link.getEndOfLink().getChouetteId().getObjectId();
+				start = link.getEndOfLink().getChouetteId();
 				link = linkByStart.remove(start);
 			}
 		}

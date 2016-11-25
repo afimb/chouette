@@ -5,6 +5,8 @@ import java.util.Map;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
@@ -12,6 +14,7 @@ import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.AccessLink;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 
 public class AccessLinkValidator extends AbstractValidator implements Validator<AccessLink> , Constant{
@@ -67,9 +70,11 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		Context stopAreasContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		Context accessPointsContext = (Context) validationContext.get(AccessPointValidator.LOCAL_CONTEXT);
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 //		Map<String, Location> fileLocations = data.getFileLocations();
-		Map<String, DataLocation> fileLocations = data.getDataLocations();
+		Map<ChouetteId, DataLocation> fileLocations = data.getDataLocations();
 
 		if (localContext == null || localContext.isEmpty()) return ;
 
@@ -84,7 +89,7 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 //			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
 //			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();		
 //          FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
-			DataLocation sourceLocation = fileLocations.get(objectId);
+			DataLocation sourceLocation = fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
 
 			boolean step1 = true;
 

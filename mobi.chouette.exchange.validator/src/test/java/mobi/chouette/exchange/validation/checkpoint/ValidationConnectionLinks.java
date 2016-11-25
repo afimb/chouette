@@ -23,6 +23,7 @@ import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.exchange.validator.DummyChecker;
 import mobi.chouette.exchange.validator.JobDataTest;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -131,11 +132,11 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 
 			bean1 = new ConnectionLink();
 			bean1.setId(id++);
-			bean1.getChouetteId().setObjectId("test1:ConnectionLink:1");
+			bean1.setChouetteId(new ChouetteId("test1", "1", false));
 			bean1.setName("test1");
 			bean2 = new ConnectionLink();
 			bean2.setId(id++);
-			bean2.getChouetteId().setObjectId("test2:ConnectionLink:1");
+			bean2.setChouetteId(new ChouetteId("test2", "1", false));
 			bean2.setName("test2");
 
 			beansFor4.add(bean1);
@@ -348,7 +349,7 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		List<CheckPointErrorReport> details = checkReportForTest(report, "4-ConnectionLink-1", 1);
 		CheckPointErrorReport detail = details.get(0);
 		Assert.assertEquals(detail.getReferenceValue(), "ObjectId", "detail must refer column");
-		Assert.assertEquals(detail.getValue(), bean2.getChouetteId().getObjectId().split(":")[2], "detail must refer value");
+		Assert.assertEquals(detail.getValue(), bean2.getTechnicalId(), "detail must refer value");
 	}
 
 	@Test(groups = { "connectionLink" }, description = "4-ConnectionLink-2", priority = 6)
@@ -362,11 +363,11 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 
 		StopArea start = new StopArea();
 		start.setId((long) 1);
-		start.getChouetteId().setObjectId("test:StopArea:1");
+		start.setChouetteId(new ChouetteId("test", "1", false));
 		start.setAreaType(ChouetteAreaEnum.StopPlace);
 		StopArea end = new StopArea();
 		end.setId((long) 2);
-		end.getChouetteId().setObjectId("test:StopArea:1");
+		end.setChouetteId(new ChouetteId("test", "1", false));
 		end.setAreaType(ChouetteAreaEnum.Quay);
 		bean1.setStartOfLink(start);
 		bean1.setEndOfLink(end);

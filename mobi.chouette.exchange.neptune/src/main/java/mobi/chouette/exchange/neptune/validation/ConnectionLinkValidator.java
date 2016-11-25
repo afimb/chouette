@@ -5,12 +5,15 @@ import java.util.Map;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.util.Referential;
@@ -63,10 +66,13 @@ public class ConnectionLinkValidator extends AbstractValidator implements Valida
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		if (localContext == null || localContext.isEmpty()) return ;
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 //		Map<String, Location> fileLocations = data.getFileLocations();
-		Map<String, DataLocation> fileLocations = data.getDataLocations();
+		Map<ChouetteId, DataLocation> fileLocations = data.getDataLocations();
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
@@ -74,17 +80,17 @@ public class ConnectionLinkValidator extends AbstractValidator implements Valida
 		prepareCheckPoint(context, CONNECTION_LINK_1);
 		for (String objectId : localContext.keySet()) 
 		{
-			ConnectionLink connectionLink = referential.getConnectionLinks().get(objectId);
+			ConnectionLink connectionLink = referential.getConnectionLinks().get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
 
-			if (stopAreaContext.containsKey(connectionLink.getStartOfLink().getChouetteId().getObjectId()) 
-					|| stopAreaContext.containsKey(connectionLink.getEndOfLink().getChouetteId().getObjectId()))
+			if (stopAreaContext.containsKey(connectionLink.getStartOfLink().getChouetteId()) 
+					|| stopAreaContext.containsKey(connectionLink.getEndOfLink().getChouetteId()))
 				continue;
 //			Detail errorItem = new Detail(
 //					CONNECTION_LINK_1,
 //					fileLocations.get(connectionLink.getChouetteId().getObjectId()));
 //			addValidationError(context, CONNECTION_LINK_1, errorItem);
 			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-			validationReporter.addCheckPointReportError(context, CONNECTION_LINK_1, fileLocations.get(connectionLink.getChouetteId().getObjectId()));
+			validationReporter.addCheckPointReportError(context, CONNECTION_LINK_1, fileLocations.get(connectionLink.getChouetteId()));
 
 		}
 		return ;

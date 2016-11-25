@@ -14,16 +14,17 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.model.TimeSlot;
 import mobi.chouette.exchange.neptune.validation.TimeSlotValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Timeband;
-import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectFactory;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class TimeSlotParser extends NeptuneChouetteIdGenerator implements Parser, Constant {
+public class TimeSlotParser implements Parser, Constant {
 
 	private static final String CHILD_TAG = "TimeSlot";
 
@@ -32,6 +33,9 @@ public class TimeSlotParser extends NeptuneChouetteIdGenerator implements Parser
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		NeptuneObjectFactory factory =  (NeptuneObjectFactory) context.get(NEPTUNE_OBJECT_FACTORY);
+		
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		int columnNumber =  xpp.getColumnNumber();
@@ -49,10 +53,10 @@ public class TimeSlotParser extends NeptuneChouetteIdGenerator implements Parser
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("objectId")) {				
 				objectId = ParserUtils.getText(xpp.nextText());
-				timeSlot = factory.getTimeSlot(toChouetteId(objectId, "default_codespace"));
+				timeSlot = factory.getTimeSlot(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
 				timeSlot.setFilled(true);
 				
-				timeband = NeptuneChouetteIdObjectFactory.getTimeband(referential, toChouetteId(objectId, "default_codespace"));
+				timeband = NeptuneChouetteIdObjectUtil.getTimeband(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
 				timeband.setFilled(true);
 
 			} else if (xpp.getName().equals("objectVersion")) {

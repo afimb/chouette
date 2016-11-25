@@ -12,13 +12,15 @@ import mobi.chouette.exchange.netex.NetexChouetteIdGenerator;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
-import mobi.chouette.exchange.netex.NetexChouetteIdObjectFactory;
+import mobi.chouette.exchange.netex.NetexChouetteIdObjectUtil;
+import mobi.chouette.exchange.netex.exporter.NetexExportParameters;
+import mobi.chouette.exchange.netex.importer.NetexImportParameters;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class JourneyPatternParser extends NetexChouetteIdGenerator implements Parser, Constant {
+public class JourneyPatternParser implements Parser, Constant {
 
 	private static final String CHILD_TAG = "servicePatterns";
 
@@ -47,10 +49,13 @@ public class JourneyPatternParser extends NetexChouetteIdGenerator implements Pa
 		xpp.require(XmlPullParser.START_TAG, null, "ServicePattern");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
+		NetexImportParameters configuration = (NetexImportParameters) context.get(CONFIGURATION);
+		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		String id = xpp.getAttributeValue(null, ID);
-		JourneyPattern journeyPattern = NetexChouetteIdObjectFactory.getJourneyPattern(
-				referential, toChouetteId(id, "default_codespace"));
+		JourneyPattern journeyPattern = NetexChouetteIdObjectUtil.getJourneyPattern(
+				referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace()));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		journeyPattern.setObjectVersion(version != null ? version : 0);
@@ -65,12 +70,12 @@ public class JourneyPatternParser extends NetexChouetteIdGenerator implements Pa
 				journeyPattern.setName(xpp.nextText());
 			} else if (xpp.getName().equals("RouteRef")) {
 				String ref = xpp.getAttributeValue(null, REF);
-				Route route = NetexChouetteIdObjectFactory.getRoute(referential, toChouetteId(ref, "default_codespace"));
+				Route route = NetexChouetteIdObjectUtil.getRoute(referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace()));
 				journeyPattern.setRoute(route);
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("RouteRef")) {
 				String ref = xpp.getAttributeValue(null, REF);
-				Route route = NetexChouetteIdObjectFactory.getRoute(referential, toChouetteId(ref, "default_codespace"));
+				Route route = NetexChouetteIdObjectUtil.getRoute(referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace()));
 				journeyPattern.setRoute(route);
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("pointsInSequence")) {
@@ -89,6 +94,9 @@ public class JourneyPatternParser extends NetexChouetteIdGenerator implements Pa
 			JourneyPattern journeyPattern) throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
+		
+		NetexExportParameters configuration = (NetexExportParameters) context.get(CONFIGURATION);
+		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		xpp.require(XmlPullParser.START_TAG, null, "pointsInSequence");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
@@ -100,8 +108,8 @@ public class JourneyPatternParser extends NetexChouetteIdGenerator implements Pa
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("ScheduledStopPointRef")) {
 						String ref = xpp.getAttributeValue(null, REF);
-						StopPoint stopPoint = NetexChouetteIdObjectFactory.getStopPoint(
-								referential, toChouetteId(ref, "default_codespace"));
+						StopPoint stopPoint = NetexChouetteIdObjectUtil.getStopPoint(
+								referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace()));
 						journeyPattern.addStopPoint(stopPoint);
 						XPPUtil.skipSubTree(log, xpp);
 					} else {

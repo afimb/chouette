@@ -31,7 +31,7 @@ public class AccessPointProducer extends
             .createPTAccessPointType();
 
       //
-      populateFromModel(jaxbAccessPoint, accessPoint);
+      populateFromModel(context, jaxbAccessPoint, accessPoint);
 
       jaxbAccessPoint.setComment(getNotEmptyString(accessPoint.getComment()));
       jaxbAccessPoint.setName(accessPoint.getName());

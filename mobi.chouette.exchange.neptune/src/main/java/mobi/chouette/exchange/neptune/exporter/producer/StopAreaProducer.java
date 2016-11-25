@@ -3,6 +3,7 @@ package mobi.chouette.exchange.neptune.exporter.producer;
 import java.util.ArrayList;
 import java.util.List;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -24,10 +25,10 @@ public class StopAreaProducer extends AbstractJaxbNeptuneProducer<ChouetteArea.S
 		JsonExtension {
 
 	//@Override
-	public ChouetteArea.StopArea produce(StopArea stopArea, boolean addExtension) {
+	public ChouetteArea.StopArea produce(Context context, StopArea stopArea, boolean addExtension) {
 		ChouetteArea.StopArea jaxbStopArea = tridentFactory.createChouettePTNetworkTypeChouetteAreaStopArea();
 
-		populateFromModel(jaxbStopArea, stopArea);
+		populateFromModel(context, jaxbStopArea, stopArea);
 
 		jaxbStopArea.setComment(buildComment(stopArea, addExtension));
 		jaxbStopArea.setName(stopArea.getName());

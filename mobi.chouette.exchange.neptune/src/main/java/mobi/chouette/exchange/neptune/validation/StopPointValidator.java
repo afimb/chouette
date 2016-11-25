@@ -5,12 +5,15 @@ import java.util.Map;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.LongLatTypeEnum;
@@ -82,10 +85,14 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
+		
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		
 		if (localContext == null || localContext.isEmpty()) return ;
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 //		Map<String, Location> fileLocations = data.getFileLocations();
-		Map<String, DataLocation> fileLocations = data.getDataLocations();
+		Map<ChouetteId, DataLocation> fileLocations = data.getDataLocations();
 		Context stopAreasContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		Context linesContext = (Context) validationContext.get(LineValidator.LOCAL_CONTEXT);
 		Context networksContext = (Context) validationContext.get(PTNetworkValidator.LOCAL_CONTEXT);
@@ -114,7 +121,7 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 //							fileLocations.get(objectId), lineIdShortCut);
 //					addValidationError(context,STOP_POINT_1, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, STOP_POINT_1, fileLocations.get(objectId), lineIdShortCut);
+					validationReporter.addCheckPointReportError(context, STOP_POINT_1, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), lineIdShortCut);
 	            }
 
 	         }
@@ -130,7 +137,7 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 //							fileLocations.get(objectId), ptNetworkIdShortcut);
 //					addValidationError(context,STOP_POINT_2, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, STOP_POINT_2, fileLocations.get(objectId), ptNetworkIdShortcut);
+					validationReporter.addCheckPointReportError(context, STOP_POINT_2, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), ptNetworkIdShortcut);
 	            }
 
 	         }
@@ -143,7 +150,7 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 //							fileLocations.get(objectId), containedIn);
 //					addValidationError(context,STOP_POINT_3, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, STOP_POINT_3, fileLocations.get(objectId), containedIn);
+					validationReporter.addCheckPointReportError(context, STOP_POINT_3, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), containedIn);
 	         }
 
 	         if (!LongLatTypeEnum.WGS84.equals(objectContext.get(LONG_LAT_TYPE)))
@@ -153,7 +160,7 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 //							fileLocations.get(objectId), objectContext.get(LONG_LAT_TYPE).toString());
 //					addValidationError(context,STOP_POINT_4, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, STOP_POINT_4, fileLocations.get(objectId), objectContext.get(LONG_LAT_TYPE).toString());
+					validationReporter.addCheckPointReportError(context, STOP_POINT_4, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), objectContext.get(LONG_LAT_TYPE).toString());
 	         }
 		
 		}

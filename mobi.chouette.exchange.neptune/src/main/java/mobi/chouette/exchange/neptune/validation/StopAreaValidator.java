@@ -9,6 +9,8 @@ import java.util.Set;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
@@ -94,12 +96,14 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
+		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		Set<String> objectIds = (Set<String>) validationContext.get(OBJECT_IDS);
 
 		if (localContext == null || localContext.isEmpty()) return ;
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 //		Map<String, Location> fileLocations = data.getFileLocations();
-		Map<String, DataLocation> fileLocations = data.getDataLocations();
+		Map<ChouetteId, DataLocation> fileLocations = data.getDataLocations();
 		Context stopPointContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
 		Context itlContext = (Context) validationContext.get(RoutingConstraintValidator.ITL_LOCAL_CONTEXT);
 		if (itlContext == null) itlContext = new Context(); 
@@ -132,7 +136,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 		//							fileLocations.get(objectId), containedId);
 		//					addValidationError(context,STOP_AREA_1, errorItem);
 							ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-							validationReporter.addCheckPointReportError(context, STOP_AREA_1, fileLocations.get(objectId), containedId);
+							validationReporter.addCheckPointReportError(context, STOP_AREA_1, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), containedId);
 						}
 					}
 				}
@@ -159,7 +163,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 					// or commercialstoppoints
 					for (StopArea child : stopArea.getContainedStopAreas()) 
 					{
-						if (localContext.containsKey(child.getChouetteId().getObjectId()))
+						if (localContext.containsKey(neptuneChouetteIdGenerator.toSpecificFormatId(child.getChouetteId(), parameters.getDefaultCodespace(), child)))
 						{
 							if (!child.getAreaType().equals(ChouetteAreaEnum.StopPlace) && 
 									!child.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint))
@@ -172,11 +176,11 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 	//
 	//							addValidationError(context,STOP_AREA_2, errorItem);
 								ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-								validationReporter.addCheckPointReportError(context, STOP_AREA_2, fileLocations.get(stopArea.getChouetteId().getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.StopPlace.toString());
-								validationReporter.addTargetLocationToCheckPointError(context, STOP_AREA_2, fileLocations.get(child.getChouetteId().getObjectId()));
+								validationReporter.addCheckPointReportError(context, STOP_AREA_2, fileLocations.get(stopArea.getChouetteId()), child.getAreaType().toString(),ChouetteAreaEnum.StopPlace.toString());
+								validationReporter.addTargetLocationToCheckPointError(context, STOP_AREA_2, fileLocations.get(child.getChouetteId()));
 							}
 						}
-						else if (stopPointContext.containsKey(child.getChouetteId().getObjectId()))
+						else if (stopPointContext.containsKey(neptuneChouetteIdGenerator.toSpecificFormatId(child.getChouetteId(), parameters.getDefaultCodespace(), child)))
 						{
 							// wrong reference type
 	//						Detail errorItem = new Detail(
@@ -185,8 +189,8 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 	//						errorItem.getTargets().add(fileLocations.get(child.getChouetteId().getObjectId()));
 	//						addValidationError(context,STOP_AREA_2, errorItem);
 							ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-							validationReporter.addCheckPointReportError(context, STOP_AREA_2, fileLocations.get(stopArea.getChouetteId().getObjectId()), "StopPoint",ChouetteAreaEnum.StopPlace.toString());
-							validationReporter.addTargetLocationToCheckPointError(context, STOP_AREA_2, fileLocations.get(child.getChouetteId().getObjectId()));
+							validationReporter.addCheckPointReportError(context, STOP_AREA_2, fileLocations.get(stopArea.getChouetteId()), "StopPoint",ChouetteAreaEnum.StopPlace.toString());
+							validationReporter.addTargetLocationToCheckPointError(context, STOP_AREA_2, fileLocations.get(child.getChouetteId()));
 	
 						}
 					}
@@ -200,7 +204,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 					prepareCheckPoint(context,STOP_AREA_3);
 					for (StopArea child : stopArea.getContainedStopAreas()) 
 					{
-						if (localContext.containsKey(child.getChouetteId().getObjectId())) 
+						if (localContext.containsKey(neptuneChouetteIdGenerator.toSpecificFormatId(child.getChouetteId(), parameters.getDefaultCodespace(), child))) 
 						{
 							if (!child.getAreaType().equals(ChouetteAreaEnum.Quay) && 
 									!child.getAreaType().equals(ChouetteAreaEnum.BoardingPosition))
@@ -212,11 +216,11 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 	//							errorItem.getTargets().add(fileLocations.get( child.getChouetteId().getObjectId()));
 	//							addValidationError(context,STOP_AREA_3, errorItem);
 								ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-								validationReporter.addCheckPointReportError(context, STOP_AREA_3, fileLocations.get(stopArea.getChouetteId().getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.CommercialStopPoint.toString());
-								validationReporter.addTargetLocationToCheckPointError(context, STOP_AREA_3, fileLocations.get(child.getChouetteId().getObjectId()));
+								validationReporter.addCheckPointReportError(context, STOP_AREA_3, fileLocations.get(stopArea.getChouetteId()), child.getAreaType().toString(),ChouetteAreaEnum.CommercialStopPoint.toString());
+								validationReporter.addTargetLocationToCheckPointError(context, STOP_AREA_3, fileLocations.get(child.getChouetteId()));
 							}
 						}
-						else if (stopPointContext.containsKey(child.getChouetteId().getObjectId()))
+						else if (stopPointContext.containsKey(neptuneChouetteIdGenerator.toSpecificFormatId(child.getChouetteId(), parameters.getDefaultCodespace(), child)))
 						{
 							// wrong reference type
 	//						Detail errorItem = new Detail(
@@ -225,8 +229,8 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 	//						errorItem.getTargets().add(fileLocations.get( child.getChouetteId().getObjectId()));
 	//						addValidationError(context,STOP_AREA_3, errorItem);
 							ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-							validationReporter.addCheckPointReportError(context, STOP_AREA_3, fileLocations.get(stopArea.getChouetteId().getObjectId()), "StopPoint",ChouetteAreaEnum.CommercialStopPoint.toString());
-							validationReporter.addTargetLocationToCheckPointError(context, STOP_AREA_3, fileLocations.get(child.getChouetteId().getObjectId()));
+							validationReporter.addCheckPointReportError(context, STOP_AREA_3, fileLocations.get(stopArea.getChouetteId()), "StopPoint",ChouetteAreaEnum.CommercialStopPoint.toString());
+							validationReporter.addTargetLocationToCheckPointError(context, STOP_AREA_3, fileLocations.get(child.getChouetteId()));
 	
 						}
 					}
@@ -240,9 +244,9 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 					// boardingPosition : check if it refers only StopPoints
 					for (StopPoint child : stopArea.getContainedStopPoints()) 
 					{
-						if (localContext.containsKey(child.getChouetteId().getObjectId()))
+						if (localContext.containsKey(neptuneChouetteIdGenerator.toSpecificFormatId(child.getChouetteId(), parameters.getDefaultCodespace(), child)))
 						{
-							StopArea area = stopAreas.get(child.getChouetteId().getObjectId());
+							StopArea area = stopAreas.get(neptuneChouetteIdGenerator.toSpecificFormatId(child.getChouetteId(), parameters.getDefaultCodespace(), child));
 							// wrong reference type
 	//						Detail errorItem = new Detail(
 	//								STOP_AREA_4,
@@ -250,8 +254,8 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 	//						errorItem.getTargets().add(fileLocations.get( child.getChouetteId().getObjectId()));
 	//						addValidationError(context,STOP_AREA_4, errorItem);
 							ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-							validationReporter.addCheckPointReportError(context, STOP_AREA_4, fileLocations.get(stopArea.getChouetteId().getObjectId()), area.getAreaType().toString(),stopArea.getAreaType().toString());
-							validationReporter.addTargetLocationToCheckPointError(context, STOP_AREA_4, fileLocations.get( child.getChouetteId().getObjectId()));
+							validationReporter.addCheckPointReportError(context, STOP_AREA_4, fileLocations.get(stopArea.getChouetteId()), area.getAreaType().toString(),stopArea.getAreaType().toString());
+							validationReporter.addTargetLocationToCheckPointError(context, STOP_AREA_4, fileLocations.get( child.getChouetteId()));
 						}
 					}
 				}
@@ -332,7 +336,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 	//								fileLocations.get(stopArea.getChouetteId().getObjectId()), centroidId);
 	//						addValidationError(context,STOP_AREA_5, errorItem);
 							ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-							validationReporter.addCheckPointReportError(context, STOP_AREA_5, fileLocations.get(stopArea.getChouetteId().getObjectId()), centroidId);
+							validationReporter.addCheckPointReportError(context, STOP_AREA_5, fileLocations.get(stopArea.getChouetteId()), centroidId);
 						} 
 						else
 						{
@@ -343,7 +347,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 							if (containedIn != null)
 							{
 								if (!containedIn.equals(
-										stopArea.getChouetteId().getObjectId()))
+										neptuneChouetteIdGenerator.toSpecificFormatId(stopArea.getChouetteId(), parameters.getDefaultCodespace(), stopArea)))
 								{
 	//								Detail errorItem = new Detail(
 	//										STOP_AREA_6,
@@ -351,8 +355,8 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 	//								errorItem.getTargets().add(fileLocations.get( centroidId));
 	//								addValidationError(context,STOP_AREA_6, errorItem);
 									ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-									validationReporter.addCheckPointReportError(context, STOP_AREA_6, fileLocations.get(stopArea.getChouetteId().getObjectId()), containedIn);
-									validationReporter.addTargetLocationToCheckPointError(context, STOP_AREA_6, fileLocations.get(centroidId));
+									validationReporter.addCheckPointReportError(context, STOP_AREA_6, fileLocations.get(stopArea.getChouetteId()), containedIn);
+									validationReporter.addTargetLocationToCheckPointError(context, STOP_AREA_6, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(centroidId, parameters.getDefaultCodespace())));
 								}
 							}
 						}
