@@ -267,6 +267,11 @@ public class PublicationDeliveryParser extends AbstractParser {
         Parser dayTypeParser = ParserFactory.create(DayTypeParser.class.getName());
         dayTypeParser.parse(context);
 
+        // TODO consider if this is the best place to sort the stop points connected to routes
+        //      maybe a post processor method could be useful for stuff like sorting, renaming, etc...
+        referential.getRoutes().values().forEach(route -> {
+            route.getStopPoints().sort((o1, o2) -> o1.getPosition().compareTo(o2.getPosition()));
+        });
     }
 
     static {

@@ -59,9 +59,9 @@ public class JourneyPatternParser extends AbstractParser {
         Context routeContext = (Context) parsingContext.get(RouteParser.LOCAL_CONTEXT);
         Context stopPointContext = (Context) parsingContext.get(StopPointParser.LOCAL_CONTEXT);
 
-        Collection<org.rutebanken.netex.model.JourneyPattern> netexJourneyPatterns = netexReferential.getJourneyPatterns().values();
+        Collection<JourneyPattern> netexJourneyPatterns = netexReferential.getJourneyPatterns().values();
 
-        for (org.rutebanken.netex.model.JourneyPattern netexJourneyPattern : netexJourneyPatterns) {
+        for (JourneyPattern netexJourneyPattern : netexJourneyPatterns) {
             String netexJourneyPatternId = netexJourneyPattern.getId();
             String chouetteJourneyPatternId = netexJourneyPattern.getId(); // TODO generate neptune id with creator here
             mobi.chouette.model.JourneyPattern chouetteJourneyPattern = ObjectFactory.getJourneyPattern(chouetteReferential, chouetteJourneyPatternId);
@@ -79,18 +79,14 @@ public class JourneyPatternParser extends AbstractParser {
             Collection<StopPointInJourneyPattern> stopPointsInJourneyPatternsColl = netexReferential.getStopPointsInJourneyPattern().values();
             List<StopPointInJourneyPattern> stopPointsInJourneyPattern = new ArrayList(stopPointsInJourneyPatternsColl);
 
-
-            // probably most correct to do it this way, we must not parse/convert all stop points found for all journey patterns for every occurrence of a journey pattern
             // TODO should probably remove the following section from initReferentials method above
+            //      probably most correct to do it this way, we must not parse/convert all stop points found for all journey patterns for every occurrence of a journey pattern
 
             // mandatory, null check not necessary, because consistency check done in validators
             PointsInJourneyPattern_RelStructure pointsInSequenceStruct = netexJourneyPattern.getPointsInSequence();
 
             List<PointInLinkSequence_VersionedChildStructure> pointsInLinkSequence = pointsInSequenceStruct
                     .getPointInJourneyPatternOrStopPointInJourneyPatternOrTimingPointInJourneyPattern();
-
-            // TODO how to preserver order, see comparator below, but change id with order
-            // TODO beware that there are references from ServiceJourneys to StopPointInJourneyPatterns, change TimetableParser
 
             for (PointInLinkSequence_VersionedChildStructure pointInLinkSequence : pointsInLinkSequence) {
                 StopPointInJourneyPattern stopPointInJourneyPattern = (StopPointInJourneyPattern) pointInLinkSequence;
@@ -103,32 +99,13 @@ public class JourneyPatternParser extends AbstractParser {
                 chouetteJourneyPattern.addStopPoint(stopPoint);
             }
 
-            // TODO find out if we need to set the following or not, its not set in regtopp
-/*
-            List<StopPoint> stopPoints = chouetteJourneyPattern.getStopPoints();
+            List<StopPoint> addedStopPoints = chouetteJourneyPattern.getStopPoints();
+            addedStopPoints.sort((o1, o2) -> o1.getPosition().compareTo(o2.getPosition()));
+            chouetteJourneyPattern.setDepartureStopPoint(addedStopPoints.get(0));
+            chouetteJourneyPattern.setArrivalStopPoint(addedStopPoints.get(addedStopPoints.size() - 1));
 
-            if (stopPoints != null && stopPoints.size() > 0) {
-                StopPoint departureStopPoint = stopPoints.get(0);
-                chouetteJourneyPattern.setDepartureStopPoint(departureStopPoint);
-                StopPoint arrivalStopPoint = stopPoints.get(stopPoints.size() - 1);
-                chouetteJourneyPattern.setArrivalStopPoint(arrivalStopPoint);
-                // TODO: how to handle elements ForAlighting and ForBoarding in chouette?
-            }
-*/
-
-            // TODO: add all remaining optional elements, for now we only support RouteRef and pointsInSequence. See: https://rutebanken.atlassian.net/wiki/display/PUBLIC/network#network-JourneyPattern
-
-            // necessary?
-            //chouetteReferential.getJourneyPatterns().put(chouetteJourneyPattern.getObjectId(), chouetteJourneyPattern);
-
-            // TODO find out if this call is needed, see below method, and neptune journey pattern parser, line 105
-            // refreshDepartureArrivals(chouetteJourneyPattern);
-
-            // TODO also check out the equivalent method in RegtoppRouteParser, line 119-121
-            // sortStopPoints(chouetteReferential);
-
-            // TODO also check out the following, which is called in RegtoppRouteParser after setting stop points on a journey pattern
-            // updateRouteNames(referential, configuration);
+            // TODO: add all remaining optional elements, for now we only support RouteRef and pointsInSequence.
+            //      See: https://rutebanken.atlassian.net/wiki/display/PUBLIC/network#network-JourneyPattern
 
             chouetteJourneyPattern.setFilled(true);
         }
@@ -138,95 +115,6 @@ public class JourneyPatternParser extends AbstractParser {
         Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
         objectContext.put(JOURNEY_PATTERN_ID, journeyPatternId);
     }
-
-/*
-    protected void updateRouteNames(Referential referential, RegtoppImportParameters configuration) {
-
-        for (Route route : referential.getRoutes().values()) {
-            if (route.getName() == null) {
-                // Set to last stop
-                List<StopPoint> stopPoints = route.getStopPoints();
-                if (stopPoints != null && !stopPoints.isEmpty()) {
-                    StopArea lastStopArea = stopPoints.get(stopPoints.size() - 1).getContainedInStopArea();
-                    if (lastStopArea.getParent() == null) {
-                        route.setName(lastStopArea.getName());
-                    } else {
-                        route.setName(lastStopArea.getParent().getName());
-                    }
-                }
-            }
-
-            route.setPublishedName(route.getName());
-
-            for (mobi.chouette.model.JourneyPattern jp : route.getJourneyPatterns()) {
-
-                // Set arrival and departure
-
-                jp.setName(route.getName());
-            }
-
-            // default direction and wayback = R if opposite Route = A, else A
-        }
-    }
-*/
-
-
-/*
-    protected void sortStopPoints(Referential referential) {
-        Comparator<StopPoint> stopPointSequenceComparator = new Comparator<StopPoint>() {
-            @Override
-            public int compare(StopPoint arg0, StopPoint arg1) {
-                return arg0.getPosition().compareTo(arg1.getPosition());
-            }
-        };
-
-        // Sort stopPoints on JourneyPattern
-        Collection<mobi.chouette.model.JourneyPattern> journeyPatterns = referential.getJourneyPatterns().values();
-        for (mobi.chouette.model.JourneyPattern jp : journeyPatterns) {
-            List<StopPoint> stopPoints = jp.getStopPoints();
-            Collections.sort(stopPoints, stopPointSequenceComparator);
-            jp.setDepartureStopPoint(stopPoints.get(0));
-            jp.setArrivalStopPoint(stopPoints.get(stopPoints.size() - 1));
-        }
-
-        // Sort stopPoints on route
-        Collection<Route> routes = referential.getRoutes().values();
-        for (Route r : routes) {
-            List<StopPoint> stopPoints = r.getStopPoints();
-            Collections.sort(stopPoints, stopPointSequenceComparator);
-        }
-    }
-*/
-
-    /**
-     * update departure and arrival of JourneyPattern <br/>
-     * to be used after stopPoints update
-     */
-/*
-    public static void refreshDepartureArrivals(mobi.chouette.model.JourneyPattern jp) {
-        List<StopPoint> stopPoints = jp.getStopPoints();
-        if (stopPoints == null || stopPoints.isEmpty()) {
-            jp.setDepartureStopPoint(null);
-            jp.setArrivalStopPoint(null);
-        } else {
-            for (StopPoint stopPoint : stopPoints) {
-                if (stopPoint.getPosition() == null) {
-                    log.warn("stopPoint without position " + stopPoint.getObjectId());
-                    return;
-                }
-            }
-            Collections.sort(jp.getStopPoints(), new Comparator<StopPoint>() {
-
-                @Override
-                public int compare(StopPoint arg0, StopPoint arg1) {
-                    return arg0.getPosition().intValue() - arg1.getPosition().intValue();
-                }
-            });
-            jp.setDepartureStopPoint(stopPoints.get(0));
-            jp.setArrivalStopPoint(stopPoints.get(stopPoints.size() - 1));
-        }
-    }
-*/
 
     static {
         ParserFactory.register(JourneyPatternParser.class.getName(), new ParserFactory() {

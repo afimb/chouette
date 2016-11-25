@@ -66,7 +66,6 @@ public class VehicleJourneyParser extends AbstractParser {
             // TODO is this useful for anything?
             OffsetTime netexJourneyDepartureTime = netexServiceJourney.getDepartureTime(); // most often the same as departure time for the first timetabled passing time
 
-            // initialize day type references, to be used in DayTypeParser, when setting references the opposite way: timetable.addVehicleJourney()
             DayTypeRefs_RelStructure dayTypeRefsRelStruct = netexServiceJourney.getDayTypes();
             List<JAXBElement<? extends DayTypeRefStructure>> dayTypeRefStructElements = dayTypeRefsRelStruct.getDayTypeRef();
             for (JAXBElement<? extends DayTypeRefStructure> dayTypeRefStructElement : dayTypeRefStructElements) {
@@ -80,11 +79,9 @@ public class VehicleJourneyParser extends AbstractParser {
             Line line = ObjectFactory.getLine(chouetteReferential, chouetteLineId);
             chouetteVehicleJourney.setCompany(line.getCompany());
 
-            // TODO this should be set directly on the Journey in netex instead of getting from line
+            // TODO check if the norwegian netex profile supports transport mode on journeys, to avoid getting from line
             TransportModeNameEnum transportModeName = line.getTransportModeName();
             chouetteVehicleJourney.setTransportMode(transportModeName);
-
-            // TODO could it be useful to also get the reference to the netex JourneyPattern instance?
 
             JourneyPatternRefStructure journeyPatternRefStruct = netexServiceJourney.getJourneyPatternRef().getValue();
             String netexJourneyPatternIdRef = journeyPatternRefStruct.getRef();
@@ -109,29 +106,11 @@ public class VehicleJourneyParser extends AbstractParser {
 
             // TODO find out how to handle JourneyFrequencies
 
-            // parse passing times together with stop points
             List<TimetabledPassingTime> timetabledPassingTimes = netexServiceJourney.getPassingTimes().getTimetabledPassingTime();
 
-            // TODO consider creating separate method for parsing TimetabledPassingTime instances like
-            // parseTimetabledPassingTimes(timetabledPassingTimes), or se alternative below inside loop
-
             for (TimetabledPassingTime timetabledPassingTime : timetabledPassingTimes) {
-
-                // TODO consider creating separate method for parsing TimetabledPassingTime instances like
-                // parseTimetabledPassingTime(), or se alternative above
-
-                // TODO consider extracting to separate method for passing times and vehicle journeys at stop
                 VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop();
                 vehicleJourneyAtStop.setVehicleJourney(chouetteVehicleJourney);
-
-                // Default = board and alight
-                vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.BoardAndAlight);
-
-                // TODO find out how to handle boarding/alighting possibilities and alternatives, when to any of the following?
-
-                // vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.NeitherBoardOrAlight);
-                // vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.BoardOnly);
-                // vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.AlightOnly);
 
                 // TODO what are the conditions for setting the following properties?
 
@@ -147,6 +126,9 @@ public class VehicleJourneyParser extends AbstractParser {
                 List<PointInLinkSequence_VersionedChildStructure> pointsInLinkSequence = pointsInSequenceStruct
                         .getPointInJourneyPatternOrStopPointInJourneyPatternOrTimingPointInJourneyPattern();
 
+                // Default = board and alight
+                vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.BoardAndAlight);
+
                 for (PointInLinkSequence_VersionedChildStructure pointInLinkSequence : pointsInLinkSequence) {
                     StopPointInJourneyPattern stopPointInJourneyPattern = (StopPointInJourneyPattern) pointInLinkSequence;
 
@@ -158,22 +140,9 @@ public class VehicleJourneyParser extends AbstractParser {
                         StopPoint stopPoint = ObjectFactory.getStopPoint(chouetteReferential, chouetteStopPointId);
                         vehicleJourneyAtStop.setStopPoint(stopPoint);
 
-                        // alternative way of finding the matching stop point
-/*
-                        for (StopPoint stopPoint : chouetteJourneyPattern.getStopPoints()) {
-                            if (stopPoint.getId().equals(chouetteStopPointId)) {
-                                vehicleJourneyAtStop.setStopPoint(stopPoint);
-                            }
-                        }
-*/
-                        // find and match boarding/alighting for this vechicleJourneyAtStop
-
                         Boolean forBoarding = stopPointInJourneyPattern.isForBoarding();
                         Boolean forAlighting = stopPointInJourneyPattern.isForAlighting();
 
-                        // TODO we must check for nulls before doing logic check on any of these two
-                        // TODO find out how we can do this check with nested conditional ifs instead
-                        // TODO fix, after checking the database, we can see that neither boarding nor alighting is set on any vehicle journey at stop
                         if (forBoarding == null && forAlighting != null && !forAlighting) {
                             vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.BoardOnly);
                         }
@@ -184,7 +153,7 @@ public class VehicleJourneyParser extends AbstractParser {
                     }
                 }
 
-                // the following is a temporary solution for handling incoming data in UTC
+                // This solution only handles incoming data in UTC for now
                 // TODO add support for other time zones and zone offsets
 
                 OffsetTime departureTime = timetabledPassingTime.getDepartureTime();
@@ -217,8 +186,17 @@ public class VehicleJourneyParser extends AbstractParser {
 
             }
 
-            // TODO sort the list of VehicleJourneyAtStop instances in VehicleJourney
-            // Collections.sort(chouetteVehicleJourney.getVehicleJourneyAtStops(), VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
+            // sort the list of added vechicle journey at stops for the current vehicle journey
+            chouetteVehicleJourney.getVehicleJourneyAtStops().sort((o1, o2) -> {
+                StopPoint p1 = o1.getStopPoint();
+                StopPoint p2 = o2.getStopPoint();
+                if (p1 != null && p2 != null) {
+                    int pos1 = p1.getPosition() == null ? 0 : p1.getPosition().intValue();
+                    int pos2 = p2.getPosition() == null ? 0 : p2.getPosition().intValue();
+                    return pos1 - pos2;
+                }
+                return 0;
+            });
 
             chouetteVehicleJourney.setFilled(true);
         }

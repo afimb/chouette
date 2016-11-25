@@ -15,6 +15,7 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import org.rutebanken.netex.model.*;
 
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
 
@@ -74,17 +75,21 @@ public class StopPointParser extends AbstractParser {
             StopPoint chouetteStopPoint = ObjectFactory.getStopPoint(chouetteReferential, chouetteStopPointId);
             addStopPointIdRef(context, netexStopPointId, chouetteStopPointId);
 
-            // TODO find out how to set the stop point position in order
-            // chouetteStopPoint.setPosition(index);
+            // TODO we must fix the issue with parsing stop points from referential instead of per frame, this will cause errors with the actual order of stop points
+            // TODO find out what's best: 1. to set the position during parsing of journey patterns 2. to set the position during parsing of stop points
+            // TODO find out the best way to retrieve these objects, from referential or not?
+            Collection<StopPointInJourneyPattern> stopPointsInJourneyPattern = netexReferential.getStopPointsInJourneyPattern().values();
+            BigInteger stopPointOrder = null;
 
-            // TODO fix issue with stop area, all stop areas should be available in referential at this point, just check by id
-            // if this is not possible, we can do it the same way as we did with the routeId, find out what's best
+            for (StopPointInJourneyPattern stopPointInJourneyPattern : stopPointsInJourneyPattern) {
+                ScheduledStopPointRefStructure stopPointRefStruct = stopPointInJourneyPattern.getScheduledStopPointRef().getValue();
 
-            // TODO find out if this stop area must be the same as the actual stop place's stop area created in PublicationDeliveryParser when parsing StopPlace's
-            // TODO looks like this is searching for an existing stop area, and not creating a new if necessary, setting static value for now to test
-            //String chouetteStopAreaId = scheduledStopPointId + "-" + BOARDING_POSITION_ID_SUFFIX;
+                if (chouetteStopPointId.equals(stopPointRefStruct.getRef())) {
+                    stopPointOrder = stopPointInJourneyPattern.getOrder();
+                }
+            }
 
-            // String chouetteStopAreaId = "NSR:StopPlace:0301152" + index + "-" + BOARDING_POSITION_ID_SUFFIX;
+            chouetteStopPoint.setPosition(stopPointOrder.intValue());
 
             // TODO map stop point ids to stop areas through passenger stop assignments in netex referential, an alternative is to add references during stop place parsing, to map ids
             // TODO also consider if we should get this from the currently processed frame instead, now we are getting all
@@ -92,10 +97,10 @@ public class StopPointParser extends AbstractParser {
             String stopPlaceIdRef = null;
 
             for (PassengerStopAssignment stopAssignment : stopAssignments) {
-                ScheduledStopPointRefStructure scheduledStopPointRef = stopAssignment.getScheduledStopPointRef();
+                ScheduledStopPointRefStructure stopPointRefStruct = stopAssignment.getScheduledStopPointRef();
                 StopPlaceRefStructure stopPlaceRef = stopAssignment.getStopPlaceRef();
 
-                if (chouetteStopPointId.equals(scheduledStopPointRef.getRef())) {
+                if (chouetteStopPointId.equals(stopPointRefStruct.getRef())) {
                     stopPlaceIdRef = stopPlaceRef.getRef();
                 }
             }
@@ -118,7 +123,7 @@ public class StopPointParser extends AbstractParser {
             String chouetteRouteId = (String) objectContext.get(ROUTE_ID);
             Route route = ObjectFactory.getRoute(chouetteReferential, chouetteRouteId);
             chouetteStopPoint.setRoute(route);
-
+            
             chouetteStopPoint.setFilled(true);
         }
     }

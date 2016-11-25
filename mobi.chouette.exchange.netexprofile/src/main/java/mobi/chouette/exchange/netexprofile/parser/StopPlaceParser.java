@@ -15,7 +15,6 @@ import org.rutebanken.netex.model.SimplePoint_VersionStructure;
 import org.rutebanken.netex.model.StopPlace;
 import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
 
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 
