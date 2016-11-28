@@ -11,6 +11,7 @@ import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.NamingUtil;
+import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -35,13 +36,12 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 
 		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
-		
 		// Database test init
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-		validationReporter.addItemToValidationReport(context, "2-DATABASE-ConnectionLink-1", "E");
+		validationReporter.addItemToValidationReport(context, DATABASE_CONNECTION_LINK_1, "W");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-				
-				
+
+
 		if (newValue.getName() == null) {
 			NamingUtil.setDefaultName(newValue);
 		}
@@ -121,8 +121,7 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 				oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
 			}
 		}
-		
-		
+
 		if (newValue.getStartOfLink() != null) {
 
 			String objectId = newValue.getStartOfLink().getObjectId();
@@ -140,7 +139,15 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 				if (context.containsKey(CONNECTION_LINK_BLOC))
 					oldValue.forceStartOfLink(startOfLink);
 				else
+				{
+					// check for no link change
+					if (!NeptuneUtil.sameValue(oldValue.getStartOfLink(), newValue.getStartOfLink()))
+						validationReporter.addCheckPointReportError(context, DATABASE_CONNECTION_LINK_1, "1", data
+								.getDataLocations().get(newValue.getObjectId()));
+					else
+						validationReporter.reportSuccess(context, DATABASE_CONNECTION_LINK_1);
 					oldValue.setStartOfLink(startOfLink);
+				}
 			}
 		}
 
@@ -160,9 +167,16 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 				if (context.containsKey(CONNECTION_LINK_BLOC))
 					oldValue.forceEndOfLink(endOfLink);
 				else
-					oldValue.setEndOfLink(endOfLink);
+				{
+					if (!NeptuneUtil.sameValue(oldValue.getEndOfLink(), newValue.getEndOfLink()))
+						validationReporter.addCheckPointReportError(context, DATABASE_CONNECTION_LINK_1, "2", data
+								.getDataLocations().get(newValue.getObjectId()));
+					else
+						validationReporter.reportSuccess(context, DATABASE_CONNECTION_LINK_1);
+				}
 			}
 		}
 		monitor.stop();
 	}
+
 }
