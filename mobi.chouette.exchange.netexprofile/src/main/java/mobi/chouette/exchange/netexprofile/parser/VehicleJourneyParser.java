@@ -181,7 +181,7 @@ public class VehicleJourneyParser extends AbstractParser {
 
                 } else {
                     // TODO find out if necessary
-                    vehicleJourneyAtStop.setArrivalTime(new Time(vehicleJourneyAtStop.getDepartureTime().getTime()));
+                   // vehicleJourneyAtStop.setArrivalTime(new Time(vehicleJourneyAtStop.getDepartureTime().getTime()));
                 }
 
             }
