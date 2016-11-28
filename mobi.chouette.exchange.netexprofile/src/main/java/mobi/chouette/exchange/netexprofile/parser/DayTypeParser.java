@@ -4,17 +4,20 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
+import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import org.apache.commons.lang.StringUtils;
-import org.rutebanken.netex.model.DayOfWeekEnumeration;
-import org.rutebanken.netex.model.DayType;
-import org.rutebanken.netex.model.PropertiesOfDay_RelStructure;
-import org.rutebanken.netex.model.PropertyOfDay;
+import org.rutebanken.netex.model.*;
 
+import javax.xml.bind.JAXBElement;
+import java.sql.Date;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -49,6 +52,23 @@ public class DayTypeParser extends AbstractParser {
         //DayTypesInFrame_RelStructure dayTypesRelStruct = (DayTypesInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
         //List<JAXBElement<? extends DataManagedObjectStructure>> dayTypeElements = dayTypesRelStruct.getDayType_();
 
+        // TODO add better support for specific periods
+        // temporary fix to support timetable periods
+        List<TimetableFrame> timetableFrames = new ArrayList<>(netexReferential.getTimetableFrames().values());
+        TimetableFrame mainTimetableFrame = timetableFrames.get(0);
+
+        ValidityConditions_RelStructure validityConditions = mainTimetableFrame.getValidityConditions();
+        List<Object> availabilityConditionElements = validityConditions.getValidityConditionRefOrValidBetweenOrValidityCondition_();
+        @SuppressWarnings("unchecked") AvailabilityCondition availabilityCondition =
+                ((JAXBElement<AvailabilityCondition>) availabilityConditionElements.get(0)).getValue();
+
+        OffsetDateTime fromDate = availabilityCondition.getFromDate();
+        OffsetDateTime toDate = availabilityCondition.getToDate();
+
+        Date startOfPeriod = ParserUtils.getSQLDate(fromDate.toString());
+        Date endOfPeriod = ParserUtils.getSQLDate(toDate.toString());
+        Period period = new Period(startOfPeriod, endOfPeriod);
+
         Collection<DayType> dayTypes = netexReferential.getDayTypes().values();
 
         for (DayType dayType : dayTypes) {
@@ -79,11 +99,9 @@ public class DayTypeParser extends AbstractParser {
                 // timetable.addCalendarDay(value);
             }
 
-            // TODO find out if the period should be retrieved from the ServiceJourney -> validityConditions, or if this should be linked to ServiceCalendarFrame -> timebands
-
-            // timetable.setStartOfPeriod(startDate);
-            // timetable.setEndOfPeriod(endDate);
-            // Period period = new Period(startDate, endDate);
+            timetable.setStartOfPeriod(startOfPeriod);
+            timetable.setEndOfPeriod(endOfPeriod);
+            timetable.addPeriod(period);
             // timetable.getPeriods().add(period);
 
             String chouetteVehicleJourneyId = (String) objectContext.get(VEHICLE_JOURNEY_ID);
