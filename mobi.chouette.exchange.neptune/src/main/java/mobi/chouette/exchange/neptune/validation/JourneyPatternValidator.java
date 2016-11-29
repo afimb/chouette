@@ -93,6 +93,7 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 //		Map<String, Location> fileLocations = data.getFileLocations();
 		Map<ChouetteId, DataLocation> fileLocations = data.getDataLocations();
+
 		Context stopPointsContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
 		Context routesContext = (Context) validationContext.get(ChouetteRouteValidator.LOCAL_CONTEXT);
 		Context linesContext = (Context) validationContext.get(LineValidator.LOCAL_CONTEXT);
@@ -113,10 +114,6 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 				String routeId = (String) objectContext.get(ROUTE_ID);
 				if (!routesContext.containsKey(routeId))
 				{
-//					Detail errorItem = new Detail(
-//							JOURNEY_PATTERN_1,
-//							fileLocations.get(objectId), routeId);
-//					addValidationError(context,JOURNEY_PATTERN_1, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, JOURNEY_PATTERN_1, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), routeId);
 				}
@@ -127,10 +124,6 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 	         {
 	            if (!stopPointsContext.containsKey(stopPointId))
 	            {
-//	            	Detail errorItem = new Detail(
-//	            			JOURNEY_PATTERN_2,
-//	            			fileLocations.get(objectId), stopPointId);
-//					addValidationError(context,JOURNEY_PATTERN_2, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, JOURNEY_PATTERN_2, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), stopPointId);
 	             
@@ -143,10 +136,6 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 	            String lineIdShortCut = (String) objectContext.get(LINE_ID_SHORTCUT);
 	            if (!linesContext.containsKey(lineIdShortCut))
 	            {
-//	            	Detail errorItem = new Detail(
-//	            			JOURNEY_PATTERN_3,
-//	            			fileLocations.get(objectId), lineIdShortCut);
-//					addValidationError(context,JOURNEY_PATTERN_3, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, JOURNEY_PATTERN_3, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), lineIdShortCut);
 	            }

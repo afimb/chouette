@@ -3,6 +3,7 @@ package mobi.chouette.exchange.neptune.validation;
 
 import java.util.Map;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
@@ -18,6 +19,7 @@ import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.util.Referential;
 
+@Log4j
 public class ConnectionLinkValidator extends AbstractValidator implements Validator<ConnectionLink> , Constant{
 
 	public static final String END_OF_LINK = "endOfLink";
@@ -80,6 +82,9 @@ public class ConnectionLinkValidator extends AbstractValidator implements Valida
 		prepareCheckPoint(context, CONNECTION_LINK_1);
 		for (String objectId : localContext.keySet()) 
 		{
+			log.warn(" connection link object id : " + objectId);
+			log.warn(" connection link object codespace : " + neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()).getCodeSpace() +
+					" connection link object technical id : " + neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()).getTechnicalId());
 			ConnectionLink connectionLink = referential.getConnectionLinks().get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
 
 			if (stopAreaContext.containsKey(connectionLink.getStartOfLink().getChouetteId()) 

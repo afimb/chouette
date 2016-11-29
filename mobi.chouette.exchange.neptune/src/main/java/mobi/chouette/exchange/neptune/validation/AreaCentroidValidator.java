@@ -3,6 +3,7 @@ package mobi.chouette.exchange.neptune.validation;
 
 import java.util.Map;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
@@ -18,6 +19,7 @@ import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.type.LongLatTypeEnum;
 
+@Log4j
 public class AreaCentroidValidator extends AbstractValidator implements Validator<AreaCentroid> , Constant{
 
 	public static final String LONG_LAT_TYPE = "longLatType";
@@ -69,6 +71,7 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 //		Map<String, Location> fileLocations = data.getFileLocations();
 		Map<ChouetteId, DataLocation> fileLocations = data.getDataLocations();
+
 		if (localContext == null || localContext.isEmpty())
 			return ;
 
@@ -82,15 +85,12 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 //			Location sourceLocation = fileLocations.get(objectId);
 			DataLocation sourceLocation = fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
 
+
 			String containedIn = (String) objectContext.get(CONTAINED_IN);
 			if (containedIn == null)
 				continue;
 			if (!stopAreaContext.containsKey(containedIn))
 			{
-//				Detail errorItem = new Detail(
-//						AREA_CENTROID_1,
-//						sourceLocation, containedIn);
-//				addValidationError(context, AREA_CENTROID_1, errorItem);
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 				validationReporter.addCheckPointReportError(context, AREA_CENTROID_1, sourceLocation, containedIn);
 			}
@@ -100,17 +100,22 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 		for (String objectId : localContext.keySet()) 
 		{
 			Context objectContext = (Context) localContext.get(objectId);
-//			Location sourceLocation = fileLocations.get(objectId);
-			DataLocation sourceLocation = fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
-			if (objectContext.get(LONG_LAT_TYPE).equals(LongLatTypeEnum.WGS84))
-				continue;
-//			Detail errorItem = new Detail(
-//					AREA_CENTROID_2,
-//					sourceLocation, objectContext.get(LONG_LAT_TYPE).toString());
-//			addValidationError(context, AREA_CENTROID_2, errorItem);
 			
-			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-			validationReporter.addCheckPointReportError(context, AREA_CENTROID_2, sourceLocation, objectContext.get(LONG_LAT_TYPE).toString());
+			log.warn("object id area centroid validator : " + objectId);
+			
+			if( objectContext == null)
+				log.error("Object context is null in area centroid validator");
+//			Location sourceLocation = fileLocations.get(objectId);
+			log.warn("Codespace area centroid : " + neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()).getCodeSpace() + " technical id area centroid : " + neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()).getTechnicalId());
+			DataLocation sourceLocation = fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
+			
+			if( objectContext.get(LONG_LAT_TYPE) != null) {
+				if (objectContext.get(LONG_LAT_TYPE).equals(LongLatTypeEnum.WGS84))
+					continue;
+			
+				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+				validationReporter.addCheckPointReportError(context, AREA_CENTROID_2, sourceLocation, objectContext.get(LONG_LAT_TYPE).toString());
+			}
 		}
 
 

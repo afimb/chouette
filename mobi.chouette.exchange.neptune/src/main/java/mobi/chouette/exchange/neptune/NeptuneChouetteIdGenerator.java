@@ -5,15 +5,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.trident.schema.trident.PTNetworkType;
+
+import javassist.expr.Instanceof;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.AbstractChouetteIdGenerator;
 import mobi.chouette.exchange.ChouetteIdGenerator;
 import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
+import mobi.chouette.exchange.neptune.model.AreaCentroid;
+import mobi.chouette.exchange.neptune.model.TimeSlot;
+import mobi.chouette.model.AccessLink;
+import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ChouetteId;
+import mobi.chouette.model.Company;
+import mobi.chouette.model.ConnectionLink;
+import mobi.chouette.model.GroupOfLine;
+import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneIdentifiedObject;
+import mobi.chouette.model.Network;
+import mobi.chouette.model.Route;
+import mobi.chouette.model.RouteSection;
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.Timeband;
+import mobi.chouette.model.Timetable;
+import mobi.chouette.model.VehicleJourney;
 
 @Log4j
 public class NeptuneChouetteIdGenerator extends AbstractChouetteIdGenerator implements NeptuneObjectIdTypes{
@@ -56,56 +75,53 @@ public class NeptuneChouetteIdGenerator extends AbstractChouetteIdGenerator impl
 		String objectId = null;
 		
 		// Produire l'identifiant pour chaque type d'objet possible pour chaque format
-		try {
+		
 			objectId += chouetteId.getCodeSpace();
 			objectId += ":";
 			
-			if (Class.forName(ACCESSPOINT_KEY).isInstance(object))
+			if ( object instanceof AccessPoint)
 				objectId += ACCESSPOINT_KEY;
-			else if (Class.forName(ACCESSLINK_KEY).isInstance(object))
+			else if (object instanceof AccessLink)
 				objectId += ACCESSLINK_KEY;
-			else if (Class.forName(AREACENTROID_KEY).isInstance(object))
-				objectId += AREACENTROID_KEY;
-			else if (Class.forName(COMPANY_KEY).isInstance(object))
+			else if (object instanceof Company)
 				objectId += COMPANY_KEY;
-			else if (Class.forName(CONNECTIONLINK_KEY).isInstance(object))
+			else if (object instanceof ConnectionLink)
 				objectId += CONNECTIONLINK_KEY;
-			else if (Class.forName(FACILITY_KEY).isInstance(object))
-				objectId += FACILITY_KEY;
-			else if (Class.forName(GROUPOFLINE_KEY).isInstance(object))
+			else if (object instanceof GroupOfLine)
 				objectId += GROUPOFLINE_KEY;
-			else if (Class.forName(JOURNEYPATTERN_KEY).isInstance(object))
+			else if (object instanceof JourneyPattern)
 				objectId += JOURNEYPATTERN_KEY;
-			else if (Class.forName(LINE_KEY).isInstance(object))
+			else if (object instanceof Line)
 				objectId += LINE_KEY;
-			else if (Class.forName(PTLINK_KEY).isInstance(object))
-				objectId += PTLINK_KEY;
-			else if (Class.forName(PTNETWORK_KEY).isInstance(object))
+			else if (object instanceof Network)
 				objectId += PTNETWORK_KEY;
-			else if (Class.forName(ROUTE_SECTION_KEY).isInstance(object))
+			else if (object instanceof RouteSection)
 				objectId += ROUTE_SECTION_KEY;
-			else if (Class.forName(ROUTE_KEY).isInstance(object))
+			else if (object instanceof Route)
 				objectId += ROUTE_KEY;
-			else if (Class.forName(STOPAREA_KEY).isInstance(object))
+			else if (object instanceof StopArea)
 				objectId += STOPAREA_KEY;
-			else if (Class.forName(STOPPOINT_KEY).isInstance(object))
+			else if (object instanceof StopPoint)
 				objectId += STOPPOINT_KEY;
-			else if (Class.forName(STOPPOINT_KEY).isInstance(object))
-				objectId += STOPPOINT_KEY;
-			else if (Class.forName(TIMESLOT_KEY).isInstance(object))
+			else if (object instanceof TimeSlot)
 				objectId += TIMESLOT_KEY;
-			else if (Class.forName(TIMETABLE_KEY).isInstance(object))
+			else if (object instanceof Timetable)
 				objectId += TIMETABLE_KEY;
-			else if (Class.forName(TIMEBAND_KEY).isInstance(object))
+			else if (object instanceof Timeband)
 				objectId += TIMEBAND_KEY;
-			else if (Class.forName(VEHICLEJOURNEY_KEY).isInstance(object))
+			else if (object instanceof VehicleJourney)
 				objectId += VEHICLEJOURNEY_KEY;
+			
+			else {
+				log.error("Class " + object.getClass().getSimpleName() + " from type not found for neptune export id generation");
+				objectId += object.getClass().getSimpleName();
+			}
 			
 			objectId += ":";
 			objectId += chouetteId.getTechnicalId();
-		} catch (ClassNotFoundException e) {
-			log.error("Class from type not found for neptune export id generation");
-		}
+		
+			
+		
 		return objectId;
 	}
 	

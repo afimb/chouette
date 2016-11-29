@@ -99,10 +99,6 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<N
 				prepareCheckPoint(context, NETWORK_1);
 				if (!lineIds.contains(lineId))
 				{
-//					Detail errorItem = new Detail(
-//							NETWORK_1,
-//							fileLocations.get(objectId), lineId);
-//					addValidationError(context, NETWORK_1, errorItem);	
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, NETWORK_1, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), lineId);
 				}
@@ -116,10 +112,6 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<N
 				Network network = networks.get(objectId);
 				if (!sourceType.equals(network.getSourceType().name()))
 				{
-//					Detail errorItem = new Detail(
-//							NETWORK_2,
-//							fileLocations.get(objectId), sourceType,network.getSourceType().name());
-//					addValidationError(context, NETWORK_2, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, NETWORK_2, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), sourceType,network.getSourceType().name());
 				}

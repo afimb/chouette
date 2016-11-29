@@ -611,14 +611,12 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 	
 	private boolean compareJourneyFrequencyToVehicleJourneyAtStop(Context context, VehicleJourney currentVj, JourneyFrequency jf, List<VehicleJourney> beans) {
 			boolean ok = true;
-			log.info("Vehicle journey list size : "+ beans.size());
 			for(VehicleJourney vj: beans) {
 				if(vj.getJourneyCategory().equals(JourneyCategoryEnum.Timesheet)) {
 					VehicleJourneyAtStop vjas = vj.getVehicleJourneyAtStops().get(0);
 					// heure debut vjas non inclus dans jfs
 					if(vjas.getDepartureTime().getTime() < jf.getFirstDepartureTime().getTime() ||  vjas.getDepartureTime().getTime() > jf.getLastDepartureTime().getTime()) {
 						ok = false;
-						log.info("current vj : " + currentVj.getChouetteId() + " vj : " + vj.getChouetteId());
 					} 
 					if(!ok) {
 						DataLocation location = buildLocation(context, currentVj);

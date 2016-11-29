@@ -234,7 +234,7 @@ public class ValidationStopAreasUpdater extends AbstractTestValidation {
 	@Test(groups = { "StopArea" }, description = "2-DATABASE-ConnectionLink-1-1", priority = 4)
 	public void verifyTest2_ConnectionLink_1_1() throws Exception {
 		// 2-DATABASE-ConnectionLink-1-1 : check columns
-		log.info(Color.BLUE + "2-DATABASE-ConnectionLink-1-1" + Color.NORMAL);
+		log.info(Color.BLUE + "2-DATABASE-ConnectionLink-1 1" + Color.NORMAL);
 	
 		importLines("Ligne_OK.xml", 1, 1, true);
 		
@@ -260,8 +260,8 @@ public class ValidationStopAreasUpdater extends AbstractTestValidation {
 		}
 				
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-		CheckPointReport checkPointReport = validationReport.findCheckPointReportByName("2-DATABASE-ConnectionLink-1-1");
-		Assert.assertNotNull(checkPointReport, "report must contain a 2-DATABASE-ConnectionLink-1-1 checkPoint");
+		CheckPointReport checkPointReport = validationReport.findCheckPointReportByName("2-DATABASE-ConnectionLink-1");
+		Assert.assertNotNull(checkPointReport, "report must contain a 2-DATABASE-ConnectionLink-1 checkPoint");
 
 		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
 		
@@ -273,7 +273,7 @@ public class ValidationStopAreasUpdater extends AbstractTestValidation {
 	@Test(groups = { "StopArea" }, description = "2-DATABASE-ConnectionLink-1-2", priority = 5)
 	public void verifyTest2_ConnectionLink_1_2() throws Exception {
 		// 2-DATABASE-ConnectionLink-1-1 : check columns
-		log.info(Color.BLUE + "2-DATABASE-ConnectionLink-1-2" + Color.NORMAL);
+		log.info(Color.BLUE + "2-DATABASE-ConnectionLink-1 2" + Color.NORMAL);
 	
 		importLines("Ligne_OK.xml", 1, 1, true);
 		
@@ -299,8 +299,8 @@ public class ValidationStopAreasUpdater extends AbstractTestValidation {
 		}
 				
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-		CheckPointReport checkPointReport = validationReport.findCheckPointReportByName("2-DATABASE-ConnectionLink-1-2");
-		Assert.assertNotNull(checkPointReport, "report must contain a 2-DATABASE-ConnectionLink-1-2 checkPoint");
+		CheckPointReport checkPointReport = validationReport.findCheckPointReportByName("2-DATABASE-ConnectionLink-1");
+		Assert.assertNotNull(checkPointReport, "report must contain a 2-DATABASE-ConnectionLink-1 checkPoint");
 
 		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
 		

@@ -88,27 +88,10 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 //		return result;
 //	}
 		
-	public List<T> findByChouetteId(final String codeSpace, final Collection<String> objectIds) {
+	public List<T> findByChouetteId(final String codeSpace, final Collection<Object> objectIds) {
 		// System.out.println("GenericDAOImpl.findByObjectId() : " + objectIds);
-		List<T> result = null;
-		if (objectIds.isEmpty())
-			return result;
-
-		Iterable<List<String>> iterator = Iterables.partition(objectIds, 32000);
-		for (List<String> ids : iterator) {
-			CriteriaBuilder builder = em.getCriteriaBuilder();
-			CriteriaQuery<T> criteria = builder.createQuery(type);
-			Root<T> root = criteria.from(type);
-			Predicate predicate = builder.equal(root.get("chouetteId").get("codeSpace"), codeSpace);
-			predicate = builder.and(predicate, builder.in(root.get("chouetteId").get("objectId")).value(ids));
-			criteria.where(predicate);
-			TypedQuery<T> query = em.createQuery(criteria);
-			if (result == null)
-				result = query.getResultList();
-			else
-				result.addAll(query.getResultList());
-		}
-		return result;
+		throw new RuntimeException("Not implemented");
+		
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.JobDataTest;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneSAXParserCommand;
@@ -61,6 +62,8 @@ public class ValidationTests implements Constant, ReportConstant
 		context.put(VALIDATION_REPORT, new ValidationReport());
 		NeptuneImportParameters configuration = new NeptuneImportParameters();
 		context.put(CONFIGURATION, configuration);
+		NeptuneChouetteIdGenerator chouetteIdGenerator = new NeptuneChouetteIdGenerator();
+		context.put(CHOUETTEID_GENERATOR, chouetteIdGenerator);
 		context.put(REFERENTIAL, new Referential());
 		configuration.setName("name");
 		configuration.setUserName("userName");
@@ -88,7 +91,7 @@ public class ValidationTests implements Constant, ReportConstant
 
 	}
 
-   protected void verifyValidation(String testFile,
+   protected CheckPointErrorReport verifyValidation(String testFile,
          String mandatoryErrorTest, SEVERITY severity, RESULT status) throws Exception
    {
       Context context = initImportContext();
@@ -100,7 +103,7 @@ public class ValidationTests implements Constant, ReportConstant
       NeptuneValidationCommand validator = (NeptuneValidationCommand) CommandFactory.create(initialContext, NeptuneValidationCommand.class.getName());
       validator.execute(context);
       
-      checkMandatoryTest(context, mandatoryErrorTest, severity, status);
+      return checkMandatoryTest(context, mandatoryErrorTest, severity, status);
 
    }
 
@@ -139,9 +142,10 @@ public class ValidationTests implements Constant, ReportConstant
     * @param valReport
     * @param state
     */
-   private void checkMandatoryTest(Context context, String mandatoryTest, SEVERITY severity,
+   private CheckPointErrorReport checkMandatoryTest(Context context, String mandatoryTest, SEVERITY severity,
           RESULT state)
    {
+	   CheckPointErrorReport result = null;
 	   ValidationReport valReport = (ValidationReport) context.get(VALIDATION_REPORT);
       if (mandatoryTest.equals("NONE"))
       {
@@ -174,9 +178,11 @@ public class ValidationTests implements Constant, ReportConstant
         	 List<CheckPointErrorReport> details = checkReportForTest(valReport,mandatoryTest,-1);
         	 for (CheckPointErrorReport detail : details) {
 				Assert.assertTrue(detail.getKey().startsWith(detailKey),"details key should start with test key : expected "+detailKey+", found : "+detail.getKey());
-			}
+                if (result == null) result = detail;
+        	 }
          }
       }
+      return result;
    }
 	/**
 	 * check and return details for checkpoint

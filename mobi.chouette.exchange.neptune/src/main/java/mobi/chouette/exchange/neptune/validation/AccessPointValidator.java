@@ -118,14 +118,11 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 			AccessPoint accessPoint = accessPoints.get(objectId);
 //			Location sourceLocation = fileLocations.get(accessPoint.getChouetteId().getObjectId());
 			DataLocation sourceLocation = fileLocations.get(accessPoint.getChouetteId());
+
 			// 2-NEPTUNE-AccessPoint-1 : check existence of containedIn stopArea
 			String containedIn = (String) objectContext.get(CONTAINED_IN);
 			if (containedIn == null || !stopAreaContext.containsKey(containedIn))
 			{
-//				Detail errorItem = new Detail(
-//						ACCESS_POINT_1,
-//						sourceLocation, containedIn);
-//				addValidationError(context,ACCESS_POINT_1, errorItem);
 				
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 				validationReporter.addCheckPointReportError(context, ACCESS_POINT_1, sourceLocation, containedIn);
@@ -136,20 +133,12 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 				prepareCheckPoint(context,ACCESS_POINT_2);
 				if (parent.getAreaType().equals(ChouetteAreaEnum.ITL))
 				{
-//					Context parentContext = (Context) stopAreaContext.get(containedIn);
-//					Location targetLocation = fileLocations.get(containedIn);
 					DataLocation targetLocation = fileLocations.get(containedIn);
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put(CONTAINED_IN, containedIn);
-//					Detail errorItem = new Detail(
-//							ACCESS_POINT_2,
-//							sourceLocation);
-//					errorItem.getTargets().add(targetLocation);
-//					addValidationError(context,ACCESS_POINT_2, errorItem);
 					
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, ACCESS_POINT_2, sourceLocation);
-					validationReporter.addTargetLocationToCheckPointError(context, ACCESS_POINT_2, targetLocation);
+					validationReporter.addCheckPointReportError(context, ACCESS_POINT_2, sourceLocation,null,null,targetLocation);
 				}
 			}
 
@@ -157,10 +146,6 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 			List<AccessLink> links = mapAccessLinkByAccessPointId.get(neptuneChouetteIdGenerator.toSpecificFormatId(accessPoint.getChouetteId(), parameters.getDefaultCodespace(), accessPoint));
 			if (links == null)
 			{
-//				Detail errorItem = new Detail(
-//						ACCESS_POINT_3,
-//						sourceLocation);
-//				addValidationError(context,ACCESS_POINT_3, errorItem);
 				
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 				validationReporter.addCheckPointReportError(context, ACCESS_POINT_3, sourceLocation);
@@ -184,10 +169,6 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 					prepareCheckPoint(context,ACCESS_POINT_4);
 					if (endFound)
 					{
-//						Detail errorItem = new Detail(
-//								ACCESS_POINT_4,
-//								sourceLocation);
-//						addValidationError(context,ACCESS_POINT_4, errorItem);
 						
 						ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 						validationReporter.addCheckPointReportError(context, ACCESS_POINT_4, sourceLocation);
@@ -199,10 +180,6 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 					prepareCheckPoint(context,ACCESS_POINT_5);
 					if (startFound)
 					{
-//						Detail errorItem = new Detail(
-//								ACCESS_POINT_5,
-//								sourceLocation);
-//						addValidationError(context,ACCESS_POINT_5, errorItem);
 						
 						ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 						validationReporter.addCheckPointReportError(context, ACCESS_POINT_5, sourceLocation);
@@ -216,10 +193,6 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 					prepareCheckPoint(context,ACCESS_POINT_6);
 					if (!startFound || !endFound)
 					{
-//						Detail errorItem = new Detail(
-//								ACCESS_POINT_6,
-//								sourceLocation);
-//						addValidationError(context,ACCESS_POINT_6, errorItem);
 						
 						ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 						validationReporter.addCheckPointReportError(context, ACCESS_POINT_6, sourceLocation);
@@ -230,10 +203,6 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 			// 2-NEPTUNE-AccessPoint-7 : check centroid projection type as WSG84
 			if (!accessPoint.getLongLatType().equals(LongLatTypeEnum.WGS84))
 			{
-//				Detail errorItem = new Detail(
-//						ACCESS_POINT_7,
-//						sourceLocation, accessPoint.getLongLatType().toString());
-//				addValidationError(context,ACCESS_POINT_7, errorItem);
 				
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 				validationReporter.addCheckPointReportError(context, ACCESS_POINT_7, sourceLocation, accessPoint.getLongLatType().toString());

@@ -26,8 +26,9 @@ import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.NamingUtil;
 
 @Data
-@ToString
+@ToString (exclude={"object"})
 public class DataLocation implements Constant{
+	
 	private String objectType; // Line route stop area..
 	private String filename;
 	private int lineNumber = -1;
@@ -90,7 +91,7 @@ public class DataLocation implements Constant{
 
 	public DataLocation(Context context, NeptuneIdentifiedObject chouetteObject) {
 		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		AbstractParameter parameters = (AbstractParameter) context.get(CONFIGURATION);
 		
 		this.objectId = chouetteIdGenerator.toSpecificFormatId(chouetteObject.getChouetteId(), parameters.getDefaultCodespace(), chouetteObject);
 		this.object = chouetteObject;

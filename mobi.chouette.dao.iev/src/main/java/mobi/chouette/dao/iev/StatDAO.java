@@ -1,6 +1,7 @@
 package mobi.chouette.dao.iev;
 
 import java.sql.Date;
+import java.util.Collection;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -74,7 +75,14 @@ public class StatDAO extends GenericDAOImpl<Stat> {
 	}
 
 	@Override
-	public Stat findByChouetteId(String codeSpace, String objectId) {
+	public Stat findByChouetteId(String codeSpace, Object chouetteId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Stat> findByChouetteId(String codeSpace,
+			Collection<Object> chouetteIds) {
 		// TODO Auto-generated method stub
 		return null;
 	}

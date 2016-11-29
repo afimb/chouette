@@ -97,6 +97,7 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 		
 //		Map<String, Location> fileLocations = data.getFileLocations();
 		Map<ChouetteId, DataLocation> fileLocations = data.getDataLocations();
+
 		if (localContext == null || localContext.isEmpty())
 			return ;
 		Context networkContext = (Context) validationContext.get(PTNetworkValidator.LOCAL_CONTEXT);
@@ -117,8 +118,6 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 			if (ptnetworkIdShortcut != null) {
 				prepareCheckPoint(context, LINE_1);
 				if (!networkContext.containsKey(ptnetworkIdShortcut)) {
-//					Detail errorItem = new Detail(LINE_1, sourceLocation, ptnetworkIdShortcut);
-//					addValidationError(context, LINE_1, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, LINE_1, sourceLocation, ptnetworkIdShortcut);
 				}
@@ -155,16 +154,12 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 				for (String endId : lineEnds) {
 					// endId must exists as stopArea ?
 					if (!stopAreaContext.containsKey(endId)) {
-//						Detail errorItem = new Detail(LINE_2, sourceLocation, endId);
-//						addValidationError(context, LINE_2, errorItem);			
 						ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 						validationReporter.addCheckPointReportError(context, LINE_2, sourceLocation, endId);
 					} else {
 						// 2-NEPTUNE-Line-3 : check ends of line
 						prepareCheckPoint(context, LINE_3);
 						if (!endAreas.contains(endId)) {
-//							Detail errorItem = new Detail(LINE_3, sourceLocation, endId);
-//							addValidationError(context, LINE_3, errorItem);
 							ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 							validationReporter.addCheckPointReportError(context, LINE_3, sourceLocation, endId);
 						}
@@ -178,8 +173,6 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 			List<String> routeIds = (List<String>) objectContext.get(ROUTE_ID);
 			for (String routeId : routeIds) {
 				if (!routeContext.containsKey(routeId)) {
-//					Detail errorItem = new Detail(LINE_4, sourceLocation, routeId);
-//					addValidationError(context, LINE_4, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, LINE_4, sourceLocation, routeId);
 				}
@@ -189,12 +182,8 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 			prepareCheckPoint(context, LINE_5);
 			for (String routeId : routeContext.keySet()) {
 				if (!routeIds.contains(routeId)) {
-//					Detail errorItem = new Detail(LINE_5, sourceLocation, routeId);
-//					errorItem.getTargets().add(fileLocations.get( routeId));
-//					addValidationError(context, LINE_5, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, LINE_5, sourceLocation, routeId);
-					validationReporter.addTargetLocationToCheckPointError(context, LINE_5, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(routeId, parameters.getDefaultCodespace())));
+					validationReporter.addCheckPointReportError(context, LINE_5, sourceLocation, routeId,null, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(routeId, parameters.getDefaultCodespace())));
 				}
 			}
 
@@ -203,8 +192,6 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 			prepareCheckPoint(context, LINE_6);
 
 			if (isEmpty(line.getName()) && isEmpty(line.getNumber()) && isEmpty(line.getPublishedName())) {
-//				Detail errorItem = new Detail(LINE_6, sourceLocation);
-//				addValidationError(context, LINE_6, errorItem);
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 				validationReporter.addCheckPointReportError(context, LINE_6, sourceLocation);
 			}

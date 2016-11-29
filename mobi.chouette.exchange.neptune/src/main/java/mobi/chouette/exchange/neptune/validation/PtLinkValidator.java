@@ -84,20 +84,12 @@ public class PtLinkValidator extends AbstractValidator implements Validator<PTLi
 			String start = (String) objectContext.get(START_OF_LINK_ID);
 			if (!stopPointsContext.containsKey(start))
 			{
-//				Detail errorItem = new Detail(
-//						PT_LINK_1,
-//						fileLocations.get(objectId), start, "startOfLink");
-//				addValidationError(context,PT_LINK_1, errorItem);
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 				validationReporter.addCheckPointReportError(context, PT_LINK_1, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), start, "startOfLink");
 			}
 			String end = (String) objectContext.get(END_OF_LINK_ID);
 			if (!stopPointsContext.containsKey(end))
 			{
-//				Detail errorItem = new Detail(
-//						PT_LINK_1,
-//						fileLocations.get(objectId), end, "endOfLink");
-//				addValidationError(context,PT_LINK_1, errorItem);
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 				validationReporter.addCheckPointReportError(context, PT_LINK_1, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), end, "endOfLink");
 			}
