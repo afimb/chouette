@@ -87,7 +87,7 @@ public class GroupOfLineValidator extends AbstractValidator implements Validator
 				if (!lineIds.contains(lineId))
 				{
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, GROUP_OF_LINE_1, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), lineId);
+					validationReporter.addCheckPointReportError(context, GROUP_OF_LINE_1, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),GroupOfLine.class)), lineId);
 
 				}
 			}

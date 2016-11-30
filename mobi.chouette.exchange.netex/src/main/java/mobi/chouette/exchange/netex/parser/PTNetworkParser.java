@@ -34,7 +34,7 @@ public class PTNetworkParser implements Parser, Constant {
 
 		String id = xpp.getAttributeValue(null, ID);
 
-		Network network = NetexChouetteIdObjectUtil.getPTNetwork(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace()));
+		Network network = NetexChouetteIdObjectUtil.getPTNetwork(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace(),Network.class));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		network.setObjectVersion(version != null ? version : 0);

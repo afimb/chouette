@@ -46,7 +46,7 @@ public class ITLParser implements Parser, Constant {
 //				TODO : Arret Netex : Delete once RoutingConstraint is implemented
 //				stopArea = ObjectFactory.getStopArea(referential, objectId);
 //				if (line != null) line.addRoutingConstraint(stopArea);
-				routingConstraint = NeptuneChouetteIdObjectUtil.getRoutingConstraint(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
+				routingConstraint = NeptuneChouetteIdObjectUtil.getRoutingConstraint(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),RoutingConstraint.class));
 				if (line != null) line.addRoutingConstraint(routingConstraint);
 			} else if (xpp.getName().equals("lineIdShortCut")) {
 				String lineIdShortCut = ParserUtils.getText(xpp.nextText());

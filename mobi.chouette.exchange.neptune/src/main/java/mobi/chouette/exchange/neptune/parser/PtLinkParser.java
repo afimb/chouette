@@ -48,7 +48,7 @@ public class PtLinkParser implements Parser, Constant {
 
 			if (xpp.getName().equals("objectId")) {
 				 objectId = ParserUtils.getText(xpp.nextText());
-				ptLink = factory.getPTLink(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
+				ptLink = factory.getPTLink(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),PTLink.class));
 				ptLink.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -61,13 +61,13 @@ public class PtLinkParser implements Parser, Constant {
 			} else if (xpp.getName().equals("startOfLink")) {
 				String startOfLinkId = ParserUtils.getText(xpp.nextText());
 				StopPoint startOfLink = NeptuneChouetteIdObjectUtil.getStopPoint(referential,
-						neptuneChouetteIdGenerator.toChouetteId(startOfLinkId, parameters.getDefaultCodespace()));
+						neptuneChouetteIdGenerator.toChouetteId(startOfLinkId, parameters.getDefaultCodespace(),StopPoint.class));
 				ptLink.setStartOfLink(startOfLink);
 				validator.addStartOfLinkId(context, objectId, startOfLinkId);
 			} else if (xpp.getName().equals("endOfLink")) {
 				String endOfLinkId = ParserUtils.getText(xpp.nextText());
 				StopPoint endOfLink = NeptuneChouetteIdObjectUtil.getStopPoint(referential,
-						neptuneChouetteIdGenerator.toChouetteId(endOfLinkId, parameters.getDefaultCodespace()));
+						neptuneChouetteIdGenerator.toChouetteId(endOfLinkId, parameters.getDefaultCodespace(),StopPoint.class));
 				ptLink.setEndOfLink(endOfLink);
 				validator.addEndOfLinkId(context, objectId, endOfLinkId);
 			} else if (xpp.getName().equals("linkDistance")) {

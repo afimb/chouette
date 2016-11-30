@@ -10,6 +10,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
+import mobi.chouette.exchange.neptune.model.PTLink;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
@@ -17,6 +18,7 @@ import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.ChouetteId;
+import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
@@ -171,7 +173,7 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 				if (!ptLinksContext.containsKey(ptLinkId))
 				{
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, ROUTE_2, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), ptLinkId);
+					validationReporter.addCheckPointReportError(context, ROUTE_2, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Route.class)), ptLinkId);
 					routeok = false;
 					continue;
 				}
@@ -202,7 +204,7 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 					if (!journeyPatternsContext.containsKey(journeyPatternId))
 					{
 						ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-						validationReporter.addCheckPointReportError(context, ROUTE_1, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), journeyPatternId);
+						validationReporter.addCheckPointReportError(context, ROUTE_1, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Route.class)), journeyPatternId);
 					}
 
 				}
@@ -256,7 +258,7 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 			{
 				routeok = false;
 				
-				DataLocation linkLocation = fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(ptLinkId, parameters.getDefaultCodespace()));
+				DataLocation linkLocation = fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(ptLinkId, parameters.getDefaultCodespace(),PTLink.class));
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 				validationReporter.addCheckPointReportError(context, ROUTE_5, linkLocation, stopPointId, "startOfLink");
 
@@ -308,7 +310,7 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 							|| !(jpsOfRoute.contains(journeyPatternId)))
 					{
 						ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-						validationReporter.addCheckPointReportError(context, ROUTE_7, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(routeId, parameters.getDefaultCodespace())), journeyPatternId);
+						validationReporter.addCheckPointReportError(context, ROUTE_7, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(routeId, parameters.getDefaultCodespace(),Route.class)), journeyPatternId);
 					}
 				}
 			}
@@ -352,7 +354,7 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 					
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 
-					validationReporter.addCheckPointReportError(context, ROUTE_6,"2", fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())),null,null, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(linkId, parameters.getDefaultCodespace())));
+					validationReporter.addCheckPointReportError(context, ROUTE_6,"2", fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Route.class)),null,null, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(linkId, parameters.getDefaultCodespace(),PTLink.class)));
 					
 					route3ok = false;
 				}
@@ -362,7 +364,7 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 		{
 			// no first id : circle route
 			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-			validationReporter.addCheckPointReportError(context, ROUTE_6, "1", fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())));
+			validationReporter.addCheckPointReportError(context, ROUTE_6, "1", fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Route.class)));
 			route3ok = false;
 		} 
 		else
@@ -390,7 +392,7 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 					// broken route but ptlink exists
 					
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, ROUTE_6,"2", fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())),null,null, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(linkId, parameters.getDefaultCodespace())));
+					validationReporter.addCheckPointReportError(context, ROUTE_6,"2", fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Route.class)),null,null, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(linkId, parameters.getDefaultCodespace(),PTLink.class)));
 					
 					route3ok = false;
 					break;
@@ -442,7 +444,7 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 					{
 						ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 
-						validationReporter.addCheckPointReportError(context, ROUTE_8, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())),null,null, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(jpId, parameters.getDefaultCodespace())));
+						validationReporter.addCheckPointReportError(context, ROUTE_8, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Route.class)),null,null, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(jpId, parameters.getDefaultCodespace(),JourneyPattern.class)));
 					}
 					unusedPointIds.removeAll(stopsOnJp);
 				}
@@ -459,7 +461,7 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 					Context stopCtx = (Context) stopPointsContext.get(stopPointId);
 					if (stopCtx != null)
 					{
-						validationReporter.addCheckPointReportError(context, ROUTE_9, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), stopPointId, null, fileLocations.get(stopPointId));
+						validationReporter.addCheckPointReportError(context, ROUTE_9, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Route.class)), stopPointId, null, fileLocations.get(stopPointId));
 					}
 					else
 					{
@@ -485,8 +487,8 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 		for (String objectId : localContext.keySet())
 		{
 			// prepare object context
-			Context objectContext = (Context) localContext.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
-			Route route = referential.getRoutes().get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
+			Context objectContext = (Context) localContext.get(objectId);
+			Route route = referential.getRoutes().get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Route.class));
 			if (objectContext.containsKey(WAY_BACK_ROUTE_ID))
 			{
 				// 2-NEPTUNE-Route-3 : check cross existence wayback routes
@@ -497,7 +499,7 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 				{
 					
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, ROUTE_3, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), wayBackRouteId);
+					validationReporter.addCheckPointReportError(context, ROUTE_3, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Route.class)), wayBackRouteId);
 					
 					continue;
 				}
@@ -511,13 +513,13 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 				{
 					
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, ROUTE_10, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())),null,null,fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(wayBackRouteId, parameters.getDefaultCodespace())));
+					validationReporter.addCheckPointReportError(context, ROUTE_10, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Route.class)),null,null,fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(wayBackRouteId, parameters.getDefaultCodespace(),Route.class)));
 					continue;
 				}
 
 				// 2-NEPTUNE-Route-11 : check orientation of wayback routes
 				// (W)
-				Route wayBackRoute = referential.getRoutes().get(neptuneChouetteIdGenerator.toChouetteId(wayBackRouteId, parameters.getDefaultCodespace()));
+				Route wayBackRoute = referential.getRoutes().get(neptuneChouetteIdGenerator.toChouetteId(wayBackRouteId, parameters.getDefaultCodespace(),Route.class));
 				if (route.getWayBack() != null
 						&& wayBackRoute.getWayBack() != null)
 				{
@@ -530,7 +532,7 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 					{
 						
 						ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-						validationReporter.addCheckPointReportError(context, ROUTE_11, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), wayBackRoute.getWayBack(),route.getWayBack(), fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(wayBackRouteId, parameters.getDefaultCodespace())));
+						validationReporter.addCheckPointReportError(context, ROUTE_11, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Route.class)), wayBackRoute.getWayBack(),route.getWayBack(), fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(wayBackRouteId, parameters.getDefaultCodespace(),Route.class)));
 					}
 				}
 				// 2-NEPTUNE-Route-12 : check terminus of wayback routes (W)
@@ -561,7 +563,7 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 //					addValidationError(context,ROUTE_12, errorItem);
 
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, ROUTE_12, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), neptuneChouetteIdGenerator.toSpecificFormatId(startParentCommercial.getChouetteId(), parameters.getDefaultCodespace(), startParentCommercial),neptuneChouetteIdGenerator.toSpecificFormatId(endParentCommercial.getChouetteId(), parameters.getDefaultCodespace(), endParentCommercial),fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(wayBackRouteId, parameters.getDefaultCodespace())));
+					validationReporter.addCheckPointReportError(context, ROUTE_12, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Route.class)), neptuneChouetteIdGenerator.toSpecificFormatId(startParentCommercial.getChouetteId(), parameters.getDefaultCodespace(), startParentCommercial),neptuneChouetteIdGenerator.toSpecificFormatId(endParentCommercial.getChouetteId(), parameters.getDefaultCodespace(), endParentCommercial),fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(wayBackRouteId, parameters.getDefaultCodespace(),Route.class)));
 
 				}
 			}

@@ -49,7 +49,7 @@ public class GroupOfLineParser implements Parser, Constant {
 		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		String id = xpp.getAttributeValue(null, ID);
-		GroupOfLine groupOfLine = NetexChouetteIdObjectUtil.getGroupOfLine(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace()));
+		GroupOfLine groupOfLine = NetexChouetteIdObjectUtil.getGroupOfLine(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace(),GroupOfLine.class));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		groupOfLine.setObjectVersion(version != null ? version : 0);

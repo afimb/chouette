@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -21,13 +20,13 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.ConnectionLinkDAO;
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.exchange.ChouetteIdObjectUtil;
 import mobi.chouette.exchange.importer.updater.ConnectionLinkUpdater;
 import mobi.chouette.exchange.importer.updater.Updater;
 import mobi.chouette.exchange.importer.updater.UpdaterUtils;
 import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
-import mobi.chouette.exchange.ChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
@@ -74,53 +73,43 @@ public class ConnectionLinkRegisterBlocCommand implements Command {
 			// log.info(Color.CYAN + monitorUpdate.stop() + Color.NORMAL);
 			// Monitor monitorFlush = MonitorFactory.start(COMMAND + ".flush");
 			connectionLinkDAO.flush();
-//			log.info(Color.CYAN + monitorFlush.stop() + Color.NORMAL);
+			// log.info(Color.CYAN + monitorFlush.stop() + Color.NORMAL);
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error(e);
 			throw e;
-//		} finally {
-//			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+			// } finally {
+			// log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 		return result;
 
 	}
 
-	@SuppressWarnings("unchecked")
 	private void initializeStopArea(Referential cache, Collection<ConnectionLink> list) {
 		Collection<ChouetteId> chouetteIds = new HashSet<>();
 		for (ConnectionLink connectionLink : list) {
 			chouetteIds.add(connectionLink.getStartOfLink().getChouetteId());
 			chouetteIds.add(connectionLink.getEndOfLink().getChouetteId());
 		}
-		Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+		Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 		List<StopArea> objects = new ArrayList<StopArea>();
-		
-		for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
-		{
-			 objects.addAll((List<StopArea>) stopAreaDAO.findByChouetteId(entry.getKey(), entry.getValue()));
-		}
-		
+		objects.addAll((List<StopArea>) stopAreaDAO.findByChouetteId(chouetteIdsByCodeSpace));
+
 		for (StopArea object : objects) {
 			cache.getStopAreas().put(object.getChouetteId(), object);
 		}
 
 	}
 
-	@SuppressWarnings("unchecked")
 	private void initializeConnectionLink(Referential cache, Collection<ConnectionLink> list) {
 		if (list.isEmpty())
 			return;
 		Collection<ChouetteId> objectIds = UpdaterUtils.getChouetteIds(list);
-		
-		Map<String,List<ChouetteId>> objectIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(objectIds);
+
+		Map<String, List<String>> objectIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(objectIds);
 		List<ConnectionLink> objects = new ArrayList<ConnectionLink>();
-		
-		for (Entry<String, List<ChouetteId>> entry : objectIdsByCodeSpace.entrySet())
-		{
-		    objects.addAll((List<ConnectionLink>) connectionLinkDAO.findByChouetteId(entry.getKey(), entry.getValue()));
-		}
-		
+		objects.addAll((List<ConnectionLink>) connectionLinkDAO.findByChouetteId(objectIdsByCodeSpace));
+
 		for (ConnectionLink object : objects) {
 			cache.getConnectionLinks().put(object.getChouetteId(), object);
 		}

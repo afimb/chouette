@@ -10,12 +10,12 @@ import mobi.chouette.model.NeptuneIdentifiedObject;
 public class AbstractChouetteIdGenerator implements ChouetteIdGenerator{
 
 	@Override
-	public boolean checkObjectId(String oid) {
+	public boolean checkObjectId(String oid, Class<? extends NeptuneIdentifiedObject> clazz) {
 		return false;
 	}
 
 	@Override
-	public ChouetteId toChouetteId(String objectId, String defaultCodespace) {
+	public ChouetteId toChouetteId(String objectId, String defaultCodespace, Class<? extends NeptuneIdentifiedObject> clazz) {
 		return null;
 	}
 
@@ -35,11 +35,11 @@ public class AbstractChouetteIdGenerator implements ChouetteIdGenerator{
 	}
 
 	@Override
-	public List<ChouetteId> toListChouetteId(List<String> lstObjectId, String defaultCodespace) {
+	public List<ChouetteId> toListChouetteId(List<String> lstObjectId, String defaultCodespace, Class<? extends NeptuneIdentifiedObject> clazz) {
 		List<ChouetteId> lstChouetteId = new ArrayList<ChouetteId>();
 		
 		for(String objectId: lstObjectId)
-			lstChouetteId.add(toChouetteId(objectId, defaultCodespace));
+			lstChouetteId.add(toChouetteId(objectId, defaultCodespace,clazz));
 		
 		return lstChouetteId;
 	}

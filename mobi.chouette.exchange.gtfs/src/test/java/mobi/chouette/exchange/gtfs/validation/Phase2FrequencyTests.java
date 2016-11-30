@@ -10,7 +10,6 @@ import mobi.chouette.exchange.validation.report.ValidationReporter.RESULT;
 
 import org.testng.Assert;
 import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
 
 @Log4j
 public class Phase2FrequencyTests extends AbstractPhase2Tests {

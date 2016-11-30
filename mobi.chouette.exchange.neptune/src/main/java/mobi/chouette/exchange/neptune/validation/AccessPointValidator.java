@@ -115,9 +115,10 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 		{
 
 			Context objectContext = (Context) localContext.get(objectId);
-			AccessPoint accessPoint = accessPoints.get(objectId);
+			ChouetteId accessPointChouetteId = neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(), AccessPoint.class);
+			AccessPoint accessPoint = accessPoints.get(accessPointChouetteId);
 //			Location sourceLocation = fileLocations.get(accessPoint.getChouetteId().getObjectId());
-			DataLocation sourceLocation = fileLocations.get(accessPoint.getChouetteId());
+			DataLocation sourceLocation = fileLocations.get(accessPointChouetteId);
 
 			// 2-NEPTUNE-AccessPoint-1 : check existence of containedIn stopArea
 			String containedIn = (String) objectContext.get(CONTAINED_IN);
@@ -128,12 +129,13 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 				validationReporter.addCheckPointReportError(context, ACCESS_POINT_1, sourceLocation, containedIn);
 			} else
 			{
-				StopArea parent = stopAreas.get(containedIn);
+				ChouetteId parentChouetteId = neptuneChouetteIdGenerator.toChouetteId(containedIn, parameters.getDefaultCodespace(), StopArea.class);
+				StopArea parent = stopAreas.get(parentChouetteId);
 				// 2-NEPTUNE-AccessPoint-2 : check type of containedIn stopArea
 				prepareCheckPoint(context,ACCESS_POINT_2);
 				if (parent.getAreaType().equals(ChouetteAreaEnum.ITL))
 				{
-					DataLocation targetLocation = fileLocations.get(containedIn);
+					DataLocation targetLocation = fileLocations.get(parentChouetteId);
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put(CONTAINED_IN, containedIn);
 					

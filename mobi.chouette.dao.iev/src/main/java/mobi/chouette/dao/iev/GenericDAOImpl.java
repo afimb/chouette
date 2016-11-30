@@ -2,6 +2,7 @@ package mobi.chouette.dao.iev;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Cache;
 import javax.persistence.EntityManager;
@@ -16,8 +17,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import mobi.chouette.dao.GenericDAO;
-
-import com.google.common.collect.Iterables;
 
 public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 
@@ -63,7 +62,7 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		result = query.getResultList();
 		return result;
 	}
-	
+
 	@Override
 	public List<T> findAll() {
 		List<T> result = null;
@@ -75,27 +74,23 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		return result;
 	}
 
-	// TODO : Voir si cela est nécessaire : D'ici on ne peut pas accéder aux classes du modèle
-//	@SuppressWarnings("unchecked")
-//	public T findByChouetteId(final String codeSpace, final String objectId) {
-//		Session session = em.unwrap(Session.class);
-//		T result = (T) session.byNaturalId(type)
-//						.using( "chouetteId", new ChouetteId())
-//						.using( "codeSpace", codeSpace )
-//						.using( "objectId", objectId )
-//						.load();
-//
-//		return result;
-//	}
-		
-	public List<T> findByChouetteId(final String codeSpace, final Collection<Object> objectIds) {
-		// System.out.println("GenericDAOImpl.findByObjectId() : " + objectIds);
-		throw new RuntimeException("Not implemented");
-		
-	}
+	// TODO : Voir si cela est nécessaire : D'ici on ne peut pas accéder aux
+	// classes du modèle
+	// @SuppressWarnings("unchecked")
+	// public T findByChouetteId(final String codeSpace, final String objectId)
+	// {
+	// Session session = em.unwrap(Session.class);
+	// T result = (T) session.byNaturalId(type)
+	// .using( "chouetteId", new ChouetteId())
+	// .using( "codeSpace", codeSpace )
+	// .using( "objectId", objectId )
+	// .load();
+	//
+	// return result;
+	// }
 
 	@Override
-	public void create(final T entity) {		
+	public void create(final T entity) {
 		em.persist(entity);
 	}
 
@@ -124,16 +119,13 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		result = query.executeUpdate();
 		return result;
 	}
-	
+
 	@Override
 	public int truncate() {
-		String query = new StringBuilder("TRUNCATE TABLE ")
-        .append(type.getAnnotation(Table.class).name())
-        .append(" CASCADE")
-        .toString();        
-        return em.createNativeQuery(query).executeUpdate();
+		String query = new StringBuilder("TRUNCATE TABLE ").append(type.getAnnotation(Table.class).name())
+				.append(" CASCADE").toString();
+		return em.createNativeQuery(query).executeUpdate();
 	}
-
 
 	@Override
 	public void evictAll() {
@@ -153,5 +145,26 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 			em.detach(object);
 		}
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see mobi.chouette.dao.GenericDAO#findByChouetteId(java.util.Map)
+	 */
+	@Override
+	public List<T> findByChouetteId(Map<String, List<String>> chouetteIdsByCodeSpace) {
+		throw new UnsupportedOperationException();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see mobi.chouette.dao.GenericDAO#findByChouetteId(java.lang.String,
+	 * java.lang.String)
+	 */
+	@Override
+	public T findByChouetteId(final String codeSpace, final String technical) {
+		throw new UnsupportedOperationException();
+	}
+
 }

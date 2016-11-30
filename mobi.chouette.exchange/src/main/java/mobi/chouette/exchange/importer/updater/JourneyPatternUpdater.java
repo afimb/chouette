@@ -43,7 +43,6 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 	@EJB(beanName = RouteSectionUpdater.BEAN_NAME)
 	private Updater<RouteSection> routeSectionUpdater;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Context context, JourneyPattern oldValue, JourneyPattern newValue) throws Exception {
 
@@ -138,8 +137,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			StopPoint stopPoint = cache.getStopPoints().get(item.getChouetteId());
 			if (stopPoint == null) {
 				if (stopPoints == null) {
-					String codeSpace = item.getChouetteId().getCodeSpace();
-					stopPoints = (List<StopPoint>) stopPointDAO.findByChouetteId(codeSpace, UpdaterUtils.getChouetteIds(addedStopPoint));
+					stopPoints = (List<StopPoint>) stopPointDAO.findByChouetteId(UpdaterUtils.getChouetteIdsByCodeSpace(addedStopPoint));
 					for (StopPoint object : stopPoints) {
 						cache.getStopPoints().put(object.getChouetteId(), object);
 					}
@@ -208,8 +206,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			VehicleJourney vehicleJourney = cache.getVehicleJourneys().get(item.getChouetteId());
 			if (vehicleJourney == null) {
 				if (vehicleJourneys == null) {
-					String codeSpace = item.getChouetteId().getCodeSpace();
-					vehicleJourneys = (List<VehicleJourney>) vehicleJourneyDAO.findByChouetteId(codeSpace, UpdaterUtils.getChouetteIds(addedVehicleJourney));
+					vehicleJourneys = (List<VehicleJourney>) vehicleJourneyDAO.findByChouetteId(UpdaterUtils.getChouetteIdsByCodeSpace(addedVehicleJourney));
 					for (VehicleJourney object : vehicleJourneys) {
 						cache.getVehicleJourneys().put(object.getChouetteId(), object);
 					}

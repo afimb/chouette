@@ -52,7 +52,7 @@ public class LineParser implements Parser, Constant, JsonExtension {
 
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
-				line = NeptuneChouetteIdObjectUtil.getLine(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
+				line = NeptuneChouetteIdObjectUtil.getLine(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Line.class));
 				line.setFilled(true);
 				line.setNetwork(getPtNetwork(referential));
 				line.setCompany(getFirstCompany(referential));
@@ -79,7 +79,7 @@ public class LineParser implements Parser, Constant, JsonExtension {
 			} else if (xpp.getName().equals("routeId")) {
 				String routeId = ParserUtils.getText(xpp.nextText());
 				validator.addRouteId(context, objectId, routeId);
-				Route route = NeptuneChouetteIdObjectUtil.getRoute(referential, neptuneChouetteIdGenerator.toChouetteId(routeId, parameters.getDefaultCodespace()));
+				Route route = NeptuneChouetteIdObjectUtil.getRoute(referential, neptuneChouetteIdGenerator.toChouetteId(routeId, parameters.getDefaultCodespace(),Route.class));
 				route.setLine(line);
 			} else if (xpp.getName().equals("ptNetworkIdShortcut")) {
 				String ptNetworkIdShortcut = ParserUtils.getText(xpp.nextText());

@@ -123,7 +123,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 				List<String> contains = (List<String>) objectContext.get(CONTAINS2);
 				
 				if( contains != null ) {
-					log.warn("StopArea => " + objectId + "containedId");
+					// log.warn("StopArea => " + objectId + " containedId");
 				//  2-NEPTUNE-StopArea-1 : check if StopArea refers in field contains
 					for (String containedId : contains) 
 
@@ -138,16 +138,16 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 		//							fileLocations.get(objectId), containedId);
 		//					addValidationError(context,STOP_AREA_1, errorItem);
 							ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-							validationReporter.addCheckPointReportError(context, STOP_AREA_1, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), containedId);
+							validationReporter.addCheckPointReportError(context, STOP_AREA_1, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),StopArea.class)), containedId);
 							
 						}
 					}
 
 				}
 	
-				StopArea stopArea = stopAreas.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
-				log.warn("StopArea => " + neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()).getCodeSpace() + "   codespace");
-				log.warn("StopArea => " + neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()).getTechnicalId() + "   technicalId");
+				StopArea stopArea = stopAreas.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),StopArea.class));
+				// log.warn("StopArea => " + neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),StopArea.class).getCodeSpace() + "   codespace");
+				// log.warn("StopArea => " + neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),StopArea.class).getTechnicalId() + "   technicalId");
 				if (stopArea == null) 
 				{
 					log.error("null area " +objectId);

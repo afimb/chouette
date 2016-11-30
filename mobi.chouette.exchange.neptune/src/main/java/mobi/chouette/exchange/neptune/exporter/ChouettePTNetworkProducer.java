@@ -270,7 +270,7 @@ public class ChouettePTNetworkProducer extends NeptuneChouetteIdGenerator implem
 					timeSlot.setLastDepartureTimeInSlot(journeyFrequency.getLastDepartureTime());
 					
 						VehicleJourneyType jaxbObj = vehicleJourneyProducer.produce(context, vehicleJourney, addExtension, count);
-						timeSlot.setChouetteId(neptuneChouetteIdGenerator.toChouetteId(jaxbObj.getObjectId().replaceAll("VehicleJourney", "TimeSlot"), parameters.getDefaultCodespace()));
+						timeSlot.setChouetteId(neptuneChouetteIdGenerator.toChouetteId(jaxbObj.getObjectId().replaceAll("VehicleJourney", "TimeSlot"), parameters.getDefaultCodespace(),TimeSlot.class));
 						jaxbObj.setTimeSlotId(neptuneChouetteIdGenerator.toSpecificFormatId(timeSlot.getChouetteId(), parameters.getDefaultCodespace(), timeSlot));
 						chouetteLineDescription.getVehicleJourney().add(jaxbObj);
 					

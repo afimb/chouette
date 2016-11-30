@@ -89,7 +89,7 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 //			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
 //			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();		
 //          FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
-			DataLocation sourceLocation = fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
+			DataLocation sourceLocation = fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),AccessLink.class));
 
 
 			boolean step1 = true;

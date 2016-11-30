@@ -103,7 +103,6 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	@EJB(beanName = JourneyFrequencyUpdater.BEAN_NAME)
 	private Updater<JourneyFrequency> journeyFrequencyUpdater;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Context context, VehicleJourney oldValue, VehicleJourney newValue) throws Exception {
 
@@ -245,20 +244,15 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			for (VehicleJourneyAtStop vehicleJourneyAtStop : addedVehicleJourneyAtStop) {
 				chouetteIds.add(vehicleJourneyAtStop.getStopPoint().getChouetteId());
 			}
-			Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+			Map<String,List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 			List<StopPoint> stopPoints = new ArrayList<StopPoint>();
 			for (VehicleJourneyAtStop item : addedVehicleJourneyAtStop) {
 				VehicleJourneyAtStop vehicleJourneyAtStop = ChouetteIdObjectUtil.getVehicleJourneyAtStop();
 
 				StopPoint stopPoint = cache.getStopPoints().get(item.getStopPoint().getChouetteId());
 				if (stopPoint == null) {
-					if (stopPoints == null) {
-						String codeSpace = item.getVehicleJourney().getChouetteId().getCodeSpace();
-						
-						for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
-						{
-							stopPoints.addAll((List<StopPoint>) stopPointDAO.findByChouetteId(entry.getKey(), entry.getValue()));
-						}
+					if (stopPoints.isEmpty()) {
+						stopPoints.addAll((List<StopPoint>) stopPointDAO.findByChouetteId(chouetteIdsByCodeSpace));	
 						
 						for (StopPoint object : stopPoints) {
 							cache.getStopPoints().put(object.getChouetteId(), object);
@@ -299,8 +293,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			Timetable timetable = cache.getTimetables().get(item.getChouetteId());
 			if (timetable == null) {
 				if (timetables == null) {
-					String codeSpace = item.getChouetteId().getCodeSpace();
-					timetables = (List<Timetable>) timetableDAO.findByChouetteId(codeSpace, UpdaterUtils.getChouetteIds(addedTimetable));
+					timetables = (List<Timetable>) timetableDAO.findByChouetteId(UpdaterUtils.getChouetteIdsByCodeSpace(addedTimetable));
 					for (Timetable object : timetables) {
 						cache.getTimetables().put(object.getChouetteId(), object);
 					}
@@ -334,16 +327,15 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			for (JourneyFrequency journeyFrequency : addedJourneyFrequency) {
 				chouetteIds.add(journeyFrequency.getTimeband().getChouetteId());
 			}
-			Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+			Map<String,List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 			List<Timeband> timebands = new ArrayList<Timeband>();
 			for (JourneyFrequency item : addedJourneyFrequency) {
 				JourneyFrequency journeyFrequency = new JourneyFrequency();
 				Timeband timeband = cache.getTimebands().get(item.getTimeband().getChouetteId());
 				if (timeband == null) {
-						for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
-						{
-							timebands.addAll((List<Timeband>) timebandDAO.findByChouetteId(entry.getKey(), entry.getValue()));
-						}
+						
+							timebands.addAll((List<Timeband>) timebandDAO.findByChouetteId(chouetteIdsByCodeSpace));
+						
 						
 						for (Timeband object : timebands) {
 							cache.getTimebands().put(object.getChouetteId(), object);

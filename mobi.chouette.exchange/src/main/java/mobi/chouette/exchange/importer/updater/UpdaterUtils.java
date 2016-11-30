@@ -26,15 +26,16 @@ public class UpdaterUtils {
 	 * @param list
 	 * @return
 	 */
-	public static Map<String,List<ChouetteId>> getChouetteIdsByCodeSpace(Collection<?> list) {
-		final Map<String,List<ChouetteId>> result = new HashMap<>();
+	public static Map<String,List<String>> getChouetteIdsByCodeSpace(Collection<?> list) {
+		final Map<String,List<String>> result = new HashMap<>();
 		for (Object o : list) {
 			if (o instanceof NeptuneIdentifiedObject) {
-				String codespace = ((NeptuneIdentifiedObject) o).getChouetteId().getCodeSpace();
+				ChouetteId chouetteId = ((NeptuneIdentifiedObject) o).getChouetteId();
+				String codespace = chouetteId.getCodeSpace();
 				if (!result.containsKey(codespace))
-					result.put(codespace, new ArrayList<ChouetteId>());
+					result.put(codespace, new ArrayList<String>());
 
-				result.get(codespace).add(((NeptuneIdentifiedObject) o).getChouetteId());
+				result.get(codespace).add(chouetteId.getTechnicalId());
 			}
 		}
 		return result;

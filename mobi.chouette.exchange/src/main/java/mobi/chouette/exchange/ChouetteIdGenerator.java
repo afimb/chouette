@@ -15,12 +15,12 @@ public interface ChouetteIdGenerator {
 	 *            objectId to check
 	 * @return true if valid, false othewise
 	 */
-	public boolean checkObjectId(String oid);
+	public boolean checkObjectId(String oid, Class<? extends NeptuneIdentifiedObject> clazz);
 	
 	/**
 	 * Convert some object id to chouette id for import
 	 */
-	public ChouetteId toChouetteId(String objectId, String defaultCodespace);
+	public ChouetteId toChouetteId(String objectId, String defaultCodespace, Class<? extends NeptuneIdentifiedObject> clazz);
 	
 	/**
 	 * Convert some object id list to chouette id list
@@ -28,7 +28,7 @@ public interface ChouetteIdGenerator {
 	 * @param defaultCodespace
 	 * @return
 	 */
-	public List<ChouetteId> toListChouetteId(List<String> lstObjectId, String defaultCodespace);
+	public List<ChouetteId> toListChouetteId(List<String> lstObjectId, String defaultCodespace, Class<? extends NeptuneIdentifiedObject> clazz);
 			
 	/**
 	 * Convert some chouette id to specific format id for export

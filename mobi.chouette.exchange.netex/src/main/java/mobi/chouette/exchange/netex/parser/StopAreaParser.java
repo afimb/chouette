@@ -61,9 +61,9 @@ public class StopAreaParser implements Parser, Constant {
 
 			for (Entry<String, String> item : map.entrySet()) {
 				StopArea child = NetexChouetteIdObjectUtil.getStopArea(referential,
-						chouetteIdGenerator.toChouetteId(item.getKey(), configuration.getDefaultCodespace()));
+						chouetteIdGenerator.toChouetteId(item.getKey(), configuration.getDefaultCodespace(),StopArea.class));
 				StopArea parent = NetexChouetteIdObjectUtil.getStopArea(referential,
-						chouetteIdGenerator.toChouetteId(item.getValue(), configuration.getDefaultCodespace()));
+						chouetteIdGenerator.toChouetteId(item.getValue(), configuration.getDefaultCodespace(),StopArea.class));
 				if (parent != null) {
 					parent.setAreaType(ChouetteAreaEnum.StopPlace);
 					child.setParent(parent);
@@ -107,7 +107,7 @@ public class StopAreaParser implements Parser, Constant {
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
 		String id = xpp.getAttributeValue(null, ID);
-		StopArea stopArea = NetexChouetteIdObjectUtil.getStopArea(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace()));
+		StopArea stopArea = NetexChouetteIdObjectUtil.getStopArea(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace(),StopArea.class));
 		stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
@@ -161,7 +161,7 @@ public class StopAreaParser implements Parser, Constant {
 		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		String id = xpp.getAttributeValue(null, ID);
-		StopArea stopArea = NetexChouetteIdObjectUtil.getStopArea(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace()));
+		StopArea stopArea = NetexChouetteIdObjectUtil.getStopArea(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace(),StopArea.class));
 		stopArea.setAreaType(ChouetteAreaEnum.Quay);
 		stopArea.setParent(parent);
 

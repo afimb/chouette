@@ -53,10 +53,10 @@ public class TimeSlotParser implements Parser, Constant {
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("objectId")) {				
 				objectId = ParserUtils.getText(xpp.nextText());
-				timeSlot = factory.getTimeSlot(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
+				timeSlot = factory.getTimeSlot(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),TimeSlot.class));
 				timeSlot.setFilled(true);
 				
-				timeband = NeptuneChouetteIdObjectUtil.getTimeband(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
+				timeband = NeptuneChouetteIdObjectUtil.getTimeband(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Timeband.class));
 				timeband.setFilled(true);
 
 			} else if (xpp.getName().equals("objectVersion")) {

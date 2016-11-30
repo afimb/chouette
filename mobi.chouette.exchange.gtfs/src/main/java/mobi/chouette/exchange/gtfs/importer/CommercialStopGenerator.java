@@ -11,13 +11,11 @@ import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectUtil;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
-import mobi.chouette.exchange.ChouetteIdObjectUtil;
-import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
-import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectUtil;
-import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
@@ -145,9 +143,9 @@ public class CommercialStopGenerator extends AbstractGenerator {
 		String[] token = gcig.toSpecificFormatId(stop.getChouetteId(), parameters.getDefaultCodespace(), stop).split(":");
 		if (objectId == null)
 			objectId = token[0] + ":" + token[1] + ":COM_" + token[2];
-		StopArea area = GtfsChouetteIdObjectUtil.getStopArea(referential, gcig.toChouetteId(objectId, parameters.getDefaultCodespace()));
+		StopArea area = GtfsChouetteIdObjectUtil.getStopArea(referential, gcig.toChouetteId(objectId, parameters.getDefaultCodespace(),StopArea.class));
 		area.setName(stop.getName());
-		area.setChouetteId(gcig.toChouetteId(objectId, parameters.getDefaultCodespace()));
+		area.setChouetteId(gcig.toChouetteId(objectId, parameters.getDefaultCodespace(),StopArea.class));
 		area.setObjectVersion(stop.getObjectVersion());
 		area.setCreationTime(now.getTime());
 		area.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
@@ -177,7 +175,7 @@ public class CommercialStopGenerator extends AbstractGenerator {
 
 			StopArea areaExcluded = initArea(gcid, parameters, referential, excludedList.get(0), baseId + "_" + rank);
 			// patch object id for non confusion
-			areaExcluded.setChouetteId(gcid.toChouetteId(baseId + "_" + rank, parameters.getDefaultCodespace()));
+			areaExcluded.setChouetteId(gcid.toChouetteId(baseId + "_" + rank, parameters.getDefaultCodespace(),StopArea.class));
 			for (StopArea excluded : excludedList) {
 				excluded.setParent(areaExcluded);
 			}

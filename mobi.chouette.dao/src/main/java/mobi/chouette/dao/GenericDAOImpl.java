@@ -1,7 +1,9 @@
 package mobi.chouette.dao;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Cache;
 import javax.persistence.EntityManager;
@@ -14,8 +16,6 @@ import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import mobi.chouette.model.ChouetteId;
 
 import org.hibernate.Session;
 
@@ -31,12 +31,10 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		this.type = type;
 	}
 
-	
 	public T find(final Object id) {
 		return em.find(type, id);
 	}
 
-	
 	public List<T> find(final String hql, final List<Object> values) {
 		List<T> result = null;
 		if (values.isEmpty()) {
@@ -53,7 +51,6 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		return result;
 	}
 
-	
 	public List<T> findAll(final Collection<Long> ids) {
 		List<T> result = null;
 		CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -66,7 +63,6 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		return result;
 	}
 
-	
 	public List<T> findAll() {
 		List<T> result = null;
 		CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -79,60 +75,55 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public T findByChouetteId(final String codeSpace, final Object chouetteId) {
+	public T findByChouetteId(final String codeSpace, final String technicalId) {
 		Session session = em.unwrap(Session.class);
-		T result = (T) session.byNaturalId(type)
-				.using( "codeSpace", codeSpace )
-				.using( "technicalId", ((ChouetteId) chouetteId).getTechnicalId() )
-				.load();
+		T result = (T) session.byNaturalId(type).using("codeSpace", codeSpace).using("technicalId", technicalId).load();
 		return result;
 	}
-	
+
 	@Override
-	public List<T> findByChouetteId(final String codeSpace, final Collection<Object> chouetteIds) {
+	public List<T> findByChouetteId(Map<String, List<String>> chouetteIdsByCodeSpace) {
 		// System.out.println("GenericDAOImpl.findByObjectId() : " + objectIds);
 		List<T> result = null;
-		if (chouetteIds.isEmpty())
-			return result;
+		if (chouetteIdsByCodeSpace.isEmpty())
+			return new ArrayList<>();
 
-		Iterable<List<Object>> iterator = Iterables.partition(chouetteIds, 32000);
-		for (List<Object> ids : iterator) {
-			CriteriaBuilder builder = em.getCriteriaBuilder();
-			CriteriaQuery<T> criteria = builder.createQuery(type);
-			Root<T> root = criteria.from(type);
-			Predicate predicate = builder.equal(root.get("codeSpace"), codeSpace);
-			predicate = builder.and(predicate, builder.in(root.get("technicalId")).value(ids));
-			criteria.where(predicate);
-			TypedQuery<T> query = em.createQuery(criteria);
-			if (result == null)
-				result = query.getResultList();
-			else
-				result.addAll(query.getResultList());
+		for (String codeSpace : chouetteIdsByCodeSpace.keySet()) {
+			List<String> chouetteIds = chouetteIdsByCodeSpace.get(codeSpace);
+			Iterable<List<String>> iterator = Iterables.partition(chouetteIds, 32000);
+			for (List<String> ids : iterator) {
+				CriteriaBuilder builder = em.getCriteriaBuilder();
+				CriteriaQuery<T> criteria = builder.createQuery(type);
+				Root<T> root = criteria.from(type);
+				Predicate predicate = builder.equal(root.get("codeSpace"), codeSpace);
+				predicate = builder.and(predicate, builder.in(root.get("technicalId")).value(ids));
+				criteria.where(predicate);
+				TypedQuery<T> query = em.createQuery(criteria);
+				if (result == null)
+					result = query.getResultList();
+				else
+					result.addAll(query.getResultList());
+			}
 		}
 		return result;
 	}
 
-	
 	public void create(final T entity) {
 		em.persist(entity);
 	}
 
-	
 	public T update(final T entity) {
 		return em.merge(entity);
 	}
 
-	
 	public void delete(final T entity) {
 		em.remove(entity);
 	}
 
-	
 	public void detach(final T entity) {
 		em.detach(entity);
 	}
 
-	
 	public int deleteAll() {
 		int result = 0;
 		CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -143,21 +134,18 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		return result;
 	}
 
-	
 	public int truncate() {
 		String query = new StringBuilder("TRUNCATE TABLE ").append(type.getAnnotation(Table.class).name())
 				.append(" CASCADE").toString();
 		return em.createNativeQuery(query).executeUpdate();
 	}
 
-	
 	public void evictAll() {
 		EntityManagerFactory factory = em.getEntityManagerFactory();
 		Cache cache = factory.getCache();
 		cache.evictAll();
 	}
 
-	
 	public void flush() {
 		em.flush();
 	}
@@ -174,5 +162,4 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		}
 	}
 
-	
 }

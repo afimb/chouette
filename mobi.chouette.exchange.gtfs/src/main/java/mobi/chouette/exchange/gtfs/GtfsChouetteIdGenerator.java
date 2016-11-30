@@ -4,11 +4,10 @@ import java.util.regex.Pattern;
 
 import mobi.chouette.exchange.AbstractChouetteIdGenerator;
 import mobi.chouette.model.ChouetteId;
-import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 public class GtfsChouetteIdGenerator extends AbstractChouetteIdGenerator{
 	@Override
-	public boolean checkObjectId(String oid) {
+	public boolean checkObjectId(String oid, Class<? extends NeptuneIdentifiedObject> clazz) {
 		if (oid == null)
 			return false;
 
@@ -20,11 +19,11 @@ public class GtfsChouetteIdGenerator extends AbstractChouetteIdGenerator{
 	}
 
 	@Override
-	public ChouetteId toChouetteId(String objectId, String defaultCodespace) {
+	public ChouetteId toChouetteId(String objectId, String defaultCodespace, Class<? extends NeptuneIdentifiedObject> clazz) {
 		ChouetteId chouetteId = null;
 		
 		// If object id is conform to gtfs format
-		if (checkObjectId(objectId)) {
+		if (checkObjectId(objectId,clazz)) {
 			String [] objectIdArray = objectId.split(":");
 			String codespace;
 			String technicalId;

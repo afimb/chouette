@@ -19,6 +19,7 @@ import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.ChouetteId;
+import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.Referential;
@@ -204,6 +205,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 		{
 			boolean fkOK = true;
 			Context objectContext = (Context) localContext.get(objectId);
+			ChouetteId vjChouetteId = neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(), VehicleJourney.class);
 
 			// 2-NEPTUNE-VehicleJourney-1 : check if route and JourneyPattern
 			// are coherent (e)
@@ -211,7 +213,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 			if (!routesContext.containsKey(routeId))
 			{
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-				validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_1, fileLocations.get(objectId), routeId.toString());
+				validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_1, fileLocations.get(vjChouetteId), routeId.toString());
 				
 				fkOK = false;
 			}
@@ -230,7 +232,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				if (!journeyPatternsContext.containsKey(objectContext.get(JOURNEY_PATTERN_ID)))
 				{
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), objectContext.get(JOURNEY_PATTERN_ID).toString());
+					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, fileLocations.get(vjChouetteId), objectContext.get(JOURNEY_PATTERN_ID).toString());
 					fkOK = false;
 				}
 			}
@@ -239,11 +241,11 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				// 2-NEPTUNE-VehicleJourney-8 : check if only one journey pattern exists in route
 				// journeyPattern
 				prepareCheckPoint(context,VEHICLE_JOURNEY_8);
-				VehicleJourney vj = vehicleJourneys.get(objectId);
+				VehicleJourney vj = vehicleJourneys.get(vjChouetteId);
 				if (vj.getRoute().getJourneyPatterns().size() != 1)
 				{
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_8, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())));
+					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_8, fileLocations.get(vjChouetteId));
 					fkOK = false;					
 				}
 				else
@@ -260,7 +262,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				if (!linesContext.containsKey(objectContext.get(LINE_ID_SHORTCUT)))
 				{
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_3, fileLocations.get(objectId), objectContext.get(LINE_ID_SHORTCUT).toString());
+					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_3, fileLocations.get(vjChouetteId), objectContext.get(LINE_ID_SHORTCUT).toString());
 				}
 			}
 			if (objectContext.containsKey(OPERATOR_ID))
@@ -270,7 +272,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				if (!companiesContext.containsKey(objectContext.get(OPERATOR_ID)))
 				{
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_4, fileLocations.get(objectId), objectContext.get(OPERATOR_ID).toString());
+					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_4, fileLocations.get(vjChouetteId), objectContext.get(OPERATOR_ID).toString());
 				}
 			}
 			if (objectContext.containsKey(TIME_SLOT_ID))
@@ -280,7 +282,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				if (!timeSlotsContext.containsKey(objectContext.get(TIME_SLOT_ID)))
 				{
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_5, fileLocations.get(objectId), objectContext.get(TIME_SLOT_ID).toString());
+					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_5, fileLocations.get(vjChouetteId), objectContext.get(TIME_SLOT_ID).toString());
 				}
 			}
 
@@ -297,7 +299,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				Integer columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
 				
 				DataLocation vjasLocation = new DataLocation(fileName, lineNumber, columnNumber, objectId);
-				vjasLocation.setPath(fileLocations.get(objectId).getPath());
+				vjasLocation.setPath(fileLocations.get(vjChouetteId).getPath());
 
 				String stopPointId = (String) vjas.get(STOP_POINT_ID);
 				if (!stopPointsContext.containsKey(stopPointId))
@@ -334,7 +336,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 					if (!jpRouteId.equals(routeId))
 					{
 						ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-						validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_6, fileLocations.get(objectId), journeyPatternId,routeId);
+						validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_6, fileLocations.get(vjChouetteId), journeyPatternId,routeId);
 					} else
 					{
 						List<String> stops = (List<String>) journeyPatternCtx.get(JourneyPatternValidator.STOP_POINT_LIST);
@@ -343,7 +345,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 								|| !stops.containsAll(stopsOfVj))
 						{
 							ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-							validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_AT_STOP_4, fileLocations.get(objectId), journeyPatternId);
+							validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_AT_STOP_4, fileLocations.get(vjChouetteId), journeyPatternId);
 						}
 					}
 
@@ -362,7 +364,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				if (!sequence.equals(stopsOfVj))
 				{
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_AT_STOP_3, fileLocations.get(objectId), routeId);
+					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_AT_STOP_3, fileLocations.get(vjChouetteId), routeId);
 				}
 			}
 		}
@@ -372,7 +374,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 			for (String jpId : unreferencedJourneyPatterns)
 			{
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-				validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_7, fileLocations.get(jpId));
+				validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_7, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(jpId, parameters.getDefaultCodespace(), JourneyPattern.class)));
 
 			}
 

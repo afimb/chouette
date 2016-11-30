@@ -56,7 +56,7 @@ public class ConnectionLinkParser implements Parser, Constant {
 
 		String id = xpp.getAttributeValue(null, ID);
 		ConnectionLink connectionLink = NetexChouetteIdObjectUtil.getConnectionLink(
-				referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace()));
+				referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace(),ConnectionLink.class));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		connectionLink.setObjectVersion(version != null ? version : 0);
@@ -104,7 +104,7 @@ public class ConnectionLinkParser implements Parser, Constant {
 					if (xpp.getName().equals("StopPlaceRef")) {
 						String ref = xpp.getAttributeValue(null, REF);
 						StopArea startOfLink = NetexChouetteIdObjectUtil.getStopArea(
-								referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace()));
+								referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace(),StopArea.class));
 						connectionLink.setStartOfLink(startOfLink);
 						XPPUtil.skipSubTree(log, xpp);
 					} else {
@@ -117,7 +117,7 @@ public class ConnectionLinkParser implements Parser, Constant {
 					if (xpp.getName().equals("StopPlaceRef")) {
 						String ref = xpp.getAttributeValue(null, REF);
 						StopArea endOfLink = NetexChouetteIdObjectUtil.getStopArea(
-								referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace()));
+								referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace(),StopArea.class));
 						connectionLink.setEndOfLink(endOfLink);
 						XPPUtil.skipSubTree(log, xpp);
 					} else {

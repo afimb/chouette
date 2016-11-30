@@ -118,7 +118,7 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 				String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 						StopArea.STOPAREA_KEY, gtfsStop.getStopId(), log);
 
-				StopArea stopArea = GtfsChouetteIdObjectUtil.getStopArea(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace()));
+				StopArea stopArea = GtfsChouetteIdObjectUtil.getStopArea(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace(),StopArea.class));
 				convert(context, gtfsStop, stopArea);
 
 			}
@@ -154,7 +154,7 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 			if (gtfsStop.getParentStation() != null) {
 				String parentId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 						StopArea.STOPAREA_KEY, gtfsStop.getParentStation(), log);
-				StopArea parent = GtfsChouetteIdObjectUtil.getStopArea(referential, gcid.toChouetteId(parentId, configuration.getDefaultCodespace()));
+				StopArea parent = GtfsChouetteIdObjectUtil.getStopArea(referential, gcid.toChouetteId(parentId, configuration.getDefaultCodespace(),StopArea.class));
 				stopArea.setParent(parent);
 			}
 		}

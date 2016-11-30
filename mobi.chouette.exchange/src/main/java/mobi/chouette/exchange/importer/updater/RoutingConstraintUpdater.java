@@ -31,7 +31,6 @@ public class RoutingConstraintUpdater implements Updater<RoutingConstraint> {
 	@EJB(beanName = StopAreaUpdater.BEAN_NAME)
 	private Updater<StopArea> stopAreaUpdater;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Context context, RoutingConstraint oldValue, RoutingConstraint newValue) throws Exception {
 
@@ -81,8 +80,7 @@ public class RoutingConstraintUpdater implements Updater<RoutingConstraint> {
 			StopArea area = cache.getStopAreas().get(item.getChouetteId());
 			if (area == null) {
 				if (stopAreas == null) {
-					String codeSpace = item.getChouetteId().getCodeSpace();
-					stopAreas = (List<StopArea>) stopAreaDAO.findByChouetteId(codeSpace, UpdaterUtils.getChouetteIds(addedStopAreas));
+					stopAreas = (List<StopArea>) stopAreaDAO.findByChouetteId(UpdaterUtils.getChouetteIdsByCodeSpace(addedStopAreas));
 					for (StopArea object : addedStopAreas) {
 						cache.getStopAreas().put(object.getChouetteId(), object);
 					}

@@ -121,7 +121,7 @@ public class ITLValidator extends AbstractValidator implements Validator<StopAre
 
 			// 2-NEPTUNE-ITL-5 : Check if ITL refers Line
 			String lineId = (String) objectContext.get(LINE_ID);
-			ChouetteId lineChouetteId = neptuneChouetteIdGenerator.toChouetteId(lineId, parameters.getDefaultCodespace());
+			ChouetteId lineChouetteId = neptuneChouetteIdGenerator.toChouetteId(lineId, parameters.getDefaultCodespace(),Line.class);
 			if (lineId != null)
 			{
 				prepareCheckPoint(context, ITL_5);

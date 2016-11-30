@@ -82,10 +82,10 @@ public class ConnectionLinkValidator extends AbstractValidator implements Valida
 		prepareCheckPoint(context, CONNECTION_LINK_1);
 		for (String objectId : localContext.keySet()) 
 		{
-			log.warn(" connection link object id : " + objectId);
-			log.warn(" connection link object codespace : " + neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()).getCodeSpace() +
-					" connection link object technical id : " + neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()).getTechnicalId());
-			ConnectionLink connectionLink = referential.getConnectionLinks().get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
+//			log.warn(" connection link object id : " + objectId);
+//			log.warn(" connection link object codespace : " + neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),ConnectionLink.class).getCodeSpace() +
+//					" connection link object technical id : " + neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),ConnectionLink.class).getTechnicalId());
+			ConnectionLink connectionLink = referential.getConnectionLinks().get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),ConnectionLink.class));
 
 			if (stopAreaContext.containsKey(connectionLink.getStartOfLink().getChouetteId()) 
 					|| stopAreaContext.containsKey(connectionLink.getEndOfLink().getChouetteId()))

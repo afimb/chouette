@@ -26,7 +26,6 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 	@EJB(beanName = AccessLinkUpdater.BEAN_NAME)
 	private Updater<AccessLink> accessLinkUpdater;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Context context, AccessPoint oldValue,
 			AccessPoint newValue) throws Exception {
@@ -149,9 +148,8 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 					item.getChouetteId());
 			if (accessLink == null) {
 				if (accessLinks == null) {
-					String codeSpace = item.getAccessPoint().getChouetteId().getCodeSpace();
-					accessLinks = (List<AccessLink>) accessLinkDAO.findByChouetteId(codeSpace, UpdaterUtils
-							.getChouetteIds(addedAccessLink));
+					accessLinks = (List<AccessLink>) accessLinkDAO.findByChouetteId(UpdaterUtils
+							.getChouetteIdsByCodeSpace(addedAccessLink));
 					for (AccessLink object : accessLinks) {
 						cache.getAccessLinks()
 								.put(object.getChouetteId(), object);

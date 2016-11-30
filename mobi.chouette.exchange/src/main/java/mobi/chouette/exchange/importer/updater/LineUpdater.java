@@ -64,7 +64,6 @@ public class LineUpdater implements Updater<Line> {
 	@EJB(beanName = RoutingConstraintUpdater.BEAN_NAME)
 	private Updater<RoutingConstraint> routingConstraintUpdater;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Context context, Line oldValue, Line newValue) throws Exception {
 
@@ -206,8 +205,7 @@ public class LineUpdater implements Updater<Line> {
 			GroupOfLine groupOfLine = cache.getGroupOfLines().get(item.getChouetteId());
 			if (groupOfLine == null) {
 				if (groupOfLines == null) {
-					String codeSpace = item.getChouetteId().getCodeSpace();
-					groupOfLines = (List<GroupOfLine>) groupOfLineDAO.findByChouetteId(codeSpace, UpdaterUtils.getChouetteIds(addedGroupOfLine));
+					groupOfLines = (List<GroupOfLine>) groupOfLineDAO.findByChouetteId(UpdaterUtils.getChouetteIdsByCodeSpace(addedGroupOfLine));
 					for (GroupOfLine object : groupOfLines) {
 						cache.getGroupOfLines().put(object.getChouetteId(), object);
 					}
@@ -240,8 +238,7 @@ public class LineUpdater implements Updater<Line> {
 			Route route = cache.getRoutes().get(item.getChouetteId());
 			if (route == null) {
 				if (routes == null) {
-					String codeSpace = item.getChouetteId().getCodeSpace();
-					routes = (List<Route>) routeDAO.findByChouetteId(codeSpace, UpdaterUtils.getChouetteIds(addedRoute));
+					routes = (List<Route>) routeDAO.findByChouetteId(UpdaterUtils.getChouetteIdsByCodeSpace(addedRoute));
 					for (Route object : routes) {
 						cache.getRoutes().put(object.getChouetteId(), object);
 					}
@@ -308,8 +305,7 @@ public class LineUpdater implements Updater<Line> {
 			RoutingConstraint routingConstraint = cache.getRoutingConstraints().get(item.getChouetteId());
 			if (routingConstraint == null) {
 				if (routingConstraints == null) {
-					String codeSpace = item.getChouetteId().getCodeSpace();
-					routingConstraints = (List<RoutingConstraint>) routingConstraintDAO.findByChouetteId(codeSpace, UpdaterUtils.getChouetteIds(addedRoutingConstraint));
+					routingConstraints = (List<RoutingConstraint>) routingConstraintDAO.findByChouetteId( UpdaterUtils.getChouetteIdsByCodeSpace(addedRoutingConstraint));
 					for (RoutingConstraint object : routingConstraints) {
 						cache.getRoutingConstraints().put(object.getChouetteId(), object);
 					}

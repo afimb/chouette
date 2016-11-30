@@ -206,7 +206,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 						cpt ++;
 						RouteSection section = new RouteSection();
 						String routeSectionId = line.getChouetteId().getCodeSpace() + ":" + RouteSection.ROUTE_SECTION_KEY + ":" + cpt;
-						section.setChouetteId(chouetteIdGenerator.toChouetteId(routeSectionId, parameters.getDefaultCodespace()));
+						section.setChouetteId(chouetteIdGenerator.toChouetteId(routeSectionId, parameters.getDefaultCodespace(),RouteSection.class));
 						if (!section.isFilled()) {
 						
 							Coordinate[] inputCoords = new Coordinate[2];

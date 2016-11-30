@@ -1,8 +1,8 @@
 package mobi.chouette.dao.iev;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -146,16 +146,4 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		
 	}
 
-	@Override
-	public Job findByChouetteId(String codeSpace, Object chouetteId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Job> findByChouetteId(String codeSpace,
-			Collection<Object> chouetteIds) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

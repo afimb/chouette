@@ -50,7 +50,7 @@ public class ChouetteRouteParser implements Parser, Constant {
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
-				route = NeptuneChouetteIdObjectUtil.getRoute(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
+				route = NeptuneChouetteIdObjectUtil.getRoute(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Route.class));
 				route.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -68,14 +68,14 @@ public class ChouetteRouteParser implements Parser, Constant {
 			} else if (xpp.getName().equals("journeyPatternId")) {
 				String journeyPatternId = ParserUtils.getText(xpp.nextText());
 				validator.addJourneyPatternId(context, objectId, journeyPatternId);
-				JourneyPattern journeyPattern = NeptuneChouetteIdObjectUtil.getJourneyPattern(referential, neptuneChouetteIdGenerator.toChouetteId(journeyPatternId, parameters.getDefaultCodespace()));
+				JourneyPattern journeyPattern = NeptuneChouetteIdObjectUtil.getJourneyPattern(referential, neptuneChouetteIdGenerator.toChouetteId(journeyPatternId, parameters.getDefaultCodespace(),JourneyPattern.class));
 				journeyPattern.setRoute(route);
 			} else if (xpp.getName().equals("number")) {
 				route.setNumber(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("ptLinkId")) {
 				String ptLinkId = ParserUtils.getText(xpp.nextText());
 				validator.addPtLinkId(context, objectId, ptLinkId);
-				PTLink ptLink = factory.getPTLink(neptuneChouetteIdGenerator.toChouetteId(ptLinkId, parameters.getDefaultCodespace()));
+				PTLink ptLink = factory.getPTLink(neptuneChouetteIdGenerator.toChouetteId(ptLinkId, parameters.getDefaultCodespace(),PTLink.class));
 				List<PTLink> list = factory.getPTLinksOnRoute(route);
 				list.add(ptLink);
 				ptLink.setRoute(route);

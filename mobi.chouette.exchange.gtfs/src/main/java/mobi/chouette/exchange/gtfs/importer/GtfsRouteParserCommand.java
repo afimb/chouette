@@ -135,10 +135,9 @@ public class GtfsRouteParserCommand implements Command, Constant {
 	}
 
 	private Network createPTNetwork(Referential referential, GtfsChouetteIdGenerator gcid, GtfsImportParameters configuration) {
-		GtfsChouetteIdObjectUtil gciof = new GtfsChouetteIdObjectUtil();
 		String prefix = configuration.getObjectIdPrefix();
 		String ptNetworkId = prefix + ":" + Network.PTNETWORK_KEY + ":" + prefix;
-		Network ptNetwork = GtfsChouetteIdObjectUtil.getPTNetwork(referential, gcid.toChouetteId(ptNetworkId, configuration.getDefaultCodespace()));
+		Network ptNetwork = GtfsChouetteIdObjectUtil.getPTNetwork(referential, gcid.toChouetteId(ptNetworkId, configuration.getDefaultCodespace(),Network.class));
 		ptNetwork.setVersionDate(Calendar.getInstance().getTime());
 		ptNetwork.setName(prefix);
 		ptNetwork.setRegistrationNumber(prefix);

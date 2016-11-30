@@ -95,7 +95,7 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 			}
 			if (!vjFound) {
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-				validationReporter.addCheckPointReportError(context, TIMETABLE_1, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())));
+				validationReporter.addCheckPointReportError(context, TIMETABLE_1, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Timetable.class)));
 			}
 
 			Timetable timetable = timetables.get(objectId);
@@ -107,7 +107,7 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 					if (period.getEndDate().after(period.getStartDate()))
 						continue;
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, TIMETABLE_3, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())));
+					validationReporter.addCheckPointReportError(context, TIMETABLE_3, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Timetable.class)));
 					break;
 				}
 
@@ -116,7 +116,7 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 		if (!unreferencedVehicleJourneys.isEmpty()) {
 			for (String vjId : unreferencedVehicleJourneys) {
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-				validationReporter.addCheckPointReportError(context, TIMETABLE_2, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(vjId, parameters.getDefaultCodespace())));
+				validationReporter.addCheckPointReportError(context, TIMETABLE_2, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(vjId, parameters.getDefaultCodespace(),Timetable.class)));
 			}
 		}
 		return;

@@ -42,11 +42,11 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject implements
 	/**
 	 * 	Id containing three fields from raw object id
 	 */
-	public ChouetteId getChouetteId() {
+	public final ChouetteId getChouetteId() {
 		return new ChouetteId(this.codeSpace, this.technicalId, this.shared);
 	}
 	
-	public void setChouetteId(ChouetteId chouetteId) {
+	public final void setChouetteId(ChouetteId chouetteId) {
 		this.codeSpace = chouetteId.getCodeSpace();
 		this.technicalId = chouetteId.getTechnicalId();
 		this.shared = chouetteId.isShared();

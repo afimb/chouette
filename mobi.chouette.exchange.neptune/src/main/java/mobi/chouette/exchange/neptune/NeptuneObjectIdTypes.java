@@ -55,9 +55,9 @@ public interface NeptuneObjectIdTypes {
 	    */
 	   public static final String ROUTE_KEY = "Route";
 	   /**
-	    * default objectId type for routing constraint
+	    * default objectId type for routing constraint in Neptune
 	    */
-	   public static final String ROUTING_CONSTRAINT_KEY = "RoutingConstraint";
+	   public static final String ROUTING_CONSTRAINT_KEY = "StopArea";
 	   /**
 	    * default objectId type for stop areas 
 	    */

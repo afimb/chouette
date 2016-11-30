@@ -110,7 +110,7 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 					ConnectionLink.CONNECTIONLINK_KEY, gtfsTransfer.getFromStopId() + "_" + gtfsTransfer.getToStopId(),
 					log);
-			ConnectionLink connectionLink = GtfsChouetteIdObjectUtil.getConnectionLink(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace()));
+			ConnectionLink connectionLink = GtfsChouetteIdObjectUtil.getConnectionLink(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace(),ConnectionLink.class));
 			convert(context, gtfsTransfer, connectionLink);
 		}
 	}
@@ -122,10 +122,10 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 		GtfsChouetteIdGenerator gcid = (GtfsChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		
 		StopArea startOfLink = GtfsChouetteIdObjectUtil.getStopArea(referential, gcid.toChouetteId(AbstractConverter.composeObjectId(
-				configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, gtfsTransfer.getFromStopId(), log), configuration.getDefaultCodespace()));
+				configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, gtfsTransfer.getFromStopId(), log), configuration.getDefaultCodespace(),StopArea.class));
 		connectionLink.setStartOfLink(startOfLink);
 		StopArea endOfLink = GtfsChouetteIdObjectUtil.getStopArea(referential, gcid.toChouetteId(AbstractConverter.composeObjectId(
-				configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, gtfsTransfer.getToStopId(), log), configuration.getDefaultCodespace()));
+				configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, gtfsTransfer.getToStopId(), log), configuration.getDefaultCodespace(),StopArea.class));
 		connectionLink.setEndOfLink(endOfLink);
 		connectionLink.setCreationTime(Calendar.getInstance().getTime());
 		connectionLink.setLinkType(ConnectionLinkTypeEnum.Overground);

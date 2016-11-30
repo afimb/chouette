@@ -48,7 +48,7 @@ public class StopPointParser implements Parser, Constant, JsonExtension {
 
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
-				stopPoint = NeptuneChouetteIdObjectUtil.getStopPoint(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
+				stopPoint = NeptuneChouetteIdObjectUtil.getStopPoint(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),StopPoint.class));
 				stopPoint.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -63,7 +63,7 @@ public class StopPointParser implements Parser, Constant, JsonExtension {
 			} else if (xpp.getName().equals("containedIn")) {
 				String containedIn = ParserUtils.getText(xpp.nextText());
 				validator.addContainedIn(context, objectId, containedIn);
-				StopArea stopArea = NeptuneChouetteIdObjectUtil.getStopArea(referential, neptuneChouetteIdGenerator.toChouetteId(containedIn, parameters.getDefaultCodespace()));
+				StopArea stopArea = NeptuneChouetteIdObjectUtil.getStopArea(referential, neptuneChouetteIdGenerator.toChouetteId(containedIn, parameters.getDefaultCodespace(),StopArea.class));
 				stopPoint.setContainedInStopArea(stopArea);
 			} else if (xpp.getName().equals("lineIdShortcut")) {
 				String lineIdShortcut = ParserUtils.getText(xpp.nextText());

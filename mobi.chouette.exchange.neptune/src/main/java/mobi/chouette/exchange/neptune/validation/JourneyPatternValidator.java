@@ -115,7 +115,7 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 				if (!routesContext.containsKey(routeId))
 				{
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, JOURNEY_PATTERN_1, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), routeId);
+					validationReporter.addCheckPointReportError(context, JOURNEY_PATTERN_1, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),JourneyPattern.class)), routeId);
 				}
 			}
 	         // 2-NEPTUNE-JourneyPattern-2 : check existence of StopPoints
@@ -125,7 +125,7 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 	            if (!stopPointsContext.containsKey(stopPointId))
 	            {
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, JOURNEY_PATTERN_2, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), stopPointId);
+					validationReporter.addCheckPointReportError(context, JOURNEY_PATTERN_2, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),JourneyPattern.class)), stopPointId);
 	             
 	            }
 	         }
@@ -137,7 +137,7 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 	            if (!linesContext.containsKey(lineIdShortCut))
 	            {
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, JOURNEY_PATTERN_3, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace())), lineIdShortCut);
+					validationReporter.addCheckPointReportError(context, JOURNEY_PATTERN_3, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),JourneyPattern.class)), lineIdShortCut);
 	            }
 
 	         }

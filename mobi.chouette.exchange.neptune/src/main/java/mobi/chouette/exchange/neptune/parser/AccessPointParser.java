@@ -50,7 +50,7 @@ public class AccessPointParser implements Parser, Constant {
 			if (xpp.getName().equals("objectId")) {
 				 objectId = ParserUtils.getText(xpp.nextText());
 				accessPoint = NeptuneChouetteIdObjectUtil.getAccessPoint(referential,
-						neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
+						neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),AccessPoint.class));
 				accessPoint.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -68,7 +68,7 @@ public class AccessPointParser implements Parser, Constant {
 				String containedInId = ParserUtils.getText(xpp.nextText());
 				validator.addContainedIn(context, objectId, containedInId);
 				StopArea stopArea = NeptuneChouetteIdObjectUtil.getStopArea(referential,
-						neptuneChouetteIdGenerator.toChouetteId(containedInId, parameters.getDefaultCodespace()));
+						neptuneChouetteIdGenerator.toChouetteId(containedInId, parameters.getDefaultCodespace(),StopArea.class));
 				accessPoint.setContainedIn(stopArea);
 			} else if (xpp.getName().equals("address")) {
 

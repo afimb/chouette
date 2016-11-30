@@ -113,7 +113,7 @@ public class RoutingConstraintValidator extends AbstractValidator implements Val
 			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
 
 			String routingConstraintId = objectId;
-			RoutingConstraint routingConstraint = routingConstraints.get(neptuneChouetteIdGenerator.toChouetteId(routingConstraintId, parameters.getDefaultCodespace()));
+			RoutingConstraint routingConstraint = routingConstraints.get(neptuneChouetteIdGenerator.toChouetteId(routingConstraintId, parameters.getDefaultCodespace(),RoutingConstraint.class));
 			// 2-NEPTUNE-ITL-3 : Check if ITL refers existing StopArea
 			prepareCheckPoint(context, ITL_3);
 			
@@ -129,7 +129,7 @@ public class RoutingConstraintValidator extends AbstractValidator implements Val
 				// 2-NEPTUNE-ITL-4 : Check if ITL refers StopArea of ITL
 				// type
 				prepareCheckPoint(context, ITL_4);
-				RoutingConstraint rc = routingConstraints.get(neptuneChouetteIdGenerator.toChouetteId(routingConstraintId, parameters.getDefaultCodespace()));
+				RoutingConstraint rc = routingConstraints.get(neptuneChouetteIdGenerator.toChouetteId(routingConstraintId, parameters.getDefaultCodespace(),RoutingConstraint.class));
 				if (rc != null)
 				{
 					Context routingConstraintData = (Context) routingConstraintLocalContext.get(routingConstraintId);

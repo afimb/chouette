@@ -31,7 +31,8 @@ public class NetexChouetteIdGenerator extends AbstractChouetteIdGenerator implem
 	}
 	
 	@Override
-	public ChouetteId toChouetteId(String objectId, String defaultCodespace) {
+	public ChouetteId toChouetteId(String objectId, String defaultCodespace,
+			Class<? extends NeptuneIdentifiedObject> clazz) {
 		ChouetteId chouetteId = null;
 		
 		// If object id is conform to netex format

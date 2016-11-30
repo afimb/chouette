@@ -44,35 +44,32 @@ public abstract class AbstractValidator implements Constant {
 
 	@SuppressWarnings("unchecked")
 	protected static Context getObjectContext(Context context, String localContextName, String objectId) {
-		log.info("AbstractValidator object id : " + objectId);
-		log.info("AbstractValidator OK1");
+		
+		if (objectId.startsWith("null")) 
+		{
+			log.info("AbstractValidator object id : " + objectId);
+			throw new NullPointerException(objectId);
+		}
 		Context objectContext = null;
 		if (objectId != null) {
 			Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
-			log.info("AbstractValidator OK2");
 			if (validationContext == null) {
 				validationContext = new Context();
 				context.put(VALIDATION_CONTEXT, validationContext);
 				validationContext.put(OBJECT_IDS, new HashSet<String>());
 			}
-			log.info("AbstractValidator OK3");
 			Set<String> objectIds = (Set<String>) validationContext.get(OBJECT_IDS);
-			log.info("AbstractValidator OK4");
 			objectIds.add(objectId);
-			log.info("AbstractValidator OK5");
 			Context localContext = (Context) validationContext.get(localContextName);
-			log.info("AbstractValidator OK6");
 			if (localContext == null) {
 				localContext = new Context();
 				validationContext.put(localContextName, localContext);
 			}
-			log.info("AbstractValidator OK7");
 			objectContext = (Context) localContext.get(objectId);
 			if (objectContext == null) {
 				objectContext = new Context();
 				localContext.put(objectId, objectContext);
 			}
-			log.info("AbstractValidator OK8");
 		}
 		return objectContext;
 
@@ -153,7 +150,6 @@ public abstract class AbstractValidator implements Constant {
 		
 		if(object.getChouetteId() == null)
 			log.info("object chouette id in parsing is null ");
-		log.info("OK1dsvdsvd");
 		if( context == null)
 			log.info("context is null");
 		if( localContext == null )
@@ -163,26 +159,19 @@ public abstract class AbstractValidator implements Constant {
 			log.info("chouette id is null");
 		if (objectId == null)
 			log.info("objectId is null");
+		
 		if (objectId != null) {
 			Context objectContext = getObjectContext(context, localContext, objectId);
-			log.info("OK2");
 			objectContext.put(LINE_NUMBER, Integer.valueOf(lineNumber));
-			log.info("OK3");
 			objectContext.put(COLUMN_NUMBER, Integer.valueOf(columnNumber));
-			log.info("OK4");
 			ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-			log.info("OK5");
 			if (data == null) 
 			{
-				log.info("OK5BIS");
 				data = new ValidationData();
 				context.put(VALIDATION_DATA,data);
-				log.info("OK6BIS");
 			}
 			String fileName = (String) context.get(FILE_NAME);
-			log.info("OK6");
 			if (data != null && fileName != null) {
-				log.info("OK7");
 				DataLocation loc = new DataLocation(context, fileName, lineNumber, columnNumber, object);
 				// manage neptune specific model
 				if (object instanceof PTLink) {
@@ -207,13 +196,10 @@ public abstract class AbstractValidator implements Constant {
 	
 					}
 				}{
-					log.info("OK8");
 	//				DataLocation.addLineLocation(loc, object);
 					loc.setName(DataLocation.buildName(object));
 				}
-				log.info("OK9");
 				data.getDataLocations().put(object.getChouetteId(), loc);
-				log.info("OK10");
 			}
 		}
 

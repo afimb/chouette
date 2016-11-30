@@ -47,7 +47,7 @@ public class GroupOfLineParser implements Parser, Constant, JsonExtension {
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
 				groupOfLine = NeptuneChouetteIdObjectUtil.getGroupOfLine(referential,
-						neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
+						neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),GroupOfLine.class));
 				groupOfLine.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -63,7 +63,7 @@ public class GroupOfLineParser implements Parser, Constant, JsonExtension {
 				groupOfLine.setComment(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("lineId")) {
 				String lineId = ParserUtils.getText(xpp.nextText());
-				Line line = NeptuneChouetteIdObjectUtil.getLine(referential, neptuneChouetteIdGenerator.toChouetteId(lineId, parameters.getDefaultCodespace()));
+				Line line = NeptuneChouetteIdObjectUtil.getLine(referential, neptuneChouetteIdGenerator.toChouetteId(lineId, parameters.getDefaultCodespace(),GroupOfLine.class));
 				groupOfLine.addLine(line);
 				validator.addLineId(context, objectId, lineId);
 			} else {

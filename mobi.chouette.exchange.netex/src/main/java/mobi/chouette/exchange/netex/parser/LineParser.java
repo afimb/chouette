@@ -55,7 +55,7 @@ public class LineParser implements Parser, Constant {
 		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		String id = xpp.getAttributeValue(null, ID);
-		Line line = NetexChouetteIdObjectUtil.getLine(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace()));
+		Line line = NetexChouetteIdObjectUtil.getLine(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace(),Line.class));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		line.setObjectVersion(version != null ? version : 0);
@@ -79,7 +79,7 @@ public class LineParser implements Parser, Constant {
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("RouteRef")) {
 						String ref = xpp.getAttributeValue(null, REF);
-						Route route = NetexChouetteIdObjectUtil.getRoute(referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace()));
+						Route route = NetexChouetteIdObjectUtil.getRoute(referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace(),Route.class));
 						route.setLine(line);
 						XPPUtil.skipSubTree(log, xpp);
 					} else {

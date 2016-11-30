@@ -52,7 +52,7 @@ public class AccessLinkParser implements Parser, Constant {
 
 			if (xpp.getName().equals("objectId")) {
 			    objectId = ParserUtils.getText(xpp.nextText());
-				accessLink = NeptuneChouetteIdObjectUtil.getAccessLink(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
+				accessLink = NeptuneChouetteIdObjectUtil.getAccessLink(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),AccessLink.class));
 				accessLink.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -71,13 +71,13 @@ public class AccessLinkParser implements Parser, Constant {
 				validator.addStartOfLinkId(context, objectId, linkId);
 				if (referential.getStopAreas().containsKey(linkId)) {
 					StopArea stopArea = NeptuneChouetteIdObjectUtil.getStopArea(referential,
-							neptuneChouetteIdGenerator.toChouetteId(linkId, parameters.getDefaultCodespace()));
+							neptuneChouetteIdGenerator.toChouetteId(linkId, parameters.getDefaultCodespace(),StopArea.class));
 					accessLink.setStopArea(stopArea);
 					accessLink
 							.setLinkOrientation(LinkOrientationEnum.StopAreaToAccessPoint);
 				} else if (referential.getAccessPoints().containsKey(linkId)) {
 					AccessPoint accessPoint = NeptuneChouetteIdObjectUtil.getAccessPoint(
-							referential, neptuneChouetteIdGenerator.toChouetteId(linkId, parameters.getDefaultCodespace()));
+							referential, neptuneChouetteIdGenerator.toChouetteId(linkId, parameters.getDefaultCodespace(),AccessPoint.class));
 					accessLink.setAccessPoint(accessPoint);
 					accessLink
 							.setLinkOrientation(LinkOrientationEnum.AccessPointToStopArea);
@@ -87,11 +87,11 @@ public class AccessLinkParser implements Parser, Constant {
 				validator.addEndOfLinkId(context, objectId, linkId);
 				if (referential.getStopAreas().containsKey(linkId)) {
 					StopArea stopArea = NeptuneChouetteIdObjectUtil.getStopArea(referential,
-							neptuneChouetteIdGenerator.toChouetteId(linkId, parameters.getDefaultCodespace()));
+							neptuneChouetteIdGenerator.toChouetteId(linkId, parameters.getDefaultCodespace(),StopArea.class));
 					accessLink.setStopArea(stopArea);
 				} else if (referential.getAccessPoints().containsKey(linkId)) {
 					AccessPoint accessPoint = NeptuneChouetteIdObjectUtil.getAccessPoint(
-							referential, neptuneChouetteIdGenerator.toChouetteId(linkId, parameters.getDefaultCodespace()));
+							referential, neptuneChouetteIdGenerator.toChouetteId(linkId, parameters.getDefaultCodespace(),AccessPoint.class));
 					accessLink.setAccessPoint(accessPoint);
 				}
 			} else if (xpp.getName().equals("linkDistance")) {

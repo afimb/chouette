@@ -44,7 +44,6 @@ public class RouteUpdater implements Updater<Route> {
 	@EJB(beanName = JourneyPatternUpdater.BEAN_NAME)
 	private Updater<JourneyPattern> journeyPatternUpdater;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Context context, Route oldValue, Route newValue) throws Exception {
 
@@ -136,8 +135,7 @@ public class RouteUpdater implements Updater<Route> {
 			StopPoint stopPoint = cache.getStopPoints().get(item.getChouetteId());
 			if (stopPoint == null) {
 				if (stopPoints == null) {
-					String codeSpace = item.getChouetteId().getCodeSpace();
-					stopPoints = (List<StopPoint>) stopPointDAO.findByChouetteId(codeSpace, UpdaterUtils.getChouetteIds(addedStopPoint));
+					stopPoints = (List<StopPoint>) stopPointDAO.findByChouetteId( UpdaterUtils.getChouetteIdsByCodeSpace(addedStopPoint));
 					for (StopPoint object : stopPoints) {
 						cache.getStopPoints().put(object.getChouetteId(), object);
 					}
@@ -180,8 +178,7 @@ public class RouteUpdater implements Updater<Route> {
 			JourneyPattern journeyPattern = cache.getJourneyPatterns().get(item.getChouetteId());
 			if (journeyPattern == null) {
 				if (journeyPatterns == null) {
-					String codeSpace = item.getChouetteId().getCodeSpace();
-					journeyPatterns = (List<JourneyPattern>) journeyPatternDAO.findByChouetteId(codeSpace, UpdaterUtils.getChouetteIds(addedJourneyPattern));
+					journeyPatterns = (List<JourneyPattern>) journeyPatternDAO.findByChouetteId(UpdaterUtils.getChouetteIdsByCodeSpace(addedJourneyPattern));
 					for (JourneyPattern object : journeyPatterns) {
 						cache.getJourneyPatterns().put(object.getChouetteId(), object);
 					}

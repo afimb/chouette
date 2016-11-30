@@ -12,6 +12,7 @@ import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.validation.PTNetworkValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.type.PTNetworkSourceTypeEnum;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
@@ -46,11 +47,12 @@ public class PTNetworkParser implements Parser, Constant {
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
 				log.info("NEPTUNE object id -> " + objectId);
-				if (neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()) != null) {
-					log.info(" Chouette object codespace : " + neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()).getCodeSpace());
-					log.info(" Chouette object technicalId : " + neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()).getTechnicalId());
+				ChouetteId chouetteId = neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Network.class);
+				if (chouetteId != null) {
+					log.info(" Chouette object codespace : " + chouetteId.getCodeSpace());
+					log.info(" Chouette object technicalId : " + chouetteId.getTechnicalId());
 				}
-				network = NeptuneChouetteIdObjectUtil.getPTNetwork(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
+				network = NeptuneChouetteIdObjectUtil.getPTNetwork(referential, chouetteId);
 				network.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());

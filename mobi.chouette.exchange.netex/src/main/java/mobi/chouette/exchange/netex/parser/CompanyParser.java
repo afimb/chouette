@@ -50,7 +50,7 @@ public class CompanyParser implements Parser, Constant {
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
 		String id = xpp.getAttributeValue(null, ID);
-		Company company = NetexChouetteIdObjectUtil.getCompany(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace()));
+		Company company = NetexChouetteIdObjectUtil.getCompany(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace(),Company.class));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		company.setObjectVersion(version != null ? version : 0);

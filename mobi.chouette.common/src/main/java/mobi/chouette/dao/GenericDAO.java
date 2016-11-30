@@ -2,19 +2,18 @@ package mobi.chouette.dao;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Local;
-
-import mobi.chouette.common.Pair;
 
 @Local
 public interface GenericDAO<T> {
 
 	T find(Object id);
 
-	T findByChouetteId(String codeSpace, Object chouetteId);
+	T findByChouetteId(String codeSpace, String technicalId);
 
-	List<T> findByChouetteId(String codeSpace, Collection<Object> chouetteIds);
+	List<T> findByChouetteId(Map<String,List<String>> chouetteIdsByCodeSpace);
 
 	List<T> findAll();
 

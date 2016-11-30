@@ -32,7 +32,6 @@ import mobi.chouette.exchange.gtfs.exporter.producer.GtfsTripProducer;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporter;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
-import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;

@@ -106,7 +106,7 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 		for (GtfsAgency gtfsAgency : importer.getAgencyById()) {
 			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Company.COMPANY_KEY,
 					gtfsAgency.getAgencyId(), log);
-			Company company = GtfsChouetteIdObjectUtil.getCompany(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace()));
+			Company company = GtfsChouetteIdObjectUtil.getCompany(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace(),Company.class));
 			convert(context, gtfsAgency, company);
 		}
 	}

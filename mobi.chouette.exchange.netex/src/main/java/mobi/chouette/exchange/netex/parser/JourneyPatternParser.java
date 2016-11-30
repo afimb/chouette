@@ -55,7 +55,7 @@ public class JourneyPatternParser implements Parser, Constant {
 
 		String id = xpp.getAttributeValue(null, ID);
 		JourneyPattern journeyPattern = NetexChouetteIdObjectUtil.getJourneyPattern(
-				referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace()));
+				referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace(),JourneyPattern.class));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		journeyPattern.setObjectVersion(version != null ? version : 0);
@@ -70,12 +70,12 @@ public class JourneyPatternParser implements Parser, Constant {
 				journeyPattern.setName(xpp.nextText());
 			} else if (xpp.getName().equals("RouteRef")) {
 				String ref = xpp.getAttributeValue(null, REF);
-				Route route = NetexChouetteIdObjectUtil.getRoute(referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace()));
+				Route route = NetexChouetteIdObjectUtil.getRoute(referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace(),Route.class));
 				journeyPattern.setRoute(route);
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("RouteRef")) {
 				String ref = xpp.getAttributeValue(null, REF);
-				Route route = NetexChouetteIdObjectUtil.getRoute(referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace()));
+				Route route = NetexChouetteIdObjectUtil.getRoute(referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace(),Route.class));
 				journeyPattern.setRoute(route);
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("pointsInSequence")) {
@@ -109,7 +109,7 @@ public class JourneyPatternParser implements Parser, Constant {
 					if (xpp.getName().equals("ScheduledStopPointRef")) {
 						String ref = xpp.getAttributeValue(null, REF);
 						StopPoint stopPoint = NetexChouetteIdObjectUtil.getStopPoint(
-								referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace()));
+								referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace(),StopPoint.class));
 						journeyPattern.addStopPoint(stopPoint);
 						XPPUtil.skipSubTree(log, xpp);
 					} else {

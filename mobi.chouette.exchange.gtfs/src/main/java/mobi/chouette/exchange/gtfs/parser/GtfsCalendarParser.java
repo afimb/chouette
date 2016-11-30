@@ -192,7 +192,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 
 				String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 						Timetable.TIMETABLE_KEY, gtfsCalendar.getServiceId(), log);
-				Timetable timetable = GtfsChouetteIdObjectUtil.getTimetable(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace()));
+				Timetable timetable = GtfsChouetteIdObjectUtil.getTimetable(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace(),Timetable.class));
 				convert(context, gtfsCalendar, timetable);
 			}
 		}
@@ -207,7 +207,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 				Timetable timetable = referential.getTimetables().get(objectId);
 				for (GtfsCalendarDate gtfsCalendarDate : importer.getCalendarDateByService().values(serviceId)) {
 					if (timetable == null) {
-						timetable = GtfsChouetteIdObjectUtil.getTimetable(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace()));
+						timetable = GtfsChouetteIdObjectUtil.getTimetable(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace(),Timetable.class));
 						convert(context, createDummyCalandar(gtfsCalendarDate.getId()), timetable);
 					}
 					addCalendarDay(timetable, gtfsCalendarDate);

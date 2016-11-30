@@ -190,20 +190,20 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 
 		String lineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY,
 				gtfsRouteId, log);
-		Line line = GtfsChouetteIdObjectUtil.getLine(referential, gcid.toChouetteId(lineId, configuration.getDefaultCodespace()));
+		Line line = GtfsChouetteIdObjectUtil.getLine(referential, gcid.toChouetteId(lineId, configuration.getDefaultCodespace(),Line.class));
 		convert(context, gtfsRoute, line);
 
 		// PTNetwork
 		String ptNetworkId = configuration.getObjectIdPrefix() + ":" + Network.PTNETWORK_KEY + ":"
 				+ configuration.getObjectIdPrefix();
-		Network ptNetwork = GtfsChouetteIdObjectUtil.getPTNetwork(referential, gcid.toChouetteId(ptNetworkId, configuration.getDefaultCodespace()));
+		Network ptNetwork = GtfsChouetteIdObjectUtil.getPTNetwork(referential, gcid.toChouetteId(ptNetworkId, configuration.getDefaultCodespace(),Network.class));
 		line.setNetwork(ptNetwork);
 
 		// Company
 		if (gtfsRoute.getAgencyId() != null) {
 			String companyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 					Company.COMPANY_KEY, gtfsRoute.getAgencyId(), log);
-			Company company = GtfsChouetteIdObjectUtil.getCompany(referential, gcid.toChouetteId(companyId, configuration.getDefaultCodespace()));
+			Company company = GtfsChouetteIdObjectUtil.getCompany(referential, gcid.toChouetteId(companyId, configuration.getDefaultCodespace(),Company.class));
 			line.setCompany(company);
 		} else if (!referential.getSharedCompanies().isEmpty()) {
 			Company company = referential.getSharedCompanies().values().iterator().next();

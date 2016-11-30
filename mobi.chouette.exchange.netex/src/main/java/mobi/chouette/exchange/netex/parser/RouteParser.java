@@ -121,9 +121,9 @@ public class RouteParser implements Parser, Constant {
 
 		if (stopPointId != null && stopAreaId != null) {
 			StopPoint stopPoint = NetexChouetteIdObjectUtil.getStopPoint(referential,
-					chouetteIdGenerator.toChouetteId(stopPointId, configuration.getDefaultCodespace()));
+					chouetteIdGenerator.toChouetteId(stopPointId, configuration.getDefaultCodespace(),StopPoint.class));
 			StopArea stopArea = NetexChouetteIdObjectUtil.getStopArea(referential,
-					chouetteIdGenerator.toChouetteId(stopAreaId, configuration.getDefaultCodespace()));
+					chouetteIdGenerator.toChouetteId(stopAreaId, configuration.getDefaultCodespace(),StopArea.class));
 			stopPoint.setContainedInStopArea(stopArea);
 		}
 
@@ -142,7 +142,7 @@ public class RouteParser implements Parser, Constant {
 		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		String id = xpp.getAttributeValue(null, ID);
-		Route route = NetexChouetteIdObjectUtil.getRoute(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace()));
+		Route route = NetexChouetteIdObjectUtil.getRoute(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace(),Route.class));
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		route.setObjectVersion(version != null ? version : 0);
@@ -174,7 +174,7 @@ public class RouteParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("InverseRouteRef")) {
 				String ref = xpp.getAttributeValue(null, REF);
-				Route wayBackRoute = NetexChouetteIdObjectUtil.getRoute(referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace()));
+				Route wayBackRoute = NetexChouetteIdObjectUtil.getRoute(referential, chouetteIdGenerator.toChouetteId(ref, configuration.getDefaultCodespace(),Route.class));
 				if (wayBackRoute != null)
 				{
 					wayBackRoute.setOppositeRoute(route);
@@ -206,7 +206,7 @@ public class RouteParser implements Parser, Constant {
 			if (xpp.getName().equals("PointOnRoute")) {
 				String id = xpp.getAttributeValue(null, ID);
 				StopPoint stopPoint = NetexChouetteIdObjectUtil.getStopPoint(referential,
-						chouetteIdGenerator.toChouetteId(getStopPointObjectId(context, route, id), configuration.getDefaultCodespace()));
+						chouetteIdGenerator.toChouetteId(getStopPointObjectId(context, route, id), configuration.getDefaultCodespace(),StopPoint.class));
 				stopPoint.setRoute(route);
 				stopPoint.setFilled(true);
 				XPPUtil.skipSubTree(log, xpp);

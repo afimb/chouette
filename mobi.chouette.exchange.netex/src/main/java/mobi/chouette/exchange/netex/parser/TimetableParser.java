@@ -74,7 +74,7 @@ public class TimetableParser implements Parser, Constant {
 			if (xpp.getName().equals("DayType")) {
 
 				String id = xpp.getAttributeValue(null, ID);
-				timetable.setChouetteId(chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace()));
+				timetable.setChouetteId(chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace(),Timetable.class));
 
 				Integer version = Integer.valueOf(xpp.getAttributeValue(null,
 						VERSION));

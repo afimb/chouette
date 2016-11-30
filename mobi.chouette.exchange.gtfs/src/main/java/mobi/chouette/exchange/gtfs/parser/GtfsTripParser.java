@@ -515,7 +515,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 					VehicleJourney.VEHICLEJOURNEY_KEY, gtfsTrip.getTripId(), log);
-			VehicleJourney vehicleJourney = GtfsChouetteIdObjectUtil.getVehicleJourney(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace()));
+			VehicleJourney vehicleJourney = GtfsChouetteIdObjectUtil.getVehicleJourney(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace(),VehicleJourney.class));
 			convert(context, gtfsTrip, vehicleJourney);
 
 			// VehicleJourneyAtStop
@@ -544,7 +544,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			if (afterMidnight) {
 				timetableId += GtfsCalendarParser.AFTER_MIDNIGHT_SUFFIX;
 			}
-			Timetable timetable = GtfsChouetteIdObjectUtil.getTimetable(referential, gcid.toChouetteId(timetableId, configuration.getDefaultCodespace()));
+			Timetable timetable = GtfsChouetteIdObjectUtil.getTimetable(referential, gcid.toChouetteId(timetableId, configuration.getDefaultCodespace(),Timetable.class));
 			vehicleJourney.getTimetables().add(timetable);
 
 			// JourneyPattern
@@ -593,7 +593,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 			String timeBandObjectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 					Timeband.TIMETABLE_KEY, gtfsTrip.getTripId() + "-" + count++, log);
-			Timeband timeband = GtfsChouetteIdObjectUtil.getTimeband(referential, gcid.toChouetteId(timeBandObjectId, configuration.getDefaultCodespace()));
+			Timeband timeband = GtfsChouetteIdObjectUtil.getTimeband(referential, gcid.toChouetteId(timeBandObjectId, configuration.getDefaultCodespace(),Timeband.class));
 			timeband.setName(getTimebandName(frequency));
 			timeband.setStartTime(frequency.getStartTime().getTime());
 			timeband.setEndTime(frequency.getEndTime().getTime());
@@ -637,7 +637,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 		// JourneyPattern
 		String journeyPatternId = route.getTechnicalId().replace(Route.ROUTE_KEY, JourneyPattern.JOURNEYPATTERN_KEY);
-		journeyPattern = GtfsChouetteIdObjectUtil.getJourneyPattern(referential, gcid.toChouetteId(journeyPatternId, configuration.getDefaultCodespace()));
+		journeyPattern = GtfsChouetteIdObjectUtil.getJourneyPattern(referential, gcid.toChouetteId(journeyPatternId, configuration.getDefaultCodespace(),JourneyPattern.class));
 		journeyPattern.setName(gtfsTrip.getTripHeadSign());
 		journeyPattern.setRoute(route);
 		journeyPatternByStopSequence.put(journeyKey, journeyPattern);
@@ -769,7 +769,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					rank++;
 				String routeSectionId = prefix + ":" + RouteSection.ROUTE_SECTION_KEY + ":" + shapeId + "_"
 						+ gcid.toSpecificFormatId(previousLocation.getChouetteId(), configuration.getDefaultCodespace(), previousLocation) + "_" + gcid.toSpecificFormatId(location.getChouetteId(), configuration.getDefaultCodespace(), location) + "_" + intFactor;
-				RouteSection section = GtfsChouetteIdObjectUtil.getRouteSection(referential, gcid.toChouetteId(routeSectionId, configuration.getDefaultCodespace()));
+				RouteSection section = GtfsChouetteIdObjectUtil.getRouteSection(referential, gcid.toChouetteId(routeSectionId, configuration.getDefaultCodespace(),RouteSection.class));
 				if (!section.isFilled()) {
 					Coordinate[] inputCoords = new Coordinate[2];
 					section.setDeparture(previousLocation);
@@ -821,7 +821,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		String lineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY,
 				gtfsTrip.getRouteId(), log);
 		GtfsChouetteIdGenerator gcid = (GtfsChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		Line line = GtfsChouetteIdObjectUtil.getLine(referential, gcid.toChouetteId(lineId, configuration.getDefaultCodespace()));
+		Line line = GtfsChouetteIdObjectUtil.getLine(referential, gcid.toChouetteId(lineId, configuration.getDefaultCodespace(),Line.class));
 		String routeKey = gtfsTrip.getRouteId() + "_" + gtfsTrip.getDirectionId().ordinal();
 		if (gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty())
 			routeKey += "_" + gtfsTrip.getShapeId();
@@ -829,7 +829,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		String routeId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.ROUTE_KEY,
 				routeKey, log);
 
-		Route route = GtfsChouetteIdObjectUtil.getRoute(referential, gcid.toChouetteId(routeId, configuration.getDefaultCodespace()));
+		Route route = GtfsChouetteIdObjectUtil.getRoute(referential, gcid.toChouetteId(routeId, configuration.getDefaultCodespace(),Route.class));
 		route.setLine(line);
 		String wayBack = gtfsTrip.getDirectionId().equals(DirectionType.Outbound) ? "A" : "R";
 		route.setWayBack(wayBack);
@@ -844,7 +844,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		vehicleJourneyAtStop.setId(Long.valueOf(gtfsStopTime.getId().longValue()));
 
 		String objectId = gtfsStopTime.getStopId();
-		StopPoint stopPoint = GtfsChouetteIdObjectUtil.getStopPoint(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace()));
+		StopPoint stopPoint = GtfsChouetteIdObjectUtil.getStopPoint(referential, gcid.toChouetteId(objectId, configuration.getDefaultCodespace(),StopPoint.class));
 		vehicleJourneyAtStop.setStopPoint(stopPoint);
 		vehicleJourneyAtStop.setArrivalTime(gtfsStopTime.getArrivalTime().getTime());
 		vehicleJourneyAtStop.setDepartureTime(gtfsStopTime.getDepartureTime().getTime());
@@ -916,11 +916,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 			stopPointKeys.add(stopKey);
 
-			StopPoint stopPoint = GtfsChouetteIdObjectUtil.getStopPoint(referential, gcid.toChouetteId(stopKey, configuration.getDefaultCodespace()));
+			StopPoint stopPoint = GtfsChouetteIdObjectUtil.getStopPoint(referential, gcid.toChouetteId(stopKey, configuration.getDefaultCodespace(),StopPoint.class));
 
 			String stopAreaId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 					StopArea.STOPAREA_KEY, wrapper.stopId, log);
-			StopArea stopArea = GtfsChouetteIdObjectUtil.getStopArea(referential, gcid.toChouetteId(stopAreaId, configuration.getDefaultCodespace()));
+			StopArea stopArea = GtfsChouetteIdObjectUtil.getStopArea(referential, gcid.toChouetteId(stopAreaId, configuration.getDefaultCodespace(),StopArea.class));
 			stopPoint.setContainedInStopArea(stopArea);
 			stopPoint.setRoute(route);
 			stopPoint.setPosition(position++);

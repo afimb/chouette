@@ -15,6 +15,8 @@ import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.dao.ConnectionLinkDAO;
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.ChouetteIdObjectUtil;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
@@ -24,8 +26,6 @@ import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.NeptuneUtil;
-import mobi.chouette.exchange.ChouetteIdGenerator;
-import mobi.chouette.exchange.ChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -61,7 +61,6 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	@EJB(beanName = ConnectionLinkUpdater.BEAN_NAME)
 	private Updater<ConnectionLink> connectionLinkUpdater;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Context context, StopArea oldValue, StopArea newValue) throws Exception {
 
@@ -223,8 +222,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			AccessPoint accessPoint = cache.getAccessPoints().get(item.getChouetteId());
 			if (accessPoint == null) {
 				if (accessPoints == null) {
-					String codeSpace = item.getChouetteId().getCodeSpace();
-					accessPoints = (List<AccessPoint>) accessPointDAO.findByChouetteId(codeSpace, UpdaterUtils.getChouetteIds(addedAccessPoint));
+					accessPoints = (List<AccessPoint>) accessPointDAO.findByChouetteId(UpdaterUtils.getChouetteIdsByCodeSpace(addedAccessPoint));
 					for (AccessPoint object : accessPoints) {
 						cache.getAccessPoints().put(object.getChouetteId(), object);
 					}
@@ -256,8 +254,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			AccessLink accessLink = cache.getAccessLinks().get(item.getChouetteId());
 			if (accessLink == null) {
 				if (accessLinks == null) {
-					String codeSpace = item.getChouetteId().getCodeSpace();
-					accessLinks = (List<AccessLink>) accessLinkDAO.findByChouetteId(codeSpace, UpdaterUtils.getChouetteIds(addedAccessLink));
+					accessLinks = (List<AccessLink>) accessLinkDAO.findByChouetteId(UpdaterUtils.getChouetteIdsByCodeSpace(addedAccessLink));
 					for (AccessLink object : accessLinks) {
 						cache.getAccessLinks().put(object.getChouetteId(), object);
 					}

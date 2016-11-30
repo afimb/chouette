@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -121,20 +120,15 @@ public class StopAreaRegisterBlocCommand implements Command {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	private void initializeAccessPoint(Referential cache, Collection<AccessPoint> list) {
 		if (list.isEmpty())
 			return;
 		Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
-		
-		Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+
+		Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 		List<AccessPoint> objects = new ArrayList<AccessPoint>();
-		
-		for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
-		{
-		    objects.addAll((List<AccessPoint>) accessPointDAO.findByChouetteId(entry.getKey(), entry.getValue()));
-		}
-		
+		objects.addAll((List<AccessPoint>) accessPointDAO.findByChouetteId(chouetteIdsByCodeSpace));
+
 		for (AccessPoint object : objects) {
 			cache.getAccessPoints().put(object.getChouetteId(), object);
 		}
@@ -147,20 +141,15 @@ public class StopAreaRegisterBlocCommand implements Command {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void initializeAccessLink(Referential cache, Collection<AccessLink> list) {
 		if (list.isEmpty())
 			return;
 		Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
-		
-		Map<String,List<ChouetteId>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+
+		Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
 		List<AccessLink> objects = new ArrayList<AccessLink>();
-		
-		for (Entry<String, List<ChouetteId>> entry : chouetteIdsByCodeSpace.entrySet())
-		{
-		    objects.addAll((List<AccessLink>) accessLinkDAO.findByChouetteId(entry.getKey(), entry.getValue()));
-		}
-		
+		objects.addAll((List<AccessLink>) accessLinkDAO.findByChouetteId(chouetteIdsByCodeSpace));
+
 		for (AccessLink object : objects) {
 			cache.getAccessLinks().put(object.getChouetteId(), object);
 		}

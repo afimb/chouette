@@ -109,9 +109,10 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 		for (String objectId : localContext.keySet()) {
 			Context objectContext = (Context) localContext.get(objectId);
 //			Location sourceLocation = fileLocations.get(objectId);
-			DataLocation sourceLocation = fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace()));
+			ChouetteId lineChouetteId = neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Line.class);
+			DataLocation sourceLocation = fileLocations.get(lineChouetteId);
 
-			Line line = lines.get(objectId);
+			Line line = lines.get(lineChouetteId);
 			// 2-NEPTUNE-Line-1 : check ptnetworkIdShortcut
 			String ptnetworkIdShortcut = (String) objectContext.get(PT_NETWORK_ID_SHORTCUT);
 
@@ -183,7 +184,7 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 			for (String routeId : routeContext.keySet()) {
 				if (!routeIds.contains(routeId)) {
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, LINE_5, sourceLocation, routeId,null, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(routeId, parameters.getDefaultCodespace())));
+					validationReporter.addCheckPointReportError(context, LINE_5, sourceLocation, routeId,null, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(routeId, parameters.getDefaultCodespace(),Route.class)));
 				}
 			}
 
