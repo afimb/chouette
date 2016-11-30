@@ -1657,7 +1657,7 @@ CREATE UNIQUE INDEX lines_objectid_key ON lines USING btree (objectid);
 -- Name: lines_registration_number_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
-CREATE UNIQUE INDEX lines_registration_number_key ON lines USING btree (registration_number);
+CREATE INDEX lines_registration_number_key ON lines USING btree (registration_number);
 
 
 --
