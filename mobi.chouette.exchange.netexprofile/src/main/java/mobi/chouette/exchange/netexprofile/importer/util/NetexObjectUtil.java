@@ -294,7 +294,7 @@ public class NetexObjectUtil {
         return scheduledStopPoint;
     }
 
-    public static void addJourneyPatternReference(NetexReferential referential, String objectId, JourneyPattern journeyPattern) {
+    public static void addJourneyPatternReference(NetexReferential referential, String objectId, JourneyPattern_VersionStructure journeyPattern) {
         if (journeyPattern == null) {
             throw new NullPointerException("Unknown journey pattern : " + objectId);
         }
@@ -312,8 +312,8 @@ public class NetexObjectUtil {
         }
     }
 
-    public static JourneyPattern getJourneyPattern(NetexReferential referential, String objectId) {
-        JourneyPattern journeyPattern = referential.getJourneyPatterns().get(objectId);
+    public static JourneyPattern_VersionStructure getJourneyPattern(NetexReferential referential, String objectId) {
+        JourneyPattern_VersionStructure journeyPattern = referential.getJourneyPatterns().get(objectId);
         if (journeyPattern == null) {
             throw new NullPointerException("Unknown journey pattern : " + objectId);
         }

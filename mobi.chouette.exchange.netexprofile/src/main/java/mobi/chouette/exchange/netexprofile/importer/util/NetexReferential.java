@@ -82,7 +82,7 @@ public class NetexReferential implements Serializable {
 
     @Getter
     @Setter
-    private Map<String, JourneyPattern> journeyPatterns = new HashMap<>();
+    private Map<String, JourneyPattern_VersionStructure> journeyPatterns = new HashMap<>();
 
     @Getter
     @Setter

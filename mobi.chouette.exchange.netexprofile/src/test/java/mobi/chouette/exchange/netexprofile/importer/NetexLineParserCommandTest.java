@@ -18,7 +18,7 @@ import java.nio.file.Paths;
 
 public class NetexLineParserCommandTest {
 
-	@Test(enabled = false)
+	@Test(enabled = true)
 	public void testParseDocument() throws Exception {
 		Context context = new Context();
 		NetexprofileImportParameters configuration = new NetexprofileImportParameters();
@@ -26,18 +26,24 @@ public class NetexLineParserCommandTest {
 		context.put(Constant.CONFIGURATION, configuration);
 		context.put(Constant.VALIDATION_REPORT, new ValidationReport());
 		context.put(Constant.REPORT, new ActionReport());
-		
+
+		Path filePath = Paths.get("src/test/data/WF739.xml");
+		String url = filePath.toUri().toURL().toExternalForm();
+		Assert.assertTrue(Files.exists(filePath));
+
 		Referential referential = new Referential();
 		context.put(Constant.REFERENTIAL,referential);
 
 		NetexInitImportCommand initCmd = new NetexInitImportCommand();
 		initCmd.execute(context);
 		
+		NetexInitReferentialCommand initRef = new NetexInitReferentialCommand();
+		initRef.setFileURL(url);
+		initRef.execute(context);
+		
+		
 		NetexLineParserCommand cmd = new NetexLineParserCommand();
 		
-		Path filePath = Paths.get("src/test/data/WF739.xml");
-		String url = filePath.toUri().toURL().toExternalForm();
-		Assert.assertTrue(Files.exists(filePath));
 		cmd.setFileURL(url);
 		File file = new File(new URL(url).toURI());
 		context.put(Constant.FILE_NAME, file.getName());

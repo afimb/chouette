@@ -11,8 +11,8 @@
                     <XmlnsUrl>http://avinor.no/</XmlnsUrl>
                 </Codespace>
                 <Codespace id="nhr">
-                    <Xmlns>NHR</Xmlns>
-                    <XmlnsUrl>http://www.rutebanken.no/nasjonltholdeplassregister</XmlnsUrl>
+                    <Xmlns>NSR</Xmlns>
+                    <XmlnsUrl>http://www.rutebanken.no/nasjonaltstoppestedregister</XmlnsUrl>
                 </Codespace>
             </codespaces>
             <frames>

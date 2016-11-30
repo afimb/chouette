@@ -86,7 +86,7 @@ public class VehicleJourneyParser extends AbstractParser {
             JourneyPatternRefStructure journeyPatternRefStruct = netexServiceJourney.getJourneyPatternRef().getValue();
             String netexJourneyPatternIdRef = journeyPatternRefStruct.getRef();
 
-            org.rutebanken.netex.model.JourneyPattern netexJourneyPattern = NetexObjectUtil.getJourneyPattern(netexReferential, netexJourneyPatternIdRef);
+            org.rutebanken.netex.model.JourneyPattern_VersionStructure netexJourneyPattern = NetexObjectUtil.getJourneyPattern(netexReferential, netexJourneyPatternIdRef);
 
             Context journeyPatternObjectContext = (Context) journeyPatternContext.get(netexJourneyPatternIdRef);
             String chouetteJourneyPatternId = (String) journeyPatternObjectContext.get(JourneyPatternParser.JOURNEY_PATTERN_ID);

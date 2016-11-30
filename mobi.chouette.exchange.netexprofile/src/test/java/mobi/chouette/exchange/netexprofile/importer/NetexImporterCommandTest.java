@@ -11,6 +11,7 @@ import mobi.chouette.exchange.netexprofile.DummyChecker;
 import mobi.chouette.exchange.netexprofile.JobDataTest;
 import mobi.chouette.exchange.netexprofile.NetexTestUtils;
 import mobi.chouette.exchange.report.*;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
@@ -68,22 +69,16 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	@Inject
 	UserTransaction utx;
 
-	//@Deployment
+	// @Deployment
 	public static WebArchive createDeploymentOld() {
 
 		WebArchive result;
 
-		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.exchange.netexprofile:3.4.0-SNAPSHOT", "mobi.chouette:mobi.chouette.dao:3.4.0-SNAPSHOT","mobi.chouette:mobi.chouette.exchange:3.4.0-SNAPSHOT")
-				.withTransitivity().asFile();
+		File[] files = Maven.resolver().loadPomFromFile("pom.xml").resolve("mobi.chouette:mobi.chouette.exchange.netexprofile:3.4.0-SNAPSHOT",
+				"mobi.chouette:mobi.chouette.dao:3.4.0-SNAPSHOT", "mobi.chouette:mobi.chouette.exchange:3.4.0-SNAPSHOT").withTransitivity().asFile();
 
-		result = ShrinkWrap.create(WebArchive.class, "test.war")
-				.addAsWebInfResource("postgres-ds.xml")
-			    .addAsLibraries(files)
-				.addClass(DummyChecker.class)
-				.addClass(NetexTestUtils.class)
-				.addClass(JobDataTest.class)
-				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
+		result = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml").addAsLibraries(files).addClass(DummyChecker.class)
+				.addClass(NetexTestUtils.class).addClass(JobDataTest.class).addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 		return result;
 
 	}
@@ -91,11 +86,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	@Deployment
 	public static EnterpriseArchive createDeployment() {
 		EnterpriseArchive result;
-		File[] files = Maven.resolver()
-				.loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.exchange.netexprofile")
-				.withTransitivity()
-				.asFile();
+		File[] files = Maven.resolver().loadPomFromFile("pom.xml").resolve("mobi.chouette:mobi.chouette.exchange.netexprofile").withTransitivity().asFile();
 
 		List<File> jars = new ArrayList<>();
 		List<JavaArchive> modules = new ArrayList<>();
@@ -103,21 +94,14 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		for (File file : files) {
 			if (file.getName().startsWith("mobi.chouette.exchange")) {
 				String name = file.getName().split("\\-")[0] + ".jar";
-				JavaArchive archive = ShrinkWrap
-						.create(ZipImporter.class, name)
-						.importFrom(file)
-						.as(JavaArchive.class);
+				JavaArchive archive = ShrinkWrap.create(ZipImporter.class, name).importFrom(file).as(JavaArchive.class);
 				modules.add(archive);
 			} else {
 				jars.add(file);
 			}
 		}
 
-		File[] filesDao = Maven.resolver()
-				.loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.dao")
-				.withTransitivity()
-				.asFile();
+		File[] filesDao = Maven.resolver().loadPomFromFile("pom.xml").resolve("mobi.chouette:mobi.chouette.dao").withTransitivity().asFile();
 
 		if (filesDao.length == 0) {
 			throw new NullPointerException("no dao");
@@ -126,10 +110,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		for (File file : filesDao) {
 			if (file.getName().startsWith("mobi.chouette.dao")) {
 				String name = file.getName().split("\\-")[0] + ".jar";
-				JavaArchive archive = ShrinkWrap
-						.create(ZipImporter.class, name)
-						.importFrom(file)
-						.as(JavaArchive.class);
+				JavaArchive archive = ShrinkWrap.create(ZipImporter.class, name).importFrom(file).as(JavaArchive.class);
 				modules.add(archive);
 
 				if (!modules.contains(archive))
@@ -140,18 +121,11 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 			}
 		}
 
-		final WebArchive testWar = ShrinkWrap.create(WebArchive.class, "test.war")
-				.addAsWebInfResource("postgres-ds.xml")
-				.addClass(NetexImporterCommandTest.class)
-				.addClass(NetexTestUtils.class)
-				.addClass(DummyChecker.class)
-				.addClass(JobDataTest.class);
+		final WebArchive testWar = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
+				.addClass(NetexImporterCommandTest.class).addClass(NetexTestUtils.class).addClass(DummyChecker.class).addClass(JobDataTest.class);
 
-		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-				.addAsLibraries(jars.toArray(new File[0]))
-				.addAsModules(modules.toArray(new JavaArchive[0]))
-				.addAsModule(testWar)
-				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
+		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear").addAsLibraries(jars.toArray(new File[0]))
+				.addAsModules(modules.toArray(new JavaArchive[0])).addAsModule(testWar).addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 		return result;
 	}
 
@@ -203,7 +177,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 	}
 
-	@Test(groups = {"ImportLine"}, description = "Import Plugin should import file")
+	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")
 	public void verifyImportLine() throws Exception {
 		Context context = initImportContext();
 		NetexTestUtils.copyFile("C_NETEX_1.xml");
@@ -224,11 +198,11 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 			throw ex;
 		}
 
-		//dumpReports(context);
+		// dumpReports(context);
 
 		ActionReport report = (ActionReport) context.get(REPORT);
 		Reporter.log("report :" + report.toString(), true);
-		log.debug("report output : " + report.toString());
+		dumpReports(context);
 
 		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
 		Assert.assertEquals(report.getFiles().size(), 1, "file reported");
@@ -348,7 +322,8 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	}
 
 	private void assertGlobalLines(ActionReport report, int lines) {
-		assertEquals(report.findObjectReport("global", ActionReporter.OBJECT_TYPE.LINE).getStats().get(ActionReporter.OBJECT_TYPE.LINE).intValue(), lines, "lines reported");
+		assertEquals(report.findObjectReport("global", ActionReporter.OBJECT_TYPE.LINE).getStats().get(ActionReporter.OBJECT_TYPE.LINE).intValue(), lines,
+				"lines reported");
 	}
 
 	private void assertLine(ActionReport report, ActionReporter.OBJECT_STATE state) {
@@ -361,9 +336,9 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	}
 
 	private void assertGlobalRoutes(ActionReport report, int routes) {
-		assertEquals(report.findObjectReport("global", ActionReporter.OBJECT_TYPE.ROUTE).getStats().get(ActionReporter.OBJECT_TYPE.ROUTE).intValue(), routes, "routes reported");
+		assertEquals(report.findObjectReport("global", ActionReporter.OBJECT_TYPE.ROUTE).getStats().get(ActionReporter.OBJECT_TYPE.ROUTE).intValue(), routes,
+				"routes reported");
 	}
-
 
 	private void assertFiles(ActionReport report, int files) {
 		assertEquals(report.getFiles().size(), files, "files reported");
@@ -393,7 +368,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	}
 
 	private void assertWarningOrOk(ValidationReporter.VALIDATION_RESULT result) {
-		if (result.equals(ValidationReporter.VALIDATION_RESULT.ERROR) || result.equals(ValidationReporter.VALIDATION_RESULT.NO_PROCESSING)){
+		if (result.equals(ValidationReporter.VALIDATION_RESULT.ERROR) || result.equals(ValidationReporter.VALIDATION_RESULT.NO_PROCESSING)) {
 			throw new AssertionError("Validation failed. Got " + result);
 		}
 	}
@@ -418,12 +393,16 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 				logOk(System.out, toString);
 			}
 		}
-		for (ObjectReport object : actionReport.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
-			String toString = ToStringBuilder.reflectionToString(object, ToStringStyle.SHORT_PREFIX_STYLE, true);
-			if (object.getStatus() == ActionReporter.OBJECT_STATE.ERROR) {
-				logError(toString);
-			} else {
-				logOk(System.out, toString);
+		Collection<ObjectCollectionReport> collections = actionReport.getCollections().values();
+
+		for (ObjectCollectionReport report : collections) {
+			for (ObjectReport object : report.getObjectReports()) {
+				String toString = ToStringBuilder.reflectionToString(object, ToStringStyle.SHORT_PREFIX_STYLE, true);
+				if (object.getStatus() == ActionReporter.OBJECT_STATE.ERROR) {
+					logError(toString);
+				} else {
+					logOk(System.out, toString);
+				}
 			}
 		}
 

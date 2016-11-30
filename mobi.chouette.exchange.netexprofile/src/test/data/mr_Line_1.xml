@@ -1,0 +1,2159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PublicationDelivery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="1.0" xmlns="http://www.netex.org.uk/netex">
+  <PublicationTimestamp>2016-11-15T16:08:44+01:00</PublicationTimestamp>
+  <ParticipantRef>MR:avlsIntegrator</ParticipantRef>
+  <dataObjects>
+    <CompositeFrame version="20161115160844" id="MR:CompositeFrame:MR_line_1">
+      <validityConditions>
+        <ValidBetween>
+          <FromDate>2016-11-16T00:00:00</FromDate>
+          <ToDate>2016-11-30T00:00:00</ToDate>
+        </ValidBetween>
+      </validityConditions>
+      <codespaces>
+        <Codespace id="MR">
+          <Xmlns>MR</Xmlns>
+          <XmlnsUrl>http://www.mrfylke.no/PTdata/XmlnsUrl</XmlnsUrl>
+          <Description>Public Transport Reference Data for Møre og Romsdal fylke, Norway</Description>
+        </Codespace>
+        <Codespace id="NSR">
+          <Xmlns>NSR</Xmlns>
+          <XmlnsUrl>http://www.rutebanken.no/nasjonaltstoppestedregister</XmlnsUrl>
+          <Description>Rutebanken - Nasjonalt stoppestedregister</Description>
+        </Codespace>
+      </codespaces>
+      <frames>
+        <ResourceFrame version="20161115160844" id="MR:ResourceFrame:251">
+          <organisations>
+            <Operator version="any" id="MR:Operator:251">
+              <Name>Norled ferje</Name>
+            </Operator>
+          </organisations>
+        </ResourceFrame>
+        <ServiceFrame version="20161115160844" id="MR:ServiceFrame:MR_line_1">
+          <validityConditions>
+            <ValidBetween>
+              <FromDate>2016-11-16T00:00:00</FromDate>
+              <ToDate>2016-11-30T00:00:00</ToDate>
+            </ValidBetween>
+          </validityConditions>
+          <lines>
+            <Line id="MR:Line:1" version="any">
+              <Name>Larsnes-Åram-Voksa-Kvamsøya</Name>
+              <PublicCode>15-01</PublicCode>
+            </Line>
+          </lines>
+          <destinationDisplays>
+            <DestinationDisplay version="any" id="MR:DestinationDisplay:1150000010640687">
+              <Name>Voksa Åram Larsnes</Name>
+            </DestinationDisplay>
+            <DestinationDisplay version="any" id="MR:DestinationDisplay:1150000010640745">
+              <Name>Larsnes</Name>
+            </DestinationDisplay>
+            <DestinationDisplay version="any" id="MR:DestinationDisplay:1150000010640715">
+              <Name>Åram Voksa Kvamsøya</Name>
+            </DestinationDisplay>
+            <DestinationDisplay version="any" id="MR:DestinationDisplay:1150000010640741">
+              <Name>Åram Larsnes</Name>
+            </DestinationDisplay>
+            <DestinationDisplay version="any" id="MR:DestinationDisplay:1150000010640719">
+              <Name>Voksa Kvamsøya</Name>
+            </DestinationDisplay>
+            <DestinationDisplay version="any" id="MR:DestinationDisplay:1150000010640723">
+              <Name>Kvamsøya</Name>
+            </DestinationDisplay>
+            <DestinationDisplay version="any" id="MR:DestinationDisplay:1150000010640737">
+              <Name>Åram Larsnes Voksa</Name>
+            </DestinationDisplay>
+          </destinationDisplays>
+          <timingPoints>
+            <TimingPoint version="any" id="MR:TimingPoint:15148003">
+              <projections>
+                <PointProjection version="any" id="MR:TimingPointProjection:15148003">
+                  <ProjectToPointRef ref="MR:ScheduledStopPoint:15148003" />
+                </PointProjection>
+              </projections>
+            </TimingPoint>
+            <TimingPoint version="any" id="MR:TimingPoint:15148002">
+              <projections>
+                <PointProjection version="any" id="MR:TimingPointProjection:15148002">
+                  <ProjectToPointRef ref="MR:ScheduledStopPoint:15148002" />
+                </PointProjection>
+              </projections>
+            </TimingPoint>
+            <TimingPoint version="any" id="MR:TimingPoint:15118000">
+              <projections>
+                <PointProjection version="any" id="MR:TimingPointProjection:15118000">
+                  <ProjectToPointRef ref="MR:ScheduledStopPoint:15118000" />
+                </PointProjection>
+              </projections>
+            </TimingPoint>
+            <TimingPoint version="any" id="MR:TimingPoint:15148000">
+              <projections>
+                <PointProjection version="any" id="MR:TimingPointProjection:15148000">
+                  <ProjectToPointRef ref="MR:ScheduledStopPoint:15148000" />
+                </PointProjection>
+              </projections>
+            </TimingPoint>
+          </timingPoints>
+          <journeyPatterns>
+            <ServiceJourneyPattern id="MR:ServiceJourneyPattern:1150000010640671" version="any">
+              <DirectionType>outbound</DirectionType>
+              <pointsInSequence>
+                <StopPointInJourneyPattern id="MR:StopPointInJourneyPattern:1150000010640671:1" version="any" order="1">
+                  <projections>
+                    <PointProjection version="any" id="MR:StopPointInJourneyPatternProjection:1150000010640671:1">
+                      <ProjectToPointRef ref="MR:TimingPoint:15148003" />
+                    </PointProjection>
+                  </projections>
+                  <ScheduledStopPointRef ref="MR:ScheduledStopPoint:15148003" />
+                  <ForAlighting>false</ForAlighting>
+                  <DestinationDisplayRef ref="MR:DestinationDisplay:1150000010640687" />
+                </StopPointInJourneyPattern>
+                <StopPointInJourneyPattern id="MR:StopPointInJourneyPattern:1150000010640671:2" version="any" order="2">
+                  <projections>
+                    <PointProjection version="any" id="MR:StopPointInJourneyPatternProjection:1150000010640671:2">
+                      <ProjectToPointRef ref="MR:TimingPoint:15148002" />
+                    </PointProjection>
+                  </projections>
+                  <ScheduledStopPointRef ref="MR:ScheduledStopPoint:15148002" />
+                  <DestinationDisplayRef ref="MR:DestinationDisplay:1150000010640687" />
+                </StopPointInJourneyPattern>
+                <StopPointInJourneyPattern id="MR:StopPointInJourneyPattern:1150000010640671:3" version="any" order="3">
+                  <projections>
+                    <PointProjection version="any" id="MR:StopPointInJourneyPatternProjection:1150000010640671:3">
+                      <ProjectToPointRef ref="MR:TimingPoint:15118000" />
+                    </PointProjection>
+                  </projections>
+                  <ScheduledStopPointRef ref="MR:ScheduledStopPoint:15118000" />
+                  <DestinationDisplayRef ref="MR:DestinationDisplay:1150000010640741" />
+                </StopPointInJourneyPattern>
+                <StopPointInJourneyPattern id="MR:StopPointInJourneyPattern:1150000010640671:4" version="any" order="4">
+                  <projections>
+                    <PointProjection version="any" id="MR:StopPointInJourneyPatternProjection:1150000010640671:4">
+                      <ProjectToPointRef ref="MR:TimingPoint:15148000" />
+                    </PointProjection>
+                  </projections>
+                  <ScheduledStopPointRef ref="MR:ScheduledStopPoint:15148000" />
+                  <ForBoarding>false</ForBoarding>
+                  <DestinationDisplayRef ref="MR:DestinationDisplay:1150000010640745" />
+                </StopPointInJourneyPattern>
+              </pointsInSequence>
+            </ServiceJourneyPattern>
+            <ServiceJourneyPattern id="MR:ServiceJourneyPattern:1150000010640699" version="any">
+              <DirectionType>inbound</DirectionType>
+              <pointsInSequence>
+                <StopPointInJourneyPattern id="MR:StopPointInJourneyPattern:1150000010640699:1" version="any" order="1">
+                  <projections>
+                    <PointProjection version="any" id="MR:StopPointInJourneyPatternProjection:1150000010640699:1">
+                      <ProjectToPointRef ref="MR:TimingPoint:15148000" />
+                    </PointProjection>
+                  </projections>
+                  <ScheduledStopPointRef ref="MR:ScheduledStopPoint:15148000" />
+                  <ForAlighting>false</ForAlighting>
+                  <DestinationDisplayRef ref="MR:DestinationDisplay:1150000010640715" />
+                </StopPointInJourneyPattern>
+                <StopPointInJourneyPattern id="MR:StopPointInJourneyPattern:1150000010640699:2" version="any" order="2">
+                  <projections>
+                    <PointProjection version="any" id="MR:StopPointInJourneyPatternProjection:1150000010640699:2">
+                      <ProjectToPointRef ref="MR:TimingPoint:15118000" />
+                    </PointProjection>
+                  </projections>
+                  <ScheduledStopPointRef ref="MR:ScheduledStopPoint:15118000" />
+                  <DestinationDisplayRef ref="MR:DestinationDisplay:1150000010640715" />
+                </StopPointInJourneyPattern>
+                <StopPointInJourneyPattern id="MR:StopPointInJourneyPattern:1150000010640699:3" version="any" order="3">
+                  <projections>
+                    <PointProjection version="any" id="MR:StopPointInJourneyPatternProjection:1150000010640699:3">
+                      <ProjectToPointRef ref="MR:TimingPoint:15148002" />
+                    </PointProjection>
+                  </projections>
+                  <ScheduledStopPointRef ref="MR:ScheduledStopPoint:15148002" />
+                  <DestinationDisplayRef ref="MR:DestinationDisplay:1150000010640719" />
+                </StopPointInJourneyPattern>
+                <StopPointInJourneyPattern id="MR:StopPointInJourneyPattern:1150000010640699:4" version="any" order="4">
+                  <projections>
+                    <PointProjection version="any" id="MR:StopPointInJourneyPatternProjection:1150000010640699:4">
+                      <ProjectToPointRef ref="MR:TimingPoint:15148003" />
+                    </PointProjection>
+                  </projections>
+                  <ScheduledStopPointRef ref="MR:ScheduledStopPoint:15148003" />
+                  <ForBoarding>false</ForBoarding>
+                  <DestinationDisplayRef ref="MR:DestinationDisplay:1150000010640723" />
+                </StopPointInJourneyPattern>
+              </pointsInSequence>
+            </ServiceJourneyPattern>
+          </journeyPatterns>
+        </ServiceFrame>
+        <ServiceCalendarFrame version="20161115160844" id="MR:ServiceCalendarFrame:251">
+          <validityConditions>
+            <ValidBetween>
+              <FromDate>2016-11-16T00:00:00</FromDate>
+              <ToDate>2016-11-30T00:00:00</ToDate>
+            </ValidBetween>
+          </validityConditions>
+          <ServiceCalendar version="any" id="MR:ServiceCalendar:251">
+            <dayTypes>
+              <DayType version="any" id="MR:DayType:251:Fr_1" />
+              <DayType version="any" id="MR:DayType:251:Mo_1" />
+              <DayType version="any" id="MR:DayType:251:Sa_1" />
+              <DayType version="any" id="MR:DayType:251:Su_1" />
+              <DayType version="any" id="MR:DayType:251:Th_1" />
+              <DayType version="any" id="MR:DayType:251:Tu_1" />
+              <DayType version="any" id="MR:DayType:251:We_1" />
+            </dayTypes>
+            <dayTypeAssignments>
+              <DayTypeAssignment id="MR:DayType:251:We_1:20161116" version="any" order="1">
+                <Date>2016-11-16</Date>
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+              </DayTypeAssignment>
+              <DayTypeAssignment id="MR:DayType:251:Th_1:20161117" version="any" order="2">
+                <Date>2016-11-17</Date>
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+              </DayTypeAssignment>
+              <DayTypeAssignment id="MR:DayType:251:Fr_1:20161118" version="any" order="3">
+                <Date>2016-11-18</Date>
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </DayTypeAssignment>
+              <DayTypeAssignment id="MR:DayType:251:Sa_1:20161119" version="any" order="4">
+                <Date>2016-11-19</Date>
+                <DayTypeRef ref="MR:DayType:251:Sa_1" />
+              </DayTypeAssignment>
+              <DayTypeAssignment id="MR:DayType:251:Su_1:20161120" version="any" order="5">
+                <Date>2016-11-20</Date>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </DayTypeAssignment>
+              <DayTypeAssignment id="MR:DayType:251:Mo_1:20161121" version="any" order="6">
+                <Date>2016-11-21</Date>
+                <DayTypeRef ref="MR:DayType:251:Mo_1" />
+              </DayTypeAssignment>
+              <DayTypeAssignment id="MR:DayType:251:Tu_1:20161122" version="any" order="7">
+                <Date>2016-11-22</Date>
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+              </DayTypeAssignment>
+              <DayTypeAssignment id="MR:DayType:251:We_1:20161123" version="any" order="8">
+                <Date>2016-11-23</Date>
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+              </DayTypeAssignment>
+              <DayTypeAssignment id="MR:DayType:251:Th_1:20161124" version="any" order="9">
+                <Date>2016-11-24</Date>
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+              </DayTypeAssignment>
+              <DayTypeAssignment id="MR:DayType:251:Fr_1:20161125" version="any" order="10">
+                <Date>2016-11-25</Date>
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </DayTypeAssignment>
+              <DayTypeAssignment id="MR:DayType:251:Sa_1:20161126" version="any" order="11">
+                <Date>2016-11-26</Date>
+                <DayTypeRef ref="MR:DayType:251:Sa_1" />
+              </DayTypeAssignment>
+              <DayTypeAssignment id="MR:DayType:251:Su_1:20161127" version="any" order="12">
+                <Date>2016-11-27</Date>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </DayTypeAssignment>
+              <DayTypeAssignment id="MR:DayType:251:Mo_1:20161128" version="any" order="13">
+                <Date>2016-11-28</Date>
+                <DayTypeRef ref="MR:DayType:251:Mo_1" />
+              </DayTypeAssignment>
+              <DayTypeAssignment id="MR:DayType:251:Tu_1:20161129" version="any" order="14">
+                <Date>2016-11-29</Date>
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+              </DayTypeAssignment>
+              <DayTypeAssignment id="MR:DayType:251:We_1:20161130" version="any" order="15">
+                <Date>2016-11-30</Date>
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+              </DayTypeAssignment>
+            </dayTypeAssignments>
+          </ServiceCalendar>
+        </ServiceCalendarFrame>
+        <TimetableFrame version="20161115160844" id="MR:TimetableFrame:MR_line_1">
+          <validityConditions>
+            <ValidBetween>
+              <FromDate>2016-11-16T00:00:00</FromDate>
+              <ToDate>2016-11-30T00:00:00</ToDate>
+            </ValidBetween>
+          </validityConditions>
+          <ServiceCalendarFrameRef ref="MR:ServiceCalendarFrame:251" version="20161115160844" />
+          <vehicleJourneys>
+            <ServiceJourney version="1150000010640760" id="MR:ServiceJourney:1:101">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>06:25:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Mo_1" />
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>06:25:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>06:40:00</ArrivalTime>
+                  <DepartureTime>06:40:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>06:55:00</ArrivalTime>
+                  <DepartureTime>06:55:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>07:15:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640790" id="MR:ServiceJourney:1:102">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>07:40:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Mo_1" />
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>07:40:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>07:55:00</ArrivalTime>
+                  <DepartureTime>07:55:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>08:10:00</ArrivalTime>
+                  <DepartureTime>08:10:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>08:25:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640820" id="MR:ServiceJourney:1:103">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>08:30:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Mo_1" />
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>08:30:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>08:45:00</ArrivalTime>
+                  <DepartureTime>08:45:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>09:00:00</ArrivalTime>
+                  <DepartureTime>09:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>09:20:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640850" id="MR:ServiceJourney:1:104">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>09:45:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Mo_1" />
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>09:45:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>10:00:00</ArrivalTime>
+                  <DepartureTime>10:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>10:15:00</ArrivalTime>
+                  <DepartureTime>10:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>10:30:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640880" id="MR:ServiceJourney:1:105">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>10:35:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Mo_1" />
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>10:35:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>10:50:00</ArrivalTime>
+                  <DepartureTime>10:50:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>11:05:00</ArrivalTime>
+                  <DepartureTime>11:05:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>11:25:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640910" id="MR:ServiceJourney:1:106">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>11:45:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Mo_1" />
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>11:45:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>12:00:00</ArrivalTime>
+                  <DepartureTime>12:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>12:15:00</ArrivalTime>
+                  <DepartureTime>12:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>12:30:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640940" id="MR:ServiceJourney:1:107">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>12:45:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Mo_1" />
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>12:45:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>13:00:00</ArrivalTime>
+                  <DepartureTime>13:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>13:15:00</ArrivalTime>
+                  <DepartureTime>13:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>13:35:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640970" id="MR:ServiceJourney:1:109">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>15:00:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Mo_1" />
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>15:00:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>15:15:00</ArrivalTime>
+                  <DepartureTime>15:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>15:30:00</ArrivalTime>
+                  <DepartureTime>15:30:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>15:50:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641000" id="MR:ServiceJourney:1:110">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>13:45:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Mo_1" />
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>13:45:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>14:00:00</ArrivalTime>
+                  <DepartureTime>14:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>14:15:00</ArrivalTime>
+                  <DepartureTime>14:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>14:30:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641030" id="MR:ServiceJourney:1:111">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>16:45:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Mo_1" />
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>16:45:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>17:00:00</ArrivalTime>
+                  <DepartureTime>17:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>17:15:00</ArrivalTime>
+                  <DepartureTime>17:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>17:35:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641060" id="MR:ServiceJourney:1:112">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>16:00:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Mo_1" />
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>16:00:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>16:15:00</ArrivalTime>
+                  <DepartureTime>16:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>16:30:00</ArrivalTime>
+                  <DepartureTime>16:30:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>16:45:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641090" id="MR:ServiceJourney:1:113">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>18:45:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Mo_1" />
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>18:45:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>19:00:00</ArrivalTime>
+                  <DepartureTime>19:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>19:15:00</ArrivalTime>
+                  <DepartureTime>19:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>19:35:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641120" id="MR:ServiceJourney:1:114">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>18:00:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Mo_1" />
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>18:00:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>18:15:00</ArrivalTime>
+                  <DepartureTime>18:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>18:30:00</ArrivalTime>
+                  <DepartureTime>18:30:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>18:45:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641150" id="MR:ServiceJourney:1:115">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>20:30:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Mo_1" />
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>20:30:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>20:45:00</ArrivalTime>
+                  <DepartureTime>20:45:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>21:00:00</ArrivalTime>
+                  <DepartureTime>21:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>21:15:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641180" id="MR:ServiceJourney:1:116">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>19:45:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Mo_1" />
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>19:45:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>20:00:00</ArrivalTime>
+                  <DepartureTime>20:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>20:15:00</ArrivalTime>
+                  <DepartureTime>20:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>20:30:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641210" id="MR:ServiceJourney:1:117">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>22:00:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Mo_1" />
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>22:00:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>22:15:00</ArrivalTime>
+                  <DepartureTime>22:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>22:25:00</ArrivalTime>
+                  <DepartureTime>22:25:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>22:45:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641240" id="MR:ServiceJourney:1:118">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>21:15:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Mo_1" />
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>21:15:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>21:30:00</ArrivalTime>
+                  <DepartureTime>21:30:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>21:40:00</ArrivalTime>
+                  <DepartureTime>21:40:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>22:00:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641270" id="MR:ServiceJourney:1:119">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>00:30:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>00:30:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>00:45:00</ArrivalTime>
+                  <DepartureTime>00:45:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>00:55:00</ArrivalTime>
+                  <DepartureTime>00:55:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>01:15:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641300" id="MR:ServiceJourney:1:120">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>22:45:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Mo_1" />
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>22:45:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>23:00:00</ArrivalTime>
+                  <DepartureTime>23:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>23:10:00</ArrivalTime>
+                  <DepartureTime>23:10:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>23:25:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641330" id="MR:ServiceJourney:1:122">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>01:15:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Tu_1" />
+                <DayTypeRef ref="MR:DayType:251:We_1" />
+                <DayTypeRef ref="MR:DayType:251:Th_1" />
+                <DayTypeRef ref="MR:DayType:251:Fr_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>01:15:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>01:30:00</ArrivalTime>
+                  <DepartureTime>01:30:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>01:40:00</ArrivalTime>
+                  <DepartureTime>01:40:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>01:55:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640760" id="MR:ServiceJourney:1:601">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>06:25:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Sa_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>06:25:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>06:40:00</ArrivalTime>
+                  <DepartureTime>06:40:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>06:55:00</ArrivalTime>
+                  <DepartureTime>06:55:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>07:15:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640790" id="MR:ServiceJourney:1:602">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>07:40:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Sa_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>07:40:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>07:55:00</ArrivalTime>
+                  <DepartureTime>07:55:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>08:10:00</ArrivalTime>
+                  <DepartureTime>08:10:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>08:25:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640820" id="MR:ServiceJourney:1:603">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>08:30:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Sa_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>08:30:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>08:45:00</ArrivalTime>
+                  <DepartureTime>08:45:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>09:00:00</ArrivalTime>
+                  <DepartureTime>09:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>09:20:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640850" id="MR:ServiceJourney:1:604">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>09:45:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Sa_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>09:45:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>10:00:00</ArrivalTime>
+                  <DepartureTime>10:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>10:15:00</ArrivalTime>
+                  <DepartureTime>10:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>10:30:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640880" id="MR:ServiceJourney:1:605">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>10:35:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Sa_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>10:35:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>10:50:00</ArrivalTime>
+                  <DepartureTime>10:50:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>11:05:00</ArrivalTime>
+                  <DepartureTime>11:05:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>11:25:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640910" id="MR:ServiceJourney:1:606">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>11:45:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Sa_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>11:45:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>12:00:00</ArrivalTime>
+                  <DepartureTime>12:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>12:15:00</ArrivalTime>
+                  <DepartureTime>12:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>12:30:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640940" id="MR:ServiceJourney:1:607">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>12:45:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Sa_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>12:45:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>13:00:00</ArrivalTime>
+                  <DepartureTime>13:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>13:15:00</ArrivalTime>
+                  <DepartureTime>13:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>13:35:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641507" id="MR:ServiceJourney:1:608">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>15:15:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Sa_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>15:15:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>15:30:00</ArrivalTime>
+                  <DepartureTime>15:30:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>15:45:00</ArrivalTime>
+                  <DepartureTime>15:45:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>16:00:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641538" id="MR:ServiceJourney:1:609">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>16:00:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Sa_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>16:00:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>16:15:00</ArrivalTime>
+                  <DepartureTime>16:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>16:30:00</ArrivalTime>
+                  <DepartureTime>16:30:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>16:50:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641569" id="MR:ServiceJourney:1:610">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>17:00:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Sa_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>17:00:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>17:15:00</ArrivalTime>
+                  <DepartureTime>17:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>17:30:00</ArrivalTime>
+                  <DepartureTime>17:30:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>17:45:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641090" id="MR:ServiceJourney:1:611">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>18:45:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Sa_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>18:45:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>19:00:00</ArrivalTime>
+                  <DepartureTime>19:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>19:15:00</ArrivalTime>
+                  <DepartureTime>19:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>19:35:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641180" id="MR:ServiceJourney:1:612">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>19:45:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Sa_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>19:45:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>20:00:00</ArrivalTime>
+                  <DepartureTime>20:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>20:15:00</ArrivalTime>
+                  <DepartureTime>20:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>20:30:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641150" id="MR:ServiceJourney:1:613">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>20:30:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Sa_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>20:30:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>20:45:00</ArrivalTime>
+                  <DepartureTime>20:45:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>21:00:00</ArrivalTime>
+                  <DepartureTime>21:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>21:15:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641240" id="MR:ServiceJourney:1:614">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>21:15:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Sa_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>21:15:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>21:30:00</ArrivalTime>
+                  <DepartureTime>21:30:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>21:40:00</ArrivalTime>
+                  <DepartureTime>21:40:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>22:00:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641210" id="MR:ServiceJourney:1:615">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>22:00:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Sa_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>22:00:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>22:15:00</ArrivalTime>
+                  <DepartureTime>22:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>22:25:00</ArrivalTime>
+                  <DepartureTime>22:25:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>22:45:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641300" id="MR:ServiceJourney:1:616">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>22:45:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Sa_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>22:45:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>23:00:00</ArrivalTime>
+                  <DepartureTime>23:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>23:10:00</ArrivalTime>
+                  <DepartureTime>23:10:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>23:25:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641330" id="MR:ServiceJourney:1:618">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>01:15:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Sa_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>01:15:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>01:30:00</ArrivalTime>
+                  <DepartureTime>01:30:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>01:40:00</ArrivalTime>
+                  <DepartureTime>01:40:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>01:55:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641270" id="MR:ServiceJourney:1:619">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>00:30:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Sa_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>00:30:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>00:45:00</ArrivalTime>
+                  <DepartureTime>00:45:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>00:55:00</ArrivalTime>
+                  <DepartureTime>00:55:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>01:15:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640760" id="MR:ServiceJourney:1:701">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>06:25:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>06:25:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>06:40:00</ArrivalTime>
+                  <DepartureTime>06:40:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>06:55:00</ArrivalTime>
+                  <DepartureTime>06:55:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>07:15:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640790" id="MR:ServiceJourney:1:702">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>07:40:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>07:40:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>07:55:00</ArrivalTime>
+                  <DepartureTime>07:55:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>08:10:00</ArrivalTime>
+                  <DepartureTime>08:10:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>08:25:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640820" id="MR:ServiceJourney:1:703">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>08:30:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>08:30:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>08:45:00</ArrivalTime>
+                  <DepartureTime>08:45:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>09:00:00</ArrivalTime>
+                  <DepartureTime>09:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>09:20:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640850" id="MR:ServiceJourney:1:706">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>09:45:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>09:45:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>10:00:00</ArrivalTime>
+                  <DepartureTime>10:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>10:15:00</ArrivalTime>
+                  <DepartureTime>10:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>10:30:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640880" id="MR:ServiceJourney:1:707">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>10:35:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>10:35:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>10:50:00</ArrivalTime>
+                  <DepartureTime>10:50:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>11:05:00</ArrivalTime>
+                  <DepartureTime>11:05:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>11:25:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640910" id="MR:ServiceJourney:1:710">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>11:45:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>11:45:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>12:00:00</ArrivalTime>
+                  <DepartureTime>12:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>12:15:00</ArrivalTime>
+                  <DepartureTime>12:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>12:30:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010640940" id="MR:ServiceJourney:1:713">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>12:45:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>12:45:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>13:00:00</ArrivalTime>
+                  <DepartureTime>13:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>13:15:00</ArrivalTime>
+                  <DepartureTime>13:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>13:35:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641919" id="MR:ServiceJourney:1:714">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>13:35:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>13:35:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>13:50:00</ArrivalTime>
+                  <DepartureTime>13:50:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>14:05:00</ArrivalTime>
+                  <DepartureTime>14:05:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>14:20:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641507" id="MR:ServiceJourney:1:716">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>15:15:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>15:15:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>15:30:00</ArrivalTime>
+                  <DepartureTime>15:30:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>15:45:00</ArrivalTime>
+                  <DepartureTime>15:45:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>16:00:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641973" id="MR:ServiceJourney:1:717">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>14:25:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>14:25:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>14:40:00</ArrivalTime>
+                  <DepartureTime>14:40:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>14:55:00</ArrivalTime>
+                  <DepartureTime>14:55:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>15:15:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641569" id="MR:ServiceJourney:1:718">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>17:00:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>17:00:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>17:15:00</ArrivalTime>
+                  <DepartureTime>17:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>17:30:00</ArrivalTime>
+                  <DepartureTime>17:30:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>17:45:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641538" id="MR:ServiceJourney:1:719">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>16:00:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>16:00:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>16:15:00</ArrivalTime>
+                  <DepartureTime>16:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>16:30:00</ArrivalTime>
+                  <DepartureTime>16:30:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>16:50:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010642049" id="MR:ServiceJourney:1:722">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>19:00:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>19:00:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>19:15:00</ArrivalTime>
+                  <DepartureTime>19:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>19:30:00</ArrivalTime>
+                  <DepartureTime>19:30:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>19:45:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010642081" id="MR:ServiceJourney:1:723">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>18:00:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>18:00:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>18:15:00</ArrivalTime>
+                  <DepartureTime>18:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>18:30:00</ArrivalTime>
+                  <DepartureTime>18:30:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>18:50:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010642113" id="MR:ServiceJourney:1:725">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>19:45:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>19:45:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>20:00:00</ArrivalTime>
+                  <DepartureTime>20:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>20:15:00</ArrivalTime>
+                  <DepartureTime>20:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>20:35:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010642144" id="MR:ServiceJourney:1:726">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>21:15:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>21:15:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>21:30:00</ArrivalTime>
+                  <DepartureTime>21:30:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>21:45:00</ArrivalTime>
+                  <DepartureTime>21:45:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>22:00:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641300" id="MR:ServiceJourney:1:728">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>22:45:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>22:45:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>23:00:00</ArrivalTime>
+                  <DepartureTime>23:00:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>23:10:00</ArrivalTime>
+                  <DepartureTime>23:10:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>23:25:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641210" id="MR:ServiceJourney:1:729">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>22:00:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>22:00:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>22:15:00</ArrivalTime>
+                  <DepartureTime>22:15:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>22:25:00</ArrivalTime>
+                  <DepartureTime>22:25:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>22:45:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641330" id="MR:ServiceJourney:1:730">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>01:15:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640699" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>inbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:1" />
+                  <ArrivalTime>01:15:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:2" />
+                  <ArrivalTime>01:30:00</ArrivalTime>
+                  <DepartureTime>01:30:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:3" />
+                  <ArrivalTime>01:40:00</ArrivalTime>
+                  <DepartureTime>01:40:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640699:4" />
+                  <DepartureTime>01:55:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+            <ServiceJourney version="1150000010641270" id="MR:ServiceJourney:1:731">
+              <TransportMode>water</TransportMode>
+              <DepartureTime>00:30:00</DepartureTime>
+              <dayTypes>
+                <DayTypeRef ref="MR:DayType:251:Su_1" />
+              </dayTypes>
+              <ServiceJourneyPatternRef ref="MR:ServiceJourneyPattern:1150000010640671" />
+              <OperatorRef ref="MR:Operator:251" />
+              <LineRef ref="MR:Line:1" />
+              <DirectionType>outbound</DirectionType>
+              <passingTimes>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:1" />
+                  <ArrivalTime>00:30:00</ArrivalTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:2" />
+                  <ArrivalTime>00:45:00</ArrivalTime>
+                  <DepartureTime>00:45:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:3" />
+                  <ArrivalTime>00:55:00</ArrivalTime>
+                  <DepartureTime>00:55:00</DepartureTime>
+                </TimetabledPassingTime>
+                <TimetabledPassingTime>
+                  <StopPointInJourneyPatternRef ref="MR:StopPointInJourneyPattern:1150000010640671:4" />
+                  <DepartureTime>01:15:00</DepartureTime>
+                </TimetabledPassingTime>
+              </passingTimes>
+            </ServiceJourney>
+          </vehicleJourneys>
+        </TimetableFrame>
+      </frames>
+    </CompositeFrame>
+  </dataObjects>
+</PublicationDelivery>
