@@ -1,26 +1,57 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.xml.bind.JAXBElement;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.rutebanken.netex.model.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
+import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
-import mobi.chouette.exchange.netexprofile.importer.validation.NetexNamespaceContext;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidatorFactory;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
-import org.rutebanken.netex.model.*;
-import org.w3c.dom.Document;
-
-import javax.xml.bind.JAXBElement;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathFactory;
-import java.util.Collection;
-import java.util.List;
 
 @Log4j
 public class NorwayLineNetexProfileValidator extends AbstractValidator implements NetexProfileValidator {
+
+	private static final String NSR_URL = "http://www.nasjonaltstoppestedregister.rutebanken.no";
+	private static final String NSR_CODESPACE_PREFIX = "NSR";
+
+	private static final String _1_NETEX_TIMETABLE_FRAME = "1-NETEX-TimetableFrame";
+	private static final String _1_NETEX_SERVICE_CALENDAR_FRAME = "1-NETEX-ServiceCalendarFrame";
+	private static final String _1_NETEX_SERVICE_FRAME = "1-NETEX-ServiceFrame";
+	private static final String _1_NETEX_RESOURCE_FRAME = "1-NETEX-ResourceFrame";
+	private static final String _1_NETEX_CODESPACE = "1-NETEX-CompositeFrame_Codespace";
+	private static final String _1_NETEX_COMPOSITE_FRAME = "1-NETEX-CompositeFrame";
+	private static final String _1_NETEX_SITE_FRAME = "1-NETEX-SiteFrame";
+	private static final String _1_NETEX_SERVICE_FRAME_LINE = "1-NETEX-ServiceFrame_Line";
+
+	private static final String _1_NETEX_SERVICE_FRAME_TIMING_POINTS = "1-NETEX-ServiceFrame_TimingPoints";
+	private static final String _1_NETEX_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN = "1-NETEX-ServiceFrame_ServiceJourneyPattern";
+	private static final String _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN = "1-NETEX-ServiceFrame_JourneyPattern";
+	private static final String _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN_STOPPOINT_IN_JOURNEY_PATTERN = "1-NETEX-ServiceFrame_JourneyPattern_StopPointInJourneyPattern";
+	private static final String _1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE = "1-NETEX-ServiceFrame_Line_PublicCode";
+	private static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY = "1-NETEX-TimetableFrame_ServiceJourney";
+	private static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_TRANSPORT_MODE = "1-NETEX-TimetableFrame_ServiceJourney_TransportMode";
 
 	public static final String LOCAL_CONTEXT = "NetexPublicationDelivery";
 	public static final String NAME = "NorwayLineNetexProfileValidator";
@@ -31,50 +62,283 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 	private static final String FRAME_3 = "1-NETEX-Frame-3";
 	private static final String FRAME_4 = "1-NETEX-Frame-4";
 	private static final String FRAME_5 = "1-NETEX-Frame-5";
+	private static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIMES = "1-NETEX-TimetableFrame_ServiceJourney_TimetabledPassingTime";
+	private static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_CALLS = "1-NETEX-TimetableFrame_ServiceJourney_Calls";
+	private static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_FIRST_DEPARTURE = "1-NETEX-TimetableFrame_ServiceJourney_TimetabledPassingTime_First_DepartureTime";
+	private static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_LAST_ARRIVAL = "1-NETEX-TimetableFrame_ServiceJourney_TimetabledPassingTime_Last_ArrivalTime";
+	private static final String _1_NETEX_DUPLICATE_IDS = "1-NETEX-DuplicateIdentificators";
+	private static final String _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS = "1-NETEX-MissingVersionAttribute";
+	private static final String _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS = "1-NETEX-MissingReferenceVersionAttribute";
+	private static final String _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS = "1-NETEX-UnresolvedReferenceToCommonElements";
 
 	@Override
-	public void addObjectReference(Context context, DataManagedObjectStructure object) {}
+	public void addObjectReference(Context context, DataManagedObjectStructure object) {
+	}
 
 	@Override
-	protected void initializeCheckPoints(Context context) {
-		addItemToValidation(context, PREFIX, "Frame", 5, "E", "E", "E", "E", "E");
+	public void initializeCheckPoints(Context context) {
+		// addItemToValidation(context, PREFIX, "Frame", 5, "E", "E", "E", "E", "E");
+
+		addCheckpoints(context, _1_NETEX_DUPLICATE_IDS, "E");
+		addCheckpoints(context, _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS, "E");
+		addCheckpoints(context, _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS, "E");
+		addCheckpoints(context, _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS, "E");
+
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME, "E");
+
+		addCheckpoints(context, _1_NETEX_SERVICE_CALENDAR_FRAME, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_TIMING_POINTS, "W");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN, "W");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN_STOPPOINT_IN_JOURNEY_PATTERN, "E");
+
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY, "E");
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_TRANSPORT_MODE, "W");
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIMES, "E");
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_CALLS, "E");
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_FIRST_DEPARTURE, "E");
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_LAST_ARRIVAL, "E");
+
+		addCheckpoints(context, _1_NETEX_RESOURCE_FRAME, "E");
+		addCheckpoints(context, _1_NETEX_COMPOSITE_FRAME, "E");
+		addCheckpoints(context, _1_NETEX_SITE_FRAME, "W");
+		addCheckpoints(context, _1_NETEX_CODESPACE, "E");
+	}
+
+	private void addCheckpoints(Context context, String checkpointName, String error) {
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		validationReporter.addItemToValidationReport(context, checkpointName, error);
 	}
 
 	@Override
 	public void validate(Context context) throws Exception {
-		XPath xpath = XPathFactory.newInstance().newXPath();
-		xpath.setNamespaceContext(new NetexNamespaceContext());
-		context.put(NETEX_LINE_DATA_XPATH, xpath);
+		XPath xpath = (XPath) context.get(NETEX_LINE_DATA_XPATH);
 
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		PublicationDeliveryStructure lineDeliveryStructure = (PublicationDeliveryStructure) context.get(NETEX_LINE_DATA_JAVA);
 		Document dom = (Document) context.get(NETEX_LINE_DATA_DOM);
 		NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);
 
-		//StopRegistryIdValidator stopRegisterValidator = new StopRegistryIdValidator();
+		// StopRegistryIdValidator stopRegisterValidator = new StopRegistryIdValidator();
 
-		// TODO consider xpath validation
-		// validateElementPresent(context, xpath, dom, "//n:ServiceFrame", "1", "No ServiceFrame", _1_NETEX_SERVICEFRAME);
-		// validateMinOccursOfElement(context, xpath, dom, "count(//n:ServiceFrame/n:Network)", 0, _2_NETEX_SERVICEFRAME_NETWORK);
-		// validateElementNotPresent(context, xpath, dom, "//n:SiteFrame/n:stopPlaces/n:StopPlace", "1", "Should not contain StopPlaces", _2_NETEX_SITEFRAME_STOPPLACE);
+		@SuppressWarnings("unchecked")
+		Map<IdVersion, List<String>> commonIds = (Map<IdVersion, List<String>>) context.get(NETEX_COMMON_FILE_IDENTIFICATORS);
+
+		Set<IdVersion> localIds = collectEntityIdentificators(context, xpath, dom);
+		Set<IdVersion> localRefs = collectEntityReferences(context, xpath, dom);
+
+		verifyNoDuplicatesWithCommonElements(context, localIds, commonIds);
+		verifyUseOfVersionOnLocalElements(context, localIds);
+		verifyUseOfVersionOnRefsToLocalElements(context, localIds, localRefs);
+		verifyReferencesToCommonElements(context, localRefs, localIds, commonIds);
+
+		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame", "1", "No CompositeFrame",
+				_1_NETEX_COMPOSITE_FRAME);
+		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:codespaces/n:Codespace[n:Xmlns = '"
+				+ NSR_CODESPACE_PREFIX + "' and n:XmlnsUrl = '" + NSR_URL + "']", "1", "NSR codespace missing", _1_NETEX_CODESPACE);
+		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ResourceFrame", "1", "No ResourceFrame",
+				_1_NETEX_RESOURCE_FRAME);
+		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ServiceFrame", "1", "No ServiceFrame",
+				_1_NETEX_SERVICE_FRAME);
+		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ServiceCalendarFrame", "1",
+				"No ServiceCalendarFrame", _1_NETEX_SERVICE_CALENDAR_FRAME);
+		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:TimetableFrame", "1", "No TimetableFrame",
+				_1_NETEX_TIMETABLE_FRAME);
+		validateElementNotPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:SiteFrame", "1", "SiteFrame present",
+				_1_NETEX_SITE_FRAME);
+
+		validateResourceFrame(context, xpath, dom);
+
+		validateServiceFrame(context, xpath, dom);
+		validateTimetableFrame(context, xpath, dom);
+		// validateResourceFrame(context,xpath,dom);
+
+		// validateElementNotPresent(context, xpath, dom, "//n:SiteFrame/n:stopPlaces/n:StopPlace", "1", "Should not contain StopPlaces",
+		// _2_NETEX_SITEFRAME_STOPPLACE);
 		// validateExternalReferenceCorrect(context, xpath, dom, "//n:StopPlaceRef/@ref", stopRegisterValidator, _2_NETEX_STOPPLACE_REF);
 
 		// TODO add profile validation elements based on external reference data (dom)
 
 		// TODO consider check if frames present through xpath validation, before actual validation of frame
 		// TODO add profile validation elements based on java codex
-		validateResourceFrame(context, referential);
-		validateSiteFrame(context, referential);
-		validateServiceFrame(context, referential);
-		validateServiceCalendarFrame(context, referential);
-		validateTimetableFrame(context, referential);
+		// validateResourceFrame(context, referential);
+		// validateSiteFrame(context, referential);
+		// validateServiceFrame(context, referential);
+		// validateServiceCalendarFrame(context, referential);
+		// validateTimetableFrame(context, referential);
 
 		return;
-    }
+	}
+
+	private void validateResourceFrame(Context context, XPath xpath, Document dom) throws XPathExpressionException {
+		Node root = selectNode("/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ResourceFrame", xpath, dom);
+		// TODO could be present in common file
+		// validateElementPresent(context, xpath, root, "n:organisations", "1", "No organisations", "1-NETEX-ResourceFrame-Organisations");
+	}
+
+	private void validateServiceFrame(Context context, XPath xpath, Document dom) throws XPathExpressionException {
+		Node root = selectNode("/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ServiceFrame", xpath, dom);
+
+		validateElementPresent(context, xpath, root, "n:lines/n:Line", "1", "One and only one Line in each file", _1_NETEX_SERVICE_FRAME_LINE);
+		validateElementPresent(context, xpath, root, "n:lines/n:Line[1]/n:PublicCode", "1", "Lines must have PublicCode",
+				_1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE);
+		validateElementNotPresent(context, xpath, root, "n:journeyPatterns/n:ServiceJourneyPattern", "1", "Preferred to use JourneyPattern",
+				_1_NETEX_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN);
+		validateAtLeastElementPresent(context, xpath, root, "n:journeyPatterns/n:JourneyPattern | n:journeyPatterns/n:ServiceJourneyPattern", 1, "1",
+				"JourneyPatterns present", _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN);
+		validateElementNotPresent(context, xpath, root, "n:timingPoints", "1", "TimingPoints not used", _1_NETEX_SERVICE_FRAME_TIMING_POINTS);
+
+	}
+
+	private void validateTimetableFrame(Context context, XPath xpath, Document dom) throws XPathExpressionException {
+		Node root = selectNode("/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:TimetableFrame", xpath, dom);
+
+		validateAtLeastElementPresent(context, xpath, root, "n:vehicleJourneys/n:ServiceJourney", 1, "1", "At least one ServiceJourney must be presetn",
+				_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY);
+		validateElementNotPresent(context, xpath, root, "n:vehicleJourneys/n:ServiceJourney[count(n:TransportMode) = 1]", "1",
+				"ServiceJourney should not have TransportMode, set on Line instead", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_TRANSPORT_MODE);
+		validateElementNotPresent(context, xpath, root, "n:vehicleJourneys/n:ServiceJourney[count(n:passingTimes/n:TimetabledPassingTime) < 2]", "1",
+				"ServiceJourney must have at least 2 TimetabledPassingTimes", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIMES);
+		validateElementNotPresent(context, xpath, root, "n:vehicleJourneys/n:ServiceJourney/n:calls", "1", "ServiceJourney calls not supported",
+				_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_CALLS);
+		validateElementNotPresent(context, xpath, root,
+				"n:vehicleJourneys/n:ServiceJourney[count(n:passingTimes/n:TimetabledPassingTime[1]/n:DepartureTime) = 0]", "1",
+				"First stop must have a DepartureTime", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_FIRST_DEPARTURE);
+		validateElementNotPresent(context, xpath, root,
+				"n:vehicleJourneys/n:ServiceJourney[count(n:passingTimes/n:TimetabledPassingTime[last()]/n:ArrivalTime) = 0]", "1",
+				"Last stop must have an ArrivalTime", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_LAST_ARRIVAL);
+
+	}
+
+	private Node selectNode(String string, XPath xpath, Node dom) throws XPathExpressionException {
+		Node node = (Node) xpath.evaluate(string, dom, XPathConstants.NODE);
+		return node;
+	}
+
+	private NodeList selectNodeSet(String string, XPath xpath, Node dom) throws XPathExpressionException {
+		NodeList node = (NodeList) xpath.evaluate(string, dom, XPathConstants.NODESET);
+		return node;
+	}
+
+	private void verifyReferencesToCommonElements(Context context, Set<IdVersion> localRefs, Set<IdVersion> localIds, Map<IdVersion, List<String>> commonIds) {
+		if (commonIds != null) {
+			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+
+			Set<String> nonVersionedLocalRefs = localRefs.stream().map(e -> e.getId()).collect(Collectors.toSet());
+			Set<String> nonVersionedLocalIds = localIds.stream().map(e -> e.getId()).collect(Collectors.toSet());
+
+			Set<String> unresolvedReferences = new HashSet<>(nonVersionedLocalRefs);
+			unresolvedReferences.removeAll(nonVersionedLocalIds);
+
+			Set<String> commonIdsWithoutVersion = commonIds.keySet().stream().map(e -> e.getId()).collect(Collectors.toSet());
+			if (commonIdsWithoutVersion.size() > 0) {
+				for (String localRef : unresolvedReferences) {
+					if (!commonIdsWithoutVersion.contains(localRef)) {
+						// TODO add correct location
+						validationReporter.addCheckPointReportError(context, _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS,
+								new DataLocation((String) context.get(FILE_NAME)));
+						log.error("Unresolved reference to " + localRef + " in line file without any counterpart in the commonIds");
+					}
+				}
+			} else {
+				validationReporter.reportSuccess(context, _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS);
+			}
+		}
+	}
+
+	private void verifyUseOfVersionOnRefsToLocalElements(Context context, Set<IdVersion> localIds, Set<IdVersion> localRefs) {
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+
+		Set<IdVersion> nonVersionedLocalRefs = localRefs.stream().filter(e -> e.getVersion() == null).collect(Collectors.toSet());
+		Set<String> localIdsWithoutVersion = localIds.stream().map(e -> e.getId()).collect(Collectors.toSet());
+
+		if (nonVersionedLocalRefs.size() > 0) {
+			for (IdVersion id : nonVersionedLocalRefs) {
+				if (localIdsWithoutVersion.contains(id.getId())) {
+					// TODO add correct location
+					validationReporter.addCheckPointReportError(context, _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS,
+							new DataLocation((String) context.get(FILE_NAME)));
+					log.error("Found local reference to " + id.getId() + " in line file without use of version-attribute");
+				}
+			}
+		} else {
+			validationReporter.reportSuccess(context, _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS);
+
+		}
+	}
+
+	private void verifyUseOfVersionOnLocalElements(Context context, Set<IdVersion> localIds) {
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+
+		Set<IdVersion> nonVersionedLocalIds = localIds.stream().filter(e -> e.getVersion() == null).collect(Collectors.toSet());
+		if (nonVersionedLocalIds.size() > 0) {
+			for (IdVersion id : nonVersionedLocalIds) {
+				// TODO add correct location
+				validationReporter.addCheckPointReportError(context, _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS,
+						new DataLocation((String) context.get(FILE_NAME)));
+				log.error("Id " + id + " in line file does not have version attribute set");
+			}
+		} else {
+			validationReporter.reportSuccess(context, _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS);
+		}
+	}
+
+	private void verifyNoDuplicatesWithCommonElements(Context context, Set<IdVersion> localIds, Map<IdVersion, List<String>> commonIds) {
+		if (commonIds != null) {
+			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+
+			Set<IdVersion> overlappingIds = new HashSet<>(localIds);
+			// Add code to check no duplicates as well as line file references to common files
+			boolean duplicates = overlappingIds.retainAll(commonIds.keySet());
+			if (duplicates) {
+				for (IdVersion id : overlappingIds) {
+					List<String> commonFileNames = commonIds.get(id);
+					for (String fileName : commonFileNames) {
+						// TODO add correct location
+						validationReporter.addCheckPointReportError(context, _1_NETEX_DUPLICATE_IDS, new DataLocation(fileName));
+
+					}
+					log.error("Id " + id + " used in both line file and common files "
+							+ ToStringBuilder.reflectionToString(commonFileNames.toArray(), ToStringStyle.SIMPLE_STYLE));
+				}
+			} else {
+				validationReporter.reportSuccess(context, _1_NETEX_DUPLICATE_IDS);
+
+			}
+		}
+	}
+
+	protected Set<IdVersion> collectEntityIdentificators(Context context, XPath xpath, Document dom) throws XPathExpressionException {
+		return collectIdOrRefWithVersion(context, xpath, dom, "id");
+	}
+
+	protected Set<IdVersion> collectEntityReferences(Context context, XPath xpath, Document dom) throws XPathExpressionException {
+		return collectIdOrRefWithVersion(context, xpath, dom, "ref");
+	}
+
+	protected Set<IdVersion> collectIdOrRefWithVersion(Context context, XPath xpath, Document dom, String attributeName) throws XPathExpressionException {
+		NodeList nodes = (NodeList) xpath.evaluate("//n:*[not(name()='Codespace') and @" + attributeName + "]", dom, XPathConstants.NODESET);
+		Set<IdVersion> ids = new HashSet<IdVersion>();
+		int idCount = nodes.getLength();
+		for (int i = 0; i < idCount; i++) {
+
+			String id = nodes.item(i).getAttributes().getNamedItem(attributeName).getNodeValue();
+			String version = null;
+			Node versionAttribute = nodes.item(i).getAttributes().getNamedItem("version");
+			if (versionAttribute != null) {
+				version = versionAttribute.getNodeValue();
+			}
+			ids.add(new IdVersion(id, version));
+		}
+		return ids;
+	}
 
 	private void validateResourceFrame(Context context, NetexReferential referential) throws Exception {
 		// TODO consider moving up one level in call hierarchy
-		DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
+		DataLocation dataLocation = new DataLocation((String) context.get(FILE_NAME));
 		Collection<ResourceFrame> resourceFrames = referential.getResourceFrames().values();
 		prepareCheckPoint(context, FRAME_1);
 
@@ -123,7 +387,8 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 				if (!isCollectionEmpty(organisations)) {
 					log.info("Organisations present");
 					// TODO consider adding the data to be validated in constant VALIDATION_DATA
-					OrganisationValidator organisationValidator = (OrganisationValidator) ValidatorFactory.create(OrganisationValidator.class.getName(), context);
+					OrganisationValidator organisationValidator = (OrganisationValidator) ValidatorFactory.create(OrganisationValidator.class.getName(),
+							context);
 					organisationValidator.validate(context, null);
 				}
 
@@ -191,9 +456,9 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 		}
 	}
 
-	private void validateSiteFrame(Context context, NetexReferential referential)  throws Exception {
+	private void validateSiteFrame(Context context, NetexReferential referential) throws Exception {
 		// TODO consider moving up one level in call hierarchy
-		DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
+		DataLocation dataLocation = new DataLocation((String) context.get(FILE_NAME));
 		Collection<SiteFrame> siteFrames = referential.getSiteFrames().values();
 		prepareCheckPoint(context, FRAME_2);
 
@@ -221,7 +486,7 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 					List<JAXBElement<? extends Address_VersionStructure>> addressElements = addressesStruct.getAddress();
 					for (JAXBElement<? extends Address_VersionStructure> addressElement : addressElements) {
 						// TODO downcast and validate
-						//Address_VersionStructure value = addressElement.getValue();
+						// Address_VersionStructure value = addressElement.getValue();
 					}
 				}
 
@@ -300,7 +565,7 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 
 	private void validateServiceFrame(Context context, NetexReferential referential) throws Exception {
 		// TODO consider moving up one level in call hierarchy
-		DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
+		DataLocation dataLocation = new DataLocation((String) context.get(FILE_NAME));
 		Collection<ServiceFrame> serviceFrames = referential.getServiceFrames().values();
 		prepareCheckPoint(context, FRAME_3);
 
@@ -457,10 +722,10 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 
 				// validate journey patterns
 				// TODO implement separate validator for journey patterns
-				Collection<JourneyPattern> journeyPatterns = referential.getJourneyPatterns().values();
+				Collection<JourneyPattern_VersionStructure> journeyPatterns = referential.getJourneyPatterns().values();
 				if (!isCollectionEmpty(journeyPatterns)) {
 					log.info("JourneyPatterns present");
-					for (JourneyPattern journeyPattern : journeyPatterns) {
+					for (JourneyPattern_VersionStructure journeyPattern : journeyPatterns) {
 						// TODO validate
 					}
 				}
@@ -500,7 +765,7 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 
 	private void validateServiceCalendarFrame(Context context, NetexReferential referential) {
 		// TODO consider moving up one level in call hierarchy
-		DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
+		DataLocation dataLocation = new DataLocation((String) context.get(FILE_NAME));
 		Collection<ServiceCalendarFrame> serviceCalendarFrames = referential.getServiceCalendarFrames().values();
 		prepareCheckPoint(context, FRAME_4);
 
@@ -572,7 +837,7 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 
 	private void validateTimetableFrame(Context context, NetexReferential referential) {
 		// TODO consider moving up one level in call hierarchy
-		DataLocation dataLocation = new DataLocation((String)context.get(FILE_NAME));
+		DataLocation dataLocation = new DataLocation((String) context.get(FILE_NAME));
 		Collection<TimetableFrame> timetableFrames = referential.getTimetableFrames().values();
 		prepareCheckPoint(context, FRAME_5);
 
@@ -593,7 +858,8 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 				}
 				// validate bookingtimes/validityconditions, which one?
 				ValidityConditions_RelStructure validityConditionsStruct = timetableFrame.getValidityConditions();
-				if (validityConditionsStruct != null && !isCollectionEmpty(validityConditionsStruct.getValidityConditionRefOrValidBetweenOrValidityCondition_())) {
+				if (validityConditionsStruct != null
+						&& !isCollectionEmpty(validityConditionsStruct.getValidityConditionRefOrValidBetweenOrValidityCondition_())) {
 					log.info("ValidityConditions present");
 					List<Object> validityConditions = validityConditionsStruct.getValidityConditionRefOrValidBetweenOrValidityCondition_();
 					for (Object validityCondition : validityConditions) {
@@ -683,9 +949,11 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 
 				// validate journey interchanges
 				JourneyInterchangesInFrame_RelStructure journeyInterchangesStruct = timetableFrame.getJourneyInterchanges();
-				if (journeyInterchangesStruct != null && !isCollectionEmpty(journeyInterchangesStruct.getServiceJourneyPatternInterchangeOrServiceJourneyInterchange())) {
+				if (journeyInterchangesStruct != null
+						&& !isCollectionEmpty(journeyInterchangesStruct.getServiceJourneyPatternInterchangeOrServiceJourneyInterchange())) {
 					log.info("JourneyInterchanges present");
-					List<Interchange_VersionStructure> journeyInterchanges = journeyInterchangesStruct.getServiceJourneyPatternInterchangeOrServiceJourneyInterchange();
+					List<Interchange_VersionStructure> journeyInterchanges = journeyInterchangesStruct
+							.getServiceJourneyPatternInterchangeOrServiceJourneyInterchange();
 					for (Interchange_VersionStructure journeyInterchange : journeyInterchanges) {
 						// TODO downcast and validate
 					}

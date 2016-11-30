@@ -31,7 +31,7 @@ public class JourneyPatternParser extends AbstractParser {
         List<JAXBElement<?>> journeyPatternElements = contextData.getJourneyPattern_OrJourneyPatternView();
 
         for (JAXBElement<?> journeyPatternElement : journeyPatternElements) {
-            org.rutebanken.netex.model.JourneyPattern journeyPattern = (org.rutebanken.netex.model.JourneyPattern) journeyPatternElement.getValue();
+            org.rutebanken.netex.model.JourneyPattern_VersionStructure journeyPattern = (org.rutebanken.netex.model.JourneyPattern_VersionStructure) journeyPatternElement.getValue();
             String objectId = journeyPattern.getId();
 
             // 1. initialize stop points in journey pattern references
@@ -59,9 +59,9 @@ public class JourneyPatternParser extends AbstractParser {
         Context routeContext = (Context) parsingContext.get(RouteParser.LOCAL_CONTEXT);
         Context stopPointContext = (Context) parsingContext.get(StopPointParser.LOCAL_CONTEXT);
 
-        Collection<JourneyPattern> netexJourneyPatterns = netexReferential.getJourneyPatterns().values();
+        Collection<JourneyPattern_VersionStructure> netexJourneyPatterns = netexReferential.getJourneyPatterns().values();
 
-        for (JourneyPattern netexJourneyPattern : netexJourneyPatterns) {
+        for (JourneyPattern_VersionStructure netexJourneyPattern : netexJourneyPatterns) {
             String netexJourneyPatternId = netexJourneyPattern.getId();
             String chouetteJourneyPatternId = netexJourneyPattern.getId(); // TODO generate neptune id with creator here
             mobi.chouette.model.JourneyPattern chouetteJourneyPattern = ObjectFactory.getJourneyPattern(chouetteReferential, chouetteJourneyPatternId);

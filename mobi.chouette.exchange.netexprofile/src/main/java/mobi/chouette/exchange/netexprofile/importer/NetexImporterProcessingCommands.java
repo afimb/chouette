@@ -1,5 +1,15 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.naming.InitialContext;
+
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
@@ -16,17 +26,10 @@ import mobi.chouette.exchange.importer.CleanRepositoryCommand;
 import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.ImportedLineValidatorCommand;
 import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
-
-import javax.naming.InitialContext;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Data
 @Log4j
@@ -71,22 +74,22 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 
         // added in chouette 3.4, add support for this at this level instead, if we need to set file state for excluded files see below:
         // reporter.setFileState(context, exclude.getFileName().toString(), IO_TYPE.INPUT,FILE_STATE.IGNORED);
-        // ActionReporter reporter = ActionReporter.Factory.getInstance();
+//         ActionReporter reporter = ActionReporter.Factory.getInstance();
 
         boolean level3validation = context.get(VALIDATION) != null;
         List<Command> commands = new ArrayList<>();
         JobData jobData = (JobData) context.get(JOB_DATA);
         Path path = Paths.get(jobData.getPathName(), INPUT);
         try {
-            // enable this if needed
-/*
-            List<Path> excluded = FileUtil.listFiles(path, "*", "*.xml");
-			if (!excluded.isEmpty()) {
-				for (Path exclude : excluded) {
-					reporter.setFileState(context, exclude.getFileName().toString(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.IGNORED);
-				}
-			}
-*/
+
+        	// Report any files that are not XML files
+//        	List<Path> excluded = FileUtil.listFiles(path, "*", "*.xml");
+//			if (!excluded.isEmpty()) {
+//				for (Path exclude : excluded) {
+//					reporter.setFileState(context, exclude.getFileName().toString(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.IGNORED);
+//				}
+//			}
+
 
             // schema validation
             Chain schemaValidationChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
@@ -98,27 +101,16 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
                 String url = file.toUri().toURL().toExternalForm();
                 NetexSchemaValidationCommand schemaValidation = (NetexSchemaValidationCommand) CommandFactory.create(initialContext,
                         NetexSchemaValidationCommand.class.getName());
-                schemaValidationChain.add(schemaValidation);
                 schemaValidation.setFileURL(url);
                 schemaValidationChain.add(schemaValidation);
             }
 
             // common file parsing
-            Chain commonFilesParserChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
-            commands.add(commonFilesParserChain);
 
             List<Path> commonFiles = FileUtil.listFiles(path, "_*.xml");
-            Set<String> commonUrls = new HashSet<String>();
-            for (Path file : commonFiles) {
-
-                // TODO add profile validation of common files here
-
-                NetexCommonParserCommand parser = (NetexCommonParserCommand) CommandFactory.create(initialContext, NetexCommonParserCommand.class.getName());
-                String url = file.toUri().toURL().toExternalForm();
-                commonUrls.add(url);
-                parser.setFile(file.toFile());
-                commonFilesParserChain.add(parser);
-            }
+            NetexCommonFilesParserCommand commonFilesParser = (NetexCommonFilesParserCommand) CommandFactory.create(initialContext, NetexCommonFilesParserCommand.class.getName());
+            commonFilesParser.setFiles(commonFiles);
+            commands.add(commonFilesParser);
 
             for (Path file : allFiles) {
                 String url = file.toUri().toURL().toExternalForm();

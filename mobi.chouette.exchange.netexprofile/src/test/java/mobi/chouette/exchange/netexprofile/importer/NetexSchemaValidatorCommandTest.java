@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 
 public class NetexSchemaValidatorCommandTest {
 
-	@Test(enabled = false)
+	@Test
 	public void testValidateDocument() throws Exception {
 		Context context = new Context();
 		NetexprofileImportParameters configuration = new NetexprofileImportParameters();
@@ -40,8 +40,6 @@ public class NetexSchemaValidatorCommandTest {
 		
 		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
 		actionReporter.setFileState(context, file.getName(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.ERROR);
-		
-		context.put(Constant.REPORT, actionReporter);
 		
 		boolean result = cmd.execute(context );
 		

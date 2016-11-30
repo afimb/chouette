@@ -8,6 +8,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.importer.validation.NetexNamespaceContext;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
@@ -16,6 +17,9 @@ import mobi.chouette.model.util.Referential;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import javax.naming.InitialContext;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
+
 import java.io.IOException;
 
 @Log4j
@@ -34,6 +38,10 @@ public class NetexInitImportCommand implements Command, Constant {
             NetexImporter importer = new NetexImporter();
             context.put(IMPORTER, importer);
 
+    		XPath xpath = XPathFactory.newInstance().newXPath();
+    		xpath.setNamespaceContext(new NetexNamespaceContext());
+    		context.put(NETEX_LINE_DATA_XPATH, xpath);
+            
             NetexProfileValidator profileValidator = importer.getProfileValidator(context);
             if (profileValidator != null) {
                 context.put(NETEX_PROFILE_VALIDATOR, profileValidator);

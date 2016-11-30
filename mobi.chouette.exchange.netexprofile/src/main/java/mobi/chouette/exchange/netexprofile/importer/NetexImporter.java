@@ -93,6 +93,7 @@ public class NetexImporter {
 		default:
 			profileValidator = (NorwayLineNetexProfileValidator) NetexProfileValidatorFactory.create(
 					NorwayLineNetexProfileValidator.class.getName(), context);
+			profileValidator.initializeCheckPoints(context);
 		}
 		return profileValidator;
 	}
