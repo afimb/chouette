@@ -157,7 +157,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 * @return The actual value
 	 */
 	@Getter
-	@Column(name = "registration_number", unique = true)
+	@Column(name = "registration_number")
 	private String registrationNumber;
 
 	/**
