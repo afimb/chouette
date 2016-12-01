@@ -45,9 +45,10 @@ import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+import org.xml.sax.SAXException;
 
 public class NeTExStopPlaceRegisterUpdaterTest {
-
+	
 	@Test
 	public void convertStopAreaAndConnectionLink() throws Exception {
 
@@ -97,79 +98,7 @@ public class NeTExStopPlaceRegisterUpdaterTest {
 		Context context = new Context();
 
 		// Build response
-		NeTExStopPlaceRegisterUpdater neTExStopPlaceRegisterUpdater = new NeTExStopPlaceRegisterUpdater(
-				new PublicationDeliveryClient("") {
-					@Override
-					public PublicationDeliveryStructure sendPublicationDelivery(
-							PublicationDeliveryStructure publicationDelivery) throws JAXBException, IOException {
-
-						Assert.assertEquals(1, ((SiteFrame)publicationDelivery.getDataObjects().getCompositeFrameOrCommonFrame().get(0).getValue()).getStopPlaces().getStopPlace().size(),"StopPlaces not unique");
-						
-						SimplePoint_VersionStructure centroid = new SimplePoint_VersionStructure()
-								.withLocation(new LocationStructure().withLatitude(stopArea.getLatitude())
-										.withLongitude(stopArea.getLongitude()));
-
-						StopPlace stopPlace = new StopPlace();
-						stopPlace.setId("NHR:StopArea:1");
-						stopPlace.setCentroid(centroid);
-						stopPlace.setName(new MultilingualString().withValue("StopPlaceName"));
-						stopPlace.setKeyList(createKeyListStructure("AKT:StopArea:1"));
-
-						Quay q = new Quay();
-						q.setId("NHR:StopArea:2");
-						q.setKeyList(createKeyListStructure(StringUtils.join(new String[] {"AKT:StopArea:2","OPP:StopArea:3"},NeTExStopPlaceRegisterUpdater.IMPORTED_ID_VALUE_SEPARATOR))); // 2 values
-						q.setName(new MultilingualString().withValue("QuayName"));
-						q.setCentroid(centroid);
-
-						Quays_RelStructure quays = new Quays_RelStructure();
-						quays.getQuayRefOrQuay().add(q);
-						stopPlace.setQuays(quays);
-
-						List<StopPlace> stopPlaces = new ArrayList<>();
-						stopPlaces.add(stopPlace);
-						
-						PathLink pathLink = null;
-						try {
-							pathLink = new PathLink()
-									.withId("NHR:PathLink:1")
-									.withFrom(new PathLinkEndStructure().withPlaceRef(new PlaceRefStructure().withValue(stopPlace.getId())))
-									.withTo(new PathLinkEndStructure().withPlaceRef(new PlaceRefStructure().withValue(q.getId())))
-									.withTransferDuration(new TransferDurationStructure().withDefaultDuration(DatatypeFactory.newInstance().newDuration("PT5M")));
-									
-							pathLink.setKeyList(createKeyListStructure("AKT:ConnectionLink:1-2"));
-						} catch (DatatypeConfigurationException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						
-
-						SiteFrame siteFrame = new SiteFrame();
-						siteFrame.setStopPlaces(new StopPlacesInFrame_RelStructure().withStopPlace(stopPlaces));
-						siteFrame.setPathLinks(new PathLinksInFrame_RelStructure().withPathLink(pathLink));
-
-						org.rutebanken.netex.model.ObjectFactory objectFactory = new org.rutebanken.netex.model.ObjectFactory();
-						JAXBElement<SiteFrame> jaxSiteFrame = objectFactory.createSiteFrame(siteFrame);
-
-						PublicationDeliveryStructure respoonse = new PublicationDeliveryStructure()
-								.withDescription(
-										new MultilingualString().withValue("Publication delivery from chouette")
-												.withLang("no").withTextIdType(""))
-								.withPublicationTimestamp(OffsetDateTime.now()).withParticipantRef("participantRef")
-								.withDataObjects(new PublicationDeliveryStructure.DataObjects()
-										.withCompositeFrameOrCommonFrame(Arrays.asList(jaxSiteFrame)));
-						return respoonse;
-
-					}
-
-					protected KeyListStructure createKeyListStructure(String value) {
-						KeyListStructure kl = new KeyListStructure();
-						KeyValueStructure kv = new KeyValueStructure();
-						kv.setKey(NeTExStopPlaceRegisterUpdater.IMPORTED_ID);
-						kv.setValue(value);
-						kl.getKeyValue().add(kv);
-						return kl;
-					}
-				});
+		NeTExStopPlaceRegisterUpdater neTExStopPlaceRegisterUpdater = new NeTExStopPlaceRegisterUpdater(createMockedPublicationDeliveryClient(stopArea));
 
 		// Call update
 		neTExStopPlaceRegisterUpdater.update(context, referential);
@@ -182,4 +111,79 @@ public class NeTExStopPlaceRegisterUpdaterTest {
 		AssertJUnit.assertEquals(referential.getSharedConnectionLinks().values().iterator().next().getObjectId(), "NHR:PathLink:1");
 	}
 
+
+	private PublicationDeliveryClient createMockedPublicationDeliveryClient(StopArea stopArea) throws JAXBException, IOException, SAXException {
+		return new PublicationDeliveryClient("") {
+			@Override
+			public PublicationDeliveryStructure sendPublicationDelivery(
+					PublicationDeliveryStructure publicationDelivery) throws JAXBException, IOException {
+
+				Assert.assertEquals(1, ((SiteFrame)publicationDelivery.getDataObjects().getCompositeFrameOrCommonFrame().get(0).getValue()).getStopPlaces().getStopPlace().size(),"StopPlaces not unique");
+
+				SimplePoint_VersionStructure centroid = new SimplePoint_VersionStructure()
+						.withLocation(new LocationStructure().withLatitude(stopArea.getLatitude())
+								.withLongitude(stopArea.getLongitude()));
+
+				StopPlace stopPlace = new StopPlace();
+				stopPlace.setId("NHR:StopArea:1");
+				stopPlace.setCentroid(centroid);
+				stopPlace.setName(new MultilingualString().withValue("StopPlaceName"));
+				stopPlace.setKeyList(createKeyListStructure("AKT:StopArea:1"));
+
+				Quay q = new Quay();
+				q.setId("NHR:StopArea:2");
+				q.setKeyList(createKeyListStructure(StringUtils.join(new String[] {"AKT:StopArea:2","OPP:StopArea:3"},NeTExStopPlaceRegisterUpdater.IMPORTED_ID_VALUE_SEPARATOR))); // 2 values
+				q.setName(new MultilingualString().withValue("QuayName"));
+				q.setCentroid(centroid);
+
+				Quays_RelStructure quays = new Quays_RelStructure();
+				quays.getQuayRefOrQuay().add(q);
+				stopPlace.setQuays(quays);
+
+				List<StopPlace> stopPlaces = new ArrayList<>();
+				stopPlaces.add(stopPlace);
+
+				PathLink pathLink = null;
+				try {
+					pathLink = new PathLink()
+							.withId("NHR:PathLink:1")
+							.withFrom(new PathLinkEndStructure().withPlaceRef(new PlaceRefStructure().withValue(stopPlace.getId())))
+							.withTo(new PathLinkEndStructure().withPlaceRef(new PlaceRefStructure().withValue(q.getId())))
+							.withTransferDuration(new TransferDurationStructure().withDefaultDuration(DatatypeFactory.newInstance().newDuration("PT5M")));
+
+					pathLink.setKeyList(createKeyListStructure("AKT:ConnectionLink:1-2"));
+				} catch (DatatypeConfigurationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+
+				SiteFrame siteFrame = new SiteFrame();
+				siteFrame.setStopPlaces(new StopPlacesInFrame_RelStructure().withStopPlace(stopPlaces));
+				siteFrame.setPathLinks(new PathLinksInFrame_RelStructure().withPathLink(pathLink));
+
+				org.rutebanken.netex.model.ObjectFactory objectFactory = new org.rutebanken.netex.model.ObjectFactory();
+				JAXBElement<SiteFrame> jaxSiteFrame = objectFactory.createSiteFrame(siteFrame);
+
+				PublicationDeliveryStructure respoonse = new PublicationDeliveryStructure()
+						.withDescription(
+								new MultilingualString().withValue("Publication delivery from chouette")
+										.withLang("no").withTextIdType(""))
+						.withPublicationTimestamp(OffsetDateTime.now()).withParticipantRef("participantRef")
+						.withDataObjects(new PublicationDeliveryStructure.DataObjects()
+								.withCompositeFrameOrCommonFrame(Arrays.asList(jaxSiteFrame)));
+				return respoonse;
+
+			}
+
+			protected KeyListStructure createKeyListStructure(String value) {
+				KeyListStructure kl = new KeyListStructure();
+				KeyValueStructure kv = new KeyValueStructure();
+				kv.setKey(NeTExStopPlaceRegisterUpdater.IMPORTED_ID);
+				kv.setValue(value);
+				kl.getKeyValue().add(kv);
+				return kl;
+			}
+		};
+	}
 }
