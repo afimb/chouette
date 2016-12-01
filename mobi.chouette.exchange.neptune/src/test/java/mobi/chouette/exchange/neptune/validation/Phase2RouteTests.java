@@ -1,8 +1,10 @@
 package mobi.chouette.exchange.neptune.validation;
 
+import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
 import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
 import mobi.chouette.exchange.validation.report.ValidationReporter.RESULT;
 
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class Phase2RouteTests extends ValidationTests {
@@ -65,32 +67,37 @@ public class Phase2RouteTests extends ValidationTests {
 	@Test(groups = { "Phase 2 route" }, description = "journeypattern dont use route's stoppoints")
 	public void verifyTest_2_Route_8() throws Exception {
 		
-		verifyValidation( "2-NEPTUNE-Route-8.xml", "2-NEPTUNE-Route-8", SEVERITY.ERROR, RESULT.NOK);
+		CheckPointErrorReport detail = verifyValidation( "2-NEPTUNE-Route-8.xml", "2-NEPTUNE-Route-8", SEVERITY.ERROR, RESULT.NOK);
+        Assert.assertEquals(detail.getTargets().size(), 1, "targets size");
 
 	}
 	@Test(groups = { "Phase 2 route" }, description = "unused stoppoint")
 	public void verifyTest_2_Route_9() throws Exception {
 		
-		verifyValidation( "2-NEPTUNE-Route-9.xml", "2-NEPTUNE-Route-9", SEVERITY.WARNING, RESULT.NOK);
+		CheckPointErrorReport detail = verifyValidation( "2-NEPTUNE-Route-9.xml", "2-NEPTUNE-Route-9", SEVERITY.WARNING, RESULT.NOK);
+        Assert.assertEquals(detail.getTargets().size(), 1, "targets size");
 
 	}
 	@Test(groups = { "Phase 2 route" }, description = "unused stoppoint")
 	public void verifyTest_2_Route_10() throws Exception {
 		
-		verifyValidation( "2-NEPTUNE-Route-10.xml", "2-NEPTUNE-Route-10", SEVERITY.ERROR, RESULT.NOK);
+		CheckPointErrorReport detail = verifyValidation( "2-NEPTUNE-Route-10.xml", "2-NEPTUNE-Route-10", SEVERITY.ERROR, RESULT.NOK);
+        Assert.assertEquals(detail.getTargets().size(), 1, "targets size");
 
 	}
 	@Test(groups = { "Phase 2 route" }, description = "unused stoppoint")
 	public void verifyTest_2_Route_11() throws Exception {
 		
-		verifyValidation( "2-NEPTUNE-Route-11.xml", "2-NEPTUNE-Route-11", SEVERITY.WARNING, RESULT.NOK);
+		CheckPointErrorReport detail = verifyValidation( "2-NEPTUNE-Route-11.xml", "2-NEPTUNE-Route-11", SEVERITY.WARNING, RESULT.NOK);
+        Assert.assertEquals(detail.getTargets().size(), 1, "targets size");
 
 	}
 	@Test(groups = { "Phase 2 route" }, description = "unused stoppoint")
 	public void verifyTest_2_Route_12() throws Exception {
 		
-		verifyValidation( "2-NEPTUNE-Route-12.xml", "2-NEPTUNE-Route-12", SEVERITY.WARNING, RESULT.NOK);
-
+		CheckPointErrorReport detail = verifyValidation( "2-NEPTUNE-Route-12.xml", "2-NEPTUNE-Route-12", SEVERITY.WARNING, RESULT.NOK);
+        Assert.assertEquals(detail.getTargets().size(), 1, "targets size");
+		
 	}
 
 

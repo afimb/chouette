@@ -22,7 +22,7 @@ import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.NamingUtil;
 
 @Data
-@ToString
+@ToString (exclude={"object"})
 public class DataLocation {
 	private String objectType; // Line route stop area..
 	private String filename;
