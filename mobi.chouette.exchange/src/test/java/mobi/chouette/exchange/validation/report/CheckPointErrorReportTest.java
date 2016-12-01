@@ -3,6 +3,7 @@ package mobi.chouette.exchange.validation.report;
 import java.io.PrintStream;
 
 import mobi.chouette.common.Constant;
+
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -46,7 +47,17 @@ public class CheckPointErrorReportTest implements Constant{
 			
 			JSONArray targets = res.getJSONArray("target");
 			Assert.assertNotNull(targets, "targets must not be null");
+			Assert.assertEquals(targets.length(),1,"targets size");
+			JSONObject target = targets.getJSONObject(0);
+			
+			Assert.assertEquals(target.getJSONObject("file").getString("filename"), "filename2", "wrong target file location name");
+			Assert.assertEquals(target.getJSONObject("file").getInt("line_number"), 2, "wrong target file location line number");
+			Assert.assertEquals(target.getJSONObject("file").getInt("column_number"), 6, "wrong target file location column number");
+			Assert.assertEquals(target.getString("objectid") , "12345", "wrong target location object id");
+			
 			Assert.assertNotNull(res.getString("reference_value"), "reference value must not be null");
+			
+			targets.length();
 		}
 	}
 }
