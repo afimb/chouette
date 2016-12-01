@@ -1,6 +1,7 @@
 package mobi.chouette.dao;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Cache;
@@ -53,6 +54,9 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 
 	
 	public List<T> findAll(final Collection<Long> ids) {
+		if (ids == null || ids.size() == 0){
+			return Collections.emptyList();
+		}
 		List<T> result = null;
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<T> criteria = builder.createQuery(type);

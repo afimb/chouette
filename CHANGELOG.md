@@ -1,4 +1,8 @@
-# Version 3.4.0 (en cours)
+# Version 3.4.1 (28/11/2016)
+* Correction
+  * Mantis 50126: Validation Neptune : informations manquantes dans le rapport provoquant plantage de l'IHM
+
+# Version 3.4.0 (02/11/2016)
 * Nouvelles fonctionnalités :
   * validation à l'export : après exports Neptune ou GTFS, une validation des fichiers produits est ajoutée sur option
   * reprise du rapport de validation pour mieux présenter les résultats
