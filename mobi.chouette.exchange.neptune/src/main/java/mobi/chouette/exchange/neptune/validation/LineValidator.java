@@ -111,7 +111,7 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 //			Location sourceLocation = fileLocations.get(objectId);
 			ChouetteId lineChouetteId = neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Line.class);
 			DataLocation sourceLocation = fileLocations.get(lineChouetteId);
-
+			log.warn("Object id LineValidator : " + objectId);
 			Line line = lines.get(lineChouetteId);
 			// 2-NEPTUNE-Line-1 : check ptnetworkIdShortcut
 			String ptnetworkIdShortcut = (String) objectContext.get(PT_NETWORK_ID_SHORTCUT);

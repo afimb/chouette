@@ -11,7 +11,7 @@ public interface NeptuneObjectIdTypes {
 	    */
 	   public static final String ACCESSLINK_KEY = "AccessLink";
 	   /**
-	    * default objectId type for area centroids (deprecated in next release)
+	    * default objectId type for area centroids
 	    */
 	   public static final String AREACENTROID_KEY = "AreaCentroid";
 	   /**
@@ -39,7 +39,7 @@ public interface NeptuneObjectIdTypes {
 	    */
 	   public static final String LINE_KEY = "Line";
 	   /**
-	    * default objectId type for ptlinks  (deprecated in next release)
+	    * default objectId type for ptlinks
 	    */
 	   public static final String PTLINK_KEY = "PtLink"; 
 	   /**
@@ -47,7 +47,7 @@ public interface NeptuneObjectIdTypes {
 	    */
 	   public static final String PTNETWORK_KEY = "PTNetwork";
 	   /**
-	    * default objectId type for route 
+	    * default objectId type for route section
 	    */
 	   public static final String ROUTE_SECTION_KEY = "RouteSection";
 	   /**

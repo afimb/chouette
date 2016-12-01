@@ -29,8 +29,6 @@ public class ITLValidator extends AbstractValidator implements Validator<StopAre
 	public static String NAME = "ITLValidator";
 
 	// TODO move tests from StopAreaValidator
-	private static final String ITL_1 = "2-NEPTUNE-ITL-1";
-	private static final String ITL_2 = "2-NEPTUNE-ITL-2";
 	private static final String ITL_3 = "2-NEPTUNE-ITL-3";
 	private static final String ITL_4 = "2-NEPTUNE-ITL-4";
 	private static final String ITL_5 = "2-NEPTUNE-ITL-5";
@@ -93,8 +91,9 @@ public class ITLValidator extends AbstractValidator implements Validator<StopAre
 			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
 
 			String stopAreaId = objectId;
+			ChouetteId stopAreaChouetteId = neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Line.class);
 			
-			if (!stopAreaContext.containsKey(stopAreaId) || !stopAreas.containsKey(stopAreaId))
+			if (!stopAreaContext.containsKey(stopAreaId) || !stopAreas.containsKey(stopAreaChouetteId))
 
 			{
 				
@@ -105,18 +104,19 @@ public class ITLValidator extends AbstractValidator implements Validator<StopAre
 			{
 				// 2-NEPTUNE-ITL-4 : Check if ITL refers StopArea of ITL
 				// type
-				prepareCheckPoint(context, ITL_4);
-				StopArea stopArea = stopAreas.get(stopAreaId);
-				if (!stopArea.getAreaType().equals(ChouetteAreaEnum.ITL))
-				{
-					Context stopAreaData = (Context) stopAreaContext.get(stopAreaId);
-					lineNumber = ((Integer) stopAreaData.get(LINE_NUMBER)).intValue();
-					columnNumber = ((Integer) stopAreaData.get(COLUMN_NUMBER)).intValue();
-					
-					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, ITL_4, new DataLocation(fileName, lineNumber, columnNumber, (String) objectContext.get(ITL_NAME)),
-							stopArea.getAreaType().toString(),null, fileLocations.get( stopAreaId));
-				}
+//				@TODO : Si le parent n'existe pas, regarder s'il n'est pas dans les routingConstraint
+//				prepareCheckPoint(context, ITL_4);
+//				StopArea stopArea = stopAreas.get(stopAreaChouetteId);
+//				if (!stopArea.getAreaType().equals(ChouetteAreaEnum.ITL))
+//				{
+//					Context stopAreaData = (Context) stopAreaContext.get(stopAreaId);
+//					lineNumber = ((Integer) stopAreaData.get(LINE_NUMBER)).intValue();
+//					columnNumber = ((Integer) stopAreaData.get(COLUMN_NUMBER)).intValue();
+//					
+//					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+//					validationReporter.addCheckPointReportError(context, ITL_4, new DataLocation(fileName, lineNumber, columnNumber, (String) objectContext.get(ITL_NAME)),
+//							stopArea.getAreaType().toString(),null, fileLocations.get(stopAreaChouetteId));
+//				}
 			}
 
 			// 2-NEPTUNE-ITL-5 : Check if ITL refers Line

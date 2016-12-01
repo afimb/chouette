@@ -73,7 +73,6 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
 		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-//		Map<String, Location> fileLocations = data.getFileLocations();
 		Map<ChouetteId, DataLocation> fileLocations = data.getDataLocations();
 
 
@@ -86,9 +85,6 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 		for (String objectId : localContext.keySet()) 
 		{
 			Context objectContext = (Context) localContext.get(objectId);
-//			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
-//			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();		
-//          FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 			DataLocation sourceLocation = fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),AccessLink.class));
 
 

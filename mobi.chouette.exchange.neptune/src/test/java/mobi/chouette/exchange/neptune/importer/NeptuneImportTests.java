@@ -308,7 +308,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		utx.begin();
 		em.joinTransaction();
 		Line line = lineDao.findByChouetteId("NINOXE", "15574334");
-		
+		log.warn("Line " + line.getCodeSpace() + ":" + line.getTechnicalId());
 		NeptuneTestsUtils.checkMinimalLine(context, line);
 		
 		utx.rollback();

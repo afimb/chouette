@@ -39,9 +39,8 @@ public class HubArretProducer extends AbstractProducer {
 	private HubArret hubObject = new HubArret();
 
 	public boolean save(Context context, StopArea neptuneObject) {
-		// ignore StopPlaces or ITL area
-		if (neptuneObject.getAreaType().equals(ChouetteAreaEnum.StopPlace)
-				|| neptuneObject.getAreaType().equals(ChouetteAreaEnum.ITL))
+		// ignore StopPlaces
+		if (neptuneObject.getAreaType().equals(ChouetteAreaEnum.StopPlace))
 			return true;
 
 		hubObject.clear();

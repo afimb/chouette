@@ -107,7 +107,8 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 		for (String objectId : localContext.keySet()) 
 		{
 			Context objectContext = (Context) localContext.get(objectId);
-
+			ChouetteId objectChouetteId = neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),JourneyPattern.class);
+			
 			// 2-NEPTUNE-JourneyPattern-1 : check existence of route
 			if (objectContext.containsKey(ROUTE_ID))
 			{
@@ -115,7 +116,7 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 				if (!routesContext.containsKey(routeId))
 				{
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, JOURNEY_PATTERN_1, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),JourneyPattern.class)), routeId);
+					validationReporter.addCheckPointReportError(context, JOURNEY_PATTERN_1, fileLocations.get(objectChouetteId), routeId);
 				}
 			}
 	         // 2-NEPTUNE-JourneyPattern-2 : check existence of StopPoints
@@ -125,7 +126,7 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 	            if (!stopPointsContext.containsKey(stopPointId))
 	            {
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, JOURNEY_PATTERN_2, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),JourneyPattern.class)), stopPointId);
+					validationReporter.addCheckPointReportError(context, JOURNEY_PATTERN_2, fileLocations.get(objectChouetteId), stopPointId);
 	             
 	            }
 	         }
@@ -137,7 +138,7 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 	            if (!linesContext.containsKey(lineIdShortCut))
 	            {
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, JOURNEY_PATTERN_3, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),JourneyPattern.class)), lineIdShortCut);
+					validationReporter.addCheckPointReportError(context, JOURNEY_PATTERN_3, fileLocations.get(objectChouetteId), lineIdShortCut);
 	            }
 
 	         }

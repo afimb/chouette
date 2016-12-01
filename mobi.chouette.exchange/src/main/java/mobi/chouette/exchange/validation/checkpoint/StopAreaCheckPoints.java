@@ -99,10 +99,7 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 
 		for (int i = 0; i < beans.size(); i++) {
 			StopArea stopArea = beans.get(i);
-			// no test for ITL
-			if (stopArea.getAreaType().equals(ChouetteAreaEnum.ITL))
-				continue;
-
+			
 			if (!sourceFile) {
 				check3StopArea1(context, stopArea);
 			}

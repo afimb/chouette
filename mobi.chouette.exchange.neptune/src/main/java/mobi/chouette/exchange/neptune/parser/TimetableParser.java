@@ -89,7 +89,7 @@ public class TimetableParser implements Parser, Constant {
 			} else if (xpp.getName().equals("vehicleJourneyId")) {
 				String vehicleJourneyId = ParserUtils.getText(xpp.nextText());
 				VehicleJourney vehicleJourney = NeptuneChouetteIdObjectUtil
-						.getVehicleJourney(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),VehicleJourney.class));
+						.getVehicleJourney(referential, neptuneChouetteIdGenerator.toChouetteId(vehicleJourneyId, parameters.getDefaultCodespace(),VehicleJourney.class));
 				timetable.addVehicleJourney(vehicleJourney);
 				validator.addVehicleJourneyId(context, objectId, vehicleJourneyId);
 			} else {

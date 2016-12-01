@@ -84,7 +84,8 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 
 		for (String objectId : localContext.keySet()) {
 			Context objectContext = (Context) localContext.get(objectId);
-
+			ChouetteId objectChouetteId = neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Timetable.class);
+			
 			boolean vjFound = false;
 			if (objectContext.containsKey(VEHICLE_JOURNEY_ID)) {
 				for (String vjId : (List<String>) objectContext.get(VEHICLE_JOURNEY_ID)) {
@@ -95,7 +96,7 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 			}
 			if (!vjFound) {
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-				validationReporter.addCheckPointReportError(context, TIMETABLE_1, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Timetable.class)));
+				validationReporter.addCheckPointReportError(context, TIMETABLE_1, fileLocations.get(objectChouetteId));
 			}
 
 			Timetable timetable = timetables.get(objectId);
@@ -107,7 +108,7 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 					if (period.getEndDate().after(period.getStartDate()))
 						continue;
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, TIMETABLE_3, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Timetable.class)));
+					validationReporter.addCheckPointReportError(context, TIMETABLE_3, fileLocations.get(objectChouetteId));
 					break;
 				}
 

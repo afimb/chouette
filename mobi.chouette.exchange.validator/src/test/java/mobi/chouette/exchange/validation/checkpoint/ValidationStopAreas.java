@@ -409,12 +409,6 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		double minLon = 180;
 		double maxLon = -180;
 		for (StopArea area : beans) {
-			if (area.getAreaType().equals(ChouetteAreaEnum.ITL))
-			{
-				log.info("présence itl anormale : " + area.getChouetteId().toString());
-				continue;
-			}
-				
 			if (area.getLatitude().doubleValue() > maxLat)
 				maxLat = area.getLatitude().doubleValue();
 			if (area.getLatitude().doubleValue() < minLat)

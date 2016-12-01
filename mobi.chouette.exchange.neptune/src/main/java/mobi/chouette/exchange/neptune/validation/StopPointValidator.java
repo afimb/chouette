@@ -109,7 +109,8 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 		for (String objectId : localContext.keySet()) 
 		{
 			Context objectContext = (Context) localContext.get(objectId);
-
+			ChouetteId objectChouetteId = neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),StopPoint.class);
+			
 	         if (objectContext.containsKey(LINE_ID_SHORTCUT))
 	         {
 	            // 2-NEPTUNE-StopPoint-1 : check existence of line referred by lineIdShortcut
@@ -118,7 +119,7 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 	            if (!linesContext.containsKey(lineIdShortCut))
 	            {
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, STOP_POINT_1, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),StopPoint.class)), lineIdShortCut);
+					validationReporter.addCheckPointReportError(context, STOP_POINT_1, fileLocations.get(objectChouetteId), lineIdShortCut);
 	            }
 
 	         }
@@ -130,7 +131,7 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 	            if (!networksContext.containsKey(ptNetworkIdShortcut))
 	            {
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, STOP_POINT_2, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),StopPoint.class)), ptNetworkIdShortcut);
+					validationReporter.addCheckPointReportError(context, STOP_POINT_2, fileLocations.get(objectChouetteId), ptNetworkIdShortcut);
 	            }
 
 	         }
@@ -139,13 +140,13 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 	         if (!stopAreasContext.containsKey(containedIn))
 	         {
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, STOP_POINT_3, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),StopPoint.class)), containedIn);
+					validationReporter.addCheckPointReportError(context, STOP_POINT_3, fileLocations.get(objectChouetteId), containedIn);
 	         }
 
 	         if (!LongLatTypeEnum.WGS84.equals(objectContext.get(LONG_LAT_TYPE)))
 	         {
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, STOP_POINT_4, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),StopPoint.class)), objectContext.get(LONG_LAT_TYPE).toString());
+					validationReporter.addCheckPointReportError(context, STOP_POINT_4, fileLocations.get(objectChouetteId), objectContext.get(LONG_LAT_TYPE).toString());
 	         }
 		
 		}

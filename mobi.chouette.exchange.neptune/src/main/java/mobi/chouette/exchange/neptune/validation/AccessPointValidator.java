@@ -132,16 +132,17 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 				ChouetteId parentChouetteId = neptuneChouetteIdGenerator.toChouetteId(containedIn, parameters.getDefaultCodespace(), StopArea.class);
 				StopArea parent = stopAreas.get(parentChouetteId);
 				// 2-NEPTUNE-AccessPoint-2 : check type of containedIn stopArea
-				prepareCheckPoint(context,ACCESS_POINT_2);
-				if (parent.getAreaType().equals(ChouetteAreaEnum.ITL))
-				{
-					DataLocation targetLocation = fileLocations.get(parentChouetteId);
-					Map<String, Object> map = new HashMap<String, Object>();
-					map.put(CONTAINED_IN, containedIn);
-					
-					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, ACCESS_POINT_2, sourceLocation,null,null,targetLocation);
-				}
+//				@TODO : Si le parent n'existe pas, regarder s'il n'est pas dans les routingConstraint
+//				prepareCheckPoint(context,ACCESS_POINT_2);
+//				if (parent.getAreaType().equals(ChouetteAreaEnum.ITL))
+//				{
+//					DataLocation targetLocation = fileLocations.get(parentChouetteId);
+//					Map<String, Object> map = new HashMap<String, Object>();
+//					map.put(CONTAINED_IN, containedIn);
+//					
+//					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+//					validationReporter.addCheckPointReportError(context, ACCESS_POINT_2, sourceLocation,null,null,targetLocation);
+//				}
 			}
 
 			// 2-NEPTUNE-AccessPoint-3 : check presence of access links

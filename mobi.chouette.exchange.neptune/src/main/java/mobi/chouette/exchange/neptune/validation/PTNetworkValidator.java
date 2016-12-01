@@ -93,7 +93,7 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<N
 		{
 			// 2-NEPTUNE-PtNetwork-1 : check if lineId of line is present in list
 			Context objectContext = (Context) localContext.get(objectId);
-			ChouetteId networkId = neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Network.class);
+			ChouetteId networkChouetteId = neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Network.class);
 			List<String> lineIds = (List<String>) objectContext.get(LINE_ID);
 			if (lineIds != null)
 			{
@@ -101,7 +101,7 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<N
 				if (!lineIds.contains(lineId))
 				{
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, NETWORK_1, fileLocations.get(networkId), lineId);
+					validationReporter.addCheckPointReportError(context, NETWORK_1, fileLocations.get(networkChouetteId), lineId);
 				}
 			}
 			
@@ -110,11 +110,11 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<N
 			if (sourceType != null)
 			{
 				prepareCheckPoint(context, NETWORK_2);
-				Network network = networks.get(networkId);
+				Network network = networks.get(networkChouetteId);
 				if (!sourceType.equals(network.getSourceType().name()))
 				{
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, NETWORK_2, fileLocations.get(networkId), sourceType,network.getSourceType().name());
+					validationReporter.addCheckPointReportError(context, NETWORK_2, fileLocations.get(networkChouetteId), sourceType,network.getSourceType().name());
 				}
 			}
 

@@ -21,9 +21,5 @@ public enum ChouetteAreaEnum
    /**
     * Stop place
     */
-   StopPlace, 
-   /**
-    * Routing constraint group
-    */
-   ITL;
+   StopPlace
 }

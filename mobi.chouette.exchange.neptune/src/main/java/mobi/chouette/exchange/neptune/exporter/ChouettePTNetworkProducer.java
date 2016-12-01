@@ -18,13 +18,13 @@ import mobi.chouette.exchange.neptune.exporter.producer.AreaCentroidProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.CompanyProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.ConnectionLinkProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.GroupOfLineProducer;
+import mobi.chouette.exchange.neptune.exporter.producer.ITLProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.ITLStopAreaProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.JourneyPatternProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.LineProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.PTLinkProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.PTNetworkProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.RouteProducer;
-import mobi.chouette.exchange.neptune.exporter.producer.ITLProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.StopAreaProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.StopPointProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.TimeSlotProducer;
@@ -50,7 +50,6 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timeband;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
-import mobi.chouette.model.type.ChouetteAreaEnum;
 
 import org.trident.schema.trident.ChouettePTNetworkType;
 import org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea;
@@ -127,23 +126,21 @@ public class ChouettePTNetworkProducer extends NeptuneChouetteIdGenerator implem
 			stopArea.toProjection(projectionType);
 			ChouetteArea.StopArea jaxbStopArea = stopAreaProducer.produce(context, stopArea,addExtension);
 			// add children reference only for exported ones
-			if (!(stopArea.getAreaType().equals(ChouetteAreaEnum.ITL)))
+			for (StopArea child : stopArea.getContainedStopAreas())
 			{
-				for (StopArea child : stopArea.getContainedStopAreas())
+				if (collection.getStopAreas().contains(child))
 				{
-					if (collection.getStopAreas().contains(child))
-					{
-						jaxbStopArea.getContains().add(neptuneChouetteIdGenerator.toSpecificFormatId(child.getChouetteId(), parameters.getDefaultCodespace(), child));
-					}
-				}
-				for (StopPoint child : stopArea.getContainedStopPoints())
-				{
-					if (collection.getStopPoints().contains(child))
-					{
-						jaxbStopArea.getContains().add(neptuneChouetteIdGenerator.toSpecificFormatId(child.getChouetteId(), parameters.getDefaultCodespace(), child));
-					}
+					jaxbStopArea.getContains().add(neptuneChouetteIdGenerator.toSpecificFormatId(child.getChouetteId(), parameters.getDefaultCodespace(), child));
 				}
 			}
+			for (StopPoint child : stopArea.getContainedStopPoints())
+			{
+				if (collection.getStopPoints().contains(child))
+				{
+					jaxbStopArea.getContains().add(neptuneChouetteIdGenerator.toSpecificFormatId(child.getChouetteId(), parameters.getDefaultCodespace(), child));
+				}
+			}
+			
 			if (metadata != null && stopArea.hasCoordinates())
 				metadata.getSpatialCoverage().update(stopArea.getLongitude().doubleValue(), stopArea.getLatitude().doubleValue());
 			if (stopArea.hasAddress() || stopArea.hasCoordinates() || stopArea.hasProjection())
