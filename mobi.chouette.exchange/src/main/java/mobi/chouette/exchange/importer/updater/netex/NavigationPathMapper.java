@@ -68,7 +68,7 @@ public class NavigationPathMapper {
 		}
 
 		PathLinkInSequence pathLinks = new PathLinkInSequence()
-				.withPathLinkRef(new PathLinkRefStructure().withValue(pl.getId())).withOrder(BigInteger.ONE);
+				.withPathLinkRef(new PathLinkRefStructure().withRef(pl.getId())).withOrder(BigInteger.ONE);
 		NavigationPath np = new NavigationPath()
 				.withPathLinksInSequence(new PathLinksInSequence_RelStructure().withPathLinkInSequence(pathLinks))
 				.withId(link.getObjectId());
