@@ -6,26 +6,39 @@ import static mobi.chouette.exchange.validation.report.ValidationReporter.RESULT
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.rutebanken.netex.model.DataManagedObjectStructure;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 
 @Log4j
 public abstract class AbstractValidator implements Constant {
 
+	
+	public static final String _1_NETEX_DUPLICATE_IDS = "1-NETEXPROFILE-DuplicateIdentificators";
+	public static final String _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS = "1-NETEXPROFILE-MissingVersionAttribute";
+	public static final String _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS = "1-NETEXPROFILE-MissingReferenceVersionAttribute";
+	public static final String _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS = "1-NETEXPROFILE-UnresolvedReferenceToCommonElements";
+
+	
 	protected static final String PREFIX = "2-NETEX-";
 	protected static final String OBJECT_IDS = "encountered_ids";
 
@@ -145,6 +158,129 @@ public abstract class AbstractValidator implements Constant {
 
 	protected boolean isEmpty(String text) {
 		return text == null || text.isEmpty();
+	}
+
+	protected Node selectNode(String string, XPath xpath, Node dom) throws XPathExpressionException {
+		Node node = (Node) xpath.evaluate(string, dom, XPathConstants.NODE);
+		return node;
+	}
+
+	protected NodeList selectNodeSet(String string, XPath xpath, Node dom) throws XPathExpressionException {
+		NodeList node = (NodeList) xpath.evaluate(string, dom, XPathConstants.NODESET);
+		return node;
+	}
+
+	protected void verifyReferencesToCommonElements(Context context, Set<IdVersion> localRefs, Set<IdVersion> localIds, Map<IdVersion, List<String>> commonIds) {
+		if (commonIds != null) {
+			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+
+			Set<String> nonVersionedLocalRefs = localRefs.stream().map(e -> e.getId()).collect(Collectors.toSet());
+			Set<String> nonVersionedLocalIds = localIds.stream().map(e -> e.getId()).collect(Collectors.toSet());
+
+			Set<String> unresolvedReferences = new HashSet<>(nonVersionedLocalRefs);
+			unresolvedReferences.removeAll(nonVersionedLocalIds);
+
+			Set<String> commonIdsWithoutVersion = commonIds.keySet().stream().map(e -> e.getId()).collect(Collectors.toSet());
+			if (commonIdsWithoutVersion.size() > 0) {
+				for (String localRef : unresolvedReferences) {
+					if (!commonIdsWithoutVersion.contains(localRef)) {
+						// TODO add correct location
+						validationReporter.addCheckPointReportError(context, _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS,
+								new DataLocation((String) context.get(FILE_NAME)));
+						log.error("Unresolved reference to " + localRef + " in line file without any counterpart in the commonIds");
+					}
+				}
+			} else {
+				validationReporter.reportSuccess(context, _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS);
+			}
+		}
+	}
+
+	protected void verifyUseOfVersionOnRefsToLocalElements(Context context, Set<IdVersion> localIds, Set<IdVersion> localRefs) {
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+
+		Set<IdVersion> nonVersionedLocalRefs = localRefs.stream().filter(e -> e.getVersion() == null).collect(Collectors.toSet());
+		Set<String> localIdsWithoutVersion = localIds.stream().map(e -> e.getId()).collect(Collectors.toSet());
+
+		if (nonVersionedLocalRefs.size() > 0) {
+			for (IdVersion id : nonVersionedLocalRefs) {
+				if (localIdsWithoutVersion.contains(id.getId())) {
+					// TODO add correct location
+					validationReporter.addCheckPointReportError(context, _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS,
+							new DataLocation((String) context.get(FILE_NAME)));
+					log.error("Found local reference to " + id.getId() + " in line file without use of version-attribute");
+				}
+			}
+		} else {
+			validationReporter.reportSuccess(context, _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS);
+
+		}
+	}
+
+	protected void verifyUseOfVersionOnLocalElements(Context context, Set<IdVersion> localIds) {
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+
+		Set<IdVersion> nonVersionedLocalIds = localIds.stream().filter(e -> e.getVersion() == null).collect(Collectors.toSet());
+		if (nonVersionedLocalIds.size() > 0) {
+			for (IdVersion id : nonVersionedLocalIds) {
+				// TODO add correct location
+				validationReporter.addCheckPointReportError(context, _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS,
+						new DataLocation((String) context.get(FILE_NAME)));
+				log.error("Id " + id + " in line file does not have version attribute set");
+			}
+		} else {
+			validationReporter.reportSuccess(context, _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS);
+		}
+	}
+
+	protected void verifyNoDuplicatesWithCommonElements(Context context, Set<IdVersion> localIds, Map<IdVersion, List<String>> commonIds) {
+		if (commonIds != null) {
+			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+
+			Set<IdVersion> overlappingIds = new HashSet<>(localIds);
+			// Add code to check no duplicates as well as line file references to common files
+			boolean duplicates = overlappingIds.retainAll(commonIds.keySet());
+			if (duplicates) {
+				for (IdVersion id : overlappingIds) {
+					List<String> commonFileNames = commonIds.get(id);
+					for (String fileName : commonFileNames) {
+						// TODO add correct location
+						validationReporter.addCheckPointReportError(context, _1_NETEX_DUPLICATE_IDS, new DataLocation(fileName));
+
+					}
+					log.error("Id " + id + " used in both line file and common files "
+							+ ToStringBuilder.reflectionToString(commonFileNames.toArray(), ToStringStyle.SIMPLE_STYLE));
+				}
+			} else {
+				validationReporter.reportSuccess(context, _1_NETEX_DUPLICATE_IDS);
+
+			}
+		}
+	}
+
+	protected Set<IdVersion> collectEntityIdentificators(Context context, XPath xpath, Document dom) throws XPathExpressionException {
+		return collectIdOrRefWithVersion(context, xpath, dom, "id");
+	}
+
+	protected Set<IdVersion> collectEntityReferences(Context context, XPath xpath, Document dom) throws XPathExpressionException {
+		return collectIdOrRefWithVersion(context, xpath, dom, "ref");
+	}
+
+	protected Set<IdVersion> collectIdOrRefWithVersion(Context context, XPath xpath, Document dom, String attributeName) throws XPathExpressionException {
+		NodeList nodes = (NodeList) xpath.evaluate("//n:*[not(name()='Codespace') and @" + attributeName + "]", dom, XPathConstants.NODESET);
+		Set<IdVersion> ids = new HashSet<IdVersion>();
+		int idCount = nodes.getLength();
+		for (int i = 0; i < idCount; i++) {
+
+			String id = nodes.item(i).getAttributes().getNamedItem(attributeName).getNodeValue();
+			String version = null;
+			Node versionAttribute = nodes.item(i).getAttributes().getNamedItem("version");
+			if (versionAttribute != null) {
+				version = versionAttribute.getNodeValue();
+			}
+			ids.add(new IdVersion(id, version));
+		}
+		return ids;
 	}
 
 
