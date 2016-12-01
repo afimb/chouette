@@ -106,6 +106,7 @@ public interface ValidationReporter {
 	 * @param value
 	 */
 	void addCheckPointReportError(Context context, String checkPointName, DataLocation[] locations, String value);
+	
 	/**
 	 * Report if test is successful for specific checkpoint
 	 * @param context
@@ -140,14 +141,7 @@ public interface ValidationReporter {
 	 * @param severity
 	 */
 	void updateCheckPointReportSeverity(Context context, String checkPointName, CheckPointReport.SEVERITY severity);
-	
-//	/**
-//	 * Check if validation report validity
-//	 * @param context
-//	 * @return
-//	 */
-//	boolean checkValidationReportValidity(Context context);
-	
+		
 	/**
 	 * Check if checkpoint exists
 	 * @param context
@@ -155,14 +149,6 @@ public interface ValidationReporter {
 	 * @return
 	 */
 	boolean checkIfCheckPointExists(Context context, String checkPointName);
-	
-	/**
-	 * Add target location to checkpoint error
-	 * @param context
-	 * @param errorName
-	 * @param targetLocation
-	 */
-	void addTargetLocationToCheckPointError(Context context, String errorName, DataLocation targetLocation);
 	
 	/**
 	 * Clear all validation report checkpoints
@@ -186,6 +172,7 @@ public interface ValidationReporter {
 			return validationReporter;
 		}
 	}
+
 
 
 }

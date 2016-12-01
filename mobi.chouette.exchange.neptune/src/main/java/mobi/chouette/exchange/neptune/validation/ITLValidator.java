@@ -109,8 +109,8 @@ public class ITLValidator extends AbstractValidator implements Validator<StopAre
 					columnNumber = ((Integer) stopAreaData.get(COLUMN_NUMBER)).intValue();
 					
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, ITL_4, new DataLocation(fileName, lineNumber, columnNumber, (String) objectContext.get(ITL_NAME)), stopArea.getAreaType().toString());
-					validationReporter.addTargetLocationToCheckPointError(context, ITL_4, fileLocations.get( stopAreaId));
+					validationReporter.addCheckPointReportError(context, ITL_4, new DataLocation(fileName, lineNumber, columnNumber, (String) objectContext.get(ITL_NAME)),
+							stopArea.getAreaType().toString(),null, fileLocations.get( stopAreaId));
 				}
 			}
 
@@ -127,8 +127,7 @@ public class ITLValidator extends AbstractValidator implements Validator<StopAre
 					
 
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, ITL_5, new DataLocation(fileName, lineNumber, columnNumber, objectId), lineId);
-					validationReporter.addTargetLocationToCheckPointError(context, ITL_5, fileLocations.get(line.getObjectId()));
+					validationReporter.addCheckPointReportError(context, ITL_5, new DataLocation(fileName, lineNumber, columnNumber, objectId), lineId,null, fileLocations.get(line.getObjectId()));
 				}
 
 			}
