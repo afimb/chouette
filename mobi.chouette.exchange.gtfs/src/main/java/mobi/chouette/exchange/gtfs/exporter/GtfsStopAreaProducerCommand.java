@@ -123,7 +123,7 @@ public class GtfsStopAreaProducerCommand implements Command, Constant {
 		}
 		for (Iterator<StopArea> iterator = commercialStops.iterator(); iterator.hasNext();) {
 			StopArea stop = iterator.next();
-			if (!stopProducer.save(stop, sharedPrefix, null)) {
+			if (!stopProducer.save(stop, sharedPrefix, null, configuration.isKeepOriginalId())) {
 				iterator.remove();
 			} else {
 				stopCount++;
@@ -133,7 +133,7 @@ public class GtfsStopAreaProducerCommand implements Command, Constant {
 			}
 		}
 		for (StopArea stop : physicalStops) {
-			stopProducer.save(stop, sharedPrefix, commercialStops);
+			stopProducer.save(stop, sharedPrefix, commercialStops, configuration.isKeepOriginalId());
 			stopCount++;
 			// if (stop.hasCoordinates())
 			// metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(),
@@ -147,7 +147,7 @@ public class GtfsStopAreaProducerCommand implements Command, Constant {
 			} else if (!physicalStops.contains(link.getEndOfLink()) && !commercialStops.contains(link.getEndOfLink())) {
 				continue;
 			}
-			transferProducer.save(link, sharedPrefix);
+			transferProducer.save(link, sharedPrefix, configuration.isKeepOriginalId());
 			connectionLinkCount++;
 		}
 		reporter.addObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, "connection links", OBJECT_STATE.OK,
