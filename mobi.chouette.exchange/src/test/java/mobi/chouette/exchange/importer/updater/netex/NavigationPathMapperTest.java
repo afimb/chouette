@@ -50,8 +50,8 @@ public class NavigationPathMapperTest {
 		Assert.assertNotNull(fromEndStructure,"No from structure");
 		Assert.assertNotNull(toEndStructure,"No to structure");
 		
-		Assert.assertEquals(fromEndStructure.getPlaceRef().getValue(), from.getObjectId());
-		Assert.assertEquals(toEndStructure.getPlaceRef().getValue(), to.getObjectId());
+		Assert.assertEquals(fromEndStructure.getPlaceRef().getRef(), from.getObjectId());
+		Assert.assertEquals(toEndStructure.getPlaceRef().getRef(), to.getObjectId());
 		
 		Duration duration = DatatypeFactory.newInstance().newDuration("PT5M");
 		Assert.assertEquals(duration, pl.getTransferDuration().getDefaultDuration());
@@ -66,7 +66,7 @@ public class NavigationPathMapperTest {
 		Assert.assertNotNull(navigationPath.getPathLinksInSequence().getPathLinkInSequence(),"no pathlinkinsequence list in navigation path");
 		Assert.assertEquals(navigationPath.getPathLinksInSequence().getPathLinkInSequence().size(),1,"no path list in navigation path");
 		
-		Assert.assertEquals(navigationPath.getPathLinksInSequence().getPathLinkInSequence().get(0).getPathLinkRef().getValue(),link.getObjectId());
+		Assert.assertEquals(navigationPath.getPathLinksInSequence().getPathLinkInSequence().get(0).getPathLinkRef().getRef(),link.getObjectId());
 }
 	
     private StopArea createStopPlace(String name, String id) {
