@@ -44,6 +44,7 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.Referential;
+import org.xml.sax.SAXException;
 
 @Log4j
 @Stateless(name = NeTExStopPlaceRegisterUpdater.BEAN_NAME)
@@ -84,12 +85,12 @@ public class NeTExStopPlaceRegisterUpdater {
 			this.client = null;
 		} else {
 			try {
-				this.client = new PublicationDeliveryClient(url);
-			} catch (JAXBException e) {
-				log.warn("Cannot initialize publication delivery client", e);
+				this.client = new PublicationDeliveryClient(url, true);
+			} catch (JAXBException | SAXException | IOException e) {
+				log.warn("Cannot initialize publication delivery client with URL '"+ url +"'", e);
 			}
 		}
-		
+
 		
 	}
 
@@ -200,7 +201,7 @@ public class NeTExStopPlaceRegisterUpdater {
 			PublicationDeliveryStructure response = null;
 			try {
 				response = client.sendPublicationDelivery(publicationDelivery);
-			} catch (JAXBException | IOException e) {
+			} catch (JAXBException | IOException | SAXException e) {
 				log.warn("Got exception while sending publication delivery with " + stopPlaces.size() + " stop places. correlationId: "+correlationId,
 						e);
 				return;
