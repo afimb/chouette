@@ -43,39 +43,7 @@ public class TimeSlotValidator extends AbstractValidator implements Validator<Ti
 			if (target.getBeginningSlotTime().after(target.getFirstDepartureTimeInSlot()) ||
 					target.getFirstDepartureTimeInSlot().after(target.getLastDepartureTimeInSlot()) ||
 					target.getLastDepartureTimeInSlot().after(target.getEndSlotTime()))
-				; // addValidationError
-//		Context stopPointsContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
-//
-//		String fileName = (String) context.get(FILE_NAME);
-//
-//		// 2-NEPTUNE-PtLink-1 : check existence of start and end of links
-//		prepareCheckPoint(context, PT_LINK_1);
-//		for (String objectId : localContext.keySet()) 
-//		{
-//			Context objectContext = (Context) localContext.get(objectId);
-//			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
-//			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
-//			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
-//
-//			String start = (String) objectContext.get(START_OF_LINK_ID);
-//			if (!stopPointsContext.containsKey(start))
-//			{
-//				Detail errorItem = new Detail(
-//						PT_LINK_1,
-//						new Location(sourceLocation,objectId), start, "startOfLink");
-//				addValidationError(context,PT_LINK_1, errorItem);
-//			}
-//			String end = (String) objectContext.get(END_OF_LINK_ID);
-//			if (!stopPointsContext.containsKey(end))
-//			{
-//				Detail errorItem = new Detail(
-//						PT_LINK_1,
-//						new Location(sourceLocation,objectId), end, "endOfLink");
-//				addValidationError(context,PT_LINK_1, errorItem);
-//			}
-//
-//
-//		}
+				; 
 		return ;
 	}
 

@@ -68,12 +68,10 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 		Context stopAreasContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		Context accessPointsContext = (Context) validationContext.get(AccessPointValidator.LOCAL_CONTEXT);
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-//		Map<String, Location> fileLocations = data.getFileLocations();
 		Map<String, DataLocation> fileLocations = data.getDataLocations();
 
 		if (localContext == null || localContext.isEmpty()) return ;
 
-		// String fileName = (String) context.get(FILE_NAME);
 
 		// 2-NEPTUNE-AccessLink-1 : check existence of start and end of links
 		prepareCheckPoint(context, ACCESS_LINK_1);
@@ -81,9 +79,6 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 		for (String objectId : localContext.keySet()) 
 		{
 			Context objectContext = (Context) localContext.get(objectId);
-//			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
-//			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();		
-//          FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 			DataLocation sourceLocation = fileLocations.get(objectId);
 
 			boolean step1 = true;
@@ -92,10 +87,6 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 			if (!stopAreasContext.containsKey(start)
 					&& !accessPointsContext.containsKey(start))
 			{
-//				Detail errorItem = new Detail(
-//						ACCESS_LINK_1,
-//						sourceLocation /*new Location(sourceLocation,objectId)*/ , start);
-//				addValidationError(context,ACCESS_LINK_1, errorItem);
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 				validationReporter.addCheckPointReportError(context, ACCESS_LINK_1, sourceLocation, start);
 				step1 = false;
@@ -104,10 +95,6 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 			if (!stopAreasContext.containsKey(end)
 					&& !accessPointsContext.containsKey(end))
 			{
-//				Detail errorItem = new Detail(
-//						ACCESS_LINK_1,
-//						sourceLocation, end);
-//				addValidationError(context,ACCESS_LINK_1, errorItem);
 				
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 				validationReporter.addCheckPointReportError(context, ACCESS_LINK_1, sourceLocation, end);
@@ -125,10 +112,6 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 	         if (accessPointsContext.containsKey(start)
 	               && stopAreasContext.containsKey(end))
 	            continue;
-//				Detail errorItem = new Detail(
-//						ACCESS_LINK_2,
-//						sourceLocation, start , end);
-//				addValidationError(context,ACCESS_LINK_2, errorItem);
 				
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 				validationReporter.addCheckPointReportError(context, ACCESS_LINK_2, sourceLocation, start, end);
