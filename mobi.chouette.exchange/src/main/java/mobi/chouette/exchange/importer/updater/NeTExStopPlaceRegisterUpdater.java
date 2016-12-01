@@ -142,6 +142,7 @@ public class NeTExStopPlaceRegisterUpdater {
 				.map(stopPlaceMapper::mapStopAreaToStopPlace).collect(Collectors.toList());
 
 		SiteFrame siteFrame = new SiteFrame();
+		stopPlaceMapper.setVersion(siteFrame);
 		
 		// Find and convert ConnectionLinks
 		List<NavigationPath> nps = referential.getSharedConnectionLinks().values().stream()

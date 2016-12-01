@@ -1,13 +1,6 @@
 package mobi.chouette.exchange.importer.updater.netex;
 
-import org.rutebanken.netex.model.LocationStructure;
-import org.rutebanken.netex.model.MultilingualString;
-import org.rutebanken.netex.model.Quay;
-import org.rutebanken.netex.model.Quays_RelStructure;
-import org.rutebanken.netex.model.SimplePoint_VersionStructure;
-import org.rutebanken.netex.model.StopPlace;
-import org.rutebanken.netex.model.StopTypeEnumeration;
-import org.rutebanken.netex.model.Zone_VersionStructure;
+import org.rutebanken.netex.model.*;
 
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -17,6 +10,8 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 public class StopPlaceMapper {
+
+	private static final String VERSION = "any";
 
 	public StopArea createCommercialStopPoint(Referential referential, StopArea stopArea) {
 		StopArea parent = ObjectFactory.getStopArea(referential, stopArea.getObjectId()+"-PARENT");
@@ -98,6 +93,7 @@ public class StopPlaceMapper {
 	private StopPlace createStopPlace(StopArea stopArea) {
 		StopPlace stopPlace = new StopPlace();
 		mapId(stopArea, stopPlace);
+		setVersion(stopPlace);
 		mapCentroid(stopArea, stopPlace);
 		mapName(stopArea, stopPlace);
 		return stopPlace;
@@ -107,6 +103,7 @@ public class StopPlaceMapper {
 	private Quay createQuay(StopArea stopArea) {
 		Quay quay = new Quay();
 		mapId(stopArea, quay);
+		setVersion(quay);
 		mapCentroid(stopArea, quay);
 		mapName(stopArea, quay);
 		mapCompassBearing(stopArea,quay);
@@ -119,11 +116,16 @@ public class StopPlaceMapper {
 		}
 	}
 
+	public void setVersion(EntityInVersionStructure entity) {
+		entity.setVersion(VERSION);
+	}
+
 	private void mapId(StopArea stopArea, Zone_VersionStructure zone) {
 		zone.setId(stopArea.getObjectId());
 	}
 
 	public void mapCentroid(StopArea stopArea, Zone_VersionStructure zone) {
+		setVersion(zone);
 		if(stopArea.getLatitude() != null && stopArea.getLongitude() != null) {
 			zone.setCentroid(new SimplePoint_VersionStructure().withLocation(
 					new LocationStructure().withLatitude(stopArea.getLatitude()).withLongitude(stopArea.getLongitude())));
