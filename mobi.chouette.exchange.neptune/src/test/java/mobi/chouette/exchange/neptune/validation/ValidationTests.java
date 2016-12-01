@@ -88,7 +88,7 @@ public class ValidationTests implements Constant, ReportConstant
 
 	}
 
-   protected void verifyValidation(String testFile,
+   protected CheckPointErrorReport verifyValidation(String testFile,
          String mandatoryErrorTest, SEVERITY severity, RESULT status) throws Exception
    {
       Context context = initImportContext();
@@ -100,7 +100,7 @@ public class ValidationTests implements Constant, ReportConstant
       NeptuneValidationCommand validator = (NeptuneValidationCommand) CommandFactory.create(initialContext, NeptuneValidationCommand.class.getName());
       validator.execute(context);
       
-      checkMandatoryTest(context, mandatoryErrorTest, severity, status);
+      return checkMandatoryTest(context, mandatoryErrorTest, severity, status);
 
    }
 
@@ -139,9 +139,10 @@ public class ValidationTests implements Constant, ReportConstant
     * @param valReport
     * @param state
     */
-   private void checkMandatoryTest(Context context, String mandatoryTest, SEVERITY severity,
+   private CheckPointErrorReport checkMandatoryTest(Context context, String mandatoryTest, SEVERITY severity,
           RESULT state)
    {
+	   CheckPointErrorReport result = null;
 	   ValidationReport valReport = (ValidationReport) context.get(VALIDATION_REPORT);
       if (mandatoryTest.equals("NONE"))
       {
@@ -174,9 +175,11 @@ public class ValidationTests implements Constant, ReportConstant
         	 List<CheckPointErrorReport> details = checkReportForTest(valReport,mandatoryTest,-1);
         	 for (CheckPointErrorReport detail : details) {
 				Assert.assertTrue(detail.getKey().startsWith(detailKey),"details key should start with test key : expected "+detailKey+", found : "+detail.getKey());
-			}
+                if (result == null) result = detail;
+        	 }
          }
       }
+      return result;
    }
 	/**
 	 * check and return details for checkpoint

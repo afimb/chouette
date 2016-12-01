@@ -63,7 +63,6 @@ public class GroupOfLineValidator extends AbstractValidator implements Validator
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return ;
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-//		Map<String, Location> fileLocations = data.getFileLocations();
 		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		
 		
@@ -80,10 +79,6 @@ public class GroupOfLineValidator extends AbstractValidator implements Validator
 				prepareCheckPoint(context, GROUP_OF_LINE_1);
 				if (!lineIds.contains(lineId))
 				{
-//					Detail errorItem = new Detail(
-//							GROUP_OF_LINE_1,
-//							fileLocations.get(objectId), lineId);
-//					addValidationError(context, GROUP_OF_LINE_1, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, GROUP_OF_LINE_1, fileLocations.get(objectId), lineId);
 

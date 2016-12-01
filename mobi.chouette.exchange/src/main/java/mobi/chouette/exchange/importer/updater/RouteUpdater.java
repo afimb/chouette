@@ -16,7 +16,6 @@ import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
-import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;

@@ -69,16 +69,13 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		
+
 		// Database test init
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		validationReporter.addItemToValidationReport(context, "2-DATABASE-", "StopArea", 2, "W", "E");
 		validationReporter.addItemToValidationReport(context, DATABASE_ACCESS_POINT_1, "E");
-		validationReporter.addItemToValidationReport(context, DATABASE_CONNECTION_LINK_1_1, "W");
-		validationReporter.addItemToValidationReport(context, DATABASE_CONNECTION_LINK_1_2, "W");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		
-		
+
 		if (newValue.getAreaType() == null) {
 			log.error("stoparea without mandatory areatype " + newValue.getObjectId());
 			throw new IllegalArgumentException("area type null");
@@ -191,8 +188,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 				oldValue.setCompassBearing(newValue.getCompassBearing());
 			}
 		}
-		
-		
+
 		// StopArea Parent
 		if (newValue.getParent() == null) {
 			oldValue.setParent(null);
@@ -210,7 +206,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 				stopArea = ObjectFactory.getStopArea(cache, objectId);
 			}
 			if (context.containsKey(AREA_BLOC))
-			   oldValue.forceParent(stopArea);
+				oldValue.forceParent(stopArea);
 			else
 				oldValue.setParent(stopArea);
 			stopAreaUpdater.update(context, oldValue.getParent(), newValue.getParent());
@@ -238,7 +234,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			} else {
 				twoDatabaseAccessPointOneTest(validationReporter, context, accessPoint, item, data);
 			}
-			accessPoint.setContainedIn(oldValue);		
+			accessPoint.setContainedIn(oldValue);
 		}
 
 		Collection<Pair<AccessPoint, AccessPoint>> modifiedAccessPoint = CollectionUtil.intersection(
@@ -285,10 +281,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			for (ConnectionLink item : addedStartOfLink) {
 
 				ConnectionLink startOfLink = cache.getConnectionLinks().get(item.getObjectId());
-				if(startOfLink == null) {
+				if (startOfLink == null) {
 					startOfLink = ObjectFactory.getConnectionLink(cache, item.getObjectId());
-				} else {
-					twoDatabaseConnectionLinkStartOfLinkOneTest(validationReporter, context, startOfLink, item, data);
 				}
 				StopArea endOfLinkArea = cache.getStopAreas().get(item.getEndOfLink().getObjectId());
 				if (endOfLinkArea == null) {
@@ -300,7 +294,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 						endOfLinkArea = null; // ignored if not already saved
 				}
 				if (endOfLinkArea != null) {
-					
+
 					startOfLink.setStartOfLink(oldValue);
 					startOfLink.setEndOfLink(endOfLinkArea);
 				}
@@ -322,8 +316,6 @@ public class StopAreaUpdater implements Updater<StopArea> {
 				ConnectionLink endOfLink = cache.getConnectionLinks().get(item.getObjectId());
 				if (endOfLink == null) {
 					endOfLink = ObjectFactory.getConnectionLink(cache, item.getObjectId());
-				} else {
-					twoDatabaseConnectionLinkEndOfLinkOneTest(validationReporter, context, endOfLink, item, data);
 				}
 				StopArea startOfLinkArea = cache.getStopAreas().get(item.getStartOfLink().getObjectId());
 				if (startOfLinkArea == null) {
@@ -371,13 +363,11 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			if (area == null) {
 				area = ObjectFactory.getStopArea(cache, item.getObjectId());
 			}
-			
+
 			if (!area.isDetached() || area.isFilled())
 				oldValue.getRoutingConstraintAreas().add(area);
 		}
-		
-		
-		
+
 		Collection<Pair<StopArea, StopArea>> modifiedStopArea = CollectionUtil.intersection(
 				oldValue.getRoutingConstraintAreas(), newValue.getRoutingConstraintAreas(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -387,78 +377,59 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		monitor.stop();
 
 	}
-	
-	
+
 	/**
 	 * Test 2-DATABASE-StopArea-1
+	 * 
 	 * @param validationReporter
 	 * @param context
 	 * @param oldParent
 	 * @param newParent
 	 */
-	private void twoDatabaseStopAreaOneTest(ValidationReporter validationReporter, Context context, StopArea oldValue, StopArea newValue, ValidationData data) {
-		if(!NeptuneUtil.sameValue(oldValue.getParent(), newValue.getParent()))
-				validationReporter.addCheckPointReportError(context, DATABASE_STOP_AREA_1, data.getDataLocations().get(newValue.getObjectId()));
-			else
-				validationReporter.reportSuccess(context, DATABASE_STOP_AREA_1);
+	private void twoDatabaseStopAreaOneTest(ValidationReporter validationReporter, Context context, StopArea oldValue,
+			StopArea newValue, ValidationData data) {
+		if (!NeptuneUtil.sameValue(oldValue.getParent(), newValue.getParent()))
+			validationReporter.addCheckPointReportError(context, DATABASE_STOP_AREA_1,
+					data.getDataLocations().get(newValue.getObjectId()));
+		else
+			validationReporter.reportSuccess(context, DATABASE_STOP_AREA_1);
 	}
 
 	/**
 	 * Test 2-DATABASE-StopArea-2
+	 * 
 	 * @param validationReporter
 	 * @param context
 	 * @param oldSA
 	 * @param newSA
 	 */
-	private void twoDatabaseStopAreaTwoTest(ValidationReporter validationReporter, Context context, StopArea oldSA, StopArea newSA, ValidationData data) {
-		if(oldSA !=null && newSA != null) {
-			if(!NeptuneUtil.sameValue(oldSA.getAreaType(),newSA.getAreaType()))
-				validationReporter.addCheckPointReportError(context, DATABASE_STOP_AREA_2, data.getDataLocations().get(newSA.getObjectId()));
+	private void twoDatabaseStopAreaTwoTest(ValidationReporter validationReporter, Context context, StopArea oldSA,
+			StopArea newSA, ValidationData data) {
+		if (oldSA != null && newSA != null) {
+			if (!NeptuneUtil.sameValue(oldSA.getAreaType(), newSA.getAreaType()))
+				validationReporter.addCheckPointReportError(context, DATABASE_STOP_AREA_2,
+						data.getDataLocations().get(newSA.getObjectId()));
 			else
 				validationReporter.reportSuccess(context, DATABASE_STOP_AREA_2);
 		}
 	}
-	
+
 	/**
 	 * Test 2-DATABASE-Access-Point-1
+	 * 
 	 * @param validationReporter
 	 * @param context
 	 * @param oldAP
 	 * @param newAP
 	 * @param data
 	 */
-	private void twoDatabaseAccessPointOneTest(ValidationReporter validationReporter, Context context, AccessPoint oldAP, AccessPoint newAP, ValidationData data) {
-		if(!NeptuneUtil.sameValue(oldAP.getContainedIn(), newAP.getContainedIn()))
-			validationReporter.addCheckPointReportError(context, DATABASE_ACCESS_POINT_1, data.getDataLocations().get(newAP.getObjectId()));
+	private void twoDatabaseAccessPointOneTest(ValidationReporter validationReporter, Context context,
+			AccessPoint oldAP, AccessPoint newAP, ValidationData data) {
+		if (!NeptuneUtil.sameValue(oldAP.getContainedIn(), newAP.getContainedIn()))
+			validationReporter.addCheckPointReportError(context, DATABASE_ACCESS_POINT_1,
+					data.getDataLocations().get(newAP.getObjectId()));
 		else
 			validationReporter.reportSuccess(context, DATABASE_ACCESS_POINT_1);
 	}
-	
-	/**
-	 * Test 2-ConnectionLink-1-1
-	 * @param validationReporter
-	 * @param context
-	 * @param oldCL
-	 * @param newCL
-	 */
-	private void twoDatabaseConnectionLinkStartOfLinkOneTest(ValidationReporter validationReporter, Context context, ConnectionLink oldCL, ConnectionLink newCL, ValidationData data) {
-		if(!NeptuneUtil.sameValue(oldCL.getStartOfLink(), newCL.getStartOfLink()))
-			validationReporter.addCheckPointReportError(context, DATABASE_CONNECTION_LINK_1_1, data.getDataLocations().get(newCL.getObjectId()));
-		else
-			validationReporter.reportSuccess(context, DATABASE_CONNECTION_LINK_1_1);
-	}
-	
-	/**
-	 * Test 2-ConnectionLink-1-2
-	 * @param validationReporter
-	 * @param context
-	 * @param oldCL
-	 * @param newCL
-	 */
-	private void twoDatabaseConnectionLinkEndOfLinkOneTest(ValidationReporter validationReporter, Context context, ConnectionLink oldCL, ConnectionLink newCL, ValidationData data) {
-		if(!NeptuneUtil.sameValue(oldCL.getEndOfLink(), newCL.getEndOfLink()))
-			validationReporter.addCheckPointReportError(context, DATABASE_CONNECTION_LINK_1_2, data.getDataLocations().get(newCL.getObjectId()));
-		else
-			validationReporter.reportSuccess(context, DATABASE_CONNECTION_LINK_1_2);
-	}
+
 }

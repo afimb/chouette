@@ -36,10 +36,10 @@ import mobi.chouette.model.type.TransportModeNameEnum;
  * <li>3-VehicleJourney-7 : check if vehicle journey is included in its associated timeband</li>
  * <li>3-VehicleJourney-8 : check if some timesheet journey are included in frequency journeys</li>
  * </ul>
- * 
- * 
+ *
+ *
  * @author michel
- * 
+ *
  */
 @Log4j
 public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney> implements Validator<VehicleJourney> {
@@ -616,7 +616,6 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 
 	private boolean compareJourneyFrequencyToVehicleJourneyAtStop(Context context, VehicleJourney currentVj, JourneyFrequency jf, List<VehicleJourney> beans) {
 			boolean ok = true;
-			log.info("Vehicle journey list size : "+ beans.size());
 			for(VehicleJourney vj: beans) {
 				if(vj.getJourneyCategory().equals(JourneyCategoryEnum.Timesheet)) {
 					VehicleJourneyAtStop vjas = vj.getVehicleJourneyAtStops().get(0);

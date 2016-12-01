@@ -158,7 +158,6 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return ;
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-//		Map<String, Location> fileLocations = data.getFileLocations();
 		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		Context stopPointsContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
 		Context routesContext = (Context) validationContext.get(ChouetteRouteValidator.LOCAL_CONTEXT);
@@ -203,10 +202,6 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 			String routeId = (String) objectContext.get(ROUTE_ID);
 			if (!routesContext.containsKey(routeId))
 			{
-//				Detail errorItem = new Detail(
-//						VEHICLE_JOURNEY_1,
-//						fileLocations.get(objectId), routeId.toString());
-//				addValidationError(context,VEHICLE_JOURNEY_1, errorItem);
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 				validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_1, fileLocations.get(objectId), routeId.toString());
 				
@@ -226,10 +221,6 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				prepareCheckPoint(context,VEHICLE_JOURNEY_2);
 				if (!journeyPatternsContext.containsKey(objectContext.get(JOURNEY_PATTERN_ID)))
 				{
-//					Detail errorItem = new Detail(
-//							VEHICLE_JOURNEY_2,
-//							fileLocations.get(objectId), objectContext.get(JOURNEY_PATTERN_ID).toString());
-//					addValidationError(context,VEHICLE_JOURNEY_2, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, fileLocations.get(objectId), objectContext.get(JOURNEY_PATTERN_ID).toString());
 					fkOK = false;
@@ -243,10 +234,6 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				VehicleJourney vj = vehicleJourneys.get(objectId);
 				if (vj.getRoute().getJourneyPatterns().size() != 1)
 				{
-//					Detail errorItem = new Detail(
-//							VEHICLE_JOURNEY_8,
-//							fileLocations.get(objectId));
-//					addValidationError(context,VEHICLE_JOURNEY_8, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_8, fileLocations.get(objectId));
 					fkOK = false;					
@@ -264,10 +251,6 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				prepareCheckPoint(context,VEHICLE_JOURNEY_3);
 				if (!linesContext.containsKey(objectContext.get(LINE_ID_SHORTCUT)))
 				{
-//					Detail errorItem = new Detail(
-//							VEHICLE_JOURNEY_3,
-//							fileLocations.get(objectId), objectContext.get(LINE_ID_SHORTCUT).toString());
-//					addValidationError(context,VEHICLE_JOURNEY_3, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_3, fileLocations.get(objectId), objectContext.get(LINE_ID_SHORTCUT).toString());
 				}
@@ -278,10 +261,6 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				prepareCheckPoint(context,VEHICLE_JOURNEY_4);
 				if (!companiesContext.containsKey(objectContext.get(OPERATOR_ID)))
 				{
-//					Detail errorItem = new Detail(
-//							VEHICLE_JOURNEY_4,
-//							fileLocations.get(objectId), objectContext.get(OPERATOR_ID).toString());
-//					addValidationError(context,VEHICLE_JOURNEY_4, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_4, fileLocations.get(objectId), objectContext.get(OPERATOR_ID).toString());
 				}
@@ -292,10 +271,6 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				prepareCheckPoint(context, VEHICLE_JOURNEY_5);
 				if (!timeSlotsContext.containsKey(objectContext.get(TIME_SLOT_ID)))
 				{
-//					Detail errorItem = new Detail(
-//							VEHICLE_JOURNEY_5,
-//							fileLocations.get(objectId), objectContext.get(TIME_SLOT_ID).toString());
-//					addValidationError(context,VEHICLE_JOURNEY_5, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_5, fileLocations.get(objectId), objectContext.get(TIME_SLOT_ID).toString());
 				}
@@ -312,8 +287,6 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 			{
 				Integer lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
 				Integer columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
-//				Location vjasLocation = new Location(new FileLocation(fileName, lineNumber, columnNumber),objectId);
-//				vjasLocation.setLine(fileLocations.get(objectId).getLine());
 				
 				DataLocation vjasLocation = new DataLocation(fileName, lineNumber, columnNumber, objectId);
 				vjasLocation.setPath(fileLocations.get(objectId).getPath());
@@ -321,10 +294,6 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				String stopPointId = (String) vjas.get(STOP_POINT_ID);
 				if (!stopPointsContext.containsKey(stopPointId))
 				{
-//					Detail errorItem = new Detail(
-//							VEHICLE_JOURNEY_AT_STOP_1,
-//							vjasLocation, stopPointId);
-//					addValidationError(context,VEHICLE_JOURNEY_AT_STOP_1, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_AT_STOP_1, vjasLocation, stopPointId);
 					
@@ -341,10 +310,6 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 					prepareCheckPoint(context, VEHICLE_JOURNEY_AT_STOP_2);
 					if (!objectId.equals(vehicleJourneyId))
 					{
-//						Detail errorItem = new Detail(
-//								VEHICLE_JOURNEY_AT_STOP_2,
-//								vjasLocation, vehicleJourneyId);
-//						addValidationError(context,VEHICLE_JOURNEY_AT_STOP_2, errorItem);
 						ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 						validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_AT_STOP_2, vjasLocation, vehicleJourneyId);
 					}
@@ -360,10 +325,6 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 					unreferencedJourneyPatterns.remove(journeyPatternId);
 					if (!jpRouteId.equals(routeId))
 					{
-//						Detail errorItem = new Detail(
-//								VEHICLE_JOURNEY_6,
-//								fileLocations.get(objectId), journeyPatternId,routeId);
-//						addValidationError(context,VEHICLE_JOURNEY_6, errorItem);
 						ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 						validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_6, fileLocations.get(objectId), journeyPatternId,routeId);
 					} else
@@ -373,10 +334,6 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 						if (stopsOfVj.size() != stops.size()
 								|| !stops.containsAll(stopsOfVj))
 						{
-//							Detail errorItem = new Detail(
-//									VEHICLE_JOURNEY_AT_STOP_4,
-//									fileLocations.get(objectId), journeyPatternId);
-//							addValidationError(context,VEHICLE_JOURNEY_AT_STOP_4, errorItem);
 							ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 							validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_AT_STOP_4, fileLocations.get(objectId), journeyPatternId);
 						}
@@ -396,10 +353,6 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				sequence.retainAll(stopsOfVj);
 				if (!sequence.equals(stopsOfVj))
 				{
-//					Detail errorItem = new Detail(
-//							VEHICLE_JOURNEY_AT_STOP_3,
-//							fileLocations.get(objectId), routeId);
-//					addValidationError(context,VEHICLE_JOURNEY_AT_STOP_3, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_AT_STOP_3, fileLocations.get(objectId), routeId);
 				}
@@ -410,10 +363,6 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 			// unused journeyPatterns : warning
 			for (String jpId : unreferencedJourneyPatterns)
 			{
-//				Detail errorItem = new Detail(
-//						VEHICLE_JOURNEY_7,
-//						fileLocations.get(jpId));
-//				addValidationError(context,VEHICLE_JOURNEY_7, errorItem);
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 				validationReporter.addCheckPointReportError(context, VEHICLE_JOURNEY_7, fileLocations.get(jpId));
 
