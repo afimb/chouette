@@ -11,7 +11,7 @@ import mobi.chouette.model.util.Referential;
 
 public class StopPlaceMapper {
 
-	private static final String VERSION = "any";
+	private static final String VERSION = "1";
 
 	public StopArea createCommercialStopPoint(Referential referential, StopArea stopArea) {
 		StopArea parent = ObjectFactory.getStopArea(referential, stopArea.getObjectId()+"-PARENT");
