@@ -76,7 +76,7 @@ public class JobServiceManager {
 
 	private String rootDirectory;
 
-	private static Set<String> intializedContexts = new HashSet<>();
+	private Set<String> intializedContexts = new HashSet<>();
 
 	@PostConstruct
 	public synchronized void init() {
