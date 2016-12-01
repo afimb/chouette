@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.importer.updater;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Time;
@@ -8,10 +9,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.util.JAXBSource;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.client.PublicationDeliveryClient;
@@ -31,6 +36,7 @@ import org.rutebanken.netex.model.SiteFrame;
 import org.rutebanken.netex.model.StopPlace;
 import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
 import org.rutebanken.netex.model.TransferDurationStructure;
+import org.rutebanken.netex.validation.NeTExValidator;
 import org.testng.Assert;
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
@@ -48,7 +54,7 @@ import mobi.chouette.model.util.Referential;
 import org.xml.sax.SAXException;
 
 public class NeTExStopPlaceRegisterUpdaterTest {
-	
+
 	@Test
 	public void convertStopAreaAndConnectionLink() throws Exception {
 
@@ -111,12 +117,30 @@ public class NeTExStopPlaceRegisterUpdaterTest {
 		AssertJUnit.assertEquals(referential.getSharedConnectionLinks().values().iterator().next().getObjectId(), "NHR:PathLink:1");
 	}
 
+	/**
+	 * Validate PublicationDeliveryStructure.
+	 */
+	private void validate(PublicationDeliveryStructure publicationDeliveryStructure) throws JAXBException, IOException {
+		JAXBContext jaxbContext = JAXBContext.newInstance(PublicationDeliveryStructure.class);
+		Marshaller marshaller = jaxbContext.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+		JAXBSource jaxbSource = new JAXBSource(jaxbContext, new org.rutebanken.netex.model.ObjectFactory().createPublicationDelivery(publicationDeliveryStructure));
+		try {
+			NeTExValidator neTExValidator = new NeTExValidator();
+			neTExValidator.getSchema().newValidator().validate(jaxbSource);
+		} catch (SAXException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	private PublicationDeliveryClient createMockedPublicationDeliveryClient(StopArea stopArea) throws JAXBException, IOException, SAXException {
 		return new PublicationDeliveryClient("") {
 			@Override
 			public PublicationDeliveryStructure sendPublicationDelivery(
 					PublicationDeliveryStructure publicationDelivery) throws JAXBException, IOException {
+
+				validate(publicationDelivery);
 
 				Assert.assertEquals(1, ((SiteFrame)publicationDelivery.getDataObjects().getCompositeFrameOrCommonFrame().get(0).getValue()).getStopPlaces().getStopPlace().size(),"StopPlaces not unique");
 
