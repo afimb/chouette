@@ -172,7 +172,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		assertActionReport(report, STATUS_OK, 8, 1);
 		assertObjectTypeHasState(report, OBJECT_TYPE.LINE, OBJECT_STATE.OK);
-		assertValidationReport(validationReport, 17, 1, 51);
+		assertValidationReport(validationReport, 17, 1, 49);
 
 		// line should be saved
 		utx.begin();
@@ -269,7 +269,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		assertActionReport(report, STATUS_OK, 8, 1);
 		assertStats(report, 1, 57);
 		assertObjectTypeHasState(report, OBJECT_TYPE.LINE, OBJECT_STATE.OK);
-		assertValidationReport(validationReport, 18, 0, 51);
+		assertValidationReport(validationReport, 18, 0, 49);
 
 		utx.begin();
 		em.joinTransaction();
@@ -315,7 +315,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		assertActionReport(report, STATUS_OK, 8, 1);
 		assertStats(report, 1, 9);
 		assertObjectTypeHasState(report, OBJECT_TYPE.LINE, OBJECT_STATE.OK);
-		assertValidationReport(validationReport, 17, 1, 51);
+		assertValidationReport(validationReport, 17, 1, 49);
 
 		// line should be saved
 		utx.begin();
@@ -369,7 +369,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		assertActionReport(report, STATUS_OK, 8, 1);
 		assertStats(report, 1, 3);
 		assertObjectTypeHasState(report, OBJECT_TYPE.LINE, OBJECT_STATE.OK);
-		assertValidationReport(validationReport, 16, 2, 51);
+		assertValidationReport(validationReport, 16, 2, 49);
 
 		// Reporter.log("report line :" + report.getLines().get(0).toString(), true);
 		// Assert.assertEquals(report.getLines().get(0).getStatus(), LINE_STATE.OK, "line status");
@@ -473,7 +473,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		assertActionReport(report, STATUS_OK, 8, 1);
 		assertStats(report, 1, 10);
 		assertObjectTypeHasState(report, OBJECT_TYPE.LINE, OBJECT_STATE.OK);
-		assertValidationReport(validationReport, 17, 1, 51);
+		assertValidationReport(validationReport, 17, 1, 49);
 
 		// line should be saved
 		utx.begin();
@@ -529,7 +529,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		assertStats(report, 1, 12);
 		assertObjectTypeHasState(report, OBJECT_TYPE.LINE, OBJECT_STATE.OK);
 		// TODO line below must be verified
-		assertValidationReport(validationReport, 13, 0, 56);
+		assertValidationReport(validationReport, 13, 0, 54);
 
 		System.out.println(ToStringBuilder.reflectionToString(report, ToStringStyle.MULTI_LINE_STYLE, true));
 
