@@ -271,16 +271,6 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 
 	}
 
-//	@Override
-//	public boolean checkValidationReportValidity(Context context) {
-//		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
-//		for (CheckPointReport checkPoint : validationReport.getCheckPoints()) {
-//			if (checkPoint.getSeverity().equals(SEVERITY.ERROR) && checkPoint.getState().equals(RESULT.NOK)) {
-//				return ERROR;
-//			}
-//		}
-//		return SUCCESS;
-//	}
 
 	@Override
 	public boolean checkIfCheckPointExists(Context context, String checkPointName) {
@@ -290,14 +280,5 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		return (checkPoint != null);
 	}
 
-	@Override
-	public void addTargetLocationToCheckPointError(Context context, String errorKey, DataLocation targetLocation) {
-		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-		CheckPointErrorReport checkPointError = validationReport.findCheckPointReportErrorByKey(errorKey);
-		if (checkPointError != null) {
-			Location location = new Location(targetLocation);
-			checkPointError.getTargets().add(location);
-		}
-	}
 
 }

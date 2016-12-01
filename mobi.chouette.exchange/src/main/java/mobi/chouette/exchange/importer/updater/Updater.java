@@ -20,8 +20,8 @@ public interface Updater<T> extends Constant {
 	public static final String DATABASE_STOP_AREA_1 = "2-DATABASE-StopArea-1";
 	public static final String DATABASE_STOP_AREA_2 = "2-DATABASE-StopArea-2";
 	public static final String DATABASE_ACCESS_POINT_1 = "2-DATABASE-AccessPoint-1";
-	public static final String DATABASE_CONNECTION_LINK_1_1 = "2-DATABASE-ConnectionLink-1-1";
-	public static final String DATABASE_CONNECTION_LINK_1_2 = "2-DATABASE-ConnectionLink-1-2";
+	public static final String DATABASE_CONNECTION_LINK_1 = "2-DATABASE-ConnectionLink-1";
+// 	public static final String DATABASE_CONNECTION_LINK_1_2 = "2-DATABASE-ConnectionLink-1-2";
 	
 	void update(Context context, T oldValue, T newValue) throws Exception;
 
