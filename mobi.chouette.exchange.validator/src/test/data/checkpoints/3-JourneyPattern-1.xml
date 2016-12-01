@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<ChouettePTNetwork>
-    <PTNetwork>
+<ChouettePTNetwork xmlns="http://www.trident.org/schema/trident" xmlns:acsb="http://www.ifopt.org.uk/acsb" xmlns:siri="http://www.siri.org.uk/siri">
+  <PTNetwork>
         <objectId>NINOXE:GroupOfLine:15563881</objectId>
         <objectVersion>2</objectVersion>
         <creationTime>2012-10-02T08:09:50.663Z</creationTime>

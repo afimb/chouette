@@ -33,24 +33,24 @@ public class PeriodeExporter extends ExporterImpl<HubPeriode> implements
 
 
 		@Override
-		public String to(Context context, HubPeriode input) {
+		public String to(HubContext hubContext, HubPeriode input) {
 			String result = null;
 			List<String> values = new ArrayList<String>();
-			values.add(STRING_CONVERTER.to(context, FIELDS.code,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code,
 					input.getCode(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.nom,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.nom,
 					input.getNom(), true));
-			values.add(DATE_CONVERTER.to(context, FIELDS.date_debut,
+			values.add(DATE_CONVERTER.to(hubContext, FIELDS.date_debut,
 					input.getDateDebut(), true));
-			values.add(DATE_CONVERTER.to(context, FIELDS.date_fin,
+			values.add(DATE_CONVERTER.to(hubContext, FIELDS.date_fin,
 					input.getDateFin(), true));
 			StringBuffer list = new StringBuffer();
 			for (Boolean jour : input.getCalendrier()) {
-				list.append(BOOLEAN_CONVERTER.to(context, FIELDS.calendrier,
+				list.append(BOOLEAN_CONVERTER.to(hubContext, FIELDS.calendrier,
 					jour, true));
 			}
 			values.add(list.toString());
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.identifiant,
 					input.getIdentifiant(), true));
 			result = Tokenizer.untokenize(values);
 			return result;

@@ -12,10 +12,13 @@ import mobi.chouette.common.Pair;
 import mobi.chouette.dao.RouteSectionDAO;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
+import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -24,18 +27,18 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 
 	public static final String BEAN_NAME = "JourneyPatternUpdater";
 
-	@EJB 
+	@EJB
 	private StopPointDAO stopPointDAO;
 
-	@EJB 
+	@EJB
 	private VehicleJourneyDAO vehicleJourneyDAO;
-	
-	@EJB 
+
+	@EJB
 	private RouteSectionDAO routeSectionDAO;
 
 	@EJB(beanName = VehicleJourneyUpdater.BEAN_NAME)
 	private Updater<VehicleJourney> vehicleJourneyUpdater;
-	
+
 	@EJB(beanName = RouteSectionUpdater.BEAN_NAME)
 	private Updater<RouteSection> routeSectionUpdater;
 
@@ -47,65 +50,81 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		}
 		newValue.setSaved(true);
 
+//		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
-
-		if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
+		
+		// Database test init
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		validationReporter.addItemToValidationReport(context, DATABASE_JOURNEY_PATTERN_1, "E");
+		validationReporter.addItemToValidationReport(context, DATABASE_VEHICLE_JOURNEY_1, "E");
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		
+		if (oldValue.isDetached()) {
+			// object does not exist in database
 			oldValue.setObjectId(newValue.getObjectId());
-		}
-		if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
 			oldValue.setObjectVersion(newValue.getObjectVersion());
-		}
-		if (newValue.getCreationTime() != null && !newValue.getCreationTime().equals(oldValue.getCreationTime())) {
 			oldValue.setCreationTime(newValue.getCreationTime());
-		}
-		if (newValue.getCreatorId() != null && !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
 			oldValue.setCreatorId(newValue.getCreatorId());
-		}
-		if (newValue.getName() != null && !newValue.getName().equals(oldValue.getName())) {
 			oldValue.setName(newValue.getName());
-		}
-		if (newValue.getComment() != null && !newValue.getComment().equals(oldValue.getComment())) {
 			oldValue.setComment(newValue.getComment());
-		}
-		if (newValue.getRegistrationNumber() != null
-				&& !newValue.getRegistrationNumber().equals(oldValue.getRegistrationNumber())) {
 			oldValue.setRegistrationNumber(newValue.getRegistrationNumber());
-		}
-		if (newValue.getPublishedName() != null && !newValue.getPublishedName().equals(oldValue.getPublishedName())) {
 			oldValue.setPublishedName(newValue.getPublishedName());
-		}
-
-		if (newValue.getSectionStatus() != null && !newValue.getSectionStatus().equals(oldValue.getSectionStatus())) {
 			oldValue.setSectionStatus(newValue.getSectionStatus());
+			oldValue.setDetached(false);
+		} else {
+			if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
+				oldValue.setObjectId(newValue.getObjectId());
+			}
+			if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
+				oldValue.setObjectVersion(newValue.getObjectVersion());
+			}
+			if (newValue.getCreationTime() != null && !newValue.getCreationTime().equals(oldValue.getCreationTime())) {
+				oldValue.setCreationTime(newValue.getCreationTime());
+			}
+			if (newValue.getCreatorId() != null && !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
+				oldValue.setCreatorId(newValue.getCreatorId());
+			}
+			if (newValue.getName() != null && !newValue.getName().equals(oldValue.getName())) {
+				oldValue.setName(newValue.getName());
+			}
+			if (newValue.getComment() != null && !newValue.getComment().equals(oldValue.getComment())) {
+				oldValue.setComment(newValue.getComment());
+			}
+			if (newValue.getRegistrationNumber() != null
+					&& !newValue.getRegistrationNumber().equals(oldValue.getRegistrationNumber())) {
+				oldValue.setRegistrationNumber(newValue.getRegistrationNumber());
+			}
+			if (newValue.getPublishedName() != null && !newValue.getPublishedName().equals(oldValue.getPublishedName())) {
+				oldValue.setPublishedName(newValue.getPublishedName());
+			}
+
+			if (newValue.getSectionStatus() != null && !newValue.getSectionStatus().equals(oldValue.getSectionStatus())) {
+				oldValue.setSectionStatus(newValue.getSectionStatus());
+			}
 		}
 		
+		
 		// RouteSections
-		if (!newValue.getRouteSections().equals(oldValue.getRouteSections()))
-		{
-			// List<RouteSection> sections = routeSectionDAO.findByObjectId(UpdaterUtils.getObjectIds(newValue.getRouteSections()));
-//            for (RouteSection object : sections) {
-//				cache.getRouteSections().put(object.getObjectId(), object);
-//			}
+		if (!newValue.getRouteSections().equals(oldValue.getRouteSections())) {
+			// List<RouteSection> sections =
+			// routeSectionDAO.findByObjectId(UpdaterUtils.getObjectIds(newValue.getRouteSections()));
+			// for (RouteSection object : sections) {
+			// cache.getRouteSections().put(object.getObjectId(), object);
+			// }
 			oldValue.getRouteSections().clear();
 			for (RouteSection item : newValue.getRouteSections()) {
 				RouteSection section = cache.getRouteSections().get(item.getObjectId());
-				if (section == null)
-				{
-					section = ObjectFactory.getRouteSection(cache,
-							item.getObjectId());
+				if (section == null) {
+					section = ObjectFactory.getRouteSection(cache, item.getObjectId());
 				}
 				oldValue.getRouteSections().add(section);
 			}
 		}
-		Collection<Pair<RouteSection, RouteSection>> modifiedRouteSection = CollectionUtil
-				.intersection(oldValue.getRouteSections(),
-						newValue.getRouteSections(),
-						NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<Pair<RouteSection, RouteSection>> modifiedRouteSection = CollectionUtil.intersection(
+				oldValue.getRouteSections(), newValue.getRouteSections(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<RouteSection, RouteSection> pair : modifiedRouteSection) {
-			routeSectionUpdater.update(context, pair.getLeft(),
-					pair.getRight());
+			routeSectionUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
-		
 
 		// StopPoint
 		Collection<StopPoint> addedStopPoint = CollectionUtil.substract(newValue.getStopPoints(),
@@ -195,7 +214,11 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			if (vehicleJourney == null) {
 				vehicleJourney = ObjectFactory.getVehicleJourney(cache, item.getObjectId());
 			}
-			vehicleJourney.setJourneyPattern(oldValue);
+			if(vehicleJourney.getJourneyPattern() != null) {
+				twoDatabaseVehicleJourneyOneTest(validationReporter, context, vehicleJourney, item, data);
+			} else {
+				vehicleJourney.setJourneyPattern(oldValue);
+			}
 		}
 
 		Collection<Pair<VehicleJourney, VehicleJourney>> modifiedVehicleJourney = CollectionUtil.intersection(
@@ -205,14 +228,23 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			vehicleJourneyUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
-		// Collection<VehicleJourney> removedVehicleJourney = CollectionUtils
-		// .substract(oldValue.getVehicleJourneys(),
-		// newValue.getVehicleJourneys(),
-		// NeptuneIdentifiedObjectComparator.INSTANCE);
-		// for (VehicleJourney vehicleJourney : removedVehicleJourney) {
-		// vehicleJourney.setJourneyPattern(null);
-		// vehicleJourneyDAO.delete(vehicleJourney);
-		// }
-	}
 
+//		monitor.stop();
+	}
+	
+	
+	/**
+	 * Test 2-DATABASE-VehicleJourney-1
+	 * @param validationReporter
+	 * @param context
+	 * @param oldVj
+	 * @param newVj
+	 */
+	private void twoDatabaseVehicleJourneyOneTest(ValidationReporter validationReporter, Context context, VehicleJourney oldVj, VehicleJourney newVj, ValidationData data) {
+		if(!NeptuneUtil.sameValue(oldVj.getJourneyPattern(), newVj.getJourneyPattern()))
+			validationReporter.addCheckPointReportError(context, DATABASE_VEHICLE_JOURNEY_1, data.getDataLocations().get(newVj.getObjectId()));
+		else
+			validationReporter.reportSuccess(context, DATABASE_VEHICLE_JOURNEY_1);
+	}
+	
 }

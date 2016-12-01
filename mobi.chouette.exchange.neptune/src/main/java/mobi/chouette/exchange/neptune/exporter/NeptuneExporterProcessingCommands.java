@@ -73,6 +73,8 @@ public class NeptuneExporterProcessingCommands implements ProcessingCommands, Co
 		NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(CONFIGURATION);
 		List<Command> commands = new ArrayList<>();
 		try {
+			if (parameters.isValidateAfterExport())
+				commands.add(CommandFactory.create(initialContext, NeptuneValidateExportCommand.class.getName()));
 			if (parameters.isAddMetadata())
 				commands.add(CommandFactory.create(initialContext, SaveMetadataCommand.class.getName()));
 			commands.add(CommandFactory.create(initialContext, CompressCommand.class.getName()));

@@ -182,5 +182,7 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 		// }
 
 	}
+	
+	
 
 }

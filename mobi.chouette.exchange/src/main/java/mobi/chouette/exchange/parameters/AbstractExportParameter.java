@@ -19,7 +19,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString(callSuper = true)
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "referencesType", "ids", "startDate", "endDate", "addMetadata" }, name = "actionExportParameter")
+@XmlType(propOrder = { "referencesType", "ids", "startDate", "endDate", "addMetadata" ,"validateAfterExport"}, name = "actionExportParameter")
 public class AbstractExportParameter extends AbstractParameter {
 
 	@Getter
@@ -46,6 +46,11 @@ public class AbstractExportParameter extends AbstractParameter {
 	@Setter
 	@XmlElement(name = "add_metadata", defaultValue = "true")
 	private boolean addMetadata = true;
+
+	@Getter
+	@Setter
+	@XmlElement(name = "validate_after_export", defaultValue = "false")
+	private boolean validateAfterExport = true;
 
 	public boolean isValid(Logger log, String[] allowedTypes) {
 		if (!super.isValid(log)) return false;

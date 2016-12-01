@@ -11,7 +11,7 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
-import mobi.chouette.exchange.gtfs.validation.ValidationReporter;
+import mobi.chouette.exchange.gtfs.validation.GtfsValidationReporter;
 import mobi.chouette.exchange.importer.AbstractDisposeImportCommand;
 
 import com.jamonapi.Monitor;
@@ -34,9 +34,9 @@ public class GtfsDisposeImportCommand extends AbstractDisposeImportCommand  impl
 			if (importer != null) {
 				importer.dispose();
 			}
-			ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
-			if (validationReporter != null) {
-				validationReporter.dispose();
+			GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
+			if (gtfsValidationReporter != null) {
+				gtfsValidationReporter.dispose();
 			}
 
 			result = SUCCESS;

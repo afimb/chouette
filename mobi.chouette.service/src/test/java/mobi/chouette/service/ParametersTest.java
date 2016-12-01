@@ -3,7 +3,6 @@ package mobi.chouette.service;
 import java.io.File;
 import java.nio.file.Files;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.dummy.importer.DummyImporterInputValidator;
@@ -11,7 +10,6 @@ import mobi.chouette.exchange.dummy.importer.DummyImporterInputValidator;
 import org.apache.log4j.BasicConfigurator;
 import org.testng.annotations.Test;
 
-@Log4j
 public class ParametersTest {
 
 	@Test

@@ -17,9 +17,9 @@ import java.util.List;
 import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.hub.model.HubCommune;
 import mobi.chouette.exchange.hub.model.exporter.HubExporterInterface;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.StopArea;
 
 
@@ -51,7 +51,7 @@ public class HubCommuneProducer extends AbstractProducer {
 		return true;
 	}
 	
-	public boolean saveAll(ActionReport report)
+	public boolean saveAll(Context context)
 	{
 
 		try {

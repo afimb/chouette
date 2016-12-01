@@ -1,5 +1,8 @@
 package mobi.chouette.exchange.neptune.exporter.producer;
 
+import java.math.BigDecimal;
+
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.LongLatTypeEnum;
 
@@ -8,6 +11,7 @@ import org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea;
 import org.trident.schema.trident.LongLatTypeType;
 import org.trident.schema.trident.ProjectedPointType;
 
+@Log4j
 public class AreaCentroidProducer extends
       AbstractJaxbNeptuneProducer<ChouetteArea.AreaCentroid, StopArea>
 {
@@ -48,6 +52,14 @@ public class AreaCentroidProducer extends
          {
             // TODO generate report
          }
+      }
+      else
+      {
+			log.error("missing coordinates for StopArea "+area.getObjectId()+" "+area.getName());    	  
+    	  // longitude/latitude mmandatory
+          jaxbAreaCentroid.setLatitude(BigDecimal.ZERO);
+          jaxbAreaCentroid.setLongitude(BigDecimal.ZERO);
+          jaxbAreaCentroid.setLongLatType(LongLatTypeType.WGS_84);
       }
 
       if (area.hasProjection())

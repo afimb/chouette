@@ -15,8 +15,8 @@ import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.importer.AbstractImporterCommand;
-import mobi.chouette.exchange.report.ActionError;
-import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -35,15 +35,14 @@ public class GtfsImporterCommand extends AbstractImporterCommand implements Comm
 
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
 				ProgressionCommand.class.getName());
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 		try {
 			// check params
 			Object configuration = context.get(CONFIGURATION);
 			if (!(configuration instanceof GtfsImportParameters)) {
 				// fatal wrong parameters
 				//log.error("invalid parameters for gtfs import " + configuration.getClass().getName());
-				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,
-						"invalid parameters for gtfs import " + configuration.getClass().getName()));
+				reporter.setActionError(context, ERROR_CODE.INVALID_PARAMETERS,"invalid parameters for gtfs import " + configuration.getClass().getName());
 				return ERROR;
 			}
 
@@ -56,11 +55,11 @@ public class GtfsImporterCommand extends AbstractImporterCommand implements Comm
 			result = process(context, commands, progression, true, (all?Mode.line:Mode.stopareas));
 
 		} catch (CommandCancelledException e) {
-			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Command cancelled"));
+			reporter.setActionError(context, ERROR_CODE.INTERNAL_ERROR, "Command cancelled");
 			log.error(e.getMessage());
 		} catch (Exception e) {
 			// log.error(e.getMessage(), e);
-			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Fatal :" + e));
+			reporter.setActionError(context, ERROR_CODE.INTERNAL_ERROR,"Fatal :" + e);
 		} finally {
 			progression.dispose(context);
 			log.info(Color.YELLOW + monitor.stop() + Color.NORMAL);

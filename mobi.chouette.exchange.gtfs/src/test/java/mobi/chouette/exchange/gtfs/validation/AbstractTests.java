@@ -2,6 +2,7 @@ package mobi.chouette.exchange.gtfs.validation;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -11,7 +12,6 @@ import javax.naming.NamingException;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.gtfs.validation.Constant;
 import mobi.chouette.exchange.gtfs.JobDataTest;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.importer.GtfsInitImportCommand;
@@ -20,17 +20,17 @@ import mobi.chouette.exchange.gtfs.importer.GtfsValidationRulesCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
-import mobi.chouette.exchange.validation.report.Detail;
+import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
+import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.ValidationReporter.RESULT;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
-import org.codehaus.jettison.json.JSONException;
 import org.testng.Assert;
+import org.testng.Reporter;
 
 public abstract class AbstractTests implements Constant, ReportConstant {
 
@@ -59,11 +59,10 @@ public abstract class AbstractTests implements Constant, ReportConstant {
 		}
 	}
 
-	protected final Context initImportContext(boolean all) {
+	protected final Context initImportContext(Context context, boolean all) {
 		// init();
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
 
-		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
 		context.put(REPORT, new ActionReport());
 		context.put(VALIDATION_REPORT, new ValidationReport());
@@ -100,9 +99,9 @@ public abstract class AbstractTests implements Constant, ReportConstant {
 
 	}
 
-	protected final CheckPoint verifyValidation(Logger log, String testFile, String mandatoryErrorTest,
-			CheckPoint.SEVERITY severity, RESULT status, boolean all) throws Exception {
-		Context context = initImportContext(all);
+	protected final CheckPointReport verifyValidation(Logger log, Context context, String testFile, String mandatoryErrorTest,
+			CheckPointReport.SEVERITY severity, RESULT status, boolean all) throws Exception {
+		initImportContext(context, all);
 		copyFile(context, testFile + ".zip");
 
 		Command uncompress = CommandFactory.create(initialContext, UncompressCommand.class.getName());
@@ -124,6 +123,20 @@ public abstract class AbstractTests implements Constant, ReportConstant {
 
 	}
 
+	protected List<CheckPointErrorReport> getDetails(Context context, CheckPointReport checkPoint)
+	{
+		List<CheckPointErrorReport> details = new ArrayList<>();
+		ValidationReport valReport = (ValidationReport) context.get(VALIDATION_REPORT);
+		
+		List<CheckPointErrorReport> errors = valReport.getCheckPointErrors();
+		for (Integer rank : checkPoint.getCheckPointErrorsKeys())
+		{
+			details.add(errors.get(rank.intValue()));
+		}
+		return details;
+		
+	}
+	
 	/**
 	 * @param log
 	 * @param mandatoryTest
@@ -132,10 +145,10 @@ public abstract class AbstractTests implements Constant, ReportConstant {
 	 * @param state
 	 * @return
 	 */
-	private CheckPoint checkMandatoryTest(Logger log, Context context, String mandatoryTest,
-			CheckPoint.SEVERITY severity, RESULT state) {
-		ValidationReport valReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-		for (CheckPoint phase : valReport.getCheckPoints()) {
+	private CheckPointReport checkMandatoryTest(Logger log, Context context, String mandatoryTest,
+			CheckPointReport.SEVERITY severity, RESULT state) {
+		ValidationReport valReport = (ValidationReport) context.get(VALIDATION_REPORT);
+		for (CheckPointReport phase : valReport.getCheckPoints()) {
 			if (!phase.getState().equals(RESULT.UNCHECK))
 			{
 				// log.info(phase.getName() + ":" + phase.getState());
@@ -144,39 +157,44 @@ public abstract class AbstractTests implements Constant, ReportConstant {
 			}
 		}
 		if (mandatoryTest.equals("NONE")) {
-			for (CheckPoint phase : valReport.getCheckPoints()) {
-				if (phase.getSeverity().equals(CheckPoint.SEVERITY.ERROR))
+			for (CheckPointReport phase : valReport.getCheckPoints()) {
+				if (phase.getSeverity().equals(CheckPointReport.SEVERITY.ERROR))
 					Assert.assertFalse(phase.getState().equals(RESULT.NOK), phase.getName() + " must have status " + state);
 			}
 			return null;
 		} else {
-			CheckPoint foundItem = null;
-			for (CheckPoint cp : valReport.getCheckPoints()) {
+			CheckPointReport foundItem = null;
+			for (CheckPointReport cp : valReport.getCheckPoints()) {
 				if (cp.getName().equals(mandatoryTest)) {
 					foundItem = cp;
 					break;
 				}
 
 			}
+			if (foundItem == null)
+			{
+				Reporter.log(valReport.toString(),true);
+			}
 			Assert.assertNotNull(foundItem, mandatoryTest + " must be reported");
 			Assert.assertEquals(foundItem.getSeverity(), severity, mandatoryTest + " must have severity " + severity);
 			Assert.assertEquals(foundItem.getState(), state, mandatoryTest + " must have status " + state);
 			if (foundItem.getState().equals(RESULT.NOK)) {
 				String detailKey = mandatoryTest.replaceAll("-", "_").toLowerCase();
-				Assert.assertNotEquals(foundItem.getDetails(), 0, "details should be present");
-				List<Detail> details = foundItem.getDetails();
-				for (Detail detail : details) {
+				Assert.assertNotEquals(foundItem.getCheckPointErrorsKeys().size(), 0, "details should be present");
+				List<CheckPointErrorReport> details = valReport.getCheckPointErrors();
+				for (Integer rank : foundItem.getCheckPointErrorsKeys()) {
+					CheckPointErrorReport detail = details.get(rank.intValue());
 					Assert.assertTrue(
 							detail.getKey().startsWith(detailKey),
 							"details key should start with test key : expected " + detailKey + ", found : "
 									+ detail.getKey());
 				}
 			}
-			try {
-				log.info("detail :"+foundItem.toJson().toString(2));
-			} catch (JSONException e) {
-				log.error("unable to convert to json");
-			}
+//			try {
+//				log.info("detail :"+foundItem.toJson().toString(2));
+//			} catch (JSONException e) {
+//				log.error("unable to convert to json");
+//			}
 			return foundItem; // for extra check
 		}
 	}

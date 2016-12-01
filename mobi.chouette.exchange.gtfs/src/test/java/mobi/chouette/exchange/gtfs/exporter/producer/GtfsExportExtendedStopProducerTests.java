@@ -11,7 +11,6 @@ import mobi.chouette.exchange.gtfs.model.GtfsStop.LocationType;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.WheelchairBoardingType;
 import mobi.chouette.exchange.gtfs.model.exporter.StopExtendedExporter;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
@@ -36,7 +35,6 @@ public class GtfsExportExtendedStopProducerTests
    {
       mock.reset();
 
-      ActionReport report = new ActionReport();
       StopArea neptuneObject = new StopArea();
       neptuneObject.setObjectId("GTFS:StopArea:4321");
       neptuneObject.setName("physical point");
@@ -58,7 +56,7 @@ public class GtfsExportExtendedStopProducerTests
       parents.add(parent);
       neptuneObject.setParent(parent);
 
-      producer.save(neptuneObject, report, "GTFS", parents);
+      producer.save(neptuneObject,  "GTFS", parents);
       GtfsStop gtfsObject = mock.getExportedStops().get(0);
       Reporter.log("verifyExtendedStopProducerWithFullData");
       Reporter.log(StopExtendedExporter.CONVERTER.to(context, gtfsObject));

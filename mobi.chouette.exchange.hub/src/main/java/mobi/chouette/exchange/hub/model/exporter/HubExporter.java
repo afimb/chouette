@@ -28,7 +28,6 @@ import mobi.chouette.exchange.hub.model.HubRenvoi;
 import mobi.chouette.exchange.hub.model.HubReseau;
 import mobi.chouette.exchange.hub.model.HubSchema;
 import mobi.chouette.exchange.hub.model.HubTransporteur;
-import mobi.chouette.exchange.report.ActionReport;
 
 @Log4j
 public class HubExporter implements HubExporterInterface {
@@ -46,10 +45,10 @@ public class HubExporter implements HubExporterInterface {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public void dispose(ActionReport report) {
+	public void dispose(mobi.chouette.common.Context context) {
 		for (Exporter exporter : _map.values()) {
 			try {
-				exporter.dispose(report);
+				exporter.dispose(context);
 			} catch (IOException e) {
 				log.error(e);
 			}
@@ -67,10 +66,10 @@ public class HubExporter implements HubExporterInterface {
 						.toString(), clazz.getName());
 				_map.put(name, result);
 			} catch (ClassNotFoundException | IOException e) {
-				Context context = new Context();
-				context.put(Context.PATH, _path);
-				context.put(Context.ERROR, ERROR.SYSTEM);
-				throw new HubException(context, e);
+				HubContext hubContext = new HubContext();
+				hubContext.put(HubContext.PATH, _path);
+				hubContext.put(HubContext.ERROR, ERROR.SYSTEM);
+				throw new HubException(hubContext, e);
 			}
 
 		}

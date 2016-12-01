@@ -64,7 +64,7 @@ public class RestService implements Constant {
 
 	@Inject
 	JobServiceManager jobServiceManager;
-
+	
 	@Context
 	UriInfo uriInfo;
 
@@ -79,14 +79,20 @@ public class RestService implements Constant {
 		try {
 			log.info(Color.CYAN + "Call upload referential = " + referential + ", action = " + action
 					+ (type == null ? "" : ", type = " + type) + Color.NORMAL);
-
+			
+			
+			
 			// Convertir les parametres fournis
 			type = parseType(type);
 			inputStreamByName = readParts(input);
+			
 
+					
+					
 			// Relayer le service au JobServiceManager
 			ResponseBuilder builder = Response.accepted();
 			{
+				
 				JobService jobService = jobServiceManager.create(referential, action, type, inputStreamByName);
 
 				// Produire la vue
@@ -119,7 +125,10 @@ public class RestService implements Constant {
 			log.info(Color.CYAN + "upload returns" + Color.NORMAL);
 		}
 	}
-
+	
+	
+	
+			
 	private WebApplicationException toWebApplicationException(ServiceException exception) {
 		return new WebApplicationException(exception.getMessage(), toWebApplicationCode(exception.getExceptionCode()));
 	}
@@ -149,6 +158,7 @@ public class RestService implements Constant {
 		case UNREADABLE_PARAMETERS:
 		case INVALID_PARAMETERS:
 		case INVALID_FILE_FORMAT:
+		case INVALID_FORMAT:
 		case ACTION_TYPE_MISMATCH:
 			return Status.BAD_REQUEST;
 		case UNKNOWN_REFERENTIAL:

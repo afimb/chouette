@@ -7,13 +7,12 @@ import java.util.Map;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
-import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.exchange.validation.report.DataLocation;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 
@@ -58,13 +57,13 @@ public class GroupOfLineValidator extends AbstractValidator implements Validator
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ValidationConstraints validate(Context context, GroupOfLine target) throws ValidationException
+	public void validate(Context context, GroupOfLine target) throws ValidationException
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
-		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
+		if (localContext == null || localContext.isEmpty()) return ;
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Map<String, Location> fileLocations = data.getFileLocations();
+		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		
 		
 		Context lineContext = (Context) validationContext.get(LineValidator.LOCAL_CONTEXT);
@@ -80,15 +79,14 @@ public class GroupOfLineValidator extends AbstractValidator implements Validator
 				prepareCheckPoint(context, GROUP_OF_LINE_1);
 				if (!lineIds.contains(lineId))
 				{
-					Detail errorItem = new Detail(
-							GROUP_OF_LINE_1,
-							fileLocations.get(objectId), lineId);
-					addValidationError(context, GROUP_OF_LINE_1, errorItem);
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, GROUP_OF_LINE_1, fileLocations.get(objectId), lineId);
+
 				}
 			}
 
 		}
-		return new ValidationConstraints();
+		return ;
 	}
 
 	public static class DefaultValidatorFactory extends ValidatorFactory {

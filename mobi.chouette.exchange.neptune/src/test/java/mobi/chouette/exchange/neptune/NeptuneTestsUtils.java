@@ -210,6 +210,35 @@ public class NeptuneTestsUtils implements Constant, ReportConstant{
                 		Assert.assertEquals(vj.getJourneyCategory(), JourneyCategoryEnum.Frequency, " vehicleJourney category should be frequency");
                 		Assert.assertEquals(vj.getJourneyFrequencies().size(), 1, " only one journeyFrequency");
                 	}
+                	
+                	/** GJT Check Offset coherence VehicleAtStop list on specific VehicleJourney */
+                	if ("NINOXE:VehicleJourney:15574500".equals(vj.getObjectId())) {
+                		Assert.assertEquals(vj.getJourneyCategory(), JourneyCategoryEnum.Timesheet, " vehicleJourney category should be timesheet");
+                		
+                		/** First stop */
+                		Assert.assertEquals(vj.getVehicleJourneyAtStops().get(0).getArrivalDayOffset(), 0, " arrival day offset should be 0");
+                		Assert.assertEquals(vj.getVehicleJourneyAtStops().get(0).getDepartureDayOffset(), 1, " departure day offset should be 1");
+                		
+                		/** Second stop */
+                		Assert.assertEquals(vj.getVehicleJourneyAtStops().get(1).getArrivalDayOffset(), 1, " arrival day offset should be 1");
+                		Assert.assertEquals(vj.getVehicleJourneyAtStops().get(1).getDepartureDayOffset(), 1, " departure day offset should be 1");
+                		
+                		/** Third stop */
+                		Assert.assertEquals(vj.getVehicleJourneyAtStops().get(2).getArrivalDayOffset(), 1, " arrival day offset should be 1");
+                		Assert.assertEquals(vj.getVehicleJourneyAtStops().get(2).getDepartureDayOffset(), 2, " departure day offset should be 2");
+                		
+                		/** Fourth stop */
+                		Assert.assertEquals(vj.getVehicleJourneyAtStops().get(3).getArrivalDayOffset(), 2, " arrival day offset should be 2");
+                		Assert.assertEquals(vj.getVehicleJourneyAtStops().get(3).getDepartureDayOffset(), 2, " departure day offset should be 2");
+                		
+                		/** Fifth stop */
+                		Assert.assertEquals(vj.getVehicleJourneyAtStops().get(4).getArrivalDayOffset(), 2, " arrival day offset should be 2");
+                		Assert.assertEquals(vj.getVehicleJourneyAtStops().get(4).getDepartureDayOffset(), 2, " departure day offset should be 2");
+                		
+                		/** Last stop */
+                		Assert.assertEquals(vj.getVehicleJourneyAtStops().get(5).getArrivalDayOffset(), 3, " arrival day offset should be 3");
+                		Assert.assertEquals(vj.getVehicleJourneyAtStops().get(5).getDepartureDayOffset(), 3, " departure day offset should be 3");
+                	}
 				}
 			}
 		}
