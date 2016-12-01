@@ -113,8 +113,8 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
             commands.add(commonFilesParser);
 
             for (Path file : allFiles) {
-                String url = file.toUri().toURL().toExternalForm();
-                if (!commonFiles.contains(url)) {
+                if (!commonFiles.contains(file)) {
+                    String url = file.toUri().toURL().toExternalForm();
                     Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
                     commands.add(chain);
 

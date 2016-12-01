@@ -55,9 +55,6 @@ public class NetexInitReferentialCommand implements Command, Constant {
             context.put(NETEX_LINE_DATA_JAVA, lineDeliveryStructure);
             context.put(NETEX_LINE_DATA_DOM, dom);
 
-            PublicationDeliveryParser parser = (PublicationDeliveryParser) ParserFactory.create(PublicationDeliveryParser.class.getName());
-            parser.initReferentials(context);
-
             result = SUCCESS;
         } catch (Exception e) {
             reporter.addFileErrorInReport(context, fileName, ActionReporter.FILE_ERROR_CODE.INTERNAL_ERROR, e.toString());
