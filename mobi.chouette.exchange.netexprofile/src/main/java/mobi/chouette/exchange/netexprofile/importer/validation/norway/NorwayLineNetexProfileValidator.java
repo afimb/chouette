@@ -36,40 +36,36 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 	private static final String NSR_URL = "http://www.nasjonaltstoppestedregister.rutebanken.no";
 	private static final String NSR_CODESPACE_PREFIX = "NSR";
 
-	private static final String _1_NETEX_TIMETABLE_FRAME = "1-NETEX-TimetableFrame";
-	private static final String _1_NETEX_SERVICE_CALENDAR_FRAME = "1-NETEX-ServiceCalendarFrame";
-	private static final String _1_NETEX_SERVICE_FRAME = "1-NETEX-ServiceFrame";
-	private static final String _1_NETEX_RESOURCE_FRAME = "1-NETEX-ResourceFrame";
-	private static final String _1_NETEX_CODESPACE = "1-NETEX-CompositeFrame_Codespace";
-	private static final String _1_NETEX_COMPOSITE_FRAME = "1-NETEX-CompositeFrame";
-	private static final String _1_NETEX_SITE_FRAME = "1-NETEX-SiteFrame";
-	private static final String _1_NETEX_SERVICE_FRAME_LINE = "1-NETEX-ServiceFrame_Line";
+	private static final String _1_NETEX_TIMETABLE_FRAME = "1-NETEXPROFILE-TimetableFrame";
+	private static final String _1_NETEX_SERVICE_CALENDAR_FRAME = "1-NETEXPROFILE-ServiceCalendarFrame";
+	private static final String _1_NETEX_SERVICE_FRAME = "1-NETEXPROFILE-ServiceFrame";
+	private static final String _1_NETEX_RESOURCE_FRAME = "1-NETEXPROFILE-ResourceFrame";
+	private static final String _1_NETEX_CODESPACE = "1-NETEXPROFILE-CompositeFrame_Codespace";
+	private static final String _1_NETEX_COMPOSITE_FRAME = "1-NETEXPROFILE-CompositeFrame";
+	private static final String _1_NETEX_SITE_FRAME = "1-NETEXPROFILE-SiteFrame";
+	private static final String _1_NETEX_SERVICE_FRAME_LINE = "1-NETEXPROFILE-ServiceFrame_Line";
 
-	private static final String _1_NETEX_SERVICE_FRAME_TIMING_POINTS = "1-NETEX-ServiceFrame_TimingPoints";
-	private static final String _1_NETEX_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN = "1-NETEX-ServiceFrame_ServiceJourneyPattern";
-	private static final String _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN = "1-NETEX-ServiceFrame_JourneyPattern";
-	private static final String _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN_STOPPOINT_IN_JOURNEY_PATTERN = "1-NETEX-ServiceFrame_JourneyPattern_StopPointInJourneyPattern";
-	private static final String _1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE = "1-NETEX-ServiceFrame_Line_PublicCode";
-	private static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY = "1-NETEX-TimetableFrame_ServiceJourney";
-	private static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_TRANSPORT_MODE = "1-NETEX-TimetableFrame_ServiceJourney_TransportMode";
+	private static final String _1_NETEX_SERVICE_FRAME_TIMING_POINTS = "1-NETEXPROFILE-ServiceFrame_TimingPoints";
+	private static final String _1_NETEX_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN = "1-NETEXPROFILE-ServiceFrame_ServiceJourneyPattern";
+	private static final String _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN = "1-NETEXPROFILE-ServiceFrame_JourneyPattern";
+	private static final String _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN_STOPPOINT_IN_JOURNEY_PATTERN = "1-NETEXPROFILE-ServiceFrame_JourneyPattern_StopPointInJourneyPattern";
+	private static final String _1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE = "1-NETEXPROFILE-ServiceFrame_Line_PublicCode";
+	private static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY = "1-NETEXPROFILE-TimetableFrame_ServiceJourney";
+	private static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_TRANSPORT_MODE = "1-NETEXPROFILE-TimetableFrame_ServiceJourney_TransportMode";
 
 	public static final String LOCAL_CONTEXT = "NetexPublicationDelivery";
 	public static final String NAME = "NorwayLineNetexProfileValidator";
-	public static final String PREFIX = "1-NETEX-";
+	public static final String PREFIX = "1-NETEXPROFILE-";
 
-	private static final String FRAME_1 = "1-NETEX-Frame-1";
-	private static final String FRAME_2 = "1-NETEX-Frame-2";
-	private static final String FRAME_3 = "1-NETEX-Frame-3";
-	private static final String FRAME_4 = "1-NETEX-Frame-4";
-	private static final String FRAME_5 = "1-NETEX-Frame-5";
-	private static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIMES = "1-NETEX-TimetableFrame_ServiceJourney_TimetabledPassingTime";
-	private static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_CALLS = "1-NETEX-TimetableFrame_ServiceJourney_Calls";
-	private static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_FIRST_DEPARTURE = "1-NETEX-TimetableFrame_ServiceJourney_TimetabledPassingTime_First_DepartureTime";
-	private static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_LAST_ARRIVAL = "1-NETEX-TimetableFrame_ServiceJourney_TimetabledPassingTime_Last_ArrivalTime";
-	private static final String _1_NETEX_DUPLICATE_IDS = "1-NETEX-DuplicateIdentificators";
-	private static final String _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS = "1-NETEX-MissingVersionAttribute";
-	private static final String _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS = "1-NETEX-MissingReferenceVersionAttribute";
-	private static final String _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS = "1-NETEX-UnresolvedReferenceToCommonElements";
+	private static final String FRAME_1 = "1-NETEXPROFILE-Frame-1";
+	private static final String FRAME_2 = "1-NETEXPROFILE-Frame-2";
+	private static final String FRAME_3 = "1-NETEXPROFILE-Frame-3";
+	private static final String FRAME_4 = "1-NETEXPROFILE-Frame-4";
+	private static final String FRAME_5 = "1-NETEXPROFILE-Frame-5";
+	private static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIMES = "1-NETEXPROFILE-TimetableFrame_ServiceJourney_TimetabledPassingTime";
+	private static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_CALLS = "1-NETEXPROFILE-TimetableFrame_ServiceJourney_Calls";
+	private static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_FIRST_DEPARTURE = "1-NETEXPROFILE-TimetableFrame_ServiceJourney_TimetabledPassingTime_First_DepartureTime";
+	private static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_LAST_ARRIVAL = "1-NETEXPROFILE-TimetableFrame_ServiceJourney_TimetabledPassingTime_Last_ArrivalTime";
 
 	@Override
 	public void addObjectReference(Context context, DataManagedObjectStructure object) {
@@ -176,7 +172,7 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 	private void validateResourceFrame(Context context, XPath xpath, Document dom) throws XPathExpressionException {
 		Node root = selectNode("/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ResourceFrame", xpath, dom);
 		// TODO could be present in common file
-		// validateElementPresent(context, xpath, root, "n:organisations", "1", "No organisations", "1-NETEX-ResourceFrame-Organisations");
+		// validateElementPresent(context, xpath, root, "n:organisations", "1", "No organisations", "1-NETEXPROFILE-ResourceFrame-Organisations");
 	}
 
 	private void validateServiceFrame(Context context, XPath xpath, Document dom) throws XPathExpressionException {
@@ -213,128 +209,6 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 
 	}
 
-	private Node selectNode(String string, XPath xpath, Node dom) throws XPathExpressionException {
-		Node node = (Node) xpath.evaluate(string, dom, XPathConstants.NODE);
-		return node;
-	}
-
-	private NodeList selectNodeSet(String string, XPath xpath, Node dom) throws XPathExpressionException {
-		NodeList node = (NodeList) xpath.evaluate(string, dom, XPathConstants.NODESET);
-		return node;
-	}
-
-	private void verifyReferencesToCommonElements(Context context, Set<IdVersion> localRefs, Set<IdVersion> localIds, Map<IdVersion, List<String>> commonIds) {
-		if (commonIds != null) {
-			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-
-			Set<String> nonVersionedLocalRefs = localRefs.stream().map(e -> e.getId()).collect(Collectors.toSet());
-			Set<String> nonVersionedLocalIds = localIds.stream().map(e -> e.getId()).collect(Collectors.toSet());
-
-			Set<String> unresolvedReferences = new HashSet<>(nonVersionedLocalRefs);
-			unresolvedReferences.removeAll(nonVersionedLocalIds);
-
-			Set<String> commonIdsWithoutVersion = commonIds.keySet().stream().map(e -> e.getId()).collect(Collectors.toSet());
-			if (commonIdsWithoutVersion.size() > 0) {
-				for (String localRef : unresolvedReferences) {
-					if (!commonIdsWithoutVersion.contains(localRef)) {
-						// TODO add correct location
-						validationReporter.addCheckPointReportError(context, _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS,
-								new DataLocation((String) context.get(FILE_NAME)));
-						log.error("Unresolved reference to " + localRef + " in line file without any counterpart in the commonIds");
-					}
-				}
-			} else {
-				validationReporter.reportSuccess(context, _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS);
-			}
-		}
-	}
-
-	private void verifyUseOfVersionOnRefsToLocalElements(Context context, Set<IdVersion> localIds, Set<IdVersion> localRefs) {
-		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-
-		Set<IdVersion> nonVersionedLocalRefs = localRefs.stream().filter(e -> e.getVersion() == null).collect(Collectors.toSet());
-		Set<String> localIdsWithoutVersion = localIds.stream().map(e -> e.getId()).collect(Collectors.toSet());
-
-		if (nonVersionedLocalRefs.size() > 0) {
-			for (IdVersion id : nonVersionedLocalRefs) {
-				if (localIdsWithoutVersion.contains(id.getId())) {
-					// TODO add correct location
-					validationReporter.addCheckPointReportError(context, _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS,
-							new DataLocation((String) context.get(FILE_NAME)));
-					log.error("Found local reference to " + id.getId() + " in line file without use of version-attribute");
-				}
-			}
-		} else {
-			validationReporter.reportSuccess(context, _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS);
-
-		}
-	}
-
-	private void verifyUseOfVersionOnLocalElements(Context context, Set<IdVersion> localIds) {
-		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-
-		Set<IdVersion> nonVersionedLocalIds = localIds.stream().filter(e -> e.getVersion() == null).collect(Collectors.toSet());
-		if (nonVersionedLocalIds.size() > 0) {
-			for (IdVersion id : nonVersionedLocalIds) {
-				// TODO add correct location
-				validationReporter.addCheckPointReportError(context, _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS,
-						new DataLocation((String) context.get(FILE_NAME)));
-				log.error("Id " + id + " in line file does not have version attribute set");
-			}
-		} else {
-			validationReporter.reportSuccess(context, _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS);
-		}
-	}
-
-	private void verifyNoDuplicatesWithCommonElements(Context context, Set<IdVersion> localIds, Map<IdVersion, List<String>> commonIds) {
-		if (commonIds != null) {
-			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-
-			Set<IdVersion> overlappingIds = new HashSet<>(localIds);
-			// Add code to check no duplicates as well as line file references to common files
-			boolean duplicates = overlappingIds.retainAll(commonIds.keySet());
-			if (duplicates) {
-				for (IdVersion id : overlappingIds) {
-					List<String> commonFileNames = commonIds.get(id);
-					for (String fileName : commonFileNames) {
-						// TODO add correct location
-						validationReporter.addCheckPointReportError(context, _1_NETEX_DUPLICATE_IDS, new DataLocation(fileName));
-
-					}
-					log.error("Id " + id + " used in both line file and common files "
-							+ ToStringBuilder.reflectionToString(commonFileNames.toArray(), ToStringStyle.SIMPLE_STYLE));
-				}
-			} else {
-				validationReporter.reportSuccess(context, _1_NETEX_DUPLICATE_IDS);
-
-			}
-		}
-	}
-
-	protected Set<IdVersion> collectEntityIdentificators(Context context, XPath xpath, Document dom) throws XPathExpressionException {
-		return collectIdOrRefWithVersion(context, xpath, dom, "id");
-	}
-
-	protected Set<IdVersion> collectEntityReferences(Context context, XPath xpath, Document dom) throws XPathExpressionException {
-		return collectIdOrRefWithVersion(context, xpath, dom, "ref");
-	}
-
-	protected Set<IdVersion> collectIdOrRefWithVersion(Context context, XPath xpath, Document dom, String attributeName) throws XPathExpressionException {
-		NodeList nodes = (NodeList) xpath.evaluate("//n:*[not(name()='Codespace') and @" + attributeName + "]", dom, XPathConstants.NODESET);
-		Set<IdVersion> ids = new HashSet<IdVersion>();
-		int idCount = nodes.getLength();
-		for (int i = 0; i < idCount; i++) {
-
-			String id = nodes.item(i).getAttributes().getNamedItem(attributeName).getNodeValue();
-			String version = null;
-			Node versionAttribute = nodes.item(i).getAttributes().getNamedItem("version");
-			if (versionAttribute != null) {
-				version = versionAttribute.getNodeValue();
-			}
-			ids.add(new IdVersion(id, version));
-		}
-		return ids;
-	}
 
 	private void validateResourceFrame(Context context, NetexReferential referential) throws Exception {
 		// TODO consider moving up one level in call hierarchy
