@@ -65,7 +65,6 @@ public class ConnectionLinkValidator extends AbstractValidator implements Valida
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return ;
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-//		Map<String, Location> fileLocations = data.getFileLocations();
 		Map<String, DataLocation> fileLocations = data.getDataLocations();
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
@@ -79,10 +78,6 @@ public class ConnectionLinkValidator extends AbstractValidator implements Valida
 			if (stopAreaContext.containsKey(connectionLink.getStartOfLink().getObjectId()) 
 					|| stopAreaContext.containsKey(connectionLink.getEndOfLink().getObjectId()))
 				continue;
-//			Detail errorItem = new Detail(
-//					CONNECTION_LINK_1,
-//					fileLocations.get(connectionLink.getObjectId()));
-//			addValidationError(context, CONNECTION_LINK_1, errorItem);
 			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 			validationReporter.addCheckPointReportError(context, CONNECTION_LINK_1, fileLocations.get(connectionLink.getObjectId()));
 

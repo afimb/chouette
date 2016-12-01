@@ -49,8 +49,6 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.util.ObjectFactory;
-import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.apache.commons.io.FileUtils;

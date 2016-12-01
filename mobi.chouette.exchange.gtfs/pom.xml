@@ -92,8 +92,8 @@
       </dependency>
 
 	</dependencies>
- 	<build> 
- 		<plugins> 
+ 	<build>
+ 		<plugins>
          <plugin>
             <artifactId>maven-resources-plugin</artifactId>
             <version>2.6</version>
@@ -146,6 +146,6 @@
 <!-- 					</execution> -->
 <!-- 				</executions> -->
 <!-- 			</plugin> -->
- 		</plugins> 
- 	</build> 
+ 		</plugins>
+ 	</build>
 </project>

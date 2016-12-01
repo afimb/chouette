@@ -31,8 +31,8 @@ protected List<TestDescription> databaseTestList = null;
 			
 			databaseTestList.add(new TestDescription(2, "2-DATABASE-AccessPoint-1", "ERROR"));
 			
-			databaseTestList.add(new TestDescription(2, "2-DATABASE-ConnectionLink-1-1", "ERROR"));
-			databaseTestList.add(new TestDescription(2, "2-DATABASE-ConnectionLink-1-2", "ERROR"));
+			databaseTestList.add(new TestDescription(2, "2-DATABASE-ConnectionLink-1", "ERROR"));
+// 			databaseTestList.add(new TestDescription(2, "2-DATABASE-ConnectionLink-2", "ERROR"));
 	}
 	
 	
