@@ -12,6 +12,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
+import mobi.chouette.exchange.neptune.model.AreaCentroid;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
@@ -103,6 +104,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 		Context stopPointContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
 		Context itlContext = (Context) validationContext.get(RoutingConstraintValidator.ITL_LOCAL_CONTEXT);
 		if (itlContext == null) itlContext = new Context(); 
+		Context areaCentroidContext = (Context) validationContext.get(AreaCentroidValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Map<ChouetteId, StopArea> stopAreas = referential.getStopAreas();
 
@@ -224,6 +226,36 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 					}
 				}
 				break;		
+				}
+				prepareCheckPoint(context,STOP_AREA_5);
+				prepareCheckPoint(context,STOP_AREA_6);
+				String centroidId = (String) objectContext.get(CENTROID_OF_AREA);
+				if (centroidId != null)
+				{
+					// 2-NEPTUNE-StopArea-5 : if stoparea is not ITL : check if
+					// it refers an existing areacentroid (replace test
+					// fk_centroid_stoparea from XSD)
+					Context areaCentroidData = (Context) areaCentroidContext.get(centroidId);
+					if (areaCentroidData == null)
+					{
+						ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+						validationReporter.addCheckPointReportError(context, STOP_AREA_5, fileLocations.get(stopArea.getChouetteId()), centroidId);
+					} 
+					else
+					{
+						// 2-NEPTUNE-StopArea-6 : if stoparea is not ITL : check
+						// if it refers an existing areacentroid which refers
+						// the good stoparea.
+						String containedIn = (String) areaCentroidData.get("containedIn");
+						if (containedIn != null)
+						{
+							if (!containedIn.equals(objectId))
+							{
+								ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+								validationReporter.addCheckPointReportError(context, STOP_AREA_6, fileLocations.get(stopArea.getChouetteId()), containedIn,null, fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(centroidId, parameters.getDefaultCodespace(), AreaCentroid.class)));
+							}
+						}
+					}
 				}
 		}
 		
