@@ -21,7 +21,6 @@ import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.RoutingConstraint;
-import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.AccessPointTypeEnum;
 import mobi.chouette.model.type.LinkOrientationEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
@@ -126,7 +125,7 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 				validationReporter.addCheckPointReportError(context, ACCESS_POINT_1, sourceLocation, containedIn);
 			} 
-			if (containedIn != null )
+			if (containedIn != null && routingConstraintContext != null)
 			{
 				// 2-NEPTUNE-AccessPoint-2 : check type of containedIn not ITL
 				prepareCheckPoint(context,ACCESS_POINT_2);
