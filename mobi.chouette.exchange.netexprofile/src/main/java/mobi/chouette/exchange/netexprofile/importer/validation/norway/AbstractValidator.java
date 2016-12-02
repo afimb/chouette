@@ -1,16 +1,16 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
-import static mobi.chouette.exchange.validation.report.ValidationReporter.RESULT.NOK;
-import static mobi.chouette.exchange.validation.report.ValidationReporter.RESULT.OK;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.management.RuntimeErrorException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -32,13 +32,12 @@ import mobi.chouette.exchange.validation.report.ValidationReporter;
 @Log4j
 public abstract class AbstractValidator implements Constant {
 
-	
 	public static final String _1_NETEX_DUPLICATE_IDS = "1-NETEXPROFILE-DuplicateIdentificators";
 	public static final String _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS = "1-NETEXPROFILE-MissingVersionAttribute";
 	public static final String _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS = "1-NETEXPROFILE-MissingReferenceVersionAttribute";
 	public static final String _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS = "1-NETEXPROFILE-UnresolvedReferenceToCommonElements";
+	public static final String _1_NETEX_INVALID_ID_STRUCTURE = "1-NETEXPROFILE-InvalidIdFormat";
 
-	
 	protected static final String PREFIX = "2-NETEX-";
 	protected static final String OBJECT_IDS = "encountered_ids";
 
@@ -105,7 +104,7 @@ public abstract class AbstractValidator implements Constant {
 
 		return objectContext;
 	}
-	
+
 	public static Predicate<Integer> exact(int v) {
 		return p -> p == v;
 	}
@@ -119,8 +118,8 @@ public abstract class AbstractValidator implements Constant {
 		validateElement(context, xpath, document, expression, exact(1), checkPointKey);
 	}
 
-	protected void validateAtLeastElementPresent(Context context, XPath xpath, Node document, String expression, int count, String errorCode, String errorMessage,
-			String checkPointKey) throws XPathExpressionException {
+	protected void validateAtLeastElementPresent(Context context, XPath xpath, Node document, String expression, int count, String errorCode,
+			String errorMessage, String checkPointKey) throws XPathExpressionException {
 		validateElement(context, xpath, document, expression, atLeast(count), checkPointKey);
 	}
 
@@ -129,14 +128,15 @@ public abstract class AbstractValidator implements Constant {
 		validateElement(context, xpath, document, expression, exact(0), checkPointKey);
 	}
 
-	private void validateElement(Context context, XPath xpath, Node document, String expression, Predicate<Integer> function,String checkPointKey)
+	private void validateElement(Context context, XPath xpath, Node document, String expression, Predicate<Integer> function, String checkPointKey)
 			throws XPathExpressionException {
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		if (!validationReporter.checkIfCheckPointExists(context, checkPointKey)) {
 			log.error("Checkpoint " + checkPointKey + " not present in ValidationReport");
+			throw new RuntimeException("Checkpoint "+checkPointKey+" does not exist - did you add a validation rule but forgot to register the checkpoint?");
 		}
 		NodeList nodes = (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
-		if(function.test(nodes.getLength())) {
+		if (function.test(nodes.getLength())) {
 			validationReporter.reportSuccess(context, checkPointKey);
 		} else {
 			// TODO fix reporting with lineNumber etc
@@ -170,7 +170,8 @@ public abstract class AbstractValidator implements Constant {
 		return node;
 	}
 
-	protected void verifyReferencesToCommonElements(Context context, Set<IdVersion> localRefs, Set<IdVersion> localIds, Map<IdVersion, List<String>> commonIds) {
+	protected void verifyReferencesToCommonElements(Context context, Set<IdVersion> localRefs, Set<IdVersion> localIds,
+			Map<IdVersion, List<String>> commonIds) {
 		if (commonIds != null) {
 			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 
@@ -258,6 +259,35 @@ public abstract class AbstractValidator implements Constant {
 		}
 	}
 
+	protected void verifyIdStructure(Context context, Set<IdVersion> localIds, Map<IdVersion, List<String>> commonIds, String regex) {
+		Pattern p = Pattern.compile(regex);
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		for (IdVersion id : localIds) {
+			Matcher m = p.matcher(id.getId());
+			if (!m.matches()) {
+				// TODO add correct location
+				validationReporter.addCheckPointReportError(context, _1_NETEX_INVALID_ID_STRUCTURE, new DataLocation((String) context.get(FILE_NAME)));
+				log.error("Id " + id + " in line file have an invalid format. Correct format is " + regex);
+			}
+		}
+
+		if (commonIds != null) {
+			for (IdVersion id : commonIds.keySet()) {
+				Matcher m = p.matcher(id.getId());
+				if (!m.matches()) {
+					for (String commonFileName : commonIds.get(id)) {
+						// TODO add correct location
+						validationReporter.addCheckPointReportError(context, _1_NETEX_INVALID_ID_STRUCTURE, new DataLocation(commonFileName));
+						log.error("Id " + id + " in common file file " + commonFileName + "have an invalid format. Correct format is " + regex);
+
+					}
+
+				}
+			}
+
+		}
+	}
+
 	protected Set<IdVersion> collectEntityIdentificators(Context context, XPath xpath, Document dom) throws XPathExpressionException {
 		return collectIdOrRefWithVersion(context, xpath, dom, "id");
 	}
@@ -282,7 +312,6 @@ public abstract class AbstractValidator implements Constant {
 		}
 		return ids;
 	}
-
 
 	/*
 	 * public static void validateExternalReferenceCorrect(Context context, XPath xpath, Document dom, String expression, ExternalReferenceValidator
