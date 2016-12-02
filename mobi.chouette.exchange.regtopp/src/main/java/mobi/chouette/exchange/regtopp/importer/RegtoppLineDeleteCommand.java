@@ -48,10 +48,12 @@ public class RegtoppLineDeleteCommand implements Command {
 		Line newLine = referential.getLines().values().iterator().next();
 		try {
 
-			
-			lineDAO.deleteByObjectId(Arrays.asList(newLine.getObjectId()));
-			log.info("Delete existing line before import: " + newLine.getObjectId() + " "+newLine.getName());
-			
+			Line existingLine = lineDAO.findByObjectId(newLine.getObjectId());
+			if (existingLine != null) {
+				log.info("Delete existing line before import: " + existingLine.getObjectId() + " "+existingLine.getName());
+				lineDAO.delete(existingLine);
+				lineDAO.flush();
+			}
 			result = SUCCESS;
 		} catch (Exception ex) {
 			log.error(ex.getMessage());
