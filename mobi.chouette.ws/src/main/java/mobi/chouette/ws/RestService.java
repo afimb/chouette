@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.naming.InitialContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -37,9 +38,13 @@ import javax.ws.rs.core.UriInfo;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
+import mobi.chouette.common.chain.Command;
+import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.importer.CleanRepositoryCommand;
 import mobi.chouette.model.iev.Job;
 import mobi.chouette.model.iev.Job.STATUS;
 import mobi.chouette.model.iev.Link;
+import mobi.chouette.persistence.hibernate.ContextHolder;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
 import mobi.chouette.service.RequestExceptionCode;
@@ -63,7 +68,7 @@ public class RestService implements Constant {
 
 	@Inject
 	JobServiceManager jobServiceManager;
-	
+
 	@Context
 	UriInfo uriInfo;
 
@@ -78,20 +83,20 @@ public class RestService implements Constant {
 		try {
 			log.info(Color.CYAN + "Call upload referential = " + referential + ", action = " + action
 					+ (type == null ? "" : ", type = " + type) + Color.NORMAL);
-			
-			
-			
+
+
+
 			// Convertir les parametres fournis
 			type = parseType(type);
 			inputStreamByName = readParts(input);
-			
 
-					
-					
+
+
+
 			// Relayer le service au JobServiceManager
 			ResponseBuilder builder = Response.accepted();
 			{
-				
+
 				JobService jobService = jobServiceManager.create(referential, action, type, inputStreamByName);
 
 				// Produire la vue
@@ -124,10 +129,10 @@ public class RestService implements Constant {
 			log.info(Color.CYAN + "upload returns" + Color.NORMAL);
 		}
 	}
-	
-	
-	
-			
+
+
+
+
 	private WebApplicationException toWebApplicationException(ServiceException exception) {
 		return new WebApplicationException(exception.getMessage(), toWebApplicationCode(exception.getExceptionCode()));
 	}
@@ -203,6 +208,26 @@ public class RestService implements Constant {
 	private String removeSpecialChars(String filename) {
 		return filename.replaceAll("[^\\w-_\\.]", "_");
 	}
+
+
+	@DELETE
+	@Path("/{ref}")
+	public Response clean(@PathParam("ref") String referential) {
+		log.info(Color.CYAN + "Call clean referential = " + referential + Color.NORMAL);
+		try {
+			ContextHolder.setContext(referential);
+			Command command = CommandFactory.create(new InitialContext(), CleanRepositoryCommand.class.getName());
+			command.execute(null);
+			return Response.ok().build();
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
+		} finally {
+			ContextHolder.setContext(null);
+			log.info(Color.CYAN + "clean returns" + Color.NORMAL);
+		}
+	}
+
 
 	// download attached file
 	@GET
