@@ -1,4 +1,4 @@
-package mobi.chouette.model;
+package mobi.chouette.common;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -13,7 +13,7 @@ import org.apache.commons.lang.StringUtils;
 @AllArgsConstructor
 public class ChouetteId {
 	/**
-	 * Neptune object id <br/>
+	 * Chouette generic object id <br/>
 	 * composed of 3 items separated by a colon
 	 * <ol>
 	 * <li>codespace : an alphanumerical value (underscore accepted)</li>

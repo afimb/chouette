@@ -103,43 +103,43 @@ public class DaoSharedDataValidatorCommand implements Command, Constant {
 		try {
 			if (!data.getLineIds().isEmpty()) {
 				data.getLines().clear();
-				Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(data
+				Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.dispatchChouetteIdsByCodeSpace(data
 						.getLineIds());
 				data.getLines().addAll((List<Line>) lineDAO.findByChouetteId(chouetteIdsByCodeSpace));
 
 			}
 			if (!data.getNetworkIds().isEmpty()) {
 				data.getNetworks().clear();
-				Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(data
-						.getNetworks());
+				Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.dispatchChouetteIdsByCodeSpace(data
+						.getNetworkIds());
 				data.getNetworks().addAll((List<Network>) ptNetworkDAO.findByChouetteId(chouetteIdsByCodeSpace));
 
 			}
 			if (!data.getCompanyIds().isEmpty()) {
 				data.getCompanies().clear();
-				Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(data
-						.getCompanies());
+				Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.dispatchChouetteIdsByCodeSpace(data
+						.getCompanyIds());
 				data.getCompanies().addAll((List<Company>) companyDAO.findByChouetteId(chouetteIdsByCodeSpace));
 
 			}
 			if (!data.getGroupOfLineIds().isEmpty()) {
 				data.getGroupOfLines().clear();
-				Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(data
-						.getGroupOfLines());
+				Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.dispatchChouetteIdsByCodeSpace(data
+						.getGroupOfLineIds());
 				data.getGroupOfLines().addAll(
 						(List<GroupOfLine>) groupOfLineDAO.findByChouetteId(chouetteIdsByCodeSpace));
 
 			}
 			if (!data.getStopAreaIds().isEmpty()) {
 				data.getStopAreas().clear();
-				Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(data
+				Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.dispatchChouetteIdsByCodeSpace(data
 						.getStopAreaIds());
 				data.getStopAreas().addAll((List<StopArea>) stopAreaDAO.findByChouetteId(chouetteIdsByCodeSpace));
 
 			}
 			if (!data.getAccessPointIds().isEmpty()) {
 				data.getAccessPoints().clear();
-				Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(data
+				Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.dispatchChouetteIdsByCodeSpace(data
 						.getAccessPointIds());
 				data.getAccessPoints().addAll(
 						(List<AccessPoint>) accessPointDAO.findByChouetteId(chouetteIdsByCodeSpace));
@@ -147,14 +147,14 @@ public class DaoSharedDataValidatorCommand implements Command, Constant {
 			}
 			if (!data.getAccessLinkIds().isEmpty()) {
 				data.getAccessLinks().clear();
-				Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(data
+				Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.dispatchChouetteIdsByCodeSpace(data
 						.getAccessLinkIds());
 				data.getAccessLinks().addAll((List<AccessLink>) accessLinkDAO.findByChouetteId(chouetteIdsByCodeSpace));
 
 			}
 			if (!data.getTimetableIds().isEmpty()) {
 				data.getTimetables().clear();
-				Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(data
+				Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.dispatchChouetteIdsByCodeSpace(data
 						.getTimetableIds());
 				data.getTimetables().addAll((List<Timetable>) timetableDAO.findByChouetteId(chouetteIdsByCodeSpace));
 

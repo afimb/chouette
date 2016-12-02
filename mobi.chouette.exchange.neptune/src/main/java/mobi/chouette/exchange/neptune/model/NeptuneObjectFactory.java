@@ -7,7 +7,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
-import mobi.chouette.model.ChouetteId;
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.model.Route;
 
 public class NeptuneObjectFactory {

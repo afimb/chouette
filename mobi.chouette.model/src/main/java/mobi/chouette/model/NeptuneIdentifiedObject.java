@@ -9,11 +9,7 @@ package mobi.chouette.model;
 
 import java.util.Date;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.EmbeddedId;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
@@ -21,6 +17,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.model.util.ObjectIdTypes;
 
 import org.apache.commons.lang.StringUtils;

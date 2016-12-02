@@ -5,10 +5,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.core.ChouetteException;
 import mobi.chouette.exchange.gtfs.exporter.producer.mock.GtfsDummyProducer;
 import mobi.chouette.exchange.gtfs.exporter.producer.mock.GtfsExporterMock;
-import mobi.chouette.model.ChouetteId;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;

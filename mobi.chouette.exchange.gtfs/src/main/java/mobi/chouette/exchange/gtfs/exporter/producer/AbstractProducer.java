@@ -6,8 +6,8 @@ import java.net.URL;
 import java.util.Collection;
 
 import lombok.Getter;
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
-import mobi.chouette.model.ChouetteId;
 
 public abstract class AbstractProducer
 {

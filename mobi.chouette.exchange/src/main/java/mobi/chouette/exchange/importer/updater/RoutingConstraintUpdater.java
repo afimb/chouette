@@ -6,7 +6,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
@@ -20,7 +19,6 @@ import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 @Stateless(name = RoutingConstraintUpdater.BEAN_NAME)
-@Log4j
 public class RoutingConstraintUpdater implements Updater<RoutingConstraint> {
 
 	public static final String BEAN_NAME = "RoutingConstraintUpdater";
@@ -41,7 +39,6 @@ public class RoutingConstraintUpdater implements Updater<RoutingConstraint> {
 
 		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
-		Referential referential = (Referential) context.get(REFERENTIAL);
 		
 		if (oldValue.isDetached()) {
 			oldValue.setChouetteId(newValue.getChouetteId());

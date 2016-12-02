@@ -7,6 +7,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
@@ -15,14 +16,11 @@ import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.dao.ConnectionLinkDAO;
 import mobi.chouette.dao.StopAreaDAO;
-import mobi.chouette.exchange.ChouetteIdGenerator;
 import mobi.chouette.exchange.ChouetteIdObjectUtil;
-import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.NeptuneUtil;
@@ -325,7 +323,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 					String codeSpace = item.getChouetteId().getCodeSpace();
 					startOfLinkArea = stopAreaDAO.findByChouetteId(codeSpace, item.getStartOfLink().getTechnicalId());
 				} else {
-					StopArea localArea = referential.getSharedStopAreas().get(startOfLinkArea.getTechnicalId());
+					StopArea localArea = referential.getSharedStopAreas().get(startOfLinkArea.getChouetteId());
 					if (!localArea.isSaved())
 						startOfLinkArea = null; // ignored if not already saved
 				}
@@ -393,11 +391,9 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	 * @param newParent
 	 */
 	private void twoDatabaseStopAreaOneTest(ValidationReporter validationReporter, Context context, StopArea oldValue, StopArea newValue, ValidationData data) {
-		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
 		
 		if(!NeptuneUtil.sameValue(oldValue.getParent(), newValue.getParent()))
-				validationReporter.addCheckPointReportError(context, DATABASE_STOP_AREA_1, data.getDataLocations().get(chouetteIdGenerator.toSpecificFormatId(newValue.getChouetteId(), parameters.getDefaultCodespace(), newValue)));
+				validationReporter.addCheckPointReportError(context, DATABASE_STOP_AREA_1, data.getDataLocations().get(newValue.getChouetteId()));
 			else
 				validationReporter.reportSuccess(context, DATABASE_STOP_AREA_1);
 	}
@@ -411,12 +407,10 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	 * @param newSA
 	 */
 	private void twoDatabaseStopAreaTwoTest(ValidationReporter validationReporter, Context context, StopArea oldSA, StopArea newSA, ValidationData data) {
-		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
 		
 		if(oldSA !=null && newSA != null) {
 			if(!NeptuneUtil.sameValue(oldSA.getAreaType(),newSA.getAreaType()))
-				validationReporter.addCheckPointReportError(context, DATABASE_STOP_AREA_2, data.getDataLocations().get(chouetteIdGenerator.toSpecificFormatId(newSA.getChouetteId(), parameters.getDefaultCodespace(), newSA)));
+				validationReporter.addCheckPointReportError(context, DATABASE_STOP_AREA_2, data.getDataLocations().get(newSA.getChouetteId()));
 			else
 				validationReporter.reportSuccess(context, DATABASE_STOP_AREA_2);
 		}
@@ -432,11 +426,9 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	 * @param data
 	 */
 	private void twoDatabaseAccessPointOneTest(ValidationReporter validationReporter, Context context, AccessPoint oldAP, AccessPoint newAP, ValidationData data) {
-		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
 		
 		if(!NeptuneUtil.sameValue(oldAP.getContainedIn(), newAP.getContainedIn()))
-			validationReporter.addCheckPointReportError(context, DATABASE_ACCESS_POINT_1, data.getDataLocations().get(chouetteIdGenerator.toSpecificFormatId(newAP.getChouetteId(), parameters.getDefaultCodespace(), newAP)));
+			validationReporter.addCheckPointReportError(context, DATABASE_ACCESS_POINT_1, data.getDataLocations().get(newAP.getChouetteId()));
 		else
 			validationReporter.reportSuccess(context, DATABASE_ACCESS_POINT_1);
 	}

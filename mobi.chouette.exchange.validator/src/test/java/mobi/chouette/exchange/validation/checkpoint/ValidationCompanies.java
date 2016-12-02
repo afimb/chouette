@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JSONUtil;
@@ -16,7 +17,6 @@ import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validator.JobDataTest;
 import mobi.chouette.exchange.validator.ValidateParameters;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Company;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 

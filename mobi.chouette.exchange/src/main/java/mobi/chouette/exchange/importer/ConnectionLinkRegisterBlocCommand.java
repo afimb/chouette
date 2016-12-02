@@ -15,6 +15,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
@@ -24,7 +25,6 @@ import mobi.chouette.exchange.ChouetteIdObjectUtil;
 import mobi.chouette.exchange.importer.updater.ConnectionLinkUpdater;
 import mobi.chouette.exchange.importer.updater.Updater;
 import mobi.chouette.exchange.importer.updater.UpdaterUtils;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.Referential;
@@ -91,7 +91,7 @@ public class ConnectionLinkRegisterBlocCommand implements Command {
 			chouetteIds.add(connectionLink.getStartOfLink().getChouetteId());
 			chouetteIds.add(connectionLink.getEndOfLink().getChouetteId());
 		}
-		Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+		Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.dispatchChouetteIdsByCodeSpace(chouetteIds);
 		List<StopArea> objects = new ArrayList<StopArea>();
 		objects.addAll((List<StopArea>) stopAreaDAO.findByChouetteId(chouetteIdsByCodeSpace));
 
@@ -104,9 +104,8 @@ public class ConnectionLinkRegisterBlocCommand implements Command {
 	private void initializeConnectionLink(Referential cache, Collection<ConnectionLink> list) {
 		if (list.isEmpty())
 			return;
-		Collection<ChouetteId> objectIds = UpdaterUtils.getChouetteIds(list);
 
-		Map<String, List<String>> objectIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(objectIds);
+		Map<String, List<String>> objectIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(list);
 		List<ConnectionLink> objects = new ArrayList<ConnectionLink>();
 		objects.addAll((List<ConnectionLink>) connectionLinkDAO.findByChouetteId(objectIdsByCodeSpace));
 

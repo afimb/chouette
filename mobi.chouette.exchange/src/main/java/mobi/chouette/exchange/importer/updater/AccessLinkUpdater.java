@@ -3,11 +3,11 @@ package mobi.chouette.exchange.importer.updater;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
 

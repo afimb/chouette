@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;

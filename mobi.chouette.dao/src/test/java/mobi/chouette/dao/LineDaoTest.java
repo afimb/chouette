@@ -4,7 +4,7 @@ import java.io.File;
 
 import javax.ejb.EJB;
 
-import mobi.chouette.model.ChouetteId;
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.model.Line;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 

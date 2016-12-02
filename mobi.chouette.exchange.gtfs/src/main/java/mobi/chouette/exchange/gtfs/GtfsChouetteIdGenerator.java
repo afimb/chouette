@@ -2,8 +2,8 @@ package mobi.chouette.exchange.gtfs;
 
 import java.util.regex.Pattern;
 
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.exchange.AbstractChouetteIdGenerator;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 public class GtfsChouetteIdGenerator extends AbstractChouetteIdGenerator{
 	@Override

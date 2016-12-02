@@ -13,6 +13,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.core.ChouetteException;
@@ -28,7 +29,6 @@ import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.exchange.validator.DummyChecker;
 import mobi.chouette.exchange.validator.JobDataTest;
 import mobi.chouette.exchange.validator.ValidateParameters;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;

@@ -2,13 +2,13 @@ package mobi.chouette.exchange.gtfs.exporter.producer;
 
 import java.sql.Time;
 
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.core.ChouetteException;
 import mobi.chouette.exchange.gtfs.exporter.producer.mock.GtfsExporterMock;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer.TransferType;
 import mobi.chouette.exchange.gtfs.model.exporter.TransferExporter;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 

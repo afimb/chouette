@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import javax.ejb.EJB;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.model.ChouetteId;
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.persistence.hibernate.ContextHolder;

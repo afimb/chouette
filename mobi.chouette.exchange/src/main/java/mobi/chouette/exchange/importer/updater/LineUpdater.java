@@ -8,6 +8,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
@@ -21,7 +22,6 @@ import mobi.chouette.exchange.ChouetteIdObjectUtil;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.GroupOfLine;
@@ -383,10 +383,8 @@ public class LineUpdater implements Updater<Line> {
 	 * @param newLine
 	 */
 	private void twoDatabaseLineOneTest(ValidationReporter validationReporter, Context context, Line oldLine, Line newLine, ValidationData data) {
-		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
 		if(!NeptuneUtil.sameValue(oldLine.getNetwork(), newLine.getNetwork()))
-			validationReporter.addCheckPointReportError(context, DATABASE_LINE_1, data.getDataLocations().get(chouetteIdGenerator.toSpecificFormatId(newLine.getChouetteId(), parameters.getDefaultCodespace(), newLine)));
+			validationReporter.addCheckPointReportError(context, DATABASE_LINE_1, data.getDataLocations().get(newLine.getChouetteId()));
 		else
 			validationReporter.reportSuccess(context, DATABASE_LINE_1);
 	}
@@ -399,10 +397,8 @@ public class LineUpdater implements Updater<Line> {
 	 * @param newLine
 	 */
 	private void twoDatabaseLineTwoTest(ValidationReporter validationReporter, Context context, Line oldLine, Line newLine, ValidationData data) {
-		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
 		if(!NeptuneUtil.sameValue(oldLine.getCompany(), newLine.getCompany()))
-			validationReporter.addCheckPointReportError(context, DATABASE_LINE_2, data.getDataLocations().get(chouetteIdGenerator.toSpecificFormatId(newLine.getChouetteId(), parameters.getDefaultCodespace(), newLine)));
+			validationReporter.addCheckPointReportError(context, DATABASE_LINE_2, data.getDataLocations().get(newLine.getChouetteId()));
 		else
 			validationReporter.reportSuccess(context, DATABASE_LINE_2);
 	}
@@ -415,10 +411,8 @@ public class LineUpdater implements Updater<Line> {
 	 * @param newRoute
 	 */
 	private void twoDatabaseRouteOneTest(ValidationReporter validationReporter, Context context, Route oldRoute, Route newRoute, ValidationData data) {
-		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
 		if(!NeptuneUtil.sameValue(oldRoute.getLine(), newRoute.getLine()))
-			validationReporter.addCheckPointReportError(context, DATABASE_ROUTE_1, data.getDataLocations().get(chouetteIdGenerator.toSpecificFormatId(newRoute.getChouetteId(), parameters.getDefaultCodespace(), newRoute)));
+			validationReporter.addCheckPointReportError(context, DATABASE_ROUTE_1, data.getDataLocations().get(newRoute.getChouetteId()));
 		else
 			validationReporter.reportSuccess(context, DATABASE_ROUTE_1);
 	}

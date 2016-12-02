@@ -2,10 +2,10 @@ package mobi.chouette.exchange.hub;
 
 import java.io.IOException;
 
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.exchange.AbstractChouetteIdGenerator;
 import mobi.chouette.exchange.ChouetteIdGenerator;
 import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 
 public class HubChouetteIdGenerator extends AbstractChouetteIdGenerator{

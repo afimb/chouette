@@ -8,10 +8,10 @@ import java.util.Map;
 import java.util.Set;
 
 import lombok.Data;
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;

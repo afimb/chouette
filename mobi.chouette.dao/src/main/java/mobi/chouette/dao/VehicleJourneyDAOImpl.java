@@ -14,7 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.model.ChouetteId;
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.model.VehicleJourney;
 
 import org.hibernate.Session;

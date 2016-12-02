@@ -4,9 +4,9 @@ import java.awt.Color;
 import java.net.URL;
 import java.util.Collection;
 
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.exchange.gtfs.exporter.producer.AbstractProducer;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
-import mobi.chouette.model.ChouetteId;
 
 public class GtfsDummyProducer extends AbstractProducer
 {

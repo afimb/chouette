@@ -2,9 +2,9 @@ package mobi.chouette.exchange.validation.report;
 
 import java.io.PrintStream;
 
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;

@@ -14,9 +14,9 @@ public class NeptuneIdentifiedObjectComparator implements
 		int result = -1;
 		
 		if (left.getChouetteId().equals(right.getChouetteId()))
-			result = 1;
-		else
 			result = 0;
+		else
+			result = 1;
 			
 		return result;
 	}

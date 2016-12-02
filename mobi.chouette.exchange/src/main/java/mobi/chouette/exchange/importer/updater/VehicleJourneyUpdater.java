@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
@@ -19,12 +20,9 @@ import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.dao.TimebandDAO;
 import mobi.chouette.dao.TimetableDAO;
 import mobi.chouette.dao.VehicleJourneyAtStopDAO;
-import mobi.chouette.exchange.ChouetteIdGenerator;
 import mobi.chouette.exchange.ChouetteIdObjectUtil;
-import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyFrequency;
@@ -248,7 +246,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			for (VehicleJourneyAtStop vehicleJourneyAtStop : addedVehicleJourneyAtStop) {
 				chouetteIds.add(vehicleJourneyAtStop.getStopPoint().getChouetteId());
 			}
-			Map<String,List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+			Map<String,List<String>> chouetteIdsByCodeSpace = UpdaterUtils.dispatchChouetteIdsByCodeSpace(chouetteIds);
 			List<StopPoint> stopPoints = new ArrayList<StopPoint>();
 			for (VehicleJourneyAtStop item : addedVehicleJourneyAtStop) {
 				VehicleJourneyAtStop vehicleJourneyAtStop = ChouetteIdObjectUtil.getVehicleJourneyAtStop();
@@ -331,7 +329,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			for (JourneyFrequency journeyFrequency : addedJourneyFrequency) {
 				chouetteIds.add(journeyFrequency.getTimeband().getChouetteId());
 			}
-			Map<String,List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+			Map<String,List<String>> chouetteIdsByCodeSpace = UpdaterUtils.dispatchChouetteIdsByCodeSpace(chouetteIds);
 			List<Timeband> timebands = new ArrayList<Timeband>();
 			for (JourneyFrequency item : addedJourneyFrequency) {
 				JourneyFrequency journeyFrequency = new JourneyFrequency();
@@ -414,12 +412,9 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	 * @param oldCompany
 	 * @param newCompany
 	 */
-	private void twoDatabaseVehicleJourneyTwoTest(ValidationReporter validationReporter, Context context, Company oldCompany,  Company newCompany, ValidationData data) {
-		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
-		
+	private void twoDatabaseVehicleJourneyTwoTest(ValidationReporter validationReporter, Context context, Company oldCompany,  Company newCompany, ValidationData data) {		
 		if(!NeptuneUtil.sameValue(oldCompany, newCompany))
-			validationReporter.addCheckPointReportError(context, DATABASE_VEHICLE_JOURNEY_2, data.getDataLocations().get(chouetteIdGenerator.toSpecificFormatId(newCompany.getChouetteId(), parameters.getDefaultCodespace(), newCompany)));
+			validationReporter.addCheckPointReportError(context, DATABASE_VEHICLE_JOURNEY_2, data.getDataLocations().get(newCompany.getChouetteId()));
 		else
 			validationReporter.reportSuccess(context, DATABASE_VEHICLE_JOURNEY_2);
 	}

@@ -6,9 +6,9 @@ import javax.ejb.Stateless;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.Referential;

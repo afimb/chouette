@@ -4,13 +4,11 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
-import mobi.chouette.exchange.ChouetteIdGenerator;
-import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.NamingUtil;
@@ -43,8 +41,6 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		validationReporter.addItemToValidationReport(context, DATABASE_CONNECTION_LINK_1, "W");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
 
 		if (newValue.getName() == null) {
 			NamingUtil.setDefaultName(newValue);

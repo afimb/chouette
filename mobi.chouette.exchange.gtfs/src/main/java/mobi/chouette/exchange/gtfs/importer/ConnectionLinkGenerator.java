@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
 import mobi.chouette.exchange.gtfs.GtfsChouetteIdObjectUtil;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;

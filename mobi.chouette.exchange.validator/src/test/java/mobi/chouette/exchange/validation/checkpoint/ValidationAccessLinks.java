@@ -12,6 +12,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.AccessLinkDAO;
@@ -25,7 +26,6 @@ import mobi.chouette.exchange.validator.DummyChecker;
 import mobi.chouette.exchange.validator.JobDataTest;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.StopArea;
 
 import org.jboss.arquillian.container.test.api.Deployment;

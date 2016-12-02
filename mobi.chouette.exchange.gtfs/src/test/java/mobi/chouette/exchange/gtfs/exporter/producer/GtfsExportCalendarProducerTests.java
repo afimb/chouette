@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.core.ChouetteException;
 import mobi.chouette.exchange.gtfs.exporter.producer.mock.GtfsExporterMock;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendar;
@@ -14,7 +15,6 @@ import mobi.chouette.exchange.gtfs.model.exporter.CalendarDateExporter;
 import mobi.chouette.exchange.gtfs.model.exporter.CalendarExporter;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
 import mobi.chouette.model.CalendarDay;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;

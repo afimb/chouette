@@ -3,6 +3,7 @@ package mobi.chouette.exchange.neptune.parser;
 import java.util.Date;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.XPPUtil;
@@ -12,7 +13,6 @@ import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.validation.PTNetworkValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.type.PTNetworkSourceTypeEnum;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;

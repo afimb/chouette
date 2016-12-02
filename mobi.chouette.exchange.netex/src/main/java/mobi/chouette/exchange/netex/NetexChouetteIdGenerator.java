@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.exchange.AbstractChouetteIdGenerator;
 import mobi.chouette.exchange.ChouetteIdGenerator;
 import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 
 @Log4j

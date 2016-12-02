@@ -3,7 +3,7 @@ package mobi.chouette.exchange;
 import java.util.ArrayList;
 import java.util.List;
 
-import mobi.chouette.model.ChouetteId;
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 
 

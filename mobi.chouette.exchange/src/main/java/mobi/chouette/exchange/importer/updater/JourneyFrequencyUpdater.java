@@ -3,9 +3,9 @@ package mobi.chouette.exchange.importer.updater;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.TimebandDAO;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.Timeband;
 import mobi.chouette.exchange.ChouetteIdObjectUtil;

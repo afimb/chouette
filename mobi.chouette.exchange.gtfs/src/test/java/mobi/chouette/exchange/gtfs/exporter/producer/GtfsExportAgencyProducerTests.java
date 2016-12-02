@@ -2,12 +2,12 @@ package mobi.chouette.exchange.gtfs.exporter.producer;
 
 import java.util.TimeZone;
 
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.core.ChouetteException;
 import mobi.chouette.exchange.gtfs.exporter.producer.mock.GtfsExporterMock;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.exporter.AgencyExporter;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Company;
 
 import org.testng.Assert;

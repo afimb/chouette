@@ -26,7 +26,6 @@ import mobi.chouette.exchange.importer.updater.Updater;
 import mobi.chouette.exchange.importer.updater.UpdaterUtils;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.Referential;
 
@@ -123,9 +122,7 @@ public class StopAreaRegisterBlocCommand implements Command {
 	private void initializeAccessPoint(Referential cache, Collection<AccessPoint> list) {
 		if (list.isEmpty())
 			return;
-		Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
-
-		Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+		Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(list);
 		List<AccessPoint> objects = new ArrayList<AccessPoint>();
 		objects.addAll((List<AccessPoint>) accessPointDAO.findByChouetteId(chouetteIdsByCodeSpace));
 
@@ -144,9 +141,8 @@ public class StopAreaRegisterBlocCommand implements Command {
 	private void initializeAccessLink(Referential cache, Collection<AccessLink> list) {
 		if (list.isEmpty())
 			return;
-		Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 
-		Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+		Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(list);
 		List<AccessLink> objects = new ArrayList<AccessLink>();
 		objects.addAll((List<AccessLink>) accessLinkDAO.findByChouetteId(chouetteIdsByCodeSpace));
 

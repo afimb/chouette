@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.model.ChouetteId;
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.NeptuneLocalizedObject;

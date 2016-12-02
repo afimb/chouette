@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.dao.CompanyDAO;
@@ -25,7 +26,6 @@ import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.exchange.ChouetteIdObjectUtil;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
@@ -111,8 +111,7 @@ public class LineOptimiser {
 
 	private void initializeStopArea(Referential cache, Collection<StopArea> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
-			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(list);
 			List<StopArea> objects = new ArrayList<StopArea>();
 
 			objects.addAll((List<StopArea>) stopAreaDAO.findByChouetteId(chouetteIdsByCodeSpace));
@@ -133,8 +132,7 @@ public class LineOptimiser {
 
 	private void initializeConnectionLink(Referential cache, Collection<ConnectionLink> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
-			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(list);
 			List<ConnectionLink> objects = new ArrayList<ConnectionLink>();
 
 			objects.addAll((List<ConnectionLink>) connectionLinkDAO.findByChouetteId(chouetteIdsByCodeSpace));
@@ -154,9 +152,8 @@ public class LineOptimiser {
 
 	private void initializeAccessLink(Referential cache, Collection<AccessLink> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 
-			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(list);
 			List<AccessLink> objects = new ArrayList<AccessLink>();
 			objects.addAll((List<AccessLink>) accessLinkDAO.findByChouetteId(chouetteIdsByCodeSpace));
 
@@ -175,9 +172,8 @@ public class LineOptimiser {
 
 	private void initializeAccessPoint(Referential cache, Collection<AccessPoint> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 
-			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(list);
 			List<AccessPoint> objects = new ArrayList<AccessPoint>();
 
 			objects.addAll((List<AccessPoint>) accessPointDAO.findByChouetteId(chouetteIdsByCodeSpace));
@@ -197,9 +193,8 @@ public class LineOptimiser {
 
 	private void initializeTimetable(Referential cache, Collection<Timetable> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 
-			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(list);
 			List<Timetable> objects = new ArrayList<Timetable>();
 
 			objects.addAll((List<Timetable>) timetableDAO.findByChouetteId(chouetteIdsByCodeSpace));
@@ -219,9 +214,8 @@ public class LineOptimiser {
 
 	private void initializePTNetwork(Referential cache, Collection<Network> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 
-			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(list);
 			List<Network> objects = new ArrayList<Network>();
             objects.addAll((List<Network>) ptNetworkDAO.findByChouetteId(chouetteIdsByCodeSpace));
 
@@ -241,9 +235,8 @@ public class LineOptimiser {
 
 	private void initializeCompany(Referential cache, Collection<Company> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 
-			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(list);
 			List<Company> objects = new ArrayList<Company>();
 
 			objects.addAll((List<Company>) companyDAO.findByChouetteId(chouetteIdsByCodeSpace));
@@ -264,9 +257,8 @@ public class LineOptimiser {
 
 	private void initializeGroupOfLine(Referential cache, Collection<GroupOfLine> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 
-			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(list);
 			List<GroupOfLine> objects = new ArrayList<GroupOfLine>();
 
 			objects.addAll((List<GroupOfLine>) groupOfLineDAO.findByChouetteId(chouetteIdsByCodeSpace));
@@ -287,9 +279,8 @@ public class LineOptimiser {
 
 	private void initializeLine(Referential cache, Collection<Line> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 
-			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(list);
 			List<Line> objects = new ArrayList<Line>();
 
 			objects.addAll((List<Line>) lineDAO.findByChouetteId(chouetteIdsByCodeSpace));
@@ -309,9 +300,8 @@ public class LineOptimiser {
 
 	private void initializeRoute(Referential cache, Collection<Route> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 
-			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(list);
 			List<Route> objects = new ArrayList<Route>();
 
 			objects.addAll((List<Route>) routeDAO.findByChouetteId(chouetteIdsByCodeSpace));
@@ -331,9 +321,8 @@ public class LineOptimiser {
 
 	private void initializeStopPoint(Referential cache, Collection<StopPoint> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 
-			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(list);
 			List<StopPoint> objects = new ArrayList<StopPoint>();
 
 			objects.addAll((List<StopPoint>) stopPointDAO.findByChouetteId(chouetteIdsByCodeSpace));
@@ -354,9 +343,8 @@ public class LineOptimiser {
 
 	private void initializeJourneyPattern(Referential cache, Collection<JourneyPattern> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 
-			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(list);
 			List<JourneyPattern> objects = new ArrayList<JourneyPattern>();
 
 			objects.addAll((List<JourneyPattern>) journeyPatternDAO.findByChouetteId(chouetteIdsByCodeSpace));
@@ -377,9 +365,8 @@ public class LineOptimiser {
 
 	private void initializeVehicleJourney(Referential cache, Collection<VehicleJourney> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 
-			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(list);
 			List<VehicleJourney> objects = new ArrayList<VehicleJourney>();
 
 			objects.addAll((List<VehicleJourney>) vehicleJourneyDAO.findByChouetteId(chouetteIdsByCodeSpace));
@@ -400,9 +387,8 @@ public class LineOptimiser {
 
 	private void initializeTimeband(Referential cache, Collection<Timeband> list) {
 		if (list != null && !list.isEmpty()) {
-			Collection<ChouetteId> chouetteIds = UpdaterUtils.getChouetteIds(list);
 
-			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(chouetteIds);
+			Map<String, List<String>> chouetteIdsByCodeSpace = UpdaterUtils.getChouetteIdsByCodeSpace(list);
 			List<Timeband> objects = new ArrayList<Timeband>();
 
 			objects.addAll((List<Timeband>) timebandDAO.findByChouetteId(chouetteIdsByCodeSpace));

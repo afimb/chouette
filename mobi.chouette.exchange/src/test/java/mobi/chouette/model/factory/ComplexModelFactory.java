@@ -15,10 +15,10 @@ import java.util.logging.Logger;
 
 import lombok.Getter;
 import lombok.Setter;
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.CalendarDay;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;

@@ -6,18 +6,16 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.JourneyPatternDAO;
 import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.dao.StopPointDAO;
-import mobi.chouette.exchange.ChouetteIdGenerator;
 import mobi.chouette.exchange.ChouetteIdObjectUtil;
-import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
@@ -131,7 +129,6 @@ public class RouteUpdater implements Updater<Route> {
 
 		List<StopPoint> stopPoints = null;
 		for (StopPoint item : addedStopPoint) {
-
 			StopPoint stopPoint = cache.getStopPoints().get(item.getChouetteId());
 			if (stopPoint == null) {
 				if (stopPoints == null) {
@@ -214,11 +211,9 @@ public class RouteUpdater implements Updater<Route> {
 	 * @param newRouteSection
 	 */
 	private void twoDatabaseJourneyPatternOneTest(ValidationReporter validationReporter, Context context, JourneyPattern oldValue, JourneyPattern newValue, ValidationData data) {
-		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
 		
 		if(!NeptuneUtil.sameValue(oldValue.getRoute(), newValue.getRoute()))
-			validationReporter.addCheckPointReportError(context, DATABASE_JOURNEY_PATTERN_1, data.getDataLocations().get(chouetteIdGenerator.toSpecificFormatId(newValue.getChouetteId(), parameters.getDefaultCodespace(), newValue)));
+			validationReporter.addCheckPointReportError(context, DATABASE_JOURNEY_PATTERN_1, data.getDataLocations().get(newValue.getChouetteId()));
 		else
 			validationReporter.reportSuccess(context, DATABASE_JOURNEY_PATTERN_1);
 	}
@@ -231,11 +226,9 @@ public class RouteUpdater implements Updater<Route> {
 	 * @param newSp
 	 */
 	private void twoDatabaseStopPointOneTest(ValidationReporter validationReporter, Context context, StopPoint oldSp, StopPoint newSp, ValidationData data) {
-		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
 		
 		if(!NeptuneUtil.sameValue(oldSp.getRoute(), newSp.getRoute()))
-			validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_1, data.getDataLocations().get(chouetteIdGenerator.toSpecificFormatId(newSp.getChouetteId(), parameters.getDefaultCodespace(), newSp)));
+			validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_1, data.getDataLocations().get(newSp.getChouetteId()));
 		else
 			validationReporter.reportSuccess(context, DATABASE_STOP_POINT_1);
 	}

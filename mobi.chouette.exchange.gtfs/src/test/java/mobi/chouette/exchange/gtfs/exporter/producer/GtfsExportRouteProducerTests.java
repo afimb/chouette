@@ -1,11 +1,11 @@
 package mobi.chouette.exchange.gtfs.exporter.producer;
 
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.core.ChouetteException;
 import mobi.chouette.exchange.gtfs.exporter.producer.mock.GtfsExporterMock;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.exporter.RouteExporter;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
-import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
 
