@@ -1,5 +1,28 @@
 package mobi.chouette.ws;
 
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.chain.Command;
+import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.importer.CleanRepositoryCommand;
+import mobi.chouette.model.iev.Job;
+import mobi.chouette.model.iev.Job.STATUS;
+import mobi.chouette.model.iev.Link;
+import mobi.chouette.persistence.hibernate.ContextHolder;
+import mobi.chouette.service.*;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
@@ -11,46 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.CacheControl;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
-import mobi.chouette.common.Constant;
-import mobi.chouette.model.iev.Job;
-import mobi.chouette.model.iev.Job.STATUS;
-import mobi.chouette.model.iev.Link;
-import mobi.chouette.service.JobService;
-import mobi.chouette.service.JobServiceManager;
-import mobi.chouette.service.RequestExceptionCode;
-import mobi.chouette.service.RequestServiceException;
-import mobi.chouette.service.ServiceException;
-import mobi.chouette.service.ServiceExceptionCode;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 @Path("/referentials")
 @Log4j
@@ -79,14 +62,20 @@ public class RestService implements Constant {
 		try {
 			log.info(Color.CYAN + "Call upload referential = " + referential + ", action = " + action
 					+ (type == null ? "" : ", type = " + type) + Color.NORMAL);
+			
+			
 
 			// Convertir les parametres fournis
 			type = parseType(type);
 			inputStreamByName = readParts(input);
 
+
+
+
 			// Relayer le service au JobServiceManager
 			ResponseBuilder builder = Response.accepted();
 			{
+
 				JobService jobService = jobServiceManager.create(referential, action, type, inputStreamByName);
 
 				// Produire la vue
@@ -119,6 +108,9 @@ public class RestService implements Constant {
 			log.info(Color.CYAN + "upload returns" + Color.NORMAL);
 		}
 	}
+	
+	
+	
 
 	private WebApplicationException toWebApplicationException(ServiceException exception) {
 		return new WebApplicationException(exception.getMessage(), toWebApplicationCode(exception.getExceptionCode()));
@@ -149,6 +141,7 @@ public class RestService implements Constant {
 		case UNREADABLE_PARAMETERS:
 		case INVALID_PARAMETERS:
 		case INVALID_FILE_FORMAT:
+		case INVALID_FORMAT:
 		case ACTION_TYPE_MISMATCH:
 			return Status.BAD_REQUEST;
 		case UNKNOWN_REFERENTIAL:
@@ -194,6 +187,26 @@ public class RestService implements Constant {
 	private String removeSpecialChars(String filename) {
 		return filename.replaceAll("[^\\w-_\\.]", "_");
 	}
+
+
+	@POST
+	@Path("/{ref}/clean")
+	public Response clean(@PathParam("ref") String referential) {
+		log.info(Color.CYAN + "Call clean referential = " + referential + Color.NORMAL);
+		try {
+			ContextHolder.setContext(referential);
+			Command command = CommandFactory.create(new InitialContext(), CleanRepositoryCommand.class.getName());
+			command.execute(null);
+			return Response.ok().build();
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
+		} finally {
+			ContextHolder.setContext(null);
+			log.info(Color.CYAN + "clean returns" + Color.NORMAL);
+		}
+	}
+
 
 	// download attached file
 	@GET
