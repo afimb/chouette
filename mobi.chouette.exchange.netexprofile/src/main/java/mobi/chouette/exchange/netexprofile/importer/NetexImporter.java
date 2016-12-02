@@ -33,8 +33,9 @@ public class NetexImporter {
 
 	private JAXBContext netexJaxBContext = null;
 
-	public Schema getNetexSchema() throws SAXException, IOException {
+	public synchronized Schema getNetexSchema() throws SAXException, IOException {
 
+		
 		if (netexSchema == null) {
 			SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			factory.setResourceResolver(new PredefinedSchemaListClasspathResourceResolver("/netex_schema_list.txt"));

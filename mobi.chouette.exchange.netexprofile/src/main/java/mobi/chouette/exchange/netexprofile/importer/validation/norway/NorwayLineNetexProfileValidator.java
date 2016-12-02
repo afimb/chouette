@@ -44,6 +44,7 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 	private static final String _1_NETEX_COMPOSITE_FRAME = "1-NETEXPROFILE-CompositeFrame";
 	private static final String _1_NETEX_SITE_FRAME = "1-NETEXPROFILE-SiteFrame";
 	private static final String _1_NETEX_SERVICE_FRAME_LINE = "1-NETEXPROFILE-ServiceFrame_Line";
+	private static final String _1_NETEX_SERVICE_FRAME_NETWORK = "1-NETEXPROFILE-ServiceFrame_Network";
 
 	private static final String _1_NETEX_SERVICE_FRAME_TIMING_POINTS = "1-NETEXPROFILE-ServiceFrame_TimingPoints";
 	private static final String _1_NETEX_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN = "1-NETEXPROFILE-ServiceFrame_ServiceJourneyPattern";
@@ -85,6 +86,7 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 		addCheckpoints(context, _1_NETEX_SERVICE_CALENDAR_FRAME, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_TIMING_POINTS, "W");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN, "W");
@@ -139,8 +141,9 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 				_1_NETEX_RESOURCE_FRAME);
 		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ServiceFrame", "1", "No ServiceFrame",
 				_1_NETEX_SERVICE_FRAME);
-		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ServiceCalendarFrame", "1",
-				"No ServiceCalendarFrame", _1_NETEX_SERVICE_CALENDAR_FRAME);
+// TODO service calendar frame may be defined in common files
+		//		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ServiceCalendarFrame", "1",
+//				"No ServiceCalendarFrame", _1_NETEX_SERVICE_CALENDAR_FRAME);
 		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:TimetableFrame", "1", "No TimetableFrame",
 				_1_NETEX_TIMETABLE_FRAME);
 		validateElementNotPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:SiteFrame", "1", "SiteFrame present",
@@ -178,6 +181,7 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 	private void validateServiceFrame(Context context, XPath xpath, Document dom) throws XPathExpressionException {
 		Node root = selectNode("/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ServiceFrame", xpath, dom);
 
+		validateElementPresent(context, xpath, root, "n:Network", "1", "A line must belong to a network", _1_NETEX_SERVICE_FRAME_NETWORK);
 		validateElementPresent(context, xpath, root, "n:lines/n:Line", "1", "One and only one Line in each file", _1_NETEX_SERVICE_FRAME_LINE);
 		validateElementPresent(context, xpath, root, "n:lines/n:Line[1]/n:PublicCode", "1", "Lines must have PublicCode",
 				_1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE);
