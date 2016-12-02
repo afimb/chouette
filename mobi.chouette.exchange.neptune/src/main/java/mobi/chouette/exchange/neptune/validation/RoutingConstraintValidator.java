@@ -2,7 +2,6 @@ package mobi.chouette.exchange.neptune.validation;
 
 import java.util.Map;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
@@ -22,7 +21,6 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.Referential;
 
-@Log4j
 public class RoutingConstraintValidator extends AbstractValidator implements Validator<RoutingConstraint>, Constant {
 
 	public static final String ITL_NAME = "name";
@@ -184,7 +182,6 @@ public class RoutingConstraintValidator extends AbstractValidator implements Val
 		Context routingConstraintLocalContext = (Context) validationContext
 				.get(RoutingConstraintValidator.SA_LOCAL_CONTEXT);
 		Context stopPointContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
-		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Map<ChouetteId, RoutingConstraint> routingConstraints = referential.getRoutingConstraints();
 

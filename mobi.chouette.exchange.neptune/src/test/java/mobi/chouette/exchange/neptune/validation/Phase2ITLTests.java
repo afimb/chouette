@@ -3,16 +3,10 @@ package mobi.chouette.exchange.neptune.validation;
 import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
 import mobi.chouette.exchange.validation.report.ValidationReporter.RESULT;
 
-import org.apache.log4j.BasicConfigurator;
 import org.testng.annotations.Test;
 
 public class Phase2ITLTests extends ValidationTests {
 
-	static {
-		BasicConfigurator.resetConfiguration();
-		BasicConfigurator.configure();
-	}
-	
 	@Test(groups = { "Phase 2 ITL" }, description = "StopArea ITL refers StopPoint")
 	public void verifyTest_2_ITL_1_1() throws Exception {
 		

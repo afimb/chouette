@@ -29,12 +29,18 @@ import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.BasicConfigurator;
 import org.testng.Assert;
 
 
 public class ValidationTests implements Constant, ReportConstant
 {
 
+	static {
+		BasicConfigurator.resetConfiguration();
+		BasicConfigurator.configure();
+	}
+	
    private static final String path = "src/test/data/lignes_neptune_err/";
 
 	protected static InitialContext initialContext;
