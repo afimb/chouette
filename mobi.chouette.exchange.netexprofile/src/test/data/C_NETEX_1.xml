@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<PublicationDelivery xmlns="http://www.netex.org.uk/netex" xmlns:ns2="http://www.opengis.net/gml/3.2" xmlns:ns3="http://www.siri.org.uk/siri" version="1.0">
+<PublicationDelivery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns="http://www.netex.org.uk/netex" xmlns:ns2="http://www.opengis.net/gml/3.2" xmlns:ns3="http://www.siri.org.uk/siri" version="1.0"
+    
+    xsi:schemaLocation="http://www.netex.org.uk/netex ../../xsd/NeTEx_publication.xsd"
+    >
     <PublicationTimestamp>2016-11-21T14:09:25.396Z</PublicationTimestamp>
     <ParticipantRef>Avinor</ParticipantRef>
     <Description>Flight DY280 : Oslo-Kristiansand</Description>
@@ -38,11 +41,17 @@
                             <CompanyNumber>912084949</CompanyNumber>
                             <Name>Norwegian</Name>
                             <LegalName>NORWEGIAN AIR NORWAY AS</LegalName>
+                            
                             <ContactDetails>
                                 <Phone>0047 815 21 815</Phone>
                                 <Url>http://www.norwegian.no/</Url>
                             </ContactDetails>
                             <OrganisationType>operator</OrganisationType>
+                            <CustomerServiceContactDetails>
+                                <Phone>0047 815 21 815</Phone>
+                                <Url>http://www.norwegian.no/</Url>
+                            </CustomerServiceContactDetails>
+                            
                         </Operator>
                     </organisations>
                 </ResourceFrame>
@@ -163,8 +172,8 @@
                         <ServiceJourney version="1" id="AVI:ServiceJourney:DY280">
                             <DepartureTime>19:30:00Z</DepartureTime>
                             <dayTypes>
-                                <DayTypeRef ref="DY280:DayType:weekday" version="1"/>
-                                <DayTypeRef ref="DY280:DayType:weekend" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:DY280-weekday" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:DY280-weekend" version="1"/>
                             </dayTypes>
                             <JourneyPatternRef ref="AVI:JourneyPattern:DY280101" version="1"/>
                             <PublicCode>DY280</PublicCode>
@@ -184,7 +193,7 @@
                 </TimetableFrame>
                 <ServiceCalendarFrame version="1" id="AVI:ServiceCalendarFrame:1">
                     <dayTypes>
-                        <DayType version="1" id="DY280:DayType:weekday">
+                        <DayType version="1" id="AVI:DayType:DY280-weekday">
                             <Name>Ukedager (mandag til fredag)</Name>
                             <properties>
                                 <PropertyOfDay>
@@ -192,7 +201,7 @@
                                 </PropertyOfDay>
                             </properties>
                         </DayType>
-                        <DayType version="1" id="DY280:DayType:weekend">
+                        <DayType version="1" id="AVI:DayType:DY280-weekend">
                             <Name>Helgdager (lørdag og søndag)</Name>
                             <properties>
                                 <PropertyOfDay>
