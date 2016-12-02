@@ -29,15 +29,15 @@
 	</persistence-unit>
 
 	<persistence-unit name="referential" transaction-type="JTA">
-		
+
 		<jta-data-source>java:jboss/datasources/chouette</jta-data-source>
-		
+
 		<class>mobi.chouette.model.AccessLink</class>
 		<class>mobi.chouette.model.AccessPoint</class>
 		<class>mobi.chouette.model.CalendarDay</class>
 		<class>mobi.chouette.model.Company</class>
 		<class>mobi.chouette.model.ConnectionLink</class>
-		<class>mobi.chouette.model.Footnote</class>
+      <class>mobi.chouette.model.Footnote</class>
 		<class>mobi.chouette.model.GroupOfLine</class>
 		<class>mobi.chouette.model.JourneyFrequency</class>
 		<class>mobi.chouette.model.JourneyPattern</class>
@@ -45,7 +45,7 @@
 		<class>mobi.chouette.model.Period</class>
 		<class>mobi.chouette.model.Network</class>
 		<class>mobi.chouette.model.Route</class>
-		<class>mobi.chouette.model.RouteSection</class>
+      <class>mobi.chouette.model.RouteSection</class>
 		<class>mobi.chouette.model.StopArea</class>
 		<class>mobi.chouette.model.StopPoint</class>
 		<class>mobi.chouette.model.Timeband</class>
@@ -54,7 +54,7 @@
 		<class>mobi.chouette.model.VehicleJourney</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<validation-mode>NONE</validation-mode>
-		
+
 		<properties>
 			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.format_sql" value="true" />
@@ -69,56 +69,10 @@
 			<property name="hibernate.cache.use_second_level_cache"
 				value="true" />
 			<property name="hibernate.cache.use_query_cache" value="true" />
-			<property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect" />
+         <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect" />
 			<property name="javax.persistence.validation.mode" value="none" />
 		</properties>
 	</persistence-unit>
-	
-	<persistence-unit name="referential_delete" transaction-type="JTA">
-		
-		<jta-data-source>java:jboss/datasources/chouette</jta-data-source>
-		
-		<class>mobi.chouette.model.AccessLink</class>
-		<class>mobi.chouette.model.AccessPoint</class>
-		<class>mobi.chouette.model.CalendarDay</class>
-		<class>mobi.chouette.model.Company</class>
-		<class>mobi.chouette.model.ConnectionLink</class>
-		<class>mobi.chouette.model.Footnote</class>
-		<class>mobi.chouette.model.GroupOfLine</class>
-		<class>mobi.chouette.model.JourneyFrequency</class>
-		<class>mobi.chouette.model.JourneyPattern</class>
-		<class>mobi.chouette.model.Line</class>
-		<class>mobi.chouette.model.Period</class>
-		<class>mobi.chouette.model.Network</class>
-		<class>mobi.chouette.model.Route</class>
-		<class>mobi.chouette.model.RouteSection</class>
-		<class>mobi.chouette.model.StopArea</class>
-		<class>mobi.chouette.model.StopPoint</class>
-		<class>mobi.chouette.model.Timeband</class>
-		<class>mobi.chouette.model.Timetable</class>
-		<class>mobi.chouette.model.VehicleJourneyAtStop</class>
-		<class>mobi.chouette.model.VehicleJourney</class>
-		<exclude-unlisted-classes>true</exclude-unlisted-classes>
-		<validation-mode>NONE</validation-mode>
-		
-		<properties>
-			<property name="hibernate.show_sql" value="false" />
-			<property name="hibernate.format_sql" value="true" />
-			<property name="hibernate.jdbc.batch_size" value="2000" />
-			<property name="hibernate.default_batch_fetch_size" value="2000" />
-			<property name="hibernate.multiTenancy" value="SCHEMA" />
-			<property name="hibernate.connection.datasource" value="java:jboss/datasources/chouette" />
-			<property name="hibernate.tenant_identifier_resolver"
-				value="mobi.chouette.persistence.hibernate.DefaultTenantIdentifierResolver" />
-			<property name="hibernate.multi_tenant_connection_provider"
-				value="mobi.chouette.persistence.hibernate.DefaultConnectionProvider" />
-			<property name="hibernate.cache.use_second_level_cache"
-				value="true" />
-			<property name="hibernate.cache.use_query_cache" value="true" />
-			<property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect" />
-			<property name="javax.persistence.validation.mode" value="none" />
-		</properties>
-	</persistence-unit>
-	
-	
+
+
 </persistence>
