@@ -34,7 +34,7 @@ public class GtfsExportAgencyProducerTests
       neptuneObject.setUrl("http://www.mywebsite.com");
       neptuneObject.setPhone("01 02 03 04 05");
 
-      producer.save(neptuneObject,  "GTFS", null);
+      producer.save(neptuneObject,  "GTFS", null,false);
       GtfsAgency gtfsObject = mock.getExportedAgencies().get(0);
       Reporter.log("verifyAgencyProducer1");
       Reporter.log(AgencyExporter.CONVERTER.to(context, gtfsObject));
@@ -63,7 +63,7 @@ public class GtfsExportAgencyProducerTests
       neptuneObject.setShortName("short");
       neptuneObject.setPhone("01 02 03 04 05");
 
-      producer.save(neptuneObject, "GTFS", null);
+      producer.save(neptuneObject, "GTFS", null,false);
       GtfsAgency gtfsObject = mock.getExportedAgencies().get(0);
       Reporter.log("verifyAgencyProducer2");
       Reporter.log(AgencyExporter.CONVERTER.to(context, gtfsObject));
@@ -92,7 +92,7 @@ public class GtfsExportAgencyProducerTests
       neptuneObject.setName("name");
       neptuneObject.setPhone("01 02 03 04 05");
 
-      producer.save(neptuneObject, "GTFS", null);
+      producer.save(neptuneObject, "GTFS", null,false);
       GtfsAgency gtfsObject = mock.getExportedAgencies().get(0);
       Reporter.log("verifyAgencyProducer3");
       Reporter.log(AgencyExporter.CONVERTER.to(context, gtfsObject));
@@ -120,7 +120,7 @@ public class GtfsExportAgencyProducerTests
       neptuneObject.setName("name");
 
       Reporter.log("verifyAgencyProducer4");
-      producer.save(neptuneObject,  "GTFS", TimeZone.getTimeZone("America/Montreal"));
+      producer.save(neptuneObject,  "GTFS", TimeZone.getTimeZone("America/Montreal"),false);
       GtfsAgency gtfsObject = mock.getExportedAgencies().get(0);
       Reporter.log(AgencyExporter.CONVERTER.to(context, gtfsObject));
 
@@ -129,7 +129,7 @@ public class GtfsExportAgencyProducerTests
       
       neptuneObject.setTimeZone("Europe/Paris");
       mock.reset();
-      producer.save(neptuneObject, "GTFS", TimeZone.getTimeZone("America/Montreal"));
+      producer.save(neptuneObject, "GTFS", TimeZone.getTimeZone("America/Montreal"),false);
       gtfsObject = mock.getExportedAgencies().get(0);
       Reporter.log(AgencyExporter.CONVERTER.to(context, gtfsObject));
       Assert.assertEquals(gtfsObject.getAgencyTimezone().getID(),"Europe/Paris" ,

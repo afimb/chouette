@@ -29,6 +29,7 @@ import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.ActionReporter.FILE_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
+import mobi.chouette.exchange.report.ObjectCollectionReport;
 import mobi.chouette.exchange.report.ObjectReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.report.ValidationReport;
@@ -292,11 +293,12 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
 		Assert.assertEquals(report.getFiles().size(), 1, "file reported");
 		Assert.assertNotNull(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE), "line reported");
-		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 1, "line reported");
-		for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+		ObjectCollectionReport lineReports = report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE);
+		for (ObjectReport info : lineReports.getObjectReports()) {
 			Reporter.log("report line :" + info.toString(), true);
 			Assert.assertEquals(info.getStatus(), OBJECT_STATE.OK, "line status");
 		}
+		Assert.assertEquals(lineReports.getObjectReports().size(), 1, "line reported");
 		
 		NeptuneTestsUtils.checkLine(context);
 		
@@ -308,8 +310,19 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		utx.begin();
 		em.joinTransaction();
 		Line line = lineDao.findByChouetteId("NINOXE", "15574334");
+		if (line == null)
+		{
+			List<Line> lines = lineDao.findAll();
+			for (Line line2 : lines) {
+				log.warn("Line " + line2.getCodeSpace() + ":" + line2.getTechnicalId());
+			}
+			Assert.assertNotNull(line,"line not saved");
+		}
+		else
+		{
 		log.warn("Line " + line.getCodeSpace() + ":" + line.getTechnicalId());
 		NeptuneTestsUtils.checkMinimalLine(context, line);
+		}
 		
 		utx.rollback();
 

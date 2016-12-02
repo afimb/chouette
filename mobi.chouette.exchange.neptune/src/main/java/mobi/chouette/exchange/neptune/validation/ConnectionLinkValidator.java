@@ -81,8 +81,8 @@ public class ConnectionLinkValidator extends AbstractValidator implements Valida
 		{
 			ConnectionLink connectionLink = referential.getConnectionLinks().get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),ConnectionLink.class));
 
-			if (stopAreaContext.containsKey(connectionLink.getStartOfLink().getChouetteId()) 
-					|| stopAreaContext.containsKey(connectionLink.getEndOfLink().getChouetteId()))
+			if (stopAreaContext.containsKey(neptuneChouetteIdGenerator.toSpecificFormatId(connectionLink.getStartOfLink().getChouetteId(),parameters.getDefaultCodespace(),connectionLink.getStartOfLink())) 
+					|| stopAreaContext.containsKey(neptuneChouetteIdGenerator.toSpecificFormatId(connectionLink.getEndOfLink().getChouetteId(),parameters.getDefaultCodespace(),connectionLink.getEndOfLink())))
 				continue;
 			
 			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();

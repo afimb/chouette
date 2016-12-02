@@ -40,7 +40,7 @@ public class GtfsExportTransferProducerTests
       Time defaultDuration = new Time(60000);
       neptuneObject.setDefaultDuration(defaultDuration);
 
-      producer.save(neptuneObject,  "GTFS");
+      producer.save(neptuneObject,  "GTFS",false);
       GtfsTransfer gtfsObject = mock.getExportedTransfers().get(0);
       Reporter.log("verifyTransferProducer1");
       Reporter.log(TransferExporter.CONVERTER.to(context,gtfsObject));
@@ -70,7 +70,7 @@ public class GtfsExportTransferProducerTests
       Time defaultDuration = new Time(500);
       neptuneObject.setDefaultDuration(defaultDuration);
 
-      producer.save(neptuneObject, "GTFS");
+      producer.save(neptuneObject, "GTFS",false);
       GtfsTransfer gtfsObject = mock.getExportedTransfers().get(0);
       Reporter.log("verifyTransferProducer2");
       Reporter.log(TransferExporter.CONVERTER.to(context,gtfsObject));

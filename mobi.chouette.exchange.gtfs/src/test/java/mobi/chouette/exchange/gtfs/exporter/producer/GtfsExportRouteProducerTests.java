@@ -39,7 +39,7 @@ public class GtfsExportRouteProducerTests
       company.setName("name");
       neptuneObject.setCompany(company);
 
-      producer.save(neptuneObject, "GTFS");
+      producer.save(neptuneObject, "GTFS",false);
       Reporter.log("verifyRouteProducerWithShortAndLongName");
       Assert.assertEquals(mock.getExportedRoutes().size(), 1, "Route should be returned");
       GtfsRoute gtfsObject = mock.getExportedRoutes().get(0);
@@ -70,7 +70,7 @@ public class GtfsExportRouteProducerTests
       company.setChouetteId(new ChouetteId("GTFS","1234", false));
       company.setName("name");
       neptuneObject.setCompany(company);
-      producer.save(neptuneObject,"GTFS");
+      producer.save(neptuneObject,"GTFS",false);
       Reporter.log("verifyRouteProducerWithNoShortName");
       Assert.assertEquals(mock.getExportedRoutes().size(), 1, "Route should be returned");
       GtfsRoute gtfsObject = mock.getExportedRoutes().get(0);
@@ -96,7 +96,7 @@ public class GtfsExportRouteProducerTests
       company.setChouetteId(new ChouetteId("GTFS","1234", false));
       company.setName("name");
       neptuneObject.setCompany(company);
-      producer.save(neptuneObject,  "GTFS");
+      producer.save(neptuneObject,  "GTFS",false);
       Reporter.log("verifyRouteProducerWithNoLongName");
       Assert.assertEquals(mock.getExportedRoutes().size(), 1, "Route should be returned");
       GtfsRoute gtfsObject = mock.getExportedRoutes().get(0);
@@ -118,7 +118,7 @@ public class GtfsExportRouteProducerTests
       company.setChouetteId(new ChouetteId("GTFS","1234", false));
       company.setName("name");
       neptuneObject.setCompany(company);
-      boolean state = producer.save(neptuneObject, "GTFS");
+      boolean state = producer.save(neptuneObject, "GTFS",false);
       Reporter.log("verifyRouteProducerWithNoName");
       Assert.assertFalse(state, "GTFS Route must not be produced");
 

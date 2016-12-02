@@ -32,7 +32,7 @@ public class GtfsExtendedStopProducer extends
       super(exporter);
    }
 
-   public boolean save(StopArea neptuneObject,  String prefix, Collection<StopArea> validParents)
+   public boolean save(StopArea neptuneObject,  String prefix, Collection<StopArea> validParents, boolean keepOriginalId)
    {
       ChouetteAreaEnum chouetteAreaType = neptuneObject.getAreaType();
       if (chouetteAreaType.compareTo(ChouetteAreaEnum.BoardingPosition) == 0)
@@ -41,36 +41,22 @@ public class GtfsExtendedStopProducer extends
          stop.setLocationType(GtfsStop.LocationType.Stop);
       else if (chouetteAreaType.compareTo(ChouetteAreaEnum.CommercialStopPoint) == 0)
          stop.setLocationType(GtfsStop.LocationType.Station);
-      // else if(chouetteAreaType.compareTo(ChouetteAreaEnum.STOPPLACE) == 0)
-      // stop.setLocationType(GtfsStop.STATION);
       else
          return false; // StopPlaces and ITL type not available
-      stop.setStopId(toGtfsId(neptuneObject.getChouetteId(),prefix));
+      stop.setStopId(toGtfsId(neptuneObject.getChouetteId(),prefix,keepOriginalId));
       if (neptuneObject.getName() == null)
       {
-//         GtfsReportItem item = new GtfsReportItem(
-//               GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",
-//               neptuneObject.getObjectId(), "Name");
-//         report.addItem(item);
          return false;
       }
       stop.setStopName(neptuneObject.getName());
 
       if (neptuneObject.getLatitude() == null)
       {
-//         GtfsReportItem item = new GtfsReportItem(
-//               GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",
-//               neptuneObject.getName(), "Latitude");
-//         report.addItem(item);
          return false;
       }
       stop.setStopLat(neptuneObject.getLatitude());
       if (neptuneObject.getLongitude() == null)
       {
-//         GtfsReportItem item = new GtfsReportItem(
-//               GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",
-//               neptuneObject.getName(), "Longitude");
-//         report.addItem(item);
          return false;
       }
       stop.setStopLon(neptuneObject.getLongitude());
@@ -96,7 +82,7 @@ public class GtfsExtendedStopProducer extends
          if (neptuneObject.getParent() != null && validParents.contains(neptuneObject.getParent()))
          {
             stop.setParentStation(toGtfsId(neptuneObject.getParent()
-                  .getChouetteId(),prefix));
+                  .getChouetteId(),prefix,keepOriginalId));
          }
       }
       

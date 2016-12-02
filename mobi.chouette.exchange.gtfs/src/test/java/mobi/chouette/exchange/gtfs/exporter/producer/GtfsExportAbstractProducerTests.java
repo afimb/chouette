@@ -23,8 +23,8 @@ public class GtfsExportAbstractProducerTests
    public void verifyToGtfsId() throws ChouetteException
    {
 
-      Assert.assertEquals(producer.toGtfsIdWrapper(new ChouetteId("GTFS","1234", false), "GTFS"), "1234", "gtfs id must contains only third part of neptune id");
-      Assert.assertEquals(producer.toGtfsIdWrapper(new ChouetteId("GTFS","1234", false), "TEST"), "GTFS.1234",
+      Assert.assertEquals(producer.toGtfsIdWrapper(new ChouetteId("GTFS","1234", false), "GTFS",false), "1234", "gtfs id must contains only third part of neptune id");
+      Assert.assertEquals(producer.toGtfsIdWrapper(new ChouetteId("GTFS","1234", false), "TEST",false), "GTFS.1234",
             "gtfs id must contains combination of first and third parts of neptune id");
 
    }

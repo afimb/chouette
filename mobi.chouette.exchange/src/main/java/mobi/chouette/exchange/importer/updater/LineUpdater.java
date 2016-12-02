@@ -1,6 +1,8 @@
 package mobi.chouette.exchange.importer.updater;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -21,6 +23,7 @@ import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.ChouetteId;
 import mobi.chouette.model.Company;
+import mobi.chouette.model.Footnote;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
@@ -63,6 +66,9 @@ public class LineUpdater implements Updater<Line> {
 
 	@EJB(beanName = RoutingConstraintUpdater.BEAN_NAME)
 	private Updater<RoutingConstraint> routingConstraintUpdater;
+
+	@EJB(beanName = FootnoteUpdater.BEAN_NAME)
+	private Updater<Footnote> footnoteUpdater;
 
 	@Override
 	public void update(Context context, Line oldValue, Line newValue) throws Exception {
@@ -330,6 +336,42 @@ public class LineUpdater implements Updater<Line> {
 		for (RoutingConstraint routingConstraint : removedRoutingConstraint) {
 			oldValue.removeRoutingConstraint(routingConstraint);
 		}
+		// Footnotes - merge at this level 
+		// This is the new list of footnotes
+		List<Footnote> footnotes = new ArrayList<Footnote>();
+		
+		// Compare at 'code' attribute
+		Comparator<Footnote> footnoteCodeCompatator = new Comparator<Footnote>() {
+			@Override
+			public int compare(Footnote o1, Footnote o2) {
+				return o2.getCode().compareTo(o1.getCode());
+			}
+		};
+		
+		// Find added footnotes
+		Collection<Footnote> addedFootnotes = CollectionUtil.substract(
+				newValue.getFootnotes(), oldValue.getFootnotes(),
+				footnoteCodeCompatator);
+		
+		// add all new footnotes
+		footnotes.addAll(addedFootnotes);
+		
+		// Find modified footnotes
+		Collection<Pair<Footnote, Footnote>> modifiedFootnotes = CollectionUtil
+				.intersection(oldValue.getFootnotes(),
+						newValue.getFootnotes(),
+						footnoteCodeCompatator);
+		for (Pair<Footnote, Footnote> pair : modifiedFootnotes) {
+			footnoteUpdater.update(context, pair.getLeft(), pair.getRight());
+			footnotes.add(pair.getLeft());
+		}
+		
+		for(Footnote f : footnotes) {
+			f.setLine(oldValue);
+		}
+		
+		oldValue.setFootnotes(footnotes);
+
 //		monitor.stop();
 	}
 	

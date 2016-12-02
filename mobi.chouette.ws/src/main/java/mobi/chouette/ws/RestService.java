@@ -48,6 +48,7 @@ import mobi.chouette.service.ServiceException;
 import mobi.chouette.service.ServiceExceptionCode;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
@@ -261,10 +262,10 @@ public class RestService implements Constant {
 	@Path("/{ref}/jobs")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response jobs(@PathParam("ref") String referential,
-			@DefaultValue("0") @QueryParam("version") final Long version, @QueryParam("action") final String action) {
+			@DefaultValue("0") @QueryParam("version") final Long version, @QueryParam("action") final String[] action, @QueryParam("status") final Job.STATUS[] status) {
 
 		try {
-			log.info(Color.CYAN + "Call jobs referential = " + referential + ", action = " + action + ", version = "
+			log.info(Color.CYAN + "Call jobs referential = " + referential + ", action = " + StringUtils.join(action,',')+", status = " + StringUtils.join(status,',') + ", version = "
 					+ version + Color.NORMAL);
 
 			// create jobs listing
@@ -272,7 +273,7 @@ public class RestService implements Constant {
 
 			// re factor Parameters dependencies
 			{
-				List<JobService> jobServices = jobServiceManager.jobs(referential, action, version);
+				List<JobService> jobServices = jobServiceManager.jobs(referential, action, version,status);
 				for (JobService jobService : jobServices) {
 					JobInfo jobInfo = new JobInfo(jobService, true, uriInfo);
 					result.add(jobInfo);

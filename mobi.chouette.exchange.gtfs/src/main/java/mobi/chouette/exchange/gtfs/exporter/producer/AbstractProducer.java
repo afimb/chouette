@@ -20,12 +20,17 @@ public abstract class AbstractProducer
       this.exporter = exporter;
    }
 
-   static protected String toGtfsId(ChouetteId neptuneId, String prefix)
+   static protected String toGtfsId(ChouetteId neptuneId, String prefix, boolean keepOriginal)
    {
-      if (neptuneId.getCodeSpace().equals(prefix))
-         return neptuneId.getTechnicalId();
-      else
-         return neptuneId.getCodeSpace() + "." + neptuneId.getTechnicalId();
+      if(keepOriginal) {
+    	  // @TODO use default format generator
+    	  return neptuneId.getCodeSpace() + "." + neptuneId.getTechnicalId();
+      } else {
+          if (neptuneId.getCodeSpace().equals(prefix))
+              return neptuneId.getTechnicalId();
+           else
+              return neptuneId.getCodeSpace() + "." + neptuneId.getTechnicalId();
+	      }
    }
 
    static protected boolean isEmpty(String s)

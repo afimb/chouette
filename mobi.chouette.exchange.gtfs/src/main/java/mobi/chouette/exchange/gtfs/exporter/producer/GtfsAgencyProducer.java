@@ -33,18 +33,14 @@ public class GtfsAgencyProducer extends AbstractProducer
    private GtfsAgency agency = new GtfsAgency();
 
 
-   public boolean save(Company neptuneObject, String prefix, TimeZone timeZone)
+   public boolean save(Company neptuneObject, String prefix, TimeZone timeZone, boolean keepOriginalId)
    {
-      agency.setAgencyId(toGtfsId(neptuneObject.getChouetteId(),prefix));
+      agency.setAgencyId(toGtfsId(neptuneObject.getChouetteId(),prefix,keepOriginalId));
 
       String name = neptuneObject.getName();
       if (name.trim().isEmpty())
       {
          log.error("no name for " + neptuneObject.getCodeSpace() +  " " + neptuneObject.getTechnicalId());
-//         GtfsReportItem item = new GtfsReportItem(
-//               GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "Company",
-//               neptuneObject.getObjectId(), "Name");
-//         report.addItem(item);
          return false;
       }
 
@@ -70,7 +66,6 @@ public class GtfsAgencyProducer extends AbstractProducer
          if (neptuneObject.getOrganisationalUnit() != null
                && neptuneObject.getOrganisationalUnit().startsWith("http"))
          {
-            // urlData = "OrganisationalUnit";
             url = neptuneObject.getOrganisationalUnit();
          } else
          {
@@ -83,10 +78,6 @@ public class GtfsAgencyProducer extends AbstractProducer
       } catch (MalformedURLException e)
       {
          log.error("malformed URL " + url);
-//         GtfsReportItem item = new GtfsReportItem(
-//               GtfsReportItem.KEY.INVALID_DATA, STATE.ERROR, "Company",
-//               neptuneObject.getName(), urlData, url);
-//         report.addItem(item);
          return false;
       }
 

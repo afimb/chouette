@@ -16,9 +16,9 @@ public class GtfsDummyProducer extends AbstractProducer
       super(exporter);
    }
    
-   public String toGtfsIdWrapper(ChouetteId neptuneId, String prefix)
+   public String toGtfsIdWrapper(ChouetteId neptuneId, String prefix, boolean keepOriginalId)
    {
-      return toGtfsId(neptuneId, prefix);
+      return toGtfsId(neptuneId, prefix, keepOriginalId);
    }
    
    public Color getColorWrapper(String color)
