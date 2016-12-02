@@ -222,7 +222,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			String codeSpace = newValue.getRoute().getChouetteId().getCodeSpace();
 			String technicalId = newValue.getRoute().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getRoute().getChouetteId();
-			Route route = cache.getRoutes().get(technicalId);
+			Route route = cache.getRoutes().get(chouetteId);
 			if (route == null) {
 				route = routeDAO.findByChouetteId(codeSpace, technicalId);
 				if (route != null) {

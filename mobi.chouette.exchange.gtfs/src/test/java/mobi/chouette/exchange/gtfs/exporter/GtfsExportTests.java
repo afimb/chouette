@@ -21,6 +21,7 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.DummyChecker;
+import mobi.chouette.exchange.gtfs.GtfsChouetteIdGenerator;
 import mobi.chouette.exchange.gtfs.GtfsTestsUtils;
 import mobi.chouette.exchange.gtfs.JobDataTest;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
@@ -152,6 +153,8 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		configuration.setCleanRepository(true);
 		configuration.setNoSave(false);
 		context.put(CONFIGURATION, configuration);
+		GtfsChouetteIdGenerator chouetteIdGenerator = new GtfsChouetteIdGenerator();
+		context.put(CHOUETTEID_GENERATOR, chouetteIdGenerator);
 		configuration.setName("name");
 		configuration.setUserName("userName");
 		configuration.setNoSave(true);
@@ -187,6 +190,8 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		context.put(VALIDATION_REPORT, new ValidationReport());
 		GtfsExportParameters configuration = new GtfsExportParameters();
 		context.put(CONFIGURATION, configuration);
+		GtfsChouetteIdGenerator chouetteIdGenerator = new GtfsChouetteIdGenerator();
+		context.put(CHOUETTEID_GENERATOR, chouetteIdGenerator);
 		configuration.setName("name");
 		configuration.setUserName("userName");
 		configuration.setOrganisationName("organisation");
@@ -382,6 +387,12 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 				Reporter.log(cp.toString(),true);
 			}
 		}
+		
+
+		for (ObjectReport linerep : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+            Reporter.log("line "+linerep.getObjectId());
+        }
+
 		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
 		Assert.assertEquals(report.getFiles().size(), fileCount, "file reported");
 		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), lineCount, "line reported");

@@ -75,7 +75,7 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
 			String codeSpace = newValue.getArrival().getChouetteId().getCodeSpace();
 			String technicalId = newValue.getArrival().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getArrival().getChouetteId();
-			StopArea arrival = cache.getStopAreas().get(technicalId);
+			StopArea arrival = cache.getStopAreas().get(chouetteId);
 			if (arrival == null) {
 				arrival = stopAreaDAO.findByChouetteId(codeSpace, technicalId);
 				if (arrival != null) {

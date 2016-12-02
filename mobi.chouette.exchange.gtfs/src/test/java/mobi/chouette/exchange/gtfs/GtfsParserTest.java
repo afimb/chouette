@@ -79,11 +79,13 @@ public class GtfsParserTest  extends Arquillian implements Constant{
 		ValidationReport validationReport = new ValidationReport();
 		GtfsRouteParserCommand command = (GtfsRouteParserCommand) CommandFactory.create(initialContext, GtfsRouteParserCommand.class.getName());
 		GtfsImporter importer = new GtfsImporter("src/test/data/valid");
+		GtfsChouetteIdGenerator chouetteIdGenerator = new GtfsChouetteIdGenerator();
 		context.put(PARSER, importer);
 		context.put(REPORT, report);
 		context.put(REFERENTIAL, new Referential());
 		context.put(VALIDATION_REPORT, validationReport);
 		context.put(CONFIGURATION, configuration);
+		context.put(CHOUETTEID_GENERATOR, chouetteIdGenerator);
 		command.setGtfsRouteId("0001");
 		
 		command.execute(context);

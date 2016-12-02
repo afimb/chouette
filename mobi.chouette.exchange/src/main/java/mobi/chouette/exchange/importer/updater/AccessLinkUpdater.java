@@ -123,7 +123,7 @@ public class AccessLinkUpdater implements Updater<AccessLink> {
 			String codeSpace = newValue.getAccessPoint().getChouetteId().getCodeSpace();
 			String technicalId = newValue.getAccessPoint().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getAccessPoint().getChouetteId();
-			AccessPoint accessPoint = cache.getAccessPoints().get(technicalId);
+			AccessPoint accessPoint = cache.getAccessPoints().get(chouetteId);
 			if (accessPoint == null) {
 				accessPoint = accessPointDAO.findByChouetteId(codeSpace, technicalId);
 				if (accessPoint != null) {

@@ -27,6 +27,7 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
+import mobi.chouette.exchange.AbstractChouetteIdGenerator;
 import mobi.chouette.exchange.importer.updater.LineOptimiser;
 import mobi.chouette.exchange.importer.updater.LineUpdater;
 import mobi.chouette.exchange.importer.updater.Updater;
@@ -79,7 +80,6 @@ public class LineRegisterCommand implements Command {
 		context.put(CACHE, cache);
 
 		AbstractImportParameter importParameter = (AbstractImportParameter) context.get(CONFIGURATION);
-
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		Line newValue = referential.getLines().values().iterator().next();

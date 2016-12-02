@@ -166,7 +166,7 @@ public class LineUpdater implements Updater<Line> {
 			String codeSpace = newValue.getNetwork().getChouetteId().getCodeSpace();
 			String technicalId = newValue.getNetwork().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getNetwork().getChouetteId();
-			Network ptNetwork = cache.getPtNetworks().get(technicalId);
+			Network ptNetwork = cache.getPtNetworks().get(chouetteId);
 			if (ptNetwork == null) {
 				ptNetwork = ptNetworkDAO.findByChouetteId(codeSpace, technicalId);
 				if (ptNetwork != null) {
@@ -185,10 +185,10 @@ public class LineUpdater implements Updater<Line> {
 		if (newValue.getCompany() == null) {
 			oldValue.setCompany(null);
 		} else {
-			String codeSpace = newValue.getCompany().getChouetteId().getCodeSpace();
-			String technicalId = newValue.getNetwork().getChouetteId().getTechnicalId();
+			String codeSpace = newValue.getCompany().getCodeSpace();
+			String technicalId = newValue.getCompany().getTechnicalId();
 			ChouetteId chouetteId = newValue.getCompany().getChouetteId();
-			Company company = cache.getCompanies().get(technicalId);
+			Company company = cache.getCompanies().get(chouetteId);
 			if (company == null) {
 				company = companyDAO.findByChouetteId(codeSpace, technicalId);
 				if (company != null) {

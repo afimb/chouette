@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
+import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.model.AccessLink;
@@ -39,7 +40,7 @@ public class GtfsTestsUtils implements Constant, ReportConstant{
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Assert.assertNotNull(referential, "referential");
 		Assert.assertEquals(referential.getLines().size(), 1, "lines size");
-		Line line = referential.getLines().get("NINOXE:Line:15574334");
+		Line line = referential.getLines().get(new ChouetteId("NINOXE", "15574334", false));
 		Assert.assertNotNull(line, "line");
 
 		// comptage des objets :

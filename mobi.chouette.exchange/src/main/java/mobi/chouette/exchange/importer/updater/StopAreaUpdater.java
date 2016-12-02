@@ -193,7 +193,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			String codeSpace = newValue.getParent().getChouetteId().getCodeSpace();
 			String technicalId = newValue.getParent().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getParent().getChouetteId();
-			StopArea stopArea = cache.getStopAreas().get(technicalId);
+			StopArea stopArea = cache.getStopAreas().get(chouetteId);
 			if (stopArea == null) {
 				stopArea = stopAreaDAO.findByChouetteId(codeSpace, technicalId);
 				if (stopArea != null) {
