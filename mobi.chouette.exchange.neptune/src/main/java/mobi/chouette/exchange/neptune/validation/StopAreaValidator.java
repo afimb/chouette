@@ -214,9 +214,11 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 					// boardingPosition : check if it refers only StopPoints
 					for (StopPoint child : stopArea.getContainedStopPoints()) 
 					{
+						String specificChildId = neptuneChouetteIdGenerator.toSpecificFormatId(child.getChouetteId(), parameters.getDefaultCodespace(), child);
+						ChouetteId stopAreaChouetteId = neptuneChouetteIdGenerator.toChouetteId(specificChildId, parameters.getDefaultCodespace(), StopArea.class);
 						if (localContext.containsKey(neptuneChouetteIdGenerator.toSpecificFormatId(child.getChouetteId(), parameters.getDefaultCodespace(), child)))
 						{
-							StopArea area = stopAreas.get(neptuneChouetteIdGenerator.toSpecificFormatId(child.getChouetteId(), parameters.getDefaultCodespace(), child));
+							StopArea area = stopAreas.get(stopAreaChouetteId);
 							// wrong reference type
 							ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 							validationReporter.addCheckPointReportError(context, STOP_AREA_4, fileLocations.get(stopArea.getChouetteId()), area.getAreaType().toString(),stopArea.getAreaType().toString(),fileLocations.get(stopArea.getChouetteId()));
