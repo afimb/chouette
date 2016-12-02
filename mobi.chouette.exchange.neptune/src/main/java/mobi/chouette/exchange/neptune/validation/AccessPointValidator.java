@@ -22,7 +22,6 @@ import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.AccessPointTypeEnum;
-import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LinkOrientationEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.Referential;

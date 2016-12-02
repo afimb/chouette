@@ -145,13 +145,9 @@ public abstract class AbstractValidator implements Constant {
 		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		
 		String objectId = neptuneChouetteIdGenerator.toSpecificFormatId(object.getChouetteId(), parameters.getDefaultCodespace(), object);
-		if (object == null) 
-			log.info("object in parsing is null ");
 		
 		if(object.getChouetteId() == null)
 			log.info("object chouette id in parsing is null ");
-		if( context == null)
-			log.info("context is null");
 		if( localContext == null )
 			log.info("local context is null");
 		

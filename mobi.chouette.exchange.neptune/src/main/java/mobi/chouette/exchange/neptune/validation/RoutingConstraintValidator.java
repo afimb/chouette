@@ -3,6 +3,7 @@ package mobi.chouette.exchange.neptune.validation;
 
 import java.util.Map;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
@@ -21,6 +22,7 @@ import mobi.chouette.model.RoutingConstraint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.Referential;
 
+@Log4j
 public class RoutingConstraintValidator extends AbstractValidator implements Validator<RoutingConstraint> , Constant{
 
 	public static final String ITL_NAME = "name";
@@ -180,6 +182,7 @@ public class RoutingConstraintValidator extends AbstractValidator implements Val
 		Map<ChouetteId, DataLocation> fileLocations = data.getDataLocations();
 		Context routingConstraintLocalContext = (Context) validationContext.get(RoutingConstraintValidator.SA_LOCAL_CONTEXT);
 		Context stopPointContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
+		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Map<ChouetteId, RoutingConstraint> routingConstraints = referential.getRoutingConstraints();
 
@@ -203,12 +206,12 @@ public class RoutingConstraintValidator extends AbstractValidator implements Val
 				{
 					
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, ITL_1, fileLocations.get(routingConstraint.getChouetteId()), child.getAreaType().toString(), "ITL");				
+					validationReporter.addCheckPointReportError(context, ITL_1, fileLocations.get(routingConstraint.getChouetteId()), "ITL", "ITL",fileLocations.get(child.getChouetteId()));				
 				}
 				else if (stopPointContext.containsKey(specificChildId))
 				{
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, ITL_1, fileLocations.get(routingConstraint.getChouetteId()), "StopPoint", "ITL");
+					validationReporter.addCheckPointReportError(context, ITL_1, fileLocations.get(routingConstraint.getChouetteId()), "StopPoint", "ITL",fileLocations.get(child.getChouetteId()));
 				}
 
 			}

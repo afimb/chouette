@@ -107,37 +107,42 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("areaType")) {
 						areaType = ParserUtils.getText(xpp.nextText());
-						stopArea.setAreaType(ParserUtils.getEnum(
-								ChouetteAreaEnum.class, areaType));
+						if (areaType.equalsIgnoreCase("ITL"))
+						{
+							// Arret Netex : Pass stopArea of type ITL into routingConstraint object
+							routingConstraint = NeptuneChouetteIdObjectUtil.getRoutingConstraint(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),RoutingConstraint.class));
+							routingConstraint.setName(stopArea.getName());
+							routingConstraint.setComment(stopArea.getComment());
+							referential.getStopAreas().remove(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),StopArea.class));
+							for (String childId : contains) {
+								StopArea child = NeptuneChouetteIdObjectUtil.getStopArea(
+										referential, neptuneChouetteIdGenerator.toChouetteId(childId, parameters.getDefaultCodespace(),StopArea.class));
+                                // Arret NETEX : Let Routing Constraint handle this
+								routingConstraint.addRoutingConstraintStopArea(child);
+							}
+							
+						}
+						else
+						{
+							stopArea.setAreaType(ParserUtils.getEnum(
+									ChouetteAreaEnum.class, areaType));							
 						
 						if ( stopArea.getAreaType() != ChouetteAreaEnum.BoardingPosition 
-								&& stopArea.getAreaType() != ChouetteAreaEnum.Quay
-								&& !areaType.equalsIgnoreCase("ITL") ) {
+								&& stopArea.getAreaType() != ChouetteAreaEnum.Quay ) {
 							for (String childId : contains) {
 								StopArea child = NeptuneChouetteIdObjectUtil.getStopArea(
 										referential, neptuneChouetteIdGenerator.toChouetteId(childId, parameters.getDefaultCodespace(),StopArea.class));
 								child.setParent(stopArea);
 							}
 						} else {
-							if (stopArea.getAreaType() == ChouetteAreaEnum.BoardingPosition
-									|| stopArea.getAreaType() == ChouetteAreaEnum.Quay) {
+							
 								for (String childId : contains) {
 									StopPoint stopPoint = NeptuneChouetteIdObjectUtil
 											.getStopPoint(referential, neptuneChouetteIdGenerator.toChouetteId(childId, parameters.getDefaultCodespace(),StopPoint.class));
 									stopPoint.setContainedInStopArea(stopArea);
 								}
-							} else if (areaType.equalsIgnoreCase("ITL")) {
-								// Arret Netex : Pass stopArea of type ITL into routingConstraint object
-								routingConstraint = NeptuneChouetteIdObjectUtil.getRoutingConstraint(referential, neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),RoutingConstraint.class));
-								routingConstraint.setName(stopArea.getName());
-								
-								for (String childId : contains) {
-									StopArea child = NeptuneChouetteIdObjectUtil.getStopArea(
-											referential, neptuneChouetteIdGenerator.toChouetteId(childId, parameters.getDefaultCodespace(),StopArea.class));
-	                            // Arret NETEX : Let Routing Constraint handle this
-									routingConstraint.addRoutingConstraintStopArea(child);
-								}
-							}
+							
+						}
 						}
 						
 					} else if (xpp.getName().equals("nearestTopicName")) {

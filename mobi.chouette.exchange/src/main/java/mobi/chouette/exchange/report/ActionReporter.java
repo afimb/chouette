@@ -15,7 +15,10 @@ public interface ActionReporter {
 		LINE,
 		ROUTE,
 		JOURNEY_PATTERN,
-		VEHICLE_JOURNEY
+		VEHICLE_JOURNEY,
+		ROUTING_CONSTRAINT,
+		ROUTE_SECTION,
+		TIMEBAND
 	};
 	
 	public enum FILE_STATE {

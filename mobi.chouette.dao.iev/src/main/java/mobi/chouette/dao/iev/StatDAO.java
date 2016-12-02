@@ -9,11 +9,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.iev.Stat;
 
 @Stateless
-@Log4j
 public class StatDAO extends GenericDAOImpl<Stat> {
 	
 	public StatDAO() {

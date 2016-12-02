@@ -2,7 +2,6 @@ package mobi.chouette.dao.iev;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;

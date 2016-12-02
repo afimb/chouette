@@ -114,6 +114,19 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 				
 				ChouetteId objectChouetteId = neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),StopArea.class);
 				
+				StopArea stopArea = stopAreas.get(objectChouetteId);
+				if (stopArea == null) 
+				{
+					log.error("null area " +objectId);
+					continue;
+				}
+				if (stopArea.getAreaType() == null)
+				{
+					if (!referential.getRoutingConstraints().containsKey(objectChouetteId))
+					   log.error("null area type " +stopArea);
+					continue;
+				}
+
 				List<String> contains = (List<String>) objectContext.get(CONTAINS2);
 				
 				if( contains != null ) {
@@ -134,17 +147,6 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 
 				}
 	
-				StopArea stopArea = stopAreas.get(objectChouetteId);
-				if (stopArea == null) 
-				{
-					log.error("null area " +objectId);
-					continue;
-				}
-				if (stopArea.getAreaType() == null)
-				{
-					log.error("null area type " +stopArea);
-					continue;
-				}
 	
 				switch (stopArea.getAreaType())
 				{
