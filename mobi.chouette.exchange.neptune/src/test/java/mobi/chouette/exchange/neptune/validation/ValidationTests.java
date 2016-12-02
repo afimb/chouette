@@ -31,6 +31,7 @@ import mobi.chouette.persistence.hibernate.ContextHolder;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.BasicConfigurator;
 import org.testng.Assert;
+import org.testng.Reporter;
 
 
 public class ValidationTests implements Constant, ReportConstant
@@ -168,11 +169,11 @@ public class ValidationTests implements Constant, ReportConstant
                if (cp.getName().equals(mandatoryTest))
                {
                   foundItem = cp;
-                  break;
                }
             
          }
          Assert.assertNotNull(foundItem, mandatoryTest + " must be reported");
+         
          Assert.assertEquals(foundItem.getSeverity(), severity,
                  mandatoryTest + " must have severity " + severity);
          Assert.assertEquals(foundItem.getState(), state,

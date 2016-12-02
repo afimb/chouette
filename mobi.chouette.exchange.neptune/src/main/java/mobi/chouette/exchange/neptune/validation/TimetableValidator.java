@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
@@ -21,7 +20,6 @@ import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.util.Referential;
 
-@Log4j
 public class TimetableValidator extends AbstractValidator implements Validator<Timetable>, Constant {
 
 	public static final String VEHICLE_JOURNEY_ID = "vehicleJourneyId";

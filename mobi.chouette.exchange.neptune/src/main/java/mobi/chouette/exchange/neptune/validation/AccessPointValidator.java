@@ -20,11 +20,13 @@ import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.NeptuneIdentifiedObject;
+import mobi.chouette.model.RoutingConstraint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.AccessPointTypeEnum;
 import mobi.chouette.model.type.LinkOrientationEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.Referential;
+
 
 public class AccessPointValidator extends AbstractValidator implements Validator<AccessPoint> , Constant{
 
@@ -71,6 +73,7 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return ;
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
+		Context routingConstraintContext = (Context) validationContext.get(RoutingConstraintValidator.SA_LOCAL_CONTEXT);
 		Context accessLinkContext = (Context) validationContext.get(AccessLinkValidator.LOCAL_CONTEXT);
 		
 		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
@@ -79,11 +82,8 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Map<ChouetteId, AccessPoint> accessPoints = referential.getAccessPoints();
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-//		Map<String, Location> fileLocations = data.getFileLocations();
 		Map<ChouetteId, DataLocation> fileLocations = data.getDataLocations();
-// 		String fileName = (String) context.get(FILE_NAME);
 
-		Map<ChouetteId, StopArea> stopAreas = referential.getStopAreas();
 		Map<ChouetteId, AccessLink> accessLinks = referential.getAccessLinks();
 
 		// build a map on link connected ids
@@ -116,7 +116,6 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 			Context objectContext = (Context) localContext.get(objectId);
 			ChouetteId accessPointChouetteId = neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(), AccessPoint.class);
 			AccessPoint accessPoint = accessPoints.get(accessPointChouetteId);
-//			Location sourceLocation = fileLocations.get(accessPoint.getChouetteId().getObjectId());
 			DataLocation sourceLocation = fileLocations.get(accessPointChouetteId);
 
 			// 2-NEPTUNE-AccessPoint-1 : check existence of containedIn stopArea
@@ -126,22 +125,18 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 				
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 				validationReporter.addCheckPointReportError(context, ACCESS_POINT_1, sourceLocation, containedIn);
-			} else
+			} 
+			if (containedIn != null )
 			{
-				ChouetteId parentChouetteId = neptuneChouetteIdGenerator.toChouetteId(containedIn, parameters.getDefaultCodespace(), StopArea.class);
-				StopArea parent = stopAreas.get(parentChouetteId);
-				// 2-NEPTUNE-AccessPoint-2 : check type of containedIn stopArea
-//				@TODO : Si le parent n'existe pas, regarder s'il n'est pas dans les routingConstraint
-//				prepareCheckPoint(context,ACCESS_POINT_2);
-//				if (parent.getAreaType().equals(ChouetteAreaEnum.ITL))
-//				{
-//					DataLocation targetLocation = fileLocations.get(parentChouetteId);
-//					Map<String, Object> map = new HashMap<String, Object>();
-//					map.put(CONTAINED_IN, containedIn);
-//					
-//					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-//					validationReporter.addCheckPointReportError(context, ACCESS_POINT_2, sourceLocation,null,null,targetLocation);
-//				}
+				// 2-NEPTUNE-AccessPoint-2 : check type of containedIn not ITL
+				prepareCheckPoint(context,ACCESS_POINT_2);
+				if (routingConstraintContext.containsKey(containedIn))
+				{
+					ChouetteId parentChouetteId = neptuneChouetteIdGenerator.toChouetteId(containedIn, parameters.getDefaultCodespace(), RoutingConstraint.class);
+					DataLocation targetLocation = fileLocations.get(parentChouetteId);					
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, ACCESS_POINT_2, sourceLocation,null,null,targetLocation);
+				}
 			}
 
 			// 2-NEPTUNE-AccessPoint-3 : check presence of access links
