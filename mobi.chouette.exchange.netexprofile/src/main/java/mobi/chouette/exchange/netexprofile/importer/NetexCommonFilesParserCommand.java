@@ -124,13 +124,15 @@ public class NetexCommonFilesParserCommand implements Command, Constant {
 		NodeList nodes = (NodeList) xpath.evaluate("//n:*[not(name()='Codespace') and @id]", parseFileToDom, XPathConstants.NODESET);
 		int idCount = nodes.getLength();
 		for (int i = 0; i < idCount; i++) {
-			String id = nodes.item(i).getAttributes().getNamedItem("id").getNodeValue();
+			
+			Node n = nodes.item(i);
+			String id = n.getAttributes().getNamedItem("id").getNodeValue();
 			String version = null;
-			Node versionAttribute = nodes.item(i).getAttributes().getNamedItem("version");
+			Node versionAttribute = n.getAttributes().getNamedItem("version");
 			if(versionAttribute != null) {
 				version = versionAttribute.getNodeValue();
 			}
-			IdVersion idVersion = new IdVersion(id, version);
+			IdVersion idVersion = new IdVersion(id, version,fileName,(Integer)n.getUserData(PositionalXMLReader.LINE_NUMBER_KEY_NAME),(Integer)n.getUserData(PositionalXMLReader.COLUMN_NUMBER_KEY_NAME));
 			List<String> list = commonIds.get(idVersion);
 			if(list == null) {
 				list = new ArrayList<String>();

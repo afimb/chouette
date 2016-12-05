@@ -3,18 +3,21 @@ package mobi.chouette.exchange.netexprofile.importer.util;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(of = {"id","version"})
 @ToString
 public class IdVersion {
 	@Getter
-	@Setter
 	String id;
 	@Getter
-	@Setter
 	String version;
-}
+	@Getter
+	String filename;
+	@Getter
+	int lineNumber;
+	@Getter
+	int columnNumber;
 
+}

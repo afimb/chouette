@@ -1,6 +1,8 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import javax.xml.XMLConstants;
@@ -8,8 +10,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
@@ -53,12 +53,21 @@ public class NetexImporter {
 	}
 
 	public Document parseFileToDom(File f) throws SAXException, IOException, ParserConfigurationException {
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setNamespaceAware(true);
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document document = builder.parse(f);
-
-		return document;
+		FileInputStream fis = new FileInputStream(f);
+		BufferedInputStream bis = new BufferedInputStream(fis);
+		
+		Document doc = PositionalXMLReader.readXML(bis);
+        bis.close();
+ 	
+		return doc;
+		
+//		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+//		factory.setNamespaceAware(true);
+//		DocumentBuilder builder = factory.newDocumentBuilder();
+//		
+//		Document document = builder.parse(f);
+//
+//		return document;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -74,6 +83,8 @@ public class NetexImporter {
 	public PublicationDeliveryStructure unmarshal(Document d) throws JAXBException {
 		JAXBContext netexJaxBContext = getNetexJaxBContext();
 		Unmarshaller createUnmarshaller = netexJaxBContext.createUnmarshaller();
+//		LocationListener locationListener = new LocationListener();
+//		createUnmarshaller.setListener(locationListener);
 		JAXBElement<PublicationDeliveryStructure> commonDeliveryStructure = (JAXBElement<PublicationDeliveryStructure>) createUnmarshaller
 				.unmarshal(new DOMSource(d));
 		return commonDeliveryStructure.getValue();
