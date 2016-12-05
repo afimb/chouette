@@ -30,7 +30,7 @@ public abstract class AbstractProducer
               return neptuneId.getTechnicalId();
            else
               return neptuneId.getCodeSpace() + "." + neptuneId.getTechnicalId();
-	      }
+	  }
    }
 
    static protected boolean isEmpty(String s)

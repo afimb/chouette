@@ -2,9 +2,12 @@ package mobi.chouette.exchange.gtfs;
 
 import java.util.regex.Pattern;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.ChouetteId;
 import mobi.chouette.exchange.AbstractChouetteIdGenerator;
 import mobi.chouette.model.NeptuneIdentifiedObject;
+
+@Log4j
 public class GtfsChouetteIdGenerator extends AbstractChouetteIdGenerator{
 	@Override
 	public boolean checkObjectId(String oid, Class<? extends NeptuneIdentifiedObject> clazz) {
@@ -35,9 +38,9 @@ public class GtfsChouetteIdGenerator extends AbstractChouetteIdGenerator{
 				technicalId = objectIdArray[0];
 			}
 			
-			chouetteId = new ChouetteId();
-			chouetteId.setCodeSpace(codespace);
-			chouetteId.setTechnicalId(technicalId);
+			chouetteId = new ChouetteId(codespace, technicalId, false);
+		} else {
+			log.info("Object id : " + objectId + " non conforme au format neptune");
 		}
 		
 		return chouetteId;
