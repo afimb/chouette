@@ -35,7 +35,7 @@ public class SiteFrameWriter extends AbstractWriter{
 
 		writer.write("<!-- =========================================== -->\n");
 		writer.write("<!-- NEPTUNE StopPlaces (StopArea of type StopPlace) are mapped to NeTEx StopPlace -->\n");
-		writer.write("<SiteFrame version=\"any\" id=\""+line.getChouetteId().getCodeSpace()+":SiteFrame:SF01\"> \n");
+		writer.write("<SiteFrame version=\"any\" id=\""+line.getCodeSpace()+":SiteFrame:SF01\"> \n");
 		writer.write("  <stopPlaces>\n");
 		//    #foreach( $stopPlace in $stopPlaces )
 		for (StopArea stopPlace : stopPlaces) {

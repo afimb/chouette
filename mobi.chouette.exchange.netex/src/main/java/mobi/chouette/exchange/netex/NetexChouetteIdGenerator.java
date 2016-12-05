@@ -8,7 +8,22 @@ import mobi.chouette.common.ChouetteId;
 import mobi.chouette.exchange.AbstractChouetteIdGenerator;
 import mobi.chouette.exchange.ChouetteIdGenerator;
 import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
+import mobi.chouette.model.AccessLink;
+import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.Company;
+import mobi.chouette.model.ConnectionLink;
+import mobi.chouette.model.GroupOfLine;
+import mobi.chouette.model.JourneyPattern;
+import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneIdentifiedObject;
+import mobi.chouette.model.Network;
+import mobi.chouette.model.Route;
+import mobi.chouette.model.RouteSection;
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.Timeband;
+import mobi.chouette.model.Timetable;
+import mobi.chouette.model.VehicleJourney;
 
 @Log4j
 public class NetexChouetteIdGenerator extends AbstractChouetteIdGenerator implements NetexObjectIdTypes{
@@ -23,11 +38,12 @@ public class NetexChouetteIdGenerator extends AbstractChouetteIdGenerator implem
 		if (oid == null)
 			return false;
 
-		Pattern p = Pattern.compile("(\\w|_)+:\\w+:([0-9A-Za-z]|_|-)+:(LOC|_)+");
+//		Pattern p = Pattern.compile("(\\w|_)+:\\w+:([0-9A-Za-z]|_|-)+:(LOC|_)+");
+//		Pattern p2 = Pattern.compile("\\w+:\\w+:\\w+:([0-9A-Za-z]|_|-)+:\\w+");
+//		return (p.matcher(oid).matches() || p2.matcher(oid).matches());
+		Pattern p = Pattern.compile("(\\w|_)+:\\w+:([0-9A-Za-z]|_|-)+");
+		return p.matcher(oid).matches();
 		
-		Pattern p2 = Pattern.compile("\\w+:\\w+:\\w+:([0-9A-Za-z]|_|-)+:\\w+");
-		
-		return (p.matcher(oid).matches() || p2.matcher(oid).matches());
 	}
 	
 	@Override
@@ -35,31 +51,87 @@ public class NetexChouetteIdGenerator extends AbstractChouetteIdGenerator implem
 			Class<? extends NeptuneIdentifiedObject> clazz) {
 		ChouetteId chouetteId = null;
 		
-		// If object id is conform to netex format
 		if (checkObjectId(objectId)) {
-			String [] objectIdArray = objectId.split(":");
-			String codespace = null;
-			String technicalId = null;
-			boolean shared = false;
-			
-			chouetteId = new ChouetteId();
-			
-			if (objectIdArray.length == 4) {
-				codespace = objectIdArray[0];
-				technicalId = objectIdArray[2];
-				shared = !(objectIdArray[3].equalsIgnoreCase("LOC"));
-	
-			} else if (objectIdArray.length == 5) { // Object is a stop point
-				codespace = objectIdArray[0] + ":" + objectIdArray[1];
-				technicalId = objectIdArray[3];
-				shared = !(objectIdArray[4].equalsIgnoreCase("LOC"));
+			// log.info("Object id : " + objectId + " conforme au format neptune");
+			String[] objectIdArray = objectId.split(":");
+			String codespace = objectIdArray[0];
+			String technicalId = objectIdArray[2];
+			String objectType = getObjectType(clazz);
+			// si le type d'objet ,n'est pas standard, on l'injecte dans le TechnicalId
+			if (!objectIdArray[1].equals(objectType)) {
+				technicalId = objectIdArray[1] + ":" + objectIdArray[2];
 			}
-			chouetteId.setCodeSpace(codespace);
-			chouetteId.setTechnicalId(technicalId);
-			chouetteId.setShared(shared);
+			chouetteId = new ChouetteId(codespace, technicalId, false);
+		} else {
+			log.info("Object id : " + objectId + " non conforme au format neptune");
 		}
 		
+//		// If object id is conform to netex format
+//		if (checkObjectId(objectId)) {
+//			String [] objectIdArray = objectId.split(":");
+//			String codespace = null;
+//			String technicalId = null;
+//			boolean shared = false;
+//			
+//			chouetteId = new ChouetteId();
+//			
+//			if (objectIdArray.length == 4) {
+//				codespace = objectIdArray[0];
+//				technicalId = objectIdArray[2];
+//				shared = !(objectIdArray[3].equalsIgnoreCase("LOC"));
+//	
+//			} else if (objectIdArray.length == 5) { // Object is a stop point
+//				codespace = objectIdArray[0] + ":" + objectIdArray[1];
+//				technicalId = objectIdArray[3];
+//				shared = !(objectIdArray[4].equalsIgnoreCase("LOC"));
+//			}
+//			chouetteId.setCodeSpace(codespace);
+//			chouetteId.setTechnicalId(technicalId);
+//			chouetteId.setShared(shared);
+//		}
+		
 		return chouetteId;
+	}
+
+	private String getObjectType(Class<? extends NeptuneIdentifiedObject> clazz) {
+		try {
+			NeptuneIdentifiedObject object = clazz.newInstance();
+			if (object instanceof AccessPoint)
+				return ACCESSPOINT_KEY;
+			if (object instanceof AccessLink)
+				return ACCESSLINK_KEY;
+			if (object instanceof Company)
+				return COMPANY_KEY;
+			if (object instanceof ConnectionLink)
+				return CONNECTIONLINK_KEY;
+			if (object instanceof GroupOfLine)
+				return GROUPOFLINE_KEY;
+			if (object instanceof JourneyPattern)
+				return JOURNEYPATTERN_KEY;
+			if (object instanceof Line)
+				return LINE_KEY;
+			if (object instanceof Network)
+				return PTNETWORK_KEY;
+			if (object instanceof RouteSection)
+				return ROUTE_SECTION_KEY;
+			if (object instanceof Route)
+				return ROUTE_KEY;
+			if (object instanceof StopArea)
+				return STOPAREA_KEY;
+			if (object instanceof StopPoint)
+				return STOPPOINT_KEY;
+			if (object instanceof Timetable)
+				return TIMETABLE_KEY;
+			if (object instanceof Timeband)
+				return TIMEBAND_KEY;
+			if (object instanceof VehicleJourney)
+				return VEHICLEJOURNEY_KEY;
+
+		} catch (InstantiationException | IllegalAccessException e) {
+
+		}
+		return clazz.getSimpleName();
+
 	}
 
 	@Override
