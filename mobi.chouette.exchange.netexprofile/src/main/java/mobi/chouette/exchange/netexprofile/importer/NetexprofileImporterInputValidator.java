@@ -56,8 +56,8 @@ public class NetexprofileImporterInputValidator extends AbstractInputValidator {
 			String[] validCodespacesTuples = StringUtils.split(parameters.getValidCodespaces(), ",");
 			if (validCodespacesTuples.length > 0) {
 				// Check for odd numbers of commas
-				if (validCodespacesTuples.length % 2 != 1) {
-					log.error("Unable to decode valid codepsaces. String must be comma separated with a pattern like PREFIX,URL,PREFIX,URL, ...");
+				if (validCodespacesTuples.length % 2 != 0) {
+					log.error("Unable to decode valid codepsaces "+parameters.getValidCodespaces()+" String must be comma separated with a pattern like PREFIX,URL,PREFIX,URL, ...");
 					return false;
 				}
 			}
