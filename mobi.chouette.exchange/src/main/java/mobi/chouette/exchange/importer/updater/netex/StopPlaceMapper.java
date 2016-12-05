@@ -56,6 +56,9 @@ public class StopPlaceMapper {
 		if (quays != null) {
 			for (Object q : quays.getQuayRefOrQuay()) {
 				StopArea boardingPosition = createBoardingPosition(referential, (Quay) q);
+				if(boardingPosition.getName() == null) {
+					boardingPosition.setName(stopArea.getName());
+				}
 				boardingPosition.setParent(stopArea);
 			}
 		}
