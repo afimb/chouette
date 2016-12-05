@@ -66,17 +66,17 @@ public class DeliveryWriter extends AbstractWriter{
 		writer.write("  <dataObjects>\n");
 		writer.write("    <!-- =========================================== -->    \n");   
 		writer.write("    <CompositeFrame version=\"1\" created=\""+dateFormat.format(line.getNetwork().getVersionDate())+"\" " +
-				"id=\""+line.getChouetteId().getCodeSpace()+":Neptune:CompositeFrame:"+line.getChouetteId().getTechnicalId()+"\">\n");
+				"id=\""+line.getCodeSpace()+":Neptune:CompositeFrame:"+line.getTechnicalId()+"\">\n");
 		writer.write("      <Name>NEPTUNE Mapping Frame</Name>\n");
 		writer.write("      <!-- NEPTUNE [mapping:fixed] : This is a NEPTUNE to NeTEx mapping frame -->\n");
 		writer.write("      <TypeOfFrameRef version=\"01\" ref=\"Neptune:TypeOfFrame:CompositeFrame\"/>\n");
 		writer.write("      <codespaces>\n");
-		writer.write("        <Codespace id=\""+line.getChouetteId().getCodeSpace()+"\">\n");
-		writer.write("          <Xmlns>"+line.getChouetteId().getCodeSpace()+"</Xmlns>\n");
+		writer.write("        <Codespace id=\""+line.getCodeSpace()+"\">\n");
+		writer.write("          <Xmlns>"+line.getCodeSpace()+"</Xmlns>\n");
 		writer.write("        </Codespace>\n");
 		writer.write("      </codespaces>\n");
 		writer.write("      <FrameDefaults>\n");
-		writer.write("        <DefaultCodespaceRef ref=\""+line.getChouetteId().getCodeSpace()+"\"/>\n");
+		writer.write("        <DefaultCodespaceRef ref=\""+line.getCodeSpace()+"\"/>\n");
 		writer.write("        <!-- NEPTUNE [mapping:fixed] : NEPTUNE is in French ! -->\n");
 		writer.write("        <DefaultLocale>\n");
 		writer.write("          <TimeZoneOffset>-1</TimeZoneOffset>\n");

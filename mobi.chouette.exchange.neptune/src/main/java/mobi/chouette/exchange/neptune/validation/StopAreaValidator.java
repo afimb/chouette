@@ -223,7 +223,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 							StopArea area = stopAreas.get(stopAreaChouetteId);
 							// wrong reference type
 							ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-							validationReporter.addCheckPointReportError(context, STOP_AREA_4, fileLocations.get(stopArea.getChouetteId()), area.getAreaType().toString(),stopArea.getAreaType().toString(),fileLocations.get(stopArea.getChouetteId()));
+							validationReporter.addCheckPointReportError(context, STOP_AREA_4, fileLocations.get(stopArea.getChouetteId()), area.getAreaType().toString(),stopArea.getAreaType().toString(),fileLocations.get(area.getChouetteId()));
 						}
 					}
 				}

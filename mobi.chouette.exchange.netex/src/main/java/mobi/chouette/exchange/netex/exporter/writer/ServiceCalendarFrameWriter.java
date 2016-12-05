@@ -31,8 +31,8 @@ public class ServiceCalendarFrameWriter extends AbstractWriter{
 		// #foreach( $timetable in $timetables )
 		for (Timetable timetable : timetables) {
 			timetable.computeLimitOfPeriods();
-		writer.write("<ServiceCalendarFrame version=\"any\" id=\""+timetable.getChouetteId().getCodeSpace()+":ServiceCalendarFrame:SFC"+counter+"\">\n");
-		writer.write("  <ServiceCalendar version=\"any\" id=\""+timetable.getChouetteId().getCodeSpace()+":ServiceCalendar:SFC"+counter+"\">\n");
+		writer.write("<ServiceCalendarFrame version=\"any\" id=\""+timetable.getCodeSpace()+":ServiceCalendarFrame:SFC"+counter+"\">\n");
+		writer.write("  <ServiceCalendar version=\"any\" id=\""+timetable.getCodeSpace()+":ServiceCalendar:SFC"+counter+"\">\n");
 		writer.write("    <FromDate>"+shortDateFormat.format(timetable.getStartOfPeriod())+"</FromDate>\n");
 		writer.write("    <ToDate>"+shortDateFormat.format(timetable.getEndOfPeriod())+"</ToDate>\n");
 		writer.write("  </ServiceCalendar>\n");

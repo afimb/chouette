@@ -21,7 +21,7 @@ public class ResourceFrameWriter extends AbstractWriter{
 		writer.write("<!-- =========================================== -->\n");
 		writer.write("<!-- Resourceframe to map the Company NEPTUNE Object -->\n");
 		writer.write("<ResourceFrame version=\"any\" id=\"Neptune:ResourceFrame:FrameProfile01\">\n");
-		writer.write("  <Name>"+line.getChouetteId().getCodeSpace()+"--Neptune-Line Profile </Name>\n");
+		writer.write("  <Name>"+line.getCodeSpace()+"--Neptune-Line Profile </Name>\n");
 		writer.write("  <codespaces>\n");
 		writer.write("    <Codespace id=\"Neptune\">\n");
 		writer.write("      <Xmlns>Neptune</Xmlns>\n");
@@ -59,7 +59,7 @@ public class ResourceFrameWriter extends AbstractWriter{
 		writer.write("    </TypeOfValidity>\n");
 		writer.write("    <TypeOfFrame version=\"01\" id=\"Neptune:TypeOfFrame:CompositeFrame\">\n");
 		writer.write("      <Name>Neptune Profile:  Composite Frame </Name>\n");
-		writer.write("      <Description>"+line.getChouetteId().getCodeSpace()+"--Neptune-Line-xxxxxx  frames will be composite frame containing Service, Timetable (and Service Calendar) and Resource frames with all the usual NEPTUNE attributes filled in, for a given line xxxxx.</Description>\n");
+		writer.write("      <Description>"+line.getCodeSpace()+"--Neptune-Line-xxxxxx  frames will be composite frame containing Service, Timetable (and Service Calendar) and Resource frames with all the usual NEPTUNE attributes filled in, for a given line xxxxx.</Description>\n");
 		writer.write("      <TypeOfValidityRef version=\"01\" ref=\"Neptune:TypeOfValidity:WeeklyPlanned\"/>\n");
 		writer.write("      <FrameClassRef nameOfClass=\"CompositeFrame\"/>\n");
 		writer.write("      <classes>\n");
@@ -121,7 +121,7 @@ public class ResourceFrameWriter extends AbstractWriter{
 		writer.write("    </TypeOfFrame>\n");
 		writer.write("  </typesOfValue>\n");
 		writer.write("  <organisations> <!-- TODO : Prendre en compte plusieurs companies -->\n");
-		writer.write("    <Operator version=\""+company.getObjectVersion()+"\" id=\""+company.getChouetteId().getCodeSpace()+":Company:"+company.getChouetteId().getTechnicalId()+"\">\n");
+		writer.write("    <Operator version=\""+company.getObjectVersion()+"\" id=\""+company.getCodeSpace()+":Company:"+company.getTechnicalId()+"\">\n");
 		//      #if ( $company.code )
 		if (isSet(company.getCode()))
 			writer.write("      <PublicCode>"+toXml(company.getCode())+"</PublicCode>\n");
@@ -161,7 +161,7 @@ public class ResourceFrameWriter extends AbstractWriter{
 		if (isSet(company.getOrganisationalUnit()))
 		{
 			writer.write("      <parts>\n");
-			writer.write("          <OrganisationPart version=\""+company.getObjectVersion()+"\" id=\""+company.getChouetteId().getCodeSpace()+":OrganisationPart:"+company.getChouetteId().getTechnicalId()+"\">\n");
+			writer.write("          <OrganisationPart version=\""+company.getObjectVersion()+"\" id=\""+company.getCodeSpace()+":OrganisationPart:"+company.getTechnicalId()+"\">\n");
 			writer.write("              <Name>"+toXml(company.getOrganisationalUnit())+"</Name>\n");
 			writer.write("          </OrganisationPart>\n");
 			writer.write("      </parts>\n");
@@ -171,7 +171,7 @@ public class ResourceFrameWriter extends AbstractWriter{
 		if (isSet(company.getOperatingDepartmentName()))
 		{
 			writer.write("      <departments>\n");
-			writer.write("          <Department id=\""+company.getChouetteId().getCodeSpace()+":Department:"+company.getChouetteId().getTechnicalId()+"\" version=\"1\">\n");
+			writer.write("          <Department id=\""+company.getCodeSpace()+":Department:"+company.getTechnicalId()+"\" version=\"1\">\n");
 			writer.write("              <Name>"+toXml(company.getOperatingDepartmentName())+"</Name>\n");
 			writer.write("          </Department>\n");
 			writer.write("      </departments>\n");

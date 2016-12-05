@@ -25,7 +25,7 @@ public class TimeTableFrameWriter extends AbstractWriter{
 
 		writer.write("\n");
 		writer.write("<!-- =========================================== -->\n");
-		writer.write("<TimetableFrame version=\"any\" id=\""+line.getChouetteId().getCodeSpace()+":TimetableFrame:TF02\"> \n");
+		writer.write("<TimetableFrame version=\"any\" id=\""+line.getCodeSpace()+":TimetableFrame:TF02\"> \n");
 		writer.write("  <vehicleJourneys>\n");
 		//    #foreach( $vehicleJourney in $vehicleJourneys )
 		for (VehicleJourney vehicleJourney : vehicleJourneys) {
