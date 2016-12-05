@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
+import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidatorFactory;
 import mobi.chouette.exchange.validation.ValidatorFactory;
@@ -28,6 +30,13 @@ import mobi.chouette.exchange.validation.report.ValidationReporter;
 @Log4j
 public class NorwayLineNetexProfileValidator extends AbstractValidator implements NetexProfileValidator {
 
+	
+	
+	public static final String PROFILE_ID_1 = "1.04:NO-NeTEx-networktimetable:1.0";
+
+	public static final String NSR_XMLNSURL = "http://www.rutebanken.org/ns/nsr";
+	public static final String NSR_XMLNS = "NSR";
+
 	private static final String _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CUSTOMER_SERVICE_CONTACT_DETAILS = "1-NETEXPROFILE-ResourceFrame-Organisations-Operator-CustomerServiceContactDetails";
 	private static final String _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CONTACT_DETAILS = "1-NETEXPROFILE-ResourceFrame-Organisations-Operator-ContactDetails";
 	private static final String _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_LEGAL_NAME = "1-NETEXPROFILE-ResourceFrame-Organisations-Operator-LegalName";
@@ -36,8 +45,6 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 	private static final String _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR = "1-NETEXPROFILE-ResourceFrame-Organisations-Operator";
 	private static final String _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY = "1-NETEXPROFILE-ResourceFrame-Organisations-Authority";
 	private static final String _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS = "1-NETEXPROFILE-ResourceFrame-Organisations";
-	private static final String NSR_URL = "http://www.nasjonaltstoppestedregister.rutebanken.no";
-	private static final String NSR_CODESPACE_PREFIX = "NSR";
 
 	private static final String _1_NETEX_TIMETABLE_FRAME = "1-NETEXPROFILE-TimetableFrame";
 	private static final String _1_NETEX_SERVICE_CALENDAR_FRAME = "1-NETEXPROFILE-ServiceCalendarFrame";
@@ -84,6 +91,8 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 		addCheckpoints(context, _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS, "E");
 		addCheckpoints(context, _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS, "E");
 		addCheckpoints(context, _1_NETEX_INVALID_ID_STRUCTURE, "E");
+		addCheckpoints(context, _1_NETEX_UNAPPROVED_CODESPACE_DEFINED, "E");
+		addCheckpoints(context, _1_NETEX_USE_OF_UNAPPROVED_CODESPACE, "E");
 
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME, "E");
 
@@ -105,18 +114,16 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_LAST_ARRIVAL, "E");
 
 		addCheckpoints(context, _1_NETEX_RESOURCE_FRAME, "E");
-		addCheckpoints(context,  _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS,"E");
-		addCheckpoints(context,  _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY,"E");
-		addCheckpoints(context,  _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR,"E");
-		
-		
-		addCheckpoints(context,   _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_COMPANY_NUMBER,"W");
-		addCheckpoints(context,   _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_NAME,"E");
-		addCheckpoints(context,   _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_LEGAL_NAME,"W");
-		addCheckpoints(context,  _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CONTACT_DETAILS,"E");
-		addCheckpoints(context,   _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CUSTOMER_SERVICE_CONTACT_DETAILS,"E");
-		
-		
+		addCheckpoints(context, _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS, "E");
+		addCheckpoints(context, _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY, "E");
+		addCheckpoints(context, _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR, "E");
+
+		addCheckpoints(context, _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_COMPANY_NUMBER, "W");
+		addCheckpoints(context, _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_NAME, "E");
+		addCheckpoints(context, _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_LEGAL_NAME, "W");
+		addCheckpoints(context, _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CONTACT_DETAILS, "E");
+		addCheckpoints(context, _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CUSTOMER_SERVICE_CONTACT_DETAILS, "E");
+
 		addCheckpoints(context, _1_NETEX_COMPOSITE_FRAME, "E");
 		addCheckpoints(context, _1_NETEX_SITE_FRAME, "W");
 		addCheckpoints(context, _1_NETEX_CODESPACE, "E");
@@ -135,6 +142,7 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 		PublicationDeliveryStructure lineDeliveryStructure = (PublicationDeliveryStructure) context.get(NETEX_LINE_DATA_JAVA);
 		Document dom = (Document) context.get(NETEX_LINE_DATA_DOM);
 		NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);
+		Set<ProfileValidatorCodespace> validCodespaces = (Set<ProfileValidatorCodespace>) context.get(NETEX_VALID_CODESPACES);
 
 		// StopRegistryIdValidator stopRegisterValidator = new StopRegistryIdValidator();
 
@@ -144,7 +152,16 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 		Set<IdVersion> localIds = collectEntityIdentificators(context, xpath, dom);
 		Set<IdVersion> localRefs = collectEntityReferences(context, xpath, dom);
 
-		verifyIdStructure(context,localIds,commonIds,"^[A-Z]{3}:[A-Za-z]*:[0-9A-Za-z_\\-]*$");
+		if(validCodespaces == null) {
+			throw new RuntimeException("valid codespaces are empty - did you forget to include in context?");
+		}
+
+		// Add valid codespace for NSR
+		validCodespaces.add(new ProfileValidatorCodespace(NorwayLineNetexProfileValidator.NSR_XMLNS, NorwayLineNetexProfileValidator.NSR_XMLNSURL));
+
+		
+		verifyAcceptedCodespaces(context, xpath, dom, validCodespaces);
+		verifyIdStructure(context, localIds, commonIds, "^([A-Z]{3}):([A-Za-z]*):([0-9A-Za-z_\\-]*)$",validCodespaces);
 		verifyNoDuplicatesWithCommonElements(context, localIds, commonIds);
 		verifyUseOfVersionOnLocalElements(context, localIds);
 		verifyUseOfVersionOnRefsToLocalElements(context, localIds, localRefs);
@@ -153,14 +170,14 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame", "1", "No CompositeFrame",
 				_1_NETEX_COMPOSITE_FRAME);
 		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:codespaces/n:Codespace[n:Xmlns = '"
-				+ NSR_CODESPACE_PREFIX + "' and n:XmlnsUrl = '" + NSR_URL + "']", "1", "NSR codespace missing", _1_NETEX_CODESPACE);
+				+ NSR_XMLNS + "' and n:XmlnsUrl = '" + NSR_XMLNSURL + "']", "1", "NSR codespace missing", _1_NETEX_CODESPACE);
 		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ResourceFrame", "1", "No ResourceFrame",
 				_1_NETEX_RESOURCE_FRAME);
 		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ServiceFrame", "1", "No ServiceFrame",
 				_1_NETEX_SERVICE_FRAME);
-// TODO service calendar frame may be defined in common files
-		//		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ServiceCalendarFrame", "1",
-//				"No ServiceCalendarFrame", _1_NETEX_SERVICE_CALENDAR_FRAME);
+		// TODO service calendar frame may be defined in common files
+		// validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ServiceCalendarFrame", "1",
+		// "No ServiceCalendarFrame", _1_NETEX_SERVICE_CALENDAR_FRAME);
 		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:TimetableFrame", "1", "No TimetableFrame",
 				_1_NETEX_TIMETABLE_FRAME);
 		validateElementNotPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:SiteFrame", "1", "SiteFrame present",
@@ -191,23 +208,29 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 
 	private void validateResourceFrame(Context context, XPath xpath, Document dom) throws XPathExpressionException {
 		Node root = selectNode("/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ResourceFrame", xpath, dom);
-		if(root != null && root.hasChildNodes()) {
+		if (root != null && root.hasChildNodes()) {
 			validateElementPresent(context, xpath, root, "n:organisations", "1", "No organisations", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS);
-			validateElementPresent(context, xpath, root, "n:organisations/n:Authority", "1", "No Authority", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY);
-			validateAtLeastElementPresent(context, xpath, root, "n:organisations/n:Operator",1, "1", "No Operators", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR);
+			validateElementPresent(context, xpath, root, "n:organisations/n:Authority", "1", "No Authority",
+					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY);
+			validateAtLeastElementPresent(context, xpath, root, "n:organisations/n:Operator", 1, "1", "No Operators",
+					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR);
 			NodeList operators = selectNodeSet("n:organisations/n:Operator", xpath, root);
-			for(int i=0;i<operators.getLength();i++) {
+			for (int i = 0; i < operators.getLength(); i++) {
 				validateOperator(context, xpath, operators.item(i));
 			}
 		}
 	}
-	
+
 	private void validateOperator(Context context, XPath xpath, Node node) throws XPathExpressionException {
-		validateElementPresent(context, xpath, node, "n:CompanyNumber", "1", "No operator company number", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_COMPANY_NUMBER);
+		validateElementPresent(context, xpath, node, "n:CompanyNumber", "1", "No operator company number",
+				_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_COMPANY_NUMBER);
 		validateElementPresent(context, xpath, node, "n:Name", "1", "No operator name", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_NAME);
-		validateElementPresent(context, xpath, node, "n:LegalName", "1", "No operator legal name", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_LEGAL_NAME);
-		validateElementPresent(context, xpath, node, "n:ContactDetails", "1", "No operator contact details", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CONTACT_DETAILS);
-		validateElementPresent(context, xpath, node, "n:CustomerServiceContactDetails", "1", "No operator customer service contact details", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CUSTOMER_SERVICE_CONTACT_DETAILS);
+		validateElementPresent(context, xpath, node, "n:LegalName", "1", "No operator legal name",
+				_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_LEGAL_NAME);
+		validateElementPresent(context, xpath, node, "n:ContactDetails", "1", "No operator contact details",
+				_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CONTACT_DETAILS);
+		validateElementPresent(context, xpath, node, "n:CustomerServiceContactDetails", "1", "No operator customer service contact details",
+				_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CUSTOMER_SERVICE_CONTACT_DETAILS);
 	}
 
 	private void validateServiceFrame(Context context, XPath xpath, Document dom) throws XPathExpressionException {
@@ -244,7 +267,6 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 				"Last stop must have an ArrivalTime", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_LAST_ARRIVAL);
 
 	}
-
 
 	private void validateResourceFrame(Context context, NetexReferential referential) throws Exception {
 		// TODO consider moving up one level in call hierarchy
@@ -875,7 +897,7 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 	public static class DefaultValidatorFactory extends NetexProfileValidatorFactory {
 		@Override
 		protected NetexProfileValidator create(Context context) {
-			NorwayLineNetexProfileValidator instance = (NorwayLineNetexProfileValidator) context.get(NAME);
+			NetexProfileValidator instance = (NetexProfileValidator) context.get(NAME);
 			if (instance == null) {
 				instance = new NorwayLineNetexProfileValidator();
 				context.put(NAME, instance);
@@ -887,6 +909,13 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 	static {
 		NetexProfileValidatorFactory.factories.put(NorwayLineNetexProfileValidator.class.getName(),
 				new NorwayLineNetexProfileValidator.DefaultValidatorFactory());
+	}
+
+	@Override
+	public Collection<String> getSupportedProfiles() {
+		return Arrays.asList(new String[] {
+			PROFILE_ID_1	
+		});
 	}
 
 }

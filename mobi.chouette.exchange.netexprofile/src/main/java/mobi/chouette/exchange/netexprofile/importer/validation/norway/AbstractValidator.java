@@ -10,7 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.management.RuntimeErrorException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -26,6 +25,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
+import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 
@@ -37,7 +37,8 @@ public abstract class AbstractValidator implements Constant {
 	public static final String _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS = "1-NETEXPROFILE-MissingReferenceVersionAttribute";
 	public static final String _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS = "1-NETEXPROFILE-UnresolvedReferenceToCommonElements";
 	public static final String _1_NETEX_INVALID_ID_STRUCTURE = "1-NETEXPROFILE-InvalidIdFormat";
-
+	public static final String _1_NETEX_UNAPPROVED_CODESPACE_DEFINED = "1-NETEXPROFILE-UnapprovedCodespaceDefined";
+	public static final String _1_NETEX_USE_OF_UNAPPROVED_CODESPACE = "1-NETEXPROFILE-UseOfUnapprovedCodespace";
 	protected static final String PREFIX = "2-NETEX-";
 	protected static final String OBJECT_IDS = "encountered_ids";
 
@@ -170,6 +171,26 @@ public abstract class AbstractValidator implements Constant {
 		return node;
 	}
 
+	
+	protected void verifyAcceptedCodespaces(Context context, XPath xpath, Node dom, Set<ProfileValidatorCodespace> acceptedCodespaces)
+			throws XPathExpressionException {
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+
+		NodeList codespaces = selectNodeSet("//n:Codespace", xpath, dom);
+		for (int i = 0; i < codespaces.getLength(); i++) {
+			Node n = codespaces.item(i);
+			ProfileValidatorCodespace cs = new ProfileValidatorCodespace((String) xpath.evaluate("n:Xmlns", n, XPathConstants.STRING),
+					(String) xpath.evaluate("n:XmlnsUrl", n, XPathConstants.STRING));
+			if (!acceptedCodespaces.contains(cs)) {
+				// TODO add correct location
+				validationReporter.addCheckPointReportError(context, _1_NETEX_UNAPPROVED_CODESPACE_DEFINED, new DataLocation((String) context.get(FILE_NAME)));
+				log.error("Codespace " + cs + " is not accepted for this validation");
+
+			}
+		}
+
+	}
+
 	protected void verifyReferencesToCommonElements(Context context, Set<IdVersion> localRefs, Set<IdVersion> localIds,
 			Map<IdVersion, List<String>> commonIds) {
 		if (commonIds != null) {
@@ -259,7 +280,15 @@ public abstract class AbstractValidator implements Constant {
 		}
 	}
 
-	protected void verifyIdStructure(Context context, Set<IdVersion> localIds, Map<IdVersion, List<String>> commonIds, String regex) {
+	protected void verifyIdStructure(Context context, Set<IdVersion> localIds, Map<IdVersion, List<String>> commonIds, String regex, Set<ProfileValidatorCodespace> validCodespaces) {
+		Set<String> validPrefixes = null;
+		if(validCodespaces != null) {
+			validPrefixes = new HashSet<>();
+			for(ProfileValidatorCodespace cs : validCodespaces) {
+				validPrefixes.add(cs.getXmlns());
+			}
+		}
+		
 		Pattern p = Pattern.compile(regex);
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		for (IdVersion id : localIds) {
@@ -268,6 +297,14 @@ public abstract class AbstractValidator implements Constant {
 				// TODO add correct location
 				validationReporter.addCheckPointReportError(context, _1_NETEX_INVALID_ID_STRUCTURE, new DataLocation((String) context.get(FILE_NAME)));
 				log.error("Id " + id + " in line file have an invalid format. Correct format is " + regex);
+			} else if(validPrefixes != null) {
+				String prefix = m.group(1);
+				if(!validPrefixes.contains(prefix)) {
+					// TODO add correct location
+					validationReporter.addCheckPointReportError(context, _1_NETEX_USE_OF_UNAPPROVED_CODESPACE, new DataLocation((String) context.get(FILE_NAME)));
+					log.error("Id " + id + " in line file are using an unaccepted codepsace prefix "+prefix+". Valid prefixes are "+ToStringBuilder.reflectionToString(validPrefixes,ToStringStyle.SIMPLE_STYLE));
+					
+				}
 			}
 		}
 
@@ -282,9 +319,19 @@ public abstract class AbstractValidator implements Constant {
 
 					}
 
+				} else if(validPrefixes != null) {
+					String prefix = m.group(1);
+					if(!validPrefixes.contains(prefix)) {
+						for (String commonFileName : commonIds.get(id)) {
+							// TODO add correct location
+							validationReporter.addCheckPointReportError(context, _1_NETEX_USE_OF_UNAPPROVED_CODESPACE, new DataLocation(commonFileName));
+							log.error("Id " + id + " in common file are using an unaccepted codepsace prefix "+prefix+". Valid prefixes are "+ToStringBuilder.reflectionToString(validPrefixes,ToStringStyle.SIMPLE_STYLE));
+
+						}
+						
+					}
 				}
 			}
-
 		}
 	}
 

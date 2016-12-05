@@ -22,7 +22,6 @@ public class NetexLineParserCommandTest {
 	public void testParseDocument() throws Exception {
 		Context context = new Context();
 		NetexprofileImportParameters configuration = new NetexprofileImportParameters();
-		configuration.setProfileId("dummy");
 		context.put(Constant.CONFIGURATION, configuration);
 		context.put(Constant.VALIDATION_REPORT, new ValidationReport());
 		context.put(Constant.REPORT, new ActionReport());
