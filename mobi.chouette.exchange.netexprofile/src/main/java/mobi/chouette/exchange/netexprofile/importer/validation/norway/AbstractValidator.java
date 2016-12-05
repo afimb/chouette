@@ -32,6 +32,7 @@ import mobi.chouette.exchange.validation.report.ValidationReporter;
 @Log4j
 public abstract class AbstractValidator implements Constant {
 
+	public static final String _1_NETEX_UNKNOWN_PROFILE = "1-NETEX-UnknownProfile";
 	public static final String _1_NETEX_DUPLICATE_IDS = "1-NETEXPROFILE-DuplicateIdentificators";
 	public static final String _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS = "1-NETEXPROFILE-MissingVersionAttribute";
 	public static final String _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS = "1-NETEXPROFILE-MissingReferenceVersionAttribute";

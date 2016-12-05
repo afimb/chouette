@@ -26,9 +26,12 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
+import mobi.chouette.exchange.netexprofile.importer.validation.norway.AbstractValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.NorwayLineNetexProfileValidator;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.exchange.validation.report.DataLocation;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 
 @Log4j
 public class NetexInitReferentialCommand implements Command, Constant {
@@ -46,6 +49,9 @@ public class NetexInitReferentialCommand implements Command, Constant {
 		context.put(FILE_URL, fileURL);
 
 		ActionReporter reporter = ActionReporter.Factory.getInstance();
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		validationReporter.addItemToValidationReport(context, AbstractValidator._1_NETEX_UNKNOWN_PROFILE, "E");
+
 		File file = new File(new URL(fileURL).toURI());
 		String fileName = file.getName();
 		reporter.addFileReport(context, fileName, IO_TYPE.INPUT);
@@ -74,9 +80,11 @@ public class NetexInitReferentialCommand implements Command, Constant {
 			if (profileValidator != null) {
 				profileValidator.initializeCheckPoints(context);
 				context.put(NETEX_PROFILE_VALIDATOR, profileValidator);
+				validationReporter.reportSuccess(context, AbstractValidator._1_NETEX_UNKNOWN_PROFILE);
 			} else {
-				log.error("Unsupported NeTEx profile in PublicationDelivery/@version: " + profileVersion + " . Supported profiles are "
-						+ ToStringBuilder.reflectionToString(availableProfileValidators.keySet(), ToStringStyle.SIMPLE_STYLE));
+				log.error("Unsupported NeTEx profile in PublicationDelivery/@version: " + profileVersion);
+				// TODO fix reporting with lineNumber etc
+				validationReporter.addCheckPointReportError(context, AbstractValidator._1_NETEX_UNKNOWN_PROFILE, new DataLocation(fileName));
 				result = ERROR;
 			}
 

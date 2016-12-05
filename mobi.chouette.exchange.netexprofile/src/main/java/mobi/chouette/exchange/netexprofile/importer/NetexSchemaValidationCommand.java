@@ -64,6 +64,8 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 			for (Path filePath : allFiles) {
 				
 				SchemaValidationTask schemaValidationTask = new SchemaValidationTask(context, actionReporter, importer, filePath.toFile());
+				String fileName = filePath.toFile().getName();
+				actionReporter.addFileReport(context, fileName, IO_TYPE.INPUT);
 				schemaValidationResults.add((Future<SchemaValidationTask>) executor.submit(schemaValidationTask));
 			}
 			
@@ -108,14 +110,15 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 		@Getter
 		private File file;
 		
-		@Getter
 		boolean fileValidationResult = ERROR;
 		
+		public boolean getFileValidationResult() {
+			return fileValidationResult && !actionReporter.hasFileValidationErrors(context, file.getName());
+		}
 		
 		@Override
 		public SchemaValidationTask call() throws Exception {
 			String fileName = file.getName();
-			actionReporter.addFileReport(context, fileName, IO_TYPE.INPUT);
 			Source xmlSource = new StreamSource(file);
 			try {
 				// validate xml file
@@ -138,7 +141,7 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 					}
 				});
 				validator.validate(xmlSource);
-				fileValidationResult = !actionReporter.hasFileValidationErrors(context, fileName);
+				fileValidationResult = SUCCESS;
 			} catch (SAXException e) {
 				log.error(e);
 				fileValidationResult = ERROR;
