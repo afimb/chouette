@@ -26,14 +26,14 @@ public class NetexprofileImporterInputValidator extends AbstractInputValidator {
 			return null;
 		}
 	}
+
 	@Override
 	public boolean checkParameters(String abstractParameterString, String validationParametersString) {
 
 		try {
 			NetexprofileImportParameters parameters = JSONUtil.fromJSON(abstractParameterString, NetexprofileImportParameters.class);
 
-			ValidationParameters validationParameters = JSONUtil.fromJSON(validationParametersString,
-					ValidationParameters.class);
+			ValidationParameters validationParameters = JSONUtil.fromJSON(validationParametersString, ValidationParameters.class);
 
 			return checkParameters(parameters, validationParameters);
 		} catch (Exception ex) {
@@ -41,36 +41,38 @@ public class NetexprofileImporterInputValidator extends AbstractInputValidator {
 			return false;
 		}
 	}
+
 	@Override
 	public boolean checkParameters(AbstractParameter abstractParameter, ValidationParameters validationParameters) {
 		if (!(abstractParameter instanceof NetexprofileImportParameters)) {
 			log.error("invalid parameters for Netex import " + abstractParameter.getClass().getName());
 			return false;
 		}
-		
+
 		NetexprofileImportParameters parameters = (NetexprofileImportParameters) abstractParameter;
-		
-		
+
 		// Validate profile parameters
-        String[] validCodespacesTuples = StringUtils.split(parameters.getValidCodespaces(),",");
-        if(validCodespacesTuples.length > 0) {
-        	// Check for odd numbers of commas
-        	if(validCodespacesTuples.length % 2 != 1) {
-        		log.error("Unable to decode valid codepsaces. String must be comma separated with a pattern like PREFIX,URL,PREFIX,URL, ...");
-        		return false;
-        	} 
-        }
-        
+		if (parameters.getValidCodespaces() != null) {
+			String[] validCodespacesTuples = StringUtils.split(parameters.getValidCodespaces(), ",");
+			if (validCodespacesTuples.length > 0) {
+				// Check for odd numbers of commas
+				if (validCodespacesTuples.length % 2 != 1) {
+					log.error("Unable to decode valid codepsaces. String must be comma separated with a pattern like PREFIX,URL,PREFIX,URL, ...");
+					return false;
+				}
+			}
+		}
+
 		return true;
 	}
 
 	@Override
 	public boolean checkFilename(String fileName) {
-		if (fileName  == null || fileName.isEmpty()) {
+		if (fileName == null || fileName.isEmpty()) {
 			log.error("input data expected");
 			return false;
 		}
-		
+
 		if (!fileName.endsWith(".zip") && !fileName.endsWith(".xml")) {
 			log.error("xml or Zip archive input data expected");
 			return false;
@@ -100,9 +102,7 @@ public class NetexprofileImporterInputValidator extends AbstractInputValidator {
 	}
 
 	static {
-		InputValidatorFactory.factories.put(NetexprofileImporterInputValidator.class.getName(),
-				new DefaultFactory());
+		InputValidatorFactory.factories.put(NetexprofileImporterInputValidator.class.getName(), new DefaultFactory());
 	}
-	
 
 }
