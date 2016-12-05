@@ -56,6 +56,9 @@ public class StopPlaceMapper {
 		if (quays != null) {
 			for (Object q : quays.getQuayRefOrQuay()) {
 				StopArea boardingPosition = createBoardingPosition(referential, (Quay) q);
+				if(boardingPosition.getName() == null) {
+					boardingPosition.setName(stopArea.getName());
+				}
 				boardingPosition.setParent(stopArea);
 			}
 		}
@@ -148,7 +151,9 @@ public class StopPlaceMapper {
 	}
 
 	public void mapName(Zone_VersionStructure zone, StopArea stopArea) {
-		stopArea.setName(zone.getName().getValue());
+		if(zone.getName() != null) {
+			stopArea.setName(zone.getName().getValue());
+		}
 	}
 
 	public void mapTransportMode(StopPlace sp, TransportModeNameEnum mode) {

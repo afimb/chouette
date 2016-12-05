@@ -5,7 +5,10 @@ import static org.testng.Assert.assertNotNull;
 
 import java.util.Arrays;
 
+import mobi.chouette.model.util.Referential;
+import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.Quay;
+import org.rutebanken.netex.model.Quays_RelStructure;
 import org.rutebanken.netex.model.StopPlace;
 import org.testng.annotations.Test;
 
@@ -62,6 +65,30 @@ public class StopPlaceMapperTest {
 
         assertNotNull(netexStopPlace);
         assertEquals(netexStopPlace.getName().getValue(), boardingPosition.getName());
+    }
+
+    @Test
+    public void setBoardingPositionNameIfMissing() {
+        StopPlace stopPlace = new StopPlace()
+                .withName(new MultilingualString().withValue("Festningen"))
+                .withQuays(new Quays_RelStructure()
+                        .withQuayRefOrQuay(new Quay()));
+
+        StopArea stopArea = stopPlaceMapper.mapStopPlaceToStopArea(new Referential(), stopPlace);
+
+        assertEquals(stopArea.getContainedStopAreas().get(0).getName(), "Festningen");
+    }
+
+    @Test
+    public void keepBoardingPositionNameIfDifferent() {
+        StopPlace stopPlace = new StopPlace()
+                .withName(new MultilingualString().withValue("Festningen"))
+                .withQuays(new Quays_RelStructure()
+                        .withQuayRefOrQuay(new Quay().withName(new MultilingualString().withValue("Slottet"))));
+
+        StopArea stopArea = stopPlaceMapper.mapStopPlaceToStopArea(new Referential(), stopPlace);
+
+        assertEquals(stopArea.getContainedStopAreas().get(0).getName(), "Slottet");
     }
 
     private StopArea createStopPlace(String name) {
