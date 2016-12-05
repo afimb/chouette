@@ -56,7 +56,8 @@ public class NetexLineParserCommand implements Command, Constant {
                 referential.clear(true);
             }
 
-            Parser parser = ParserFactory.create(PublicationDeliveryParser.class.getName());
+            PublicationDeliveryParser parser = (PublicationDeliveryParser) ParserFactory.create(PublicationDeliveryParser.class.getName());
+            parser.initReferentials(context);
             parser.parse(context);
 
             Context validationContext = (Context) context.get(VALIDATION_CONTEXT);

@@ -71,6 +71,7 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
     public List<? extends Command> getLineProcessingCommands(Context context, boolean withDao) {
         InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
         NetexprofileImportParameters parameters = (NetexprofileImportParameters) context.get(CONFIGURATION);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 
         // added in chouette 3.4, add support for this at this level instead, if we need to set file state for excluded files see below:
         // reporter.setFileState(context, exclude.getFileName().toString(), IO_TYPE.INPUT,FILE_STATE.IGNORED);
@@ -83,38 +84,31 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
         try {
 
         	// Report any files that are not XML files
-//        	List<Path> excluded = FileUtil.listFiles(path, "*", "*.xml");
-//			if (!excluded.isEmpty()) {
-//				for (Path exclude : excluded) {
-//					reporter.setFileState(context, exclude.getFileName().toString(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.IGNORED);
-//				}
-//			}
+        	List<Path> excluded = FileUtil.listFiles(path, "*", "*.xml");
+			if (!excluded.isEmpty()) {
+				for (Path exclude : excluded) {
+					reporter.setFileState(context, exclude.getFileName().toString(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.IGNORED);
+				}
+			}
 
 
             // schema validation
-            Chain schemaValidationChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
-            commands.add(schemaValidationChain);
-
-            // TODO consider merging schema validation loop with main loop for profile validation and parsing below
-            List<Path> allFiles = FileUtil.listFiles(path, "*.xml");
-            for (Path file : allFiles) {
-                String url = file.toUri().toURL().toExternalForm();
-                NetexSchemaValidationCommand schemaValidation = (NetexSchemaValidationCommand) CommandFactory.create(initialContext,
-                        NetexSchemaValidationCommand.class.getName());
-                schemaValidation.setFileURL(url);
-                schemaValidationChain.add(schemaValidation);
-            }
+ 
+            NetexSchemaValidationCommand schemaValidation = (NetexSchemaValidationCommand) CommandFactory.create(initialContext,
+                    NetexSchemaValidationCommand.class.getName());
+            commands.add(schemaValidation);
 
             // common file parsing
 
+            List<Path> allFiles = FileUtil.listFiles(path, "*.xml");
             List<Path> commonFiles = FileUtil.listFiles(path, "_*.xml");
             NetexCommonFilesParserCommand commonFilesParser = (NetexCommonFilesParserCommand) CommandFactory.create(initialContext, NetexCommonFilesParserCommand.class.getName());
             commonFilesParser.setFiles(commonFiles);
             commands.add(commonFilesParser);
 
             for (Path file : allFiles) {
-                String url = file.toUri().toURL().toExternalForm();
-                if (!commonFiles.contains(url)) {
+                if (!commonFiles.contains(file)) {
+                    String url = file.toUri().toURL().toExternalForm();
                     Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
                     commands.add(chain);
 

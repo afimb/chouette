@@ -1,14 +1,13 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
-import static mobi.chouette.exchange.validation.report.ValidationReporter.RESULT.NOK;
-import static mobi.chouette.exchange.validation.report.ValidationReporter.RESULT.OK;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPath;
@@ -26,19 +25,21 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
+import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 
 @Log4j
 public abstract class AbstractValidator implements Constant {
 
-	
+	public static final String _1_NETEX_UNKNOWN_PROFILE = "1-NETEX-UnknownProfile";
 	public static final String _1_NETEX_DUPLICATE_IDS = "1-NETEXPROFILE-DuplicateIdentificators";
 	public static final String _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS = "1-NETEXPROFILE-MissingVersionAttribute";
 	public static final String _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS = "1-NETEXPROFILE-MissingReferenceVersionAttribute";
 	public static final String _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS = "1-NETEXPROFILE-UnresolvedReferenceToCommonElements";
-
-	
+	public static final String _1_NETEX_INVALID_ID_STRUCTURE = "1-NETEXPROFILE-InvalidIdFormat";
+	public static final String _1_NETEX_UNAPPROVED_CODESPACE_DEFINED = "1-NETEXPROFILE-UnapprovedCodespaceDefined";
+	public static final String _1_NETEX_USE_OF_UNAPPROVED_CODESPACE = "1-NETEXPROFILE-UseOfUnapprovedCodespace";
 	protected static final String PREFIX = "2-NETEX-";
 	protected static final String OBJECT_IDS = "encountered_ids";
 
@@ -105,7 +106,7 @@ public abstract class AbstractValidator implements Constant {
 
 		return objectContext;
 	}
-	
+
 	public static Predicate<Integer> exact(int v) {
 		return p -> p == v;
 	}
@@ -119,8 +120,8 @@ public abstract class AbstractValidator implements Constant {
 		validateElement(context, xpath, document, expression, exact(1), checkPointKey);
 	}
 
-	protected void validateAtLeastElementPresent(Context context, XPath xpath, Node document, String expression, int count, String errorCode, String errorMessage,
-			String checkPointKey) throws XPathExpressionException {
+	protected void validateAtLeastElementPresent(Context context, XPath xpath, Node document, String expression, int count, String errorCode,
+			String errorMessage, String checkPointKey) throws XPathExpressionException {
 		validateElement(context, xpath, document, expression, atLeast(count), checkPointKey);
 	}
 
@@ -129,14 +130,15 @@ public abstract class AbstractValidator implements Constant {
 		validateElement(context, xpath, document, expression, exact(0), checkPointKey);
 	}
 
-	private void validateElement(Context context, XPath xpath, Node document, String expression, Predicate<Integer> function,String checkPointKey)
+	private void validateElement(Context context, XPath xpath, Node document, String expression, Predicate<Integer> function, String checkPointKey)
 			throws XPathExpressionException {
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		if (!validationReporter.checkIfCheckPointExists(context, checkPointKey)) {
 			log.error("Checkpoint " + checkPointKey + " not present in ValidationReport");
+			throw new RuntimeException("Checkpoint "+checkPointKey+" does not exist - did you add a validation rule but forgot to register the checkpoint?");
 		}
 		NodeList nodes = (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
-		if(function.test(nodes.getLength())) {
+		if (function.test(nodes.getLength())) {
 			validationReporter.reportSuccess(context, checkPointKey);
 		} else {
 			// TODO fix reporting with lineNumber etc
@@ -170,7 +172,28 @@ public abstract class AbstractValidator implements Constant {
 		return node;
 	}
 
-	protected void verifyReferencesToCommonElements(Context context, Set<IdVersion> localRefs, Set<IdVersion> localIds, Map<IdVersion, List<String>> commonIds) {
+	
+	protected void verifyAcceptedCodespaces(Context context, XPath xpath, Node dom, Set<ProfileValidatorCodespace> acceptedCodespaces)
+			throws XPathExpressionException {
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+
+		NodeList codespaces = selectNodeSet("//n:Codespace", xpath, dom);
+		for (int i = 0; i < codespaces.getLength(); i++) {
+			Node n = codespaces.item(i);
+			ProfileValidatorCodespace cs = new ProfileValidatorCodespace((String) xpath.evaluate("n:Xmlns", n, XPathConstants.STRING),
+					(String) xpath.evaluate("n:XmlnsUrl", n, XPathConstants.STRING));
+			if (!acceptedCodespaces.contains(cs)) {
+				// TODO add correct location
+				validationReporter.addCheckPointReportError(context, _1_NETEX_UNAPPROVED_CODESPACE_DEFINED, new DataLocation((String) context.get(FILE_NAME)));
+				log.error("Codespace " + cs + " is not accepted for this validation");
+
+			}
+		}
+
+	}
+
+	protected void verifyReferencesToCommonElements(Context context, Set<IdVersion> localRefs, Set<IdVersion> localIds,
+			Map<IdVersion, List<String>> commonIds) {
 		if (commonIds != null) {
 			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 
@@ -258,6 +281,61 @@ public abstract class AbstractValidator implements Constant {
 		}
 	}
 
+	protected void verifyIdStructure(Context context, Set<IdVersion> localIds, Map<IdVersion, List<String>> commonIds, String regex, Set<ProfileValidatorCodespace> validCodespaces) {
+		Set<String> validPrefixes = null;
+		if(validCodespaces != null) {
+			validPrefixes = new HashSet<>();
+			for(ProfileValidatorCodespace cs : validCodespaces) {
+				validPrefixes.add(cs.getXmlns());
+			}
+		}
+		
+		Pattern p = Pattern.compile(regex);
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		for (IdVersion id : localIds) {
+			Matcher m = p.matcher(id.getId());
+			if (!m.matches()) {
+				// TODO add correct location
+				validationReporter.addCheckPointReportError(context, _1_NETEX_INVALID_ID_STRUCTURE, new DataLocation((String) context.get(FILE_NAME)));
+				log.error("Id " + id + " in line file have an invalid format. Correct format is " + regex);
+			} else if(validPrefixes != null) {
+				String prefix = m.group(1);
+				if(!validPrefixes.contains(prefix)) {
+					// TODO add correct location
+					validationReporter.addCheckPointReportError(context, _1_NETEX_USE_OF_UNAPPROVED_CODESPACE, new DataLocation((String) context.get(FILE_NAME)));
+					log.error("Id " + id + " in line file are using an unaccepted codepsace prefix "+prefix+". Valid prefixes are "+ToStringBuilder.reflectionToString(validPrefixes,ToStringStyle.SIMPLE_STYLE));
+					
+				}
+			}
+		}
+
+		if (commonIds != null) {
+			for (IdVersion id : commonIds.keySet()) {
+				Matcher m = p.matcher(id.getId());
+				if (!m.matches()) {
+					for (String commonFileName : commonIds.get(id)) {
+						// TODO add correct location
+						validationReporter.addCheckPointReportError(context, _1_NETEX_INVALID_ID_STRUCTURE, new DataLocation(commonFileName));
+						log.error("Id " + id + " in common file file " + commonFileName + "have an invalid format. Correct format is " + regex);
+
+					}
+
+				} else if(validPrefixes != null) {
+					String prefix = m.group(1);
+					if(!validPrefixes.contains(prefix)) {
+						for (String commonFileName : commonIds.get(id)) {
+							// TODO add correct location
+							validationReporter.addCheckPointReportError(context, _1_NETEX_USE_OF_UNAPPROVED_CODESPACE, new DataLocation(commonFileName));
+							log.error("Id " + id + " in common file are using an unaccepted codepsace prefix "+prefix+". Valid prefixes are "+ToStringBuilder.reflectionToString(validPrefixes,ToStringStyle.SIMPLE_STYLE));
+
+						}
+						
+					}
+				}
+			}
+		}
+	}
+
 	protected Set<IdVersion> collectEntityIdentificators(Context context, XPath xpath, Document dom) throws XPathExpressionException {
 		return collectIdOrRefWithVersion(context, xpath, dom, "id");
 	}
@@ -282,7 +360,6 @@ public abstract class AbstractValidator implements Constant {
 		}
 		return ids;
 	}
-
 
 	/*
 	 * public static void validateExternalReferenceCorrect(Context context, XPath xpath, Document dom, String expression, ExternalReferenceValidator

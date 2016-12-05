@@ -32,10 +32,8 @@ public class NetexValidationCommand implements Command, Constant {
             Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
             Referential referential = (Referential) context.get(REFERENTIAL);
 
-            if (validationContext != null) {
-                NetexProfileValidator validator = (NetexProfileValidator) context.get(NETEX_PROFILE_VALIDATOR);
-                validator.validate(context);
-            }
+            NetexProfileValidator validator = (NetexProfileValidator) context.get(NETEX_PROFILE_VALIDATOR);
+            validator.validate(context);
 
             result = !reporter.hasFileValidationErrors(context, fileName);
         } catch (Exception e) {

@@ -156,7 +156,6 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		configuration.setCleanRepository(true);
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
-		configuration.setProfileId("norway");
 		JobDataTest jobData = new JobDataTest();
 		context.put(JOB_DATA, jobData);
 		jobData.setPathName("target/referential/test");
@@ -190,6 +189,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
+		configuration.setValidCodespaces("AVI,http://avinor.no/");
 
 		try {
 			command.execute(context);
@@ -204,7 +204,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		Reporter.log("report :" + report.toString(), true);
 		dumpReports(context);
 
-		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+		Assert.assertEquals(report.getResult(), STATUS_OK, "fileValidationResult");
 		Assert.assertEquals(report.getFiles().size(), 1, "file reported");
 		Assert.assertNotNull(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE), "line reported");
 		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 1, "line reported");
@@ -345,7 +345,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	}
 
 	private void assertStatus(ActionReport report, String status) {
-		assertEquals(report.getResult(), status, "result");
+		assertEquals(report.getResult(), status, "fileValidationResult");
 	}
 
 	private void assertValidationReport(ValidationReport validationReport, int expectedOk, int expectedNok, int expectedUncheck) {
@@ -374,7 +374,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	}
 
 	private void assertActionReport(ActionReport report, String status, int files, int lines) {
-		assertEquals(report.getResult(), status, "result");
+		assertEquals(report.getResult(), status, "fileValidationResult");
 		assertEquals(report.getFiles().size(), files, "file reported");
 		assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), lines, "line reported");
 	}
