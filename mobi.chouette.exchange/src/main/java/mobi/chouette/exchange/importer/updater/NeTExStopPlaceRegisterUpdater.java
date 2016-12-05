@@ -1,10 +1,24 @@
 package mobi.chouette.exchange.importer.updater;
 
-import java.io.IOException;
-import java.time.OffsetDateTime;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.ContenerChecker;
+import mobi.chouette.common.Context;
+import mobi.chouette.common.PropertyNames;
+import mobi.chouette.exchange.importer.updater.netex.NavigationPathMapper;
+import mobi.chouette.exchange.importer.updater.netex.StopPlaceMapper;
+import mobi.chouette.model.*;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.Route;
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.type.ChouetteAreaEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.model.util.Referential;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.rutebanken.netex.client.PublicationDeliveryClient;
+import org.rutebanken.netex.model.*;
+import org.xml.sax.SAXException;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -12,39 +26,11 @@ import javax.ejb.Stateless;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.rutebanken.netex.client.PublicationDeliveryClient;
-import org.rutebanken.netex.model.KeyListStructure;
-import org.rutebanken.netex.model.KeyValueStructure;
-import org.rutebanken.netex.model.MultilingualString;
-import org.rutebanken.netex.model.NavigationPath;
-import org.rutebanken.netex.model.ObjectFactory;
-import org.rutebanken.netex.model.PathLink;
-import org.rutebanken.netex.model.PublicationDeliveryStructure;
-import org.rutebanken.netex.model.Quay;
-import org.rutebanken.netex.model.Quays_RelStructure;
-import org.rutebanken.netex.model.SiteFrame;
-import org.rutebanken.netex.model.StopPlace;
-import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
-
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.ContenerChecker;
-import mobi.chouette.common.Context;
-import mobi.chouette.common.PropertyNames;
-import mobi.chouette.exchange.importer.updater.netex.NavigationPathMapper;
-import mobi.chouette.exchange.importer.updater.netex.StopPlaceMapper;
-import mobi.chouette.model.ConnectionLink;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.Route;
-import mobi.chouette.model.StopArea;
-import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.type.ChouetteAreaEnum;
-import mobi.chouette.model.type.TransportModeNameEnum;
-import mobi.chouette.model.util.Referential;
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.time.OffsetDateTime;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Log4j
 @Stateless(name = NeTExStopPlaceRegisterUpdater.BEAN_NAME)
@@ -207,6 +193,15 @@ public class NeTExStopPlaceRegisterUpdater {
 						e);
 				return;
 			}
+
+			if (response.getDataObjects() == null) {
+				log.error("The response dataObjects is null for received publication delivery. Nothing to do here. " + correlationId);
+				return;
+			} else if (response.getDataObjects().getCompositeFrameOrCommonFrame() == null) {
+				log.error("Composite frame or common fra is null for received publication delivery. " + correlationId);
+				return;
+			}
+
 			log.info("Got publication delivery structure back with "
 					+ response.getDataObjects().getCompositeFrameOrCommonFrame().size()
 					+ " composite frames or common frames correlationId: "+correlationId);
