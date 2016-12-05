@@ -143,7 +143,7 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 									child.setParent(stopArea);
 								}
 							} else {
-								log.warn("Stop Area chouette Id : " + stopArea.getChouetteId().getCodeSpace() + ":" + stopArea.getChouetteId().getTechnicalId());
+								
 								for (String childId : contains) {
 									StopPoint stopPoint = NeptuneChouetteIdObjectUtil.getStopPoint(
 											referential,

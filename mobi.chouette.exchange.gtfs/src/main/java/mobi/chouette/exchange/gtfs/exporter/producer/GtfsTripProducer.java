@@ -87,11 +87,6 @@ public class GtfsTripProducer extends AbstractProducer {
 		List<RouteSection> routeSections = vj.getJourneyPattern().getRouteSections();
 		int index = 0;
 		for (VehicleJourneyAtStop vjas : lvjas) {
-			log.warn("Vehicle Journey at stop : " + vjas.getId());
-			log.warn("StopPoint associated : " + vjas.getStopPoint().getCodeSpace() + ":" + vjas.getStopPoint().getTechnicalId());
-			log.warn("Contained in stopArea StopPoint associated : " + vjas.getStopPoint().getContainedInStopArea().getCodeSpace() + ":" + vjas.getStopPoint().getContainedInStopArea().getTechnicalId());
-			log.warn("vjas stop Area chouette id : " + vjas.getStopPoint().getContainedInStopArea().getChouetteId().toString());
-			log.warn("Gtfs Id : " + toGtfsId(vjas.getStopPoint().getContainedInStopArea().getChouetteId(), sharedPrefix, keepOriginalId));
 			time.setStopId(toGtfsId(vjas.getStopPoint().getContainedInStopArea().getChouetteId(), sharedPrefix, keepOriginalId));
 			Time arrival = vjas.getArrivalTime();
 			arrivalOffset = vjas.getArrivalDayOffset(); /** GJT */
@@ -287,10 +282,6 @@ public class GtfsTripProducer extends AbstractProducer {
 			trip.setWheelchairAccessible(GtfsTrip.WheelchairAccessibleType.NoInformation);
 		// trip.setBlockId(...);
 		// trip.setBikeAllowed();
-//		log.warn("vehicle journey : " + vj.getCodeSpace() + ":" + vj.getTechnicalId());
-//		log.warn("prefix : " + prefix);
-//		log.warn("shared prefix : " + sharedPrefix);
-//		log.warn("original id : " + keepOriginalId);
 		// add StopTimes
 		if (saveTimes(vj,  prefix, sharedPrefix, keepOriginalId)) {
 			try {

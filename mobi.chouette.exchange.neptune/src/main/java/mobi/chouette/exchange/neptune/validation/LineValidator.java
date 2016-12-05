@@ -95,7 +95,6 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
 		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		
-//		Map<String, Location> fileLocations = data.getFileLocations();
 		Map<ChouetteId, DataLocation> fileLocations = data.getDataLocations();
 
 		if (localContext == null || localContext.isEmpty())
@@ -108,10 +107,8 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 
 		for (String objectId : localContext.keySet()) {
 			Context objectContext = (Context) localContext.get(objectId);
-//			Location sourceLocation = fileLocations.get(objectId);
 			ChouetteId lineChouetteId = neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Line.class);
 			DataLocation sourceLocation = fileLocations.get(lineChouetteId);
-			log.warn("Object id LineValidator : " + objectId);
 			Line line = lines.get(lineChouetteId);
 			// 2-NEPTUNE-Line-1 : check ptnetworkIdShortcut
 			String ptnetworkIdShortcut = (String) objectContext.get(PT_NETWORK_ID_SHORTCUT);
