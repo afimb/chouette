@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<PublicationDelivery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns="http://www.netex.org.uk/netex" xmlns:ns2="http://www.opengis.net/gml/3.2" xmlns:ns3="http://www.siri.org.uk/siri" version="1.0"
+<PublicationDelivery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns="http://www.netex.org.uk/netex" xmlns:ns2="http://www.opengis.net/gml/3.2" xmlns:ns3="http://www.siri.org.uk/siri" version="1.04:NO-NeTEx-networktimetable:1.0"
     
     xsi:schemaLocation="http://www.netex.org.uk/netex ../../xsd/NeTEx_publication.xsd"
     >
@@ -15,7 +15,7 @@
                 </Codespace>
                 <Codespace id="nsr">
                     <Xmlns>NSR</Xmlns>
-                    <XmlnsUrl>http://www.nasjonaltstoppestedregister.rutebanken.no</XmlnsUrl>
+                    <XmlnsUrl>http://www.rutebanken.org/ns/nsr</XmlnsUrl>
                 </Codespace>
             </codespaces>
             <FrameDefaults>

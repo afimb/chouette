@@ -156,7 +156,6 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		configuration.setCleanRepository(true);
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
-		configuration.setProfileId("norway");
 		JobDataTest jobData = new JobDataTest();
 		context.put(JOB_DATA, jobData);
 		jobData.setPathName("target/referential/test");
@@ -190,6 +189,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
+		configuration.setValidCodespaces("AVI,http://avinor.no/");
 
 		try {
 			command.execute(context);
