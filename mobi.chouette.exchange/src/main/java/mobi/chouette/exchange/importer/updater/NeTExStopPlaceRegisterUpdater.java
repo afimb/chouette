@@ -2,13 +2,20 @@ package mobi.chouette.exchange.importer.updater;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -29,6 +36,7 @@ import org.rutebanken.netex.model.Quays_RelStructure;
 import org.rutebanken.netex.model.SiteFrame;
 import org.rutebanken.netex.model.StopPlace;
 import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
+import org.xml.sax.SAXException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.ContenerChecker;
@@ -44,10 +52,9 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.Referential;
-import org.xml.sax.SAXException;
 
 @Log4j
-@Stateless(name = NeTExStopPlaceRegisterUpdater.BEAN_NAME)
+@Singleton(name = NeTExStopPlaceRegisterUpdater.BEAN_NAME)
 public class NeTExStopPlaceRegisterUpdater {
 	private static final String STOP_PLACE_REGISTER_MAP = "STOP_PLACE_REGISTER_MAP";
 
