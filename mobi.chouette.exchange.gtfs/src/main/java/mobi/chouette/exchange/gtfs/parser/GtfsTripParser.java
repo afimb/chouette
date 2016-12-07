@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +32,7 @@ import mobi.chouette.exchange.gtfs.model.GtfsTrip.DirectionType;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
+import mobi.chouette.exchange.gtfs.model.importer.IndexImpl;
 import mobi.chouette.exchange.gtfs.model.importer.RouteById;
 import mobi.chouette.exchange.gtfs.model.importer.ShapeById;
 import mobi.chouette.exchange.gtfs.model.importer.StopById;
@@ -569,10 +571,10 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			
 			
 			// Si la course présente un tracé
-			log.warn("Avant test tracé");
+			//log.warn("Avant test tracé");
 			if (gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty()
 					&& importer.getShapeById().containsKey(gtfsTrip.getShapeId())) {
-				log.warn("Course " + gtfsTrip.getTripId() + " présente un tracé");
+				//log.warn("Course " + gtfsTrip.getTripId() + " présente un tracé");
 				for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney.getVehicleJourneyAtStops()) {
 					float shapeValue = ((VehicleJourneyAtStopWrapper) vehicleJourneyAtStop).shapeDistTraveled;
 					if(Float.valueOf(shapeValue) != null) {
@@ -585,18 +587,18 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					}
 				}
 			} else {
-				log.warn("Course " + gtfsTrip.getTripId() + " ne présente pas de tracé");
+				//log.warn("Course " + gtfsTrip.getTripId() + " ne présente pas de tracé");
 				for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney.getVehicleJourneyAtStops()) {
 					String stopId = ((VehicleJourneyAtStopWrapper) vehicleJourneyAtStop).stopId;
 					journeyKey += "," + stopId;
 				}
 			}
 			
-			log.warn("Après test tracé");
+			//log.warn("Après test tracé");
 			
 			JourneyPattern journeyPattern = journeyPatternByStopSequence.get(journeyKey);
 			if (journeyPattern == null) {
-				log.warn("JourneyPattern " + journeyKey + " n'existe pas");
+				//log.warn("JourneyPattern " + journeyKey + " n'existe pas");
 				journeyPattern = createJourneyPattern(context, referential, configuration, gtfsTrip, gtfsShapes,
 						vehicleJourney, journeyKey, journeyPatternByStopSequence, lstNotShapedRoute);
 			}
@@ -605,7 +607,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			vehicleJourney.setJourneyPattern(journeyPattern);
 
 			int length = journeyPattern.getStopPoints().size();
-			log.warn("Journey Pattern size : " + length);
+			//log.warn("Journey Pattern size : " + length);
 			if (gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty()
 					&& importer.getShapeById().containsKey(gtfsTrip.getShapeId())) {
 				for (int i = 0; i < length; i++) {
@@ -632,86 +634,134 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		// dispose collections
 		journeyPatternByStopSequence.clear();
 		
-		log.warn("Total Route non tracées : "+ lstNotShapedRoute.size());
+		//log.warn("Total Route non tracées : "+ lstNotShapedRoute.size());
+		
+		// Ordonner les routes par taille de stopPoint list décroissante
+		orderRouteListByStopPointListSize(lstNotShapedRoute);
+		
+		// Faire un parcours matriciel de la liste ordonnée
 		// Fusion des routes n'ayant pas de tracé
-		for(Route route1: lstNotShapedRoute) {
-			for( Route route2: lstNotShapedRoute) {
-				log.warn("Route 1 size : "+ route1.getStopPoints().size());
-				log.warn("Route 2 size : "+ route2.getStopPoints().size());
-				if (route1.getStopPoints().size() > route2.getStopPoints().size())
-					isRouteInclude(route2, route1, lstRouteToDelete);
-				else if (route2.getStopPoints().size() > route1.getStopPoints().size())
-					isRouteInclude(route1, route2, lstRouteToDelete);
-				else {
-					log.warn("Condition non remplie pour " + route1.getObjectId() + " et " + route2.getObjectId());
+		for(int i = 0; i < lstNotShapedRoute.size(); i++) {
+			Route route1 = lstNotShapedRoute.get(i);
+			log.warn("Route1 object id : "+ route1.getObjectId());
+			for (JourneyPattern jp: route1.getJourneyPatterns()) {
+				log.warn("JourneyPattern object id : "+ jp.getObjectId());
+				
+				for(VehicleJourney vj: jp.getVehicleJourneys())
+					log.warn("VehicleJourney object id : "+ vj.getObjectId());
+			}
+			for(int j = i + 1; j < lstNotShapedRoute.size(); j++) {
+				Route route2 = lstNotShapedRoute.get(j);
+				//log.warn("Route 1 size : "+ route1.getStopPoints().size());
+				//log.warn("Route 2 size : "+ route2.getStopPoints().size());
+				if ( route2.getStopPoints().size() == 0)
+					continue;
+				if (route1.getStopPoints().size() > route2.getStopPoints().size()) {
+					isRouteInclude(route2, route1, lstRouteToDelete, referential);
+					//log.warn("Condition remplie pour " + route1.getObjectId() + " et " + route2.getObjectId());
+				} else {
+					//log.warn("Condition remplie pour " + route1.getObjectId() + " et " + route2.getObjectId());
 					continue;
 				}
 			}
 		}
 		
+		// Fusion des routes n'ayant pas de tracé
+//		for(Route route1: lstNotShapedRoute) {
+//			for( Route route2: lstNotShapedRoute) {
+//				//log.warn("Route 1 size : "+ route1.getStopPoints().size());
+//				//log.warn("Route 2 size : "+ route2.getStopPoints().size());
+//				if (route1.getStopPoints().size() > route2.getStopPoints().size()) {
+//					isRouteInclude(route2, route1, lstRouteToDelete);
+//					//log.warn("Condition remplie pour " + route1.getObjectId() + " et " + route2.getObjectId());
+//				}
+//				else if (route2.getStopPoints().size() > route1.getStopPoints().size()) {
+//					isRouteInclude(route1, route2, lstRouteToDelete);
+//				}
+//				else {
+//					//log.warn("Condition remplie pour " + route1.getObjectId() + " et " + route2.getObjectId());
+//					continue;
+//				}
+//			}
+//		}
 		
-		log.warn("Total Route à supprimer : "+ lstRouteToDelete.size());
+		
+		////log.warn("Total des routes supprimées : "+ lstRouteToDelete.size());
 		// Clear empty routes
-		lstRouteToDelete.clear();
+		//lstRouteToDelete.clear();
+		
+		//log.warn("Fin parsing gtfs trip");
 	}
 	
+	
+	private void orderRouteListByStopPointListSize(List <Route> lstRoute) {
+		Collections.sort(lstRoute, new Comparator<Route>() {
+		    @Override
+		    public int compare(Route r1, Route r2) {
+		    	Integer n1 = new Integer(r1.getStopPoints().size());
+		    	Integer n2 = new Integer(r2.getStopPoints().size());
+		        return n1.compareTo(n2);
+		    }
+		});
+	}
 	/**
 	 * Is route included in another route
 	 * @param routeIncluded
 	 * @param routeIncluding
 	 * @param lstRoute
 	 */
-	private void isRouteInclude(Route routeIncluded, Route routeIncluding, List<Route> lstRoute) {
-		boolean included = false;
-		int includedSize = routeIncluded.getStopPoints().size();
+	private void isRouteInclude(Route routeIncluded, Route routeIncluding, List<Route> lstRouteToDelete, Referential referential) {
+//		boolean included = false;
+//		int includedSize = routeIncluded.getStopPoints().size();
+		//log.warn("Debut isRouteInclude" + routeIncluded.getObjectId() + " et " + routeIncluding.getObjectId());
+		//log.warn(" Point de départ route included " + routeIncluded.getObjectId() + " -> " + routeIncluded.getStopPoints().get(0).getObjectId());
+		//log.warn(" Point de départ route including " + routeIncluding.getObjectId() + " -> " + routeIncluding.getStopPoints().get(0).getObjectId());
 		
-		// Condition préalable : avoir le même point de départ
-		if ( routeIncluded.getStopPoints().get(0).equals(routeIncluding.getStopPoints().get(0)) ) {
-			included = true;
-			for( int i = 0; i < includedSize - 1; i++) {
-				if ( !routeIncluded.getStopPoints().get(i).equals(routeIncluding.getStopPoints().get(i)) ) {
-					included = true;
-					break;
-				}
-			}
-			
-			if ( included && !routeIncluded.getStopPoints().get(includedSize).equals(routeIncluding.getStopPoints().get(includedSize)) ) {
-				
-				log.warn("Avant fusion");
-				log.warn("Route incluse : " + routeIncluded.getObjectId());
-				log.warn("Route inclusive : " + routeIncluding.getObjectId());
-				log.warn("Debut boucle route incluse " + routeIncluded.getObjectId());
-				for( int i = 0; i < includedSize ; i++) {
-					log.warn(" Point  :" + routeIncluded.getStopPoints().get(i));
-				}
-				log.warn("Fin boucle route incluse " + routeIncluded.getObjectId());
-				log.warn("Debut boucle route inclusive " + routeIncluding.getObjectId());
-				for( int i = 0; i < routeIncluding.getStopPoints().size() ; i++) {
-					log.warn(" Point  :" + routeIncluding.getStopPoints().get(i));
-				}
-				log.warn("Fin boucle route inclusive " + routeIncluding.getObjectId());
-				
-				routeIncluded.getStopPoints().get(includedSize).setRoute(routeIncluding);
-				routeIncluding.getStopPoints().add(includedSize, routeIncluded.getStopPoints().get(includedSize)); 
-				lstRoute.add(routeIncluded);
-				
-				log.warn("Après fusion");
-				log.warn("Route incluse : " + routeIncluded.getObjectId());
-				log.warn("Route inclusive : " + routeIncluding.getObjectId());
-				log.warn("Debut boucle route incluse " + routeIncluded.getObjectId());
-				for( int i = 0; i < includedSize ; i++) {
-					log.warn(" Point  :" + routeIncluded.getStopPoints().get(i));
-				}
-				log.warn("Fin boucle route incluse " + routeIncluded.getObjectId());
-				log.warn("Debut boucle route inclusive " + routeIncluding.getObjectId());
-				for( int i = 0; i < routeIncluding.getStopPoints().size() ; i++) {
-					log.warn(" Point  :" + routeIncluding.getStopPoints().get(i));
-				}
-				log.warn("Fin boucle route inclusive " + routeIncluding.getObjectId());
-			}
-			
-			propagateMergedRoute(routeIncluded, routeIncluding);
-		}
+//		included = true;
+//		for( int i = 0; i < includedSize; i++) {
+//			if ( !routeIncluded.getStopPoints().get(i).getContainedInStopArea().equals(routeIncluding.getStopPoints().get(i).getContainedInStopArea()) ) {
+//				included = false;
+//				break;
+//			}
+//		}
+//		
+//		if ( included && !routeIncluded.getStopPoints().get(includedSize - 1).getContainedInStopArea().equals(routeIncluding.getStopPoints().get(includedSize - 1).getContainedInStopArea()) ) {
+//			
+//			//log.warn("Avant fusion");
+//			log.warn("Route incluse : " + routeIncluded.getObjectId());
+//			log.warn("Route inclusive : " + routeIncluding.getObjectId());
+//			log.warn("Debut boucle route incluse " + routeIncluded.getObjectId());
+//			for( int i = 0; i < includedSize ; i++) {
+//				log.warn(" Point  :" + routeIncluded.getStopPoints().get(i));
+//			}
+//			log.warn("Fin boucle route incluse " + routeIncluded.getObjectId());
+//			log.warn("Debut boucle route inclusive " + routeIncluding.getObjectId());
+//			for( int i = 0; i < routeIncluding.getStopPoints().size() ; i++) {
+//				log.warn(" Point  :" + routeIncluding.getStopPoints().get(i));
+//			}
+//			log.warn("Fin boucle route inclusive " + routeIncluding.getObjectId());
+//			
+//			routeIncluding.getStopPoints().add(includedSize, routeIncluded.getStopPoints().get(includedSize - 1)); 
+//			lstRoute.add(routeIncluded);
+//			
+//			log.warn("Après fusion");
+//			log.warn("Route incluse : " + routeIncluded.getObjectId());
+//			log.warn("Route inclusive : " + routeIncluding.getObjectId());
+//			log.warn("Debut boucle route incluse " + routeIncluded.getObjectId());
+//			for( int i = 0; i < includedSize ; i++) {
+//				log.warn(" Point  :" + routeIncluded.getStopPoints().get(i));
+//			}
+//			log.warn("Fin boucle route incluse " + routeIncluded.getObjectId());
+//			log.warn("Debut boucle route inclusive " + routeIncluding.getObjectId());
+//			for( int i = 0; i < routeIncluding.getStopPoints().size() ; i++) {
+//				log.warn(" Point  :" + routeIncluding.getStopPoints().get(i));
+//			}
+//			log.warn("Fin boucle route inclusive " + routeIncluding.getObjectId());
+//		}
+//		
+		propagateMergedRoute(routeIncluded, routeIncluding, lstRouteToDelete, referential);
+		//log.warn("Fin isRouteInclude" + routeIncluded.getObjectId() + " et " + routeIncluding.getObjectId());
+		
 	}
 	
 	/**
@@ -719,16 +769,68 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	 * @param routeIncluded
 	 * @param routeIncluding
 	 */
-	private void propagateMergedRoute(Route routeIncluded, Route routeIncluding) {
-		for (JourneyPattern jp: routeIncluded.getJourneyPatterns()) {
-			for (StopPoint sp: jp.getStopPoints())
-				sp.setRoute(routeIncluding);
+	private void propagateMergedRoute(Route routeIncluded, Route routeIncluding, List<Route> lstRouteToDelete, Referential referential) {
+		List<JourneyPattern> lstRouteIncludedJourneyPattern = routeIncluded.getJourneyPatterns();
+		//log.warn("Taille liste lstRouteIncludedJourneyPattern  : " + lstRouteIncludedJourneyPattern.size());
+		//log.warn("Taille liste lstRouteIncludingJourneyPattern  : " + lstRouteIncludingJourneyPattern.size());
+		
+		for (int i = 0; i < lstRouteIncludedJourneyPattern.size(); i++) {
+			JourneyPattern currentJp = lstRouteIncludedJourneyPattern.get(i);
+			List<StopPoint> lstStopPointToInclude = new ArrayList<StopPoint>();
+			List<StopPoint> lstStopPointIncluded = lstRouteIncludedJourneyPattern.get(i).getStopPoints();
+			List<StopPoint> lstStopPointIncluding = routeIncluding.getStopPoints();
 			
-			for (VehicleJourney vj: jp.getVehicleJourneys()) {
-				for(VehicleJourneyAtStop vjas: vj.getVehicleJourneyAtStops())
-					vjas.getStopPoint().setRoute(routeIncluding);
+			// Récupération des stopPoints à affecter à la journey pattern inclue courante*
+			int ind = 0;
+			for (int j = 0; j < lstStopPointIncluding.size() && ind < lstStopPointIncluded.size(); j++) {
+				if (lstStopPointIncluding.get(j).getContainedInStopArea().equals(lstStopPointIncluded.get(ind).getContainedInStopArea())) {
+					lstStopPointToInclude.add(lstStopPointIncluding.get(j));
+					ind += 1;
+				}
+			}
+			
+			// Merge valide ?
+			if (lstStopPointToInclude.size() == lstStopPointIncluded.size()) {
+				log.warn("Merge valide Route1 object id : "+ currentJp.getRoute().getObjectId());
+				log.warn("Merge valide JourneyPattern object id : "+ currentJp.getObjectId());
+					
+				for(VehicleJourney vj: currentJp.getVehicleJourneys())
+					log.warn("Merge valide VehicleJourney object id : "+ vj.getObjectId());
+				
+				log.warn("Journey Pattern in GtfsTripParser : " + currentJp.getObjectId());
+				// Affectation des éléments de la liste des stopPoints respectivement aux vjas correspondantes
+				for (VehicleJourney vj: currentJp.getVehicleJourneys()) {
+					for(int k = 0; k < vj.getVehicleJourneyAtStops().size(); k++)
+						vj.getVehicleJourneyAtStops().get(k).setStopPoint(lstStopPointToInclude.get(k));
+					
+					vj.setRoute(routeIncluding);
+					log.warn("VehicleJourney in GtfsTripParser : " + vj.getObjectId());
+				}
+						
+				// Affectation de la liste des stopPoints à la journeyPattern courante
+				currentJp.setStopPoints(lstStopPointToInclude);
+				
+				
+				// Affectement de la nouvelle route englobante à la journeyPattern courante
+				currentJp.setRoute(routeIncluding);
+				
+				// Rafraîchissement des arrivées-départs
+				NeptuneUtil.refreshDepartureArrivals(currentJp);
+				
+				// Ajout de la route inclue à supprimer
+				//lstRouteToDelete.add(routeIncluded);
 			}
 		}
+		
+		// Suppression des routes mergées du référentiel et de la liste
+		for(Iterator<Map.Entry<String, Route>> it = referential.getRoutes().entrySet().iterator(); it.hasNext(); ) {
+		      Map.Entry<String, Route> entry = it.next();
+		      if(entry.getValue().getStopPoints().isEmpty()) {
+		    	 log.warn("Route supprimée : " + entry.getValue().getObjectId());
+		        it.remove();
+		      }
+		}
+		routeIncluded.setLine(null);
 	}
 	
 	private void createJourneyFrequencies(Context context, Referential referential, GtfsImporter importer,

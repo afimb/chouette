@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
@@ -23,6 +24,7 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Stateless(name = RouteUpdater.BEAN_NAME)
+@Log4j
 public class RouteUpdater implements Updater<Route> {
 
 	public static final String BEAN_NAME = "RouteUpdater";
@@ -44,7 +46,9 @@ public class RouteUpdater implements Updater<Route> {
 
 	@Override
 	public void update(Context context, Route oldValue, Route newValue) throws Exception {
-
+		//log.warn("Route old value : " + oldValue.getObjectId());
+		log.warn("Route new value : " + newValue.getObjectId());
+		
 		if (newValue.isSaved()) {
 			return;
 		}

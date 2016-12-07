@@ -8,6 +8,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
@@ -33,6 +34,7 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Stateless(name = VehicleJourneyUpdater.BEAN_NAME)
+@Log4j
 public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 
 	public static final String BEAN_NAME = "VehicleJourneyUpdater";
@@ -100,7 +102,8 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 
 	@Override
 	public void update(Context context, VehicleJourney oldValue, VehicleJourney newValue) throws Exception {
-
+		//log.warn("Vehicle journey old value : " + oldValue.getObjectId());
+		log.warn("Vehicle journey new value : " + newValue.getObjectId());
 		if (newValue.isSaved()) {
 			return;
 		}
