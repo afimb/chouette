@@ -3,6 +3,7 @@ package mobi.chouette.exchange.importer.updater;
 import java.io.IOException;
 import java.io.IOException;
 import java.time.OffsetDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,7 +13,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Predicate;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -20,6 +22,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBException;
@@ -128,27 +131,10 @@ public class NeTExStopPlaceRegisterUpdater {
 
 		final Map<String, String> m = map;
 		
-		Predicate<StopArea> fullStopAreaNotCahced = new Predicate<StopArea>() {
-
-			@Override
-			public boolean test(StopArea t) {
-
-				if(m.containsKey(t.getObjectId())) {
-					for(StopArea child : t.getContainedStopAreas()) {
-						if(!m.containsKey(child.getObjectId())) {
-							return true;
-						}
-					}
-					return false;
-				}
-				return true;
-			}
-			
-		};
 		
 		
 		List<StopArea> boardingPositionsWithoutParents = referential.getStopAreas().values().stream()
-				.filter(stopArea -> fullStopAreaNotCahced.test(stopArea))
+				.filter(stopArea -> !m.containsKey(stopArea.getObjectId()))
 				.filter(stopArea -> stopArea.getAreaType() == ChouetteAreaEnum.BoardingPosition)
 				.filter(stopArea -> stopArea.getParent() == null)
 				.filter(stopArea -> stopArea.getObjectId() != null)
@@ -159,34 +145,18 @@ public class NeTExStopPlaceRegisterUpdater {
 		for(StopArea bp : boardingPositionsWithoutParents) {
 			StopArea csp = stopPlaceMapper.createCommercialStopPoint(referential, bp);
 			createdParents.add(csp);
-			log.info("Created parent "+csp.getObjectId()+ " for "+bp.getObjectId());
+//			log.info("created parent "+csp.getObjectId()+ " for "+bp.getObjectId());
 		}
-// TODO remove commented out code below if importer is working
-//		if(referential.getStopAreas().containsKey("RUT:StopArea:0301061916")) {
-//			StopArea stopArea = referential.getStopAreas().get("RUT:StopArea:0301061916");
-//			log.info("Stoparea "+stopArea.getObjectId()+ "has parent "+stopArea.getParent());
-//			if(map.containsKey("RUT:StopArea:0301061916")) {
-//				log.info("Map contains RUT:StopArea:0301061916, mapped values is "+map.get("RUT:StopArea:0301061916"));
-//			}
-//		}
-		
+
 		// Find and convert valid StopAreas
 		List<StopPlace> stopPlaces = referential.getStopAreas().values().stream()
 				.map(stopArea -> stopArea.getParent() == null ? stopArea : stopArea.getParent())
-				.filter(stopArea -> fullStopAreaNotCahced.test(stopArea))
+				.filter(stopArea -> !m.containsKey(stopArea.getObjectId()))
 				.filter(stopArea -> stopArea.getObjectId() != null)
 				.filter(stopArea -> stopArea.getAreaType() == ChouetteAreaEnum.CommercialStopPoint)
-				.distinct()
 				.peek(stopArea -> log.info(stopArea.getObjectId() + " name: " + stopArea.getName() + " correlationId: " + correlationId))
 				.map(stopPlaceMapper::mapStopAreaToStopPlace).collect(Collectors.toList());
 
-// TODO remove commented out code below if importer is working
-//		for(StopPlace stopPlace : stopPlaces) {
-//			if(stopPlace.getId().equals("RUT:StopArea:03010619")) {
-//				log.info("StopPlaces contains RUT:StopArea:03010619");
-//			}
-//		}
-		
 		SiteFrame siteFrame = new SiteFrame();
 		stopPlaceMapper.setVersion(siteFrame);
 		
