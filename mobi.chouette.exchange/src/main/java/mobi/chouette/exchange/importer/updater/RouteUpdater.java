@@ -46,9 +46,6 @@ public class RouteUpdater implements Updater<Route> {
 
 	@Override
 	public void update(Context context, Route oldValue, Route newValue) throws Exception {
-		//log.warn("Route old value : " + oldValue.getObjectId());
-		log.warn("Route new value : " + newValue.getObjectId());
-		
 		if (newValue.isSaved()) {
 			return;
 		}

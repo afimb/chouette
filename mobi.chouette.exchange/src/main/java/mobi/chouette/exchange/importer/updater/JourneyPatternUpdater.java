@@ -47,7 +47,6 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 
 	@Override
 	public void update(Context context, JourneyPattern oldValue, JourneyPattern newValue) throws Exception {
-		log.warn("Journey pattern new value : " + newValue.getObjectId());
 		if (newValue.isSaved()) {
 			return;
 		}

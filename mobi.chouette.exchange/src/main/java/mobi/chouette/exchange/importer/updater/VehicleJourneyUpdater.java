@@ -102,8 +102,6 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 
 	@Override
 	public void update(Context context, VehicleJourney oldValue, VehicleJourney newValue) throws Exception {
-		//log.warn("Vehicle journey old value : " + oldValue.getObjectId());
-		log.warn("Vehicle journey new value : " + newValue.getObjectId());
 		if (newValue.isSaved()) {
 			return;
 		}

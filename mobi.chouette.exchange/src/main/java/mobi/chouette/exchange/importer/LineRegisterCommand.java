@@ -80,56 +80,29 @@ public class LineRegisterCommand implements Command {
 		try {
 
 			optimiser.initialize(cache, referential);
-			//log.warn("Optimiser");
 			Line oldValue = cache.getLines().get(newValue.getObjectId());
-			//log.warn("Old value update line");
 			lineUpdater.update(context, oldValue, newValue);
-			//log.warn("value update");
 			lineDAO.create(oldValue);
-			//log.warn("create oldValue");
 			lineDAO.flush(); // to prevent SQL error outside method
-			//log.warn("flush");
 			if (optimized) {
-				//log.warn("optimised");
 				Monitor wMonitor = MonitorFactory.start("prepareCopy");
 				StringWriter buffer = new StringWriter(1024);
 				final List<String> list = new ArrayList<String>(referential.getVehicleJourneys().keySet());
-				//log.warn("optimised 2");
 				for (VehicleJourney item : referential.getVehicleJourneys().values()) {
-					//log.warn("optimised loop 1");
 					VehicleJourney vehicleJourney = cache.getVehicleJourneys().get(item.getObjectId());
-					//log.warn("optimised loop 2");
 					List<VehicleJourneyAtStop> vehicleJourneyAtStops = item.getVehicleJourneyAtStops();
-					//log.warn("optimised loop 3");
 					
-					if (vehicleJourney.getId() == null) {
-						log.warn("vehicle journey object id : " + vehicleJourney.getObjectId());
-						log.warn("journey pattern object id : " + vehicleJourney.getJourneyPattern().getObjectId());
-						log.warn("journey pattern route object id : " + vehicleJourney.getJourneyPattern().getRoute().getObjectId());
-						log.warn("route object id : " + vehicleJourney.getRoute().getObjectId());
-						log.warn("line object id : " + vehicleJourney.getRoute().getLine().getObjectId());
-					}
 					for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourneyAtStops) {
-						//log.warn("optimised loop loop 1");
-						
 			
 						StopPoint stopPoint = cache.getStopPoints().get(
 								vehicleJourneyAtStop.getStopPoint().getObjectId());
-						//log.warn("optimised loop loop 2");
-						
-						
+					
 						write(buffer, vehicleJourney, stopPoint, vehicleJourneyAtStop);
-						//log.warn("optimised loop loop 3");
 					}
-					//log.warn("optimised loop 4");
 				}
-				//log.warn("optimised 3");
 				vehicleJourneyDAO.deleteChildren(list);
-				//log.warn("optimised 4");
 				context.put(BUFFER, buffer.toString());
-				//log.warn("optimised 5");
 				wMonitor.stop();
-				log.warn("optimised 6");
 			}
 
 			result = SUCCESS;
@@ -204,33 +177,25 @@ public class LineRegisterCommand implements Command {
 		// VehicleJourneyAtStopUpdater.update(Context context,
 		// VehicleJourneyAtStop oldValue,
 		// VehicleJourneyAtStop newValue)
-		log.warn("write 1");
+		
 		DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-		log.warn("write 2");
-		log.warn("VehicleJourney id : " + vehicleJourney.getId());
 		buffer.write(vehicleJourney.getId().toString());
-		log.warn("write 3");
 		buffer.append(SEP);
 		buffer.write(stopPoint.getId().toString());
-		log.warn("write 4");
 		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getArrivalTime() != null)
 			buffer.write(timeFormat.format(vehicleJourneyAtStop.getArrivalTime()));
 		else
 			buffer.write(NULL);
 		buffer.append(SEP);
-		log.warn("write 5");
 		if (vehicleJourneyAtStop.getDepartureTime() != null)
 			buffer.write(timeFormat.format(vehicleJourneyAtStop.getDepartureTime()));
 		else
 			buffer.write(NULL);
-		log.warn("write 6");
 		buffer.append(SEP);
 		buffer.write(Integer.toString(vehicleJourneyAtStop.getArrivalDayOffset()));
 		buffer.append(SEP);
-		log.warn("write 7");
 		buffer.write(Integer.toString(vehicleJourneyAtStop.getDepartureDayOffset()));
-		log.warn("write 8");
 		
 		buffer.append('\n');
 		
