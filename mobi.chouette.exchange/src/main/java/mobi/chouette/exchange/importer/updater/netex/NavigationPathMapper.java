@@ -38,10 +38,10 @@ public class NavigationPathMapper {
 	public NavigationPath mapConnectionLinkToNavigationPath(SiteFrame frame, ConnectionLink link) {
 
 		PathLinkEndStructure start = new PathLinkEndStructure();
-		start.setPlaceRef(new PlaceRefStructure().withRef(link.getStartOfLink().getObjectId()));
+		start.setPlaceRef(new PlaceRefStructure().withRef(link.getStartOfLink().getObjectId()).withVersion(VERSION));
 
 		PathLinkEndStructure end = new PathLinkEndStructure();
-		end.setPlaceRef(new PlaceRefStructure().withRef(link.getEndOfLink().getObjectId()));
+		end.setPlaceRef(new PlaceRefStructure().withRef(link.getEndOfLink().getObjectId()).withVersion(VERSION));
 
 		PathLink pl = new PathLink().withFrom(start).withTo(end).withId(link.getObjectId()).withVersion(VERSION);
 		pl.setAllowedUse(PathDirectionEnumeration.TWO_WAY);
