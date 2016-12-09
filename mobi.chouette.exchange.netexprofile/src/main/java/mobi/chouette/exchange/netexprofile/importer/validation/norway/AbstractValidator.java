@@ -39,7 +39,7 @@ public abstract class AbstractValidator implements Constant {
 	public static final String _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS = "1-NETEXPROFILE-MissingVersionAttribute";
 	public static final String _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS = "1-NETEXPROFILE-MissingReferenceVersionAttribute";
 	public static final String _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS = "1-NETEXPROFILE-UnresolvedReferenceToCommonElements";
-	public static final String _1_NETEX_INVALID_ID_STRUCTURE = "1-NETEXPROFILE-InvalidIdFormat";
+	public static final String _1_NETEX_INVALID_ID_STRUCTURE = "1-NETEXPROFILE-InvalidIdStructure";
 	public static final String _1_NETEX_UNAPPROVED_CODESPACE_DEFINED = "1-NETEXPROFILE-UnapprovedCodespaceDefined";
 	public static final String _1_NETEX_USE_OF_UNAPPROVED_CODESPACE = "1-NETEXPROFILE-UseOfUnapprovedCodespace";
 	protected static final String PREFIX = "2-NETEX-";
@@ -145,7 +145,6 @@ public abstract class AbstractValidator implements Constant {
 		if (function.test(nodes.getLength())) {
 			validationReporter.reportSuccess(context, checkPointKey);
 		} else {
-			// TODO fix reporting with lineNumber etc
 			for (int i = 0; i < nodes.getLength(); i++) {
 				validationReporter.addCheckPointReportError(context, checkPointKey, DataLocationHelper.findDataLocation(context, nodes.item(i)));
 			}
@@ -182,6 +181,7 @@ public abstract class AbstractValidator implements Constant {
 			throws XPathExpressionException {
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 
+		boolean onlyAcceptedCodespaces = true;
 		NodeList codespaces = selectNodeSet("//n:Codespace", xpath, dom);
 		for (int i = 0; i < codespaces.getLength(); i++) {
 			Node n = codespaces.item(i);
@@ -191,10 +191,13 @@ public abstract class AbstractValidator implements Constant {
 				// TODO add correct location
 				validationReporter.addCheckPointReportError(context, _1_NETEX_UNAPPROVED_CODESPACE_DEFINED, DataLocationHelper.findDataLocation(context, n));
 				log.error("Codespace " + cs + " is not accepted for this validation");
-
+				onlyAcceptedCodespaces = false;
 			}
 		}
 
+		if(onlyAcceptedCodespaces) {
+			validationReporter.reportSuccess(context, _1_NETEX_UNAPPROVED_CODESPACE_DEFINED);
+		}
 	}
 
 	protected void verifyReferencesToCommonElements(Context context, Set<IdVersion> localRefs, Set<IdVersion> localIds,
@@ -378,10 +381,10 @@ public abstract class AbstractValidator implements Constant {
 				}
 			}
 		}
-		if (!allIdStructuresValid) {
+		if (allIdStructuresValid) {
 			validationReporter.reportSuccess(context, _1_NETEX_INVALID_ID_STRUCTURE);
 		}
-		if (!allCodespacesValid) {
+		if (allCodespacesValid) {
 			validationReporter.reportSuccess(context, _1_NETEX_USE_OF_UNAPPROVED_CODESPACE);
 		}
 	}
@@ -421,6 +424,7 @@ public abstract class AbstractValidator implements Constant {
 			}
 			ids.add(new IdVersion(id, version, elementName,(String) context.get(Constant.FILE_NAME), (Integer) n.getUserData(PositionalXMLReader.LINE_NUMBER_KEY_NAME),
 					(Integer) n.getUserData(PositionalXMLReader.COLUMN_NUMBER_KEY_NAME)));
+			
 		}
 		return ids;
 	}
