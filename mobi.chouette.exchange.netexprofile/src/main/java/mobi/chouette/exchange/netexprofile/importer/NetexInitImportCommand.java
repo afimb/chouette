@@ -50,10 +50,7 @@ public class NetexInitImportCommand implements Command, Constant {
 			context.put(NETEX_LINE_DATA_XPATH, xpath);
 
 			context.put(REFERENTIAL, new Referential());
-
-			if (context.get(VALIDATION) != null) {
-				context.put(VALIDATION_DATA, new ValidationData());
-			}
+			context.put(VALIDATION_DATA, new ValidationData());
 
 			// Decode codespace definition if provided
 			if (configuration.getValidCodespaces() != null) {

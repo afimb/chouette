@@ -19,11 +19,13 @@ import org.w3c.dom.NodeList;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
+import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidatorFactory;
+import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
@@ -146,6 +148,7 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 		Document dom = (Document) context.get(NETEX_LINE_DATA_DOM);
 		NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);
 		Set<ProfileValidatorCodespace> validCodespaces = (Set<ProfileValidatorCodespace>) context.get(NETEX_VALID_CODESPACES);
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 
 		// StopRegistryIdValidator stopRegisterValidator = new StopRegistryIdValidator();
 
@@ -156,6 +159,11 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 		Set<IdVersion> localIds = collectEntityIdentificators(context, xpath, dom, new HashSet<>(Arrays.asList("Codespace")));
 		Set<IdVersion> localRefs = collectEntityReferences(context, xpath, dom,null);
 
+		for(IdVersion id : localIds) {
+			data.getDataLocations().put(id.getId(), DataLocationHelper.findDataLocation(id));
+		}
+		
+		
 		// Null check, this is a bug if happens
 		if(validCodespaces == null) {
 			throw new RuntimeException("valid codespaces are empty - did you forget to include in context?");
@@ -168,7 +176,8 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 		verifyAcceptedCodespaces(context, xpath, dom, validCodespaces);
 		verifyIdStructure(context, localIds, commonIds, "^([A-Z]{3}):([A-Za-z]*):([0-9A-Za-z_\\-]*)$",validCodespaces);
 		verifyNoDuplicatesWithCommonElements(context, localIds, commonIds);
-		verifyNoDuplicatesAcrossLineFiles(context, localIds,new HashSet<>(Arrays.asList("ResourceFrame","Authority","Operator","SiteFrame","PointProjection","RoutePoint","StopPlace","AvailabilityCondition")));
+		verifyNoDuplicatesAcrossLineFiles(context, localIds,
+				new HashSet<>(Arrays.asList("ResourceFrame","Network","Authority","Operator","SiteFrame","PointProjection","RoutePoint","StopPlace","AvailabilityCondition")));
 		verifyUseOfVersionOnLocalElements(context, localIds);
 		verifyUseOfVersionOnRefsToLocalElements(context, localIds, localRefs);
 		verifyReferencesToCommonElements(context, localRefs, localIds, commonIds);

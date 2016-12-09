@@ -30,9 +30,11 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
@@ -120,6 +122,8 @@ public class NetexCommonFilesParserCommand implements Command, Constant {
 
 	protected void collectEntityIdentificators(Context context, String fileName, Document parseFileToDom, Map<IdVersion, List<String>> commonIds)
 			throws XPathExpressionException {
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+
 		XPath xpath = (XPath) context.get(NETEX_LINE_DATA_XPATH);
 		NodeList nodes = (NodeList) xpath.evaluate("//n:*[not(name()='Codespace') and @id]", parseFileToDom, XPathConstants.NODESET);
 		int idCount = nodes.getLength();
@@ -134,6 +138,9 @@ public class NetexCommonFilesParserCommand implements Command, Constant {
 				version = versionAttribute.getNodeValue();
 			}
 			IdVersion idVersion = new IdVersion(id, version,elementName,fileName,(Integer)n.getUserData(PositionalXMLReader.LINE_NUMBER_KEY_NAME),(Integer)n.getUserData(PositionalXMLReader.COLUMN_NUMBER_KEY_NAME));
+
+			data.getDataLocations().put(idVersion.getId(), DataLocationHelper.findDataLocation(idVersion));
+
 			List<String> list = commonIds.get(idVersion);
 			if(list == null) {
 				list = new ArrayList<String>();
