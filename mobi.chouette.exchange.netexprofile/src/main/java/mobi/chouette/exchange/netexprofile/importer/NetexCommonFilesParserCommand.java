@@ -126,13 +126,14 @@ public class NetexCommonFilesParserCommand implements Command, Constant {
 		for (int i = 0; i < idCount; i++) {
 			
 			Node n = nodes.item(i);
+			String elementName = n.getNodeName();
 			String id = n.getAttributes().getNamedItem("id").getNodeValue();
 			String version = null;
 			Node versionAttribute = n.getAttributes().getNamedItem("version");
 			if(versionAttribute != null) {
 				version = versionAttribute.getNodeValue();
 			}
-			IdVersion idVersion = new IdVersion(id, version,fileName,(Integer)n.getUserData(PositionalXMLReader.LINE_NUMBER_KEY_NAME),(Integer)n.getUserData(PositionalXMLReader.COLUMN_NUMBER_KEY_NAME));
+			IdVersion idVersion = new IdVersion(id, version,elementName,fileName,(Integer)n.getUserData(PositionalXMLReader.LINE_NUMBER_KEY_NAME),(Integer)n.getUserData(PositionalXMLReader.COLUMN_NUMBER_KEY_NAME));
 			List<String> list = commonIds.get(idVersion);
 			if(list == null) {
 				list = new ArrayList<String>();

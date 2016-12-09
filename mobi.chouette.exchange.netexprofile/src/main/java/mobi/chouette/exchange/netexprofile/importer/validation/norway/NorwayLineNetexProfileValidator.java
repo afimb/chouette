@@ -2,6 +2,7 @@ package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -86,7 +87,8 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 	public void initializeCheckPoints(Context context) {
 		// addItemToValidation(context, PREFIX, "Frame", 5, "E", "E", "E", "E", "E");
 
-		addCheckpoints(context, _1_NETEX_DUPLICATE_IDS, "E");
+		addCheckpoints(context, _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_AND_COMMON_FILES, "E");
+		addCheckpoints(context, _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_FILES, "E");
 		addCheckpoints(context, _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS, "E");
 		addCheckpoints(context, _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS, "E");
 		addCheckpoints(context, _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS, "E");
@@ -94,6 +96,7 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 		addCheckpoints(context, _1_NETEX_UNAPPROVED_CODESPACE_DEFINED, "E");
 		addCheckpoints(context, _1_NETEX_USE_OF_UNAPPROVED_CODESPACE, "E");
 
+		
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME, "E");
 
 		addCheckpoints(context, _1_NETEX_SERVICE_CALENDAR_FRAME, "E");
@@ -149,9 +152,11 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 		@SuppressWarnings("unchecked")
 		Map<IdVersion, List<String>> commonIds = (Map<IdVersion, List<String>>) context.get(NETEX_COMMON_FILE_IDENTIFICATORS);
 
-		Set<IdVersion> localIds = collectEntityIdentificators(context, xpath, dom);
-		Set<IdVersion> localRefs = collectEntityReferences(context, xpath, dom);
+		
+		Set<IdVersion> localIds = collectEntityIdentificators(context, xpath, dom, new HashSet<>(Arrays.asList("Codespace")));
+		Set<IdVersion> localRefs = collectEntityReferences(context, xpath, dom,null);
 
+		// Null check, this is a bug if happens
 		if(validCodespaces == null) {
 			throw new RuntimeException("valid codespaces are empty - did you forget to include in context?");
 		}
@@ -163,6 +168,7 @@ public class NorwayLineNetexProfileValidator extends AbstractValidator implement
 		verifyAcceptedCodespaces(context, xpath, dom, validCodespaces);
 		verifyIdStructure(context, localIds, commonIds, "^([A-Z]{3}):([A-Za-z]*):([0-9A-Za-z_\\-]*)$",validCodespaces);
 		verifyNoDuplicatesWithCommonElements(context, localIds, commonIds);
+		verifyNoDuplicatesAcrossLineFiles(context, localIds,new HashSet<>(Arrays.asList("ResourceFrame","Authority","Operator","SiteFrame","PointProjection","RoutePoint","StopPlace","AvailabilityCondition")));
 		verifyUseOfVersionOnLocalElements(context, localIds);
 		verifyUseOfVersionOnRefsToLocalElements(context, localIds, localRefs);
 		verifyReferencesToCommonElements(context, localRefs, localIds, commonIds);

@@ -35,7 +35,7 @@ import mobi.chouette.exchange.validation.report.ValidationReporter;
 public abstract class AbstractValidator implements Constant {
 
 	public static final String _1_NETEX_UNKNOWN_PROFILE = "1-NETEX-UnknownProfile";
-	public static final String _1_NETEX_DUPLICATE_IDS = "1-NETEXPROFILE-DuplicateIdentificators";
+	public static final String _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_AND_COMMON_FILES = "1-NETEXPROFILE-DuplicateIdentificatorsAcrossLineAndCommonFiles";
 	public static final String _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS = "1-NETEXPROFILE-MissingVersionAttribute";
 	public static final String _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS = "1-NETEXPROFILE-MissingReferenceVersionAttribute";
 	public static final String _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS = "1-NETEXPROFILE-UnresolvedReferenceToCommonElements";
@@ -44,6 +44,7 @@ public abstract class AbstractValidator implements Constant {
 	public static final String _1_NETEX_USE_OF_UNAPPROVED_CODESPACE = "1-NETEXPROFILE-UseOfUnapprovedCodespace";
 	protected static final String PREFIX = "2-NETEX-";
 	protected static final String OBJECT_IDS = "encountered_ids";
+	public static final String _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_FILES = "1-NETEXPROFILE-DuplicateIdentificatorsAcrossLineFiles";
 
 	@SuppressWarnings("unchecked")
 	public static void resetContext(Context context) {
@@ -137,14 +138,15 @@ public abstract class AbstractValidator implements Constant {
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		if (!validationReporter.checkIfCheckPointExists(context, checkPointKey)) {
 			log.error("Checkpoint " + checkPointKey + " not present in ValidationReport");
-			throw new RuntimeException("Checkpoint "+checkPointKey+" does not exist - did you add a validation rule but forgot to register the checkpoint?");
+			throw new RuntimeException(
+					"Checkpoint " + checkPointKey + " does not exist - did you add a validation rule but forgot to register the checkpoint?");
 		}
 		NodeList nodes = (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
 		if (function.test(nodes.getLength())) {
 			validationReporter.reportSuccess(context, checkPointKey);
 		} else {
 			// TODO fix reporting with lineNumber etc
-			for(int i=0;i<nodes.getLength();i++) {
+			for (int i = 0; i < nodes.getLength(); i++) {
 				validationReporter.addCheckPointReportError(context, checkPointKey, DataLocationHelper.findDataLocation(context, nodes.item(i)));
 			}
 		}
@@ -176,7 +178,6 @@ public abstract class AbstractValidator implements Constant {
 		return node;
 	}
 
-	
 	protected void verifyAcceptedCodespaces(Context context, XPath xpath, Node dom, Set<ProfileValidatorCodespace> acceptedCodespaces)
 			throws XPathExpressionException {
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
@@ -251,8 +252,7 @@ public abstract class AbstractValidator implements Constant {
 		if (nonVersionedLocalIds.size() > 0) {
 			for (IdVersion id : nonVersionedLocalIds) {
 				// TODO add correct location
-				validationReporter.addCheckPointReportError(context, _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS,
-						DataLocationHelper.findDataLocation(id));
+				validationReporter.addCheckPointReportError(context, _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS, DataLocationHelper.findDataLocation(id));
 				log.error("Id " + id + " in line file does not have version attribute set");
 			}
 		} else {
@@ -266,49 +266,84 @@ public abstract class AbstractValidator implements Constant {
 
 			Set<IdVersion> overlappingIds = new HashSet<>(localIds);
 			// Add code to check no duplicates as well as line file references to common files
-			boolean duplicates = overlappingIds.retainAll(commonIds.keySet());
-			if (duplicates) {
+			overlappingIds.retainAll(commonIds.keySet());
+			if (overlappingIds.size() > 0) {
 				for (IdVersion id : overlappingIds) {
 					List<String> commonFileNames = commonIds.get(id);
 					for (String fileName : commonFileNames) {
 						// TODO add correct location
-						validationReporter.addCheckPointReportError(context, _1_NETEX_DUPLICATE_IDS, DataLocationHelper.findDataLocation(fileName,id));
+						validationReporter.addCheckPointReportError(context, _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_AND_COMMON_FILES,
+								DataLocationHelper.findDataLocation(fileName, id));
 
 					}
 					log.error("Id " + id + " used in both line file and common files "
 							+ ToStringBuilder.reflectionToString(commonFileNames.toArray(), ToStringStyle.SIMPLE_STYLE));
 				}
 			} else {
-				validationReporter.reportSuccess(context, _1_NETEX_DUPLICATE_IDS);
+				validationReporter.reportSuccess(context, _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_AND_COMMON_FILES);
 
 			}
 		}
 	}
 
-	protected void verifyIdStructure(Context context, Set<IdVersion> localIds, Map<IdVersion, List<String>> commonIds, String regex, Set<ProfileValidatorCodespace> validCodespaces) {
+	protected void verifyNoDuplicatesAcrossLineFiles(Context context, Set<IdVersion> localIds, Set<String> ignorableElementNames) {
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+
+		Set<IdVersion> alreadyFoundLocalIds = (Set<IdVersion>) context.get(Constant.NETEX_EXISTING_LINE_IDS);
+		if (alreadyFoundLocalIds == null) {
+			alreadyFoundLocalIds = new HashSet<>();
+			context.put(Constant.NETEX_EXISTING_LINE_IDS, alreadyFoundLocalIds);
+		}
+
+		boolean duplicateFound = false;
+
+		for (IdVersion id : localIds) {
+			if (alreadyFoundLocalIds.contains(id) && !ignorableElementNames.contains(id.getElementName())) {
+				// Log duplicate
+				duplicateFound = true;
+				validationReporter.addCheckPointReportError(context, _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_FILES, DataLocationHelper.findDataLocation(id));
+				log.error("Id " + id + " in line file have already been defined in another file");
+			} else {
+				alreadyFoundLocalIds.add(id);
+			}
+		}
+
+		if (!duplicateFound) {
+			validationReporter.reportSuccess(context, _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_FILES);
+		}
+	}
+
+	protected void verifyIdStructure(Context context, Set<IdVersion> localIds, Map<IdVersion, List<String>> commonIds, String regex,
+			Set<ProfileValidatorCodespace> validCodespaces) {
 		Set<String> validPrefixes = null;
-		if(validCodespaces != null) {
+		if (validCodespaces != null) {
 			validPrefixes = new HashSet<>();
-			for(ProfileValidatorCodespace cs : validCodespaces) {
+			for (ProfileValidatorCodespace cs : validCodespaces) {
 				validPrefixes.add(cs.getXmlns());
 			}
 		}
-		
+
 		Pattern p = Pattern.compile(regex);
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+
+		boolean allIdStructuresValid = true;
+		boolean allCodespacesValid = true;
+
 		for (IdVersion id : localIds) {
 			Matcher m = p.matcher(id.getId());
 			if (!m.matches()) {
 				// TODO add correct location
 				validationReporter.addCheckPointReportError(context, _1_NETEX_INVALID_ID_STRUCTURE, DataLocationHelper.findDataLocation(id));
 				log.error("Id " + id + " in line file have an invalid format. Correct format is " + regex);
-			} else if(validPrefixes != null) {
+				allIdStructuresValid = false;
+			} else if (validPrefixes != null) {
 				String prefix = m.group(1);
-				if(!validPrefixes.contains(prefix)) {
+				if (!validPrefixes.contains(prefix)) {
 					// TODO add correct location
 					validationReporter.addCheckPointReportError(context, _1_NETEX_USE_OF_UNAPPROVED_CODESPACE, DataLocationHelper.findDataLocation(id));
-					log.error("Id " + id + " in line file are using an unaccepted codepsace prefix "+prefix+". Valid prefixes are "+ToStringBuilder.reflectionToString(validPrefixes,ToStringStyle.SIMPLE_STYLE));
-					
+					log.error("Id " + id + " in line file are using an unaccepted codepsace prefix " + prefix + ". Valid prefixes are "
+							+ ToStringBuilder.reflectionToString(validPrefixes, ToStringStyle.SIMPLE_STYLE));
+					allCodespacesValid = false;
 				}
 			}
 		}
@@ -319,49 +354,73 @@ public abstract class AbstractValidator implements Constant {
 				if (!m.matches()) {
 					for (String commonFileName : commonIds.get(id)) {
 						// TODO add correct location
-						validationReporter.addCheckPointReportError(context, _1_NETEX_INVALID_ID_STRUCTURE, DataLocationHelper.findDataLocation(commonFileName,id));
+						validationReporter.addCheckPointReportError(context, _1_NETEX_INVALID_ID_STRUCTURE,
+								DataLocationHelper.findDataLocation(commonFileName, id));
 						log.error("Id " + id + " in common file file " + commonFileName + "have an invalid format. Correct format is " + regex);
+						allIdStructuresValid = false;
 
 					}
 
-				} else if(validPrefixes != null) {
+				} else if (validPrefixes != null) {
 					String prefix = m.group(1);
-					if(!validPrefixes.contains(prefix)) {
+					if (!validPrefixes.contains(prefix)) {
 						for (String commonFileName : commonIds.get(id)) {
 							// TODO add correct location
-							validationReporter.addCheckPointReportError(context, _1_NETEX_USE_OF_UNAPPROVED_CODESPACE, DataLocationHelper.findDataLocation(commonFileName,id));
-							log.error("Id " + id + " in common file are using an unaccepted codepsace prefix "+prefix+". Valid prefixes are "+ToStringBuilder.reflectionToString(validPrefixes,ToStringStyle.SIMPLE_STYLE));
+							validationReporter.addCheckPointReportError(context, _1_NETEX_USE_OF_UNAPPROVED_CODESPACE,
+									DataLocationHelper.findDataLocation(commonFileName, id));
+							log.error("Id " + id + " in common file are using an unaccepted codepsace prefix " + prefix + ". Valid prefixes are "
+									+ ToStringBuilder.reflectionToString(validPrefixes, ToStringStyle.SIMPLE_STYLE));
+							allCodespacesValid = false;
 
 						}
-						
+
 					}
 				}
 			}
 		}
+		if (!allIdStructuresValid) {
+			validationReporter.reportSuccess(context, _1_NETEX_INVALID_ID_STRUCTURE);
+		}
+		if (!allCodespacesValid) {
+			validationReporter.reportSuccess(context, _1_NETEX_USE_OF_UNAPPROVED_CODESPACE);
+		}
 	}
 
-	protected Set<IdVersion> collectEntityIdentificators(Context context, XPath xpath, Document dom) throws XPathExpressionException {
-		return collectIdOrRefWithVersion(context, xpath, dom, "id");
+	protected Set<IdVersion> collectEntityIdentificators(Context context, XPath xpath, Document dom, Set<String> ignorableElementNames)
+			throws XPathExpressionException {
+		return collectIdOrRefWithVersion(context, xpath, dom, "id", ignorableElementNames);
 	}
 
-	protected Set<IdVersion> collectEntityReferences(Context context, XPath xpath, Document dom) throws XPathExpressionException {
-		return collectIdOrRefWithVersion(context, xpath, dom, "ref");
+	protected Set<IdVersion> collectEntityReferences(Context context, XPath xpath, Document dom, Set<String> ignorableElementNames)
+			throws XPathExpressionException {
+		return collectIdOrRefWithVersion(context, xpath, dom, "ref", ignorableElementNames);
 	}
 
-	protected Set<IdVersion> collectIdOrRefWithVersion(Context context, XPath xpath, Document dom, String attributeName) throws XPathExpressionException {
-		NodeList nodes = (NodeList) xpath.evaluate("//n:*[not(name()='Codespace') and @" + attributeName + "]", dom, XPathConstants.NODESET);
+	protected Set<IdVersion> collectIdOrRefWithVersion(Context context, XPath xpath, Document dom, String attributeName, Set<String> ignorableElementNames)
+			throws XPathExpressionException {
+		StringBuilder filterClause = new StringBuilder();
+		filterClause.append("//n:*[");
+		if (ignorableElementNames != null) {
+			for (String elementName : ignorableElementNames) {
+				filterClause.append("not(name()='" + elementName + "') and ");
+			}
+		}
+		filterClause.append("@" + attributeName + "]");
+
+		NodeList nodes = (NodeList) xpath.evaluate(filterClause.toString(), dom, XPathConstants.NODESET);
 		Set<IdVersion> ids = new HashSet<IdVersion>();
 		int idCount = nodes.getLength();
 		for (int i = 0; i < idCount; i++) {
 			Node n = nodes.item(i);
-			
-			String id =n.getAttributes().getNamedItem(attributeName).getNodeValue();
+			String elementName = n.getNodeName();
+			String id = n.getAttributes().getNamedItem(attributeName).getNodeValue();
 			String version = null;
-			Node versionAttribute =n.getAttributes().getNamedItem("version");
+			Node versionAttribute = n.getAttributes().getNamedItem("version");
 			if (versionAttribute != null) {
 				version = versionAttribute.getNodeValue();
 			}
-			ids.add(new IdVersion(id, version,(String)context.get(Constant.FILE_NAME),(Integer)n.getUserData(PositionalXMLReader.LINE_NUMBER_KEY_NAME),(Integer)n.getUserData(PositionalXMLReader.COLUMN_NUMBER_KEY_NAME)));
+			ids.add(new IdVersion(id, version, elementName,(String) context.get(Constant.FILE_NAME), (Integer) n.getUserData(PositionalXMLReader.LINE_NUMBER_KEY_NAME),
+					(Integer) n.getUserData(PositionalXMLReader.COLUMN_NUMBER_KEY_NAME)));
 		}
 		return ids;
 	}
