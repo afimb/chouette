@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PostConstruct;
+import javax.ejb.ConcurrencyManagement;
+import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.EJB;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -64,6 +66,7 @@ import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
+@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 @Singleton(name = NeTExStopPlaceRegisterUpdater.BEAN_NAME)
 public class NeTExStopPlaceRegisterUpdater {
 	private static final String STOP_PLACE_REGISTER_MAP = "STOP_PLACE_REGISTER_MAP";
