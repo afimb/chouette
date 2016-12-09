@@ -14,10 +14,13 @@ public class IdVersion {
 	@Getter
 	String version;
 	@Getter
+	String elementName;
+	@Getter
 	String filename;
 	@Getter
 	int lineNumber;
 	@Getter
 	int columnNumber;
+	
 
 }
