@@ -184,7 +184,7 @@ public class NeTExStopPlaceRegisterUpdater {
 		// Find and convert ConnectionLinks
 		List<NavigationPath> nps = referential.getSharedConnectionLinks().values().stream()
 			.filter(link -> !m.containsKey(link.getObjectId()))
-			.peek(link -> log.info(link.getObjectId() + " correlationId: "+correlationId))
+			.peek(link -> log.debug(link.getObjectId() + " correlationId: "+correlationId))
 			.map(link -> navigationPathMapper.mapConnectionLinkToNavigationPath(siteFrame, link))
 			.collect(Collectors.toList());
 			
@@ -205,7 +205,7 @@ public class NeTExStopPlaceRegisterUpdater {
 				} else {
 					// Recursively find all transportModes
 					Set<TransportModeNameEnum> transportMode = findTransportModeForStopArea(
-							new HashSet<TransportModeNameEnum>(), sa);
+							new HashSet<>(), sa);
 					if (transportMode.size() > 1) {
 						log.warn("Found more than one transport mode for StopArea with id " + sp.getId() + ": "
 								+ ToStringBuilder.reflectionToString(transportMode.toArray(),ToStringStyle.SIMPLE_STYLE) + ", will use "
@@ -236,7 +236,7 @@ public class NeTExStopPlaceRegisterUpdater {
 					.withDataObjects(new PublicationDeliveryStructure.DataObjects()
 							.withCompositeFrameOrCommonFrame(Arrays.asList(jaxSiteFrame)));
 
-			PublicationDeliveryStructure response = null;
+			PublicationDeliveryStructure response;
 			try {
 				response = client.sendPublicationDelivery(publicationDelivery);
 			} catch (JAXBException | IOException | SAXException e) {
@@ -249,7 +249,7 @@ public class NeTExStopPlaceRegisterUpdater {
 				log.error("The response dataObjects is null for received publication delivery. Nothing to do here. " + correlationId);
 				return;
 			} else if (response.getDataObjects().getCompositeFrameOrCommonFrame() == null) {
-				log.error("Composite frame or common fra is null for received publication delivery. " + correlationId);
+				log.error("Composite frame or common frame is null for received publication delivery. " + correlationId);
 				return;
 			}
 
