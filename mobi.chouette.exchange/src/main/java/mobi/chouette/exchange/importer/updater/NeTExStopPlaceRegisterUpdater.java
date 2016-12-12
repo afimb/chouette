@@ -6,6 +6,7 @@ import java.time.OffsetDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -182,11 +183,16 @@ public class NeTExStopPlaceRegisterUpdater {
 		stopPlaceMapper.setVersion(siteFrame);
 		
 		// Find and convert ConnectionLinks
-		List<NavigationPath> nps = referential.getSharedConnectionLinks().values().stream()
-			.filter(link -> !m.containsKey(link.getObjectId()))
-			.peek(link -> log.debug(link.getObjectId() + " correlationId: "+correlationId))
-			.map(link -> navigationPathMapper.mapConnectionLinkToNavigationPath(siteFrame, link))
-			.collect(Collectors.toList());
+		// TODO replace lines below with proper conncetion link mapping as commented out after
+		List<NavigationPath> nps = Collections.emptyList();
+		referential.getSharedConnectionLinks().clear(); // Nuke connection links fully to avoid old stopareas being persisted
+
+		
+//		List<NavigationPath> nps = referential.getSharedConnectionLinks().values().stream()
+//			.filter(link -> !m.containsKey(link.getObjectId()))
+//			.peek(link -> log.debug(link.getObjectId() + " correlationId: "+correlationId))
+//			.map(link -> navigationPathMapper.mapConnectionLinkToNavigationPath(siteFrame, link))
+//			.collect(Collectors.toList());
 			
 		
 		if (!stopPlaces.isEmpty()) {
