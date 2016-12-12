@@ -110,46 +110,58 @@ public abstract class AbstractNetexProfileValidator implements Constant {
 		return objectContext;
 	}
 
-	public static Predicate<Integer> exact(int v) {
-		return p -> p == v;
-	}
-
-	public static Predicate<Integer> atLeast(int v) {
-		return p -> p >= v;
-	}
-
 	protected void validateElementPresent(Context context, XPath xpath, Node document, String expression, String errorCode, String errorMessage,
 			String checkPointKey) throws XPathExpressionException {
-		validateElement(context, xpath, document, expression, exact(1), checkPointKey);
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		validateCheckpointExists(context, checkPointKey, validationReporter);
+		NodeList nodes = (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
+		if (nodes.getLength() == 1) {
+			validationReporter.reportSuccess(context, checkPointKey);
+		} else {
+			log.error("Checkpoint " + checkPointKey + " failed: "+expression+" did not return 1 node");
+
+			validationReporter.addCheckPointReportError(context, checkPointKey, DataLocationHelper.findDataLocation(context, document));
+		}
 	}
 
 	protected void validateAtLeastElementPresent(Context context, XPath xpath, Node document, String expression, int count, String errorCode,
 			String errorMessage, String checkPointKey) throws XPathExpressionException {
-		validateElement(context, xpath, document, expression, atLeast(count), checkPointKey);
-	}
-
-	protected void validateElementNotPresent(Context context, XPath xpath, Node document, String expression, String errorCode, String errorMessage,
-			String checkPointKey) throws XPathExpressionException {
-		validateElement(context, xpath, document, expression, exact(0), checkPointKey);
-	}
-
-	private void validateElement(Context context, XPath xpath, Node document, String expression, Predicate<Integer> function, String checkPointKey)
-			throws XPathExpressionException {
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-		if (!validationReporter.checkIfCheckPointExists(context, checkPointKey)) {
-			log.error("Checkpoint " + checkPointKey + " not present in ValidationReport");
-			throw new RuntimeException(
-					"Checkpoint " + checkPointKey + " does not exist - did you add a validation rule but forgot to register the checkpoint?");
-		}
+		validateCheckpointExists(context, checkPointKey, validationReporter);
 		NodeList nodes = (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
-		if (function.test(nodes.getLength())) {
+		if (nodes.getLength() >= count) {
 			validationReporter.reportSuccess(context, checkPointKey);
 		} else {
+			log.error("Checkpoint " + checkPointKey + " failed: "+expression+" did not return at least 1 node but "+nodes.getLength());
 			for (int i = 0; i < nodes.getLength(); i++) {
 				validationReporter.addCheckPointReportError(context, checkPointKey, DataLocationHelper.findDataLocation(context, nodes.item(i)));
 			}
 		}
 	}
+
+	protected void validateElementNotPresent(Context context, XPath xpath, Node document, String expression, String errorCode, String errorMessage,
+			String checkPointKey) throws XPathExpressionException {
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		validateCheckpointExists(context, checkPointKey, validationReporter);
+		NodeList nodes = (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
+		if (nodes.getLength() == 0) {
+			validationReporter.reportSuccess(context, checkPointKey);
+		} else {
+			log.error("Checkpoint " + checkPointKey + " failed: "+expression+" should return 0 nodes, but returned "+nodes.getLength());
+			for (int i = 0; i < nodes.getLength(); i++) {
+				validationReporter.addCheckPointReportError(context, checkPointKey, DataLocationHelper.findDataLocation(context, nodes.item(i)));
+			}
+		}
+	}
+
+	protected void validateCheckpointExists(Context context, String checkPointKey, ValidationReporter validationReporter) {
+		if (!validationReporter.checkIfCheckPointExists(context, checkPointKey)) {
+			log.error("Checkpoint " + checkPointKey + " not present in ValidationReport");
+			throw new RuntimeException(
+					"Checkpoint " + checkPointKey + " does not exist - did you add a validation rule but forgot to register the checkpoint?");
+		}
+	}
+
 
 	protected abstract void initializeCheckPoints(Context context);
 
