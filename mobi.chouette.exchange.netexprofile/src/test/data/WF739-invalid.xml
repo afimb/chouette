@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PublicationDelivery xmlns="http://www.netex.org.uk/netex" version="1.0">
+    <PublicationTimestamp>2016-08-22T10:07:21Z</PublicationTimestamp>
+    <ParticipantRef>AVI</ParticipantRef>
+    <Description>Flight WF739 : Bodø-Trondheim</Description>
+    <dataObjects>
+        <CompositeFrame created="2016-08-22T10:07:21Z" version="1" id="AVI:Norway:CompositeFrame:WF739">
+            <frames>
+                <invalidElement/>
+            </frames>
+        </CompositeFrame>
+    </dataObjects>
+</PublicationDelivery>
