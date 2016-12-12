@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.netexprofile.importer.validation.norway;
+package mobi.chouette.exchange.netexprofile.importer.validation;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -32,7 +32,7 @@ import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 
 @Log4j
-public abstract class AbstractValidator implements Constant {
+public abstract class AbstractNetexProfileValidator implements Constant {
 
 	public static final String _1_NETEX_UNKNOWN_PROFILE = "1-NETEX-UnknownProfile";
 	public static final String _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_AND_COMMON_FILES = "1-NETEXPROFILE-DuplicateIdentificatorsAcrossLineAndCommonFiles";

@@ -3,6 +3,7 @@ package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
+import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Log4j
-public class NetworkValidator extends AbstractValidator implements Validator<Network> {
+public class NetworkValidator extends AbstractNetexProfileValidator implements Validator<Network> {
 
     public static final String LOCAL_CONTEXT = "NetexNetwork";
     public static final String ORGANISATION_ID = "organisationId";

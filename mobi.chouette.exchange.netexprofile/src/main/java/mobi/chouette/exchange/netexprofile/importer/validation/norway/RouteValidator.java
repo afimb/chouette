@@ -3,6 +3,7 @@ package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
+import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
@@ -13,7 +14,7 @@ import org.rutebanken.netex.model.Route;
 import java.util.Map;
 
 @Log4j
-public class RouteValidator extends AbstractValidator implements Validator<Route> {
+public class RouteValidator extends AbstractNetexProfileValidator implements Validator<Route> {
 
     public static final String LOCAL_CONTEXT = "NetexRoute";
     public static final String NAME = "RouteValidator";

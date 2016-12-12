@@ -23,6 +23,7 @@ import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
+import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidatorFactory;
 import mobi.chouette.exchange.validation.ValidationData;
@@ -31,7 +32,7 @@ import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 
 @Log4j
-public class NorwayLineNetexProfileValidator extends AbstractValidator implements NetexProfileValidator {
+public class NorwayLineNetexProfileValidator extends AbstractNetexProfileValidator implements NetexProfileValidator {
 
 	
 	
