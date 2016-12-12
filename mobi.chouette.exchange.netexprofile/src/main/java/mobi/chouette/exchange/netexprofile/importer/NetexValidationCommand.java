@@ -8,8 +8,8 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
-import mobi.chouette.exchange.netexprofile.importer.validation.norway.AbstractValidator;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.model.util.Referential;
 
@@ -40,7 +40,7 @@ public class NetexValidationCommand implements Command, Constant {
             log.error("Netex validation failed ", e);
             throw e;
         } finally {
-            AbstractValidator.resetContext(context);
+            AbstractNetexProfileValidator.resetContext(context);
             log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
         }
         if (result == ERROR) {

@@ -13,8 +13,10 @@ public class DataLocationHelper {
 		Integer lineNumber = (Integer) p.getUserData(PositionalXMLReader.LINE_NUMBER_KEY_NAME);
 		Integer columnNumber = (Integer) p.getUserData(PositionalXMLReader.COLUMN_NUMBER_KEY_NAME);
 		
-		Node idAttribute = p.getAttributes().getNamedItem("id");
-
+		Node idAttribute = null;
+		if(p.hasAttributes()) {
+			idAttribute = p.getAttributes().getNamedItem("id");
+		}
 		DataLocation d = new DataLocation(filename, lineNumber != null ? lineNumber : -1, columnNumber != null ? columnNumber : -1, idAttribute != null? idAttribute.getNodeValue() : null);
 
 		return d;

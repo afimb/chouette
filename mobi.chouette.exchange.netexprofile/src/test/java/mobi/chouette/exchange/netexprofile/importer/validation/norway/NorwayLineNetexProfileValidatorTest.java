@@ -24,6 +24,7 @@ import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespa
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexNamespaceContext;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
@@ -43,6 +44,10 @@ public class NorwayLineNetexProfileValidatorTest {
 		
 		ValidationReport vr = new ValidationReport();
 		context.put(Constant.VALIDATION_REPORT	, vr);
+		
+		ValidationData data =new ValidationData();
+		context.put(Constant.VALIDATION_DATA,data);
+
 		
 		XPath xpath = XPathFactory.newInstance().newXPath();
 		xpath.setNamespaceContext(new NetexNamespaceContext()) ;
@@ -87,6 +92,9 @@ public class NorwayLineNetexProfileValidatorTest {
 		ValidationReport vr = new ValidationReport();
 		context.put(Constant.VALIDATION_REPORT	, vr);
 		
+		ValidationData data =new ValidationData();
+		context.put(Constant.VALIDATION_DATA,data);
+
 		XPath xpath = XPathFactory.newInstance().newXPath();
 		xpath.setNamespaceContext(new NetexNamespaceContext()) ;
 		context.put(Constant.NETEX_LINE_DATA_XPATH, xpath);

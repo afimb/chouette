@@ -1,13 +1,14 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import org.rutebanken.netex.model.DataManagedObjectStructure;
 import org.rutebanken.netex.model.ScheduledStopPoint;
 
-public class ScheduledStopPointValidator extends AbstractValidator implements Validator<ScheduledStopPoint> {
+public class ScheduledStopPointValidator extends AbstractNetexProfileValidator implements Validator<ScheduledStopPoint> {
 
     public static final String LOCAL_CONTEXT = "NetexScheduledStopPoint";
     public static String NAME = "ScheduledStopPointValidator";
