@@ -127,18 +127,25 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 
 					@Override
 					public void warning(SAXParseException exception) throws SAXException {
-						actionReporter.addFileErrorInReport(context, fileName, ActionReporter.FILE_ERROR_CODE.READ_ERROR, exception.getMessage());
+						addToActionReport(exception);
 					}
 
 					@Override
 					public void fatalError(SAXParseException exception) throws SAXException {
-						actionReporter.addFileErrorInReport(context, fileName, ActionReporter.FILE_ERROR_CODE.READ_ERROR, exception.getMessage());
+						addToActionReport(exception);
 					}
 
 					@Override
 					public void error(SAXParseException exception) throws SAXException {
-						actionReporter.addFileErrorInReport(context, fileName, ActionReporter.FILE_ERROR_CODE.READ_ERROR, exception.getMessage());
+						addToActionReport(exception);
 					}
+					
+					public void addToActionReport(SAXParseException exception) {
+						String message = exception.getLineNumber()+":"+exception.getColumnNumber()+" "+exception.getMessage();
+						actionReporter.addFileErrorInReport(context, fileName, ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, message);
+						log.error(fileName+" has error at line:column "+message);
+					}
+					
 				});
 				validator.validate(xmlSource);
 				fileValidationResult = SUCCESS;

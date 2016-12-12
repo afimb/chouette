@@ -12,6 +12,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ActionReporter.FILE_ERROR_CODE;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 
 public class NetexSchemaValidatorCommandTest {
@@ -35,6 +36,31 @@ public class NetexSchemaValidatorCommandTest {
 		boolean result = cmd.execute(context );
 		
 		Assert.assertTrue(result);
+	}
+
+	@Test
+	public void testInvalidDocument() throws Exception {
+		Context context = new Context();
+		NetexprofileImportParameters configuration = new NetexprofileImportParameters();
+
+		context.put(Constant.CONFIGURATION, configuration);
+		context.put(Constant.VALIDATION_REPORT, new ValidationReport());
+		ActionReport actionReport =  new ActionReport();
+		context.put(Constant.REPORT, actionReport );
+		JobData jobData = createJobData("src/test/data/WF739-invalid.xml");
+		context.put(Constant.JOB_DATA, jobData);
+		
+		NetexInitImportCommand initCmd = new NetexInitImportCommand();
+		initCmd.execute(context);
+		
+		NetexSchemaValidationCommand cmd = new NetexSchemaValidationCommand();
+
+		boolean result = cmd.execute(context );
+		
+		Assert.assertTrue(result);
+		
+		Assert.assertEquals(actionReport.getFiles().get(0).getErrors().get(0).getCode(),FILE_ERROR_CODE.INVALID_FORMAT);
+		
 	}
 
 	protected JobData createJobData(String filePath) throws IOException {
