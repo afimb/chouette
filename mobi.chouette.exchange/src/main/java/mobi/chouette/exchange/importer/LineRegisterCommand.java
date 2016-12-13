@@ -96,7 +96,6 @@ public class LineRegisterCommand implements Command {
 			
 						StopPoint stopPoint = cache.getStopPoints().get(
 								vehicleJourneyAtStop.getStopPoint().getObjectId());
-					
 						write(buffer, vehicleJourney, stopPoint, vehicleJourneyAtStop);
 					}
 				}
