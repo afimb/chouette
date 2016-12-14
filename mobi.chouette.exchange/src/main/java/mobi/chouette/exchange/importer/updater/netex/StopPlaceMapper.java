@@ -77,12 +77,12 @@ public class StopPlaceMapper {
 
 	}
 
-	private StopArea createBoardingPosition(Referential referential, Quay quay) {
+	private StopArea createBoardingPosition(Referential referential, StopPlace stopPlace, Quay quay) {
 
 		StopArea boardingPosition = ObjectFactory.getStopArea(referential, quay.getId());
 		boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
 		mapCentroid(quay, boardingPosition);
-		mapName(quay, boardingPosition);
+		mapQuayName(stopPlace, quay, boardingPosition);
 		mapCompassBearing(quay,boardingPosition);
 		return boardingPosition;
 	}
@@ -108,7 +108,7 @@ public class StopPlaceMapper {
 		mapId(stopArea, quay);
 		setVersion(quay);
 		mapCentroid(stopArea, quay);
-		mapName(stopArea, quay);
+		mapQuayName(stopArea, quay);
 		mapCompassBearing(stopArea,quay);
 		return quay;
 	}
@@ -145,8 +145,18 @@ public class StopPlaceMapper {
 	}
 
 	public void mapName(StopArea stopArea, Zone_VersionStructure zone) {
-
 		zone.setName(new MultilingualString().withValue(stopArea.getName()).withLang("no").withTextIdType(""));
+
+	}
+
+	public void mapQuayName(StopArea stopArea, Zone_VersionStructure zone) {
+
+		String quayName = stopArea.getRegistrationNumber();
+		if(quayName == null) {
+			quayName = stopArea.getName();
+		}
+		
+		zone.setName(new MultilingualString().withValue(quayName).withLang("no").withTextIdType(""));
 
 	}
 
@@ -154,6 +164,24 @@ public class StopPlaceMapper {
 		if(zone.getName() != null) {
 			stopArea.setName(zone.getName().getValue());
 		}
+	}
+
+	public void mapQuayName(StopPlace stopPlace, Quay quay, StopArea stopArea) {
+		if(quay.getName() == null) {
+			stopArea.setName(stopPlace.getName().getValue());
+		} else if (quay.getName() != null) {
+			if(multiLingualStringEquals(stopPlace.getName(), quay.getName())) {
+				// Same as parent
+				stopArea.setName(quay.getName().getValue());
+			} else {
+				// Different than parent
+				stopArea.setName(stopPlace.getName().getValue()+ "/ " + quay.getName().getValue());
+			}
+		}
+	}
+	
+	private boolean multiLingualStringEquals(MultilingualString a, MultilingualString b) {
+		return a.getValue().equals(b.getValue());
 	}
 
 	public void mapTransportMode(StopPlace sp, TransportModeNameEnum mode) {
