@@ -187,8 +187,8 @@ public class NorwayLineNetexProfileValidator extends AbstractNetexProfileValidat
 				_1_NETEX_COMPOSITE_FRAME);
 		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:codespaces/n:Codespace[n:Xmlns = '"
 				+ NSR_XMLNS + "' and n:XmlnsUrl = '" + NSR_XMLNSURL + "']", "1", "NSR codespace missing", _1_NETEX_CODESPACE);
-		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ResourceFrame", "1", "No ResourceFrame",
-				_1_NETEX_RESOURCE_FRAME);
+//		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ResourceFrame", "1", "No ResourceFrame",
+//				_1_NETEX_RESOURCE_FRAME);
 		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ServiceFrame", "1", "No ServiceFrame",
 				_1_NETEX_SERVICE_FRAME);
 		// TODO service calendar frame may be defined in common files

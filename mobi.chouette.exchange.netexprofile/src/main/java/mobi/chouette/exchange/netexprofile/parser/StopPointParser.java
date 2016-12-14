@@ -26,8 +26,6 @@ public class StopPointParser extends AbstractParser {
     public static final String STOP_POINT_ID = "stopPointId";
     public static final String ROUTE_ID = "routeId";
 
-    private static final String BOARDING_POSITION_ID_SUFFIX = "01";
-
     @Override
     public void initReferentials(Context context) throws Exception {
         NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);

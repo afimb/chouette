@@ -139,10 +139,7 @@ public class LineParser extends AbstractParser {
             OperatorRefStructure operatorRef = netexLine.getOperatorRef();
             String operatorRefValue = operatorRef.getRef();
 
-            Context organisationObjectContext = (Context) organisationContext.get(operatorRefValue);
-            String chouetteCompanyId = (String) organisationObjectContext.get(OrganisationParser.COMPANY_ID);
-            Company company = ObjectFactory.getCompany(chouetteReferential, chouetteCompanyId);
-
+            Company company = ObjectFactory.getCompany(chouetteReferential, operatorRefValue);
             chouetteLine.setCompany(company);
 
             // mandatory
