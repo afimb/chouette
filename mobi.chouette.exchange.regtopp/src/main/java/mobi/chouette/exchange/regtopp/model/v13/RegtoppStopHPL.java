@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppStopHPL;
+import mobi.chouette.exchange.regtopp.model.enums.InterchangeWeight;
 import mobi.chouette.exchange.regtopp.model.enums.StopType;
 
 @ToString(callSuper = true)
@@ -30,8 +31,8 @@ public class RegtoppStopHPL extends AbstractRegtoppStopHPL implements Serializab
 
 	@Getter
 	@Setter
-	@Field(at = 84, length = 1)
-	private Integer interchangeType;
+	@Field(at = 84, length = 1,regex = "[0123]{1}", format = "toString")
+	private InterchangeWeight interchangeType = InterchangeWeight.Normal;
 
 	@Getter
 	@Setter
