@@ -3,6 +3,7 @@ package mobi.chouette.exchange.regtopp.importer.parser.v11;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppStopHPL;
+import mobi.chouette.exchange.regtopp.model.enums.InterchangeWeight;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -93,7 +94,7 @@ public class RegtoppStopParserTest {
     }
 
     private AbstractRegtoppStopHPL createStop(String stopId) {
-        AbstractRegtoppStopHPL regtoppStop = new RegtoppStopHPL(0, 0, 0);
+        AbstractRegtoppStopHPL regtoppStop = new RegtoppStopHPL(InterchangeWeight.Normal, 0, 0);
         regtoppStop.setStopId(stopId);
         regtoppStop.setY(new BigDecimal("6533687"));
         regtoppStop.setX(new BigDecimal("318578"));
