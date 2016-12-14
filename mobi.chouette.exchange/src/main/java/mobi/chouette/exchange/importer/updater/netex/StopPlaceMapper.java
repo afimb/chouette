@@ -55,10 +55,7 @@ public class StopPlaceMapper {
 		Quays_RelStructure quays = stopPlace.getQuays();
 		if (quays != null) {
 			for (Object q : quays.getQuayRefOrQuay()) {
-				StopArea boardingPosition = createBoardingPosition(referential, (Quay) q);
-				if(boardingPosition.getName() == null) {
-					boardingPosition.setName(stopArea.getName());
-				}
+				StopArea boardingPosition = createBoardingPosition(referential, stopPlace,(Quay) q);
 				boardingPosition.setParent(stopArea);
 			}
 		}
@@ -175,7 +172,8 @@ public class StopPlaceMapper {
 				stopArea.setName(quay.getName().getValue());
 			} else {
 				// Different than parent
-				stopArea.setName(stopPlace.getName().getValue()+ "/ " + quay.getName().getValue());
+				stopArea.setName(stopPlace.getName().getValue()+ " / " + quay.getName().getValue());
+				stopArea.setRegistrationNumber(quay.getName().getValue());
 			}
 		}
 	}
