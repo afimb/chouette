@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.exchange.regtopp.model.enums.InterchangeWeight;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
@@ -74,7 +75,7 @@ public abstract class AbstractRegtoppStopHPL extends RegtoppObject implements Se
 	@Field(at = 78, length = 5)
 	protected String zoneId2;
 
-	public abstract Integer getInterchangeType();
+	public abstract InterchangeWeight getInterchangeType();
 
 	public abstract Integer getInterchangeMinutes();
 
