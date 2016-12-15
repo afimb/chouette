@@ -54,7 +54,7 @@ public class PublicationDeliveryParser extends AbstractParser {
 				if (organisationsInFrameStruct != null) {
 					context.put(NETEX_LINE_DATA_CONTEXT, organisationsInFrameStruct);
 					OrganisationParser organisationParser = (OrganisationParser) ParserFactory.create(OrganisationParser.class.getName());
-					organisationParser.initReferentials(context);
+					organisationParser.parse(context);
 				}
 			}
 		}
