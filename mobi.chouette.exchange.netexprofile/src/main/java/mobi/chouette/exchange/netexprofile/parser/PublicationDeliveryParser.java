@@ -98,7 +98,7 @@ public class PublicationDeliveryParser extends AbstractParser {
 				if(scheduledStopPointStruct != null) {
 					context.put(NETEX_LINE_DATA_CONTEXT, scheduledStopPointStruct);
 					StopPointParser stopPointParser = (StopPointParser) ParserFactory.create(StopPointParser.class.getName());
-					stopPointParser.initReferentials(context);
+					stopPointParser.parse(context);
 				}
 			}
 		}
