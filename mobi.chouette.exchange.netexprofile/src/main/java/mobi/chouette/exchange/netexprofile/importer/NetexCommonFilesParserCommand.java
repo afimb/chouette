@@ -60,6 +60,8 @@ public class NetexCommonFilesParserCommand implements Command, Constant {
 			String fileName = file.getName();
 			context.put(FILE_NAME, fileName);
 
+			actionReporter.addFileReport(context, fileName, IO_TYPE.INPUT);
+			
 			try {
 
 				log.info("parsing file : " + file.getAbsolutePath());
