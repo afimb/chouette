@@ -13,18 +13,21 @@ import mobi.chouette.model.JourneyPattern;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-@XmlType(propOrder={"objectId", "name", "registrationNumber","publishedName"})
+@XmlType(propOrder={"technicalId", "name", "registrationNumber","publishedName"})
 public class JourneyPatternParameters {
 
 	@XmlTransient
-	public static String[] fields = { "ObjectId", "Name", "RegistrationNumber","PublishedName"} ;
+	public static String[] fields = { "TechnicalId", "Name", "RegistrationNumber","PublishedName"} ;
 	
 	static {
 		ValidationParametersUtil.addFieldList(JourneyPattern.class.getSimpleName(), Arrays.asList(fields));
 	}
 
-	@XmlElement(name = "objectid")
-	private FieldParameters objectId;
+//	@XmlElement(name = "objectid")
+//	private FieldParameters objectId;
+	
+	@XmlElement(name = "technical_id")
+	private FieldParameters technicalId;
 
 	@XmlElement(name = "name")
 	private FieldParameters name;

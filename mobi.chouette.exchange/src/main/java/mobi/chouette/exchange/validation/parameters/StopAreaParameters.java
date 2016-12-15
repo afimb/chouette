@@ -13,18 +13,21 @@ import mobi.chouette.model.StopArea;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-@XmlType(propOrder={"objectId", "name", "registrationNumber","cityName","countryCode", "zipCode"})
+@XmlType(propOrder={"technicalId", "name", "registrationNumber","cityName","countryCode", "zipCode"})
 public class StopAreaParameters {
 
 	@XmlTransient
-	public static String[] fields = { "ObjectId", "Name", "RegistrationNumber","CityName","CountryCode", "ZipCode"} ;
+	public static String[] fields = { "TechnicalId", "Name", "RegistrationNumber","CityName","CountryCode", "ZipCode"} ;
 	
 	static {
 		ValidationParametersUtil.addFieldList(StopArea.class.getSimpleName(), Arrays.asList(fields));
 	}
 
-	@XmlElement(name = "objectid")
-	private FieldParameters objectId;
+//	@XmlElement(name = "objectid")
+//	private FieldParameters objectId;
+	
+	@XmlElement(name = "technical_id")
+	private FieldParameters technicalId;
 
 	@XmlElement(name = "name")
 	private FieldParameters name;

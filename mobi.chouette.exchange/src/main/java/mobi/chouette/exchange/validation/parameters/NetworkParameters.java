@@ -14,18 +14,21 @@ import mobi.chouette.model.Network;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-@XmlType(propOrder={"objectId", "name", "registrationNumber"})
+@XmlType(propOrder={"technicalId", "name", "registrationNumber"})
 public class NetworkParameters {
 
 	@XmlTransient
-	public static String[] fields = { "ObjectId", "Name", "RegistrationNumber"} ;
+	public static String[] fields = { "TechnicalId", "Name", "RegistrationNumber"} ;
 	
 	static {
 		ValidationParametersUtil.addFieldList(Network.class.getSimpleName(), Arrays.asList(fields));
 	}
 
-	@XmlElement(name = "objectid")
-	private FieldParameters objectId;
+//	@XmlElement(name = "objectid")
+//	private FieldParameters objectId;
+	
+	@XmlElement(name = "technical_id")
+	private FieldParameters technicalId;
 
 	@XmlElement(name = "name")
 	private FieldParameters name;

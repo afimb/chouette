@@ -163,7 +163,7 @@
     },
     "check_network": "0",
     "network": {
-        "objectid": {
+        "technical_id": {
             "unique": "0",
             "pattern": "0",
             "min_size": "",
@@ -184,7 +184,7 @@
     },
     "check_company": "0",
     "company": {
-        "objectid": {
+        "technical_id": {
             "unique": "0",
             "pattern": "0",
             "min_size": "",
@@ -205,7 +205,7 @@
     },
     "check_group_of_line": "0",
     "group_of_line": {
-        "objectid": {
+        "technical_id": {
             "unique": "0",
             "pattern": "0",
             "min_size": "",
@@ -226,7 +226,7 @@
     },
     "check_stop_area": "0",
     "stop_area": {
-        "objectid": {
+        "technical_id": {
             "unique": "0",
             "pattern": "0",
             "min_size": "",
@@ -265,7 +265,7 @@
     },
     "check_access_point": "0",
     "access_point": {
-        "objectid": {
+        "technical_id": {
             "unique": "0",
             "pattern": "0",
             "min_size": "",
@@ -298,7 +298,7 @@
     },
     "check_access_link": "0",
     "access_link": {
-        "objectid": {
+        "technical_id": {
             "unique": "0",
             "pattern": "0",
             "min_size": "",
@@ -323,7 +323,7 @@
     },
     "check_connection_link": "0",
     "connection_link": {
-        "objectid": {
+        "technical_id": {
             "unique": "0",
             "pattern": "0",
             "min_size": "",
@@ -348,7 +348,7 @@
     },
     "check_time_table": "0",
     "time_table": {
-        "objectid": {
+        "technical_id": {
             "unique": "0",
             "pattern": "0",
             "min_size": "",
@@ -369,7 +369,7 @@
     },
     "check_line": "0",
     "line": {
-        "objectid": {
+        "technical_id": {
             "unique": "0",
             "pattern": "0",
             "min_size": "",
@@ -402,7 +402,7 @@
     },
     "check_route": "0",
     "route": {
-        "objectid": {
+        "technical_id": {
             "unique": "0",
             "pattern": "0",
             "min_size": "",
@@ -429,7 +429,7 @@
     },
     "check_journey_pattern": "0",
     "journey_pattern": {
-        "objectid": {
+        "technical_id": {
             "unique": "0",
             "pattern": "0",
             "min_size": "",
@@ -456,7 +456,7 @@
     },
     "check_vehicle_journey": "0",
     "vehicle_journey": {
-        "objectid": {
+        "technical_id": {
             "unique": "0",
             "pattern": "0",
             "min_size": "",

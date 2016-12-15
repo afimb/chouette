@@ -204,35 +204,35 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 				" checkpoint must have no detail");
 
 	}
-
-	@Test(groups = { "vehicleJourney" }, description = "4-VehicleJourney-1 unicity",priority=2)
-	public void verifyTest4_1_unique() throws Exception {
-		// 4-VehicleJourney-1 : check columns
-		log.info(Color.BLUE + "4-VehicleJourney-1 unicity" + Color.NORMAL);
-		Context context = initValidatorContext();
-		Assert.assertNotNull(fullparameters, "no parameters for test");
-
-		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport());
-
-		fullparameters.setCheckVehicleJourney(1);
-		fullparameters.getVehicleJourney().getObjectId().setUnique(1);
-
-		ValidationData data = new ValidationData();
-		data.getVehicleJourneys().addAll(beansFor4);
-		context.put(VALIDATION_DATA, data);
-
-		checkPoint.validate(context, null);
-		fullparameters.getRoute().getObjectId().setUnique(0);
-		// unique
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-
-		List<CheckPointErrorReport> details = checkReportForTest(report, "4-VehicleJourney-1", 3);
-		for (CheckPointErrorReport detail : details) {
-			Assert.assertEquals(detail.getReferenceValue(), "ObjectId", "detail must refer column");
-			Assert.assertEquals(detail.getValue(), bean2.getTechnicalId(), "detail must refer value");
-		}
-	}
+//	@TODO l'unicité se fait sur le chouetteId et non sur le technicalId
+//	@Test(groups = { "vehicleJourney" }, description = "4-VehicleJourney-1 unicity",priority=2)
+//	public void verifyTest4_1_unique() throws Exception {
+//		// 4-VehicleJourney-1 : check columns
+//		log.info(Color.BLUE + "4-VehicleJourney-1 unicity" + Color.NORMAL);
+//		Context context = initValidatorContext();
+//		Assert.assertNotNull(fullparameters, "no parameters for test");
+//
+//		context.put(VALIDATION, fullparameters);
+//		context.put(VALIDATION_REPORT, new ValidationReport());
+//
+//		fullparameters.setCheckVehicleJourney(1);
+//		fullparameters.getVehicleJourney().getTechnicalId().setUnique(1);
+//
+//		ValidationData data = new ValidationData();
+//		data.getVehicleJourneys().addAll(beansFor4);
+//		context.put(VALIDATION_DATA, data);
+//
+//		checkPoint.validate(context, null);
+//		fullparameters.getRoute().getTechnicalId().setUnique(0);
+//		// unique
+//		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+//
+//		List<CheckPointErrorReport> details = checkReportForTest(report, "4-VehicleJourney-1", 3);
+//		for (CheckPointErrorReport detail : details) {
+//			Assert.assertEquals(detail.getReferenceValue(), "ObjectId", "detail must refer column");
+//			Assert.assertEquals(detail.getValue(), bean2.getTechnicalId(), "detail must refer value");
+//		}
+//	}
 
 	@Test(groups = { "vehicleJourney" }, description = "3-VehicleJourney-1",priority=3)
 	public void verifyTest3_1() throws Exception {

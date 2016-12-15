@@ -13,18 +13,21 @@ import mobi.chouette.model.AccessPoint;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-@XmlType(propOrder={"objectId", "name", "cityName", "countryCode", "zipCode"})
+@XmlType(propOrder={"technicalId", "name", "cityName", "countryCode", "zipCode"})
 public class AccessPointParameters {
 
 	@XmlTransient
-	public static String[] fields = { "ObjectId", "Name", "CityName", "CountryCode", "ZipCode"} ;
+	public static String[] fields = { "TechnicalId", "Name", "CityName", "CountryCode", "ZipCode"} ;
 	
 	static {
 		ValidationParametersUtil.addFieldList(AccessPoint.class.getSimpleName(), Arrays.asList(fields));
 	}
 
-	@XmlElement(name = "objectid")
-	private FieldParameters objectId;
+//	@XmlElement(name = "objectid")
+//	private FieldParameters objectId;
+	
+	@XmlElement(name = "technical_id")
+	private FieldParameters technicalId;
 
 	@XmlElement(name = "name")
 	private FieldParameters name;

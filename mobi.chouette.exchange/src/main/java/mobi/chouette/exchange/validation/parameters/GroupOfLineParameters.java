@@ -13,18 +13,21 @@ import mobi.chouette.model.GroupOfLine;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-@XmlType(propOrder={"objectId", "name", "registrationNumber"})
+@XmlType(propOrder={"technicalId", "name", "registrationNumber"})
 public class GroupOfLineParameters {
 
 	@XmlTransient
-	public static String[] fields = { "ObjectId", "Name", "RegistrationNumber"} ;
+	public static String[] fields = { "TechnicalId", "Name", "RegistrationNumber"} ;
 	
 	static {
 		ValidationParametersUtil.addFieldList(GroupOfLine.class.getSimpleName(), Arrays.asList(fields));
 	}
 
-	@XmlElement(name = "objectid")
-	private FieldParameters objectId;
+//	@XmlElement(name = "objectid")
+//	private FieldParameters objectId;
+	
+	@XmlElement(name = "technical_id")
+	private FieldParameters technicalId;
 
 	@XmlElement(name = "name")
 	private FieldParameters name;

@@ -126,6 +126,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 		context.put(VALIDATION_REPORT, new ValidationReport());
 		ValidateParameters configuration = new ValidateParameters();
 		context.put(CONFIGURATION, configuration);
+		//context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(configuration.getDefaultFormat()));
 		configuration.setName("name");
 		configuration.setUserName("userName");
 		configuration.setOrganisationName("organisation");
@@ -311,25 +312,25 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 
         ret.setCheckNetwork(0);
         ret.setNetwork(new NetworkParameters());
-        ret.getNetwork().setObjectId(new FieldParameters());
+        ret.getNetwork().setTechnicalId(new FieldParameters());
         ret.getNetwork().setName(new FieldParameters());
         ret.getNetwork().setRegistrationNumber(new FieldParameters());
 
         ret.setCheckCompany(0);
         ret.setCompany(new CompanyParameters());
-        ret.getCompany().setObjectId(new FieldParameters());
+        ret.getCompany().setTechnicalId(new FieldParameters());
         ret.getCompany().setName(new FieldParameters());
         ret.getCompany().setRegistrationNumber(new FieldParameters());
 
         ret.setCheckGroupOfLine(0);
         ret.setGroupOfLine(new GroupOfLineParameters());
-        ret.getGroupOfLine().setObjectId(new FieldParameters());
+        ret.getGroupOfLine().setTechnicalId(new FieldParameters());
         ret.getGroupOfLine().setName(new FieldParameters());
         ret.getGroupOfLine().setRegistrationNumber(new FieldParameters());
 
         ret.setCheckStopArea(0);
         ret.setStopArea(new StopAreaParameters());
-        ret.getStopArea().setObjectId(new FieldParameters());
+        ret.getStopArea().setTechnicalId(new FieldParameters());
         ret.getStopArea().setName(new FieldParameters());
         ret.getStopArea().setRegistrationNumber(new FieldParameters());
         ret.getStopArea().setCityName(new FieldParameters());
@@ -338,34 +339,34 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 
         ret.setCheckAccessPoint(0);
         ret.setAccessPoint(new AccessPointParameters());
-        ret.getAccessPoint().setObjectId(new FieldParameters());
+        ret.getAccessPoint().setTechnicalId(new FieldParameters());
         ret.getAccessPoint().setName(new FieldParameters());
         ret.getAccessPoint().setCityName(new FieldParameters());
         ret.getAccessPoint().setCountryCode(new FieldParameters());
 
         ret.setCheckAccessLink(0);
         ret.setAccessLink(new AccessLinkParameters());
-        ret.getAccessLink().setObjectId(new FieldParameters());
+        ret.getAccessLink().setTechnicalId(new FieldParameters());
         ret.getAccessLink().setName(new FieldParameters());
         ret.getAccessLink().setLinkDistance(new FieldParameters());
         ret.getAccessLink().setDefaultDuration(new FieldParameters());
 
         ret.setCheckConnectionLink(0);
         ret.setConnectionLink(new ConnectionLinkParameters());
-        ret.getConnectionLink().setObjectId(new FieldParameters());
+        ret.getConnectionLink().setTechnicalId(new FieldParameters());
         ret.getConnectionLink().setName(new FieldParameters());
         ret.getConnectionLink().setLinkDistance(new FieldParameters());
         ret.getConnectionLink().setDefaultDuration(new FieldParameters());
 
         ret.setCheckTimetable(0);
         ret.setTimetable(new TimetableParameters());
-        ret.getTimetable().setObjectId(new FieldParameters());
+        ret.getTimetable().setTechnicalId(new FieldParameters());
         ret.getTimetable().setComment(new FieldParameters());
         ret.getTimetable().setVersion(new FieldParameters());
 
         ret.setCheckLine(0);
         ret.setLine(new LineParameters());
-        ret.getLine().setObjectId(new FieldParameters());
+        ret.getLine().setTechnicalId(new FieldParameters());
         ret.getLine().setName(new FieldParameters());
         ret.getLine().setRegistrationNumber(new FieldParameters());
         ret.getLine().setNumber(new FieldParameters());
@@ -373,21 +374,21 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 
         ret.setCheckRoute(0);
         ret.setRoute(new RouteParameters());
-        ret.getRoute().setObjectId(new FieldParameters());
+        ret.getRoute().setTechnicalId(new FieldParameters());
         ret.getRoute().setName(new FieldParameters());
         ret.getRoute().setNumber(new FieldParameters());
         ret.getRoute().setPublishedName(new FieldParameters());
 
         ret.setCheckJourneyPattern(0);
         ret.setJourneyPattern(new JourneyPatternParameters());
-        ret.getJourneyPattern().setObjectId(new FieldParameters());
+        ret.getJourneyPattern().setTechnicalId(new FieldParameters());
         ret.getJourneyPattern().setName(new FieldParameters());
         ret.getJourneyPattern().setRegistrationNumber(new FieldParameters());
         ret.getJourneyPattern().setPublishedName(new FieldParameters());
 
         ret.setCheckVehicleJourney(0);
         ret.setVehicleJourney(new VehicleJourneyParameters());
-        ret.getVehicleJourney().setObjectId(new FieldParameters());
+        ret.getVehicleJourney().setTechnicalId(new FieldParameters());
         ret.getVehicleJourney().setPublishedJourneyName(new FieldParameters());
         ret.getVehicleJourney().setPublishedJourneyIdentifier(new FieldParameters());
         ret.getVehicleJourney().setNumber(new FieldParameters());

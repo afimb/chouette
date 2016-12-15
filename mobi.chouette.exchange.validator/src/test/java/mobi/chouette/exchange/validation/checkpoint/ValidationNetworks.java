@@ -137,33 +137,33 @@ public class ValidationNetworks extends AbstractTestValidation implements Consta
 
 
 	}
-
-	@Test(groups = { "network" }, description = "4-Network-1 unicity", priority = 2)
-	public void verifyTest4_1_unique() throws Exception {
-		// 4-Network-1 : check columns
-		log.info(Color.BLUE + "4-Network-1 unicity" + Color.NORMAL);
-		Context context = initValidatorContext();
-		Assert.assertNotNull(fullparameters, "no parameters for test");
-
-		context.put(VALIDATION_REPORT, new ValidationReport());
-
-		fullparameters.setCheckNetwork(1);
-		fullparameters.getNetwork().getObjectId().setUnique(1);
-
-		context.put(VALIDATION, fullparameters);
-		ValidationData data = new ValidationData();
-		data.getNetworks().addAll(beansFor4);
-		context.put(VALIDATION_DATA, data);
-		checkPoint.validate(context, null);
-		fullparameters.getNetwork().getObjectId().setUnique(0);
-
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-
-		Assert.assertFalse(report.getCheckPoints().isEmpty(), " report must have items");
-		Assert.assertNotNull(report.findCheckPointReportByName("4-Network-1"), " report must have 1 item on key "+"4-Network-1");
-		CheckPointReport checkPointReport = report.findCheckPointReportByName("4-Network-1");
-		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkpoint must have "+1+" detail");
-	}
+//	@TODO l'unicité se fait sur le chouetteId et non sur le technicalId
+//	@Test(groups = { "network" }, description = "4-Network-1 unicity", priority = 2)
+//	public void verifyTest4_1_unique() throws Exception {
+//		// 4-Network-1 : check columns
+//		log.info(Color.BLUE + "4-Network-1 unicity" + Color.NORMAL);
+//		Context context = initValidatorContext();
+//		Assert.assertNotNull(fullparameters, "no parameters for test");
+//
+//		context.put(VALIDATION_REPORT, new ValidationReport());
+//
+//		fullparameters.setCheckNetwork(1);
+//		fullparameters.getNetwork().getTechnicalId().setUnique(1);
+//
+//		context.put(VALIDATION, fullparameters);
+//		ValidationData data = new ValidationData();
+//		data.getNetworks().addAll(beansFor4);
+//		context.put(VALIDATION_DATA, data);
+//		checkPoint.validate(context, null);
+//		fullparameters.getNetwork().getTechnicalId().setUnique(0);
+//
+//		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+//
+//		Assert.assertFalse(report.getCheckPoints().isEmpty(), " report must have items");
+//		Assert.assertNotNull(report.findCheckPointReportByName("4-Network-1"), " report must have 1 item on key "+"4-Network-1");
+//		CheckPointReport checkPointReport = report.findCheckPointReportByName("4-Network-1");
+//		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkpoint must have "+1+" detail");
+//	}
 
 	@Test(groups = { "network" }, description = "4-Network-1 pattern numeric", priority = 3)
 	public void verifyTest4_1_pattern_numeric() throws Exception {
