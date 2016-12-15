@@ -1,27 +1,7 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.naming.InitialContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-
-import org.rutebanken.netex.model.PublicationDeliveryStructure;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -38,6 +18,22 @@ import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.model.util.Referential;
+import org.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.naming.InitialContext;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Log4j
 public class NetexCommonFilesParserCommand implements Command, Constant {
@@ -59,10 +55,11 @@ public class NetexCommonFilesParserCommand implements Command, Constant {
 		Map<IdVersion, List<String>> commonIds = new HashMap<>();
 		context.put(NETEX_COMMON_FILE_IDENTIFICATORS, commonIds);
 
-		for(Path p : files) {
-			File file = p.toFile();
+		for(Path filePath : files) {
+			File file = filePath.toFile();
 			String fileName = file.getName();
 			context.put(FILE_NAME, fileName);
+
 			try {
 
 				log.info("parsing file : " + file.getAbsolutePath());
@@ -79,7 +76,15 @@ public class NetexCommonFilesParserCommand implements Command, Constant {
 
 				// Find id-fields and check for duplicates
 				collectEntityIdentificators(context, fileName, dom, commonIds);
-				parseToJava(context, importer, dom);
+
+				// unmarshal xml to java
+				PublicationDeliveryStructure commonDeliveryStructure = importer.unmarshal(dom);
+				context.put(NETEX_COMMON_DATA, commonDeliveryStructure);
+
+				PublicationDeliveryParser parser = (PublicationDeliveryParser) ParserFactory.create(PublicationDeliveryParser.class.getName());
+				parser.initCommonReferentials(context);
+				//parser.initReferentials(context);
+				//parser.parse(context);
 
 				// report service
 				// TODO if has duplicates  - do not report as OK
@@ -107,22 +112,6 @@ public class NetexCommonFilesParserCommand implements Command, Constant {
 		}
 		
 		return result;
-	}
-
-	protected void parseToJava(Context context, NetexImporter importer, Document dom) throws Exception {
-		PublicationDeliveryStructure commonDeliveryStructure = importer.unmarshal(dom);
-
-		@SuppressWarnings("unchecked")
-		List<PublicationDeliveryStructure> commonDeliveries = (List<PublicationDeliveryStructure>) context.get(NETEX_COMMON_DATA);
-		if (commonDeliveries == null) {
-			commonDeliveries = new ArrayList<>();
-			context.put(NETEX_COMMON_DATA, commonDeliveries);
-		}
-
-		commonDeliveries.add(commonDeliveryStructure);
-        PublicationDeliveryParser parser = (PublicationDeliveryParser) ParserFactory.create(PublicationDeliveryParser.class.getName());
-        parser.initReferentials(context);
-        //parser.parse(context);
 	}
 
 	protected void collectEntityIdentificators(Context context, String fileName, Document parseFileToDom, Map<IdVersion, List<String>> commonIds)

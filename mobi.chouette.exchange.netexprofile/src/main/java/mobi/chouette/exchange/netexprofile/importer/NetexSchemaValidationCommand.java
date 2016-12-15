@@ -1,42 +1,31 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-
-import javax.ejb.Stateless;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Validator;
-
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
-
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.FileUtil;
-import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import javax.ejb.Stateless;
+import javax.naming.InitialContext;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Validator;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
 
 @Log4j
 @Stateless(name = NetexSchemaValidationCommand.COMMAND)
@@ -45,37 +34,35 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 	public static final String COMMAND = "NetexSchemaValidationCommand";
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
 		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
 		NetexImporter importer = (NetexImporter) context.get(IMPORTER);
+		List<Path> allFiles = (List<Path>) context.get(NETEX_FILE_PATHS);
 
-		JobData jobData = (JobData) context.get(JOB_DATA);
-		Path path = Paths.get(jobData.getPathName(), INPUT);
-		List<Path> allFiles = FileUtil.listFiles(path, "*.xml");
-		
 		ExecutorService executor = Executors.newFixedThreadPool(8);
 		
 		try {
-			
 			List<Future<SchemaValidationTask>> schemaValidationResults = new ArrayList<>();
 			
 			for (Path filePath : allFiles) {
-				
 				SchemaValidationTask schemaValidationTask = new SchemaValidationTask(context, actionReporter, importer, filePath.toFile());
 				String fileName = filePath.toFile().getName();
 				actionReporter.addFileReport(context, fileName, IO_TYPE.INPUT);
-				schemaValidationResults.add((Future<SchemaValidationTask>) executor.submit(schemaValidationTask));
+				schemaValidationResults.add(executor.submit(schemaValidationTask));
 			}
 			
 			executor.shutdown();
 			executor.awaitTermination(60, TimeUnit.MINUTES);
 			
 			for(Future<SchemaValidationTask> schemaValidationResult : schemaValidationResults) {
-				SchemaValidationTask schemaValidationTask = (SchemaValidationTask) schemaValidationResult.get();
+				SchemaValidationTask schemaValidationTask = schemaValidationResult.get();
+
 				if(schemaValidationTask.fileValidationResult == ERROR) {
-					actionReporter.addFileErrorInReport(context, schemaValidationTask.getFile().getName(), ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, "Netex profile compliance failed");
+					actionReporter.addFileErrorInReport(context, schemaValidationTask.getFile().getName(),
+							ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, "Netex profile compliance failed");
 				} else {
 					result = SUCCESS;
 				}

@@ -30,12 +30,9 @@ public class OrganisationParser extends AbstractParser {
     @Override
     public void initReferentials(Context context) throws Exception {
         NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);
-        OrganisationValidator validator = (OrganisationValidator) ValidatorFactory.create(OrganisationValidator.class.getName(), context);
 
-        OrganisationsInFrame_RelStructure organisationsInFrameStruct =
-                (OrganisationsInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
-        List<JAXBElement<? extends DataManagedObjectStructure>> organisationElements =
-                organisationsInFrameStruct.getOrganisation_();
+        OrganisationsInFrame_RelStructure organisationsInFrameStruct = (OrganisationsInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
+        List<JAXBElement<? extends DataManagedObjectStructure>> organisationElements = organisationsInFrameStruct.getOrganisation_();
 
         for (JAXBElement<? extends DataManagedObjectStructure> organisationElement : organisationElements) {
             DataManagedObjectStructure organisation = organisationElement.getValue();
@@ -43,10 +40,8 @@ public class OrganisationParser extends AbstractParser {
 
             if (organisation instanceof Authority) {
                 NetexObjectUtil.addAuthorityReference(referential, objectId, (Authority) organisation);
-                validator.addObjectReference(context, organisation);
             } else if (organisation instanceof Operator) {
                 NetexObjectUtil.addOperatorReference(referential, objectId, (Operator) organisation);
-                validator.addObjectReference(context, organisation);
             }
         }
     }
@@ -56,26 +51,39 @@ public class OrganisationParser extends AbstractParser {
         Referential referential = (Referential) context.get(REFERENTIAL);
         NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
 
-        for(Authority authority : netexReferential.getAuthorities().values()) {
-            Company company = ObjectFactory.getCompany(referential, authority.getId());
-            company.setName(authority.getName().getValue());
-            company.setRegistrationNumber(authority.getCompanyNumber());
-            company.setPhone(authority.getContactDetails().getPhone());
-            company.setUrl(authority.getContactDetails().getUrl());
-            company.setEmail(authority.getContactDetails().getEmail());
-            company.setFilled(true);
-            addCompanyIdRef(context, company.getObjectId()	, company.getObjectId());
-        }
-        
-        for(Operator operator : netexReferential.getOperators().values()) {
-            Company company = ObjectFactory.getCompany(referential, operator.getId());
-            company.setName(operator.getName().getValue());
-            company.setRegistrationNumber(operator.getCompanyNumber());
-            company.setPhone(operator.getContactDetails().getPhone());
-            company.setUrl(operator.getContactDetails().getUrl());
-            company.setEmail(operator.getContactDetails().getEmail());
-            company.setFilled(true);
-            addCompanyIdRef(context, company.getObjectId()	, company.getObjectId());
+        OrganisationsInFrame_RelStructure organisationsInFrameStruct = (OrganisationsInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
+        List<JAXBElement<? extends DataManagedObjectStructure>> organisationElements = organisationsInFrameStruct.getOrganisation_();
+
+        for (JAXBElement<? extends DataManagedObjectStructure> organisationElement : organisationElements) {
+            DataManagedObjectStructure organisation = organisationElement.getValue();
+            String objectId = organisation.getId();
+
+            if (organisation instanceof Authority) {
+                Authority authority = (Authority) organisation;
+                NetexObjectUtil.addAuthorityReference(netexReferential, objectId, authority);
+
+                Company company = ObjectFactory.getCompany(referential, authority.getId());
+                company.setName(authority.getName().getValue());
+                company.setRegistrationNumber(authority.getCompanyNumber());
+                company.setPhone(authority.getContactDetails().getPhone());
+                company.setUrl(authority.getContactDetails().getUrl());
+                company.setEmail(authority.getContactDetails().getEmail());
+                company.setFilled(true);
+                addCompanyIdRef(context, company.getObjectId()	, company.getObjectId());
+
+            } else if (organisation instanceof Operator) {
+                Operator operator = (Operator) organisation;
+                NetexObjectUtil.addOperatorReference(netexReferential, objectId, operator);
+
+                Company company = ObjectFactory.getCompany(referential, operator.getId());
+                company.setName(operator.getName().getValue());
+                company.setRegistrationNumber(operator.getCompanyNumber());
+                company.setPhone(operator.getContactDetails().getPhone());
+                company.setUrl(operator.getContactDetails().getUrl());
+                company.setEmail(operator.getContactDetails().getEmail());
+                company.setFilled(true);
+                addCompanyIdRef(context, company.getObjectId()	, company.getObjectId());
+            }
         }
     }
 

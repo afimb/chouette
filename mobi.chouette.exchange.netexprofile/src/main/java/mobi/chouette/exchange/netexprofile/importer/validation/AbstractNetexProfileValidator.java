@@ -227,9 +227,16 @@ public abstract class AbstractNetexProfileValidator implements Constant {
 			if (commonIdsWithoutVersion.size() > 0) {
 				for (String localRef : unresolvedReferences) {
 					if (!commonIdsWithoutVersion.contains(localRef)) {
-						// TODO add correct location
+						// TODO add faster lookup
+						IdVersion id = null;
+						for(IdVersion i : localRefs ) {
+							if(i.getId().equals(localRef)) {
+								id = i;
+								break;
+							}
+						}
 						validationReporter.addCheckPointReportError(context, _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS,
-								new DataLocation((String) context.get(FILE_NAME)));
+								DataLocationHelper.findDataLocation(id));
 						log.error("Unresolved reference to " + localRef + " in line file without any counterpart in the commonIds");
 					}
 				}

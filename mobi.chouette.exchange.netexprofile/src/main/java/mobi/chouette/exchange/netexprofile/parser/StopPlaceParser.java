@@ -42,13 +42,21 @@ public class StopPlaceParser extends AbstractParser {
 		Referential chouetteReferential = (Referential) context.get(REFERENTIAL);
 		NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
 
-		Collection<StopPlace> stopPlaces = netexReferential.getStopPlaces().values();
+		//Collection<StopPlace> stopPlaces = netexReferential.getStopPlaces().values();
+
+		StopPlacesInFrame_RelStructure stopPlacesStruct = (StopPlacesInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
+		List<StopPlace> stopPlaces = stopPlacesStruct.getStopPlace();
 
 		for (StopPlace stopPlace : stopPlaces) {
+
+			NetexObjectUtil.addStopPlaceReference(netexReferential, stopPlace.getId(), stopPlace);
+
 			String netexStopPlaceId = stopPlace.getId();
-			// TODO generate chouette id with generator here, do not use netex id directly
 			String chouetteStopAreaId = stopPlace.getId();
+
 			StopArea stopArea = ObjectFactory.getStopArea(chouetteReferential, chouetteStopAreaId);
+
+			// TODO remove? probably not needed anymore
 			addStopAreaIdRef(context, netexStopPlaceId, chouetteStopAreaId);
 
 			String stopPlaceName = stopPlace.getName().getValue();
@@ -59,32 +67,14 @@ public class StopPlaceParser extends AbstractParser {
 
 			stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 
-			// TODO add support for adjustments of wrong coordinates, see RegtoppStopParser
 			SimplePoint_VersionStructure centroidStruct = stopPlace.getCentroid();
+
 			if (centroidStruct != null) {
 				LocationStructure locationStruct = centroidStruct.getLocation();
 				stopArea.setLongLatType(NetexUtils.toLongLatTypeEnum(locationStruct.getSrsName()));
-
 				stopArea.setLatitude(locationStruct.getLatitude());
 				stopArea.setLongitude(locationStruct.getLongitude());
-
 			}
-			// TODO add support for area centroid, see regtopp CentroidGenerator for an example
-			/*
-			 * stopArea.setX(); stopArea.setY(y); stopArea.setProjectionType("epsg:2154"); // TODO make this a configuration parameter, static for now
-			 */
-
-			/*
-			 * // TODO add support for quays/gates which will map to boarding positions
-			 * 
-			 * String boardingPositionObjectId = stopPlace.getId() + "-" + BOARDING_POSITION_ID_SUFFIX; // TODO use id generator/creator StopArea
-			 * boardingPosition = ObjectFactory.getStopArea(chouetteReferential, boardingPositionObjectId);
-			 * 
-			 * boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition); boardingPosition.setY(stopArea.getY()); boardingPosition.setX(stopArea.getX());
-			 * boardingPosition.setProjectionType(stopArea.getProjectionType()); boardingPosition.setLatitude(stopArea.getLatitude());
-			 * boardingPosition.setLongitude(stopArea.getLongitude()); boardingPosition.setLongLatType(stopArea.getLongLatType());
-			 * boardingPosition.setName(stopArea.getName()); boardingPosition.setParent(stopArea); boardingPosition.setFilled(true);
-			 */
 
 			stopArea.setFilled(true);
 		}
