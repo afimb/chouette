@@ -14,6 +14,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.rutebanken.netex.model.DataManagedObjectStructure;
@@ -34,7 +35,7 @@ import mobi.chouette.exchange.validation.report.ValidationReporter;
 @Log4j
 public abstract class AbstractNetexProfileValidator implements Constant {
 
-	public static final String _1_NETEX_UNKNOWN_PROFILE = "1-NETEX-UnknownProfile";
+	public static final String _1_NETEX_UNKNOWN_PROFILE = "1-NETEXPROFILE-UnknownProfile";
 	public static final String _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_AND_COMMON_FILES = "1-NETEXPROFILE-DuplicateIdentificatorsAcrossLineAndCommonFiles";
 	public static final String _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS = "1-NETEXPROFILE-MissingVersionAttribute";
 	public static final String _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS = "1-NETEXPROFILE-MissingReferenceVersionAttribute";
@@ -190,6 +191,8 @@ public abstract class AbstractNetexProfileValidator implements Constant {
 			throws XPathExpressionException {
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 
+		String referenceValue = StringUtils.join(acceptedCodespaces.stream().map(e -> e.getXmlns()+"/"+e.getXmlnsurl()).collect(Collectors.toList()),' ');
+		
 		boolean onlyAcceptedCodespaces = true;
 		NodeList codespaces = selectNodeSet("//n:Codespace", xpath, dom);
 		for (int i = 0; i < codespaces.getLength(); i++) {
@@ -198,7 +201,7 @@ public abstract class AbstractNetexProfileValidator implements Constant {
 					(String) xpath.evaluate("n:XmlnsUrl", n, XPathConstants.STRING));
 			if (!acceptedCodespaces.contains(cs)) {
 				// TODO add correct location
-				validationReporter.addCheckPointReportError(context, _1_NETEX_UNAPPROVED_CODESPACE_DEFINED, null, DataLocationHelper.findDataLocation(context, n),cs.getXmlns());
+				validationReporter.addCheckPointReportError(context, _1_NETEX_UNAPPROVED_CODESPACE_DEFINED, null, DataLocationHelper.findDataLocation(context, n),cs.getXmlns()+"/"+cs.getXmlnsurl(),referenceValue);
 				log.error("Codespace " + cs + " is not accepted for this validation");
 				onlyAcceptedCodespaces = false;
 			}

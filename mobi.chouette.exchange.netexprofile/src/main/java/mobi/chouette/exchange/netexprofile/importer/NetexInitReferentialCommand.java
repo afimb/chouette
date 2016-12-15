@@ -84,7 +84,7 @@ public class NetexInitReferentialCommand implements Command, Constant {
 			} else {
 				log.error("Unsupported NeTEx profile in PublicationDelivery/@version: " + profileVersion);
 				// TODO fix reporting with lineNumber etc
-				validationReporter.addCheckPointReportError(context, AbstractNetexProfileValidator._1_NETEX_UNKNOWN_PROFILE, new DataLocation(fileName));
+				validationReporter.addCheckPointReportError(context, AbstractNetexProfileValidator._1_NETEX_UNKNOWN_PROFILE, null,new DataLocation(fileName),profileVersion);
 				result = ERROR;
 			}
 
