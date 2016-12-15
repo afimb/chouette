@@ -360,6 +360,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			}
 		}
 
+		
 		// Footnotes
 		// This is the new list of footnotes
 		List<Footnote> footnotes = new ArrayList<Footnote>();

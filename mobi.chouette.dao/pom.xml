@@ -4,7 +4,8 @@
 	<parent>
 		<groupId>mobi.chouette</groupId>
 		<artifactId>mobi.chouette</artifactId>
-    <version>3.4.RB-SNAPSHOT</version>
+		<version>3.4.RB-SNAPSHOT</version>
+
 	</parent>
 	<artifactId>mobi.chouette.dao</artifactId>
 	<packaging>ejb</packaging>

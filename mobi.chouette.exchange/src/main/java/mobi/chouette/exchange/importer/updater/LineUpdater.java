@@ -296,7 +296,8 @@ public class LineUpdater implements Updater<Line> {
 			oldValue.removeRoutingConstraint(stopArea);
 		}
 
-		// Footnotes - merge at this level
+		// Footnotes - merge at this level 
+
 		// This is the new list of footnotes
 		List<Footnote> footnotes = new ArrayList<Footnote>();
 

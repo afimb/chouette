@@ -4,6 +4,7 @@
 	<groupId>mobi.chouette</groupId>
 	<artifactId>mobi.chouette</artifactId>
 	<version>3.4.RB-SNAPSHOT</version>
+
 	<packaging>pom</packaging>
 
 	<properties>
