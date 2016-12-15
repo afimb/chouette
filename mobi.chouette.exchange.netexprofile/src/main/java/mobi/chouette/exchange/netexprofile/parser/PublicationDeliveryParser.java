@@ -70,7 +70,7 @@ public class PublicationDeliveryParser extends AbstractParser {
 				if (stopPlacesStruct != null) {
 					context.put(NETEX_LINE_DATA_CONTEXT, stopPlacesStruct);
 					StopPlaceParser stopPlaceParser = (StopPlaceParser) ParserFactory.create(StopPlaceParser.class.getName());
-					stopPlaceParser.initReferentials(context);
+					stopPlaceParser.parse(context);
 				}
 			}
 		}
