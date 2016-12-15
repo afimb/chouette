@@ -84,11 +84,11 @@ public class StopPlaceMapperTest {
         StopPlace stopPlace = new StopPlace()
                 .withName(new MultilingualString().withValue("Festningen"))
                 .withQuays(new Quays_RelStructure()
-                        .withQuayRefOrQuay(new Quay().withName(new MultilingualString().withValue("Slottet"))));
+                        .withQuayRefOrQuay(new Quay().withName(new MultilingualString().withValue("A"))));
 
         StopArea stopArea = stopPlaceMapper.mapStopPlaceToStopArea(new Referential(), stopPlace);
 
-        assertEquals(stopArea.getContainedStopAreas().get(0).getName(), "Slottet");
+        assertEquals(stopArea.getContainedStopAreas().get(0).getName(), "Festningen / A");
     }
 
     private StopArea createStopPlace(String name) {
