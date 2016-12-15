@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
@@ -17,6 +18,7 @@ import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
 import mobi.chouette.model.util.Referential;
+import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.*;
 
 import javax.xml.bind.JAXBElement;
@@ -25,6 +27,82 @@ import java.util.List;
 
 @Log4j
 public class PublicationDeliveryParser extends AbstractParser {
+
+	@SuppressWarnings("unchecked")
+	public void initCommonReferentials(Context context) throws Exception {
+		// TODO find out when to to this null check and clearing, do we really need it, or can we just presume its available?
+		NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);
+
+		if (referential == null) {
+			referential = new NetexReferential();
+			context.put(NETEX_REFERENTIAL, referential);
+		} else {
+			referential.clear();
+		}
+
+		PublicationDeliveryStructure publicationDelivery = (PublicationDeliveryStructure) context.get(NETEX_COMMON_DATA);
+		List<JAXBElement<? extends Common_VersionFrameStructure>> dataObjectFrames = publicationDelivery.getDataObjects().getCompositeFrameOrCommonFrame();
+
+		List<ResourceFrame> resourceFrames = NetexObjectUtil.getFrames(ResourceFrame.class, dataObjectFrames);
+
+		if (CollectionUtils.isNotEmpty(resourceFrames)) {
+			for (ResourceFrame resourceFrame : resourceFrames) {
+
+				// parse organisations
+				OrganisationsInFrame_RelStructure organisationsInFrameStruct = resourceFrame.getOrganisations();
+
+				if (organisationsInFrameStruct != null) {
+					context.put(NETEX_LINE_DATA_CONTEXT, organisationsInFrameStruct);
+					OrganisationParser organisationParser = (OrganisationParser) ParserFactory.create(OrganisationParser.class.getName());
+					organisationParser.initReferentials(context);
+				}
+			}
+		}
+
+		List<SiteFrame> siteFrames = NetexObjectUtil.getFrames(SiteFrame.class, dataObjectFrames);
+
+		if (CollectionUtils.isNotEmpty(siteFrames)) {
+			for (SiteFrame siteFrame : siteFrames) {
+
+				// parse stop places
+				StopPlacesInFrame_RelStructure stopPlacesStruct = siteFrame.getStopPlaces();
+
+				if (stopPlacesStruct != null) {
+					context.put(NETEX_LINE_DATA_CONTEXT, stopPlacesStruct);
+					StopPlaceParser stopPlaceParser = (StopPlaceParser) ParserFactory.create(StopPlaceParser.class.getName());
+					stopPlaceParser.initReferentials(context);
+				}
+			}
+		}
+
+		List<ServiceFrame> serviceFrames = NetexObjectUtil.getFrames(ServiceFrame.class, dataObjectFrames);
+
+		if (CollectionUtils.isNotEmpty(siteFrames)) {
+			for (ServiceFrame serviceFrame : serviceFrames) {
+
+				// parse stop points
+				ScheduledStopPointsInFrame_RelStructure scheduledStopPointStruct = serviceFrame.getScheduledStopPoints();
+
+				if(scheduledStopPointStruct != null) {
+					context.put(NETEX_LINE_DATA_CONTEXT, scheduledStopPointStruct);
+					StopPointParser stopPointParser = (StopPointParser) ParserFactory.create(StopPointParser.class.getName());
+					stopPointParser.initReferentials(context);
+				}
+
+				// parse stop assignments
+				StopAssignmentsInFrame_RelStructure stopAssignmentsStructure = serviceFrame.getStopAssignments();
+
+				if (stopAssignmentsStructure != null) {
+					List<JAXBElement<? extends StopAssignment_VersionStructure>> stopAssignmentElements = stopAssignmentsStructure.getStopAssignment();
+
+					for (JAXBElement<? extends StopAssignment_VersionStructure> stopAssignmentElement : stopAssignmentElements) {
+						PassengerStopAssignment passengerStopAssignment = (PassengerStopAssignment) stopAssignmentElement.getValue();
+						NetexObjectUtil.addPassengerStopAssignmentReference(referential, passengerStopAssignment.getId(), passengerStopAssignment);
+					}
+				}
+			}
+		}
+	}
 
 	@Override
 	public void initReferentials(Context context) throws Exception {
@@ -36,6 +114,7 @@ public class PublicationDeliveryParser extends AbstractParser {
 			referential.clear();
 		}
 
+		// TODO the problem is when we are parsing a common file, the below statement have no meaning, either create a separate method for common deliveries or make code work for both cases
 		PublicationDeliveryStructure publicationDelivery = (PublicationDeliveryStructure) context.get(NETEX_LINE_DATA_JAVA);
 		List<JAXBElement<? extends Common_VersionFrameStructure>> topLevelFrame = publicationDelivery.getDataObjects().getCompositeFrameOrCommonFrame();
 
@@ -177,6 +256,7 @@ public class PublicationDeliveryParser extends AbstractParser {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private <T> List<T> getFrames(Class<T> clazz, List<JAXBElement<? extends Common_VersionFrameStructure>> compositeFrameOrCommonFrame) {
 		List<T> foundFrames = new ArrayList<>();
 		for (JAXBElement<? extends Common_VersionFrameStructure> frame : compositeFrameOrCommonFrame) {

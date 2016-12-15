@@ -64,6 +64,7 @@ public class NetexObjectUtil {
         return resourceFrame;
     }
 
+    // TODO add to shared referential space instead, should be global to all line deliveries
     public static void addAuthorityReference(NetexReferential referential, String objectId, Authority authority) {
         if (authority == null) {
             throw new NullPointerException("Unknown authority : " + objectId);
@@ -81,6 +82,7 @@ public class NetexObjectUtil {
         return authority;
     }
 
+    // TODO add to shared referential space instead, should be global to all line deliveries
     public static void addOperatorReference(NetexReferential referential, String objectId, Operator operator) {
         if (operator == null) {
             throw new NullPointerException("Unknown operator : " + objectId);
@@ -345,23 +347,26 @@ public class NetexObjectUtil {
         return serviceJourney;
     }
 
-    public static <T> List<T> getFrames(Class<T> clazz, List<JAXBElement<? extends Common_VersionFrameStructure>> compositeFrameOrCommonFrame) {
+    public static <T> List<T> getFrames(Class<T> clazz, List<JAXBElement<? extends Common_VersionFrameStructure>> dataObjectFrames) {
         List<T> foundFrames = new ArrayList<>();
-        for (JAXBElement<? extends Common_VersionFrameStructure> frame : compositeFrameOrCommonFrame) {
+
+        for (JAXBElement<? extends Common_VersionFrameStructure> frame : dataObjectFrames) {
             if (frame.getValue() instanceof CompositeFrame) {
                 CompositeFrame compositeFrame = (CompositeFrame) frame.getValue();
                 Frames_RelStructure frames = compositeFrame.getFrames();
                 List<JAXBElement<? extends Common_VersionFrameStructure>> commonFrames = frames.getCommonFrame();
+
                 for (JAXBElement<? extends Common_VersionFrameStructure> commonFrame : commonFrames) {
                     T value = (T) commonFrame.getValue();
                     if (value.getClass().equals(clazz)) {
                         foundFrames.add(value);
                     }
                 }
-            } else if (frame.getValue().equals(clazz)) {
+            } else if (frame.getValue().getClass().equals(clazz)) {
                 foundFrames.add((T) frame.getValue());
             }
         }
+
         return foundFrames;
     }
 

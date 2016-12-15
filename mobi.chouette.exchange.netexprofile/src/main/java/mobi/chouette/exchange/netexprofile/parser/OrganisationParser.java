@@ -30,12 +30,12 @@ public class OrganisationParser extends AbstractParser {
     @Override
     public void initReferentials(Context context) throws Exception {
         NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);
+
+        // TODO consider if really needed, used before to register id references in corresponding validator
         OrganisationValidator validator = (OrganisationValidator) ValidatorFactory.create(OrganisationValidator.class.getName(), context);
 
-        OrganisationsInFrame_RelStructure organisationsInFrameStruct =
-                (OrganisationsInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
-        List<JAXBElement<? extends DataManagedObjectStructure>> organisationElements =
-                organisationsInFrameStruct.getOrganisation_();
+        OrganisationsInFrame_RelStructure organisationsInFrameStruct = (OrganisationsInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
+        List<JAXBElement<? extends DataManagedObjectStructure>> organisationElements = organisationsInFrameStruct.getOrganisation_();
 
         for (JAXBElement<? extends DataManagedObjectStructure> organisationElement : organisationElements) {
             DataManagedObjectStructure organisation = organisationElement.getValue();
@@ -43,9 +43,13 @@ public class OrganisationParser extends AbstractParser {
 
             if (organisation instanceof Authority) {
                 NetexObjectUtil.addAuthorityReference(referential, objectId, (Authority) organisation);
+
+                // TODO consider if really needed, used before to register id references in corresponding validator
                 validator.addObjectReference(context, organisation);
             } else if (organisation instanceof Operator) {
                 NetexObjectUtil.addOperatorReference(referential, objectId, (Operator) organisation);
+
+                // TODO consider if really needed, used before to register id references in corresponding validator
                 validator.addObjectReference(context, organisation);
             }
         }
