@@ -80,15 +80,6 @@ public class PublicationDeliveryParser extends AbstractParser {
 		if (CollectionUtils.isNotEmpty(siteFrames)) {
 			for (ServiceFrame serviceFrame : serviceFrames) {
 
-				// parse stop points
-				ScheduledStopPointsInFrame_RelStructure scheduledStopPointStruct = serviceFrame.getScheduledStopPoints();
-
-				if(scheduledStopPointStruct != null) {
-					context.put(NETEX_LINE_DATA_CONTEXT, scheduledStopPointStruct);
-					StopPointParser stopPointParser = (StopPointParser) ParserFactory.create(StopPointParser.class.getName());
-					stopPointParser.initReferentials(context);
-				}
-
 				// parse stop assignments
 				StopAssignmentsInFrame_RelStructure stopAssignmentsStructure = serviceFrame.getStopAssignments();
 
@@ -99,6 +90,15 @@ public class PublicationDeliveryParser extends AbstractParser {
 						PassengerStopAssignment passengerStopAssignment = (PassengerStopAssignment) stopAssignmentElement.getValue();
 						NetexObjectUtil.addPassengerStopAssignmentReference(referential, passengerStopAssignment.getId(), passengerStopAssignment);
 					}
+				}
+
+				// parse stop points
+				ScheduledStopPointsInFrame_RelStructure scheduledStopPointStruct = serviceFrame.getScheduledStopPoints();
+
+				if(scheduledStopPointStruct != null) {
+					context.put(NETEX_LINE_DATA_CONTEXT, scheduledStopPointStruct);
+					StopPointParser stopPointParser = (StopPointParser) ParserFactory.create(StopPointParser.class.getName());
+					stopPointParser.initReferentials(context);
 				}
 			}
 		}
