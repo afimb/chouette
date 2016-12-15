@@ -33,9 +33,9 @@ public class GtfsAgencyProducer extends AbstractProducer
    private GtfsAgency agency = new GtfsAgency();
 
 
-   public boolean save(Company neptuneObject, String prefix, TimeZone timeZone)
+   public boolean save(Company neptuneObject, String prefix, TimeZone timeZone, boolean keepOriginalId)
    {
-      agency.setAgencyId(toGtfsId(neptuneObject.getObjectId(),prefix));
+      agency.setAgencyId(toGtfsId(neptuneObject.getObjectId(),prefix,keepOriginalId));
 
       String name = neptuneObject.getName();
       if (name.trim().isEmpty())

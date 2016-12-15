@@ -35,12 +35,19 @@ public class JobDAO extends GenericDAOImpl<Job> {
 	}
 
 	public List<Job> findByReferential(String referential) {
+		return findByReferential(referential,new Job.STATUS[0]);
+	}
+	public List<Job> findByReferential(String referential, Job.STATUS[] status) {
 		List<Job> result;
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Job> criteria = builder.createQuery(type);
 		Root<Job> root = criteria.from(type);
 		Predicate statusPredicate = builder.notEqual(root.get(Job_.status),
 				Job.STATUS.CREATED); // Created jobs are only in initialization phase, should not be sent
+		if(status.length != 0) {
+			 statusPredicate = root.get(Job_.status).in(Arrays.asList(status));
+		}
+		
 		Predicate referentialPredicate = builder.equal(root.get(Job_.referential),
 				referential);
 		criteria.where(builder.and( referentialPredicate, statusPredicate));
@@ -50,18 +57,29 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		return result;
 	}
 
-	public List<Job> findByReferentialAndAction(String referential, String action) {
+	public List<Job> findByReferentialAndAction(String referential, String action[]) {
+		return findByReferentialAndAction(referential, action, new Job.STATUS[0]);
+	}
+	
+	public List<Job> findByReferentialAndAction(String referential, String action[], Job.STATUS[] status) {
 		List<Job> result;
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Job> criteria = builder.createQuery(type);
 		Root<Job> root = criteria.from(type);
 		Predicate statusPredicate = builder.notEqual(root.get(Job_.status),
 				Job.STATUS.CREATED); // Created jobs are only in initialization phase, should not be sent
+		if(status.length != 0) {
+			 statusPredicate = root.get(Job_.status).in(Arrays.asList(status));
+		}
 		Predicate referentialPredicate = builder.equal(root.get(Job_.referential),
 				referential);
-		Predicate actionPredicate = builder.equal(root.get(Job_.action),
-				action);
-		criteria.where( builder.and(referentialPredicate, actionPredicate,statusPredicate ));
+
+		if(action.length != 0) {
+			Predicate actionPredicate = root.get(Job_.action).in(Arrays.asList(action)); 
+			criteria.where( builder.and(referentialPredicate, actionPredicate,statusPredicate ));
+		} else {
+			criteria.where( builder.and(referentialPredicate, statusPredicate ));
+		}
 		criteria.orderBy(builder.asc(root.get(Job_.created)));
 		TypedQuery<Job> query = em.createQuery(criteria);
 		result = query.getResultList();
@@ -101,7 +119,7 @@ public class JobDAO extends GenericDAOImpl<Job> {
 	}
 
 	public int deleteAll(String referential) {
-		List<Job> list = findByReferential(referential);
+		List<Job> list = findByReferential(referential,new Job.STATUS[0]);
 		for (Job entity : list) {
 			delete(entity);
 		}
