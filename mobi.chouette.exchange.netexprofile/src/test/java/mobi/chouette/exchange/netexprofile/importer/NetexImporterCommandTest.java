@@ -229,7 +229,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		utx.rollback();
 	}
 
-	@Test(enabled = false) // Disabled due to jaxb class loading issues (works when deployed normally, just not inside arquillian/embedded jboss)
+	@Test(enabled = true) // Disabled due to jaxb class loading issues (works when deployed normally, just not inside arquillian/embedded jboss)
 	public void importAvinor() throws Exception {
 		// Prepare context
 		Context context = initImportContext();
@@ -258,7 +258,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("TST:Line:2306-2016-03-29");
+		Line line = lineDao.findByObjectId("AVI:Line:WF1697");
 
 		Assert.assertNotNull(line, "Line not found");
 		Assert.assertNotNull(line.getNetwork(), "line must have a network");

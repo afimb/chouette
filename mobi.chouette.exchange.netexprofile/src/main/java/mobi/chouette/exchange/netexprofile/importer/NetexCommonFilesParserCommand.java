@@ -29,9 +29,11 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
+import mobi.chouette.exchange.netexprofile.parser.PublicationDeliveryParser;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.ValidationData;
@@ -107,7 +109,7 @@ public class NetexCommonFilesParserCommand implements Command, Constant {
 		return result;
 	}
 
-	protected void parseToJava(Context context, NetexImporter importer, Document dom) throws JAXBException {
+	protected void parseToJava(Context context, NetexImporter importer, Document dom) throws Exception {
 		PublicationDeliveryStructure commonDeliveryStructure = importer.unmarshal(dom);
 
 		@SuppressWarnings("unchecked")
@@ -118,6 +120,9 @@ public class NetexCommonFilesParserCommand implements Command, Constant {
 		}
 
 		commonDeliveries.add(commonDeliveryStructure);
+        PublicationDeliveryParser parser = (PublicationDeliveryParser) ParserFactory.create(PublicationDeliveryParser.class.getName());
+        parser.initReferentials(context);
+        //parser.parse(context);
 	}
 
 	protected void collectEntityIdentificators(Context context, String fileName, Document parseFileToDom, Map<IdVersion, List<String>> commonIds)
