@@ -15,7 +15,6 @@ import lombok.ToString;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
-
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -48,19 +47,19 @@ public class ObjectReport extends AbstractReport {
 	@Getter
 	private List<ObjectError> errors = new ArrayList<ObjectError>();
 
-	@XmlElement(name = "checkpoint_errors")
+	@XmlElement(name = "check_point_errors")
 	@Getter
 	private List<Integer> checkPointErrorKeys = new ArrayList<Integer>();
 	
-	@XmlElement(name = "checkpoint_warnings")
+	@XmlElement(name = "check_point_warnings")
 	@Getter
 	private List<Integer> checkPointWarningKeys = new ArrayList<Integer>();
 
-	@XmlElement(name = "checkpoint_error_count")
+	@XmlElement(name = "check_point_error_count")
 	@Getter
 	private int checkPointErrorCount = 0;
 
-	@XmlElement(name = "checkpoint_warning_count")
+	@XmlElement(name = "check_point_warning_count")
 	@Getter
 	private int checkPointWarningCount = 0;
 
