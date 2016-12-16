@@ -29,10 +29,10 @@ public class GtfsRouteProducer extends AbstractProducer
 
    private GtfsRoute route = new GtfsRoute();
 
-   public boolean save(Line neptuneObject,  String prefix)
+   public boolean save(Line neptuneObject,  String prefix,boolean keepOriginalId)
    {
-      route.setRouteId(toGtfsId(neptuneObject.getObjectId(), prefix));
-      route.setAgencyId(toGtfsId(neptuneObject.getCompany().getObjectId(), prefix));
+      route.setRouteId(toGtfsId(neptuneObject.getObjectId(), prefix,keepOriginalId));
+      route.setAgencyId(toGtfsId(neptuneObject.getCompany().getObjectId(), prefix, keepOriginalId));
       route.setRouteShortName(null);
       route.setRouteLongName(null);
       if (isEmpty(neptuneObject.getNumber()))

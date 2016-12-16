@@ -19,13 +19,17 @@ public abstract class AbstractProducer
       this.exporter = exporter;
    }
 
-   static protected String toGtfsId(String neptuneId, String prefix)
+   static protected String toGtfsId(String neptuneId, String prefix, boolean keepOriginal)
    {
-      String[] tokens = neptuneId.split(":");
-      if (tokens[0].equals(prefix))
-         return tokens[2];
-      else
-         return tokens[0] + "." + tokens[2];
+      if(keepOriginal) {
+    	  return neptuneId.replace(':', '.');
+      } else {
+    	  String[] tokens = neptuneId.split(":");
+	      if (tokens[0].equals(prefix))
+	         return tokens[2];
+	      else
+	         return tokens[0] + "." + tokens[2];
+	      }
    }
 
    static protected boolean isEmpty(String s)

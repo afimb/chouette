@@ -1,7 +1,12 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
+import static mobi.chouette.exchange.netexprofile.Constant.NETEX_FILE_PATHS;
+
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import org.codehaus.plexus.util.FileUtils;
@@ -9,6 +14,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.common.FileUtil;
 import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.report.ActionReport;
@@ -25,8 +31,8 @@ public class NetexSchemaValidatorCommandTest {
 		context.put(Constant.CONFIGURATION, configuration);
 		context.put(Constant.VALIDATION_REPORT, new ValidationReport());
 		context.put(Constant.REPORT, new ActionReport());
-		JobData jobData = createJobData("src/test/data/WF739.xml");
-		context.put(Constant.JOB_DATA, jobData);
+        List<Path> allFilePaths = Arrays.asList(new File("src/test/data/WF739.xml").toPath());
+        context.put(NETEX_FILE_PATHS, allFilePaths);
 		
 		NetexInitImportCommand initCmd = new NetexInitImportCommand();
 		initCmd.execute(context);
@@ -47,8 +53,10 @@ public class NetexSchemaValidatorCommandTest {
 		context.put(Constant.VALIDATION_REPORT, new ValidationReport());
 		ActionReport actionReport =  new ActionReport();
 		context.put(Constant.REPORT, actionReport );
-		JobData jobData = createJobData("src/test/data/WF739-invalid.xml");
-		context.put(Constant.JOB_DATA, jobData);
+
+        List<Path> allFilePaths = Arrays.asList(new File("src/test/data/WF739-invalid.xml").toPath());
+        context.put(NETEX_FILE_PATHS, allFilePaths);
+
 		
 		NetexInitImportCommand initCmd = new NetexInitImportCommand();
 		initCmd.execute(context);
@@ -61,74 +69,5 @@ public class NetexSchemaValidatorCommandTest {
 		
 		Assert.assertEquals(actionReport.getFiles().get(0).getErrors().get(0).getCode(),FILE_ERROR_CODE.INVALID_FORMAT);
 		
-	}
-
-	protected JobData createJobData(String filePath) throws IOException {
-		File srcFile = new File(filePath).getAbsoluteFile();
-		
-		File tmpDir = new File(System.getProperty("java.io.tmpdir"));
-		File dstFolder = new File(tmpDir,UUID.randomUUID().toString());
-		File inputFolder = new File(dstFolder,"input");
-		inputFolder.mkdirs();
-		FileUtils.copyFileToDirectory(srcFile	, inputFolder);
-		
-		dstFolder.deleteOnExit();
-		
-		JobData jobData = new JobData() {
-			
-			@Override
-			public void setOutputFilename(String filename) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void setInputFilename(String filename) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public String getType() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-			@Override
-			public String getReferential() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-			@Override
-			public String getPathName() {
-				return dstFolder.getAbsolutePath();
-			}
-			
-			@Override
-			public String getOutputFilename() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-			@Override
-			public String getInputFilename() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-			@Override
-			public Long getId() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-			@Override
-			public String getAction() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-		};
-		return jobData;
 	}
 }

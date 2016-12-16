@@ -15,6 +15,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -28,7 +29,7 @@ import lombok.ToString;
 @EqualsAndHashCode(of = { "id" })
 @ToString(exclude = { "parametersAsString" })
 @Entity
-@Table(name = "jobs")
+@Table(name = "jobs",indexes = {@Index(name = "i_referential_type_status", columnList = "referential,type,status")})
 @Data
 public class Job implements Serializable {
 

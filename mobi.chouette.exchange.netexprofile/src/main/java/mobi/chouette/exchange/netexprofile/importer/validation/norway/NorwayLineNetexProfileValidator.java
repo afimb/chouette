@@ -183,21 +183,17 @@ public class NorwayLineNetexProfileValidator extends AbstractNetexProfileValidat
 		verifyUseOfVersionOnRefsToLocalElements(context, localIds, localRefs);
 		verifyReferencesToCommonElements(context, localRefs, localIds, commonIds);
 
-		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame", "1", "No CompositeFrame",
-				_1_NETEX_COMPOSITE_FRAME);
+		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame", _1_NETEX_COMPOSITE_FRAME);
 		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:codespaces/n:Codespace[n:Xmlns = '"
-				+ NSR_XMLNS + "' and n:XmlnsUrl = '" + NSR_XMLNSURL + "']", "1", "NSR codespace missing", _1_NETEX_CODESPACE);
+				+ NSR_XMLNS + "' and n:XmlnsUrl = '" + NSR_XMLNSURL + "']", _1_NETEX_CODESPACE);
 //		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ResourceFrame", "1", "No ResourceFrame",
 //				_1_NETEX_RESOURCE_FRAME);
-		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ServiceFrame", "1", "No ServiceFrame",
-				_1_NETEX_SERVICE_FRAME);
+		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ServiceFrame", _1_NETEX_SERVICE_FRAME);
 		// TODO service calendar frame may be defined in common files
 		// validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ServiceCalendarFrame", "1",
 		// "No ServiceCalendarFrame", _1_NETEX_SERVICE_CALENDAR_FRAME);
-		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:TimetableFrame", "1", "No TimetableFrame",
-				_1_NETEX_TIMETABLE_FRAME);
-		validateElementNotPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:SiteFrame", "1", "SiteFrame present",
-				_1_NETEX_SITE_FRAME);
+		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:TimetableFrame", _1_NETEX_TIMETABLE_FRAME);
+		validateElementNotPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:SiteFrame", _1_NETEX_SITE_FRAME);
 
 		validateResourceFrame(context, xpath, dom);
 
@@ -225,11 +221,9 @@ public class NorwayLineNetexProfileValidator extends AbstractNetexProfileValidat
 	private void validateResourceFrame(Context context, XPath xpath, Document dom) throws XPathExpressionException {
 		Node root = selectNode("/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ResourceFrame", xpath, dom);
 		if (root != null && root.hasChildNodes()) {
-			validateElementPresent(context, xpath, root, "n:organisations", "1", "No organisations", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS);
-			validateElementPresent(context, xpath, root, "n:organisations/n:Authority", "1", "No Authority",
-					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY);
-			validateAtLeastElementPresent(context, xpath, root, "n:organisations/n:Operator", 1, "1", "No Operators",
-					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR);
+			validateElementPresent(context, xpath, root, "n:organisations", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS);
+			validateElementPresent(context, xpath, root, "n:organisations/n:Authority", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY);
+			validateAtLeastElementPresent(context, xpath, root, "n:organisations/n:Operator", 1, _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR);
 			NodeList operators = selectNodeSet("n:organisations/n:Operator", xpath, root);
 			for (int i = 0; i < operators.getLength(); i++) {
 				validateOperator(context, xpath, operators.item(i));
@@ -238,49 +232,36 @@ public class NorwayLineNetexProfileValidator extends AbstractNetexProfileValidat
 	}
 
 	private void validateOperator(Context context, XPath xpath, Node node) throws XPathExpressionException {
-		validateElementPresent(context, xpath, node, "n:CompanyNumber", "1", "No operator company number",
-				_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_COMPANY_NUMBER);
-		validateElementPresent(context, xpath, node, "n:Name", "1", "No operator name", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_NAME);
-		validateElementPresent(context, xpath, node, "n:LegalName", "1", "No operator legal name",
-				_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_LEGAL_NAME);
-		validateElementPresent(context, xpath, node, "n:ContactDetails", "1", "No operator contact details",
-				_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CONTACT_DETAILS);
-		validateElementPresent(context, xpath, node, "n:CustomerServiceContactDetails", "1", "No operator customer service contact details",
-				_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CUSTOMER_SERVICE_CONTACT_DETAILS);
+		validateElementPresent(context, xpath, node, "n:CompanyNumber", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_COMPANY_NUMBER);
+		validateElementPresent(context, xpath, node, "n:Name", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_NAME);
+		validateElementPresent(context, xpath, node, "n:LegalName", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_LEGAL_NAME);
+		validateElementPresent(context, xpath, node, "n:ContactDetails", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CONTACT_DETAILS);
+		validateElementPresent(context, xpath, node, "n:CustomerServiceContactDetails", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CUSTOMER_SERVICE_CONTACT_DETAILS);
 	}
 
 	private void validateServiceFrame(Context context, XPath xpath, Document dom) throws XPathExpressionException {
 		Node root = selectNode("/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ServiceFrame", xpath, dom);
 
-		validateElementPresent(context, xpath, root, "n:Network", "1", "A line must belong to a network", _1_NETEX_SERVICE_FRAME_NETWORK);
-		validateElementPresent(context, xpath, root, "n:lines/n:Line", "1", "One and only one Line in each file", _1_NETEX_SERVICE_FRAME_LINE);
-		validateElementPresent(context, xpath, root, "n:lines/n:Line[1]/n:PublicCode", "1", "Lines must have PublicCode",
-				_1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE);
-		validateElementNotPresent(context, xpath, root, "n:journeyPatterns/n:ServiceJourneyPattern", "1", "Preferred to use JourneyPattern",
-				_1_NETEX_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN);
-		validateAtLeastElementPresent(context, xpath, root, "n:journeyPatterns/n:JourneyPattern | n:journeyPatterns/n:ServiceJourneyPattern", 1, "1",
-				"JourneyPatterns present", _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN);
-		validateElementNotPresent(context, xpath, root, "n:timingPoints", "1", "TimingPoints not used", _1_NETEX_SERVICE_FRAME_TIMING_POINTS);
+		validateElementPresent(context, xpath, root, "n:Network", _1_NETEX_SERVICE_FRAME_NETWORK);
+		validateElementPresent(context, xpath, root, "n:lines/n:Line", _1_NETEX_SERVICE_FRAME_LINE);
+		validateElementPresent(context, xpath, root, "n:lines/n:Line[1]/n:PublicCode", _1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE);
+		validateElementNotPresent(context, xpath, root, "n:journeyPatterns/n:ServiceJourneyPattern", _1_NETEX_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN);
+		validateAtLeastElementPresent(context, xpath, root, "n:journeyPatterns/n:JourneyPattern | n:journeyPatterns/n:ServiceJourneyPattern", 1, _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN);
+		validateElementNotPresent(context, xpath, root, "n:timingPoints", _1_NETEX_SERVICE_FRAME_TIMING_POINTS);
 
 	}
 
 	private void validateTimetableFrame(Context context, XPath xpath, Document dom) throws XPathExpressionException {
 		Node root = selectNode("/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:TimetableFrame", xpath, dom);
 
-		validateAtLeastElementPresent(context, xpath, root, "n:vehicleJourneys/n:ServiceJourney", 1, "1", "At least one ServiceJourney must be presetn",
-				_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY);
-		validateElementNotPresent(context, xpath, root, "n:vehicleJourneys/n:ServiceJourney[count(n:TransportMode) = 1]", "1",
-				"ServiceJourney should not have TransportMode, set on Line instead", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_TRANSPORT_MODE);
-		validateElementNotPresent(context, xpath, root, "n:vehicleJourneys/n:ServiceJourney[count(n:passingTimes/n:TimetabledPassingTime) < 2]", "1",
-				"ServiceJourney must have at least 2 TimetabledPassingTimes", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIMES);
-		validateElementNotPresent(context, xpath, root, "n:vehicleJourneys/n:ServiceJourney/n:calls", "1", "ServiceJourney calls not supported",
-				_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_CALLS);
+		validateAtLeastElementPresent(context, xpath, root, "n:vehicleJourneys/n:ServiceJourney", 1, _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY);
+		validateElementNotPresent(context, xpath, root, "n:vehicleJourneys/n:ServiceJourney[count(n:TransportMode) = 1]", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_TRANSPORT_MODE);
+		validateElementNotPresent(context, xpath, root, "n:vehicleJourneys/n:ServiceJourney[count(n:passingTimes/n:TimetabledPassingTime) < 2]", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIMES);
+		validateElementNotPresent(context, xpath, root, "n:vehicleJourneys/n:ServiceJourney/n:calls", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_CALLS);
 		validateElementNotPresent(context, xpath, root,
-				"n:vehicleJourneys/n:ServiceJourney[count(n:passingTimes/n:TimetabledPassingTime[1]/n:DepartureTime) = 0]", "1",
-				"First stop must have a DepartureTime", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_FIRST_DEPARTURE);
+				"n:vehicleJourneys/n:ServiceJourney[count(n:passingTimes/n:TimetabledPassingTime[1]/n:DepartureTime) = 0]", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_FIRST_DEPARTURE);
 		validateElementNotPresent(context, xpath, root,
-				"n:vehicleJourneys/n:ServiceJourney[count(n:passingTimes/n:TimetabledPassingTime[last()]/n:ArrivalTime) = 0]", "1",
-				"Last stop must have an ArrivalTime", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_LAST_ARRIVAL);
+				"n:vehicleJourneys/n:ServiceJourney[count(n:passingTimes/n:TimetabledPassingTime[last()]/n:ArrivalTime) = 0]", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_LAST_ARRIVAL);
 
 	}
 

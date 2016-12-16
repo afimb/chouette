@@ -37,7 +37,7 @@ public class GtfsShapeProducer extends AbstractProducer
 
    private GtfsShape shape = new GtfsShape();
 
-   public boolean save(JourneyPattern neptuneObject,  String prefix)
+   public boolean save(JourneyPattern neptuneObject,  String prefix, boolean keepOriginalId)
    {
 	   boolean result = true;
 	   if (neptuneObject.getSectionStatus() != SectionStatusEnum.Completed)
@@ -47,7 +47,7 @@ public class GtfsShapeProducer extends AbstractProducer
 	   float distance = (float) 0.0;
 
 	   for (RouteSection rs : neptuneObject.getRouteSections() ) {
-		   shape.setShapeId(toGtfsId(neptuneObject.getObjectId(), prefix));
+		   shape.setShapeId(toGtfsId(neptuneObject.getObjectId(), prefix, keepOriginalId));
 		   if (rs == null)
 		   {
 		      continue;

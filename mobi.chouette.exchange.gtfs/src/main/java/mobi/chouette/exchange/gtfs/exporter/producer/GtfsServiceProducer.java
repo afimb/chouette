@@ -44,14 +44,14 @@ AbstractProducer
    GtfsCalendar calendar = new GtfsCalendar();
    GtfsCalendarDate calendarDate = new GtfsCalendarDate();
 
-   public boolean save(List<Timetable> timetables,  String prefix)
+   public boolean save(List<Timetable> timetables,  String prefix, boolean keepOriginalId)
    {
 
-      Timetable reduced = merge(timetables, prefix);
+      Timetable reduced = merge(timetables, prefix,keepOriginalId);
 
       if (reduced == null) return false;
 
-      String serviceId = toGtfsId(reduced.getObjectId(), prefix);
+      String serviceId = toGtfsId(reduced.getObjectId(), prefix, keepOriginalId);
 
       if (!isEmpty(reduced.getPeriods()))
       {
@@ -249,7 +249,7 @@ AbstractProducer
    }
 
 
-   private Timetable merge(List<Timetable> timetables,String prefix)
+   private Timetable merge(List<Timetable> timetables,String prefix, boolean keepOriginalId)
    {
       Timetable merged = reduce(timetables.get(0));
       if (timetables.size() > 1)
@@ -263,7 +263,7 @@ AbstractProducer
 			}
             
          }
-         merged.setObjectId(prefix+":"+Timetable.TIMETABLE_KEY+":"+key(timetables,prefix));
+         merged.setObjectId(prefix+":"+Timetable.TIMETABLE_KEY+":"+key(timetables,prefix,false));
       }
       merged.computeLimitOfPeriods();
       return merged;
@@ -276,7 +276,7 @@ AbstractProducer
       return !timetable.getPeriods().isEmpty() || !timetable.getCalendarDays().isEmpty();
    }
 
-   public String key(List<Timetable> timetables,String prefix)
+   public String key(List<Timetable> timetables,String prefix, boolean keepOriginalId)
    {
       if (isEmpty(timetables)) return null;
       // remove invalid timetables (no date set) 
@@ -291,7 +291,7 @@ AbstractProducer
       String key = "";
       for (Timetable timetable : timetables)
       {
-         key += "-"+toGtfsId(timetable.getObjectId(), prefix);
+         key += "-"+toGtfsId(timetable.getObjectId(), prefix, keepOriginalId);
       }
       return key.substring(1);
    }

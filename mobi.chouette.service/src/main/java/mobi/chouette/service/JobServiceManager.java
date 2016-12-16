@@ -450,14 +450,14 @@ public class JobServiceManager {
 		throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, " id = " + id);
 	}
 
-	public List<JobService> jobs(String referential, String action, final Long version) throws ServiceException {
+	public List<JobService> jobs(String referential, String action[], final Long version, Job.STATUS[] status) throws ServiceException {
 		validateReferential(referential);
 
 		List<Job> jobs = null;
 		if (action == null) {
-			jobs = jobDAO.findByReferential(referential);
+			jobs = jobDAO.findByReferential(referential,status);
 		} else {
-			jobs = jobDAO.findByReferentialAndAction(referential, action);
+			jobs = jobDAO.findByReferentialAndAction(referential, action,status);
 		}
 
 		Collection<Job> filtered = Collections2.filter(jobs, new Predicate<Job>() {

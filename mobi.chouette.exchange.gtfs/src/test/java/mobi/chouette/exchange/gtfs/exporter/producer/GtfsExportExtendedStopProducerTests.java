@@ -56,7 +56,7 @@ public class GtfsExportExtendedStopProducerTests
       parents.add(parent);
       neptuneObject.setParent(parent);
 
-      producer.save(neptuneObject,  "GTFS", parents);
+      producer.save(neptuneObject,  "GTFS", parents,false);
       GtfsStop gtfsObject = mock.getExportedStops().get(0);
       Reporter.log("verifyExtendedStopProducerWithFullData");
       Reporter.log(StopExtendedExporter.CONVERTER.to(context, gtfsObject));
