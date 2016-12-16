@@ -62,7 +62,6 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-//		Map<String, Location> fileLocations = data.getFileLocations();
 		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		if (localContext == null || localContext.isEmpty())
 			return ;
@@ -74,7 +73,6 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 		{
 
 			Context objectContext = (Context) localContext.get(objectId);
-//			Location sourceLocation = fileLocations.get(objectId);
 			DataLocation sourceLocation = fileLocations.get(objectId);
 
 			String containedIn = (String) objectContext.get(CONTAINED_IN);
@@ -82,10 +80,6 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 				continue;
 			if (!stopAreaContext.containsKey(containedIn))
 			{
-//				Detail errorItem = new Detail(
-//						AREA_CENTROID_1,
-//						sourceLocation, containedIn);
-//				addValidationError(context, AREA_CENTROID_1, errorItem);
 				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 				validationReporter.addCheckPointReportError(context, AREA_CENTROID_1, sourceLocation, containedIn);
 			}
@@ -95,14 +89,9 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 		for (String objectId : localContext.keySet()) 
 		{
 			Context objectContext = (Context) localContext.get(objectId);
-//			Location sourceLocation = fileLocations.get(objectId);
 			DataLocation sourceLocation = fileLocations.get(objectId);
 			if (objectContext.get(LONG_LAT_TYPE).equals(LongLatTypeEnum.WGS84))
 				continue;
-//			Detail errorItem = new Detail(
-//					AREA_CENTROID_2,
-//					sourceLocation, objectContext.get(LONG_LAT_TYPE).toString());
-//			addValidationError(context, AREA_CENTROID_2, errorItem);
 			
 			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 			validationReporter.addCheckPointReportError(context, AREA_CENTROID_2, sourceLocation, objectContext.get(LONG_LAT_TYPE).toString());

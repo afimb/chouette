@@ -71,7 +71,6 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<N
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return ;
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-//		Map<String, Location> fileLocations = data.getFileLocations();
 		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		Context lineContext = (Context) validationContext.get(LineValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
@@ -89,10 +88,6 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<N
 				prepareCheckPoint(context, NETWORK_1);
 				if (!lineIds.contains(lineId))
 				{
-//					Detail errorItem = new Detail(
-//							NETWORK_1,
-//							fileLocations.get(objectId), lineId);
-//					addValidationError(context, NETWORK_1, errorItem);	
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, NETWORK_1, fileLocations.get(objectId), lineId);
 				}
@@ -106,10 +101,6 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<N
 				Network network = networks.get(objectId);
 				if (!sourceType.equals(network.getSourceType().name()))
 				{
-//					Detail errorItem = new Detail(
-//							NETWORK_2,
-//							fileLocations.get(objectId), sourceType,network.getSourceType().name());
-//					addValidationError(context, NETWORK_2, errorItem);
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, NETWORK_2, fileLocations.get(objectId), sourceType,network.getSourceType().name());
 				}
