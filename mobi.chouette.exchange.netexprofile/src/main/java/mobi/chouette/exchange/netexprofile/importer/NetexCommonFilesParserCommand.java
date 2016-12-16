@@ -80,11 +80,10 @@ public class NetexCommonFilesParserCommand implements Command, Constant {
 				// unmarshal xml to java
 				PublicationDeliveryStructure commonDeliveryStructure = importer.unmarshal(dom);
 				context.put(NETEX_COMMON_DATA, commonDeliveryStructure);
+				context.put(NETEX_WITH_COMMON_DATA, Boolean.TRUE);
 
 				PublicationDeliveryParser parser = (PublicationDeliveryParser) ParserFactory.create(PublicationDeliveryParser.class.getName());
-				parser.initCommonReferentials(context);
-				//parser.initReferentials(context);
-				//parser.parse(context);
+				parser.parse(context);
 
 				// report service
 				// TODO if has duplicates  - do not report as OK

@@ -5,7 +5,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
-import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
+import mobi.chouette.exchange.netexprofile.importer.util.NetexFrameContext;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
@@ -17,9 +17,7 @@ import org.rutebanken.netex.model.*;
 import javax.xml.bind.JAXBElement;
 import java.sql.Date;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 @Log4j
@@ -30,10 +28,7 @@ public class DayTypeParser extends AbstractParser {
 
     @Override
     public void initReferentials(Context context) throws Exception {
-        NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);
-
         // TODO implement
-
     }
 
     public void addVehicleJourneyIdRef(Context context, String objectId, String vehicleJourneyId) {
@@ -42,25 +37,19 @@ public class DayTypeParser extends AbstractParser {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void parse(Context context) throws Exception {
         Referential chouetteReferential = (Referential) context.get(REFERENTIAL);
-        NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
         Context parsingContext = (Context) context.get(PARSING_CONTEXT);
         Context localContext = (Context) parsingContext.get(LOCAL_CONTEXT);
+        NetexFrameContext frameContext = (NetexFrameContext) context.get(NETEX_FRAME_CONTEXT);
 
-        // TODO consider the best way to get day type instances, from referential (all at once), or per frame
-        //DayTypesInFrame_RelStructure dayTypesRelStruct = (DayTypesInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
-        //List<JAXBElement<? extends DataManagedObjectStructure>> dayTypeElements = dayTypesRelStruct.getDayType_();
+        TimetableFrame timetableFrame = frameContext.get(TimetableFrame.class);
 
-        // TODO add better support for specific periods
-        // temporary fix to support timetable periods
-        List<TimetableFrame> timetableFrames = new ArrayList<>(netexReferential.getTimetableFrames().values());
-        TimetableFrame mainTimetableFrame = timetableFrames.get(0);
-
-        ValidityConditions_RelStructure validityConditions = mainTimetableFrame.getValidityConditions();
+        // TODO add better support for specific periods, temporary fix to support timetable periods
+        ValidityConditions_RelStructure validityConditions = timetableFrame.getValidityConditions();
         List<Object> availabilityConditionElements = validityConditions.getValidityConditionRefOrValidBetweenOrValidityCondition_();
-        @SuppressWarnings("unchecked") AvailabilityCondition availabilityCondition =
-                ((JAXBElement<AvailabilityCondition>) availabilityConditionElements.get(0)).getValue();
+        AvailabilityCondition availabilityCondition = ((JAXBElement<AvailabilityCondition>) availabilityConditionElements.get(0)).getValue();
 
         OffsetDateTime fromDate = availabilityCondition.getFromDate();
         OffsetDateTime toDate = availabilityCondition.getToDate();
@@ -69,14 +58,16 @@ public class DayTypeParser extends AbstractParser {
         Date endOfPeriod = ParserUtils.getSQLDate(toDate.toString());
         Period period = new Period(startOfPeriod, endOfPeriod);
 
-        Collection<DayType> dayTypes = netexReferential.getDayTypes().values();
+        DayTypesInFrame_RelStructure dayTypesStruct = (DayTypesInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
+        List<JAXBElement<? extends DataManagedObjectStructure>> dayTypeElements = dayTypesStruct.getDayType_();
 
-        for (DayType dayType : dayTypes) {
+        for (JAXBElement<? extends DataManagedObjectStructure> dayTypeElement : dayTypeElements) {
+            DayType dayType = (DayType) dayTypeElement.getValue();
+
             String netexDayTypeId = dayType.getId();
             Context objectContext = (Context) localContext.get(netexDayTypeId);
 
-            String chouetteTimetableId = dayType.getId(); // TODO generate through id generator/creator
-            Timetable timetable = ObjectFactory.getTimetable(chouetteReferential, chouetteTimetableId);
+            Timetable timetable = ObjectFactory.getTimetable(chouetteReferential, dayType.getId());
 
             String netexDayTypeName = dayType.getName().getValue();
 
@@ -104,6 +95,7 @@ public class DayTypeParser extends AbstractParser {
             timetable.addPeriod(period);
             // timetable.getPeriods().add(period);
 
+            // TODO fix retrieval of correct vehicle journey here
             String chouetteVehicleJourneyId = (String) objectContext.get(VEHICLE_JOURNEY_ID);
             VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(chouetteReferential, chouetteVehicleJourneyId);
             timetable.addVehicleJourney(vehicleJourney);

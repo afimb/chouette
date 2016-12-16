@@ -15,14 +15,12 @@ import org.rutebanken.netex.model.SimplePoint_VersionStructure;
 import org.rutebanken.netex.model.StopPlace;
 import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
 
-import java.util.Collection;
 import java.util.List;
 
 @Log4j
 public class StopPlaceParser extends AbstractParser {
 
 	public static final String LOCAL_CONTEXT = "StopPlaceContext";
-	public static final String STOP_AREA_ID = "stopAreaId";
 
 	@Override
 	public void initReferentials(Context context) throws Exception {
@@ -33,38 +31,19 @@ public class StopPlaceParser extends AbstractParser {
 
 		for (StopPlace stopPlace : stopPlaces) {
 			NetexObjectUtil.addStopPlaceReference(referential, stopPlace.getId(), stopPlace);
-			// validator.addObjectReference(context, route); // TODO implement a stop place validator
 		}
 	}
 
 	@Override
 	public void parse(Context context) throws Exception {
 		Referential chouetteReferential = (Referential) context.get(REFERENTIAL);
-		NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
-
-		//Collection<StopPlace> stopPlaces = netexReferential.getStopPlaces().values();
-
 		StopPlacesInFrame_RelStructure stopPlacesStruct = (StopPlacesInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
 		List<StopPlace> stopPlaces = stopPlacesStruct.getStopPlace();
 
 		for (StopPlace stopPlace : stopPlaces) {
-
-			NetexObjectUtil.addStopPlaceReference(netexReferential, stopPlace.getId(), stopPlace);
-
-			String netexStopPlaceId = stopPlace.getId();
-			String chouetteStopAreaId = stopPlace.getId();
-
-			StopArea stopArea = ObjectFactory.getStopArea(chouetteReferential, chouetteStopAreaId);
-
-			// TODO remove? probably not needed anymore
-			addStopAreaIdRef(context, netexStopPlaceId, chouetteStopAreaId);
-
-			String stopPlaceName = stopPlace.getName().getValue();
-			stopArea.setName(stopPlaceName);
-
-			String stopPlaceShortName = stopPlace.getShortName().getValue();
-			stopArea.setRegistrationNumber(stopPlaceShortName);
-
+			StopArea stopArea = ObjectFactory.getStopArea(chouetteReferential, stopPlace.getId());
+			stopArea.setName(stopPlace.getName().getValue());
+			stopArea.setRegistrationNumber(stopPlace.getShortName().getValue());
 			stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 
 			SimplePoint_VersionStructure centroidStruct = stopPlace.getCentroid();
@@ -78,11 +57,6 @@ public class StopPlaceParser extends AbstractParser {
 
 			stopArea.setFilled(true);
 		}
-	}
-
-	private void addStopAreaIdRef(Context context, String objectId, String stopAreaId) {
-		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		objectContext.put(STOP_AREA_ID, stopAreaId);
 	}
 
 	static {
