@@ -10,11 +10,13 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import org.rutebanken.netex.model.*;
+import org.rutebanken.netex.model.JourneyPatternsInFrame_RelStructure;
+import org.rutebanken.netex.model.PointInLinkSequence_VersionedChildStructure;
+import org.rutebanken.netex.model.PointsInJourneyPattern_RelStructure;
+import org.rutebanken.netex.model.StopPointInJourneyPattern;
 
 import javax.xml.bind.JAXBElement;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 @Log4j
@@ -34,7 +36,6 @@ public class JourneyPatternParser extends AbstractParser {
             org.rutebanken.netex.model.JourneyPattern_VersionStructure journeyPattern = (org.rutebanken.netex.model.JourneyPattern_VersionStructure) journeyPatternElement.getValue();
             String objectId = journeyPattern.getId();
 
-            // 1. initialize stop points in journey pattern references
             PointsInJourneyPattern_RelStructure pointsInSequenceStruct = journeyPattern.getPointsInSequence();
 
             if (pointsInSequenceStruct != null) {
@@ -54,35 +55,20 @@ public class JourneyPatternParser extends AbstractParser {
     @Override
     public void parse(Context context) throws Exception {
         Referential chouetteReferential = (Referential) context.get(REFERENTIAL);
-        NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
-        Context parsingContext = (Context) context.get(PARSING_CONTEXT);
-        Context routeContext = (Context) parsingContext.get(RouteParser.LOCAL_CONTEXT);
-        Context stopPointContext = (Context) parsingContext.get(StopPointParser.LOCAL_CONTEXT);
 
-        Collection<JourneyPattern_VersionStructure> netexJourneyPatterns = netexReferential.getJourneyPatterns().values();
+        JourneyPatternsInFrame_RelStructure contextData = (JourneyPatternsInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
+        List<JAXBElement<?>> journeyPatternElements = contextData.getJourneyPattern_OrJourneyPatternView();
 
-        for (JourneyPattern_VersionStructure netexJourneyPattern : netexJourneyPatterns) {
-            String netexJourneyPatternId = netexJourneyPattern.getId();
-            String chouetteJourneyPatternId = netexJourneyPattern.getId(); // TODO generate neptune id with creator here
-            mobi.chouette.model.JourneyPattern chouetteJourneyPattern = ObjectFactory.getJourneyPattern(chouetteReferential, chouetteJourneyPatternId);
-            addJourneyPatternIdRef(context, netexJourneyPatternId, chouetteJourneyPatternId);
+        for (JAXBElement<?> journeyPatternElement : journeyPatternElements) {
+            org.rutebanken.netex.model.JourneyPattern_VersionStructure netexJourneyPattern = (org.rutebanken.netex.model.JourneyPattern_VersionStructure) journeyPatternElement.getValue();
+            mobi.chouette.model.JourneyPattern chouetteJourneyPattern = ObjectFactory.getJourneyPattern(chouetteReferential, netexJourneyPattern.getId());
 
-            RouteRefStructure routeRefStruct = netexJourneyPattern.getRouteRef();
-            Context routeObjectContext = (Context) routeContext.get(routeRefStruct.getRef());
-            String chouetteRouteId = (String) routeObjectContext.get(RouteParser.ROUTE_ID);
-            Route route = ObjectFactory.getRoute(chouetteReferential, chouetteRouteId);
-
+            String routeIdRef = netexJourneyPattern.getRouteRef().getRef();
+            Route route = ObjectFactory.getRoute(chouetteReferential, routeIdRef);
             chouetteJourneyPattern.setRoute(route);
+
             chouetteJourneyPattern.setPublishedName(route.getPublishedName());
 
-            // TODO consider if this is necessary, maybe better to parse and handle directly in this class, and not adding to referential
-            Collection<StopPointInJourneyPattern> stopPointsInJourneyPatternsColl = netexReferential.getStopPointsInJourneyPattern().values();
-            List<StopPointInJourneyPattern> stopPointsInJourneyPattern = new ArrayList(stopPointsInJourneyPatternsColl);
-
-            // TODO should probably remove the following section from initReferentials method above
-            //      probably most correct to do it this way, we must not parse/convert all stop points found for all journey patterns for every occurrence of a journey pattern
-
-            // mandatory, null check not necessary, because consistency check done in validators
             PointsInJourneyPattern_RelStructure pointsInSequenceStruct = netexJourneyPattern.getPointsInSequence();
 
             List<PointInLinkSequence_VersionedChildStructure> pointsInLinkSequence = pointsInSequenceStruct
@@ -90,17 +76,25 @@ public class JourneyPatternParser extends AbstractParser {
 
             for (PointInLinkSequence_VersionedChildStructure pointInLinkSequence : pointsInLinkSequence) {
                 StopPointInJourneyPattern stopPointInJourneyPattern = (StopPointInJourneyPattern) pointInLinkSequence;
-                ScheduledStopPointRefStructure scheduledStopPointRefStruct = stopPointInJourneyPattern.getScheduledStopPointRef().getValue();
+                String stopPointIdRef = stopPointInJourneyPattern.getScheduledStopPointRef().getValue().getRef();
+                StopPoint stopPoint = ObjectFactory.getStopPoint(chouetteReferential, stopPointIdRef);
 
-                Context stopPointObjectContext = (Context) stopPointContext.get(scheduledStopPointRefStruct.getRef());
-                String chouetteStopPointId = (String) stopPointObjectContext.get(StopPointParser.STOP_POINT_ID);
-                StopPoint stopPoint = ObjectFactory.getStopPoint(chouetteReferential, chouetteStopPointId);
-
+                // TODO cannot set the position on stop points when parsing common stop points, must be set when we are parsing journey patterns, move
+    /*
+                BigInteger stopPointOrder = null;
+                for (StopPointInJourneyPattern stopPointInJourneyPattern : stopPointsInJourneyPattern) {
+                    ScheduledStopPointRefStructure stopPointRefStruct = stopPointInJourneyPattern.getScheduledStopPointRef().getValue();
+                    if (chouetteStopPointId.equals(stopPointRefStruct.getRef())) {
+                        stopPointOrder = stopPointInJourneyPattern.getOrder();
+                    }
+                }
+                chouetteStopPoint.setPosition(stopPointOrder.intValue());
+    */
                 chouetteJourneyPattern.addStopPoint(stopPoint);
             }
 
             List<StopPoint> addedStopPoints = chouetteJourneyPattern.getStopPoints();
-            addedStopPoints.sort((o1, o2) -> o1.getPosition().compareTo(o2.getPosition()));
+            addedStopPoints.sort(Comparator.comparing(StopPoint::getPosition));
             chouetteJourneyPattern.setDepartureStopPoint(addedStopPoints.get(0));
             chouetteJourneyPattern.setArrivalStopPoint(addedStopPoints.get(addedStopPoints.size() - 1));
 
@@ -109,11 +103,6 @@ public class JourneyPatternParser extends AbstractParser {
 
             chouetteJourneyPattern.setFilled(true);
         }
-    }
-
-    private void addJourneyPatternIdRef(Context context, String objectId, String journeyPatternId) {
-        Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-        objectContext.put(JOURNEY_PATTERN_ID, journeyPatternId);
     }
 
     static {

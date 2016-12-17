@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.netexprofile.importer.util.NetexFrameContext;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.model.Line;
@@ -21,21 +22,16 @@ import java.sql.Time;
 import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.Collection;
 import java.util.List;
 
 @Log4j
 public class VehicleJourneyParser extends AbstractParser {
 
     public static final String LOCAL_CONTEXT = "VehicleJourneyContext";
-
-    private static final ZoneId UTC = ZoneId.of("UTC");
     private static final ZoneId LOCAL_ZONE_ID = ZoneId.of("Europe/Oslo");
 
     @Override
     public void initReferentials(Context context) throws Exception {
-        NetexReferential referential = (NetexReferential) context.get(NETEX_REFERENTIAL);
-
         // TODO implement
     }
 
@@ -43,55 +39,47 @@ public class VehicleJourneyParser extends AbstractParser {
     public void parse(Context context) throws Exception {
         Referential chouetteReferential = (Referential) context.get(REFERENTIAL);
         NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
-        Context parsingContext = (Context) context.get(PARSING_CONTEXT);
-        Context lineContext = (Context) parsingContext.get(LineParser.LOCAL_CONTEXT);
-        Context journeyPatternContext = (Context) parsingContext.get(JourneyPatternParser.LOCAL_CONTEXT);
-        Context stopPointContext = (Context) parsingContext.get(StopPointParser.LOCAL_CONTEXT);
-
         DayTypeParser dayTypeParser = (DayTypeParser) ParserFactory.create(DayTypeParser.class.getName());
+        JourneysInFrame_RelStructure journeysInFrameRelStruct = (JourneysInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
+        List<Journey_VersionStructure> serviceJourneyStructs = journeysInFrameRelStruct.getDatedServiceJourneyOrDeadRunOrServiceJourney();
 
-        //JourneysInFrame_RelStructure journeysInFrameRelStruct = (JourneysInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
-        //List<Journey_VersionStructure> serviceJourneyStructs = journeysInFrameRelStruct.getDatedServiceJourneyOrDeadRunOrServiceJourney();
+        NetexFrameContext netexFrameContext = (NetexFrameContext) context.get(NETEX_FRAME_CONTEXT);
+        //TimetableFrame timetableFrame = netexFrameContext.get(TimetableFrame.class);
+        //ServiceCalendarFrame serviceCalendarFrame = netexFrameContext.get(ServiceCalendarFrame.class);
 
-        Collection<ServiceJourney> netexServiceJourneys = netexReferential.getServiceJourneys().values();
+        for (Journey_VersionStructure serviceJourneyStruct : serviceJourneyStructs) {
 
-        //for (Journey_VersionStructure serviceJourneyStruct : serviceJourneyStructs) {
-        for (ServiceJourney netexServiceJourney : netexServiceJourneys) {
-            // TODO handle all types of netex journeys here, might have an instanceof check here... for now only parsing ServiceJourney instances
+            // TODO handle all types of netex journeys, for now only parsing ServiceJourney instances
+            ServiceJourney netexServiceJourney = (ServiceJourney) serviceJourneyStruct;
+            VehicleJourney chouetteVehicleJourney = ObjectFactory.getVehicleJourney(chouetteReferential, netexServiceJourney.getId());
 
-            //ServiceJourney netexServiceJourney = (ServiceJourney) serviceJourneyStruct;
-            String chouetteVehicleJourneyId = netexServiceJourney.getId();  // TODO generate/create id with id creator
-            VehicleJourney chouetteVehicleJourney = ObjectFactory.getVehicleJourney(chouetteReferential, chouetteVehicleJourneyId);
+            // TODO consider if this field is this useful for anything
+            //OffsetTime netexJourneyDepartureTime = netexServiceJourney.getDepartureTime();
 
-            // TODO is this useful for anything?
-            OffsetTime netexJourneyDepartureTime = netexServiceJourney.getDepartureTime(); // most often the same as departure time for the first timetabled passing time
+            // TODO find out how to find daytype id references in DayTypeParser, is this necessary?
+            List<JAXBElement<? extends DayTypeRefStructure>> dayTypeRefStructElements = netexServiceJourney.getDayTypes().getDayTypeRef();
 
-            DayTypeRefs_RelStructure dayTypeRefsRelStruct = netexServiceJourney.getDayTypes();
-            List<JAXBElement<? extends DayTypeRefStructure>> dayTypeRefStructElements = dayTypeRefsRelStruct.getDayTypeRef();
             for (JAXBElement<? extends DayTypeRefStructure> dayTypeRefStructElement : dayTypeRefStructElements) {
-                DayTypeRefStructure dayTypeRefStruct = dayTypeRefStructElement.getValue();
-                dayTypeParser.addVehicleJourneyIdRef(context, dayTypeRefStruct.getRef(), chouetteVehicleJourneyId);
+
+                // TODO fix this id reference: als see DayTypeParser line: 101. in cases like this, where the connection is inverted, it could be useful with the object context
+                String dayTypeIdRef = dayTypeRefStructElement.getValue().getRef();
+                dayTypeParser.addVehicleJourneyIdRef(context, dayTypeIdRef, netexServiceJourney.getId());
             }
 
-            LineRefStructure lineRefStruct = netexServiceJourney.getLineRef().getValue();
-            Context lineObjectContext = (Context) lineContext.get(lineRefStruct.getRef());
-            String chouetteLineId = (String) lineObjectContext.get(LineParser.LINE_ID);
-            Line line = ObjectFactory.getLine(chouetteReferential, chouetteLineId);
+            String lineIdRef = netexServiceJourney.getLineRef().getValue().getRef();
+            Line line = ObjectFactory.getLine(chouetteReferential, lineIdRef);
             chouetteVehicleJourney.setCompany(line.getCompany());
 
             // TODO check if the norwegian netex profile supports transport mode on journeys, to avoid getting from line
             TransportModeNameEnum transportModeName = line.getTransportModeName();
             chouetteVehicleJourney.setTransportMode(transportModeName);
 
-            JourneyPatternRefStructure journeyPatternRefStruct = netexServiceJourney.getJourneyPatternRef().getValue();
-            String netexJourneyPatternIdRef = journeyPatternRefStruct.getRef();
+            String journeyPatternIdRef = netexServiceJourney.getJourneyPatternRef().getValue().getRef();
 
-            org.rutebanken.netex.model.JourneyPattern_VersionStructure netexJourneyPattern = NetexObjectUtil.getJourneyPattern(netexReferential, netexJourneyPatternIdRef);
+            // TODO find out how to retrieve this
+            org.rutebanken.netex.model.JourneyPattern_VersionStructure netexJourneyPattern = NetexObjectUtil.getJourneyPattern(netexReferential, journeyPatternIdRef);
 
-            Context journeyPatternObjectContext = (Context) journeyPatternContext.get(netexJourneyPatternIdRef);
-            String chouetteJourneyPatternId = (String) journeyPatternObjectContext.get(JourneyPatternParser.JOURNEY_PATTERN_ID);
-            mobi.chouette.model.JourneyPattern chouetteJourneyPattern = ObjectFactory.getJourneyPattern(chouetteReferential, chouetteJourneyPatternId);
-
+            mobi.chouette.model.JourneyPattern chouetteJourneyPattern = ObjectFactory.getJourneyPattern(chouetteReferential, journeyPatternIdRef);
             chouetteVehicleJourney.setJourneyPattern(chouetteJourneyPattern);
             chouetteVehicleJourney.setRoute(chouetteJourneyPattern.getRoute());
 
@@ -100,11 +88,7 @@ public class VehicleJourneyParser extends AbstractParser {
             chouetteVehicleJourney.setPublishedJourneyIdentifier(netexJourneyPublicCode);
             chouetteVehicleJourney.setComment(netexJourneyPublicCode);
 
-            // TODO add more properties to journey like
-            // chouetteVehicleJourney.setJourneyCategory(JourneyCategoryEnum.Timesheet);
-            // chouetteVehicleJourney.setVehicleTypeIdentifier(null); // e.g. aircraft type?
-
-            // TODO find out how to handle JourneyFrequencies
+            // TODO implement parsing of JourneyFrequencies
 
             List<TimetabledPassingTime> timetabledPassingTimes = netexServiceJourney.getPassingTimes().getTimetabledPassingTime();
 
@@ -112,8 +96,7 @@ public class VehicleJourneyParser extends AbstractParser {
                 VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop();
                 vehicleJourneyAtStop.setVehicleJourney(chouetteVehicleJourney);
 
-                // TODO what are the conditions for setting the following properties?
-
+                // TODO are these mandatory?
                 // vehicleJourneyAtStop.setArrivalTime(tripVisitTime.getTime());
                 // vehicleJourneyAtStop.setArrivalDayOffset(tripVisitTime.getDayOffset());
                 // vehicleJourneyAtStop.setDepartureTime(tripVisitTime.getTime());
@@ -133,11 +116,8 @@ public class VehicleJourneyParser extends AbstractParser {
                     StopPointInJourneyPattern stopPointInJourneyPattern = (StopPointInJourneyPattern) pointInLinkSequence;
 
                     if (stopPointInJourneyPattern.getId().equalsIgnoreCase(pointInJourneyPatternId)) {
-                        ScheduledStopPointRefStructure scheduledStopPointRefStruct = stopPointInJourneyPattern.getScheduledStopPointRef().getValue();
-                        Context stopPointObjectContext = (Context) stopPointContext.get(scheduledStopPointRefStruct.getRef());
-                        String chouetteStopPointId = (String) stopPointObjectContext.get(StopPointParser.STOP_POINT_ID);
-
-                        StopPoint stopPoint = ObjectFactory.getStopPoint(chouetteReferential, chouetteStopPointId);
+                        String stopPointIdRef = stopPointInJourneyPattern.getScheduledStopPointRef().getValue().getRef();
+                        StopPoint stopPoint = ObjectFactory.getStopPoint(chouetteReferential, stopPointIdRef);
                         vehicleJourneyAtStop.setStopPoint(stopPoint);
 
                         Boolean forBoarding = stopPointInJourneyPattern.isForBoarding();
@@ -153,9 +133,7 @@ public class VehicleJourneyParser extends AbstractParser {
                     }
                 }
 
-                // This solution only handles incoming data in UTC for now
-                // TODO add support for other time zones and zone offsets
-
+                // TODO add support for other time zones and zone offsets, for now only handling UTC
                 OffsetTime departureTime = timetabledPassingTime.getDepartureTime();
                 OffsetTime arrivalTime = timetabledPassingTime.getArrivalTime();
 
@@ -181,7 +159,7 @@ public class VehicleJourneyParser extends AbstractParser {
 
                 } else {
                     // TODO find out if necessary
-                   // vehicleJourneyAtStop.setArrivalTime(new Time(vehicleJourneyAtStop.getDepartureTime().getTime()));
+                    // vehicleJourneyAtStop.setArrivalTime(new Time(vehicleJourneyAtStop.getDepartureTime().getTime()));
                 }
 
             }
@@ -191,8 +169,8 @@ public class VehicleJourneyParser extends AbstractParser {
                 StopPoint p1 = o1.getStopPoint();
                 StopPoint p2 = o2.getStopPoint();
                 if (p1 != null && p2 != null) {
-                    int pos1 = p1.getPosition() == null ? 0 : p1.getPosition().intValue();
-                    int pos2 = p2.getPosition() == null ? 0 : p2.getPosition().intValue();
+                    int pos1 = p1.getPosition() == null ? 0 : p1.getPosition();
+                    int pos2 = p2.getPosition() == null ? 0 : p2.getPosition();
                     return pos1 - pos2;
                 }
                 return 0;

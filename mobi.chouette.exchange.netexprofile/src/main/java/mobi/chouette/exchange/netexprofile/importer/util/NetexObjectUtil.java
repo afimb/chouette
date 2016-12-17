@@ -357,13 +357,13 @@ public class NetexObjectUtil {
                 List<JAXBElement<? extends Common_VersionFrameStructure>> commonFrames = frames.getCommonFrame();
 
                 for (JAXBElement<? extends Common_VersionFrameStructure> commonFrame : commonFrames) {
-                    T value = (T) commonFrame.getValue();
-                    if (value.getClass().equals(clazz)) {
+                    if (commonFrame.getValue().getClass().equals(clazz)) {
+                        T value = clazz.cast(commonFrame.getValue());
                         foundFrames.add(value);
                     }
                 }
             } else if (frame.getValue().getClass().equals(clazz)) {
-                foundFrames.add((T) frame.getValue());
+                foundFrames.add(clazz.cast(frame.getValue()));
             }
         }
 
