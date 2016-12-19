@@ -9,7 +9,6 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.parser.PublicationDeliveryParser;
@@ -57,7 +56,6 @@ public class NetexLineParserCommand implements Command, Constant {
             }
 
             PublicationDeliveryParser parser = (PublicationDeliveryParser) ParserFactory.create(PublicationDeliveryParser.class.getName());
-            parser.initReferentials(context);
             parser.parse(context);
 
             Context validationContext = (Context) context.get(VALIDATION_CONTEXT);

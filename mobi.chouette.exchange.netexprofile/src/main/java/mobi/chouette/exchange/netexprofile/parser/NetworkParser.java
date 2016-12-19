@@ -11,14 +11,14 @@ import mobi.chouette.model.util.Referential;
 import org.rutebanken.netex.model.GroupOfLines;
 import org.rutebanken.netex.model.GroupsOfLinesInFrame_RelStructure;
 import org.rutebanken.netex.model.LineRefStructure;
+import org.rutebanken.netex.model.PrivateCodeStructure;
 
 import javax.xml.bind.JAXBElement;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Log4j
 public class NetworkParser extends AbstractParser {
-
-    public static final String LOCAL_CONTEXT = "NetworkContext";
 
     @Override
     public void initReferentials(Context context) throws Exception {
@@ -26,14 +26,34 @@ public class NetworkParser extends AbstractParser {
 
     @Override
     public void parse(Context context) throws Exception {
-        Referential chouetteReferential = (Referential) context.get(REFERENTIAL);
+        Referential referential = (Referential) context.get(REFERENTIAL);
         org.rutebanken.netex.model.Network netexNetwork = (org.rutebanken.netex.model.Network) context.get(NETEX_LINE_DATA_CONTEXT);
 
-        mobi.chouette.model.Network chouetteNetwork = ObjectFactory.getPTNetwork(chouetteReferential, netexNetwork.getId());
+        mobi.chouette.model.Network chouetteNetwork = ObjectFactory.getPTNetwork(referential, netexNetwork.getId());
+
+        Integer version = Integer.valueOf(netexNetwork.getVersion());
+        chouetteNetwork.setObjectVersion(version != null ? version : 0);
+
+/*
+        OffsetDateTime changed = netexNetwork.getChanged();
+        if (changed != null) {
+            chouetteNetwork.setVersionDate(NetexUtils.getDate(changed.toString()));
+        }
+*/
 
         chouetteNetwork.setSourceIdentifier("NeTEx");
         chouetteNetwork.setName(netexNetwork.getName().getValue());
-        chouetteNetwork.setRegistrationNumber(netexNetwork.getId().split(":")[2]);
+
+        PrivateCodeStructure privateCodeStruct = netexNetwork.getPrivateCode();
+        if (privateCodeStruct != null) {
+            chouetteNetwork.setRegistrationNumber(privateCodeStruct.getValue());
+        } else {
+            chouetteNetwork.setRegistrationNumber(netexNetwork.getId().split(":")[2]);
+        }
+
+        if (netexNetwork.getDescription() != null) {
+            chouetteNetwork.setComment(netexNetwork.getDescription().getValue());
+        }
 
         GroupsOfLinesInFrame_RelStructure groupsOfLinesStruct = netexNetwork.getGroupsOfLines();
 
@@ -41,14 +61,14 @@ public class NetworkParser extends AbstractParser {
             List<GroupOfLines> groupsOfLines = groupsOfLinesStruct.getGroupOfLines();
 
             for (GroupOfLines groupOfLines : groupsOfLines) {
-                GroupOfLine groupOfLine = ObjectFactory.getGroupOfLine(chouetteReferential, groupOfLines.getId());
+                GroupOfLine groupOfLine = ObjectFactory.getGroupOfLine(referential, groupOfLines.getId());
                 groupOfLine.setName(groupOfLines.getName().getValue());
 
                 List<JAXBElement<? extends LineRefStructure>> lineRefStructs = groupOfLines.getMembers().getLineRef();
 
                 for (JAXBElement<? extends LineRefStructure> lineRefRelStruct : lineRefStructs) {
                     String lineIdRef = lineRefRelStruct.getValue().getRef();
-                    Line line = ObjectFactory.getLine(chouetteReferential, lineIdRef);
+                    Line line = ObjectFactory.getLine(referential, lineIdRef);
 
                     if (line != null) {
                         groupOfLine.addLine(line);

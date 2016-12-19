@@ -4,188 +4,213 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.netexprofile.importer.util.NetexFrameContext;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
-import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.StopArea;
 import mobi.chouette.model.*;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
+import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.*;
 import org.rutebanken.netex.model.Network;
 
 import javax.xml.bind.JAXBElement;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Log4j
 public class PublicationDeliveryParser extends AbstractParser {
+
+	private Map<String, String> stopAssignments;
 
 	@Override
 	public void parse(Context context) throws Exception {
 		boolean isCommonDelivery = context.get(NETEX_WITH_COMMON_DATA) != null && context.get(NETEX_LINE_DATA_JAVA) == null;
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
-
-		if (netexReferential == null) {
-			netexReferential = new NetexReferential();
-			context.put(NETEX_REFERENTIAL, netexReferential);
-		} else {
-			// clear all data from last line parsing session (not shared data)
-			netexReferential.clear();
-		}
-
-		NetexFrameContext frameContext = (NetexFrameContext) context.get(NETEX_FRAME_CONTEXT);
-		if (frameContext == null) {
-			frameContext = new NetexFrameContext();
-			context.put(NETEX_FRAME_CONTEXT, frameContext);
-		} else {
-			frameContext.clear();
-		}
-
-		String contextKey = isCommonDelivery ? NETEX_COMMON_DATA : NETEX_LINE_DATA_JAVA;
+        String contextKey = isCommonDelivery ? NETEX_COMMON_DATA : NETEX_LINE_DATA_JAVA;
 		PublicationDeliveryStructure publicationDelivery = (PublicationDeliveryStructure) context.get(contextKey);
 		List<JAXBElement<? extends Common_VersionFrameStructure>> dataObjectFrames = publicationDelivery.getDataObjects().getCompositeFrameOrCommonFrame();
 
 		List<ResourceFrame> resourceFrames = NetexObjectUtil.getFrames(ResourceFrame.class, dataObjectFrames);
-		if (CollectionUtils.isNotEmpty(resourceFrames)) {
-			for (ResourceFrame resourceFrame : resourceFrames) {
-				parseResourceFrame(context, resourceFrame);
-			}
-			// cache 1st occurrence of frame (presume 1 of each frame for now)
-			frameContext.put(ResourceFrame.class, resourceFrames.get(0));
-		}
-
-		List<SiteFrame> siteFrames = NetexObjectUtil.getFrames(SiteFrame.class, dataObjectFrames);
-		if (CollectionUtils.isNotEmpty(siteFrames)) {
-			for (SiteFrame siteFrame : siteFrames) {
-				parseSiteFrame(context, siteFrame);
-			}
-			// cache 1st occurrence of frame (presume 1 of each frame for now)
-			frameContext.put(SiteFrame.class, siteFrames.get(0));
-		}
-
 		List<ServiceFrame> serviceFrames = NetexObjectUtil.getFrames(ServiceFrame.class, dataObjectFrames);
-		if (CollectionUtils.isNotEmpty(serviceFrames)) {
-			for (ServiceFrame serviceFrame : serviceFrames) {
-				parseServiceFrame(context, serviceFrame, netexReferential, isCommonDelivery);
-			}
-			// cache 1st occurrence of frame (presume 1 of each frame for now)
-			frameContext.put(ServiceFrame.class, serviceFrames.get(0));
-		}
-
+		List<SiteFrame> siteFrames = NetexObjectUtil.getFrames(SiteFrame.class, dataObjectFrames);
 		List<ServiceCalendarFrame> serviceCalendarFrames = NetexObjectUtil.getFrames(ServiceCalendarFrame.class, dataObjectFrames);
-		if (CollectionUtils.isNotEmpty(serviceCalendarFrames)) {
-			for (ServiceCalendarFrame serviceCalendarFrame : serviceCalendarFrames) {
-				parseServiceCalendarFrame(context, serviceCalendarFrame);
-			}
-			// cache 1st occurrence of frame (presume 1 of each frame for now)
-			frameContext.put(ServiceCalendarFrame.class, serviceCalendarFrames.get(0));
-		}
+		List<TimetableFrame> timetableFrames = new ArrayList<>();
 
 		if (!isCommonDelivery) {
-			List<TimetableFrame> timetableFrames = NetexObjectUtil.getFrames(TimetableFrame.class, dataObjectFrames);
-			if (CollectionUtils.isNotEmpty(timetableFrames)) {
-				for (TimetableFrame timetableFrame : timetableFrames) {
-					parseTimetableFrame(context, timetableFrame);
-				}
-				// cache 1st occurrence of frame (presume 1 of each frame for now)
-				frameContext.put(TimetableFrame.class, timetableFrames.get(0));
-			}
+			timetableFrames = NetexObjectUtil.getFrames(TimetableFrame.class, dataObjectFrames);
+		}
+
+		// pre processing
+		preParseReferentialDependencies(context, serviceFrames, isCommonDelivery);
+
+		// normal processing
+		parseResourceFrames(context, resourceFrames);
+		parseSiteFrames(context, siteFrames);
+		parseServiceFrames(context, serviceFrames, isCommonDelivery);
+		parseServiceCalendarFrame(context, serviceCalendarFrames);
+
+		if (!isCommonDelivery) {
+			parseTimetableFrames(context, timetableFrames);
 		}
 
 		// post processing
-		sortStopPointsOnRoutes(referential);
+		linkStopPointsToAssignedStopArea(referential);
+		//sortStopPointsOnRoutes(referential);
 		updateBoardingAlighting(referential);
 	}
 
-	private void parseResourceFrame(Context context, ResourceFrame resourceFrame) throws Exception{
-		OrganisationsInFrame_RelStructure organisationsInFrameStruct = resourceFrame.getOrganisations();
-		if (organisationsInFrameStruct != null) {
-			context.put(NETEX_LINE_DATA_CONTEXT, organisationsInFrameStruct);
-			OrganisationParser organisationParser = (OrganisationParser) ParserFactory.create(OrganisationParser.class.getName());
-			organisationParser.parse(context);
+	private void preParseReferentialDependencies(Context context, List<ServiceFrame> serviceFrames, boolean isCommonDelivery) throws Exception {
+		if (stopAssignments == null) {
+			stopAssignments = new HashMap<>();
 		}
-	}
 
-	private void parseSiteFrame(Context context, SiteFrame siteFrame) throws Exception{
-		StopPlacesInFrame_RelStructure stopPlacesStruct = siteFrame.getStopPlaces();
-		if (stopPlacesStruct != null) {
-			context.put(NETEX_LINE_DATA_CONTEXT, stopPlacesStruct);
-			StopPlaceParser stopPlaceParser = (StopPlaceParser) ParserFactory.create(StopPlaceParser.class.getName());
-			stopPlaceParser.parse(context);
-		}
-	}
+		for (ServiceFrame serviceFrame : serviceFrames) {
+			StopAssignmentsInFrame_RelStructure stopAssignmentsStructure = serviceFrame.getStopAssignments();
+			if (stopAssignmentsStructure != null) {
+				List<JAXBElement<? extends StopAssignment_VersionStructure>> stopAssignmentElements = stopAssignmentsStructure.getStopAssignment();
 
-	private void parseServiceFrame(Context context, ServiceFrame serviceFrame, NetexReferential referential, boolean isCommonDelivery) throws Exception {
-		if (!isCommonDelivery) {
-			Network network = serviceFrame.getNetwork();
-			//NetexObjectUtil.addNetworkReference(referential, network.getId(), network);
-			context.put(NETEX_LINE_DATA_CONTEXT, network);
-			NetworkParser networkParser = (NetworkParser) ParserFactory.create(NetworkParser.class.getName());
-			networkParser.parse(context);
+				for (JAXBElement<? extends StopAssignment_VersionStructure> stopAssignmentElement : stopAssignmentElements) {
+					PassengerStopAssignment passengerStopAssignment = (PassengerStopAssignment) stopAssignmentElement.getValue();
+					ScheduledStopPointRefStructure scheduledStopPointRef = passengerStopAssignment.getScheduledStopPointRef();
+					StopPlaceRefStructure stopPlaceRef = passengerStopAssignment.getStopPlaceRef();
 
-			// this is the mapping between points on a route to the actual stop points
-			List<RoutePoint> routePoints = serviceFrame.getRoutePoints().getRoutePoint();
-			for (RoutePoint routePoint : routePoints) {
-				NetexObjectUtil.addRoutePointReference(referential, routePoint.getId(), routePoint);
+					if (scheduledStopPointRef != null && stopPlaceRef != null) {
+					    if (!stopAssignments.containsKey(scheduledStopPointRef.getRef())) {
+                            stopAssignments.put(scheduledStopPointRef.getRef(), stopPlaceRef.getRef());
+                        }
+					}
+				}
 			}
 
-			RoutesInFrame_RelStructure routesInFrameStruct = serviceFrame.getRoutes();
-			context.put(NETEX_LINE_DATA_CONTEXT, routesInFrameStruct);
-			RouteParser routeParser = (RouteParser) ParserFactory.create(RouteParser.class.getName());
-			routeParser.parse(context);
+			if (!isCommonDelivery) {
 
-			LinesInFrame_RelStructure linesInFrameStruct = serviceFrame.getLines();
-			context.put(NETEX_LINE_DATA_CONTEXT, linesInFrameStruct);
-			LineParser lineParser = (LineParser) ParserFactory.create(LineParser.class.getName());
-			lineParser.parse(context);
-		}
+				// preparsing mandatory for stop places to parse correctly
+				TariffZonesInFrame_RelStructure tariffZonesStruct = serviceFrame.getTariffZones();
+				if (tariffZonesStruct != null) {
+					context.put(NETEX_LINE_DATA_CONTEXT, tariffZonesStruct);
+					StopPlaceParser stopPlaceParser = (StopPlaceParser) ParserFactory.create(StopPlaceParser.class.getName());
+					stopPlaceParser.parse(context);
+				}
+			} else {
 
-		// parse stop assignments (connection between stop points and stop places)
-		StopAssignmentsInFrame_RelStructure stopAssignmentsStructure = serviceFrame.getStopAssignments();
-		List<JAXBElement<? extends StopAssignment_VersionStructure>> stopAssignmentElements = stopAssignmentsStructure.getStopAssignment();
+			}
+        }
+    }
 
-		for (JAXBElement<? extends StopAssignment_VersionStructure> stopAssignmentElement : stopAssignmentElements) {
-			PassengerStopAssignment passengerStopAssignment = (PassengerStopAssignment) stopAssignmentElement.getValue();
-			NetexObjectUtil.addPassengerStopAssignmentReference(referential, passengerStopAssignment.getId(), passengerStopAssignment);
-		}
-
-		ScheduledStopPointsInFrame_RelStructure scheduledStopPointStruct = serviceFrame.getScheduledStopPoints();
-		context.put(NETEX_LINE_DATA_CONTEXT, scheduledStopPointStruct);
-		StopPointParser stopPointParser = (StopPointParser) ParserFactory.create(StopPointParser.class.getName());
-		stopPointParser.parse(context);
-
-		if (!isCommonDelivery) {
-			JourneyPatternsInFrame_RelStructure journeyPatternStruct = serviceFrame.getJourneyPatterns();
-			context.put(NETEX_LINE_DATA_CONTEXT, journeyPatternStruct);
-			JourneyPatternParser journeyPatternParser = (JourneyPatternParser) ParserFactory.create(JourneyPatternParser.class.getName());
-			journeyPatternParser.initReferentials(context);
+    private void parseResourceFrames(Context context, List<ResourceFrame> resourceFrames) throws Exception {
+		for (ResourceFrame resourceFrame : resourceFrames) {
+			OrganisationsInFrame_RelStructure organisationsInFrameStruct = resourceFrame.getOrganisations();
+			if (organisationsInFrameStruct != null) {
+				context.put(NETEX_LINE_DATA_CONTEXT, organisationsInFrameStruct);
+				OrganisationParser organisationParser = (OrganisationParser) ParserFactory.create(OrganisationParser.class.getName());
+				organisationParser.parse(context);
+			}
 		}
 	}
 
-	private void parseServiceCalendarFrame(Context context, ServiceCalendarFrame serviceCalendarFrame) throws Exception {
-		DayTypesInFrame_RelStructure dayTypeStruct = serviceCalendarFrame.getDayTypes();
-		context.put(NETEX_LINE_DATA_CONTEXT, dayTypeStruct);
-		Parser dayTypeParser = ParserFactory.create(DayTypeParser.class.getName());
-		dayTypeParser.parse(context);
+	private void parseSiteFrames(Context context, List<SiteFrame> siteFrames) throws Exception {
+		for (SiteFrame siteFrame : siteFrames) {
+            StopPlacesInFrame_RelStructure stopPlacesStruct = siteFrame.getStopPlaces();
+			if (stopPlacesStruct != null) {
+				context.put(NETEX_LINE_DATA_CONTEXT, stopPlacesStruct);
+				StopPlaceParser stopPlaceParser = (StopPlaceParser) ParserFactory.create(StopPlaceParser.class.getName());
+				stopPlaceParser.parse(context);
+			}
+		}
 	}
 
-	private void parseTimetableFrame(Context context, TimetableFrame timetableFrame) throws Exception {
-		JourneysInFrame_RelStructure vehicleJourneysStruct = timetableFrame.getVehicleJourneys();
-		context.put(NETEX_LINE_DATA_CONTEXT, vehicleJourneysStruct);
-		Parser vehicleJourneyParser = ParserFactory.create(VehicleJourneyParser.class.getName());
-		vehicleJourneyParser.parse(context);
+	private void parseServiceFrames(Context context, List<ServiceFrame> serviceFrames, boolean isCommonDelivery) throws Exception {
+		for (ServiceFrame serviceFrame : serviceFrames) {
+			if (!isCommonDelivery) {
+				Network network = serviceFrame.getNetwork();
+				context.put(NETEX_LINE_DATA_CONTEXT, network);
+				NetworkParser networkParser = (NetworkParser) ParserFactory.create(NetworkParser.class.getName());
+				networkParser.parse(context);
+
+				LinesInFrame_RelStructure linesInFrameStruct = serviceFrame.getLines();
+				context.put(NETEX_LINE_DATA_CONTEXT, linesInFrameStruct);
+				LineParser lineParser = (LineParser) ParserFactory.create(LineParser.class.getName());
+				lineParser.parse(context);
+
+				RoutesInFrame_RelStructure routesInFrameStruct = serviceFrame.getRoutes();
+				context.put(NETEX_LINE_DATA_CONTEXT, routesInFrameStruct);
+				RouteParser routeParser = (RouteParser) ParserFactory.create(RouteParser.class.getName());
+				routeParser.parse(context);
+			}
+
+			if (!isCommonDelivery) {
+				JourneyPatternsInFrame_RelStructure journeyPatternStruct = serviceFrame.getJourneyPatterns();
+				context.put(NETEX_LINE_DATA_CONTEXT, journeyPatternStruct);
+                JourneyParser journeyParser = (JourneyParser) ParserFactory.create(JourneyParser.class.getName());
+                journeyParser.parse(context);
+
+				TransfersInFrame_RelStructure connectionsStruct = serviceFrame.getConnections();
+				if (connectionsStruct != null) {
+					// TODO implement connection link parser
+				}
+			}
+		}
+	}
+
+	private void parseServiceCalendarFrame(Context context, List<ServiceCalendarFrame> serviceCalendarFrames) throws Exception {
+		for (ServiceCalendarFrame serviceCalendarFrame : serviceCalendarFrames) {
+            Parser calendarParser = ParserFactory.create(CalendarParser.class.getName());
+
+            ValidityConditions_RelStructure validityConditionsStruct = serviceCalendarFrame.getContentValidityConditions();
+            if (validityConditionsStruct != null) {
+                context.put(NETEX_LINE_DATA_CONTEXT, validityConditionsStruct);
+                calendarParser.parse(context);
+            }
+            DayTypesInFrame_RelStructure dayTypeStruct = serviceCalendarFrame.getDayTypes();
+            if (dayTypeStruct != null) {
+                context.put(NETEX_LINE_DATA_CONTEXT, dayTypeStruct);
+                calendarParser.parse(context);
+            }
+            OperatingDaysInFrame_RelStructure operatingDaysStruct = serviceCalendarFrame.getOperatingDays();
+            if (operatingDaysStruct != null) {
+                context.put(NETEX_LINE_DATA_CONTEXT, operatingDaysStruct);
+                calendarParser.parse(context);
+            }
+            OperatingPeriodsInFrame_RelStructure operatingPeriodsStruct = serviceCalendarFrame.getOperatingPeriods();
+            if (operatingPeriodsStruct != null) {
+                context.put(NETEX_LINE_DATA_CONTEXT, operatingPeriodsStruct);
+                calendarParser.parse(context);
+            }
+		}
+	}
+
+	private void parseTimetableFrames(Context context, List<TimetableFrame> timetableFrames) throws Exception {
+		for (TimetableFrame timetableFrame : timetableFrames) {
+			JourneysInFrame_RelStructure vehicleJourneysStruct = timetableFrame.getVehicleJourneys();
+			context.put(NETEX_LINE_DATA_CONTEXT, vehicleJourneysStruct);
+			Parser journeyParser = ParserFactory.create(JourneyParser.class.getName());
+			journeyParser.parse(context);
+		}
 	}
 
 	@Override
 	public void initReferentials(Context context) throws Exception {
 	}
+
+	private void linkStopPointsToAssignedStopArea(Referential referential) {
+        Collection<StopPoint> stopPoints = referential.getStopPoints().values();
+
+        for (StopPoint stopPoint : stopPoints) {
+            String stopPointObjectId = stopPoint.getObjectId();
+            String stopAreaObjectId;
+
+            if (stopAssignments.containsKey(stopPointObjectId)) {
+                stopAreaObjectId = stopAssignments.get(stopPointObjectId);
+                StopArea stopArea = ObjectFactory.getStopArea(referential, stopAreaObjectId);
+                stopPoint.setContainedInStopArea(stopArea);
+                stopPoint.setFilled(true);
+            }
+        }
+    }
 
 	private void sortStopPointsOnRoutes(Referential referential) {
 		referential.getRoutes().values().forEach(route -> route.getStopPoints()
