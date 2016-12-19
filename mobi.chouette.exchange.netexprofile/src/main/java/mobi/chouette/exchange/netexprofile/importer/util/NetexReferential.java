@@ -78,6 +78,10 @@ public class NetexReferential implements Serializable {
 
     @Getter
     @Setter
+    private Map<String, PassengerStopAssignment> sharedStopAssignments = new HashMap<>();
+
+    @Getter
+    @Setter
     private Map<String, ScheduledStopPoint> scheduledStopPoints = new HashMap<>();
 
     @Getter
@@ -119,6 +123,7 @@ public class NetexReferential implements Serializable {
 
     public void dispose() {
         clear();
+        sharedStopAssignments.clear();
     }
 
 }

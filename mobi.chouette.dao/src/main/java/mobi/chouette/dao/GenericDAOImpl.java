@@ -20,7 +20,7 @@ import org.hibernate.Session;
 
 import com.google.common.collect.Iterables;
 
-public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
+public abstract class 	GenericDAOImpl<T> implements GenericDAO<T> {
 
 	protected EntityManager em;
 

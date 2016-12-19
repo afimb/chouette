@@ -5,8 +5,6 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.netexprofile.Constant;
 
-import java.util.Collection;
-
 @Log4j
 public abstract class AbstractParser implements Parser, Constant {
 
@@ -34,9 +32,5 @@ public abstract class AbstractParser implements Parser, Constant {
     }
 
     public abstract void initReferentials(Context context) throws Exception;
-
-    protected boolean isCollectionEmpty (Collection< ? > collection){
-        return collection == null || collection.isEmpty();
-    }
 
 }
