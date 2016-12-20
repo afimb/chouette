@@ -10,8 +10,15 @@ import java.util.Set;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
+
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
+import mobi.chouette.common.TransportMode;
+import mobi.chouette.exchange.TransportModeConverter;
+import mobi.chouette.exchange.netex.NetexTransportModeConverter;
 import mobi.chouette.exchange.netex.exporter.ExportableData;
 import mobi.chouette.exchange.netex.exporter.ModelTranslator;
+import mobi.chouette.exchange.netex.exporter.NetexExportParameters;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
@@ -22,12 +29,16 @@ import mobi.chouette.model.RoutingConstraint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 
-public class ServiceFrameWriter extends AbstractWriter{
+public class ServiceFrameWriter extends AbstractWriter implements Constant{
 	
 
 	
-	public static void write(Writer writer, ExportableData data ) throws IOException, DatatypeConfigurationException 
+	public static void write(Context context, Writer writer, ExportableData data ) throws IOException, DatatypeConfigurationException 
 	{
+		NetexExportParameters parameters = (NetexExportParameters) context.get(CONFIGURATION);
+		NetexTransportModeConverter ntmc = NetexTransportModeConverter.getInstance();
+		TransportModeConverter tmc = (TransportModeConverter) context.get(TRANSPORT_MODE_CONVERTER);
+		
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 		DatatypeFactory durationFactory = DatatypeFactory.newInstance();
 		Line line = data.getLine();
@@ -182,8 +193,16 @@ public class ServiceFrameWriter extends AbstractWriter{
 		writer.write("      <Description>"+toXml(line.getComment())+"</Description>\n");
 		//      #end
 		//      #if ( $line.transportModeName )
-		if (isSet(line.getTransportModeName()))
-		writer.write("      <TransportMode>"+modelTranslator.toTransportModeNetex(line.getTransportModeName())+"</TransportMode>\n");
+		if (line.getTransportModeContainer() != null) {
+			if (!parameters.getDefaultFormat().equalsIgnoreCase("Netex")) {
+				TransportMode ptM = tmc.specificToGenericMode(line.getTransportModeContainer());
+				TransportMode tM = ntmc.genericToSpecificMode(ptM);
+				if (tM != null)
+					writer.write("      <TransportMode>"+modelTranslator.toTransportModeNetex(line.getTransportMode())+"</TransportMode>\n");
+
+			}
+
+		}
 		//      #end
 		//      #if ( $line.number )
 		if (isSet(line.getNumber()))

@@ -14,6 +14,9 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.TransportModeConverter;
+import mobi.chouette.exchange.TransportModeConverterFactory;
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.ReportConstant;
@@ -42,10 +45,14 @@ public class MainCommand implements Command, Constant {
 		try {
 			// set job status to started
 			// jobManager.start(jobService);
-			context.put(CONFIGURATION, jobService.getActionParameter());
+			
+			AbstractParameter parameters = jobService.getActionParameter();
+			context.put(CONFIGURATION, parameters);
+			
 			ValidationParameters validationParameters = jobService.getValidationParameter();
 			if (validationParameters != null)
 			   context.put(VALIDATION, validationParameters);
+			context.put(TRANSPORT_MODE_CONVERTER, TransportModeConverterFactory.create(parameters.getDefaultFormat()));
 			context.put(REPORT, new ActionReport());
 			context.put(VALIDATION_REPORT, new ValidationReport());
 			String name = jobService.getCommandName();

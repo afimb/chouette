@@ -38,7 +38,7 @@ public class NetexLineProducer implements Constant {
 		File file = new File(dir.toFile(), fileName);
 
 		NetexFileWriter writer = new NetexFileWriter();
-		writer.writeXmlFile(collection, file);
+		writer.writeXmlFile(context, collection, file);
 
 		reporter.addFileReport(context, fileName, IO_TYPE.OUTPUT);
 

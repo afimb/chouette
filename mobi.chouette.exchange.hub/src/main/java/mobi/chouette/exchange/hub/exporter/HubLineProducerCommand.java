@@ -179,7 +179,7 @@ public class HubLineProducerCommand implements Command, Constant {
 			context.put(HUB_MODETRANSPORT_PRODUCER, modeTransportProducer);
 		}
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
-		modeTransportProducer.addLine(collection.getLine());
+		modeTransportProducer.addLine(context, collection.getLine());
 
 	}
 

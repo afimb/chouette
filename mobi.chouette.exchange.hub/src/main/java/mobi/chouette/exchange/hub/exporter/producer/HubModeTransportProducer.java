@@ -17,7 +17,12 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.TransportMode;
+import mobi.chouette.exchange.TransportModeConverter;
+import mobi.chouette.exchange.hub.HubTransportModeConverter;
+import mobi.chouette.exchange.hub.exporter.HubExportParameters;
 import mobi.chouette.exchange.hub.model.HubModeTransport;
 import mobi.chouette.exchange.hub.model.exporter.HubExporterInterface;
 import mobi.chouette.model.Line;
@@ -28,53 +33,68 @@ import mobi.chouette.model.Line;
  * optimise multiple period timetable with calendarDate inclusion or exclusion
  */
 @Log4j
-public class HubModeTransportProducer extends AbstractProducer {
+public class HubModeTransportProducer extends AbstractProducer implements Constant{
 
-	private Map<HubModeTransport.MODE_TRANSPORT, HubModeTransport> modesTransport = new HashMap<>();
-
+	private Map<TransportMode, HubModeTransport> modesTransport = new HashMap<>();
+	
 	public HubModeTransportProducer(HubExporterInterface exporter) {
 		super(exporter);
 	}
 
-	public boolean addLine(Line line) {
-		HubModeTransport.MODE_TRANSPORT mode = null;
-		switch (line.getTransportModeName()) {
-		case Air:
-			mode = HubModeTransport.MODE_TRANSPORT.AVION;
-			break;
-		case Bicycle:
-			mode = HubModeTransport.MODE_TRANSPORT.VELO;
-			break;
-		case Bus:
-			mode = HubModeTransport.MODE_TRANSPORT.BUS;
-			break;
-		case Coach:
-			mode = HubModeTransport.MODE_TRANSPORT.CAR;
-			break;
-		case Waterborne:
-		case Ferry:
-			mode = HubModeTransport.MODE_TRANSPORT.BATEAU;
-			break;
-		case LocalTrain:
-		case Train:
-		case LongDistanceTrain:
-		case LongDistanceTrain_2:
-			mode = HubModeTransport.MODE_TRANSPORT.TRAIN;
-			break;
-		case Metro:
-			mode = HubModeTransport.MODE_TRANSPORT.METRO;
-			break;
-		case Tramway:
-			mode = HubModeTransport.MODE_TRANSPORT.TRAM;
-			break;
-		case Trolleybus:
-			mode = HubModeTransport.MODE_TRANSPORT.TROLLEY;
-			break;
-
-		default:
-			return false; // not implemented
-		}
+	public boolean addLine(Context context, Line line) {
+		HubExportParameters parameters = (HubExportParameters) context.get(CONFIGURATION);
+		HubTransportModeConverter htmc = HubTransportModeConverter.getInstance();
+		TransportModeConverter tmc = (TransportModeConverter) context.get(TRANSPORT_MODE_CONVERTER);
+		TransportMode mode = null;
+//		HubModeTransport.MODE_TRANSPORT mode = null;
+//		switch (line.getTransportModeName()) {
+//		case Air:
+//			mode = HubModeTransport.MODE_TRANSPORT.AVION;
+//			break;
+//		case Bicycle:
+//			mode = HubModeTransport.MODE_TRANSPORT.VELO;
+//			break;
+//		case Bus:
+//			mode = HubModeTransport.MODE_TRANSPORT.BUS;
+//			break;
+//		case Coach:
+//			mode = HubModeTransport.MODE_TRANSPORT.CAR;
+//			break;
+//		case Waterborne:
+//		case Ferry:
+//			mode = HubModeTransport.MODE_TRANSPORT.BATEAU;
+//			break;
+//		case LocalTrain:
+//		case Train:
+//		case LongDistanceTrain:
+//		case LongDistanceTrain_2:
+//			mode = HubModeTransport.MODE_TRANSPORT.TRAIN;
+//			break;
+//		case Metro:
+//			mode = HubModeTransport.MODE_TRANSPORT.METRO;
+//			break;
+//		case Tramway:
+//			mode = HubModeTransport.MODE_TRANSPORT.TRAM;
+//			break;
+//		case Trolleybus:
+//			mode = HubModeTransport.MODE_TRANSPORT.TROLLEY;
+//			break;
+//
+//		default:
+//			return false; // not implemented
+//		}
+		
+		if (!parameters.getDefaultFormat().equalsIgnoreCase("Hub")) {
+			TransportMode ptM = tmc.specificToGenericMode(line.getTransportModeContainer());
+			TransportMode tM = htmc.genericToSpecificMode(ptM);
+			if (tM != null) {
+				mode = tM;
+			}
+		} else
+			mode = line.getTransportModeContainer();
+		
 		HubModeTransport hubObject = modesTransport.get(mode);
+		
 		if (hubObject == null) {
 			hubObject = new HubModeTransport();
 			hubObject.setCode(mode);
@@ -108,7 +128,7 @@ public class HubModeTransportProducer extends AbstractProducer {
 		@Override
 		public int compare(HubModeTransport arg0, HubModeTransport arg1) {
 
-			return arg0.getCode().name().compareTo(arg1.getCode().name());
+			return arg0.getCode().getMode().compareTo(arg1.getCode().getMode());
 		}
 	}
 

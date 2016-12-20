@@ -433,7 +433,7 @@ public class ValidationLines extends AbstractTestValidation
 		}
 
 		{ // check test detect invalid transport mode
-			line1.setTransportModeName(TransportModeNameEnum.Bus);
+			line1.setTransportMode("Bus");
 			context.put(VALIDATION_REPORT, new ValidationReport());
 			fullparameters.getModeBus().setAllowedTransport(0);
 			context.put(VALIDATION,fullparameters);

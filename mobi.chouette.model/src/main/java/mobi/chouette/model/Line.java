@@ -28,7 +28,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.common.TransportMode;
 import mobi.chouette.model.type.UserNeedEnum;
 import mobi.chouette.model.util.ObjectIdTypes;
 
@@ -171,11 +171,18 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 		registrationNumber = StringUtils.abbreviate(value, 255);
 
 	}
-
+	
+	public TransportMode getTransportModeContainer() {
+		TransportMode tM = new TransportMode();
+		tM.setMode(transportMode);
+		tM.setSubMode(transportSubMode);
+		
+		return tM;
+	}
 	/**
 	 * Transport mode (default value = Bus)
 	 * 
-	 * @param transportModeName
+	 * @param transportMode
 	 *            New value
 	 * @return The actual value
 	 */
@@ -183,7 +190,20 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	@Setter
 	@Enumerated(EnumType.STRING)
 	@Column(name = "transport_mode_name")
-	private TransportModeNameEnum transportModeName = TransportModeNameEnum.Bus;
+	private String transportMode = "Bus";
+	
+	/**
+	 * Transport submode (default value = Bus)
+	 * 
+	 * @param transportSubMode
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@Enumerated(EnumType.STRING)
+	@Column(name = "transport_submode_name")
+	private String transportSubMode = "Bus";
 
 	/**
 	 * mobility restriction indicator (such as wheel chairs) <br/>

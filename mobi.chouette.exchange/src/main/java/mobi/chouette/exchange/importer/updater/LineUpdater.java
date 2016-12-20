@@ -97,7 +97,8 @@ public class LineUpdater implements Updater<Line> {
 			oldValue.setNumber(newValue.getNumber());
 			oldValue.setPublishedName(newValue.getPublishedName());
 			oldValue.setRegistrationNumber(newValue.getRegistrationNumber());
-			oldValue.setTransportModeName(newValue.getTransportModeName());
+			oldValue.setTransportMode(newValue.getTransportMode());
+			oldValue.setTransportSubMode(newValue.getTransportSubMode());
 			oldValue.setMobilityRestrictedSuitable(newValue.getMobilityRestrictedSuitable());
 			oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
 			oldValue.setUrl(newValue.getUrl());
@@ -136,9 +137,13 @@ public class LineUpdater implements Updater<Line> {
 					&& !newValue.getRegistrationNumber().equals(oldValue.getRegistrationNumber())) {
 				oldValue.setRegistrationNumber(newValue.getRegistrationNumber());
 			}
-			if (newValue.getTransportModeName() != null
-					&& !newValue.getTransportModeName().equals(oldValue.getTransportModeName())) {
-				oldValue.setTransportModeName(newValue.getTransportModeName());
+			if (newValue.getTransportMode() != null
+					&& !newValue.getTransportMode().equals(oldValue.getTransportMode())) {
+				oldValue.setTransportMode(newValue.getTransportMode());
+			}
+			if (newValue.getTransportSubMode() != null
+					&& !newValue.getTransportSubMode().equals(oldValue.getTransportSubMode())) {
+				oldValue.setTransportSubMode(newValue.getTransportSubMode());
 			}
 			if (newValue.getMobilityRestrictedSuitable() != null
 					&& !newValue.getMobilityRestrictedSuitable().equals(oldValue.getMobilityRestrictedSuitable())) {

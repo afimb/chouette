@@ -13,8 +13,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -23,6 +21,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.common.TransportMode;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 
@@ -330,6 +329,41 @@ public class StopArea extends NeptuneLocalizedObject {
 		}
 		this.intUserNeeds = value;
 	}
+	
+	public TransportMode getTransportModeContainer() {
+		TransportMode tM = new TransportMode();
+		tM.setMode(transportMode);
+		tM.setSubMode(transportSubMode);
+		
+		return tM;
+	}
+	
+	/**
+	 * Transport mode when different from line transport mode
+	 * 
+	 * @param transportMode
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@Enumerated(EnumType.STRING)
+	@Column(name = "transport_mode")
+	private String transportMode;
+	
+	/**
+	 * Transport submode when different from line transport submode
+	 * 
+	 * @param transportMode
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@Enumerated(EnumType.STRING)
+	@Column(name = "transport_submode")
+	private String transportSubMode;
+	
 
 	/**
 	 * stop area parent<br/>

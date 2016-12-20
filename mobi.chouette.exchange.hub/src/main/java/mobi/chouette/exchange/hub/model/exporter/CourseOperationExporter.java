@@ -45,7 +45,7 @@ public class CourseOperationExporter extends ExporterImpl<HubCourseOperation> im
 					input.getCodeLot(), false));
 			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_activite,
 					input.getCodeActivite(), false));
-			values.add(ENUM_CONVERTER.to(hubContext, FIELDS.mode_transport,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.mode_transport,
 					input.getModeTransport(), false));
 			values.add(STRING_CONVERTER.to(hubContext, FIELDS.libre1,
 					input.getLibre1(), false));

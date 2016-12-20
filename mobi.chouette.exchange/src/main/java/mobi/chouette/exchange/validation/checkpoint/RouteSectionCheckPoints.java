@@ -54,7 +54,7 @@ public class RouteSectionCheckPoints extends AbstractValidation<RouteSection> im
 		
 		for (int i = jpRank + 1; i < beans.size(); i++) {
 			JourneyPattern jp2 = beans.get(i);
-			String modeKey = jp2.getRoute().getLine().getTransportModeName().toString();
+			String modeKey = jp2.getRoute().getLine().getTransportMode();
 			TransportModeParameters mode = getModeParameters(parameters, modeKey, log);
 			if (mode == null) {
 				log.error("no parameters for mode " + modeKey);

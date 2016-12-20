@@ -4,18 +4,20 @@ import java.util.Collection;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.TransportMode;
 import mobi.chouette.common.XPPUtil;
+import mobi.chouette.exchange.TransportModeConverter;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.netex.NetexChouetteIdGenerator;
 import mobi.chouette.exchange.netex.NetexChouetteIdObjectUtil;
+import mobi.chouette.exchange.netex.NetexTransportModeConverter;
 import mobi.chouette.exchange.netex.importer.NetexImportParameters;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
-import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -53,7 +55,8 @@ public class LineParser implements Parser, Constant {
 		
 		NetexImportParameters configuration = (NetexImportParameters) context.get(CONFIGURATION);
 		NetexChouetteIdGenerator chouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-
+		NetexTransportModeConverter ntmc = NetexTransportModeConverter.getInstance();
+		TransportModeConverter tmc = (TransportModeConverter) context.get(TRANSPORT_MODE_CONVERTER);
 		String id = xpp.getAttributeValue(null, ID);
 		Line line = NetexChouetteIdObjectUtil.getLine(referential, chouetteIdGenerator.toChouetteId(id, configuration.getDefaultCodespace(),Line.class));
 
@@ -68,9 +71,20 @@ public class LineParser implements Parser, Constant {
 			} else if (xpp.getName().equals("Description")) {
 				line.setComment(xpp.nextText());
 			} else if (xpp.getName().equals("TransportMode")) {
-				TransportModeNameEnum transportModeName = NetexUtils
-						.toTransportModeNameEnum(xpp.nextText());
-				line.setTransportModeName(transportModeName);
+				String value = xpp.nextText();
+				if( value != null) {
+					// If base default format different than netex
+					if (!configuration.getDefaultFormat().equalsIgnoreCase("Netex")) {
+						if(value != null) {
+							TransportMode trSrc = new TransportMode(value, "unspecified");
+							TransportMode tmpTM = ntmc.specificToGenericMode(trSrc);
+							TransportMode tM = tmc.genericToSpecificMode(tmpTM);
+					
+							line.setTransportMode(tM.getMode());
+							line.setTransportSubMode(tM.getSubMode());
+						}
+					}
+				}
 			} else if (xpp.getName().equals("PublicCode")) {
 				line.setNumber(xpp.nextText());
 			} else if (xpp.getName().equals("PrivateCode")) {

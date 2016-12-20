@@ -7,12 +7,12 @@ import mobi.chouette.common.TransportMode;
  *
  */
 public interface TransportModeConverter {
-	
+	public final static String CODE ="code";
 	public final static String MODE ="mode";
 	public final static String SUBMODE ="submode";
 	public final static String PIVOT ="pivot";
 	public final static String PIVOT_SUBMODE ="pivot-submode";
 	
-	TransportMode importModeToSpecificMode(TransportMode importMode);
+	TransportMode genericToSpecificMode(TransportMode importMode);
 	TransportMode specificToGenericMode(TransportMode specificMode);
 }

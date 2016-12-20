@@ -9,9 +9,15 @@
 package mobi.chouette.exchange.gtfs.exporter.producer;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
+import mobi.chouette.common.TransportMode;
+import mobi.chouette.exchange.TransportModeConverter;
+import mobi.chouette.exchange.gtfs.GtfsTransportModeConverter;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.RouteTypeEnum;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.model.Line;
 
 /**
@@ -20,7 +26,7 @@ import mobi.chouette.model.Line;
  * optimise multiple period timetable with calendarDate inclusion or exclusion
  */
 @Log4j
-public class GtfsRouteProducer extends AbstractProducer
+public class GtfsRouteProducer extends AbstractProducer implements Constant
 {
    public GtfsRouteProducer(GtfsExporterInterface exporter)
    {
@@ -29,8 +35,11 @@ public class GtfsRouteProducer extends AbstractProducer
 
    private GtfsRoute route = new GtfsRoute();
 
-   public boolean save(Line neptuneObject,  String prefix,boolean keepOriginalId)
+   public boolean save(Context context, Line neptuneObject,  String prefix, boolean keepOriginalId)
    {
+	   AbstractParameter parameters = (AbstractParameter)context.get(CONFIGURATION);
+	   TransportModeConverter tmc = (TransportModeConverter) context.get(TRANSPORT_MODE_CONVERTER);
+	   GtfsTransportModeConverter gtmc = GtfsTransportModeConverter.getInstance();
       route.setRouteId(toGtfsId(neptuneObject.getChouetteId(), prefix,keepOriginalId));
       route.setAgencyId(toGtfsId(neptuneObject.getCompany().getChouetteId(), prefix, keepOriginalId));
       route.setRouteShortName(null);
@@ -82,39 +91,16 @@ public class GtfsRouteProducer extends AbstractProducer
       route.setRouteTextColor(getColor(neptuneObject.getTextColor()));
       route.setRouteUrl(getUrl(neptuneObject.getUrl()));
 
-      if (neptuneObject.getTransportModeName() != null)
+      if (neptuneObject.getTransportModeContainer() != null)
       {
-         switch (neptuneObject.getTransportModeName())
-         {
-         case Tramway:
-            route.setRouteType(RouteTypeEnum.Tram);
-            break;
-         case Trolleybus:
-         case Coach:
-         case Bus:
-            route.setRouteType(RouteTypeEnum.Bus);
-            break;
-         case Val:
-         case Metro:
-            route.setRouteType(RouteTypeEnum.Subway);
-            break;
-         case RapidTransit:
-         case LocalTrain:
-         case LongDistanceTrain:
-         case Train:
-            route.setRouteType(RouteTypeEnum.Rail);
-            break;
-         case Ferry:
-            route.setRouteType(RouteTypeEnum.Ferry);
-            break;
-         default:
-            route.setRouteType(RouteTypeEnum.Bus);
-         }
+    	  if (!parameters.getDefaultFormat().equalsIgnoreCase("Gtfs")) {
+    		  TransportMode ptM = tmc.specificToGenericMode(neptuneObject.getTransportModeContainer());
+    		  Integer code = gtmc.fromPivotTransportModeToCode(ptM);
+    		  if (code != null)
+    			  route.setRouteType(RouteTypeEnum.fromValue(code.intValue()));
+    	  }	  
       }
-      else
-      {
-         route.setRouteType(RouteTypeEnum.Bus);
-      }
+  
 
       try
       {

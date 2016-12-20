@@ -1,10 +1,13 @@
 package mobi.chouette.exchange.gtfs;
 
+import java.io.IOException;
 import java.util.regex.Pattern;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.ChouetteId;
 import mobi.chouette.exchange.AbstractChouetteIdGenerator;
+import mobi.chouette.exchange.ChouetteIdGenerator;
+import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 
 @Log4j
@@ -60,5 +63,18 @@ public class GtfsChouetteIdGenerator extends AbstractChouetteIdGenerator{
 		objectId += chouetteId.getTechnicalId();
 		
 		return objectId;
+	}
+	
+	public static class DefaultFactory extends ChouetteIdGeneratorFactory {
+
+		@Override
+		protected ChouetteIdGenerator create() throws IOException {
+			ChouetteIdGenerator result = new GtfsChouetteIdGenerator();
+			return result;
+		}
+	}
+
+	static {
+		ChouetteIdGeneratorFactory.factories.put("Gtfs", new DefaultFactory());
 	}
 }

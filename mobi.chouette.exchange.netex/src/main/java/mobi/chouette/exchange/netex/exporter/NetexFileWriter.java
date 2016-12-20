@@ -7,6 +7,7 @@ import java.io.Writer;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.netex.exporter.writer.DeliveryWriter;
 
@@ -77,7 +78,7 @@ public class NetexFileWriter implements Constant {
 //		}
 //	}
 
-	public File writeXmlFile(ExportableData collection, File file) throws IOException, DatatypeConfigurationException {
+	public File writeXmlFile(Context context, ExportableData collection, File file) throws IOException, DatatypeConfigurationException {
 		// Prepare the model for velocity
 //		 prepareModel(collection);
 //		Monitor monitor = MonitorFactory.start("NetexFileWriter.writeXmlFile");
@@ -87,7 +88,7 @@ public class NetexFileWriter implements Constant {
 //		velocityContext.put("esc", new EscapeTool());
 //		
 		Writer output = new FileWriterWithEncoding(file, "UTF-8");
-		DeliveryWriter.write(output, collection);
+		DeliveryWriter.write(context, output, collection);
 		output.close();
 //
 //		velocityEngine.mergeTemplate("templates/line.vm", "UTF-8", velocityContext, output);

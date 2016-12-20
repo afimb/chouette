@@ -127,7 +127,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 					properties.put("line_published_name", getProperty(line.getPublishedName()));
 					properties.put("company_objectid", getProperty(chouetteIdGenerator.toSpecificFormatId(line.getCompany().getChouetteId(), parameters.getDefaultCodespace(), line.getCompany())));
 					properties.put("network_objectid", getProperty(chouetteIdGenerator.toSpecificFormatId(line.getNetwork().getChouetteId(), parameters.getDefaultCodespace(), line.getNetwork())));
-					properties.put("transport_mode", getProperty(line.getTransportModeName()));
+					properties.put("transport_mode", getProperty(line.getTransportMode()));
 					properties.put("color", getProperty(line.getColor()));
 					properties.put("text_color", getProperty(line.getTextColor()));
 

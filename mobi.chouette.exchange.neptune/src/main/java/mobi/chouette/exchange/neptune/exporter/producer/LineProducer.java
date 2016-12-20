@@ -5,8 +5,11 @@ import java.util.Collection;
 import java.util.List;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.common.TransportMode;
+import mobi.chouette.exchange.TransportModeConverter;
 import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.NeptuneTransportModeConverter;
 import mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.Line;
@@ -34,8 +37,10 @@ public class LineProducer extends AbstractJaxbNeptuneProducer<ChouettePTNetworkT
 	public ChouettePTNetworkType.ChouetteLineDescription.Line produce(Context context, Line line, Collection<Route> exportableRoutes, boolean addExtension) {
 		ChouettePTNetworkType.ChouetteLineDescription.Line jaxbLine = tridentFactory
 				.createChouettePTNetworkTypeChouetteLineDescriptionLine();
-		  NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(CONFIGURATION);
-		   NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(CONFIGURATION);
+		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		NeptuneTransportModeConverter ntmc = NeptuneTransportModeConverter.getInstance();
+		TransportModeConverter tmc = (TransportModeConverter) context.get(TRANSPORT_MODE_CONVERTER);
 		//
 		populateFromModel(context, jaxbLine, line);
 
@@ -46,10 +51,15 @@ public class LineProducer extends AbstractJaxbNeptuneProducer<ChouettePTNetworkT
 		jaxbLine.setPtNetworkIdShortcut(getNonEmptyObjectId(context, line.getNetwork()));
 
 		try {
-			TransportModeNameEnum transportModeName = line.getTransportModeName();
-			if (transportModeName != null) {
-				jaxbLine.setTransportModeName(TransportModeNameType.fromValue(transportModeName.name()));
-			}
+			 if (line.getTransportModeContainer() != null)
+		      {
+		    	  if (!parameters.getDefaultFormat().equalsIgnoreCase("Neptune")) {
+		    		  TransportMode ptM = tmc.specificToGenericMode(line.getTransportModeContainer());
+		    		  TransportMode tM = ntmc.genericToSpecificMode(ptM);
+		    		  if (tM != null)
+		    			  jaxbLine.setTransportModeName(TransportModeNameType.fromValue(tM.getMode()));
+		    	  }	  
+		      }
 		} catch (IllegalArgumentException e) {
 			// should not arrive after xsd validation
 		}

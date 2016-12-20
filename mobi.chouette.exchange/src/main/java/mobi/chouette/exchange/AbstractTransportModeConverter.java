@@ -1,17 +1,19 @@
 package mobi.chouette.exchange;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
+import lombok.Getter;
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.TransportMode;
+
+import org.apache.commons.io.IOUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.TransportMode;
 
 /**
  * Classe permettant de gérer les conversions entre les modes de transports des différents format d'échange
@@ -19,11 +21,15 @@ import mobi.chouette.common.TransportMode;
  *
  */
 @Log4j
-public class AbstractTransportModeConverter implements TransportModeConverter{
-	protected static Path transportModePath;
+public abstract class AbstractTransportModeConverter implements TransportModeConverter{
+	
+	@Getter
+	protected static Map<TransportMode, TransportMode> mapTransportToPivotMode;
+	@Getter
+	protected static Map<TransportMode, TransportMode> mapPivotToTransportMode;
 	
 	@Override
-	public TransportMode importModeToSpecificMode(TransportMode importMode) {
+	public TransportMode genericToSpecificMode(TransportMode importMode) {
 		return null;
 	}
 
@@ -32,15 +38,18 @@ public class AbstractTransportModeConverter implements TransportModeConverter{
 		return null;
 	}
 
-	public static List<TransportMode> getTransportModeListFromJSONFile(Path transportModePath) {
-		List<TransportMode> listTransportMode = null;
+	public static void getTransportModeListFromJSONFile(String urlStr) {
 		byte[] bytes = null;
 		String text = null;
 		
 		try {
-			bytes = Files.readAllBytes(transportModePath);
+			mapTransportToPivotMode = new HashMap<TransportMode, TransportMode>();
+			mapPivotToTransportMode = new HashMap<TransportMode, TransportMode>();
+			URL url = new URL(urlStr);
+			InputStream is = url.openStream();
+			
+			bytes = IOUtils.toByteArray(is);
 			text = new String(bytes, "UTF-8");
-			listTransportMode = new ArrayList<TransportMode>();
 			if (text != null && text.trim().startsWith("[") && text.trim().endsWith("]")) {
 				JSONArray arrayModesTransport;
 				try {
@@ -54,8 +63,8 @@ public class AbstractTransportModeConverter implements TransportModeConverter{
 						String pivotSub = transportMode.optString(PIVOT_SUBMODE, null);
 
 						if (mode != null && subMode != null && pivot != null && pivotSub != null) {
-							TransportMode tM = new TransportMode(mode, subMode, pivot, pivotSub);
-							listTransportMode.add(tM);
+							mapTransportToPivotMode.put(new TransportMode(mode, subMode), new TransportMode(pivot, pivotSub));
+							mapPivotToTransportMode.put(new TransportMode(pivot, pivotSub), new TransportMode(mode, subMode));
 						}
 					}
 				} catch (JSONException e) {
@@ -67,8 +76,6 @@ public class AbstractTransportModeConverter implements TransportModeConverter{
 		} catch (IOException e) {
 			log.warn("Cannot read json file from server");
 		}
-		return listTransportMode;
-
 	}
 
 }

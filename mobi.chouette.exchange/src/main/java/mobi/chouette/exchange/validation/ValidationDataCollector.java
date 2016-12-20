@@ -204,7 +204,8 @@ public class ValidationDataCollector {
 		target.setPublishedName(source.getPublishedName());
 		target.setRegistrationNumber(source.getRegistrationNumber());
 		target.setTextColor(source.getTextColor());
-		target.setTransportModeName(source.getTransportModeName());
+		target.setTransportMode(source.getTransportMode());
+		target.setTransportSubMode(source.getTransportSubMode());
 		target.setUrl(source.getUrl());
 
 		// clone used dependencies

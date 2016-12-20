@@ -150,12 +150,12 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 	}
 
 	private void check4Line2(Context context, Line line1, ValidationParameters parameters) {
-		if (getModeParameters(parameters, line1.getTransportModeName().name(), log).getAllowedTransport() != 1) {
+		if (getModeParameters(parameters, line1.getTransportMode(), log).getAllowedTransport() != 1) {
 			// failure encountered, add line 1
 			DataLocation location = buildLocation(context, line1);
 
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-			reporter.addCheckPointReportError(context, L4_LINE_2, location, line1.getTransportModeName().name());
+			reporter.addCheckPointReportError(context, L4_LINE_2, location, line1.getTransportMode());
 		}
 
 	}

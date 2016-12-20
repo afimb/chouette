@@ -8,13 +8,17 @@ import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.TransportMode;
 import mobi.chouette.common.XPPUtil;
+import mobi.chouette.exchange.TransportModeConverter;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectUtil;
+import mobi.chouette.exchange.neptune.NeptuneTransportModeConverter;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.model.TimeSlot;
@@ -30,8 +34,6 @@ import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.type.JourneyCategoryEnum;
-import mobi.chouette.model.type.TransportModeNameEnum;
-import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -66,7 +68,9 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 		NeptuneObjectFactory factory =  (NeptuneObjectFactory) context.get(NEPTUNE_OBJECT_FACTORY);
 		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
 		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-
+		NeptuneTransportModeConverter ntmc = NeptuneTransportModeConverter.getInstance();
+		TransportModeConverter tmc = (TransportModeConverter) context.get(TRANSPORT_MODE_CONVERTER);
+		
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		int columnNumber = xpp.getColumnNumber();
 		int lineNumber = xpp.getLineNumber();
@@ -135,8 +139,18 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 					journeyFrequency.setScheduledHeadwayInterval(headwayFrequency);
 				
 			} else if (xpp.getName().equals("transportMode")) {
-				TransportModeNameEnum value = ParserUtils.getEnum(TransportModeNameEnum.class, xpp.nextText());
-				vehicleJourney.setTransportMode(value);
+				String value = xpp.nextText();
+				// If base default format different than neptune
+				if (!parameters.getDefaultFormat().equalsIgnoreCase("Neptune")) {
+					if(value != null) {
+						TransportMode trSrc = new TransportMode(value, "unspecified");
+						TransportMode tmpTM = ntmc.specificToGenericMode(trSrc);
+						TransportMode tM = tmc.genericToSpecificMode(tmpTM);
+				
+						vehicleJourney.setTransportMode(tM.getMode());
+						vehicleJourney.setTransportSubMode(tM.getSubMode());
+					}
+				}
 			} else if (xpp.getName().equals("vehicleTypeIdentifier")) {
 				vehicleJourney.setVehicleTypeIdentifier(xpp.nextText());
 			} else if (xpp.getName().equals("vehicleJourneyAtStop")) {

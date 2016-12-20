@@ -21,7 +21,6 @@ import mobi.chouette.model.Timeband;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.JourneyCategoryEnum;
-import mobi.chouette.model.type.TransportModeNameEnum;
 
 /**
  * check a group of coherent vehicle journeys (i.e. on the same journey pattern)
@@ -238,7 +237,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		if (isEmpty(vj.getVehicleJourneyAtStops()))
 			return;
 		// 3-VehicleJourney-2 : check speed progression
-		TransportModeNameEnum transportMode = getTransportMode(vj);
+		String transportMode = getTransportMode(vj);
 		long maxSpeed = getModeParameters(parameters, transportMode.toString(), log).getSpeedMax();
 		long minSpeed = getModeParameters(parameters, transportMode.toString(), log).getSpeedMin();
 		List<VehicleJourneyAtStop> vjasList = vj.getVehicleJourneyAtStops();
@@ -294,12 +293,12 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 	 * @param vj
 	 * @return
 	 */
-	private TransportModeNameEnum getTransportMode(VehicleJourney vj) {
-		TransportModeNameEnum transportMode = vj.getTransportMode();
+	private String getTransportMode(VehicleJourney vj) {
+		String transportMode = vj.getTransportMode();
 		if (transportMode == null) {
-			transportMode = vj.getJourneyPattern().getRoute().getLine().getTransportModeName();
+			transportMode = vj.getJourneyPattern().getRoute().getLine().getTransportMode();
 			if (transportMode == null)
-				transportMode = TransportModeNameEnum.Other;
+				transportMode = "Other";
 		}
 		return transportMode;
 	}
@@ -349,7 +348,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		
 		// check data between average data
 		for (VehicleJourney vehicleJourney : beans) {
-			TransportModeNameEnum transportMode = getTransportMode(vehicleJourney);
+			String transportMode = getTransportMode(vehicleJourney);
 			long maxDuration = getModeParameters(parameters, transportMode.toString(), log)
 					.getInterStopDurationVariationMax();
 			String key = vehicleJourney.getJourneyPattern().getChouetteId()+"#"+transportMode;
@@ -656,11 +655,11 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		// 4-VehicleJourney-2 : (optional) check transport modes
 		if (vj.getTransportMode() == null)
 			return;
-		if (getModeParameters(parameters, vj.getTransportMode().name(), log).getAllowedTransport() != 1) {
+		if (getModeParameters(parameters, vj.getTransportMode(), log).getAllowedTransport() != 1) {
 			// failure encountered, add line 1
 			DataLocation location = buildLocation(context, vj);
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-			reporter.addCheckPointReportError(context, L4_VEHICLE_JOURNEY_2, location, vj.getTransportMode().name());
+			reporter.addCheckPointReportError(context, L4_VEHICLE_JOURNEY_2, location, vj.getTransportMode());
 		}
 	}
 

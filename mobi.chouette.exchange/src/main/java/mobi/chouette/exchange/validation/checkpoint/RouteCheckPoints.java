@@ -192,7 +192,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		// 3-Route-3 : check distance between stops
 		prepareCheckPoint(context, ROUTE_3);
 		// find transportMode :
-		String modeKey = route.getLine().getTransportModeName().toString();
+		String modeKey = route.getLine().getTransportMode();
 
 		TransportModeParameters mode = getModeParameters(parameters, modeKey, log);
 		if (mode == null) {

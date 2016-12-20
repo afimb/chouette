@@ -371,7 +371,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Assert.assertFalse(beans.isEmpty(), "No data for test");
 		Line line1 = beans.get(0);
 
-		line1.setTransportModeName(TransportModeNameEnum.Bus);
+		line1.setTransportMode("Bus");
 		Route route1 = line1.getRoutes().get(0);
 		Route route2 = line1.getRoutes().get(1);
 

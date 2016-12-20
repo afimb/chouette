@@ -396,7 +396,7 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		double plotFirstLong = rs.getDeparture().getLongitude().doubleValue();
 		double plotLastLong = rs.getArrival().getLongitude().doubleValue();
 		double distance = 0, distance2 = 0;
-		String modeKey = jp.getRoute().getLine().getTransportModeName().toString();
+		String modeKey = jp.getRoute().getLine().getTransportMode();
 		
 		TransportModeParameters parameters = AbstractValidation.getModeParameters(fullparameters, modeKey, log);
 		rs.getDeparture().setLatitude(BigDecimal.valueOf(plotFirstLat + 0.0002));

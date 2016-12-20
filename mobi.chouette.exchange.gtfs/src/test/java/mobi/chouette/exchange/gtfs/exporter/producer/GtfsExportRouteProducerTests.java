@@ -5,7 +5,7 @@ import mobi.chouette.core.ChouetteException;
 import mobi.chouette.exchange.gtfs.exporter.producer.mock.GtfsExporterMock;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.exporter.RouteExporter;
-import mobi.chouette.exchange.gtfs.model.importer.Context;
+import mobi.chouette.common.Context;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
 
@@ -20,7 +20,8 @@ public class GtfsExportRouteProducerTests
    private GtfsExporterMock mock = new GtfsExporterMock();
    private GtfsRouteProducer producer = new GtfsRouteProducer(mock);
    private Context context = new Context();
-
+   private mobi.chouette.exchange.gtfs.model.importer.Context importContext = new mobi.chouette.exchange.gtfs.model.importer.Context();
+   
    @Test(groups = { "Producers" }, description = "test route with both short and long name")
    public void verifyRouteProducerWithShortAndLongName() throws ChouetteException
    {
@@ -39,11 +40,11 @@ public class GtfsExportRouteProducerTests
       company.setName("name");
       neptuneObject.setCompany(company);
 
-      producer.save(neptuneObject, "GTFS",false);
+      producer.save(context, neptuneObject, "GTFS",false);
       Reporter.log("verifyRouteProducerWithShortAndLongName");
       Assert.assertEquals(mock.getExportedRoutes().size(), 1, "Route should be returned");
       GtfsRoute gtfsObject = mock.getExportedRoutes().get(0);
-      Reporter.log(RouteExporter.CONVERTER.to(context, gtfsObject));
+      Reporter.log(RouteExporter.CONVERTER.to(importContext, gtfsObject));
 
       Assert.assertEquals(gtfsObject.getRouteShortName(), neptuneObject.getNumber(), "RouteShortName must be line Number");
       Assert.assertEquals(gtfsObject.getRouteLongName(), neptuneObject.getPublishedName(), "RouteLongName must be correctly set");
@@ -70,11 +71,11 @@ public class GtfsExportRouteProducerTests
       company.setChouetteId(new ChouetteId("GTFS","1234", false));
       company.setName("name");
       neptuneObject.setCompany(company);
-      producer.save(neptuneObject,"GTFS",false);
+      producer.save(context, neptuneObject,"GTFS",false);
       Reporter.log("verifyRouteProducerWithNoShortName");
       Assert.assertEquals(mock.getExportedRoutes().size(), 1, "Route should be returned");
       GtfsRoute gtfsObject = mock.getExportedRoutes().get(0);
-      Reporter.log(RouteExporter.CONVERTER.to(context, gtfsObject));
+      Reporter.log(RouteExporter.CONVERTER.to(importContext, gtfsObject));
 
       Assert.assertEquals(gtfsObject.getRouteShortName(), neptuneObject.getName(), "RouteShortName must be line name");
       Assert.assertEquals(gtfsObject.getRouteLongName(), neptuneObject.getPublishedName(), "RouteLongName must be correctly set");
@@ -96,11 +97,11 @@ public class GtfsExportRouteProducerTests
       company.setChouetteId(new ChouetteId("GTFS","1234", false));
       company.setName("name");
       neptuneObject.setCompany(company);
-      producer.save(neptuneObject,  "GTFS",false);
+      producer.save(context, neptuneObject,  "GTFS",false);
       Reporter.log("verifyRouteProducerWithNoLongName");
       Assert.assertEquals(mock.getExportedRoutes().size(), 1, "Route should be returned");
       GtfsRoute gtfsObject = mock.getExportedRoutes().get(0);
-      Reporter.log(RouteExporter.CONVERTER.to(context, gtfsObject));
+      Reporter.log(RouteExporter.CONVERTER.to(importContext, gtfsObject));
 
       Assert.assertEquals(gtfsObject.getRouteShortName(), neptuneObject.getNumber(), "RouteShortName must be line Number");
       Assert.assertNull(gtfsObject.getRouteLongName(), "RouteLongName must be empty");
@@ -118,7 +119,7 @@ public class GtfsExportRouteProducerTests
       company.setChouetteId(new ChouetteId("GTFS","1234", false));
       company.setName("name");
       neptuneObject.setCompany(company);
-      boolean state = producer.save(neptuneObject, "GTFS",false);
+      boolean state = producer.save(context, neptuneObject, "GTFS",false);
       Reporter.log("verifyRouteProducerWithNoName");
       Assert.assertFalse(state, "GTFS Route must not be produced");
 

@@ -7,12 +7,13 @@ import java.util.Calendar;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netex.exporter.ExportableData;
 import mobi.chouette.model.Line;
 
 public class DeliveryWriter extends AbstractWriter{
 	
-	public static void write(Writer writer, ExportableData data ) throws IOException, DatatypeConfigurationException 
+	public static void write(Context context, Writer writer, ExportableData data ) throws IOException, DatatypeConfigurationException 
 	{
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 		Line line = data.getLine();
@@ -90,7 +91,7 @@ public class DeliveryWriter extends AbstractWriter{
 //		        #parse( "templates/resource_frame.vm" )
 		ResourceFrameWriter.write(writer, data);
 //		        #parse( "templates/service_frame.vm" )
-		ServiceFrameWriter.write(writer, data);
+		ServiceFrameWriter.write(context, writer, data);
 //		        #parse( "templates/site_frame.vm" )
 		SiteFrameWriter.write(writer, data);
 //		        #parse( "templates/service_calendar_frame.vm" )

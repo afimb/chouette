@@ -184,7 +184,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 		KmlData lineData = new KmlData("ligne : " + line.getName());
 		KmlItem lineItem = lineData.addNewItem(chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line));
 		lineItem.addAttribute("name", line.getName());
-		lineItem.addExtraData("transport_mode", line.getTransportModeName());
+		lineItem.addExtraData("transport_mode", line.getTransportMode());
 		lineItem.addExtraData("objectid", chouetteIdGenerator.toSpecificFormatId(line.getChouetteId(), configuration.getDefaultCodespace(), line));
 		lineItem.addExtraData("object_version", line.getObjectVersion());
 		lineItem.addExtraData("creation_time", line.getCreationTime());

@@ -228,49 +228,49 @@ public class ModelTranslator
    // <xsd:enumeration value="funicular"/>
    // <xsd:enumeration value="taxi"/>
    // <xsd:enumeration value="selfDrive">
-   public String toTransportModeNetex(TransportModeNameEnum transportMode)
+   public String toTransportModeNetex(String transportMode)
    {
       switch (transportMode)
       {
-      case Air:
+      case "Air":
          return "air";
-      case Train:
+      case "Train":
          return "rail";
-      case LongDistanceTrain:
+      case "LongDistanceTrain":
          return "intercityRail";
-      case LongDistanceTrain_2:
+      case "LongDistanceTrain_2":
          return "intercityRail";
-      case LocalTrain:
+      case "LocalTrain":
          return "urbanRail";
-      case RapidTransit:
+      case "RapidTransit":
          return "urbanRail";
-      case Metro:
+      case "Metro":
          return "metro";
-      case Tramway:
+      case "Tramway":
          return "tram";
-      case Coach:
+      case "Coach":
          return "coach";
-      case Bus:
+      case "Bus":
          return "bus";
-      case Ferry:
+      case "Ferry":
          return "water";
-      case Waterborne:
+      case "Waterborne":
          return "water";
-      case PrivateVehicle:
+      case "PrivateVehicle":
          return "selfDrive";
-      case Walk:
+      case "Walk":
          return "selfDrive";
-      case Trolleybus:
+      case "Trolleybus":
          return "trolleyBus";
-      case Bicycle:
+      case "Bicycle":
          return "selfDrive";
-      case Shuttle:
+      case "Shuttle":
          return "rail";
-      case Taxi:
+      case "Taxi":
          return "taxi";
-      case Val:
+      case "Val":
          return "rail";
-      case Other:
+      case "Other":
          return "unknown";
       default:
          return "";

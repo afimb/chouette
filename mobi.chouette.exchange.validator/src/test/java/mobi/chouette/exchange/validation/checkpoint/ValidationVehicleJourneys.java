@@ -821,7 +821,7 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 			Assert.assertNotNull(checkPointReport, "report must contain a 4-VehicleJourney-2 checkPoint");
 		}
 
-		jp1.getVehicleJourneys().get(0).setTransportMode(TransportModeNameEnum.Bus);
+		jp1.getVehicleJourneys().get(0).setTransportMode("Bus");
 		{ // check test not required when check is false
 			ValidationData data = new ValidationData();
 			context.put(VALIDATION_DATA, data);

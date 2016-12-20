@@ -8,14 +8,17 @@ import java.util.List;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.common.TimeUtil;
+import mobi.chouette.common.TransportMode;
+import mobi.chouette.exchange.TransportModeConverter;
 import mobi.chouette.exchange.neptune.JsonExtension;
+import mobi.chouette.exchange.neptune.NeptuneTransportModeConverter;
+import mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
-import mobi.chouette.model.type.TransportModeNameEnum;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -43,7 +46,9 @@ public class VehicleJourneyProducer extends AbstractJaxbNeptuneProducer<VehicleJ
 
 	public VehicleJourneyType produce(Context context, VehicleJourney vehicleJourney, boolean addExtension, int count) {
 		VehicleJourneyType jaxbVehicleJourney = tridentFactory.createVehicleJourneyType();
-
+		NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(CONFIGURATION);
+		NeptuneTransportModeConverter ntmc = NeptuneTransportModeConverter.getInstance();
+		TransportModeConverter tmc = (TransportModeConverter) context.get(TRANSPORT_MODE_CONVERTER);
 		//
 		populateFromModel(context, jaxbVehicleJourney, vehicleJourney);
 		if (count > 0)
@@ -63,10 +68,14 @@ public class VehicleJourneyProducer extends AbstractJaxbNeptuneProducer<VehicleJ
 
 		// jaxbVehicleJourney.setTimeSlotId(getNonEmptyObjectId(vehicleJourney
 		// .getTimeSlot()));
-		if (vehicleJourney.getTransportMode() != null) {
-			TransportModeNameEnum transportMode = vehicleJourney.getTransportMode();
+		if (vehicleJourney.getTransportModeContainer() != null) {
 			try {
-				jaxbVehicleJourney.setTransportMode(TransportModeNameType.fromValue(transportMode.name()));
+				if (!parameters.getDefaultFormat().equalsIgnoreCase("Neptune")) {
+					TransportMode ptM = tmc.specificToGenericMode(vehicleJourney.getTransportModeContainer());
+					TransportMode tM = ntmc.genericToSpecificMode(ptM);
+					if (tM != null)
+						jaxbVehicleJourney.setTransportMode(TransportModeNameType.fromValue(tM.getMode()));
+				}	  
 			} catch (IllegalArgumentException e) {
 				// TODO generate report
 			}

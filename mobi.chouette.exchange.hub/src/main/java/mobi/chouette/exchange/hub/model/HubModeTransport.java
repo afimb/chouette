@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import mobi.chouette.common.TransportMode;
 
 public class HubModeTransport extends HubObject implements Comparable<HubModeTransport>{
 	
@@ -16,7 +17,7 @@ public class HubModeTransport extends HubObject implements Comparable<HubModeTra
 	 * TailleMax = 50
 	 */
 	@Getter @Setter
-	private MODE_TRANSPORT code;
+	private TransportMode code;
 	
 	/**
 	 * rang = 2
@@ -39,7 +40,7 @@ public class HubModeTransport extends HubObject implements Comparable<HubModeTra
 
 	@Override
 	public int compareTo(HubModeTransport arg0) {
-		return code.compareTo(arg0.code);
+		return code.getMode().compareTo(arg0.code.getMode());
 	}
 
 	@Override

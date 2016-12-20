@@ -7,7 +7,7 @@ import mobi.chouette.common.ChouetteId;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 
 
-public class AbstractChouetteIdGenerator implements ChouetteIdGenerator{
+public abstract class AbstractChouetteIdGenerator implements ChouetteIdGenerator{
 
 	@Override
 	public boolean checkObjectId(String oid, Class<? extends NeptuneIdentifiedObject> clazz) {

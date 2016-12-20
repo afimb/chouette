@@ -7,12 +7,16 @@ import java.util.List;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.TransportMode;
 import mobi.chouette.common.XPPUtil;
+import mobi.chouette.exchange.TransportModeConverter;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
+import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectUtil;
+import mobi.chouette.exchange.neptune.NeptuneTransportModeConverter;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.validation.LineValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
@@ -20,9 +24,7 @@ import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
-import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.UserNeedEnum;
-import mobi.chouette.exchange.neptune.NeptuneChouetteIdObjectUtil;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -43,7 +45,8 @@ public class LineParser implements Parser, Constant, JsonExtension {
 		
 		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
 		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-
+		NeptuneTransportModeConverter ntmc = NeptuneTransportModeConverter.getInstance();
+		TransportModeConverter tmc = (TransportModeConverter) context.get(TRANSPORT_MODE_CONVERTER);
 		LineValidator validator = (LineValidator) ValidatorFactory.create(LineValidator.class.getName(), context);
 
 		Line line = null;
@@ -71,8 +74,18 @@ public class LineParser implements Parser, Constant, JsonExtension {
 			} else if (xpp.getName().equals("publishedName")) {
 				line.setPublishedName(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("transportModeName")) {
-				TransportModeNameEnum value = ParserUtils.getEnum(TransportModeNameEnum.class, xpp.nextText());
-				line.setTransportModeName(value);
+				String value = xpp.nextText();
+				// If base default format different than neptune
+				if (!parameters.getDefaultFormat().equalsIgnoreCase("Neptune")) {
+					if(value != null) {
+						TransportMode trSrc = new TransportMode(value, "unspecified");
+						TransportMode tmpTM = ntmc.specificToGenericMode(trSrc);
+						TransportMode tM = tmc.genericToSpecificMode(tmpTM);
+				
+						line.setTransportMode(tM.getMode());
+						line.setTransportSubMode(tM.getSubMode());
+					}
+				}
 			} else if (xpp.getName().equals("lineEnd")) {
 				String lineEnd = ParserUtils.getText(xpp.nextText());
 				validator.addLineEnd(context, objectId, lineEnd);

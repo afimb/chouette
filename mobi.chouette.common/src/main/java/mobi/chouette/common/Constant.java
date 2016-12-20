@@ -62,6 +62,7 @@ public interface Constant {
 	public static final String BUFFER = "buffer";
 	
 	public static final String CHOUETTEID_GENERATOR = "chouetteid_generator";
+	public static final String TRANSPORT_MODE_CONVERTER = "transport_mode_converter";
 	
 
 }

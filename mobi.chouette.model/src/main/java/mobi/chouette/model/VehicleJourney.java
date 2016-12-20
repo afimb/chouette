@@ -22,8 +22,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.common.TransportMode;
 import mobi.chouette.model.type.JourneyCategoryEnum;
-import mobi.chouette.model.type.TransportModeNameEnum;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
@@ -78,7 +78,15 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	public void setComment(String value) {
 		comment = StringUtils.abbreviate(value, 255);
 	}
-
+	
+	public TransportMode getTransportModeContainer() {
+		TransportMode tM = new TransportMode();
+		tM.setMode(transportMode);
+		tM.setSubMode(transportSubMode);
+		
+		return tM;
+	}
+	
 	/**
 	 * Transport mode when different from line transport mode
 	 * 
@@ -90,8 +98,21 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	@Setter
 	@Enumerated(EnumType.STRING)
 	@Column(name = "transport_mode")
-	private TransportModeNameEnum transportMode;
-
+	private String transportMode;
+	
+	/**
+	 * Transport submode when different from line transport submode
+	 * 
+	 * @param transportMode
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@Enumerated(EnumType.STRING)
+	@Column(name = "transport_submode")
+	private String transportSubMode;
+	
 	/**
 	 * published journey name
 	 * 
