@@ -3,7 +3,6 @@
 <!-- Rename suite to exchangeNetex -->
 <!-- Rename tests to ImportNetex, ValidationNetex etc... -->
 <suite name="Factory" verbose="5">
-<!--
 	<test name="Importer">
 		<packages>
 			<package name="mobi.chouette.exchange.netexprofile.importer"/>
@@ -14,5 +13,4 @@
 			<package name="mobi.chouette.exchange.netexprofile.importer.validation.norway"/>
 		</packages>
 	</test>
--->
 </suite>

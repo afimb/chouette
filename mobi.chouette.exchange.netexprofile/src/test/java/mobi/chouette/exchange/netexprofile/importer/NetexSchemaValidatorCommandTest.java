@@ -24,14 +24,14 @@ import mobi.chouette.exchange.validation.report.ValidationReport;
 public class NetexSchemaValidatorCommandTest {
 
 	@Test
-	public void testValthidateDocument() throws Exception {
+	public void testValidateDocument() throws Exception {
 		Context context = new Context();
 		NetexprofileImportParameters configuration = new NetexprofileImportParameters();
 
 		context.put(Constant.CONFIGURATION, configuration);
 		context.put(Constant.VALIDATION_REPORT, new ValidationReport());
 		context.put(Constant.REPORT, new ActionReport());
-        List<Path> allFilePaths = Arrays.asList(new File("src/test/data/WF739.xml").toPath());
+        List<Path> allFilePaths = Arrays.asList(new File("src/test/data/SK264.xml").toPath());
         context.put(NETEX_FILE_PATHS, allFilePaths);
 		
 		NetexInitImportCommand initCmd = new NetexInitImportCommand();
@@ -54,7 +54,7 @@ public class NetexSchemaValidatorCommandTest {
 		ActionReport actionReport =  new ActionReport();
 		context.put(Constant.REPORT, actionReport );
 
-        List<Path> allFilePaths = Arrays.asList(new File("src/test/data/WF739-invalid.xml").toPath());
+        List<Path> allFilePaths = Arrays.asList(new File("src/test/data/SK264-invalid.xml").toPath());
         context.put(NETEX_FILE_PATHS, allFilePaths);
 
 		

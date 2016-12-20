@@ -193,7 +193,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNetexProfileValidat
 		// validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:ServiceCalendarFrame", "1",
 		// "No ServiceCalendarFrame", _1_NETEX_SERVICE_CALENDAR_FRAME);
 		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:TimetableFrame", _1_NETEX_TIMETABLE_FRAME);
-		validateElementNotPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:SiteFrame", _1_NETEX_SITE_FRAME);
+		//validateElementNotPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:CompositeFrame/n:frames/n:SiteFrame", _1_NETEX_SITE_FRAME);
 
 		validateResourceFrame(context, xpath, dom);
 
