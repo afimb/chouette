@@ -47,13 +47,36 @@ public class ValidationNominal extends AbstractTestValidation {
 				.resolve("mobi.chouette:mobi.chouette.exchange.validator").withTransitivity().asFile();
 		List<File> jars = new ArrayList<>();
 		List<JavaArchive> modules = new ArrayList<>();
+		List<String> moduleNames = new ArrayList<>();
 		for (File file : files) {
 			if (file.getName().startsWith("mobi.chouette.exchange")) {
 				String name = file.getName().split("\\-")[0] + ".jar";
+
 				JavaArchive archive = ShrinkWrap.create(ZipImporter.class, name).importFrom(file).as(JavaArchive.class);
 				modules.add(archive);
+				moduleNames.add(name);
 			} else {
 				jars.add(file);
+			}
+		}
+		File[] filesNeptune = Maven.resolver().loadPomFromFile("pom.xml")
+				.resolve("mobi.chouette:mobi.chouette.exchange.neptune").withTransitivity().asFile();
+		if (filesNeptune.length == 0) {
+			throw new NullPointerException("no neptune");
+		}
+		for (File file : filesNeptune) {
+			if (file.getName().startsWith("mobi.chouette.exchange")) {
+				String name = file.getName().split("\\-")[0] + ".jar";
+				if (!moduleNames.contains(name)) {
+
+					JavaArchive archive = ShrinkWrap.create(ZipImporter.class, name).importFrom(file)
+							.as(JavaArchive.class);
+					modules.add(archive);
+					moduleNames.add(name);
+				}
+			} else {
+				if (!jars.contains(file))
+					jars.add(file);
 			}
 		}
 		File[] filesDao = Maven.resolver().loadPomFromFile("pom.xml").resolve("mobi.chouette:mobi.chouette.dao")
@@ -64,11 +87,13 @@ public class ValidationNominal extends AbstractTestValidation {
 		for (File file : filesDao) {
 			if (file.getName().startsWith("mobi.chouette.dao")) {
 				String name = file.getName().split("\\-")[0] + ".jar";
+				if (!moduleNames.contains(name)) {
 
-				JavaArchive archive = ShrinkWrap.create(ZipImporter.class, name).importFrom(file).as(JavaArchive.class);
-				modules.add(archive);
-				if (!modules.contains(archive))
+					JavaArchive archive = ShrinkWrap.create(ZipImporter.class, name).importFrom(file)
+							.as(JavaArchive.class);
 					modules.add(archive);
+					moduleNames.add(name);
+				}
 			} else {
 				if (!jars.contains(file))
 					jars.add(file);
@@ -126,7 +151,7 @@ public class ValidationNominal extends AbstractTestValidation {
 		unchecked.add("3-VehicleJourney-6");
 		unchecked.add("3-VehicleJourney-7");
 		unchecked.add("3-VehicleJourney-8");
-		
+
 		for (CheckPointReport checkPoint : report.getCheckPoints()) {
 			if (checkPoint.getName().equals("3-StopArea-1"))
 				bStopArea1 = true;

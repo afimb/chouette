@@ -130,6 +130,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 		configuration.setUserName("userName");
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
+		configuration.setDefaultFormat("neptune");
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
 		test.setPathName( "target/referential/test");

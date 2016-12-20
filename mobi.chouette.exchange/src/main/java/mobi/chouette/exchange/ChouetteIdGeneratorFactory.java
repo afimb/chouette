@@ -14,13 +14,13 @@ public abstract class ChouetteIdGeneratorFactory {
 
 	   {
 		   String formatToLowerCase = format.toLowerCase();
-		  String className = formatToLowerCase.substring(0, 1).toUpperCase() + formatToLowerCase.substring(1) + "ChouetteIdGenerator";
+		  String className = "mobi.chouette.exchange."+formatToLowerCase+"."+formatToLowerCase.substring(0, 1).toUpperCase() + formatToLowerCase.substring(1) + "ChouetteIdGenerator";
 	      if (!factories.containsKey(format))
 	      {
 	         Class.forName(className);
 			 // log.info("[DSU] create : " + name);
 	         if (!factories.containsKey(format))
-	            throw new ClassNotFoundException(format);
+	            throw new ClassNotFoundException(className);
 	      }
 	      return ((ChouetteIdGeneratorFactory) factories.get(format)).create();
 	   }

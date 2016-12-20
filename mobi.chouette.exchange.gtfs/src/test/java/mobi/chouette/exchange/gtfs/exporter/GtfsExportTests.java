@@ -48,86 +48,92 @@ import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.AcceptScopesStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.CombinedStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveStrategy;
 import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
 
 @Log4j
-public class GtfsExportTests extends Arquillian implements Constant, ReportConstant
-{
+public class GtfsExportTests extends Arquillian implements Constant, ReportConstant {
 	@Deployment
 	public static EnterpriseArchive createDeployment() {
 
 		EnterpriseArchive result;
 
-
-		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.exchange.gtfs").withTransitivity().asFile();
+		File[] files = Maven.resolver().loadPomFromFile("pom.xml").resolve("mobi.chouette:mobi.chouette.exchange.gtfs")
+				.withTransitivity().asFile();
 		List<File> jars = new ArrayList<>();
 		List<JavaArchive> modules = new ArrayList<>();
+		List<String> moduleNames = new ArrayList<>();
 		for (File file : files) {
-			if (file.getName().startsWith("mobi.chouette.exchange"))
-			{
-				String name = file.getName().split("\\-")[0]+".jar";
-				
-				JavaArchive archive = ShrinkWrap
-						  .create(ZipImporter.class, name)
-						  .importFrom(file)
-						  .as(JavaArchive.class);
+			if (file.getName().startsWith("mobi.chouette.exchange")) {
+				String name = file.getName().split("\\-")[0] + ".jar";
+
+				JavaArchive archive = ShrinkWrap.create(ZipImporter.class, name).importFrom(file).as(JavaArchive.class);
 				modules.add(archive);
-			}
-			else
-			{
+				moduleNames.add(name);
+			} else {
 				jars.add(file);
 			}
 		}
-		
-		File[] filesDao = Maven.resolver().loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.dao").withTransitivity().asFile();
-		if (filesDao.length == 0) 
-		{
+
+		File[] filesNeptune = Maven.resolver().loadPomFromFile("pom.xml")
+				.resolve("mobi.chouette:mobi.chouette.exchange.neptune").withTransitivity().asFile();
+		if (filesNeptune.length == 0) {
+			throw new NullPointerException("no neptune");
+		}
+		for (File file : filesNeptune) {
+			if (file.getName().startsWith("mobi.chouette.exchange")) {
+				String name = file.getName().split("\\-")[0] + ".jar";
+				if (!moduleNames.contains(name)) {
+
+					JavaArchive archive = ShrinkWrap.create(ZipImporter.class, name).importFrom(file)
+							.as(JavaArchive.class);
+					modules.add(archive);
+					moduleNames.add(name);
+				}
+			} else {
+				if (!jars.contains(file))
+					jars.add(file);
+			}
+		}
+
+		File[] filesDao = Maven.resolver().loadPomFromFile("pom.xml").resolve("mobi.chouette:mobi.chouette.dao")
+				.withTransitivity().asFile();
+		if (filesDao.length == 0) {
 			throw new NullPointerException("no dao");
 		}
 		for (File file : filesDao) {
-			if (file.getName().startsWith("mobi.chouette.dao"))
-			{
-				String name = file.getName().split("\\-")[0]+".jar";
-				
-				JavaArchive archive = ShrinkWrap
-						  .create(ZipImporter.class, name)
-						  .importFrom(file)
-						  .as(JavaArchive.class);
-				modules.add(archive);
-				if (!modules.contains(archive))
-				   modules.add(archive);
-			}
-			else
-			{
+			if (file.getName().startsWith("mobi.chouette.dao")) {
+				String name = file.getName().split("\\-")[0] + ".jar";
+				if (!moduleNames.contains(name)) {
+
+					JavaArchive archive = ShrinkWrap.create(ZipImporter.class, name).importFrom(file)
+							.as(JavaArchive.class);
+					modules.add(archive);
+					moduleNames.add(name);
+				}
+			} else {
 				if (!jars.contains(file))
-				   jars.add(file);
+					jars.add(file);
 			}
 		}
 
-        
+		final WebArchive testWar = ShrinkWrap.create(WebArchive.class, "test.war")
+				.addAsWebInfResource("postgres-ds.xml").addClass(GtfsExportTests.class).addClass(GtfsTestsUtils.class)
+				.addClass(DummyChecker.class).addClass(JobDataTest.class);
 
-		final WebArchive testWar = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
-				.addClass(GtfsExportTests.class)
-				.addClass(GtfsTestsUtils.class)
-				.addClass(DummyChecker.class)
-				.addClass(JobDataTest.class);
-		
-		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-				.addAsLibraries(jars.toArray(new File[0]))
-				.addAsModules(modules.toArray(new JavaArchive[0]))
-				.addAsModule(testWar)
+		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear").addAsLibraries(jars.toArray(new File[0]))
+				.addAsModules(modules.toArray(new JavaArchive[0])).addAsModule(testWar)
 				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 		return result;
 
 	}
 
-
 	protected static InitialContext initialContext;
-	
 
 	protected void init() {
 		Locale.setDefault(Locale.ENGLISH);
@@ -137,10 +143,10 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 			} catch (NamingException e) {
 				e.printStackTrace();
 			}
-			
-			
+
 		}
 	}
+
 	protected Context initImportContext() {
 		init();
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
@@ -162,7 +168,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		configuration.setReferentialName("test");
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
-		test.setPathName( "target/referential/test");
+		test.setPathName("target/referential/test");
 		File f = new File("target/referential/test");
 		if (f.exists())
 			try {
@@ -171,9 +177,9 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 				e.printStackTrace();
 			}
 		f.mkdirs();
-		test.setReferential( "chouette_gui");
-		test.setAction( IMPORTER);
-		test.setType( "neptune");
+		test.setReferential("chouette_gui");
+		test.setAction(IMPORTER);
+		test.setType("neptune");
 		context.put("testng", "true");
 		context.put(OPTIMIZED, Boolean.FALSE);
 		return context;
@@ -200,7 +206,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
 		test.setPathName("target/referential/test");
-		test.setOutputFilename( "gtfs.zip");
+		test.setOutputFilename("gtfs.zip");
 		File f = new File("target/referential/test");
 		if (f.exists())
 			try {
@@ -209,21 +215,19 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 				e.printStackTrace();
 			}
 		f.mkdirs();
-		test.setReferential( "chouette_gui");
-		test.setAction( EXPORTER);
+		test.setReferential("chouette_gui");
+		test.setAction(EXPORTER);
 		test.setType("gtfs");
 		context.put("testng", "true");
 		context.put(OPTIMIZED, Boolean.FALSE);
 		return context;
 
 	}
-	
 
-   @Test(groups = { "export" }, description = "test export GTFS Line")
-   public void verifyExportLines() throws Exception
-   {
+	@Test(groups = { "export" }, description = "test export GTFS Line")
+	public void verifyExportLines() throws Exception {
 		// save data
-		importLines("test_neptune.zip",6,6);
+		importLines("test_neptune.zip", 6, 6);
 
 		// export data
 		Context context = initExportContext();
@@ -232,8 +236,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		configuration.setReferencesType("line");
 		configuration.setObjectIdPrefix("CITURA");
 		configuration.setTimeZone("Europe/Paris");
-		Command command = (Command) CommandFactory.create(initialContext,
-				GtfsExporterCommand.class.getName());
+		Command command = (Command) CommandFactory.create(initialContext, GtfsExporterCommand.class.getName());
 
 		try {
 			command.execute(context);
@@ -241,32 +244,33 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 			log.error("test failed", ex);
 			throw ex;
 		}
-		
+
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
 		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
 		for (FileReport info : report.getFiles()) {
-		    Reporter.log(info.toString(),true);
+			Reporter.log(info.toString(), true);
 		}
 		Assert.assertEquals(report.getFiles().size(), 9, "file reported");
 		for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
-		    Reporter.log(info.toString(),true);
+			Reporter.log(info.toString(), true);
 		}
-		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 6, "line reported");
+		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 6,
+				"line reported");
 		for (int i = 0; i < 6; i++) {
-			Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i).getStatus(), OBJECT_STATE.OK, "line status");
+			Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i)
+					.getStatus(), OBJECT_STATE.OK, "line status");
 		}
 		Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
-		Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
+		Assert.assertFalse(vreport.getCheckPoints().isEmpty(), "validation report should not be empty");
 
-   }
+	}
 
-   @Test(groups = { "export" }, description = "test export GTFS StopAreas")
-   public void verifyExportStopAreas() throws Exception
-   {
+	@Test(groups = { "export" }, description = "test export GTFS StopAreas")
+	public void verifyExportStopAreas() throws Exception {
 		// save data
-		importLines("test_neptune.zip",6,6);
+		importLines("test_neptune.zip", 6, 6);
 
 		// export data
 		Context context = initExportContext();
@@ -275,8 +279,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		configuration.setReferencesType("stop_area");
 		configuration.setObjectIdPrefix("CITURA");
 		configuration.setTimeZone("Europe/Paris");
-		Command command = (Command) CommandFactory.create(initialContext,
-				GtfsExporterCommand.class.getName());
+		Command command = (Command) CommandFactory.create(initialContext, GtfsExporterCommand.class.getName());
 
 		try {
 			command.execute(context);
@@ -284,90 +287,85 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 			log.error("test failed", ex);
 			throw ex;
 		}
-		
+
 		ActionReport report = (ActionReport) context.get(REPORT);
 		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
 		for (FileReport info : report.getFiles()) {
-			Reporter.log(info.toString(),true);
+			Reporter.log(info.toString(), true);
 		}
 		Assert.assertEquals(report.getFiles().size(), 1, "file reported");
-		
 
-
-   }
-
-    @EJB 
-    protected LineDAO lineDAO;
-   
-    @PersistenceContext(unitName = "referential")
-    EntityManager em;
-
-    @Inject
-    UserTransaction utx;
-   
-    @Test(groups = { "export" }, description = "test not export GTFS Line than has no Company")
-    public void verifyNotExportLineWithNoCompany() throws Exception
-    {
-	// save data
-	importLines("test_neptune.zip",6,6);
-	// export data
-	Context context = initExportContext();
-
-               
-	utx.begin();
-	em.joinTransaction();
-	Line myLine = lineDAO.findByChouetteId("CITURA", "01");
-	myLine.setCompany(null);
-	String myLineName = myLine.getName();
-	utx.commit();
-               
-	GtfsExportParameters configuration = (GtfsExportParameters) context.get(CONFIGURATION);
-	configuration.setAddMetadata(true);
-	configuration.setReferencesType("line");
-	configuration.setObjectIdPrefix("CITURA");
-	configuration.setTimeZone("Europe/Paris");
-	Command command = (Command) CommandFactory.create(initialContext,
-							  GtfsExporterCommand.class.getName());
-
-	try {
-	    command.execute(context);
-	} catch (Exception ex) {
-	    log.error("test failed", ex);
-	    throw ex;
-	}
-               
-	ActionReport report = (ActionReport) context.get(REPORT);
-               
-	Assert.assertEquals(report.getResult(), STATUS_OK, "result");
-	for (FileReport info : report.getFiles()) {
-	    Reporter.log(info.toString(),true);
-	}
-	Assert.assertEquals(report.getFiles().size(), 9, "file reported");
-	for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
-	    Reporter.log(info.toString(),true);
-	}
-	Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 6, "line reported");
-	for (int i = 0; i < 6; i++) {
-	    if (myLineName.equals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i).getDescription()))
-		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i).getStatus(), OBJECT_STATE.ERROR, "no company for this line");
-	    else
-		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i).getStatus(), OBJECT_STATE.OK, "line status");
 	}
 
-    }
+	@EJB
+	protected LineDAO lineDAO;
 
+	@PersistenceContext(unitName = "referential")
+	EntityManager em;
 
+	@Inject
+	UserTransaction utx;
 
-	private void importLines(String file, int fileCount, int lineCount) throws Exception
-	{
+	@Test(groups = { "export" }, description = "test not export GTFS Line than has no Company")
+	public void verifyNotExportLineWithNoCompany() throws Exception {
+		// save data
+		importLines("test_neptune.zip", 6, 6);
+		// export data
+		Context context = initExportContext();
+
+		utx.begin();
+		em.joinTransaction();
+		Line myLine = lineDAO.findByChouetteId("CITURA", "01");
+		myLine.setCompany(null);
+		String myLineName = myLine.getName();
+		utx.commit();
+
+		GtfsExportParameters configuration = (GtfsExportParameters) context.get(CONFIGURATION);
+		configuration.setAddMetadata(true);
+		configuration.setReferencesType("line");
+		configuration.setObjectIdPrefix("CITURA");
+		configuration.setTimeZone("Europe/Paris");
+		Command command = (Command) CommandFactory.create(initialContext, GtfsExporterCommand.class.getName());
+
+		try {
+			command.execute(context);
+		} catch (Exception ex) {
+			log.error("test failed", ex);
+			throw ex;
+		}
+
+		ActionReport report = (ActionReport) context.get(REPORT);
+
+		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+		for (FileReport info : report.getFiles()) {
+			Reporter.log(info.toString(), true);
+		}
+		Assert.assertEquals(report.getFiles().size(), 9, "file reported");
+		for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+			Reporter.log(info.toString(), true);
+		}
+		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 6,
+				"line reported");
+		for (int i = 0; i < 6; i++) {
+			if (myLineName.equals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()
+					.get(i).getDescription()))
+				Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()
+						.get(i).getStatus(), OBJECT_STATE.ERROR, "no company for this line");
+			else
+				Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()
+						.get(i).getStatus(), OBJECT_STATE.OK, "line status");
+		}
+
+	}
+
+	private void importLines(String file, int fileCount, int lineCount) throws Exception {
 		Context context = initImportContext();
-
 
 		NeptuneImporterCommand command = (NeptuneImporterCommand) CommandFactory.create(initialContext,
 				NeptuneImporterCommand.class.getName());
 		GtfsTestsUtils.copyFile(file);
 		JobDataTest test = (JobDataTest) context.get(JOB_DATA);
-		test.setInputFilename( file);
+		test.setInputFilename(file);
 		NeptuneImportParameters configuration = (NeptuneImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
@@ -378,26 +376,25 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 			throw ex;
 		}
 		ActionReport report = (ActionReport) context.get(REPORT);
-		Reporter.log(report.toString(),true);
+		Reporter.log(report.toString(), true);
 		ValidationReport valReport = (ValidationReport) context.get(VALIDATION_REPORT);
-		for (CheckPointReport cp : valReport.getCheckPoints()) 
-		{
-			if (cp.getState().equals(RESULT.NOK))
-			{
-				Reporter.log(cp.toString(),true);
+		for (CheckPointReport cp : valReport.getCheckPoints()) {
+			if (cp.getState().equals(RESULT.NOK)) {
+				Reporter.log(cp.toString(), true);
 			}
 		}
-		
 
 		for (ObjectReport linerep : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
-            Reporter.log("line "+linerep.getObjectId());
-        }
+			Reporter.log("line " + linerep.getObjectId());
+		}
 
 		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
 		Assert.assertEquals(report.getFiles().size(), fileCount, "file reported");
-		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), lineCount, "line reported");
+		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(),
+				lineCount, "line reported");
 		for (int i = 0; i < 6; i++) {
-			Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i).getStatus(), OBJECT_STATE.OK, "line status");
+			Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i)
+					.getStatus(), OBJECT_STATE.OK, "line status");
 		}
 
 	}
