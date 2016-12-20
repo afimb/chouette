@@ -13,18 +13,21 @@ import mobi.chouette.model.Timetable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-@XmlType(propOrder={"objectId", "comment", "version"})
+@XmlType(propOrder={"technicalId", "comment", "version"})
 public class TimetableParameters {
 
 	@XmlTransient
-	public static String[] fields = { "ObjectId", "Comment", "Version"} ;
+	public static String[] fields = { "TechnicalId", "Comment", "Version"} ;
 	
 	static {
 		ValidationParametersUtil.addFieldList(Timetable.class.getSimpleName(), Arrays.asList(fields));
 	}
 
-	@XmlElement(name = "objectid")
-	private FieldParameters objectId;
+//	@XmlElement(name = "objectid")
+//	private FieldParameters objectId;
+	
+	@XmlElement(name = "technical_id")
+	private FieldParameters technicalId;
 
 	@XmlElement(name = "comment")
 	private FieldParameters comment;

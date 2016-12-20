@@ -13,18 +13,21 @@ import mobi.chouette.model.Route;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-@XmlType(propOrder={"objectId", "name", "number","publishedName"})
+@XmlType(propOrder={"technicalId", "name", "number","publishedName"})
 public class RouteParameters {
 
 	@XmlTransient
-	public static String[] fields = { "ObjectId", "Name", "Number","PublishedName"} ;
+	public static String[] fields = { "TechnicalId", "Name", "Number","PublishedName"} ;
 	
 	static {
 		ValidationParametersUtil.addFieldList(Route.class.getSimpleName(), Arrays.asList(fields));
 	}
 
-	@XmlElement(name = "objectid")
-	private FieldParameters objectId;
+//	@XmlElement(name = "objectid")
+//	private FieldParameters objectId;
+	
+	@XmlElement(name = "technical_id")
+	private FieldParameters technicalId;
 
 	@XmlElement(name = "name")
 	private FieldParameters name;

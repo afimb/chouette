@@ -119,12 +119,13 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 				StopArea stopArea = stopAreas.get(objectChouetteId);
 				if (stopArea == null) 
 				{
+					log.warn("ChouetteId : " + objectChouetteId.toString());
 					log.error("null area " +objectId);
 					continue;
 				}
 				if (stopArea.getAreaType() == null)
 				{
-					if (!referential.getRoutingConstraints().containsKey(objectChouetteId))
+					if (!referential.getStopAreas().containsKey(objectChouetteId))
 					   log.error("null area type " +stopArea);
 					continue;
 				}
