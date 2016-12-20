@@ -40,6 +40,16 @@
                             </ContactDetails>
                             <OrganisationType>authority</OrganisationType>
                         </Authority>
+                        <Authority version="1" id="NSR:Authority:NSR">
+                            <CompanyNumber></CompanyNumber>
+                            <Name>Nasjonal Stoppestedsregister</Name>
+                            <LegalName>NASJONAL STOPPESTEDSREGISTER</LegalName>
+                            <ContactDetails>
+                                <Phone></Phone>
+                                <Url>http://www.rutebanken.org/ns/nsr</Url>
+                            </ContactDetails>
+                            <OrganisationType>authority</OrganisationType>
+                        </Authority>
                         <Operator version="1" id="AVI:Operator:SK">
                             <CompanyNumber>811176702</CompanyNumber>
                             <Name>SAS</Name>
@@ -121,7 +131,7 @@
                             <Name>Bergen-Oslo</Name>
                             <TransportMode>air</TransportMode>
                             <PublicCode>SK264</PublicCode>
-                            <OperatorRef ref="AVI:Operator:SK" version="1"/>
+                            <OperatorRef ref="AVI:Operator:SK"/>
                             <routes>
                                 <RouteRef ref="AVI:Route:SK264" version="1"/>
                             </routes>
@@ -153,12 +163,12 @@
                             <pointsInSequence>
                                 <StopPointInJourneyPattern order="1" version="1"
                                                            id="AVI:StopPointInJourneyPattern:22100531">
-                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:BGO" version="1"/>
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:BGO"/>
                                     <ForAlighting>false</ForAlighting>
                                 </StopPointInJourneyPattern>
                                 <StopPointInJourneyPattern order="2" version="1"
                                                            id="AVI:StopPointInJourneyPattern:22100532">
-                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:OSL" version="1"/>
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:OSL"/>
                                     <ForBoarding>false</ForBoarding>
                                 </StopPointInJourneyPattern>
                             </pointsInSequence>

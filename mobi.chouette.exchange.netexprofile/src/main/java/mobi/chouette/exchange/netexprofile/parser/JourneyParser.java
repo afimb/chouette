@@ -69,6 +69,8 @@ public class JourneyParser extends AbstractParser {
 
         if (netexJourneyPattern.getName() != null) {
             chouetteJourneyPattern.setName(netexJourneyPattern.getName().getValue());
+        } else {
+            chouetteJourneyPattern.setName(netexJourneyPattern.getId());
         }
 
         String routeIdRef = netexJourneyPattern.getRouteRef().getRef();

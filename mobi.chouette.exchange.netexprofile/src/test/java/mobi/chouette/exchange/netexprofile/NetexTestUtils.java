@@ -26,7 +26,7 @@ public class NetexTestUtils  {
 		Referential referential = (Referential) context.get(Constant.REFERENTIAL);
 		Assert.assertNotNull(referential, "referential");
 		Assert.assertEquals(referential.getLines().size(), 1, "lines size");
-		Line line = referential.getLines().get("AVI:Line:DY280");
+		Line line = referential.getLines().get("AVI:Line:SK264");
 		Assert.assertNotNull(line, "line");
 
 		Assert.assertNotNull(line.getNetwork(), "line must have a network");

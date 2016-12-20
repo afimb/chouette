@@ -11,7 +11,6 @@ import mobi.chouette.exchange.netexprofile.DummyChecker;
 import mobi.chouette.exchange.netexprofile.JobDataTest;
 import mobi.chouette.exchange.netexprofile.NetexTestUtils;
 import mobi.chouette.exchange.report.*;
-import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
@@ -223,101 +222,105 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("AVI:Line:DY280");
+		Line line = lineDao.findByObjectId("AVI:Line:SK264");
 		Assert.assertNotNull(line, "Line not found");
 
 		utx.rollback();
 	}
 
-	@Test(enabled = true) // Disabled due to jaxb class loading issues (works when deployed normally, just not inside arquillian/embedded jboss)
-	public void importAvinor() throws Exception {
-		// Prepare context
+	@Test
+	public void verifyImportAvinorZipLines() throws Exception {
 		Context context = initImportContext();
+		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
+				initialContext, NetexprofileImporterCommand.class.getName());
 
-		File f = new File("src/test/data/avinor.zip");
-		File dest = new File("target/referential/test");
-		FileUtils.copyFileToDirectory(f, dest);
-		JobDataTest job = (JobDataTest) context.get(JOB_DATA);
-		job.setInputFilename(f.getName());
+		NetexTestUtils.copyFile("avinor-netex.zip");
 
-		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(initialContext, NetexprofileImporterCommand.class.getName());
+		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
+		jobData.setInputFilename("avinor-netex.zip");
 
-		NetexprofileImportParameters parameters = (NetexprofileImportParameters) context.get(CONFIGURATION);
-		parameters.setNoSave(false);
+		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
+		configuration.setNoSave(false);
+		configuration.setCleanRepository(true);
+		//configuration.setValidCodespaces("AVI,http://avinor.no/");
+		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
-		boolean result = command.execute(context);
-		dumpReports(context);
-
-		ActionReport report = (ActionReport) context.get(REPORT);
-		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-		assertActionReport(report, STATUS_OK, 8, 1);
-		assertStats(report, 1, 9);
-		assertLine(report, ActionReporter.OBJECT_STATE.OK);
-		assertValidationReport(validationReport, 14, 1, 40);
-
-		// line should be saved
-		utx.begin();
-		em.joinTransaction();
-		Line line = lineDao.findByObjectId("AVI:Line:WF1697");
-
-		Assert.assertNotNull(line, "Line not found");
-		Assert.assertNotNull(line.getNetwork(), "line must have a network");
-		Assert.assertNotNull(line.getCompany(), "line must have a company");
-		Assert.assertNotNull(line.getRoutes(), "line must have routes");
-		assertEquals(line.getRoutes().size(), 9, "number of routes");
-		Set<StopArea> bps = new HashSet<StopArea>();
-
-		int numStopPoints = 0;
-		int numVehicleJourneys = 0;
-		int numJourneyPatterns = 0;
-
-		for (Route route : line.getRoutes()) {
-			Assert.assertNotNull(route.getName(), "No route name");
-
-			Assert.assertNotEquals(route.getJourneyPatterns().size(), 0, "line routes must have journeyPattens");
-			for (JourneyPattern jp : route.getJourneyPatterns()) {
-				Assert.assertNotNull(jp.getName(), "No journeypattern name");
-				Assert.assertNotEquals(jp.getStopPoints().size(), 0, "line journeyPattens must have stoppoints");
-				for (StopPoint point : jp.getStopPoints()) {
-
-					numStopPoints++;
-					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
-					bps.add(point.getContainedInStopArea());
-
-					Assert.assertNotNull(point.getForAlighting(), "no alighting info StopPoint=" + point);
-					Assert.assertNotNull(point.getForBoarding(), "no boarding info StopPoint=" + point);
-
-				}
-				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0, " journeyPattern should have VehicleJourneys");
-				for (VehicleJourney vj : jp.getVehicleJourneys()) {
-					Assert.assertNotEquals(vj.getTimetables().size(), 0, " vehicleJourney should have timetables");
-					assertEquals(vj.getVehicleJourneyAtStops().size(), jp.getStopPoints().size(),
-							" vehicleJourney should have correct vehicleJourneyAtStop count");
-					numVehicleJourneys++;
-				}
-				numJourneyPatterns++;
-			}
+		boolean result;
+		try {
+			result = command.execute(context);
+		} catch (Exception ex) {
+			log.error("test failed", ex);
+			throw ex;
 		}
 
-		assertEquals(numJourneyPatterns, 9, "number of journeyPatterns");
-		assertEquals(numVehicleJourneys, 12, "number of vehicleJourneys");
-		assertEquals(numStopPoints, 411, "number of stopPoints in journeyPattern");
-		assertEquals(bps.size(), 90, "number boarding positions");
+		ActionReport report = (ActionReport) context.get(REPORT);
 
-		// Check opposite routes
-		Route outbound = routeDao.findByObjectId("TST:Route:2306103-2016-03-29");
-		Route inbound = routeDao.findByObjectId("TST:Route:2306203-2016-03-29");
+		dumpReports(context);
 
-		Assert.assertNotNull(outbound, "Outbound route not found");
-		Assert.assertNotNull(inbound, "Inbound route not found");
+		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+		Assert.assertEquals(report.getFiles().size(), 4, "files reported");
+		Assert.assertNotNull(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE), "lines reported");
+		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 3, "lines reported");
 
-		Assert.assertNotNull(outbound.getOppositeRoute(), "Oppsite route to outbound not found");
-		Assert.assertNotNull(inbound.getOppositeRoute(), "Oppsite route to inbound not found");
+		for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+			Reporter.log("report lines :" + info.toString(), true);
+			Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "lines status");
+		}
 
-		Assert.assertTrue(outbound.getOppositeRoute().equals(inbound), "Opposite route incorrect");
+		// lines should be saved
+		utx.begin();
+		em.joinTransaction();
+
+		Collection<String> objectIds = Arrays.asList("AVI:Line:DY121", "AVI:Line:SK4116", "AVI:Line:WF511");
+		List<Line> lines = lineDao.findByObjectId(objectIds);
+
+		for (Line line : lines) {
+			Assert.assertNotNull(line, "Line not found");
+			Assert.assertNotNull(line.getNetwork(), "line must have a network");
+			Assert.assertNotNull(line.getCompany(), "line must have a company");
+			Assert.assertNotNull(line.getRoutes(), "line must have routes");
+			assertEquals(line.getRoutes().size(), 1, "number of routes");
+
+			Set<StopArea> bps = new HashSet<>();
+
+			int numStopPoints = 0;
+			int numVehicleJourneys = 0;
+			int numJourneyPatterns = 0;
+
+			for (Route route : line.getRoutes()) {
+				Assert.assertNotNull(route.getName(), "No route name");
+				Assert.assertNotEquals(route.getJourneyPatterns().size(), 0, "line routes must have journeyPattens");
+
+				for (JourneyPattern jp : route.getJourneyPatterns()) {
+					Assert.assertNotNull(jp.getName(), "No journeypattern name");
+					Assert.assertNotEquals(jp.getStopPoints().size(), 0, "line journeyPattens must have stoppoints");
+
+					for (StopPoint point : jp.getStopPoints()) {
+						numStopPoints++;
+						Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
+						bps.add(point.getContainedInStopArea());
+						Assert.assertNotNull(point.getForAlighting(), "no alighting info StopPoint=" + point);
+						Assert.assertNotNull(point.getForBoarding(), "no boarding info StopPoint=" + point);
+					}
+
+					Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0, " journeyPattern should have VehicleJourneys");
+
+					for (VehicleJourney vj : jp.getVehicleJourneys()) {
+						Assert.assertNotEquals(vj.getTimetables().size(), 0, " vehicleJourney should have timetables");
+						assertEquals(vj.getVehicleJourneyAtStops().size(), jp.getStopPoints().size(), " vehicleJourney should have correct vehicleJourneyAtStop count");
+						numVehicleJourneys++;
+					}
+					numJourneyPatterns++;
+				}
+			}
+
+			assertEquals(numJourneyPatterns, 1, "number of journeyPatterns");
+			assertEquals(numVehicleJourneys, 1, "number of vehicleJourneys");
+			assertEquals(numStopPoints, 2, "number of stopPoints in journeyPattern");
+			assertEquals(bps.size(), 2, "number boarding positions");
+		}
 
 		utx.rollback();
-
 		Assert.assertTrue(result, "Importer command execution failed: " + report.getFailure());
 	}
 
