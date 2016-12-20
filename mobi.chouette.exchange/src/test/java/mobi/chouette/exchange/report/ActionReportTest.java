@@ -21,30 +21,30 @@ public class ActionReportTest implements Constant{
 		Context context = new Context();
 		context.put(VALIDATION_REPORT, new ValidationReport());
 		context.put(REPORT, new ActionReport());
-		
+
 		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
 		ActionReport actionReport = (ActionReport) context.get(REPORT);
-	
+
 		{
 		ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 		PrintStream stream = new PrintStream(oStream);
-		
-		
+
+
 		actionReport.print(stream);
 		String text = oStream.toString();
 		JSONObject res = new JSONObject(text);
 		Assert.assertEquals(res.length(), 1 , "Report must contains 1 entry");
 		Assert.assertTrue(res.has("action_report"), "Report must contains entry action_report");
 		JSONObject arJson = res.getJSONObject("action_report");
-		
+
 		// Test progression presence
 		JSONObject progression = arJson.getJSONObject("progression");
 		Assert.assertNotNull(progression, "action report progression cannot be null");
-		
+
 		// Test result attribute
 		Assert.assertEquals(arJson.get("result"), "OK", "action report result is not OK by default");
 		}
-		
+
 		//Test zipFile add
 		{
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
@@ -59,7 +59,7 @@ public class ActionReportTest implements Constant{
 			JSONArray zipFiles = arJson.getJSONArray("zip_files");
 			Assert.assertEquals(((JSONObject)zipFiles.get(0)).getString("name"), "zip1", "action report must have a zip file named zip1");
 		}
-		
+
 		//Test Failure add
 		{
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
@@ -74,7 +74,7 @@ public class ActionReportTest implements Constant{
 			JSONObject failure = arJson.getJSONObject("failure");
 			Assert.assertNotNull(failure, "action report must contain one failure");
 		}
-		
+
 		//Test Failure add
 		{
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
@@ -89,7 +89,7 @@ public class ActionReportTest implements Constant{
 			JSONObject failure = arJson.getJSONObject("failure");
 			Assert.assertNotNull(failure, "action report must contain one failure");
 		}
-		
+
 		//Test File report add
 		{
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
@@ -104,7 +104,7 @@ public class ActionReportTest implements Constant{
 			JSONArray filesReport = arJson.getJSONArray("files");
 			Assert.assertEquals(filesReport.length(), 1, "Action report must contain one file report");
 		}
-		
+
 		//Test object report add
 		{
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
@@ -117,11 +117,11 @@ public class ActionReportTest implements Constant{
 			Assert.assertEquals(res.length(), 1 , "Report must contains 1 entry");
 			Assert.assertTrue(res.has("action_report"), "Report must contains entry action_report");
 			JSONObject arJson = res.getJSONObject("action_report");
-			
+
 			JSONArray objectsReport = arJson.getJSONArray("objects");
 			Assert.assertEquals(objectsReport.length(), 1, "Action report must contain one object report");
 		}
-		
+
 		// Test object report collection add
 		{
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
@@ -134,7 +134,7 @@ public class ActionReportTest implements Constant{
 			Assert.assertEquals(res.length(), 1 , "Report must contains 1 entry");
 			Assert.assertTrue(res.has("action_report"), "Report must contains entry action_report");
 			JSONObject arJson = res.getJSONObject("action_report");
-			
+
 			JSONArray objectCollectionsReport = arJson.getJSONArray("collections");
 			JSONArray objects = ((JSONObject) objectCollectionsReport.get(0)).getJSONArray("objects");
 			Assert.assertEquals(objects.length(), 1, "Action report must contain one object collection report");

@@ -1,15 +1,7 @@
 package mobi.chouette.exchange.report;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.xml.bind.annotation.XmlElement;
-
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
@@ -19,52 +11,51 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import javax.xml.bind.annotation.XmlElement;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 @ToString
+@NoArgsConstructor
+@Getter
+@Setter
 public class ObjectReport extends AbstractReport {
 
 	@XmlElement(name = "type", required = true)
-	@Getter
 	private ActionReporter.OBJECT_TYPE type;
 
 	@XmlElement(name = "description", required = true)
-	@Getter
-	@Setter
 	private String description;
 
 	@XmlElement(name = "status", required = true)
-	@Getter
 	private OBJECT_STATE status = OBJECT_STATE.OK;
 
 	@XmlElement(name = "stats", required = true)
-	@Getter
 	private Map<OBJECT_TYPE, Integer> stats = new HashMap<OBJECT_TYPE, Integer>();
 
 	@XmlElement(name = "io_type")
-	@Getter
 	private IO_TYPE ioType;
 
 	@XmlElement(name = "errors")
-	@Getter
 	private List<ObjectError> errors = new ArrayList<ObjectError>();
 
 	@XmlElement(name = "check_point_errors")
-	@Getter
 	private List<Integer> checkPointErrorKeys = new ArrayList<Integer>();
 	
 	@XmlElement(name = "check_point_warnings")
-	@Getter
 	private List<Integer> checkPointWarningKeys = new ArrayList<Integer>();
 
 	@XmlElement(name = "check_point_error_count")
-	@Getter
 	private int checkPointErrorCount = 0;
 
 	@XmlElement(name = "check_point_warning_count")
-	@Getter
 	private int checkPointWarningCount = 0;
 
 	@XmlElement(name = "objectid")
-	@Getter
 	private String objectId;
 
 	protected ObjectReport(String objectId, OBJECT_TYPE type, String description, OBJECT_STATE status, IO_TYPE ioType) {

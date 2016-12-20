@@ -1,5 +1,17 @@
 package mobi.chouette.exchange.report;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,47 +19,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
-
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "objectType", "objectReports", "stats", "ioType" })
-public class ObjectCollectionReport  extends AbstractReport {
+@XmlType(propOrder = {"type", "objects", "stats"})
+public class ObjectCollectionReport extends AbstractReport {
 	@XmlElement(name = "type", required = true)
 	private ActionReporter.OBJECT_TYPE objectType;
 
-	@XmlElement(name = "object_reports")
-	private List<ObjectReport> objectReports = new ArrayList<ObjectReport>();
+	@XmlElement(name = "objects")
+	private List<ObjectReport> objectReports = new ArrayList<>();
 
 	@XmlElement(name = "stats")
-	private Map<ActionReporter.OBJECT_TYPE, Integer> stats = new HashMap<ActionReporter.OBJECT_TYPE, Integer>();
+	private Map<OBJECT_TYPE, Integer> stats = new HashMap<OBJECT_TYPE, Integer>();
 
 	/**
-	 * 
 	 * @param object
 	 */
 	protected void addObjectReport(ObjectReport object) {
 		if (findObjectReport(object.getObjectId()) == null)
-		   objectReports.add(object);
+			objectReports.add(object);
 	}
 
 	/**
 	 * Add stat to data type
-	 * 
+	 *
 	 * @param type
 	 */
 	protected void addStatTypeToObject(ActionReporter.OBJECT_TYPE type, int count) {
@@ -90,7 +87,7 @@ public class ObjectCollectionReport  extends AbstractReport {
 	}
 
 	@Override
-	public void print(PrintStream out, StringBuilder ret , int level, boolean first) {
+	public void print(PrintStream out, StringBuilder ret, int level, boolean first) {
 		ret.setLength(0);
 		out.print(addLevel(ret, level).append('{'));
 		out.print(toJsonString(ret, level + 1, "type", objectType.toString().toLowerCase(), true));
@@ -101,6 +98,6 @@ public class ObjectCollectionReport  extends AbstractReport {
 		}
 		ret.setLength(0);
 		out.print(addLevel(ret.append('\n'), level).append('}'));
-	
+
 	}
 }
