@@ -1,9 +1,5 @@
 package mobi.chouette.exchange.importer.updater;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -17,21 +13,13 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneImporterCommand;
-import mobi.chouette.exchange.importer.updater.AbstractTestValidation;
 import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
-import mobi.chouette.exchange.validator.DummyChecker;
 import mobi.chouette.exchange.validator.JobDataTest;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.testng.Assert;
 import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
@@ -51,64 +39,8 @@ public class ValidationJourneyPatternsUpdater extends AbstractTestValidation {
 	@Deployment
 	public static EnterpriseArchive createDeployment() {
 
-		EnterpriseArchive result;
-		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.exchange.validator").withTransitivity().asFile();
-		List<File> jars = new ArrayList<>();
-		List<JavaArchive> modules = new ArrayList<>();
-		for (File file : files) {
-			if (file.getName().startsWith("mobi.chouette.exchange"))
-			{
-				String name = file.getName().split("\\-")[0]+".jar";
-				JavaArchive archive = ShrinkWrap
-						  .create(ZipImporter.class, name)
-						  .importFrom(file)
-						  .as(JavaArchive.class);
-				modules.add(archive);
-			}
-			else
-			{
-				jars.add(file);
-			}
+		return prepareDeployment();
 		}
-		File[] filesDao = Maven.resolver().loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.dao").withTransitivity().asFile();
-		if (filesDao.length == 0) 
-		{
-			throw new NullPointerException("no dao");
-		}
-		for (File file : filesDao) {
-			if (file.getName().startsWith("mobi.chouette.dao"))
-			{
-				String name = file.getName().split("\\-")[0]+".jar";
-				
-				JavaArchive archive = ShrinkWrap
-						  .create(ZipImporter.class, name)
-						  .importFrom(file)
-						  .as(JavaArchive.class);
-				modules.add(archive);
-				if (!modules.contains(archive))
-				   modules.add(archive);
-			}
-			else
-			{
-				if (!jars.contains(file))
-				   jars.add(file);
-			}
-		}
-		final WebArchive testWar = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
-				.addClass(DummyChecker.class)
-				.addClass(JobDataTest.class)
-				.addClass(AbstractTestValidation.class)
-				.addClass(ValidationJourneyPatternsUpdater.class);
-		
-		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-				.addAsLibraries(jars.toArray(new File[0]))
-				.addAsModules(modules.toArray(new JavaArchive[0]))
-				.addAsModule(testWar)
-				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
-		return result;
-	}
 
 	@BeforeGroups(groups = { "JourneyPattern" })
 	public void init() {
