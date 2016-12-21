@@ -28,6 +28,7 @@ import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.util.Referential;
 
 public class NorwayLineNetexProfileValidatorTest {
 
@@ -47,6 +48,8 @@ public class NorwayLineNetexProfileValidatorTest {
 		
 		ValidationData data =new ValidationData();
 		context.put(Constant.VALIDATION_DATA,data);
+
+		context.put(Constant.NETEX_COMMON_DATA_DOMS, new ArrayList<Document>());
 
 		
 		XPath xpath = XPathFactory.newInstance().newXPath();
@@ -95,28 +98,35 @@ public class NorwayLineNetexProfileValidatorTest {
 		ValidationData data =new ValidationData();
 		context.put(Constant.VALIDATION_DATA,data);
 
+		Referential referential =new Referential();
+		context.put(Constant.REFERENTIAL,referential);
+
+		context.put(Constant.NETEX_COMMON_DATA_DOMS, new ArrayList<Document>());
+		
 		XPath xpath = XPathFactory.newInstance().newXPath();
 		xpath.setNamespaceContext(new NetexNamespaceContext()) ;
 		context.put(Constant.NETEX_LINE_DATA_XPATH, xpath);
 
 		Set<ProfileValidatorCodespace> validCodespaces = new HashSet<>();
 		validCodespaces.add(new ProfileValidatorCodespace(NorwayLineNetexProfileValidator.NSR_XMLNS, NorwayLineNetexProfileValidator.NSR_XMLNSURL));
-//		validCodespaces.add(new ProfileValidatorCodespace("AVI","http://avinor.no/"));
+		validCodespaces.add(new ProfileValidatorCodespace("AVI","http://www.rutebanken.org/ns/avi"));
 		context.put(Constant.NETEX_VALID_CODESPACES, validCodespaces);
 
-		// Parse (convert to chouette objects)
-		Document lineDom = importer.parseFileToDom(new File("src/test/data/mr_Line_1.xml"));
-		PublicationDeliveryStructure lineStructure =importer.unmarshal(lineDom);
-		context.put(Constant.NETEX_LINE_DATA_JAVA, lineStructure);
-		context.put(Constant.NETEX_LINE_DATA_DOM, lineDom);
+
 
 		
 		NetexCommonFilesParserCommand commonParser =new NetexCommonFilesParserCommand();
-		Path path = FileSystems.getDefault().getPath("src/test/data", "_mr_StopsAndLinks.xml");
+		Path path = FileSystems.getDefault().getPath("src/test/data/norway_line_commonfile/", "_avinor_common_elements.xml");
 		List<Path> commonFiles = new ArrayList<>();
 		commonFiles.add(path);
 		commonParser.setFiles(commonFiles);
 		commonParser.execute(context);
+
+		// Parse (convert to chouette objects)
+		Document lineDom = importer.parseFileToDom(new File("src/test/data/norway_line_commonfile/Norwegian-DY121-Stavanger-Bergen.xml"));
+		PublicationDeliveryStructure lineStructure =importer.unmarshal(lineDom);
+		context.put(Constant.NETEX_LINE_DATA_JAVA, lineStructure);
+		context.put(Constant.NETEX_LINE_DATA_DOM, lineDom);
 
 		NetexProfileValidator validator = new NorwayLineNetexProfileValidator();
 		validator.initializeCheckPoints(context);
@@ -130,7 +140,7 @@ public class NorwayLineNetexProfileValidatorTest {
 			}
 		
 		// TODO add more checks here
-		Assert.assertFalse(valid);;
+		Assert.assertTrue(valid);;
 	}
 
 }

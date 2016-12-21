@@ -11,7 +11,11 @@ import mobi.chouette.exchange.importer.AbstractDisposeImportCommand;
 import mobi.chouette.exchange.netexprofile.Constant;
 
 import javax.naming.InitialContext;
+
+import org.w3c.dom.Document;
+
 import java.io.IOException;
+import java.util.List;
 
 @Log4j
 public class NetexDisposeImportCommand extends AbstractDisposeImportCommand implements  Constant {
@@ -25,7 +29,9 @@ public class NetexDisposeImportCommand extends AbstractDisposeImportCommand impl
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		try {
+			((List<Document>) context.get(Constant.NETEX_COMMON_DATA_DOMS)).clear();
 			super.execute(context);
+			
 			result = SUCCESS;
 
 		} catch (Exception e) {

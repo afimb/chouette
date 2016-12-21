@@ -27,7 +27,7 @@ public class PublicationDeliveryParser implements Parser, Constant {
 	public void parse(Context context) throws Exception {
 		boolean isCommonDelivery = context.get(NETEX_WITH_COMMON_DATA) != null && context.get(NETEX_LINE_DATA_JAVA) == null;
 		Referential referential = (Referential) context.get(REFERENTIAL);
-        String contextKey = isCommonDelivery ? NETEX_COMMON_DATA : NETEX_LINE_DATA_JAVA;
+        String contextKey = isCommonDelivery ? NETEX_COMMON_DATA_JAVA : NETEX_LINE_DATA_JAVA;
 		PublicationDeliveryStructure publicationDelivery = (PublicationDeliveryStructure) context.get(contextKey);
 		List<JAXBElement<? extends Common_VersionFrameStructure>> dataObjectFrames = publicationDelivery.getDataObjects().getCompositeFrameOrCommonFrame();
 
