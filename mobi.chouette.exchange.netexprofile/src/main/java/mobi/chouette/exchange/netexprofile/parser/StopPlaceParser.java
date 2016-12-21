@@ -5,6 +5,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
+import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
@@ -20,13 +21,9 @@ import java.util.Map;
 import java.util.Properties;
 
 @Log4j
-public class StopPlaceParser extends AbstractParser {
+public class StopPlaceParser implements Parser, Constant {
 
 	private Map<String, Properties> tariffZoneProperties;
-
-	@Override
-	public void initReferentials(Context context) throws Exception {
-	}
 
 	@Override
 	public void parse(Context context) throws Exception {

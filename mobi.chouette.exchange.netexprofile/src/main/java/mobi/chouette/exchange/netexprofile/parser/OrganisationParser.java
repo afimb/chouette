@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -16,11 +17,7 @@ import javax.xml.bind.JAXBElement;
 import java.util.List;
 
 @Log4j
-public class OrganisationParser extends AbstractParser {
-
-    @Override
-    public void initReferentials(Context context) throws Exception {
-    }
+public class OrganisationParser implements Parser, Constant {
 
     @Override
     public void parse(Context context) throws Exception {

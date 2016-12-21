@@ -4,24 +4,21 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.PTDirectionEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import org.rutebanken.netex.model.*;
+import org.rutebanken.netex.model.DirectionTypeEnumeration;
+import org.rutebanken.netex.model.LinkSequence_VersionStructure;
+import org.rutebanken.netex.model.RouteRefStructure;
+import org.rutebanken.netex.model.RoutesInFrame_RelStructure;
 
 import javax.xml.bind.JAXBElement;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Log4j
-public class RouteParser extends AbstractParser {
-
-    @Override
-    public void initReferentials(Context context) throws Exception {
-    }
+public class RouteParser implements Parser, Constant {
 
     @Override
     public void parse(Context context) throws Exception {
@@ -41,6 +38,8 @@ public class RouteParser extends AbstractParser {
 
             if (netexRoute.getShortName() != null) {
                 chouetteRoute.setPublishedName(netexRoute.getShortName().getValue());
+            } else {
+                chouetteRoute.setPublishedName(routeName);
             }
 
             // TODO consider how to handle DirectionType, its part of property map with direction id in chouette model, for now setting to A
@@ -67,37 +66,9 @@ public class RouteParser extends AbstractParser {
                 }
             }
 
-            parsePointsInSequence(context, netexRoute, chouetteRoute);
             chouetteRoute.setFilled(true);
         }
     }
-
-    private void parsePointsInSequence(Context context, org.rutebanken.netex.model.Route netexRoute, mobi.chouette.model.Route chouetteRoute) throws Exception {
-        Referential referential = (Referential) context.get(REFERENTIAL);
-        PointsOnRoute_RelStructure pointsInSequence = netexRoute.getPointsInSequence();
-        List<PointOnRoute> pointsOnRoute = pointsInSequence.getPointOnRoute();
-
-        for (PointOnRoute pointOnRoute : pointsOnRoute) {
-            StopPoint stopPoint = ObjectFactory.getStopPoint(referential, getStopPointObjectId(chouetteRoute, pointOnRoute.getId()));
-            stopPoint.setRoute(chouetteRoute);
-            stopPoint.setFilled(true);
-        }
-        for (StopPoint stopPoint : chouetteRoute.getStopPoints()) {
-            stopPoint.setPosition(chouetteRoute.getStopPoints().indexOf(stopPoint));
-        }
-    }
-
-    private String getStopPointObjectId(mobi.chouette.model.Route route, String pointOnRouteId) {
-        String prefix = NetexUtils.objectIdPrefix(route.getObjectId());
-        Matcher m = Pattern.compile("\\S+:\\S+:(\\S+)$").matcher(pointOnRouteId);
-
-        if (!m.matches()) {
-            throw new RuntimeException("PointOnRoute.id " + pointOnRouteId);
-        }
-
-        return String.format("%s:ScheduledStopPoint:%s", prefix, m.group(1));
-    }
-
 
     static {
         ParserFactory.register(RouteParser.class.getName(), new ParserFactory() {

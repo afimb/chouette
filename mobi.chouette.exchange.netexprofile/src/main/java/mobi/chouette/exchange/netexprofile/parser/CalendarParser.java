@@ -5,9 +5,11 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
+import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
+import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
@@ -22,17 +24,12 @@ import java.util.List;
 import java.util.Map;
 
 @Log4j
-public class CalendarParser extends AbstractParser {
+public class CalendarParser implements Parser, Constant {
 
     private static final String PERIOD_START = "period_start";
     private static final String PERIOD_END = "period_end";
 
     private Map<String, Date> validityConditions;
-
-    @Override
-    public void initReferentials(Context context) throws Exception {
-
-    }
 
     @Override
     public void parse(Context context) throws Exception {
@@ -70,7 +67,8 @@ public class CalendarParser extends AbstractParser {
             }
         }
 
-        referential.getTimetables().put(timetable.getObjectId(), timetable);
+        // link timetable to referential
+        ObjectFactory.getTimetable(referential, timetable.getObjectId());
         timetable.setFilled(true);
     }
 
@@ -126,7 +124,7 @@ public class CalendarParser extends AbstractParser {
             period.setStartDate(ParserUtils.getSQLDate(fromDate.toString()));
             period.setEndDate(ParserUtils.getSQLDate(toDate.toString()));
         }
-        timetable.getPeriods().add(period);
+        timetable.addPeriod(period);
     }
 
     static {
