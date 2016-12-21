@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.w3c.dom.Document;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -51,6 +53,7 @@ public class NetexInitImportCommand implements Command, Constant {
 
 			context.put(REFERENTIAL, new Referential());
 			context.put(VALIDATION_DATA, new ValidationData());
+			context.put(Constant.NETEX_COMMON_DATA_DOMS, new ArrayList<Document>());
 
 			// Decode codespace definition if provided
 			if (configuration.getValidCodespaces() != null) {

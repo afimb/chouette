@@ -72,13 +72,16 @@ public class NetexCommonFilesParserCommand implements Command, Constant {
 
 				NetexImporter importer = (NetexImporter) context.get(IMPORTER);
 				Document dom = importer.parseFileToDom(file);
+				
+				List<Document> commonDataDoms = (List<Document>) context.get(Constant.NETEX_COMMON_DATA_DOMS);
+				commonDataDoms.add(dom);
 
 				// Find id-fields and check for duplicates
 				collectEntityIdentificators(context, fileName, dom, commonIds);
 
 				// unmarshal xml to java
 				PublicationDeliveryStructure commonDeliveryStructure = importer.unmarshal(dom);
-				context.put(NETEX_COMMON_DATA, commonDeliveryStructure);
+				context.put(NETEX_COMMON_DATA_JAVA, commonDeliveryStructure);
 				context.put(NETEX_WITH_COMMON_DATA, Boolean.TRUE);
 
 				PublicationDeliveryParser parser = (PublicationDeliveryParser) ParserFactory.create(PublicationDeliveryParser.class.getName());

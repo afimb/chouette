@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PublicationDelivery xmlns="http://www.netex.org.uk/netex" xmlns:ns2="http://www.opengis.net/gml/3.2" xmlns:ns3="http://www.siri.org.uk/siri" version="1.04:NO-NeTEx-networktimetable:1.0">
+    <PublicationTimestamp>2016-12-20T08:47:47.159Z</PublicationTimestamp>
+    <ParticipantRef>Avinor</ParticipantRef>
+    <Description>Flight DY121 : Stavanger-Bergen</Description>
+    <dataObjects>
+        <CompositeFrame created="2016-12-20T08:47:47.159Z" version="1" id="AVI:CompositeFrame:DY121">
+            <validityConditions>
+                <AvailabilityCondition version="1" id="AVI:AvailabilityCondition:7718973">
+                    <FromDate>2016-12-20T00:00:00Z</FromDate>
+                    <ToDate>2017-01-20T00:00:00Z</ToDate>
+                </AvailabilityCondition>
+            </validityConditions>
+            <codespaces>
+                <Codespace id="avi">
+                    <Xmlns>AVI</Xmlns>
+                    <XmlnsUrl>http://www.rutebanken.org/ns/avi</XmlnsUrl>
+                </Codespace>
+                <Codespace id="nsr">
+                    <Xmlns>NSR</Xmlns>
+                    <XmlnsUrl>http://www.rutebanken.org/ns/nsr</XmlnsUrl>
+                </Codespace>
+            </codespaces>
+            <FrameDefaults>
+                <DefaultLocale>
+                    <TimeZone>UTC</TimeZone>
+                    <DefaultLanguage>no</DefaultLanguage>
+                </DefaultLocale>
+            </FrameDefaults>
+            <frames>
+                <ServiceFrame version="1" id="AVI:ServiceFrame:DY121">
+                    <Network changed="2016-12-20T08:47:47.159Z" version="1" id="AVI:Network:DY">
+                        <Name>Norwegian</Name>
+                    </Network>
+                    <routePoints>
+                        <RoutePoint version="1" id="AVI:RoutePoint:SVG">
+                            <projections>
+<PointProjection version="1" id="AVI:PointProjection:SVG">
+    <ProjectedPointRef ref="AVI:ScheduledStopPoint:SVG" version="1"/>
+</PointProjection>
+                            </projections>
+                        </RoutePoint>
+                        <RoutePoint version="1" id="AVI:RoutePoint:BGO">
+                            <projections>
+<PointProjection version="1" id="AVI:PointProjection:BGO">
+    <ProjectedPointRef ref="AVI:ScheduledStopPoint:BGO" version="1"/>
+</PointProjection>
+                            </projections>
+                        </RoutePoint>
+                    </routePoints>
+                    <routes>
+                        <Route version="1" id="AVI:Route:DY121">
+                            <Name>Stavanger-Bergen</Name>
+                            <LineRef ref="AVI:Line:DY121" version="1"/>
+                            <pointsInSequence>
+<PointOnRoute version="1" id="AVI:PointOnRoute:39026721">
+    <RoutePointRef ref="AVI:RoutePoint:SVG" version="1"/>
+</PointOnRoute>
+<PointOnRoute version="1" id="AVI:PointOnRoute:39026722">
+    <RoutePointRef ref="AVI:RoutePoint:BGO" version="1"/>
+</PointOnRoute>
+                            </pointsInSequence>
+                        </Route>
+                    </routes>
+                    <lines>
+                        <Line version="1" id="AVI:Line:DY121">
+                            <Name>Stavanger-Bergen</Name>
+                            <TransportMode>air</TransportMode>
+                            <PublicCode>DY121</PublicCode>
+                            <OperatorRef ref="AVI:Operator:DY"/>
+                            <routes>
+<RouteRef ref="AVI:Route:DY121" version="1"/>
+                            </routes>
+                        </Line>
+                    </lines>
+                    <journeyPatterns>
+                        <JourneyPattern version="1" id="AVI:JourneyPattern:8662337">
+                            <RouteRef ref="AVI:Route:DY121" version="1"/>
+                            <pointsInSequence>
+<StopPointInJourneyPattern order="1" version="1" id="AVI:StopPointInJourneyPattern:40203411">
+    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:SVG"/>
+    <ForAlighting>false</ForAlighting>
+</StopPointInJourneyPattern>
+<StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:40203412">
+    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:BGO"/>
+    <ForBoarding>false</ForBoarding>
+</StopPointInJourneyPattern>
+                            </pointsInSequence>
+                        </JourneyPattern>
+                    </journeyPatterns>
+                </ServiceFrame>
+                <TimetableFrame version="1" id="AVI:TimetableFrame:2508399">
+                    <validityConditions>
+                        <AvailabilityCondition version="1" id="AVI:AvailabilityCondition:8495566">
+                            <FromDate>2016-12-20T00:00:00Z</FromDate>
+                            <ToDate>2017-01-20T00:00:00Z</ToDate>
+                        </AvailabilityCondition>
+                    </validityConditions>
+                    <vehicleJourneys>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:DY121">
+                            <DepartureTime>06:00:00Z</DepartureTime>
+                            <dayTypes>
+<DayTypeRef ref="AVI:DayType:DY121_weekday" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:8662337" version="1"/>
+                            <PublicCode>DY121</PublicCode>
+                            <LineRef ref="AVI:Line:DY121" version="1"/>
+                            <passingTimes>
+<TimetabledPassingTime>
+    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:40203411" version="1"/>
+    <DepartureTime>06:00:00Z</DepartureTime>
+</TimetabledPassingTime>
+<TimetabledPassingTime>
+    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:40203412" version="1"/>
+    <ArrivalTime>06:40:00Z</ArrivalTime>
+</TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                    </vehicleJourneys>
+                </TimetableFrame>
+                <ServiceCalendarFrame version="1" id="AVI:ServiceCalendarFrame:1395104">
+                    <validityConditions>
+                        <AvailabilityCondition version="1" id="AVI:AvailabilityCondition:5230790">
+                            <FromDate>2016-12-20T00:00:00Z</FromDate>
+                            <ToDate>2017-01-20T00:00:00Z</ToDate>
+                        </AvailabilityCondition>
+                    </validityConditions>
+                    <dayTypes>
+                        <DayType version="1" id="AVI:DayType:DY121_weekday">
+                            <Name>Ukedager (mandag til fredag)</Name>
+                            <properties>
+<PropertyOfDay>
+    <DaysOfWeek>Monday Tuesday Wednesday Thursday</DaysOfWeek>
+</PropertyOfDay>
+                            </properties>
+                        </DayType>
+                    </dayTypes>
+                </ServiceCalendarFrame>
+            </frames>
+        </CompositeFrame>
+    </dataObjects>
+</PublicationDelivery>
