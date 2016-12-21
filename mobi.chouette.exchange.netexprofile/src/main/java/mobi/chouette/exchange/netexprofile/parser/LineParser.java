@@ -5,6 +5,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
+import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.UserNeedEnum;
@@ -18,11 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Log4j
-public class LineParser extends AbstractParser {
-
-    @Override
-    public void initReferentials(Context context) throws Exception {
-    }
+public class LineParser implements Parser, Constant {
 
     @Override
     public void parse(Context context) throws Exception {

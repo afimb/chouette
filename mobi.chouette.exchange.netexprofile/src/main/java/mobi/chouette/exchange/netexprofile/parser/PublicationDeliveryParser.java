@@ -4,16 +4,15 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
-import mobi.chouette.model.StopArea;
 import mobi.chouette.model.*;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
-import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import org.rutebanken.netex.model.*;
 import org.rutebanken.netex.model.Network;
@@ -22,9 +21,7 @@ import javax.xml.bind.JAXBElement;
 import java.util.*;
 
 @Log4j
-public class PublicationDeliveryParser extends AbstractParser {
-
-	private Map<String, String> stopAssignments;
+public class PublicationDeliveryParser implements Parser, Constant {
 
 	@Override
 	public void parse(Context context) throws Exception {
@@ -58,14 +55,23 @@ public class PublicationDeliveryParser extends AbstractParser {
 		}
 
 		// post processing
-		linkStopPointsToAssignedStopArea(referential);
-		//sortStopPointsOnRoutes(referential);
+		sortStopPoints(referential);
 		updateBoardingAlighting(referential);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void preParseReferentialDependencies(Context context, List<ServiceFrame> serviceFrames, boolean isCommonDelivery) throws Exception {
+		Map<String, String> stopAssignments = (Map<String, String>) context.get(NETEX_STOP_ASSIGNMENTS);
 		if (stopAssignments == null) {
 			stopAssignments = new HashMap<>();
+			context.put(NETEX_STOP_ASSIGNMENTS, stopAssignments);
+		}
+		Map<String, String> stopIdMapper = (Map<String, String>) context.get(STOP_POINT_ID_MAPPER);
+		if (stopIdMapper == null) {
+			stopIdMapper = new HashMap<>();
+			context.put(STOP_POINT_ID_MAPPER, stopIdMapper);
+		} else {
+			stopIdMapper.clear();
 		}
 
 		for (ServiceFrame serviceFrame : serviceFrames) {
@@ -192,29 +198,22 @@ public class PublicationDeliveryParser extends AbstractParser {
 		}
 	}
 
-	@Override
-	public void initReferentials(Context context) throws Exception {
-	}
+	protected void sortStopPoints(Referential referential) {
+		// Sort stopPoints on JourneyPattern
+		Collection<JourneyPattern> journeyPatterns = referential.getJourneyPatterns().values();
+		for (JourneyPattern jp : journeyPatterns) {
+			List<StopPoint> stopPoints = jp.getStopPoints();
+			stopPoints.sort(Comparator.comparing(StopPoint::getPosition));
+			jp.setDepartureStopPoint(stopPoints.get(0));
+			jp.setArrivalStopPoint(stopPoints.get(stopPoints.size() - 1));
+		}
 
-	private void linkStopPointsToAssignedStopArea(Referential referential) {
-        Collection<StopPoint> stopPoints = referential.getStopPoints().values();
-
-        for (StopPoint stopPoint : stopPoints) {
-            String stopPointObjectId = stopPoint.getObjectId();
-            String stopAreaObjectId;
-
-            if (stopAssignments.containsKey(stopPointObjectId)) {
-                stopAreaObjectId = stopAssignments.get(stopPointObjectId);
-                StopArea stopArea = ObjectFactory.getStopArea(referential, stopAreaObjectId);
-                stopPoint.setContainedInStopArea(stopArea);
-                stopPoint.setFilled(true);
-            }
-        }
-    }
-
-	private void sortStopPointsOnRoutes(Referential referential) {
-		referential.getRoutes().values().forEach(route -> route.getStopPoints()
-				.sort(Comparator.comparing(StopPoint::getPosition)));
+		// Sort stopPoints on route
+		Collection<Route> routes = referential.getRoutes().values();
+		for (Route r : routes) {
+			List<StopPoint> stopPoints = r.getStopPoints();
+			stopPoints.sort(Comparator.comparing(StopPoint::getPosition));
+		}
 	}
 
 	private void updateBoardingAlighting(Referential referential) {

@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.ObjectFactory;
@@ -14,15 +15,10 @@ import org.rutebanken.netex.model.LineRefStructure;
 import org.rutebanken.netex.model.PrivateCodeStructure;
 
 import javax.xml.bind.JAXBElement;
-import java.time.OffsetDateTime;
 import java.util.List;
 
 @Log4j
-public class NetworkParser extends AbstractParser {
-
-    @Override
-    public void initReferentials(Context context) throws Exception {
-    }
+public class NetworkParser implements Parser, Constant {
 
     @Override
     public void parse(Context context) throws Exception {
