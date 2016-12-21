@@ -57,7 +57,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 			return 0;
 		}
 	};
-	
+
 	private Time headwayFrequency = null;
 
 	@Override
@@ -70,7 +70,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		NeptuneTransportModeConverter ntmc = NeptuneTransportModeConverter.getInstance();
 		TransportModeConverter tmc = (TransportModeConverter) context.get(TRANSPORT_MODE_CONVERTER);
-		
+
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		int columnNumber = xpp.getColumnNumber();
 		int lineNumber = xpp.getLineNumber();
@@ -127,7 +127,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 			} else if (xpp.getName().equals("timeSlotId")) {
 				String timeSlotId = ParserUtils.getText(xpp.nextText());
 				validator.addTimeSlotId(context, objectId, timeSlotId);
-				
+
 				vehicleJourney.setJourneyCategory(JourneyCategoryEnum.Frequency);
 				TimeSlot timeSlot = factory.getTimeSlot(neptuneChouetteIdGenerator.toChouetteId(timeSlotId, parameters.getDefaultCodespace(),TimeSlot.class));
 				journeyFrequency = new JourneyFrequency();
@@ -137,18 +137,25 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 				journeyFrequency.setLastDepartureTime(timeSlot.getLastDepartureTimeInSlot());
 				if (headwayFrequency != null)
 					journeyFrequency.setScheduledHeadwayInterval(headwayFrequency);
-				
+
 			} else if (xpp.getName().equals("transportMode")) {
 				String value = xpp.nextText();
-				// If base default format different than neptune
-				if (!parameters.getDefaultFormat().equalsIgnoreCase("Neptune")) {
-					if(value != null) {
-						TransportMode trSrc = new TransportMode(value, "unspecified");
+				if(value != null) {
+					TransportMode trSrc = new TransportMode(value, "unspecified");
+					// If base default format different than neptune
+					if (!parameters.getDefaultFormat().equalsIgnoreCase("Neptune")) {
+						log.warn("VehicleJourneyParser neptune-> mode before conversion : " + trSrc.getMode() + ":" + trSrc.getSubMode());
 						TransportMode tmpTM = ntmc.specificToGenericMode(trSrc);
 						TransportMode tM = tmc.genericToSpecificMode(tmpTM);
-				
+
 						vehicleJourney.setTransportMode(tM.getMode());
 						vehicleJourney.setTransportSubMode(tM.getSubMode());
+
+						log.warn("VehicleJourneyParser neptune-> mode after conversion : " + tM.getMode() + ":" + tM.getSubMode());
+					} else {
+						log.warn("VehicleJourneyParser neptune-> no need conversion : " + trSrc.getMode() + ":" + trSrc.getSubMode());
+						vehicleJourney.setTransportMode(trSrc.getMode());
+						vehicleJourney.setTransportSubMode(trSrc.getSubMode());
 					}
 				}
 			} else if (xpp.getName().equals("vehicleTypeIdentifier")) {
@@ -170,7 +177,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		
+
 		NeptuneImportParameters parameters = (NeptuneImportParameters) context.get(CONFIGURATION);
 		NeptuneChouetteIdGenerator neptuneChouetteIdGenerator = (NeptuneChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
@@ -248,7 +255,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 			}
 		});
 	}
-	
+
 	/**
 	 * Set the correct offset depending on journey stops times
 	 * @param lstVehicleJourneyAtStop
@@ -257,7 +264,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 		VehicleJourneyAtStop previous_vjas = null;
 		int currentArrivalOffset = 0;
 		int currentDepartureOffset = 0;
-		
+
 		if (lstVehicleJourneyAtStop != null) {
 			for (VehicleJourneyAtStop vjas: lstVehicleJourneyAtStop) {
 				/** First stop */
@@ -272,22 +279,22 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 					if(checkIfDiffAfterMidnight(previous_vjas.getArrivalTime(), vjas.getArrivalTime())) {
 						currentArrivalOffset += 1;
 					}
-					
+
 					/** Check Offset between previous and current departure time */
 					if(checkIfDiffAfterMidnight(previous_vjas.getDepartureTime(), vjas.getDepartureTime())) {
 						currentDepartureOffset += 1;
 					}
 				}
-				
+
 				vjas.setArrivalDayOffset(currentArrivalOffset);
 				vjas.setDepartureDayOffset(currentDepartureOffset);
-				
+
 				previous_vjas = vjas;
-				
+
 			}
 		}
 	}
-	
+
 	/**
 	 * Check if lastTime belongs to the next day
 	 * @param firstTime
@@ -296,10 +303,10 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 	 */
 	private boolean checkIfDiffAfterMidnight(Time firstTime, Time lastTime) {
 		long diffTime = lastTime.getTime() - firstTime.getTime();
-		
+
 		return diffTime < 0;
 	}
-	
-	
-	
+
+
+
 }

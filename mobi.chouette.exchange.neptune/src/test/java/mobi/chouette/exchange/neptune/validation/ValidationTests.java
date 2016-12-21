@@ -77,6 +77,7 @@ public class ValidationTests implements Constant, ReportConstant
 		configuration.setNoSave(true);
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
+		configuration.setDefaultFormat("neptune");
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
 		

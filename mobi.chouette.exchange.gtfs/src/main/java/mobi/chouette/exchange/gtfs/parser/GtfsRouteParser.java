@@ -235,18 +235,22 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		} else {
 			line.setName(line.getNumber());
 		}
-		
-		// If base default format different than gtfs
-		if (!configuration.getDefaultFormat().equalsIgnoreCase("Gtfs")) {
-			if(gtfsRoute.getRouteType() != null) {
-				TransportMode trSrc = gtmc.fromCodeToPivotTransportMode(new Integer(gtfsRoute.getRouteType().ordinal()));
-				TransportMode tM = tmc.genericToSpecificMode(trSrc);
-		
-				line.setTransportMode(tM.getMode());
-				line.setTransportSubMode(tM.getSubMode());
+		if(gtfsRoute.getRouteType() != null) {
+			TransportMode trSrc = gtmc.fromCodeToPivotTransportMode(new Integer(gtfsRoute.getRouteType().ordinal()));
+			// If base default format different than gtfs
+			if (!configuration.getDefaultFormat().equalsIgnoreCase("Gtfs")) {
+					log.warn("GtfsRouteParser Gtfs-> before conversion : " + trSrc.getMode() + ":" + trSrc.getSubMode());
+					TransportMode tM = tmc.genericToSpecificMode(trSrc);
+					log.warn("GtfsRouteParser  generic -> after conversion : " + tM.getMode() + ":" + tM.getSubMode());
+					line.setTransportMode(tM.getMode());
+					line.setTransportSubMode(tM.getSubMode());
+				
+			} else {
+				log.warn("GtfsRouteParser Gtfs-> no need conversion : " + trSrc.getMode() + ":" + trSrc.getSubMode());
+				line.setTransportMode(trSrc.getMode());
+				line.setTransportSubMode(trSrc.getSubMode());
 			}
 		}
-
 		//String[] token = line.getChouetteId().getObjectId().split(":");
 		line.setRegistrationNumber(line.getTechnicalId());
 		line.setComment(gtfsRoute.getRouteDesc());

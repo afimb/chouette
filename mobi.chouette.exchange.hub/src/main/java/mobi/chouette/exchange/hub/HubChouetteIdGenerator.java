@@ -35,6 +35,6 @@ public class HubChouetteIdGenerator extends AbstractChouetteIdGenerator{
 	}
 
 	static {
-		ChouetteIdGeneratorFactory.factories.put("Hub", new DefaultFactory());
+		ChouetteIdGeneratorFactory.factories.put("hub", new DefaultFactory());
 	}
 }

@@ -14,7 +14,6 @@ import mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
-import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -53,12 +52,15 @@ public class LineProducer extends AbstractJaxbNeptuneProducer<ChouettePTNetworkT
 		try {
 			 if (line.getTransportModeContainer() != null)
 		      {
+				 TransportMode lineTransportMode = line.getTransportModeContainer();
 		    	  if (!parameters.getDefaultFormat().equalsIgnoreCase("Neptune")) {
-		    		  TransportMode ptM = tmc.specificToGenericMode(line.getTransportModeContainer());
+		    		  TransportMode ptM = tmc.specificToGenericMode(lineTransportMode);
 		    		  TransportMode tM = ntmc.genericToSpecificMode(ptM);
 		    		  if (tM != null)
 		    			  jaxbLine.setTransportModeName(TransportModeNameType.fromValue(tM.getMode()));
-		    	  }	  
+		    	  }	else {
+		    		  jaxbLine.setTransportModeName(TransportModeNameType.fromValue(lineTransportMode.getMode()));
+		    	  }
 		      }
 		} catch (IllegalArgumentException e) {
 			// should not arrive after xsd validation

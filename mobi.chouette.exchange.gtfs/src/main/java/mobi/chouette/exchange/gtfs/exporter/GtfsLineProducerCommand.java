@@ -128,6 +128,7 @@ public class GtfsLineProducerCommand implements Command, Constant {
 		GtfsShapeProducer shapeProducer = new GtfsShapeProducer(exporter);
 
 		GtfsExportParameters configuration = (GtfsExportParameters) context.get(CONFIGURATION);
+		log.warn("Parametre format par défaut : " + configuration.getDefaultFormat());
 		String prefix = configuration.getObjectIdPrefix();
 		String sharedPrefix = prefix;
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);

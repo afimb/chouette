@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
@@ -24,8 +25,13 @@ import com.google.common.collect.HashBiMap;
 @Log4j
 public class GtfsTransportModeConverter extends AbstractTransportModeConverter{
 	
-	private static final String transportModeUrlSrc = "https://github.com/afimb/chouette-projects-i18n/tree/master/data/transport_mode/gtfs.json";
+	private static final String transportModeUrlSrc = "https://raw.githubusercontent.com/afimb/chouette-projects-i18n/master/data/transport_mode/gtfs.json";
 	private static BiMap<Integer, TransportMode> mapCodeToTransportMode;
+	@Getter
+	protected static Map<TransportMode, TransportMode> mapTransportToPivotMode;
+	@Getter
+	protected static Map<TransportMode, TransportMode> mapPivotToTransportMode;
+	
 	private GtfsTransportModeConverter(){
 
 	}
@@ -38,6 +44,7 @@ public class GtfsTransportModeConverter extends AbstractTransportModeConverter{
 	public static synchronized GtfsTransportModeConverter getInstance(){
 		
 		if(INSTANCE == null){
+			log.warn("Appel de la premiere instanciation du convertisseur GTFS");
 			getTransportModeListFromJSONFile(transportModeUrlSrc);
 			INSTANCE = new GtfsTransportModeConverter();
 		}
@@ -45,24 +52,29 @@ public class GtfsTransportModeConverter extends AbstractTransportModeConverter{
 		return INSTANCE;
 	}
 	
+	
+	
 	public static void getTransportModeListFromJSONFile(String urlStr) {
 		byte[] bytes = null;
 		String text = null;
-		
 		try {
 			mapCodeToTransportMode = HashBiMap.create();
 			mapTransportToPivotMode = new HashMap<TransportMode, TransportMode>();
 			mapPivotToTransportMode = new HashMap<TransportMode, TransportMode>();
 			URL url = new URL(urlStr);
+		    
+		    JSONArray arrayModesTransport = null;
 			InputStream is = url.openStream();
 			
 			bytes = IOUtils.toByteArray(is);
 			text = new String(bytes, "UTF-8");
+			log.warn("Parsing fichier");
 			if (text != null && text.trim().startsWith("[") && text.trim().endsWith("]")) {
-				JSONArray arrayModesTransport;
+				log.warn("Fichier GTFS JSON Mode transport conforme");
+				
 				try {
 					arrayModesTransport = new JSONArray(text);
-
+					log.warn(arrayModesTransport.toString());
 					for (int i = 0; i < arrayModesTransport.length(); i++) {
 						JSONObject transportMode = arrayModesTransport.getJSONObject(i);
 						String code = transportMode.optString(CODE, null);
@@ -89,6 +101,10 @@ public class GtfsTransportModeConverter extends AbstractTransportModeConverter{
 		} catch (IOException e) {
 			log.warn("Cannot read json file from server");
 		}
+		
+		log.warn("GTFS mapTransportToPivotMode size : " + mapTransportToPivotMode.size());
+		log.warn("GTFS mapPivotToTransportMode size : " + mapPivotToTransportMode.size());
+		log.warn("mapCodeToTransportMode size : " + mapCodeToTransportMode.size());
 	}
 	
 	@Override
@@ -120,6 +136,12 @@ public class GtfsTransportModeConverter extends AbstractTransportModeConverter{
 //		return null;
 
 	}
+	
+	@Override
+	public TransportMode specificToGenericMode(TransportMode specificMode) {
+		log.warn("Appel GTFs specific to generic mode");
+		return null;
+	}
 
 	public TransportMode fromCodeToPivotTransportMode(Integer code) {
 		TransportMode specificTM = mapCodeToTransportMode.get(code);
@@ -130,6 +152,18 @@ public class GtfsTransportModeConverter extends AbstractTransportModeConverter{
 	
 	public Integer fromPivotTransportModeToCode(TransportMode transportPivotMode) {
 		TransportMode tM = genericToSpecificMode(transportPivotMode);
+		log.warn("Transport specific mode : " + tM.getMode() + ":" + tM.getSubMode());
+		Integer code = null;
+		
+		if (tM != null) {
+			BiMap<TransportMode, Integer> inverse = mapCodeToTransportMode.inverse();
+			code = inverse.get(tM);
+		}
+		
+		return code;
+	}
+	
+	public Integer fromSpecificTransportModeToCode(TransportMode tM) {
 		Integer code = null;
 		
 		if (tM != null) {
@@ -150,6 +184,6 @@ public class GtfsTransportModeConverter extends AbstractTransportModeConverter{
 	}
 
 	static {
-		TransportModeConverterFactory.factories.put("Gtfs", new DefaultFactory());
+		TransportModeConverterFactory.factories.put("gtfs", new DefaultFactory());
 	}
 }

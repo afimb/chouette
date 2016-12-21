@@ -46,9 +46,9 @@ public class HubCourseOperationProducer extends AbstractProducer implements Cons
 		if (isTrue(neptuneObject.getFlexibleService())) {
 			hubObject.setModeTransport("TAD");
 		} else if (neptuneObject.getTransportModeContainer() != null) {
-			
+			TransportMode neptuneObjectTransportMode = neptuneObject.getTransportModeContainer();
 			if (!parameters.getDefaultFormat().equalsIgnoreCase("Hub")) {
-				TransportMode ptM = tmc.specificToGenericMode(neptuneObject.getTransportModeContainer());
+				TransportMode ptM = tmc.specificToGenericMode(neptuneObjectTransportMode);
 				TransportMode tM = htmc.genericToSpecificMode(ptM);
 				if (tM != null) {
 					if ((tM.getMode().equalsIgnoreCase("CAR") || tM.getMode().equalsIgnoreCase("BUS")) && isTrue(neptuneObject.getMobilityRestrictedSuitability()))

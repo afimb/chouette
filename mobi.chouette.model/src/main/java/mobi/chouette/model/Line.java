@@ -13,8 +13,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -188,9 +186,8 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 */
 	@Getter
 	@Setter
-	@Enumerated(EnumType.STRING)
 	@Column(name = "transport_mode_name")
-	private String transportMode = "Bus";
+	private String transportMode;
 	
 	/**
 	 * Transport submode (default value = Bus)
@@ -201,9 +198,8 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 */
 	@Getter
 	@Setter
-	@Enumerated(EnumType.STRING)
 	@Column(name = "transport_submode_name")
-	private String transportSubMode = "Bus";
+	private String transportSubMode;
 
 	/**
 	 * mobility restriction indicator (such as wheel chairs) <br/>

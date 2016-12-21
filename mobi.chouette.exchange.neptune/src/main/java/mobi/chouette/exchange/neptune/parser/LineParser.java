@@ -75,15 +75,21 @@ public class LineParser implements Parser, Constant, JsonExtension {
 				line.setPublishedName(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("transportModeName")) {
 				String value = xpp.nextText();
-				// If base default format different than neptune
-				if (!parameters.getDefaultFormat().equalsIgnoreCase("Neptune")) {
-					if(value != null) {
-						TransportMode trSrc = new TransportMode(value, "unspecified");
-						TransportMode tmpTM = ntmc.specificToGenericMode(trSrc);
-						TransportMode tM = tmc.genericToSpecificMode(tmpTM);
-				
-						line.setTransportMode(tM.getMode());
-						line.setTransportSubMode(tM.getSubMode());
+				if(value != null) {
+					TransportMode trSrc = new TransportMode(value, "unspecified");
+					// If base default format different than neptune
+					if (!parameters.getDefaultFormat().equalsIgnoreCase("Neptune")) {
+							log.warn("LineParser neptune-> mode before conversion : " + trSrc.getMode() + ":" + trSrc.getSubMode());
+							TransportMode tmpTM = ntmc.specificToGenericMode(trSrc);
+							TransportMode tM = tmc.genericToSpecificMode(tmpTM);
+					
+							line.setTransportMode(tM.getMode());
+							line.setTransportSubMode(tM.getSubMode());
+							log.warn("LineParser neptune-> mode after conversion : " + tM.getMode() + ":" + tM.getSubMode());
+					} else {
+						log.warn("LineParser neptune-> no need conversion : " + trSrc.getMode() + ":" + trSrc.getSubMode());
+						line.setTransportMode(trSrc.getMode());
+						line.setTransportSubMode(trSrc.getSubMode());
 					}
 				}
 			} else if (xpp.getName().equals("lineEnd")) {

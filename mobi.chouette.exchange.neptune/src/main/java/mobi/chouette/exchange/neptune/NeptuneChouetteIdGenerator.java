@@ -190,6 +190,6 @@ public class NeptuneChouetteIdGenerator extends AbstractChouetteIdGenerator impl
 	}
 
 	static {
-		ChouetteIdGeneratorFactory.factories.put("Neptune", new DefaultFactory());
+		ChouetteIdGeneratorFactory.factories.put("neptune", new DefaultFactory());
 	}
 }

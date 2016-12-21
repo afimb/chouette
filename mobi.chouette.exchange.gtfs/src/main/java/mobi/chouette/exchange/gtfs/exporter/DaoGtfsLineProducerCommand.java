@@ -61,7 +61,8 @@ public class DaoGtfsLineProducerCommand implements Command, Constant
 			InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 			
 			Command export = CommandFactory.create(initialContext, GtfsLineProducerCommand.class.getName());
-			
+			GtfsExportParameters configuration = (GtfsExportParameters) context.get(CONFIGURATION);
+			log.warn("Parametre format par défaut : " + configuration.getDefaultFormat());
 			context.put(LINE, line);
 			result = export.execute(context);
 			//daoContext.setRollbackOnly();

@@ -201,6 +201,6 @@ public class NetexChouetteIdGenerator extends AbstractChouetteIdGenerator implem
 	}
 
 	static {
-		ChouetteIdGeneratorFactory.factories.put("Netex", new DefaultFactory());
+		ChouetteIdGeneratorFactory.factories.put("netex", new DefaultFactory());
 	}
 }

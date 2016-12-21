@@ -105,8 +105,9 @@
          <artifactId>mobi.chouette.exchange.neptune</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
+         <scope>test</scope>
       </dependency>
-      <dependency>
+<!--       <dependency>
          <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.exchange.netex</artifactId>
          <type>ejb</type>
@@ -117,7 +118,7 @@
          <artifactId>mobi.chouette.exchange.gtfs</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
-      </dependency>
+      </dependency> -->
       <dependency>
          <groupId>org.hibernate</groupId>
          <artifactId>hibernate-core</artifactId>

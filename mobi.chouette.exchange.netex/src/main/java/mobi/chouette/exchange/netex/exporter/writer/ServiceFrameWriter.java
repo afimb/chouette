@@ -194,12 +194,15 @@ public class ServiceFrameWriter extends AbstractWriter implements Constant{
 		//      #end
 		//      #if ( $line.transportModeName )
 		if (line.getTransportModeContainer() != null) {
+			TransportMode lineTransportMode = line.getTransportModeContainer();
 			if (!parameters.getDefaultFormat().equalsIgnoreCase("Netex")) {
-				TransportMode ptM = tmc.specificToGenericMode(line.getTransportModeContainer());
+				TransportMode ptM = tmc.specificToGenericMode(lineTransportMode);
 				TransportMode tM = ntmc.genericToSpecificMode(ptM);
 				if (tM != null)
-					writer.write("      <TransportMode>"+modelTranslator.toTransportModeNetex(line.getTransportMode())+"</TransportMode>\n");
+					writer.write("      <TransportMode>"+modelTranslator.toTransportModeNetex(tM.getMode())+"</TransportMode>\n");
 
+			} else {
+				writer.write("      <TransportMode>"+modelTranslator.toTransportModeNetex(line.getTransportMode())+"</TransportMode>\n");
 			}
 
 		}

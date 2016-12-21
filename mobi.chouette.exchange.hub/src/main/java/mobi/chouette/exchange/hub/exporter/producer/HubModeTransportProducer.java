@@ -83,24 +83,26 @@ public class HubModeTransportProducer extends AbstractProducer implements Consta
 //		default:
 //			return false; // not implemented
 //		}
-		
-		if (!parameters.getDefaultFormat().equalsIgnoreCase("Hub")) {
-			TransportMode ptM = tmc.specificToGenericMode(line.getTransportModeContainer());
-			TransportMode tM = htmc.genericToSpecificMode(ptM);
-			if (tM != null) {
-				mode = tM;
+		if (line.getTransportModeContainer() != null) {
+			TransportMode lineTransportMode = line.getTransportModeContainer();
+			if (!parameters.getDefaultFormat().equalsIgnoreCase("Hub")) {
+				TransportMode ptM = tmc.specificToGenericMode(lineTransportMode);
+				TransportMode tM = htmc.genericToSpecificMode(ptM);
+				if (tM != null) {
+					mode = tM;
+				}
+			} else
+				mode = lineTransportMode;
+			
+			HubModeTransport hubObject = modesTransport.get(mode);
+			
+			if (hubObject == null) {
+				hubObject = new HubModeTransport();
+				hubObject.setCode(mode);
+				modesTransport.put(mode, hubObject);
 			}
-		} else
-			mode = line.getTransportModeContainer();
-		
-		HubModeTransport hubObject = modesTransport.get(mode);
-		
-		if (hubObject == null) {
-			hubObject = new HubModeTransport();
-			hubObject.setCode(mode);
-			modesTransport.put(mode, hubObject);
+			hubObject.getCodesLigne().add(toHubId(line));
 		}
-		hubObject.getCodesLigne().add(toHubId(line));
 
 		return true;
 	}

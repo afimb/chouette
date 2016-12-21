@@ -70,12 +70,15 @@ public class VehicleJourneyProducer extends AbstractJaxbNeptuneProducer<VehicleJ
 		// .getTimeSlot()));
 		if (vehicleJourney.getTransportModeContainer() != null) {
 			try {
+				TransportMode vehicleTransportMode = vehicleJourney.getTransportModeContainer();
 				if (!parameters.getDefaultFormat().equalsIgnoreCase("Neptune")) {
-					TransportMode ptM = tmc.specificToGenericMode(vehicleJourney.getTransportModeContainer());
+					TransportMode ptM = tmc.specificToGenericMode(vehicleTransportMode);
 					TransportMode tM = ntmc.genericToSpecificMode(ptM);
 					if (tM != null)
 						jaxbVehicleJourney.setTransportMode(TransportModeNameType.fromValue(tM.getMode()));
-				}	  
+				} else {
+					jaxbVehicleJourney.setTransportMode(TransportModeNameType.fromValue(vehicleTransportMode.getMode()));
+				}
 			} catch (IllegalArgumentException e) {
 				// TODO generate report
 			}

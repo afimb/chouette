@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.gtfs.exporter.producer;
 
+import java.io.IOException;
+
 import mobi.chouette.common.ChouetteId;
 import mobi.chouette.core.ChouetteException;
 import mobi.chouette.exchange.gtfs.exporter.producer.mock.GtfsExporterMock;
@@ -14,19 +16,18 @@ import org.testng.Reporter;
 import org.testng.annotations.Test;
 
 
-public class GtfsExportRouteProducerTests 
-{
+public class GtfsExportRouteProducerTests extends AbstractProducerTest {
 
    private GtfsExporterMock mock = new GtfsExporterMock();
    private GtfsRouteProducer producer = new GtfsRouteProducer(mock);
-   private Context context = new Context();
+   private Context context;
    private mobi.chouette.exchange.gtfs.model.importer.Context importContext = new mobi.chouette.exchange.gtfs.model.importer.Context();
    
    @Test(groups = { "Producers" }, description = "test route with both short and long name")
-   public void verifyRouteProducerWithShortAndLongName() throws ChouetteException
+   public void verifyRouteProducerWithShortAndLongName() throws ChouetteException, ClassNotFoundException, IOException
    {
       mock.reset();
-
+      context = initExportContext();
       Line neptuneObject = new Line();
       neptuneObject.setChouetteId(new ChouetteId("GTFS","4321", false));
       neptuneObject.setName("lineName");
@@ -35,6 +36,8 @@ public class GtfsExportRouteProducerTests
       neptuneObject.setUrl("http://www.line.fr");
       neptuneObject.setColor("0000FF");
       neptuneObject.setTextColor("00FF00");
+      neptuneObject.setTransportMode("Bicycle");
+      neptuneObject.setTransportSubMode("unspecified");
       Company company = new Company();
       company.setChouetteId(new ChouetteId("GTFS","1234", false));
       company.setName("name");
@@ -59,10 +62,10 @@ public class GtfsExportRouteProducerTests
    }
 
    @Test(groups = { "Producers" }, description = "test route with no short name")
-   public void verifyRouteProducerWithNoShortName() throws ChouetteException
+   public void verifyRouteProducerWithNoShortName() throws ChouetteException, ClassNotFoundException, IOException
    {
       mock.reset();
-
+      context = initExportContext();
       Line neptuneObject = new Line();
       neptuneObject.setChouetteId(new ChouetteId("GTFS","4321", false));
       neptuneObject.setName("lineNname");
@@ -71,6 +74,8 @@ public class GtfsExportRouteProducerTests
       company.setChouetteId(new ChouetteId("GTFS","1234", false));
       company.setName("name");
       neptuneObject.setCompany(company);
+      neptuneObject.setTransportMode("Bicycle");
+      neptuneObject.setTransportSubMode("unspecified");
       producer.save(context, neptuneObject,"GTFS",false);
       Reporter.log("verifyRouteProducerWithNoShortName");
       Assert.assertEquals(mock.getExportedRoutes().size(), 1, "Route should be returned");
@@ -86,10 +91,10 @@ public class GtfsExportRouteProducerTests
    }
 
    @Test(groups = { "Producers" }, description = "test route with no long name")
-   public void verifyRouteProducerWithNoLongName() throws ChouetteException
+   public void verifyRouteProducerWithNoLongName() throws ChouetteException, ClassNotFoundException, IOException
    {
       mock.reset();
-
+      context = initExportContext();
       Line neptuneObject = new Line();
       neptuneObject.setChouetteId(new ChouetteId("GTFS","4321", false));
       neptuneObject.setNumber("lineNumber");
@@ -97,6 +102,8 @@ public class GtfsExportRouteProducerTests
       company.setChouetteId(new ChouetteId("GTFS","1234", false));
       company.setName("name");
       neptuneObject.setCompany(company);
+      neptuneObject.setTransportMode("Bicycle");
+      neptuneObject.setTransportSubMode("unspecified");
       producer.save(context, neptuneObject,  "GTFS",false);
       Reporter.log("verifyRouteProducerWithNoLongName");
       Assert.assertEquals(mock.getExportedRoutes().size(), 1, "Route should be returned");
@@ -109,16 +116,18 @@ public class GtfsExportRouteProducerTests
    }
 
    @Test(groups = { "Producers" }, description = "test route with no name")
-   public void verifyRouteProducerWithNoName() throws ChouetteException
+   public void verifyRouteProducerWithNoName() throws ChouetteException, ClassNotFoundException, IOException
    {
       mock.reset();
-
+      context = initExportContext();
       Line neptuneObject = new Line();
       neptuneObject.setChouetteId(new ChouetteId("GTFS","4321", false));
       Company company = new Company();
       company.setChouetteId(new ChouetteId("GTFS","1234", false));
       company.setName("name");
       neptuneObject.setCompany(company);
+      neptuneObject.setTransportMode("Bicycle");
+      neptuneObject.setTransportSubMode("unspecified");
       boolean state = producer.save(context, neptuneObject, "GTFS",false);
       Reporter.log("verifyRouteProducerWithNoName");
       Assert.assertFalse(state, "GTFS Route must not be produced");

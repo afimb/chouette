@@ -14,12 +14,12 @@ public abstract class TransportModeConverterFactory {
 
 	   {
 		   String formatToLowerCase = format.toLowerCase();
-		  String className = formatToLowerCase.substring(0, 1).toUpperCase() + formatToLowerCase.substring(1) + "TransportModeConverter";
+		  String className = "mobi.chouette.exchange."+formatToLowerCase+"." + formatToLowerCase.substring(0, 1).toUpperCase() + formatToLowerCase.substring(1) + "TransportModeConverter";
 	      if (!factories.containsKey(format))
 	      {
 	         Class.forName(className);
 			 // log.info("[DSU] create : " + name);
-	         if (!factories.containsKey(format))
+	         if (!factories.containsKey(formatToLowerCase))
 	            throw new ClassNotFoundException(format);
 	      }
 	      return ((TransportModeConverterFactory) factories.get(format)).create();

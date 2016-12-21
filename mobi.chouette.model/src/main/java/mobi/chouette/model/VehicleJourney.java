@@ -96,7 +96,6 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@Enumerated(EnumType.STRING)
 	@Column(name = "transport_mode")
 	private String transportMode;
 	
@@ -109,7 +108,6 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@Enumerated(EnumType.STRING)
 	@Column(name = "transport_submode")
 	private String transportSubMode;
 	

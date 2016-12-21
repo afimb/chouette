@@ -64,7 +64,7 @@ public class GtfsChouetteIdGenerator extends AbstractChouetteIdGenerator{
 		
 		return objectId;
 	}
-	
+
 	public static class DefaultFactory extends ChouetteIdGeneratorFactory {
 
 		@Override
@@ -75,6 +75,6 @@ public class GtfsChouetteIdGenerator extends AbstractChouetteIdGenerator{
 	}
 
 	static {
-		ChouetteIdGeneratorFactory.factories.put("Gtfs", new DefaultFactory());
+		ChouetteIdGeneratorFactory.factories.put("gtfs", new DefaultFactory());
 	}
 }

@@ -73,16 +73,17 @@ public class LineParser implements Parser, Constant {
 			} else if (xpp.getName().equals("TransportMode")) {
 				String value = xpp.nextText();
 				if( value != null) {
+					TransportMode trSrc = new TransportMode(value, "unspecified");
 					// If base default format different than netex
 					if (!configuration.getDefaultFormat().equalsIgnoreCase("Netex")) {
-						if(value != null) {
-							TransportMode trSrc = new TransportMode(value, "unspecified");
 							TransportMode tmpTM = ntmc.specificToGenericMode(trSrc);
 							TransportMode tM = tmc.genericToSpecificMode(tmpTM);
 					
 							line.setTransportMode(tM.getMode());
 							line.setTransportSubMode(tM.getSubMode());
-						}
+					} else {
+						line.setTransportMode(trSrc.getMode());
+						line.setTransportSubMode(trSrc.getSubMode());
 					}
 				}
 			} else if (xpp.getName().equals("PublicCode")) {
