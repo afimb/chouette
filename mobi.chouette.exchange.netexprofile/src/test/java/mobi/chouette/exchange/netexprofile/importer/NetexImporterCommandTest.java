@@ -308,6 +308,13 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 					for (VehicleJourney vj : jp.getVehicleJourneys()) {
 						Assert.assertNotEquals(vj.getTimetables().size(), 0, " vehicleJourney should have timetables");
 						assertEquals(vj.getVehicleJourneyAtStops().size(), jp.getStopPoints().size(), " vehicleJourney should have correct vehicleJourneyAtStop count");
+						List<Timetable> timetables = vj.getTimetables();
+						for(Timetable timetable : timetables) {
+							Assert.assertNotNull(timetable.getStartOfPeriod());
+							Assert.assertNotNull(timetable.getEndOfPeriod());
+							Assert.assertFalse(timetable.getDayTypes().isEmpty());
+						}
+						
 						numVehicleJourneys++;
 					}
 					numJourneyPatterns++;
