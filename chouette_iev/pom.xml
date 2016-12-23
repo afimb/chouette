@@ -85,7 +85,7 @@
 				<configuration>
 					<filename>${earName}.ear</filename>
 					<skip>${skipWildfly}</skip>
-                    <port>10090</port>
+                    <!--<port>10090</port>-->
 				</configuration>
 				<executions>
 					<execution>
