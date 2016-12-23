@@ -46,9 +46,6 @@ public class RouteParser implements Parser, Constant {
             DirectionTypeEnumeration directionType = netexRoute.getDirectionType();
             chouetteRoute.setDirection(directionType == null || directionType.equals(DirectionTypeEnumeration.OUTBOUND) ? PTDirectionEnum.A : PTDirectionEnum.R);
 
-            // TODO is this mandatory?
-            chouetteRoute.setNumber(netexRoute.getId());
-
             String lineIdRef = netexRoute.getLineRef().getValue().getRef();
             Line chouetteLine = ObjectFactory.getLine(chouetteReferential, lineIdRef);
             chouetteRoute.setLine(chouetteLine);

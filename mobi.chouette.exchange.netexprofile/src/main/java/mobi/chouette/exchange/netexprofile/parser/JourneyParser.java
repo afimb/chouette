@@ -65,16 +65,15 @@ public class JourneyParser implements Parser, Constant {
         Integer version = Integer.valueOf(netexJourneyPattern.getVersion());
         chouetteJourneyPattern.setObjectVersion(version != null ? version : 0);
 
-        if (netexJourneyPattern.getName() != null) {
-            chouetteJourneyPattern.setName(netexJourneyPattern.getName().getValue());
-        } else {
-            chouetteJourneyPattern.setName(netexJourneyPattern.getId());
-        }
-
         String routeIdRef = netexJourneyPattern.getRouteRef().getRef();
         mobi.chouette.model.Route route = mobi.chouette.model.util.ObjectFactory.getRoute(referential, routeIdRef);
         chouetteJourneyPattern.setRoute(route);
-        chouetteJourneyPattern.setPublishedName(route.getPublishedName());
+
+        if (netexJourneyPattern.getName() != null) {
+            chouetteJourneyPattern.setName(netexJourneyPattern.getName().getValue());
+        } else {
+            chouetteJourneyPattern.setName(route.getName());
+        }
 
         if (netexJourneyPattern.getPrivateCode() != null) {
             chouetteJourneyPattern.setRegistrationNumber(netexJourneyPattern.getPrivateCode().getValue());
@@ -149,12 +148,7 @@ public class JourneyParser implements Parser, Constant {
         if (serviceJourney.getName() != null) {
             vehicleJourney.setPublishedJourneyName(serviceJourney.getName().getValue());
         }
-        if (serviceJourney.getShortName() != null) {
-            vehicleJourney.setPublishedJourneyIdentifier(serviceJourney.getShortName().getValue());
-        }
-        if (serviceJourney.getPublicCode() != null) {
-            vehicleJourney.setComment(serviceJourney.getPublicCode());
-        }
+        vehicleJourney.setPublishedJourneyIdentifier(serviceJourney.getPublicCode());
 
         List<JAXBElement<? extends DayTypeRefStructure>> dayTypeRefStructElements = serviceJourney.getDayTypes().getDayTypeRef();
         for (JAXBElement<? extends DayTypeRefStructure> dayTypeRefStructElement : dayTypeRefStructElements) {
