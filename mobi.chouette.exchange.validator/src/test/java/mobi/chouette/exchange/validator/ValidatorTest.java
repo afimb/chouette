@@ -11,6 +11,8 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
+import mobi.chouette.exchange.TransportModeConverterFactory;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneImporterCommand;
 import mobi.chouette.exchange.report.ActionReport;
@@ -24,6 +26,7 @@ import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.BasicConfigurator;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.testng.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -67,8 +70,9 @@ public class ValidatorTest extends Arquillian implements Constant,ReportConstant
 			
 			
 		}
+		BasicConfigurator.configure();
 	}
-	protected Context initImportContext() {
+	protected Context initImportContext() throws ClassNotFoundException, IOException {
 		init();
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
 
@@ -85,6 +89,10 @@ public class ValidatorTest extends Arquillian implements Constant,ReportConstant
 		configuration.setNoSave(true);
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
+		configuration.setDefaultFormat("neptune");
+		configuration.setDefaultCodespace("DEFAULT_CODESPACE");
+		context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(configuration.getDefaultFormat()));
+		context.put(TRANSPORT_MODE_CONVERTER, TransportModeConverterFactory.create(configuration.getDefaultFormat()));
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
 

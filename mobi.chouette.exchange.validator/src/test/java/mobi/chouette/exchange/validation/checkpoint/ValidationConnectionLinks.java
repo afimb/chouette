@@ -337,32 +337,32 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 
 	}
 // 	@TODO l'unicité se fait sur le chouetteId et non sur le technicalId
-//	@Test(groups = { "connectionLink" }, description = "4-ConnectionLink-1 unicity", priority = 5)
-//	public void verifyTest4_1_unique() throws Exception {
-//		// 4-ConnectionLink-1 : check columns
-//		log.info(Color.BLUE + "4-ConnectionLink-1 unicity" + Color.NORMAL);
-//		Context context = initValidatorContext();
-//		Assert.assertNotNull(fullparameters, "no parameters for test");
-//
-//		context.put(VALIDATION_REPORT, new ValidationReport());
-//
-//		fullparameters.setCheckConnectionLink(1);
-//		fullparameters.getConnectionLink().getTechnicalId().setUnique(1);
-//
-//		context.put(VALIDATION, fullparameters);
-//		ValidationData data = new ValidationData();
-//		data.getConnectionLinks().addAll(beansFor4);
-//		context.put(VALIDATION_DATA, data);
-//		checkPoint.validate(context, null);
-//		fullparameters.getConnectionLink().getTechnicalId().setUnique(0);
-//
-//		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-//
-//		List<CheckPointErrorReport> details = checkReportForTest(report, "4-ConnectionLink-1", 1);
-//		CheckPointErrorReport detail = details.get(0);
-//		Assert.assertEquals(detail.getReferenceValue(), "ObjectId", "detail must refer column");
-//		Assert.assertEquals(detail.getValue(), bean2.getTechnicalId(), "detail must refer value");
-//	}
+	@Test(groups = { "connectionLink" }, description = "4-ConnectionLink-1 unicity", priority = 5)
+	public void verifyTest4_1_unique() throws Exception {
+		// 4-ConnectionLink-1 : check columns
+		log.info(Color.BLUE + "4-ConnectionLink-1 unicity" + Color.NORMAL);
+		Context context = initValidatorContext();
+		Assert.assertNotNull(fullparameters, "no parameters for test");
+
+		context.put(VALIDATION_REPORT, new ValidationReport());
+
+		fullparameters.setCheckConnectionLink(1);
+		fullparameters.getConnectionLink().getTechnicalId().setUnique(1);
+
+		context.put(VALIDATION, fullparameters);
+		ValidationData data = new ValidationData();
+		data.getConnectionLinks().addAll(beansFor4);
+		context.put(VALIDATION_DATA, data);
+		checkPoint.validate(context, null);
+		fullparameters.getConnectionLink().getTechnicalId().setUnique(0);
+
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+
+		List<CheckPointErrorReport> details = checkReportForTest(report, "4-ConnectionLink-1", 1);
+		CheckPointErrorReport detail = details.get(0);
+		Assert.assertEquals(detail.getReferenceValue(), "TechnicalId", "detail must refer column");
+		Assert.assertEquals(detail.getValue(), bean2.getTechnicalId(), "detail must refer value");
+	}
 
 	@Test(groups = { "connectionLink" }, description = "4-ConnectionLink-2", priority = 6)
 	public void verifyTest4_2() throws Exception {

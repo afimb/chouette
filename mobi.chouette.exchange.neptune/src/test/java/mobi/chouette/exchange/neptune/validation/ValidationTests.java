@@ -11,6 +11,7 @@ import javax.naming.NamingException;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.TransportModeConverterFactory;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.JobDataTest;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
@@ -31,7 +32,6 @@ import mobi.chouette.persistence.hibernate.ContextHolder;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.BasicConfigurator;
 import org.testng.Assert;
-import org.testng.Reporter;
 
 
 public class ValidationTests implements Constant, ReportConstant
@@ -59,7 +59,7 @@ public class ValidationTests implements Constant, ReportConstant
 			
 		}
 	}
-	protected Context initImportContext() {
+	protected Context initImportContext() throws ClassNotFoundException, IOException {
 		init();
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
 
@@ -78,6 +78,7 @@ public class ValidationTests implements Constant, ReportConstant
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
 		configuration.setDefaultFormat("neptune");
+		context.put(TRANSPORT_MODE_CONVERTER, TransportModeConverterFactory.create(configuration.getDefaultFormat()));
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
 		

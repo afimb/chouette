@@ -459,8 +459,8 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
 		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
-		// TODO Analyser pourquoi le compte a changé
-		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 17, " checkPointReport must have 17 item");
+
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 18, " checkPointReport must have 18 item");
 		String detailKey = "3-StopArea-4".replaceAll("-", "_").toLowerCase();
 		List<CheckPointErrorReport> details = checkReportForTest(report,"3-StopArea-4",-1);
 		for (CheckPointErrorReport detail : details) {
@@ -548,32 +548,32 @@ public class ValidationStopAreas extends AbstractTestValidation {
 
 	}
 //	@TODO l'unicité se fait sur le chouetteId et non sur le technicalId
-//	@Test(groups = { "stopArea" }, description = "4-StopArea-1 unicity", priority = 8)
-//	public void verifyTest4_1_unique() throws Exception {
-//		// 4-StopArea-1 : check columns
-//		log.info(Color.BLUE + "4-StopArea-1 unicity" + Color.NORMAL);
-//		Context context = initValidatorContext();
-//		Assert.assertNotNull(fullparameters, "no parameters for test");
-//
-//		context.put(VALIDATION_REPORT, new ValidationReport());
-//
-//		fullparameters.setCheckStopArea(1);
-//		fullparameters.getStopArea().getTechnicalId().setUnique(1);
-//		context.put(VALIDATION, fullparameters);
-//		ValidationData data = new ValidationData();
-//		data.getStopAreas().addAll(beansFor4);
-//		context.put(VALIDATION_DATA, data);
-//
-//		checkPoint.validate(context, null);
-//		fullparameters.getStopArea().getTechnicalId().setUnique(0);
-//
-//		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-//
-//		List<CheckPointErrorReport> details = checkReportForTest(report, "4-StopArea-1", 1);
-//		CheckPointErrorReport detail = details.get(0);
-//		Assert.assertEquals(detail.getReferenceValue(), "ObjectId", "detail must refer column");
-//		Assert.assertEquals(detail.getValue(), bean2.getTechnicalId(), "detail must refer value");
-//	}
+	@Test(groups = { "stopArea" }, description = "4-StopArea-1 unicity", priority = 8)
+	public void verifyTest4_1_unique() throws Exception {
+		// 4-StopArea-1 : check columns
+		log.info(Color.BLUE + "4-StopArea-1 unicity" + Color.NORMAL);
+		Context context = initValidatorContext();
+		Assert.assertNotNull(fullparameters, "no parameters for test");
+
+		context.put(VALIDATION_REPORT, new ValidationReport());
+
+		fullparameters.setCheckStopArea(1);
+		fullparameters.getStopArea().getTechnicalId().setUnique(1);
+		context.put(VALIDATION, fullparameters);
+		ValidationData data = new ValidationData();
+		data.getStopAreas().addAll(beansFor4);
+		context.put(VALIDATION_DATA, data);
+
+		checkPoint.validate(context, null);
+		fullparameters.getStopArea().getTechnicalId().setUnique(0);
+
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+
+		List<CheckPointErrorReport> details = checkReportForTest(report, "4-StopArea-1", 1);
+		CheckPointErrorReport detail = details.get(0);
+		Assert.assertEquals(detail.getReferenceValue(), "TechnicalId", "detail must refer column");
+		Assert.assertEquals(detail.getValue(), bean2.getTechnicalId(), "detail must refer value");
+	}
 
 	@Test(groups = { "StopArea" }, description = "4-StopArea-2", priority = 9)
 	public void verifyTest4_2() throws Exception {

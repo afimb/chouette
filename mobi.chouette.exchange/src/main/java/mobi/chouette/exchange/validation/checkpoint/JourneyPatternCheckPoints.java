@@ -126,7 +126,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 
 		prepareCheckPoint(context, ROUTE_SECTION_1);
 
-		String modeKey = jp.getRoute().getLine().getTransportMode().toString();
+		String modeKey = jp.getRoute().getLine().getTransportMode();
 		TransportModeParameters mode = getModeParameters(parameters, modeKey, log);
 
 		if (mode == null) {

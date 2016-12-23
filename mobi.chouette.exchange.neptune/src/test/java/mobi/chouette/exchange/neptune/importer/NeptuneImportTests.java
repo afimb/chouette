@@ -19,12 +19,12 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
+import mobi.chouette.exchange.TransportModeConverterFactory;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.DummyChecker;
 import mobi.chouette.exchange.neptune.JobDataTest;
 import mobi.chouette.exchange.neptune.NeptuneChouetteIdGenerator;
 import mobi.chouette.exchange.neptune.NeptuneTestsUtils;
-import mobi.chouette.exchange.neptune.NeptuneTransportModeConverter;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.ActionReporter.FILE_STATE;
@@ -145,7 +145,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 			
 		}
 	}
-	protected Context initImportContext() {
+	protected Context initImportContext() throws ClassNotFoundException, IOException {
 		init();
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
 
@@ -157,7 +157,6 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		context.put(CONFIGURATION, configuration);
 		NeptuneChouetteIdGenerator chouetteIdGenerator = new NeptuneChouetteIdGenerator();
 		context.put(CHOUETTEID_GENERATOR, chouetteIdGenerator);
-		context.put(TRANSPORT_MODE_CONVERTER, NeptuneTransportModeConverter.getInstance());
 		configuration.setName("name");
 		configuration.setUserName("userName");
 		configuration.setNoSave(true);
@@ -165,6 +164,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
 		configuration.setDefaultFormat("neptune");
+		context.put(TRANSPORT_MODE_CONVERTER, TransportModeConverterFactory.create(configuration.getDefaultFormat()));
 		JobDataTest jobData = new JobDataTest();
 		context.put(JOB_DATA,jobData);
 		jobData.setPathName("target/referential/test");

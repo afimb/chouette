@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.validation.checkpoint;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -174,7 +175,7 @@ public class ValidationLines extends AbstractTestValidation
 	}
 
 	@Test(groups = { "line" }, description = "4-Line-1 no test",priority=1)
-	public void verifyTest4_1_notest() throws ChouetteException
+	public void verifyTest4_1_notest() throws ChouetteException, ClassNotFoundException, IOException
 	{
 		// 4-Line-1 : check columns
 		log.info(Color.BLUE +"4-Line-1 no test"+ Color.NORMAL);
@@ -202,36 +203,36 @@ public class ValidationLines extends AbstractTestValidation
 
 	}
 //	@TODO l'unicité se fait sur le chouetteId et non sur le technicalId
-//	@Test(groups = { "line" }, description = "4-Line-1 unicity",priority=2)
-//	public void verifyTest4_1_unique() throws ChouetteException
-//	{
-//		// 4-Line-1 : check columns
-//		log.info(Color.BLUE +"4-Line-1 unicity"+ Color.NORMAL);
-//		Context context = initValidatorContext();
-//		Assert.assertNotNull(fullparameters, "no parameters for test");
-//
-//		context.put(VALIDATION,fullparameters);
-//		context.put(VALIDATION_REPORT, new ValidationReport());
-//
-//		fullparameters.getLine().getTechnicalId().setUnique(1);
-//		ValidationData data = new ValidationData();
-//		context.put(VALIDATION_DATA, data);
-//
-//		data.setCurrentLine(bean1);
-//		checkPoint.validate(context, null);
-//		data.setCurrentLine(bean2);
-//		checkPoint.validate(context, null);
-//		fullparameters.getLine().getTechnicalId().setUnique(0);
-//		// unique
-//		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-//
-//		List<CheckPointErrorReport> details = checkReportForTest(report,"4-Line-1",1);
-//		CheckPointErrorReport detail = details.get(0);
-//		Assert.assertEquals(detail.getReferenceValue(),"ObjectId","detail must refer column");
-//		Assert.assertEquals(detail.getValue(),bean2.getTechnicalId(),"detail must refer value");
-//		Assert.assertEquals(detail.getSource().getObjectId(),bean2.getTechnicalId(),"detail must refer second bean as source");
-//		Assert.assertEquals(detail.getTargets().get(0).getObjectId(),bean1.getTechnicalId(),"detail must refer fisrt bean as target");
-//	}
+	@Test(groups = { "line" }, description = "4-Line-1 unicity",priority=2)
+	public void verifyTest4_1_unique() throws ChouetteException, ClassNotFoundException, IOException
+	{
+		// 4-Line-1 : check columns
+		log.info(Color.BLUE +"4-Line-1 unicity"+ Color.NORMAL);
+		Context context = initValidatorContext();
+		Assert.assertNotNull(fullparameters, "no parameters for test");
+
+		context.put(VALIDATION,fullparameters);
+		context.put(VALIDATION_REPORT, new ValidationReport());
+
+		fullparameters.getLine().getTechnicalId().setUnique(1);
+		ValidationData data = new ValidationData();
+		context.put(VALIDATION_DATA, data);
+
+		data.setCurrentLine(bean1);
+		checkPoint.validate(context, null);
+		data.setCurrentLine(bean2);
+		checkPoint.validate(context, null);
+		fullparameters.getLine().getTechnicalId().setUnique(0);
+		// unique
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+
+		List<CheckPointErrorReport> details = checkReportForTest(report,"4-Line-1",1);
+		CheckPointErrorReport detail = details.get(0);
+		Assert.assertEquals(detail.getReferenceValue(),"TechnicalId","detail must refer column");
+		Assert.assertEquals(detail.getValue(),bean2.getTechnicalId(),"detail must refer value");
+		Assert.assertEquals(detail.getSource().getObjectId(),bean2.getTechnicalId(),"detail must refer second bean as source");
+		Assert.assertEquals(detail.getTargets().get(0).getObjectId(),bean1.getTechnicalId(),"detail must refer fisrt bean as target");
+	}
 
 
 	@Test(groups = { "line" }, description = "3-Line-1",priority=3)
@@ -244,7 +245,7 @@ public class ValidationLines extends AbstractTestValidation
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 		
 		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
-		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		
 		bean1.setChouetteId(new ChouetteId("NINOXE", "modelLine", false));
 		bean2.setChouetteId(new ChouetteId("NINOXE", "wrongLine", false));
@@ -335,7 +336,7 @@ public class ValidationLines extends AbstractTestValidation
 		context.put(VALIDATION_REPORT, new ValidationReport());
 		
 		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
-		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -398,7 +399,7 @@ public class ValidationLines extends AbstractTestValidation
 		context.put(VALIDATION,fullparameters);
 		
 		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
-		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
@@ -486,7 +487,7 @@ public class ValidationLines extends AbstractTestValidation
 		context.put(VALIDATION,fullparameters);
 		
 		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
-		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -577,7 +578,7 @@ public class ValidationLines extends AbstractTestValidation
 		context.put(VALIDATION,fullparameters);
 		
 		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
-		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 

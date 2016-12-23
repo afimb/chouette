@@ -117,7 +117,7 @@ public class HubTransportModeConverter extends AbstractTransportModeConverter{
 
 		@Override
 		protected TransportModeConverter create() throws IOException {
-			TransportModeConverter result = new HubTransportModeConverter();
+			TransportModeConverter result = HubTransportModeConverter.getInstance();
 			return result;
 		}
 	}

@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
@@ -26,7 +25,6 @@ import mobi.chouette.model.util.Referential;
 import org.apache.commons.io.FileUtils;
 import org.testng.Assert;
 
-@Log4j
 public class NeptuneTestsUtils implements Constant, ReportConstant{
 
 	

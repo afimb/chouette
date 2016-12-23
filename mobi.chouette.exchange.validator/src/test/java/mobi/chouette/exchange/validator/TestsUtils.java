@@ -42,7 +42,7 @@ public class TestsUtils implements Constant, ReportConstant{
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		
 		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
-		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		
 		Assert.assertNotNull(referential, "referential");
 		Assert.assertEquals(referential.getLines().size(), 1, "lines size");

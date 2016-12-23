@@ -14,6 +14,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneImporterCommand;
 import mobi.chouette.exchange.report.ActionReport;
@@ -54,7 +55,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 
 	}
 
-	protected Context initImportContext() {
+	protected Context initImportContext() throws ClassNotFoundException, IOException {
 		init();
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
 
@@ -69,6 +70,9 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 		configuration.setNoSave(true);
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
+		configuration.setDefaultFormat("neptune");
+		configuration.setDefaultCodespace("DEFAULT_CODESPACE");
+		context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(configuration.getDefaultFormat()));
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
 		test.setPathName( "target/referential/test");
@@ -88,7 +92,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 		return context;
 
 	}
-	protected Context initValidatorContext() {
+	protected Context initValidatorContext() throws ClassNotFoundException, IOException {
 		init();
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
 
@@ -102,6 +106,9 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 		configuration.setUserName("userName");
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
+		configuration.setDefaultFormat("neptune");
+		configuration.setDefaultCodespace("DEFAULT_CODESPACE");
+		context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(configuration.getDefaultFormat()));
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
 		test.setPathName( "target/referential/test");

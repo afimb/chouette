@@ -271,7 +271,7 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 
 	private Collection<ChouetteId> getLines(Context context, StopArea area) {
 		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		AbstractParameter parameters = (AbstractParameter) context.get(CONFIGURATION);
 		
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		Set<ChouetteId> lines = data.getLinesOfStopAreas().get(chouetteIdGenerator.toSpecificFormatId(area.getChouetteId(), parameters.getDefaultCodespace(), area));

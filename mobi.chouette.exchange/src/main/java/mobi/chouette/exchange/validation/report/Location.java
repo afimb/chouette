@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.ChouetteIdGenerator;
@@ -38,6 +39,7 @@ import mobi.chouette.model.util.NamingUtil;
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "file", "line", "objectId", "name", "objectRefs" })
+@Log4j
 public class Location extends AbstractReport implements Constant {
 
 	@XmlElement(name = "file")
@@ -114,8 +116,9 @@ public class Location extends AbstractReport implements Constant {
 
 	private void init(Context context, NeptuneIdentifiedObject chouetteObject) {
 		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
-		
+		AbstractParameter parameters = (AbstractParameter) context.get(CONFIGURATION);
+		//log.warn("GJT Location class Default format");
+		//log.warn("GJT " + parameters.getDefaultFormat());
 		this.objectId = chouetteIdGenerator.toSpecificFormatId(chouetteObject.getChouetteId(), parameters.getDefaultCodespace(), chouetteObject);
 		this.name = buildName(chouetteObject);
 		if (chouetteObject instanceof VehicleJourney) {

@@ -16,6 +16,7 @@ import mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.persistence.hibernate.ContextHolder;
+import org.apache.log4j.BasicConfigurator;
 
 import org.apache.commons.io.FileUtils;
 
@@ -32,6 +33,7 @@ public abstract class AbstractProducerTest implements Constant{
 			}
 
 		}
+		BasicConfigurator.configure();
 	}
 	protected Context initExportContext() throws ClassNotFoundException, IOException {
 		init();

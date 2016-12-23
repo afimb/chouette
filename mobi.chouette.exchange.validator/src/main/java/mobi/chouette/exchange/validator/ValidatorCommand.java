@@ -117,7 +117,7 @@ public class ValidatorCommand implements Command, Constant {
 		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
 		ActionReporter reporter = ActionReporter.Factory.getInstance();
 		
-		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(parameters.getDefaultFormat()));
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		// initialisation
 		List<? extends Command> preProcessingCommands = commands.getPreProcessingCommands(context, true);

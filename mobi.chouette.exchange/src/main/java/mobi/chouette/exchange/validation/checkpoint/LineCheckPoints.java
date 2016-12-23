@@ -104,6 +104,8 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 			DataLocation location = buildLocation(context, line1);
 
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+			if (reporter == null)
+				log.warn("ValidationReporter is null !!!");
 			reporter.addCheckPointReportError(context, LINE_2, location);
 		}
 	}

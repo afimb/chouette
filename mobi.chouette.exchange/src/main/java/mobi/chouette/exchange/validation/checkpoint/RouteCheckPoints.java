@@ -52,6 +52,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		initCheckPoint(context, ROUTE_3, SEVERITY.W);
 		initCheckPoint(context, ROUTE_4, SEVERITY.W);
 		initCheckPoint(context, ROUTE_5, SEVERITY.W);
+		
 		if (!sourceFile) {
 			initCheckPoint(context, ROUTE_6, SEVERITY.E);
 			initCheckPoint(context, ROUTE_7, SEVERITY.E);
@@ -59,15 +60,17 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 			prepareCheckPoint(context, ROUTE_6);
 			prepareCheckPoint(context, ROUTE_7);
 		}
+		
 		initCheckPoint(context, ROUTE_8, SEVERITY.W);
 		initCheckPoint(context, ROUTE_9, SEVERITY.W);
-
+		
 		boolean test4_1 = (parameters.getCheckRoute() != 0);
+		
 		if (test4_1) {
 			initCheckPoint(context, L4_ROUTE_1, SEVERITY.E);
 			prepareCheckPoint(context, L4_ROUTE_1);
 		}
-
+	
 		// en cas d'erreur, on reporte autant de detail que de route en erreur
 		for (int i = 0; i < beans.size(); i++) {
 			Route route = beans.get(i);
@@ -108,6 +111,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 			}
 
 		}
+		
 		// log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 		return;
 	}
@@ -238,7 +242,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 
 	private void check3Route4(Context context, int rank, Route route, int rank2, Route route2) {
 		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		AbstractParameter parameters = (AbstractParameter) context.get(CONFIGURATION);
 		
 		// 3-Route-4 : check identical routes
 		if (isEmpty(route.getStopPoints()))

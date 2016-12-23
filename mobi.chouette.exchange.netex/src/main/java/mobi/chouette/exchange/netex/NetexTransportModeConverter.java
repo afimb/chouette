@@ -113,7 +113,7 @@ public class NetexTransportModeConverter extends AbstractTransportModeConverter{
 
 		@Override
 		protected TransportModeConverter create() throws IOException {
-			TransportModeConverter result = new NetexTransportModeConverter();
+			TransportModeConverter result = NetexTransportModeConverter.getInstance();
 			return result;
 		}
 	}

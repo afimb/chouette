@@ -16,6 +16,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
+import mobi.chouette.exchange.TransportModeConverterFactory;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.DummyChecker;
 import mobi.chouette.exchange.neptune.JobDataTest;
@@ -41,6 +42,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.testng.Assert;
+import org.testng.Reporter;
 import org.testng.annotations.Test;
 
 @Log4j
@@ -134,7 +136,7 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 			
 		}
 	}
-	protected Context initImportContext() {
+	protected Context initImportContext() throws ClassNotFoundException, IOException {
 		init();
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
 
@@ -149,6 +151,8 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 		configuration.setNoSave(true);
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
+		configuration.setDefaultFormat("neptune");
+		context.put(TRANSPORT_MODE_CONVERTER, TransportModeConverterFactory.create(configuration.getDefaultFormat()));
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
 		test.setPathName( "target/referential/test");
@@ -169,7 +173,7 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 
 	}
 
-	protected Context initExportContext() {
+	protected Context initExportContext() throws ClassNotFoundException, IOException {
 		init();
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
 
@@ -184,6 +188,8 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
 		configuration.setValidateAfterExport(true);
+		configuration.setDefaultFormat("neptune");
+		context.put(TRANSPORT_MODE_CONVERTER, TransportModeConverterFactory.create(configuration.getDefaultFormat()));
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
 
@@ -235,34 +241,35 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 	@Test(groups = { "ExportLine" }, description = "Export Plugin should export file")
 	public void verifyExportLine() throws Exception
 	{
-//		// save data
-//		importLines("C_NEPTUNE_1.xml",1,1);
-//
-//		// export data
-//		Context context = initExportContext();
-//		NeptuneExportParameters configuration = (NeptuneExportParameters) context.get(CONFIGURATION);
-//		configuration.setAddMetadata(true);
-//		configuration.setReferencesType("line");
-//		Command command = (Command) CommandFactory.create(initialContext,
-//				NeptuneExporterCommand.class.getName());
-//
-//		try {
-//			command.execute(context);
-//		} catch (Exception ex) {
-//			log.error("test failed", ex);
-//			throw ex;
-//		}
-//		
-//		ActionReport report = (ActionReport) context.get(REPORT);
-//		Reporter.log("report " + report.toString(), true);
-//		ValidationReport vreport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-//		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
-//		Assert.assertEquals(report.getFiles().size(), 1, "file reported");
+		// save data
+		importLines("C_NEPTUNE_1.xml",1,1);
+
+		// export data
+		Context context = initExportContext();
+		NeptuneExportParameters configuration = (NeptuneExportParameters) context.get(CONFIGURATION);
+		configuration.setAddMetadata(true);
+		configuration.setReferencesType("line");
+		Command command = (Command) CommandFactory.create(initialContext,
+				NeptuneExporterCommand.class.getName());
+
+		try {
+			command.execute(context);
+		} catch (Exception ex) {
+			log.error("test failed", ex);
+			throw ex;
+		}
+		
+		ActionReport report = (ActionReport) context.get(REPORT);
+		Reporter.log("report " + report.toString(), true);
+		ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
+		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+		Assert.assertEquals(report.getFiles().size(), 1, "file reported");
+//		@TODO à voir avec Michel
 //		Assert.assertEquals(report.getLines().size(), 1, "line reported");
 //		Reporter.log("report line :" + report.getLines().get(0).toString(), true);
 //		Assert.assertEquals(report.getLines().get(0).getStatus(), LINE_STATE.OK, "line status");
-//		Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
-//		Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
+		Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
+		Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
 
 	}
 

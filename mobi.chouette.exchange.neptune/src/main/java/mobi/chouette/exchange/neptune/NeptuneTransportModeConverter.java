@@ -128,7 +128,7 @@ public class NeptuneTransportModeConverter extends AbstractTransportModeConverte
 
 		@Override
 		protected TransportModeConverter create() throws IOException {
-			TransportModeConverter result = new NeptuneTransportModeConverter();
+			TransportModeConverter result = NeptuneTransportModeConverter.getInstance();
 			return result;
 		}
 	}

@@ -11,8 +11,6 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.TransportMode;
 import mobi.chouette.exchange.AbstractTransportModeConverter;
-import mobi.chouette.exchange.TransportModeConverter;
-import mobi.chouette.exchange.TransportModeConverterFactory;
 
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jettison.json.JSONArray;
@@ -23,30 +21,31 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 @Log4j
-public class GtfsTransportModeConverter extends AbstractTransportModeConverter{
+public class ExtendedGtfsTransportModeConverter extends AbstractTransportModeConverter{
 	
-	private static final String transportModeUrlSrc = "https://raw.githubusercontent.com/afimb/chouette-projects-i18n/master/data/transport_mode/gtfs.json";
+	private static final String transportModeUrlSrc = "https://raw.githubusercontent.com/afimb/chouette-projects-i18n/master/data/transport_mode/gtfs_extended.json";
+	@Getter
 	private static BiMap<Integer, TransportMode> mapCodeToTransportMode;
 	@Getter
 	protected static Map<TransportMode, TransportMode> mapTransportToPivotMode;
 	@Getter
 	protected static Map<TransportMode, TransportMode> mapPivotToTransportMode;
 	
-	private GtfsTransportModeConverter(){
+	private ExtendedGtfsTransportModeConverter(){
 
 	}
 
-	private static GtfsTransportModeConverter INSTANCE = null;
+	private static ExtendedGtfsTransportModeConverter INSTANCE = null;
 	
 	@Getter
 	private static List<TransportMode> listTransportMode = null;
 
-	public static synchronized GtfsTransportModeConverter getInstance(){
+	public static synchronized ExtendedGtfsTransportModeConverter getInstance(){
 		
 		if(INSTANCE == null){
 			log.warn("Appel de la premiere instanciation du convertisseur GTFS");
 			getTransportModeListFromJSONFile(transportModeUrlSrc);
-			INSTANCE = new GtfsTransportModeConverter();
+			INSTANCE = new ExtendedGtfsTransportModeConverter();
 		}
 		
 		return INSTANCE;
@@ -130,14 +129,6 @@ public class GtfsTransportModeConverter extends AbstractTransportModeConverter{
 		if (tM != null)
 			return tM;	
 		
-		// If not found check on extended gtfs list
-		ExtendedGtfsTransportModeConverter egtMC = ExtendedGtfsTransportModeConverter.getInstance();
-		
-		tM = egtMC.genericToSpecificMode(pivotMode);
-		
-		if (tM != null)
-			return tM;
-		
 		// If there is no transport mode matching
 		return null;
 
@@ -168,14 +159,8 @@ public class GtfsTransportModeConverter extends AbstractTransportModeConverter{
 		
 			if (code != null)
 				return code;	
+		
 		}
-		
-		// If not found check on extended gtfs list
-		ExtendedGtfsTransportModeConverter egtMC = ExtendedGtfsTransportModeConverter.getInstance();
-		code = egtMC.fromPivotTransportModeToCode(transportPivotMode);
-		
-		if (code != null)
-			return code;
 		
 		// If there is no transport mode matching
 		return null;
@@ -190,18 +175,5 @@ public class GtfsTransportModeConverter extends AbstractTransportModeConverter{
 		}
 		
 		return code;
-	}
-	
-	public static class DefaultFactory extends TransportModeConverterFactory {
-
-		@Override
-		protected TransportModeConverter create() throws IOException {
-			TransportModeConverter result = GtfsTransportModeConverter.getInstance();
-			return result;
-		}
-	}
-
-	static {
-		TransportModeConverterFactory.factories.put("gtfs", new DefaultFactory());
 	}
 }
