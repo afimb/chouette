@@ -166,12 +166,6 @@
                     </journeyPatterns>
                 </ServiceFrame>
                 <TimetableFrame version="1" id="AVI:TimetableFrame:4155997">
-                    <validityConditions>
-                        <AvailabilityCondition version="1" id="AVI:AvailabilityCondition:1615775">
-                            <FromDate>2016-12-19T00:00:00Z</FromDate>
-                            <ToDate>2017-01-19T00:00:00Z</ToDate>
-                        </AvailabilityCondition>
-                    </validityConditions>
                     <vehicleJourneys>
                         <ServiceJourney version="1" id="AVI:ServiceJourney:SK264">
                             <DepartureTime>10:20:00Z</DepartureTime>
@@ -197,12 +191,6 @@
                     </vehicleJourneys>
                 </TimetableFrame>
                 <ServiceCalendarFrame version="1" id="AVI:ServiceCalendarFrame:4863921">
-                    <validityConditions>
-                        <AvailabilityCondition version="1" id="AVI:AvailabilityCondition:2013935">
-                            <FromDate>2016-12-19T00:00:00Z</FromDate>
-                            <ToDate>2017-01-19T00:00:00Z</ToDate>
-                        </AvailabilityCondition>
-                    </validityConditions>
                     <dayTypes>
                         <DayType version="1" id="AVI:DayType:SK264_sunday">
                             <Name>Helgdag (søndag)</Name>
