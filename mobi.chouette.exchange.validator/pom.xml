@@ -113,6 +113,12 @@
       </dependency>
       <dependency>
          <groupId>${project.groupId}</groupId>
+         <artifactId>mobi.chouette.exchange.netexprofile</artifactId>
+         <type>ejb</type>
+         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.exchange.gtfs</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
