@@ -40,6 +40,10 @@ public class RegtoppStopParser implements Parser {
 			shouldImport = false;
 		} else if (stop.getFullName().toUpperCase().startsWith("-- ")) {
 			shouldImport = false;
+		} else if (stop.getFullName().toUpperCase().startsWith("MELDEPUNKT")) {
+			shouldImport = false;
+		} else if (stop.getFullName().toUpperCase().startsWith("LOKASJONSPUNKT")) {
+			shouldImport = false;
 		} else if (stop.getFullName().toUpperCase().startsWith("__")) {
 			shouldImport = false;
 		} else if (stop.getFullName().toUpperCase().startsWith("- ")) {

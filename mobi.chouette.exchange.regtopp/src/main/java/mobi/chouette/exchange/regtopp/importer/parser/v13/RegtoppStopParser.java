@@ -40,52 +40,63 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 
 			for (AbstractRegtoppStopHPL abstractStop : importer.getStopById()) {
 				RegtoppStopHPL stop = (RegtoppStopHPL) abstractStop;
-				if (shouldImportHPL(abstractStop) && stop.getType() == StopType.Stop || (stop.getType() == StopType.Other && !"Lokasjonspunkt".equals(stop.getFullName()))) {
+				if (shouldImportHPL(abstractStop) && stop.getType() == StopType.Stop
+						) {
 					String objectId = ObjectIdCreator.createStopAreaId(configuration, stop.getStopId());
 
 					StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
 					stopArea.setName(StringUtils.trimToNull(stop.getFullName()));
-					//stopArea.setRegistrationNumber(stop.getShortName());
+					// stopArea.setRegistrationNumber(stop.getShortName());
 					stopArea.setAreaType(PARENT_STOP_PLACE_TYPE);
 
 					convertAndSetCoordinates(stopArea, stop.getX(), stop.getY(), projection);
 
 					List<RegtoppStopPointSTP> stopPoints = stopPointsByStopId.getValue(stop.getStopId());
-					for (RegtoppStopPointSTP regtoppStopPoint : stopPoints) {
-						String chouetteStopPointId = ObjectIdCreator.createStopAreaId(configuration,regtoppStopPoint.getFullStopId());
-						StopArea boardingPosition = ObjectFactory.getStopArea(referential, chouetteStopPointId);
+					if (stopPoints != null) {
+						for (RegtoppStopPointSTP regtoppStopPoint : stopPoints) {
+							String chouetteStopPointId = ObjectIdCreator.createStopAreaId(configuration,
+									regtoppStopPoint.getFullStopId());
+							StopArea boardingPosition = ObjectFactory.getStopArea(referential, chouetteStopPointId);
 
-						convertAndSetCoordinates(boardingPosition, regtoppStopPoint.getX(), regtoppStopPoint.getY(), projection);
-						boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
-						boardingPosition.setRegistrationNumber(StringUtils.trimToNull(regtoppStopPoint.getStopPointName()));
-						
-						if(stopArea.getName() != null) {
-							// Use parent stop area name
-							boardingPosition.setName(stopArea.getName());
-						} else if(StringUtils.trimToNull(regtoppStopPoint.getDescription()) != null) {
-							// If parent is empty, use stop point description on both stop point and stop area
-							boardingPosition.setName(StringUtils.trimToNull(regtoppStopPoint.getDescription()));
-							stopArea.setName(boardingPosition.getName());
+							convertAndSetCoordinates(boardingPosition, regtoppStopPoint.getX(), regtoppStopPoint.getY(),
+									projection);
+							boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
+							boardingPosition
+									.setRegistrationNumber(StringUtils.trimToNull(regtoppStopPoint.getStopPointName()));
+
+							if (stopArea.getName() != null) {
+								// Use parent stop area name
+								boardingPosition.setName(stopArea.getName());
+							} else if (StringUtils.trimToNull(regtoppStopPoint.getDescription()) != null) {
+								// If parent is empty, use stop point
+								// description on both stop point and stop area
+								boardingPosition.setName(StringUtils.trimToNull(regtoppStopPoint.getDescription()));
+								stopArea.setName(boardingPosition.getName());
+							}
+
+							// if
+							// (StringUtils.trimToNull(regtoppStopPoint.getDescription())
+							// == null) {
+							// stopPoint.setName(stopArea.getName());
+							// log.warn("StopPoint with no description, using
+							// HPL stop name instead: " + regtoppStopPoint);
+							// } else {
+							// stopPoint.setName(regtoppStopPoint.getDescription());
+							// }
+							// stopPoint.setRegistrationNumber(stopArea.getRegistrationNumber());
+
+							boardingPosition.setParent(stopArea);
 						}
-						
-//						if (StringUtils.trimToNull(regtoppStopPoint.getDescription()) == null) {
-//							stopPoint.setName(stopArea.getName());
-//							log.warn("StopPoint with no description, using HPL stop name instead: " + regtoppStopPoint);
-//						} else {
-//							stopPoint.setName(regtoppStopPoint.getDescription());
-//						}
-						//stopPoint.setRegistrationNumber(stopArea.getRegistrationNumber());
-
-						boardingPosition.setParent(stopArea);
 					}
-					
-					if(stopArea.getName() == null) {
+
+					if (stopArea.getName() == null) {
 						// Fallback, must have name
 						stopArea.setName("Noname");
 					}
 
 				} else {
-					// TODO parse other node types (if really used, only Ruter uses this)
+					// TODO parse other node types (if really used, only Ruter
+					// uses this)
 					log.warn("Ignoring HPL stop of type Other: " + stop);
 				}
 
