@@ -95,12 +95,14 @@ public class GtfsTripProducer extends AbstractProducer {
 				arrival = vjas.getDepartureTime();
 				arrivalOffset = vjas.getDepartureDayOffset(); /** GJT */
 			}
-			
-			
 			time.setArrivalTime(new GtfsTime(arrival, arrivalOffset)); /** GJT */
+
 			Time departure = vjas.getDepartureTime();
 			departureOffset = vjas.getDepartureDayOffset(); /** GJT */
-			
+			if (departure == null) {
+				departure = vjas.getArrivalTime();
+				departureOffset = vjas.getArrivalDayOffset(); /** GJT */
+			}
 			time.setDepartureTime(new GtfsTime(departure, departureOffset)); /** GJT */
 			
 			time.setStopSequence((int) vjas.getStopPoint().getPosition());
