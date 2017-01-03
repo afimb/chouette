@@ -93,7 +93,7 @@ public class LineRegisterCommand implements Command {
 		// Use property based enabling of stop place updater, but allow disabling if property exist in context
 		Line newValue = referential.getLines().values().iterator().next();
 		
-		if(importParameter.isKeepObsoleteLines() || isLineIsValidInFuture(newValue)) {
+		if(importParameter.isKeepObsoleteLines() || isLineValidInFuture(newValue)) {
 			boolean shouldUpdateStopPlaceRegistry =
 					Boolean.parseBoolean(System.getProperty(checker.getContext() + PropertyNames.STOP_PLACE_REGISTER_UPDATE)) && importParameter.isUpdateStopPlaces();
 			if(shouldUpdateStopPlaceRegistry) {
@@ -101,7 +101,6 @@ public class LineRegisterCommand implements Command {
 			} else {
 				log.warn("Stop place register will not be updated. Neither is property " + PropertyNames.STOP_PLACE_REGISTER_UPDATE + " set nor has import parameter update_stop_registry = true.");
 			}
-
 		
 			log.info("register line : " + newValue.getObjectId() + " " + newValue.getName() + " vehicleJourney count = "
 					+ referential.getVehicleJourneys().size());
@@ -204,14 +203,14 @@ public class LineRegisterCommand implements Command {
 		return result;
 	}
 
-	private boolean isLineIsValidInFuture(Line line) {
+	private boolean isLineValidInFuture(Line line) {
 
 		Date now = new Date();
 		
-		for(Route r : line.getRoutes()) {
-			for(JourneyPattern jp : r.getJourneyPatterns()) {
-				for(VehicleJourney vj : jp.getVehicleJourneys()) {
-					for(Timetable t : vj.getTimetables()) {
+		for(Route r : (line.getRoutes() == null? new ArrayList<Route>() : line.getRoutes())) {
+			for(JourneyPattern jp : (r.getJourneyPatterns() == null? new ArrayList<JourneyPattern>() : r.getJourneyPatterns())) {
+				for(VehicleJourney vj : (jp.getVehicleJourneys() == null? new ArrayList<VehicleJourney>() : jp.getVehicleJourneys())) {
+					for(Timetable t : (vj.getTimetables() == null ? new ArrayList<Timetable>() : vj.getTimetables())) {
 						t.computeLimitOfPeriods();
 						if(!t.getEndOfPeriod().before(now)) {
 							return true;
