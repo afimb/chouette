@@ -91,7 +91,6 @@ public class JourneyParser implements Parser, Constant {
     private void parsePointsInSequence(Context context, JourneyPattern netexJourneyPattern, mobi.chouette.model.JourneyPattern chouetteJourneyPattern, Route route) throws Exception {
         Referential referential = (Referential) context.get(REFERENTIAL);
         Map<String, String> stopAssignments = (Map<String, String>) context.get(NETEX_STOP_ASSIGNMENTS);
-        Map<String, String> stopPointIdMapper = (Map<String, String>) context.get(STOP_POINT_ID_MAPPER);
         PointsInJourneyPattern_RelStructure pointsInSequenceStruct = netexJourneyPattern.getPointsInSequence();
 
         List<PointInLinkSequence_VersionedChildStructure> pointsInLinkSequence = pointsInSequenceStruct
@@ -101,12 +100,11 @@ public class JourneyParser implements Parser, Constant {
             StopPointInJourneyPattern stopPointInJourneyPattern = (StopPointInJourneyPattern) pointInLinkSequence;
             Integer pointSequenceIndex = stopPointInJourneyPattern.getOrder().intValue();
 
-            String netexStopPointId = stopPointInJourneyPattern.getScheduledStopPointRef().getValue().getRef();
-//            String stopPointIdSuffix = netexStopPointId.split(":")[2];
-//            String chouetteStopPointId = route.getLine().getObjectId() + route.getObjectId() + stopPointIdSuffix + pointSequenceIndex + "-" + Instant.now().toEpochMilli();
+            String netexStopPointId = stopPointInJourneyPattern.getId();
+            String netexScheduledStopPointId = stopPointInJourneyPattern.getScheduledStopPointRef().getValue().getRef();
 
-            if (stopAssignments.containsKey(netexStopPointId)) {
-                String stopAreaObjectId = stopAssignments.get(netexStopPointId);
+            if (stopAssignments.containsKey(netexScheduledStopPointId)) {
+                String stopAreaObjectId = stopAssignments.get(netexScheduledStopPointId);
                 StopArea stopArea = ObjectFactory.getStopArea(referential, stopAreaObjectId);
 
                 if (stopArea != null) {
@@ -114,10 +112,6 @@ public class JourneyParser implements Parser, Constant {
                     stopPoint.setPosition(pointSequenceIndex);
                     stopPoint.setContainedInStopArea(stopArea);
                     stopPoint.setRoute(route);
-
-                    if (!stopPointIdMapper.containsKey(netexStopPointId)) {
-                        stopPointIdMapper.put(netexStopPointId, netexStopPointId);
-                    }
 
                     chouetteJourneyPattern.addStopPoint(stopPoint);
 
@@ -189,7 +183,6 @@ public class JourneyParser implements Parser, Constant {
     @SuppressWarnings("unchecked")
     private void parseTimetabledPassingTimes(Context context, ServiceJourney serviceJourney, VehicleJourney vehicleJourney) {
         Referential referential = (Referential) context.get(REFERENTIAL);
-        Map<String, String> stopPointIdMapper = (Map<String, String>) context.get(STOP_POINT_ID_MAPPER);
         List<TimetabledPassingTime> timetabledPassingTimes = serviceJourney.getPassingTimes().getTimetabledPassingTime();
 
         for (TimetabledPassingTime timetabledPassingTime : timetabledPassingTimes) {
@@ -198,29 +191,22 @@ public class JourneyParser implements Parser, Constant {
 
             String pointInJourneyPatternId = timetabledPassingTime.getPointInJourneyPatternRef().getValue().getRef();
             StopPointInJourneyPattern stopPointInJourneyPattern = stopPointInJourneyPatternMap.get(pointInJourneyPatternId);
+            StopPoint stopPoint = ObjectFactory.getStopPoint(referential, pointInJourneyPatternId);
+            vehicleJourneyAtStop.setStopPoint(stopPoint);
 
             // Default = board and alight
             vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.BoardAndAlight);
 
-            if (stopPointInJourneyPattern.getId().equalsIgnoreCase(pointInJourneyPatternId)) {
+            Boolean forBoarding = stopPointInJourneyPattern.isForBoarding();
+            Boolean forAlighting = stopPointInJourneyPattern.isForAlighting();
 
-                // TODO re-analyze if this is the best way to get stop points for a vehicle journey at stop, look at regtopp
-
-                String netexStopPointId = stopPointInJourneyPattern.getScheduledStopPointRef().getValue().getRef();
-                String chouetteStopPointId = stopPointIdMapper.get(netexStopPointId);
-                StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
-                vehicleJourneyAtStop.setStopPoint(stopPoint);
-
-                Boolean forBoarding = stopPointInJourneyPattern.isForBoarding();
-                Boolean forAlighting = stopPointInJourneyPattern.isForAlighting();
-
-                if (forBoarding == null && forAlighting != null && !forAlighting) {
-                    vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.BoardOnly);
-                }
-                if (forAlighting == null && forBoarding != null && !forBoarding) {
-                    vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.AlightOnly);
-                }
+            if (forBoarding == null && forAlighting != null && !forAlighting) {
+                vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.BoardOnly);
             }
+            if (forAlighting == null && forBoarding != null && !forBoarding) {
+                vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.AlightOnly);
+            }
+
 
             parsePassingTimes(timetabledPassingTime, vehicleJourneyAtStop);
         }

@@ -143,14 +143,6 @@ public class PublicationDeliveryParser implements Parser, Constant {
 			stopAssignments = new HashMap<>();
 			context.put(NETEX_STOP_ASSIGNMENTS, stopAssignments);
 		}
-		Map<String, String> stopIdMapper = (Map<String, String>) context.get(STOP_POINT_ID_MAPPER);
-		if (stopIdMapper == null) {
-			stopIdMapper = new HashMap<>();
-			context.put(STOP_POINT_ID_MAPPER, stopIdMapper);
-		} else {
-			stopIdMapper.clear();
-		}
-
 		for (ServiceFrame serviceFrame : serviceFrames) {
 			StopAssignmentsInFrame_RelStructure stopAssignmentsStructure = serviceFrame.getStopAssignments();
 			if (stopAssignmentsStructure != null) {
