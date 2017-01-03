@@ -121,48 +121,51 @@ public class StopPlaceParser implements Parser, Constant {
 	private void parseQuay(Context context, StopArea parentStopArea, Quay quay) throws Exception {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
-		StopArea quayStopArea = ObjectFactory.getStopArea(referential, quay.getId());
-		quayStopArea.setAreaType(ChouetteAreaEnum.Quay);
+		StopArea boardingPosition = ObjectFactory.getStopArea(referential, quay.getId());
+		boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
 
 		Integer version = Integer.valueOf(quay.getVersion());
-		quayStopArea.setObjectVersion(version != null ? version : 0);
-		quayStopArea.setName(quay.getName().getValue());
-
-		quayStopArea.setParent(parentStopArea);
+		boardingPosition.setObjectVersion(version != null ? version : 0);
+		if(quay.getName() == null) {
+			boardingPosition.setName(parentStopArea.getName());
+		} else {
+			boardingPosition.setName(quay.getName().getValue());
+		}
+		boardingPosition.setParent(parentStopArea);
 
 		if (quay.getDescription() != null) {
-			quayStopArea.setComment(quay.getDescription().getValue());
+			boardingPosition.setComment(quay.getDescription().getValue());
 		}
 		if (quay.getLandmark() != null) {
-			quayStopArea.setNearestTopicName(quay.getLandmark().getValue());
+			boardingPosition.setNearestTopicName(quay.getLandmark().getValue());
 		}
 
 		PrivateCodeStructure privateCodeStruct = quay.getPrivateCode();
 		if (privateCodeStruct != null) {
-			quayStopArea.setRegistrationNumber(privateCodeStruct.getValue());
+			boardingPosition.setRegistrationNumber(privateCodeStruct.getValue());
 		} else {
 			if (quay.getShortName() != null) {
-				quayStopArea.setRegistrationNumber(quay.getShortName().getValue());
+				boardingPosition.setRegistrationNumber(quay.getShortName().getValue());
 			}
 		}
 
 		SimplePoint_VersionStructure centroidStruct = quay.getCentroid();
 		if (centroidStruct != null) {
-			parseCentroid(centroidStruct.getLocation(), quayStopArea);
+			parseCentroid(centroidStruct.getLocation(), boardingPosition);
 		}
 
 		PostalAddress postalAddress = quay.getPostalAddress();
 		if (postalAddress != null) {
-			quayStopArea.setCountryCode(postalAddress.getPostCode());
-			quayStopArea.setStreetName(postalAddress.getAddressLine1().getValue());
+			boardingPosition.setCountryCode(postalAddress.getPostCode());
+			boardingPosition.setStreetName(postalAddress.getAddressLine1().getValue());
 		}
 
 		TariffZoneRefs_RelStructure tariffZonesStruct = quay.getTariffZones();
 		if (tariffZonesStruct != null) {
-			parseTariffZoneRefs(tariffZonesStruct, quayStopArea);
+			parseTariffZoneRefs(tariffZonesStruct, boardingPosition);
 		}
 
-		quayStopArea.setFilled(true);
+		boardingPosition.setFilled(true);
 	}
 
 	private void parseCentroid(LocationStructure locationStruct, StopArea stopArea) throws Exception {

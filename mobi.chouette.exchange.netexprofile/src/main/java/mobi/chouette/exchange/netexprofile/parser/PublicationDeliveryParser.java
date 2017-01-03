@@ -25,6 +25,7 @@ import org.rutebanken.netex.model.PassengerStopAssignment;
 import org.rutebanken.netex.model.PropertiesOfDay_RelStructure;
 import org.rutebanken.netex.model.PropertyOfDay;
 import org.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.rutebanken.netex.model.QuayRefStructure;
 import org.rutebanken.netex.model.ResourceFrame;
 import org.rutebanken.netex.model.RoutesInFrame_RelStructure;
 import org.rutebanken.netex.model.ScheduledStopPointRefStructure;
@@ -163,6 +164,13 @@ public class PublicationDeliveryParser implements Parser, Constant {
 					if (scheduledStopPointRef != null && stopPlaceRef != null) {
 					    if (!stopAssignments.containsKey(scheduledStopPointRef.getRef())) {
                             stopAssignments.put(scheduledStopPointRef.getRef(), stopPlaceRef.getRef());
+                        }
+					}
+					QuayRefStructure quayRef = passengerStopAssignment.getQuayRef();
+
+					if (scheduledStopPointRef != null && quayRef != null) {
+					    if (!stopAssignments.containsKey(scheduledStopPointRef.getRef())) {
+                            stopAssignments.put(scheduledStopPointRef.getRef(), quayRef.getRef());
                         }
 					}
 				}

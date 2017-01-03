@@ -102,30 +102,30 @@ public class JourneyParser implements Parser, Constant {
             Integer pointSequenceIndex = stopPointInJourneyPattern.getOrder().intValue();
 
             String netexStopPointId = stopPointInJourneyPattern.getScheduledStopPointRef().getValue().getRef();
-            String stopPointIdSuffix = netexStopPointId.split(":")[2];
-            String chouetteStopPointId = route.getLine().getObjectId() + route.getObjectId() + stopPointIdSuffix + pointSequenceIndex + "-" + Instant.now().toEpochMilli();
+//            String stopPointIdSuffix = netexStopPointId.split(":")[2];
+//            String chouetteStopPointId = route.getLine().getObjectId() + route.getObjectId() + stopPointIdSuffix + pointSequenceIndex + "-" + Instant.now().toEpochMilli();
 
             if (stopAssignments.containsKey(netexStopPointId)) {
                 String stopAreaObjectId = stopAssignments.get(netexStopPointId);
                 StopArea stopArea = ObjectFactory.getStopArea(referential, stopAreaObjectId);
 
                 if (stopArea != null) {
-                    StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
+                    StopPoint stopPoint = ObjectFactory.getStopPoint(referential, netexStopPointId);
                     stopPoint.setPosition(pointSequenceIndex);
                     stopPoint.setContainedInStopArea(stopArea);
                     stopPoint.setRoute(route);
 
                     if (!stopPointIdMapper.containsKey(netexStopPointId)) {
-                        stopPointIdMapper.put(netexStopPointId, chouetteStopPointId);
+                        stopPointIdMapper.put(netexStopPointId, netexStopPointId);
                     }
 
                     chouetteJourneyPattern.addStopPoint(stopPoint);
 
-                    log.debug("Added StopPoint " + chouetteStopPointId + " to JourneyPattern " +
+                    log.debug("Added StopPoint " + netexStopPointId + " to JourneyPattern " +
                             chouetteJourneyPattern.getObjectId() + ". ContainedInStopArea is " + stopArea.getObjectId());
                 } else {
                     log.warn("StopArea with id " + stopAreaObjectId + " not found in cache. Not adding StopPoint " +
-                            chouetteStopPointId + " to JourneyPattern.");
+                    		netexStopPointId + " to JourneyPattern.");
                 }
             }
 
