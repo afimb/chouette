@@ -799,6 +799,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		return route;
 	}
 	
+	/**
+	 * @param str
+	 * @param separator
+	 * @return
+	 */
 	private String substringBeforeLast(String str, String separator) {
 	      if (isEmpty(str) || isEmpty(separator)) {
 	          return str;
@@ -810,10 +815,17 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	      return str.substring(0, pos);
 	}
 	
+	/**
+	 * @param str
+	 * @return
+	 */
 	private boolean isEmpty(String str) {
 	    return str == null || str.length() == 0;
 	 }
 	
+	/**
+	 * @param lstRoute
+	 */
 	private void orderRouteListByStopPointListSize(List <Route> lstRoute) {
 		Collections.sort(lstRoute, new Comparator<Route>() {
 		    @Override
@@ -935,6 +947,14 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		return null;
 	}
 	
+	/**
+	 * @param context
+	 * @param referential
+	 * @param importer
+	 * @param configuration
+	 * @param gtfsTrip
+	 * @param vehicleJourney
+	 */
 	private void createJourneyFrequencies(Context context, Referential referential, GtfsImporter importer,
 			GtfsImportParameters configuration, GtfsTrip gtfsTrip, VehicleJourney vehicleJourney) {
 		int count = 0;
@@ -967,6 +987,10 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		}
 	}
 
+	/**
+	 * @param frequency
+	 * @return
+	 */
 	private String getTimebandName(GtfsFrequency frequency) {
 		Calendar startCal = Calendar.getInstance(TimeZone.getDefault());
 		startCal.setTime(frequency.getStartTime().getTime());
@@ -976,13 +1000,25 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				+ endCal.get(Calendar.HOUR_OF_DAY) + ":" + endCal.get(Calendar.MINUTE));
 	}
 
+	/**
+	 * @param context
+	 * @param referential
+	 * @param configuration
+	 * @param gtfsTrip
+	 * @param gtfsShapes
+	 * @param vehicleJourney
+	 * @param journeyKey
+	 * @param journeyPatternByStopSequence
+	 * @param lstNotShapedRoute
+	 * @return
+	 */
 	private JourneyPattern createJourneyPattern(Context context, Referential referential,
 			GtfsImportParameters configuration, GtfsTrip gtfsTrip, Iterable<GtfsShape> gtfsShapes,
 			VehicleJourney vehicleJourney, String journeyKey, Map<String, JourneyPattern> journeyPatternByStopSequence, List<Route> lstNotShapedRoute) {
 		JourneyPattern journeyPattern;
 
 		// Route
-		Route route = createRoute(referential, configuration, gtfsTrip);
+		Route route = createRoute(referential, configuration, gtfsTrip, vehicleJourney);
 
 		// JourneyPattern
 		String journeyPatternId = route.getObjectId().replace(Route.ROUTE_KEY, JourneyPattern.JOURNEYPATTERN_KEY);
@@ -1030,6 +1066,15 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 	private static final double narrow = 0.0000001;
 
+	/**
+	 * @param context
+	 * @param referential
+	 * @param configuration
+	 * @param journeyPattern
+	 * @param vehicleJourney
+	 * @param gtfsShapes
+	 * @return
+	 */
 	private List<RouteSection> createRouteSections(Context context, Referential referential,
 			GtfsImportParameters configuration, JourneyPattern journeyPattern, VehicleJourney vehicleJourney,
 			Iterable<GtfsShape> gtfsShapes) {
@@ -1169,18 +1214,16 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	 * @param referential
 	 * @param configuration
 	 * @param gtfsTrip
+	 * @param vj 
 	 * @return
 	 */
-	private Route createRoute(Referential referential, GtfsImportParameters configuration, GtfsTrip gtfsTrip) {
+	private Route createRoute(Referential referential, GtfsImportParameters configuration, GtfsTrip gtfsTrip, VehicleJourney vehicleJourney) {
 		String lineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY,
 				gtfsTrip.getRouteId(), log);
 		
-//		log.warn("create route -> line id : " + lineId);
-//		log.warn("create route -> gtfstrip.getRouteId : " + gtfsTrip.getRouteId());
 		Line line = ObjectFactory.getLine(referential, lineId);
-//		log.warn("create route -> line object id : " + line.getObjectId());
-//		log.warn("create route -> line object name : " + line.getName());
-		String routeKey = gtfsTrip.getRouteId() + "_" + gtfsTrip.getDirectionId().ordinal();
+//		String routeKey = buildRouteKey(gtfsTrip,vehicleJourney, false);
+ 		String routeKey = gtfsTrip.getRouteId() + "_" + gtfsTrip.getDirectionId().ordinal();
 		if (gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty())
 			routeKey += "_" + gtfsTrip.getShapeId();
 		routeKey += "_" + line.getRoutes().size();
@@ -1193,7 +1236,37 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		route.setWayBack(wayBack);
 		return route;
 	}
+	
+//	private String buildRouteKey(GtfsTrip gtfsTrip, VehicleJourney vehicleJourney, boolean withPickUpDropDown) {
+//		String routeKey = gtfsTrip.getRouteId() + "_" + gtfsTrip.getDirectionId().ordinal()+"_"+vehicleJourney.getVehicleJourneyAtStops().size();        
+//		if (gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty())
+//			routeKey += "_" + gtfsTrip.getShapeId();
+//		String stopsKey = "";
+//		for (VehicleJourneyAtStop vjas : vehicleJourney.getVehicleJourneyAtStops()) {
+//			VehicleJourneyAtStopWrapper vjasw = (VehicleJourneyAtStopWrapper) vjas;
+//			String stopId = vjasw.stopId;
+//			if (withPickUpDropDown)
+//			{
+//				stopId += "_"+vjasw.pickUpType.ordinal()+"_"+vjasw.dropOffType.ordinal();
+//			}
+//			else 
+//			{
+//				stopId += "_0_0";
+//			}
+//			stopsKey += stopId+" ";
+//		}
+//		Checksum checksum = new Adler32();
+//		byte bytes[] = stopsKey.getBytes();
+//		checksum.update(bytes,0,bytes.length);
+//		routeKey += "_"+checksum.getValue();
+//		return routeKey;
+//	}
 
+	/**
+	 * @param context
+	 * @param gtfsStopTime
+	 * @param vehicleJourneyAtStop
+	 */
 	protected void convert(Context context, GtfsStopTime gtfsStopTime, VehicleJourneyAtStop vehicleJourneyAtStop) {
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
@@ -1215,6 +1288,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		vehicleJourneyAtStop.setDepartureDayOffset(gtfsStopTime.getDepartureTime().getDay());
 	}
 
+	/**
+	 * @param context
+	 * @param gtfsTrip
+	 * @param vehicleJourney
+	 */
 	protected void convert(Context context, GtfsTrip gtfsTrip, VehicleJourney vehicleJourney) {
 
 		if (gtfsTrip.getTripShortName() != null) {
@@ -1344,6 +1422,10 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		return AlightingPossibilityEnum.normal;
 	}
 	
+	/**
+	 * @author michel
+	 *
+	 */
 	@AllArgsConstructor
 	class VehicleJourneyAtStopWrapper extends VehicleJourneyAtStop {
 
@@ -1351,8 +1433,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		String stopId;
 		int stopSequence;
 		Float shapeDistTraveled;
-		BoardingPossibilityEnum pickUpType;
-		AlightingPossibilityEnum dropOffType;
+		BoardingPossibilityEnum pickUpType = BoardingPossibilityEnum.normal;
+		AlightingPossibilityEnum dropOffType = AlightingPossibilityEnum.normal;
 		
 		
 		public void setBoardingPossibilityEnum(BoardingPossibilityEnum pickUpType) {
