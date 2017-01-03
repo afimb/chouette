@@ -1,7 +1,10 @@
 package mobi.chouette.exchange.regtopp.importer.parser;
 
+import org.apache.commons.lang.StringUtils;
+
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
+import mobi.chouette.model.Timetable;
 import mobi.chouette.model.util.ObjectIdTypes;
 
 public abstract class ObjectIdCreator {
@@ -30,6 +33,16 @@ public abstract class ObjectIdCreator {
 
 		return composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY, localId);
 
+	}
+
+	public static String recomputeTimetableId(RegtoppImportParameters configuration, String adminCode,
+			Timetable timetableToModify,RegtoppDayCodeHeaderDKO header) {
+
+		
+		String[] split = StringUtils.split(timetableToModify.getObjectId(),":");
+		String dayCodeId = split[2].substring(3, 7);
+
+		return createTimetableId(configuration, adminCode, dayCodeId, header);
 	}
 
 	public static String createOperatorId(RegtoppImportParameters configuration, String operatorCode) {
@@ -86,5 +99,6 @@ public abstract class ObjectIdCreator {
 	public static String createConnectionLinkId(RegtoppImportParameters configuration, String stopAreaFrom, String stopAreaTo) {
 		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.CONNECTIONLINK_KEY, stopAreaFrom + "-" + stopAreaTo);
 	}
+
 
 }

@@ -173,9 +173,18 @@ public class RegtoppTripParser extends LineSpecificParser {
 
 		String chouetteTimetableId = ObjectIdCreator.createTimetableId(configuration, trip.getAdminCode(), trip.getDayCodeRef(), header);
 
-
-		Timetable timetable = ObjectFactory.getTimetable(referential, chouetteTimetableId);
-		timetable.addVehicleJourney(vehicleJourney);
+		Timetable timetable = referential.getTimetables().get(chouetteTimetableId);
+		if(timetable == null) {
+			for(Timetable timetableToModify : referential.getSharedTimetables().values()) {
+				String modifiedChouetteTimetableId = ObjectIdCreator.recomputeTimetableId(configuration, trip.getAdminCode(),timetableToModify,header);
+				log.warn("Invalid timetable reference found "+chouetteTimetableId+", recomputed with new identifier "+modifiedChouetteTimetableId);
+				referential.getTimetables().put(modifiedChouetteTimetableId, timetableToModify);
+				referential.getSharedTimetables().put(modifiedChouetteTimetableId, timetableToModify);
+			}
+		}
+		
+		Timetable timetableToUse = referential.getTimetables().get(chouetteTimetableId);
+				timetableToUse.addVehicleJourney(vehicleJourney);
 	}
 
 	protected Company createOperator(Referential referential, RegtoppImportParameters configuration, String operatorCode) {
