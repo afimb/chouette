@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -83,7 +85,7 @@ public class LineRegisterCommand implements Command {
 
 		Line newValue = referential.getLines().values().iterator().next();
 		
-		if(importParameter.isKeepObsoleteLines() || isLineIsValidInFuture(newValue)) {
+		if(importParameter.isKeepObsoleteLines() || isLineValidInFuture(newValue)) {
 		
 			log.info("register line : " + newValue.getObjectId() + " " + newValue.getName() + " vehicleJourney count = "
 					+ referential.getVehicleJourneys().size());
@@ -187,14 +189,14 @@ public class LineRegisterCommand implements Command {
 		return result;
 	}
 
-	private boolean isLineIsValidInFuture(Line line) {
+	private boolean isLineValidInFuture(Line line) {
 
 		Date now = new Date();
 		
-		for(Route r : line.getRoutes()) {
-			for(JourneyPattern jp : r.getJourneyPatterns()) {
-				for(VehicleJourney vj : jp.getVehicleJourneys()) {
-					for(Timetable t : vj.getTimetables()) {
+		for(Route r : (line.getRoutes() == null? new ArrayList<Route>() : line.getRoutes())) {
+			for(JourneyPattern jp : (r.getJourneyPatterns() == null? new ArrayList<JourneyPattern>() : r.getJourneyPatterns())) {
+				for(VehicleJourney vj : (jp.getVehicleJourneys() == null? new ArrayList<VehicleJourney>() : jp.getVehicleJourneys())) {
+					for(Timetable t : (vj.getTimetables() == null ? new ArrayList<Timetable>() : vj.getTimetables())) {
 						t.computeLimitOfPeriods();
 						log.info("Checking "+t.getEndOfPeriod()+ " against "+now);
 						if(!t.getEndOfPeriod().before(now)) {
