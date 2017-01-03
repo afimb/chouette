@@ -1,5 +1,17 @@
 package mobi.chouette.exchange.regtopp.importer.parser.v11;
 
+import static mobi.chouette.common.Constant.CONFIGURATION;
+import static mobi.chouette.common.Constant.PARSER;
+import static mobi.chouette.common.Constant.REFERENTIAL;
+
+import java.sql.Time;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.Duration;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
@@ -15,19 +27,24 @@ import mobi.chouette.exchange.regtopp.importer.parser.RouteKey;
 import mobi.chouette.exchange.regtopp.importer.parser.TripVisitTimeCalculator;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.enums.TransportType;
-import mobi.chouette.exchange.regtopp.model.v11.*;
-import mobi.chouette.model.*;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppRouteTDA;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppTripIndexTIX;
+import mobi.chouette.model.Company;
+import mobi.chouette.model.Footnote;
+import mobi.chouette.model.JourneyPattern;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.Route;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.Timetable;
+import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.Duration;
-
-import java.sql.Time;
-import java.util.List;
-
-import static mobi.chouette.common.Constant.*;
 
 @Log4j
 public class RegtoppTripParser extends LineSpecificParser {
@@ -173,9 +190,25 @@ public class RegtoppTripParser extends LineSpecificParser {
 
 		String chouetteTimetableId = ObjectIdCreator.createTimetableId(configuration, trip.getAdminCode(), trip.getDayCodeRef(), header);
 
-
-		Timetable timetable = ObjectFactory.getTimetable(referential, chouetteTimetableId);
-		timetable.addVehicleJourney(vehicleJourney);
+		Timetable timetable = referential.getSharedTimetables().get(chouetteTimetableId);
+		if(timetable == null) {
+			log.warn("Invalid timetable reference "+chouetteTimetableId);
+			Map<String,Timetable> timetablesToAdd = new HashMap<>();
+			for(Timetable timetableToModify : referential.getSharedTimetables().values()) {
+				String modifiedChouetteTimetableId = ObjectIdCreator.recomputeTimetableId(configuration, trip.getAdminCode(),timetableToModify,header);
+				log.warn("Adding timetable "+timetableToModify.getObjectId()+" with new identifier "+modifiedChouetteTimetableId);
+				timetablesToAdd.put(modifiedChouetteTimetableId, timetableToModify);
+			}
+			referential.getTimetables().putAll(timetablesToAdd);
+			referential.getSharedTimetables().putAll(timetablesToAdd);
+		}
+		
+		Timetable timetableToUse = referential.getSharedTimetables().get(chouetteTimetableId);
+		if(timetableToUse == null) {
+			log.error("Did not find timetable with id "+chouetteTimetableId+", skipping VehicleJourney "+vehicleJourney.getObjectId());
+		} else {
+			timetableToUse.addVehicleJourney(vehicleJourney);
+		}
 	}
 
 	protected Company createOperator(Referential referential, RegtoppImportParameters configuration, String operatorCode) {
