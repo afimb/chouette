@@ -59,7 +59,7 @@ public class ObjectReference extends AbstractReport implements Constant{
 
 	public ObjectReference(Context context, Network object) {
 		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		AbstractParameter parameters = (AbstractParameter) context.get(CONFIGURATION);
 		
 		this.type = TYPE.network;
 		this.id = object.getId();
@@ -70,7 +70,7 @@ public class ObjectReference extends AbstractReport implements Constant{
 
 	public ObjectReference(Context context, Company object) {
 		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		AbstractParameter parameters = (AbstractParameter) context.get(CONFIGURATION);
 		
 		this.type = TYPE.company;
 		this.id = object.getId();
@@ -80,7 +80,7 @@ public class ObjectReference extends AbstractReport implements Constant{
 
 	public ObjectReference(Context context, GroupOfLine object) {
 		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		AbstractParameter parameters = (AbstractParameter) context.get(CONFIGURATION);
 		
 		this.type = TYPE.group_of_line;
 		this.id = object.getId();
@@ -90,7 +90,7 @@ public class ObjectReference extends AbstractReport implements Constant{
 
 	public ObjectReference(Context context, StopArea object) {
 		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		AbstractParameter parameters = (AbstractParameter) context.get(CONFIGURATION);
 		
 		this.type = TYPE.stop_area;
 		this.id = object.getId();
@@ -100,7 +100,7 @@ public class ObjectReference extends AbstractReport implements Constant{
 
 	public ObjectReference(Context context, ConnectionLink object) {
 		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		AbstractParameter parameters = (AbstractParameter) context.get(CONFIGURATION);
 		
 		this.type = TYPE.connection_link;
 		this.id = object.getId();
@@ -110,7 +110,7 @@ public class ObjectReference extends AbstractReport implements Constant{
 
 	public ObjectReference(Context context, AccessPoint object) {
 		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		AbstractParameter parameters = (AbstractParameter) context.get(CONFIGURATION);
 		
 		this.type = TYPE.access_point;
 		this.id = object.getId();
@@ -120,7 +120,7 @@ public class ObjectReference extends AbstractReport implements Constant{
 
 	public ObjectReference(Context context, AccessLink object) {
 		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		AbstractParameter parameters = (AbstractParameter) context.get(CONFIGURATION);
 		
 		this.type = TYPE.access_link;
 		this.id = object.getId();
@@ -130,7 +130,7 @@ public class ObjectReference extends AbstractReport implements Constant{
 
 	public ObjectReference(Context context, Timetable object) {
 		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		AbstractParameter parameters = (AbstractParameter) context.get(CONFIGURATION);
 		
 		this.type = TYPE.time_table;
 		this.id = object.getId();
@@ -140,7 +140,7 @@ public class ObjectReference extends AbstractReport implements Constant{
 
 	public ObjectReference(Context context, Line object) {
 		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		AbstractParameter parameters = (AbstractParameter) context.get(CONFIGURATION);
 		
 		this.type = TYPE.line;
 		this.id = object.getId();
@@ -150,7 +150,7 @@ public class ObjectReference extends AbstractReport implements Constant{
 
 	public ObjectReference(Context context, Route object) {
 		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		AbstractParameter parameters = (AbstractParameter) context.get(CONFIGURATION);
 		
 		this.type = TYPE.route;
 		this.id = object.getId();
@@ -160,7 +160,7 @@ public class ObjectReference extends AbstractReport implements Constant{
 
 	public ObjectReference(Context context, JourneyPattern object) {
 		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		AbstractParameter parameters = (AbstractParameter) context.get(CONFIGURATION);
 		
 		this.type = TYPE.journey_pattern;
 		this.id = object.getId();
@@ -170,7 +170,7 @@ public class ObjectReference extends AbstractReport implements Constant{
 
 	public ObjectReference(Context context, VehicleJourney object) {
 		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
-		AbstractParameter parameters = (AbstractParameter) context.get(PARAMETERS_FILE);
+		AbstractParameter parameters = (AbstractParameter) context.get(CONFIGURATION);
 		
 		this.type = TYPE.vehicle_journey;
 		this.id = object.getId();

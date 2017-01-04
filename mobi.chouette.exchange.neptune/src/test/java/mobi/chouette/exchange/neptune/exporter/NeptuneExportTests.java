@@ -62,6 +62,7 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 		List<File> jars = new ArrayList<>();
 		List<JavaArchive> modules = new ArrayList<>();
 		for (File file : files) {
+			System.out.println(file.getName());
 			if (file.getName().startsWith("mobi.chouette.exchange"))
 			{
 				String name = file.getName().split("\\-")[0]+".jar";
@@ -93,7 +94,6 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 						  .create(ZipImporter.class, name)
 						  .importFrom(file)
 						  .as(JavaArchive.class);
-				modules.add(archive);
 				if (!modules.contains(archive))
 				   modules.add(archive);
 			}

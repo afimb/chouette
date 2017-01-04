@@ -78,7 +78,8 @@ public class LocationTest implements Constant{
 			context.put(CHOUETTEID_GENERATOR, new DummyChouetteIdGenerator());
 			DummyParameter dp = new DummyParameter();
 			dp.setDefaultCodespace("DEFAULT_CODESPACE");
-			context.put(PARAMETERS_FILE, dp);
+			dp.setDefaultFormat("neptune");
+			context.put(CONFIGURATION, dp);
 			Location location = new Location(context, jp);
 			location.print(stream, new StringBuilder(), 1, true);
 			String text = oStream.toString();
