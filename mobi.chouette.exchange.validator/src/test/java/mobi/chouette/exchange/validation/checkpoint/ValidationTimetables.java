@@ -11,6 +11,7 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.core.ChouetteException;
+import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
@@ -73,7 +74,7 @@ public class ValidationTimetables extends AbstractTestValidation {
 
 	}
 
-	protected Context initValidatorContext() {
+	protected Context initValidatorContext() throws ClassNotFoundException, IOException {
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
 
 		Context context = new Context();
@@ -86,6 +87,9 @@ public class ValidationTimetables extends AbstractTestValidation {
 		configuration.setUserName("userName");
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
+		configuration.setDefaultFormat("neptune");
+		configuration.setDefaultCodespace("DEFAULT_CODESPACE");
+		context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(configuration.getDefaultFormat()));
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
 		test.setPathName("target/referential/test");
@@ -106,7 +110,7 @@ public class ValidationTimetables extends AbstractTestValidation {
 	}
 
 	@Test(groups = { "timetable" }, description = "4-Timetable-1 no test",priority=1)
-	public void verifyTest4_1_notest() throws ChouetteException {
+	public void verifyTest4_1_notest() throws ChouetteException, ClassNotFoundException, IOException {
 		// 4-Timetable-1 : check columns
 		log.info(Color.BLUE + "4-Timetable-1 no test" + Color.NORMAL);
 		Context context = initValidatorContext();
@@ -137,7 +141,7 @@ public class ValidationTimetables extends AbstractTestValidation {
 	}
 //	@TODO l'unicité se fait sur le chouetteId et non sur le technicalId
 	@Test(groups = { "timetable" }, description = "4-Timetable-1 unicity",priority=2)
-	public void verifyTest4_1_unique() throws ChouetteException {
+	public void verifyTest4_1_unique() throws ChouetteException, ClassNotFoundException, IOException {
 		// 4-Timetable-1 : check columns
 		log.info(Color.BLUE + "4-Timetable-1 unicity" + Color.NORMAL);
 		Context context = initValidatorContext();

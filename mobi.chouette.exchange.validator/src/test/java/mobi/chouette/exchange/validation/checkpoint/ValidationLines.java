@@ -21,6 +21,7 @@ import mobi.chouette.core.ChouetteException;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.ChouetteIdGenerator;
 import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
@@ -209,6 +210,8 @@ public class ValidationLines extends AbstractTestValidation
 		// 4-Line-1 : check columns
 		log.info(Color.BLUE +"4-Line-1 unicity"+ Color.NORMAL);
 		Context context = initValidatorContext();
+		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
+		AbstractParameter parameters = (AbstractParameter)context.get(CONFIGURATION);
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
 		context.put(VALIDATION,fullparameters);
@@ -229,9 +232,9 @@ public class ValidationLines extends AbstractTestValidation
 		List<CheckPointErrorReport> details = checkReportForTest(report,"4-Line-1",1);
 		CheckPointErrorReport detail = details.get(0);
 		Assert.assertEquals(detail.getReferenceValue(),"TechnicalId","detail must refer column");
-		Assert.assertEquals(detail.getValue(),bean2.getTechnicalId(),"detail must refer value");
-		Assert.assertEquals(detail.getSource().getObjectId(),bean2.getTechnicalId(),"detail must refer second bean as source");
-		Assert.assertEquals(detail.getTargets().get(0).getObjectId(),bean1.getTechnicalId(),"detail must refer fisrt bean as target");
+		Assert.assertEquals(detail.getValue(), bean2.getTechnicalId(),"detail must refer value");
+		Assert.assertEquals(detail.getSource().getObjectId(), chouetteIdGenerator.toSpecificFormatId(bean2.getChouetteId(), parameters.getDefaultCodespace(), bean2),"detail must refer second bean as source");
+		Assert.assertEquals(detail.getTargets().get(0).getObjectId(), chouetteIdGenerator.toSpecificFormatId(bean1.getChouetteId(), parameters.getDefaultCodespace(), bean1),"detail must refer fisrt bean as target");
 	}
 
 
