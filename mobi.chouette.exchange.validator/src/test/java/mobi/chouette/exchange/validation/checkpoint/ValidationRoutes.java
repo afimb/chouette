@@ -316,6 +316,12 @@ public class ValidationRoutes extends AbstractTestValidation {
 			route1.setOppositeRoute(route2);
 			route2.setOppositeRoute(route1);
 		}
+		
+		System.out.println("Route 1 technical id : " + route1.getTechnicalId());
+		System.out.println("Opposite route Route 1 technical id : " + route1.getOppositeRoute().getTechnicalId());
+		
+		System.out.println("Route 2 technical id : " + route2.getTechnicalId());
+		System.out.println("Opposite route Route 2 technical id : " + route2.getOppositeRoute().getTechnicalId());
 
 		StopArea area1 = route1.getStopPoints().get(1).getContainedInStopArea().getParent();
 		StopArea area0 = route1.getStopPoints().get(0).getContainedInStopArea();

@@ -134,31 +134,31 @@ public class ValidationCompanies extends AbstractTestValidation {
 
 	}
 //  @TODO l'unicité se fait sur le chouetteId et non sur le technicalId
-//	@Test(groups = { "company" }, description = "4-Company-1 unicity",priority=2)
-//	public void verifyTest4_1_unique() throws Exception {
-//		// 4-Company-1 : check columns
-//		log.info(Color.BLUE + "4-Company-1 unicity" + Color.NORMAL);
-//		Context context = initValidatorContext();
-//		Assert.assertNotNull(fullparameters, "no parameters for test");
-//
-//		context.put(VALIDATION_REPORT, new ValidationReport());
-//
-//		fullparameters.setCheckCompany(1);
-//		fullparameters.getCompany().getTechnicalId().setUnique(1);
-//
-//		context.put(VALIDATION, fullparameters);
-//		ValidationData data = new ValidationData();
-//		data.getCompanies().addAll(beansFor4);
-//		context.put(VALIDATION_DATA, data);
-//		checkPoint.validate(context, null);
-//		fullparameters.getCompany().getTechnicalId().setUnique(0);
-//
-//		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-//
-//		Assert.assertFalse(report.getCheckPoints().isEmpty(), " report must have items");
-//		Assert.assertNotNull(report.findCheckPointReportByName("4-Company-1"), " report must have 1 item on key 4-Company-1");
-//		CheckPointReport checkPointReport = report.findCheckPointReportByName("4-Company-1");
-//		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkpoint must have " + 1 + " detail");
-//	}
+	@Test(groups = { "company" }, description = "4-Company-1 unicity",priority=2)
+	public void verifyTest4_1_unique() throws Exception {
+		// 4-Company-1 : check columns
+		log.info(Color.BLUE + "4-Company-1 unicity" + Color.NORMAL);
+		Context context = initValidatorContext();
+		Assert.assertNotNull(fullparameters, "no parameters for test");
+
+		context.put(VALIDATION_REPORT, new ValidationReport());
+
+		fullparameters.setCheckCompany(1);
+		fullparameters.getCompany().getTechnicalId().setUnique(1);
+
+		context.put(VALIDATION, fullparameters);
+		ValidationData data = new ValidationData();
+		data.getCompanies().addAll(beansFor4);
+		context.put(VALIDATION_DATA, data);
+		checkPoint.validate(context, null);
+		fullparameters.getCompany().getTechnicalId().setUnique(0);
+
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+
+		Assert.assertFalse(report.getCheckPoints().isEmpty(), " report must have items");
+		Assert.assertNotNull(report.findCheckPointReportByName("4-Company-1"), " report must have 1 item on key 4-Company-1");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("4-Company-1");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkpoint must have " + 1 + " detail");
+	}
 
 }

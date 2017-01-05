@@ -147,18 +147,23 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 	 */
 	private void check3Route2(Context context, Route route) {
 		// 3-Route-2 : check if two wayback routes are actually waybacks
+		System.out.println("GJT Check3Route2 PASS 0");
+		System.out.println("Technical id : " + route.getTechnicalId());
+		
 		// test can be passed if route has wayback
 		if (!hasOppositeRoute(route, log))
 			return;
-
+		System.out.println("GJT Check3Route2 PASS 1");
 		List<StopArea> areas = NeptuneUtil.getStopAreaOfRoute(route);
 		// test can be passed if areas exist and have parents
 		if (areas.isEmpty())
 			return;
+		System.out.println("GJT Check3Route2 PASS 2");
 		StopArea first = areas.get(0).getParent();
 		StopArea last = areas.get(areas.size() - 1).getParent();
 		if (first == null || last == null)
 			return;
+		System.out.println("GJT Check3Route2 PASS 3");
 		Route routeWb = route.getOppositeRoute();
 		List<StopArea> areasWb = NeptuneUtil.getStopAreaOfRoute(routeWb);
 		// test can be passed if wayback areas exist and have parents
@@ -167,6 +172,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 			StopArea lastWb = areasWb.get(areasWb.size() - 1).getParent();
 			if (firstWb == null || lastWb == null)
 				return;
+			System.out.println("GJT Check3Route2 PASS 4");
 			prepareCheckPoint(context, ROUTE_2);
 			if (first.equals(lastWb) && last.equals(firstWb))
 				return; // test ok

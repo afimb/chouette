@@ -371,7 +371,7 @@ public class ValidationAccessLinks extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
 		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
-		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 4, " checkPointReport must have 4 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 8, " checkPointReport must have 8 item");
 		String detailKey = "3-AccessLink-3".replaceAll("-", "_").toLowerCase();
 		List<CheckPointErrorReport> details = checkReportForTest(report,"3-AccessLink-3",-1);
 		for (CheckPointErrorReport detail : details) {

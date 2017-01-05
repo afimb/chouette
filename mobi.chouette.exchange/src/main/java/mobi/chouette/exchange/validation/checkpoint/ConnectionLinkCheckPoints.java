@@ -75,6 +75,11 @@ public class ConnectionLinkCheckPoints extends AbstractValidation<ConnectionLink
 		long distanceMax = parameters.getInterConnectionLinkDistanceMax();
 
 		double distance = quickDistance(start, end);
+		if (distanceMax > distance) {
+			int value = (int)distance - 10;
+			parameters.setInterConnectionLinkDistanceMax(value);
+			distanceMax = parameters.getInterConnectionLinkDistanceMax();
+		}
 		if (distance > distanceMax) {
 			DataLocation location = buildLocation(context,connectionLink);
 			DataLocation startLocation = buildLocation(context,start);
@@ -86,6 +91,7 @@ public class ConnectionLinkCheckPoints extends AbstractValidation<ConnectionLink
 		} else {
 			// 3-ConnectionLink-2 : check distance of link against distance
 			// between stops of connectionLink
+	
 			if (connectionLink.getLinkDistance() != null && !connectionLink.getLinkDistance().equals(BigDecimal.ZERO)) {
 				if (distance > connectionLink.getLinkDistance().doubleValue()) {
 					DataLocation location = buildLocation(context,connectionLink);
@@ -112,7 +118,7 @@ public class ConnectionLinkCheckPoints extends AbstractValidation<ConnectionLink
 		int maxFrequentSpeed = parameters.getWalkFrequentTravellerSpeedMax();
 		int maxMobilitySpeed = parameters.getWalkMobilityRestrictedTravellerSpeedMax();
 		int maxOccasionalSpeed = parameters.getWalkOccasionalTravellerSpeedMax();
-
+	
 		checkLinkSpeed(context, connectionLink, connectionLink.getDefaultDuration(), distance, maxDefaultSpeed,
 				CONNECTION_LINK_3, "1");
 		checkLinkSpeed(context, connectionLink, connectionLink.getOccasionalTravellerDuration(), distance,

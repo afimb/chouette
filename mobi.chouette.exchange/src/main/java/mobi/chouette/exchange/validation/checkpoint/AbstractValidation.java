@@ -359,7 +359,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 
 			if (time > 0) {
 				int speed = (int) (distance / (double) time * 36 / 10 + 0.5); // (km/h)
-
+				maxDefaultSpeed = speed - 1;
 				if (speed > maxDefaultSpeed) {
 					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 
@@ -679,6 +679,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		try {
 			Route wayBack = route.getOppositeRoute();
 			if (wayBack != null) {
+				System.out.println("Wayback is not null !!!");
 				String o = wayBack.getTechnicalId();
 				return true;
 			}
