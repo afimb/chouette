@@ -12,7 +12,7 @@ import mobi.chouette.model.StopArea;
 @Log4j
 public class HubDataCollector extends DataCollector {
 	public boolean collect(ExportableData collection, Line line, Date startDate, Date endDate) {
-		boolean res = collect(collection, line, startDate, endDate, false, false);
+		boolean res = collect(collection, line, startDate, endDate, false, true);
 		if (line.getNetwork() == null) {
 			log.error("line " + line.getObjectId() + " : missing network");
 			return false;

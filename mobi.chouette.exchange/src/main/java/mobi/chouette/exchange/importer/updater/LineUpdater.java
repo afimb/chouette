@@ -90,6 +90,7 @@ public class LineUpdater implements Updater<Line> {
 			oldValue.setRegistrationNumber(newValue.getRegistrationNumber());
 			oldValue.setTransportModeName(newValue.getTransportModeName());
 			oldValue.setMobilityRestrictedSuitable(newValue.getMobilityRestrictedSuitable());
+			oldValue.setFlexibleService(newValue.getFlexibleService());
 			oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
 			oldValue.setUrl(newValue.getUrl());
 			oldValue.setColor(newValue.getColor());
@@ -134,6 +135,10 @@ public class LineUpdater implements Updater<Line> {
 			if (newValue.getMobilityRestrictedSuitable() != null
 					&& !newValue.getMobilityRestrictedSuitable().equals(oldValue.getMobilityRestrictedSuitable())) {
 				oldValue.setMobilityRestrictedSuitable(newValue.getMobilityRestrictedSuitable());
+			}
+			if (newValue.getFlexibleService() != null
+					&& !newValue.getFlexibleService().equals(oldValue.getFlexibleService())) {
+				oldValue.setFlexibleService(newValue.getFlexibleService());
 			}
 			if (newValue.getIntUserNeeds() != null && !newValue.getIntUserNeeds().equals(oldValue.getIntUserNeeds())) {
 				oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
@@ -217,11 +222,12 @@ public class LineUpdater implements Updater<Line> {
 			groupOfLineUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
-		Collection<GroupOfLine> removedGroupOfLine = CollectionUtil.substract(oldValue.getGroupOfLines(),
-				newValue.getGroupOfLines(), NeptuneIdentifiedObjectComparator.INSTANCE);
-		for (GroupOfLine groupOfLine : removedGroupOfLine) {
-			groupOfLine.removeLine(oldValue);
-		}
+		// dont remove old groupOfLine definition
+//		Collection<GroupOfLine> removedGroupOfLine = CollectionUtil.substract(oldValue.getGroupOfLines(),
+//				newValue.getGroupOfLines(), NeptuneIdentifiedObjectComparator.INSTANCE);
+//		for (GroupOfLine groupOfLine : removedGroupOfLine) {
+//			groupOfLine.removeLine(oldValue);
+//		}
 
 		// Route
 		Collection<Route> addedRoute = CollectionUtil.substract(newValue.getRoutes(), oldValue.getRoutes(),

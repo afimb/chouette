@@ -4,6 +4,7 @@ public interface Constant extends mobi.chouette.common.Constant {
 	public static final String HUB_EXPORTER = "hub_exporter";
 	public static final String HUB_ARRET_PRODUCER = "hub_arret_producer";
 	public static final String HUB_CHEMIN_PRODUCER = "hub_chemin_producer";
+	public static final String HUB_CHEMINOPERATION_PRODUCER = "hub_cheminoperation_producer";
 	public static final String HUB_COMMUNE_PRODUCER = "hub_commune_producer";
 	public static final String HUB_CORRESPONDANCE_PRODUCER = "hub_correspondance_producer";
 	public static final String HUB_COURSEOPERATION_PRODUCER = "hub_courseoperation_producer";

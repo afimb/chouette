@@ -16,6 +16,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.hub.Constant;
+import mobi.chouette.exchange.hub.exporter.producer.HubCheminOperationProducer;
 import mobi.chouette.exchange.hub.exporter.producer.HubCheminProducer;
 import mobi.chouette.exchange.hub.exporter.producer.HubCourseOperationProducer;
 import mobi.chouette.exchange.hub.exporter.producer.HubCourseProducer;
@@ -244,6 +245,11 @@ public class HubLineProducerCommand implements Command, Constant {
 			cheminProducer = new HubCheminProducer(exporter);
 			context.put(HUB_CHEMIN_PRODUCER, cheminProducer);
 		}
+		HubCheminOperationProducer cheminOperationProducer = (HubCheminOperationProducer) context.get(HUB_CHEMINOPERATION_PRODUCER);
+		if (cheminOperationProducer == null) {
+			cheminOperationProducer = new HubCheminOperationProducer(exporter);
+			context.put(HUB_CHEMINOPERATION_PRODUCER, cheminOperationProducer);
+		}
 		HubDirectionProducer directionProducer = (HubDirectionProducer) context.get(HUB_DIRECTION_PRODUCER);
 		if (directionProducer == null) {
 			directionProducer = new HubDirectionProducer(exporter);
@@ -253,6 +259,7 @@ public class HubLineProducerCommand implements Command, Constant {
 		Collections.sort(collection.getJourneyPatterns(), new JourneyPatternSorter());
 		for (JourneyPattern journeyPattern : collection.getJourneyPatterns()) {
 			cheminProducer.save(context,journeyPattern);
+			cheminOperationProducer.save(context,journeyPattern);
 			directionProducer.save(context,journeyPattern);
 		}
 

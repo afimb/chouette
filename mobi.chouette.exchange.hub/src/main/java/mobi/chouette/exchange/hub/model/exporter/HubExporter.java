@@ -8,6 +8,7 @@ import java.util.Map;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.hub.model.HubArret;
 import mobi.chouette.exchange.hub.model.HubChemin;
+import mobi.chouette.exchange.hub.model.HubCheminOperation;
 import mobi.chouette.exchange.hub.model.HubCommune;
 import mobi.chouette.exchange.hub.model.HubCorrespondance;
 import mobi.chouette.exchange.hub.model.HubCourse;
@@ -32,7 +33,7 @@ import mobi.chouette.exchange.hub.model.HubTransporteur;
 @Log4j
 public class HubExporter implements HubExporterInterface {
 	public static enum EXPORTER {
-		ARRET, CHEMIN, COMMUNE, CORRESPONDANCE, COURSE, COURSE_OPERATION, DIRECTION, 
+		ARRET, CHEMIN, CHEMIN_OPERATION, COMMUNE, CORRESPONDANCE, COURSE, COURSE_OPERATION, DIRECTION, 
 		GROUPE_DE_LIGNE, HORAIRE, ITL, LIGNE, MODE_TRANSPORT, PERIODE, RENVOI, RESEAU, 
 		SCHEMA, TRANSPORTEUR, MISSION, MISSION_OPERATION;
 	}
@@ -89,6 +90,13 @@ public class HubExporter implements HubExporterInterface {
 	public Exporter<HubChemin> getCheminExporter() {
 		return getExporter(EXPORTER.CHEMIN.name(), CheminExporter.FILENAME,
 				CheminExporter.class);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Exporter<HubCheminOperation> getCheminOperationExporter() {
+		return getExporter(EXPORTER.CHEMIN_OPERATION.name(), CheminOperationExporter.FILENAME,
+				CheminOperationExporter.class);
 	}
 
 	@SuppressWarnings("unchecked")
