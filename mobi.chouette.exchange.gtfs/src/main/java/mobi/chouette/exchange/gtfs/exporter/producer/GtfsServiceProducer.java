@@ -289,11 +289,28 @@ AbstractProducer
 
       Collections.sort(timetables, new TimetableSorter());
       String key = "";
-      for (Timetable timetable : timetables)
-      {
-         key += "-"+toGtfsId(timetable.getObjectId(), prefix, keepOriginalId);
+      
+      if(keepOriginalId) {
+          for(int i = 0;i<timetables.size();i++) {
+        	  if(i ==0) {
+        		  // Keep full id
+                  key += toGtfsId(timetables.get(i).getObjectId(), prefix, true);
+        	  } else {
+        		  // Only keep remaining parts
+                  key += "-"+toGtfsId(timetables.get(i).getObjectId(), prefix, false);
+        	  }
+          }
+    	  
+      } else {
+          for (Timetable timetable : timetables)
+          {
+             key += "-"+toGtfsId(timetable.getObjectId(), prefix, keepOriginalId);
+          }
+          // Trim leading dash
+          key = key.substring(1);
       }
-      return key.substring(1);
+      
+      return key;
    }
 
    private class TimetableSorter implements Comparator<Timetable>
