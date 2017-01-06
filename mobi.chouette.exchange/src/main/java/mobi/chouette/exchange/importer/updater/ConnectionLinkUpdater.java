@@ -126,7 +126,7 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 			String codeSpace = newValue.getStartOfLink().getChouetteId().getCodeSpace();
 			String objectId = newValue.getStartOfLink().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getStartOfLink().getChouetteId();
-			StopArea startOfLink = cache.getStopAreas().get(objectId);
+			StopArea startOfLink = cache.getStopAreas().get(chouetteId);
 			if (startOfLink == null) {
 				log.info("search connectionLink starts in DB " + objectId);
 				startOfLink = stopAreaDAO.findByChouetteId(codeSpace, objectId);
@@ -156,7 +156,7 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 			String codeSpace = newValue.getEndOfLink().getChouetteId().getCodeSpace();
 			String objectId = newValue.getEndOfLink().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getEndOfLink().getChouetteId();
-			StopArea endOfLink = cache.getStopAreas().get(objectId);
+			StopArea endOfLink = cache.getStopAreas().get(chouetteId);
 			if (endOfLink == null) {
 				log.info("search connectionLink ends in DB " + objectId);
 				endOfLink = stopAreaDAO.findByChouetteId(codeSpace, objectId);

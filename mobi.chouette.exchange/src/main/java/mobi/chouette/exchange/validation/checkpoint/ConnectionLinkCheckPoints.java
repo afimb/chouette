@@ -75,11 +75,7 @@ public class ConnectionLinkCheckPoints extends AbstractValidation<ConnectionLink
 		long distanceMax = parameters.getInterConnectionLinkDistanceMax();
 
 		double distance = quickDistance(start, end);
-		if (distanceMax > distance) {
-			int value = (int)distance - 10;
-			parameters.setInterConnectionLinkDistanceMax(value);
-			distanceMax = parameters.getInterConnectionLinkDistanceMax();
-		}
+		
 		if (distance > distanceMax) {
 			DataLocation location = buildLocation(context,connectionLink);
 			DataLocation startLocation = buildLocation(context,start);

@@ -1,5 +1,7 @@
 package mobi.chouette.exchange;
 
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.PropertyNames;
 import mobi.chouette.common.TransportMode;
 
 /**
@@ -7,6 +9,7 @@ import mobi.chouette.common.TransportMode;
  * @author gjamot
  *
  */
+@Log4j
 public abstract class AbstractTransportModeConverter implements TransportModeConverter{
 	
 	
@@ -20,5 +23,15 @@ public abstract class AbstractTransportModeConverter implements TransportModeCon
 	public TransportMode specificToGenericMode(TransportMode specificMode) {
 		throw new UnsupportedOperationException();
 	}
+	
+	protected static String getTransportModeUrl(String fileName) {
+		String url = null;
+		System.setProperty("iev" + PropertyNames.URL_TRANSPORT_MODE, "https://raw.githubusercontent.com/afimb/chouette-projects-i18n/master/data/transport_mode/");
+		url = System.getProperty("iev" + PropertyNames.URL_TRANSPORT_MODE);
+		url = url + fileName;
+		
+		return url;
+	}
+	
 
 }

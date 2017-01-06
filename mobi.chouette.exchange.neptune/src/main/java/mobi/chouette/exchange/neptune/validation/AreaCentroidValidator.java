@@ -101,12 +101,7 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 		{
 			Context objectContext = (Context) localContext.get(objectId);
 			
-			// log.warn("object id area centroid validator : " + objectId);
-			
-			if( objectContext == null)
-				log.error("Object context is null in area centroid validator");
 //			Location sourceLocation = fileLocations.get(objectId);
-			// log.warn("Codespace area centroid : " + neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),AreaCentroid.class).getCodeSpace() + " technical id area centroid : " + neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),AreaCentroid.class).getTechnicalId());
 			DataLocation sourceLocation = fileLocations.get(neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),AreaCentroid.class));
 			
 			if( objectContext.get(LONG_LAT_TYPE) != null) {

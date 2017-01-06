@@ -144,16 +144,13 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 					TransportMode trSrc = new TransportMode(value, "unspecified");
 					// If base default format different than neptune
 					if (!parameters.getDefaultFormat().equalsIgnoreCase("Neptune")) {
-						log.warn("VehicleJourneyParser neptune-> mode before conversion : " + trSrc.getMode() + ":" + trSrc.getSubMode());
 						TransportMode tmpTM = ntmc.specificToGenericMode(trSrc);
 						TransportMode tM = tmc.genericToSpecificMode(tmpTM);
 
 						vehicleJourney.setTransportMode(tM.getMode());
 						vehicleJourney.setTransportSubMode(tM.getSubMode());
 
-						log.warn("VehicleJourneyParser neptune-> mode after conversion : " + tM.getMode() + ":" + tM.getSubMode());
 					} else {
-						log.warn("VehicleJourneyParser neptune-> no need conversion : " + trSrc.getMode() + ":" + trSrc.getSubMode());
 						vehicleJourney.setTransportMode(trSrc.getMode());
 						vehicleJourney.setTransportSubMode(trSrc.getSubMode());
 					}

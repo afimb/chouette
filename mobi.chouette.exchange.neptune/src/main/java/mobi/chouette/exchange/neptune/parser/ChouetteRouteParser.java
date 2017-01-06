@@ -91,7 +91,7 @@ public class ChouetteRouteParser implements Parser, Constant {
 			} else if (xpp.getName().equals("wayBackRouteId")) {
 				String wayBackRouteId = ParserUtils.getText(xpp.nextText());
 				validator.addWayBackRouteId(context, objectId, wayBackRouteId);
-				Route wayBackRoute = referential.getRoutes().get(wayBackRouteId);
+				Route wayBackRoute = referential.getRoutes().get(neptuneChouetteIdGenerator.toChouetteId(wayBackRouteId, parameters.getDefaultCodespace(), Route.class));
 				if (wayBackRoute != null) {
 					wayBackRoute.setOppositeRoute(route);
 				}

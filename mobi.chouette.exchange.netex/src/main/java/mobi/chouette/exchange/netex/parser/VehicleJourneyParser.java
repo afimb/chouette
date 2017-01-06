@@ -122,11 +122,14 @@ public class VehicleJourneyParser implements Parser, Constant {
 		xpp.require(XmlPullParser.START_TAG, null, "dayTypes");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
+		NetexImportParameters parameters = (NetexImportParameters) context.get(CONFIGURATION);
+		NetexChouetteIdGenerator netexChouetteIdGenerator = (NetexChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("DayTypeRef")) {
 				String ref = xpp.getAttributeValue(null, REF);
-				Timetable timetable = referential.getTimetables().get(ref);
+				Timetable timetable = referential.getTimetables().get(netexChouetteIdGenerator.toChouetteId(ref, parameters.getDefaultCodespace(), Timetable.class));
 				if (timetable != null) {
 					vehicleJourney.getTimetables().add(timetable);
 					// timetable.addVehicleJourney(vehicleJourney);

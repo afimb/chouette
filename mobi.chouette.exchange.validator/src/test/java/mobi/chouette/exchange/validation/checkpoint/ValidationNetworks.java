@@ -190,11 +190,8 @@ public class ValidationNetworks extends AbstractTestValidation implements Consta
 		data.getNetworks().addAll(beansFor4);
 		context.put(VALIDATION_DATA, data);
 		checkPoint.validate(context, null);
-		log.warn("ValidationNetwork 1");
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-		log.warn("ValidationNetwork 2");
 		checkReportForTest(report, "4-Network-1",1);
-		log.warn("ValidationNetwork 3");
 	}
 
 	@Test(groups = { "network" }, description = "4-Network-1 pattern alphabetic", priority = 4)

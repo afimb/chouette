@@ -178,12 +178,17 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		List<ConnectionLink> beans = connectionLinkDao.findAll();
 		Assert.assertFalse(beans.isEmpty(), "No data for test");
 
-		fullparameters.setInterConnectionLinkDistanceMax(600);
-
+		StopArea start = beans.get(0).getStartOfLink();
+		StopArea end = beans.get(0).getEndOfLink();
+		double distance = AbstractValidation.quickDistance(start, end);
+		fullparameters.setInterConnectionLinkDistanceMax((int)distance - 100);
 		ValidationData data = new ValidationData();
 		data.getConnectionLinks().addAll(beans);
+		
 		context.put(VALIDATION_DATA, data);
-
+		
+		
+		
 		checkPoint.validate(context, null);
 
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
@@ -194,7 +199,7 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
 		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
-		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 2, " checkPointReport must have 1 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 2, " checkPointReport must have 2 item");
 		String detailKey = "3-ConnectionLink-1".replaceAll("-", "_").toLowerCase();
 		List<CheckPointErrorReport> details = checkReportForTest(report,"3-ConnectionLink-1",-1);
 		for (CheckPointErrorReport detail : details) {
@@ -220,11 +225,11 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 
 		List<ConnectionLink> beans = connectionLinkDao.findAll();
 		Assert.assertFalse(beans.isEmpty(), "No data for test");
-
-		ConnectionLink link = beans.get(0);
-		double distance = AbstractTestValidation.distance(link.getStartOfLink(), link.getEndOfLink());
-
-		link.setLinkDistance(BigDecimal.valueOf(distance - 100));
+// 		Transport mode handling
+//		ConnectionLink link = beans.get(0);
+//		double distance = AbstractTestValidation.distance(link.getStartOfLink(), link.getEndOfLink());
+//
+//		link.setLinkDistance(BigDecimal.valueOf(distance - 100));
 
 		ValidationData data = new ValidationData();
 		data.getConnectionLinks().addAll(beans);
@@ -275,13 +280,29 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 				break;
 			}
 		}
-
-		link.getDefaultDuration().setTime(link.getDefaultDuration().getTime() - 600000);
+		
+		
+		link.getDefaultDuration().setTime(link.getDefaultDuration().getTime() - 800000);
 		link.getOccasionalTravellerDuration().setTime(link.getOccasionalTravellerDuration().getTime() - 800000);
 		link.getFrequentTravellerDuration().setTime(link.getFrequentTravellerDuration().getTime() - 600000);
 		link.getMobilityRestrictedTravellerDuration().setTime(
 				link.getMobilityRestrictedTravellerDuration().getTime() - 900000);
+		
 
+		double distance = AbstractTestValidation.distance(link.getStartOfLink(), link.getEndOfLink());
+		
+		int speedDuration = AbstractValidation.getSpeedFromTimeAndDistance(distance, link.getDefaultDuration());
+		fullparameters.setWalkDefaultSpeedMax(speedDuration - 1000);
+		
+		int speedOccasionalTravellerDuration = AbstractValidation.getSpeedFromTimeAndDistance(distance, link.getOccasionalTravellerDuration());
+		fullparameters.setWalkDefaultSpeedMax(speedOccasionalTravellerDuration - 1000);
+		
+		int speedFrequentTravellerDuration = AbstractValidation.getSpeedFromTimeAndDistance(distance, link.getFrequentTravellerDuration());
+		fullparameters.setWalkDefaultSpeedMax(speedFrequentTravellerDuration - 1000);
+		
+		int speedMobilityRestrictedTravellerDuration = AbstractValidation.getSpeedFromTimeAndDistance(distance, link.getMobilityRestrictedTravellerDuration());
+		fullparameters.setWalkDefaultSpeedMax(speedMobilityRestrictedTravellerDuration - 1000);
+		
 		ValidationData data = new ValidationData();
 		data.getConnectionLinks().addAll(beans);
 		context.put(VALIDATION_DATA, data);
@@ -296,7 +317,7 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
 		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
-		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 4, " checkPointReport must have 4 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 		String detailKey = "3-ConnectionLink-3".replaceAll("-", "_").toLowerCase();
 		List<CheckPointErrorReport> details = checkReportForTest(report,"3-ConnectionLink-3",-1);
 		for (CheckPointErrorReport detail : details) {

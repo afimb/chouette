@@ -153,7 +153,6 @@ public class ValidationNominal extends AbstractTestValidation {
 		unchecked.add("3-VehicleJourney-8");
 
 		for (CheckPointReport checkPoint : report.getCheckPoints()) {
-			System.out.println("GJT CheckPointName : " + checkPoint.getName());
 			if (checkPoint.getName().equals("3-StopArea-1"))
 				bStopArea1 = true;
 			if (checkPoint.getName().equals("3-AccessPoint-1"))

@@ -20,7 +20,7 @@ import mobi.chouette.exchange.TransportModeConverterFactory;
 
 @Log4j
 public class NeptuneTransportModeConverter extends AbstractTransportModeConverter{
-	private static final String transportModeUrlSrc = "https://raw.githubusercontent.com/afimb/chouette-projects-i18n/master/data/transport_mode/neptune.json";
+	private static final String transportModeUrlSrc = "neptune.json";
 	
 	@Getter
 	protected static Map<TransportMode, TransportMode> mapTransportToPivotMode;
@@ -34,11 +34,8 @@ public class NeptuneTransportModeConverter extends AbstractTransportModeConverte
 	private static NeptuneTransportModeConverter INSTANCE = null;
 	public static synchronized NeptuneTransportModeConverter getInstance(){
 		if(INSTANCE == null){
-			log.warn("Parsing fichier neptune JSON");
-			getTransportModeListFromJSONFile(transportModeUrlSrc);
+			getTransportModeListFromJSONFile(getTransportModeUrl(transportModeUrlSrc));
 			INSTANCE = new NeptuneTransportModeConverter();
-			log.warn("Neptune mapTransportToPivotMode size : " + mapTransportToPivotMode.size());
-			log.warn("Neptune mapPivotToTransportMode size : " + mapPivotToTransportMode.size());
 		}
 		
 		return INSTANCE;
@@ -60,7 +57,6 @@ public class NeptuneTransportModeConverter extends AbstractTransportModeConverte
 				JSONArray arrayModesTransport;
 				try {
 					arrayModesTransport = new JSONArray(text);
-					log.warn(arrayModesTransport.toString());
 					for (int i = 0; i < arrayModesTransport.length(); i++) {
 						JSONObject transportMode = arrayModesTransport.getJSONObject(i);
 						String mode = transportMode.optString(MODE, null);
@@ -118,8 +114,6 @@ public class NeptuneTransportModeConverter extends AbstractTransportModeConverte
 //		}
 		// Search specific mode matching with pivot transport mode
 		TransportMode tM = mapTransportToPivotMode.get(specificMode);
-				
-		log.warn("NeptuneTransportModeConverter generic mode : " + tM.getMode() + ":" + tM.getSubMode());
 		
 		return tM;	
 	}
@@ -136,4 +130,5 @@ public class NeptuneTransportModeConverter extends AbstractTransportModeConverte
 	static {
 		TransportModeConverterFactory.factories.put("neptune", new DefaultFactory());
 	}
+	
 }

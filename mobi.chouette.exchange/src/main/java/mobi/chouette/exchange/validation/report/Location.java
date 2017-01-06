@@ -117,8 +117,6 @@ public class Location extends AbstractReport implements Constant {
 	private void init(Context context, NeptuneIdentifiedObject chouetteObject) {
 		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		AbstractParameter parameters = (AbstractParameter) context.get(CONFIGURATION);
-		//log.warn("GJT Location class Default format");
-		//log.warn("GJT " + parameters.getDefaultFormat());
 		this.objectId = chouetteIdGenerator.toSpecificFormatId(chouetteObject.getChouetteId(), parameters.getDefaultCodespace(), chouetteObject);
 		this.name = buildName(chouetteObject);
 		if (chouetteObject instanceof VehicleJourney) {

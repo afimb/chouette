@@ -94,22 +94,10 @@ public class DataLocation implements Constant{
 	public DataLocation(Context context, NeptuneIdentifiedObject chouetteObject) {
 		ChouetteIdGenerator chouetteIdGenerator = (ChouetteIdGenerator) context.get(CHOUETTEID_GENERATOR);
 		AbstractParameter parameters = (AbstractParameter) context.get(CONFIGURATION);
-//		if (chouetteIdGenerator != null)
-//			log.warn("GJT ChouetteIdGenerator is not null");
-//		if (chouetteObject != null)
-//			log.warn("chouetteObject is not null");
-//		if (chouetteObject.getChouetteId() != null)
-//			log.warn("GJT ChouetteId is not null");
-//		log.warn(chouetteObject.getChouetteId().getCodeSpace() + ":" + chouetteObject.getChouetteId().getTechnicalId());
-//		log.warn("GJT " + parameters.getDefaultCodespace());
-//		log.warn("GJT " + parameters.getDefaultFormat());
 		this.objectId = chouetteIdGenerator.toSpecificFormatId(chouetteObject.getChouetteId(), parameters.getDefaultCodespace(), chouetteObject);
-//		log.warn("GJT Pass1");
 		this.object = chouetteObject;
 		this.name = buildName(chouetteObject);
-//		log.warn("GJT Pass2");
 		if (chouetteObject.getChouetteId() != null) {
-//			log.warn("GJT ChouetteId non null");
 			path.add(new Path(chouetteIdGenerator, parameters, object));
 			if (chouetteObject instanceof VehicleJourney) {
 				VehicleJourney object = (VehicleJourney) chouetteObject;
@@ -151,8 +139,6 @@ public class DataLocation implements Constant{
 			}
 		}
 		// addLineLocation(this, chouetteObject);
-//		log.warn("GJT Fin constructor data location");
-
 	}
 
 	public static String buildName(NeptuneIdentifiedObject chouetteObject) {

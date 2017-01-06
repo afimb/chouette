@@ -44,7 +44,6 @@ public class GtfsRouteProducer extends AbstractProducer implements Constant
       route.setAgencyId(toGtfsId(neptuneObject.getCompany().getChouetteId(), prefix, keepOriginalId));
       route.setRouteShortName(null);
       route.setRouteLongName(null);
-      log.warn("GtfsRouteProducer default format : " + parameters.getDefaultFormat());
       if (isEmpty(neptuneObject.getNumber()))
       {
          route.setRouteShortName(neptuneObject.getName());
@@ -96,16 +95,9 @@ public class GtfsRouteProducer extends AbstractProducer implements Constant
       {
     	  TransportMode neptuneObjectTransportMode = neptuneObject.getTransportModeContainer();
     	  if (!parameters.getDefaultFormat().equalsIgnoreCase("Gtfs")) {
-    		  log.warn("Transport neptune mode : " + neptuneObjectTransportMode.getMode() + ":" + neptuneObjectTransportMode.getSubMode());
-    		  if (tmc != null) {
-    			  if (!(tmc instanceof GtfsTransportModeConverter))
-    				  log.warn("Default transport mode converter is gtfs not neptune !!!");
-    			  else
-    				  log.warn("Default transport mode converter is neptune !!!");
-    		  }
+ 
     		  TransportMode ptM = tmc.specificToGenericMode(neptuneObjectTransportMode);
     		  if (ptM != null) {
-    			  log.warn("Transport pivot mode : " + ptM.getMode() + ":" + ptM.getSubMode());
     			  Integer code = gtmc.fromPivotTransportModeToCode(ptM);
 	    		  if (code != null)
 	    			  route.setRouteType(RouteTypeEnum.fromValue(code.intValue()));

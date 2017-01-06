@@ -163,7 +163,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			String codeSpace = newValue.getArrivalStopPoint().getChouetteId().getCodeSpace();
 			String objectId = newValue.getArrivalStopPoint().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getArrivalStopPoint().getChouetteId();
-			StopPoint stopPoint = cache.getStopPoints().get(objectId);
+			StopPoint stopPoint = cache.getStopPoints().get(chouetteId);
 			if (stopPoint == null) {
 				stopPoint = stopPointDAO.findByChouetteId(codeSpace, objectId);
 				if (stopPoint != null) {
@@ -183,7 +183,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			String codeSpace = newValue.getDepartureStopPoint().getChouetteId().getCodeSpace();
 			String objectId = newValue.getDepartureStopPoint().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getDepartureStopPoint().getChouetteId();
-			StopPoint stopPoint = cache.getStopPoints().get(objectId);
+			StopPoint stopPoint = cache.getStopPoints().get(chouetteId);
 			if (stopPoint == null) {
 				stopPoint = stopPointDAO.findByChouetteId(codeSpace, objectId);
 				if (stopPoint != null) {

@@ -314,15 +314,10 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		Line line = lineDao.findByChouetteId("NINOXE", "15574334");
 		if (line == null)
 		{
-			List<Line> lines = lineDao.findAll();
-			for (Line line2 : lines) {
-				log.warn("Line " + line2.getCodeSpace() + ":" + line2.getTechnicalId());
-			}
 			Assert.assertNotNull(line,"line not saved");
 		}
 		else
 		{
-		log.warn("Line " + line.getCodeSpace() + ":" + line.getTechnicalId());
 		NeptuneTestsUtils.checkMinimalLine(context, line);
 		}
 		

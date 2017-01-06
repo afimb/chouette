@@ -10,6 +10,7 @@ import mobi.chouette.common.ChouetteId;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JSONUtil;
+import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
@@ -71,7 +72,7 @@ public class ValidationCompanies extends AbstractTestValidation {
 
 	}
 
-	protected Context initValidatorContext() {
+	protected Context initValidatorContext() throws ClassNotFoundException, IOException {
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
 
 		Context context = new Context();
@@ -84,6 +85,9 @@ public class ValidationCompanies extends AbstractTestValidation {
 		configuration.setUserName("userName");
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
+		configuration.setDefaultFormat("neptune");
+		configuration.setDefaultCodespace("DEFAULT_CODESPACE");
+		context.put(CHOUETTEID_GENERATOR, ChouetteIdGeneratorFactory.create(configuration.getDefaultFormat()));
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
 		test.setPathName("target/referential/test");

@@ -46,7 +46,7 @@ public class JourneyFrequencyUpdater implements Updater<JourneyFrequency> {
 			String codeSpace = newValue.getTimeband().getChouetteId().getCodeSpace();
 			String objectId = newValue.getTimeband().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getTimeband().getChouetteId();
-			Timeband timeband = cache.getTimebands().get(objectId);
+			Timeband timeband = cache.getTimebands().get(chouetteId);
 			if (timeband == null) {
 				timeband = timebandDAO.findByChouetteId(codeSpace, objectId);
 				if (timeband != null) {

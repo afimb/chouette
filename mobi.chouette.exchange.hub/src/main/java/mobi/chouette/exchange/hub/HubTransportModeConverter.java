@@ -22,7 +22,7 @@ import mobi.chouette.exchange.TransportModeConverterFactory;
 @Log4j
 public class HubTransportModeConverter extends AbstractTransportModeConverter{
 	
-	private static final String transportModeUrlSrc = "https://raw.githubusercontent.com/afimb/chouette-projects-i18n/master/data/transport_mode/hub.json";
+	private static final String transportModeUrlSrc = "hub.json";
 	
 	@Getter
 	protected static Map<TransportMode, TransportMode> mapTransportToPivotMode;
@@ -41,7 +41,7 @@ public class HubTransportModeConverter extends AbstractTransportModeConverter{
 	public static synchronized HubTransportModeConverter getInstance(){
 		
 		if(INSTANCE == null){
-			getTransportModeListFromJSONFile(transportModeUrlSrc);
+			getTransportModeListFromJSONFile(getTransportModeUrl(transportModeUrlSrc));
 			INSTANCE = new HubTransportModeConverter();
 		}
 		
@@ -64,7 +64,6 @@ public class HubTransportModeConverter extends AbstractTransportModeConverter{
 				JSONArray arrayModesTransport;
 				try {
 					arrayModesTransport = new JSONArray(text);
-					log.warn(arrayModesTransport.toString());
 					for (int i = 0; i < arrayModesTransport.length(); i++) {
 						JSONObject transportMode = arrayModesTransport.getJSONObject(i);
 						String mode = transportMode.optString(MODE, null);

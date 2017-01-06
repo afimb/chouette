@@ -43,7 +43,6 @@ public class ExtendedGtfsTransportModeConverter extends AbstractTransportModeCon
 	public static synchronized ExtendedGtfsTransportModeConverter getInstance(){
 		
 		if(INSTANCE == null){
-			log.warn("Appel de la premiere instanciation du convertisseur GTFS");
 			getTransportModeListFromJSONFile(transportModeUrlSrc);
 			INSTANCE = new ExtendedGtfsTransportModeConverter();
 		}
@@ -67,13 +66,9 @@ public class ExtendedGtfsTransportModeConverter extends AbstractTransportModeCon
 			
 			bytes = IOUtils.toByteArray(is);
 			text = new String(bytes, "UTF-8");
-			log.warn("Parsing fichier");
-			if (text != null && text.trim().startsWith("[") && text.trim().endsWith("]")) {
-				log.warn("Fichier GTFS JSON Mode transport conforme");
-				
+			if (text != null && text.trim().startsWith("[") && text.trim().endsWith("]")) {	
 				try {
 					arrayModesTransport = new JSONArray(text);
-					log.warn(arrayModesTransport.toString());
 					for (int i = 0; i < arrayModesTransport.length(); i++) {
 						JSONObject transportMode = arrayModesTransport.getJSONObject(i);
 						String code = transportMode.optString(CODE, null);
@@ -100,10 +95,6 @@ public class ExtendedGtfsTransportModeConverter extends AbstractTransportModeCon
 		} catch (IOException e) {
 			log.warn("Cannot read json file from server");
 		}
-		
-		log.warn("GTFS mapTransportToPivotMode size : " + mapTransportToPivotMode.size());
-		log.warn("GTFS mapPivotToTransportMode size : " + mapPivotToTransportMode.size());
-		log.warn("mapCodeToTransportMode size : " + mapCodeToTransportMode.size());
 	}
 	
 	@Override
@@ -113,7 +104,6 @@ public class ExtendedGtfsTransportModeConverter extends AbstractTransportModeCon
 		for (Map.Entry<TransportMode, TransportMode> entry : mapPivotToTransportMode.entrySet())
 		{
 		    TransportMode entryT = entry.getKey();
-		    log.warn(entryT.getMode() + ":" + entryT.getSubMode());
 		}
 				
 		// Search pivot mode matching with gtfs transport mode
@@ -136,7 +126,6 @@ public class ExtendedGtfsTransportModeConverter extends AbstractTransportModeCon
 	
 	@Override
 	public TransportMode specificToGenericMode(TransportMode specificMode) {
-		log.warn("Appel GTFs specific to generic mode");
 		return null;
 	}
 
@@ -148,9 +137,7 @@ public class ExtendedGtfsTransportModeConverter extends AbstractTransportModeCon
 	}
 	
 	public Integer fromPivotTransportModeToCode(TransportMode transportPivotMode) {
-		log.warn("GtfsTransportModeConverter pivot mode : " + transportPivotMode.getMode() + ":" + transportPivotMode.getSubMode());
 		TransportMode tM = genericToSpecificMode(transportPivotMode);
-		log.warn("Transport specific mode : " + tM.getMode() + ":" + tM.getSubMode());
 		Integer code = null;
 		
 		if (tM != null) {

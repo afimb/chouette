@@ -205,7 +205,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param obj2
 	 * @return
 	 */
-	protected static double quickDistance(NeptuneLocalizedObject obj1, NeptuneLocalizedObject obj2) {
+	public static double quickDistance(NeptuneLocalizedObject obj1, NeptuneLocalizedObject obj2) {
 
 		double dlon = (obj2.getLongitude().doubleValue() - obj1.getLongitude().doubleValue()) * A;
 		dlon *= Math.cos((obj2.getLatitude().doubleValue() + obj1.getLatitude().doubleValue())* toRad/2.);
@@ -359,7 +359,6 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 
 			if (time > 0) {
 				int speed = (int) (distance / (double) time * 36 / 10 + 0.5); // (km/h)
-				maxDefaultSpeed = speed - 1;
 				if (speed > maxDefaultSpeed) {
 					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 
@@ -375,11 +374,20 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		}
 	}
 
-	protected long getTimeInSeconds(Time time) {
+	protected static long getTimeInSeconds(Time time) {
 		TimeZone tz = TimeZone.getDefault();
 		long millis = 0;
 		millis = time.getTime() + tz.getRawOffset();
 		return millis / 1000;
+	}
+	
+	public static int getSpeedFromTimeAndDistance(double distance, Time timeObject) {
+		int speed = 0;
+		long time = getTimeInSeconds(timeObject);
+		if (time > 0)
+			speed = (int) (distance / (double) time * 36 / 10 + 0.5);
+		
+		return speed;
 	}
 
 	protected void check4Generic1(Context context, T object, String testName, ValidationParameters parameters,
@@ -679,7 +687,6 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		try {
 			Route wayBack = route.getOppositeRoute();
 			if (wayBack != null) {
-				System.out.println("Wayback is not null !!!");
 				String o = wayBack.getTechnicalId();
 				return true;
 			}

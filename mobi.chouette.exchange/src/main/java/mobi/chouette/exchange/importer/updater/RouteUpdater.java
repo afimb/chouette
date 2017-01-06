@@ -111,7 +111,7 @@ public class RouteUpdater implements Updater<Route> {
 			String codeSpace = newValue.getOppositeRoute().getChouetteId().getCodeSpace();
 			String technicalId = newValue.getOppositeRoute().getChouetteId().getTechnicalId();
 			ChouetteId chouetteId = newValue.getOppositeRoute().getChouetteId();
-			Route opposite = cache.getRoutes().get(technicalId);
+			Route opposite = cache.getRoutes().get(chouetteId);
 			if (opposite == null) {
 				opposite = routeDAO.findByChouetteId(codeSpace, technicalId);
 				if (opposite != null) {
