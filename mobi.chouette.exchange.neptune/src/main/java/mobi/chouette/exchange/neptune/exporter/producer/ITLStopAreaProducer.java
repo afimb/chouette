@@ -11,8 +11,9 @@ import org.trident.schema.trident.StopAreaExtensionType;
 public class ITLStopAreaProducer extends AbstractJaxbNeptuneProducer<ChouetteArea.StopArea, RoutingConstraint> implements
 JsonExtension {
 	/**
-	 * @param routingConstraint
-	 * @return
+	 * @param context job context
+	 * @param routingConstraint exported routing  constraint
+	 * @return StopArea Neptune Object (ITL type)
 	 */
 	public ChouetteArea.StopArea produce(Context context, RoutingConstraint routingConstraint)
 	{

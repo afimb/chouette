@@ -9,7 +9,6 @@ import java.util.Set;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.ChouetteIdGenerator;
-import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;

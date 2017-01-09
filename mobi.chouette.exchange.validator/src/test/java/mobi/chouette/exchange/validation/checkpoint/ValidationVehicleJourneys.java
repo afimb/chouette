@@ -18,7 +18,6 @@ import mobi.chouette.common.Context;
 import mobi.chouette.dao.JourneyPatternDAO;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.ChouetteIdGenerator;
-import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
@@ -34,7 +33,6 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
-import mobi.chouette.model.type.TransportModeNameEnum;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;

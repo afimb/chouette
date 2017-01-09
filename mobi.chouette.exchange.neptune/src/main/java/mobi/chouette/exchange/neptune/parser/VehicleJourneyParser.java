@@ -296,7 +296,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 	 * Check if lastTime belongs to the next day
 	 * @param firstTime
 	 * @param lastTime
-	 * @return
+	 * @return true if lastTime before firstTime
 	 */
 	private boolean checkIfDiffAfterMidnight(Time firstTime, Time lastTime) {
 		long diffTime = lastTime.getTime() - firstTime.getTime();

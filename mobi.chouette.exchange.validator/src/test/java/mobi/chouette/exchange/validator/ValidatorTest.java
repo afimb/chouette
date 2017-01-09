@@ -26,7 +26,6 @@ import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.BasicConfigurator;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.testng.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -70,7 +69,6 @@ public class ValidatorTest extends Arquillian implements Constant,ReportConstant
 			
 			
 		}
-		BasicConfigurator.configure();
 	}
 	protected Context initImportContext() throws ClassNotFoundException, IOException {
 		init();

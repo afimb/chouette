@@ -46,12 +46,7 @@ public class PTNetworkParser implements Parser, Constant {
 
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
-				log.info("NEPTUNE object id -> " + objectId);
 				ChouetteId chouetteId = neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),Network.class);
-				if (chouetteId != null) {
-					log.info(" Chouette object codespace : " + chouetteId.getCodeSpace());
-					log.info(" Chouette object technicalId : " + chouetteId.getTechnicalId());
-				}
 				network = NeptuneChouetteIdObjectUtil.getPTNetwork(referential, chouetteId);
 				network.setFilled(true);
 			} else if (xpp.getName().equals("objectVersion")) {

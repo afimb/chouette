@@ -12,9 +12,10 @@ import org.trident.schema.trident.ITLType;
 public class ITLProducer implements Constant
 {
    /**
-    * @param line
-    * @param routingConstraint
-    * @return
+    * @param context job context
+    * @param line exported line
+    * @param routingConstraint exported routing Constraint
+    * @return ITL Neptune object
     */
    public ITLType produce(Context context, Line line, RoutingConstraint routingConstraint)
    {

@@ -7,6 +7,7 @@ import java.util.List;
 import javax.ejb.EJB;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
@@ -113,7 +114,7 @@ public class ValidationNominal extends AbstractTestValidation {
 	public void verifyTestOk() throws Exception {
 		// 3-all-1 : no warning nor error
 		init();
-
+		log.info(Color.BLUE +"3-All-OK"+ Color.NORMAL);
 		ValidationParameters parameters = null;
 		try {
 			parameters = loadFullParameters();
@@ -185,6 +186,7 @@ public class ValidationNominal extends AbstractTestValidation {
 		// 3-all-1 : no warning nor error
 		// some tests are skiped
 		init();
+		log.info(Color.BLUE +"3-All-without-save-OK"+ Color.NORMAL);
 
 		ValidationParameters parameters = null;
 		try {

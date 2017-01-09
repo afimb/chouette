@@ -55,7 +55,6 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.BasicConfigurator;
 import org.jboss.arquillian.testng.Arquillian;
 import org.testng.Assert;
 
@@ -78,10 +77,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 			} catch (NamingException e) {
 				e.printStackTrace();
 			}
-
-
 		}
-		BasicConfigurator.configure();
 	}
 
 	protected Context initImportContext() throws ClassNotFoundException, IOException {

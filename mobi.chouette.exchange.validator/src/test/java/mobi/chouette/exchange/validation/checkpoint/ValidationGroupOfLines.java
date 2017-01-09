@@ -21,6 +21,7 @@ import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.BasicConfigurator;
 import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.BeforeGroups;
@@ -37,7 +38,7 @@ public class ValidationGroupOfLines extends AbstractTestValidation {
 
 	@BeforeGroups(groups = { "groupOfLine" })
 	public void init() {
-		// BasicConfigurator.configure();
+		BasicConfigurator.configure();
 		super.init();
 		long id = 1;
 

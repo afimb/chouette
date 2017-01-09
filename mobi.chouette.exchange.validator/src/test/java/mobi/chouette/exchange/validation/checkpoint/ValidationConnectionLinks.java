@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.validation.checkpoint;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -181,7 +180,7 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		StopArea start = beans.get(0).getStartOfLink();
 		StopArea end = beans.get(0).getEndOfLink();
 		double distance = AbstractValidation.quickDistance(start, end);
-		fullparameters.setInterConnectionLinkDistanceMax((int)distance - 100);
+		fullparameters.setInterConnectionLinkDistanceMax((int)distance / 2);
 		ValidationData data = new ValidationData();
 		data.getConnectionLinks().addAll(beans);
 		

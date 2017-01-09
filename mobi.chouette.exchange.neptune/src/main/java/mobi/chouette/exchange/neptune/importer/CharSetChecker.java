@@ -14,6 +14,14 @@ public class CharSetChecker {
 	
 	   private static final int BOM_SIZE = 4;
 
+	/**
+	 * build a encoded inputStream reader adapted on detected encoding mode
+	 * 
+	 * @param fileName  file to read (for log)
+	 * @param in original input stream 
+	 * @return encoded input stream
+	 * @throws IOException reading file fails
+	 */
 	public static InputStreamReader getEncodedInputStreamReader(String fileName, InputStream in) throws IOException
 	{
 	      byte bom[] = new byte[BOM_SIZE];
@@ -87,7 +95,7 @@ public class CharSetChecker {
 	    *           name for log purpose
 	    * @param contentXml
 	    *           xml data to check
-	    * @return
+	    * @return detected charset
 	    */
 	   private static String getCharset(String filename, String contentXml)
 	   {

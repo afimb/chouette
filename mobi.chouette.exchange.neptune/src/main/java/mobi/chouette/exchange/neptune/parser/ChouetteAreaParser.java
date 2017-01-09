@@ -86,6 +86,7 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 		List<String> contains = new ArrayList<String>();
 
 		String objectId = null;
+		String areaCentroidId = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
@@ -117,6 +118,7 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 											RoutingConstraint.class));
 							routingConstraint.setName(stopArea.getName());
 							routingConstraint.setComment(stopArea.getComment());
+							routingConstraint.setFilled(true);
 							referential.getStopAreas().remove(
 									neptuneChouetteIdGenerator.toChouetteId(objectId, parameters.getDefaultCodespace(),
 											StopArea.class));
@@ -143,7 +145,7 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 									child.setParent(stopArea);
 								}
 							} else {
-								
+
 								for (String childId : contains) {
 									StopPoint stopPoint = NeptuneChouetteIdObjectUtil.getStopPoint(
 											referential,
@@ -195,12 +197,9 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 			} else if (xpp.getName().equals("contains")) {
 				String containsId = ParserUtils.getText(xpp.nextText());
 				contains.add(containsId);
-				validator.addContains(context, objectId, containsId);
 
 			} else if (xpp.getName().equals("centroidOfArea")) {
-				String value = ParserUtils.getText(xpp.nextText());
-				validator.addAreaCentroidId(context, objectId, value);
-				map.put(objectId, value);
+				areaCentroidId = ParserUtils.getText(xpp.nextText());
 
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
@@ -210,8 +209,16 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 		// RoutingConstraintValidator
 		if (routingConstraint != null)
 			rcValidator.addStopAreaLocation(context, routingConstraint, lineNumber, columnNumber);
-		else
+		else {
 			validator.addLocation(context, stopArea, lineNumber, columnNumber);
+			for (String containsId : contains) {
+				validator.addContains(context, objectId, containsId);
+			}
+			if (areaCentroidId != null) {
+				validator.addAreaCentroidId(context, objectId, areaCentroidId);
+				map.put(objectId, areaCentroidId);
+			}
+		}
 	}
 
 	private void parseAreaCentroid(Context context, BiMap<String, String> map) throws Exception {

@@ -53,7 +53,7 @@ public class AreaCentroid extends NeptuneLocalizedObject
    /**
     * containedInId
     * 
-    * @param containedInId
+    * @param containedIn
     *           New value
     * @return The actual value
     */

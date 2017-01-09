@@ -19,7 +19,6 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.ChouetteIdGenerator;
-import mobi.chouette.exchange.ChouetteIdGeneratorFactory;
 import mobi.chouette.exchange.CommandCancelledException;
 import mobi.chouette.exchange.DaoReader;
 import mobi.chouette.exchange.ProcessingCommands;

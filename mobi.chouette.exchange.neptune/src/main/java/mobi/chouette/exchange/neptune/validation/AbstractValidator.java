@@ -77,20 +77,6 @@ public abstract class AbstractValidator implements Constant {
 
 	protected static void addItemToValidation(Context context, String prefix, String name, int count,
 			String... severities) {
-//		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-//		for (int i = 1; i <= count; i++) {
-//			String key = prefix + name + "-" + i;
-//			if (validationReport.findCheckPointByName(key) == null) {
-//				if (severities[i - 1].equals("W")) {
-//					validationReport.addCheckPoint(
-//							new CheckPoint(key, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-//				} else {
-//					validationReport.addCheckPoint(
-//							new CheckPoint(key, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-//				}
-//			}
-//		}
-//			
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		validationReporter.addItemToValidationReport(context, prefix, name, count, severities);
 		return;
@@ -102,14 +88,6 @@ public abstract class AbstractValidator implements Constant {
 	 * @param checkPointKey
 	 */
 	protected void prepareCheckPoint(Context context, String checkPointKey) {
-//		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-//		CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointKey);
-//		if (checkPoint == null) {
-//			initializeCheckPoints(context);
-//			checkPoint = validationReport.findCheckPointByName(checkPointKey);
-//		}
-//		if (checkPoint.getDetails().isEmpty())
-//			checkPoint.setState(CheckPoint.RESULT.OK);
 		
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		
@@ -133,11 +111,11 @@ public abstract class AbstractValidator implements Constant {
 	 * add location for local validation (level 1 and 2) and for general
 	 * validation (level 3 and more)
 	 * 
-	 * @param context
-	 * @param localContext
-	 * @param objectId
-	 * @param lineNumber
-	 * @param columnNumber
+	 * @param context job context
+	 * @param localContext validation context
+	 * @param object imported object
+	 * @param lineNumber line position in file
+	 * @param columnNumber column position in file
 	 */
 	protected void addLocation(Context context, String localContext, NeptuneIdentifiedObject object, int lineNumber,
 			int columnNumber) {
@@ -205,7 +183,7 @@ public abstract class AbstractValidator implements Constant {
 	 * check if a list is null or empty
 	 * 
 	 * @param list
-	 * @return
+	 * @return true if list is null or empty
 	 */
 	protected boolean isListEmpty(List<?> list) {
 		return list == null || list.isEmpty();
@@ -213,6 +191,12 @@ public abstract class AbstractValidator implements Constant {
 
 	protected abstract void initializeCheckPoints(Context context);
 
+	/**
+	 * check if a string is null or empty
+	 * 
+	 * @param text
+	 * @return true if string is null or empty
+	 */
 	protected boolean isEmpty(String text) {
 		return text == null || text.isEmpty();
 	}
