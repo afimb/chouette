@@ -47,8 +47,8 @@ public class ValidationNetworks extends AbstractTestValidation implements Consta
 
 	@BeforeGroups(groups = { "network" })
 	public void init() {
+		BasicConfigurator.resetConfiguration();
 		BasicConfigurator.configure();
-
 		super.init();
 		long id = 1;
 

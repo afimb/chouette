@@ -55,6 +55,7 @@ public abstract class AbstractTests implements Constant, ReportConstant {
 			} catch (NamingException e) {
 				e.printStackTrace();
 			}
+			BasicConfigurator.resetConfiguration();
 			BasicConfigurator.configure();
 		}
 	}

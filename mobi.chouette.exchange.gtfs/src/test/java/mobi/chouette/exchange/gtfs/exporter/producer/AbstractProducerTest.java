@@ -31,9 +31,9 @@ public abstract class AbstractProducerTest implements Constant{
 			} catch (NamingException e) {
 				e.printStackTrace();
 			}
-
+			BasicConfigurator.resetConfiguration();
+			BasicConfigurator.configure();
 		}
-		BasicConfigurator.configure();
 	}
 	protected Context initExportContext() throws ClassNotFoundException, IOException {
 		init();

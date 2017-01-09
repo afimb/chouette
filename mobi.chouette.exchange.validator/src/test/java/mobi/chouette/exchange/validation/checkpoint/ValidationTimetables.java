@@ -47,6 +47,7 @@ public class ValidationTimetables extends AbstractTestValidation {
 
 	@BeforeGroups(groups = { "timetable" })
 	public void init() {
+		BasicConfigurator.resetConfiguration();
 		BasicConfigurator.configure();
 		super.init();
 		long id = 1;

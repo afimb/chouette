@@ -38,6 +38,7 @@ public class ValidationGroupOfLines extends AbstractTestValidation {
 
 	@BeforeGroups(groups = { "groupOfLine" })
 	public void init() {
+		BasicConfigurator.resetConfiguration();
 		BasicConfigurator.configure();
 		super.init();
 		long id = 1;

@@ -45,6 +45,7 @@ public class ValidationCompanies extends AbstractTestValidation {
 
 	@BeforeGroups(groups = { "company" })
 	public void init() {
+		BasicConfigurator.resetConfiguration();
 		BasicConfigurator.configure();
 		super.init();
 		long id = 1;
