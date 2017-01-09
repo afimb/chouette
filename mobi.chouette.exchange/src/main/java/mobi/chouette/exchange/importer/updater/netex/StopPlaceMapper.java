@@ -66,7 +66,13 @@ public class StopPlaceMapper {
 	private StopArea createStopArea(Referential referential, StopPlace stopPlace) {
 		StopArea stopArea = ObjectFactory.getStopArea(referential, stopPlace.getId());
 		stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
-
+		
+		// Set default values TODO set what we get from NSR
+		stopArea.setMobilityRestrictedSuitable(null);
+		stopArea.setLiftAvailable(null);
+		stopArea.setStairsAvailable(null);
+		
+		
 		mapCentroid(stopPlace, stopArea);
 		mapName(stopPlace, stopArea);
 
@@ -77,6 +83,11 @@ public class StopPlaceMapper {
 	private StopArea createBoardingPosition(Referential referential, StopPlace stopPlace, Quay quay) {
 
 		StopArea boardingPosition = ObjectFactory.getStopArea(referential, quay.getId());
+		// Set default values TODO set what we get from NSR
+		boardingPosition.setMobilityRestrictedSuitable(null);
+		boardingPosition.setLiftAvailable(null);
+		boardingPosition.setStairsAvailable(null);
+
 		boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
 		mapCentroid(quay, boardingPosition);
 		mapQuayName(stopPlace, quay, boardingPosition);
