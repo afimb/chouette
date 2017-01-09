@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="Validation Phase 3" verbose="1" >
+<suite name="Validation Phase 3" verbose="1" parallel="none" >
    <test name="Test_A_ok" preserve-order="true">
       <classes>
          <class name="mobi.chouette.exchange.validation.checkpoint.ValidationNominal" />
