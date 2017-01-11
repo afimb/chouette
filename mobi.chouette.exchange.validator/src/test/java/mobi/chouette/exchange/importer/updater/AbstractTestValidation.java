@@ -47,7 +47,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 
 	protected InitialContext initialContext;
 	
-	public static EnterpriseArchive prepareDeployment()
+	public static EnterpriseArchive prepareDeployment(Class testImplementation)
 	{
 		EnterpriseArchive result;
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
@@ -110,7 +110,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 				.addClass(DummyChecker.class)
 				.addClass(JobDataTest.class)
 				.addClass(AbstractTestValidation.class)
-				.addClass(ValidationJourneyPatternsUpdater.class);
+				.addClass(testImplementation);
 		
 		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
 				.addAsLibraries(jars.toArray(new File[0]))

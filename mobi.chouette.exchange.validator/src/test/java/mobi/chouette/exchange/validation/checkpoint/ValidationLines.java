@@ -54,7 +54,7 @@ public class ValidationLines extends AbstractTestValidation
 	@Deployment
 	public static EnterpriseArchive createDeployment() {
 
-		return prepareDeployment();
+		return prepareDeployment(ValidationLines.class);
 	}
 
 	@Override

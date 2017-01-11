@@ -32,7 +32,7 @@ public class ValidationNominal extends AbstractTestValidation {
 	@Deployment
 	public static EnterpriseArchive createDeployment() {
 
-		return prepareDeployment();
+		return prepareDeployment(ValidationNominal.class);
 	}
 
 	@Test(groups = { "all" }, description = "3-all-ok")

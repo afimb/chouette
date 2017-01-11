@@ -48,7 +48,7 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 	@Deployment
 	public static EnterpriseArchive createDeployment() {
 
-		return prepareDeployment();
+		return prepareDeployment(ValidationAccessPoints.class);
 	}
 
 	@BeforeGroups(groups = { "accessPoint" })

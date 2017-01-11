@@ -39,7 +39,7 @@ public class ValidationJourneyPatternsUpdater extends AbstractTestValidation {
 	@Deployment
 	public static EnterpriseArchive createDeployment() {
 
-		return prepareDeployment();
+		return prepareDeployment(ValidationJourneyPatternsUpdater.class);
 		}
 
 	@BeforeGroups(groups = { "JourneyPattern" })

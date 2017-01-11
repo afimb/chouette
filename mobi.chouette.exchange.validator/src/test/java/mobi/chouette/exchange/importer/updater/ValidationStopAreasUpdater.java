@@ -38,7 +38,7 @@ public class ValidationStopAreasUpdater extends AbstractTestValidation {
 	@Deployment
 	public static EnterpriseArchive createDeployment() {
 
-		return prepareDeployment();
+		return prepareDeployment(ValidationStopAreasUpdater.class);
 	}
 
 	@BeforeGroups(groups = { "StopArea" })

@@ -39,7 +39,7 @@ public class ValidationLinesUpdater extends AbstractTestValidation {
 	@Deployment
 	public static EnterpriseArchive createDeployment() {
 
-		return prepareDeployment();
+		return prepareDeployment(ValidationLinesUpdater.class);
 	}
 	
 	@BeforeGroups(groups = { "Line" })

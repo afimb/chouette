@@ -51,7 +51,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 	@Deployment
 	public static EnterpriseArchive createDeployment() {
 
-		return prepareDeployment();
+		return prepareDeployment(ValidationRoutes.class);
 	}
 
 	@BeforeGroups(groups = { "route" })

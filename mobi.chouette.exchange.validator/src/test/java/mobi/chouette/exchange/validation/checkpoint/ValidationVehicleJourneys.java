@@ -57,7 +57,7 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 	@Deployment
 	public static EnterpriseArchive createDeployment() {
 
-		return prepareDeployment();
+		return prepareDeployment(ValidationVehicleJourneys.class);
 	}
 
 	@BeforeGroups(groups = { "vehicleJourney" })

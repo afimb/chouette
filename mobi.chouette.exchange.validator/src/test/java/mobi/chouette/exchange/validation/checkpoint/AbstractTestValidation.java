@@ -15,7 +15,6 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.importer.updater.ValidationJourneyPatternsUpdater;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneImporterCommand;
 import mobi.chouette.exchange.report.ActionReport;
@@ -74,7 +73,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 
 	protected InitialContext initialContext;
 
-	public static EnterpriseArchive prepareDeployment()
+	public static EnterpriseArchive prepareDeployment(Class testImplementation)
 	{
 		EnterpriseArchive result;
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
@@ -137,7 +136,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 				.addClass(DummyChecker.class)
 				.addClass(JobDataTest.class)
 				.addClass(AbstractTestValidation.class)
-				.addClass(ValidationJourneyPatternsUpdater.class);
+				.addClass(testImplementation);
 		
 		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
 				.addAsLibraries(jars.toArray(new File[0]))

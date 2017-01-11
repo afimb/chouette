@@ -50,7 +50,7 @@ public class ValidationAccessLinks extends AbstractTestValidation {
 	@Deployment
 	public static EnterpriseArchive createDeployment() {
 
-		return prepareDeployment();
+		return prepareDeployment(ValidationAccessLinks.class);
 	}
 
 	@BeforeGroups(groups = { "accessLink" })
