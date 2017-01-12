@@ -1,0 +1,14 @@
+<arquillian xmlns="http://jboss.org/schema/arquillian"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://jboss.org/schema/arquillian
+        http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+    <container qualifier="wildfly-embedded" default="true">
+        <configuration>
+            <property name="jbossHome">../target/wildfly-8.2.0.Final</property>
+            <property name="modulePath">../target/wildfly-8.2.0.Final/modules</property>
+            <property name="managementPort">10290</property>
+            <property name="serverConfig">standalone.xml</property>
+       </configuration>
+    </container>
+</arquillian>
