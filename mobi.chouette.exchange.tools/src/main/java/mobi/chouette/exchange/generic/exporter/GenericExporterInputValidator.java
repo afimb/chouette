@@ -42,6 +42,9 @@ public class GenericExporterInputValidator extends AbstractInputValidator {
 	
 	@Override
 	public boolean checkParameters(AbstractParameter abstractParameter, ValidationParameters validationParameters) {
+		
+		// TODO validate that destination referential exists
+		
 		// TODO Auto-generated method stub
 		return true;
 	}
