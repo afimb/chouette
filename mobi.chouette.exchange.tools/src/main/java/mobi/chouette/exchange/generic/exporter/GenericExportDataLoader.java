@@ -50,11 +50,14 @@ public class GenericExportDataLoader implements Command {
 		
 		GenericExportParameters configuration = (GenericExportParameters) context.get(CONFIGURATION);
 
+		log.info("Loading all lines...");
 		List<Line> allLines = lineDAO.findAll();
+		log.info("Loading all lines completed, removing Hibernate proxies");
 		HibernateDeproxynator<?> deProxy = new HibernateDeproxynator<>();
 		allLines = deProxy.deepDeproxy(allLines);
+		log.info("Removing Hibernate proxies completed, filtering lines");
+		
 		List<Line> lineToTransfer = new ArrayList<>();
-
 		LineFilter lineFilter = new LineFilter();
 
 		for (Line line : allLines) {
@@ -66,6 +69,7 @@ public class GenericExportDataLoader implements Command {
 				lineToTransfer.add(line);
 			}
 		}
+		log.info("Filtering lines completed");
 
 		em.clear();
 		return lineToTransfer;

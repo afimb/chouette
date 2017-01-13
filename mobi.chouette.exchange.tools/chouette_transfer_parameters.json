@@ -4,9 +4,9 @@
       "user_name": "admin@rutebanken.org",
       "name": "Clean repo import",
       "organisation_name": "Rutebanken",
-      "referential_name": "ch_187",
+      "referential_name": "ch_189",
       "references_type": "",
-      "dest_referential_name": "ch_183"
+      "dest_referential_name": "ch_190"
     }
   }
 }

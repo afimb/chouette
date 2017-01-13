@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,24 +16,37 @@ import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.NeptuneObject;
 
+@Log4j
 public class HibernateDeproxynator<T> {
 	public List deepDeproxy(final List maybeProxy) throws ClassCastException {
 		if (maybeProxy == null)
 			return null;
 		HashSet<Object> visited = new HashSet<>();
+		HashSet<Object> moreObjectsToFollow = new HashSet<>();
 
 		List<T> results = new ArrayList<T>();
 		for (Object x : maybeProxy) {
-			T ret = deepDeproxy(x, visited);
+//			log.info("Deproxying "+x.getClass().getSimpleName()+"/"+x.hashCode());
+			T ret = deepDeproxy(x, visited, moreObjectsToFollow);
+//			log.info("Deproxying finished "+x.getClass().getSimpleName()+"/"+x.hashCode());
 			results.add(ret);
 		}
+		
+		// Attempt to reduce stack depth. Note using iterator to allow recursive method to add more elements
+		for(Iterator<Object> o  = moreObjectsToFollow.iterator();o.hasNext();) {
+			deepDeproxy(o.next(), visited, moreObjectsToFollow);
+		}
+		
+		// Ease garbage collection
+		visited.clear();
 
 		return results;
 	}
 
-	private T deepDeproxy(final Object maybeProxy, final HashSet<Object> visited) throws ClassCastException {
+	private T deepDeproxy(final Object maybeProxy, final HashSet<Object> visited, HashSet<Object> moreObjectsToFollow) throws ClassCastException {
 		if (maybeProxy == null)
 			return null;
 		Class clazz;
@@ -55,6 +69,7 @@ public class HibernateDeproxynator<T> {
 			((NeptuneObject) ret).setId(null);
 		}
 
+		
 		for (PropertyDescriptor property : PropertyUtils.getPropertyDescriptors(ret)) {
 			try {
 				String name = property.getName();
@@ -63,7 +78,7 @@ public class HibernateDeproxynator<T> {
 
 					boolean needToSetProperty = false;
 					if (value instanceof HibernateProxy) {
-						value = deepDeproxy(value, visited);
+						value = deepDeproxy(value, visited, moreObjectsToFollow);
 						needToSetProperty = true;
 					}
 
@@ -71,7 +86,7 @@ public class HibernateDeproxynator<T> {
 						Object[] valueArray = (Object[]) value;
 						Object[] result = (Object[]) Array.newInstance(value.getClass(), valueArray.length);
 						for (int i = 0; i < valueArray.length; i++) {
-							result[i] = deepDeproxy(valueArray[i], visited);
+							result[i] = deepDeproxy(valueArray[i], visited, moreObjectsToFollow);
 						}
 						value = result;
 						needToSetProperty = true;
@@ -80,7 +95,7 @@ public class HibernateDeproxynator<T> {
 						Set valueSet = (Set) value;
 						Set result = new HashSet();
 						for (Object o : valueSet) {
-							result.add(deepDeproxy(o, visited));
+							result.add(deepDeproxy(o, visited, moreObjectsToFollow));
 						}
 						value = result;
 						needToSetProperty = true;
@@ -89,7 +104,7 @@ public class HibernateDeproxynator<T> {
 						Map valueMap = (Map) value;
 						Map result = new HashMap();
 						for (Object o : valueMap.keySet()) {
-							result.put(deepDeproxy(o, visited), deepDeproxy(valueMap.get(o), visited));
+							result.put(deepDeproxy(o, visited, moreObjectsToFollow), deepDeproxy(valueMap.get(o), visited, moreObjectsToFollow));
 						}
 						value = result;
 						needToSetProperty = true;
@@ -102,7 +117,7 @@ public class HibernateDeproxynator<T> {
 						Object[] array = valueList.toArray();
 
 						for (Object o : array) {
-							result.add(deepDeproxy(o, visited));
+							result.add(deepDeproxy(o, visited, moreObjectsToFollow));
 						}
 						value = result;
 						needToSetProperty = true;
@@ -113,7 +128,8 @@ public class HibernateDeproxynator<T> {
 					if (value instanceof NeptuneObject) {
 						// Follow any Neptune data relations to discover more
 						// proxies
-						deepDeproxy(value, visited);
+						//log.info("Delaying following of object "+value.getClass().getSimpleName());
+						moreObjectsToFollow.add(value);
 					}
 				}
 			} catch (java.lang.IllegalAccessException e) {

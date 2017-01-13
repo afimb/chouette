@@ -43,7 +43,7 @@ public class GenericExporterCommand extends AbstractExporterCommand implements C
 		// initialize reporting and progression
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
 				ProgressionCommand.class.getName());
-		progression.initialize(context, 1);
+		progression.initialize(context, 2);
 
 		String currentTentant = ContextHolder.getContext();
 
@@ -73,12 +73,14 @@ public class GenericExporterCommand extends AbstractExporterCommand implements C
 			Command dataLoader =  CommandFactory.create(initialContext,
 					GenericExportDataLoader.class.getName());
 			dataLoader.execute(context);
+			progression.execute(context);
 			
 			ContextHolder.setContext(parameters.getDestReferentialName());
 
 			Command dataWriter =  CommandFactory.create(initialContext,
 					GenericExportDataWriter.class.getName());
 			dataWriter.execute(context);
+			progression.execute(context);
 			
 
 			result = SUCCESS;

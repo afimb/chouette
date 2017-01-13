@@ -39,16 +39,22 @@ public class GenericExportDataWriter implements Command {
 		}
 
 		List<Line> lineToTransfer = (List<Line>) context.get("LINES");
-		
+
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 		Command cleanCommand = CommandFactory.create(initialContext, CleanRepositoryCommand.class.getName());
+		log.info("Cleaning target dataspace");
 		boolean cleanCommandResult = cleanCommand.execute(context);
 
 		// Persist
+		log.info("Starting to persist lines, count=" + lineToTransfer.size());
+
 		for (Line line : lineToTransfer) {
+			//log.info("Persisting line " + line.getObjectId() + " / " + line.getName());
 			lineDAO.create(line);
 		}
+		log.info("Flushing to database");
 		lineDAO.flush();
+		log.info("Flush completed");
 
 		return true;
 	}
