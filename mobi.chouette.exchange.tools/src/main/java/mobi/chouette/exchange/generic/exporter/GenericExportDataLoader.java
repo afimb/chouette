@@ -77,12 +77,12 @@ public class GenericExportDataLoader implements Command {
 			
 			// Clean according to date rules
 			// Clean obsolete data
-			//boolean shouldKeep = lineFilter.filter(line, configuration.getStartDate(), configuration.getEndDate());
+			boolean shouldKeep = lineFilter.filter(line, configuration.getStartDate(), configuration.getEndDate());
 
-			if (true) {
+			if (shouldKeep) {
 				lineToTransfer.add(line);
-			} else {
-				log.warn("Skipping line "+line.getObjectId());
+//			} else {
+//				log.warn("Skipping line "+line.getObjectId());
 			}
 		}
 		// transaction.commit();

@@ -29,19 +29,18 @@ public class HibernateDeproxynator<T> {
 	public List deepDeproxy(final List maybeProxy) throws ClassCastException {
 		if (maybeProxy == null)
 			return null;
-		HashSet<Object> visitedCollections = new HashSet<Object>();
 		HashSet<Object> visited = new HashSet<>();
 
 		List<T> results = new ArrayList<T>();
 		for (Object x : maybeProxy) {
-			T ret = deepDeproxy(x, visited, visitedCollections);
+			T ret = deepDeproxy(x, visited);
 			results.add(ret);
 		}
 
 		return results;
 	}
 
-	private T deepDeproxy(final Object maybeProxy, final HashSet<Object> visited, HashSet<Object> hashSet)
+	private T deepDeproxy(final Object maybeProxy, final HashSet<Object> visited)
 			throws ClassCastException {
 		if (maybeProxy == null)
 			return null;
@@ -55,14 +54,14 @@ public class HibernateDeproxynator<T> {
 			clazz = maybeProxy.getClass();
 		}
 
-		log.info("Deproxying " + maybeProxy.getClass().getSimpleName() + " with id "
-				+ (maybeProxy instanceof NeptuneIdentifiedObject ? ((NeptuneIdentifiedObject) maybeProxy).getObjectId()
-						: "<>"));
-
+//		log.info("Deproxying " + maybeProxy.getClass().getSimpleName() + " with id "
+//				+ (maybeProxy instanceof NeptuneIdentifiedObject ? ((NeptuneIdentifiedObject) maybeProxy).getObjectId()
+//						: "<>"));
+//
 		T ret = (T) deepDeproxy(maybeProxy, clazz);
 		if (visited.contains(ret)) {
-			log.info("Already finished with object " + ret.getClass().getSimpleName() + " with id "
-					+ (ret instanceof NeptuneIdentifiedObject ? ((NeptuneIdentifiedObject) ret).getObjectId() : "<>"));
+//			log.info("Already finished with object " + ret.getClass().getSimpleName() + " with id "
+//					+ (ret instanceof NeptuneIdentifiedObject ? ((NeptuneIdentifiedObject) ret).getObjectId() : "<>"));
 			return ret;
 
 		}
@@ -92,9 +91,9 @@ public class HibernateDeproxynator<T> {
 				if (!"owner".equals(name) && property.getWriteMethod() != null) {
 					Object value = PropertyUtils.getProperty(ret, name);
 
-					if(ret instanceof StopPoint && name.equals("containedInStopArea")) {
-						log.info("StopPoint.containedInStopArea");
-					}
+//					if(ret instanceof StopPoint && name.equals("containedInStopArea")) {
+//						log.info("StopPoint.containedInStopArea");
+//					}
 
 //					if(hashSet.contains(value)) {
 //						log.info("Seen proxy "+value+" before, skipping");
@@ -108,7 +107,7 @@ public class HibernateDeproxynator<T> {
 					Object originalValue = value;
 					boolean needToSetProperty = false;
 					if (value instanceof HibernateProxy) {
-						value = deepDeproxy(value, visited, hashSet);
+						value = deepDeproxy(value, visited);
 						needToSetProperty = true;
 					}
 					
@@ -121,7 +120,7 @@ public class HibernateDeproxynator<T> {
 //							hashSet.add(originalValue);
 //
 							for (int i = 0; i < valueArray.length; i++) {
-								result[i] = deepDeproxy(valueArray[i], visited, hashSet);
+								result[i] = deepDeproxy(valueArray[i], visited);
 							}
 //							hashSet.remove(originalValue);
 							value = result;
@@ -133,7 +132,7 @@ public class HibernateDeproxynator<T> {
 //						if (!hashSet.contains(originalValue)) {
 //							hashSet.add(originalValue);
 							for (Object o : valueSet) {
-								result.add(deepDeproxy(o, visited, hashSet));
+								result.add(deepDeproxy(o, visited));
 							}
 //							hashSet.remove(originalValue);
 							value = result;
@@ -145,8 +144,8 @@ public class HibernateDeproxynator<T> {
 //						if (!hashSet.contains(originalValue)) {
 //							hashSet.add(originalValue);
 							for (Object o : valueMap.keySet()) {
-								result.put(deepDeproxy(o, visited, hashSet),
-										deepDeproxy(valueMap.get(o), visited, hashSet));
+								result.put(deepDeproxy(o, visited),
+										deepDeproxy(valueMap.get(o), visited));
 							}
 //							hashSet.remove(originalValue);
 							value = result;
@@ -158,9 +157,9 @@ public class HibernateDeproxynator<T> {
 
 						
 						
-						log.info("About to iterate over " + ret.getClass().getSimpleName() + "." + name + " / "
-						+ valueList.hashCode() + " with id " + (ret instanceof NeptuneIdentifiedObject
-								? ((NeptuneIdentifiedObject) ret).getObjectId() : "<>"));
+//						log.info("About to iterate over " + ret.getClass().getSimpleName() + "." + name + " / "
+//						+ valueList.hashCode() + " with id " + (ret instanceof NeptuneIdentifiedObject
+//								? ((NeptuneIdentifiedObject) ret).getObjectId() : "<>"));
 //						if (!hashSet.contains(originalValue)) {
 						//	hashSet.add(originalValue);
 
@@ -168,17 +167,17 @@ public class HibernateDeproxynator<T> {
 //									+ valueList.hashCode() + " with id " + (ret instanceof NeptuneIdentifiedObject
 //											? ((NeptuneIdentifiedObject) ret).getObjectId() : "<>"));
 							
-							try {
+//							try {
 								Object[] array = valueList.toArray();
 								
 								for (Object o : array) {
-									result.add(deepDeproxy(o, visited, hashSet));
+									result.add(deepDeproxy(o, visited));
 								}
 								
-							} catch (ConcurrentModificationException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+//							} catch (ConcurrentModificationException e) {
+//								// TODO Auto-generated catch block
+//								e.printStackTrace();
+//							}
 //							log.info("Completed iterating over " + ret.getClass().getSimpleName() + "." + name + " / "
 //									+ valueList.hashCode() + " with id " + (ret instanceof NeptuneIdentifiedObject
 //											? ((NeptuneIdentifiedObject) ret).getObjectId() : "<>"));
@@ -195,12 +194,12 @@ public class HibernateDeproxynator<T> {
 //						}
 					}
 					if (needToSetProperty) {
-						log.info("Updating "+ret.getClass().getSimpleName()+"."+name+" with value "+value.getClass().getSimpleName());
+//						log.info("Updating "+ret.getClass().getSimpleName()+"."+name+" with value "+value.getClass().getSimpleName());
 						PropertyUtils.setProperty(ret, name, value);
 						
 					}
 					if (value instanceof NeptuneObject) {
-						deepDeproxy(value, visited, hashSet);
+						deepDeproxy(value, visited);
 					}
 				}
 			} catch (java.lang.IllegalAccessException e) {
