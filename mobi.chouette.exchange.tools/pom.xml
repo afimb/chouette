@@ -14,13 +14,6 @@
 		<skipInitDb>false</skipInitDb>
 	</properties>
 	<dependencies>
-
-		<dependency>
-			<groupId>uk.com.robust-it</groupId>
-			<artifactId>cloning</artifactId>
-			<version>1.9.3</version>
-		</dependency>
-
 		<!-- Default Dependencies -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -33,7 +26,12 @@
 			<type>pom</type>
 			<scope>provided</scope>
 		</dependency>
-		
+		<dependency>
+			<groupId>org.jboss.ejb3</groupId>
+			<artifactId>jboss-ejb3-ext-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
 
 		<!-- Modules -->
 		<dependency>

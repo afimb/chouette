@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -20,6 +21,7 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.model.Line;
+import org.jboss.ejb3.annotation.TransactionTimeout;
 
 @Log4j
 @Stateless(name = GenericExportDataLoader.COMMAND)
@@ -34,6 +36,7 @@ public class GenericExportDataLoader implements Command {
 	private EntityManager em;
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionTimeout(value = 1, unit = TimeUnit.HOURS)
 	public boolean execute(Context context) throws Exception {
 
 		List<Line> lineToTransfer = prepareLines(context);
