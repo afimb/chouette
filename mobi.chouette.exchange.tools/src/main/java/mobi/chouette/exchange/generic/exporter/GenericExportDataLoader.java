@@ -36,7 +36,7 @@ public class GenericExportDataLoader implements Command {
 	private EntityManager em;
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	@TransactionTimeout(value = 1, unit = TimeUnit.HOURS)
+	@TransactionTimeout(value = 2, unit = TimeUnit.HOURS)
 	public boolean execute(Context context) throws Exception {
 
 		List<Line> lineToTransfer = prepareLines(context);
@@ -55,14 +55,12 @@ public class GenericExportDataLoader implements Command {
 
 		log.info("Loading all lines...");
 		List<Line> allLines = lineDAO.findAll();
-		log.info("Loading all lines completed, removing Hibernate proxies");
-		HibernateDeproxynator<?> deProxy = new HibernateDeproxynator<>();
-		allLines = deProxy.deepDeproxy(allLines);
-		log.info("Removing Hibernate proxies completed, filtering lines");
 		
 		List<Line> lineToTransfer = new ArrayList<>();
+		
 		LineFilter lineFilter = new LineFilter();
 
+		log.info("Filtering lines");
 		for (Line line : allLines) {
 			// Clean according to date rules
 			// Clean obsolete data
@@ -72,7 +70,13 @@ public class GenericExportDataLoader implements Command {
 				lineToTransfer.add(line);
 			}
 		}
+		
 		log.info("Filtering lines completed");
+		log.info("Removing Hibernate proxies");
+		HibernateDeproxynator<?> deProxy = new HibernateDeproxynator<>();
+		lineToTransfer = deProxy.deepDeproxy(lineToTransfer);
+		log.info("Removing Hibernate proxies completed");
+		
 
 		em.clear();
 		return lineToTransfer;

@@ -61,7 +61,7 @@ public class GenericExportDataWriter implements Command {
 	private EntityManager em;
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	@TransactionTimeout(value = 1, unit = TimeUnit.HOURS)
+	@TransactionTimeout(value = 2, unit = TimeUnit.HOURS)
 	public boolean execute(Context context) throws Exception {
 		if (!em.isJoinedToTransaction()) {
 			throw new RuntimeException("No transaction");
@@ -234,6 +234,8 @@ public class GenericExportDataWriter implements Command {
 
 	private void detachLineFromPersistenceContext(List<Line> lineToTransfer, int i, int flushSize) {
 
+		int freedObjectCount = 0;
+		
 		int start = i-flushSize;
 		if(start < 0) {
 			start = 0;
@@ -243,18 +245,23 @@ public class GenericExportDataWriter implements Command {
 			if (x < lineToTransfer.size()) {
 				Line l = lineToTransfer.get(x);
 				em.detach(l);
+				freedObjectCount++;
 				for (Route r : l.getRoutes()) {
 					em.detach(r);
+					freedObjectCount++;
 					for(StopPoint sp : r.getStopPoints()) {
 						em.detach(sp);
+						freedObjectCount++;
 						sp.setContainedInStopArea(null);
 					}
 					r.getStopPoints().clear();
 					
 					for (JourneyPattern jp : r.getJourneyPatterns()) {
 						em.detach(jp);
+						freedObjectCount++;
 						for(StopPoint sp : jp.getStopPoints()) {
 							em.detach(sp);
+							freedObjectCount++;
 							sp.setContainedInStopArea(null);
 							
 						}
@@ -262,8 +269,10 @@ public class GenericExportDataWriter implements Command {
 						
 						for (VehicleJourney vj : jp.getVehicleJourneys()) {
 							em.detach(vj);
+							freedObjectCount++;
 							for (VehicleJourneyAtStop vjs : vj.getVehicleJourneyAtStops()) {
 								em.detach(vjs);
+								freedObjectCount++;
 							}
 							vj.getVehicleJourneyAtStops().clear();
 						}
@@ -274,7 +283,7 @@ public class GenericExportDataWriter implements Command {
 				l.getRoutes().clear();
 			}
 		}
-
+		log.info("Freed "+freedObjectCount+"objects for lines "+start+" to "+i);
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {
