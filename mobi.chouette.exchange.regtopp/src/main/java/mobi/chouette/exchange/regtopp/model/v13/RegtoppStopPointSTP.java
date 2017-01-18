@@ -45,10 +45,13 @@ public  class RegtoppStopPointSTP extends RegtoppObject implements Serializable 
 	@Field(at = 12, length = 2)
 	protected String stopPointId;
 
+	/**
+	 * Stop point letter designation.
+	 */
 	@Getter
 	@Setter
 	@Field(at = 14, length = 2)
-	protected String stopPointName;
+	protected String stopPointDesignation;
 
 	@Getter
 	@Setter

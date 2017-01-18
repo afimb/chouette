@@ -11,7 +11,7 @@ public class RegtoppStopParserTest {
     @Test
     public void setBoardingPositionNameFromParentStop() throws Exception {
         RegtoppStopPointSTP regtoppStopPointSTP =  new RegtoppStopPointSTP();
-        regtoppStopPointSTP.setStopPointName("stopPointName");
+        regtoppStopPointSTP.setStopPointDesignation("stopPointDesignation");
 
         String parentStopAreaName = "Parent stop name";
         StopArea parentStopArea = new StopArea();

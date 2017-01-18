@@ -62,10 +62,10 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 									projection);
 							boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
 							boardingPosition
-									.setRegistrationNumber(StringUtils.trimToNull(regtoppStopPoint.getStopPointName()));
+									.setRegistrationNumber(StringUtils.trimToNull(regtoppStopPoint.getStopPointDesignation()));
 
 							setNameAndDescription(regtoppStopPoint, boardingPosition, stopArea);
-							
+
 							boardingPosition.setParent(stopArea);
 						}
 					}
