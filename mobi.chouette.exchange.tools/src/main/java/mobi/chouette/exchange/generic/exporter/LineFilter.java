@@ -49,6 +49,10 @@ public class LineFilter {
 								timetableI.remove();
 							}
 						}
+						
+						if(vehicleJourney.getTimetables().isEmpty()) {
+							vjI.remove();
+						}
 					} else {
 						for (Iterator<Timetable> timetableI = vehicleJourney.getTimetables().iterator(); timetableI
 								.hasNext();) {
@@ -60,6 +64,9 @@ public class LineFilter {
 								timetableI.remove();
 								continue;
 							}
+						}
+						if(vehicleJourney.getTimetables().isEmpty()) {
+							vjI.remove();
 						}
 					} // end vehiclejourney loop
 				} // end journeyPattern loop
