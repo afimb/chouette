@@ -64,15 +64,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 							boardingPosition
 									.setRegistrationNumber(StringUtils.trimToNull(regtoppStopPoint.getStopPointName()));
 
-							if (stopArea.getName() != null) {
-								// Use parent stop area name
-								boardingPosition.setName(stopArea.getName());
-							} else if (StringUtils.trimToNull(regtoppStopPoint.getDescription()) != null) {
-								// If parent is empty, use stop point
-								// description on both stop point and stop area
-								boardingPosition.setName(StringUtils.trimToNull(regtoppStopPoint.getDescription()));
-								stopArea.setName(boardingPosition.getName());
-							}
+							setNameAndDescription(regtoppStopPoint, boardingPosition, stopArea);
 
 							// if
 							// (StringUtils.trimToNull(regtoppStopPoint.getDescription())
@@ -105,6 +97,18 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 		} catch (Exception e) {
 			log.error("Error parsing StopArea", e);
 			throw e;
+		}
+	}
+
+	public void setNameAndDescription(RegtoppStopPointSTP regtoppStopPoint, StopArea boardingPosition, StopArea stopArea) {
+		if (stopArea.getName() != null) {
+			// Use parent stop area name
+			boardingPosition.setName(stopArea.getName());
+		} else if (StringUtils.trimToNull(regtoppStopPoint.getDescription()) != null) {
+			// If parent is empty, use stop point
+			// description on both stop point and stop area
+			boardingPosition.setName(StringUtils.trimToNull(regtoppStopPoint.getDescription()));
+			stopArea.setName(boardingPosition.getName());
 		}
 	}
 
