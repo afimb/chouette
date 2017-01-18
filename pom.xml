@@ -126,6 +126,7 @@
 							<autocommit>true</autocommit>
 							<srcFiles>
 								<srcFile>${project.rootDir}/src/test/sql/chouette_test.sql</srcFile>
+								<srcFile>${project.rootDir}/src/test/sql/chouette_test_transfer.sql</srcFile>
 							</srcFiles>
 						</configuration>
 					</execution>
@@ -568,6 +569,11 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
+				<artifactId>mobi.chouette.exchange.tools</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>mobi.chouette.service</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -871,6 +877,7 @@
 		<module>mobi.chouette.exchange.regtopp</module>
 		<module>mobi.chouette.exchange.validator</module>
 		<module>mobi.chouette.exchange.converter</module>
+		<module>mobi.chouette.exchange.tools</module>
 		<module>mobi.chouette.service</module>
 		<module>mobi.chouette.schema.checker</module>
 		<module>mobi.chouette.ws</module>
