@@ -72,16 +72,22 @@ public class GenericExporterCommand extends AbstractExporterCommand implements C
 			
 			Command dataLoader =  CommandFactory.create(initialContext,
 					GenericExportDataLoader.class.getName());
-			dataLoader.execute(context);
 			progression.execute(context);
+			boolean loadResult = dataLoader.execute(context);
+			if(!loadResult) {
+				log.error("Error loading data from source referential");
+				return ERROR;
+			}
 			
 			ContextHolder.setContext(parameters.getDestReferentialName());
 
 			Command dataWriter =  CommandFactory.create(initialContext,
 					GenericExportDataWriter.class.getName());
-			dataWriter.execute(context);
 			progression.execute(context);
-			
+			boolean writeResult = dataWriter.execute(context);
+			if(!writeResult) {
+				return ERROR;
+			}
 
 			result = SUCCESS;
 
