@@ -65,18 +65,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 									.setRegistrationNumber(StringUtils.trimToNull(regtoppStopPoint.getStopPointName()));
 
 							setNameAndDescription(regtoppStopPoint, boardingPosition, stopArea);
-
-							// if
-							// (StringUtils.trimToNull(regtoppStopPoint.getDescription())
-							// == null) {
-							// stopPoint.setName(stopArea.getName());
-							// log.warn("StopPoint with no description, using
-							// HPL stop name instead: " + regtoppStopPoint);
-							// } else {
-							// stopPoint.setName(regtoppStopPoint.getDescription());
-							// }
-							// stopPoint.setRegistrationNumber(stopArea.getRegistrationNumber());
-
+							
 							boardingPosition.setParent(stopArea);
 						}
 					}
