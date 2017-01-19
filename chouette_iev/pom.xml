@@ -195,7 +195,7 @@
       </dependency>
       <dependency>
          <groupId>${project.groupId}</groupId>
-         <artifactId>mobi.chouette.exchange.tools</artifactId>
+         <artifactId>mobi.chouette.exchange.transfer</artifactId>
          <type>ejb</type>        
          <version>${project.version}</version>
       </dependency>

@@ -93,7 +93,7 @@ public class CleanRepositoryCommand implements Command {
 	private VehicleJourneyAtStopDAO vehicleJourneyAtStopDAO;
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public boolean execute(Context context) throws Exception {
 
 		boolean result = ERROR;
