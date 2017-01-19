@@ -220,8 +220,7 @@ public class JobServiceManager {
 			throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, ex);
 		}
 	}
-	
-	private void validateReferential(final String referential) throws ServiceException {
+	public void validateReferential(final String referential) throws ServiceException {
 
 		if (referentials.contains(referential))
 			return;

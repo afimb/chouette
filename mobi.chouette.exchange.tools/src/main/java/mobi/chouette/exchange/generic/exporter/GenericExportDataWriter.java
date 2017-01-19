@@ -23,6 +23,7 @@ import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.dao.ConnectionLinkDAO;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.exchange.generic.importer.GenericImportParameters;
 import mobi.chouette.exchange.importer.CleanRepositoryCommand;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.ConnectionLink;
