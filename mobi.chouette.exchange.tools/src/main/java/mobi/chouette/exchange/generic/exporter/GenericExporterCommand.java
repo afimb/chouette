@@ -17,6 +17,8 @@ import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.commons.beanutils.BeanUtils;
+
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
@@ -113,7 +115,8 @@ public class GenericExporterCommand extends AbstractExporterCommand implements C
 			lock.lock();
 
 			GenericImportParameters importParameters = new GenericImportParameters();
-
+			BeanUtils.copyProperties(importParameters, parameters);
+			
 			Map<String, InputStream> inputStreamsByName = new HashMap<>();
 			
 			inputStreamsByName.put("parameters.json",
