@@ -1,13 +1,5 @@
 package mobi.chouette.exchange.regtopp.importer.parser.v13;
 
-import static mobi.chouette.common.Constant.CONFIGURATION;
-import static mobi.chouette.common.Constant.PARSER;
-import static mobi.chouette.common.Constant.REFERENTIAL;
-
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
@@ -24,97 +16,154 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+import org.apache.commons.lang.StringUtils;
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static mobi.chouette.common.Constant.*;
 
 @Log4j
 public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppStopParser {
 
-	@Override
-	public void parse(Context context) throws Exception {
-		try {
-			RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
-			Referential referential = (Referential) context.get(REFERENTIAL);
-			RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
-			String projection = configuration.getCoordinateProjection();
+    /**
+     * Pattern for matching description content in parentheses.
+     * For instance: 'Stop place name (some comment) (some optional platform with designation A)'
+     */
+    private static final Pattern PATTERN = Pattern.compile("(.[^\\)]*)?\\s?\\((.[^\\)]*)\\)\\s?(\\(.[^\\)]*\\s([a-zA-Z0-9]{0,3})\\))?");
 
-			Index<List<RegtoppStopPointSTP>> stopPointsByStopId = importer.getStopPointsByStopId();
+    @Override
+    public void parse(Context context) throws Exception {
+        try {
+            RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
+            Referential referential = (Referential) context.get(REFERENTIAL);
+            RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
+            String projection = configuration.getCoordinateProjection();
 
-			for (AbstractRegtoppStopHPL abstractStop : importer.getStopById()) {
-				RegtoppStopHPL stop = (RegtoppStopHPL) abstractStop;
-				if (shouldImportHPL(abstractStop) && (stop.getType() == StopType.Stop
-						|| (stop.getType() == StopType.Other && !stop.getFullName().equals("Lokasjonspunkt")))) {
-					String objectId = ObjectIdCreator.createStopAreaId(configuration, stop.getStopId());
+            Index<List<RegtoppStopPointSTP>> stopPointsByStopId = importer.getStopPointsByStopId();
 
-					StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
-					stopArea.setName(StringUtils.trimToNull(stop.getFullName()));
-					// stopArea.setRegistrationNumber(stop.getShortName());
-					stopArea.setAreaType(PARENT_STOP_PLACE_TYPE);
+            for (AbstractRegtoppStopHPL abstractStop : importer.getStopById()) {
+                RegtoppStopHPL stop = (RegtoppStopHPL) abstractStop;
+                if (shouldImportHPL(abstractStop) && (stop.getType() == StopType.Stop
+                        || (stop.getType() == StopType.Other && !stop.getFullName().equals("Lokasjonspunkt")))) {
+                    String objectId = ObjectIdCreator.createStopAreaId(configuration, stop.getStopId());
 
-					convertAndSetCoordinates(stopArea, stop.getX(), stop.getY(), projection);
+                    StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
+                    stopArea.setName(StringUtils.trimToNull(stop.getFullName()));
+                    // stopArea.setRegistrationNumber(stop.getShortName());
+                    stopArea.setAreaType(PARENT_STOP_PLACE_TYPE);
 
-					List<RegtoppStopPointSTP> stopPoints = stopPointsByStopId.getValue(stop.getStopId());
-					if (stopPoints != null) {
-						for (RegtoppStopPointSTP regtoppStopPoint : stopPoints) {
-							String chouetteStopPointId = ObjectIdCreator.createStopAreaId(configuration,
-									regtoppStopPoint.getFullStopId());
-							StopArea boardingPosition = ObjectFactory.getStopArea(referential, chouetteStopPointId);
+                    convertAndSetCoordinates(stopArea, stop.getX(), stop.getY(), projection);
 
-							convertAndSetCoordinates(boardingPosition, regtoppStopPoint.getX(), regtoppStopPoint.getY(),
-									projection);
-							boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
-							boardingPosition
-									.setRegistrationNumber(StringUtils.trimToNull(regtoppStopPoint.getStopPointName()));
+                    List<RegtoppStopPointSTP> stopPoints = stopPointsByStopId.getValue(stop.getStopId());
+                    if (stopPoints != null) {
+                        for (RegtoppStopPointSTP regtoppStopPoint : stopPoints) {
+                            String chouetteStopPointId = ObjectIdCreator.createStopAreaId(configuration,
+                                    regtoppStopPoint.getFullStopId());
+                            StopArea boardingPosition = ObjectFactory.getStopArea(referential, chouetteStopPointId);
 
-							if (stopArea.getName() != null) {
-								// Use parent stop area name
-								boardingPosition.setName(stopArea.getName());
-							} else if (StringUtils.trimToNull(regtoppStopPoint.getDescription()) != null) {
-								// If parent is empty, use stop point
-								// description on both stop point and stop area
-								boardingPosition.setName(StringUtils.trimToNull(regtoppStopPoint.getDescription()));
-								stopArea.setName(boardingPosition.getName());
-							}
+                            convertAndSetCoordinates(boardingPosition, regtoppStopPoint.getX(), regtoppStopPoint.getY(),
+                                    projection);
+                            boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
+                            boardingPosition
+                                    .setRegistrationNumber(StringUtils.trimToNull(regtoppStopPoint.getStopPointDesignation()));
 
-							// if
-							// (StringUtils.trimToNull(regtoppStopPoint.getDescription())
-							// == null) {
-							// stopPoint.setName(stopArea.getName());
-							// log.warn("StopPoint with no description, using
-							// HPL stop name instead: " + regtoppStopPoint);
-							// } else {
-							// stopPoint.setName(regtoppStopPoint.getDescription());
-							// }
-							// stopPoint.setRegistrationNumber(stopArea.getRegistrationNumber());
+                            setNameAndComment(regtoppStopPoint, boardingPosition, stopArea);
 
-							boardingPosition.setParent(stopArea);
-						}
-					}
+                            boardingPosition.setParent(stopArea);
+                        }
+                    }
 
-					if (stopArea.getName() == null) {
-						// Fallback, must have name
-						stopArea.setName("Noname");
-					}
+                    if (stopArea.getName() == null) {
+                        // Fallback, must have name
+                        stopArea.setName("Noname");
+                    }
 
-				} else {
-					// TODO parse other node types (if really used, only Ruter
-					// uses this)
-					log.warn("Ignoring HPL stop of type Other: " + stop);
-				}
+                } else {
+                    // TODO parse other node types (if really used, only Ruter
+                    // uses this)
+                    log.warn("Ignoring HPL stop of type Other: " + stop);
+                }
 
-			}
+            }
 
-		} catch (Exception e) {
-			log.error("Error parsing StopArea", e);
-			throw e;
-		}
-	}
+        } catch (Exception e) {
+            log.error("Error parsing StopArea", e);
+            throw e;
+        }
+    }
 
-	static {
-		ParserFactory.register(RegtoppStopParser.class.getName(), new ParserFactory() {
-			@Override
-			protected Parser create() {
-				return new RegtoppStopParser();
-			}
-		});
-	}
+    /**
+     * Set stop place name, boarding position comment and if detected, platform code.
+     * Stop area and boarding position name will be equal.
+     *
+     * @param regtoppStopPoint to get and parse description from
+     * @param boardingPosition to optionally set comment and registration number (platform code)
+     * @param stopArea if stop stop area does not have any name, it can sometimes be found in stop point description. It will only be set if already empty.
+     */
+    public void setNameAndComment(RegtoppStopPointSTP regtoppStopPoint, StopArea boardingPosition, StopArea stopArea) {
+
+        if (StringUtils.isNotBlank(regtoppStopPoint.getDescription())) {
+            String description = regtoppStopPoint.getDescription().trim();
+
+            if (StringUtils.isNotBlank(stopArea.getName())) {
+                boolean descriptionAndStopAreaNameEqual = description.equals(stopArea.getName());
+
+                if (!descriptionAndStopAreaNameEqual && description.startsWith(stopArea.getName())) {
+                    // Remove stop place name from comment
+                    String comment = description.substring(stopArea.getName().length()).trim();
+                    extractCommentFromParentheses(comment, stopArea, boardingPosition, false);
+                } else if (!descriptionAndStopAreaNameEqual) {
+                    boardingPosition.setComment(description.trim());
+                }
+            } else {
+                extractCommentFromParentheses(regtoppStopPoint.getDescription(), stopArea, boardingPosition, true);
+            }
+        }
+        if (StringUtils.isNotBlank(stopArea.getName())) {
+            // Set parent stop area name
+            boardingPosition.setName(stopArea.getName());
+        }
+        log.debug("Parent stop area name: '" + stopArea.getName()
+                + "', boarding position name: '" + boardingPosition.getName()
+                + "', boarding position comment: '" + boardingPosition.getComment() + "'");
+    }
+
+    private void extractCommentFromParentheses(String description, StopArea stopArea, StopArea boardingPosition, boolean setStopAreaName) {
+        Matcher matcher = PATTERN.matcher(description);
+
+        if (matcher.find() && matcher.groupCount() > 0) {
+            if (matcher.group(1) != null && setStopAreaName) {
+                String name = matcher.group(1).trim();
+                stopArea.setName(name);
+            }
+
+            if (matcher.groupCount() > 1) {
+                int group = 2;
+                if (matcher.group(group) != null) {
+                    String comment = matcher.group(group).trim();
+                    boardingPosition.setComment(comment);
+                }
+            }
+
+            if (matcher.groupCount() > 3) {
+                int group = 4;
+                if (matcher.group(group) != null && StringUtils.isEmpty(boardingPosition.getRegistrationNumber())) {
+                    String designation = matcher.group(group).trim();
+                    boardingPosition.setRegistrationNumber(designation);
+                }
+            }
+        }
+    }
+
+    static {
+        ParserFactory.register(RegtoppStopParser.class.getName(), new ParserFactory() {
+            @Override
+            protected Parser create() {
+                return new RegtoppStopParser();
+            }
+        });
+    }
 
 }
