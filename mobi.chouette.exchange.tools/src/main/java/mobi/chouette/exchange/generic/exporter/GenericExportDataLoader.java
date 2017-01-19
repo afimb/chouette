@@ -15,13 +15,14 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.jboss.ejb3.annotation.TransactionTimeout;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.model.Line;
-import org.jboss.ejb3.annotation.TransactionTimeout;
 
 @Log4j
 @Stateless(name = GenericExportDataLoader.COMMAND)
@@ -41,7 +42,7 @@ public class GenericExportDataLoader implements Command {
 
 		List<Line> lineToTransfer = prepareLines(context);
 		context.put("LINES", lineToTransfer);
-
+	     
 		return true;
 	}
 

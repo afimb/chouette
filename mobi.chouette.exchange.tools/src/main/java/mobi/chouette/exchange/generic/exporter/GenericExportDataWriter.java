@@ -1,9 +1,7 @@
 package mobi.chouette.exchange.generic.exporter;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.ejb.EJB;
@@ -25,6 +23,7 @@ import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.dao.ConnectionLinkDAO;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.exchange.generic.importer.GenericImportParameters;
 import mobi.chouette.exchange.importer.CleanRepositoryCommand;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.ConnectionLink;
@@ -73,47 +72,36 @@ public class GenericExportDataWriter implements Command {
 		Command cleanCommand = CommandFactory.create(initialContext, CleanRepositoryCommand.class.getName());
 		log.info("Cleaning target dataspace");
 		boolean cleanCommandResult = cleanCommand.execute(context);
-
+		if(!cleanCommandResult) {
+			log.error("Error cleaning dataspace");
+			return ERROR;
+		}
+		
 		// Persist
 		log.info("Starting to persist lines, count=" + lineToTransfer.size());
 
-		context.put(OPTIMIZED, Boolean.TRUE);
+		// TODO collect StopArea, ConnectionLink and AccessLink into separate Sets
 		Referential referential = new Referential();
-
-		Set<StopArea> stopAreas = new HashSet<>();
 		for (Line l : lineToTransfer) {
 			for (Route r : l.getRoutes()) {
 				for (StopPoint sp : r.getStopPoints()) {
 					StopArea sa = sp.getContainedInStopArea();
 
 					if (sa != null) {
-						// stopAreas.add(sa);
-
 						referential.getStopAreas().put(sa.getObjectId(), sa);
-						// referential.getSharedStopAreas().put(sa.getObjectId(),
-						// sa);
 						if (sa.getParent() != null) {
-							// stopAreas.add(sa);
 							referential.getStopAreas().put(sa.getParent().getObjectId(), sa.getParent());
-							// referential.getSharedStopAreas().put(sa.getParent().getObjectId(),
-							// sa.getParent());
 						}
 						for (ConnectionLink cle : sa.getConnectionEndLinks()) {
 							if (cle.getEndOfLink() != null) {
-								// stopAreas.add(cle.getEndOfLink());
-								// referential.getStopAreas().put(sa.getObjectId(),
-								// sa);
 								referential.getStopAreas().put(cle.getEndOfLink().getObjectId(), cle.getEndOfLink());
 							}
 							if (cle.getStartOfLink() != null) {
-								// stopAreas.add(cle.getStartOfLink());
 								referential.getStopAreas().put(cle.getStartOfLink().getObjectId(),
 										cle.getStartOfLink());
 							}
 
 							referential.getConnectionLinks().put(cle.getObjectId(), cle);
-							// referential.getSharedConnectionLinks().put(cle.getObjectId(),
-							// cle);
 						}
 						for (ConnectionLink cle : sa.getConnectionStartLinks()) {
 							if (cle.getEndOfLink() != null) {
@@ -124,34 +112,23 @@ public class GenericExportDataWriter implements Command {
 										cle.getStartOfLink());
 							}
 							referential.getConnectionLinks().put(cle.getObjectId(), cle);
-							// referential.getSharedConnectionLinks().put(cle.getObjectId(),
-							// cle);
 						}
 						for (AccessLink cle : sa.getAccessLinks()) {
 							if (cle.getStopArea() != null) {
 								referential.getStopAreas().put(cle.getStopArea().getObjectId(), cle.getStopArea());
-								// stopAreas.add(cle.getStopArea());
 							}
-
 							referential.getAccessLinks().put(cle.getObjectId(), cle);
-							// referential.getSharedAccessLinks().put(cle.getObjectId(),
-							// cle);
 						}
 					}
 				}
 			}
 		}
 
-		// context.put(REFERENTIAL, referential);
-		// Command stopAreaRegister = CommandFactory.create(initialContext,
-		// StopAreaRegisterCommand.class.getName());
-		// stopAreaRegister.execute(context);
-
 		log.info("Inserting " + referential.getStopAreas().size() + " stopareas");
 		for (StopArea sa : referential.getStopAreas().values()) {
 			stopAreaDAO.create(sa);
 		}
-		log.info("Flushing " + stopAreas.size() + " stopareas");
+		log.info("Flushing " + referential.getStopAreas().size() + " stopareas");
 		stopAreaDAO.flush();
 
 		log.info("Inserting " + referential.getConnectionLinks().size() + " connection links");
@@ -168,10 +145,8 @@ public class GenericExportDataWriter implements Command {
 		log.info("Flushing " + referential.getAccessLinks().size() + " access links");
 		accessLinkDAO.flush();
 
-		GenericImportParameters importParameters = new GenericImportParameters();
-		importParameters.setKeepObsoleteLines(true);
-		context.put(CONFIGURATION, importParameters);
-
+		referential.clear(true);
+		
 		for (int i = 0; i < lineToTransfer.size(); i++) {
 			Line line = lineToTransfer.get(i);
 			log.info("Persisting line " + line.getObjectId() + " / " + line.getName());
@@ -181,52 +156,17 @@ public class GenericExportDataWriter implements Command {
 			if (i % FLUSH_SIZE == 0) {
 				log.info("Intermediary flush");
 				lineDAO.flush();
+				// Remove most flushed objects from persistence context to ease garbage collection
 				detachLineFromPersistenceContext(lineToTransfer, i, FLUSH_SIZE);
 				log.info("Intermediary flush completed");
 			}
-
-
-			// referential.getLines().put(line.getObjectId(), line);
-			// for(Route r : line.getRoutes()) {
-			// for(JourneyPattern jp : r.getJourneyPatterns()) {
-			// for(VehicleJourney vj : jp.getVehicleJourneys()) {
-			// referential.getVehicleJourneys().put(vj.getObjectId(), vj);
-			// }
-			// }
-			// }
-			//
-			//
-			// Command register = CommandFactory.create(initialContext,
-			// LineRegisterCommand.class.getName());
-			// register.execute(context);
-			//
-			// Command copy = CommandFactory.create(initialContext,
-			// CopyCommand.class.getName());
-			// copy.execute(context);
-			//
-			// referential.getLines().clear();
-			// referential.getVehicleJourneys().clear();
-
 		}
 
 		log.info("Final flush");
 		lineDAO.flush();
 		log.info("Final flush completed");
 
-		// check if CopyCommands ended (with timeout to 5 minutes >
-		// transaction timeout)
-		// if (context.containsKey(COPY_IN_PROGRESS)) {
-		// long timeout = 5;
-		// TimeUnit unit = TimeUnit.MINUTES;
-		// List<Future<Void>> futures = (List<Future<Void>>)
-		// context.get(COPY_IN_PROGRESS);
-		// for (Future<Void> future : futures) {
-		// if (!future.isDone()) {
-		// log.info("Waiting for CopyCommand");
-		// future.get(timeout, unit);
-		// }
-		// }
-		// }
+		// Clear everything to free memory
 		em.clear();
 
 		return true;
@@ -283,7 +223,7 @@ public class GenericExportDataWriter implements Command {
 				l.getRoutes().clear();
 			}
 		}
-		log.info("Freed "+freedObjectCount+"objects for lines "+start+" to "+i);
+		log.info("Freed "+freedObjectCount+" objects for lines "+start+" to "+i);
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {

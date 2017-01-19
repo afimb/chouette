@@ -87,7 +87,7 @@ public class GenericExporterCommandTest extends Arquillian implements mobi.choue
 	public static WebArchive createDeployment() {
 
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.exchange.tools", "mobi.chouette:mobi.chouette.dao").withTransitivity()
+				.resolve("mobi.chouette:mobi.chouette.exchange.tools", "mobi.chouette:mobi.chouette.dao","mobi.chouette:mobi.chouette.service").withTransitivity()
 				.asFile();
 
 		return ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")

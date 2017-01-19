@@ -32,33 +32,24 @@ public class HibernateDeproxynator<T> {
 		List<T> results = new ArrayList<T>();
 		for (Object x : maybeProxy) {
 			AtomicInteger stackCounter = new AtomicInteger();
-			// log.info("Deproxying
-			// "+x.getClass().getSimpleName()+"/"+x.hashCode());
-			T ret = deepDeproxy(x, visited, moreObjectsToFollow, stackCounter);
-			// log.info("Deproxying finished
-			// "+x.getClass().getSimpleName()+"/"+x.hashCode());
+			T ret = deepDeproxy(x, visited, moreObjectsToFollow);
 			results.add(ret);
 		}
-
-		// Attempt to reduce stack depth. Note using iterator to allow recursive
-		// method to add more elements
-		AtomicInteger stackCounter = new AtomicInteger();
 
 		boolean finished = false;
 		while (!finished) {
 			HashSet<Object> newObjectsToFollow = new HashSet<>(10000);
-			log.info("[" + stackCounter.get() + "] Objects to follow queue size=" + moreObjectsToFollow.size());
+			log.info("Objects to follow initial queue size=" + moreObjectsToFollow.size());
 			Iterator it = moreObjectsToFollow.iterator();
 			while (it.hasNext()) {
-				// try disconnecting vertices
 				Object next = it.next();
 				if (!visited.contains(next)) {
-					deepDeproxy(next, visited, newObjectsToFollow, stackCounter);
+					deepDeproxy(next, visited, newObjectsToFollow);
 				}
 			}
 
 			moreObjectsToFollow.clear();
-			log.info("Adding "+newObjectsToFollow.size()+" objects to follow");
+			log.info("Adding "+newObjectsToFollow.size()+" more objects to follow");
 			moreObjectsToFollow = newObjectsToFollow;
 			it = moreObjectsToFollow.iterator();
 			finished = !it.hasNext();
@@ -71,12 +62,9 @@ public class HibernateDeproxynator<T> {
 		return results;
 	}
 
-	private T deepDeproxy(final Object maybeProxy, final Set<Object> visited, HashSet<Object> moreObjectsToFollow,
-			AtomicInteger stackCounter) throws ClassCastException {
+	private T deepDeproxy(final Object maybeProxy, final Set<Object> visited, HashSet<Object> moreObjectsToFollow) throws ClassCastException {
 		if (maybeProxy == null)
 			return null;
-		stackCounter.incrementAndGet();
-
 		Class clazz;
 		Hibernate.initialize(maybeProxy);
 		if (maybeProxy instanceof HibernateProxy) {
@@ -89,13 +77,8 @@ public class HibernateDeproxynator<T> {
 
 		T ret = (T) deepDeproxy(maybeProxy, clazz);
 		if (visited.contains(ret)) {
-			// log.info("["+stackCounter.get()+"] Already finished
-			// "+ret.getClass().getSimpleName()+"/"+ret.hashCode());
-			stackCounter.decrementAndGet();
 			return ret;
 		}
-		// log.info("["+stackCounter.get()+"] Deproxying
-		// "+ret.getClass().getSimpleName()+"/"+ret.hashCode());
 		visited.add(ret);
 
 		if (ret instanceof NeptuneObject) {
@@ -109,13 +92,13 @@ public class HibernateDeproxynator<T> {
 			if (ret instanceof Object[]) {
 				Object[] valueArray = (Object[]) ret;
 				for (int i = 0; i < valueArray.length; i++) {
-					valueArray[i] = deepDeproxy(valueArray[i], visited, moreObjectsToFollow, stackCounter);
+					valueArray[i] = deepDeproxy(valueArray[i], visited, moreObjectsToFollow);
 				}
 			} else if (ret instanceof Set) {
 				Set valueSet = (Set) ret;
 				Set result = new HashSet();
 				for (Object o : valueSet) {
-					result.add(deepDeproxy(o, visited, moreObjectsToFollow, stackCounter));
+					result.add(deepDeproxy(o, visited, moreObjectsToFollow));
 				}
 				valueSet.clear();
 				valueSet.addAll(result);
@@ -123,15 +106,15 @@ public class HibernateDeproxynator<T> {
 				Map valueMap = (Map) ret;
 				Map result = new HashMap();
 				for (Object o : valueMap.keySet()) {
-					result.put(deepDeproxy(o, visited, moreObjectsToFollow, stackCounter),
-							deepDeproxy(valueMap.get(o), visited, moreObjectsToFollow, stackCounter));
+					result.put(deepDeproxy(o, visited, moreObjectsToFollow),
+							deepDeproxy(valueMap.get(o), visited, moreObjectsToFollow));
 				}
 				valueMap.clear();
 				valueMap.putAll(result);
 			} else if (ret instanceof List) {
 				List valueList = (List) ret;
 				for (int i = 0; i < valueList.size(); i++) {
-					valueList.set(i, deepDeproxy(valueList.get(i), visited, moreObjectsToFollow, stackCounter));
+					valueList.set(i, deepDeproxy(valueList.get(i), visited, moreObjectsToFollow));
 				}
 			}
 		} else {
@@ -143,7 +126,7 @@ public class HibernateDeproxynator<T> {
 
 						boolean needToSetProperty = false;
 						if (value instanceof HibernateProxy) {
-							value = deepDeproxy(value, visited, moreObjectsToFollow, stackCounter);
+							value = deepDeproxy(value, visited, moreObjectsToFollow);
 							needToSetProperty = true;
 						}
 
@@ -234,7 +217,6 @@ public class HibernateDeproxynator<T> {
 
 		}
 
-		stackCounter.decrementAndGet();
 		return ret;
 	}
 
