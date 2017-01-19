@@ -28,9 +28,10 @@ import static mobi.chouette.common.Constant.*;
 public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppStopParser {
 
     /**
-     * Pattern for matching content in parentheses.
+     * Pattern for matching description content in parentheses.
+     * For instance: 'Stop place name (some comment) (some optional platform with designation A)'
      */
-    private static final Pattern PATTERN = Pattern.compile("\\((.[^\\)]*)\\)");
+    private static final Pattern PATTERN = Pattern.compile("(.[^\\)]*)?\\s?\\((.[^\\)]*)\\)\\s?(\\(.[^\\)]*\\s([a-zA-Z0-9]{0,3})\\))?");
 
     @Override
     public void parse(Context context) throws Exception {
@@ -93,29 +94,35 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
         }
     }
 
+    /**
+     * Set stop place name, boarding position comment and if detected, platform code.
+     * Stop area and boarding position name will be equal.
+     *
+     * @param regtoppStopPoint to get and parse description from
+     * @param boardingPosition to optionally set comment and registration number (platform code)
+     * @param stopArea if stop stop area does not have any name, it can sometimes be found in stop point description. It will only be set if already empty.
+     */
     public void setNameAndComment(RegtoppStopPointSTP regtoppStopPoint, StopArea boardingPosition, StopArea stopArea) {
 
         if (StringUtils.isNotBlank(regtoppStopPoint.getDescription())) {
             String description = regtoppStopPoint.getDescription().trim();
 
             if (StringUtils.isNotBlank(stopArea.getName())) {
-
                 boolean descriptionAndStopAreaNameEqual = description.equals(stopArea.getName());
 
                 if (!descriptionAndStopAreaNameEqual && description.startsWith(stopArea.getName())) {
                     // Remove stop place name from comment
                     String comment = description.substring(stopArea.getName().length()).trim();
-                    boardingPosition.setComment(extractCommentFromParentheses(comment));
+                    extractCommentFromParentheses(comment, stopArea, boardingPosition, false);
                 } else if (!descriptionAndStopAreaNameEqual) {
                     boardingPosition.setComment(description.trim());
                 }
-            } else if (!splitAndSetNameAndComment(description, boardingPosition, stopArea)) {
-                boardingPosition.setComment("");
-                stopArea.setName(description);
+            } else {
+                extractCommentFromParentheses(regtoppStopPoint.getDescription(), stopArea, boardingPosition, true);
             }
         }
         if (StringUtils.isNotBlank(stopArea.getName())) {
-            // Use parent stop area name
+            // Set parent stop area name
             boardingPosition.setName(stopArea.getName());
         }
         log.debug("Parent stop area name: '" + stopArea.getName()
@@ -123,43 +130,32 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
                 + "', boarding position comment: '" + boardingPosition.getComment() + "'");
     }
 
-    private String extractCommentFromParentheses(String description) {
-        String newDescription;
+    private void extractCommentFromParentheses(String description, StopArea stopArea, StopArea boardingPosition, boolean setStopAreaName) {
         Matcher matcher = PATTERN.matcher(description);
 
         if (matcher.find() && matcher.groupCount() > 0) {
-            newDescription = matcher.group(1).trim();
-
-            if(matcher.find()) {
-                System.out.println(matcher.group(1));
+            if (matcher.group(1) != null && setStopAreaName) {
+                String name = matcher.group(1).trim();
+                stopArea.setName(name);
             }
-        } else {
-            newDescription = description.trim();
+
+            if (matcher.groupCount() > 1) {
+                int group = 2;
+                if (matcher.group(group) != null) {
+                    String comment = matcher.group(group).trim();
+                    boardingPosition.setComment(comment);
+                }
+            }
+
+            if (matcher.groupCount() > 3) {
+                int group = 4;
+                if (matcher.group(group) != null && StringUtils.isEmpty(boardingPosition.getRegistrationNumber())) {
+                    String designation = matcher.group(group).trim();
+                    boardingPosition.setRegistrationNumber(designation);
+                }
+            }
         }
-
-        return newDescription;
-
     }
-
-    /**
-     * If description contains parentheses, split it up to stop area name and boarding position comment.
-     * Useful only if parent stop area name is not set.
-     *
-     * @param description      description with stop area name and parentheses containing description
-     * @param boardingPosition to set comment on
-     * @param stopArea         to set name
-     */
-    private boolean splitAndSetNameAndComment(String description, StopArea boardingPosition, StopArea stopArea) {
-        if (description.matches(".*\\(.*\\)")) {
-            int indexOfStart = description.indexOf('(');
-            int indexOfEnd = description.indexOf(')');
-            boardingPosition.setComment(description.substring(indexOfStart + 1, indexOfEnd).trim());
-            stopArea.setName(description.substring(0, indexOfStart).trim());
-            return true;
-        }
-        return false;
-    }
-
 
     static {
         ParserFactory.register(RegtoppStopParser.class.getName(), new ParserFactory() {

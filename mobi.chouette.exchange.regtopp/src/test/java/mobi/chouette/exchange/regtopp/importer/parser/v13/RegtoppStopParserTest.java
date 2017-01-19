@@ -68,7 +68,7 @@ public class RegtoppStopParserTest {
     @Test
     public void setBoardingPositionCommentFromStpDescriptionWithSpaces() throws Exception {
         RegtoppStopPointSTP regtoppStopPointSTP = new RegtoppStopPointSTP();
-        regtoppStopPointSTP.setDescription("Allèen  (mot Manglerud ) ");
+        regtoppStopPointSTP.setDescription("Allèen  (mot Manglerud ) (Plf A)");
 
         String parentStopAreaName = "Allèen";
         StopArea parentStopArea = new StopArea();
@@ -133,6 +133,7 @@ public class RegtoppStopParserTest {
         assertEquals(parentStopArea.getName(), "Økern T");
         assertEquals(boardingPosition.getName(), "Økern T");
         assertEquals(boardingPosition.getComment(), "mot vest/mot sentrum");
+        assertEquals(boardingPosition.getRegistrationNumber(), "A");
     }
 
     @Test
