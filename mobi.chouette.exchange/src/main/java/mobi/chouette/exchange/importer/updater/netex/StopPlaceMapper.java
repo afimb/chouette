@@ -33,7 +33,7 @@ public class StopPlaceMapper {
         return stopPlace;
     }
 
-    private Quay mapQuay(StopArea stopArea) {
+    protected Quay mapQuay(StopArea stopArea) {
         Quay quay = new Quay();
         mapId(stopArea, quay);
         setVersion(quay);
