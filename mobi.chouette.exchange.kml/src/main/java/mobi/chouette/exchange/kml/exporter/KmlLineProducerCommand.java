@@ -25,9 +25,9 @@ import mobi.chouette.exchange.kml.exporter.KmlData.KmlItem;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
 import mobi.chouette.exchange.report.ActionReporter;
-import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.JourneyPattern;
@@ -40,6 +40,7 @@ import mobi.chouette.model.util.NamingUtil;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+import com.vividsolutions.jts.geom.LineString;
 
 @Log4j
 public class KmlLineProducerCommand implements Command, Constant {
@@ -97,7 +98,8 @@ public class KmlLineProducerCommand implements Command, Constant {
 			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
 			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
 					collection.getJourneyPatterns().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, collection.getRoutes().size());
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, collection
+					.getRoutes().size());
 			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK,
 					collection.getConnectionLinks().size());
 			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT,
@@ -160,6 +162,10 @@ public class KmlLineProducerCommand implements Command, Constant {
 		for (AccessPoint point : collection.getAccessPoints()) {
 			shared.getAccessPoints().addAccessPoint(point);
 		}
+	}
+
+	private boolean isTrue(Boolean value) {
+		return value != null && value;
 	}
 
 	private boolean isEmpty(String value) {
@@ -254,8 +260,11 @@ public class KmlLineProducerCommand implements Command, Constant {
 						}
 						if (!filteredRouteSection.isEmpty()) {
 							for (RouteSection routeSection : filteredRouteSection) {
-								com.vividsolutions.jts.geom.LineString geometry = (routeSection.getInputGeometry() != null) ? routeSection
-										.getInputGeometry() : routeSection.getProcessedGeometry();
+								LineString geometry = routeSection.getProcessedGeometry();
+								if (isTrue(routeSection.getNoProcessing())
+										|| routeSection.getProcessedGeometry() == null) {
+									geometry = routeSection.getInputGeometry();
+								}
 								if (geometry != null) {
 									jpItem.addLineString(geometry);
 									sections = true;

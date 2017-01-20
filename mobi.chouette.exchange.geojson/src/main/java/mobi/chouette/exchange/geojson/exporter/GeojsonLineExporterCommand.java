@@ -66,6 +66,10 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 		Set<String> connectionLinks = new HashSet<String>();
 	}
 
+	private boolean isTrue(Boolean value) {
+		return value != null && value;
+	}
+
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
@@ -78,8 +82,6 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 			if (line == null) {
 				return result;
 			}
-
-			// log.info("[DSU] processing  : " + line.getObjectId());
 
 			SharedData shared = (SharedData) context.get(SHARED_DATA);
 			if (shared == null) {
@@ -99,16 +101,11 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 			int journeyPatternCount = 0;
 			for (Route route : routes) {
 
-				// log.info("[DSU] processing  : " + route.getObjectId());
-
 				routeCount++;
 
 				List<JourneyPattern> journeyPatterns = route.getJourneyPatterns();
 				for (JourneyPattern journeyPattern : journeyPatterns) {
 					String id = journeyPattern.getObjectId();
-
-					// log.info("[DSU] processing  : "
-					// + journeyPattern.getObjectId());
 
 					journeyPatternCount++;
 
@@ -153,13 +150,11 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 								filteredRouteSection.add(routeSection);
 						}
 						if (!filteredRouteSection.isEmpty()) {
-							RouteSection[] array = filteredRouteSection.toArray(new RouteSection[filteredRouteSection.size()]);
+							RouteSection[] array = filteredRouteSection.toArray(new RouteSection[filteredRouteSection
+									.size()]);
 							coordinates = new double[array.length][][];
 							for (int i = 0; i < array.length; i++) {
 								RouteSection routeSection = array[i];
-
-								// log.info("[DSU] processing  : "
-								// + routeSection.getObjectId());
 
 								StopArea departure = routeSection.getDeparture();
 
@@ -176,8 +171,11 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 											.getLatitude().doubleValue());
 								}
 
-								com.vividsolutions.jts.geom.LineString geometry = (routeSection.getInputGeometry() != null) ? routeSection
-										.getInputGeometry() : routeSection.getProcessedGeometry();
+								com.vividsolutions.jts.geom.LineString geometry = routeSection.getProcessedGeometry();
+								if (isTrue(routeSection.getNoProcessing())
+										|| routeSection.getProcessedGeometry() == null) {
+									geometry = routeSection.getInputGeometry();
+								}
 								if (geometry != null) {
 									coordinates[i] = getCoordinates(geometry);
 								}
@@ -198,22 +196,22 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 					keys.getConnectionLinks().size());
 			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT,
 					keys.getAccessPoints().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA,
-					keys.getStopArea().size());
-			
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA, keys
+					.getStopArea().size());
+
 			// global stats
 			reporter.addObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, "connection links",
 					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
-			reporter.addObjectReport(context, "merged", OBJECT_TYPE.ACCESS_POINT, "access points",
-					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
-			reporter.addObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, "stop areas",
-					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
+			reporter.addObjectReport(context, "merged", OBJECT_TYPE.ACCESS_POINT, "access points", OBJECT_STATE.OK,
+					IO_TYPE.OUTPUT);
+			reporter.addObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, "stop areas", OBJECT_STATE.OK,
+					IO_TYPE.OUTPUT);
 			reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, OBJECT_TYPE.CONNECTION_LINK,
 					shared.connectionLinks.size());
 			reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.ACCESS_POINT, OBJECT_TYPE.ACCESS_POINT,
 					shared.accessPoints.size());
 			reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, OBJECT_TYPE.STOP_AREA,
-					shared.physicalStops.size()+ shared.commercialStops.size());
+					shared.physicalStops.size() + shared.commercialStops.size());
 
 			// save feature collection
 			FeatureCollection target = new FeatureCollection(features);
