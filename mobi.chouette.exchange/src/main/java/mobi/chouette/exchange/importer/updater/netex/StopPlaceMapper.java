@@ -101,6 +101,9 @@ public class StopPlaceMapper {
 		boardingPosition.setMobilityRestrictedSuitable(null);
 		boardingPosition.setLiftAvailable(null);
 		boardingPosition.setStairsAvailable(null);
+		if(quay.getDescription() != null) {
+			boardingPosition.setComment(quay.getDescription().getValue());
+		}
 
 		boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
 		mapCentroid(quay, boardingPosition);
