@@ -84,6 +84,27 @@ public class RegtoppStopParserTest {
     }
 
     @Test
+    public void setBoardingPositionCommentWithPlatformCode() throws Exception {
+        RegtoppStopPointSTP regtoppStopPointSTP = new RegtoppStopPointSTP();
+        regtoppStopPointSTP.setDescription("Allèen (Plf A)");
+
+        String parentStopAreaName = "Allèen";
+        StopArea parentStopArea = new StopArea();
+        parentStopArea.setName(parentStopAreaName);
+
+        StopArea boardingPosition = new StopArea();
+
+        regtoppStopParser.setNameAndComment(regtoppStopPointSTP, boardingPosition, parentStopArea);
+
+        assertEquals(parentStopArea.getName(), parentStopAreaName, "StopArea's name should not have been changed");
+        assertEquals(boardingPosition.getName(), parentStopAreaName);
+
+        // We are not currently supporting extraction of single parenthesis with designation/registration number.
+        // So this is currently expected to be mapped to comment.
+        assertEquals(boardingPosition.getComment(), "Plf A");
+    }
+
+    @Test
     public void setBoardingPositionCommentFromDescriptionWithMultipleParentheses() {
         RegtoppStopPointSTP regtoppStopPointSTP = new RegtoppStopPointSTP();
         regtoppStopPointSTP.setDescription("Økern T (fra sentrum/mot nord)(Plf C)");
