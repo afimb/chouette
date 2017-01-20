@@ -91,6 +91,16 @@ public class StopPlaceMapperTest {
         assertEquals(stopArea.getContainedStopAreas().get(0).getName(), "Festningen / A");
     }
 
+    @Test
+    public void createQuayWithDescription() {
+        StopArea stopArea = new StopArea();
+        stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
+        stopArea.setComment("Comment text");
+        Quay quay = stopPlaceMapper.createQuay(stopArea);
+        assertNotNull(quay.getDescription(), "description should not be null for quay");
+        assertEquals(quay.getDescription().getValue(), stopArea.getComment());
+    }
+
     private StopArea createStopPlace(String name) {
         return createStopArea(name, ChouetteAreaEnum.StopPlace);
     }
