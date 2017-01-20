@@ -112,6 +112,7 @@
 					<url>jdbc:postgresql://localhost:5432/chouette_test</url>
 					<username>chouette</username>
 					<password>chouette</password>
+					<delimiterType>row</delimiterType>
 					<!--all executions are ignored if -Dmaven.test.skip=true or -DskipTests=true -->
 					<skip>${skipInitDb}</skip>
 				</configuration>
