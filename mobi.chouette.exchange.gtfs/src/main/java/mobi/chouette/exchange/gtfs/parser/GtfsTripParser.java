@@ -13,6 +13,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineSegment;
+import com.vividsolutions.jts.geom.PrecisionModel;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +31,8 @@ import mobi.chouette.exchange.gtfs.model.GtfsShape;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.LocationType;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
+import mobi.chouette.exchange.gtfs.model.GtfsStopTime.DropOffType;
+import mobi.chouette.exchange.gtfs.model.GtfsStopTime.PickupType;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip.DirectionType;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
@@ -51,22 +58,19 @@ import mobi.chouette.model.Timeband;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
+import mobi.chouette.model.type.AlightingPossibilityEnum;
+import mobi.chouette.model.type.BoardingPossibilityEnum;
 import mobi.chouette.model.type.JourneyCategoryEnum;
 import mobi.chouette.model.type.SectionStatusEnum;
 import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineSegment;
-import com.vividsolutions.jts.geom.PrecisionModel;
-
 @Log4j
 public class GtfsTripParser implements Parser, Validator, Constant {
 
 	private static final Comparator<OrderedCoordinate> COORDINATE_SORTER = new OrderedCoordinateComparator();
-
+	
 	@Getter
 	@Setter
 	private String gtfsRouteId;
@@ -842,12 +846,83 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		vehicleJourneyAtStop.setArrivalTime(gtfsStopTime.getArrivalTime().getTime());
 		vehicleJourneyAtStop.setDepartureTime(gtfsStopTime.getDepartureTime().getTime());
 
+		// Set boarding/alighting
+		// Challenge: GTFS specifies this on a trip to trip basis - which fits VehicleJourneyAtStop
+		// If put on JourneyPattern->StopPoint this applies to all Trips for a given Route
+		// StopPoint boarding/alighting has all possible values to match stoptime boarding/alighting, but
+		// VehicleJourneyAtStop does not.
+		// In order to get this as correct as possible, one must afterwards check if all trips that passes through a StopPoint
+		// have the same boarding/alighting values - if so the values can be set on StopPoint instead of VehicleJourneyAtStop
+		
+		updateBoardingAlighting(gtfsStopTime,stopPoint);
+		
 		/**
 		 * GJT : Setting arrival and departure offset to vehicleJourneyAtStop
 		 * object
 		 */
 		vehicleJourneyAtStop.setArrivalDayOffset(gtfsStopTime.getArrivalTime().getDay());
 		vehicleJourneyAtStop.setDepartureDayOffset(gtfsStopTime.getDepartureTime().getDay());
+	}
+	
+	protected void updateBoardingAlighting(GtfsStopTime gtfsStopTime, StopPoint stopPoint) {
+		// 1 Convert values from gtfs
+		AlightingPossibilityEnum alighting = toAlightingPossibility(gtfsStopTime.getDropOffType());
+		BoardingPossibilityEnum boarding = toBoardingPossibility(gtfsStopTime.getPickupType());
+		
+		AlightingPossibilityEnum existingAlighting = stopPoint.getForAlighting();
+		BoardingPossibilityEnum existingBoarding = stopPoint.getForBoarding();
+		// TODO Auto-generated method stub
+		
+		if(existingAlighting != null) {
+			if(alighting != existingAlighting) {
+				log.warn("StopPoint "+stopPoint.getObjectId()+" has conflicting alighting information: Is "+existingAlighting+" but updating to "+alighting);
+			}
+		}
+		stopPoint.setForAlighting(alighting);
+
+		if(existingBoarding != null) {
+			if(boarding != existingBoarding) {
+				log.warn("StopPoint "+stopPoint.getObjectId()+" has conflicting boarding information: Is "+existingBoarding+" but updating to "+boarding);
+			}
+		}
+		stopPoint.setForBoarding(boarding);
+
+	}
+	
+	private BoardingPossibilityEnum toBoardingPossibility(PickupType type) {
+		if(type == null) {
+			return null;
+		}
+		
+		switch (type) {
+		case Scheduled:
+			return BoardingPossibilityEnum.normal;
+		case NoAvailable:
+			return BoardingPossibilityEnum.forbidden;
+		case AgencyCall:
+			return BoardingPossibilityEnum.is_flexible;
+		case DriverCall:
+			return BoardingPossibilityEnum.request_stop;
+		}
+		return null;
+	}
+
+	private AlightingPossibilityEnum toAlightingPossibility(DropOffType type) {
+		if(type == null) {
+			return null;
+		}
+		
+		switch (type) {
+		case Scheduled:
+			return AlightingPossibilityEnum.normal;
+		case NoAvailable:
+			return AlightingPossibilityEnum.forbidden;
+		case AgencyCall:
+			return AlightingPossibilityEnum.is_flexible;
+		case DriverCall:
+			return AlightingPossibilityEnum.request_stop;
+		}
+		return null;
 	}
 
 	protected void convert(Context context, GtfsTrip gtfsTrip, VehicleJourney vehicleJourney) {
