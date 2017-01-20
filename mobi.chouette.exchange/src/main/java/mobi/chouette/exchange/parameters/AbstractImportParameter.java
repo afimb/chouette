@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 @NoArgsConstructor
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "noSave", "cleanRepository" }, name = "actionImportParameter")
+@XmlType(propOrder = { "noSave", "cleanRepository" ,"keepObsoleteLines"}, name = "actionImportParameter")
 public class AbstractImportParameter extends AbstractParameter {
 
 	@XmlElement(name = "no_save", defaultValue = "false")
@@ -27,6 +27,11 @@ public class AbstractImportParameter extends AbstractParameter {
 	@Getter
 	@Setter
 	private boolean cleanRepository = false;
+
+	@XmlElement(name = "keep_obsolete_lines", defaultValue = "false")
+	@Getter
+	@Setter
+	private boolean keepObsoleteLines = true;
 
 	public boolean isValid(Logger log) {
 		return super.isValid(log);

@@ -49,7 +49,7 @@ public class GtfsExportStopProducerTests
       parents.add(parent);
       neptuneObject.setParent(parent);
 
-      producer.save(neptuneObject,  "GTFS", parents);
+      producer.save(neptuneObject,  "GTFS", parents,false);
       GtfsStop gtfsObject = mock.getExportedStops().get(0);
       Reporter.log("verifyStopProducerStopWithFullData");
       Reporter.log(StopExporter.CONVERTER.to(context, gtfsObject));
@@ -91,7 +91,7 @@ public class GtfsExportStopProducerTests
       List<StopArea> parents = new ArrayList<>();
       parents.add(parent);
 
-      producer.save(neptuneObject,  "GTFS", parents);
+      producer.save(neptuneObject,  "GTFS", parents,false);
       GtfsStop gtfsObject = mock.getExportedStops().get(0);
       Reporter.log("verifyStopProducerStopWithLessData");
       Reporter.log(StopExporter.CONVERTER.to(context, gtfsObject));
@@ -137,7 +137,7 @@ public class GtfsExportStopProducerTests
       parents.add(parent);
       neptuneObject.setParent(parent);
 
-      producer.save(neptuneObject, "GTFS", parents);
+      producer.save(neptuneObject, "GTFS", parents,false);
       GtfsStop gtfsObject = mock.getExportedStops().get(0);
       Reporter.log("verifyStopProducerStationWithFullData");
       Reporter.log(StopExporter.CONVERTER.to(context, gtfsObject));
@@ -181,7 +181,7 @@ public class GtfsExportStopProducerTests
 
       List<StopArea> parents = new ArrayList<>();
 
-      Assert.assertFalse(producer.save(neptuneObject, "GTFS", parents));
+      Assert.assertFalse(producer.save(neptuneObject, "GTFS", parents,false));
 
    }
 
