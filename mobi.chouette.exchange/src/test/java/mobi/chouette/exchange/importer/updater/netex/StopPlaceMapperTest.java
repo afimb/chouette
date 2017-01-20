@@ -1,10 +1,7 @@
 package mobi.chouette.exchange.importer.updater.netex;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-
-import java.util.Arrays;
-
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.Referential;
 import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.Quay;
@@ -12,8 +9,10 @@ import org.rutebanken.netex.model.Quays_RelStructure;
 import org.rutebanken.netex.model.StopPlace;
 import org.testng.annotations.Test;
 
-import mobi.chouette.model.StopArea;
-import mobi.chouette.model.type.ChouetteAreaEnum;
+import java.util.Arrays;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 public class StopPlaceMapperTest {
 
@@ -89,6 +88,32 @@ public class StopPlaceMapperTest {
         StopArea stopArea = stopPlaceMapper.mapStopPlaceToStopArea(new Referential(), stopPlace);
 
         assertEquals(stopArea.getContainedStopAreas().get(0).getName(), "Festningen / A");
+    }
+
+    @Test
+    public void keepBoardingPositionComment() {
+        StopPlace stopPlace = new StopPlace()
+                .withName(new MultilingualString().withValue("Hestehovveien"))
+                .withQuays(new Quays_RelStructure()
+                        .withQuayRefOrQuay(
+                                new Quay()
+                                        .withName(new MultilingualString().withValue("A"))
+                                        .withDescription(new MultilingualString().withValue("description"))));
+
+
+        StopArea stopArea = stopPlaceMapper.mapStopPlaceToStopArea(new Referential(), stopPlace);
+
+        assertEquals(stopArea.getContainedStopAreas().get(0).getComment(), "description");
+    }
+
+    @Test
+    public void createQuayWithDescription() {
+        StopArea stopArea = new StopArea();
+        stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
+        stopArea.setComment("Comment text");
+        Quay quay = stopPlaceMapper.createQuay(stopArea);
+        assertNotNull(quay.getDescription(), "description should not be null for quay");
+        assertEquals(quay.getDescription().getValue(), stopArea.getComment());
     }
 
     private StopArea createStopPlace(String name) {

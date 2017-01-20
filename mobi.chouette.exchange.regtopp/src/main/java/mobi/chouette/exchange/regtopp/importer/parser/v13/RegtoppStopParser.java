@@ -31,7 +31,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
      * Pattern for matching description content in parentheses.
      * For instance: 'Stop place name (some comment) (some optional platform with designation A)'
      */
-    private static final Pattern PATTERN = Pattern.compile("(.[^\\)]*)?\\s?\\((.[^\\)]*)\\)\\s?(\\(.[^\\)]*\\s([a-zA-Z0-9]{0,3})\\))?");
+    private static final Pattern PATTERN = Pattern.compile("(.[^\\)]*)?\\s?\\((.[^\\)]*)\\)?\\s?(\\(.[^\\)]*\\s([a-zA-Z0-9]{0,3})\\))?");
 
     @Override
     public void parse(Context context) throws Exception {

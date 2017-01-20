@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.importer.updater.netex;
 
+import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
 
 import mobi.chouette.model.StopArea;
@@ -63,16 +64,29 @@ public class StopPlaceMapper {
 		return stopArea;
 	}
 
+	public Quay createQuay(StopArea stopArea) {
+		Quay quay = new Quay();
+		mapId(stopArea, quay);
+		setVersion(quay);
+		mapCentroid(stopArea, quay);
+		mapQuayName(stopArea, quay);
+		mapCompassBearing(stopArea,quay);
+        if(StringUtils.isNotBlank(stopArea.getComment())) {
+            quay.setDescription(new MultilingualString().withValue(stopArea.getComment()));
+        }
+		return quay;
+	}
+
 	private StopArea createStopArea(Referential referential, StopPlace stopPlace) {
 		StopArea stopArea = ObjectFactory.getStopArea(referential, stopPlace.getId());
 		stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
-		
+
 		// Set default values TODO set what we get from NSR
 		stopArea.setMobilityRestrictedSuitable(null);
 		stopArea.setLiftAvailable(null);
 		stopArea.setStairsAvailable(null);
-		
-		
+
+
 		mapCentroid(stopPlace, stopArea);
 		mapName(stopPlace, stopArea);
 
@@ -87,6 +101,9 @@ public class StopPlaceMapper {
 		boardingPosition.setMobilityRestrictedSuitable(null);
 		boardingPosition.setLiftAvailable(null);
 		boardingPosition.setStairsAvailable(null);
+		if(quay.getDescription() != null) {
+			boardingPosition.setComment(quay.getDescription().getValue());
+		}
 
 		boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
 		mapCentroid(quay, boardingPosition);
@@ -101,6 +118,7 @@ public class StopPlaceMapper {
 		}
 	}
 
+
 	private StopPlace createStopPlace(StopArea stopArea) {
 		StopPlace stopPlace = new StopPlace();
 		mapId(stopArea, stopPlace);
@@ -108,17 +126,6 @@ public class StopPlaceMapper {
 		mapCentroid(stopArea, stopPlace);
 		mapName(stopArea, stopPlace);
 		return stopPlace;
-	}
-
-
-	private Quay createQuay(StopArea stopArea) {
-		Quay quay = new Quay();
-		mapId(stopArea, quay);
-		setVersion(quay);
-		mapCentroid(stopArea, quay);
-		mapQuayName(stopArea, quay);
-		mapCompassBearing(stopArea,quay);
-		return quay;
 	}
 
 	private void mapCompassBearing(StopArea stopArea, Quay quay) {
