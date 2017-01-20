@@ -22,11 +22,12 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
+import mobi.chouette.exchange.transfer.Constant;
 import mobi.chouette.model.Line;
 
 @Log4j
 @Stateless(name = TransferExportDataLoader.COMMAND)
-public class TransferExportDataLoader implements Command {
+public class TransferExportDataLoader implements Command, Constant {
 
 	public static final String COMMAND = "TransferExporterDataLoader";
 
@@ -41,7 +42,7 @@ public class TransferExportDataLoader implements Command {
 	public boolean execute(Context context) throws Exception {
 
 		List<Line> lineToTransfer = prepareLines(context);
-		context.put("LINES", lineToTransfer);
+		context.put(LINES, lineToTransfer);
 	     
 		return true;
 	}

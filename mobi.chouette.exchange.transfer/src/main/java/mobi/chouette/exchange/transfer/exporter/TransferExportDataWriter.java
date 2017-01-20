@@ -23,8 +23,9 @@ import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.dao.ConnectionLinkDAO;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.importer.CleanRepositoryCommand;
-import mobi.chouette.exchange.transfer.importer.TransferImportParameters;
+import mobi.chouette.exchange.transfer.Constant;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.JourneyPattern;
@@ -38,7 +39,7 @@ import mobi.chouette.model.util.Referential;
 
 @Log4j
 @Stateless(name = TransferExportDataWriter.COMMAND)
-public class TransferExportDataWriter implements Command {
+public class TransferExportDataWriter implements Command, Constant {
 
 	private static final int FLUSH_SIZE = 100;
 
@@ -66,7 +67,8 @@ public class TransferExportDataWriter implements Command {
 			throw new RuntimeException("No transaction");
 		}
 
-		List<Line> lineToTransfer = (List<Line>) context.get("LINES");
+		List<Line> lineToTransfer = (List<Line>) context.get(LINES);
+		ProgressionCommand progression = (ProgressionCommand) context.get(PROGRESSION);
 
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 		Command cleanCommand = CommandFactory.create(initialContext, CleanRepositoryCommand.class.getName());
@@ -124,12 +126,14 @@ public class TransferExportDataWriter implements Command {
 			}
 		}
 
+	
 		log.info("Inserting " + referential.getStopAreas().size() + " stopareas");
 		for (StopArea sa : referential.getStopAreas().values()) {
 			stopAreaDAO.create(sa);
 		}
 		log.info("Flushing " + referential.getStopAreas().size() + " stopareas");
 		stopAreaDAO.flush();
+		progression.execute(context);
 
 		log.info("Inserting " + referential.getConnectionLinks().size() + " connection links");
 		for (ConnectionLink sa : referential.getConnectionLinks().values()) {
@@ -137,6 +141,7 @@ public class TransferExportDataWriter implements Command {
 		}
 		log.info("Flushing " + referential.getConnectionLinks().size() + " connection links");
 		connectionLinkDAO.flush();
+		progression.execute(context);
 
 		log.info("Inserting " + referential.getAccessLinks().size() + " access links");
 		for (AccessLink sa : referential.getAccessLinks().values()) {
@@ -144,6 +149,7 @@ public class TransferExportDataWriter implements Command {
 		}
 		log.info("Flushing " + referential.getAccessLinks().size() + " access links");
 		accessLinkDAO.flush();
+		progression.execute(context);
 
 		referential.clear(true);
 		
@@ -152,6 +158,7 @@ public class TransferExportDataWriter implements Command {
 			log.info("Persisting line " + line.getObjectId() + " / " + line.getName());
 
 			lineDAO.create(line);
+			progression.execute(context);
 
 			if (i % FLUSH_SIZE == 0) {
 				log.info("Intermediary flush");

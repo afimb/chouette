@@ -60,12 +60,16 @@ public class TransferImporterCommand extends AbstractExporterCommand implements 
 		ReentrantLock lock = lockManager.getLock(currentTentant);
 		try {
 
+			progression.execute(context);
 			// Wait for lock
 			
 			// Signal that the referential is ready for writing (no other jobs are trying to write to this referential)
 			log.info("Ready to receive data into referential "+currentTentant);
 			lock.lock();
 			log.info("Data received into referential "+currentTentant+", finishing job");
+			
+			progression.terminate(context, 0);
+			progression.execute(context);
 			
 			result = SUCCESS;
 
