@@ -2,10 +2,7 @@ package mobi.chouette.exchange.importer.updater.netex;
 
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
-import mobi.chouette.model.util.Referential;
-import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.Quay;
-import org.rutebanken.netex.model.Quays_RelStructure;
 import org.rutebanken.netex.model.StopPlace;
 import org.testng.annotations.Test;
 
@@ -37,7 +34,7 @@ public class StopPlaceMapperTest {
         Quay firstQuay = (Quay) netexStopPlace.getQuays().getQuayRefOrQuay().get(0);
         assertEquals(firstQuay.getName().getValue(), stopPlace.getName());
     }
-    
+
     @Test
     public void stopPlaceWithoutBoardingPositions() {
         StopArea stopPlace = createStopPlace("Klavestadhaugen");
@@ -67,51 +64,11 @@ public class StopPlaceMapperTest {
     }
 
     @Test
-    public void setBoardingPositionNameIfMissing() {
-        StopPlace stopPlace = new StopPlace()
-                .withName(new MultilingualString().withValue("Festningen"))
-                .withQuays(new Quays_RelStructure()
-                        .withQuayRefOrQuay(new Quay()));
-
-        StopArea stopArea = stopPlaceMapper.mapStopPlaceToStopArea(new Referential(), stopPlace);
-
-        assertEquals(stopArea.getContainedStopAreas().get(0).getName(), "Festningen");
-    }
-
-    @Test
-    public void keepBoardingPositionNameIfDifferent() {
-        StopPlace stopPlace = new StopPlace()
-                .withName(new MultilingualString().withValue("Festningen"))
-                .withQuays(new Quays_RelStructure()
-                        .withQuayRefOrQuay(new Quay().withName(new MultilingualString().withValue("A"))));
-
-        StopArea stopArea = stopPlaceMapper.mapStopPlaceToStopArea(new Referential(), stopPlace);
-
-        assertEquals(stopArea.getContainedStopAreas().get(0).getName(), "Festningen / A");
-    }
-
-    @Test
-    public void keepBoardingPositionComment() {
-        StopPlace stopPlace = new StopPlace()
-                .withName(new MultilingualString().withValue("Hestehovveien"))
-                .withQuays(new Quays_RelStructure()
-                        .withQuayRefOrQuay(
-                                new Quay()
-                                        .withName(new MultilingualString().withValue("A"))
-                                        .withDescription(new MultilingualString().withValue("description"))));
-
-
-        StopArea stopArea = stopPlaceMapper.mapStopPlaceToStopArea(new Referential(), stopPlace);
-
-        assertEquals(stopArea.getContainedStopAreas().get(0).getComment(), "description");
-    }
-
-    @Test
     public void createQuayWithDescription() {
         StopArea stopArea = new StopArea();
         stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
         stopArea.setComment("Comment text");
-        Quay quay = stopPlaceMapper.createQuay(stopArea);
+        Quay quay = stopPlaceMapper.mapQuay(stopArea);
         assertNotNull(quay.getDescription(), "description should not be null for quay");
         assertEquals(quay.getDescription().getValue(), stopArea.getComment());
     }
