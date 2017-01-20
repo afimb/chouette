@@ -4,10 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.ejb.EJB;
@@ -24,7 +22,6 @@ import com.jamonapi.MonitorFactory;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
-import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.chain.Command;
@@ -34,18 +31,20 @@ import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.exporter.AbstractExporterCommand;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
-import mobi.chouette.exchange.transfer.LockManager;
-import mobi.chouette.exchange.transfer.importer.TransferImportParameters;
-import mobi.chouette.exchange.transfer.importer.JobParametersWrapper;
 import mobi.chouette.exchange.report.ReportConstant;
+import mobi.chouette.exchange.transfer.Constant;
+import mobi.chouette.exchange.transfer.LockManager;
+import mobi.chouette.exchange.transfer.importer.JobParametersWrapper;
+import mobi.chouette.exchange.transfer.importer.TransferImportParameters;
+import mobi.chouette.model.Line;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
-import mobi.chouette.service.Parameters;
 
 @Log4j
 @Stateless(name = TransferExporterCommand.COMMAND)
 public class TransferExporterCommand extends AbstractExporterCommand implements Command, Constant, ReportConstant {
+
 
 	@EJB
 	private JobServiceManager jobServiceManager;
@@ -67,33 +66,17 @@ public class TransferExporterCommand extends AbstractExporterCommand implements 
 		// initialize reporting and progression
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
 				ProgressionCommand.class.getName());
-		progression.initialize(context, 2);
+	
+		progression.initialize(context, 3);  //  Must do recount
+		context.put(PROGRESSION, progression);
 
 		String currentTentant = ContextHolder.getContext();
 
 		ReentrantLock lock = null;
 		try {
-
-			// read parameters
-			Object configuration = context.get(CONFIGURATION);
-			if (!(configuration instanceof TransferExportParameters)) {
-				// fatal wrong parameters
-				log.error("invalid parameters for transfer export " + configuration.getClass().getName());
-				reporter.setActionError(context, ERROR_CODE.INVALID_PARAMETERS,
-						"invalid parameters for transfer export " + configuration.getClass().getName());
-				return ERROR;
-			}
-
-			TransferExportParameters parameters = (TransferExportParameters) configuration;
-			if (parameters.getStartDate() != null && parameters.getEndDate() != null) {
-				if (parameters.getStartDate().after(parameters.getEndDate())) {
-					reporter.setActionError(context, ERROR_CODE.INVALID_PARAMETERS, "end date before start date");
-					return ERROR;
-
-				}
-
-			}
+			TransferExportParameters parameters = (TransferExportParameters) context.get(CONFIGURATION);
 			jobServiceManager.validateReferential(parameters.getDestReferentialName());
+			progression.execute(context);
 
 			// Obtain lock for destination referential
 			lock = synchronizer.getLock(parameters.getDestReferentialName());
@@ -103,6 +86,7 @@ public class TransferExporterCommand extends AbstractExporterCommand implements 
 			Command dataLoader = CommandFactory.create(initialContext, TransferExportDataLoader.class.getName());
 			dataLoader.execute(context);
 			progression.execute(context);
+			int numLines = ((List<Line>)context.get(LINES)).size();
 
 			// Cancel existing jobs since this one is deleting all data
 			for (JobService job : jobServiceManager.activeJobs()) {
@@ -114,6 +98,8 @@ public class TransferExporterCommand extends AbstractExporterCommand implements 
 			// Release lock
 			lock.lock();
 
+			
+			// Create corresponding "import" job in destination referential to ensure we have locked the referential against other jobs
 			TransferImportParameters importParameters = new TransferImportParameters();
 			BeanUtils.copyProperties(importParameters, parameters);
 			
@@ -137,6 +123,8 @@ public class TransferExporterCommand extends AbstractExporterCommand implements 
 				log.info("Write job has obtained lock");
 				ContextHolder.setContext(parameters.getDestReferentialName());
 
+				progression.start(context, numLines+3); // separate saving of stopareas, connectionlinks and accesslinks
+				
 				Command dataWriter = CommandFactory.create(initialContext, TransferExportDataWriter.class.getName());
 				dataWriter.execute(context);
 				progression.execute(context);
@@ -146,6 +134,8 @@ public class TransferExporterCommand extends AbstractExporterCommand implements 
 				// abort
 				result = ERROR;
 			}
+			progression.terminate(context, 1);
+			progression.execute(context);
 
 		} catch (CommandCancelledException e) {
 			reporter.setActionError(context, ERROR_CODE.INTERNAL_ERROR, "Command cancelled");

@@ -2,6 +2,7 @@ package mobi.chouette.exchange.transfer.exporter;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 
 import lombok.extern.log4j.Log4j;
@@ -49,31 +50,34 @@ public class TransferExporterInputValidator extends AbstractInputValidator {
 			return false;
 		}
 		
+		if (ex.getStartDate() != null && ex.getEndDate() != null) {
+			if (ex.getStartDate().after(ex.getEndDate())) {
+				log.error("startDate "+ex.getStartDate()+ " cannot be after endDate "+ex.getEndDate());
+				return false;
+			}
+		}
+
+		
 		if(ex.getDestReferentialName() == null) {
 			log.error("Destination referential must be set");
 			return false;
 		}
-		// TODO validate that destination referential exists
-		
 		return true;
 	}
 
 	@Override
 	public boolean checkFilename(String fileName) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public boolean checkFile(String fileName, Path filePath, AbstractParameter abstractParameter) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public List<TestDescription> getTestList() {
-		// TODO Auto-generated method stub
-		return null;
+		return Collections.emptyList();
 	}
 	
 	public static class DefaultFactory extends InputValidatorFactory {

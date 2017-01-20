@@ -36,8 +36,6 @@ import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.exchange.importer.CleanRepositoryCommand;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.transfer.JobDataTest;
-import mobi.chouette.exchange.transfer.exporter.TransferExportParameters;
-import mobi.chouette.exchange.transfer.exporter.TransferExporterCommand;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Company;
@@ -54,6 +52,7 @@ import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
+import mobi.chouette.scheduler.Scheduler;
 
 public class TransferExporterCommandTest extends Arquillian implements mobi.chouette.common.Constant {
 
@@ -84,6 +83,9 @@ public class TransferExporterCommandTest extends Arquillian implements mobi.chou
 
 	@Inject
 	UserTransaction utx;
+	
+	@EJB
+	Scheduler scheduler;
 
 	@Deployment
 	public static WebArchive createDeployment() {
