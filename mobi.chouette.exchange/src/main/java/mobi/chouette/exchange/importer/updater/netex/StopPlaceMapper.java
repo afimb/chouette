@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.importer.updater.netex;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
@@ -9,6 +10,7 @@ import org.rutebanken.netex.model.*;
 /**
  * Map from chouette model to NeTEx
  */
+@Log4j
 public class StopPlaceMapper {
 
     private static final String VERSION = "1";
@@ -123,7 +125,8 @@ public class StopPlaceMapper {
                 sp.setStopPlaceType(StopTypeEnumeration.FERRY_STOP);
                 break;
             default:
-
+                log.warn("Could not map stop place type for stop place " + sp.getId() + " Chouette type was: " + mode);
         }
+        log.debug("Mapped stop place type from " + mode + " to " + sp.getStopPlaceType());
     }
 }
