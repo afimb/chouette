@@ -1,11 +1,5 @@
 package mobi.chouette.exchange.regtopp.importer.parser.v12;
 
-import static mobi.chouette.common.Constant.CONFIGURATION;
-import static mobi.chouette.common.Constant.PARSER;
-import static mobi.chouette.common.Constant.REFERENTIAL;
-
-import java.util.List;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
@@ -18,16 +12,13 @@ import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.importer.parser.RouteKey;
 import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppStopParser;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppRouteTMS;
-import mobi.chouette.model.Company;
-import mobi.chouette.model.Footnote;
-import mobi.chouette.model.JourneyPattern;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.Network;
-import mobi.chouette.model.Route;
-import mobi.chouette.model.StopArea;
-import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.*;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+
+import java.util.List;
+
+import static mobi.chouette.common.Constant.*;
 
 @Log4j
 public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppRouteParser {
@@ -83,6 +74,7 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 
 				// Create stop point
 				String chouetteStopPointId = ObjectIdCreator.createStopPointId(configuration,routeKey,routeSegment.getSequenceNumberStop());
+				log.debug("Created chouette stop point ID: " + chouetteStopPointId);
 
 				// Might return null if invalid stopPoint
 				StopPoint stopPoint = createStopPoint(referential, context, routeSegment, chouetteStopPointId);
@@ -107,7 +99,9 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 
 		String chouetteStopAreaId = ObjectIdCreator.createStopAreaId(configuration, routeSegment.getStopId() + RegtoppStopParser.BOARDING_POSITION_ID_SUFFIX);
+		log.debug("Created chouette stop area ID with suffix from route segment stop ID: " + chouetteStopAreaId);
 		if(referential.getSharedStopAreas().containsKey(chouetteStopAreaId)) {
+			log.debug("Referential contains key for created chouette stop area ID " + chouetteStopAreaId + " in shared stop areas.");
 			StopArea stopArea = ObjectFactory.getStopArea(referential, chouetteStopAreaId);
 			
 			StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
