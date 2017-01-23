@@ -29,7 +29,7 @@ public class RegtoppStopParserTest {
         AbstractRegtoppStopHPL regtoppStop = createStop("12345618");
         RegtoppImportParameters configuration = createConfig("prefix");
 
-        regtoppStopParser.mapRegtoppStop(regtoppStop, configuration, referential, Coordinate.UTM_32N, new HashMap<String, StopArea>());
+        regtoppStopParser.mapRegtoppStop(regtoppStop, configuration, referential, Coordinate.UTM_32N);
 
         StopArea stopArea = getStopArea(configuration, regtoppStop.getStopId());
         assertEquals(stopArea.getAreaType(), ChouetteAreaEnum.CommercialStopPoint);
@@ -40,7 +40,7 @@ public class RegtoppStopParserTest {
         AbstractRegtoppStopHPL regtoppStop = createStop("12345680");
         RegtoppImportParameters configuration = createConfig("prefix");
 
-        regtoppStopParser.mapRegtoppStop(regtoppStop, configuration, referential, Coordinate.UTM_32N, new HashMap<String, StopArea>());
+        regtoppStopParser.mapRegtoppStop(regtoppStop, configuration, referential, Coordinate.UTM_32N);
 
         StopArea stopArea = getStopArea(configuration, regtoppStop.getStopId());
         assertEquals(stopArea.getContainedStopAreas().size(), 1);
@@ -52,7 +52,7 @@ public class RegtoppStopParserTest {
         AbstractRegtoppStopHPL regtoppStop = createStop("12345679");
         RegtoppImportParameters configuration = createConfig("prefix");
 
-        regtoppStopParser.mapRegtoppStop(regtoppStop, configuration, referential, Coordinate.UTM_32N, new HashMap<String, StopArea>());
+        regtoppStopParser.mapRegtoppStop(regtoppStop, configuration, referential, Coordinate.UTM_32N);
 
         StopArea stopArea = getStopArea(configuration, regtoppStop.getStopId());
         assertEquals(stopArea.objectIdSuffix().length(), 8);
@@ -63,7 +63,7 @@ public class RegtoppStopParserTest {
         AbstractRegtoppStopHPL regtoppStop = createStop("11020517");
         RegtoppImportParameters configuration = createConfig("prefix");
 
-        regtoppStopParser.mapRegtoppStop(regtoppStop, configuration, referential, Coordinate.UTM_32N, new HashMap<String, StopArea>());
+        regtoppStopParser.mapRegtoppStop(regtoppStop, configuration, referential, Coordinate.UTM_32N);
 
         StopArea stopArea = getStopArea(configuration, regtoppStop.getStopId());
         assertEquals(stopArea.getContainedStopAreas().get(0).objectIdSuffix().length(), 10, stopArea.getObjectId());
@@ -74,7 +74,7 @@ public class RegtoppStopParserTest {
         AbstractRegtoppStopHPL regtoppStop = createStop("11020517");
         RegtoppImportParameters configuration = createConfig("prefix");
 
-        regtoppStopParser.mapRegtoppStop(regtoppStop, configuration, referential, Coordinate.UTM_32N, new HashMap<String, StopArea>());
+        regtoppStopParser.mapRegtoppStop(regtoppStop, configuration, referential, Coordinate.UTM_32N);
 
         StopArea boardingPosition = getStopArea(configuration, regtoppStop.getStopId() + RegtoppStopParser.BOARDING_POSITION_ID_SUFFIX);
 
