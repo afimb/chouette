@@ -1,15 +1,5 @@
 package mobi.chouette.exchange.regtopp.importer.parser.v11;
 
-import static mobi.chouette.common.Constant.CONFIGURATION;
-import static mobi.chouette.common.Constant.PARSER;
-import static mobi.chouette.common.Constant.REFERENTIAL;
-
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
@@ -25,6 +15,11 @@ import mobi.chouette.model.util.Coordinate;
 import mobi.chouette.model.util.CoordinateUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+import org.apache.commons.lang.StringUtils;
+
+import java.math.BigDecimal;
+
+import static mobi.chouette.common.Constant.*;
 
 @Log4j
 public class RegtoppStopParser implements Parser {
@@ -70,15 +65,13 @@ public class RegtoppStopParser implements Parser {
 			RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 			String projection = configuration.getCoordinateProjection();
 
-			Map<String, StopArea> parentStopPlaceCache = new HashMap<String, StopArea>();
 
 			for (AbstractRegtoppStopHPL stop : importer.getStopById()) {
 				if (shouldImportHPL(stop)) {
-					mapRegtoppStop(stop, configuration, referential, projection, parentStopPlaceCache);
+					mapRegtoppStop(stop, configuration, referential, projection);
 				}
 			}
-			parentStopPlaceCache.clear();
-			
+
 		} catch (Exception e) {
 			log.error("Error parsing StopArea", e);
 			throw e;
@@ -86,19 +79,13 @@ public class RegtoppStopParser implements Parser {
 	}
 
 	protected void mapRegtoppStop(AbstractRegtoppStopHPL stop, RegtoppImportParameters configuration,
-			Referential referential, String projection, Map<String, StopArea> parentStopPlaceCache) {
-
-		StopArea stopArea = parentStopPlaceCache.get(stop.getFullName());
-		if (stopArea == null) {
-			String stopPlaceObjectId = ObjectIdCreator.createStopAreaId(configuration, stop.getFullStopId());
-			stopArea = ObjectFactory.getStopArea(referential, stopPlaceObjectId);
-			stopArea.setName(stop.getFullName());
-			// stopArea.setRegistrationNumber(stop.getShortName());
-			stopArea.setAreaType(PARENT_STOP_PLACE_TYPE);
-			convertAndSetCoordinates(stopArea, stop.getX(), stop.getY(), projection);
-
-			parentStopPlaceCache.put(stop.getFullName(), stopArea);
-		}
+								  Referential referential, String projection) {
+		String stopPlaceObjectId = ObjectIdCreator.createStopAreaId(configuration, stop.getFullStopId());
+		StopArea stopArea = ObjectFactory.getStopArea(referential, stopPlaceObjectId);
+		stopArea.setName(stop.getFullName());
+		// stopArea.setRegistrationNumber(stop.getShortName());
+		stopArea.setAreaType(PARENT_STOP_PLACE_TYPE);
+		convertAndSetCoordinates(stopArea, stop.getX(), stop.getY(), projection);
 
 		String boardingPositionObjectId = ObjectIdCreator.createStopAreaId(configuration,
 				stop.getFullStopId() + BOARDING_POSITION_ID_SUFFIX);
