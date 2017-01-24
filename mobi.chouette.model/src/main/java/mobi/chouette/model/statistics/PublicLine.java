@@ -10,10 +10,9 @@ import javax.xml.bind.annotation.XmlType;
 
 import lombok.Getter;
 
-
 @XmlRootElement(name = "lineStatistics")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "lineNumber", "lineNames","effectivePeriods", "lines" })
+@XmlType(propOrder = { "lineNumber", "lineNames", "effectivePeriods", "lines" })
 @Getter
 public class PublicLine implements Comparable<PublicLine> {
 	private String lineNumber;
@@ -23,7 +22,11 @@ public class PublicLine implements Comparable<PublicLine> {
 
 	@Override
 	public int compareTo(PublicLine o) {
-		return lineNumber.compareTo(o.lineNumber);
+		if (lineNumber != null && o.lineNumber != null) {
+			return lineNumber.compareTo(o.lineNumber);
+		} else {
+			return -1;
+		}
 	}
 
 	public PublicLine(String number) {
