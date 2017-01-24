@@ -22,6 +22,7 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.dao.ConnectionLinkDAO;
 import mobi.chouette.dao.LineDAO;
+import mobi.chouette.dao.RouteSectionDAO;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.importer.CleanRepositoryCommand;
@@ -31,6 +32,7 @@ import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
@@ -57,6 +59,9 @@ public class TransferExportDataWriter implements Command, Constant {
 	@EJB
 	private AccessLinkDAO accessLinkDAO;
 
+	@EJB
+	private RouteSectionDAO routeSectionDAO;
+
 	@PersistenceContext(unitName = "referential")
 	private EntityManager em;
 
@@ -82,101 +87,128 @@ public class TransferExportDataWriter implements Command, Constant {
 		// Persist
 		log.info("Starting to persist lines, count=" + lineToTransfer.size());
 
-		// TODO collect StopArea, ConnectionLink and AccessLink into separate Sets
+		// TODO collect StopArea, ConnectionLink, AccessLink and RouteSections into separate Sets
 		Referential referential = new Referential();
-		for (Line l : lineToTransfer) {
-			for (Route r : l.getRoutes()) {
-				for (StopPoint sp : r.getStopPoints()) {
-					StopArea sa = sp.getContainedInStopArea();
+		try {
+			for (Line l : lineToTransfer) {
+				for (Route r : l.getRoutes()) {
+					for(JourneyPattern jp : r.getJourneyPatterns()) {
+						for(RouteSection rs : jp.getRouteSections()) {
+							referential.getRouteSections().putIfAbsent(rs.getObjectId(), rs);
+						}
+					}
+					
+					
+					for (StopPoint sp : r.getStopPoints()) {
+						StopArea sa = sp.getContainedInStopArea();
 
-					if (sa != null) {
-						referential.getStopAreas().put(sa.getObjectId(), sa);
-						if (sa.getParent() != null) {
-							referential.getStopAreas().put(sa.getParent().getObjectId(), sa.getParent());
-						}
-						for (ConnectionLink cle : sa.getConnectionEndLinks()) {
-							if (cle.getEndOfLink() != null) {
-								referential.getStopAreas().put(cle.getEndOfLink().getObjectId(), cle.getEndOfLink());
+						if (sa != null) {
+							referential.getStopAreas().putIfAbsent(sa.getObjectId(), sa);
+							if (sa.getParent() != null) {
+								referential.getStopAreas().putIfAbsent(sa.getParent().getObjectId(), sa.getParent());
 							}
-							if (cle.getStartOfLink() != null) {
-								referential.getStopAreas().put(cle.getStartOfLink().getObjectId(),
-										cle.getStartOfLink());
-							}
+							for (ConnectionLink cle : sa.getConnectionEndLinks()) {
+								if (cle.getEndOfLink() != null) {
+									referential.getStopAreas().putIfAbsent(cle.getEndOfLink().getObjectId(), cle.getEndOfLink());
+								}
+								if (cle.getStartOfLink() != null) {
+									referential.getStopAreas().putIfAbsent(cle.getStartOfLink().getObjectId(),
+											cle.getStartOfLink());
+								}
 
-							referential.getConnectionLinks().put(cle.getObjectId(), cle);
-						}
-						for (ConnectionLink cle : sa.getConnectionStartLinks()) {
-							if (cle.getEndOfLink() != null) {
-								referential.getStopAreas().put(cle.getEndOfLink().getObjectId(), cle.getEndOfLink());
+								referential.getConnectionLinks().putIfAbsent(cle.getObjectId(), cle);
 							}
-							if (cle.getStartOfLink() != null) {
-								referential.getStopAreas().put(cle.getStartOfLink().getObjectId(),
-										cle.getStartOfLink());
+							for (ConnectionLink cle : sa.getConnectionStartLinks()) {
+								if (cle.getEndOfLink() != null) {
+									referential.getStopAreas().putIfAbsent(cle.getEndOfLink().getObjectId(), cle.getEndOfLink());
+								}
+								if (cle.getStartOfLink() != null) {
+									referential.getStopAreas().putIfAbsent(cle.getStartOfLink().getObjectId(),
+											cle.getStartOfLink());
+								}
+								referential.getConnectionLinks().putIfAbsent(cle.getObjectId(), cle);
 							}
-							referential.getConnectionLinks().put(cle.getObjectId(), cle);
-						}
-						for (AccessLink cle : sa.getAccessLinks()) {
-							if (cle.getStopArea() != null) {
-								referential.getStopAreas().put(cle.getStopArea().getObjectId(), cle.getStopArea());
+							for (AccessLink cle : sa.getAccessLinks()) {
+								if (cle.getStopArea() != null) {
+									referential.getStopAreas().putIfAbsent(cle.getStopArea().getObjectId(), cle.getStopArea());
+								}
+								referential.getAccessLinks().putIfAbsent(cle.getObjectId(), cle);
 							}
-							referential.getAccessLinks().put(cle.getObjectId(), cle);
+							
+							for(RouteSection rs : sa.getRouteSectionArrivals()) {
+								referential.getRouteSections().putIfAbsent(rs.getObjectId(), rs);
+							}
+							for(RouteSection rs : sa.getRouteSectionDepartures()) {
+								referential.getRouteSections().putIfAbsent(rs.getObjectId(), rs);
+							}
 						}
 					}
 				}
 			}
-		}
+			
 
-	
-		log.info("Inserting " + referential.getStopAreas().size() + " stopareas");
-		for (StopArea sa : referential.getStopAreas().values()) {
-			stopAreaDAO.create(sa);
-		}
-		log.info("Flushing " + referential.getStopAreas().size() + " stopareas");
-		stopAreaDAO.flush();
-		progression.execute(context);
 
-		log.info("Inserting " + referential.getConnectionLinks().size() + " connection links");
-		for (ConnectionLink sa : referential.getConnectionLinks().values()) {
-			connectionLinkDAO.create(sa);
-		}
-		log.info("Flushing " + referential.getConnectionLinks().size() + " connection links");
-		connectionLinkDAO.flush();
-		progression.execute(context);
 
-		log.info("Inserting " + referential.getAccessLinks().size() + " access links");
-		for (AccessLink sa : referential.getAccessLinks().values()) {
-			accessLinkDAO.create(sa);
-		}
-		log.info("Flushing " + referential.getAccessLinks().size() + " access links");
-		accessLinkDAO.flush();
-		progression.execute(context);
-
-		referential.clear(true);
-		
-		for (int i = 0; i < lineToTransfer.size(); i++) {
-			Line line = lineToTransfer.get(i);
-			log.info("Persisting line " + line.getObjectId() + " / " + line.getName());
-
-			lineDAO.create(line);
+			log.info("Inserting " + referential.getStopAreas().size() + " stopareas");
+			for (StopArea sa : referential.getStopAreas().values()) {
+				stopAreaDAO.create(sa);
+			}
+			log.info("Flushing " + referential.getStopAreas().size() + " stopareas");
+			stopAreaDAO.flush();
 			progression.execute(context);
 
-			if (i % FLUSH_SIZE == 0) {
-				log.info("Intermediary flush");
-				lineDAO.flush();
-				// Remove most flushed objects from persistence context to ease garbage collection
-				detachLineFromPersistenceContext(lineToTransfer, i, FLUSH_SIZE);
-				log.info("Intermediary flush completed");
+			log.info("Inserting " + referential.getConnectionLinks().size() + " connection links");
+			for (ConnectionLink sa : referential.getConnectionLinks().values()) {
+				connectionLinkDAO.create(sa);
 			}
+			log.info("Flushing " + referential.getConnectionLinks().size() + " connection links");
+			connectionLinkDAO.flush();
+			progression.execute(context);
+
+			log.info("Inserting " + referential.getAccessLinks().size() + " access links");
+			for (AccessLink sa : referential.getAccessLinks().values()) {
+				accessLinkDAO.create(sa);
+			}
+			log.info("Flushing " + referential.getAccessLinks().size() + " access links");
+			accessLinkDAO.flush();
+			progression.execute(context);
+
+			log.info("Inserting " + referential.getRouteSections().size() + " route sections");
+			for (RouteSection sa : referential.getRouteSections().values()) {
+				routeSectionDAO.create(sa);
+			}
+			log.info("Flushing " + referential.getRouteSections().size() + " route sections");
+			routeSectionDAO.flush();
+			progression.execute(context);
+
+			referential.clear(true);
+			
+			for (int i = 0; i < lineToTransfer.size(); i++) {
+				Line line = lineToTransfer.get(i);
+				log.info("Persisting line " + line.getObjectId() + " / " + line.getName());
+
+				lineDAO.create(line);
+				progression.execute(context);
+
+				if (i % FLUSH_SIZE == 0) {
+					log.info("Intermediary flush");
+					lineDAO.flush();
+					// Remove most flushed objects from persistence context to ease garbage collection
+					detachLineFromPersistenceContext(lineToTransfer, i, FLUSH_SIZE);
+					log.info("Intermediary flush completed");
+				}
+			}
+
+			log.info("Final flush");
+			lineDAO.flush();
+			log.info("Final flush completed");
+
+			return true;
+		} finally {
+			em.clear();
+			referential.clear(true);
+			lineToTransfer.clear();
 		}
-
-		log.info("Final flush");
-		lineDAO.flush();
-		log.info("Final flush completed");
-
-		// Clear everything to free memory
-		em.clear();
-
-		return true;
 	}
 
 	private void detachLineFromPersistenceContext(List<Line> lineToTransfer, int i, int flushSize) {
