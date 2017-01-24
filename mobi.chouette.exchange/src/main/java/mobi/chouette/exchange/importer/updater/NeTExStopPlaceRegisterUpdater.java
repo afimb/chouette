@@ -205,12 +205,12 @@ public class NeTExStopPlaceRegisterUpdater {
 					log.error("Could not find StopArea for objectId=" + ToStringBuilder.reflectionToString(sp) + " correlationId: "+correlationId);
 				} else {
 					// Recursively find all transportModes
-					Set<TransportModeNameEnum> transportMode = findTransportModeForStopArea(
-							new HashSet<>(), sa);
+					Set<TransportModeNameEnum> transportMode = findTransportModeForStopArea(new HashSet<>(), sa);
 					if (transportMode.size() > 1) {
 						log.warn("Found more than one transport mode for StopArea with id " + sp.getId() + ": "
 								+ ToStringBuilder.reflectionToString(transportMode.toArray(),ToStringStyle.SIMPLE_STYLE) + ", will use "
 								+ transportMode.iterator().next()+ " correlationId: "+correlationId);
+						stopPlaceMapper.mapTransportMode(sp, transportMode.iterator().next());
 					} else if (transportMode.size() == 1) {
 						stopPlaceMapper.mapTransportMode(sp, transportMode.iterator().next());
 					} else {
