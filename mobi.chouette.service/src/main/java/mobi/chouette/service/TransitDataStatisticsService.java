@@ -18,6 +18,7 @@ import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.joda.time.DateMidnight;
 import org.joda.time.LocalDate;
@@ -202,9 +203,25 @@ public class TransitDataStatisticsService {
 			lineIdToLine.put(l.getId(), l);
 		}
 
+		
+		Map<String,String> lineNameToFakeLineNumber = new HashMap<>();
+		
+		int fakeLineNumberCounter = 0;
+		
 		for (LineAndTimetable lat : allTimetableForAllLines) {
 			mobi.chouette.model.Line l = lineIdToLine.get(lat.getLineId());
 
+			String number = StringUtils.trimToNull(l.getNumber());
+			if(number == null) {
+				String lineNameKey = l.getName()+"-"+l.getCompany().getName();
+				number = lineNameToFakeLineNumber.get(lineNameKey);
+				if(number == null) {
+					number = "<"+(++fakeLineNumberCounter)+">";
+					lineNameToFakeLineNumber.put(lineNameKey, number);
+				}
+			}
+			l.setNumber(number);
+			
 			PublicLine publicLine = publicLines.get(l.getNumber());
 			if (publicLine == null) {
 				publicLine = new PublicLine(l.getNumber());
