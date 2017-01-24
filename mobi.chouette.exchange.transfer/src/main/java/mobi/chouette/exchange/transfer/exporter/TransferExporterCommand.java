@@ -67,7 +67,7 @@ public class TransferExporterCommand extends AbstractExporterCommand implements 
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
 				ProgressionCommand.class.getName());
 	
-		progression.initialize(context, 3);  //  Must do recount
+		progression.initialize(context, 4);  //  Must do recount
 		context.put(PROGRESSION, progression);
 
 		String currentTentant = ContextHolder.getContext();
