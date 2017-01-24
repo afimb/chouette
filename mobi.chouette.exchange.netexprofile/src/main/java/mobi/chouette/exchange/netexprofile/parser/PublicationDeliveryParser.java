@@ -1,46 +1,5 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.bind.JAXBElement;
-
-import org.rutebanken.netex.model.AvailabilityCondition;
-import org.rutebanken.netex.model.Common_VersionFrameStructure;
-import org.rutebanken.netex.model.CompositeFrame;
-import org.rutebanken.netex.model.DataManagedObjectStructure;
-import org.rutebanken.netex.model.DayOfWeekEnumeration;
-import org.rutebanken.netex.model.DayType;
-import org.rutebanken.netex.model.DayTypesInFrame_RelStructure;
-import org.rutebanken.netex.model.JourneyPatternsInFrame_RelStructure;
-import org.rutebanken.netex.model.JourneysInFrame_RelStructure;
-import org.rutebanken.netex.model.LinesInFrame_RelStructure;
-import org.rutebanken.netex.model.Network;
-import org.rutebanken.netex.model.OrganisationsInFrame_RelStructure;
-import org.rutebanken.netex.model.PassengerStopAssignment;
-import org.rutebanken.netex.model.PropertiesOfDay_RelStructure;
-import org.rutebanken.netex.model.PropertyOfDay;
-import org.rutebanken.netex.model.PublicationDeliveryStructure;
-import org.rutebanken.netex.model.QuayRefStructure;
-import org.rutebanken.netex.model.ResourceFrame;
-import org.rutebanken.netex.model.RoutesInFrame_RelStructure;
-import org.rutebanken.netex.model.ScheduledStopPointRefStructure;
-import org.rutebanken.netex.model.ServiceCalendarFrame;
-import org.rutebanken.netex.model.ServiceFrame;
-import org.rutebanken.netex.model.SiteFrame;
-import org.rutebanken.netex.model.StopAssignment_VersionStructure;
-import org.rutebanken.netex.model.StopAssignmentsInFrame_RelStructure;
-import org.rutebanken.netex.model.StopPlaceRefStructure;
-import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
-import org.rutebanken.netex.model.TariffZonesInFrame_RelStructure;
-import org.rutebanken.netex.model.TimetableFrame;
-import org.rutebanken.netex.model.TransfersInFrame_RelStructure;
-import org.rutebanken.netex.model.ValidityConditions_RelStructure;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
@@ -48,19 +7,23 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
+import mobi.chouette.model.*;
 import mobi.chouette.model.JourneyPattern;
-import mobi.chouette.model.Period;
 import mobi.chouette.model.Route;
-import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
-import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+import org.rutebanken.netex.model.*;
+import org.rutebanken.netex.model.Network;
+
+import javax.xml.bind.JAXBElement;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.*;
 
 @Log4j
 public class PublicationDeliveryParser implements Parser, Constant {
@@ -238,12 +201,13 @@ public class PublicationDeliveryParser implements Parser, Constant {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void parseServiceCalendarFrame(Context context, List<ServiceCalendarFrame> serviceCalendarFrames, CompositeFrame compositeFrame) throws Exception {
         Referential referential = (Referential) context.get(REFERENTIAL);
 
 		for (ServiceCalendarFrame serviceCalendarFrame : serviceCalendarFrames) {
-
             DayTypesInFrame_RelStructure dayTypesStruct = serviceCalendarFrame.getDayTypes();
+
             if (dayTypesStruct != null) {
                 List<JAXBElement<? extends DataManagedObjectStructure>> dayTypeElements = dayTypesStruct.getDayType_();
 
@@ -252,27 +216,31 @@ public class PublicationDeliveryParser implements Parser, Constant {
                 	
                 	DayType dayType = (DayType) dayTypeElement.getValue();
                     Timetable timetable = ObjectFactory.getTimetable(referential, dayType.getId());
-                    
-                    PropertiesOfDay_RelStructure propertiesOfDayStruct = dayType.getProperties();
-                    List<PropertyOfDay> propertyOfDayList = propertiesOfDayStruct.getPropertyOfDay();
 
-                    for (PropertyOfDay propertyOfDay : propertyOfDayList) {
-                        List<DayOfWeekEnumeration> daysOfWeeks = propertyOfDay.getDaysOfWeek();
-                        for(DayOfWeekEnumeration dayOfWeek : daysOfWeeks) {
-                        	List<DayTypeEnum> convertDayOfWeek = NetexUtils.convertDayOfWeek(dayOfWeek);
-                        	for(DayTypeEnum e : convertDayOfWeek) {
-                        		timetable.addDayType(e);
-                        	}
-                        		
-                        }
-                    }
-                    
+                    PropertiesOfDay_RelStructure propertiesOfDayStruct = dayType.getProperties();
+
+					if (propertiesOfDayStruct != null) {
+						List<PropertyOfDay> propertyOfDayList = propertiesOfDayStruct.getPropertyOfDay();
+
+						for (PropertyOfDay propertyOfDay : propertyOfDayList) {
+							List<DayOfWeekEnumeration> daysOfWeeks = propertyOfDay.getDaysOfWeek();
+							for(DayOfWeekEnumeration dayOfWeek : daysOfWeeks) {
+								List<DayTypeEnum> convertDayOfWeek = NetexUtils.convertDayOfWeek(dayOfWeek);
+								for(DayTypeEnum e : convertDayOfWeek) {
+									timetable.addDayType(e);
+								}
+							}
+						}
+					}
+
                     ValidityConditions_RelStructure validityConditionsStruct = serviceCalendarFrame.getContentValidityConditions();
                     if(validityConditionsStruct == null && compositeFrame != null) {
                     	validityConditionsStruct = compositeFrame.getValidityConditions();
                     }
-                    
-                    List<Object> availabilityConditionElements = validityConditionsStruct.getValidityConditionRefOrValidBetweenOrValidityCondition_();
+
+					assert validityConditionsStruct != null;
+					List<Object> availabilityConditionElements = validityConditionsStruct.getValidityConditionRefOrValidBetweenOrValidityCondition_();
+
                     for(Object genericValidityCondition : availabilityConditionElements) {
                     	JAXBElement<?> j = (JAXBElement<?>) genericValidityCondition;
                     	if(j.getValue() instanceof AvailabilityCondition) {
@@ -287,11 +255,29 @@ public class PublicationDeliveryParser implements Parser, Constant {
                     	}
                     }
                 }
+            }
 
-            } else {
+			DayTypeAssignmentsInFrame_RelStructure dayTypeAssignmentStruct = serviceCalendarFrame.getDayTypeAssignments();
+			if (dayTypeAssignmentStruct != null) {
+				List<DayTypeAssignment> dayTypeAssignments = dayTypeAssignmentStruct.getDayTypeAssignment();
+
+				for (DayTypeAssignment dayTypeAssignment : dayTypeAssignments) {
+
+					// TODO add null checks, for getting string reference directly
+					String dayTypeRef = dayTypeAssignment.getDayTypeRef().getValue().getRef();
+					Timetable timetable = ObjectFactory.getTimetable(referential, dayTypeRef);
+
+					LocalDate dateOfOperation = dayTypeAssignment.getDate();
+					CalendarDay value = new CalendarDay(Date.valueOf(dateOfOperation), true);
+					timetable.addCalendarDay(value);
+				}
+			}
+/*
+            else {
             	throw new RuntimeException("Only able to parse daytypes for now");
             }
-			
+*/
+
 			/*
 			
 			Parser calendarParser = ParserFactory.create(CalendarParser.class.getName());

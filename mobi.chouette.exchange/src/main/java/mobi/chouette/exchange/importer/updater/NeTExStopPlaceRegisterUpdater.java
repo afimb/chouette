@@ -24,6 +24,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.beanutils.PropertyUtils;
+import mobi.chouette.exchange.importer.updater.netex.StopAreaMapper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -72,8 +73,11 @@ public class NeTExStopPlaceRegisterUpdater {
 	public static final String IMPORTED_ID_VALUE_SEPARATOR = ",";
 
 	private PublicationDeliveryClient client;
+
 	private final StopPlaceMapper stopPlaceMapper = new StopPlaceMapper();
 
+	private final StopAreaMapper stopAreaMapper = new StopAreaMapper();
+	
 	private NavigationPathMapper navigationPathMapper = null;
 
 	private static final ObjectFactory objectFactory = new ObjectFactory();
@@ -156,9 +160,9 @@ public class NeTExStopPlaceRegisterUpdater {
 				.collect(Collectors.toList());
 
 		List<StopArea> createdParents = new ArrayList<StopArea>();
-
-		for (StopArea bp : boardingPositionsWithoutParents) {
-			StopArea csp = stopPlaceMapper.createCommercialStopPoint(referential, bp);
+		
+		for(StopArea bp : boardingPositionsWithoutParents) {
+			StopArea csp = stopAreaMapper.mapCommercialStopPoint(referential, bp);
 			createdParents.add(csp);
 			// log.info("created parent "+csp.getObjectId()+ " for
 			// "+bp.getObjectId());
@@ -285,7 +289,7 @@ public class NeTExStopPlaceRegisterUpdater {
 
 			AtomicInteger mappedStopPlacesCount = new AtomicInteger();
 			receivedStopPlaces.forEach(e -> {
-				stopPlaceMapper.mapStopPlaceToStopArea(referential, e);
+				stopAreaMapper.mapStopPlaceToStopArea(referential, e);
 				mappedStopPlacesCount.incrementAndGet();
 			});
 
