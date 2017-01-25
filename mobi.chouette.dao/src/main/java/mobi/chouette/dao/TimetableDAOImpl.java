@@ -64,8 +64,10 @@ public class TimetableDAOImpl extends GenericDAOImpl<Timetable>implements Timeta
 						new ArrayList<Timetable>());
 				lineToTimetablesMap.put(lat.getLineId(), lat);
 			}
+			if (lineTimetableIdPair.length > 0 && lineTimetableIdPair[1] != null) {
 			lat.getTimetables()
 					.add(timetableIdToTimetable.get(Long.valueOf(((BigInteger) lineTimetableIdPair[1]).longValue())));
+			}
 		}
 
 		return lineToTimetablesMap.values();
