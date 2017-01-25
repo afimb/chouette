@@ -525,7 +525,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 			for (GtfsStopTime gtfsStopTime : importer.getStopTimeByTrip().values(gtfsTrip.getTripId())) {
 				VehicleJourneyAtStopWrapper vehicleJourneyAtStop = new VehicleJourneyAtStopWrapper(
-						gtfsStopTime.getStopId(), gtfsStopTime.getStopSequence(), gtfsStopTime.getShapeDistTraveled());
+						gtfsStopTime.getStopId(), gtfsStopTime.getStopSequence(), gtfsStopTime.getShapeDistTraveled(), gtfsStopTime.getDropOffType(), gtfsStopTime.getPickupType());
 				convert(context, gtfsStopTime, vehicleJourneyAtStop);
 
 				if (afterMidnight) {
@@ -558,8 +558,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				gtfsShapes = importer.getShapeById().values(gtfsTrip.getShapeId());
 			}
 			for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney.getVehicleJourneyAtStops()) {
-				String stopId = ((VehicleJourneyAtStopWrapper) vehicleJourneyAtStop).stopId;
-				journeyKey += "," + stopId;
+				String stopIdWithDropOffPickup = createJourneyKeyFragment((VehicleJourneyAtStopWrapper) vehicleJourneyAtStop);
+				journeyKey += "," + stopIdWithDropOffPickup;
 			}
 			JourneyPattern journeyPattern = journeyPatternByStopSequence.get(journeyKey);
 			if (journeyPattern == null) {
@@ -584,6 +584,17 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		}
 		// dispose collections
 		journeyPatternByStopSequence.clear();
+	}
+
+	private String createJourneyKeyFragment(VehicleJourneyAtStopWrapper vehicleJourneyAtStop) {
+		DropOffType drop = (vehicleJourneyAtStop.dropOff == null? DropOffType.Scheduled : vehicleJourneyAtStop.dropOff);
+		PickupType pickup = (vehicleJourneyAtStop.pickup == null? PickupType.Scheduled : vehicleJourneyAtStop.pickup);
+		
+		if(drop == DropOffType.Scheduled && pickup == PickupType.Scheduled) {
+			return vehicleJourneyAtStop.stopId;
+		} else {
+			return vehicleJourneyAtStop.stopId+"."+drop.ordinal()+""+pickup.ordinal();
+		}
 	}
 
 	private void createJourneyFrequencies(Context context, Referential referential, GtfsImporter importer,
@@ -846,47 +857,12 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		vehicleJourneyAtStop.setArrivalTime(gtfsStopTime.getArrivalTime().getTime());
 		vehicleJourneyAtStop.setDepartureTime(gtfsStopTime.getDepartureTime().getTime());
 
-		// Set boarding/alighting
-		// Challenge: GTFS specifies this on a trip to trip basis - which fits VehicleJourneyAtStop
-		// If put on JourneyPattern->StopPoint this applies to all Trips for a given Route
-		// StopPoint boarding/alighting has all possible values to match stoptime boarding/alighting, but
-		// VehicleJourneyAtStop does not.
-		// In order to get this as correct as possible, one must afterwards check if all trips that passes through a StopPoint
-		// have the same boarding/alighting values - if so the values can be set on StopPoint instead of VehicleJourneyAtStop
-		
-		updateBoardingAlighting(gtfsStopTime,stopPoint);
-		
 		/**
 		 * GJT : Setting arrival and departure offset to vehicleJourneyAtStop
 		 * object
 		 */
 		vehicleJourneyAtStop.setArrivalDayOffset(gtfsStopTime.getArrivalTime().getDay());
 		vehicleJourneyAtStop.setDepartureDayOffset(gtfsStopTime.getDepartureTime().getDay());
-	}
-	
-	protected void updateBoardingAlighting(GtfsStopTime gtfsStopTime, StopPoint stopPoint) {
-		// 1 Convert values from gtfs
-		AlightingPossibilityEnum alighting = toAlightingPossibility(gtfsStopTime.getDropOffType());
-		BoardingPossibilityEnum boarding = toBoardingPossibility(gtfsStopTime.getPickupType());
-		
-		AlightingPossibilityEnum existingAlighting = stopPoint.getForAlighting();
-		BoardingPossibilityEnum existingBoarding = stopPoint.getForBoarding();
-		// TODO Auto-generated method stub
-		
-		if(existingAlighting != null) {
-			if(alighting != existingAlighting) {
-				log.warn("StopPoint "+stopPoint.getObjectId()+" has conflicting alighting information: Is "+existingAlighting+" but updating to "+alighting);
-			}
-		}
-		stopPoint.setForAlighting(alighting);
-
-		if(existingBoarding != null) {
-			if(boarding != existingBoarding) {
-				log.warn("StopPoint "+stopPoint.getObjectId()+" has conflicting boarding information: Is "+existingBoarding+" but updating to "+boarding);
-			}
-		}
-		stopPoint.setForBoarding(boarding);
-
 	}
 	
 	private BoardingPossibilityEnum toBoardingPossibility(PickupType type) {
@@ -974,8 +950,9 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		int position = 0;
 		for (VehicleJourneyAtStop vehicleJourneyAtStop : list) {
 			VehicleJourneyAtStopWrapper wrapper = (VehicleJourneyAtStopWrapper) vehicleJourneyAtStop;
+			String stopIdKeyFragment = createJourneyKeyFragment(wrapper);
 			String baseKey = route.getObjectId().replace(Route.ROUTE_KEY, StopPoint.STOPPOINT_KEY) + "a"
-					+ wrapper.stopId.trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
+					+ stopIdKeyFragment.trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
 			String stopKey = baseKey;
 			int dup = 1;
 			while (stopPointKeys.contains(stopKey)) {
@@ -991,6 +968,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			stopPoint.setContainedInStopArea(stopArea);
 			stopPoint.setRoute(route);
 			stopPoint.setPosition(position++);
+			stopPoint.setForBoarding(toBoardingPossibility(wrapper.pickup));
+			stopPoint.setForAlighting(toAlightingPossibility(wrapper.dropOff));
 
 			journeyPattern.addStopPoint(stopPoint);
 			stopPoint.setFilled(true);
@@ -1005,6 +984,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		String stopId;
 		int stopSequence;
 		Float shapeDistTraveled;
+		DropOffType dropOff;
+		PickupType pickup;
 	}
 
 	public static final Comparator<VehicleJourneyAtStop> VEHICLE_JOURNEY_AT_STOP_COMPARATOR = new Comparator<VehicleJourneyAtStop>() {
