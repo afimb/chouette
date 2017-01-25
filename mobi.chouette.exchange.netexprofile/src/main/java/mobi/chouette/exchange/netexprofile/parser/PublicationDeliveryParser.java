@@ -21,7 +21,6 @@ import org.rutebanken.netex.model.*;
 import org.rutebanken.netex.model.Network;
 
 import javax.xml.bind.JAXBElement;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -203,23 +202,44 @@ public class PublicationDeliveryParser implements Parser, Constant {
 
 	@SuppressWarnings("unchecked")
 	private void parseServiceCalendarFrame(Context context, List<ServiceCalendarFrame> serviceCalendarFrames, CompositeFrame compositeFrame) throws Exception {
-        Referential referential = (Referential) context.get(REFERENTIAL);
+		Referential referential = (Referential) context.get(REFERENTIAL);
+		Map<String, LocalDate> operatingDays = new HashMap<>();
 
 		for (ServiceCalendarFrame serviceCalendarFrame : serviceCalendarFrames) {
-            DayTypesInFrame_RelStructure dayTypesStruct = serviceCalendarFrame.getDayTypes();
+			DayTypeAssignmentsInFrame_RelStructure dayTypeAssignmentStruct = serviceCalendarFrame.getDayTypeAssignments();
 
-            if (dayTypesStruct != null) {
-                List<JAXBElement<? extends DataManagedObjectStructure>> dayTypeElements = dayTypesStruct.getDayType_();
+			if (dayTypeAssignmentStruct != null) {
+				List<DayTypeAssignment> dayTypeAssignments = dayTypeAssignmentStruct.getDayTypeAssignment();
 
-                for (JAXBElement<? extends DataManagedObjectStructure> dayTypeElement : dayTypeElements) {
-                    // For each timetable
-                	
-                	DayType dayType = (DayType) dayTypeElement.getValue();
-                    Timetable timetable = ObjectFactory.getTimetable(referential, dayType.getId());
+				for (DayTypeAssignment dayTypeAssignment : dayTypeAssignments) {
+					JAXBElement<? extends DayTypeRefStructure> dayTypeRefElement = dayTypeAssignment.getDayTypeRef();
+					LocalDate dateOfOperation = dayTypeAssignment.getDate();
 
-                    PropertiesOfDay_RelStructure propertiesOfDayStruct = dayType.getProperties();
+					if (dayTypeRefElement != null && dateOfOperation != null) {
+						String dayTypeIdRef = dayTypeRefElement.getValue().getRef();
 
-					if (propertiesOfDayStruct != null) {
+						if (!operatingDays.containsKey(dayTypeIdRef)) {
+							operatingDays.put(dayTypeIdRef, dateOfOperation);
+						}
+					}
+				}
+			}
+
+			DayTypesInFrame_RelStructure dayTypesStruct = serviceCalendarFrame.getDayTypes();
+
+			if (dayTypesStruct != null) {
+				List<JAXBElement<? extends DataManagedObjectStructure>> dayTypeElements = dayTypesStruct.getDayType_();
+
+				for (JAXBElement<? extends DataManagedObjectStructure> dayTypeElement : dayTypeElements) {
+					// For each timetable
+
+					DayType dayType = (DayType) dayTypeElement.getValue();
+					Timetable timetable = ObjectFactory.getTimetable(referential, dayType.getId());
+
+					// check if day type has properties, if not look for assignments with explicit dates
+					PropertiesOfDay_RelStructure propertiesOfDayStruct = dayType.getProperties();
+
+					if (propertiesOfDayStruct != null && !propertiesOfDayStruct.getPropertyOfDay().isEmpty()) {
 						List<PropertyOfDay> propertyOfDayList = propertiesOfDayStruct.getPropertyOfDay();
 
 						for (PropertyOfDay propertyOfDay : propertyOfDayList) {
@@ -231,52 +251,42 @@ public class PublicationDeliveryParser implements Parser, Constant {
 								}
 							}
 						}
+
+						// if day type has no properties it is assumed to have explicit dates through assignments
+					} else {
+						if (!operatingDays.isEmpty() && operatingDays.containsKey(dayType.getId())) {
+							LocalDate dateOfOperation = operatingDays.get(dayType.getId());
+							timetable.addCalendarDay(new CalendarDay(java.sql.Date.valueOf(dateOfOperation), true));
+						} else {
+							throw new RuntimeException("Found no valid day types in properties or assignments");
+						}
 					}
 
-                    ValidityConditions_RelStructure validityConditionsStruct = serviceCalendarFrame.getContentValidityConditions();
-                    if(validityConditionsStruct == null && compositeFrame != null) {
-                    	validityConditionsStruct = compositeFrame.getValidityConditions();
-                    }
+					ValidityConditions_RelStructure validityConditionsStruct = serviceCalendarFrame.getContentValidityConditions();
+					if(validityConditionsStruct == null && compositeFrame != null) {
+						validityConditionsStruct = compositeFrame.getValidityConditions();
+					}
 
 					assert validityConditionsStruct != null;
 					List<Object> availabilityConditionElements = validityConditionsStruct.getValidityConditionRefOrValidBetweenOrValidityCondition_();
 
-                    for(Object genericValidityCondition : availabilityConditionElements) {
-                    	JAXBElement<?> j = (JAXBElement<?>) genericValidityCondition;
-                    	if(j.getValue() instanceof AvailabilityCondition) {
-                    		AvailabilityCondition availabilityCondition = ((JAXBElement<AvailabilityCondition>) j).getValue();
-                            Period period = new Period();
-                            period.setStartDate(ParserUtils.getSQLDate(availabilityCondition.getFromDate().toString()));
-                            period.setEndDate(ParserUtils.getSQLDate(availabilityCondition.getToDate().toString()));
-                            
-                            timetable.addPeriod(period);
-                    	} else {
-                        	throw new RuntimeException("Only support AvailabilityCondition as validityCondition");
-                    	}
-                    }
-                }
-            }
+					for(Object genericValidityCondition : availabilityConditionElements) {
+						JAXBElement<?> j = (JAXBElement<?>) genericValidityCondition;
+						if(j.getValue() instanceof AvailabilityCondition) {
+							AvailabilityCondition availabilityCondition = ((JAXBElement<AvailabilityCondition>) j).getValue();
+							Period period = new Period();
+							period.setStartDate(ParserUtils.getSQLDate(availabilityCondition.getFromDate().toString()));
+							period.setEndDate(ParserUtils.getSQLDate(availabilityCondition.getToDate().toString()));
 
-			DayTypeAssignmentsInFrame_RelStructure dayTypeAssignmentStruct = serviceCalendarFrame.getDayTypeAssignments();
-			if (dayTypeAssignmentStruct != null) {
-				List<DayTypeAssignment> dayTypeAssignments = dayTypeAssignmentStruct.getDayTypeAssignment();
-
-				for (DayTypeAssignment dayTypeAssignment : dayTypeAssignments) {
-
-					// TODO add null checks, for getting string reference directly
-					String dayTypeRef = dayTypeAssignment.getDayTypeRef().getValue().getRef();
-					Timetable timetable = ObjectFactory.getTimetable(referential, dayTypeRef);
-
-					LocalDate dateOfOperation = dayTypeAssignment.getDate();
-					CalendarDay value = new CalendarDay(Date.valueOf(dateOfOperation), true);
-					timetable.addCalendarDay(value);
+							timetable.addPeriod(period);
+						} else {
+							throw new RuntimeException("Only support AvailabilityCondition as validityCondition");
+						}
+					}
 				}
+			} else {
+				throw new RuntimeException("Only able to parse daytypes for now");
 			}
-/*
-            else {
-            	throw new RuntimeException("Only able to parse daytypes for now");
-            }
-*/
 
 			/*
 			
