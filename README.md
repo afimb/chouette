@@ -1,4 +1,4 @@
-# Chouette [![Build Status](https://travis-ci.org/afimb/chouette.png)](http://travis-ci.org/afimb/chouette?branch=master)[![Coverity Scan](https://img.shields.io/coverity/scan/5816.svg)](https://scan.coverity.com/projects/5816)
+# Chouette 
 
 Chouette is a java project for handling public transport (PT) data in different formats: Neptune, NeTEx, GTFS and provides 3 main services:
 
