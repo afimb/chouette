@@ -43,7 +43,9 @@ public class TimetableDAOImpl extends GenericDAOImpl<Timetable>implements Timeta
 
 		Set<Long> timetableIds = new HashSet<Long>();
 		for (Object[] lineToTimetablesMap : resultList2) {
-			timetableIds.add(Long.valueOf(((BigInteger) lineToTimetablesMap[1]).longValue()));
+			if (lineToTimetablesMap.length > 0 && lineToTimetablesMap[1] != null) {
+				timetableIds.add(Long.valueOf(((BigInteger) lineToTimetablesMap[1]).longValue()));
+			}
 		}
 
 		List<Timetable> timetables = findAll(timetableIds);
