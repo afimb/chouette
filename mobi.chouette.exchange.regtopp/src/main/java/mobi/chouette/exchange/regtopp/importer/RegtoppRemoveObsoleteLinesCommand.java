@@ -74,7 +74,10 @@ public class RegtoppRemoveObsoleteLinesCommand implements Command {
 			for(Line existingLine : findAll ) {
 				
 				String adminCode = importer.getTripIndex().iterator().next().getAdminCode();
-				String authority = existingLine.getNetwork().getRegistrationNumber();
+				String authority = null;
+				if(existingLine.getNetwork() != null) {
+					authority = existingLine.getNetwork().getRegistrationNumber();
+				}
 				
 				if(adminCode.equals(authority) && ObjectIdCreator.getCalendarStartDate(existingLine.getObjectId()).equals(calendarStartDate)) {
 					if(!objectIdSet.contains(existingLine.getObjectId())) {
