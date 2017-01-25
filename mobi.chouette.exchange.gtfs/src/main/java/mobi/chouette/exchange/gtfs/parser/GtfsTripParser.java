@@ -867,7 +867,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	
 	private BoardingPossibilityEnum toBoardingPossibility(PickupType type) {
 		if(type == null) {
-			return null;
+			return BoardingPossibilityEnum.normal;
 		}
 		
 		switch (type) {
@@ -885,7 +885,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 	private AlightingPossibilityEnum toAlightingPossibility(DropOffType type) {
 		if(type == null) {
-			return null;
+			return AlightingPossibilityEnum.normal;
 		}
 		
 		switch (type) {
