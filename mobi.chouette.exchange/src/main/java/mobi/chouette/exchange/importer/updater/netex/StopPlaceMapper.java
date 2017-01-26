@@ -127,6 +127,6 @@ public class StopPlaceMapper {
             default:
                 log.warn("Could not map stop place type for stop place " + sp.getId() + " Chouette type was: " + mode);
         }
-        log.debug("Mapped stop place type from " + mode + " to " + sp.getStopPlaceType());
+        log.debug("Mapped stop place type from " + mode + " to " + sp.getStopPlaceType() + " for stop " + sp.getId());
     }
 }
