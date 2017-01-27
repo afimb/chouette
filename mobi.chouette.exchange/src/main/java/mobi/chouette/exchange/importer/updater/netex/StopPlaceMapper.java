@@ -110,7 +110,7 @@ public class StopPlaceMapper {
                 sp.setStopPlaceType(StopTypeEnumeration.METRO_STATION);
                 break;
             case Tramway:
-                sp.setStopPlaceType(StopTypeEnumeration.TRAM_STATION);
+                sp.setStopPlaceType(StopTypeEnumeration.ONSTREET_TRAM);
                 break;
             case Shuttle:
             case Coach:
