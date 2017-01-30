@@ -163,10 +163,11 @@ public class TransitDataStatisticsService {
 		if (pl.getEffectivePeriods().size() > 0) {
 			Period firstPeriod = pl.getEffectivePeriods().get(0);
 
+			LocalDate from = new LocalDate(firstPeriod.getFrom());
 			LocalDate to = new LocalDate(firstPeriod.getTo());
 			LocalDate limitDate = startDateLocal.plusDays(numDays);
 
-			if (to.isAfter(limitDate) || to.isEqual(limitDate)) {
+			if (!from.isAfter(startDateLocal) && to.isAfter(limitDate) || to.isEqual(limitDate)) {
 				return true;
 			}
 		}

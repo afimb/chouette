@@ -19,19 +19,21 @@ public class TransitDataStatisticsServiceTest {
 	public void categorizeValidityWithInvalidLines() {
 		DateMidnight startDate = new DateMidnight();
 		LineStatistics lineStats = new LineStatistics();
-		lineStats.getPublicLines().add(createPublicLine("invalidNoDate", null));
-		lineStats.getPublicLines().add(createPublicLine("invalidHistoricDate", startDate.plusDays(-2)));
-		lineStats.getPublicLines().add(createPublicLine("validOutsideCategory", startDate.plusDays(2)));
-		lineStats.getPublicLines().add(createPublicLine("validCat1", startDate.plusDays(7)));
-		lineStats.getPublicLines().add(createPublicLine("validCat2", startDate.plusDays(15)));
+		lineStats.getPublicLines().add(createPublicLine("invalidNoDate", null,null));
+		lineStats.getPublicLines().add(createPublicLine("invalidHistoricToDate", startDate.plusDays(-5), startDate.plusDays(-2)));
+		lineStats.getPublicLines().add(createPublicLine("invalidFutureFromDate", startDate.plusDays(5), startDate.plusDays(20)));
+		lineStats.getPublicLines().add(createPublicLine("validOutsideCategory", startDate.plusDays(-5),startDate.plusDays(2)));
+		lineStats.getPublicLines().add(createPublicLine("validCat1", startDate.plusDays(-5), startDate.plusDays(7)));
+		lineStats.getPublicLines().add(createPublicLine("validCat2", startDate.plusDays(-5), startDate.plusDays(15)));
 
 		new TransitDataStatisticsService().categorizeValidity(lineStats, startDate.toDate(), new Integer[]{5, 10});
-		Assert.assertEquals(lineStats.getValidityCategories().size(),4);
-		Assert.assertTrue(getCategory(lineStats,-1).getLineNumbers().contains("invalidNoDate"));
-		Assert.assertTrue(getCategory(lineStats,-1).getLineNumbers().contains("invalidHistoricDate"));
-		Assert.assertTrue(getCategory(lineStats,0).getLineNumbers().contains("validOutsideCategory"));
-		Assert.assertTrue(getCategory(lineStats,5).getLineNumbers().contains("validCat1"));
-		Assert.assertTrue(getCategory(lineStats,10).getLineNumbers().contains("validCat2"));
+		Assert.assertEquals(lineStats.getValidityCategories().size(), 4);
+		Assert.assertTrue(getCategory(lineStats, -1).getLineNumbers().contains("invalidNoDate"));
+		Assert.assertTrue(getCategory(lineStats, -1).getLineNumbers().contains("invalidHistoricToDate"));
+		Assert.assertTrue(getCategory(lineStats, -1).getLineNumbers().contains("invalidFutureFromDate"));
+		Assert.assertTrue(getCategory(lineStats, 0).getLineNumbers().contains("validOutsideCategory"));
+		Assert.assertTrue(getCategory(lineStats, 5).getLineNumbers().contains("validCat1"));
+		Assert.assertTrue(getCategory(lineStats, 10).getLineNumbers().contains("validCat2"));
 	}
 
 	@Test
@@ -68,10 +70,9 @@ public class TransitDataStatisticsServiceTest {
 		return matchingCategory;
 	}
 
-	private PublicLine createPublicLine(String no, DateMidnight endDate) {
+	private PublicLine createPublicLine(String no, DateMidnight startDate, DateMidnight endDate) {
 		PublicLine publicLine = new PublicLine(no);
 		if (endDate != null) {
-			DateMidnight startDate = endDate.plusDays(-1);
 			publicLine.getEffectivePeriods().add(new Period(startDate.toDate(), endDate.toDate()));
 		}
 
