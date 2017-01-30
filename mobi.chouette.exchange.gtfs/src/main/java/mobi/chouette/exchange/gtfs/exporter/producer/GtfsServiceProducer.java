@@ -263,7 +263,11 @@ AbstractProducer
 			}
             
          }
-         merged.setObjectId(prefix+":"+Timetable.TIMETABLE_KEY+":"+key(timetables,prefix,false));
+         if(keepOriginalId) {
+             merged.setObjectId(key(timetables,prefix,true));
+         } else {
+             merged.setObjectId(prefix+":"+Timetable.TIMETABLE_KEY+":"+key(timetables,prefix,false));
+         }
       }
       merged.computeLimitOfPeriods();
       return merged;
