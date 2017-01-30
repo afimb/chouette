@@ -50,7 +50,7 @@ public class TransitDataStatisticsService {
 	/**
 	 * Returns a list of Lines grouped by Line "number". Create merged timetable
 	 * periods. Not supporting frequency based yet
-	 * 
+	 *
 	 * @param referential
 	 * @param startDate
 	 *            the first date to return data from (that is, filter away old
@@ -79,10 +79,10 @@ public class TransitDataStatisticsService {
 
 		// Convert Chouette internal model to the statistics model used
 		convertChouetteModelToStatisticsModel(startDate, publicLines);
-		
+
 		// If Line->Timetable->Period is empty, remove Line but keep publicLine
 		filterLinesWithEmptyTimetablePeriods(publicLines);
-		
+
 		// Merge overlapping periods in PublicLine for readability
 		mergePeriods(publicLines);
 
@@ -93,10 +93,10 @@ public class TransitDataStatisticsService {
 		Collections.sort(pL);
 
 		lineStats.setPublicLines(pL);
-		
+
 		// Put lineNumbers into buckets depending on validity in the future
 		categorizeValidity(lineStats, startDate, minDaysValidityCategories);
-		
+
 		// Merge identical names to display in PublicLines
 		mergeNames(lineStats);
 
@@ -109,17 +109,18 @@ public class TransitDataStatisticsService {
 			for(Line l : pl.getLines()) {
 				names.add(l.getName());
 			}
-			
+
 			pl.getLineNames().addAll(names);
 		}
 	}
 
-	private void categorizeValidity(LineStatistics lineStats, Date startDate, Integer[] minDaysValidityCategories) {
+	void categorizeValidity(LineStatistics lineStats, Date startDate, Integer[] minDaysValidityCategories) {
 
 		ValidityCategory defaultCategory = new ValidityCategory(0, new ArrayList<String>());
+		ValidityCategory invalidCategory = new ValidityCategory(-1, new ArrayList<String>());
 		List<ValidityCategory> validityCategories = new ArrayList<ValidityCategory>();
-		
-		
+
+
 		List<Integer> categories = Arrays.asList(minDaysValidityCategories);
 		Collections.sort(categories);
 		Collections.reverse(categories);
@@ -135,20 +136,25 @@ public class TransitDataStatisticsService {
 			boolean foundCategory = false;
 			for(int i=0; i<validityCategories.size();i++) {
 				ValidityCategory vc = validityCategories.get(i);
-				
+
 				foundCategory = isValidAtLeastNumberOfDays(pl, startDateLocal, vc.getNumDaysAtLeastValid());
 				if (foundCategory) {
 					vc.getLineNumbers().add(pl.getLineNumber());
 					break;
 				}
-				
+
 			}
 
 			if (!foundCategory) {
-				defaultCategory.getLineNumbers().add(pl.getLineNumber());
+				if (isValidAtLeastNumberOfDays(pl, startDateLocal, 0)) {
+					defaultCategory.getLineNumbers().add(pl.getLineNumber());
+				} else {
+					invalidCategory.getLineNumbers().add(pl.getLineNumber());
+				}
 			}
 		}
 
+		lineStats.getValidityCategories().add(invalidCategory);
 		lineStats.getValidityCategories().add(defaultCategory);
 		lineStats.getValidityCategories().addAll(validityCategories);
 	}
@@ -157,10 +163,11 @@ public class TransitDataStatisticsService {
 		if (pl.getEffectivePeriods().size() > 0) {
 			Period firstPeriod = pl.getEffectivePeriods().get(0);
 
+			LocalDate from = new LocalDate(firstPeriod.getFrom());
 			LocalDate to = new LocalDate(firstPeriod.getTo());
 			LocalDate limitDate = startDateLocal.plusDays(numDays);
 
-			if (to.isAfter(limitDate) || to.isEqual(limitDate)) {
+			if (!from.isAfter(startDateLocal) && to.isAfter(limitDate) || to.isEqual(limitDate)) {
 				return true;
 			}
 		}
@@ -203,11 +210,11 @@ public class TransitDataStatisticsService {
 			lineIdToLine.put(l.getId(), l);
 		}
 
-		
+
 		Map<String,String> lineNameToFakeLineNumber = new HashMap<>();
-		
+
 		int fakeLineNumberCounter = 0;
-		
+
 		for (LineAndTimetable lat : allTimetableForAllLines) {
 			mobi.chouette.model.Line l = lineIdToLine.get(lat.getLineId());
 
@@ -221,7 +228,7 @@ public class TransitDataStatisticsService {
 				}
 			}
 			l.setNumber(number);
-			
+
 			PublicLine publicLine = publicLines.get(l.getNumber());
 			if (publicLine == null) {
 				publicLine = new PublicLine(l.getNumber());
@@ -268,7 +275,7 @@ public class TransitDataStatisticsService {
 	}
 
 	protected void filterLinesWithEmptyTimetablePeriods(Map<String, PublicLine> publicLines) {
-		
+
 
 		List<PublicLine> filteredPublicLines = new ArrayList<>();
 

@@ -110,7 +110,7 @@ public class StopPlaceMapper {
                 sp.setStopPlaceType(StopTypeEnumeration.METRO_STATION);
                 break;
             case Tramway:
-                sp.setStopPlaceType(StopTypeEnumeration.TRAM_STATION);
+                sp.setStopPlaceType(StopTypeEnumeration.ONSTREET_TRAM);
                 break;
             case Shuttle:
             case Coach:
@@ -127,6 +127,6 @@ public class StopPlaceMapper {
             default:
                 log.warn("Could not map stop place type for stop place " + sp.getId() + " Chouette type was: " + mode);
         }
-        log.debug("Mapped stop place type from " + mode + " to " + sp.getStopPlaceType());
+        log.debug("Mapped stop place type from " + mode + " to " + sp.getStopPlaceType() + " for stop " + sp.getId());
     }
 }

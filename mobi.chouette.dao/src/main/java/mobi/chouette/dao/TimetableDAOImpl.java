@@ -47,26 +47,28 @@ public class TimetableDAOImpl extends GenericDAOImpl<Timetable>implements Timeta
 				timetableIds.add(Long.valueOf(((BigInteger) lineToTimetablesMap[1]).longValue()));
 			}
 		}
-
-		List<Timetable> timetables = findAll(timetableIds);
-
-		Map<Long, Timetable> timetableIdToTimetable = new HashMap<>();
-		for (Timetable t : timetables) {
-			timetableIdToTimetable.put(t.getId(), t);
-		}
-
 		Map<Long, LineAndTimetable> lineToTimetablesMap = new HashMap<>();
 
-		for (Object[] lineTimetableIdPair : resultList2) {
-			LineAndTimetable lat = lineToTimetablesMap.get(lineTimetableIdPair[0]);
-			if (lat == null) {
-				lat = new LineAndTimetable(Long.valueOf(((BigInteger) lineTimetableIdPair[0]).longValue()),
-						new ArrayList<Timetable>());
-				lineToTimetablesMap.put(lat.getLineId(), lat);
+		if (timetableIds.size() > 0) {
+			List<Timetable> timetables = findAll(timetableIds);
+
+			Map<Long, Timetable> timetableIdToTimetable = new HashMap<>();
+			for (Timetable t : timetables) {
+				timetableIdToTimetable.put(t.getId(), t);
 			}
-			if (lineTimetableIdPair.length > 0 && lineTimetableIdPair[1] != null) {
-			lat.getTimetables()
-					.add(timetableIdToTimetable.get(Long.valueOf(((BigInteger) lineTimetableIdPair[1]).longValue())));
+
+
+			for (Object[] lineTimetableIdPair : resultList2) {
+				LineAndTimetable lat = lineToTimetablesMap.get(lineTimetableIdPair[0]);
+				if (lat == null) {
+					lat = new LineAndTimetable(Long.valueOf(((BigInteger) lineTimetableIdPair[0]).longValue()),
+							                          new ArrayList<Timetable>());
+					lineToTimetablesMap.put(lat.getLineId(), lat);
+				}
+				if (lineTimetableIdPair.length > 0 && lineTimetableIdPair[1] != null) {
+					lat.getTimetables()
+							.add(timetableIdToTimetable.get(Long.valueOf(((BigInteger) lineTimetableIdPair[1]).longValue())));
+				}
 			}
 		}
 
