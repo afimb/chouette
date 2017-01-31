@@ -2,8 +2,10 @@ package mobi.chouette.exchange.importer.updater.netex;
 
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
 import org.rutebanken.netex.model.Quay;
 import org.rutebanken.netex.model.StopPlace;
+import org.rutebanken.netex.model.StopTypeEnumeration;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
@@ -71,6 +73,15 @@ public class StopPlaceMapperTest {
         Quay quay = stopPlaceMapper.mapQuay(stopArea);
         assertNotNull(quay.getDescription(), "description should not be null for quay");
         assertEquals(quay.getDescription().getValue(), stopArea.getComment());
+    }
+
+    @Test
+    public void mapFerryToFerryStop() {
+        StopPlace stopPlace = new StopPlace();
+        TransportModeNameEnum transportModeNameEnum = TransportModeNameEnum.Ferry;
+
+        stopPlaceMapper.mapTransportMode(stopPlace, transportModeNameEnum);
+        assertEquals(stopPlace.getStopPlaceType(), StopTypeEnumeration.FERRY_STOP);
     }
 
     private StopArea createStopPlace(String name) {
