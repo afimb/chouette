@@ -42,7 +42,7 @@ public class DaoNetexLineProducerCommand implements Command, Constant {
             Line line = lineDAO.find(lineId);
 
             InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
-            Command export = CommandFactory.create(initialContext, NeptuneLineProducerCommand.class.getName());
+            Command export = CommandFactory.create(initialContext, NetexLineProducerCommand.class.getName());
 
             context.put(LINE, line);
             result = export.execute(context);

@@ -13,8 +13,10 @@ import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.NamingUtil;
+import org.xml.sax.SAXParseException;
 
 import javax.naming.InitialContext;
+import javax.xml.bind.MarshalException;
 import java.io.IOException;
 import java.sql.Date;
 
@@ -91,20 +93,6 @@ public class NetexLineProducerCommand implements Command, Constant {
                     reporter.addObjectReport(context, "merged", ActionReporter.OBJECT_TYPE.TIMETABLE, "calendars", ActionReporter.OBJECT_STATE.OK, IO_TYPE.OUTPUT);
                     reporter.setStatToObjectReport(context, "merged", ActionReporter.OBJECT_TYPE.TIMETABLE, ActionReporter.OBJECT_TYPE.TIMETABLE, sharedData.getTimetableIds().size());
                     result = SUCCESS;
-                } catch (Exception e) {
-                    log.error(e.getMessage());
-/*
-                    if (e.getCause() != null && e.getCause() instanceof SAXParseException) {
-                        log.error(e.getCause().getMessage());
-                        reporter.addErrorToObjectReport(context, line.getObjectId(), ActionReporter.OBJECT_TYPE.LINE,
-                                ActionReporter.ERROR_CODE.INVALID_FORMAT, e.getCause().getMessage());
-                    } else {
-                        log.error(e.getMessage());
-                        reporter.addErrorToObjectReport(context, line.getObjectId(), ActionReporter.OBJECT_TYPE.LINE,
-                                ActionReporter.ERROR_CODE.INVALID_FORMAT, e.getMessage());
-                    }
-*/
-/*
                 } catch (MarshalException e) {
                     if (e.getCause() != null && e.getCause() instanceof SAXParseException) {
                         log.error(e.getCause().getMessage());
@@ -115,7 +103,6 @@ public class NetexLineProducerCommand implements Command, Constant {
                         reporter.addErrorToObjectReport(context, line.getObjectId(), ActionReporter.OBJECT_TYPE.LINE,
                                 ActionReporter.ERROR_CODE.INVALID_FORMAT, e.getMessage());
                     }
-*/
                 }
             } else {
                 reporter.addErrorToObjectReport(context, line.getObjectId(), ActionReporter.OBJECT_TYPE.LINE,

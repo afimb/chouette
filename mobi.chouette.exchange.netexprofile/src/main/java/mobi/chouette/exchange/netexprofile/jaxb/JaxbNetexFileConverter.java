@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.netexprofile;
+package mobi.chouette.exchange.netexprofile.jaxb;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import lombok.extern.log4j.Log4j;

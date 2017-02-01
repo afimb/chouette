@@ -5,7 +5,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
-import mobi.chouette.exchange.netexprofile.JaxbNetexFileConverter;
+import mobi.chouette.exchange.netexprofile.jaxb.JaxbNetexFileConverter;
 import mobi.chouette.exchange.netexprofile.exporter.producer.AbstractJaxbNetexProducer;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
@@ -14,6 +14,7 @@ import org.rutebanken.netex.model.PublicationDeliveryStructure;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.OffsetDateTime;
 
 public class NetexPublicationDeliveryProducer implements Constant {
 
@@ -42,7 +43,10 @@ public class NetexPublicationDeliveryProducer implements Constant {
 
         Metadata metadata = (Metadata) context.get(METADATA);
 
-        PublicationDeliveryStructure rootObject = AbstractJaxbNetexProducer.netexFactory.createPublicationDeliveryStructure();
+        PublicationDeliveryStructure rootObject = AbstractJaxbNetexProducer.netexFactory.createPublicationDeliveryStructure()
+                .withPublicationTimestamp(OffsetDateTime.now())
+                .withParticipantRef("NSR")
+                .withDescription(AbstractJaxbNetexProducer.netexFactory.createMultilingualString().withValue(collection.getLine().getName()));
 
         Path dir = Paths.get(rootDirectory, OUTPUT);
         String fileName = collection.getLine().getObjectId().replaceAll(":", "-") + ".xml";

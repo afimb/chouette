@@ -215,27 +215,17 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
 
-        // TODO find out if we need to set these for netex export? (used by gtfs export)
-        //configuration.setObjectIdPrefix("CITURA");
-        //configuration.setTimeZone("Europe/Paris");
-
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
         try {
-            log.info("Implement...");
-            //command.execute(context);
+            command.execute(context);
         } catch (Exception ex) {
             log.error("test failed", ex);
             throw ex;
         }
 
         ActionReport report = (ActionReport) context.get(REPORT);
-        ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
-
         Assert.assertEquals(report.getResult(), STATUS_OK, "result");
-
-        // TODO enable when test is complete
-/*
         Assert.assertEquals(report.getFiles().size(), 1, "file reported");
 
         for (FileReport info : report.getFiles()) {
@@ -249,9 +239,10 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
             Reporter.log(info.toString(), true);
         }
 
-        Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
-        Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
-*/
+        // TODO enable when validation is in place
+        //ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
+        //Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
+        //Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
     }
 
     private void importLines(String file, int fileCount, int lineCount) throws Exception {
