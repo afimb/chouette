@@ -60,9 +60,7 @@ public class NetexprofileExporterCommand extends AbstractExporterCommand impleme
 
                 }
             }
-
-            // validation available or not for this export
-            // parameters.setValidateAfterExport(false);
+            parameters.setValidateAfterExport(false);
 
             ProcessingCommands commands = ProcessingCommandsFactory.create(NetexExporterProcessingCommands.class.getName());
 

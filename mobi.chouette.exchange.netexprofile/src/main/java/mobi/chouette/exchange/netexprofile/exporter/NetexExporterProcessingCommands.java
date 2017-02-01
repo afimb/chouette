@@ -9,6 +9,7 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.exporter.CompressCommand;
+import mobi.chouette.exchange.netexprofile.importer.NetexDisposeImportCommand;
 
 import javax.naming.InitialContext;
 import java.io.IOException;
@@ -81,8 +82,7 @@ public class NetexExporterProcessingCommands implements ProcessingCommands, Cons
         try {
 
             if (parameters.isValidateAfterExport()) {
-                log.info("TODO : implement");
-                //commands.add(CommandFactory.create(initialContext, NeptuneValidateExportCommand.class.getName()));
+                commands.add(CommandFactory.create(initialContext, NetexDisposeImportCommand.class.getName()));
             }
             if (parameters.isAddMetadata()) {
                 log.info("TODO : implement");
