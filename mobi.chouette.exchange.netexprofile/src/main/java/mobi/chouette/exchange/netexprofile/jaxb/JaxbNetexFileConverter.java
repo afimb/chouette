@@ -88,23 +88,23 @@ public class JaxbNetexFileConverter {
     }
 
     private class NetexNamespacePrefixMapper extends NamespacePrefixMapper {
-        private static final String TRIDENT_PREFIX = ""; // DEFAULT NAMESPACE
-        private static final String TRIDENT_URI = "http://www.trident.org/schema/trident";
+        private static final String NETEX_PREFIX = ""; // DEFAULT NAMESPACE
+        private static final String NETEX_URI = "http://www.netex.org.uk/netex";
+
+        private static final String GML_PREFIX = "gml";
+        private static final String GML_URI = "http://www.opengis.net/gml/3.2";
 
         private static final String SIRI_PREFIX = "siri";
         private static final String SIRI_URI = "http://www.siri.org.uk/siri";
 
-        private static final String IFOPT_PREFIX = "acsb";
-        private static final String IFOPT_URI = "http://www.ifopt.org.uk/acsb";
-
         @Override
         public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
-            if (TRIDENT_URI.equals(namespaceUri)) {
-                return TRIDENT_PREFIX;
+            if (NETEX_URI.equals(namespaceUri)) {
+                return NETEX_PREFIX;
+            } else if (GML_URI.equals(namespaceUri)) {
+                return GML_PREFIX;
             } else if (SIRI_URI.equals(namespaceUri)) {
                 return SIRI_PREFIX;
-            } else if (IFOPT_URI.equals(namespaceUri)) {
-                return IFOPT_PREFIX;
             }
             return suggestion;
         }

@@ -5,8 +5,8 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
-import mobi.chouette.exchange.netexprofile.jaxb.JaxbNetexFileConverter;
 import mobi.chouette.exchange.netexprofile.exporter.producer.AbstractJaxbNetexProducer;
+import mobi.chouette.exchange.netexprofile.jaxb.JaxbNetexFileConverter;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import org.rutebanken.netex.model.PublicationDeliveryStructure;
@@ -53,7 +53,7 @@ public class NetexPublicationDeliveryProducer implements Constant {
         File file = new File(dir.toFile(), fileName);
 
         JaxbNetexFileConverter writer = JaxbNetexFileConverter.getInstance();
-        writer.write(AbstractJaxbNetexProducer.netexFactory.createPublicationDelivery(rootObject), file );
+        writer.write(AbstractJaxbNetexProducer.netexFactory.createPublicationDelivery(rootObject), file);
 
         reporter.addFileReport(context, fileName, IO_TYPE.OUTPUT);
 
