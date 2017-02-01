@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PublicationDelivery xmlns="http://www.netex.org.uk/netex" xmlns:ns2="http://www.opengis.net/gml/3.2" xmlns:ns3="http://www.siri.org.uk/siri" version="1.04:NO-NeTEx-networktimetable:1.0">
+    <PublicationTimestamp>2017-01-31T21:03:23.056Z</PublicationTimestamp>
+    <ParticipantRef>Avinor</ParticipantRef>
+    <Description>Line: Trondheim-Molde</Description>
+    <dataObjects>
+        <CompositeFrame created="2017-01-31T21:03:23.056Z" version="1" id="AVI:CompositeFrame:WF-TRD-MOL">
+            <validityConditions>
+                <AvailabilityCondition version="1" id="AVI:AvailabilityCondition:1608268">
+                    <FromDate>2017-01-31T00:00:00Z</FromDate>
+                    <ToDate>2017-02-28T00:00:00Z</ToDate>
+                </AvailabilityCondition>
+            </validityConditions>
+            <codespaces>
+                <Codespace id="avi">
+                    <Xmlns>AVI</Xmlns>
+                    <XmlnsUrl>http://www.rutebanken.org/ns/avi</XmlnsUrl>
+                </Codespace>
+                <Codespace id="nsr">
+                    <Xmlns>NSR</Xmlns>
+                    <XmlnsUrl>http://www.rutebanken.org/ns/nsr</XmlnsUrl>
+                </Codespace>
+            </codespaces>
+            <FrameDefaults>
+                <DefaultLocale>
+                    <TimeZone>UTC</TimeZone>
+                    <DefaultLanguage>no</DefaultLanguage>
+                </DefaultLocale>
+            </FrameDefaults>
+            <frames>
+                <ResourceFrame version="1" id="AVI:ResourceFrame:8356908">
+                    <organisations>
+                        <Authority version="1" id="AVI:Authority:Avinor">
+                            <CompanyNumber>985198292</CompanyNumber>
+                            <Name>Avinor</Name>
+                            <LegalName>AVINOR AS</LegalName>
+                            <ContactDetails>
+                                <Phone>0047 815 30 550</Phone>
+                                <Url>http://www.avinor.no</Url>
+                            </ContactDetails>
+                            <OrganisationType>authority</OrganisationType>
+                        </Authority>
+                        <Authority version="1" id="NSR:Authority:NSR">
+                            <CompanyNumber></CompanyNumber>
+                            <Name>Nasjonal Stoppestedsregister</Name>
+                            <LegalName>NASJONAL STOPPESTEDSREGISTER</LegalName>
+                            <ContactDetails>
+                                <Phone></Phone>
+                                <Url>http://www.rutebanken.org/ns/nsr</Url>
+                            </ContactDetails>
+                            <OrganisationType>authority</OrganisationType>
+                        </Authority>
+                        <Operator version="1" id="AVI:Operator:WF">
+                            <CompanyNumber>917330557</CompanyNumber>
+                            <Name>Widerøe</Name>
+                            <LegalName>WIDERØE'S FLYVESELSKAP AS</LegalName>
+                            <ContactDetails>
+                                <Phone>0047 755 13 500</Phone>
+                                <Url>http://www.wideroe.no</Url>
+                            </ContactDetails>
+                            <OrganisationType>operator</OrganisationType>
+                            <CustomerServiceContactDetails>
+                                <Phone>0047 755 13 500</Phone>
+                                <Url>http://www.wideroe.no</Url>
+                            </CustomerServiceContactDetails>
+                        </Operator>
+                    </organisations>
+                </ResourceFrame>
+                <SiteFrame version="1" id="AVI:SiteFrame:6340436">
+                    <stopPlaces>
+                        <StopPlace version="1" id="AVI:StopPlace:MOL">
+                            <Name>Molde Lufthavn</Name>
+                            <ShortName>MOL</ShortName>
+                            <Centroid>
+                                <Location srsName="WGS84">
+                                    <Longitude>7.260955</Longitude>
+                                    <Latitude>62.746489</Latitude>
+                                </Location>
+                            </Centroid>
+                            <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay version="1" id="AVI:Quay:MOL">
+                                    <Centroid>
+                                        <Location srsName="WGS84">
+                                            <Longitude>7.260955</Longitude>
+                                            <Latitude>62.746489</Latitude>
+                                        </Location>
+                                    </Centroid>
+                                </Quay>
+                            </quays>
+                        </StopPlace>
+                        <StopPlace version="1" id="AVI:StopPlace:TRD">
+                            <Name>Trondheim Lufthavn</Name>
+                            <ShortName>TRD</ShortName>
+                            <Centroid>
+                                <Location srsName="WGS84">
+                                    <Longitude>10.917965</Longitude>
+                                    <Latitude>63.454194</Latitude>
+                                </Location>
+                            </Centroid>
+                            <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay version="1" id="AVI:Quay:TRD">
+                                    <Centroid>
+                                        <Location srsName="WGS84">
+                                            <Longitude>10.917965</Longitude>
+                                            <Latitude>63.454194</Latitude>
+                                        </Location>
+                                    </Centroid>
+                                </Quay>
+                            </quays>
+                        </StopPlace>
+                    </stopPlaces>
+                </SiteFrame>
+                <ServiceFrame version="1" id="AVI:TimetableFrame:3025764">
+                    <Network changed="2017-01-31T21:03:23.056Z" version="1" id="AVI:Network:WF">
+                        <Name>Widerøe</Name>
+                    </Network>
+                    <routePoints>
+                        <RoutePoint version="1" id="AVI:RoutePoint:MOL">
+                            <projections>
+                                <PointProjection version="1" id="AVI:PointProjection:MOL">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:MOL" version="1"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                        <RoutePoint version="1" id="AVI:RoutePoint:TRD">
+                            <projections>
+                                <PointProjection version="1" id="AVI:PointProjection:TRD">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:TRD" version="1"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                    </routePoints>
+                    <routes>
+                        <Route version="1" id="AVI:Route:WF_MOL-TRD">
+                            <Name>Molde-Trondheim</Name>
+                            <LineRef ref="AVI:Line:WF-TRD-MOL" version="1"/>
+                            <pointsInSequence>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:49064841">
+                                    <RoutePointRef ref="AVI:RoutePoint:MOL" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:49064842">
+                                    <RoutePointRef ref="AVI:RoutePoint:TRD" version="1"/>
+                                </PointOnRoute>
+                            </pointsInSequence>
+                        </Route>
+                        <Route version="1" id="AVI:Route:WF_TRD-MOL">
+                            <Name>Trondheim-Molde</Name>
+                            <LineRef ref="AVI:Line:WF-TRD-MOL" version="1"/>
+                            <pointsInSequence>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:27527961">
+                                    <RoutePointRef ref="AVI:RoutePoint:TRD" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:27527962">
+                                    <RoutePointRef ref="AVI:RoutePoint:MOL" version="1"/>
+                                </PointOnRoute>
+                            </pointsInSequence>
+                        </Route>
+                    </routes>
+                    <lines>
+                        <Line version="1" id="AVI:Line:WF-TRD-MOL">
+                            <Name>Trondheim-Molde</Name>
+                            <TransportMode>air</TransportMode>
+                            <PublicCode>TRD-MOL</PublicCode>
+                            <OperatorRef ref="AVI:Operator:WF" version="1" />
+                            <routes>
+                                <RouteRef ref="AVI:Route:WF_TRD-MOL" version="1"/>
+                                <RouteRef ref="AVI:Route:WF_MOL-TRD" version="1"/>
+                            </routes>
+                        </Line>
+                    </lines>
+                    <destinationDisplays>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:WF_MOL-TRD">
+                            <FrontText>Trondheim</FrontText>
+                        </DestinationDisplay>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:WF_TRD-MOL">
+                            <FrontText>Molde</FrontText>
+                        </DestinationDisplay>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:WFTRDMOL-MOL">
+                            <FrontText>Molde</FrontText>
+                        </DestinationDisplay>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:WFTRDMOL-TRD">
+                            <FrontText>Trondheim</FrontText>
+                        </DestinationDisplay>
+                    </destinationDisplays>
+                    <scheduledStopPoints>
+                        <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:MOL">
+                            <Name>Molde Lufthavn</Name>
+                            <ShortName>MOL</ShortName>
+                        </ScheduledStopPoint>
+                        <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:TRD">
+                            <Name>Trondheim Lufthavn</Name>
+                            <ShortName>TRD</ShortName>
+                        </ScheduledStopPoint>
+                    </scheduledStopPoints>
+                    <stopAssignments>
+                        <PassengerStopAssignment order="26" version="1" id="AVI:PassengerStopAssignment:MOL">
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:MOL" version="1"/>
+                            <QuayRef ref="AVI:Quay:MOL" version="1"/>
+                        </PassengerStopAssignment>
+                        <PassengerStopAssignment order="42" version="1" id="AVI:PassengerStopAssignment:TRD">
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:TRD" version="1"/>
+                            <QuayRef ref="AVI:Quay:TRD" version="1"/>
+                        </PassengerStopAssignment>
+                    </stopAssignments>
+                    <journeyPatterns>
+                        <JourneyPattern version="1" id="AVI:JourneyPattern:WF_MOL-TRD">
+                            <RouteRef ref="AVI:Route:WF_MOL-TRD" version="1"/>
+                            <DestinationDisplayRef ref="AVI:DestinationDisplay:WF_MOL-TRD" version="1"/>
+                            <pointsInSequence>
+                                <StopPointInJourneyPattern order="1" version="1" id="AVI:StopPointInJourneyPattern:85193431">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:MOL" version="1" />
+                                    <ForAlighting>false</ForAlighting>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:85193432">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:TRD" version="1" />
+                                    <ForBoarding>false</ForBoarding>
+                                </StopPointInJourneyPattern>
+                            </pointsInSequence>
+                        </JourneyPattern>
+                        <JourneyPattern version="1" id="AVI:JourneyPattern:WF_TRD-MOL">
+                            <RouteRef ref="AVI:Route:WF_TRD-MOL" version="1"/>
+                            <DestinationDisplayRef ref="AVI:DestinationDisplay:WF_TRD-MOL" version="1"/>
+                            <pointsInSequence>
+                                <StopPointInJourneyPattern order="1" version="1" id="AVI:StopPointInJourneyPattern:31174271">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:TRD" version="1" />
+                                    <ForAlighting>false</ForAlighting>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:31174272">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:MOL" version="1" />
+                                    <ForBoarding>false</ForBoarding>
+                                </StopPointInJourneyPattern>
+                            </pointsInSequence>
+                        </JourneyPattern>
+                    </journeyPatterns>
+                </ServiceFrame>
+                <TimetableFrame version="1" id="AVI:TimetableFrame:8607369">
+                    <vehicleJourneys>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:7736191">
+                            <DepartureTime>06:55:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:WFTRDMOL-Mon_06" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:WFTRDMOL-Mon_13" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:WFTRDMOL-Mon_20" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:WFTRDMOL-Mon_27" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:WF_MOL-TRD" version="1"/>
+                            <PublicCode>WF538</PublicCode>
+                            <LineRef ref="AVI:Line:WF-TRD-MOL" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:85193431" version="1"/>
+                                    <DepartureTime>06:55:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:85193432" version="1"/>
+                                    <ArrivalTime>07:40:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:5093200">
+                            <DepartureTime>08:00:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:WFTRDMOL-Mon_06" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:WFTRDMOL-Mon_13" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:WFTRDMOL-Mon_20" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:WFTRDMOL-Mon_27" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:WF_TRD-MOL" version="1"/>
+                            <PublicCode>WF537</PublicCode>
+                            <LineRef ref="AVI:Line:WF-TRD-MOL" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:31174271" version="1"/>
+                                    <DepartureTime>08:00:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:31174272" version="1"/>
+                                    <ArrivalTime>08:45:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:3975582">
+                            <DepartureTime>15:45:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:WFTRDMOL-Thu_02" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:WFTRDMOL-Thu_09" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:WFTRDMOL-Thu_16" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:WFTRDMOL-Thu_23" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:WF_TRD-MOL" version="1"/>
+                            <PublicCode>WF535</PublicCode>
+                            <LineRef ref="AVI:Line:WF-TRD-MOL" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:31174271" version="1"/>
+                                    <DepartureTime>15:45:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:31174272" version="1"/>
+                                    <ArrivalTime>16:30:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                    </vehicleJourneys>
+                </TimetableFrame>
+                <ServiceCalendarFrame version="1" id="AVI:ServiceCalendarFrame:8754671">
+                    <dayTypes>
+                        <DayType version="1" id="AVI:DayType:WFTRDMOL-Thu_23"/>
+                        <DayType version="1" id="AVI:DayType:WFTRDMOL-Mon_27"/>
+                        <DayType version="1" id="AVI:DayType:WFTRDMOL-Mon_06"/>
+                        <DayType version="1" id="AVI:DayType:WFTRDMOL-Mon_20"/>
+                        <DayType version="1" id="AVI:DayType:WFTRDMOL-Thu_02"/>
+                        <DayType version="1" id="AVI:DayType:WFTRDMOL-Thu_09"/>
+                        <DayType version="1" id="AVI:DayType:WFTRDMOL-Thu_16"/>
+                        <DayType version="1" id="AVI:DayType:WFTRDMOL-Mon_13"/>
+                    </dayTypes>
+                    <dayTypeAssignments>
+                        <DayTypeAssignment order="1" version="1" id="AVI:DayTypeAssignment:WFTRDMOL-Mon_06">
+                            <Date>2017-02-06</Date>
+                            <DayTypeRef ref="AVI:DayType:WFTRDMOL-Mon_06" version="1"/>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="1" version="1" id="AVI:DayTypeAssignment:WFTRDMOL-Thu_02">
+                            <Date>2017-02-02</Date>
+                            <DayTypeRef ref="AVI:DayType:WFTRDMOL-Thu_02" version="1"/>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="2" version="1" id="AVI:DayTypeAssignment:WFTRDMOL-Mon_13">
+                            <Date>2017-02-13</Date>
+                            <DayTypeRef ref="AVI:DayType:WFTRDMOL-Mon_13" version="1"/>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="2" version="1" id="AVI:DayTypeAssignment:WFTRDMOL-Thu_09">
+                            <Date>2017-02-09</Date>
+                            <DayTypeRef ref="AVI:DayType:WFTRDMOL-Thu_09" version="1"/>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="3" version="1" id="AVI:DayTypeAssignment:WFTRDMOL-Thu_16">
+                            <Date>2017-02-16</Date>
+                            <DayTypeRef ref="AVI:DayType:WFTRDMOL-Thu_16" version="1"/>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="3" version="1" id="AVI:DayTypeAssignment:WFTRDMOL-Mon_20">
+                            <Date>2017-02-20</Date>
+                            <DayTypeRef ref="AVI:DayType:WFTRDMOL-Mon_20" version="1"/>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="4" version="1" id="AVI:DayTypeAssignment:WFTRDMOL-Mon_27">
+                            <Date>2017-02-27</Date>
+                            <DayTypeRef ref="AVI:DayType:WFTRDMOL-Mon_27" version="1"/>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="4" version="1" id="AVI:DayTypeAssignment:WFTRDMOL-Thu_23">
+                            <Date>2017-02-23</Date>
+                            <DayTypeRef ref="AVI:DayType:WFTRDMOL-Thu_23" version="1"/>
+                        </DayTypeAssignment>
+                    </dayTypeAssignments>
+                </ServiceCalendarFrame>
+            </frames>
+        </CompositeFrame>
+    </dataObjects>
+</PublicationDelivery>
