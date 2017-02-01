@@ -265,8 +265,6 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
         configuration.setNoSave(false);
         configuration.setCleanRepository(true);
-        //configuration.setValidCodespaces("NSR,http://www.rutebanken.org/ns/nsr");
-        //configuration.setValidCodespaces("AVI,http://avinor.no/");
         configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
         try {

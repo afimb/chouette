@@ -1,19 +1,21 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
+import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
-import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.JaxbNetexFileConverter;
+import mobi.chouette.exchange.netexprofile.exporter.producer.AbstractJaxbNetexProducer;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
+import org.rutebanken.netex.model.PublicationDeliveryStructure;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class NetexLineProducer implements Constant {
+public class NetexPublicationDeliveryProducer implements Constant {
 
     public void produce(Context context) throws Exception {
         ActionReporter reporter = ActionReporter.Factory.getInstance();
@@ -31,19 +33,23 @@ public class NetexLineProducer implements Constant {
             }
         }
 
-        Metadata metadata = (Metadata) context.get(METADATA);
-
+        // TODO find out if it is mandatory to set projection on stop areas
         /*
         for (StopArea stopArea : collection.getStopAreas()) {
             stopArea.toProjection(projectionType);
         }
         */
 
-        JaxbNetexFileConverter writer = JaxbNetexFileConverter.getInstance();
+        Metadata metadata = (Metadata) context.get(METADATA);
+
+        PublicationDeliveryStructure rootObject = AbstractJaxbNetexProducer.netexFactory.createPublicationDeliveryStructure();
+
         Path dir = Paths.get(rootDirectory, OUTPUT);
         String fileName = collection.getLine().getObjectId().replaceAll(":", "-") + ".xml";
         File file = new File(dir.toFile(), fileName);
-        //writer.write(AbstractJaxbNeptuneProducer.tridentFactory.createChouettePTNetwork(rootObject), file );
+
+        JaxbNetexFileConverter writer = JaxbNetexFileConverter.getInstance();
+        writer.write(AbstractJaxbNetexProducer.netexFactory.createPublicationDelivery(rootObject), file );
 
         reporter.addFileReport(context, fileName, IO_TYPE.OUTPUT);
 
@@ -54,4 +60,5 @@ public class NetexLineProducer implements Constant {
                     NeptuneObjectPresenter.getName(collection.getLine())));
         }
     }
+
 }

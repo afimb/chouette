@@ -74,8 +74,8 @@ public class NetexLineProducerCommand implements Command, Constant {
 
             if (cont) {
                 try {
-                    //ChouettePTNetworkProducer producer = new ChouettePTNetworkProducer();
-                    //producer.produce(context);
+                    NetexPublicationDeliveryProducer producer = new NetexPublicationDeliveryProducer();
+                    producer.produce(context);
 
                     reporter.setStatToObjectReport(context, line.getObjectId(), ActionReporter.OBJECT_TYPE.LINE, ActionReporter.OBJECT_TYPE.LINE, 1);
                     reporter.addObjectReport(context, "merged", ActionReporter.OBJECT_TYPE.NETWORK, "networks", ActionReporter.OBJECT_STATE.OK, IO_TYPE.OUTPUT);

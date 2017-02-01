@@ -54,11 +54,9 @@ public class NetexExporterProcessingCommands implements ProcessingCommands, Cons
 
         try {
             if (withDao) {
-                log.info("TODO : implement");
-                //commands.add(CommandFactory.create(initialContext, DaoNeptuneLineProducerCommand.class.getName()));
+                commands.add(CommandFactory.create(initialContext, DaoNetexLineProducerCommand.class.getName()));
             } else {
-                log.info("TODO : implement");
-                //commands.add(CommandFactory.create(initialContext, NeptuneLineProducerCommand.class.getName()));
+                commands.add(CommandFactory.create(initialContext, NetexLineProducerCommand.class.getName()));
             }
         } catch (Exception e) {
             log.error(e, e);

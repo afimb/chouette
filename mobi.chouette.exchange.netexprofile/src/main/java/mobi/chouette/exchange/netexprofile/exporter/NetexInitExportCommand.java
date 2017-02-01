@@ -43,10 +43,9 @@ public class NetexInitExportCommand implements Command, Constant {
             metadata.setTitle("Export NeTEx ");
 
             try {
-                // TODO find out what this should be set to (some netex schema url?)
-                metadata.setRelation(new URL("http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/neptune/"));
+                metadata.setRelation(new URL("http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/netex/"));
             } catch (MalformedURLException e1) {
-                log.error("problem with http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/neptune/ url", e1);
+                log.error("problem with http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/netex/ url", e1);
             }
 
             context.put(METADATA, metadata);
