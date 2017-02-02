@@ -5,11 +5,14 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
-import mobi.chouette.exchange.netexprofile.exporter.producer.AbstractJaxbNetexProducer;
+import mobi.chouette.exchange.netexprofile.exporter.producer.NetworkProducer;
+import mobi.chouette.exchange.netexprofile.exporter.producer.OperatorProducer;
 import mobi.chouette.exchange.netexprofile.jaxb.JaxbNetexFileConverter;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.model.Company;
 import org.rutebanken.netex.model.*;
+import org.trident.schema.trident.CompanyType;
 
 import javax.xml.bind.JAXBElement;
 import java.io.File;
@@ -17,13 +20,18 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 
+import static mobi.chouette.exchange.netexprofile.exporter.producer.AbstractJaxbNetexProducer.netexFactory;
+
 public class NetexPublicationDeliveryProducer implements Constant {
 
     // TODO move the following to some common Constant class
     private static final String NETEX_PROFILE_VERSION = "1.04:NO-NeTEx-networktimetable:1.0";
-    private static final String VERSION_ONE = "1";
+    public static final String NETEX_DATA_OJBECT_VERSION = "1";
     public static final String DEFAULT_ZONE_ID = "UTC";
     public static final String DEFAULT_LANGUAGE = "no";
+
+    private static NetworkProducer networkProducer = new NetworkProducer();
+    private static OperatorProducer operatorProducer = new OperatorProducer();
 
     public void produce(Context context) throws Exception {
         ActionReporter reporter = ActionReporter.Factory.getInstance();
@@ -32,7 +40,7 @@ public class NetexPublicationDeliveryProducer implements Constant {
         String rootDirectory = jobData.getPathName();
 
         NetexprofileExportParameters parameters = (NetexprofileExportParameters) context.get(CONFIGURATION);
-        boolean addExtension = parameters.isAddExtension();
+        boolean addExtension = parameters.isAddExtension(); // TODO find out if needed?
 
         String projectionType = parameters.getProjectionType();
         if (projectionType != null && !projectionType.isEmpty()) {
@@ -50,28 +58,38 @@ public class NetexPublicationDeliveryProducer implements Constant {
 
         Metadata metadata = (Metadata) context.get(METADATA);
 
-        PublicationDeliveryStructure rootObject = AbstractJaxbNetexProducer.netexFactory.createPublicationDeliveryStructure()
+        PublicationDeliveryStructure rootObject = netexFactory.createPublicationDeliveryStructure()
                 .withVersion(NETEX_PROFILE_VERSION)
                 .withPublicationTimestamp(OffsetDateTime.now())
                 .withParticipantRef("NSR")
-                .withDescription(AbstractJaxbNetexProducer.netexFactory.createMultilingualString().withValue(collection.getLine().getName()));
+                .withDescription(netexFactory.createMultilingualString().withValue(collection.getLine().getName()));
 
-        LocaleStructure localeStructure = AbstractJaxbNetexProducer.netexFactory.createLocaleStructure()
+        LocaleStructure localeStructure = netexFactory.createLocaleStructure()
                 .withTimeZone(DEFAULT_ZONE_ID)
                 .withDefaultLanguage(DEFAULT_LANGUAGE);
 
-        VersionFrameDefaultsStructure frameDefaultsStruct = AbstractJaxbNetexProducer.netexFactory.createVersionFrameDefaultsStructure()
+        VersionFrameDefaultsStructure frameDefaultsStruct = netexFactory.createVersionFrameDefaultsStructure()
                 .withDefaultLocale(localeStructure);
 
-        Frames_RelStructure frames = AbstractJaxbNetexProducer.netexFactory.createFrames_RelStructure();
+        Frames_RelStructure frames = netexFactory.createFrames_RelStructure();
 
-        ResourceFrame resourceFrame = AbstractJaxbNetexProducer.netexFactory.createResourceFrame()
-                .withVersion(VERSION_ONE)
+        // resource frame
+        ResourceFrame resourceFrame = netexFactory.createResourceFrame()
+                .withVersion(NETEX_DATA_OJBECT_VERSION)
                 .withId("AVI:ResourceFrame:1");
-        frames.getCommonFrame().add(AbstractJaxbNetexProducer.netexFactory.createResourceFrame(resourceFrame));
 
-        ServiceFrame serviceFrame = AbstractJaxbNetexProducer.netexFactory.createServiceFrame()
-                .withVersion(VERSION_ONE)
+        OrganisationsInFrame_RelStructure organisationsStruct = netexFactory.createOrganisationsInFrame_RelStructure();
+        for (Company company : collection.getCompanies()) {
+            Operator operator = operatorProducer.produce(company, addExtension);
+            organisationsStruct.getOrganisation_().add(netexFactory.createOperator(operator));
+        }
+        resourceFrame.setOrganisations(organisationsStruct);
+
+        frames.getCommonFrame().add(netexFactory.createResourceFrame(resourceFrame));
+
+        // service frame
+        ServiceFrame serviceFrame = netexFactory.createServiceFrame()
+                .withVersion(NETEX_DATA_OJBECT_VERSION)
                 .withId("AVI:ServiceFrame:1");
                 //.withNetwork(network)
                 //.withRoutePoints(routePointsInFrame)
@@ -79,23 +97,28 @@ public class NetexPublicationDeliveryProducer implements Constant {
                 //.withLines(linesInFrame)
                 //.withDestinationDisplays(destinationDisplayStruct)
                 //.withJourneyPatterns(journeyPatternsInFrame);
-        frames.getCommonFrame().add(AbstractJaxbNetexProducer.netexFactory.createServiceFrame(serviceFrame));
 
-        TimetableFrame timetableFrame = AbstractJaxbNetexProducer.netexFactory.createTimetableFrame()
-                .withVersion(VERSION_ONE)
+        if (collection.getLine().getNetwork() != null) {
+            serviceFrame.setNetwork(networkProducer.produce(collection.getLine().getNetwork(), addExtension));
+        }
+
+        frames.getCommonFrame().add(netexFactory.createServiceFrame(serviceFrame));
+
+        TimetableFrame timetableFrame = netexFactory.createTimetableFrame()
+                .withVersion(NETEX_DATA_OJBECT_VERSION)
                 .withId("AVI:TimetableFrame:1");
                 //.withVehicleJourneys(journeysInFrameRelStructure);
-        frames.getCommonFrame().add(AbstractJaxbNetexProducer.netexFactory.createTimetableFrame(timetableFrame));
+        frames.getCommonFrame().add(netexFactory.createTimetableFrame(timetableFrame));
 
-        ServiceCalendarFrame serviceCalendarFrame = AbstractJaxbNetexProducer.netexFactory.createServiceCalendarFrame()
-                .withVersion(VERSION_ONE)
+        ServiceCalendarFrame serviceCalendarFrame = netexFactory.createServiceCalendarFrame()
+                .withVersion(NETEX_DATA_OJBECT_VERSION)
                 .withId("AVI:ServiceCalendarFrame:1");
                 //.withDayTypes(dayTypesStruct)
                 //.withDayTypeAssignments(dayTypeAssignmentsStruct);
-        frames.getCommonFrame().add(AbstractJaxbNetexProducer.netexFactory.createServiceCalendarFrame(serviceCalendarFrame));
+        frames.getCommonFrame().add(netexFactory.createServiceCalendarFrame(serviceCalendarFrame));
 
-        CompositeFrame compositeFrame = AbstractJaxbNetexProducer.netexFactory.createCompositeFrame()
-                .withVersion(VERSION_ONE)
+        CompositeFrame compositeFrame = netexFactory.createCompositeFrame()
+                .withVersion(NETEX_DATA_OJBECT_VERSION)
                 //.withCreated(publicationTimestamp)
                 .withId("AVI:CompositeFrame:1")
                 //.withValidityConditions(validityConditionsStruct)
@@ -103,9 +126,9 @@ public class NetexPublicationDeliveryProducer implements Constant {
                 .withFrameDefaults(frameDefaultsStruct)
                 .withFrames(frames);
 
-        JAXBElement<CompositeFrame> compositeFrameElement = AbstractJaxbNetexProducer.netexFactory.createCompositeFrame(compositeFrame);
+        JAXBElement<CompositeFrame> compositeFrameElement = netexFactory.createCompositeFrame(compositeFrame);
 
-        PublicationDeliveryStructure.DataObjects dataObjects = AbstractJaxbNetexProducer.netexFactory.createPublicationDeliveryStructureDataObjects();
+        PublicationDeliveryStructure.DataObjects dataObjects = netexFactory.createPublicationDeliveryStructureDataObjects();
         dataObjects.getCompositeFrameOrCommonFrame().add(compositeFrameElement);
         rootObject.setDataObjects(dataObjects);
 
@@ -114,7 +137,7 @@ public class NetexPublicationDeliveryProducer implements Constant {
         File file = new File(dir.toFile(), fileName);
 
         JaxbNetexFileConverter writer = JaxbNetexFileConverter.getInstance();
-        writer.write(AbstractJaxbNetexProducer.netexFactory.createPublicationDelivery(rootObject), file);
+        writer.write(netexFactory.createPublicationDelivery(rootObject), file);
 
         reporter.addFileReport(context, fileName, IO_TYPE.OUTPUT);
 
