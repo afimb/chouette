@@ -26,6 +26,7 @@ public class RouteProducer extends AbstractJaxbNetexProducer<org.rutebanken.nete
         lineRefStruct.setRef(chouetteRoute.getLine().getObjectId());
         netexRoute.setLineRef(netexFactory.createLineRef(lineRefStruct));
 
+        // TODO add route points
         //netexRoute.setPointsInSequence();
 
         return netexRoute;

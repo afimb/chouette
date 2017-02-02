@@ -5,15 +5,13 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
-import mobi.chouette.exchange.netexprofile.exporter.producer.LineProducer;
-import mobi.chouette.exchange.netexprofile.exporter.producer.NetworkProducer;
-import mobi.chouette.exchange.netexprofile.exporter.producer.OperatorProducer;
-import mobi.chouette.exchange.netexprofile.exporter.producer.RouteProducer;
+import mobi.chouette.exchange.netexprofile.exporter.producer.*;
 import mobi.chouette.exchange.netexprofile.jaxb.JaxbNetexFileConverter;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Company;
 import org.rutebanken.netex.model.*;
+import org.trident.schema.trident.JourneyPatternType;
 
 import javax.xml.bind.JAXBElement;
 import java.io.File;
@@ -35,6 +33,7 @@ public class NetexPublicationDeliveryProducer implements Constant {
     private static OperatorProducer operatorProducer = new OperatorProducer();
     private static LineProducer lineProducer = new LineProducer();
     private static RouteProducer routeProducer = new RouteProducer();
+    private static JourneyPatternProducer journeyPatternProducer = new JourneyPatternProducer();
 
     public void produce(Context context) throws Exception {
         ActionReporter reporter = ActionReporter.Factory.getInstance();
@@ -117,6 +116,13 @@ public class NetexPublicationDeliveryProducer implements Constant {
             //chouetteLineDescription.getChouetteRoute().add(jaxbObj);
         }
         serviceFrame.setRoutes(routesInFrame);
+
+        JourneyPatternsInFrame_RelStructure journeyPatternsInFrame = netexFactory.createJourneyPatternsInFrame_RelStructure();
+        for (mobi.chouette.model.JourneyPattern chouetteJourneyPattern : collection.getJourneyPatterns()) {
+            org.rutebanken.netex.model.JourneyPattern netexJourneyPattern = journeyPatternProducer.produce(chouetteJourneyPattern, collection.getRoutes(), addExtension);
+            journeyPatternsInFrame.getJourneyPattern_OrJourneyPatternView().add(netexFactory.createJourneyPattern(netexJourneyPattern));
+        }
+        serviceFrame.setJourneyPatterns(journeyPatternsInFrame);
 
         frames.getCommonFrame().add(netexFactory.createServiceFrame(serviceFrame));
 
