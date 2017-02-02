@@ -5,14 +5,15 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
+import mobi.chouette.exchange.netexprofile.exporter.producer.LineProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetworkProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.OperatorProducer;
+import mobi.chouette.exchange.netexprofile.exporter.producer.RouteProducer;
 import mobi.chouette.exchange.netexprofile.jaxb.JaxbNetexFileConverter;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Company;
 import org.rutebanken.netex.model.*;
-import org.trident.schema.trident.CompanyType;
 
 import javax.xml.bind.JAXBElement;
 import java.io.File;
@@ -32,6 +33,8 @@ public class NetexPublicationDeliveryProducer implements Constant {
 
     private static NetworkProducer networkProducer = new NetworkProducer();
     private static OperatorProducer operatorProducer = new OperatorProducer();
+    private static LineProducer lineProducer = new LineProducer();
+    private static RouteProducer routeProducer = new RouteProducer();
 
     public void produce(Context context) throws Exception {
         ActionReporter reporter = ActionReporter.Factory.getInstance();
@@ -91,16 +94,29 @@ public class NetexPublicationDeliveryProducer implements Constant {
         ServiceFrame serviceFrame = netexFactory.createServiceFrame()
                 .withVersion(NETEX_DATA_OJBECT_VERSION)
                 .withId("AVI:ServiceFrame:1");
-                //.withNetwork(network)
                 //.withRoutePoints(routePointsInFrame)
                 //.withRoutes(routesInFrame)
-                //.withLines(linesInFrame)
                 //.withDestinationDisplays(destinationDisplayStruct)
                 //.withJourneyPatterns(journeyPatternsInFrame);
 
         if (collection.getLine().getNetwork() != null) {
             serviceFrame.setNetwork(networkProducer.produce(collection.getLine().getNetwork(), addExtension));
         }
+
+        Line line = lineProducer.produce(collection.getLine(), collection.getRoutes(), addExtension);
+        LinesInFrame_RelStructure linesInFrameStruct = netexFactory.createLinesInFrame_RelStructure();
+        linesInFrameStruct.getLine_().add(netexFactory.createLine(line));
+        serviceFrame.setLines(linesInFrameStruct);
+
+        RoutesInFrame_RelStructure routesInFrame = netexFactory.createRoutesInFrame_RelStructure();
+        for (mobi.chouette.model.Route chouetteRoute : collection.getRoutes()) {
+            org.rutebanken.netex.model.Route netexRoute = routeProducer.produce(chouetteRoute, collection.getRoutes(), addExtension);
+            routesInFrame.getRoute_().add(netexFactory.createRoute(netexRoute));
+
+            // TODO consider adding the route reference to the line here, instead of inside the LineProducer
+            //chouetteLineDescription.getChouetteRoute().add(jaxbObj);
+        }
+        serviceFrame.setRoutes(routesInFrame);
 
         frames.getCommonFrame().add(netexFactory.createServiceFrame(serviceFrame));
 

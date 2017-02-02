@@ -8,7 +8,7 @@ import org.rutebanken.netex.model.OrganisationTypeEnumeration;
 
 public class OperatorProducer extends AbstractJaxbNetexProducer<Operator, Company> {
 
-    @Override
+    //@Override
     public Operator produce(Company company, boolean addExtension) {
         Operator operator = netexFactory.createOperator();
         populateFromModel(operator, company);
