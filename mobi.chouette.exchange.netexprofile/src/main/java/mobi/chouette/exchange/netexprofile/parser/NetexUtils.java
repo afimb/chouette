@@ -12,8 +12,6 @@ import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlEnumValue;
-
 @Log4j
 public class NetexUtils extends ParserUtils {
 
@@ -197,7 +195,6 @@ public class NetexUtils extends ParserUtils {
 		return result;
 	}
 
-	// TODO: consider moving up to superclass
 	public static ZoneOffset getZoneOffset(ZoneId zoneId) {
 		if (zoneId == null) {
 			return null;
@@ -205,7 +202,6 @@ public class NetexUtils extends ParserUtils {
 		return zoneId.getRules().getOffset(Instant.now(Clock.system(zoneId)));
 	}
 
-	// TODO: consider moving up to superclass
 	public static Time convertToSqlTime(OffsetTime offsetTime) {
 		if (offsetTime == null) {
 			return null;
@@ -213,7 +209,6 @@ public class NetexUtils extends ParserUtils {
 		return Time.valueOf(offsetTime.withOffsetSameInstant(ZoneOffset.UTC).toLocalTime());
 	}
 
-	// TODO: consider moving up to superclass
 	public static Time convertToSqlTime(OffsetTime offsetTime, ZoneOffset zoneOffset) {
 		if (offsetTime == null) {
 			return null;

@@ -55,13 +55,13 @@ public class ServiceJourneyProducer extends AbstractJaxbNetexProducer<ServiceJou
                 if (firstStopDepartureTime == null) {
                     // TODO verify that all times conforms to UTC in written netex
                     firstStopDepartureTime = vehicleJourneyAtStop.getDepartureTime();
-                    serviceJourney.setDepartureTime(toOffsetTime(firstStopDepartureTime));
+                    serviceJourney.setDepartureTime(toOffsetTimeUtc(firstStopDepartureTime));
                 }
                 if (vehicleJourneyAtStop.getArrivalTime() != null) {
-                    timetabledPassingTime.setArrivalTime(toOffsetTime(vehicleJourneyAtStop.getArrivalTime()));
+                    timetabledPassingTime.setArrivalTime(toOffsetTimeUtc(vehicleJourneyAtStop.getArrivalTime()));
                 }
                 if (vehicleJourneyAtStop.getDepartureTime() != null) {
-                    timetabledPassingTime.setDepartureTime(toOffsetTime(vehicleJourneyAtStop.getDepartureTime()));
+                    timetabledPassingTime.setDepartureTime(toOffsetTimeUtc(vehicleJourneyAtStop.getDepartureTime()));
                 }
                 passingTimesStruct.getTimetabledPassingTime().add(timetabledPassingTime);
             }

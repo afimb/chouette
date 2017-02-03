@@ -7,16 +7,14 @@ import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.ObjectFactory;
 
 import java.sql.Time;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.Date;
 
 
 public abstract class AbstractJaxbNetexProducer<T extends DataManagedObjectStructure, U extends NeptuneIdentifiedObject> {
 
     public static final String NETEX_DATA_OJBECT_VERSION = "1";
+    public static final ZoneId LOCAL_ZONE_ID = ZoneId.of("Europe/Oslo");
     public static final String DEFAULT_ZONE_ID = "UTC";
 
     public static ObjectFactory netexFactory = null;
@@ -50,18 +48,20 @@ public abstract class AbstractJaxbNetexProducer<T extends DataManagedObjectStruc
 */
     }
 
-    protected OffsetDateTime toOffsetDateTime(Date date) {
-        if (date == null) {
-            return null;
-        }
-        return OffsetDateTime.ofInstant(date.toInstant(), ZoneId.of(DEFAULT_ZONE_ID));
+    protected ZoneOffset getZoneOffset(ZoneId zoneId) {
+        return zoneId == null ? null : zoneId.getRules().getOffset(Instant.now(Clock.system(zoneId)));
     }
 
-    protected OffsetTime toOffsetTime(Time time) {
-        if (time == null) {
-            return null;
-        }
-        return OffsetTime.of(time.toLocalTime(), ZoneOffset.UTC);
+    protected OffsetDateTime toOffsetDateTime(Date date) {
+        return date == null ? null : OffsetDateTime.ofInstant(date.toInstant(), ZoneId.of(DEFAULT_ZONE_ID));
+    }
+
+    protected OffsetTime toOffsetTimeLocal(Time time) {
+        return time == null ? null : OffsetTime.of(time.toLocalTime(), ZoneOffset.UTC);
+    }
+
+    protected OffsetTime toOffsetTimeUtc(Time time) {
+        return time == null ? null : time.toLocalTime().atOffset(getZoneOffset(LOCAL_ZONE_ID)).withOffsetSameInstant(ZoneOffset.UTC);
     }
 
     public static AllVehicleModesOfTransportEnumeration toVehicleModeOfTransportEnum(String value) {
