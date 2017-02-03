@@ -65,26 +65,37 @@ public class NetexPublicationDeliveryProducer implements Constant {
         */
 
         Metadata metadata = (Metadata) context.get(METADATA);
+        OffsetDateTime publicationTimestamp = OffsetDateTime.now();
 
         PublicationDeliveryStructure rootObject = netexFactory.createPublicationDeliveryStructure()
                 .withVersion(NETEX_PROFILE_VERSION)
-                .withPublicationTimestamp(OffsetDateTime.now())
+                .withPublicationTimestamp(publicationTimestamp)
                 .withParticipantRef("NSR")
                 .withDescription(netexFactory.createMultilingualString().withValue(collection.getLine().getName()));
+
+        CompositeFrame compositeFrame = netexFactory.createCompositeFrame()
+                .withVersion(NETEX_DATA_OJBECT_VERSION)
+                .withCreated(publicationTimestamp)
+                .withId("AVI:CompositeFrame:1"); // TODO set as <airline-iata>_<line-id>
+                //.withValidityConditions(validityConditionsStruct) // TODO
+                //.withCodespaces(codespaces) // TODO
+
+        VersionFrameDefaultsStructure frameDefaultsStruct = netexFactory.createVersionFrameDefaultsStructure();
+        compositeFrame.setFrameDefaults(frameDefaultsStruct);
 
         LocaleStructure localeStructure = netexFactory.createLocaleStructure()
                 .withTimeZone(DEFAULT_ZONE_ID)
                 .withDefaultLanguage(DEFAULT_LANGUAGE);
-
-        VersionFrameDefaultsStructure frameDefaultsStruct = netexFactory.createVersionFrameDefaultsStructure()
-                .withDefaultLocale(localeStructure);
+        frameDefaultsStruct.setDefaultLocale(localeStructure);
 
         Frames_RelStructure frames = netexFactory.createFrames_RelStructure();
+        compositeFrame.setFrames(frames);
 
         // resource frame
         ResourceFrame resourceFrame = netexFactory.createResourceFrame()
                 .withVersion(NETEX_DATA_OJBECT_VERSION)
                 .withId("AVI:ResourceFrame:1");
+        frames.getCommonFrame().add(netexFactory.createResourceFrame(resourceFrame));
 
         OrganisationsInFrame_RelStructure organisationsStruct = netexFactory.createOrganisationsInFrame_RelStructure();
         for (Company company : collection.getCompanies()) {
@@ -92,8 +103,6 @@ public class NetexPublicationDeliveryProducer implements Constant {
             organisationsStruct.getOrganisation_().add(netexFactory.createOperator(operator));
         }
         resourceFrame.setOrganisations(organisationsStruct);
-
-        frames.getCommonFrame().add(netexFactory.createResourceFrame(resourceFrame));
 
         // service frame
         ServiceFrame serviceFrame = netexFactory.createServiceFrame()
@@ -103,6 +112,7 @@ public class NetexPublicationDeliveryProducer implements Constant {
                 //.withRoutes(routesInFrame)
                 //.withDestinationDisplays(destinationDisplayStruct)
                 //.withJourneyPatterns(journeyPatternsInFrame);
+        frames.getCommonFrame().add(netexFactory.createServiceFrame(serviceFrame));
 
         if (collection.getLine().getNetwork() != null) {
             serviceFrame.setNetwork(networkProducer.produce(collection.getLine().getNetwork(), addExtension));
@@ -134,12 +144,11 @@ public class NetexPublicationDeliveryProducer implements Constant {
             // should map to netex RoutePoint
         }
 
-        frames.getCommonFrame().add(netexFactory.createServiceFrame(serviceFrame));
-
         TimetableFrame timetableFrame = netexFactory.createTimetableFrame()
                 .withVersion(NETEX_DATA_OJBECT_VERSION)
                 .withId("AVI:TimetableFrame:1");
                 //.withVehicleJourneys(journeysInFrameRelStructure);
+        frames.getCommonFrame().add(netexFactory.createTimetableFrame(timetableFrame));
 
         JourneysInFrame_RelStructure journeysInFrame = netexFactory.createJourneysInFrame_RelStructure();
         for (mobi.chouette.model.VehicleJourney vehicleJourney : collection.getVehicleJourneys()) {
@@ -148,8 +157,6 @@ public class NetexPublicationDeliveryProducer implements Constant {
         }
         timetableFrame.setVehicleJourneys(journeysInFrame);
 
-        frames.getCommonFrame().add(netexFactory.createTimetableFrame(timetableFrame));
-
         ServiceCalendarFrame serviceCalendarFrame = netexFactory.createServiceCalendarFrame()
                 .withVersion(NETEX_DATA_OJBECT_VERSION)
                 .withId("AVI:ServiceCalendarFrame:1");
@@ -157,19 +164,8 @@ public class NetexPublicationDeliveryProducer implements Constant {
                 //.withDayTypeAssignments(dayTypeAssignmentsStruct);
         frames.getCommonFrame().add(netexFactory.createServiceCalendarFrame(serviceCalendarFrame));
 
-        CompositeFrame compositeFrame = netexFactory.createCompositeFrame()
-                .withVersion(NETEX_DATA_OJBECT_VERSION)
-                //.withCreated(publicationTimestamp)
-                .withId("AVI:CompositeFrame:1")
-                //.withValidityConditions(validityConditionsStruct)
-                //.withCodespaces(codespaces)
-                .withFrameDefaults(frameDefaultsStruct)
-                .withFrames(frames);
-
-        JAXBElement<CompositeFrame> compositeFrameElement = netexFactory.createCompositeFrame(compositeFrame);
-
         PublicationDeliveryStructure.DataObjects dataObjects = netexFactory.createPublicationDeliveryStructureDataObjects();
-        dataObjects.getCompositeFrameOrCommonFrame().add(compositeFrameElement);
+        dataObjects.getCompositeFrameOrCommonFrame().add(netexFactory.createCompositeFrame(compositeFrame));
         rootObject.setDataObjects(dataObjects);
 
         Path dir = Paths.get(rootDirectory, OUTPUT);
