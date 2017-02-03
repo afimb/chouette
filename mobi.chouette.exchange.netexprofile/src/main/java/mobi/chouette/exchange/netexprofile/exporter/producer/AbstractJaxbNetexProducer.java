@@ -38,9 +38,13 @@ public abstract class AbstractJaxbNetexProducer<T extends DataManagedObjectStruc
         } else {
             target.setVersion(NETEX_DATA_OJBECT_VERSION);
         }
+
+        // TODO make this a parameter option
+/*
         if (source.getCreationTime() != null) {
             target.setCreated(toOffsetDateTime(source.getCreationTime()));
         }
+*/
 /*
         if (source.getCreatorId() != null) {
             target.setCreatorId(source.getCreatorId());

@@ -38,6 +38,7 @@ public class NetexPublicationDeliveryProducer implements Constant {
     private static OperatorProducer operatorProducer = new OperatorProducer();
     private static LineProducer lineProducer = new LineProducer();
     private static RouteProducer routeProducer = new RouteProducer();
+    private static RoutePointProducer routePointProducer = new RoutePointProducer();
     private static JourneyPatternProducer journeyPatternProducer = new JourneyPatternProducer();
     private static ServiceJourneyProducer serviceJourneyProducer = new ServiceJourneyProducer();
 
@@ -133,16 +134,19 @@ public class NetexPublicationDeliveryProducer implements Constant {
         }
         serviceFrame.setRoutes(routesInFrame);
 
+        RoutePointsInFrame_RelStructure routePointsInFrame = netexFactory.createRoutePointsInFrame_RelStructure();
+        for (StopPoint stopPoint : collection.getStopPoints()) {
+            RoutePoint routePoint = routePointProducer.produce(stopPoint, addExtension);
+            routePointsInFrame.getRoutePoint().add(routePoint);
+        }
+        serviceFrame.setRoutePoints(routePointsInFrame);
+
         JourneyPatternsInFrame_RelStructure journeyPatternsInFrame = netexFactory.createJourneyPatternsInFrame_RelStructure();
         for (mobi.chouette.model.JourneyPattern chouetteJourneyPattern : collection.getJourneyPatterns()) {
             org.rutebanken.netex.model.JourneyPattern netexJourneyPattern = journeyPatternProducer.produce(chouetteJourneyPattern, collection.getRoutes(), addExtension);
             journeyPatternsInFrame.getJourneyPattern_OrJourneyPatternView().add(netexFactory.createJourneyPattern(netexJourneyPattern));
         }
         serviceFrame.setJourneyPatterns(journeyPatternsInFrame);
-
-        for (StopPoint stopPoint : collection.getStopPoints()) {
-            // should map to netex RoutePoint
-        }
 
         TimetableFrame timetableFrame = netexFactory.createTimetableFrame()
                 .withVersion(NETEX_DATA_OJBECT_VERSION)
