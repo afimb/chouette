@@ -52,16 +52,16 @@ public class PublicationDeliveryParser implements Parser, Constant {
 				}
 
 				// pre processing
-				preParseReferentialDependencies(context, serviceFrames ,compositeFrame, isCommonDelivery);
+				preParseReferentialDependencies(context, serviceFrames , isCommonDelivery);
 
 				// normal processing
-				parseResourceFrames(context, resourceFrames,compositeFrame);
-				parseSiteFrames(context, siteFrames,compositeFrame);
-				parseServiceFrames(context, serviceFrames ,compositeFrame, isCommonDelivery);
+				parseResourceFrames(context, resourceFrames);
+				parseSiteFrames(context, siteFrames);
+				parseServiceFrames(context, serviceFrames , isCommonDelivery);
 				parseServiceCalendarFrame(context, serviceCalendarFrames ,compositeFrame);
 
 				if (!isCommonDelivery) {
-					parseTimetableFrames(context, timetableFrames,compositeFrame);
+					parseTimetableFrames(context, timetableFrames);
 				}
 				
 			}
@@ -78,20 +78,18 @@ public class PublicationDeliveryParser implements Parser, Constant {
 			}
 
 			// pre processing
-			preParseReferentialDependencies(context, serviceFrames, null, isCommonDelivery);
+			preParseReferentialDependencies(context, serviceFrames, isCommonDelivery);
 
 			// normal processing
-			parseResourceFrames(context, resourceFrames,null);
-			parseSiteFrames(context, siteFrames,null);
-			parseServiceFrames(context, serviceFrames, null,isCommonDelivery);
+			parseResourceFrames(context, resourceFrames);
+			parseSiteFrames(context, siteFrames);
+			parseServiceFrames(context, serviceFrames, isCommonDelivery);
 			parseServiceCalendarFrame(context, serviceCalendarFrames,null);
 
 			if (!isCommonDelivery) {
-				parseTimetableFrames(context, timetableFrames,null);
+				parseTimetableFrames(context, timetableFrames);
 			}
 		}
-		
-		
 
 		// post processing
 		sortStopPoints(referential);
@@ -99,7 +97,7 @@ public class PublicationDeliveryParser implements Parser, Constant {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void preParseReferentialDependencies(Context context, List<ServiceFrame> serviceFrames, CompositeFrame compositeFrame, boolean isCommonDelivery) throws Exception {
+	private void preParseReferentialDependencies(Context context, List<ServiceFrame> serviceFrames, boolean isCommonDelivery) throws Exception {
 		Map<String, String> stopAssignments = (Map<String, String>) context.get(NETEX_STOP_ASSIGNMENTS);
 		if (stopAssignments == null) {
 			stopAssignments = new HashMap<>();
@@ -145,7 +143,7 @@ public class PublicationDeliveryParser implements Parser, Constant {
         }
     }
 
-    private void parseResourceFrames(Context context, List<ResourceFrame> resourceFrames, CompositeFrame compositeFrame) throws Exception {
+    private void parseResourceFrames(Context context, List<ResourceFrame> resourceFrames) throws Exception {
 		for (ResourceFrame resourceFrame : resourceFrames) {
 			OrganisationsInFrame_RelStructure organisationsInFrameStruct = resourceFrame.getOrganisations();
 			if (organisationsInFrameStruct != null) {
@@ -156,7 +154,7 @@ public class PublicationDeliveryParser implements Parser, Constant {
 		}
 	}
 
-	private void parseSiteFrames(Context context, List<SiteFrame> siteFrames, CompositeFrame compositeFrame) throws Exception {
+	private void parseSiteFrames(Context context, List<SiteFrame> siteFrames) throws Exception {
 		for (SiteFrame siteFrame : siteFrames) {
             StopPlacesInFrame_RelStructure stopPlacesStruct = siteFrame.getStopPlaces();
 			if (stopPlacesStruct != null) {
@@ -167,7 +165,7 @@ public class PublicationDeliveryParser implements Parser, Constant {
 		}
 	}
 
-	private void parseServiceFrames(Context context, List<ServiceFrame> serviceFrames, CompositeFrame compositeFrame, boolean isCommonDelivery) throws Exception {
+	private void parseServiceFrames(Context context, List<ServiceFrame> serviceFrames, boolean isCommonDelivery) throws Exception {
 		for (ServiceFrame serviceFrame : serviceFrames) {
 			if (!isCommonDelivery) {
 				Network network = serviceFrame.getNetwork();
@@ -179,6 +177,11 @@ public class PublicationDeliveryParser implements Parser, Constant {
 				context.put(NETEX_LINE_DATA_CONTEXT, linesInFrameStruct);
 				LineParser lineParser = (LineParser) ParserFactory.create(LineParser.class.getName());
 				lineParser.parse(context);
+
+				RoutePointsInFrame_RelStructure routePointsInFrameStruct = serviceFrame.getRoutePoints();
+				context.put(NETEX_LINE_DATA_CONTEXT, routePointsInFrameStruct);
+				RoutePointParser routePointParser = (RoutePointParser) ParserFactory.create(RoutePointParser.class.getName());
+				routePointParser.parse(context);
 
 				RoutesInFrame_RelStructure routesInFrameStruct = serviceFrame.getRoutes();
 				context.put(NETEX_LINE_DATA_CONTEXT, routesInFrameStruct);
@@ -319,7 +322,7 @@ public class PublicationDeliveryParser implements Parser, Constant {
 		}
 	}
 
-	private void parseTimetableFrames(Context context, List<TimetableFrame> timetableFrames, CompositeFrame compositeFrame) throws Exception {
+	private void parseTimetableFrames(Context context, List<TimetableFrame> timetableFrames) throws Exception {
 		for (TimetableFrame timetableFrame : timetableFrames) {
 			JourneysInFrame_RelStructure vehicleJourneysStruct = timetableFrame.getVehicleJourneys();
 			context.put(NETEX_LINE_DATA_CONTEXT, vehicleJourneysStruct);

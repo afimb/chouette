@@ -7,7 +7,6 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.*;
 import mobi.chouette.model.Route;
-import mobi.chouette.model.StopArea;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.util.ObjectFactory;
@@ -17,7 +16,6 @@ import org.rutebanken.netex.model.JourneyPattern;
 
 import javax.xml.bind.JAXBElement;
 import java.sql.Time;
-import java.time.Instant;
 import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -60,13 +58,13 @@ public class JourneyParser implements Parser, Constant {
 
     private void parseJourneyPattern(Context context, JourneyPattern netexJourneyPattern) throws Exception {
         Referential referential = (Referential) context.get(REFERENTIAL);
-        mobi.chouette.model.JourneyPattern chouetteJourneyPattern = mobi.chouette.model.util.ObjectFactory.getJourneyPattern(referential, netexJourneyPattern.getId());
+        mobi.chouette.model.JourneyPattern chouetteJourneyPattern = ObjectFactory.getJourneyPattern(referential, netexJourneyPattern.getId());
 
         Integer version = Integer.valueOf(netexJourneyPattern.getVersion());
         chouetteJourneyPattern.setObjectVersion(version != null ? version : 0);
 
         String routeIdRef = netexJourneyPattern.getRouteRef().getRef();
-        mobi.chouette.model.Route route = mobi.chouette.model.util.ObjectFactory.getRoute(referential, routeIdRef);
+        mobi.chouette.model.Route route = ObjectFactory.getRoute(referential, routeIdRef);
         chouetteJourneyPattern.setRoute(route);
 
         if (netexJourneyPattern.getName() != null) {
@@ -79,7 +77,15 @@ public class JourneyParser implements Parser, Constant {
             chouetteJourneyPattern.setRegistrationNumber(netexJourneyPattern.getPrivateCode().getValue());
         }
 
-        parsePointsInSequence(context, netexJourneyPattern, chouetteJourneyPattern, route);
+        PointsInJourneyPattern_RelStructure pointsInSequenceStruct = netexJourneyPattern.getPointsInSequence();
+        List<PointInLinkSequence_VersionedChildStructure> pointsInLinkSequence = pointsInSequenceStruct
+                .getPointInJourneyPatternOrStopPointInJourneyPatternOrTimingPointInJourneyPattern();
+        pointsInLinkSequence.forEach(point -> stopPointInJourneyPatternMap.put(point.getId(), (StopPointInJourneyPattern) point));
+
+        route.getStopPoints().forEach(chouetteJourneyPattern::addStopPoint);
+        chouetteJourneyPattern.getStopPoints().sort(Comparator.comparing(StopPoint::getPosition));
+        chouetteJourneyPattern.setDepartureStopPoint(chouetteJourneyPattern.getStopPoints().get(0));
+        chouetteJourneyPattern.setArrivalStopPoint(chouetteJourneyPattern.getStopPoints().get(chouetteJourneyPattern.getStopPoints().size() - 1));
 
         // TODO: add all remaining optional elements, for now we only support RouteRef and pointsInSequence.
         //      See: https://rutebanken.atlassian.net/wiki/display/PUBLIC/network#network-JourneyPattern
@@ -87,58 +93,14 @@ public class JourneyParser implements Parser, Constant {
         chouetteJourneyPattern.setFilled(true);
     }
 
-    @SuppressWarnings("unchecked")
-    private void parsePointsInSequence(Context context, JourneyPattern netexJourneyPattern, mobi.chouette.model.JourneyPattern chouetteJourneyPattern, Route route) throws Exception {
-        Referential referential = (Referential) context.get(REFERENTIAL);
-        Map<String, String> stopAssignments = (Map<String, String>) context.get(NETEX_STOP_ASSIGNMENTS);
-        PointsInJourneyPattern_RelStructure pointsInSequenceStruct = netexJourneyPattern.getPointsInSequence();
-
-        List<PointInLinkSequence_VersionedChildStructure> pointsInLinkSequence = pointsInSequenceStruct
-                .getPointInJourneyPatternOrStopPointInJourneyPatternOrTimingPointInJourneyPattern();
-
-        for (PointInLinkSequence_VersionedChildStructure pointInLinkSequence : pointsInLinkSequence) {
-            StopPointInJourneyPattern stopPointInJourneyPattern = (StopPointInJourneyPattern) pointInLinkSequence;
-            Integer pointSequenceIndex = stopPointInJourneyPattern.getOrder().intValue();
-
-            String netexStopPointId = stopPointInJourneyPattern.getId();
-            String netexScheduledStopPointId = stopPointInJourneyPattern.getScheduledStopPointRef().getValue().getRef();
-
-            if (stopAssignments.containsKey(netexScheduledStopPointId)) {
-                String stopAreaObjectId = stopAssignments.get(netexScheduledStopPointId);
-                StopArea stopArea = ObjectFactory.getStopArea(referential, stopAreaObjectId);
-
-                if (stopArea != null) {
-                    StopPoint stopPoint = ObjectFactory.getStopPoint(referential, netexStopPointId);
-                    stopPoint.setPosition(pointSequenceIndex);
-                    stopPoint.setContainedInStopArea(stopArea);
-                    stopPoint.setRoute(route);
-
-                    chouetteJourneyPattern.addStopPoint(stopPoint);
-
-                    log.debug("Added StopPoint " + netexStopPointId + " to JourneyPattern " +
-                            chouetteJourneyPattern.getObjectId() + ". ContainedInStopArea is " + stopArea.getObjectId());
-                } else {
-                    log.warn("StopArea with id " + stopAreaObjectId + " not found in cache. Not adding StopPoint " +
-                    		netexStopPointId + " to JourneyPattern.");
-                }
-            }
-
-            stopPointInJourneyPatternMap.put(stopPointInJourneyPattern.getId(), stopPointInJourneyPattern);
-        }
-
-        List<StopPoint> addedStopPoints = chouetteJourneyPattern.getStopPoints();
-        chouetteJourneyPattern.getStopPoints().sort(Comparator.comparing(StopPoint::getPosition));
-        chouetteJourneyPattern.setDepartureStopPoint(addedStopPoints.get(0));
-        chouetteJourneyPattern.setArrivalStopPoint(addedStopPoints.get(addedStopPoints.size() - 1));
-    }
-
     private void parseServiceJourney(Context context, ServiceJourney serviceJourney) throws Exception {
         Referential referential = (Referential) context.get(REFERENTIAL);
-        VehicleJourney vehicleJourney = mobi.chouette.model.util.ObjectFactory.getVehicleJourney(referential, serviceJourney.getId());
+        VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, serviceJourney.getId());
 
         Integer version = Integer.valueOf(serviceJourney.getVersion());
         vehicleJourney.setObjectVersion(version != null ? version : 0);
 
+        // TODO check out if this gives the problem with journey names in digitransit (OSL-BGO instead of SK4887)
         if (serviceJourney.getName() != null) {
             vehicleJourney.setPublishedJourneyName(serviceJourney.getName().getValue());
         }
@@ -152,7 +114,7 @@ public class JourneyParser implements Parser, Constant {
         }
 
         String journeyPatternIdRef = serviceJourney.getJourneyPatternRef().getValue().getRef();
-        mobi.chouette.model.JourneyPattern journeyPattern = mobi.chouette.model.util.ObjectFactory.getJourneyPattern(referential, journeyPatternIdRef);
+        mobi.chouette.model.JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, journeyPatternIdRef);
         vehicleJourney.setJourneyPattern(journeyPattern);
 
         if (serviceJourney.getOperatorRef() != null) {
@@ -176,22 +138,24 @@ public class JourneyParser implements Parser, Constant {
             vehicleJourney.setRoute(route);
         }
 
-        parseTimetabledPassingTimes(context, serviceJourney, vehicleJourney);
+        parseTimetabledPassingTimes(serviceJourney, vehicleJourney, journeyPattern);
         vehicleJourney.setFilled(true);
     }
 
     @SuppressWarnings("unchecked")
-    private void parseTimetabledPassingTimes(Context context, ServiceJourney serviceJourney, VehicleJourney vehicleJourney) {
-        Referential referential = (Referential) context.get(REFERENTIAL);
+    private void parseTimetabledPassingTimes(ServiceJourney serviceJourney, VehicleJourney vehicleJourney, mobi.chouette.model.JourneyPattern journeyPattern) {
         List<TimetabledPassingTime> timetabledPassingTimes = serviceJourney.getPassingTimes().getTimetabledPassingTime();
 
-        for (TimetabledPassingTime timetabledPassingTime : timetabledPassingTimes) {
-            VehicleJourneyAtStop vehicleJourneyAtStop = mobi.chouette.model.util.ObjectFactory.getVehicleJourneyAtStop();
+        for (int i = 0; i < timetabledPassingTimes.size(); i++) {
+            TimetabledPassingTime timetabledPassingTime = timetabledPassingTimes.get(i);
+
+            VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop();
             vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
 
             String pointInJourneyPatternId = timetabledPassingTime.getPointInJourneyPatternRef().getValue().getRef();
             StopPointInJourneyPattern stopPointInJourneyPattern = stopPointInJourneyPatternMap.get(pointInJourneyPatternId);
-            StopPoint stopPoint = ObjectFactory.getStopPoint(referential, pointInJourneyPatternId);
+
+            StopPoint stopPoint = journeyPattern.getStopPoints().get(i);
             vehicleJourneyAtStop.setStopPoint(stopPoint);
 
             // Default = board and alight
@@ -207,21 +171,10 @@ public class JourneyParser implements Parser, Constant {
                 vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.AlightOnly);
             }
 
-
             parsePassingTimes(timetabledPassingTime, vehicleJourneyAtStop);
         }
 
-        // sort the list of stop points the current vehicle journey
-        vehicleJourney.getVehicleJourneyAtStops().sort((o1, o2) -> {
-            StopPoint p1 = o1.getStopPoint();
-            StopPoint p2 = o2.getStopPoint();
-            if (p1 != null && p2 != null) {
-                int pos1 = p1.getPosition() == null ? 0 : p1.getPosition();
-                int pos2 = p2.getPosition() == null ? 0 : p2.getPosition();
-                return pos1 - pos2;
-            }
-            return 0;
-        });
+        vehicleJourney.getVehicleJourneyAtStops().sort(Comparator.comparingInt(o -> o.getStopPoint().getPosition()));
     }
 
     // TODO add support for other time zones and zone offsets, for now only handling UTC
