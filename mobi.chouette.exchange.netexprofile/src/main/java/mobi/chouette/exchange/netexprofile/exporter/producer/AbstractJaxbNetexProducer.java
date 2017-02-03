@@ -6,8 +6,11 @@ import org.rutebanken.netex.model.DataManagedObjectStructure;
 import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.ObjectFactory;
 
+import java.sql.Time;
 import java.time.OffsetDateTime;
+import java.time.OffsetTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 
@@ -52,6 +55,13 @@ public abstract class AbstractJaxbNetexProducer<T extends DataManagedObjectStruc
             return null;
         }
         return OffsetDateTime.ofInstant(date.toInstant(), ZoneId.of(DEFAULT_ZONE_ID));
+    }
+
+    protected OffsetTime toOffsetTime(Time time) {
+        if (time == null) {
+            return null;
+        }
+        return OffsetTime.of(time.toLocalTime(), ZoneOffset.UTC);
     }
 
     public static AllVehicleModesOfTransportEnumeration toVehicleModeOfTransportEnum(String value) {

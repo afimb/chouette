@@ -5,19 +5,24 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
+import mobi.chouette.exchange.neptune.model.TimeSlot;
 import mobi.chouette.exchange.netexprofile.exporter.producer.*;
 import mobi.chouette.exchange.netexprofile.jaxb.JaxbNetexFileConverter;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Company;
+import mobi.chouette.model.JourneyFrequency;
+import mobi.chouette.model.StopPoint;
 import org.rutebanken.netex.model.*;
-import org.trident.schema.trident.JourneyPatternType;
+import org.trident.schema.trident.TimeSlotType;
+import org.trident.schema.trident.VehicleJourneyType;
 
 import javax.xml.bind.JAXBElement;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.AbstractJaxbNetexProducer.netexFactory;
 
@@ -34,6 +39,7 @@ public class NetexPublicationDeliveryProducer implements Constant {
     private static LineProducer lineProducer = new LineProducer();
     private static RouteProducer routeProducer = new RouteProducer();
     private static JourneyPatternProducer journeyPatternProducer = new JourneyPatternProducer();
+    private static ServiceJourneyProducer serviceJourneyProducer = new ServiceJourneyProducer();
 
     public void produce(Context context) throws Exception {
         ActionReporter reporter = ActionReporter.Factory.getInstance();
@@ -124,12 +130,24 @@ public class NetexPublicationDeliveryProducer implements Constant {
         }
         serviceFrame.setJourneyPatterns(journeyPatternsInFrame);
 
+        for (StopPoint stopPoint : collection.getStopPoints()) {
+            // should map to netex RoutePoint
+        }
+
         frames.getCommonFrame().add(netexFactory.createServiceFrame(serviceFrame));
 
         TimetableFrame timetableFrame = netexFactory.createTimetableFrame()
                 .withVersion(NETEX_DATA_OJBECT_VERSION)
                 .withId("AVI:TimetableFrame:1");
                 //.withVehicleJourneys(journeysInFrameRelStructure);
+
+        JourneysInFrame_RelStructure journeysInFrame = netexFactory.createJourneysInFrame_RelStructure();
+        for (mobi.chouette.model.VehicleJourney vehicleJourney : collection.getVehicleJourneys()) {
+            ServiceJourney serviceJourney = serviceJourneyProducer.produce(vehicleJourney, collection.getLine(), addExtension);
+            journeysInFrame.getDatedServiceJourneyOrDeadRunOrServiceJourney().add(serviceJourney);
+        }
+        timetableFrame.setVehicleJourneys(journeysInFrame);
+
         frames.getCommonFrame().add(netexFactory.createTimetableFrame(timetableFrame));
 
         ServiceCalendarFrame serviceCalendarFrame = netexFactory.createServiceCalendarFrame()
