@@ -22,6 +22,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.AbstractJaxbNetexProducer.netexFactory;
@@ -33,6 +34,13 @@ public class NetexPublicationDeliveryProducer implements Constant {
     public static final String NETEX_DATA_OJBECT_VERSION = "1";
     public static final String DEFAULT_ZONE_ID = "UTC";
     public static final String DEFAULT_LANGUAGE = "no";
+
+    // TODO make the following part of dynamic codespace mapping
+    public static final String NSR_XMLNS = "NSR";
+    public static final String NSR_XMLNSURL = "http://www.rutebanken.org/ns/nsr";
+
+    public static final String AVINOR_XMLNS = "AVI";
+    public static final String AVINOR_XMLNSURL = "http://www.rutebanken.org/ns/avi";
 
     private static NetworkProducer networkProducer = new NetworkProducer();
     private static OperatorProducer operatorProducer = new OperatorProducer();
@@ -81,6 +89,20 @@ public class NetexPublicationDeliveryProducer implements Constant {
                 //.withValidityConditions(validityConditionsStruct) // TODO
                 //.withCodespaces(codespaces) // TODO
 
+        // TODO create codespace here
+
+        Codespace nsrCodespace = netexFactory.createCodespace()
+                .withId(NSR_XMLNS.toLowerCase())
+                .withXmlns(NSR_XMLNS)
+                .withXmlnsUrl(NSR_XMLNSURL);
+        Codespace avinorCodespace = netexFactory.createCodespace()
+                .withId(AVINOR_XMLNS.toLowerCase())
+                .withXmlns(AVINOR_XMLNS)
+                .withXmlnsUrl(AVINOR_XMLNSURL);
+        Codespaces_RelStructure codespaces = netexFactory.createCodespaces_RelStructure()
+                .withCodespaceRefOrCodespace(Arrays.asList(avinorCodespace, nsrCodespace));
+        compositeFrame.setCodespaces(codespaces);
+
         VersionFrameDefaultsStructure frameDefaultsStruct = netexFactory.createVersionFrameDefaultsStructure();
         compositeFrame.setFrameDefaults(frameDefaultsStruct);
 
@@ -109,10 +131,7 @@ public class NetexPublicationDeliveryProducer implements Constant {
         ServiceFrame serviceFrame = netexFactory.createServiceFrame()
                 .withVersion(NETEX_DATA_OJBECT_VERSION)
                 .withId("AVI:ServiceFrame:1");
-                //.withRoutePoints(routePointsInFrame)
-                //.withRoutes(routesInFrame)
                 //.withDestinationDisplays(destinationDisplayStruct)
-                //.withJourneyPatterns(journeyPatternsInFrame);
         frames.getCommonFrame().add(netexFactory.createServiceFrame(serviceFrame));
 
         if (collection.getLine().getNetwork() != null) {
