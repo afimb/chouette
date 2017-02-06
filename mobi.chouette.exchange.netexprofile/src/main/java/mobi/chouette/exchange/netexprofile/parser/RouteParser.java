@@ -5,24 +5,30 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.importer.util.NetexIdMapper;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.PTDirectionEnum;
 import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
+import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
 
 import javax.xml.bind.JAXBElement;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 @Log4j
 public class RouteParser implements Parser, Constant {
 
     @Override
+    @SuppressWarnings("unchecked")
     public void parse(Context context) throws Exception {
         Referential referential = (Referential) context.get(REFERENTIAL);
         RoutesInFrame_RelStructure routesInFrameStruct = (RoutesInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
+        Map<String, String> stopAssignments = (Map<String, String>) context.get(NETEX_STOP_ASSIGNMENTS);
+        Map<String, String> stopPointIdMapper = (Map<String, String>) context.get(STOP_POINT_ID_MAPPER);
         List<JAXBElement<? extends LinkSequence_VersionStructure>> routeElements = routesInFrameStruct.getRoute_();
 
         for (JAXBElement<? extends LinkSequence_VersionStructure> routeElement : routeElements) {
@@ -65,14 +71,42 @@ public class RouteParser implements Parser, Constant {
             List<PointOnRoute> pointsOnRoute = netexRoute.getPointsInSequence().getPointOnRoute();
 
             for (int i = 0; i < pointsOnRoute.size(); i++) {
-                String routePointIdRef = pointsOnRoute.get(i).getPointRef().getValue().getRef();
-                StopPoint stopPoint = ObjectFactory.getStopPoint(referential, routePointIdRef);
+                PointOnRoute pointOnRoute = pointsOnRoute.get(i);
+                String routePointIdRef = null;
+
+                if (pointOnRoute.getPointRef() != null) {
+                    PointRefStructure pointRefStruct = pointOnRoute.getPointRef().getValue();
+                    routePointIdRef = pointRefStruct.getRef();
+                }
+
+                // TODO consider creating more sophisticated stop point ids (containing operator, line, route, pattern, etc...)
+                String[] pointOnRouteIdSplit = StringUtils.split(pointOnRoute.getId(), ":");
+                String stopPointId = StringUtils.join(new String[]{pointOnRouteIdSplit[0], ObjectIdTypes.STOPPOINT_KEY, pointOnRouteIdSplit[2]}, ":");
+
+                StopPoint stopPoint = ObjectFactory.getStopPoint(referential, stopPointId);
+                stopPoint.setObjectVersion(Integer.valueOf(pointOnRoute.getVersion()));
+
+                String scheduledStopPointIdRef = NetexIdMapper.getRouteStopMapper().get(routePointIdRef);
+
+                if (stopAssignments.containsKey(scheduledStopPointIdRef)) {
+                    String stopAreaObjectId = stopAssignments.get(scheduledStopPointIdRef);
+                    mobi.chouette.model.StopArea stopArea = ObjectFactory.getStopArea(referential, stopAreaObjectId);
+
+                    if (stopArea != null) {
+                        stopPoint.setContainedInStopArea(stopArea);
+                        log.debug("StopPoint : " + stopPointId + ", ContainedInStopArea : " + stopArea.getObjectId());
+                    } else {
+                        log.warn("StopArea with id " + stopAreaObjectId + " not found in cache.");
+                    }
+                }
+
                 stopPoint.setPosition(i + 1);
-                chouetteRoute.getStopPoints().add(stopPoint);
-                log.debug("Added StopPoint : " + routePointIdRef + " to Route : " + chouetteRoute.getObjectId());
+                stopPoint.setRoute(chouetteRoute);
+                //stopPointIdMapper.put(scheduledStopPointIdRef, stopPointId);
+                log.debug("Created StopPoint : " + stopPointId);
             }
 
-            chouetteRoute.getStopPoints().sort(Comparator.comparingInt(StopPoint::getPosition));
+            //chouetteRoute.getStopPoints().sort(Comparator.comparingInt(StopPoint::getPosition));
             chouetteRoute.setFilled(true);
         }
     }

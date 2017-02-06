@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-// TODO add common methods for extracting various types of objects from netex objects...
 public class NetexObjectUtil {
 
     public static void addResourceFrameReference(NetexReferential referential, String objectId, ResourceFrame resourceFrame) {
@@ -64,7 +63,6 @@ public class NetexObjectUtil {
         return resourceFrame;
     }
 
-    // TODO add to shared referential space instead, should be global to all line deliveries
     public static void addAuthorityReference(NetexReferential referential, String objectId, Authority authority) {
         if (authority == null) {
             throw new NullPointerException("Unknown authority : " + objectId);
@@ -82,7 +80,6 @@ public class NetexObjectUtil {
         return authority;
     }
 
-    // TODO add to shared referential space instead, should be global to all line deliveries
     public static void addOperatorReference(NetexReferential referential, String objectId, Operator operator) {
         if (operator == null) {
             throw new NullPointerException("Unknown operator : " + objectId);

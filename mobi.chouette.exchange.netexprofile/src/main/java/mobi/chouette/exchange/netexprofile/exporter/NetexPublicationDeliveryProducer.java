@@ -139,7 +139,7 @@ public class NetexPublicationDeliveryProducer implements Constant {
             RoutePoint routePoint = routePointProducer.produce(stopPoint, addExtension);
             routePointsInFrame.getRoutePoint().add(routePoint);
         }
-        serviceFrame.setRoutePoints(routePointsInFrame);
+        //serviceFrame.setRoutePoints(routePointsInFrame);
 
         JourneyPatternsInFrame_RelStructure journeyPatternsInFrame = netexFactory.createJourneyPatternsInFrame_RelStructure();
         for (mobi.chouette.model.JourneyPattern chouetteJourneyPattern : collection.getJourneyPatterns()) {

@@ -42,7 +42,8 @@ public class RouteProducer extends AbstractJaxbNetexProducer<org.rutebanken.nete
                     .withRef(stopPoint.getObjectId());
             pointOnRoute.setPointRef(netexFactory.createRoutePointRef(routePointRefStruct));
         }
-        netexRoute.setPointsInSequence(pointsOnRoute);
+
+        //netexRoute.setPointsInSequence(pointsOnRoute);
 
         return netexRoute;
     }

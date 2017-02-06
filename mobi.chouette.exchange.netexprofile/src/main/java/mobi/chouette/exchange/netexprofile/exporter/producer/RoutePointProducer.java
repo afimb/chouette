@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes;
 import mobi.chouette.model.StopPoint;
 import org.rutebanken.netex.model.PointProjection;
 import org.rutebanken.netex.model.PointRefStructure;
@@ -11,7 +12,12 @@ public class RoutePointProducer extends AbstractJaxbNetexProducer<RoutePoint, St
     //@Override
     public RoutePoint produce(StopPoint stopPoint, boolean addExtension) {
         RoutePoint routePoint = netexFactory.createRoutePoint();
-        populateFromModel(routePoint, stopPoint);
+
+        String routePointId = "AVI:" + NetexObjectIdTypes.ROUTE_POINT_KEY + "";
+        routePoint.setId(routePointId);
+
+        //routePoint.setVersion(source.getObjectVersion() > 0 ? String.valueOf(source.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+        //populateFromModel(routePoint, stopPoint);
 
         PointRefStructure pointRefStruct = netexFactory.createPointRefStructure()
                 .withVersion(NETEX_DATA_OJBECT_VERSION)

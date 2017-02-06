@@ -6,10 +6,12 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.importer.util.NetexIdMapper;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
 import mobi.chouette.model.*;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.StopArea;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
@@ -103,7 +105,27 @@ public class PublicationDeliveryParser implements Parser, Constant {
 			stopAssignments = new HashMap<>();
 			context.put(NETEX_STOP_ASSIGNMENTS, stopAssignments);
 		}
+
 		for (ServiceFrame serviceFrame : serviceFrames) {
+
+			// route point references
+			List<RoutePoint> routePoints = serviceFrame.getRoutePoints().getRoutePoint();
+
+			for (RoutePoint routePoint : routePoints) {
+				String stopPointIdRef = null;
+				Projections_RelStructure projections = routePoint.getProjections();
+
+				for (JAXBElement<?> projectionRefElement : projections.getProjectionRefOrProjection()) {
+					if (stopPointIdRef == null) {
+						PointProjection pointProjection = (PointProjection) projectionRefElement.getValue();
+						stopPointIdRef = pointProjection.getProjectedPointRef().getRef();
+					}
+				}
+
+				NetexIdMapper.addRouteStopIdMapping(routePoint.getId(), stopPointIdRef);
+			}
+
+			// stop assignments
 			StopAssignmentsInFrame_RelStructure stopAssignmentsStructure = serviceFrame.getStopAssignments();
 			if (stopAssignmentsStructure != null) {
 				List<JAXBElement<? extends StopAssignment_VersionStructure>> stopAssignmentElements = stopAssignmentsStructure.getStopAssignment();
@@ -177,11 +199,6 @@ public class PublicationDeliveryParser implements Parser, Constant {
 				context.put(NETEX_LINE_DATA_CONTEXT, linesInFrameStruct);
 				LineParser lineParser = (LineParser) ParserFactory.create(LineParser.class.getName());
 				lineParser.parse(context);
-
-				RoutePointsInFrame_RelStructure routePointsInFrameStruct = serviceFrame.getRoutePoints();
-				context.put(NETEX_LINE_DATA_CONTEXT, routePointsInFrameStruct);
-				RoutePointParser routePointParser = (RoutePointParser) ParserFactory.create(RoutePointParser.class.getName());
-				routePointParser.parse(context);
 
 				RoutesInFrame_RelStructure routesInFrameStruct = serviceFrame.getRoutes();
 				context.put(NETEX_LINE_DATA_CONTEXT, routesInFrameStruct);
