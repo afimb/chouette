@@ -254,19 +254,16 @@ public class NeTExStopPlaceRegisterUpdater {
 			try {
 				response = client.sendPublicationDelivery(publicationDelivery);
 			} catch (JAXBException | IOException | SAXException e) {
-				log.warn("Got exception while sending publication delivery with " + stopPlaces.size()
-						+ " stop places. correlationId: " + correlationId, e);
-				return;
+				throw new RuntimeException("Got exception while sending publication delivery with " + stopPlaces.size()
+						+ " stop places to stop place register. correlationId: " + correlationId, e);
 			}
 
 			if (response.getDataObjects() == null) {
-				log.error("The response dataObjects is null for received publication delivery. Nothing to do here. "
+				throw new RuntimeException("The response dataObjects is null for received publication delivery. Nothing to do here. "
 						+ correlationId);
-				return;
+
 			} else if (response.getDataObjects().getCompositeFrameOrCommonFrame() == null) {
-				log.error(
-						"Composite frame or common frame is null for received publication delivery. " + correlationId);
-				return;
+				throw new RuntimeException("Composite frame or common frame is null for received publication delivery. " + correlationId);
 			}
 
 			log.info("Got publication delivery structure back with "
