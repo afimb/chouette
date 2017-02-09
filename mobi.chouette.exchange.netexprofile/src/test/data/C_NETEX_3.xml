@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<PublicationDelivery xmlns="http://www.netex.org.uk/netex" xmlns:ns2="http://www.opengis.net/gml/3.2" xmlns:ns3="http://www.siri.org.uk/siri" version="1.04:NO-NeTEx-networktimetable:1.0">
+<PublicationDelivery xmlns="http://www.netex.org.uk/netex" version="1.04:NO-NeTEx-networktimetable:1.0">
     <PublicationTimestamp>2017-01-31T21:03:23.056Z</PublicationTimestamp>
     <ParticipantRef>Avinor</ParticipantRef>
     <Description>Line: Trondheim-Molde</Description>
@@ -197,10 +197,12 @@
                     <stopAssignments>
                         <PassengerStopAssignment order="26" version="1" id="AVI:PassengerStopAssignment:MOL">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:MOL" version="1"/>
+                            <StopPlaceRef version="1" ref="AVI:StopPlace:MOL"/>
                             <QuayRef ref="AVI:Quay:MOL" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="42" version="1" id="AVI:PassengerStopAssignment:TRD">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:TRD" version="1"/>
+                            <StopPlaceRef version="1" ref="AVI:StopPlace:TRD"/>
                             <QuayRef ref="AVI:Quay:TRD" version="1"/>
                         </PassengerStopAssignment>
                     </stopAssignments>

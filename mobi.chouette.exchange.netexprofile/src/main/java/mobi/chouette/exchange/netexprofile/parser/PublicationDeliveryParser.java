@@ -6,12 +6,10 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.importer.util.NetexIdMapper;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
 import mobi.chouette.model.*;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
-import mobi.chouette.model.StopArea;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
@@ -98,60 +96,24 @@ public class PublicationDeliveryParser implements Parser, Constant {
 		updateBoardingAlighting(referential);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void preParseReferentialDependencies(Context context, List<ServiceFrame> serviceFrames, boolean isCommonDelivery) throws Exception {
-		Map<String, String> stopAssignments = (Map<String, String>) context.get(NETEX_STOP_ASSIGNMENTS);
-		if (stopAssignments == null) {
-			stopAssignments = new HashMap<>();
-			context.put(NETEX_STOP_ASSIGNMENTS, stopAssignments);
-		}
-
 		for (ServiceFrame serviceFrame : serviceFrames) {
 
-			// route point references
-			List<RoutePoint> routePoints = serviceFrame.getRoutePoints().getRoutePoint();
-
-			for (RoutePoint routePoint : routePoints) {
-				String stopPointIdRef = null;
-				Projections_RelStructure projections = routePoint.getProjections();
-
-				for (JAXBElement<?> projectionRefElement : projections.getProjectionRefOrProjection()) {
-					if (stopPointIdRef == null) {
-						PointProjection pointProjection = (PointProjection) projectionRefElement.getValue();
-						stopPointIdRef = pointProjection.getProjectedPointRef().getRef();
-					}
-				}
-
-				NetexIdMapper.addRouteStopIdMapping(routePoint.getId(), stopPointIdRef);
+			// pre parsing route points
+			RoutePointsInFrame_RelStructure routePointStruct = serviceFrame.getRoutePoints();
+			if (routePointStruct != null) {
+				context.put(NETEX_LINE_DATA_CONTEXT, serviceFrame.getRoutePoints());
+				ParserFactory.create(RoutePointParser.class.getName()).parse(context);
 			}
 
 			// stop assignments
-			StopAssignmentsInFrame_RelStructure stopAssignmentsStructure = serviceFrame.getStopAssignments();
-			if (stopAssignmentsStructure != null) {
-				List<JAXBElement<? extends StopAssignment_VersionStructure>> stopAssignmentElements = stopAssignmentsStructure.getStopAssignment();
-
-				for (JAXBElement<? extends StopAssignment_VersionStructure> stopAssignmentElement : stopAssignmentElements) {
-					PassengerStopAssignment passengerStopAssignment = (PassengerStopAssignment) stopAssignmentElement.getValue();
-					ScheduledStopPointRefStructure scheduledStopPointRef = passengerStopAssignment.getScheduledStopPointRef();
-					StopPlaceRefStructure stopPlaceRef = passengerStopAssignment.getStopPlaceRef();
-
-					if (scheduledStopPointRef != null && stopPlaceRef != null) {
-					    if (!stopAssignments.containsKey(scheduledStopPointRef.getRef())) {
-                            stopAssignments.put(scheduledStopPointRef.getRef(), stopPlaceRef.getRef());
-                        }
-					}
-					QuayRefStructure quayRef = passengerStopAssignment.getQuayRef();
-
-					if (scheduledStopPointRef != null && quayRef != null) {
-					    if (!stopAssignments.containsKey(scheduledStopPointRef.getRef())) {
-                            stopAssignments.put(scheduledStopPointRef.getRef(), quayRef.getRef());
-                        }
-					}
-				}
+			StopAssignmentsInFrame_RelStructure stopAssignmentStruct = serviceFrame.getStopAssignments();
+			if (stopAssignmentStruct != null) {
+				context.put(NETEX_LINE_DATA_CONTEXT, serviceFrame.getStopAssignments());
+				ParserFactory.create(StopAssignmentParser.class.getName()).parse(context);
 			}
 
 			if (!isCommonDelivery) {
-
 				// preparsing mandatory for stop places to parse correctly
 				TariffZonesInFrame_RelStructure tariffZonesStruct = serviceFrame.getTariffZones();
 				if (tariffZonesStruct != null) {
@@ -159,8 +121,6 @@ public class PublicationDeliveryParser implements Parser, Constant {
 					StopPlaceParser stopPlaceParser = (StopPlaceParser) ParserFactory.create(StopPlaceParser.class.getName());
 					stopPlaceParser.parse(context);
 				}
-			} else {
-
 			}
         }
     }
@@ -209,8 +169,8 @@ public class PublicationDeliveryParser implements Parser, Constant {
 			if (!isCommonDelivery) {
 				JourneyPatternsInFrame_RelStructure journeyPatternStruct = serviceFrame.getJourneyPatterns();
 				context.put(NETEX_LINE_DATA_CONTEXT, journeyPatternStruct);
-                JourneyParser journeyParser = (JourneyParser) ParserFactory.create(JourneyParser.class.getName());
-                journeyParser.parse(context);
+				JourneyPatternParser journeyPatternParser = (JourneyPatternParser) ParserFactory.create(JourneyPatternParser.class.getName());
+                journeyPatternParser.parse(context);
 
 				TransfersInFrame_RelStructure connectionsStruct = serviceFrame.getConnections();
 				if (connectionsStruct != null) {
@@ -343,8 +303,8 @@ public class PublicationDeliveryParser implements Parser, Constant {
 		for (TimetableFrame timetableFrame : timetableFrames) {
 			JourneysInFrame_RelStructure vehicleJourneysStruct = timetableFrame.getVehicleJourneys();
 			context.put(NETEX_LINE_DATA_CONTEXT, vehicleJourneysStruct);
-			Parser journeyParser = ParserFactory.create(JourneyParser.class.getName());
-			journeyParser.parse(context);
+			Parser serviceJourneyParser = ParserFactory.create(ServiceJourneyParser.class.getName());
+			serviceJourneyParser.parse(context);
 		}
 	}
 

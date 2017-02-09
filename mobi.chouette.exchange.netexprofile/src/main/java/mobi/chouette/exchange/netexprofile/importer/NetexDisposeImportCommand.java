@@ -9,11 +9,10 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.AbstractDisposeImportCommand;
 import mobi.chouette.exchange.netexprofile.Constant;
-
-import javax.naming.InitialContext;
-
+import mobi.chouette.exchange.netexprofile.parser.NetexParser;
 import org.w3c.dom.Document;
 
+import javax.naming.InitialContext;
 import java.io.IOException;
 import java.util.List;
 
@@ -23,6 +22,7 @@ public class NetexDisposeImportCommand extends AbstractDisposeImportCommand impl
 	public static final String COMMAND = "NetexDisposeImportCommand";
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 
@@ -31,9 +31,8 @@ public class NetexDisposeImportCommand extends AbstractDisposeImportCommand impl
 		try {
 			((List<Document>) context.get(Constant.NETEX_COMMON_DATA_DOMS)).clear();
 			super.execute(context);
-			
+			NetexParser.resetContext(context);
 			result = SUCCESS;
-
 		} catch (Exception e) {
 			log.error(e, e);
 			throw e;
@@ -48,8 +47,7 @@ public class NetexDisposeImportCommand extends AbstractDisposeImportCommand impl
 
 		@Override
 		protected Command create(InitialContext context) throws IOException {
-			Command result = new NetexDisposeImportCommand();
-			return result;
+			return new NetexDisposeImportCommand();
 		}
 	}
 

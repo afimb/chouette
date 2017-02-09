@@ -5,25 +5,19 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
-import mobi.chouette.exchange.neptune.model.TimeSlot;
 import mobi.chouette.exchange.netexprofile.exporter.producer.*;
 import mobi.chouette.exchange.netexprofile.jaxb.JaxbNetexFileConverter;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Company;
-import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.StopPoint;
 import org.rutebanken.netex.model.*;
-import org.trident.schema.trident.TimeSlotType;
-import org.trident.schema.trident.VehicleJourneyType;
 
-import javax.xml.bind.JAXBElement;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
-import java.util.List;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.AbstractJaxbNetexProducer.netexFactory;
 
@@ -85,12 +79,27 @@ public class NetexPublicationDeliveryProducer implements Constant {
         CompositeFrame compositeFrame = netexFactory.createCompositeFrame()
                 .withVersion(NETEX_DATA_OJBECT_VERSION)
                 .withCreated(publicationTimestamp)
-                .withId("AVI:CompositeFrame:1"); // TODO set as <airline-iata>_<line-id>
+                .withId("AVI:CompositeFrame:1"); // TODO create correct id
                 //.withValidityConditions(validityConditionsStruct) // TODO
-                //.withCodespaces(codespaces) // TODO
 
-        // TODO create codespace here
+        // TODO add validity conditions here, based on Timetable period
 
+/*
+        String availabilityConditionId = ""; // TODO create id
+
+        Set<Timetable> timetables = collection.getTimetables();
+        AvailabilityCondition availabilityCondition = netexFactory.createAvailabilityCondition()
+                .withVersion(NETEX_DATA_OJBECT_VERSION)
+                .withId(availabilityConditionId)
+                .withFromDate(OffsetDateTime.now())
+                .withToDate(OffsetDateTime.now().plusMonths(1));
+        netexFactory.createAvailabilityCondition(availabilityCondition);
+
+        ValidityConditions_RelStructure validityConditionsStruct = netexFactory.createValidityConditions_RelStructure()
+                .withValidityConditionRefOrValidBetweenOrValidityCondition_(availabilityConditionId);
+*/
+
+        // TODO get dynamic codespaces based on id prefix from static structure, see : https://rutebanken.atlassian.net/wiki/display/PUBLIC/Codespace
         Codespace nsrCodespace = netexFactory.createCodespace()
                 .withId(NSR_XMLNS.toLowerCase())
                 .withXmlns(NSR_XMLNS)
@@ -170,7 +179,6 @@ public class NetexPublicationDeliveryProducer implements Constant {
         TimetableFrame timetableFrame = netexFactory.createTimetableFrame()
                 .withVersion(NETEX_DATA_OJBECT_VERSION)
                 .withId("AVI:TimetableFrame:1");
-                //.withVehicleJourneys(journeysInFrameRelStructure);
         frames.getCommonFrame().add(netexFactory.createTimetableFrame(timetableFrame));
 
         JourneysInFrame_RelStructure journeysInFrame = netexFactory.createJourneysInFrame_RelStructure();
@@ -180,12 +188,31 @@ public class NetexPublicationDeliveryProducer implements Constant {
         }
         timetableFrame.setVehicleJourneys(journeysInFrame);
 
+        // TODO see ServiceCalendarFrameWriter in old netex module
+
         ServiceCalendarFrame serviceCalendarFrame = netexFactory.createServiceCalendarFrame()
                 .withVersion(NETEX_DATA_OJBECT_VERSION)
                 .withId("AVI:ServiceCalendarFrame:1");
                 //.withDayTypes(dayTypesStruct)
                 //.withDayTypeAssignments(dayTypeAssignmentsStruct);
         frames.getCommonFrame().add(netexFactory.createServiceCalendarFrame(serviceCalendarFrame));
+
+/*
+        for (Timetable timetable : collection.getTimetables()) {
+            timetable.computeLimitOfPeriods();
+
+            TimetableType jaxbObj = timetableProducer.produce(timetable, addExtension);
+            rootObject.getTimetable().add(jaxbObj);
+            // add vehiclejourney only for exported ones
+            for (mobi.chouette.model.VehicleJourney vehicleJourney : collection.getVehicleJourneys()) {
+                if (vehicleJourney.getTimetables().contains(timetable)) {
+                    jaxbObj.getVehicleJourneyId().add(vehicleJourney.getObjectId());
+                }
+            }
+            if (metadata != null)
+                metadata.getTemporalCoverage().update(timetable.getStartOfPeriod(), timetable.getEndOfPeriod());
+        }
+*/
 
         PublicationDeliveryStructure.DataObjects dataObjects = netexFactory.createPublicationDeliveryStructureDataObjects();
         dataObjects.getCompositeFrameOrCommonFrame().add(netexFactory.createCompositeFrame(compositeFrame));

@@ -123,6 +123,7 @@ public class StopPlaceParser implements Parser, Constant {
 
 		StopArea boardingPosition = ObjectFactory.getStopArea(referential, quay.getId());
 		boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
+		//boardingPosition.setAreaType(ChouetteAreaEnum.Quay);
 
 		Integer version = Integer.valueOf(quay.getVersion());
 		boardingPosition.setObjectVersion(version != null ? version : 0);
