@@ -55,7 +55,7 @@ public class LineParser implements Parser, Constant {
             }
 
             AllVehicleModesOfTransportEnumeration transportMode = netexLine.getTransportMode();
-            TransportModeNameEnum transportModeName = NetexUtils.toTransportModeNameEnum(transportMode.value());
+            TransportModeNameEnum transportModeName = NetexParserUtils.toTransportModeNameEnum(transportMode.value());
             chouetteLine.setTransportModeName(transportModeName);
 
             // TODO find out how to handle this optional field in chouette model

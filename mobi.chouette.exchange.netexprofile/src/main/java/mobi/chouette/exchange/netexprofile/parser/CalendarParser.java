@@ -102,7 +102,7 @@ public class CalendarParser implements Parser, Constant {
             List<DayOfWeekEnumeration> daysOfWeek = propertyOfDay.getDaysOfWeek();
             String[] weekDays = StringUtils.splitByWholeSeparator(daysOfWeek.get(0).value(), null);
             List<String> weekDaysList = Arrays.asList(weekDays);
-            timetable.setDayTypes(NetexUtils.getDayTypes(weekDaysList));
+            timetable.setDayTypes(NetexParserUtils.getDayTypes(weekDaysList));
         }
     }
 

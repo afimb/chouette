@@ -2,12 +2,10 @@ package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.model.StopPoint;
 import org.apache.commons.lang.StringUtils;
-import org.rutebanken.netex.model.LineRefStructure;
-import org.rutebanken.netex.model.PointOnRoute;
-import org.rutebanken.netex.model.PointsOnRoute_RelStructure;
-import org.rutebanken.netex.model.RoutePointRefStructure;
+import org.rutebanken.netex.model.*;
 
 import java.util.Collection;
+import java.util.List;
 
 public class RouteProducer extends AbstractJaxbNetexProducer<org.rutebanken.netex.model.Route, mobi.chouette.model.Route> {
 
@@ -31,19 +29,23 @@ public class RouteProducer extends AbstractJaxbNetexProducer<org.rutebanken.nete
         netexRoute.setLineRef(netexFactory.createLineRef(lineRefStruct));
 
         PointsOnRoute_RelStructure pointsOnRoute = netexFactory.createPointsOnRoute_RelStructure();
-        for (StopPoint stopPoint : chouetteRoute.getStopPoints()) {
+        List<StopPoint> stopPoints = chouetteRoute.getStopPoints();
+        String[] idSequence = NetexProducerUtils.generateIdSequence(stopPoints.size());
+
+        for (int i = 0; i < stopPoints.size(); i++) {
+            String pointOnRouteId = chouetteRoute.objectIdSuffix() + StringUtils.leftPad(idSequence[i], 2, "0");
             PointOnRoute pointOnRoute = netexFactory.createPointOnRoute()
-                    .withVersion(NETEX_DATA_OJBECT_VERSION)
-                    .withId("AVI:PointOnRoute:" + stopPoint.getObjectId()); // TODO fix this id to conform to the actual stop point
+                    .withVersion(chouetteRoute.getObjectVersion() > 0 ? String.valueOf(chouetteRoute.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION)
+                    .withId("AVI:PointOnRoute:" + pointOnRouteId);
             pointsOnRoute.getPointOnRoute().add(pointOnRoute);
 
             RoutePointRefStructure routePointRefStruct = netexFactory.createRoutePointRefStructure()
-                    .withVersion(NETEX_DATA_OJBECT_VERSION)
-                    .withRef(stopPoint.getObjectId());
+                    //.withVersion(NETEX_DATA_OJBECT_VERSION) // TODO enable when RoutePoints are fixed
+                    .withRef(pointOnRouteId);
             pointOnRoute.setPointRef(netexFactory.createRoutePointRef(routePointRefStruct));
         }
 
-        //netexRoute.setPointsInSequence(pointsOnRoute);
+        netexRoute.setPointsInSequence(pointsOnRoute);
 
         return netexRoute;
     }

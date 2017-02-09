@@ -79,9 +79,9 @@ public class RouteParser implements Parser, Constant {
 
                 if (stopArea != null) {
                     String stopPointId = String.format("%s:StopPoint:%s-%s",
-                            NetexUtils.objectIdPrefix(chouetteRoute.getObjectId()),
-                            NetexUtils.objectIdSuffix(pointOnRoute.getId()),
-                            NetexUtils.objectIdSuffix(scheduledStopPointId));
+                            NetexParserUtils.objectIdPrefix(chouetteRoute.getObjectId()),
+                            NetexParserUtils.objectIdSuffix(pointOnRoute.getId()),
+                            NetexParserUtils.objectIdSuffix(scheduledStopPointId));
 
                     StopPoint stopPoint = ObjectFactory.getStopPoint(referential, stopPointId);
                     stopPoint.setContainedInStopArea(stopArea);

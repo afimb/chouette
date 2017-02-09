@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Log4j
-public class NetexUtils extends ParserUtils {
+public class NetexParserUtils extends ParserUtils {
 
 	public static String fromPTDirectionType(PTDirectionEnum type) {
 		if (type == null)
@@ -187,7 +187,7 @@ public class NetexUtils extends ParserUtils {
 		List<Date> result = new ArrayList<Date>();
 		for (String value : values) {
 			try {
-				result.add(NetexUtils.getSQLDate(value));
+				result.add(NetexParserUtils.getSQLDate(value));
 			} catch (Exception e) {
 				log.error(e.getMessage(), e);
 			}

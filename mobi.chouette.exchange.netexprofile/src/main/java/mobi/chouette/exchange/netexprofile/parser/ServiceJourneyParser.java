@@ -133,7 +133,7 @@ public class ServiceJourneyParser implements Parser, Constant {
             ZoneOffset zoneOffset = departureTime.getOffset();
 
             if (zoneOffset.equals(ZoneOffset.UTC)) {
-                Time localDepartureTime = NetexUtils.convertToSqlTime(departureTime, NetexUtils.getZoneOffset(LOCAL_ZONE_ID));
+                Time localDepartureTime = NetexParserUtils.convertToSqlTime(departureTime, NetexParserUtils.getZoneOffset(LOCAL_ZONE_ID));
                 vehicleJourneyAtStop.setDepartureTime(localDepartureTime);
             }
 
@@ -143,7 +143,7 @@ public class ServiceJourneyParser implements Parser, Constant {
             ZoneOffset zoneOffset = arrivalTime.getOffset();
 
             if (zoneOffset.equals(ZoneOffset.UTC)) {
-                Time localArrivalTime = NetexUtils.convertToSqlTime(arrivalTime, NetexUtils.getZoneOffset(LOCAL_ZONE_ID));
+                Time localArrivalTime = NetexParserUtils.convertToSqlTime(arrivalTime, NetexParserUtils.getZoneOffset(LOCAL_ZONE_ID));
                 vehicleJourneyAtStop.setArrivalTime(localArrivalTime);
             }
 

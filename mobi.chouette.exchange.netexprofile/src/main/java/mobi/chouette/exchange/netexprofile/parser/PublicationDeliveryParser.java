@@ -225,7 +225,7 @@ public class PublicationDeliveryParser implements Parser, Constant {
 						for (PropertyOfDay propertyOfDay : propertyOfDayList) {
 							List<DayOfWeekEnumeration> daysOfWeeks = propertyOfDay.getDaysOfWeek();
 							for(DayOfWeekEnumeration dayOfWeek : daysOfWeeks) {
-								List<DayTypeEnum> convertDayOfWeek = NetexUtils.convertDayOfWeek(dayOfWeek);
+								List<DayTypeEnum> convertDayOfWeek = NetexParserUtils.convertDayOfWeek(dayOfWeek);
 								for(DayTypeEnum e : convertDayOfWeek) {
 									timetable.addDayType(e);
 								}

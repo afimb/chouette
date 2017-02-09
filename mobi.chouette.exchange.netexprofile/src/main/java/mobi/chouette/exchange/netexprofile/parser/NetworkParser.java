@@ -33,7 +33,7 @@ public class NetworkParser implements Parser, Constant {
 /*
         OffsetDateTime changed = netexNetwork.getChanged();
         if (changed != null) {
-            chouetteNetwork.setVersionDate(NetexUtils.getDate(changed.toString()));
+            chouetteNetwork.setVersionDate(NetexParserUtils.getDate(changed.toString()));
         }
 */
 
