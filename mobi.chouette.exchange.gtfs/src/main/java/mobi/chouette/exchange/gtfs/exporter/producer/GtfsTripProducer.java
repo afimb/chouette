@@ -155,6 +155,8 @@ public class GtfsTripProducer extends AbstractProducer {
 
 	private void addDropOffAndPickUpType(GtfsStopTime time, Line l, VehicleJourney vj, VehicleJourneyAtStop vjas) {
 
+		time.setPickupType(null);
+		time.setDropOffType(null);
 		boolean routeOnDemand = isTrue(l.getFlexibleService());
 		boolean tripOnDemand = false;
 		if (routeOnDemand) {
