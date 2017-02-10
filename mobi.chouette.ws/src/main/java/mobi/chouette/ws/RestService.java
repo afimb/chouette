@@ -265,8 +265,9 @@ public class RestService implements Constant {
 			@DefaultValue("0") @QueryParam("version") final Long version, @QueryParam("action") final String[] action, @QueryParam("status") final Job.STATUS[] status) {
 
 		try {
-			log.info(Color.CYAN + "Call jobs referential = " + referential + ", action = " + StringUtils.join(action,',')+", status = " + StringUtils.join(status,',') + ", version = "
-					+ version + Color.NORMAL);
+			String refDescription = referential == null ? "all referentials" : "referential = " + referential;
+			log.info(Color.CYAN + "Call jobs = " + refDescription + ", action = " + StringUtils.join(action, ',') + ", status = " + StringUtils.join(status, ',') + ", version = "
+					         + version + Color.NORMAL);
 
 			// create jobs listing
 			List<JobInfo> result = new ArrayList<>();
@@ -298,6 +299,14 @@ public class RestService implements Constant {
 			log.error(ex.getMessage(), ex);
 			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	// jobs listing for all referentials
+	@GET
+	@Path("/jobs")
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response jobs(@DefaultValue("0") @QueryParam("version") final Long version, @QueryParam("action") final String[] action, @QueryParam("status") final Job.STATUS[] status) {
+		return jobs(null, version, action, status);
 	}
 
 	// view scheduled job
