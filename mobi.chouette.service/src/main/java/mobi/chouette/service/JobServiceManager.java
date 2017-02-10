@@ -458,8 +458,9 @@ public class JobServiceManager {
 	}
 
 	public List<JobService> jobs(String referential, String action[], final Long version, Job.STATUS[] status) throws ServiceException {
-		validateReferential(referential);
-
+		if (referential!=null) {
+			validateReferential(referential);
+		}
 		List<Job> jobs = null;
 		if (action == null) {
 			jobs = jobDAO.findByReferential(referential,status);
