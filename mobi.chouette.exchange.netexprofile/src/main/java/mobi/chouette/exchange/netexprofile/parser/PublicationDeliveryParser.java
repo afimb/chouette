@@ -113,15 +113,8 @@ public class PublicationDeliveryParser implements Parser, Constant {
 				for (JAXBElement<? extends StopAssignment_VersionStructure> stopAssignmentElement : stopAssignmentElements) {
 					PassengerStopAssignment passengerStopAssignment = (PassengerStopAssignment) stopAssignmentElement.getValue();
 					ScheduledStopPointRefStructure scheduledStopPointRef = passengerStopAssignment.getScheduledStopPointRef();
-					StopPlaceRefStructure stopPlaceRef = passengerStopAssignment.getStopPlaceRef();
 
-					if (scheduledStopPointRef != null && stopPlaceRef != null) {
-					    if (!stopAssignments.containsKey(scheduledStopPointRef.getRef())) {
-                            stopAssignments.put(scheduledStopPointRef.getRef(), stopPlaceRef.getRef());
-                        }
-					}
 					QuayRefStructure quayRef = passengerStopAssignment.getQuayRef();
-
 					if (scheduledStopPointRef != null && quayRef != null) {
 					    if (!stopAssignments.containsKey(scheduledStopPointRef.getRef())) {
                             stopAssignments.put(scheduledStopPointRef.getRef(), quayRef.getRef());
