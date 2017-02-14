@@ -1,16 +1,27 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.exchange.importer.ParserUtils;
-import mobi.chouette.model.type.*;
-import org.apache.commons.lang.StringUtils;
-import org.rutebanken.netex.model.DayOfWeekEnumeration;
-
 import java.sql.Date;
 import java.sql.Time;
-import java.time.*;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.OffsetTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.rutebanken.netex.model.DayOfWeekEnumeration;
+import org.rutebanken.netex.model.EntityInVersionStructure;
+
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.exchange.importer.ParserUtils;
+import mobi.chouette.model.type.ConnectionLinkTypeEnum;
+import mobi.chouette.model.type.DayTypeEnum;
+import mobi.chouette.model.type.LongLatTypeEnum;
+import mobi.chouette.model.type.PTDirectionEnum;
+import mobi.chouette.model.type.PTNetworkSourceTypeEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
 
 @Log4j
 public class NetexParserUtils extends ParserUtils {
@@ -267,5 +278,16 @@ public class NetexParserUtils extends ParserUtils {
 		}
 		return days;
 	}
+	
+	public static Integer getVersion(EntityInVersionStructure obj) {
+		Integer version = Integer.valueOf(0);
+		try {
+			version = Integer.parseInt(obj.getVersion());
+		} catch (NumberFormatException e) {
+			log.warn("Unable to parse "+obj.getVersion()+" to Integer as supported by Neptune, returning 0");
+		}
+		return version;
+	}
+
 
 }

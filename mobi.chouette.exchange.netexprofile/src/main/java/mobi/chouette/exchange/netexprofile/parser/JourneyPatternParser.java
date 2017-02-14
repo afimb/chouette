@@ -35,8 +35,7 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
 
             mobi.chouette.model.JourneyPattern chouetteJourneyPattern = ObjectFactory.getJourneyPattern(referential, netexJourneyPattern.getId());
 
-            Integer version = Integer.valueOf(netexJourneyPattern.getVersion());
-            chouetteJourneyPattern.setObjectVersion(version != null ? version : 0);
+            chouetteJourneyPattern.setObjectVersion(NetexParserUtils.getVersion(netexJourneyPattern));
 
             String routeIdRef = netexJourneyPattern.getRouteRef().getRef();
             mobi.chouette.model.Route route = ObjectFactory.getRoute(referential, routeIdRef);

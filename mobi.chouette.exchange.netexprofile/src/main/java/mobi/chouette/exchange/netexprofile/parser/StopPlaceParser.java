@@ -66,8 +66,7 @@ public class StopPlaceParser implements Parser, Constant {
 
 		StopArea stopArea = ObjectFactory.getStopArea(referential, stopPlace.getId());
 		stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
-		Integer version = Integer.valueOf(stopPlace.getVersion());
-		stopArea.setObjectVersion(version != null ? version : 0);
+		stopArea.setObjectVersion(NetexParserUtils.getVersion(stopPlace));
 		stopArea.setName(stopPlace.getName().getValue());
 
 		if (stopPlace.getDescription() != null) {
@@ -125,8 +124,7 @@ public class StopPlaceParser implements Parser, Constant {
 		boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
 		//boardingPosition.setAreaType(ChouetteAreaEnum.Quay);
 
-		Integer version = Integer.valueOf(quay.getVersion());
-		boardingPosition.setObjectVersion(version != null ? version : 0);
+		boardingPosition.setObjectVersion(NetexParserUtils.getVersion(quay));
 		if(quay.getName() == null) {
 			boardingPosition.setName(parentStopArea.getName());
 		} else {
