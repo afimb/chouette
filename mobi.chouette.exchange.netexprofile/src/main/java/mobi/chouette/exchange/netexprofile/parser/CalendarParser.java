@@ -85,8 +85,7 @@ public class CalendarParser implements Parser, Constant {
     private void parseDayType(DayType dayType, Timetable timetable) throws Exception {
         timetable.setObjectId(dayType.getId());
 
-        Integer version = Integer.valueOf(dayType.getVersion());
-        timetable.setObjectVersion(version != null ? version : 0);
+        timetable.setObjectVersion(NetexParserUtils.getVersion(dayType));
 
         if (dayType.getName() != null) {
             timetable.setComment(dayType.getName().getValue());

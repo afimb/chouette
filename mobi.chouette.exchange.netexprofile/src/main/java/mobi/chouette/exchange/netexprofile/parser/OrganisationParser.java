@@ -1,5 +1,13 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
+import java.util.List;
+
+import javax.xml.bind.JAXBElement;
+
+import org.rutebanken.netex.model.DataManagedObjectStructure;
+import org.rutebanken.netex.model.Organisation_VersionStructure;
+import org.rutebanken.netex.model.OrganisationsInFrame_RelStructure;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
@@ -8,13 +16,6 @@ import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import org.rutebanken.netex.model.Authority;
-import org.rutebanken.netex.model.DataManagedObjectStructure;
-import org.rutebanken.netex.model.Operator;
-import org.rutebanken.netex.model.OrganisationsInFrame_RelStructure;
-
-import javax.xml.bind.JAXBElement;
-import java.util.List;
 
 @Log4j
 public class OrganisationParser implements Parser, Constant {
@@ -28,27 +29,16 @@ public class OrganisationParser implements Parser, Constant {
         for (JAXBElement<? extends DataManagedObjectStructure> organisationElement : organisationElements) {
             DataManagedObjectStructure organisation = organisationElement.getValue();
             String organisationId = organisation.getId();
-            Integer version = Integer.valueOf(organisation.getVersion());
 
-            if (organisation instanceof Authority) {
-                Authority authority = (Authority) organisation;
-                Company company = ObjectFactory.getCompany(referential, organisationId);
-                company.setObjectVersion(version != null ? version : 0);
-                company.setName(authority.getName().getValue());
-                company.setRegistrationNumber(authority.getCompanyNumber());
-                company.setPhone(authority.getContactDetails().getPhone());
-                company.setUrl(authority.getContactDetails().getUrl());
-                company.setEmail(authority.getContactDetails().getEmail());
-                company.setFilled(true);
-            } else if (organisation instanceof Operator) {
-                Operator operator = (Operator) organisation;
-                Company company = ObjectFactory.getCompany(referential, organisationId);
-                company.setObjectVersion(version != null ? version : 0);
-                company.setName(operator.getName().getValue());
-                company.setRegistrationNumber(operator.getCompanyNumber());
-                company.setPhone(operator.getContactDetails().getPhone());
-                company.setUrl(operator.getContactDetails().getUrl());
-                company.setEmail(operator.getContactDetails().getEmail());
+            Organisation_VersionStructure org = (Organisation_VersionStructure) organisation;
+            Company company = ObjectFactory.getCompany(referential, organisationId);
+            company.setObjectVersion(NetexParserUtils.getVersion(organisation));
+            company.setName(org.getName().getValue());
+            company.setRegistrationNumber(org.getCompanyNumber());
+            if(org.getContactDetails() != null) {
+                company.setPhone(org.getContactDetails().getPhone());
+                company.setUrl(org.getContactDetails().getUrl());
+                company.setEmail(org.getContactDetails().getEmail());
                 company.setFilled(true);
             }
         }

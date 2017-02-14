@@ -37,8 +37,7 @@ public class ServiceJourneyParser implements Parser, Constant {
             ServiceJourney serviceJourney = (ServiceJourney) serviceJourneyStruct;
             VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, serviceJourney.getId());
 
-            Integer version = Integer.valueOf(serviceJourney.getVersion());
-            vehicleJourney.setObjectVersion(version != null ? version : 0);
+            vehicleJourney.setObjectVersion(NetexParserUtils.getVersion(serviceJourney));
 
             // TODO check out if this gives the problem with journey names in digitransit (OSL-BGO instead of SK4887)
             if (serviceJourney.getName() != null) {
