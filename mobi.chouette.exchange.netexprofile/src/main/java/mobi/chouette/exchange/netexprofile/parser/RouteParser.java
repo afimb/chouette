@@ -73,9 +73,9 @@ public class RouteParser implements Parser, Constant {
                 String scheduledStopPointId = (String) routePointObjectCtx.get(RoutePointParser.STOP_POINT_ID);
 
                 Context stopAssignmentObjectCtx = (Context) stopAssignmentCtx.get(scheduledStopPointId);
-                String stopPlaceId = (String) stopAssignmentObjectCtx.get(StopAssignmentParser.STOP_PLACE_ID);
+                String quayId = (String) stopAssignmentObjectCtx.get(StopAssignmentParser.QUAY_ID);
 
-                StopArea stopArea = ObjectFactory.getStopArea(referential, stopPlaceId);
+                StopArea stopArea = ObjectFactory.getStopArea(referential, quayId);
 
                 if (stopArea != null) {
                     String stopPointId = String.format("%s:StopPoint:%s-%s",
@@ -91,7 +91,7 @@ public class RouteParser implements Parser, Constant {
                     log.debug("Added StopPoint " + scheduledStopPointId + " to Route " +
                             chouetteRoute.getObjectId() + ". ContainedInStopArea is " + stopArea.getObjectId());
                 } else {
-                    log.warn("StopArea with id " + stopPlaceId + " not found in cache. Not adding StopPoint " + scheduledStopPointId + " to Route.");
+                    log.warn("StopArea with id " + quayId + " not found in cache. Not adding StopPoint " + scheduledStopPointId + " to Route.");
                 }
             }
 

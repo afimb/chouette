@@ -26,7 +26,7 @@ public class NetexLineParserCommandTest {
 		context.put(Constant.VALIDATION_REPORT, new ValidationReport());
 		context.put(Constant.REPORT, new ActionReport());
 
-		Path filePath = Paths.get("src/test/data/SK264.xml");
+		Path filePath = Paths.get("src/test/data/C_NETEX_1.xml");
 		String url = filePath.toUri().toURL().toExternalForm();
 		Assert.assertTrue(Files.exists(filePath));
 
@@ -39,7 +39,6 @@ public class NetexLineParserCommandTest {
 		NetexInitReferentialCommand initRef = new NetexInitReferentialCommand();
 		initRef.setFileURL(url);
 		initRef.execute(context);
-		
 		
 		NetexLineParserCommand cmd = new NetexLineParserCommand();
 		
@@ -54,6 +53,5 @@ public class NetexLineParserCommandTest {
 		Assert.assertTrue(result);
 		
 		//TODO Assert.assertEquals(referential.getLines().size(),1);
-		
 	}
 }

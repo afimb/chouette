@@ -13,7 +13,6 @@ import javax.xml.bind.JAXBElement;
 public class StopAssignmentParser extends NetexParser implements Parser, Constant {
 
     static final String LOCAL_CONTEXT = "StopAssignment";
-    static final String STOP_PLACE_ID = "stopPlaceId";
     static final String QUAY_ID = "quayId";
 
     @Override
@@ -25,22 +24,13 @@ public class StopAssignmentParser extends NetexParser implements Parser, Constan
             for (JAXBElement<? extends StopAssignment_VersionStructure> stopAssignmentElement : assignmentStruct.getStopAssignment()) {
                 PassengerStopAssignment stopAssignment = (PassengerStopAssignment) stopAssignmentElement.getValue();
                 ScheduledStopPointRefStructure scheduledStopPointRef = stopAssignment.getScheduledStopPointRef();
-                StopPlaceRefStructure stopPlaceRef = stopAssignment.getStopPlaceRef();
                 QuayRefStructure quayRef = stopAssignment.getQuayRef();
 
-                if (scheduledStopPointRef != null && stopPlaceRef != null) {
-                    addStopPlaceId(context, scheduledStopPointRef.getRef(), stopPlaceRef.getRef());
-                }
                 if (scheduledStopPointRef != null && quayRef != null) {
                     addQuayId(context, scheduledStopPointRef.getRef(), quayRef.getRef());
                 }
             }
         }
-    }
-
-    private void addStopPlaceId(Context context, String objectId, String stopPlaceId) {
-        Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-        objectContext.put(STOP_PLACE_ID, stopPlaceId);
     }
 
     private void addQuayId(Context context, String objectId, String quayId) {
