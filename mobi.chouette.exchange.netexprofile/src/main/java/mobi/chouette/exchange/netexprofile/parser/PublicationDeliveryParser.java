@@ -52,16 +52,16 @@ public class PublicationDeliveryParser implements Parser, Constant {
 				}
 
 				// pre processing
-				preParseReferentialDependencies(context, serviceFrames ,compositeFrame, isCommonDelivery);
+				preParseReferentialDependencies(context, serviceFrames , isCommonDelivery);
 
 				// normal processing
-				parseResourceFrames(context, resourceFrames,compositeFrame);
-				parseSiteFrames(context, siteFrames,compositeFrame);
-				parseServiceFrames(context, serviceFrames ,compositeFrame, isCommonDelivery);
+				parseResourceFrames(context, resourceFrames);
+				parseSiteFrames(context, siteFrames);
+				parseServiceFrames(context, serviceFrames , isCommonDelivery);
 				parseServiceCalendarFrame(context, serviceCalendarFrames ,compositeFrame);
 
 				if (!isCommonDelivery) {
-					parseTimetableFrames(context, timetableFrames,compositeFrame);
+					parseTimetableFrames(context, timetableFrames);
 				}
 				
 			}
@@ -78,53 +78,42 @@ public class PublicationDeliveryParser implements Parser, Constant {
 			}
 
 			// pre processing
-			preParseReferentialDependencies(context, serviceFrames, null, isCommonDelivery);
+			preParseReferentialDependencies(context, serviceFrames, isCommonDelivery);
 
 			// normal processing
-			parseResourceFrames(context, resourceFrames,null);
-			parseSiteFrames(context, siteFrames,null);
-			parseServiceFrames(context, serviceFrames, null,isCommonDelivery);
+			parseResourceFrames(context, resourceFrames);
+			parseSiteFrames(context, siteFrames);
+			parseServiceFrames(context, serviceFrames, isCommonDelivery);
 			parseServiceCalendarFrame(context, serviceCalendarFrames,null);
 
 			if (!isCommonDelivery) {
-				parseTimetableFrames(context, timetableFrames,null);
+				parseTimetableFrames(context, timetableFrames);
 			}
 		}
-		
-		
 
 		// post processing
 		sortStopPoints(referential);
 		updateBoardingAlighting(referential);
 	}
 
-	@SuppressWarnings("unchecked")
-	private void preParseReferentialDependencies(Context context, List<ServiceFrame> serviceFrames, CompositeFrame compositeFrame, boolean isCommonDelivery) throws Exception {
-		Map<String, String> stopAssignments = (Map<String, String>) context.get(NETEX_STOP_ASSIGNMENTS);
-		if (stopAssignments == null) {
-			stopAssignments = new HashMap<>();
-			context.put(NETEX_STOP_ASSIGNMENTS, stopAssignments);
-		}
+	private void preParseReferentialDependencies(Context context, List<ServiceFrame> serviceFrames, boolean isCommonDelivery) throws Exception {
 		for (ServiceFrame serviceFrame : serviceFrames) {
-			StopAssignmentsInFrame_RelStructure stopAssignmentsStructure = serviceFrame.getStopAssignments();
-			if (stopAssignmentsStructure != null) {
-				List<JAXBElement<? extends StopAssignment_VersionStructure>> stopAssignmentElements = stopAssignmentsStructure.getStopAssignment();
 
-				for (JAXBElement<? extends StopAssignment_VersionStructure> stopAssignmentElement : stopAssignmentElements) {
-					PassengerStopAssignment passengerStopAssignment = (PassengerStopAssignment) stopAssignmentElement.getValue();
-					ScheduledStopPointRefStructure scheduledStopPointRef = passengerStopAssignment.getScheduledStopPointRef();
+			// pre parsing route points
+			RoutePointsInFrame_RelStructure routePointStruct = serviceFrame.getRoutePoints();
+			if (routePointStruct != null) {
+				context.put(NETEX_LINE_DATA_CONTEXT, serviceFrame.getRoutePoints());
+				ParserFactory.create(RoutePointParser.class.getName()).parse(context);
+			}
 
-					QuayRefStructure quayRef = passengerStopAssignment.getQuayRef();
-					if (scheduledStopPointRef != null && quayRef != null) {
-					    if (!stopAssignments.containsKey(scheduledStopPointRef.getRef())) {
-                            stopAssignments.put(scheduledStopPointRef.getRef(), quayRef.getRef());
-                        }
-					}
-				}
+			// stop assignments
+			StopAssignmentsInFrame_RelStructure stopAssignmentStruct = serviceFrame.getStopAssignments();
+			if (stopAssignmentStruct != null) {
+				context.put(NETEX_LINE_DATA_CONTEXT, serviceFrame.getStopAssignments());
+				ParserFactory.create(StopAssignmentParser.class.getName()).parse(context);
 			}
 
 			if (!isCommonDelivery) {
-
 				// preparsing mandatory for stop places to parse correctly
 				TariffZonesInFrame_RelStructure tariffZonesStruct = serviceFrame.getTariffZones();
 				if (tariffZonesStruct != null) {
@@ -132,13 +121,11 @@ public class PublicationDeliveryParser implements Parser, Constant {
 					StopPlaceParser stopPlaceParser = (StopPlaceParser) ParserFactory.create(StopPlaceParser.class.getName());
 					stopPlaceParser.parse(context);
 				}
-			} else {
-
 			}
         }
     }
 
-    private void parseResourceFrames(Context context, List<ResourceFrame> resourceFrames, CompositeFrame compositeFrame) throws Exception {
+    private void parseResourceFrames(Context context, List<ResourceFrame> resourceFrames) throws Exception {
 		for (ResourceFrame resourceFrame : resourceFrames) {
 			OrganisationsInFrame_RelStructure organisationsInFrameStruct = resourceFrame.getOrganisations();
 			if (organisationsInFrameStruct != null) {
@@ -149,7 +136,7 @@ public class PublicationDeliveryParser implements Parser, Constant {
 		}
 	}
 
-	private void parseSiteFrames(Context context, List<SiteFrame> siteFrames, CompositeFrame compositeFrame) throws Exception {
+	private void parseSiteFrames(Context context, List<SiteFrame> siteFrames) throws Exception {
 		for (SiteFrame siteFrame : siteFrames) {
             StopPlacesInFrame_RelStructure stopPlacesStruct = siteFrame.getStopPlaces();
 			if (stopPlacesStruct != null) {
@@ -160,7 +147,7 @@ public class PublicationDeliveryParser implements Parser, Constant {
 		}
 	}
 
-	private void parseServiceFrames(Context context, List<ServiceFrame> serviceFrames, CompositeFrame compositeFrame, boolean isCommonDelivery) throws Exception {
+	private void parseServiceFrames(Context context, List<ServiceFrame> serviceFrames, boolean isCommonDelivery) throws Exception {
 		for (ServiceFrame serviceFrame : serviceFrames) {
 			if (!isCommonDelivery) {
 				Network network = serviceFrame.getNetwork();
@@ -182,8 +169,8 @@ public class PublicationDeliveryParser implements Parser, Constant {
 			if (!isCommonDelivery) {
 				JourneyPatternsInFrame_RelStructure journeyPatternStruct = serviceFrame.getJourneyPatterns();
 				context.put(NETEX_LINE_DATA_CONTEXT, journeyPatternStruct);
-                JourneyParser journeyParser = (JourneyParser) ParserFactory.create(JourneyParser.class.getName());
-                journeyParser.parse(context);
+				JourneyPatternParser journeyPatternParser = (JourneyPatternParser) ParserFactory.create(JourneyPatternParser.class.getName());
+                journeyPatternParser.parse(context);
 
 				TransfersInFrame_RelStructure connectionsStruct = serviceFrame.getConnections();
 				if (connectionsStruct != null) {
@@ -238,7 +225,7 @@ public class PublicationDeliveryParser implements Parser, Constant {
 						for (PropertyOfDay propertyOfDay : propertyOfDayList) {
 							List<DayOfWeekEnumeration> daysOfWeeks = propertyOfDay.getDaysOfWeek();
 							for(DayOfWeekEnumeration dayOfWeek : daysOfWeeks) {
-								List<DayTypeEnum> convertDayOfWeek = NetexUtils.convertDayOfWeek(dayOfWeek);
+								List<DayTypeEnum> convertDayOfWeek = NetexParserUtils.convertDayOfWeek(dayOfWeek);
 								for(DayTypeEnum e : convertDayOfWeek) {
 									timetable.addDayType(e);
 								}
@@ -312,12 +299,12 @@ public class PublicationDeliveryParser implements Parser, Constant {
 		}
 	}
 
-	private void parseTimetableFrames(Context context, List<TimetableFrame> timetableFrames, CompositeFrame compositeFrame) throws Exception {
+	private void parseTimetableFrames(Context context, List<TimetableFrame> timetableFrames) throws Exception {
 		for (TimetableFrame timetableFrame : timetableFrames) {
 			JourneysInFrame_RelStructure vehicleJourneysStruct = timetableFrame.getVehicleJourneys();
 			context.put(NETEX_LINE_DATA_CONTEXT, vehicleJourneysStruct);
-			Parser journeyParser = ParserFactory.create(JourneyParser.class.getName());
-			journeyParser.parse(context);
+			Parser serviceJourneyParser = ParserFactory.create(ServiceJourneyParser.class.getName());
+			serviceJourneyParser.parse(context);
 		}
 	}
 

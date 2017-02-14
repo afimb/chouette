@@ -1,8 +1,11 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<!-- Rename suite to exchangeNetex -->
-<!-- Rename tests to ImportNetex, ValidationNetex etc... -->
 <suite name="Factory" verbose="5">
+	<test name="Exporter">
+		<packages>
+			<package name="mobi.chouette.exchange.netexprofile.exporter"/>
+		</packages>
+	</test>
 	<test name="Importer">
 		<packages>
 			<package name="mobi.chouette.exchange.netexprofile.importer"/>

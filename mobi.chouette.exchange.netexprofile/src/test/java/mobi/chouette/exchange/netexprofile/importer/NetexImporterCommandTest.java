@@ -175,7 +175,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 	}
 
-	@Test(enabled =  false, groups = { "ImportLine" }, description = "Import Plugin should import file")
+	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")
 	public void verifyImportLine() throws Exception {
 		Context context = initImportContext();
 		NetexTestUtils.copyFile("C_NETEX_1.xml");
@@ -188,7 +188,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
-		configuration.setValidCodespaces("AVI,http://avinor.no/");
+		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
 		try {
 			command.execute(context);
@@ -222,27 +222,124 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("AVI:Line:SK264");
+		Line line = lineDao.findByObjectId("AVI:Line:WF-TRD-MOL");
 		Assert.assertNotNull(line, "Line not found");
 
 		utx.rollback();
 	}
 
-	@Test(enabled = false)
-	public void verifyImportAvinorZipLines() throws Exception {
+	@Test
+	public void verifyImportSingleLineWithCommonData() throws Exception {
 		Context context = initImportContext();
 		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
 				initialContext, NetexprofileImporterCommand.class.getName());
 
-		NetexTestUtils.copyFile("avinor-netex.zip");
+		NetexTestUtils.copyFile("avinor_single_line_with_commondata.zip");
 
 		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
-		jobData.setInputFilename("avinor-netex.zip");
+		jobData.setInputFilename("avinor_single_line_with_commondata.zip");
 
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
-		//configuration.setValidCodespaces("AVI,http://avinor.no/");
+		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
+
+		boolean result;
+		try {
+			result = command.execute(context);
+		} catch (Exception ex) {
+			log.error("test failed", ex);
+			throw ex;
+		}
+
+		ActionReport report = (ActionReport) context.get(REPORT);
+
+		dumpReports(context);
+
+		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+		Assert.assertEquals(report.getFiles().size(), 2, "files reported");
+		Assert.assertNotNull(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE), "lines reported");
+		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 1, "lines reported");
+
+		for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+			Reporter.log("report lines :" + info.toString(), true);
+			Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "lines status");
+		}
+
+		// lines should be saved
+		utx.begin();
+		em.joinTransaction();
+
+		Line line = lineDao.findByObjectId("AVI:Line:WF_TRD-MOL");
+
+		Assert.assertNotNull(line, "Line not found");
+		Assert.assertNotNull(line.getNetwork(), "line must have a network");
+		Assert.assertNotNull(line.getCompany(), "line must have a company");
+		Assert.assertNotNull(line.getRoutes(), "line must have routes");
+		assertEquals(line.getRoutes().size(), 2, "number of routes");
+
+		Set<StopArea> bps = new HashSet<>();
+
+		int numStopPoints = 0;
+		int numVehicleJourneys = 0;
+		int numJourneyPatterns = 0;
+
+		for (Route route : line.getRoutes()) {
+			Assert.assertNotNull(route.getName(), "No route name");
+			Assert.assertNotEquals(route.getJourneyPatterns().size(), 0, "line routes must have journeyPattens");
+
+			for (JourneyPattern jp : route.getJourneyPatterns()) {
+				Assert.assertNotNull(jp.getName(), "No journeypattern name");
+				Assert.assertNotEquals(jp.getStopPoints().size(), 0, "line journeyPattens must have stoppoints");
+
+				for (StopPoint point : jp.getStopPoints()) {
+					numStopPoints++;
+					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
+					bps.add(point.getContainedInStopArea());
+					Assert.assertNotNull(point.getForAlighting(), "no alighting info StopPoint=" + point);
+					Assert.assertNotNull(point.getForBoarding(), "no boarding info StopPoint=" + point);
+				}
+
+				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0, " journeyPattern should have VehicleJourneys");
+
+				for (VehicleJourney vj : jp.getVehicleJourneys()) {
+					Assert.assertNotEquals(vj.getTimetables().size(), 0, " vehicleJourney should have timetables");
+					assertEquals(vj.getVehicleJourneyAtStops().size(), jp.getStopPoints().size(), " vehicleJourney should have correct vehicleJourneyAtStop count");
+					List<Timetable> timetables = vj.getTimetables();
+					for (Timetable timetable : timetables) {
+						Assert.assertNotNull(timetable.getStartOfPeriod());
+						Assert.assertNotNull(timetable.getEndOfPeriod());
+					}
+
+					numVehicleJourneys++;
+				}
+				numJourneyPatterns++;
+			}
+		}
+
+		assertEquals(numJourneyPatterns, 2, "number of journeyPatterns");
+		assertEquals(numVehicleJourneys, 3, "number of vehicleJourneys");
+		assertEquals(numStopPoints, 4, "number of stopPoints in journeyPattern");
+		assertEquals(bps.size(), 2, "number boarding positions");
+
+		utx.rollback();
+		Assert.assertTrue(result, "Importer command execution failed: " + report.getFailure());
+	}
+
+	@Test
+	public void verifyImportMultipleLinesWithCommonData() throws Exception {
+		Context context = initImportContext();
+		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
+				initialContext, NetexprofileImporterCommand.class.getName());
+
+		NetexTestUtils.copyFile("avinor_multiple_lines_with_commondata.zip");
+
+		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
+		jobData.setInputFilename("avinor_multiple_lines_with_commondata.zip");
+
+		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
+		configuration.setNoSave(false);
+		configuration.setCleanRepository(true);
 		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
 		boolean result;
@@ -271,7 +368,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		utx.begin();
 		em.joinTransaction();
 
-		Collection<String> objectIds = Arrays.asList("AVI:Line:DY121", "AVI:Line:SK4116", "AVI:Line:WF511");
+		Collection<String> objectIds = Arrays.asList("AVI:Line:DY_TRD-TOS", "AVI:Line:SK_BOO-TOS", "AVI:Line:WF_SVG-FRO");
 		List<Line> lines = lineDao.findByObjectId(objectIds);
 
 		for (Line line : lines) {
@@ -279,7 +376,12 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 			Assert.assertNotNull(line.getNetwork(), "line must have a network");
 			Assert.assertNotNull(line.getCompany(), "line must have a company");
 			Assert.assertNotNull(line.getRoutes(), "line must have routes");
-			assertEquals(line.getRoutes().size(), 1, "number of routes");
+
+			if (line.getObjectId().equals("AVI:Line:DY_TRD-TOS")) {
+				assertEquals(line.getRoutes().size(), 2, "number of routes");
+			} else {
+				assertEquals(line.getRoutes().size(), 1, "number of routes");
+			}
 
 			Set<StopArea> bps = new HashSet<>();
 
@@ -312,19 +414,25 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 						for(Timetable timetable : timetables) {
 							Assert.assertNotNull(timetable.getStartOfPeriod());
 							Assert.assertNotNull(timetable.getEndOfPeriod());
-							Assert.assertFalse(timetable.getDayTypes().isEmpty());
 						}
-						
+
 						numVehicleJourneys++;
 					}
 					numJourneyPatterns++;
 				}
 			}
 
-			assertEquals(numJourneyPatterns, 1, "number of journeyPatterns");
-			assertEquals(numVehicleJourneys, 1, "number of vehicleJourneys");
-			assertEquals(numStopPoints, 2, "number of stopPoints in journeyPattern");
-			assertEquals(bps.size(), 2, "number boarding positions");
+			if (line.getObjectId().equals("AVI:Line:DY_TRD-TOS")) {
+				assertEquals(numJourneyPatterns, 2, "number of journeyPatterns");
+				assertEquals(numVehicleJourneys, 2, "number of vehicleJourneys");
+				assertEquals(numStopPoints, 4, "number of stopPoints in journeyPattern");
+				assertEquals(bps.size(), 2, "number boarding positions");
+			} else {
+				assertEquals(numJourneyPatterns, 1, "number of journeyPatterns");
+				assertEquals(numVehicleJourneys, 1, "number of vehicleJourneys");
+				assertEquals(numStopPoints, 2, "number of stopPoints in journeyPattern");
+				assertEquals(bps.size(), 2, "number boarding positions");
+			}
 		}
 
 		utx.rollback();
