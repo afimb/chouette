@@ -31,8 +31,7 @@ public class LineParser implements Parser, Constant {
             org.rutebanken.netex.model.Line netexLine = (org.rutebanken.netex.model.Line) lineElement.getValue();
             mobi.chouette.model.Line chouetteLine = ObjectFactory.getLine(chouetteReferential, netexLine.getId());
 
-            Integer version = Integer.valueOf(netexLine.getVersion());
-            chouetteLine.setObjectVersion(version != null ? version : 0);
+            chouetteLine.setObjectVersion(NetexParserUtils.getVersion(netexLine));
 
             for (mobi.chouette.model.Network network : chouetteReferential.getPtNetworks().values()) {
                 if (network.isFilled()) {

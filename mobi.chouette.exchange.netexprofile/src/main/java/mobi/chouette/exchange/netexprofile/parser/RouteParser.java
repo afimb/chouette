@@ -30,8 +30,7 @@ public class RouteParser implements Parser, Constant {
             org.rutebanken.netex.model.Route netexRoute = (org.rutebanken.netex.model.Route) routeElement.getValue();
             mobi.chouette.model.Route chouetteRoute = ObjectFactory.getRoute(chouetteReferential, netexRoute.getId());
 
-            Integer version = Integer.valueOf(netexRoute.getVersion());
-            chouetteRoute.setObjectVersion(version != null ? version : 0);
+            chouetteRoute.setObjectVersion(NetexParserUtils.getVersion(netexRoute));
 
             String routeName = netexRoute.getName().getValue();
             chouetteRoute.setName(routeName);

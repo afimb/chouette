@@ -62,8 +62,7 @@ public class JourneyParser implements Parser, Constant {
         Referential referential = (Referential) context.get(REFERENTIAL);
         mobi.chouette.model.JourneyPattern chouetteJourneyPattern = mobi.chouette.model.util.ObjectFactory.getJourneyPattern(referential, netexJourneyPattern.getId());
 
-        Integer version = Integer.valueOf(netexJourneyPattern.getVersion());
-        chouetteJourneyPattern.setObjectVersion(version != null ? version : 0);
+        chouetteJourneyPattern.setObjectVersion(NetexParserUtils.getVersion(netexJourneyPattern));
 
         String routeIdRef = netexJourneyPattern.getRouteRef().getRef();
         mobi.chouette.model.Route route = mobi.chouette.model.util.ObjectFactory.getRoute(referential, routeIdRef);
@@ -136,8 +135,7 @@ public class JourneyParser implements Parser, Constant {
         Referential referential = (Referential) context.get(REFERENTIAL);
         VehicleJourney vehicleJourney = mobi.chouette.model.util.ObjectFactory.getVehicleJourney(referential, serviceJourney.getId());
 
-        Integer version = Integer.valueOf(serviceJourney.getVersion());
-        vehicleJourney.setObjectVersion(version != null ? version : 0);
+        vehicleJourney.setObjectVersion(NetexParserUtils.getVersion(serviceJourney));
 
         if (serviceJourney.getName() != null) {
             vehicleJourney.setPublishedJourneyName(serviceJourney.getName().getValue());

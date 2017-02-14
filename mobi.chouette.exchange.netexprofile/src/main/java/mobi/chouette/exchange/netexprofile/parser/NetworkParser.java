@@ -27,8 +27,7 @@ public class NetworkParser implements Parser, Constant {
 
         mobi.chouette.model.Network chouetteNetwork = ObjectFactory.getPTNetwork(referential, netexNetwork.getId());
 
-        Integer version = Integer.valueOf(netexNetwork.getVersion());
-        chouetteNetwork.setObjectVersion(version != null ? version : 0);
+        chouetteNetwork.setObjectVersion(NetexParserUtils.getVersion(netexNetwork));
 
 /*
         OffsetDateTime changed = netexNetwork.getChanged();

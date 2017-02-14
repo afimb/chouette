@@ -28,12 +28,12 @@ public class OrganisationParser implements Parser, Constant {
         for (JAXBElement<? extends DataManagedObjectStructure> organisationElement : organisationElements) {
             DataManagedObjectStructure organisation = organisationElement.getValue();
             String organisationId = organisation.getId();
-            Integer version = Integer.valueOf(organisation.getVersion());
 
+            // TODO use parent organisation and avoid duplicate parsing
             if (organisation instanceof Authority) {
                 Authority authority = (Authority) organisation;
                 Company company = ObjectFactory.getCompany(referential, organisationId);
-                company.setObjectVersion(version != null ? version : 0);
+                company.setObjectVersion(NetexParserUtils.getVersion(organisation));
                 company.setName(authority.getName().getValue());
                 company.setRegistrationNumber(authority.getCompanyNumber());
                 company.setPhone(authority.getContactDetails().getPhone());
@@ -43,7 +43,7 @@ public class OrganisationParser implements Parser, Constant {
             } else if (organisation instanceof Operator) {
                 Operator operator = (Operator) organisation;
                 Company company = ObjectFactory.getCompany(referential, organisationId);
-                company.setObjectVersion(version != null ? version : 0);
+                company.setObjectVersion(NetexParserUtils.getVersion(organisation));
                 company.setName(operator.getName().getValue());
                 company.setRegistrationNumber(operator.getCompanyNumber());
                 company.setPhone(operator.getContactDetails().getPhone());
