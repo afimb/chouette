@@ -7,7 +7,7 @@ import org.rutebanken.netex.model.PointRefStructure;
 import org.rutebanken.netex.model.Projections_RelStructure;
 import org.rutebanken.netex.model.RoutePoint;
 
-public class RoutePointProducer extends AbstractJaxbNetexProducer<RoutePoint, StopPoint> {
+public class RoutePointProducer extends AbstractNetexProducer<RoutePoint, StopPoint> {
 
     //@Override
     public RoutePoint produce(StopPoint stopPoint, boolean addExtension) {

@@ -2,11 +2,12 @@ package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.model.Route;
 import org.apache.commons.lang.StringUtils;
+import org.rutebanken.netex.model.JourneyPattern;
 import org.rutebanken.netex.model.RouteRefStructure;
 
 import java.util.Collection;
 
-public class JourneyPatternProducer extends AbstractJaxbNetexProducer<org.rutebanken.netex.model.JourneyPattern, mobi.chouette.model.JourneyPattern> {
+public class JourneyPatternProducer extends AbstractNetexProducer<JourneyPattern, mobi.chouette.model.JourneyPattern> {
 
     //@Override
     public org.rutebanken.netex.model.JourneyPattern produce(mobi.chouette.model.JourneyPattern chouetteJourneyPattern, Collection<Route> exportableRoutes, boolean addExtension) {

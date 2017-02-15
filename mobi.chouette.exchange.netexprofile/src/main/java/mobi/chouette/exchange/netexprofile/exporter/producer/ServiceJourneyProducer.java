@@ -12,7 +12,7 @@ import java.sql.Time;
 import java.util.Comparator;
 import java.util.List;
 
-public class ServiceJourneyProducer extends AbstractJaxbNetexProducer<ServiceJourney, VehicleJourney> {
+public class ServiceJourneyProducer extends AbstractNetexProducer<ServiceJourney, VehicleJourney> {
 
     //@Override
     public ServiceJourney produce(VehicleJourney vehicleJourney, Line line, boolean addExtension) {

@@ -1,13 +1,14 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
-import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.*;
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
+import org.rutebanken.netex.model.Route;
 
 import java.util.Collection;
 import java.util.List;
 
-public class RouteProducer extends AbstractJaxbNetexProducer<org.rutebanken.netex.model.Route, mobi.chouette.model.Route> {
+public class RouteProducer extends AbstractNetexProducer<Route, mobi.chouette.model.Route> {
 
     //@Override
     public org.rutebanken.netex.model.Route produce(mobi.chouette.model.Route chouetteRoute,

@@ -4,10 +4,11 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
+import org.rutebanken.netex.model.Line;
 
 import java.util.Collection;
 
-public class LineProducer extends AbstractJaxbNetexProducer<org.rutebanken.netex.model.Line, mobi.chouette.model.Line> {
+public class LineProducer extends AbstractNetexProducer<Line, mobi.chouette.model.Line> {
 
     //@Override
     public Line produce(mobi.chouette.model.Line chouetteLine, Collection<Route> exportableRoutes, boolean addExtension) {
