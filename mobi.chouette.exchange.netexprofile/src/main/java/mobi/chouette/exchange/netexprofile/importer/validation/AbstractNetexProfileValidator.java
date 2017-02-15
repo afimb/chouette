@@ -35,6 +35,7 @@ import mobi.chouette.exchange.validation.report.ValidationReporter;
 @Log4j
 public abstract class AbstractNetexProfileValidator implements Constant {
 
+	public static final String _1_NETEX_SCHEMA_VALIDATION_ERROR = "1-NETEXPROFILE-SchemaValidationError";
 	public static final String _1_NETEX_UNKNOWN_PROFILE = "1-NETEXPROFILE-UnknownProfile";
 	public static final String _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_AND_COMMON_FILES = "1-NETEXPROFILE-DuplicateIdentificatorsAcrossLineAndCommonFiles";
 	public static final String _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS = "1-NETEXPROFILE-MissingVersionAttribute";
