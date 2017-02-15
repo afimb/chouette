@@ -1,5 +1,16 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
+import static mobi.chouette.exchange.netexprofile.Constant.NETEX_FILE_PATHS;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.naming.InitialContext;
+
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
@@ -20,16 +31,6 @@ import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.ImportedLineValidatorCommand;
 import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
-
-import javax.naming.InitialContext;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static mobi.chouette.exchange.netexprofile.Constant.NETEX_FILE_PATHS;
 
 @Data
 @Log4j
@@ -79,6 +80,8 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
         Path path = Paths.get(jobData.getPathName(), INPUT);
 
         try {
+            Chain mainChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
+            commands.add(mainChain);
 
             // Report any files that are not XML files
         	List<Path> excluded = FileUtil.listFiles(path, "*", "*.xml");
@@ -91,13 +94,18 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 
             // stream all file paths once
             List<Path> allFilePaths = FileUtil.listFiles(path, "*.xml");
+            for(Path p : allFilePaths) {
+				reporter.setFileState(context, p.getFileName().toString(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.ERROR);
+            }
             context.put(NETEX_FILE_PATHS, allFilePaths);
+            
 
             // schema validation
  
             NetexSchemaValidationCommand schemaValidation = (NetexSchemaValidationCommand) CommandFactory.create(initialContext,
                     NetexSchemaValidationCommand.class.getName());
-            commands.add(schemaValidation);
+            
+            mainChain.add(schemaValidation);
 
             // common file parsing
 
@@ -108,8 +116,9 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 
             NetexCommonFilesParserCommand commonFilesParser = (NetexCommonFilesParserCommand) CommandFactory.create(initialContext, NetexCommonFilesParserCommand.class.getName());
             commonFilesParser.setFiles(commonFilePaths);
-            commands.add(commonFilesParser);
+            mainChain.add(commonFilesParser);
 
+            
             // line file processing
 
             List<Path> lineFilePaths = allFilePaths.stream()
@@ -117,43 +126,48 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
                             .getPathMatcher("glob:_*.xml").matches(filePath.getFileName()))
                     .collect(Collectors.toList());
 
+            Chain lineChains = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
+            mainChain.add(lineChains);
+            
+            
             for (Path file : lineFilePaths) {
                 String url = file.toUri().toURL().toExternalForm();
-                Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
-                commands.add(chain);
+                Chain lineChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
+                lineChains.add(lineChain);
 
                 // init referentials
                 NetexInitReferentialCommand initializer = (NetexInitReferentialCommand) CommandFactory.create(initialContext, NetexInitReferentialCommand.class.getName());
                 initializer.setFileURL(url);
-                chain.add(initializer);
+                lineChain.add(initializer);
 
                 // profile validation
                 Command validator = CommandFactory.create(initialContext, NetexValidationCommand.class.getName());
-                chain.add(validator);
+                lineChain.add(validator);
 
                 // parsing
                 NetexLineParserCommand parser = (NetexLineParserCommand) CommandFactory.create(initialContext, NetexLineParserCommand.class.getName());
                 parser.setFileURL(url);
-                chain.add(parser);
+                lineChain.add(parser);
 
                 if (withDao && !parameters.isNoSave()) {
 
                     // register
                     Command register = CommandFactory.create(initialContext, LineRegisterCommand.class.getName());
-                    chain.add(register);
+                    lineChain.add(register);
 
                     Command copy = CommandFactory.create(initialContext, CopyCommand.class.getName());
-                    chain.add(copy);
+                    lineChain.add(copy);
                 }
                 if (level3validation) {
                     // add validation
                     Command validate = CommandFactory.create(initialContext, ImportedLineValidatorCommand.class.getName());
-                    chain.add(validate);
+                    lineChain.add(validate);
                 }
             }
 
         } catch (Exception e) {
-            // TODO: add exception handling here
+            log.error("Error creating importer commands",e);
+        	// TODO: add exception handling here
         }
 
         return commands;

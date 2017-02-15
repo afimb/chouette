@@ -3,6 +3,7 @@ package mobi.chouette.exchange.validation.report;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -23,11 +24,11 @@ public class ValidationReport extends AbstractReport implements Report {
 
 	@Getter
 	@Setter
-	private List<CheckPointReport> checkPoints = new ArrayList<CheckPointReport>();
+	private List<CheckPointReport> checkPoints = Collections.synchronizedList(new ArrayList<CheckPointReport>());
 
 	@Getter
 	@Setter
-	private List<CheckPointErrorReport> checkPointErrors = new ArrayList<CheckPointErrorReport>();
+	private List<CheckPointErrorReport> checkPointErrors = Collections.synchronizedList(new ArrayList<CheckPointErrorReport>());
 
 	@Getter
 	@Setter

@@ -1,7 +1,29 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
+import javax.ejb.Stateless;
+import javax.naming.InitialContext;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Validator;
+
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
@@ -9,23 +31,11 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
-import javax.ejb.Stateless;
-import javax.naming.InitialContext;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Validator;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.*;
+import mobi.chouette.exchange.validation.report.DataLocation;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 
 @Log4j
 @Stateless(name = NetexSchemaValidationCommand.COMMAND)
@@ -36,35 +46,40 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean execute(Context context) throws Exception {
-		boolean result = ERROR;
+		boolean result = SUCCESS;
 		Monitor monitor = MonitorFactory.start(COMMAND);
 		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		NetexImporter importer = (NetexImporter) context.get(IMPORTER);
 		List<Path> allFiles = (List<Path>) context.get(NETEX_FILE_PATHS);
 
+		validationReporter.addItemToValidationReport(context, AbstractNetexProfileValidator._1_NETEX_SCHEMA_VALIDATION_ERROR, "E");
+
 		ExecutorService executor = Executors.newFixedThreadPool(8);
-		
+
 		try {
 			List<Future<SchemaValidationTask>> schemaValidationResults = new ArrayList<>();
-			
+
 			for (Path filePath : allFiles) {
-				SchemaValidationTask schemaValidationTask = new SchemaValidationTask(context, actionReporter, importer, filePath.toFile());
+				SchemaValidationTask schemaValidationTask = new SchemaValidationTask(context, actionReporter, validationReporter, importer, filePath.toFile());
 				String fileName = filePath.toFile().getName();
 				actionReporter.addFileReport(context, fileName, IO_TYPE.INPUT);
 				schemaValidationResults.add(executor.submit(schemaValidationTask));
 			}
-			
+
 			executor.shutdown();
 			executor.awaitTermination(60, TimeUnit.MINUTES);
-			
-			for(Future<SchemaValidationTask> schemaValidationResult : schemaValidationResults) {
+
+			for (Future<SchemaValidationTask> schemaValidationResult : schemaValidationResults) {
 				SchemaValidationTask schemaValidationTask = schemaValidationResult.get();
 
-				if(schemaValidationTask.fileValidationResult == ERROR) {
-					actionReporter.addFileErrorInReport(context, schemaValidationTask.getFile().getName(),
-							ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, "Netex profile compliance failed");
+				if (schemaValidationTask.getFileValidationResult() == ERROR) {
+					actionReporter.addFileErrorInReport(context, schemaValidationTask.getFile().getName(), ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT,
+							"Netex schema compliance failed");
+					result = ERROR;
 				} else {
-					result = SUCCESS;
+					actionReporter.setFileState(context, schemaValidationTask.getFile().getName(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.OK);
+
 				}
 			}
 		} catch (Exception e) {
@@ -76,33 +91,35 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 		}
 		return result;
 	}
-	
-	 class SchemaValidationTask implements Callable<SchemaValidationTask> {
 
-		public SchemaValidationTask(Context context, ActionReporter actionReporter, NetexImporter importer, File file) {
+	class SchemaValidationTask implements Callable<SchemaValidationTask> {
+
+		public SchemaValidationTask(Context context, ActionReporter actionReporter, ValidationReporter validationReporter, NetexImporter importer, File file) {
 			super();
 			this.context = context;
 			this.actionReporter = actionReporter;
+			this.validationReporter = validationReporter;
 			this.importer = importer;
 			this.file = file;
 		}
 
-
 		private Context context;
-		
+
 		private ActionReporter actionReporter;
-		
+
+		private ValidationReporter validationReporter;
+
 		private NetexImporter importer;
-		
+
 		@Getter
 		private File file;
-		
+
 		boolean fileValidationResult = ERROR;
-		
+
 		public boolean getFileValidationResult() {
 			return fileValidationResult && !actionReporter.hasFileValidationErrors(context, file.getName());
 		}
-		
+
 		@Override
 		public SchemaValidationTask call() throws Exception {
 			String fileName = file.getName();
@@ -126,16 +143,21 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 					public void error(SAXParseException exception) throws SAXException {
 						addToActionReport(exception);
 					}
-					
+
 					public void addToActionReport(SAXParseException exception) {
-						String message = exception.getLineNumber()+":"+exception.getColumnNumber()+" "+exception.getMessage();
+						validationReporter.addCheckPointReportError(context, AbstractNetexProfileValidator._1_NETEX_SCHEMA_VALIDATION_ERROR,
+								new DataLocation(fileName, exception.getLineNumber(), exception.getColumnNumber()), exception.getMessage());
+						String message = exception.getLineNumber() + ":" + exception.getColumnNumber() + " " + exception.getMessage();
 						actionReporter.addFileErrorInReport(context, fileName, ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, message);
-						log.error(fileName+" has error at line:column "+message);
+						log.error(fileName + " has error at line:column " + message);
+						fileValidationResult = ERROR;
 					}
-					
+
 				});
-				validator.validate(xmlSource);
+				// Default to success, code above will update to ERROR if bogus data are found
 				fileValidationResult = SUCCESS;
+				validator.validate(xmlSource);
+
 			} catch (SAXException e) {
 				log.error(e);
 				fileValidationResult = ERROR;
@@ -143,10 +165,9 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 				log.error(e);
 				fileValidationResult = ERROR;
 			}
-			
+
 			return this;
 		}
-
 
 	}
 
