@@ -41,6 +41,7 @@ public class StopPlaceMapper {
         setVersion(quay);
         mapCentroid(stopArea, quay);
         mapQuayName(stopArea, quay);
+        mapPlateCode(stopArea, quay);
         mapCompassBearing(stopArea, quay);
         if (StringUtils.isNotBlank(stopArea.getComment())) {
             quay.setDescription(new MultilingualString().withValue(stopArea.getComment()));
@@ -84,14 +85,18 @@ public class StopPlaceMapper {
 
     }
 
-    private void mapQuayName(StopArea stopArea, Zone_VersionStructure zone) {
-
-        String quayName = stopArea.getRegistrationNumber();
-        if (quayName == null) {
-            quayName = stopArea.getName();
+    private void mapPlateCode(StopArea stopArea, Quay quay) {
+        String registrationNumber = stopArea.getRegistrationNumber();
+        if(registrationNumber != null) {
+            quay.setPlateCode(registrationNumber);
         }
+    }
 
-        zone.setName(new MultilingualString().withValue(quayName).withLang("no").withTextIdType(""));
+    private void mapQuayName(StopArea stopArea, Zone_VersionStructure zone) {
+        String quayName = stopArea.getName();
+        if(quayName != null) {
+            zone.setName(new MultilingualString().withValue(quayName).withLang("no").withTextIdType(""));
+        }
     }
 
     public void mapTransportMode(StopPlace sp, TransportModeNameEnum mode) {
