@@ -1,36 +1,55 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.model.Route;
-import mobi.chouette.model.type.TransportModeNameEnum;
-import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
-import org.rutebanken.netex.model.Line;
 
 import java.util.Collection;
+
+import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.LINE_KEY;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.ROUTE_KEY;
 
 public class LineProducer extends AbstractNetexProducer<Line, mobi.chouette.model.Line> {
 
     //@Override
-    public Line produce(mobi.chouette.model.Line chouetteLine, Collection<Route> exportableRoutes, boolean addExtension) {
+    public Line produce(mobi.chouette.model.Line neptuneLine, Collection<Route> exportableRoutes) {
         org.rutebanken.netex.model.Line netexLine = netexFactory.createLine();
-        populateFromModel(netexLine, chouetteLine);
 
-        // TODO null checks where necessary
-        netexLine.setName(getMultilingualString(chouetteLine.getName()));
-        netexLine.setPublicCode(chouetteLine.getNumber());
+        netexLine.setVersion(neptuneLine.getObjectVersion() > 0 ? String.valueOf(neptuneLine.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 
-        if (StringUtils.isNotEmpty(chouetteLine.getPublishedName())) {
-            netexLine.setShortName(getMultilingualString(chouetteLine.getPublishedName()));
+        String lineId = netexId(neptuneLine.objectIdPrefix(), LINE_KEY, neptuneLine.objectIdSuffix());
+        netexLine.setId(lineId);
+
+        if (isSet(neptuneLine.getName())) {
+            netexLine.setName(getMultilingualString(neptuneLine.getName()));
         }
 
-        TransportModeNameEnum transportMode = chouetteLine.getTransportModeName();
-        if (transportMode != null) {
-            AllVehicleModesOfTransportEnumeration vehicleModeOfTransport = toVehicleModeOfTransportEnum(transportMode.name());
+        if (isSet(neptuneLine.getPublishedName())) {
+            netexLine.setShortName(getMultilingualString(neptuneLine.getPublishedName()));
+        }
+
+        if (isSet(neptuneLine.getComment())) {
+            netexLine.setDescription(getMultilingualString(neptuneLine.getComment()));
+        }
+
+        if (isSet(neptuneLine.getTransportModeName())) {
+            AllVehicleModesOfTransportEnumeration vehicleModeOfTransport = toVehicleModeOfTransportEnum(neptuneLine.getTransportModeName().name());
             netexLine.setTransportMode(vehicleModeOfTransport);
         }
 
+        if (isSet(neptuneLine .getNumber())) {
+            netexLine.setPublicCode(neptuneLine.getNumber());
+        }
+
+        if (isSet(neptuneLine.getRegistrationNumber())) {
+            PrivateCodeStructure privateCodeStruct = netexFactory.createPrivateCodeStructure();
+            privateCodeStruct.setValue(neptuneLine.getRegistrationNumber());
+            netexLine.setPrivateCode(privateCodeStruct);
+        }
+
         OperatorRefStructure operatorRefStruct = netexFactory.createOperatorRefStructure();
-        operatorRefStruct.setRef(chouetteLine.getCompany().getObjectId());
+        operatorRefStruct.setRef(neptuneLine.getCompany().getObjectId());
 
         // TODO handle version attribute differently, false when in separate export (common file), true if in same export
         //line.setOperatorRef(isFrequentOperator ? netexObjectFactory.createOperatorRefStructure(operatorId, Boolean.FALSE) : netexObjectFactory.createOperatorRefStructure(operatorId, Boolean.TRUE));
@@ -39,11 +58,12 @@ public class LineProducer extends AbstractNetexProducer<Line, mobi.chouette.mode
         netexLine.setOperatorRef(operatorRefStruct);
 
         RouteRefs_RelStructure routeRefsStruct = netexFactory.createRouteRefs_RelStructure();
-        for (Route route : chouetteLine.getRoutes()) {
+        for (Route route : neptuneLine.getRoutes()) {
             if (exportableRoutes.contains(route)) {
                 RouteRefStructure routeRefStruct = netexFactory.createRouteRefStructure();
                 routeRefStruct.setVersion(route.getObjectVersion() != null ? String.valueOf(route.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-                routeRefStruct.setRef(route.getObjectId());
+                String routeIdRef = netexId(route.objectIdPrefix(), ROUTE_KEY, route.objectIdSuffix());
+                routeRefStruct.setRef(routeIdRef);
                 routeRefsStruct.getRouteRef().add(routeRefStruct);
             }
         }

@@ -22,7 +22,7 @@ public class ResourceFrameProducer implements FrameProducer<ResourceFrame> {
         String resourceFrameId = netexId(line.objectIdPrefix(), RESOURCE_FRAME_KEY, line.objectIdSuffix());
 
         ResourceFrame resourceFrame = netexFactory.createResourceFrame()
-                .withVersion(NETEX_DATA_OJBECT_VERSION)
+                .withVersion("any")
                 .withId(resourceFrameId);
 
         Company company = line.getCompany();

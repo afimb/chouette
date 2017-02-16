@@ -29,7 +29,7 @@ public class SiteFrameProducer implements FrameProducer<SiteFrame> {
         String siteFrameId = netexId(line.objectIdPrefix(), SITE_FRAME_KEY, line.objectIdSuffix());
 
         SiteFrame siteFrame = netexFactory.createSiteFrame()
-                .withVersion(NETEX_DATA_OJBECT_VERSION)
+                .withVersion("any")
                 .withId(siteFrameId);
 
         StopPlacesInFrame_RelStructure stopPlacesStruct = netexFactory.createStopPlacesInFrame_RelStructure();

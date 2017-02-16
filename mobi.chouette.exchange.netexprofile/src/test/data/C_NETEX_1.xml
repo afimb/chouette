@@ -120,14 +120,14 @@
                         <RoutePoint version="1" id="AVI:RoutePoint:MOL">
                             <projections>
                                 <PointProjection version="1" id="AVI:PointProjection:MOL">
-                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:MOL" version="1"/>
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:76522" version="1"/>
                                 </PointProjection>
                             </projections>
                         </RoutePoint>
                         <RoutePoint version="1" id="AVI:RoutePoint:TRD">
                             <projections>
                                 <PointProjection version="1" id="AVI:PointProjection:TRD">
-                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:TRD" version="1"/>
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:83334" version="1"/>
                                 </PointProjection>
                             </projections>
                         </RoutePoint>
@@ -185,23 +185,23 @@
                         </DestinationDisplay>
                     </destinationDisplays>
                     <scheduledStopPoints>
-                        <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:MOL">
+                        <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:76522">
                             <Name>Molde Lufthavn</Name>
                             <ShortName>MOL</ShortName>
                         </ScheduledStopPoint>
-                        <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:TRD">
+                        <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:83334">
                             <Name>Trondheim Lufthavn</Name>
                             <ShortName>TRD</ShortName>
                         </ScheduledStopPoint>
                     </scheduledStopPoints>
                     <stopAssignments>
                         <PassengerStopAssignment order="26" version="1" id="AVI:PassengerStopAssignment:MOL">
-                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:MOL" version="1"/>
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:76522" version="1"/>
                             <StopPlaceRef version="1" ref="AVI:StopPlace:MOL"/>
                             <QuayRef ref="AVI:Quay:MOL" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="42" version="1" id="AVI:PassengerStopAssignment:TRD">
-                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:TRD" version="1"/>
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:83334" version="1"/>
                             <StopPlaceRef version="1" ref="AVI:StopPlace:TRD"/>
                             <QuayRef ref="AVI:Quay:TRD" version="1"/>
                         </PassengerStopAssignment>
@@ -213,12 +213,12 @@
                             <pointsInSequence>
                                 <StopPointInJourneyPattern order="1" version="1"
                                                            id="AVI:StopPointInJourneyPattern:37306311">
-                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:TRD" version="1"/>
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:83334" version="1"/>
                                     <ForAlighting>false</ForAlighting>
                                 </StopPointInJourneyPattern>
                                 <StopPointInJourneyPattern order="2" version="1"
                                                            id="AVI:StopPointInJourneyPattern:37306312">
-                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:MOL" version="1"/>
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:76522" version="1"/>
                                     <ForBoarding>false</ForBoarding>
                                 </StopPointInJourneyPattern>
                             </pointsInSequence>
@@ -229,12 +229,12 @@
                             <pointsInSequence>
                                 <StopPointInJourneyPattern order="1" version="1"
                                                            id="AVI:StopPointInJourneyPattern:87478681">
-                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:MOL" version="1"/>
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:76522" version="1"/>
                                     <ForAlighting>false</ForAlighting>
                                 </StopPointInJourneyPattern>
                                 <StopPointInJourneyPattern order="2" version="1"
                                                            id="AVI:StopPointInJourneyPattern:87478682">
-                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:TRD" version="1"/>
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:83334" version="1"/>
                                     <ForBoarding>false</ForBoarding>
                                 </StopPointInJourneyPattern>
                             </pointsInSequence>

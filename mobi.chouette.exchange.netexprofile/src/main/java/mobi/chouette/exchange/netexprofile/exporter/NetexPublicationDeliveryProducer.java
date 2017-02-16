@@ -1,6 +1,5 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
-import com.google.common.collect.Lists;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
@@ -13,13 +12,11 @@ import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.StopPoint;
 import org.rutebanken.netex.model.*;
 
-import javax.xml.bind.JAXBElement;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
-import java.util.List;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.AbstractNetexProducer.netexFactory;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
@@ -41,12 +38,8 @@ public class NetexPublicationDeliveryProducer implements Constant {
 
     private static ResourceFrameProducer resourceFrameProducer = new ResourceFrameProducer();
     private static SiteFrameProducer siteFrameProducer = new SiteFrameProducer();
+    private static ServiceFrameProducer serviceFrameProducer = new ServiceFrameProducer();
 
-    private static NetworkProducer networkProducer = new NetworkProducer();
-    private static LineProducer lineProducer = new LineProducer();
-    private static RouteProducer routeProducer = new RouteProducer();
-    private static RoutePointProducer routePointProducer = new RoutePointProducer();
-    private static JourneyPatternProducer journeyPatternProducer = new JourneyPatternProducer();
     private static ServiceJourneyProducer serviceJourneyProducer = new ServiceJourneyProducer();
 
     // TODO consider adding producers for each frame, which in turn calls each subproducer (like netex writers)
@@ -55,29 +48,11 @@ public class NetexPublicationDeliveryProducer implements Constant {
         ActionReporter reporter = ActionReporter.Factory.getInstance();
         ExportableData exportableData = (ExportableData) context.get(EXPORTABLE_DATA);
         JobData jobData = (JobData) context.get(JOB_DATA);
+        Metadata metadata = (Metadata) context.get(METADATA);
         String rootDirectory = jobData.getPathName();
 
-        NetexprofileExportParameters parameters = (NetexprofileExportParameters) context.get(CONFIGURATION);
-        boolean addExtension = parameters.isAddExtension(); // TODO find out if needed?
-
-        mobi.chouette.model.Line line = exportableData.getLine();
-
-        String projectionType = parameters.getProjectionType();
-        if (projectionType != null && !projectionType.isEmpty()) {
-            if (!projectionType.toUpperCase().startsWith("EPSG:")) {
-                projectionType = "EPSG:" + projectionType;
-            }
-        }
-
-        // TODO find out if it is mandatory to set projection on stop areas
-        /*
-        for (StopArea stopArea : collection.getStopAreas()) {
-            stopArea.toProjection(projectionType);
-        }
-        */
-
-        Metadata metadata = (Metadata) context.get(METADATA);
         OffsetDateTime publicationTimestamp = OffsetDateTime.now();
+        mobi.chouette.model.Line line = exportableData.getLine();
 
         PublicationDeliveryStructure rootObject = netexFactory.createPublicationDeliveryStructure()
                 .withVersion(NETEX_PROFILE_VERSION)
@@ -145,55 +120,17 @@ public class NetexPublicationDeliveryProducer implements Constant {
         frames.getCommonFrame().add(netexFactory.createResourceFrame(resourceFrame));
 
         // site frame
-
         SiteFrame siteFrame = siteFrameProducer.produce(exportableData);
         frames.getCommonFrame().add(netexFactory.createSiteFrame(siteFrame));
 
         // service frame
-        String serviceFrameId = ModelTranslator.netexId(
-                exportableData.getLine().objectIdPrefix(), SERVICE_FRAME_KEY, exportableData.getLine().objectIdSuffix());
-
-        ServiceFrame serviceFrame = netexFactory.createServiceFrame()
-                .withVersion(NETEX_DATA_OJBECT_VERSION)
-                .withId(serviceFrameId);
-                //.withDestinationDisplays(destinationDisplayStruct)
+        ServiceFrame serviceFrame = serviceFrameProducer.produce(exportableData);
         frames.getCommonFrame().add(netexFactory.createServiceFrame(serviceFrame));
 
-        if (exportableData.getLine().getNetwork() != null) {
-            serviceFrame.setNetwork(networkProducer.produce(exportableData.getLine().getNetwork(), addExtension));
-        }
-
-        org.rutebanken.netex.model.Line netexLine = lineProducer.produce(exportableData.getLine(), exportableData.getRoutes(), addExtension);
-        LinesInFrame_RelStructure linesInFrameStruct = netexFactory.createLinesInFrame_RelStructure();
-        linesInFrameStruct.getLine_().add(netexFactory.createLine(netexLine));
-        serviceFrame.setLines(linesInFrameStruct);
-
-        RoutesInFrame_RelStructure routesInFrame = netexFactory.createRoutesInFrame_RelStructure();
-        for (mobi.chouette.model.Route chouetteRoute : exportableData.getRoutes()) {
-            org.rutebanken.netex.model.Route netexRoute = routeProducer.produce(chouetteRoute, exportableData.getRoutes(), addExtension);
-            routesInFrame.getRoute_().add(netexFactory.createRoute(netexRoute));
-
-            // TODO consider adding the route reference to the line here, instead of inside the LineProducer
-            //chouetteLineDescription.getChouetteRoute().add(jaxbObj);
-        }
-        serviceFrame.setRoutes(routesInFrame);
-
-        RoutePointsInFrame_RelStructure routePointsInFrame = netexFactory.createRoutePointsInFrame_RelStructure();
-        for (StopPoint stopPoint : exportableData.getStopPoints()) {
-            RoutePoint routePoint = routePointProducer.produce(stopPoint, addExtension);
-            routePointsInFrame.getRoutePoint().add(routePoint);
-        }
-        //serviceFrame.setRoutePoints(routePointsInFrame);
-
-        JourneyPatternsInFrame_RelStructure journeyPatternsInFrame = netexFactory.createJourneyPatternsInFrame_RelStructure();
-        for (mobi.chouette.model.JourneyPattern chouetteJourneyPattern : exportableData.getJourneyPatterns()) {
-            org.rutebanken.netex.model.JourneyPattern netexJourneyPattern = journeyPatternProducer.produce(chouetteJourneyPattern, exportableData.getRoutes(), addExtension);
-            journeyPatternsInFrame.getJourneyPattern_OrJourneyPatternView().add(netexFactory.createJourneyPattern(netexJourneyPattern));
-        }
-        serviceFrame.setJourneyPatterns(journeyPatternsInFrame);
-
+/*
         String timetableFrameId = ModelTranslator.netexId(
                 exportableData.getLine().objectIdPrefix(), TIMETABLE_FRAME_KEY, exportableData.getLine().objectIdSuffix());
+
 
         TimetableFrame timetableFrame = netexFactory.createTimetableFrame()
                 .withVersion(NETEX_DATA_OJBECT_VERSION)
