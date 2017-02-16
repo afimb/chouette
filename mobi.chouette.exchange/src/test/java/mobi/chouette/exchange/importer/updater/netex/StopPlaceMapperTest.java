@@ -84,6 +84,16 @@ public class StopPlaceMapperTest {
         assertEquals(stopPlace.getStopPlaceType(), StopTypeEnumeration.FERRY_STOP);
     }
 
+    @Test
+    public void mapPublicCode() {
+        Quay quay = new Quay();
+        StopArea stopArea = new StopArea();
+        stopArea.setRegistrationNumber("A");
+
+        stopPlaceMapper.mapPublicCode(stopArea, quay);
+        assertEquals(quay.getPublicCode(), "A");
+    }
+
     private StopArea createStopPlace(String name) {
         return createStopArea(name, ChouetteAreaEnum.StopPlace);
     }

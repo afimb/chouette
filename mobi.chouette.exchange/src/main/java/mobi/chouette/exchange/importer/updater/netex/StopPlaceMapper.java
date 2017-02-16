@@ -41,12 +41,19 @@ public class StopPlaceMapper {
         setVersion(quay);
         mapCentroid(stopArea, quay);
         mapQuayName(stopArea, quay);
-        mapPlateCode(stopArea, quay);
+        mapPublicCode(stopArea, quay);
         mapCompassBearing(stopArea, quay);
         if (StringUtils.isNotBlank(stopArea.getComment())) {
             quay.setDescription(new MultilingualString().withValue(stopArea.getComment()));
         }
         return quay;
+    }
+
+    public void mapPublicCode(StopArea stopArea, Quay quay) {
+        String registrationNumber = stopArea.getRegistrationNumber();
+        if(registrationNumber != null) {
+            quay.setPublicCode(registrationNumber);
+        }
     }
 
     private StopPlace mapStopPlace(StopArea stopArea) {
@@ -83,13 +90,6 @@ public class StopPlaceMapper {
     private void mapName(StopArea stopArea, Zone_VersionStructure zone) {
         zone.setName(new MultilingualString().withValue(stopArea.getName()).withLang("no").withTextIdType(""));
 
-    }
-
-    private void mapPlateCode(StopArea stopArea, Quay quay) {
-        String registrationNumber = stopArea.getRegistrationNumber();
-        if(registrationNumber != null) {
-            quay.setPlateCode(registrationNumber);
-        }
     }
 
     private void mapQuayName(StopArea stopArea, Zone_VersionStructure zone) {

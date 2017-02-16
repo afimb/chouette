@@ -58,7 +58,7 @@ public class StopAreaMapper {
             } else {
                 // Different than parent
                 stopArea.setName(stopPlace.getName().getValue() + " / " + quay.getName().getValue());
-                stopArea.setRegistrationNumber(quay.getPlateCode());
+                stopArea.setRegistrationNumber(quay.getPublicCode());
             }
         }
     }
