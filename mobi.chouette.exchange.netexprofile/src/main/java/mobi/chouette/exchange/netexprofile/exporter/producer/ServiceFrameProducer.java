@@ -1,10 +1,12 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
+import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
 
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -137,6 +139,63 @@ public class ServiceFrameProducer implements FrameProducer<ServiceFrame> {
         }
 
         serviceFrame.setJourneyPatterns(journeyPatternStruct);
+
+        // produce stop assignments
+
+        Set<String> distinctStopPointIdRefs = new HashSet<>();
+        StopAssignmentsInFrame_RelStructure stopAssignmentStruct = netexFactory.createStopAssignmentsInFrame_RelStructure();
+
+        int index = 1;
+        for (mobi.chouette.model.Route route : neptuneLine.getRoutes()) {
+            for (StopPoint stopPoint : route.getStopPoints()) {
+                String[] idSuffixSplit = StringUtils.splitByWholeSeparator(stopPoint.objectIdSuffix(), "-");
+                String stopPointIdSuffix = idSuffixSplit[idSuffixSplit.length - 1];
+                String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), STOP_POINT_KEY, stopPointIdSuffix);
+
+                if (!distinctStopPointIdRefs.contains(stopPointIdRef)) {
+                    String pointVersion = stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
+                    String stopAssignmentId = netexId(stopPoint.objectIdPrefix(), PASSENGER_STOP_ASSIGNMENT_KEY, stopPointIdSuffix);
+
+                    PassengerStopAssignment stopAssignment = netexFactory.createPassengerStopAssignment()
+                            .withVersion(pointVersion)
+                            .withId(stopAssignmentId)
+                            .withOrder(new BigInteger(Integer.toString(index)))                            ;
+
+                    ScheduledStopPointRefStructure scheduledStopPointRefStruct = netexFactory.createScheduledStopPointRefStructure()
+                            .withVersion(pointVersion)
+                            .withRef(stopPointIdRef);
+                    stopAssignment.setScheduledStopPointRef(scheduledStopPointRefStruct);
+
+                    if (isSet(stopPoint.getContainedInStopArea())) {
+                        if (isSet(stopPoint.getContainedInStopArea().getParent())) {
+                            StopArea parentStopArea = stopPoint.getContainedInStopArea().getParent();
+                            String stopPlaceVersion = parentStopArea.getObjectVersion() > 0 ? String.valueOf(parentStopArea.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
+                            String stopPlaceIdRef = netexId(parentStopArea.objectIdPrefix(), STOP_PLACE_KEY, parentStopArea.objectIdSuffix());
+
+                            StopPlaceRefStructure stopPlaceRefStruct = netexFactory.createStopPlaceRefStructure()
+                                    .withVersion(stopPlaceVersion)
+                                    .withRef(stopPlaceIdRef);
+                            stopAssignment.setStopPlaceRef(stopPlaceRefStruct);
+                        }
+
+                        StopArea containedInStopArea = stopPoint.getContainedInStopArea();
+                        String quayVersion = containedInStopArea.getObjectVersion() > 0 ? String.valueOf(containedInStopArea.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
+                        String quayIdRef = netexId(containedInStopArea.objectIdPrefix(), QUAY_KEY, containedInStopArea.objectIdSuffix());
+
+                        QuayRefStructure quayRefStruct = netexFactory.createQuayRefStructure()
+                                .withVersion(quayVersion)
+                                .withRef(quayIdRef);
+                        stopAssignment.setQuayRef(quayRefStruct);
+                    }
+
+                    stopAssignmentStruct.getStopAssignment().add(netexFactory.createPassengerStopAssignment(stopAssignment));
+                    distinctStopPointIdRefs.add(stopPointIdRef);
+                    index++;
+                }
+            }
+        }
+
+        serviceFrame.setStopAssignments(stopAssignmentStruct);
 
         return serviceFrame;
     }
