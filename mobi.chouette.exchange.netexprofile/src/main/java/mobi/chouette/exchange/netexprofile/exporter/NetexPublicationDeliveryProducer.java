@@ -39,6 +39,7 @@ public class NetexPublicationDeliveryProducer implements Constant {
     private static ResourceFrameProducer resourceFrameProducer = new ResourceFrameProducer();
     private static SiteFrameProducer siteFrameProducer = new SiteFrameProducer();
     private static ServiceFrameProducer serviceFrameProducer = new ServiceFrameProducer();
+    private static TimetableFrameProducer timetableFrameProducer = new TimetableFrameProducer();
 
     private static ServiceJourneyProducer serviceJourneyProducer = new ServiceJourneyProducer();
 
@@ -127,22 +128,11 @@ public class NetexPublicationDeliveryProducer implements Constant {
         ServiceFrame serviceFrame = serviceFrameProducer.produce(exportableData);
         frames.getCommonFrame().add(netexFactory.createServiceFrame(serviceFrame));
 
-/*
-        String timetableFrameId = ModelTranslator.netexId(
-                exportableData.getLine().objectIdPrefix(), TIMETABLE_FRAME_KEY, exportableData.getLine().objectIdSuffix());
-
-
-        TimetableFrame timetableFrame = netexFactory.createTimetableFrame()
-                .withVersion(NETEX_DATA_OJBECT_VERSION)
-                .withId(timetableFrameId);
+        // timetable frame
+        TimetableFrame timetableFrame = timetableFrameProducer.produce(exportableData);
         frames.getCommonFrame().add(netexFactory.createTimetableFrame(timetableFrame));
 
-        JourneysInFrame_RelStructure journeysInFrame = netexFactory.createJourneysInFrame_RelStructure();
-        for (mobi.chouette.model.VehicleJourney vehicleJourney : exportableData.getVehicleJourneys()) {
-            ServiceJourney serviceJourney = serviceJourneyProducer.produce(vehicleJourney, exportableData.getLine(), addExtension);
-            journeysInFrame.getDatedServiceJourneyOrDeadRunOrServiceJourney().add(serviceJourney);
-        }
-        timetableFrame.setVehicleJourneys(journeysInFrame);
+/*
 
         String serviceCalendarFrameId = ModelTranslator.netexId(
                 exportableData.getLine().objectIdPrefix(), SERVICE_CALENDAR_FRAME_KEY, exportableData.getLine().objectIdSuffix());
@@ -170,7 +160,6 @@ public class NetexPublicationDeliveryProducer implements Constant {
                 metadata.getTemporalCoverage().update(timetable.getStartOfPeriod(), timetable.getEndOfPeriod());
         }
 */
-
         PublicationDeliveryStructure.DataObjects dataObjects = netexFactory.createPublicationDeliveryStructureDataObjects();
         dataObjects.getCompositeFrameOrCommonFrame().add(netexFactory.createCompositeFrame(compositeFrame));
         rootObject.setDataObjects(dataObjects);

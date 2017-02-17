@@ -2,28 +2,45 @@ package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.*;
 import mobi.chouette.model.VehicleJourney;
-import mobi.chouette.model.VehicleJourneyAtStop;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
 
 import java.sql.Time;
 import java.util.Comparator;
 import java.util.List;
 
+import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.DAY_TYPE_KEY;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SERVICE_JOURNEY_KEY;
+
 public class ServiceJourneyProducer extends AbstractNetexProducer<ServiceJourney, VehicleJourney> {
 
     //@Override
-    public ServiceJourney produce(VehicleJourney vehicleJourney, Line line, boolean addExtension) {
+    public ServiceJourney produce(VehicleJourney vehicleJourney, Line line) {
         ServiceJourney serviceJourney = netexFactory.createServiceJourney();
-        populateFromModel(serviceJourney, vehicleJourney);
+        serviceJourney.setVersion(vehicleJourney.getObjectVersion() > 0 ? String.valueOf(vehicleJourney.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 
-        if (StringUtils.isNotEmpty(vehicleJourney.getPublishedJourneyName())) {
+        String serviceJourneyId = netexId(vehicleJourney.objectIdPrefix(), SERVICE_JOURNEY_KEY, vehicleJourney.objectIdSuffix());
+        serviceJourney.setId(serviceJourneyId);
+
+        // TODO look over how we import service journey names
+        if (isSet(vehicleJourney.getPublishedJourneyName())) {
             serviceJourney.setName(getMultilingualString(vehicleJourney.getPublishedJourneyName()));
         }
-        if (StringUtils.isNotEmpty(vehicleJourney.getPublishedJourneyIdentifier())) {
-            serviceJourney.setPublicCode(vehicleJourney.getPublishedJourneyIdentifier());
+
+        // TODO find out where and how to get the public code, and set here
+        //serviceJourney.setPublicCode("");
+
+        // TODO look over how we import service journey names
+        if (isSet(vehicleJourney.getPublishedJourneyIdentifier())) {
+            serviceJourney.setShortName(getMultilingualString(vehicleJourney.getPublishedJourneyIdentifier()));
+        }
+
+        if (isSet(vehicleJourney.getComment())) {
+            serviceJourney.setDescription(getMultilingualString(vehicleJourney.getComment()));
         }
 
         JourneyPattern journeyPattern = vehicleJourney.getJourneyPattern();
@@ -32,15 +49,26 @@ public class ServiceJourneyProducer extends AbstractNetexProducer<ServiceJourney
         journeyPatternRefStruct.setRef(journeyPattern.getObjectId());
         serviceJourney.setJourneyPatternRef(netexFactory.createJourneyPatternRef(journeyPatternRefStruct));
 
-        // TODO find out where and how to get the public code, and set here
-        //serviceJourney.setPublicCode("");
-
         LineRefStructure lineRefStruct = netexFactory.createLineRefStructure();
         lineRefStruct.setVersion(line.getObjectVersion() != null ? String.valueOf(line.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
         lineRefStruct.setRef(line.getObjectId());
         serviceJourney.setLineRef(netexFactory.createLineRef(lineRefStruct));
 
-        // TODO set day types
+        // produce day types
+
+        DayTypeRefs_RelStructure dayTypeStruct = netexFactory.createDayTypeRefs_RelStructure();
+
+        for (Timetable timetable : vehicleJourney.getTimetables()) {
+            DayTypeRefStructure dayTypeRefStruct = netexFactory.createDayTypeRefStructure();
+            dayTypeRefStruct.setVersion(timetable.getObjectVersion() > 0 ? String.valueOf(timetable.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+
+            String dayTypeIdRef = netexId(timetable.objectIdPrefix(), DAY_TYPE_KEY, timetable.objectIdSuffix());
+            dayTypeRefStruct.setRef(dayTypeIdRef);
+
+            dayTypeStruct.getDayTypeRef().add(netexFactory.createDayTypeRef(dayTypeRefStruct));
+        }
+
+        serviceJourney.setDayTypes(dayTypeStruct);
 
         if (CollectionUtils.isNotEmpty(vehicleJourney.getVehicleJourneyAtStops())) {
             List<VehicleJourneyAtStop> vehicleJourneyAtStops = vehicleJourney.getVehicleJourneyAtStops();
