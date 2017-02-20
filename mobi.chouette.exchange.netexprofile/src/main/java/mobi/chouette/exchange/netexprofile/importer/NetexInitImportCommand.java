@@ -1,8 +1,9 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.naming.InitialContext;
@@ -11,7 +12,6 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.w3c.dom.Document;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -24,6 +24,9 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexNamespaceContext;
+import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
+import mobi.chouette.exchange.netexprofile.importer.validation.norway.NorwayCommonNetexProfileValidator;
+import mobi.chouette.exchange.netexprofile.importer.validation.norway.NorwayLineNetexProfileValidator;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.ValidationData;
@@ -49,12 +52,19 @@ public class NetexInitImportCommand implements Command, Constant {
 
 			XPath xpath = XPathFactory.newInstance().newXPath();
 			xpath.setNamespaceContext(new NetexNamespaceContext());
-			context.put(NETEX_LINE_DATA_XPATH, xpath);
+			context.put(NETEX_XPATH, xpath);
 
 			context.put(REFERENTIAL, new Referential());
 			context.put(VALIDATION_DATA, new ValidationData());
-			context.put(Constant.NETEX_COMMON_DATA_DOMS, new ArrayList<Document>());
 
+			Map<String, NetexProfileValidator> availableProfileValidators = new HashMap<>();
+
+			// Register profiles for Norway
+			registerProfileValidator(availableProfileValidators, new NorwayLineNetexProfileValidator());
+			registerProfileValidator(availableProfileValidators, new NorwayCommonNetexProfileValidator());
+
+			context.put(NETEX_PROFILE_VALIDATORS, availableProfileValidators);
+			
 			// Decode codespace definition if provided
 			if (configuration.getValidCodespaces() != null) {
 				Set<ProfileValidatorCodespace> validCodespaces = new HashSet<>();
@@ -87,6 +97,13 @@ public class NetexInitImportCommand implements Command, Constant {
 
 		return result;
 	}
+
+	private void registerProfileValidator(Map<String, NetexProfileValidator> availableProfileValidators, NetexProfileValidator profileValidator) {
+	for (String supportedProfile : profileValidator.getSupportedProfiles()) {
+		availableProfileValidators.put(supportedProfile+ (profileValidator.isCommonFileValidator() ? "-common": ""), profileValidator);
+	}
+
+}
 
 	public static class DefaultCommandFactory extends CommandFactory {
 

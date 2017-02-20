@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.naming.InitialContext;
@@ -27,6 +29,7 @@ import mobi.chouette.exchange.importer.CleanRepositoryCommand;
 import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
+import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.ImportedLineValidatorCommand;
@@ -114,11 +117,40 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
                             .getPathMatcher("glob:_*.xml").matches(filePath.getFileName()))
                     .collect(Collectors.toList());
 
-            if(commonFilePaths.size() > 0) {
+            Chain commonFileChains = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
+            mainChain.add(commonFileChains);
+
+    		Map<IdVersion, List<String>> commonIds = new HashMap<>();
+    		context.put(mobi.chouette.exchange.netexprofile.Constant.NETEX_COMMON_FILE_IDENTIFICATORS, commonIds);
+
+    		for (Path file : commonFilePaths) {
+                String url = file.toUri().toURL().toExternalForm();
+                Chain commonFileChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
+                commonFileChains.add(commonFileChain);
+
+                // init referentials
+                NetexInitReferentialCommand initializer = (NetexInitReferentialCommand) CommandFactory.create(initialContext, NetexInitReferentialCommand.class.getName());
+                initializer.setFileURL(url);
+                initializer.setLineFile(false);
+                commonFileChain.add(initializer);
+
+                // profile validation
+                Command validator = CommandFactory.create(initialContext, NetexValidationCommand.class.getName());
+                commonFileChain.add(validator);
+                
 	            NetexCommonFilesParserCommand commonFilesParser = (NetexCommonFilesParserCommand) CommandFactory.create(initialContext, NetexCommonFilesParserCommand.class.getName());
-	            commonFilesParser.setFiles(commonFilePaths);
-	            mainChain.add(commonFilesParser);
+	            commonFileChain.add(commonFilesParser);
             }
+    		
+    		DuplicateIdCheckerCommand duplicateIdChecker = (DuplicateIdCheckerCommand) CommandFactory.create(initialContext, DuplicateIdCheckerCommand.class.getName());
+            mainChain.add(duplicateIdChecker);
+    		
+            
+//            if(commonFilePaths.size() > 0) {
+//	            NetexCommonFilesParserCommand commonFilesParser = (NetexCommonFilesParserCommand) CommandFactory.create(initialContext, NetexCommonFilesParserCommand.class.getName());
+//	            commonFilesParser.setFiles(commonFilePaths);
+//	            mainChain.add(commonFilesParser);
+//            }
             
             // line file processing
 
@@ -139,6 +171,7 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
                 // init referentials
                 NetexInitReferentialCommand initializer = (NetexInitReferentialCommand) CommandFactory.create(initialContext, NetexInitReferentialCommand.class.getName());
                 initializer.setFileURL(url);
+                initializer.setLineFile(true);
                 lineChain.add(initializer);
 
                 // profile validation

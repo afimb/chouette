@@ -38,9 +38,14 @@ public class NetexInitReferentialCommand implements Command, Constant {
 
 	public static final String COMMAND = "NetexInitReferentialCommand";
 
+
 	@Getter
 	@Setter
 	private String fileURL;
+	
+	@Getter
+	@Setter
+	private boolean lineFile;
 
 	@Override
 	public boolean execute(Context context) throws Exception {
@@ -58,24 +63,27 @@ public class NetexInitReferentialCommand implements Command, Constant {
 		context.put(FILE_NAME, fileName);
 
 		try {
-			URL url = new URL(fileURL);
-			log.info("Initializing referentials for file : " + url);
 
-			context.put(NETEX_REFERENTIAL, new NetexReferential());
 			NetexImporter importer = (NetexImporter) context.get(IMPORTER);
 			Document dom = importer.parseFileToDom(file);
 			PublicationDeliveryStructure lineDeliveryStructure = importer.unmarshal(dom);
-			context.put(NETEX_LINE_DATA_JAVA, lineDeliveryStructure);
-			context.put(NETEX_LINE_DATA_DOM, dom);
+			
+			context.put(NETEX_DATA_JAVA, lineDeliveryStructure);
+			context.put(NETEX_DATA_DOM, dom);
+			if(lineFile) {
+				context.put(NETEX_WITH_COMMON_DATA, Boolean.FALSE);
+				context.put(NETEX_REFERENTIAL, new NetexReferential());
+			} else {
+				context.put(NETEX_WITH_COMMON_DATA, Boolean.TRUE);
+			}
 
-			// TODO find better way to register available profiles
-			Map<String, NetexProfileValidator> availableProfileValidators = new HashMap<>();
-
-			// Register profiles for Norway
-			registerProfileValidator(availableProfileValidators, new NorwayLineNetexProfileValidator());
+			Map<String, NetexProfileValidator> availableProfileValidators = (Map<String, NetexProfileValidator>) context.get(NETEX_PROFILE_VALIDATORS);
 
 			String profileVersion = lineDeliveryStructure.getVersion();
-
+			if(!lineFile) {
+				profileVersion += "-common";
+			}
+			
 			NetexProfileValidator profileValidator = availableProfileValidators.get(profileVersion);
 			if (profileValidator != null) {
 				profileValidator.initializeCheckPoints(context);
@@ -96,13 +104,6 @@ public class NetexInitReferentialCommand implements Command, Constant {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 		return result;
-	}
-
-	private void registerProfileValidator(Map<String, NetexProfileValidator> availableProfileValidators, NetexProfileValidator profileValidator) {
-		for (String supportedProfile : profileValidator.getSupportedProfiles()) {
-			availableProfileValidators.put(supportedProfile, profileValidator);
-		}
-
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {

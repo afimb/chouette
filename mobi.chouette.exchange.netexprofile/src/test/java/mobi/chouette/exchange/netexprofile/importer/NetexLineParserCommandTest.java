@@ -37,6 +37,7 @@ public class NetexLineParserCommandTest {
 		initCmd.execute(context);
 		
 		NetexInitReferentialCommand initRef = new NetexInitReferentialCommand();
+		initRef.setLineFile(true);
 		initRef.setFileURL(url);
 		initRef.execute(context);
 		
