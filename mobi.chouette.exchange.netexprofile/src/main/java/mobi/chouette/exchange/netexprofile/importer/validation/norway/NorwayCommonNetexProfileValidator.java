@@ -102,13 +102,13 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 
 		Node resourceFrame = selectNode("n:frames/n:ResourceFrame", xpath, dom);
 		if (resourceFrame != null) {
-			validateResourceFrame(context, xpath, dom, null);
+			validateResourceFrame(context, xpath, resourceFrame, null);
 		}
 
 		validateServiceFrame(context, xpath, dom, "n:frames/n:ServiceFrame");
 
 		// Validate no TimetableFrame defines in common files
-		validateElementNotPresent(context, xpath, dom, "/n:frames/n:TimetableFrame", _1_NETEX_COMMON_TIMETABLE_FRAME);
+		validateElementNotPresent(context, xpath, dom, "n:frames/n:TimetableFrame", _1_NETEX_COMMON_TIMETABLE_FRAME);
 
 		Node serviceCalendarFrame = selectNode("n:frames/n:ServiceCalendarFrame", xpath, dom);
 		if (serviceCalendarFrame != null) {
