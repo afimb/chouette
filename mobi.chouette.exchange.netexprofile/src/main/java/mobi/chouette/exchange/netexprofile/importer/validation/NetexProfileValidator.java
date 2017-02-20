@@ -11,5 +11,7 @@ public interface NetexProfileValidator {
 	void initializeCheckPoints(Context context);
 
 	Collection<String> getSupportedProfiles();
+	
+	boolean isCommonFileValidator();
 
 }
