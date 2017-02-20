@@ -1,141 +1,19 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
-import java.sql.Date;
-import java.sql.Time;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.OffsetTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.exchange.importer.ParserUtils;
+import mobi.chouette.model.type.DayTypeEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
 import org.rutebanken.netex.model.DayOfWeekEnumeration;
 import org.rutebanken.netex.model.EntityInVersionStructure;
 
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.exchange.importer.ParserUtils;
-import mobi.chouette.model.type.ConnectionLinkTypeEnum;
-import mobi.chouette.model.type.DayTypeEnum;
-import mobi.chouette.model.type.LongLatTypeEnum;
-import mobi.chouette.model.type.PTDirectionEnum;
-import mobi.chouette.model.type.PTNetworkSourceTypeEnum;
-import mobi.chouette.model.type.TransportModeNameEnum;
+import java.sql.Time;
+import java.time.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j
 public class NetexParserUtils extends ParserUtils {
-
-	public static String fromPTDirectionType(PTDirectionEnum type) {
-		if (type == null)
-			return null;
-		return type.toString();
-	}
-
-	public static PTDirectionEnum toPTDirectionType(String value) {
-		if (value == null)
-			return null;
-		PTDirectionEnum result = null;
-		try {
-			result = PTDirectionEnum.valueOf(StringUtils.capitalize(value));
-		} catch (Exception e) {
-			log.error("unable to translate " + value + " as PTDirection");
-		}
-		return result;
-	}
-
-	public static String fromPTNetworkSourceType(PTNetworkSourceTypeEnum type) {
-		if (type == null)
-			return null;
-		return type.toString();
-	}
-
-	public static PTNetworkSourceTypeEnum toPTNetworkSourceType(String value) {
-		if (value == null)
-			return null;
-		PTNetworkSourceTypeEnum result = null;
-		try {
-			result = PTNetworkSourceTypeEnum.valueOf(StringUtils.capitalize(value));
-		} catch (Exception e) {
-			log.error("unable to translate " + value + " as PTNetworkSourceType");
-		}
-		return result;
-	}
-
-	public static String fromConnectionLinkType(ConnectionLinkTypeEnum type) {
-		if (type == null)
-			return null;
-		switch (type) {
-		case Underground:
-			return "indoors";
-		case Overground:
-			return "outdoors";
-		case Mixed:
-			return "mixed";
-		default:
-			return "unknown";
-		}
-	}
-
-	public static ConnectionLinkTypeEnum toConnectionLinkType(String value) {
-		if (value == null)
-			return null;
-		if (value.equals("indoors"))
-			return ConnectionLinkTypeEnum.Underground;
-		else if (value.equals("outdoors"))
-			return ConnectionLinkTypeEnum.Overground;
-		else if (value.equals("mixed"))
-			return ConnectionLinkTypeEnum.Mixed;
-		else
-			return null;
-	}
-
-	public static String fromTransportModeNameEnum(TransportModeNameEnum type) {
-		switch (type) {
-		case Air:
-			return "air";
-		case Train:
-			return "rail";
-		case LongDistanceTrain:
-			return "intercityRail";
-		case LongDistanceTrain_2:
-			return "intercityRail";
-		case LocalTrain:
-			return "urbanRail";
-		case RapidTransit:
-			return "urbanRail";
-		case Metro:
-			return "metro";
-		case Tramway:
-			return "tram";
-		case Coach:
-			return "coach";
-		case Bus:
-			return "bus";
-		case Ferry:
-			return "water";
-		case Waterborne:
-			return "water";
-		case PrivateVehicle:
-			return "selfDrive";
-		case Walk:
-			return "selfDrive";
-		case Trolleybus:
-			return "trolleyBus";
-		case Bicycle:
-			return "selfDrive";
-		case Shuttle:
-			return "rail";
-		case Taxi:
-			return "taxi";
-		case Val:
-			return "rail";
-		case Other:
-			return "unknown";
-		default:
-			return "";
-		}
-	}
 
 	public static TransportModeNameEnum toTransportModeNameEnum(String value) {
 		if (value == null)
@@ -170,19 +48,8 @@ public class NetexParserUtils extends ParserUtils {
 			return TransportModeNameEnum.Other;
 	}
 
-	public static LongLatTypeEnum toLongLatTypeEnum(String value) {
-		if (value == null)
-			return null;
-		else if (value.equals("WGS84"))
-			return LongLatTypeEnum.WGS84;
-		else if (value.equals("WGS92"))
-			return LongLatTypeEnum.WGS92;
-		else
-			return LongLatTypeEnum.Standard;
-	}
-
 	public static List<DayTypeEnum> getDayTypes(List<String> values) {
-		List<DayTypeEnum> result = new ArrayList<DayTypeEnum>();
+		List<DayTypeEnum> result = new ArrayList<>();
 		for (String dayType : values) {
 			try {
 				result.add(DayTypeEnum.valueOf(dayType));
@@ -194,30 +61,11 @@ public class NetexParserUtils extends ParserUtils {
 
 	}
 
-	public static List<Date> getCalendarDays(List<String> values) {
-		List<Date> result = new ArrayList<Date>();
-		for (String value : values) {
-			try {
-				result.add(NetexParserUtils.getSQLDate(value));
-			} catch (Exception e) {
-				log.error(e.getMessage(), e);
-			}
-		}
-		return result;
-	}
-
 	public static ZoneOffset getZoneOffset(ZoneId zoneId) {
 		if (zoneId == null) {
 			return null;
 		}
 		return zoneId.getRules().getOffset(Instant.now(Clock.system(zoneId)));
-	}
-
-	public static Time convertToSqlTime(OffsetTime offsetTime) {
-		if (offsetTime == null) {
-			return null;
-		}
-		return Time.valueOf(offsetTime.withOffsetSameInstant(ZoneOffset.UTC).toLocalTime());
 	}
 
 	public static Time convertToSqlTime(OffsetTime offsetTime, ZoneOffset zoneOffset) {
@@ -278,16 +126,15 @@ public class NetexParserUtils extends ParserUtils {
 		}
 		return days;
 	}
-	
+
 	public static Integer getVersion(EntityInVersionStructure obj) {
-		Integer version = Integer.valueOf(0);
+		Integer version = 0;
 		try {
 			version = Integer.parseInt(obj.getVersion());
 		} catch (NumberFormatException e) {
-			log.warn("Unable to parse "+obj.getVersion()+" to Integer as supported by Neptune, returning 0");
+			log.warn("Unable to parse " + obj.getVersion() + " to Integer as supported by Neptune, returning 0");
 		}
 		return version;
 	}
-
 
 }

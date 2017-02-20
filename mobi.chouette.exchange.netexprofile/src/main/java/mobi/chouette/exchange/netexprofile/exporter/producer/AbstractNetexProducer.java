@@ -11,7 +11,7 @@ import java.time.*;
 import java.util.Date;
 
 
-public abstract class AbstractJaxbNetexProducer<T extends DataManagedObjectStructure, U extends NeptuneIdentifiedObject> {
+public abstract class AbstractNetexProducer<T extends DataManagedObjectStructure, U extends NeptuneIdentifiedObject> {
 
     public static final String NETEX_DATA_OJBECT_VERSION = "0";
     public static final ZoneId LOCAL_ZONE_ID = ZoneId.of("Europe/Oslo");

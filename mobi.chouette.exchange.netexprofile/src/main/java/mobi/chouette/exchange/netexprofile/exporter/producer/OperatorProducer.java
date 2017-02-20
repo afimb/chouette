@@ -1,36 +1,54 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes;
 import mobi.chouette.model.Company;
-import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.ContactStructure;
 import org.rutebanken.netex.model.Operator;
 import org.rutebanken.netex.model.OrganisationTypeEnumeration;
 
-public class OperatorProducer extends AbstractJaxbNetexProducer<Operator, Company> {
+import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
+
+public class OperatorProducer extends AbstractNetexProducer<Operator, Company> {
 
     //@Override
-    public Operator produce(Company company, boolean addExtension) {
+    public Operator produce(Company company) {
         Operator operator = netexFactory.createOperator();
-        populateFromModel(operator, company);
 
-        operator.setName(getMultilingualString(company.getName()));
+        operator.setVersion(company.getObjectVersion() > 0 ? String.valueOf(company.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 
-        if (StringUtils.isNotEmpty(company.getShortName())) {
+        String operatorId = netexId(company.objectIdPrefix(), NetexObjectIdTypes.OPERATOR_KEY, company.objectIdSuffix());
+        operator.setId(operatorId);
+
+        if (isSet(company.getCode())) {
+            operator.setPublicCode(company.getCode());
+        }
+
+        if (isSet(company.getRegistrationNumber())) {
+            operator.setCompanyNumber(company.getRegistrationNumber());
+        }
+
+        if (isSet(company.getName())) {
+            operator.setName(getMultilingualString(company.getName()));
+        }
+
+        if (isSet(company.getShortName())) {
             operator.setShortName(getMultilingualString(company.getShortName()));
         }
 
-        operator.setCompanyNumber(company.getRegistrationNumber());
+        if (isSet(company.getPhone(), company.getUrl())) {
+            ContactStructure contactStructure = netexFactory.createContactStructure();
+            if (isSet(company.getPhone())) {
+                contactStructure.setPhone(company.getPhone());
+            }
+            if (isSet(company.getUrl())) {
+                contactStructure.setUrl(company.getUrl());
+            }
+            operator.setContactDetails(contactStructure);
+            operator.setCustomerServiceContactDetails(contactStructure);
+        }
+
         operator.getOrganisationType().add(OrganisationTypeEnumeration.OPERATOR);
-
-        ContactStructure contactStructure = netexFactory.createContactStructure();
-
-        // TODO null check on all fields
-        contactStructure.setPhone(company.getPhone());
-        //contactStructure.setFax(company.getFax());
-        //contactStructure.setEmail(company.getEmail());
-        contactStructure.setUrl(company.getUrl());
-        operator.setContactDetails(contactStructure);
-        operator.setCustomerServiceContactDetails(contactStructure);
 
         return operator;
     }

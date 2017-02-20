@@ -9,7 +9,6 @@ import mobi.chouette.exchange.netexprofile.exporter.producer.*;
 import mobi.chouette.exchange.netexprofile.jaxb.JaxbNetexFileConverter;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
-import mobi.chouette.model.Company;
 import mobi.chouette.model.StopPoint;
 import org.rutebanken.netex.model.*;
 
@@ -19,7 +18,8 @@ import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 
-import static mobi.chouette.exchange.netexprofile.exporter.producer.AbstractJaxbNetexProducer.netexFactory;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.AbstractNetexProducer.netexFactory;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 public class NetexPublicationDeliveryProducer implements Constant {
 
@@ -36,51 +36,44 @@ public class NetexPublicationDeliveryProducer implements Constant {
     public static final String AVINOR_XMLNS = "AVI";
     public static final String AVINOR_XMLNSURL = "http://www.rutebanken.org/ns/avi";
 
-    private static NetworkProducer networkProducer = new NetworkProducer();
-    private static OperatorProducer operatorProducer = new OperatorProducer();
-    private static LineProducer lineProducer = new LineProducer();
-    private static RouteProducer routeProducer = new RouteProducer();
-    private static RoutePointProducer routePointProducer = new RoutePointProducer();
-    private static JourneyPatternProducer journeyPatternProducer = new JourneyPatternProducer();
+    private static ResourceFrameProducer resourceFrameProducer = new ResourceFrameProducer();
+    private static SiteFrameProducer siteFrameProducer = new SiteFrameProducer();
+    private static ServiceFrameProducer serviceFrameProducer = new ServiceFrameProducer();
+    private static TimetableFrameProducer timetableFrameProducer = new TimetableFrameProducer();
+
     private static ServiceJourneyProducer serviceJourneyProducer = new ServiceJourneyProducer();
+
+    // TODO consider adding producers for each frame, which in turn calls each subproducer (like netex writers)
 
     public void produce(Context context) throws Exception {
         ActionReporter reporter = ActionReporter.Factory.getInstance();
-        ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
+        ExportableData exportableData = (ExportableData) context.get(EXPORTABLE_DATA);
         JobData jobData = (JobData) context.get(JOB_DATA);
+        Metadata metadata = (Metadata) context.get(METADATA);
         String rootDirectory = jobData.getPathName();
 
-        NetexprofileExportParameters parameters = (NetexprofileExportParameters) context.get(CONFIGURATION);
-        boolean addExtension = parameters.isAddExtension(); // TODO find out if needed?
-
-        String projectionType = parameters.getProjectionType();
-        if (projectionType != null && !projectionType.isEmpty()) {
-            if (!projectionType.toUpperCase().startsWith("EPSG:")) {
-                projectionType = "EPSG:" + projectionType;
-            }
-        }
-
-        // TODO find out if it is mandatory to set projection on stop areas
-        /*
-        for (StopArea stopArea : collection.getStopAreas()) {
-            stopArea.toProjection(projectionType);
-        }
-        */
-
-        Metadata metadata = (Metadata) context.get(METADATA);
         OffsetDateTime publicationTimestamp = OffsetDateTime.now();
+        mobi.chouette.model.Line line = exportableData.getLine();
 
         PublicationDeliveryStructure rootObject = netexFactory.createPublicationDeliveryStructure()
                 .withVersion(NETEX_PROFILE_VERSION)
                 .withPublicationTimestamp(publicationTimestamp)
                 .withParticipantRef("NSR")
-                .withDescription(netexFactory.createMultilingualString().withValue(collection.getLine().getName()));
+                .withDescription(netexFactory.createMultilingualString().withValue(exportableData.getLine().getName()));
+
+        String compositeFrameId = ModelTranslator.netexId(line.objectIdPrefix(), COMPOSITE_FRAME_KEY, line.objectIdSuffix());
 
         CompositeFrame compositeFrame = netexFactory.createCompositeFrame()
                 .withVersion(NETEX_DATA_OJBECT_VERSION)
-                .withCreated(publicationTimestamp)
-                .withId("AVI:CompositeFrame:1"); // TODO create correct id
+                .withId(compositeFrameId);
                 //.withValidityConditions(validityConditionsStruct) // TODO
+
+        if (line.getNetwork().getVersionDate() != null) {
+            OffsetDateTime createdDateTime = NetexProducerUtils.convertToOffsetDateTime(line.getNetwork().getVersionDate());
+            compositeFrame.setCreated(createdDateTime);
+        } else {
+            compositeFrame.setCreated(publicationTimestamp);
+        }
 
         // TODO add validity conditions here, based on Timetable period
 
@@ -124,75 +117,29 @@ public class NetexPublicationDeliveryProducer implements Constant {
         compositeFrame.setFrames(frames);
 
         // resource frame
-        ResourceFrame resourceFrame = netexFactory.createResourceFrame()
-                .withVersion(NETEX_DATA_OJBECT_VERSION)
-                .withId("AVI:ResourceFrame:1");
+        ResourceFrame resourceFrame = resourceFrameProducer.produce(exportableData);
         frames.getCommonFrame().add(netexFactory.createResourceFrame(resourceFrame));
 
-        OrganisationsInFrame_RelStructure organisationsStruct = netexFactory.createOrganisationsInFrame_RelStructure();
-        for (Company company : collection.getCompanies()) {
-            Operator operator = operatorProducer.produce(company, addExtension);
-            organisationsStruct.getOrganisation_().add(netexFactory.createOperator(operator));
-        }
-        resourceFrame.setOrganisations(organisationsStruct);
+        // site frame
+        SiteFrame siteFrame = siteFrameProducer.produce(exportableData);
+        frames.getCommonFrame().add(netexFactory.createSiteFrame(siteFrame));
 
         // service frame
-        ServiceFrame serviceFrame = netexFactory.createServiceFrame()
-                .withVersion(NETEX_DATA_OJBECT_VERSION)
-                .withId("AVI:ServiceFrame:1");
-                //.withDestinationDisplays(destinationDisplayStruct)
+        ServiceFrame serviceFrame = serviceFrameProducer.produce(exportableData);
         frames.getCommonFrame().add(netexFactory.createServiceFrame(serviceFrame));
 
-        if (collection.getLine().getNetwork() != null) {
-            serviceFrame.setNetwork(networkProducer.produce(collection.getLine().getNetwork(), addExtension));
-        }
-
-        Line line = lineProducer.produce(collection.getLine(), collection.getRoutes(), addExtension);
-        LinesInFrame_RelStructure linesInFrameStruct = netexFactory.createLinesInFrame_RelStructure();
-        linesInFrameStruct.getLine_().add(netexFactory.createLine(line));
-        serviceFrame.setLines(linesInFrameStruct);
-
-        RoutesInFrame_RelStructure routesInFrame = netexFactory.createRoutesInFrame_RelStructure();
-        for (mobi.chouette.model.Route chouetteRoute : collection.getRoutes()) {
-            org.rutebanken.netex.model.Route netexRoute = routeProducer.produce(chouetteRoute, collection.getRoutes(), addExtension);
-            routesInFrame.getRoute_().add(netexFactory.createRoute(netexRoute));
-
-            // TODO consider adding the route reference to the line here, instead of inside the LineProducer
-            //chouetteLineDescription.getChouetteRoute().add(jaxbObj);
-        }
-        serviceFrame.setRoutes(routesInFrame);
-
-        RoutePointsInFrame_RelStructure routePointsInFrame = netexFactory.createRoutePointsInFrame_RelStructure();
-        for (StopPoint stopPoint : collection.getStopPoints()) {
-            RoutePoint routePoint = routePointProducer.produce(stopPoint, addExtension);
-            routePointsInFrame.getRoutePoint().add(routePoint);
-        }
-        //serviceFrame.setRoutePoints(routePointsInFrame);
-
-        JourneyPatternsInFrame_RelStructure journeyPatternsInFrame = netexFactory.createJourneyPatternsInFrame_RelStructure();
-        for (mobi.chouette.model.JourneyPattern chouetteJourneyPattern : collection.getJourneyPatterns()) {
-            org.rutebanken.netex.model.JourneyPattern netexJourneyPattern = journeyPatternProducer.produce(chouetteJourneyPattern, collection.getRoutes(), addExtension);
-            journeyPatternsInFrame.getJourneyPattern_OrJourneyPatternView().add(netexFactory.createJourneyPattern(netexJourneyPattern));
-        }
-        serviceFrame.setJourneyPatterns(journeyPatternsInFrame);
-
-        TimetableFrame timetableFrame = netexFactory.createTimetableFrame()
-                .withVersion(NETEX_DATA_OJBECT_VERSION)
-                .withId("AVI:TimetableFrame:1");
+        // timetable frame
+        TimetableFrame timetableFrame = timetableFrameProducer.produce(exportableData);
         frames.getCommonFrame().add(netexFactory.createTimetableFrame(timetableFrame));
 
-        JourneysInFrame_RelStructure journeysInFrame = netexFactory.createJourneysInFrame_RelStructure();
-        for (mobi.chouette.model.VehicleJourney vehicleJourney : collection.getVehicleJourneys()) {
-            ServiceJourney serviceJourney = serviceJourneyProducer.produce(vehicleJourney, collection.getLine(), addExtension);
-            journeysInFrame.getDatedServiceJourneyOrDeadRunOrServiceJourney().add(serviceJourney);
-        }
-        timetableFrame.setVehicleJourneys(journeysInFrame);
+/*
 
-        // TODO see ServiceCalendarFrameWriter in old netex module
+        String serviceCalendarFrameId = ModelTranslator.netexId(
+                exportableData.getLine().objectIdPrefix(), SERVICE_CALENDAR_FRAME_KEY, exportableData.getLine().objectIdSuffix());
 
         ServiceCalendarFrame serviceCalendarFrame = netexFactory.createServiceCalendarFrame()
                 .withVersion(NETEX_DATA_OJBECT_VERSION)
-                .withId("AVI:ServiceCalendarFrame:1");
+                .withId(serviceCalendarFrameId);
                 //.withDayTypes(dayTypesStruct)
                 //.withDayTypeAssignments(dayTypeAssignmentsStruct);
         frames.getCommonFrame().add(netexFactory.createServiceCalendarFrame(serviceCalendarFrame));
@@ -213,13 +160,12 @@ public class NetexPublicationDeliveryProducer implements Constant {
                 metadata.getTemporalCoverage().update(timetable.getStartOfPeriod(), timetable.getEndOfPeriod());
         }
 */
-
         PublicationDeliveryStructure.DataObjects dataObjects = netexFactory.createPublicationDeliveryStructureDataObjects();
         dataObjects.getCompositeFrameOrCommonFrame().add(netexFactory.createCompositeFrame(compositeFrame));
         rootObject.setDataObjects(dataObjects);
 
         Path dir = Paths.get(rootDirectory, OUTPUT);
-        String fileName = collection.getLine().getObjectId().replaceAll(":", "-") + ".xml";
+        String fileName = exportableData.getLine().getObjectId().replaceAll(":", "-") + ".xml";
         File file = new File(dir.toFile(), fileName);
 
         JaxbNetexFileConverter writer = JaxbNetexFileConverter.getInstance();
@@ -230,8 +176,8 @@ public class NetexPublicationDeliveryProducer implements Constant {
         if (metadata != null) {
             metadata.getResources().add(metadata.new Resource(
                     fileName,
-                    NeptuneObjectPresenter.getName(collection.getLine().getNetwork()),
-                    NeptuneObjectPresenter.getName(collection.getLine())));
+                    NeptuneObjectPresenter.getName(exportableData.getLine().getNetwork()),
+                    NeptuneObjectPresenter.getName(exportableData.getLine())));
         }
     }
 
