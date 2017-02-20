@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.importer.updater.netex;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -17,6 +18,7 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Log4j
 public class NavigationPathMapper {
 
 	private static final String VERSION = "1";
@@ -95,12 +97,14 @@ public class NavigationPathMapper {
 		return np;
 	}
 
-	private String getNameOfMemberClass(StopArea endOfLink) {
-		if(endOfLink.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint)) {
+	private String getNameOfMemberClass(StopArea linkedStopArea) {
+		if(linkedStopArea.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint)) {
 			return StopPlace.class.getSimpleName();
-		} else if(endOfLink.getAreaType().equals(ChouetteAreaEnum.BoardingPosition)){
+		} else if(linkedStopArea.getAreaType().equals(ChouetteAreaEnum.BoardingPosition)){
 			return Quay.class.getSimpleName();
 		}
+		log.warn("Could not determine value of name of member class for " + linkedStopArea);
+		return null;
 	}
 
 	public Object mapPathLinkToConnectionLink(Referential referential, PathLink e) {
