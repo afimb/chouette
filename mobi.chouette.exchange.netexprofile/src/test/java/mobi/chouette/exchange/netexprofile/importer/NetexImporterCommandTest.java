@@ -175,7 +175,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 	}
 
-	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")
+	@Test(enabled = true, groups = { "ImportLine" }, description = "Import Plugin should import file")
 	public void verifyImportLine() throws Exception {
 		Context context = initImportContext();
 		NetexTestUtils.copyFile("C_NETEX_1.xml");
@@ -228,8 +228,8 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		utx.rollback();
 	}
 
-	@Test
-	public void verifyImportSingleLineWithCommonData() throws Exception {
+	@Test(enabled = true)
+	public void verifyImportSingleLineWithCommonDataAvinor() throws Exception {
 		Context context = initImportContext();
 		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
 				initialContext, NetexprofileImporterCommand.class.getName());
@@ -326,8 +326,8 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		Assert.assertTrue(result, "Importer command execution failed: " + report.getFailure());
 	}
 
-	@Test
-	public void verifyImportMultipleLinesWithCommonData() throws Exception {
+	@Test(enabled = true)
+	public void verifyImportMultipleLinesWithCommonDataAvinor() throws Exception {
 		Context context = initImportContext();
 		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
 				initialContext, NetexprofileImporterCommand.class.getName());
@@ -436,6 +436,55 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		}
 
 		utx.rollback();
+		Assert.assertTrue(result, "Importer command execution failed: " + report.getFailure());
+	}
+
+	@Test(enabled = false)
+	public void verifyImportSingleLineWithCommonDataRuter() throws Exception {
+		Context context = initImportContext();
+		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
+				initialContext, NetexprofileImporterCommand.class.getName());
+
+		NetexTestUtils.copyFile("ruter_single_line_295_with_commondata.zip");
+
+		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
+		jobData.setInputFilename("ruter_single_line_295_with_commondata.zip");
+
+		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
+		configuration.setNoSave(false);
+		configuration.setCleanRepository(true);
+		configuration.setValidCodespaces("RUT,http://www.rutebanken.org/ns/ruter");
+
+		boolean result;
+		try {
+			result = command.execute(context);
+		} catch (Exception ex) {
+			log.error("test failed", ex);
+			throw ex;
+		}
+
+		ActionReport report = (ActionReport) context.get(REPORT);
+
+		dumpReports(context);
+
+		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+		Assert.assertEquals(report.getFiles().size(), 2, "files reported");
+		Assert.assertNotNull(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE), "lines reported");
+		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 1, "lines reported");
+
+		for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+			Reporter.log("report lines :" + info.toString(), true);
+			Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "lines status");
+		}
+
+		utx.begin();
+		em.joinTransaction();
+
+		Line line = lineDao.findByObjectId("AVI:Line:WF_TRD-MOL");
+		Assert.assertNotNull(line, "Line not found");
+
+		utx.rollback();
+
 		Assert.assertTrue(result, "Importer command execution failed: " + report.getFailure());
 	}
 

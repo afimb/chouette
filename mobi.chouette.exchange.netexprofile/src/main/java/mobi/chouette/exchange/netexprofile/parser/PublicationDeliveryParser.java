@@ -4,28 +4,32 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
-import mobi.chouette.model.*;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.*;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
-import mobi.chouette.model.type.DayTypeEnum;
-import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.*;
 import org.rutebanken.netex.model.Network;
 
 import javax.xml.bind.JAXBElement;
-import java.time.LocalDate;
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 
 @Log4j
-public class PublicationDeliveryParser implements Parser, Constant {
+public class PublicationDeliveryParser extends NetexParser implements Parser, Constant {
+
+	static final String LOCAL_CONTEXT = "PublicationDelivery";
+	static final String COMPOSITE_FRAME = "compositeFrame";
+	static final String TIMETABLE_FRAME = "timetableFrame";
+	static final String SERVICE_CALENDAR_FRAME = "serviceCalendarFrame";
 
 	@Override
 	public void parse(Context context) throws Exception {
@@ -34,22 +38,20 @@ public class PublicationDeliveryParser implements Parser, Constant {
         String contextKey = isCommonDelivery ? NETEX_COMMON_DATA_JAVA : NETEX_LINE_DATA_JAVA;
 		PublicationDeliveryStructure publicationDelivery = (PublicationDeliveryStructure) context.get(contextKey);
 		List<JAXBElement<? extends Common_VersionFrameStructure>> dataObjectFrames = publicationDelivery.getDataObjects().getCompositeFrameOrCommonFrame();
-
 		List<CompositeFrame> compositeFrames = NetexObjectUtil.getFrames(CompositeFrame.class, dataObjectFrames);
+
 		if(compositeFrames.size() > 0) {
 			
 			// Parse inside a composite frame
 			for(CompositeFrame compositeFrame : compositeFrames) {
+
+				parseValidityConditionsInFrame(context, compositeFrame);
+
 				List<JAXBElement<? extends Common_VersionFrameStructure>> frames = compositeFrame.getFrames().getCommonFrame();
 				List<ResourceFrame> resourceFrames = NetexObjectUtil.getFrames(ResourceFrame.class, frames);
 				List<ServiceFrame> serviceFrames = NetexObjectUtil.getFrames(ServiceFrame.class, frames);
 				List<SiteFrame> siteFrames = NetexObjectUtil.getFrames(SiteFrame.class, frames);
 				List<ServiceCalendarFrame> serviceCalendarFrames = NetexObjectUtil.getFrames(ServiceCalendarFrame.class, frames);
-				List<TimetableFrame> timetableFrames = new ArrayList<>();
-
-				if (!isCommonDelivery) {
-					timetableFrames = NetexObjectUtil.getFrames(TimetableFrame.class, frames);
-				}
 
 				// pre processing
 				preParseReferentialDependencies(context, serviceFrames , isCommonDelivery);
@@ -58,24 +60,20 @@ public class PublicationDeliveryParser implements Parser, Constant {
 				parseResourceFrames(context, resourceFrames);
 				parseSiteFrames(context, siteFrames);
 				parseServiceFrames(context, serviceFrames , isCommonDelivery);
-				parseServiceCalendarFrame(context, serviceCalendarFrames ,compositeFrame);
+				parseServiceCalendarFrame(context, serviceCalendarFrames);
 
 				if (!isCommonDelivery) {
+					List<TimetableFrame> timetableFrames = NetexObjectUtil.getFrames(TimetableFrame.class, frames);
 					parseTimetableFrames(context, timetableFrames);
 				}
-				
 			}
 		} else {
+
 			// Not using composite frame
 			List<ResourceFrame> resourceFrames = NetexObjectUtil.getFrames(ResourceFrame.class, dataObjectFrames);
 			List<ServiceFrame> serviceFrames = NetexObjectUtil.getFrames(ServiceFrame.class, dataObjectFrames);
 			List<SiteFrame> siteFrames = NetexObjectUtil.getFrames(SiteFrame.class, dataObjectFrames);
 			List<ServiceCalendarFrame> serviceCalendarFrames = NetexObjectUtil.getFrames(ServiceCalendarFrame.class, dataObjectFrames);
-			List<TimetableFrame> timetableFrames = new ArrayList<>();
-
-			if (!isCommonDelivery) {
-				timetableFrames = NetexObjectUtil.getFrames(TimetableFrame.class, dataObjectFrames);
-			}
 
 			// pre processing
 			preParseReferentialDependencies(context, serviceFrames, isCommonDelivery);
@@ -84,9 +82,10 @@ public class PublicationDeliveryParser implements Parser, Constant {
 			parseResourceFrames(context, resourceFrames);
 			parseSiteFrames(context, siteFrames);
 			parseServiceFrames(context, serviceFrames, isCommonDelivery);
-			parseServiceCalendarFrame(context, serviceCalendarFrames,null);
+			parseServiceCalendarFrame(context, serviceCalendarFrames);
 
 			if (!isCommonDelivery) {
+				List<TimetableFrame> timetableFrames = NetexObjectUtil.getFrames(TimetableFrame.class, dataObjectFrames);
 				parseTimetableFrames(context, timetableFrames);
 			}
 		}
@@ -100,15 +99,13 @@ public class PublicationDeliveryParser implements Parser, Constant {
 		for (ServiceFrame serviceFrame : serviceFrames) {
 
 			// pre parsing route points
-			RoutePointsInFrame_RelStructure routePointStruct = serviceFrame.getRoutePoints();
-			if (routePointStruct != null) {
+			if (serviceFrame.getRoutePoints() != null) {
 				context.put(NETEX_LINE_DATA_CONTEXT, serviceFrame.getRoutePoints());
 				ParserFactory.create(RoutePointParser.class.getName()).parse(context);
 			}
 
 			// stop assignments
-			StopAssignmentsInFrame_RelStructure stopAssignmentStruct = serviceFrame.getStopAssignments();
-			if (stopAssignmentStruct != null) {
+			if (serviceFrame.getStopAssignments() != null) {
 				context.put(NETEX_LINE_DATA_CONTEXT, serviceFrame.getStopAssignments());
 				ParserFactory.create(StopAssignmentParser.class.getName()).parse(context);
 			}
@@ -181,131 +178,89 @@ public class PublicationDeliveryParser implements Parser, Constant {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void parseServiceCalendarFrame(Context context, List<ServiceCalendarFrame> serviceCalendarFrames, CompositeFrame compositeFrame) throws Exception {
-		Referential referential = (Referential) context.get(REFERENTIAL);
-		Map<String, LocalDate> operatingDays = new HashMap<>();
-
+	private void parseServiceCalendarFrame(Context context, List<ServiceCalendarFrame> serviceCalendarFrames) throws Exception {
 		for (ServiceCalendarFrame serviceCalendarFrame : serviceCalendarFrames) {
-			DayTypeAssignmentsInFrame_RelStructure dayTypeAssignmentStruct = serviceCalendarFrame.getDayTypeAssignments();
 
-			if (dayTypeAssignmentStruct != null) {
-				List<DayTypeAssignment> dayTypeAssignments = dayTypeAssignmentStruct.getDayTypeAssignment();
+			parseValidityConditionsInFrame(context, serviceCalendarFrame);
 
-				for (DayTypeAssignment dayTypeAssignment : dayTypeAssignments) {
-					JAXBElement<? extends DayTypeRefStructure> dayTypeRefElement = dayTypeAssignment.getDayTypeRef();
-					LocalDate dateOfOperation = dayTypeAssignment.getDate();
+			// parse day type assignments
 
-					if (dayTypeRefElement != null && dateOfOperation != null) {
-						String dayTypeIdRef = dayTypeRefElement.getValue().getRef();
-
-						if (!operatingDays.containsKey(dayTypeIdRef)) {
-							operatingDays.put(dayTypeIdRef, dateOfOperation);
-						}
-					}
-				}
+			if (serviceCalendarFrame.getDayTypeAssignments() != null) {
+				context.put(NETEX_LINE_DATA_CONTEXT, serviceCalendarFrame.getDayTypeAssignments());
+				ParserFactory.create(DayTypeAssignmentParser.class.getName()).parse(context);
 			}
 
-			DayTypesInFrame_RelStructure dayTypesStruct = serviceCalendarFrame.getDayTypes();
+			ServiceCalendar serviceCalendar = serviceCalendarFrame.getServiceCalendar();
 
-			if (dayTypesStruct != null) {
-				List<JAXBElement<? extends DataManagedObjectStructure>> dayTypeElements = dayTypesStruct.getDayType_();
+			// TODO consider removing this, because parsing is done in ServiceCalendarParser
+			if (serviceCalendar != null && serviceCalendar.getDayTypeAssignments() != null) {
+				context.put(NETEX_LINE_DATA_CONTEXT, serviceCalendar.getDayTypeAssignments());
+				ParserFactory.create(DayTypeAssignmentParser.class.getName()).parse(context);
+			}
 
-				for (JAXBElement<? extends DataManagedObjectStructure> dayTypeElement : dayTypeElements) {
-					// For each timetable
+			// parse service calendar if present
 
-					DayType dayType = (DayType) dayTypeElement.getValue();
-					Timetable timetable = ObjectFactory.getTimetable(referential, dayType.getId());
+			if (serviceCalendar != null) {
+				context.put(NETEX_LINE_DATA_CONTEXT, serviceCalendar);
+				ParserFactory.create(ServiceCalendarParser.class.getName()).parse(context);
+			}
 
-					// check if day type has properties, if not look for assignments with explicit dates
-					PropertiesOfDay_RelStructure propertiesOfDayStruct = dayType.getProperties();
+			// parse day types
 
-					if (propertiesOfDayStruct != null && !propertiesOfDayStruct.getPropertyOfDay().isEmpty()) {
-						List<PropertyOfDay> propertyOfDayList = propertiesOfDayStruct.getPropertyOfDay();
-
-						for (PropertyOfDay propertyOfDay : propertyOfDayList) {
-							List<DayOfWeekEnumeration> daysOfWeeks = propertyOfDay.getDaysOfWeek();
-							for(DayOfWeekEnumeration dayOfWeek : daysOfWeeks) {
-								List<DayTypeEnum> convertDayOfWeek = NetexParserUtils.convertDayOfWeek(dayOfWeek);
-								for(DayTypeEnum e : convertDayOfWeek) {
-									timetable.addDayType(e);
-								}
-							}
-						}
-
-						// if day type has no properties it is assumed to have explicit dates through assignments
-					} else {
-						if (!operatingDays.isEmpty() && operatingDays.containsKey(dayType.getId())) {
-							LocalDate dateOfOperation = operatingDays.get(dayType.getId());
-							timetable.addCalendarDay(new CalendarDay(java.sql.Date.valueOf(dateOfOperation), true));
-						} else {
-							throw new RuntimeException("Found no valid day types in properties or assignments");
-						}
-					}
-
-					ValidityConditions_RelStructure validityConditionsStruct = serviceCalendarFrame.getContentValidityConditions();
-					if(validityConditionsStruct == null && compositeFrame != null) {
-						validityConditionsStruct = compositeFrame.getValidityConditions();
-					}
-
-					assert validityConditionsStruct != null;
-					List<Object> availabilityConditionElements = validityConditionsStruct.getValidityConditionRefOrValidBetweenOrValidityCondition_();
-
-					for(Object genericValidityCondition : availabilityConditionElements) {
-						JAXBElement<?> j = (JAXBElement<?>) genericValidityCondition;
-						if(j.getValue() instanceof AvailabilityCondition) {
-							AvailabilityCondition availabilityCondition = ((JAXBElement<AvailabilityCondition>) j).getValue();
-							Period period = new Period();
-							period.setStartDate(ParserUtils.getSQLDate(availabilityCondition.getFromDate().toString()));
-							period.setEndDate(ParserUtils.getSQLDate(availabilityCondition.getToDate().toString()));
-
-							timetable.addPeriod(period);
-						} else {
-							throw new RuntimeException("Only support AvailabilityCondition as validityCondition");
-						}
-					}
-				}
+			if (serviceCalendarFrame.getDayTypes() != null) {
+				context.put(NETEX_LINE_DATA_CONTEXT, serviceCalendarFrame.getDayTypes());
+				ParserFactory.create(DayTypeParser.class.getName()).parse(context);
 			} else {
-				throw new RuntimeException("Only able to parse daytypes for now");
+				throw new RuntimeException("Only able to parse DayType elements for now");
 			}
-
-			/*
-			
-			Parser calendarParser = ParserFactory.create(CalendarParser.class.getName());
-            
-            ValidityConditions_RelStructure validityConditionsStruct = serviceCalendarFrame.getContentValidityConditions();
-            if(validityConditionsStruct == null && compositeFrame != null) {
-            	validityConditionsStruct = compositeFrame.getValidityConditions();
-            }
-            if (validityConditionsStruct != null) {
-                context.put(NETEX_LINE_DATA_CONTEXT, validityConditionsStruct);
-                calendarParser.parse(context);
-            }
-            DayTypesInFrame_RelStructure dayTypeStruct = serviceCalendarFrame.getDayTypes();
-            if (dayTypeStruct != null) {
-                context.put(NETEX_LINE_DATA_CONTEXT, dayTypeStruct);
-                calendarParser.parse(context);
-            }
-            OperatingDaysInFrame_RelStructure operatingDaysStruct = serviceCalendarFrame.getOperatingDays();
-            if (operatingDaysStruct != null) {
-                context.put(NETEX_LINE_DATA_CONTEXT, operatingDaysStruct);
-                calendarParser.parse(context);
-            }
-            OperatingPeriodsInFrame_RelStructure operatingPeriodsStruct = serviceCalendarFrame.getOperatingPeriods();
-            if (operatingPeriodsStruct != null) {
-                context.put(NETEX_LINE_DATA_CONTEXT, operatingPeriodsStruct);
-                calendarParser.parse(context);
-            }
-            */
 		}
 	}
 
 	private void parseTimetableFrames(Context context, List<TimetableFrame> timetableFrames) throws Exception {
 		for (TimetableFrame timetableFrame : timetableFrames) {
+
+			parseValidityConditionsInFrame(context, timetableFrame);
+
 			JourneysInFrame_RelStructure vehicleJourneysStruct = timetableFrame.getVehicleJourneys();
 			context.put(NETEX_LINE_DATA_CONTEXT, vehicleJourneysStruct);
 			Parser serviceJourneyParser = ParserFactory.create(ServiceJourneyParser.class.getName());
 			serviceJourneyParser.parse(context);
 		}
+	}
+
+	private void parseValidityConditionsInFrame(Context context, Common_VersionFrameStructure frameStruct) throws Exception {
+		if (frameStruct instanceof CompositeFrame) {
+			parseValidityConditionsInFrame(context, COMPOSITE_FRAME, frameStruct);
+		} else if (frameStruct instanceof TimetableFrame) {
+			parseValidityConditionsInFrame(context, TIMETABLE_FRAME, frameStruct);
+		} else if (frameStruct instanceof ServiceCalendarFrame) {
+			parseValidityConditionsInFrame(context, SERVICE_CALENDAR_FRAME, frameStruct);
+		}
+	}
+
+	private void parseValidityConditionsInFrame(Context context, String contextKey, Common_VersionFrameStructure frameStruct) throws Exception {
+		if (frameStruct.getContentValidityConditions() != null) {
+			ValidBetween validBetween = getValidBetween(frameStruct.getContentValidityConditions());
+			if (validBetween != null) {
+				addValidBetween(context, contextKey, validBetween);
+			}
+		} else if (frameStruct.getValidityConditions() != null) {
+			ValidBetween validBetween = getValidBetween(frameStruct.getValidityConditions());
+			if (validBetween != null) {
+				addValidBetween(context, contextKey, validBetween);
+			}
+		} else if (CollectionUtils.isNotEmpty(frameStruct.getValidBetween())) {
+			ValidBetween validBetween = getValidBetween(frameStruct.getValidBetween());
+			if (validBetween != null) {
+				addValidBetween(context, contextKey, validBetween);
+			}
+		}
+	}
+
+	// TODO add support for multiple validity conditions
+	private void addValidBetween(Context context, String contextKey, ValidBetween validBetween) {
+		Context localContext = getLocalContext(context, LOCAL_CONTEXT);
+		localContext.put(contextKey, validBetween);
 	}
 
 	protected void sortStopPoints(Referential referential) {
