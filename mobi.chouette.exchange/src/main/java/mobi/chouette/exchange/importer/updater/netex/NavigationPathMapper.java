@@ -2,6 +2,7 @@ package mobi.chouette.exchange.importer.updater.netex;
 
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import org.rutebanken.netex.model.*;
@@ -38,13 +39,23 @@ public class NavigationPathMapper {
 	public NavigationPath mapConnectionLinkToNavigationPath(SiteFrame frame, ConnectionLink link) {
 
 		PathLinkEndStructure start = new PathLinkEndStructure();
-		start.setPlaceRef(new PlaceRefStructure().withRef(link.getStartOfLink().getObjectId()));
+		start.setPlaceRef(
+				new PlaceRefStructure()
+						.withRef(link.getStartOfLink().getObjectId())
+						.withNameOfMemberClass(getNameOfMemberClass(link.getStartOfLink())));
 
 		PathLinkEndStructure end = new PathLinkEndStructure();
-		end.setPlaceRef(new PlaceRefStructure().withRef(link.getEndOfLink().getObjectId()));
+		end.setPlaceRef(
+				new PlaceRefStructure()
+						.withRef(link.getEndOfLink().getObjectId())
+						.withNameOfMemberClass(getNameOfMemberClass(link.getEndOfLink())));
 
-		PathLink pl = new PathLink().withFrom(start).withTo(end).withId(link.getObjectId()).withVersion(VERSION);
-		pl.setAllowedUse(PathDirectionEnumeration.TWO_WAY);
+		PathLink pl = new PathLink()
+				.withFrom(start)
+				.withTo(end)
+				.withId(link.getObjectId())
+				.withVersion(VERSION)
+				.withAllowedUse(PathDirectionEnumeration.TWO_WAY);
 
 		long time = link.getDefaultDuration().getTime(); // Returns time in GMT
 		Duration duration = factory.newDuration(time + TimeZone.getDefault().getRawOffset()); // Adjust
@@ -82,6 +93,14 @@ public class NavigationPathMapper {
 		frame.getNavigationPaths().getNavigationPath().add(np);
 
 		return np;
+	}
+
+	private String getNameOfMemberClass(StopArea endOfLink) {
+		if(endOfLink.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint)) {
+			return StopPlace.class.getSimpleName();
+		} else if(endOfLink.getAreaType().equals(ChouetteAreaEnum.BoardingPosition)){
+			return Quay.class.getSimpleName();
+		}
 	}
 
 	public Object mapPathLinkToConnectionLink(Referential referential, PathLink e) {
