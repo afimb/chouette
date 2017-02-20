@@ -96,7 +96,7 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 			}
 
             // stream all file paths once
-            List<Path> allFilePaths = FileUtil.listFiles(path, "*.xml");
+            List<Path> allFilePaths = FileUtil.listFiles(path, "*.xml",".*.xml");
             for(Path p : allFilePaths) {
 				reporter.setFileState(context, p.getFileName().toString(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.ERROR);
             }
@@ -145,13 +145,6 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
     		DuplicateIdCheckerCommand duplicateIdChecker = (DuplicateIdCheckerCommand) CommandFactory.create(initialContext, DuplicateIdCheckerCommand.class.getName());
             mainChain.add(duplicateIdChecker);
     		
-            
-//            if(commonFilePaths.size() > 0) {
-//	            NetexCommonFilesParserCommand commonFilesParser = (NetexCommonFilesParserCommand) CommandFactory.create(initialContext, NetexCommonFilesParserCommand.class.getName());
-//	            commonFilesParser.setFiles(commonFilePaths);
-//	            mainChain.add(commonFilesParser);
-//            }
-            
             // line file processing
 
             List<Path> lineFilePaths = allFilePaths.stream()
