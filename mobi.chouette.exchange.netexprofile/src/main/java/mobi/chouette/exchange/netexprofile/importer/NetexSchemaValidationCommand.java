@@ -77,8 +77,8 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 					actionReporter.addFileErrorInReport(context, schemaValidationTask.getFile().getName(), ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT,
 							"Netex schema compliance failed");
 					result = ERROR;
-				} else {
-					actionReporter.setFileState(context, schemaValidationTask.getFile().getName(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.OK);
+//				} else {
+//					actionReporter.setFileState(context, schemaValidationTask.getFile().getName(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.OK);
 
 				}
 			}
