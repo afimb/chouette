@@ -65,7 +65,7 @@ public class NetexSchemaValidatorCommandTest {
 
 		boolean result = cmd.execute(context );
 		
-		Assert.assertTrue(result);
+		Assert.assertFalse(result);
 		
 		Assert.assertEquals(actionReport.getFiles().get(0).getErrors().get(0).getCode(),FILE_ERROR_CODE.INVALID_FORMAT);
 		

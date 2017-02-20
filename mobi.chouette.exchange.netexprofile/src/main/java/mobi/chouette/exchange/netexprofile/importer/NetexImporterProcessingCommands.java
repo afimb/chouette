@@ -114,11 +114,12 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
                             .getPathMatcher("glob:_*.xml").matches(filePath.getFileName()))
                     .collect(Collectors.toList());
 
-            NetexCommonFilesParserCommand commonFilesParser = (NetexCommonFilesParserCommand) CommandFactory.create(initialContext, NetexCommonFilesParserCommand.class.getName());
-            commonFilesParser.setFiles(commonFilePaths);
-            mainChain.add(commonFilesParser);
+            if(commonFilePaths.size() > 0) {
+	            NetexCommonFilesParserCommand commonFilesParser = (NetexCommonFilesParserCommand) CommandFactory.create(initialContext, NetexCommonFilesParserCommand.class.getName());
+	            commonFilesParser.setFiles(commonFilePaths);
+	            mainChain.add(commonFilesParser);
+            }
 
-            
             // line file processing
 
             List<Path> lineFilePaths = allFilePaths.stream()

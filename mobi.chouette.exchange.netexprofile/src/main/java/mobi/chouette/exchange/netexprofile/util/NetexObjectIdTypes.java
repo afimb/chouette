@@ -1,6 +1,8 @@
 package mobi.chouette.exchange.netexprofile.util;
 
-public class NetexObjectIdTypes {
+public final class NetexObjectIdTypes {
+
+    private NetexObjectIdTypes() {}
 
     // frame id keys
     public static final String COMPOSITE_FRAME_KEY = "CompositeFrame";
@@ -30,5 +32,8 @@ public class NetexObjectIdTypes {
     public static final String AVAILABILITY_CONDITION_KEY = "AvailabilityCondition";
     public static final String SERVICE_JOURNEY_KEY = "ServiceJourney";
     public static final String PASSENGER_STOP_ASSIGNMENT_KEY = "PassengerStopAssignment";
+
+    // entity id ref keys
+    public static final String TARIFF_ZONE_REF_KEY = "TariffZoneRef";
 
 }
