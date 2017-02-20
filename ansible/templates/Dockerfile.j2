@@ -32,9 +32,9 @@ RUN /opt/jboss/wildfly/bin/add-user.sh admin pingu123 --silent
 
 
 # Overriding previously installed java version:
-RUN curl -L http://jump.rutebanken.org/jdk-8u112-linux-x64.tar.gz > jdk.tgz
+RUN curl -L http://jump.rutebanken.org/jdk-8u121-linux-x64.tar.gz > jdk.tgz
 RUN tar xzf jdk.tgz
-ENV JAVA_HOME /opt/jboss/jdk1.8.0_112/
+ENV JAVA_HOME /opt/jboss/jdk1.8.0_121/
 
 # Deploying by copying to deployment directory
 COPY chouette.ear /opt/jboss/wildfly/standalone/deployments/
