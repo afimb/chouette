@@ -4,8 +4,8 @@ module add --name=org.postgres --resources=/opt/jboss/wildfly/customization/post
 
 /subsystem=datasources/jdbc-driver=postgresql:add(driver-name="postgresql",driver-module-name="org.postgres",driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource)
 
-data-source add --jndi-name=java:jboss/datasources/iev --name=iev --connection-url=jdbc:postgresql://chouettedb:5432/iev  --driver-name=postgresql --user-name=chouette --password=chouette
+data-source add --jndi-name=java:jboss/datasources/iev --name=iev --connection-url=jdbc:postgresql://chouettedb:5432/iev  --driver-name=postgresql --user-name=chouette --password=chouette --driver-class=org.postgis.DriverWrapper --driver-name=postgresql --user-name=chouette --password=chouette --min-pool-size=20 --max-pool-size=60 --check-valid-connection-sql="select version();" --use-fast-fail=false --validate-on-match=false --background-validation=true --background-validation-millis=10000 --share-prepared-statements=false
 
-data-source add --jndi-name=java:jboss/datasources/chouette --name=chouette --connection-url=jdbc:postgresql_postGIS://chouettedb:5432/chouette2?preparedStatementCacheQueries=1024&preparedStatementCacheSizeMiB=15 --driver-class=org.postgis.DriverWrapper --driver-name=postgresql --user-name=chouette --password=chouette --min-pool-size=20 --max-pool-size=60 --check-valid-connection-sql="select version();" --use-fast-fail=false --validate-on-match=true
+data-source add --jndi-name=java:jboss/datasources/chouette --name=chouette --connection-url=jdbc:postgresql_postGIS://chouettedb:5432/chouette2?preparedStatementCacheQueries=1024&preparedStatementCacheSizeMiB=15 --driver-class=org.postgis.DriverWrapper --driver-name=postgresql --user-name=chouette --password=chouette --min-pool-size=20 --max-pool-size=60 --check-valid-connection-sql="select version();" --use-fast-fail=false --validate-on-match=false --background-validation=true --background-validation-millis=10000 --share-prepared-statements=false
 
 run-batch
