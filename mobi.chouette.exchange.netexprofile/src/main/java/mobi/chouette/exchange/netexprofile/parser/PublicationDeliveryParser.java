@@ -32,15 +32,14 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 
 	@Override
 	public void parse(Context context) throws Exception {
-		boolean isCommonDelivery = context.get(NETEX_WITH_COMMON_DATA) != null && context.get(NETEX_LINE_DATA_JAVA) == null;
+		boolean isCommonDelivery = (boolean) context.get(NETEX_WITH_COMMON_DATA);
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		String contextKey = isCommonDelivery ? NETEX_COMMON_DATA_JAVA : NETEX_LINE_DATA_JAVA;
-		PublicationDeliveryStructure publicationDelivery = (PublicationDeliveryStructure) context.get(contextKey);
+ 		PublicationDeliveryStructure publicationDelivery = (PublicationDeliveryStructure) context.get(NETEX_DATA_JAVA);
 		List<JAXBElement<? extends Common_VersionFrameStructure>> dataObjectFrames = publicationDelivery.getDataObjects().getCompositeFrameOrCommonFrame();
 		List<CompositeFrame> compositeFrames = NetexObjectUtil.getFrames(CompositeFrame.class, dataObjectFrames);
 
 		if(compositeFrames.size() > 0) {
-
+			
 			// Parse inside a composite frame
 			for(CompositeFrame compositeFrame : compositeFrames) {
 

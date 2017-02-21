@@ -4,6 +4,11 @@
     <ParticipantRef>Avinor</ParticipantRef>
     <dataObjects>
         <CompositeFrame created="2016-12-20T08:46:52.251Z" version="1" id="AVI:CompositeFrame:1233897">
+            <validityConditions>
+                <AvailabilityCondition id="AVI:AvailabilityCondition:123" version="1">
+                    <FromDate>2017-01-01T00:00:00Z</FromDate>
+                </AvailabilityCondition>
+            </validityConditions>
             <codespaces>
                 <Codespace id="avi">
                     <Xmlns>AVI</Xmlns>

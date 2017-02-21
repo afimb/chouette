@@ -60,6 +60,7 @@ public class NetexLineParserCommand implements Command, Constant {
 
             Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
             addStats(context, reporter, validationContext, referential);
+			reporter.setFileState(context, fileName, IO_TYPE.INPUT, ActionReporter.FILE_STATE.OK);
             result = SUCCESS;
         } catch (Exception e) {
             reporter.addFileErrorInReport(context, fileName, FILE_ERROR_CODE.INTERNAL_ERROR, e.toString());
