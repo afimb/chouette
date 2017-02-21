@@ -206,7 +206,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         return context;
     }
 
-    @Test(enabled = false, groups = {"ExportLine"}, description = "Export Plugin should export file")
+    @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void verifyExportLine() throws Exception {
         importLines("C_NETEX_1.xml", 1, 1);
 

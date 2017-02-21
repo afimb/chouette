@@ -2,8 +2,7 @@ package mobi.chouette.exchange.netexprofile.parser;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.importer.ParserUtils;
-import mobi.chouette.model.type.DayTypeEnum;
-import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.model.type.*;
 import org.rutebanken.netex.model.DayOfWeekEnumeration;
 import org.rutebanken.netex.model.EntityInVersionStructure;
 
@@ -46,19 +45,6 @@ public class NetexParserUtils extends ParserUtils {
 			return TransportModeNameEnum.Other;
 		else
 			return TransportModeNameEnum.Other;
-	}
-
-	public static List<DayTypeEnum> getDayTypes(List<String> values) {
-		List<DayTypeEnum> result = new ArrayList<>();
-		for (String dayType : values) {
-			try {
-				result.add(DayTypeEnum.valueOf(dayType));
-			} catch (Exception e) {
-				log.error(e.getMessage(), e);
-			}
-		}
-		return result;
-
 	}
 
 	public static ZoneOffset getZoneOffset(ZoneId zoneId) {
@@ -125,6 +111,50 @@ public class NetexParserUtils extends ParserUtils {
 			break;
 		}
 		return days;
+	}
+
+	public static AlightingPossibilityEnum getForAlighting(BoardingAlightingPossibilityEnum boardingAlightingPossibility) {
+		if (boardingAlightingPossibility == null)
+			return AlightingPossibilityEnum.normal;
+		switch (boardingAlightingPossibility) {
+			case BoardAndAlight:
+				return AlightingPossibilityEnum.normal;
+			case AlightOnly:
+				return AlightingPossibilityEnum.normal;
+			case BoardOnly:
+				return AlightingPossibilityEnum.forbidden;
+			case NeitherBoardOrAlight:
+				return AlightingPossibilityEnum.forbidden;
+			case BoardAndAlightOnRequest:
+				return AlightingPossibilityEnum.request_stop;
+			case AlightOnRequest:
+				return AlightingPossibilityEnum.request_stop;
+			case BoardOnRequest:
+				return AlightingPossibilityEnum.normal;
+		}
+		return null;
+	}
+
+	public static BoardingPossibilityEnum getForBoarding(BoardingAlightingPossibilityEnum boardingAlightingPossibility) {
+		if (boardingAlightingPossibility == null)
+			return BoardingPossibilityEnum.normal;
+		switch (boardingAlightingPossibility) {
+			case BoardAndAlight:
+				return BoardingPossibilityEnum.normal;
+			case AlightOnly:
+				return BoardingPossibilityEnum.forbidden;
+			case BoardOnly:
+				return BoardingPossibilityEnum.normal;
+			case NeitherBoardOrAlight:
+				return BoardingPossibilityEnum.forbidden;
+			case BoardAndAlightOnRequest:
+				return BoardingPossibilityEnum.request_stop;
+			case AlightOnRequest:
+				return BoardingPossibilityEnum.normal;
+			case BoardOnRequest:
+				return BoardingPossibilityEnum.request_stop;
+		}
+		return null;
 	}
 
 	public static Integer getVersion(EntityInVersionStructure obj) {

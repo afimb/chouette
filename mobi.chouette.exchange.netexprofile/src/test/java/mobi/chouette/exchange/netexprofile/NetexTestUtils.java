@@ -26,7 +26,7 @@ public class NetexTestUtils  {
 		Assert.assertNotNull(referential, "referential");
 		Assert.assertEquals(referential.getLines().size(), 1, "lines size");
 
-		Line line = referential.getLines().get("AVI:Line:WF-TRD-MOL");
+		Line line = referential.getLines().get("AVI:Line:WF_TRD-MOL");
 		Assert.assertNotNull(line, "line");
 		Assert.assertNotNull(line.getNetwork(), "line must have a network");
 		Assert.assertNotNull(line.getCompany(), "line must have a company");

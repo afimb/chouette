@@ -68,20 +68,6 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	@Inject
 	UserTransaction utx;
 
-	// @Deployment
-	public static WebArchive createDeploymentOld() {
-
-		WebArchive result;
-
-		File[] files = Maven.resolver().loadPomFromFile("pom.xml").resolve("mobi.chouette:mobi.chouette.exchange.netexprofile:3.4.0-SNAPSHOT",
-				"mobi.chouette:mobi.chouette.dao:3.4.0-SNAPSHOT", "mobi.chouette:mobi.chouette.exchange:3.4.0-SNAPSHOT").withTransitivity().asFile();
-
-		result = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml").addAsLibraries(files).addClass(DummyChecker.class)
-				.addClass(NetexTestUtils.class).addClass(JobDataTest.class).addAsResource(EmptyAsset.INSTANCE, "beans.xml");
-		return result;
-
-	}
-
 	@Deployment
 	public static EnterpriseArchive createDeployment() {
 		EnterpriseArchive result;
@@ -175,7 +161,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 	}
 
-	@Test(enabled = true, groups = { "ImportLine" }, description = "Import Plugin should import file")
+	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")
 	public void verifyImportLine() throws Exception {
 		Context context = initImportContext();
 		NetexTestUtils.copyFile("C_NETEX_1.xml");
@@ -222,13 +208,13 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("AVI:Line:WF-TRD-MOL");
+		Line line = lineDao.findByObjectId("AVI:Line:WF_TRD-MOL");
 		Assert.assertNotNull(line, "Line not found");
 
 		utx.rollback();
 	}
 
-	@Test(enabled = true)
+	@Test
 	public void verifyImportSingleLineWithCommonDataAvinor() throws Exception {
 		Context context = initImportContext();
 		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
@@ -326,7 +312,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		Assert.assertTrue(result, "Importer command execution failed: " + report.getFailure());
 	}
 
-	@Test(enabled = true)
+	@Test
 	public void verifyImportMultipleLinesWithCommonDataAvinor() throws Exception {
 		Context context = initImportContext();
 		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
@@ -583,7 +569,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 			checkpointBuilder.setExcludeFieldNames(new String[] { "details" });
 			String checkpointAsString = checkpointBuilder.toString();
 
-			List<String> lines = new ArrayList<String>();
+			List<String> lines = new ArrayList<>();
 			lines.add(checkpointAsString);
 
 			if (object.getState() == ValidationReporter.RESULT.NOK) {

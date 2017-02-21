@@ -7,9 +7,6 @@ import org.rutebanken.netex.model.JourneysInFrame_RelStructure;
 import org.rutebanken.netex.model.ServiceJourney;
 import org.rutebanken.netex.model.TimetableFrame;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.AbstractNetexProducer.netexFactory;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.TIMETABLE_FRAME_KEY;
@@ -21,8 +18,6 @@ public class TimetableFrameProducer implements FrameProducer<TimetableFrame> {
     @Override
     public TimetableFrame produce(ExportableData data) {
         Line line = data.getLine();
-        List<VehicleJourney> vehicleJourneys = data.getVehicleJourneys();
-        List<Long> vehicleNumbers = new ArrayList<>();
 
         String timetableFrameId = netexId(line.objectIdPrefix(), TIMETABLE_FRAME_KEY, line.objectIdSuffix());
 

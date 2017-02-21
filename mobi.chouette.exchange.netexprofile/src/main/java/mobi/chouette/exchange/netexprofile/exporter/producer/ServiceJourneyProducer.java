@@ -5,6 +5,7 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.*;
 import mobi.chouette.model.VehicleJourney;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
 
 import java.sql.Time;
@@ -13,8 +14,7 @@ import java.util.List;
 
 import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.DAY_TYPE_KEY;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SERVICE_JOURNEY_KEY;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 public class ServiceJourneyProducer extends AbstractNetexProducer<ServiceJourney, VehicleJourney> {
 
@@ -31,12 +31,10 @@ public class ServiceJourneyProducer extends AbstractNetexProducer<ServiceJourney
             serviceJourney.setName(getMultilingualString(vehicleJourney.getPublishedJourneyName()));
         }
 
-        // TODO find out where and how to get the public code, and set here
-        //serviceJourney.setPublicCode("");
-
         // TODO look over how we import service journey names
         if (isSet(vehicleJourney.getPublishedJourneyIdentifier())) {
             serviceJourney.setShortName(getMultilingualString(vehicleJourney.getPublishedJourneyIdentifier()));
+            serviceJourney.setPublicCode(vehicleJourney.getPublishedJourneyIdentifier());
         }
 
         if (isSet(vehicleJourney.getComment())) {
@@ -60,15 +58,16 @@ public class ServiceJourneyProducer extends AbstractNetexProducer<ServiceJourney
 
         for (Timetable timetable : vehicleJourney.getTimetables()) {
             DayTypeRefStructure dayTypeRefStruct = netexFactory.createDayTypeRefStructure();
-            dayTypeRefStruct.setVersion(timetable.getObjectVersion() > 0 ? String.valueOf(timetable.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+            //dayTypeRefStruct.setVersion(timetable.getObjectVersion() > 0 ? String.valueOf(timetable.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION); // TODO MUST ENABLE AFTER WE HAVE ADDED SERVICE CALENDAR FRAME
 
             String dayTypeIdRef = netexId(timetable.objectIdPrefix(), DAY_TYPE_KEY, timetable.objectIdSuffix());
             dayTypeRefStruct.setRef(dayTypeIdRef);
-
             dayTypeStruct.getDayTypeRef().add(netexFactory.createDayTypeRef(dayTypeRefStruct));
         }
 
         serviceJourney.setDayTypes(dayTypeStruct);
+
+        // produce timetabled passing times
 
         if (CollectionUtils.isNotEmpty(vehicleJourney.getVehicleJourneyAtStops())) {
             List<VehicleJourneyAtStop> vehicleJourneyAtStops = vehicleJourney.getVehicleJourneyAtStops();
@@ -76,12 +75,22 @@ public class ServiceJourneyProducer extends AbstractNetexProducer<ServiceJourney
 
             Time firstStopDepartureTime = null;
             TimetabledPassingTimes_RelStructure passingTimesStruct = netexFactory.createTimetabledPassingTimes_RelStructure();
+            String[] idSequence = NetexProducerUtils.generateIdSequence(vehicleJourneyAtStops.size());
 
-            for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourneyAtStops) {
+            for (int i = 0; i < vehicleJourneyAtStops.size(); i++) {
+                VehicleJourneyAtStop vehicleJourneyAtStop = vehicleJourneyAtStops.get(i);
                 TimetabledPassingTime timetabledPassingTime = netexFactory.createTimetabledPassingTime();
 
+                StopPoint stopPoint = vehicleJourneyAtStop.getStopPoint();
+                StopPointInJourneyPatternRefStructure pointInPatternRefStruct = netexFactory.createStopPointInJourneyPatternRefStructure();
+                pointInPatternRefStruct.setVersion(stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+
+                String pointInPatternIdSuffix = journeyPattern.objectIdSuffix() + StringUtils.leftPad(idSequence[i], 2, "0");
+                String pointInPatternIdRef = netexId(vehicleJourney.objectIdPrefix(), STOP_POINT_IN_JOURNEY_PATTERN_KEY, pointInPatternIdSuffix);
+                pointInPatternRefStruct.setRef(pointInPatternIdRef);
+                timetabledPassingTime.setPointInJourneyPatternRef(netexFactory.createStopPointInJourneyPatternRef(pointInPatternRefStruct));
+
                 if (firstStopDepartureTime == null) {
-                    // TODO verify that all times conforms to UTC in written netex
                     firstStopDepartureTime = vehicleJourneyAtStop.getDepartureTime();
                     serviceJourney.setDepartureTime(toOffsetTimeUtc(firstStopDepartureTime));
                 }
@@ -93,6 +102,7 @@ public class ServiceJourneyProducer extends AbstractNetexProducer<ServiceJourney
                 }
                 passingTimesStruct.getTimetabledPassingTime().add(timetabledPassingTime);
             }
+
             serviceJourney.setPassingTimes(passingTimesStruct);
         }
 

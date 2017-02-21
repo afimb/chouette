@@ -11,7 +11,6 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.*;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
-import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
 import mobi.chouette.model.util.Referential;
 import org.apache.commons.collections.CollectionUtils;
@@ -259,7 +258,12 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 	// TODO add support for multiple validity conditions
 	private void addValidBetween(Context context, String contextKey, ValidBetween validBetween) {
 		Context localContext = getLocalContext(context, LOCAL_CONTEXT);
-		localContext.put(contextKey, validBetween);
+
+		if (localContext.containsKey(contextKey)) {
+			localContext.replace(contextKey, validBetween);
+		} else {
+			localContext.put(contextKey, validBetween);
+		}
 	}
 
 	protected void sortStopPoints(Referential referential) {
@@ -330,8 +334,8 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 
 	private boolean updateStopPoint(VehicleJourneyAtStop vjas) {
 		StopPoint sp = vjas.getStopPoint();
-		BoardingPossibilityEnum forBoarding = getForBoarding(vjas.getBoardingAlightingPossibility());
-		AlightingPossibilityEnum forAlighting = getForAlighting(vjas.getBoardingAlightingPossibility());
+		BoardingPossibilityEnum forBoarding = NetexParserUtils.getForBoarding(vjas.getBoardingAlightingPossibility());
+		AlightingPossibilityEnum forAlighting = NetexParserUtils.getForAlighting(vjas.getBoardingAlightingPossibility());
 		if (sp.getForBoarding() != null && !sp.getForBoarding().equals(forBoarding))
 			return false;
 		if (sp.getForAlighting() != null && !sp.getForAlighting().equals(forAlighting))
@@ -339,50 +343,6 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 		sp.setForBoarding(forBoarding);
 		sp.setForAlighting(forAlighting);
 		return true;
-	}
-
-	private AlightingPossibilityEnum getForAlighting(BoardingAlightingPossibilityEnum boardingAlightingPossibility) {
-		if (boardingAlightingPossibility == null)
-			return AlightingPossibilityEnum.normal;
-		switch (boardingAlightingPossibility) {
-		case BoardAndAlight:
-			return AlightingPossibilityEnum.normal;
-		case AlightOnly:
-			return AlightingPossibilityEnum.normal;
-		case BoardOnly:
-			return AlightingPossibilityEnum.forbidden;
-		case NeitherBoardOrAlight:
-			return AlightingPossibilityEnum.forbidden;
-		case BoardAndAlightOnRequest:
-			return AlightingPossibilityEnum.request_stop;
-		case AlightOnRequest:
-			return AlightingPossibilityEnum.request_stop;
-		case BoardOnRequest:
-			return AlightingPossibilityEnum.normal;
-		}
-		return null;
-	}
-
-	private BoardingPossibilityEnum getForBoarding(BoardingAlightingPossibilityEnum boardingAlightingPossibility) {
-		if (boardingAlightingPossibility == null)
-			return BoardingPossibilityEnum.normal;
-		switch (boardingAlightingPossibility) {
-		case BoardAndAlight:
-			return BoardingPossibilityEnum.normal;
-		case AlightOnly:
-			return BoardingPossibilityEnum.forbidden;
-		case BoardOnly:
-			return BoardingPossibilityEnum.normal;
-		case NeitherBoardOrAlight:
-			return BoardingPossibilityEnum.forbidden;
-		case BoardAndAlightOnRequest:
-			return BoardingPossibilityEnum.request_stop;
-		case AlightOnRequest:
-			return BoardingPossibilityEnum.normal;
-		case BoardOnRequest:
-			return BoardingPossibilityEnum.request_stop;
-		}
-		return null;
 	}
 
 	static {
