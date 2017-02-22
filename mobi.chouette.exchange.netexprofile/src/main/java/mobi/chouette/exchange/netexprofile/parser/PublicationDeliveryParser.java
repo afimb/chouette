@@ -175,42 +175,11 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void parseServiceCalendarFrame(Context context, List<ServiceCalendarFrame> serviceCalendarFrames) throws Exception {
 		for (ServiceCalendarFrame serviceCalendarFrame : serviceCalendarFrames) {
-
 			parseValidityConditionsInFrame(context, serviceCalendarFrame);
-
-			// parse day type assignments
-
-			if (serviceCalendarFrame.getDayTypeAssignments() != null) {
-				context.put(NETEX_LINE_DATA_CONTEXT, serviceCalendarFrame.getDayTypeAssignments());
-				ParserFactory.create(DayTypeAssignmentParser.class.getName()).parse(context);
-			}
-
-			ServiceCalendar serviceCalendar = serviceCalendarFrame.getServiceCalendar();
-
-			// TODO consider removing this, because parsing is done in ServiceCalendarParser
-			if (serviceCalendar != null && serviceCalendar.getDayTypeAssignments() != null) {
-				context.put(NETEX_LINE_DATA_CONTEXT, serviceCalendar.getDayTypeAssignments());
-				ParserFactory.create(DayTypeAssignmentParser.class.getName()).parse(context);
-			}
-
-			// parse service calendar if present
-
-			if (serviceCalendar != null) {
-				context.put(NETEX_LINE_DATA_CONTEXT, serviceCalendar);
-				ParserFactory.create(ServiceCalendarParser.class.getName()).parse(context);
-			}
-
-			// parse day types
-
-			if (serviceCalendarFrame.getDayTypes() != null) {
-				context.put(NETEX_LINE_DATA_CONTEXT, serviceCalendarFrame.getDayTypes());
-				ParserFactory.create(DayTypeParser.class.getName()).parse(context);
-			} else {
-				throw new RuntimeException("Only able to parse DayType elements for now");
-			}
+			context.put(NETEX_LINE_DATA_CONTEXT, serviceCalendarFrame);
+			ParserFactory.create(ServiceCalendarParser.class.getName()).parse(context);
 		}
 	}
 

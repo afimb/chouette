@@ -23,13 +23,15 @@ import java.util.Comparator;
 import java.util.List;
 
 @Log4j
-public class ServiceJourneyParser implements Parser, Constant {
+public class ServiceJourneyParser extends NetexParser implements Parser, Constant {
 
     private static final ZoneId LOCAL_ZONE_ID = ZoneId.of("Europe/Oslo");
 
     @Override
     public void parse(Context context) throws Exception {
         Referential referential = (Referential) context.get(REFERENTIAL);
+        Context parsingCtx = (Context) context.get(PARSING_CONTEXT);
+        Context calendarContext = (Context) parsingCtx.get(ServiceCalendarParser.LOCAL_CONTEXT);
 
         JourneysInFrame_RelStructure journeyStruct = (JourneysInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
 
@@ -48,8 +50,14 @@ public class ServiceJourneyParser implements Parser, Constant {
             List<JAXBElement<? extends DayTypeRefStructure>> dayTypeRefStructElements = serviceJourney.getDayTypes().getDayTypeRef();
             for (JAXBElement<? extends DayTypeRefStructure> dayTypeRefStructElement : dayTypeRefStructElements) {
                 String dayTypeIdRef = dayTypeRefStructElement.getValue().getRef();
-                Timetable timetable = ObjectFactory.getTimetable(referential, dayTypeIdRef);
-                timetable.addVehicleJourney(vehicleJourney);
+                Context calendarObjectContext = (Context) calendarContext.get(dayTypeIdRef);
+                String timetableId = (String) calendarObjectContext.get(ServiceCalendarParser.TIMETABLE_ID);
+
+                if (timetableId != null && !timetableId.isEmpty()) {
+                    Timetable timetable = ObjectFactory.getTimetable(referential, timetableId);
+                    //timetable.addVehicleJourney(vehicleJourney);
+                    vehicleJourney.getTimetables().add(timetable);
+                }
             }
 
             String journeyPatternIdRef = null;

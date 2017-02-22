@@ -161,7 +161,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 	}
 
-	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")
+	@Test(enabled = false, groups = { "ImportLine" }, description = "Import Plugin should import file")
 	public void verifyImportLine() throws Exception {
 		Context context = initImportContext();
 		NetexTestUtils.copyFile("C_NETEX_1.xml");
@@ -214,7 +214,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		utx.rollback();
 	}
 
-	@Test
+	@Test(enabled = false)
 	public void verifyImportSingleLineWithCommonDataAvinor() throws Exception {
 		Context context = initImportContext();
 		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
@@ -312,7 +312,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		Assert.assertTrue(result, "Importer command execution failed: " + report.getFailure());
 	}
 
-	@Test
+	@Test(enabled = false)
 	public void verifyImportMultipleLinesWithCommonDataAvinor() throws Exception {
 		Context context = initImportContext();
 		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
@@ -425,16 +425,16 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		Assert.assertTrue(result, "Importer command execution failed: " + report.getFailure());
 	}
 
-	@Test(enabled = false)
+	@Test
 	public void verifyImportSingleLineWithCommonDataRuter() throws Exception {
 		Context context = initImportContext();
 		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
 				initialContext, NetexprofileImporterCommand.class.getName());
 
-		NetexTestUtils.copyFile("ruter_single_line_295_with_commondata.zip");
+		NetexTestUtils.copyFile("ruter_single_line_280_with_commondata.zip");
 
 		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
-		jobData.setInputFilename("ruter_single_line_295_with_commondata.zip");
+		jobData.setInputFilename("ruter_single_line_280_with_commondata.zip");
 
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
