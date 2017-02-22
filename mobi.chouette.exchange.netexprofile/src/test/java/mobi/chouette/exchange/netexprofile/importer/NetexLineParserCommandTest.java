@@ -55,4 +55,81 @@ public class NetexLineParserCommandTest {
 		
 		//TODO Assert.assertEquals(referential.getLines().size(),1);
 	}
+
+	@Test
+	public void testParseServiceCalendarWithRealDayTypes() throws Exception {
+		Context context = new Context();
+		NetexprofileImportParameters configuration = new NetexprofileImportParameters();
+		context.put(Constant.CONFIGURATION, configuration);
+		context.put(Constant.VALIDATION_REPORT, new ValidationReport());
+		context.put(Constant.REPORT, new ActionReport());
+
+		Path filePath = Paths.get("src/test/data/C_NETEX_2.xml");
+		String url = filePath.toUri().toURL().toExternalForm();
+		Assert.assertTrue(Files.exists(filePath));
+
+		Referential referential = new Referential();
+		context.put(Constant.REFERENTIAL,referential);
+
+		NetexInitImportCommand initCmd = new NetexInitImportCommand();
+		initCmd.execute(context);
+
+		NetexInitReferentialCommand initRef = new NetexInitReferentialCommand();
+		initRef.setLineFile(true);
+		initRef.setFileURL(url);
+		initRef.execute(context);
+
+		NetexLineParserCommand cmd = new NetexLineParserCommand();
+
+		cmd.setFileURL(url);
+		File file = new File(new URL(url).toURI());
+		context.put(Constant.FILE_NAME, file.getName());
+
+		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
+		actionReporter.setFileState(context, file.getName(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.ERROR);
+
+		boolean result = cmd.execute(context );
+		Assert.assertTrue(result);
+
+		//TODO Assert.assertEquals(referential.getLines().size(),1);
+	}
+
+	@Test
+	public void testParseServiceCalendarWithOperatingDays() throws Exception {
+		Context context = new Context();
+		NetexprofileImportParameters configuration = new NetexprofileImportParameters();
+		context.put(Constant.CONFIGURATION, configuration);
+		context.put(Constant.VALIDATION_REPORT, new ValidationReport());
+		context.put(Constant.REPORT, new ActionReport());
+
+		Path filePath = Paths.get("src/test/data/C_NETEX_4.xml");
+		String url = filePath.toUri().toURL().toExternalForm();
+		Assert.assertTrue(Files.exists(filePath));
+
+		Referential referential = new Referential();
+		context.put(Constant.REFERENTIAL,referential);
+
+		NetexInitImportCommand initCmd = new NetexInitImportCommand();
+		initCmd.execute(context);
+
+		NetexInitReferentialCommand initRef = new NetexInitReferentialCommand();
+		initRef.setLineFile(true);
+		initRef.setFileURL(url);
+		initRef.execute(context);
+
+		NetexLineParserCommand cmd = new NetexLineParserCommand();
+
+		cmd.setFileURL(url);
+		File file = new File(new URL(url).toURI());
+		context.put(Constant.FILE_NAME, file.getName());
+
+		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
+		actionReporter.setFileState(context, file.getName(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.ERROR);
+
+		boolean result = cmd.execute(context );
+		Assert.assertTrue(result);
+
+		//TODO Assert.assertEquals(referential.getLines().size(),1);
+	}
+
 }
