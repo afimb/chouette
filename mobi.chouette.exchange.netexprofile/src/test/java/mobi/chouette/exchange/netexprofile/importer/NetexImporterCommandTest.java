@@ -161,7 +161,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 	}
 
-	@Test(enabled = false, groups = { "ImportLine" }, description = "Import Plugin should import file")
+	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")
 	public void verifyImportLine() throws Exception {
 		Context context = initImportContext();
 		NetexTestUtils.copyFile("C_NETEX_1.xml");
@@ -214,7 +214,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		utx.rollback();
 	}
 
-	@Test(enabled = false)
+	@Test
 	public void verifyImportSingleLineWithCommonDataAvinor() throws Exception {
 		Context context = initImportContext();
 		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
@@ -312,7 +312,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		Assert.assertTrue(result, "Importer command execution failed: " + report.getFailure());
 	}
 
-	@Test(enabled = false)
+	@Test
 	public void verifyImportMultipleLinesWithCommonDataAvinor() throws Exception {
 		Context context = initImportContext();
 		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
@@ -425,7 +425,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		Assert.assertTrue(result, "Importer command execution failed: " + report.getFailure());
 	}
 
-	@Test
+	@Test(enabled = false)
 	public void verifyImportSingleLineWithCommonDataRuter() throws Exception {
 		Context context = initImportContext();
 		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
@@ -439,7 +439,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
-		configuration.setValidCodespaces("RUT,http://www.rutebanken.org/ns/ruter");
+		configuration.setValidCodespaces("RUT,http://www.rutebanken.org/ns/rut");
 
 		boolean result;
 		try {

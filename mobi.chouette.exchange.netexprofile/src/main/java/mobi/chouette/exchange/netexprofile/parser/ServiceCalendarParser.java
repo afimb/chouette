@@ -53,11 +53,13 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
             }
         }
         if (serviceCalendarFrame.getServiceCalendar() != null) {
-            for (Object genericOperatingDay : serviceCalendarFrame.getServiceCalendar().getOperatingDays().getOperatingDayRefOrOperatingDay()) {
-                OperatingDay operatingDay = (OperatingDay) genericOperatingDay;
+            if (serviceCalendarFrame.getServiceCalendar().getOperatingDays() != null) {
+                for (Object genericOperatingDay : serviceCalendarFrame.getServiceCalendar().getOperatingDays().getOperatingDayRefOrOperatingDay()) {
+                    OperatingDay operatingDay = (OperatingDay) genericOperatingDay;
 
-                if (!operatingDayIdDateMapper.containsKey(operatingDay.getId())) {
-                    operatingDayIdDateMapper.put(operatingDay.getId(), operatingDay.getCalendarDate());
+                    if (!operatingDayIdDateMapper.containsKey(operatingDay.getId())) {
+                        operatingDayIdDateMapper.put(operatingDay.getId(), operatingDay.getCalendarDate());
+                    }
                 }
             }
         }
