@@ -14,105 +14,111 @@ import java.util.List;
 
 public class NetexParser implements Constant {
 
-    public static void resetContext(Context context) {
-        Context parsingContext = (Context) context.get(PARSING_CONTEXT);
-        if (parsingContext != null) {
-            for (String key : parsingContext.keySet()) {
-                Context localContext = (Context) parsingContext.get(key);
-                localContext.clear();
-            }
-        }
-    }
+	public static void resetContext(Context context) {
+		Context parsingContext = (Context) context.get(PARSING_CONTEXT);
+		if (parsingContext != null) {
+			for (String key : parsingContext.keySet()) {
+				Context localContext = (Context) parsingContext.get(key);
+				localContext.clear();
+			}
+		}
+	}
 
-    static Context getLocalContext(Context context, String localContextName) {
-        Context parsingContext = (Context) context.get(PARSING_CONTEXT);
-        if (parsingContext == null) {
-            parsingContext = new Context();
-            context.put(PARSING_CONTEXT, parsingContext);
-        }
+	static Context getLocalContext(Context context, String localContextName) {
+		Context parsingContext = (Context) context.get(PARSING_CONTEXT);
+		if (parsingContext == null) {
+			parsingContext = new Context();
+			context.put(PARSING_CONTEXT, parsingContext);
+		}
 
-        Context localContext = (Context) parsingContext.get(localContextName);
-        if (localContext == null) {
-            localContext = new Context();
-            parsingContext.put(localContextName, localContext);
-        }
+		Context localContext = (Context) parsingContext.get(localContextName);
+		if (localContext == null) {
+			localContext = new Context();
+			parsingContext.put(localContextName, localContext);
+		}
 
-        return localContext;
-    }
+		return localContext;
+	}
 
-    static Context getObjectContext(Context context, String localContextName, String objectId) {
-        Context parsingContext = (Context) context.get(PARSING_CONTEXT);
-        if (parsingContext == null) {
-            parsingContext = new Context();
-            context.put(PARSING_CONTEXT, parsingContext);
-        }
+	static Context getObjectContext(Context context, String localContextName, String objectId) {
+		Context parsingContext = (Context) context.get(PARSING_CONTEXT);
+		if (parsingContext == null) {
+			parsingContext = new Context();
+			context.put(PARSING_CONTEXT, parsingContext);
+		}
 
-        Context localContext = (Context) parsingContext.get(localContextName);
-        if (localContext == null) {
-            localContext = new Context();
-            parsingContext.put(localContextName, localContext);
-        }
+		Context localContext = (Context) parsingContext.get(localContextName);
+		if (localContext == null) {
+			localContext = new Context();
+			parsingContext.put(localContextName, localContext);
+		}
 
-        Context objectContext = (Context) localContext.get(objectId);
-        if (objectContext == null) {
-            objectContext = new Context();
-            localContext.put(objectId, objectContext);
-        }
+		Context objectContext = (Context) localContext.get(objectId);
+		if (objectContext == null) {
+			objectContext = new Context();
+			localContext.put(objectId, objectContext);
+		}
 
-        return objectContext;
-    }
+		return objectContext;
+	}
 
-    ValidBetween getValidBetween(EntityInVersionStructure entityStruct) throws Exception {
-        if (entityStruct == null) {
-            return null;
-        }
+	ValidBetween getValidBetween(EntityInVersionStructure entityStruct) throws Exception {
+		if (entityStruct == null) {
+			return null;
+		}
 
-        ValidBetween validBetween = null;
+		ValidBetween validBetween = null;
 
-        if (entityStruct.getValidityConditions() != null) {
-            validBetween = getValidBetween(entityStruct.getValidityConditions());
-        } else if (entityStruct.getValidBetween() != null) {
-            validBetween = getValidBetween(entityStruct.getValidBetween());
-        }
+		if (entityStruct.getValidityConditions() != null) {
+			validBetween = getValidBetween(entityStruct.getValidityConditions());
+		} else if (entityStruct.getValidBetween() != null) {
+			validBetween = getValidBetween(entityStruct.getValidBetween());
+		}
 
-        return validBetween;
-    }
+		return validBetween;
+	}
 
-    @SuppressWarnings("unchecked")
-    ValidBetween getValidBetween(ValidityConditions_RelStructure validityConditionStruct) throws Exception {
-        if (validityConditionStruct == null) {
-            return null;
-        }
+	@SuppressWarnings("unchecked")
+	ValidBetween getValidBetween(ValidityConditions_RelStructure validityConditionStruct) throws Exception {
+		if (validityConditionStruct == null) {
+			return null;
+		}
 
-        ValidBetween validBetween = null;
-        List<Object> validityConditionElements = validityConditionStruct.getValidityConditionRefOrValidBetweenOrValidityCondition_();
+		ValidBetween validBetween = null;
+		List<Object> validityConditionElements = validityConditionStruct.getValidityConditionRefOrValidBetweenOrValidityCondition_();
 
-        if (CollectionUtils.isNotEmpty(validityConditionElements)) {
-            JAXBElement<?> validityConditionElement = (JAXBElement<?>) validityConditionElements.get(0);
+		if (CollectionUtils.isNotEmpty(validityConditionElements)) {
+			Object validityConditionElement =  validityConditionElements.get(0);
+			if (validityConditionElement instanceof ValidBetween) {
+				validBetween = (ValidBetween) validityConditionElement;
+			} else if (validityConditionElement instanceof JAXBElement<?>) {
+				JAXBElement<?> jaxbValidityCondition = (JAXBElement<?>) validityConditionElement;
 
-            if(validityConditionElement.getValue() instanceof AvailabilityCondition) {
-                AvailabilityCondition availabilityCondition = ((JAXBElement<AvailabilityCondition>) validityConditionElement).getValue();
-                validBetween = new ValidBetween()
-                        .withFromDate(availabilityCondition.getFromDate())
-                        .withToDate(availabilityCondition.getToDate());
-            } else {
-                throw new RuntimeException("Only support AvailabilityCondition as validityCondition");
-            }
-        }
+				if (jaxbValidityCondition.getValue() instanceof AvailabilityCondition) {
+					AvailabilityCondition availabilityCondition = ((JAXBElement<AvailabilityCondition>) jaxbValidityCondition).getValue();
+					validBetween = new ValidBetween().withFromDate(availabilityCondition.getFromDate()).withToDate(availabilityCondition.getToDate());
+				} else {
+					throw new RuntimeException("Only support ValidBetween and AvailabilityCondition as validityCondition");
+				}
 
-        return validBetween;
-    }
+			} else {
+				throw new RuntimeException("Only support ValidBetween and AvailabilityCondition as validityCondition");
+			}
+		}
 
-    ValidBetween getValidBetween(List<ValidBetween> validBetweenList) throws Exception {
-        if (CollectionUtils.isEmpty(validBetweenList)) {
-            return null;
-        }
+		return validBetween;
+	}
 
-        return validBetweenList.get(0);
-    }
+	ValidBetween getValidBetween(List<ValidBetween> validBetweenList) throws Exception {
+		if (CollectionUtils.isEmpty(validBetweenList)) {
+			return null;
+		}
 
-    boolean isPeriodEmpty(Period period) {
-        return period.getStartDate() == null && period.getEndDate() == null;
-    }
+		return validBetweenList.get(0);
+	}
+
+	boolean isPeriodEmpty(Period period) {
+		return period.getStartDate() == null && period.getEndDate() == null;
+	}
 
 }
