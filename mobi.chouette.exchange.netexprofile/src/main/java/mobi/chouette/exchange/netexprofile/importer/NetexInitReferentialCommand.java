@@ -65,11 +65,11 @@ public class NetexInitReferentialCommand implements Command, Constant {
 		try {
 
 			NetexImporter importer = (NetexImporter) context.get(IMPORTER);
-			Document dom = importer.parseFileToDom(file);
-			PublicationDeliveryStructure lineDeliveryStructure = importer.unmarshal(dom);
+			Document netexDom = importer.parseFileToDom(file);
+			PublicationDeliveryStructure netexJava = importer.unmarshal(netexDom);
 			
-			context.put(NETEX_DATA_JAVA, lineDeliveryStructure);
-			context.put(NETEX_DATA_DOM, dom);
+			context.put(NETEX_DATA_JAVA, netexJava);
+			context.put(NETEX_DATA_DOM, netexDom);
 			if(lineFile) {
 				context.put(NETEX_WITH_COMMON_DATA, Boolean.FALSE);
 				context.put(NETEX_REFERENTIAL, new NetexReferential());
@@ -79,7 +79,7 @@ public class NetexInitReferentialCommand implements Command, Constant {
 
 			Map<String, NetexProfileValidator> availableProfileValidators = (Map<String, NetexProfileValidator>) context.get(NETEX_PROFILE_VALIDATORS);
 
-			String profileVersion = lineDeliveryStructure.getVersion();
+			String profileVersion = netexJava.getVersion();
 			if(!lineFile) {
 				profileVersion += "-common";
 			}
