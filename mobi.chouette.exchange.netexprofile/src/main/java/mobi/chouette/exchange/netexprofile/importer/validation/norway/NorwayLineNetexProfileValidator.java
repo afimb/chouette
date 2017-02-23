@@ -165,6 +165,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 		if (subLevel != null) {
 
 			validateElementPresent(context, xpath, subLevel, "n:Network", _1_NETEX_SERVICE_FRAME_NETWORK);
+			validateElementNotPresent(context, xpath, subLevel, "n:Network[not(n:Name)]", _1_NETEX_SERVICE_FRAME_NETWORK_NAME);
 			validateElementPresent(context, xpath, subLevel, "n:lines/n:Line", _1_NETEX_SERVICE_FRAME_LINE);
 			validateElementNotPresent(context, xpath, subLevel, "n:lines/n:Line[not(n:PublicCode)]", _1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE);
 			validateElementNotPresent(context, xpath, subLevel, "n:lines/n:Line[not(n:TransportMode)]", _1_NETEX_SERVICE_FRAME_LINE_TRANSPORTMODE);
