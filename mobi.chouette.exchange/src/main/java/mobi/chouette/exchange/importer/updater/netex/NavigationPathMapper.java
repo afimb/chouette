@@ -1,22 +1,39 @@
 package mobi.chouette.exchange.importer.updater.netex;
 
+import java.math.BigInteger;
+import java.sql.Time;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.TimeZone;
+import java.util.concurrent.atomic.AtomicLong;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+
+import org.rutebanken.netex.model.EntityStructure;
+import org.rutebanken.netex.model.MultilingualString;
+import org.rutebanken.netex.model.NavigationPath;
+import org.rutebanken.netex.model.NavigationPathsInFrame_RelStructure;
+import org.rutebanken.netex.model.PathDirectionEnumeration;
+import org.rutebanken.netex.model.PathLink;
+import org.rutebanken.netex.model.PathLinkEndStructure;
+import org.rutebanken.netex.model.PathLinkInSequence;
+import org.rutebanken.netex.model.PathLinkRefStructure;
+import org.rutebanken.netex.model.PathLinksInFrame_RelStructure;
+import org.rutebanken.netex.model.PathLinksInSequence_RelStructure;
+import org.rutebanken.netex.model.PlaceRefStructure;
+import org.rutebanken.netex.model.Quay;
+import org.rutebanken.netex.model.SiteFrame;
+import org.rutebanken.netex.model.StopPlace;
+import org.rutebanken.netex.model.TransferDurationStructure;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import org.rutebanken.netex.model.*;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.Duration;
-import java.math.BigInteger;
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Log4j
 public class NavigationPathMapper {
@@ -59,13 +76,12 @@ public class NavigationPathMapper {
 				.withVersion(VERSION)
 				.withAllowedUse(PathDirectionEnumeration.TWO_WAY);
 
-		long time = link.getDefaultDuration().getTime(); // Returns time in GMT
-		Duration duration = factory.newDuration(time + TimeZone.getDefault().getRawOffset()); // Adjust
-																								// for
+		long time = link.getDefaultDuration().getTime()+ TimeZone.getDefault().getRawOffset(); // Returns time in GMT
+		java.time.Duration d = java.time.Duration.of(time,ChronoUnit.MILLIS);																					// for
 																								// current
 																								// timezone
 
-		pl.setTransferDuration(new TransferDurationStructure().withDefaultDuration((duration)));
+		pl.setTransferDuration(new TransferDurationStructure().withDefaultDuration((d)));
 		if (link.getComment() != null) {
 			pl.setDescription(new MultilingualString().withLang("no").withValue(link.getComment()));
 		}
@@ -118,7 +134,7 @@ public class NavigationPathMapper {
 
 		connectionLink.setStartOfLink(from);
 		connectionLink.setEndOfLink(to);
-		connectionLink.setDefaultDuration(new Time(duration.getTimeInMillis(new Date(0))));
+		connectionLink.setDefaultDuration(new Time(duration.get(ChronoUnit.SECONDS)*1000));
 
 		return connectionLink;
 	}

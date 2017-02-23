@@ -28,7 +28,9 @@ import javax.xml.datatype.DatatypeFactory;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Time;
+import java.time.Duration;
 import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -146,19 +148,14 @@ public class NeTExStopPlaceRegisterUpdaterTest {
                 List<StopPlace> stopPlaces = new ArrayList<>();
                 stopPlaces.add(stopPlace);
 
-                PathLink pathLink = null;
-                try {
-                    pathLink = new PathLink()
+                PathLink pathLink  = new PathLink()
                             .withId("NHR:PathLink:1")
                             .withFrom(new PathLinkEndStructure().withPlaceRef(new PlaceRefStructure().withValue(stopPlace.getId())))
                             .withTo(new PathLinkEndStructure().withPlaceRef(new PlaceRefStructure().withValue(q.getId())))
-                            .withTransferDuration(new TransferDurationStructure().withDefaultDuration(DatatypeFactory.newInstance().newDuration("PT5M")));
+                            .withTransferDuration(new TransferDurationStructure().withDefaultDuration(Duration.of(5, ChronoUnit.MINUTES)));
 
-                    pathLink.setKeyList(createKeyListStructure("AKT:ConnectionLink:1-2"));
-                } catch (DatatypeConfigurationException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                pathLink.setKeyList(createKeyListStructure("AKT:ConnectionLink:1-2"));
+             
 
 
                 SiteFrame siteFrame = new SiteFrame();

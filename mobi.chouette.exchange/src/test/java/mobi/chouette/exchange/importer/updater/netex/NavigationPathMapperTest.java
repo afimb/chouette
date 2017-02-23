@@ -1,11 +1,10 @@
 package mobi.chouette.exchange.importer.updater.netex;
 
 import java.sql.Time;
-import java.util.TimeZone;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 
 import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.Duration;
 
 import org.rutebanken.netex.model.NavigationPath;
 import org.rutebanken.netex.model.PathLink;
@@ -53,7 +52,7 @@ public class NavigationPathMapperTest {
 		Assert.assertEquals(fromEndStructure.getPlaceRef().getRef(), from.getObjectId());
 		Assert.assertEquals(toEndStructure.getPlaceRef().getRef(), to.getObjectId());
 		
-		Duration duration = DatatypeFactory.newInstance().newDuration("PT5M");
+		Duration duration = Duration.of(5,ChronoUnit.MINUTES);
 		Assert.assertEquals(duration, pl.getTransferDuration().getDefaultDuration());
 
 		// Check navigation path
