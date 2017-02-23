@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -10,25 +9,18 @@ import java.util.Set;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.rutebanken.netex.model.DataManagedObjectStructure;
-import org.rutebanken.netex.model.PublicationDeliveryStructure;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
 import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
-import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
-import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidatorFactory;
 import mobi.chouette.exchange.validation.ValidationData;
-import mobi.chouette.exchange.validation.report.ValidationReporter;
 
 @Log4j
 public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileValidator implements NetexProfileValidator {
