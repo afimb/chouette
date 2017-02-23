@@ -21,7 +21,7 @@ public class NetworkProducer extends AbstractNetexProducer<Network, mobi.chouett
         netexNetwork.setId(networkId);
 
         if (isSet(neptuneNetwork.getVersionDate())) {
-            OffsetDateTime changedDateTime = NetexProducerUtils.convertToOffsetDateTime(neptuneNetwork.getVersionDate());
+            OffsetDateTime changedDateTime = NetexProducerUtils.toOffsetDateTime(neptuneNetwork.getVersionDate());
             netexNetwork.setChanged(changedDateTime);
         }
 

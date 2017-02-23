@@ -431,10 +431,10 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
 				initialContext, NetexprofileImporterCommand.class.getName());
 
-		NetexTestUtils.copyFile("ruter_single_line_280_with_commondata.zip");
+		NetexTestUtils.copyFile("ruter_single_line_290_with_commondata.zip");
 
 		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
-		jobData.setInputFilename("ruter_single_line_280_with_commondata.zip");
+		jobData.setInputFilename("ruter_single_line_290_with_commondata.zip");
 
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);

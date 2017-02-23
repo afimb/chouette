@@ -9,6 +9,7 @@ import org.rutebanken.netex.model.EntityInVersionStructure;
 import java.sql.Time;
 import java.time.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Log4j
@@ -52,6 +53,10 @@ public class NetexParserUtils extends ParserUtils {
 			return null;
 		}
 		return zoneId.getRules().getOffset(Instant.now(Clock.system(zoneId)));
+	}
+
+	public static Date convertToDate(OffsetDateTime offsetDateTime) {
+		return Date.from(offsetDateTime.toLocalDate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 	}
 
 	public static Time convertToSqlTime(OffsetTime offsetTime, ZoneOffset zoneOffset) {
