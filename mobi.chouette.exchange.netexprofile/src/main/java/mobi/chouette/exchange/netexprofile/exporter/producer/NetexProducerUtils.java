@@ -3,8 +3,9 @@ package mobi.chouette.exchange.netexprofile.exporter.producer;
 import lombok.extern.log4j.Log4j;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Log4j
@@ -35,8 +36,16 @@ public class NetexProducerUtils {
         return idSequence;
     }
 
-    public static OffsetDateTime convertToOffsetDateTime(Date date) {
-        return date == null ? null : OffsetDateTime.ofInstant(date.toInstant(), ZoneOffset.UTC);
+    public static OffsetDateTime toOffsetDateTime(java.util.Date date) {
+        if (date == null) {
+            return null;
+        }
+        if (date instanceof java.sql.Date) {
+            java.sql.Date sqlDate = (java.sql.Date) date;
+            ZonedDateTime zonedDateTime = sqlDate.toLocalDate().atStartOfDay(ZoneId.systemDefault());
+            return OffsetDateTime.ofInstant(zonedDateTime.toInstant(), ZoneId.systemDefault());
+        }
+        return OffsetDateTime.ofInstant(date.toInstant(), ZoneOffset.systemDefault());
     }
 
 }

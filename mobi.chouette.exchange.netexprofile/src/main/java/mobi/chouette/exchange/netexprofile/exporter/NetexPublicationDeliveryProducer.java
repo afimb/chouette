@@ -9,7 +9,6 @@ import mobi.chouette.exchange.netexprofile.exporter.producer.*;
 import mobi.chouette.exchange.netexprofile.jaxb.JaxbNetexFileConverter;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
-import mobi.chouette.model.StopPoint;
 import org.rutebanken.netex.model.*;
 
 import java.io.File;
@@ -19,7 +18,7 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.AbstractNetexProducer.netexFactory;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.COMPOSITE_FRAME_KEY;
 
 public class NetexPublicationDeliveryProducer implements Constant {
 
@@ -40,8 +39,6 @@ public class NetexPublicationDeliveryProducer implements Constant {
     private static SiteFrameProducer siteFrameProducer = new SiteFrameProducer();
     private static ServiceFrameProducer serviceFrameProducer = new ServiceFrameProducer();
     private static TimetableFrameProducer timetableFrameProducer = new TimetableFrameProducer();
-
-    private static ServiceJourneyProducer serviceJourneyProducer = new ServiceJourneyProducer();
 
     // TODO consider adding producers for each frame, which in turn calls each subproducer (like netex writers)
 
@@ -69,28 +66,11 @@ public class NetexPublicationDeliveryProducer implements Constant {
                 //.withValidityConditions(validityConditionsStruct) // TODO
 
         if (line.getNetwork().getVersionDate() != null) {
-            OffsetDateTime createdDateTime = NetexProducerUtils.convertToOffsetDateTime(line.getNetwork().getVersionDate());
+            OffsetDateTime createdDateTime = NetexProducerUtils.toOffsetDateTime(line.getNetwork().getVersionDate());
             compositeFrame.setCreated(createdDateTime);
         } else {
             compositeFrame.setCreated(publicationTimestamp);
         }
-
-        // TODO add validity conditions here, based on Timetable period
-
-/*
-        String availabilityConditionId = ""; // TODO create id
-
-        Set<Timetable> timetables = collection.getTimetables();
-        AvailabilityCondition availabilityCondition = netexFactory.createAvailabilityCondition()
-                .withVersion(NETEX_DATA_OJBECT_VERSION)
-                .withId(availabilityConditionId)
-                .withFromDate(OffsetDateTime.now())
-                .withToDate(OffsetDateTime.now().plusMonths(1));
-        netexFactory.createAvailabilityCondition(availabilityCondition);
-
-        ValidityConditions_RelStructure validityConditionsStruct = netexFactory.createValidityConditions_RelStructure()
-                .withValidityConditionRefOrValidBetweenOrValidityCondition_(availabilityConditionId);
-*/
 
         // TODO get dynamic codespaces based on id prefix from static structure, see : https://rutebanken.atlassian.net/wiki/display/PUBLIC/Codespace
         Codespace nsrCodespace = netexFactory.createCodespace()

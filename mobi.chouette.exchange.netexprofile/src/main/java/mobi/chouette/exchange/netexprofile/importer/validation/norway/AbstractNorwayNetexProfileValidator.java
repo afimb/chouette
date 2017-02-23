@@ -1,17 +1,15 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-
-import org.rutebanken.netex.model.DataManagedObjectStructure;
-import org.w3c.dom.Node;
-
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import org.rutebanken.netex.model.DataManagedObjectStructure;
+import org.w3c.dom.Node;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import java.util.Arrays;
+import java.util.Collection;
 
 public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexProfileValidator {
 
@@ -98,6 +96,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK_NAME, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_TRANSPORTMODE, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_ROUTE_INDIRECTION, "E");
