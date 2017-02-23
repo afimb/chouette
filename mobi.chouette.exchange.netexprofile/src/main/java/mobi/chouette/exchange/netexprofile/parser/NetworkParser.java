@@ -5,17 +5,9 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import org.rutebanken.netex.model.GroupOfLines;
-import org.rutebanken.netex.model.GroupsOfLinesInFrame_RelStructure;
-import org.rutebanken.netex.model.LineRefStructure;
-import org.rutebanken.netex.model.PrivateCodeStructure;
-
-import javax.xml.bind.JAXBElement;
-import java.util.List;
 
 @Log4j
 public class NetworkParser implements Parser, Constant {
@@ -26,30 +18,29 @@ public class NetworkParser implements Parser, Constant {
         org.rutebanken.netex.model.Network netexNetwork = (org.rutebanken.netex.model.Network) context.get(NETEX_LINE_DATA_CONTEXT);
 
         mobi.chouette.model.Network chouetteNetwork = ObjectFactory.getPTNetwork(referential, netexNetwork.getId());
-
         chouetteNetwork.setObjectVersion(NetexParserUtils.getVersion(netexNetwork));
 
-/*
-        OffsetDateTime changed = netexNetwork.getChanged();
-        if (changed != null) {
-            chouetteNetwork.setVersionDate(NetexParserUtils.getDate(changed.toString()));
+        if (netexNetwork.getCreated() != null) {
+            chouetteNetwork.setCreationTime(NetexParserUtils.convertToDate(netexNetwork.getCreated()));
         }
-*/
-
-        chouetteNetwork.setSourceIdentifier("NeTEx");
-        chouetteNetwork.setName(netexNetwork.getName().getValue());
-
-        PrivateCodeStructure privateCodeStruct = netexNetwork.getPrivateCode();
-        if (privateCodeStruct != null) {
-            chouetteNetwork.setRegistrationNumber(privateCodeStruct.getValue());
-        } else {
-            chouetteNetwork.setRegistrationNumber(netexNetwork.getId().split(":")[2]);
+        if (netexNetwork.getChanged() != null) {
+            chouetteNetwork.setVersionDate(NetexParserUtils.convertToDate(netexNetwork.getChanged()));
         }
-
+        if (netexNetwork.getName() != null) {
+            chouetteNetwork.setName(netexNetwork.getName().getValue());
+        }
         if (netexNetwork.getDescription() != null) {
-            chouetteNetwork.setComment(netexNetwork.getDescription().getValue());
+            chouetteNetwork.setDescription(netexNetwork.getDescription().getValue());
+        }
+        if (netexNetwork.getPrivateCode() != null) {
+            chouetteNetwork.setRegistrationNumber(netexNetwork.getPrivateCode().getValue());
+        }
+        if (netexNetwork.getMainLineRef() != null) {
+            Line line = ObjectFactory.getLine(referential, netexNetwork.getMainLineRef().getRef());
+            chouetteNetwork.getLines().add(line);
         }
 
+/*
         GroupsOfLinesInFrame_RelStructure groupsOfLinesStruct = netexNetwork.getGroupsOfLines();
 
         if (groupsOfLinesStruct != null) {
@@ -73,6 +64,7 @@ public class NetworkParser implements Parser, Constant {
                 groupOfLine.setFilled(true);
             }
         }
+*/
 
         chouetteNetwork.setFilled(true);
     }
