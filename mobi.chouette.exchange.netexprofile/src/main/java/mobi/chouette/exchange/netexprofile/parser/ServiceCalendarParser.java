@@ -28,10 +28,8 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
     static final String LOCAL_CONTEXT = "ServiceCalendar";
     static final String TIMETABLE_ID = "timetableId";
 
-    private static final String OFFSET_MIDNIGHT_UTC = "00:00:00Z";
-
-    private Map<String, LocalDate> dayTypeIdDateMapper = new HashMap<>();
-    private Map<String, LocalDate> operatingDayIdDateMapper = new HashMap<>();
+    private Map<String, OffsetDateTime> dayTypeIdDateMapper = new HashMap<>();
+    private Map<String, OffsetDateTime> operatingDayIdDateMapper = new HashMap<>();
 
     @Override
     public void parse(Context context) throws Exception {
@@ -70,13 +68,13 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
 
                 if (dayTypeAssignment.getOperatingDayRef() != null) {
                     String operatingDayIdRef = dayTypeAssignment.getOperatingDayRef().getRef();
-                    LocalDate dateOfOperation = operatingDayIdDateMapper.get(operatingDayIdRef);
+                    OffsetDateTime dateOfOperation = operatingDayIdDateMapper.get(operatingDayIdRef);
 
                     if (dateOfOperation != null && isWithinValidRange(dateOfOperation, validBetween) && !dayTypeIdDateMapper.containsKey(dayTypeIdRef)) {
                         dayTypeIdDateMapper.put(dayTypeIdRef, dateOfOperation);
                     }
                 } else {
-                    LocalDate dateOfOperation = dayTypeAssignment.getDate();
+                	OffsetDateTime dateOfOperation = dayTypeAssignment.getDate();
 
                     if (dateOfOperation != null && !dayTypeIdDateMapper.containsKey(dayTypeIdRef)) {
                         dayTypeIdDateMapper.put(dayTypeIdRef, dateOfOperation);
@@ -101,13 +99,13 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
 
                     if (dayTypeAssignment.getOperatingDayRef() != null) {
                         String operatingDayIdRef = dayTypeAssignment.getOperatingDayRef().getRef();
-                        LocalDate dateOfOperation = operatingDayIdDateMapper.get(operatingDayIdRef);
+                        OffsetDateTime dateOfOperation = operatingDayIdDateMapper.get(operatingDayIdRef);
 
                         if (dateOfOperation != null && isWithinValidRange(dateOfOperation, calendarValidBetween) && !dayTypeIdDateMapper.containsKey(dayTypeIdRef)) {
                             dayTypeIdDateMapper.put(dayTypeIdRef, dateOfOperation);
                         }
                     } else {
-                        LocalDate dateOfOperation = dayTypeAssignment.getDate();
+                        OffsetDateTime dateOfOperation = dayTypeAssignment.getDate();
 
                         if (dateOfOperation != null && !dayTypeIdDateMapper.containsKey(dayTypeIdRef)) {
                             dayTypeIdDateMapper.put(dayTypeIdRef, dateOfOperation);
@@ -184,10 +182,10 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
             addTimetableId(context, dayType.getId(), timetable.getObjectId());
         } else {
             if (dayTypeIdDateMapper.containsKey(dayType.getId())) {
-                LocalDate dateOfOperation = dayTypeIdDateMapper.get(dayType.getId());
+            	OffsetDateTime dateOfOperation = dayTypeIdDateMapper.get(dayType.getId());
 
                 if (dateOfOperation != null) {
-                    timetable.addCalendarDay(new CalendarDay(java.sql.Date.valueOf(dateOfOperation), true));
+                    timetable.addCalendarDay(new CalendarDay(java.sql.Date.valueOf(dateOfOperation.toLocalDate()), true));
                     addTimetableId(context, dayType.getId(), timetable.getObjectId());
                 }
             }
@@ -216,9 +214,8 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
         Context publicationDeliveryContext = (Context) parsingContext.get(PublicationDeliveryParser.LOCAL_CONTEXT);
 
         if (serviceCalendar.getFromDate() != null && serviceCalendar.getToDate() != null) {
-            OffsetTime offsetMidnight = OffsetTime.parse(OFFSET_MIDNIGHT_UTC).withOffsetSameLocal(ZoneOffset.UTC);
-            OffsetDateTime fromDateTime = serviceCalendar.getFromDate().atTime(offsetMidnight);
-            OffsetDateTime toDateTime = serviceCalendar.getToDate().atTime(offsetMidnight);
+            OffsetDateTime fromDateTime = serviceCalendar.getFromDate();
+            OffsetDateTime toDateTime = serviceCalendar.getToDate();
             return new ValidBetween().withFromDate(fromDateTime).withToDate(toDateTime);
         } else {
             ValidBetween entityValidity = getValidBetween(serviceCalendar);
@@ -240,8 +237,8 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
         return null;
     }
 
-    private boolean isWithinValidRange(LocalDate dateOfOperation, ValidBetween validBetween) {
-        return !dateOfOperation.isBefore(validBetween.getFromDate().toLocalDate()) && !dateOfOperation.isAfter(validBetween.getToDate().toLocalDate());
+    private boolean isWithinValidRange(OffsetDateTime dateOfOperation, ValidBetween validBetween) {
+        return !dateOfOperation.isBefore(validBetween.getFromDate()) && !dateOfOperation.isAfter(validBetween.getToDate());
     }
 
     private void addTimetableId(Context context, String objectId, String timetableId) {
