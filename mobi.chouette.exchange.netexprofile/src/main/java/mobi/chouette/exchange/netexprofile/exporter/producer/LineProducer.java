@@ -3,7 +3,6 @@ package mobi.chouette.exchange.netexprofile.exporter.producer;
 import mobi.chouette.model.Route;
 import org.rutebanken.netex.model.*;
 
-import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.LINE_KEY;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.ROUTE_KEY;

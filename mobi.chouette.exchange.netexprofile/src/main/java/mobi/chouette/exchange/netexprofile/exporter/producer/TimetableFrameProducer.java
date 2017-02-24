@@ -7,7 +7,6 @@ import org.rutebanken.netex.model.JourneysInFrame_RelStructure;
 import org.rutebanken.netex.model.ServiceJourney;
 import org.rutebanken.netex.model.TimetableFrame;
 
-import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.TIMETABLE_FRAME_KEY;
 
 public class TimetableFrameProducer extends NetexProducer implements NetexFrameProducer<TimetableFrame> {

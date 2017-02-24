@@ -19,6 +19,7 @@ import java.util.*;
 @Log4j
 public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileValidator implements NetexProfileValidator {
 
+	private static final String ID_STRUCTURE_REGEXP = "^([A-Z]{3}):([A-Za-z]*):([0-9A-Za-z_\\-]*)$";
 	public static final String NAME = "NorwayLineNetexProfileValidator";
 
 	@Override
@@ -52,14 +53,15 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 		validCodespaces.add(new ProfileValidatorCodespace(AbstractNorwayNetexProfileValidator.NSR_XMLNS, AbstractNorwayNetexProfileValidator.NSR_XMLNSURL));
 
 		verifyAcceptedCodespaces(context, xpath, dom, validCodespaces);
-		verifyIdStructure(context, localIds, commonIds, "^([A-Z]{3}):([A-Za-z]*):([0-9A-Za-z_\\-]*)$", validCodespaces);
+		verifyIdStructure(context, localIds, commonIds, ID_STRUCTURE_REGEXP, validCodespaces);
 		verifyNoDuplicatesWithCommonElements(context, localIds, commonIds);
 		verifyNoDuplicatesAcrossLineFiles(context, localIds, new HashSet<>(Arrays.asList("ResourceFrame", "Network", "Authority", "Operator", "SiteFrame",
 				"PointProjection", "RoutePoint", "StopPlace", "AvailabilityCondition")));
 		verifyUseOfVersionOnLocalElements(context, localIds);
 		verifyUseOfVersionOnRefsToLocalElements(context, localIds, localRefs);
 		verifyReferencesToCommonElements(context, localRefs, localIds, commonIds);
-
+		verifyReferencesToCorrectEntityTypes(context,localRefs);
+		
 		NodeList compositeFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:CompositeFrame", xpath, dom);
 		if (compositeFrames.getLength() > 0) {
 			// Using composite frames

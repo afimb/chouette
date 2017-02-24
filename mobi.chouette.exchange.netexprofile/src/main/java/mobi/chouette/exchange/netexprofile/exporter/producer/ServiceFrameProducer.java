@@ -10,7 +10,6 @@ import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 
-import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 

@@ -12,7 +12,6 @@ import java.sql.Time;
 import java.util.Comparator;
 import java.util.List;
 
-import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 

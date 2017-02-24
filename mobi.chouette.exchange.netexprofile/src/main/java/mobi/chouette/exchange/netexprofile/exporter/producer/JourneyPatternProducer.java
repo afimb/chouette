@@ -8,7 +8,6 @@ import org.rutebanken.netex.model.*;
 import java.math.BigInteger;
 import java.util.List;
 
-import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 

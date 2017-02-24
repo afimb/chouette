@@ -5,7 +5,6 @@ import org.rutebanken.netex.model.PrivateCodeStructure;
 
 import java.time.OffsetDateTime;
 
-import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NETWORK_KEY;
 

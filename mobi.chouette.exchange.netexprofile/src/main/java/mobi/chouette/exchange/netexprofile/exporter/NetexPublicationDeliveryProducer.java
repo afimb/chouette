@@ -58,7 +58,7 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
                 .withParticipantRef("NSR")
                 .withDescription(netexFactory.createMultilingualString().withValue(exportableData.getLine().getName()));
 
-        String compositeFrameId = ModelTranslator.netexId(line.objectIdPrefix(), COMPOSITE_FRAME_KEY, line.objectIdSuffix());
+        String compositeFrameId = netexId(line.objectIdPrefix(), COMPOSITE_FRAME_KEY, line.objectIdSuffix());
 
         CompositeFrame compositeFrame = netexFactory.createCompositeFrame()
                 .withVersion(NETEX_DATA_OJBECT_VERSION)

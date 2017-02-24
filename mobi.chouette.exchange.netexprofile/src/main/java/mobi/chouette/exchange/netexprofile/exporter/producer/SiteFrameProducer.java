@@ -10,7 +10,6 @@ import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
 import java.util.HashSet;
 import java.util.Set;
 
-import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SITE_FRAME_KEY;
 
 public class SiteFrameProducer extends NetexProducer implements NetexFrameProducer<SiteFrame> {

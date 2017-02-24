@@ -51,7 +51,7 @@ public class NetexprofileImporterInputValidator extends AbstractInputValidator {
 		NetexprofileImportParameters parameters = (NetexprofileImportParameters) abstractParameter;
 
 		// Validate profile parameters
-		if (parameters.getValidCodespaces() != null) {
+		if (StringUtils.trimToNull(parameters.getValidCodespaces()) != null) {
 			String[] validCodespacesTuples = StringUtils.split(parameters.getValidCodespaces(), ",");
 			if (validCodespacesTuples.length > 0) {
 				// Check for odd numbers of commas
@@ -60,6 +60,8 @@ public class NetexprofileImporterInputValidator extends AbstractInputValidator {
 					return false;
 				}
 			}
+		} else {
+			return false;
 		}
 
 		return true;

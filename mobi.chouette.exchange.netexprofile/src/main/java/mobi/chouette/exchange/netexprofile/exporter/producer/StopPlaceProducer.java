@@ -5,7 +5,6 @@ import mobi.chouette.model.type.ChouetteAreaEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.*;
 
-import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
