@@ -179,6 +179,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 
 			validateElementNotPresent(context, xpath, subLevel, "n:timingPoints", _1_NETEX_SERVICE_FRAME_TIMING_POINTS);
 			validateElementNotPresent(context, xpath, subLevel, "n:destinationDisplays/n:DestinationDisplay[not(n:FrontText)]", _1_NETEX_SERVICE_FRAME_DESTINATION_DISPLAY_FRONTTEXT);
+			validateElementNotPresent(context, xpath, subLevel, "//n:StopPointInJourneyPattern[n:ForAlighting = 'false' and n:ForBoarding = 'false']", _1_NETEX_SERVICE_FRAME_STOP_WITHOUT_BOARDING_OR_ALIGHTING);
 		}
 	}
 
