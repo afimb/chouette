@@ -10,9 +10,9 @@ import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netex
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
-public class RouteProducer extends AbstractNetexProducer<Route, mobi.chouette.model.Route> {
+public class RouteProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Route, mobi.chouette.model.Route> {
 
-    //@Override
+    @Override
     public org.rutebanken.netex.model.Route produce(mobi.chouette.model.Route neptuneRoute) {
         org.rutebanken.netex.model.Route netexRoute = netexFactory.createRoute();
         netexRoute.setVersion(neptuneRoute.getObjectVersion() > 0 ? String.valueOf(neptuneRoute.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);

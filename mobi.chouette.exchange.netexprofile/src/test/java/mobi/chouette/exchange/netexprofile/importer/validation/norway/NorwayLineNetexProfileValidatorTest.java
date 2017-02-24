@@ -1,17 +1,5 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathFactory;
-
-import org.rutebanken.netex.model.PublicationDeliveryStructure;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-import org.w3c.dom.Document;
-
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.NetexImporter;
@@ -25,6 +13,16 @@ import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.util.Referential;
+import org.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import org.w3c.dom.Document;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
+import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 public class NorwayLineNetexProfileValidatorTest {
 

@@ -8,10 +8,9 @@ import org.rutebanken.netex.model.ServiceJourney;
 import org.rutebanken.netex.model.TimetableFrame;
 
 import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.AbstractNetexProducer.netexFactory;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.TIMETABLE_FRAME_KEY;
 
-public class TimetableFrameProducer implements FrameProducer<TimetableFrame> {
+public class TimetableFrameProducer extends NetexProducer implements NetexFrameProducer<TimetableFrame> {
 
     private static ServiceJourneyProducer serviceJourneyProducer = new ServiceJourneyProducer();
 
@@ -28,7 +27,7 @@ public class TimetableFrameProducer implements FrameProducer<TimetableFrame> {
         JourneysInFrame_RelStructure journeysInFrame = netexFactory.createJourneysInFrame_RelStructure();
 
         for (VehicleJourney vehicleJourney : data.getVehicleJourneys()) {
-            ServiceJourney serviceJourney = serviceJourneyProducer.produce(vehicleJourney, data.getLine());
+            ServiceJourney serviceJourney = serviceJourneyProducer.produce(vehicleJourney, line);
             journeysInFrame.getDatedServiceJourneyOrDeadRunOrServiceJourney().add(serviceJourney);
         }
 

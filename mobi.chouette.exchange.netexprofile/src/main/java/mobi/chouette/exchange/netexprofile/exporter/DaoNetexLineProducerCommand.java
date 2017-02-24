@@ -8,7 +8,6 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
-import mobi.chouette.exchange.neptune.exporter.NeptuneLineProducerCommand;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.Line;
 

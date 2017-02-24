@@ -11,12 +11,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
-import static mobi.chouette.exchange.netexprofile.exporter.NetexPublicationDeliveryProducer.NETEX_DATA_OJBECT_VERSION;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.AbstractNetexProducer.netexFactory;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
-public class ServiceFrameProducer implements FrameProducer<ServiceFrame> {
+public class ServiceFrameProducer extends NetexProducer implements NetexFrameProducer<ServiceFrame> {
 
     private static NetworkProducer networkProducer = new NetworkProducer();
     private static LineProducer lineProducer = new LineProducer();
@@ -40,7 +38,7 @@ public class ServiceFrameProducer implements FrameProducer<ServiceFrame> {
         serviceFrame.setNetwork(netexNetwork);
 
         // produce line
-        org.rutebanken.netex.model.Line netexLine = lineProducer.produce(neptuneLine, data.getRoutes());
+        org.rutebanken.netex.model.Line netexLine = lineProducer.produce(neptuneLine);
 
         LinesInFrame_RelStructure linesInFrameStruct = netexFactory.createLinesInFrame_RelStructure();
         linesInFrameStruct.getLine_().add(netexFactory.createLine(netexLine));
@@ -198,11 +196,6 @@ public class ServiceFrameProducer implements FrameProducer<ServiceFrame> {
         serviceFrame.setStopAssignments(stopAssignmentStruct);
 
         return serviceFrame;
-    }
-
-    private MultilingualString getMultilingualString(String value) {
-        return netexFactory.createMultilingualString()
-                .withValue(value);
     }
 
 }

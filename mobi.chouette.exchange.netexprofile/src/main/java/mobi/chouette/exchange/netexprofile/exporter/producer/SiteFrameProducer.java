@@ -11,11 +11,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.AbstractNetexProducer.NETEX_DATA_OJBECT_VERSION;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.AbstractNetexProducer.netexFactory;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SITE_FRAME_KEY;
 
-public class SiteFrameProducer implements FrameProducer<SiteFrame> {
+public class SiteFrameProducer extends NetexProducer implements NetexFrameProducer<SiteFrame> {
 
     private static StopPlaceProducer stopPlaceProducer = new StopPlaceProducer();
 

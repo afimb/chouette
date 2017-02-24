@@ -1,17 +1,15 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
-import javax.naming.InitialContext;
-
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.netexprofile.importer.NetexCommonFilesParserCommand.DefaultCommandFactory;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.report.ActionReporter;
+
+import javax.naming.InitialContext;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 public class DuplicateIdCheckerCommand implements Command{
 

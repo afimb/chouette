@@ -9,16 +9,13 @@ import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;
-import mobi.chouette.model.util.*;
 import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
 import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.*;
 
 import javax.xml.bind.JAXBElement;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import org.rutebanken.netex.model.KeyValueStructure;
-import org.rutebanken.netex.model.Network;
 import org.rutebanken.netex.model.PrivateCodeStructure;
 
 import java.time.OffsetDateTime;
@@ -10,9 +9,9 @@ import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netex
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NETWORK_KEY;
 
-public class NetworkProducer extends AbstractNetexProducer<Network, mobi.chouette.model.Network> {
+public class NetworkProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Network, mobi.chouette.model.Network> {
 
-    //@Override
+    @Override
     public org.rutebanken.netex.model.Network produce(mobi.chouette.model.Network neptuneNetwork) {
         org.rutebanken.netex.model.Network netexNetwork = netexFactory.createNetwork();
         netexNetwork.setVersion(neptuneNetwork.getObjectVersion() > 0 ? String.valueOf(neptuneNetwork.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);

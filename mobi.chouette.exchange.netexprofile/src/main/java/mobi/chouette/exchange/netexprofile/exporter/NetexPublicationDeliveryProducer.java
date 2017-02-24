@@ -17,10 +17,9 @@ import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 
-import static mobi.chouette.exchange.netexprofile.exporter.producer.AbstractNetexProducer.netexFactory;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.COMPOSITE_FRAME_KEY;
 
-public class NetexPublicationDeliveryProducer implements Constant {
+public class NetexPublicationDeliveryProducer extends NetexProducer implements Constant {
 
     // TODO move the following to some common Constant class
     private static final String NETEX_PROFILE_VERSION = "1.04:NO-NeTEx-networktimetable:1.0";

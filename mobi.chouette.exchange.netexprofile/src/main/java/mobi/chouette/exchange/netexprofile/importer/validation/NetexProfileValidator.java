@@ -1,8 +1,8 @@
 package mobi.chouette.exchange.netexprofile.importer.validation;
 
-import java.util.Collection;
-
 import mobi.chouette.common.Context;
+
+import java.util.Collection;
 
 public interface NetexProfileValidator {
 

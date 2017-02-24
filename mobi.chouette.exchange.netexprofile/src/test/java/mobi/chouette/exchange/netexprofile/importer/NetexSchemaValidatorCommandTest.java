@@ -1,25 +1,19 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
-import static mobi.chouette.exchange.netexprofile.Constant.NETEX_FILE_PATHS;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-
-import org.codehaus.plexus.util.FileUtils;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 import mobi.chouette.common.Context;
-import mobi.chouette.common.FileUtil;
-import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ActionReporter.FILE_ERROR_CODE;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
+
+import static mobi.chouette.exchange.netexprofile.Constant.NETEX_FILE_PATHS;
 
 public class NetexSchemaValidatorCommandTest {
 

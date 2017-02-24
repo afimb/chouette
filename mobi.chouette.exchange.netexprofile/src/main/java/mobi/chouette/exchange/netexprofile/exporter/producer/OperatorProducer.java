@@ -9,9 +9,9 @@ import org.rutebanken.netex.model.OrganisationTypeEnumeration;
 import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 
-public class OperatorProducer extends AbstractNetexProducer<Operator, Company> {
+public class OperatorProducer extends NetexProducer implements NetexEntityProducer<Operator, Company> {
 
-    //@Override
+    @Override
     public Operator produce(Company company) {
         Operator operator = netexFactory.createOperator();
 

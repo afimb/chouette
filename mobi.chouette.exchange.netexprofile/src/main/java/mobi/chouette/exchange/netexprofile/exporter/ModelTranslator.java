@@ -1,7 +1,8 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
 import mobi.chouette.model.*;
-import mobi.chouette.model.type.*;
+import mobi.chouette.model.type.DayTypeEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
 import org.apache.log4j.Logger;
 
 public class ModelTranslator {
