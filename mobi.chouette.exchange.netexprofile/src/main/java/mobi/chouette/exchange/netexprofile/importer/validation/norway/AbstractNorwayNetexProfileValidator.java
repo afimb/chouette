@@ -1,15 +1,24 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
-import mobi.chouette.common.Context;
-import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
-import mobi.chouette.exchange.validation.report.ValidationReporter;
-import org.rutebanken.netex.model.DataManagedObjectStructure;
-import org.w3c.dom.Node;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
-import java.util.Arrays;
-import java.util.Collection;
+
+import org.apache.commons.lang.StringUtils;
+import org.rutebanken.netex.model.DataManagedObjectStructure;
+import org.w3c.dom.Node;
+
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
+import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
+import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 
 public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexProfileValidator {
 
@@ -17,6 +26,9 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 	public static final String NSR_XMLNSURL = "http://www.rutebanken.org/ns/nsr";
 	public static final String NSR_XMLNS = "NSR";
+	
+	public static final String _1_NETEX_REFERENCE_TO_ILLEGAL_ELEMENT = "1-NETEXPROFILE-ReferenceToIllegalElement";
+
 	public static final String _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CUSTOMER_SERVICE_CONTACT_DETAILS = "1-NETEXPROFILE-ResourceFrame-Organisations-Operator-CustomerServiceContactDetails";
 	public static final String _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CONTACT_DETAILS = "1-NETEXPROFILE-ResourceFrame-Organisations-Operator-ContactDetails";
 	public static final String _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_LEGAL_NAME = "1-NETEXPROFILE-ResourceFrame-Organisations-Operator-LegalName";
@@ -63,7 +75,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_COMMON_SERVICE_FRAME_ROUTE = "1-NETEXPROFILE-CommonFile-ServiceFrame-RouteNotAllowed";
 	public static final String _1_NETEX_COMMON_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN = "1-NETEXPROFILE-CommonFile-ServiceFrame-JourneyPatternNotAllowed";
 
-
+	
 	
 	@Override
 	public void addObjectReference(Context context, DataManagedObjectStructure object) {
@@ -78,8 +90,10 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS, "E");
 		addCheckpoints(context, _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS, "E");
 		addCheckpoints(context, _1_NETEX_INVALID_ID_STRUCTURE, "E");
+		addCheckpoints(context, _1_NETEX_INVALID_ID_STRUCTURE_NAME, "E");
 		addCheckpoints(context, _1_NETEX_UNAPPROVED_CODESPACE_DEFINED, "E");
 		addCheckpoints(context, _1_NETEX_USE_OF_UNAPPROVED_CODESPACE, "E");
+		addCheckpoints(context, _1_NETEX_REFERENCE_TO_ILLEGAL_ELEMENT, "E");
 
 		addCheckpoints(context, _1_NETEX_COMPOSITE_FRAME, "E");
 		addCheckpoints(context, _1_NETEX_RESOURCE_FRAME, "E");
@@ -193,5 +207,45 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	}
 
 	
+	protected void verifyReferencesToCorrectEntityTypes(Context context, Set<IdVersion> localRefs) {
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		
+		Map<String,Set<String>> allowedSubstitutions = new HashMap<>();
+		Set<String> projectedPointRefSubstitutions = new HashSet<>();
+		projectedPointRefSubstitutions.add("ScheduledStopPoint");
+		projectedPointRefSubstitutions.add("RoutePoint");
+		
+		allowedSubstitutions.put("ProjectedPointRef", projectedPointRefSubstitutions);
+		
+		
+		
+		
+		for(IdVersion id : localRefs) {
+			String referencingElement = id.getElementName();
+			
+			// TODO decomposing of Ids should be in a common class
+			String[] idParts = StringUtils.split(id.getId(),":");
+			String referencedElement = idParts[1];
+			
+			// Dumb attemt first, must be of same type
+			if(!(referencedElement+"Ref").equals(referencingElement) && !("Default"+referencedElement+"Ref").equals(referencingElement)) {
+				Set<String> possibleSubstitutions = allowedSubstitutions.get(referencingElement);
+				if(possibleSubstitutions != null) {
+					if(possibleSubstitutions.contains(referencedElement)) {
+						// Allowed substitution
+						continue;
+					}
+				}
+				
+				
+				validationReporter.addCheckPointReportError(context, _1_NETEX_REFERENCE_TO_ILLEGAL_ELEMENT, null,
+						DataLocationHelper.findDataLocation(id),referencedElement,referencingElement);
+				
+			}
+			
+			
+		}
+	}
+
 
 }

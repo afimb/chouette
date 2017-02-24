@@ -12,6 +12,7 @@ import org.w3c.dom.NodeList;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
+import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidatorFactory;
@@ -41,6 +42,9 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 
 		// Validate elements in common files
 		verifyAcceptedCodespaces(context, xpath, commonDom, validCodespaces);
+
+		Set<IdVersion> localRefs = collectEntityReferences(context, xpath, commonDom, null);
+		verifyReferencesToCorrectEntityTypes(context,localRefs);
 
 		NodeList compositeFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:CompositeFrame", xpath, commonDom);
 		if (compositeFrames.getLength() > 0) {
