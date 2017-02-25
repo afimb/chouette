@@ -32,6 +32,7 @@ public final class NetexObjectIdTypes {
     public static final String AVAILABILITY_CONDITION_KEY = "AvailabilityCondition";
     public static final String SERVICE_JOURNEY_KEY = "ServiceJourney";
     public static final String PASSENGER_STOP_ASSIGNMENT_KEY = "PassengerStopAssignment";
+    public static final String SERVICE_CALENDAR_KEY = "ServiceCalendar";
 
     // entity id ref keys
     public static final String TARIFF_ZONE_REF_KEY = "TariffZoneRef";
