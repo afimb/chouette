@@ -8,13 +8,12 @@ import org.rutebanken.netex.model.*;
 import java.math.BigInteger;
 import java.util.List;
 
-import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
-public class JourneyPatternProducer extends AbstractNetexProducer<JourneyPattern, mobi.chouette.model.JourneyPattern> {
+public class JourneyPatternProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.JourneyPattern, mobi.chouette.model.JourneyPattern> {
 
-    //@Override
+    @Override
     public org.rutebanken.netex.model.JourneyPattern produce(mobi.chouette.model.JourneyPattern neptuneJourneyPattern) {
         org.rutebanken.netex.model.JourneyPattern netexJourneyPattern = netexFactory.createJourneyPattern();
         netexJourneyPattern.setVersion(neptuneJourneyPattern.getObjectVersion() > 0 ? String.valueOf(neptuneJourneyPattern.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);

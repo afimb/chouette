@@ -1,11 +1,10 @@
 package mobi.chouette.exchange.netexprofile.importer.util;
 
-import org.w3c.dom.Node;
-
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.PositionalXMLReader;
 import mobi.chouette.exchange.validation.report.DataLocation;
+import org.w3c.dom.Node;
 
 public class DataLocationHelper {
 	public static DataLocation findDataLocation(String filename, Node p) {

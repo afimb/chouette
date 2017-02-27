@@ -17,10 +17,9 @@ import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 
-import static mobi.chouette.exchange.netexprofile.exporter.producer.AbstractNetexProducer.netexFactory;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.COMPOSITE_FRAME_KEY;
 
-public class NetexPublicationDeliveryProducer implements Constant {
+public class NetexPublicationDeliveryProducer extends NetexProducer implements Constant {
 
     // TODO move the following to some common Constant class
     private static final String NETEX_PROFILE_VERSION = "1.04:NO-NeTEx-networktimetable:1.0";
@@ -39,6 +38,7 @@ public class NetexPublicationDeliveryProducer implements Constant {
     private static SiteFrameProducer siteFrameProducer = new SiteFrameProducer();
     private static ServiceFrameProducer serviceFrameProducer = new ServiceFrameProducer();
     private static TimetableFrameProducer timetableFrameProducer = new TimetableFrameProducer();
+    private static ServiceCalendarFrameProducer serviceCalendarFrameProducer = new ServiceCalendarFrameProducer();
 
     // TODO consider adding producers for each frame, which in turn calls each subproducer (like netex writers)
 
@@ -58,7 +58,7 @@ public class NetexPublicationDeliveryProducer implements Constant {
                 .withParticipantRef("NSR")
                 .withDescription(netexFactory.createMultilingualString().withValue(exportableData.getLine().getName()));
 
-        String compositeFrameId = ModelTranslator.netexId(line.objectIdPrefix(), COMPOSITE_FRAME_KEY, line.objectIdSuffix());
+        String compositeFrameId = netexId(line.objectIdPrefix(), COMPOSITE_FRAME_KEY, line.objectIdSuffix());
 
         CompositeFrame compositeFrame = netexFactory.createCompositeFrame()
                 .withVersion(NETEX_DATA_OJBECT_VERSION)
@@ -112,34 +112,10 @@ public class NetexPublicationDeliveryProducer implements Constant {
         TimetableFrame timetableFrame = timetableFrameProducer.produce(exportableData);
         frames.getCommonFrame().add(netexFactory.createTimetableFrame(timetableFrame));
 
-/*
+        // service calendar frame
+        //ServiceCalendarFrame serviceCalendarFrame = serviceCalendarFrameProducer.produce(exportableData);
+        //frames.getCommonFrame().add(netexFactory.createServiceCalendarFrame(serviceCalendarFrame));
 
-        String serviceCalendarFrameId = ModelTranslator.netexId(
-                exportableData.getLine().objectIdPrefix(), SERVICE_CALENDAR_FRAME_KEY, exportableData.getLine().objectIdSuffix());
-
-        ServiceCalendarFrame serviceCalendarFrame = netexFactory.createServiceCalendarFrame()
-                .withVersion(NETEX_DATA_OJBECT_VERSION)
-                .withId(serviceCalendarFrameId);
-                //.withDayTypes(dayTypesStruct)
-                //.withDayTypeAssignments(dayTypeAssignmentsStruct);
-        frames.getCommonFrame().add(netexFactory.createServiceCalendarFrame(serviceCalendarFrame));
-
-/*
-        for (Timetable timetable : collection.getTimetables()) {
-            timetable.computeLimitOfPeriods();
-
-            TimetableType jaxbObj = timetableProducer.produce(timetable, addExtension);
-            rootObject.getTimetable().add(jaxbObj);
-            // add vehiclejourney only for exported ones
-            for (mobi.chouette.model.VehicleJourney vehicleJourney : collection.getVehicleJourneys()) {
-                if (vehicleJourney.getTimetables().contains(timetable)) {
-                    jaxbObj.getVehicleJourneyId().add(vehicleJourney.getObjectId());
-                }
-            }
-            if (metadata != null)
-                metadata.getTemporalCoverage().update(timetable.getStartOfPeriod(), timetable.getEndOfPeriod());
-        }
-*/
         PublicationDeliveryStructure.DataObjects dataObjects = netexFactory.createPublicationDeliveryStructureDataObjects();
         dataObjects.getCompositeFrameOrCommonFrame().add(netexFactory.createCompositeFrame(compositeFrame));
         rootObject.setDataObjects(dataObjects);

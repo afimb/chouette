@@ -5,15 +5,14 @@ import mobi.chouette.model.type.ChouetteAreaEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.*;
 
-import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
-public class StopPlaceProducer extends AbstractNetexProducer<StopPlace, StopArea> {
+public class StopPlaceProducer extends NetexProducer implements NetexEntityProducer<StopPlace, StopArea> {
 
-    public static final String DEFAULT_COORDINATE_SYSTEM = "WGS84";
+    private static final String DEFAULT_COORDINATE_SYSTEM = "WGS84";
 
-    //@Override
+    @Override
     public StopPlace produce(StopArea stopArea) {
         StopPlace stopPlace = netexFactory.createStopPlace();
         stopPlace.setVersion(stopArea.getObjectVersion() > 0 ? String.valueOf(stopArea.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);

@@ -1,10 +1,10 @@
 package mobi.chouette.exchange.netexprofile.validation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import mobi.chouette.exchange.TestDescription;
 import mobi.chouette.exchange.netexprofile.Constant;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestUtils implements Constant{
 	protected List<TestDescription> netexProfileTestList = null;

@@ -1,9 +1,10 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.exchange.netexprofile.parser.xml.PredefinedSchemaListClasspathResourceResolver;
+import org.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -16,13 +17,10 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-
-import org.rutebanken.netex.model.PublicationDeliveryStructure;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.exchange.netexprofile.parser.xml.PredefinedSchemaListClasspathResourceResolver;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 @Log4j
 public class NetexImporter {

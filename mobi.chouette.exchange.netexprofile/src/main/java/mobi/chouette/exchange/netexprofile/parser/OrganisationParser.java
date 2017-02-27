@@ -1,13 +1,5 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
-import java.util.List;
-
-import javax.xml.bind.JAXBElement;
-
-import org.rutebanken.netex.model.DataManagedObjectStructure;
-import org.rutebanken.netex.model.Organisation_VersionStructure;
-import org.rutebanken.netex.model.OrganisationsInFrame_RelStructure;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
@@ -16,6 +8,12 @@ import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+import org.rutebanken.netex.model.DataManagedObjectStructure;
+import org.rutebanken.netex.model.Organisation_VersionStructure;
+import org.rutebanken.netex.model.OrganisationsInFrame_RelStructure;
+
+import javax.xml.bind.JAXBElement;
+import java.util.List;
 
 @Log4j
 public class OrganisationParser implements Parser, Constant {

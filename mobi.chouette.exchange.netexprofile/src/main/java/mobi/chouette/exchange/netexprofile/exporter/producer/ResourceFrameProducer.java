@@ -7,12 +7,9 @@ import org.rutebanken.netex.model.Operator;
 import org.rutebanken.netex.model.OrganisationsInFrame_RelStructure;
 import org.rutebanken.netex.model.ResourceFrame;
 
-import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.AbstractNetexProducer.NETEX_DATA_OJBECT_VERSION;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.AbstractNetexProducer.netexFactory;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.RESOURCE_FRAME_KEY;
 
-public class ResourceFrameProducer implements FrameProducer<ResourceFrame> {
+public class ResourceFrameProducer extends NetexProducer implements NetexFrameProducer<ResourceFrame> {
 
     private static OperatorProducer operatorProducer = new OperatorProducer();
 

@@ -9,16 +9,14 @@ import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;
-import mobi.chouette.model.util.*;
 import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
 import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.*;
 
 import javax.xml.bind.JAXBElement;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,15 +31,8 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
 
     @Override
     public void parse(Context context) throws Exception {
-        Referential referential = (Referential) context.get(REFERENTIAL);
         ServiceCalendarFrame serviceCalendarFrame = (ServiceCalendarFrame) context.get(NETEX_LINE_DATA_CONTEXT);
         ValidBetween validBetween = getValidBetweenForFrame(context);
-
-        String timetableId = String.format("%s:Timetable:%s", NetexParserUtils.objectIdPrefix(serviceCalendarFrame.getId()),
-                NetexParserUtils.objectIdSuffix(serviceCalendarFrame.getId()));
-
-        Timetable timetable = ObjectFactory.getTimetable(referential, timetableId);
-        timetable.setObjectVersion(NetexParserUtils.getVersion(serviceCalendarFrame));
 
         if (serviceCalendarFrame.getOperatingDays() != null) {
             for (OperatingDay operatingDay : serviceCalendarFrame.getOperatingDays().getOperatingDay()) {
@@ -87,12 +78,6 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
             ServiceCalendar serviceCalendar = serviceCalendarFrame.getServiceCalendar();
             ValidBetween calendarValidBetween = getValidBetween(context, serviceCalendar);
 
-            //timetable.setObjectVersion(NetexParserUtils.getVersion(serviceCalendar));
-
-            if (serviceCalendar.getName() != null) {
-                timetable.setComment(serviceCalendar.getName().getValue());
-            }
-
             if (serviceCalendar.getDayTypeAssignments() != null) {
                 for (DayTypeAssignment dayTypeAssignment : serviceCalendar.getDayTypeAssignments().getDayTypeAssignment()) {
                     String dayTypeIdRef = dayTypeAssignment.getDayTypeRef().getValue().getRef();
@@ -114,12 +99,14 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
                 }
             }
 
+            List<Timetable> timetables = new ArrayList<>();
             if (serviceCalendar.getDayTypes() != null) {
                 List<JAXBElement<?>> dayTypeElements = serviceCalendar.getDayTypes().getDayTypeRefOrDayType_();
 
                 for (JAXBElement<?> dayTypeElement : dayTypeElements) {
                     DayType dayType = (DayType) dayTypeElement.getValue();
-                    parseDayType(context, dayType, timetable);
+                    Timetable timetable = parseDayType(context, dayType);
+                    timetables.add(timetable);
                 }
             }
 
@@ -135,15 +122,19 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
                         period.setEndDate(ParserUtils.getSQLDate(operatingPeriod.getToDate().toString()));
                     }
 
-                    timetable.getPeriods().add(period);
+                    for (Timetable timetable : timetables) {
+                        timetable.addPeriod(period);
+                    }
                 }
             }
         }
 
+        List<Timetable> timetables = new ArrayList<>();
         if (serviceCalendarFrame.getDayTypes() != null) {
             for (JAXBElement<? extends DataManagedObjectStructure> dayTypeElement : serviceCalendarFrame.getDayTypes().getDayType_()) {
                 DayType dayType = (DayType) dayTypeElement.getValue();
-                parseDayType(context, dayType, timetable);
+                Timetable timetable = parseDayType(context, dayType);
+                timetables.add(timetable);
             }
         }
 
@@ -158,15 +149,18 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
                     period.setEndDate(ParserUtils.getSQLDate(operatingPeriodStruct.getToDate().toString()));
                 }
 
-                timetable.getPeriods().add(period);
+                for (Timetable timetable : timetables) {
+                    timetable.addPeriod(period);
+                }
             }
         }
-
-        referential.getTimetables().put(timetable.getObjectId(), timetable);
-        timetable.setFilled(true);
     }
 
-    private void parseDayType(Context context, DayType dayType, Timetable timetable) {
+    private Timetable parseDayType(Context context, DayType dayType) {
+        Referential referential = (Referential) context.get(REFERENTIAL);
+        Timetable timetable = ObjectFactory.getTimetable(referential, dayType.getId());
+        timetable.setObjectVersion(NetexParserUtils.getVersion(dayType));
+
         if (dayType.getProperties() != null) {
             for (PropertyOfDay propertyOfDay : dayType.getProperties().getPropertyOfDay()) {
                 List<DayOfWeekEnumeration> daysOfWeeks = propertyOfDay.getDaysOfWeek();
@@ -190,6 +184,9 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
                 }
             }
         }
+
+        timetable.setFilled(true);
+        return timetable;
     }
 
     private ValidBetween getValidBetweenForFrame(Context context) {

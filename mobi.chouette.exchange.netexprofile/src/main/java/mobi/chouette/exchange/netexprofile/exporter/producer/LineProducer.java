@@ -3,17 +3,14 @@ package mobi.chouette.exchange.netexprofile.exporter.producer;
 import mobi.chouette.model.Route;
 import org.rutebanken.netex.model.*;
 
-import java.util.Collection;
-
-import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.LINE_KEY;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.ROUTE_KEY;
 
-public class LineProducer extends AbstractNetexProducer<Line, mobi.chouette.model.Line> {
+public class LineProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Line, mobi.chouette.model.Line> {
 
-    //@Override
-    public Line produce(mobi.chouette.model.Line neptuneLine, Collection<Route> exportableRoutes) {
+    @Override
+    public org.rutebanken.netex.model.Line produce(mobi.chouette.model.Line neptuneLine) {
         org.rutebanken.netex.model.Line netexLine = netexFactory.createLine();
 
         netexLine.setVersion(neptuneLine.getObjectVersion() > 0 ? String.valueOf(neptuneLine.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
@@ -34,7 +31,7 @@ public class LineProducer extends AbstractNetexProducer<Line, mobi.chouette.mode
         }
 
         if (isSet(neptuneLine.getTransportModeName())) {
-            AllVehicleModesOfTransportEnumeration vehicleModeOfTransport = toVehicleModeOfTransportEnum(neptuneLine.getTransportModeName().name());
+            AllVehicleModesOfTransportEnumeration vehicleModeOfTransport = NetexProducerUtils.toVehicleModeOfTransportEnum(neptuneLine.getTransportModeName().name());
             netexLine.setTransportMode(vehicleModeOfTransport);
         }
 
@@ -59,13 +56,11 @@ public class LineProducer extends AbstractNetexProducer<Line, mobi.chouette.mode
 
         RouteRefs_RelStructure routeRefsStruct = netexFactory.createRouteRefs_RelStructure();
         for (Route route : neptuneLine.getRoutes()) {
-            if (exportableRoutes.contains(route)) {
                 RouteRefStructure routeRefStruct = netexFactory.createRouteRefStructure();
                 routeRefStruct.setVersion(route.getObjectVersion() != null ? String.valueOf(route.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
                 String routeIdRef = netexId(route.objectIdPrefix(), ROUTE_KEY, route.objectIdSuffix());
                 routeRefStruct.setRef(routeIdRef);
                 routeRefsStruct.getRouteRef().add(routeRefStruct);
-            }
         }
         netexLine.setRoutes(routeRefsStruct);
 

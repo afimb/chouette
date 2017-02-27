@@ -1,13 +1,11 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.bind.Unmarshaller.Listener;
-
+import mobi.chouette.exchange.validation.report.DataLocation;
 import org.w3c.dom.Node;
 
-import mobi.chouette.exchange.validation.report.DataLocation;
+import javax.xml.bind.Unmarshaller.Listener;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class LocationListener extends Listener {

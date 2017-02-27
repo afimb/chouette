@@ -12,11 +12,10 @@ import java.sql.Time;
 import java.util.Comparator;
 import java.util.List;
 
-import static mobi.chouette.exchange.netexprofile.exporter.ModelTranslator.netexId;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
-public class ServiceJourneyProducer extends AbstractNetexProducer<ServiceJourney, VehicleJourney> {
+public class ServiceJourneyProducer extends NetexProducer { //implements NetexEntityProducer<ServiceJourney, VehicleJourney> {
 
     //@Override
     public ServiceJourney produce(VehicleJourney vehicleJourney, Line line) {
@@ -92,13 +91,13 @@ public class ServiceJourneyProducer extends AbstractNetexProducer<ServiceJourney
 
                 if (firstStopDepartureTime == null) {
                     firstStopDepartureTime = vehicleJourneyAtStop.getDepartureTime();
-                    serviceJourney.setDepartureTime(toOffsetTimeUtc(firstStopDepartureTime));
+                    serviceJourney.setDepartureTime(NetexProducerUtils.toOffsetTimeUtc(firstStopDepartureTime));
                 }
                 if (vehicleJourneyAtStop.getArrivalTime() != null) {
-                    timetabledPassingTime.setArrivalTime(toOffsetTimeUtc(vehicleJourneyAtStop.getArrivalTime()));
+                    timetabledPassingTime.setArrivalTime(NetexProducerUtils.toOffsetTimeUtc(vehicleJourneyAtStop.getArrivalTime()));
                 }
                 if (vehicleJourneyAtStop.getDepartureTime() != null) {
-                    timetabledPassingTime.setDepartureTime(toOffsetTimeUtc(vehicleJourneyAtStop.getDepartureTime()));
+                    timetabledPassingTime.setDepartureTime(NetexProducerUtils.toOffsetTimeUtc(vehicleJourneyAtStop.getDepartureTime()));
                 }
                 passingTimesStruct.getTimetabledPassingTime().add(timetabledPassingTime);
             }
