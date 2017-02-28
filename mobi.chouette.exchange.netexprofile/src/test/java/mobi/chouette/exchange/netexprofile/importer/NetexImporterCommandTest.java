@@ -425,16 +425,16 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		Assert.assertTrue(result, "Importer command execution failed: " + report.getFailure());
 	}
 
-	@Test(enabled = false)
+	@Test
 	public void verifyImportSingleLineWithCommonDataRuter() throws Exception {
 		Context context = initImportContext();
 		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
 				initialContext, NetexprofileImporterCommand.class.getName());
 
-		NetexTestUtils.copyFile("ruter_single_line_290_with_commondata.zip");
+		NetexTestUtils.copyFile("ruter_single_line_210_with_commondata.zip");
 
 		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
-		jobData.setInputFilename("ruter_single_line_290_with_commondata.zip");
+		jobData.setInputFilename("ruter_single_line_210_with_commondata.zip");
 
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
@@ -466,7 +466,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		utx.begin();
 		em.joinTransaction();
 
-		Line line = lineDao.findByObjectId("AVI:Line:WF_TRD-MOL");
+		Line line = lineDao.findByObjectId("RUT:Line:210");
 		Assert.assertNotNull(line, "Line not found");
 
 		utx.rollback();
