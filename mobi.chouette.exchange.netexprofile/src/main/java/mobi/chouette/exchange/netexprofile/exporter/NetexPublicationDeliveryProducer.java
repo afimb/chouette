@@ -113,8 +113,8 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
         frames.getCommonFrame().add(netexFactory.createTimetableFrame(timetableFrame));
 
         // service calendar frame
-        //ServiceCalendarFrame serviceCalendarFrame = serviceCalendarFrameProducer.produce(exportableData);
-        //frames.getCommonFrame().add(netexFactory.createServiceCalendarFrame(serviceCalendarFrame));
+        ServiceCalendarFrame serviceCalendarFrame = serviceCalendarFrameProducer.produce(exportableData);
+        frames.getCommonFrame().add(netexFactory.createServiceCalendarFrame(serviceCalendarFrame));
 
         PublicationDeliveryStructure.DataObjects dataObjects = netexFactory.createPublicationDeliveryStructureDataObjects();
         dataObjects.getCompositeFrameOrCommonFrame().add(netexFactory.createCompositeFrame(compositeFrame));
