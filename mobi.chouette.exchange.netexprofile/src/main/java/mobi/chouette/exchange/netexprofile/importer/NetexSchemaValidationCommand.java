@@ -87,6 +87,8 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 
 	class SchemaValidationTask implements Callable<SchemaValidationTask> {
 
+		public static final int MAX_ERROR_COUNT = 100;
+
 		public SchemaValidationTask(Context context, ActionReporter actionReporter, ValidationReporter validationReporter, NetexImporter importer, File file) {
 			super();
 			this.context = context;
@@ -122,6 +124,8 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 				Validator validator = importer.getNetexSchema().newValidator();
 				validator.setErrorHandler(new ErrorHandler() {
 
+					int errorCount = 0;
+
 					@Override
 					public void warning(SAXParseException exception) throws SAXException {
 						addToActionReport(exception);
@@ -129,21 +133,27 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 
 					@Override
 					public void fatalError(SAXParseException exception) throws SAXException {
+						errorCount++;
 						addToActionReport(exception);
 					}
 
 					@Override
 					public void error(SAXParseException exception) throws SAXException {
+						errorCount++;
 						addToActionReport(exception);
 					}
 
-					public void addToActionReport(SAXParseException exception) {
+					public void addToActionReport(SAXParseException exception) throws SAXParseException {
 						validationReporter.addCheckPointReportError(context, AbstractNetexProfileValidator._1_NETEX_SCHEMA_VALIDATION_ERROR,
 								new DataLocation(fileName, exception.getLineNumber(), exception.getColumnNumber()), exception.getMessage());
 						String message = exception.getLineNumber() + ":" + exception.getColumnNumber() + " " + exception.getMessage();
 						actionReporter.addFileErrorInReport(context, fileName, ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, message);
-						log.error(fileName + " has error at line:column " + message);
+						//log.error(fileName + " has error at line:column " + message);
 						fileValidationResult = ERROR;
+						if(errorCount >= MAX_ERROR_COUNT) {
+							log.error(fileName + " has too many schema validation error (max is "+MAX_ERROR_COUNT+"). Aborting");
+							throw exception;
+						}
 					}
 
 				});
