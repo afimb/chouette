@@ -2,22 +2,19 @@ package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.*;
 
-import java.sql.Date;
+import java.math.BigInteger;
 import java.util.List;
 
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.DAY_TYPE_KEY;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SERVICE_CALENDAR_FRAME_KEY;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
-public class ServiceCalendarFrameProducer extends NetexProducer { //implements NetexFrameProducer<ServiceCalendarFrame> {
+public class ServiceCalendarFrameProducer extends NetexProducer implements NetexFrameProducer<ServiceCalendarFrame> {
 
-    //@Override
+    @Override
     public ServiceCalendarFrame produce(ExportableData data) {
         Line line = data.getLine();
 
@@ -28,19 +25,17 @@ public class ServiceCalendarFrameProducer extends NetexProducer { //implements N
                 .withId(serviceCalendarFrameId);
 
         DayTypesInFrame_RelStructure dayTypesStruct = netexFactory.createDayTypesInFrame_RelStructure();
+        DayTypeAssignmentsInFrame_RelStructure dayTypeAssignmentsStruct = netexFactory.createDayTypeAssignmentsInFrame_RelStructure();
 
         for (Timetable timetable : data.getTimetables()) {
             timetable.computeLimitOfPeriods();
 
             DayType dayType = netexFactory.createDayType();
-            dayType.setVersion(timetable.getObjectVersion() > 0 ? String.valueOf(timetable.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+            String version = timetable.getObjectVersion() > 0 ? String.valueOf(timetable.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
+            dayType.setVersion(version);
 
             String dayTypeId = netexId(timetable.objectIdPrefix(), DAY_TYPE_KEY, timetable.objectIdSuffix());
             dayType.setId(dayTypeId);
-
-            if (isSet(timetable.getComment())) {
-                dayType.setShortName(getMultilingualString(timetable.getComment()));
-            }
 
             if (CollectionUtils.isNotEmpty(timetable.getDayTypes())) {
                 List<DayTypeEnum> dayTypeEnums = timetable.getDayTypes();
@@ -57,24 +52,32 @@ public class ServiceCalendarFrameProducer extends NetexProducer { //implements N
 
             dayTypesStruct.getDayType_().add(netexFactory.createDayType(dayType));
 
-            List<Date> peculiarDates = timetable.getEffectiveDates();
-            for (Date peculiarDate : peculiarDates) {
-                // TODO create operating days?
-            }
+            // TODO rewrite when handling grouped dates, for now only supporting 1 calendar day per timetable
 
-            List<Period> effectivePeriods = timetable.getEffectivePeriods();
-            for (Period period : effectivePeriods) {
-                // TODO create operating periods?
-            }
+            if (CollectionUtils.isNotEmpty(timetable.getEffectiveDates())) {
+                String dayTypeAssignmentId = netexId(timetable.objectIdPrefix(), DAY_TYPE_ASSIGNMENT_KEY, timetable.objectIdSuffix());
 
-            for (Period period : effectivePeriods) {
-                // TODO create assignments between day types and periods
-            }
+                DayTypeRefStructure dayTypeRefStruct = netexFactory.createDayTypeRefStructure()
+                        .withVersion(version)
+                        .withRef(dayTypeId);
 
-            for (Date day : peculiarDates) {
-                // TODO create assignments between day types and operating days
+                DayTypeAssignment dayTypeAssignment = netexFactory.createDayTypeAssignment()
+                        .withVersion(version)
+                        .withId(dayTypeAssignmentId)
+                        .withDate(NetexProducerUtils.toOffsetDateTime(timetable.getEffectiveDates().get(0)))
+                        .withDayTypeRef(netexFactory.createDayTypeRef(dayTypeRefStruct));
+
+                dayTypeAssignmentsStruct.getDayTypeAssignment().add(dayTypeAssignment);
             }
         }
+
+        List<DayTypeAssignment> dayTypeAssignments = dayTypeAssignmentsStruct.getDayTypeAssignment();
+        for (DayTypeAssignment dayTypeAssignment : dayTypeAssignments) {
+            dayTypeAssignment.setOrder(BigInteger.valueOf(dayTypeAssignments.indexOf(dayTypeAssignment)));
+        }
+
+        serviceCalendarFrame.setDayTypes(dayTypesStruct);
+        serviceCalendarFrame.setDayTypeAssignments(dayTypeAssignmentsStruct);
 
         return serviceCalendarFrame;
     }
