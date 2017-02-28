@@ -8,7 +8,7 @@ import mobi.chouette.exchange.parameters.AbstractExportParameter;
 
 import javax.xml.bind.annotation.*;
 
-@XmlRootElement(name = "netex-export")
+@XmlRootElement(name = "netexprofile-export")
 @NoArgsConstructor
 @ToString(callSuper = true)
 @XmlAccessorType(XmlAccessType.FIELD)
