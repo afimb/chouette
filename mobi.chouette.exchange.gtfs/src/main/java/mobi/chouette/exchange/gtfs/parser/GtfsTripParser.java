@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
+import org.apache.commons.lang.StringUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -859,6 +861,10 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				vehicleJourney.setNumber(Long.valueOf(0));
 				vehicleJourney.setPublishedJourneyName(gtfsTrip.getTripShortName());
 			}
+		}
+		
+		if(StringUtils.trimToNull(gtfsTrip.getTripHeadSign()) != null) {
+			vehicleJourney.setPublishedJourneyName(gtfsTrip.getTripHeadSign());
 		}
 
 		if (gtfsTrip.getWheelchairAccessible() != null) {
