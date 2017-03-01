@@ -17,6 +17,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineSegment;
 import com.vividsolutions.jts.geom.PrecisionModel;
+import org.apache.commons.lang.StringUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -910,6 +911,10 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				vehicleJourney.setNumber(Long.valueOf(0));
 				vehicleJourney.setPublishedJourneyName(gtfsTrip.getTripShortName());
 			}
+		}
+		
+		if(StringUtils.trimToNull(gtfsTrip.getTripHeadSign()) != null) {
+			vehicleJourney.setPublishedJourneyName(gtfsTrip.getTripHeadSign());
 		}
 
 		if (gtfsTrip.getWheelchairAccessible() != null) {
