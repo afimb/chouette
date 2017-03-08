@@ -30,8 +30,8 @@ import mobi.chouette.service.ServiceException;
 @NoArgsConstructor
 @XmlRootElement(name = "job")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "id", "referential", "action", "type", "created", "started", "updated", "status", "linkInfos",
-		"actionParameters" })
+@XmlType(propOrder = {"id", "referential", "action", "type", "created", "started", "updated", "status", "linkInfos",
+		                     "actionParameters"})
 // @XmlSeeAlso({NeptuneImportParameters.class,
 // NeptuneExportParameters.class,
 // GtfsImportParameters.class,
@@ -80,6 +80,10 @@ public class JobInfo implements ServiceConstants {
 	private AbstractParameter actionParameters;
 
 	public JobInfo(JobService job, boolean addLink, UriInfo uriInfo) throws ServiceException {
+		this(job, addLink, true, uriInfo);
+	}
+
+	public JobInfo(JobService job, boolean addLink, boolean addActionParameters, UriInfo uriInfo) throws ServiceException {
 		id = job.getId();
 		referential = job.getReferential();
 		action = job.getAction();
@@ -89,8 +93,9 @@ public class JobInfo implements ServiceConstants {
 		updated = job.getUpdated();
 		status = STATUS.valueOf(job.getStatus().name());
 
-		actionParameters = job.getActionParameter();
-
+		if (addActionParameters) {
+			actionParameters = job.getActionParameter();
+		}
 		if (addLink) {
 			linkInfos = new ArrayList<>();
 			for (Link link : job.getJob().getLinks()) {

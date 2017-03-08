@@ -262,7 +262,8 @@ public class RestService implements Constant {
 	@Path("/{ref}/jobs")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response jobs(@PathParam("ref") String referential,
-			@DefaultValue("0") @QueryParam("version") final Long version, @QueryParam("action") final String[] action, @QueryParam("status") final Job.STATUS[] status) {
+			@DefaultValue("0") @QueryParam("version") final Long version, @QueryParam("action") final String[] action,
+			                        @QueryParam("status") final Job.STATUS[] status, @DefaultValue("true") @QueryParam("addActionParameters") boolean addActionParameters) {
 
 		try {
 			String refDescription = referential == null ? "all referentials" : "referential = " + referential;
@@ -276,7 +277,7 @@ public class RestService implements Constant {
 			{
 				List<JobService> jobServices = jobServiceManager.jobs(referential, action, version,status);
 				for (JobService jobService : jobServices) {
-					JobInfo jobInfo = new JobInfo(jobService, true, uriInfo);
+					JobInfo jobInfo = new JobInfo(jobService, true,addActionParameters, uriInfo);
 					result.add(jobInfo);
 				}
 				jobServices.clear();
@@ -305,8 +306,9 @@ public class RestService implements Constant {
 	@GET
 	@Path("/jobs")
 	@Produces({MediaType.APPLICATION_JSON})
-	public Response jobs(@DefaultValue("0") @QueryParam("version") final Long version, @QueryParam("action") final String[] action, @QueryParam("status") final Job.STATUS[] status) {
-		return jobs(null, version, action, status);
+	public Response jobs(@DefaultValue("0") @QueryParam("version") final Long version, @QueryParam("action") final String[] action,
+			                        @QueryParam("status") final Job.STATUS[] status, @DefaultValue("true") @QueryParam("addActionParameters") boolean addActionParameters) {
+		return jobs(null, version, action, status, addActionParameters);
 	}
 
 	// view scheduled job
