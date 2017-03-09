@@ -18,8 +18,10 @@ import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import mobi.chouette.model.CalendarDay;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateMidnight;
 import org.joda.time.LocalDate;
 
@@ -254,7 +256,18 @@ public class TransitDataStatisticsService {
 							timetable.getPeriods().add(period);
 						}
 					}
-				} else {
+				}
+
+				if (t.getCalendarDays() != null) {
+					for (CalendarDay day : t.getCalendarDays()) {
+						if (day.getIncluded()) {
+							Date endOfPeriod = new java.sql.Date(DateUtils.addDays(day.getDate(), 1).getTime());
+							timetable.getPeriods().add(new Period(day.getDate(), endOfPeriod));
+						}
+					}
+				}
+
+				if (timetable.getPeriods().isEmpty()) {
 					// Use timetable from/to as period
 					t.computeLimitOfPeriods();
 					Period period = new Period(t.getStartOfPeriod(), t.getEndOfPeriod());
