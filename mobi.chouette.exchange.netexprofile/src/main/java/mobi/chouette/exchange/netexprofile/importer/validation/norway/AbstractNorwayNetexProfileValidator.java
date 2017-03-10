@@ -221,6 +221,8 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		projectedPointRefSubstitutions.add("RoutePoint");
 		
 		allowedSubstitutions.put("ProjectedPointRef", projectedPointRefSubstitutions);
+		allowedSubstitutions.put("ToPointRef", projectedPointRefSubstitutions);
+		allowedSubstitutions.put("FromPointRef", projectedPointRefSubstitutions);
 		
 		
 		
