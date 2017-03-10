@@ -21,6 +21,7 @@ public class CalendarPatternAnalyzer {
 
 
 	public ValidityInterval computeValidityInterval(Set<LocalDate> includedDays) {
+		log.info(new TreeSet<>(includedDays));
 		Set<DayOfWeek> significantDays = computeSignificantDays(includedDays);
 		if (!significantDays.isEmpty()) {
 
@@ -36,7 +37,6 @@ public class CalendarPatternAnalyzer {
 
 		return null;
 	}
-
 
 	public Set<DayOfWeek> computeSignificantDays(Set<LocalDate> includedDays) {
 		Map<DayOfWeek, WeekDayEntry> dayMap = initWeekDayMap();
@@ -80,7 +80,7 @@ public class CalendarPatternAnalyzer {
 			Collections.sort(entries, (o1, o2) -> (int) (o2.getPercentage() - o1.getPercentage()));
 
 			// i = number of days attempted to merge together
-			for (int i = 1; i < DAYS_PER_WEEK; i++) {
+			for (int i = 1; i <= DAYS_PER_WEEK; i++) {
 				double minDayPercentage = (double) (MIN_PERCENTAGE_ALL_DAYS_DETECTED - ERROR_MARGIN) / (double) i; // for i=2 this means 42.5 for each day type
 
 				// Start from 0

@@ -47,9 +47,24 @@ public class TransitDataStatisticsServiceTest {
 		List<Period> splitPeriods = new TransitDataStatisticsService().mergeOverlappingPeriods(periods);
 
 		Assert.assertEquals(splitPeriods.size(), 1);
-
-
 	}
+
+
+
+	@Test
+	public void testMergeMultipleAdjacentPeriods() {
+		List<Period> periods = new ArrayList<Period>();
+
+		DateMidnight today = new DateMidnight();
+		periods.add(createPeriod(today, 0));
+		periods.add(createPeriod(today.plusDays(1), 0));
+		periods.add(createPeriod(today.plusDays(2), 0));
+		List<Period> splitPeriods = new TransitDataStatisticsService().mergeOverlappingPeriods(periods);
+
+		Assert.assertEquals(splitPeriods.size(), 1);
+	}
+
+
 
 	private Period createPeriod(DateMidnight startDate, int days) {
 		DateMidnight endDate = startDate.plusDays(days);
