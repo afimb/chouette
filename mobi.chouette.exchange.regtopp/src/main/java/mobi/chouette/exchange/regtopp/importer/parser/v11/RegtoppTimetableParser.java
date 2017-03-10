@@ -1,10 +1,8 @@
 package mobi.chouette.exchange.regtopp.importer.parser.v11;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.CalendarPatternAnalyzer;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
@@ -23,18 +21,15 @@ import mobi.chouette.model.util.Referential;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 
-import java.util.*;
+import java.time.DayOfWeek;
+import java.util.Arrays;
+import java.util.Set;
 
 import static mobi.chouette.common.Constant.*;
 
 @Log4j
 public class RegtoppTimetableParser implements Parser {
 
-	private static final int ERROR_MARGIN = 5;
-	private static final int MIN_PERCENTAGE_ALL_DAYS_DETECTED = 90;
-	private static final int MIN_DAYS_FOR_PATTERN = 5;
-
-	
 
 	@Override
 	public void parse(Context context) throws Exception {
@@ -49,23 +44,25 @@ public class RegtoppTimetableParser implements Parser {
 
 		RegtoppDayCodeHeaderDKO header = dayCodeIndex.getHeader();
 		LocalDate calStartDate = header.getDate();
-		
+
 		for (RegtoppDayCodeDKO entry : dayCodeIndex) {
-			convertTimetable(referential, configuration, calStartDate, entry,header);
+			convertTimetable(referential, configuration, calStartDate, entry, header);
 		}
 
 	}
 
 	public Timetable convertTimetable(Referential referential, RegtoppImportParameters configuration, LocalDate calStartDate, RegtoppDayCodeDKO entry, RegtoppDayCodeHeaderDKO header) {
-		
+
 		String chouetteTimetableId = ObjectIdCreator.createTimetableId(configuration, entry.getAdminCode(), entry.getDayCodeId(), header);
-		
+
 		Timetable timetable = ObjectFactory.getTimetable(referential, chouetteTimetableId);
 
 		String dayCodesBinaryArray = entry.getDayCode();
 
 		boolean[] includedDays = computeIncludedDays(dayCodesBinaryArray);
-		Set<DayTypeEnum> significantDaysInWeek = computeSignificantDays(calStartDate, includedDays);
+
+		java.time.LocalDate calStartLocalDate= java.time.LocalDate.of(calStartDate.getYear(),calStartDate.getMonthOfYear(),calStartDate.getDayOfMonth());
+		Set<DayOfWeek> significantDaysInWeek = new CalendarPatternAnalyzer().computeSignificantDays(calStartLocalDate, includedDays);
 
 		if (significantDaysInWeek.isEmpty()) {
 			// Add separate dates
@@ -78,8 +75,8 @@ public class RegtoppTimetableParser implements Parser {
 
 		} else {
 			// Add day types
-			for (DayTypeEnum dayType : significantDaysInWeek) {
-				timetable.addDayType(dayType);
+			for (DayOfWeek dayType : significantDaysInWeek) {
+				timetable.addDayType(convertFromDayOfWeek(dayType));
 			}
 
 			// Add extra inclusions and exclusions
@@ -142,122 +139,45 @@ public class RegtoppTimetableParser implements Parser {
 
 	private DayTypeEnum convertFromJodaTimeDayType(int dayType) {
 		switch (dayType) {
-		case DateTimeConstants.MONDAY:
-			return DayTypeEnum.Monday;
-		case DateTimeConstants.TUESDAY:
-			return DayTypeEnum.Tuesday;
-		case DateTimeConstants.WEDNESDAY:
-			return DayTypeEnum.Wednesday;
-		case DateTimeConstants.THURSDAY:
-			return DayTypeEnum.Thursday;
-		case DateTimeConstants.FRIDAY:
-			return DayTypeEnum.Friday;
-		case DateTimeConstants.SATURDAY:
-			return DayTypeEnum.Saturday;
-		case DateTimeConstants.SUNDAY:
-			return DayTypeEnum.Sunday;
-		default:
-			return null;
+			case DateTimeConstants.MONDAY:
+				return DayTypeEnum.Monday;
+			case DateTimeConstants.TUESDAY:
+				return DayTypeEnum.Tuesday;
+			case DateTimeConstants.WEDNESDAY:
+				return DayTypeEnum.Wednesday;
+			case DateTimeConstants.THURSDAY:
+				return DayTypeEnum.Thursday;
+			case DateTimeConstants.FRIDAY:
+				return DayTypeEnum.Friday;
+			case DateTimeConstants.SATURDAY:
+				return DayTypeEnum.Saturday;
+			case DateTimeConstants.SUNDAY:
+				return DayTypeEnum.Sunday;
+			default:
+				return null;
 		}
 
 	}
-
-	@ToString
-	private class WeekDayEntry {
-
-		@Getter
-		int count = 0;
-
-		@Setter
-		@Getter
-		double percentage = 0;
-
-		@Getter
-		DayTypeEnum dayType;
-
-		public WeekDayEntry(DayTypeEnum dayType) {
-			this.dayType = dayType;
+	private DayTypeEnum convertFromDayOfWeek(DayOfWeek dayType) {
+		switch (dayType) {
+			case MONDAY:
+				return DayTypeEnum.Monday;
+			case TUESDAY:
+				return DayTypeEnum.Tuesday;
+			case WEDNESDAY:
+				return DayTypeEnum.Wednesday;
+			case THURSDAY:
+				return DayTypeEnum.Thursday;
+			case FRIDAY:
+				return DayTypeEnum.Friday;
+			case SATURDAY:
+				return DayTypeEnum.Saturday;
+			case SUNDAY:
+				return DayTypeEnum.Sunday;
+			default:
+				return null;
 		}
 
-		public void addCount() {
-			count++;
-		}
-
-	}
-
-	private Set<DayTypeEnum> computeSignificantDays(LocalDate d, boolean[] included) {
-
-		Set<DayTypeEnum> significantDays = new HashSet<DayTypeEnum>();
-
-		Map<DayTypeEnum, WeekDayEntry> dayMap = new HashMap<DayTypeEnum, WeekDayEntry>();
-
-		dayMap.put(DayTypeEnum.Monday, new WeekDayEntry(DayTypeEnum.Monday));
-		dayMap.put(DayTypeEnum.Tuesday, new WeekDayEntry(DayTypeEnum.Tuesday));
-		dayMap.put(DayTypeEnum.Wednesday, new WeekDayEntry(DayTypeEnum.Wednesday));
-		dayMap.put(DayTypeEnum.Thursday, new WeekDayEntry(DayTypeEnum.Thursday));
-		dayMap.put(DayTypeEnum.Friday, new WeekDayEntry(DayTypeEnum.Friday));
-		dayMap.put(DayTypeEnum.Saturday, new WeekDayEntry(DayTypeEnum.Saturday));
-		dayMap.put(DayTypeEnum.Sunday, new WeekDayEntry(DayTypeEnum.Sunday));
-
-		// Count hits for each day type
-		for (int i = 0; i < included.length; i++) {
-			int dayOfWeek = d.plusDays(i).getDayOfWeek();
-			if (included[i]) {
-				dayMap.get(convertFromJodaTimeDayType(dayOfWeek)).addCount();
-			}
-		}
-
-		// compute percentages
-		int totalDaysIncluded = 0;
-		for (WeekDayEntry entry : dayMap.values()) {
-			totalDaysIncluded += entry.getCount();
-		}
-
-		if (totalDaysIncluded > MIN_DAYS_FOR_PATTERN) {
-
-			for (WeekDayEntry entry : dayMap.values()) {
-				entry.setPercentage(((double) entry.getCount()) * 100 / (double) totalDaysIncluded);
-			}
-
-			// Try to find patterns
-			List<WeekDayEntry> entries = new ArrayList<WeekDayEntry>(dayMap.values());
-
-			Collections.sort(entries, new Comparator<WeekDayEntry>() {
-
-				@Override
-				public int compare(WeekDayEntry o1, WeekDayEntry o2) {
-					return (int) (o2.getPercentage() - o1.getPercentage());
-				}
-			});
-
-			// i = number of days attempted to merge together
-			for (int i = 1; i < DateTimeConstants.DAYS_PER_WEEK; i++) {
-				double minDayPercentage = (double) (MIN_PERCENTAGE_ALL_DAYS_DETECTED - ERROR_MARGIN) / (double) i; // for i=2 this means 42.5 for each day type
-
-				// Start from 0
-				double totalDayPercentage = 0;
-				boolean allDaysAboveMinDayPercentage = true;
-				for (int j = 0; j < i; j++) {
-					double percentage = entries.get(j).getPercentage();
-					if (percentage < minDayPercentage) {
-						allDaysAboveMinDayPercentage &= false;
-					}
-					totalDayPercentage += percentage;
-				}
-
-				if (allDaysAboveMinDayPercentage && totalDayPercentage > MIN_PERCENTAGE_ALL_DAYS_DETECTED) {
-					for (int j = 0; j < i; j++) {
-						significantDays.add(entries.get(j).getDayType());
-					}
-					// Found match
-					break;
-				}
-			}
-		} else {
-			log.debug("Too few days to extract pattern, expected at least " + MIN_DAYS_FOR_PATTERN + " but only got " + totalDaysIncluded);
-		}
-
-		return significantDays;
 	}
 
 	static {

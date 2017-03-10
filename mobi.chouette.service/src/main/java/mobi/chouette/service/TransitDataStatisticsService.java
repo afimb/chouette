@@ -1,41 +1,24 @@
 package mobi.chouette.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.CalendarPatternAnalyzer;
+import mobi.chouette.dao.LineDAO;
+import mobi.chouette.dao.TimetableDAO;
+import mobi.chouette.model.CalendarDay;
+import mobi.chouette.model.statistics.*;
+import mobi.chouette.persistence.hibernate.ContextHolder;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.joda.time.DateMidnight;
+import org.joda.time.LocalDate;
 
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-
-import mobi.chouette.model.CalendarDay;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.time.DateUtils;
-import org.joda.time.DateMidnight;
-import org.joda.time.LocalDate;
-
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.dao.LineDAO;
-import mobi.chouette.dao.TimetableDAO;
-import mobi.chouette.model.statistics.Line;
-import mobi.chouette.model.statistics.LineAndTimetable;
-import mobi.chouette.model.statistics.LineStatistics;
-import mobi.chouette.model.statistics.Period;
-import mobi.chouette.model.statistics.PublicLine;
-import mobi.chouette.model.statistics.Timetable;
-import mobi.chouette.model.statistics.ValidityCategory;
-import mobi.chouette.persistence.hibernate.ContextHolder;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Singleton(name = TransitDataStatisticsService.BEAN_NAME)
 @Log4j
@@ -54,23 +37,21 @@ public class TransitDataStatisticsService {
 	 * periods. Not supporting frequency based yet
 	 *
 	 * @param referential
-	 * @param startDate
-	 *            the first date to return data from (that is, filter away old
-	 *            and obsolete periods
-	 * @param minDaysValidityCategories
-	 *            organize lineNumbers into validity categories. First category
-	 *            is from 0 to first value given in array
+	 * @param startDate                 the first date to return data from (that is, filter away old
+	 *                                  and obsolete periods
+	 * @param minDaysValidityCategories organize lineNumbers into validity categories. First category
+	 *                                  is from 0 to first value given in array
 	 * @return
 	 * @throws ServiceException
 	 */
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public LineStatistics getLineStatisticsByLineNumber(String referential, Date startDate, int days,
-			Integer minDaysValidityCategories[]) throws ServiceException {
+			                                                   Integer minDaysValidityCategories[]) throws ServiceException {
 
 		ContextHolder.setContext(referential);
 
 		log.info("Gettings statistics for " + referential + " using startDate=" + startDate
-				+ " and minDaysValidityCategories=" + ToStringBuilder.reflectionToString(minDaysValidityCategories));
+				         + " and minDaysValidityCategories=" + ToStringBuilder.reflectionToString(minDaysValidityCategories));
 
 		// Defaulting to today if not given
 		if (startDate == null) {
@@ -106,9 +87,9 @@ public class TransitDataStatisticsService {
 	}
 
 	private void mergeNames(LineStatistics lineStats) {
-		for(PublicLine pl : lineStats.getPublicLines()) {
+		for (PublicLine pl : lineStats.getPublicLines()) {
 			Set<String> names = new TreeSet<String>();
-			for(Line l : pl.getLines()) {
+			for (Line l : pl.getLines()) {
 				names.add(l.getName());
 			}
 
@@ -136,7 +117,7 @@ public class TransitDataStatisticsService {
 
 		for (PublicLine pl : lineStats.getPublicLines()) {
 			boolean foundCategory = false;
-			for(int i=0; i<validityCategories.size();i++) {
+			for (int i = 0; i < validityCategories.size(); i++) {
 				ValidityCategory vc = validityCategories.get(i);
 
 				foundCategory = isValidAtLeastNumberOfDays(pl, startDateLocal, vc.getNumDaysAtLeastValid());
@@ -213,7 +194,7 @@ public class TransitDataStatisticsService {
 		}
 
 
-		Map<String,String> lineNameToFakeLineNumber = new HashMap<>();
+		Map<String, String> lineNameToFakeLineNumber = new HashMap<>();
 
 		int fakeLineNumberCounter = 0;
 
@@ -221,11 +202,11 @@ public class TransitDataStatisticsService {
 			mobi.chouette.model.Line l = lineIdToLine.get(lat.getLineId());
 
 			String number = StringUtils.trimToNull(l.getNumber());
-			if(number == null) {
-				String lineNameKey = l.getName()+"-"+l.getCompany().getName();
+			if (number == null) {
+				String lineNameKey = l.getName() + "-" + l.getCompany().getName();
 				number = lineNameToFakeLineNumber.get(lineNameKey);
-				if(number == null) {
-					number = "<"+(++fakeLineNumberCounter)+">";
+				if (number == null) {
+					number = "<" + (++fakeLineNumberCounter) + ">";
 					lineNameToFakeLineNumber.put(lineNameKey, number);
 				}
 			}
@@ -256,13 +237,15 @@ public class TransitDataStatisticsService {
 							timetable.getPeriods().add(period);
 						}
 					}
-				}
+				} else if (t.getCalendarDays() != null) {
+					Period fromCalendarDaysPattern = calculatePeriodFromCalendarDaysPattern(t.getCalendarDays());
 
-				if (t.getCalendarDays() != null) {
+					if (fromCalendarDaysPattern != null) {
+						timetable.getPeriods().add(fromCalendarDaysPattern);
+					}
 					for (CalendarDay day : t.getCalendarDays()) {
 						if (day.getIncluded()) {
-							Date endOfPeriod = new java.sql.Date(DateUtils.addDays(day.getDate(), 1).getTime());
-							timetable.getPeriods().add(new Period(day.getDate(), endOfPeriod));
+							timetable.getPeriods().add(new Period(day.getDate(), day.getDate()));
 						}
 					}
 				}
@@ -285,6 +268,20 @@ public class TransitDataStatisticsService {
 
 			}
 		}
+	}
+
+	private Period calculatePeriodFromCalendarDaysPattern(List<CalendarDay> calendarDays) {
+		Set<java.time.LocalDate> includedDays = calendarDays.stream().filter(CalendarDay::getIncluded)
+				                                        .map(c -> c.getDate().toLocalDate()).collect(Collectors.toSet());
+
+		CalendarPatternAnalyzer.ValidityInterval validityInterval = new CalendarPatternAnalyzer().computeValidityInterval(includedDays);
+
+		if (validityInterval != null) {
+			Date from = Date.from(validityInterval.from.atStartOfDay(ZoneId.systemDefault()).toInstant());
+			Date to = Date.from(validityInterval.to.atStartOfDay(ZoneId.systemDefault()).toInstant());
+			new Period(from, to);
+		}
+		return null;
 	}
 
 	protected void filterLinesWithEmptyTimetablePeriods(Map<String, PublicLine> publicLines) {
