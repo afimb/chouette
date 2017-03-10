@@ -9,6 +9,7 @@ import mobi.chouette.model.statistics.*;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateMidnight;
 import org.joda.time.LocalDate;
 
@@ -221,6 +222,9 @@ public class TransitDataStatisticsService {
 			Line line = new Line(l.getId(), l.getObjectId(), l.getName());
 			publicLine.getLines().add(line);
 
+			Set<CalendarDay> calendarDaysForLine = new HashSet<>();
+
+			Timetable timetableForCalendarDays = null;
 			for (mobi.chouette.model.Timetable t : lat.getTimetables()) {
 				Timetable timetable = new Timetable(t.getId(), t.getObjectId());
 
@@ -237,17 +241,16 @@ public class TransitDataStatisticsService {
 							timetable.getPeriods().add(period);
 						}
 					}
-				} else if (t.getCalendarDays() != null) {
-					Period fromCalendarDaysPattern = calculatePeriodFromCalendarDaysPattern(t.getCalendarDays());
+				}
 
-					if (fromCalendarDaysPattern != null) {
-						timetable.getPeriods().add(fromCalendarDaysPattern);
-					}
+				if (t.getCalendarDays() != null) {
 					for (CalendarDay day : t.getCalendarDays()) {
 						if (day.getIncluded()) {
 							timetable.getPeriods().add(new Period(day.getDate(), day.getDate()));
 						}
 					}
+					calendarDaysForLine.addAll(t.getCalendarDays());
+					timetableForCalendarDays = timetable;
 				}
 
 				if (timetable.getPeriods().isEmpty()) {
@@ -267,10 +270,19 @@ public class TransitDataStatisticsService {
 				}
 
 			}
+
+			Period fromCalendarDaysPattern = calculatePeriodFromCalendarDaysPattern(calendarDaysForLine);
+			if (fromCalendarDaysPattern != null) {
+				log.info("Successfully created validity interval from included days for line: " + line.getId());
+				timetableForCalendarDays.getPeriods().add(fromCalendarDaysPattern);
+			}
+
 		}
 	}
 
-	private Period calculatePeriodFromCalendarDaysPattern(List<CalendarDay> calendarDays) {
+
+	private Period calculatePeriodFromCalendarDaysPattern(Collection<CalendarDay> calendarDays) {
+
 		Set<java.time.LocalDate> includedDays = calendarDays.stream().filter(CalendarDay::getIncluded)
 				                                        .map(c -> c.getDate().toLocalDate()).collect(Collectors.toSet());
 
@@ -352,7 +364,7 @@ public class TransitDataStatisticsService {
 
 		for (int i = 1; i < intervals.size(); i++) {
 			Period current = intervals.get(i);
-			if (!current.getFrom().after(end)) {
+			if (!current.getFrom().after(DateUtils.addDays(end, 1))) {
 				end = current.getTo().before(end) ? end : current.getTo();
 			} else {
 				result.add(new Period(start, end));
