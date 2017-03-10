@@ -57,7 +57,7 @@ public class ServiceJourneyProducer extends NetexProducer { //implements NetexEn
 
         for (Timetable timetable : vehicleJourney.getTimetables()) {
             DayTypeRefStructure dayTypeRefStruct = netexFactory.createDayTypeRefStructure();
-            //dayTypeRefStruct.setVersion(timetable.getObjectVersion() > 0 ? String.valueOf(timetable.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION); // TODO MUST ENABLE AFTER WE HAVE ADDED SERVICE CALENDAR FRAME
+            dayTypeRefStruct.setVersion(timetable.getObjectVersion() > 0 ? String.valueOf(timetable.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 
             String dayTypeIdRef = netexId(timetable.objectIdPrefix(), DAY_TYPE_KEY, timetable.objectIdSuffix());
             dayTypeRefStruct.setRef(dayTypeIdRef);
