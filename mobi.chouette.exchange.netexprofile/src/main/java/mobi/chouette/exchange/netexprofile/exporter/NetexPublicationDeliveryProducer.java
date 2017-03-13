@@ -20,7 +20,6 @@ import java.util.Arrays;
 
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.AVAILABILITY_CONDITION_KEY;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.COMPOSITE_FRAME_KEY;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.ROUTE_KEY;
 
 public class NetexPublicationDeliveryProducer extends NetexProducer implements Constant {
 

@@ -1,21 +1,5 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
-import java.sql.Time;
-import java.time.OffsetTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.util.Comparator;
-
-import javax.xml.bind.JAXBElement;
-
-import org.rutebanken.netex.model.DayTypeRefStructure;
-import org.rutebanken.netex.model.JourneyPatternRefStructure;
-import org.rutebanken.netex.model.Journey_VersionStructure;
-import org.rutebanken.netex.model.JourneysInFrame_RelStructure;
-import org.rutebanken.netex.model.ServiceJourney;
-import org.rutebanken.netex.model.StopPointInJourneyPattern;
-import org.rutebanken.netex.model.TimetabledPassingTime;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
@@ -23,14 +7,17 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
-import mobi.chouette.model.Company;
-import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.Timetable;
+import mobi.chouette.model.*;
 import mobi.chouette.model.VehicleJourney;
-import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+import org.rutebanken.netex.model.*;
+
+import javax.xml.bind.JAXBElement;
+import java.time.OffsetTime;
+import java.time.ZoneId;
+import java.util.Comparator;
 
 @Log4j
 public class ServiceJourneyParser extends NetexParser implements Parser, Constant {
