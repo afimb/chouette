@@ -207,7 +207,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
     }
 
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
-    public void verifyExportLine() throws Exception {
+    public void verifyExportAvinorLine() throws Exception {
         importLines("C_NETEX_1.xml", 1, 1);
 
         Context context = initExportContext();
@@ -240,10 +240,9 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
             Reporter.log(info.toString(), true);
         }
 
-        // TODO enable when validation is in place
-        //ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
-        //Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
-        //Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
+        ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
+        Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
+        Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
     }
 
     private void importLines(String file, int fileCount, int lineCount) throws Exception {
