@@ -15,9 +15,12 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.AVAILABILITY_CONDITION_KEY;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.COMPOSITE_FRAME_KEY;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.ROUTE_KEY;
 
 public class NetexPublicationDeliveryProducer extends NetexProducer implements Constant {
 
@@ -60,10 +63,21 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
 
         String compositeFrameId = netexId(line.objectIdPrefix(), COMPOSITE_FRAME_KEY, line.objectIdSuffix());
 
+        String availabilityConditionId = netexId(line.objectIdPrefix(), AVAILABILITY_CONDITION_KEY, line.objectIdSuffix());
+        AvailabilityCondition availabilityCondition = netexFactory.createAvailabilityCondition();
+        availabilityCondition.setVersion(line.getObjectVersion() > 0 ? String.valueOf(line.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+        availabilityCondition.setId(availabilityConditionId);
+
+        availabilityCondition.setFromDate(OffsetDateTime.now(ZoneId.systemDefault())); // TODO fix correct from date, for now using dummy dates
+        availabilityCondition.setToDate(availabilityCondition.getFromDate().plusMonths(1L)); // TODO fix correct to date, for now using dummy dates
+
+        ValidityConditions_RelStructure validityConditionsStruct = netexFactory.createValidityConditions_RelStructure()
+                .withValidityConditionRefOrValidBetweenOrValidityCondition_(netexFactory.createAvailabilityCondition(availabilityCondition));
+
         CompositeFrame compositeFrame = netexFactory.createCompositeFrame()
                 .withVersion(NETEX_DATA_OJBECT_VERSION)
-                .withId(compositeFrameId);
-                //.withValidityConditions(validityConditionsStruct) // TODO
+                .withId(compositeFrameId)
+                .withValidityConditions(validityConditionsStruct);
 
         if (line.getNetwork().getVersionDate() != null) {
             OffsetDateTime createdDateTime = NetexProducerUtils.toOffsetDateTime(line.getNetwork().getVersionDate());

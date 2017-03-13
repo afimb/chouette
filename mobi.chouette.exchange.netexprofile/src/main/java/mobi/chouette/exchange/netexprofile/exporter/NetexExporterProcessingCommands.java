@@ -9,7 +9,7 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.exporter.CompressCommand;
-import mobi.chouette.exchange.netexprofile.importer.NetexDisposeImportCommand;
+import mobi.chouette.exchange.exporter.SaveMetadataCommand;
 
 import javax.naming.InitialContext;
 import java.io.IOException;
@@ -65,7 +65,6 @@ public class NetexExporterProcessingCommands implements ProcessingCommands, Cons
         }
 
         return commands;
-
     }
 
     @Override
@@ -80,20 +79,18 @@ public class NetexExporterProcessingCommands implements ProcessingCommands, Cons
         List<Command> commands = new ArrayList<>();
 
         try {
-
             if (parameters.isValidateAfterExport()) {
-                commands.add(CommandFactory.create(initialContext, NetexDisposeImportCommand.class.getName()));
+                commands.add(CommandFactory.create(initialContext, NetexValidateExportCommand.class.getName()));
             }
             if (parameters.isAddMetadata()) {
-                log.info("TODO : implement");
-                //commands.add(CommandFactory.create(initialContext, SaveMetadataCommand.class.getName()));
+                commands.add(CommandFactory.create(initialContext, SaveMetadataCommand.class.getName()));
             }
-
             commands.add(CommandFactory.create(initialContext, CompressCommand.class.getName()));
         } catch (Exception e) {
             log.error(e, e);
             throw new RuntimeException("unable to call factories");
         }
+
         return commands;
     }
 

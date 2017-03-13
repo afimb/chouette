@@ -214,6 +214,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
+        configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 

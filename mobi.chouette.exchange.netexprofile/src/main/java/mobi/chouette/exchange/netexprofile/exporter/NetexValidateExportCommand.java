@@ -11,6 +11,8 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.*;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
 
 import javax.naming.InitialContext;
 import java.io.File;
@@ -34,14 +36,16 @@ public class NetexValidateExportCommand implements Command, Constant {
             Context validateContext = new Context();
             validateContext.putAll(context);
 
-            NetexprofileImportParameters parameters = new NetexprofileImportParameters();
             NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
 
+            NetexprofileImportParameters parameters = new NetexprofileImportParameters();
             parameters.setOrganisationName(configuration.getOrganisationName());
             parameters.setUserName(configuration.getUserName());
             parameters.setName(configuration.getName());
             parameters.setNoSave(true);
             parameters.setReferentialName(configuration.getReferentialName());
+            parameters.setValidCodespaces(configuration.getValidCodespaces());
+
             validateContext.put(CONFIGURATION, parameters);
             validateContext.put(REPORT, context.get(REPORT));
 
@@ -55,7 +59,6 @@ public class NetexValidateExportCommand implements Command, Constant {
             }
 
             output = new File(pathName, OUTPUT);
-
             InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 
             try {
@@ -63,26 +66,26 @@ public class NetexValidateExportCommand implements Command, Constant {
                 init.execute(validateContext);
 
                 Path path = Paths.get(jobData.getPathName(), INPUT);
+                List<Path> filePaths = FileUtil.listFiles(path, "*.xml",".*.xml");
+                validateContext.put(NETEX_FILE_PATHS, filePaths);
 
-                List<Path> filePaths = FileUtil.listFiles(path, "*.xml");
-                context.put(NETEX_FILE_PATHS, filePaths);
-
-                NetexSchemaValidationCommand schemaValidationCommand = (NetexSchemaValidationCommand)
-                        CommandFactory.create(initialContext, NetexSchemaValidationCommand.class.getName());
-                schemaValidationCommand.execute(context);
+                Command schemaValidationCommand = CommandFactory.create(initialContext, NetexSchemaValidationCommand.class.getName());
+                schemaValidationCommand.execute(validateContext);
 
                 for (Path file : filePaths) {
                     String url = file.toUri().toURL().toExternalForm();
 
                     NetexInitReferentialCommand initRefsCommand = (NetexInitReferentialCommand) CommandFactory.create(initialContext, NetexInitReferentialCommand.class.getName());
                     initRefsCommand.setFileURL(url);
-                    initRefsCommand.execute(context);
+                    initRefsCommand.setLineFile(true);
+                    initRefsCommand.execute(validateContext);
 
-                    NetexValidationCommand profileValidationCommand = (NetexValidationCommand) CommandFactory.create(initialContext, NetexValidationCommand.class.getName());
-                    profileValidationCommand.execute(context);
+                    Command validator = CommandFactory.create(initialContext, NetexValidationCommand.class.getName());
+                    validator.execute(validateContext);
 
                     NetexLineParserCommand parserCommand = (NetexLineParserCommand) CommandFactory.create(initialContext, NetexLineParserCommand.class.getName());
                     parserCommand.setFileURL(url);
+                    parserCommand.execute(validateContext);
                 }
             } catch (Exception ex) {
                 log.error("problem in validation" + ex);
