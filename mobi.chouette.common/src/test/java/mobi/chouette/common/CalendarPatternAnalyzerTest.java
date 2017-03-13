@@ -130,7 +130,7 @@ public class CalendarPatternAnalyzerTest {
 	public void testComputeValidityIntervalEveryDayPattern() {
 		CalendarPatternAnalyzer.ValidityInterval interval = analyzer.computeValidityInterval(includedDaysAsLocalDates(calStartDate, everyDayPattern));
 		Assert.assertEquals(interval.from, calStartDate);
-		Assert.assertEquals(interval.to, calStartDate.plusDays(74)); // TODO verify
+		Assert.assertEquals(interval.to, calStartDate.plusDays(74));
 	}
 
 	String emptyPattern =

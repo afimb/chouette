@@ -230,8 +230,6 @@ public class TransitDataStatisticsService {
 
 				line.getTimetables().add(timetable);
 
-				// TODO work must be done here to include all periods, including
-				// separate dates (inclusion and exclusion)
 				if (t.getPeriods() != null && t.getPeriods().size() > 0) {
 					// Use periods
 					for (mobi.chouette.model.Period p : t.getPeriods()) {
@@ -245,12 +243,12 @@ public class TransitDataStatisticsService {
 
 				if (t.getCalendarDays() != null) {
 					for (CalendarDay day : t.getCalendarDays()) {
-						if (day.getIncluded()) {
+						if (day.getIncluded() && !startDate.after(day.getDate())) {
 							timetable.getPeriods().add(new Period(day.getDate(), day.getDate()));
+							calendarDaysForLine.add(day);
+							timetableForCalendarDays = timetable;
 						}
 					}
-					calendarDaysForLine.addAll(t.getCalendarDays());
-					timetableForCalendarDays = timetable;
 				}
 
 				if (timetable.getPeriods().isEmpty()) {
@@ -272,6 +270,7 @@ public class TransitDataStatisticsService {
 			}
 
 			Period fromCalendarDaysPattern = calculatePeriodFromCalendarDaysPattern(calendarDaysForLine);
+
 			if (fromCalendarDaysPattern != null) {
 				log.info("Successfully created validity interval from included days for line: " + line.getId());
 				timetableForCalendarDays.getPeriods().add(fromCalendarDaysPattern);
@@ -279,7 +278,6 @@ public class TransitDataStatisticsService {
 
 		}
 	}
-
 
 	private Period calculatePeriodFromCalendarDaysPattern(Collection<CalendarDay> calendarDays) {
 
@@ -289,9 +287,9 @@ public class TransitDataStatisticsService {
 		CalendarPatternAnalyzer.ValidityInterval validityInterval = new CalendarPatternAnalyzer().computeValidityInterval(includedDays);
 
 		if (validityInterval != null) {
-			Date from = Date.from(validityInterval.from.atStartOfDay(ZoneId.systemDefault()).toInstant());
-			Date to = Date.from(validityInterval.to.atStartOfDay(ZoneId.systemDefault()).toInstant());
-			new Period(from, to);
+			Date from = java.sql.Date.valueOf(validityInterval.from);
+			Date to = java.sql.Date.valueOf(validityInterval.to);
+			return new Period(from, to);
 		}
 		return null;
 	}
