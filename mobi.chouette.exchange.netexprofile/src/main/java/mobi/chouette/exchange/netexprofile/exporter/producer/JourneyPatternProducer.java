@@ -53,8 +53,6 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 
         netexJourneyPattern.setRouteRef(routeRefStruct);
 
-        // TODO add points in sequence
-
         PointsInJourneyPattern_RelStructure pointsInJourneyPattern = netexFactory.createPointsInJourneyPattern_RelStructure();
         List<StopPoint> stopPoints = neptuneJourneyPattern.getStopPoints();
         String[] idSequence = NetexProducerUtils.generateIdSequence(stopPoints.size());
@@ -81,13 +79,11 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 
             stopPointInJourneyPattern.setScheduledStopPointRef(netexFactory.createScheduledStopPointRef(stopPointRefStruct));
 
-            if (isSet(stopPoint.getForBoarding()) || isSet(stopPoint.getForAlighting())) {
-                if (isSet(stopPoint.getForBoarding()) && stopPoint.getForBoarding().equals(BoardingPossibilityEnum.normal)) {
-                    stopPointInJourneyPattern.setForBoarding(true);
-                }
-                if (isSet(stopPoint.getForAlighting()) && stopPoint.getForAlighting().equals(AlightingPossibilityEnum.normal)) {
-                    stopPointInJourneyPattern.setForAlighting(true);
-                }
+            if (stopPoint.getForBoarding().equals(BoardingPossibilityEnum.normal) && stopPoint.getForAlighting().equals(AlightingPossibilityEnum.forbidden)) {
+                stopPointInJourneyPattern.setForAlighting(false);
+            }
+            if (stopPoint.getForAlighting().equals(AlightingPossibilityEnum.normal) && stopPoint.getForBoarding().equals(BoardingPossibilityEnum.forbidden)) {
+                stopPointInJourneyPattern.setForBoarding(false);
             }
 
             stopPointInJourneyPattern.setOrder(BigInteger.valueOf(i + 1));
