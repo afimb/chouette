@@ -17,24 +17,27 @@ import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.AVAILABILITY_CONDITION_KEY;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.COMPOSITE_FRAME_KEY;
 
 public class NetexPublicationDeliveryProducer extends NetexProducer implements Constant {
 
-    // TODO move the following to some common Constant class
     private static final String NETEX_PROFILE_VERSION = "1.04:NO-NeTEx-networktimetable:1.0";
     public static final String NETEX_DATA_OJBECT_VERSION = "1";
     public static final String DEFAULT_ZONE_ID = "UTC";
     public static final String DEFAULT_LANGUAGE = "no";
 
-    // TODO make the following part of dynamic codespace mapping
     public static final String NSR_XMLNS = "NSR";
     public static final String NSR_XMLNSURL = "http://www.rutebanken.org/ns/nsr";
 
     public static final String AVINOR_XMLNS = "AVI";
     public static final String AVINOR_XMLNSURL = "http://www.rutebanken.org/ns/avi";
+
+    public static final String RUTER_XMLNS = "RUT";
+    public static final String RUTER_XMLNSURL = "http://www.rutebanken.org/ns/rut";
 
     private static ResourceFrameProducer resourceFrameProducer = new ResourceFrameProducer();
     private static SiteFrameProducer siteFrameProducer = new SiteFrameProducer();
@@ -42,7 +45,12 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
     private static TimetableFrameProducer timetableFrameProducer = new TimetableFrameProducer();
     private static ServiceCalendarFrameProducer serviceCalendarFrameProducer = new ServiceCalendarFrameProducer();
 
-    // TODO consider adding producers for each frame, which in turn calls each subproducer (like netex writers)
+    private static final Map<String, Codespace> codespaceMapping = new HashMap<>();
+
+    static {
+        codespaceMapping.put("AVI", netexFactory.createCodespace().withId(AVINOR_XMLNS.toLowerCase()).withXmlns(AVINOR_XMLNS).withXmlnsUrl(AVINOR_XMLNSURL));
+        codespaceMapping.put("RUT", netexFactory.createCodespace().withId(RUTER_XMLNS.toLowerCase()).withXmlns(RUTER_XMLNS).withXmlnsUrl(RUTER_XMLNSURL));
+    }
 
     public void produce(Context context) throws Exception {
         ActionReporter reporter = ActionReporter.Factory.getInstance();
@@ -57,7 +65,7 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
         PublicationDeliveryStructure rootObject = netexFactory.createPublicationDeliveryStructure()
                 .withVersion(NETEX_PROFILE_VERSION)
                 .withPublicationTimestamp(publicationTimestamp)
-                .withParticipantRef("NSR")
+                .withParticipantRef(NSR_XMLNS)
                 .withDescription(netexFactory.createMultilingualString().withValue(exportableData.getLine().getName()));
 
         String compositeFrameId = netexId(line.objectIdPrefix(), COMPOSITE_FRAME_KEY, line.objectIdSuffix());
@@ -85,17 +93,15 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
             compositeFrame.setCreated(publicationTimestamp);
         }
 
-        // TODO get dynamic codespaces based on id prefix from static structure, see : https://rutebanken.atlassian.net/wiki/display/PUBLIC/Codespace
         Codespace nsrCodespace = netexFactory.createCodespace()
                 .withId(NSR_XMLNS.toLowerCase())
                 .withXmlns(NSR_XMLNS)
                 .withXmlnsUrl(NSR_XMLNSURL);
-        Codespace avinorCodespace = netexFactory.createCodespace()
-                .withId(AVINOR_XMLNS.toLowerCase())
-                .withXmlns(AVINOR_XMLNS)
-                .withXmlnsUrl(AVINOR_XMLNSURL);
+
+        Codespace operatorCodespace = codespaceMapping.get(line.objectIdPrefix().toUpperCase());
+
         Codespaces_RelStructure codespaces = netexFactory.createCodespaces_RelStructure()
-                .withCodespaceRefOrCodespace(Arrays.asList(avinorCodespace, nsrCodespace));
+                .withCodespaceRefOrCodespace(Arrays.asList(operatorCodespace, nsrCodespace));
         compositeFrame.setCodespaces(codespaces);
 
         VersionFrameDefaultsStructure frameDefaultsStruct = netexFactory.createVersionFrameDefaultsStructure();
