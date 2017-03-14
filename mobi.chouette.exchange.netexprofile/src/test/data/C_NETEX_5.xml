@@ -1,0 +1,1389 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PublicationDelivery xmlns="http://www.netex.org.uk/netex" version="1.04:NO-NeTEx-networktimetable:1.0">
+    <PublicationTimestamp>2017-03-13T17:00:00.000Z</PublicationTimestamp>
+    <ParticipantRef>Avinor</ParticipantRef>
+    <Description>Line: Oslo-Bergen</Description>
+    <dataObjects>
+        <CompositeFrame created="2017-03-13T00:00:00.000Z" version="1" id="AVI:CompositeFrame:WF-OSL-BGO">
+            <validityConditions>
+                <AvailabilityCondition version="1" id="AVI:AvailabilityCondition:3381461">
+                    <FromDate>2017-03-13T00:00:00Z</FromDate>
+                    <ToDate>2017-03-19T00:00:00Z</ToDate>
+                </AvailabilityCondition>
+            </validityConditions>
+            <codespaces>
+                <Codespace id="avi">
+                    <Xmlns>AVI</Xmlns>
+                    <XmlnsUrl>http://www.rutebanken.org/ns/avi</XmlnsUrl>
+                </Codespace>
+                <Codespace id="nsr">
+                    <Xmlns>NSR</Xmlns>
+                    <XmlnsUrl>http://www.rutebanken.org/ns/nsr</XmlnsUrl>
+                </Codespace>
+            </codespaces>
+            <FrameDefaults>
+                <DefaultLocale>
+                    <TimeZone>UTC</TimeZone>
+                    <DefaultLanguage>no</DefaultLanguage>
+                </DefaultLocale>
+            </FrameDefaults>
+            <frames>
+                <ResourceFrame version="1" id="AVI:ResourceFrame:8356908">
+                    <organisations>
+                        <Authority version="1" id="AVI:Authority:Avinor">
+                            <CompanyNumber>985198292</CompanyNumber>
+                            <Name>Avinor</Name>
+                            <LegalName>AVINOR AS</LegalName>
+                            <ContactDetails>
+                                <Phone>0047 815 30 550</Phone>
+                                <Url>http://www.avinor.no</Url>
+                            </ContactDetails>
+                            <OrganisationType>authority</OrganisationType>
+                        </Authority>
+                        <Authority version="1" id="NSR:Authority:NSR">
+                            <CompanyNumber></CompanyNumber>
+                            <Name>Nasjonal Stoppestedsregister</Name>
+                            <LegalName>NASJONAL STOPPESTEDSREGISTER</LegalName>
+                            <ContactDetails>
+                                <Phone></Phone>
+                                <Url>http://www.rutebanken.org/ns/nsr</Url>
+                            </ContactDetails>
+                            <OrganisationType>authority</OrganisationType>
+                        </Authority>
+                        <Operator version="1" id="AVI:Operator:WF">
+                            <CompanyNumber>917330557</CompanyNumber>
+                            <Name>Widerøe</Name>
+                            <LegalName>WIDERØE'S FLYVESELSKAP AS</LegalName>
+                            <ContactDetails>
+                                <Phone>0047 755 13 500</Phone>
+                                <Url>http://www.wideroe.no</Url>
+                            </ContactDetails>
+                            <OrganisationType>operator</OrganisationType>
+                            <CustomerServiceContactDetails>
+                                <Phone>0047 755 13 500</Phone>
+                                <Url>http://www.wideroe.no</Url>
+                            </CustomerServiceContactDetails>
+                        </Operator>
+                    </organisations>
+                </ResourceFrame>
+                <SiteFrame version="1" id="AVI:SiteFrame:6340436">
+                    <stopPlaces>
+                        <StopPlace version="1" id="AVI:StopPlace:BGO">
+                            <Name>Bergen Lufthavn</Name>
+                            <ShortName>BGO</ShortName>
+                            <Centroid>
+                                <Location srsName="WGS84">
+                                    <Longitude>5.228074</Longitude>
+                                    <Latitude>60.289055</Latitude>
+                                </Location>
+                            </Centroid>
+                            <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay version="1" id="AVI:Quay:BGO">
+                                    <Centroid>
+                                        <Location srsName="WGS84">
+                                            <Longitude>5.228074</Longitude>
+                                            <Latitude>60.289055</Latitude>
+                                        </Location>
+                                    </Centroid>
+                                </Quay>
+                            </quays>
+                        </StopPlace>
+                        <StopPlace version="1" id="AVI:StopPlace:FDE">
+                            <Name>Førde Lufthamn</Name>
+                            <ShortName>FDE</ShortName>
+                            <Centroid>
+                                <Location srsName="WGS84">
+                                    <Longitude>5.764381</Longitude>
+                                    <Latitude>61.391174</Latitude>
+                                </Location>
+                            </Centroid>
+                            <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay version="1" id="AVI:Quay:FDE">
+                                    <Centroid>
+                                        <Location srsName="WGS84">
+                                            <Longitude>5.764381</Longitude>
+                                            <Latitude>61.391174</Latitude>
+                                        </Location>
+                                    </Centroid>
+                                </Quay>
+                            </quays>
+                        </StopPlace>
+                        <StopPlace version="1" id="AVI:StopPlace:FRO">
+                            <Name>Florø Lufthamn</Name>
+                            <ShortName>FRO</ShortName>
+                            <Centroid>
+                                <Location srsName="WGS84">
+                                    <Longitude>5.024494</Longitude>
+                                    <Latitude>61.585834</Latitude>
+                                </Location>
+                            </Centroid>
+                            <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay version="1" id="AVI:Quay:FRO">
+                                    <Centroid>
+                                        <Location srsName="WGS84">
+                                            <Longitude>5.024494</Longitude>
+                                            <Latitude>61.585834</Latitude>
+                                        </Location>
+                                    </Centroid>
+                                </Quay>
+                            </quays>
+                        </StopPlace>
+                        <StopPlace version="1" id="AVI:StopPlace:HOV">
+                            <Name>Ørsta-Volda Lufthamn</Name>
+                            <ShortName>HOV</ShortName>
+                            <Centroid>
+                                <Location srsName="WGS84">
+                                    <Longitude>6.079831</Longitude>
+                                    <Latitude>62.180063</Latitude>
+                                </Location>
+                            </Centroid>
+                            <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay version="1" id="AVI:Quay:HOV">
+                                    <Centroid>
+                                        <Location srsName="WGS84">
+                                            <Longitude>6.079831</Longitude>
+                                            <Latitude>62.180063</Latitude>
+                                        </Location>
+                                    </Centroid>
+                                </Quay>
+                            </quays>
+                        </StopPlace>
+                        <StopPlace version="1" id="AVI:StopPlace:OSL">
+                            <Name>Oslo Lufthavn</Name>
+                            <ShortName>OSL</ShortName>
+                            <Centroid>
+                                <Location srsName="WGS84">
+                                    <Longitude>11.099289</Longitude>
+                                    <Latitude>60.19346</Latitude>
+                                </Location>
+                            </Centroid>
+                            <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay version="1" id="AVI:Quay:OSL">
+                                    <Centroid>
+                                        <Location srsName="WGS84">
+                                            <Longitude>11.099289</Longitude>
+                                            <Latitude>60.19346</Latitude>
+                                        </Location>
+                                    </Centroid>
+                                </Quay>
+                            </quays>
+                        </StopPlace>
+                        <StopPlace version="1" id="AVI:StopPlace:SDN">
+                            <Name>Sandane Lufthamn</Name>
+                            <ShortName>SDN</ShortName>
+                            <Centroid>
+                                <Location srsName="WGS84">
+                                    <Longitude>6.107743</Longitude>
+                                    <Latitude>61.829132</Latitude>
+                                </Location>
+                            </Centroid>
+                            <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay version="1" id="AVI:Quay:SDN">
+                                    <Centroid>
+                                        <Location srsName="WGS84">
+                                            <Longitude>6.107743</Longitude>
+                                            <Latitude>61.829132</Latitude>
+                                        </Location>
+                                    </Centroid>
+                                </Quay>
+                            </quays>
+                        </StopPlace>
+                        <StopPlace version="1" id="AVI:StopPlace:SOG">
+                            <Name>Sogndal Lufthamn</Name>
+                            <ShortName>SOG</ShortName>
+                            <Centroid>
+                                <Location srsName="WGS84">
+                                    <Longitude>7.137626</Longitude>
+                                    <Latitude>61.157552</Latitude>
+                                </Location>
+                            </Centroid>
+                            <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay version="1" id="AVI:Quay:SOG">
+                                    <Centroid>
+                                        <Location srsName="WGS84">
+                                            <Longitude>7.137626</Longitude>
+                                            <Latitude>61.157552</Latitude>
+                                        </Location>
+                                    </Centroid>
+                                </Quay>
+                            </quays>
+                        </StopPlace>
+                    </stopPlaces>
+                </SiteFrame>
+                <ServiceFrame version="1" id="AVI:ServiceFrame:7722364">
+                    <Network changed="2017-03-13T00:00:00.000Z" version="1" id="AVI:Network:WF">
+                        <Name>Widerøe</Name>
+                    </Network>
+                    <routePoints>
+                        <RoutePoint version="1" id="AVI:RoutePoint:65706">
+                            <projections>
+                                <PointProjection version="1" id="AVI:PointProjection:65706">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:65706" version="1"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                        <RoutePoint version="1" id="AVI:RoutePoint:69447">
+                            <projections>
+                                <PointProjection version="1" id="AVI:PointProjection:69447">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:69447" version="1"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                        <RoutePoint version="1" id="AVI:RoutePoint:69891">
+                            <projections>
+                                <PointProjection version="1" id="AVI:PointProjection:69891">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:69891" version="1"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                        <RoutePoint version="1" id="AVI:RoutePoint:71727">
+                            <projections>
+                                <PointProjection version="1" id="AVI:PointProjection:71727">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:71727" version="1"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                        <RoutePoint version="1" id="AVI:RoutePoint:78568">
+                            <projections>
+                                <PointProjection version="1" id="AVI:PointProjection:78568">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:78568" version="1"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                        <RoutePoint version="1" id="AVI:RoutePoint:81949">
+                            <projections>
+                                <PointProjection version="1" id="AVI:PointProjection:81949">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:81949" version="1"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                        <RoutePoint version="1" id="AVI:RoutePoint:82283">
+                            <projections>
+                                <PointProjection version="1" id="AVI:PointProjection:82283">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:82283" version="1"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                    </routePoints>
+                    <routes>
+                        <Route version="1" id="AVI:Route:82679444">
+                            <Name>Oslo-Førde-Bergen</Name>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <pointsInSequence>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:8267944401">
+                                    <RoutePointRef ref="AVI:RoutePoint:78568" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:8267944402">
+                                    <RoutePointRef ref="AVI:RoutePoint:69447" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:8267944403">
+                                    <RoutePointRef ref="AVI:RoutePoint:65706" version="1"/>
+                                </PointOnRoute>
+                            </pointsInSequence>
+                        </Route>
+                        <Route version="1" id="AVI:Route:13472272">
+                            <Name>Oslo-Sandane-Florø-Bergen</Name>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <pointsInSequence>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1347227201">
+                                    <RoutePointRef ref="AVI:RoutePoint:78568" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1347227202">
+                                    <RoutePointRef ref="AVI:RoutePoint:81949" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1347227203">
+                                    <RoutePointRef ref="AVI:RoutePoint:69891" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1347227204">
+                                    <RoutePointRef ref="AVI:RoutePoint:65706" version="1"/>
+                                </PointOnRoute>
+                            </pointsInSequence>
+                        </Route>
+                        <Route version="1" id="AVI:Route:12431890">
+                            <Name>Oslo-Ørsta/Volda-Sogndal-Bergen</Name>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <pointsInSequence>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1243189001">
+                                    <RoutePointRef ref="AVI:RoutePoint:78568" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1243189002">
+                                    <RoutePointRef ref="AVI:RoutePoint:71727" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1243189003">
+                                    <RoutePointRef ref="AVI:RoutePoint:82283" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1243189004">
+                                    <RoutePointRef ref="AVI:RoutePoint:65706" version="1"/>
+                                </PointOnRoute>
+                            </pointsInSequence>
+                        </Route>
+                        <Route version="1" id="AVI:Route:20379188">
+                            <Name>Oslo-Sogndal-Bergen</Name>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <pointsInSequence>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:2037918801">
+                                    <RoutePointRef ref="AVI:RoutePoint:78568" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:2037918802">
+                                    <RoutePointRef ref="AVI:RoutePoint:82283" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:2037918803">
+                                    <RoutePointRef ref="AVI:RoutePoint:65706" version="1"/>
+                                </PointOnRoute>
+                            </pointsInSequence>
+                        </Route>
+                        <Route version="1" id="AVI:Route:13824491">
+                            <Name>Bergen-Sogndal-Oslo</Name>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <pointsInSequence>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1382449101">
+                                    <RoutePointRef ref="AVI:RoutePoint:65706" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1382449102">
+                                    <RoutePointRef ref="AVI:RoutePoint:82283" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1382449103">
+                                    <RoutePointRef ref="AVI:RoutePoint:78568" version="1"/>
+                                </PointOnRoute>
+                            </pointsInSequence>
+                        </Route>
+                        <Route version="1" id="AVI:Route:87832170">
+                            <Name>Bergen-Sogndal-Ørsta/Volda-Oslo</Name>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <pointsInSequence>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:8783217001">
+                                    <RoutePointRef ref="AVI:RoutePoint:65706" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:8783217002">
+                                    <RoutePointRef ref="AVI:RoutePoint:82283" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:8783217003">
+                                    <RoutePointRef ref="AVI:RoutePoint:71727" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:8783217004">
+                                    <RoutePointRef ref="AVI:RoutePoint:78568" version="1"/>
+                                </PointOnRoute>
+                            </pointsInSequence>
+                        </Route>
+                        <Route version="1" id="AVI:Route:35186283">
+                            <Name>Bergen-Førde-Oslo</Name>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <pointsInSequence>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:3518628301">
+                                    <RoutePointRef ref="AVI:RoutePoint:65706" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:3518628302">
+                                    <RoutePointRef ref="AVI:RoutePoint:69447" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:3518628303">
+                                    <RoutePointRef ref="AVI:RoutePoint:78568" version="1"/>
+                                </PointOnRoute>
+                            </pointsInSequence>
+                        </Route>
+                        <Route version="1" id="AVI:Route:17537650">
+                            <Name>Bergen-Ørsta/Volda-Oslo</Name>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <pointsInSequence>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1753765001">
+                                    <RoutePointRef ref="AVI:RoutePoint:65706" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1753765002">
+                                    <RoutePointRef ref="AVI:RoutePoint:71727" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1753765003">
+                                    <RoutePointRef ref="AVI:RoutePoint:78568" version="1"/>
+                                </PointOnRoute>
+                            </pointsInSequence>
+                        </Route>
+                    </routes>
+                    <lines>
+                        <Line version="1" id="AVI:Line:WF_OSL-BGO">
+                            <Name>Oslo-Bergen</Name>
+                            <TransportMode>air</TransportMode>
+                            <PublicCode>OSL-BGO</PublicCode>
+                            <OperatorRef ref="AVI:Operator:WF" version="1"/>
+                            <routes>
+                                <RouteRef ref="AVI:Route:13824491" version="1"/>
+                                <RouteRef ref="AVI:Route:13472272" version="1"/>
+                                <RouteRef ref="AVI:Route:35186283" version="1"/>
+                                <RouteRef ref="AVI:Route:12431890" version="1"/>
+                                <RouteRef ref="AVI:Route:87832170" version="1"/>
+                                <RouteRef ref="AVI:Route:17537650" version="1"/>
+                                <RouteRef ref="AVI:Route:82679444" version="1"/>
+                                <RouteRef ref="AVI:Route:20379188" version="1"/>
+                            </routes>
+                        </Line>
+                    </lines>
+                    <destinationDisplays>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:12431890">
+                            <FrontText>Bergen</FrontText>
+                            <vias>
+                                <Via>
+                                    <DestinationDisplayRef ref="AVI:DestinationDisplay:WFOSLBGO-HOV" version="1"/>
+                                </Via>
+                                <Via>
+                                    <DestinationDisplayRef ref="AVI:DestinationDisplay:WFOSLBGO-SOG" version="1"/>
+                                </Via>
+                            </vias>
+                        </DestinationDisplay>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:13472272">
+                            <FrontText>Bergen</FrontText>
+                            <vias>
+                                <Via>
+                                    <DestinationDisplayRef ref="AVI:DestinationDisplay:WFOSLBGO-SDN" version="1"/>
+                                </Via>
+                                <Via>
+                                    <DestinationDisplayRef ref="AVI:DestinationDisplay:WFOSLBGO-FRO" version="1"/>
+                                </Via>
+                            </vias>
+                        </DestinationDisplay>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:13824491">
+                            <FrontText>Oslo</FrontText>
+                            <vias>
+                                <Via>
+                                    <DestinationDisplayRef ref="AVI:DestinationDisplay:WFOSLBGO-SOG" version="1"/>
+                                </Via>
+                            </vias>
+                        </DestinationDisplay>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:17537650">
+                            <FrontText>Oslo</FrontText>
+                            <vias>
+                                <Via>
+                                    <DestinationDisplayRef ref="AVI:DestinationDisplay:WFOSLBGO-HOV" version="1"/>
+                                </Via>
+                            </vias>
+                        </DestinationDisplay>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:20379188">
+                            <FrontText>Bergen</FrontText>
+                            <vias>
+                                <Via>
+                                    <DestinationDisplayRef ref="AVI:DestinationDisplay:WFOSLBGO-SOG" version="1"/>
+                                </Via>
+                            </vias>
+                        </DestinationDisplay>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:35186283">
+                            <FrontText>Oslo</FrontText>
+                            <vias>
+                                <Via>
+                                    <DestinationDisplayRef ref="AVI:DestinationDisplay:WFOSLBGO-FDE" version="1"/>
+                                </Via>
+                            </vias>
+                        </DestinationDisplay>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:82679444">
+                            <FrontText>Bergen</FrontText>
+                            <vias>
+                                <Via>
+                                    <DestinationDisplayRef ref="AVI:DestinationDisplay:WFOSLBGO-FDE" version="1"/>
+                                </Via>
+                            </vias>
+                        </DestinationDisplay>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:87832170">
+                            <FrontText>Oslo</FrontText>
+                            <vias>
+                                <Via>
+                                    <DestinationDisplayRef ref="AVI:DestinationDisplay:WFOSLBGO-SOG" version="1"/>
+                                </Via>
+                                <Via>
+                                    <DestinationDisplayRef ref="AVI:DestinationDisplay:WFOSLBGO-HOV" version="1"/>
+                                </Via>
+                            </vias>
+                        </DestinationDisplay>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:WFOSLBGO-BGO">
+                            <FrontText>Bergen</FrontText>
+                        </DestinationDisplay>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:WFOSLBGO-FDE">
+                            <FrontText>Førde</FrontText>
+                        </DestinationDisplay>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:WFOSLBGO-FRO">
+                            <FrontText>Florø</FrontText>
+                        </DestinationDisplay>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:WFOSLBGO-HOV">
+                            <FrontText>Ørsta/Volda</FrontText>
+                        </DestinationDisplay>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:WFOSLBGO-OSL">
+                            <FrontText>Oslo</FrontText>
+                        </DestinationDisplay>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:WFOSLBGO-SDN">
+                            <FrontText>Sandane</FrontText>
+                        </DestinationDisplay>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:WFOSLBGO-SOG">
+                            <FrontText>Sogndal</FrontText>
+                        </DestinationDisplay>
+                    </destinationDisplays>
+                    <scheduledStopPoints>
+                        <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:65706">
+                            <Name>Bergen Lufthavn</Name>
+                            <ShortName>BGO</ShortName>
+                        </ScheduledStopPoint>
+                        <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:69447">
+                            <Name>Førde Lufthamn</Name>
+                            <ShortName>FDE</ShortName>
+                        </ScheduledStopPoint>
+                        <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:69891">
+                            <Name>Florø Lufthamn</Name>
+                            <ShortName>FRO</ShortName>
+                        </ScheduledStopPoint>
+                        <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:71727">
+                            <Name>Ørsta-Volda Lufthamn</Name>
+                            <ShortName>HOV</ShortName>
+                        </ScheduledStopPoint>
+                        <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:78568">
+                            <Name>Oslo Lufthavn</Name>
+                            <ShortName>OSL</ShortName>
+                        </ScheduledStopPoint>
+                        <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:81949">
+                            <Name>Sandane Lufthamn</Name>
+                            <ShortName>SDN</ShortName>
+                        </ScheduledStopPoint>
+                        <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:82283">
+                            <Name>Sogndal Lufthamn</Name>
+                            <ShortName>SOG</ShortName>
+                        </ScheduledStopPoint>
+                    </scheduledStopPoints>
+                    <stopAssignments>
+                        <PassengerStopAssignment order="5" version="1" id="AVI:PassengerStopAssignment:65706">
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:65706" version="1"/>
+                            <StopPlaceRef ref="AVI:StopPlace:BGO" version="1"/>
+                            <QuayRef ref="AVI:Quay:BGO" version="1"/>
+                        </PassengerStopAssignment>
+                        <PassengerStopAssignment order="11" version="1" id="AVI:PassengerStopAssignment:69447">
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:69447" version="1"/>
+                            <StopPlaceRef ref="AVI:StopPlace:FDE" version="1"/>
+                            <QuayRef ref="AVI:Quay:FDE" version="1"/>
+                        </PassengerStopAssignment>
+                        <PassengerStopAssignment order="12" version="1" id="AVI:PassengerStopAssignment:69891">
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:69891" version="1"/>
+                            <StopPlaceRef ref="AVI:StopPlace:FRO" version="1"/>
+                            <QuayRef ref="AVI:Quay:FRO" version="1"/>
+                        </PassengerStopAssignment>
+                        <PassengerStopAssignment order="16" version="1" id="AVI:PassengerStopAssignment:71727">
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:71727" version="1"/>
+                            <StopPlaceRef ref="AVI:StopPlace:HOV" version="1"/>
+                            <QuayRef ref="AVI:Quay:HOV" version="1"/>
+                        </PassengerStopAssignment>
+                        <PassengerStopAssignment order="29" version="1" id="AVI:PassengerStopAssignment:78568">
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:78568" version="1"/>
+                            <StopPlaceRef ref="AVI:StopPlace:OSL" version="1"/>
+                            <QuayRef ref="AVI:Quay:OSL" version="1"/>
+                        </PassengerStopAssignment>
+                        <PassengerStopAssignment order="34" version="1" id="AVI:PassengerStopAssignment:81949">
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:81949" version="1"/>
+                            <StopPlaceRef ref="AVI:StopPlace:SDN" version="1"/>
+                            <QuayRef ref="AVI:Quay:SDN" version="1"/>
+                        </PassengerStopAssignment>
+                        <PassengerStopAssignment order="36" version="1" id="AVI:PassengerStopAssignment:82283">
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:82283" version="1"/>
+                            <StopPlaceRef ref="AVI:StopPlace:SOG" version="1"/>
+                            <QuayRef ref="AVI:Quay:SOG" version="1"/>
+                        </PassengerStopAssignment>
+                    </stopAssignments>
+                    <journeyPatterns>
+                        <JourneyPattern version="1" id="AVI:JourneyPattern:12431890">
+                            <RouteRef ref="AVI:Route:12431890" version="1"/>
+                            <DestinationDisplayRef ref="AVI:DestinationDisplay:12431890" version="1"/>
+                            <pointsInSequence>
+                                <StopPointInJourneyPattern order="1" version="1" id="AVI:StopPointInJourneyPattern:1243189001">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:78568" version="1"/>
+                                    <ForAlighting>false</ForAlighting>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:1243189002">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:71727" version="1"/>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="3" version="1" id="AVI:StopPointInJourneyPattern:1243189003">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:82283" version="1"/>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="4" version="1" id="AVI:StopPointInJourneyPattern:1243189004">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:65706" version="1"/>
+                                    <ForBoarding>false</ForBoarding>
+                                </StopPointInJourneyPattern>
+                            </pointsInSequence>
+                        </JourneyPattern>
+                        <JourneyPattern version="1" id="AVI:JourneyPattern:13472272">
+                            <RouteRef ref="AVI:Route:13472272" version="1"/>
+                            <DestinationDisplayRef ref="AVI:DestinationDisplay:13472272" version="1"/>
+                            <pointsInSequence>
+                                <StopPointInJourneyPattern order="1" version="1" id="AVI:StopPointInJourneyPattern:1347227201">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:78568" version="1"/>
+                                    <ForAlighting>false</ForAlighting>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:1347227202">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:81949" version="1"/>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="3" version="1" id="AVI:StopPointInJourneyPattern:1347227203">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:69891" version="1"/>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="4" version="1" id="AVI:StopPointInJourneyPattern:1347227204">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:65706" version="1"/>
+                                    <ForBoarding>false</ForBoarding>
+                                </StopPointInJourneyPattern>
+                            </pointsInSequence>
+                        </JourneyPattern>
+                        <JourneyPattern version="1" id="AVI:JourneyPattern:13824491">
+                            <RouteRef ref="AVI:Route:13824491" version="1"/>
+                            <DestinationDisplayRef ref="AVI:DestinationDisplay:13824491" version="1"/>
+                            <pointsInSequence>
+                                <StopPointInJourneyPattern order="1" version="1" id="AVI:StopPointInJourneyPattern:1382449101">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:65706" version="1"/>
+                                    <ForAlighting>false</ForAlighting>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:1382449102">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:82283" version="1"/>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="3" version="1" id="AVI:StopPointInJourneyPattern:1382449103">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:78568" version="1"/>
+                                    <ForBoarding>false</ForBoarding>
+                                </StopPointInJourneyPattern>
+                            </pointsInSequence>
+                        </JourneyPattern>
+                        <JourneyPattern version="1" id="AVI:JourneyPattern:17537650">
+                            <RouteRef ref="AVI:Route:17537650" version="1"/>
+                            <DestinationDisplayRef ref="AVI:DestinationDisplay:17537650" version="1"/>
+                            <pointsInSequence>
+                                <StopPointInJourneyPattern order="1" version="1" id="AVI:StopPointInJourneyPattern:1753765001">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:65706" version="1"/>
+                                    <ForAlighting>false</ForAlighting>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:1753765002">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:71727" version="1"/>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="3" version="1" id="AVI:StopPointInJourneyPattern:1753765003">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:78568" version="1"/>
+                                    <ForBoarding>false</ForBoarding>
+                                </StopPointInJourneyPattern>
+                            </pointsInSequence>
+                        </JourneyPattern>
+                        <JourneyPattern version="1" id="AVI:JourneyPattern:20379188">
+                            <RouteRef ref="AVI:Route:20379188" version="1"/>
+                            <DestinationDisplayRef ref="AVI:DestinationDisplay:20379188" version="1"/>
+                            <pointsInSequence>
+                                <StopPointInJourneyPattern order="1" version="1" id="AVI:StopPointInJourneyPattern:2037918801">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:78568" version="1"/>
+                                    <ForAlighting>false</ForAlighting>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:2037918802">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:82283" version="1"/>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="3" version="1" id="AVI:StopPointInJourneyPattern:2037918803">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:65706" version="1"/>
+                                    <ForBoarding>false</ForBoarding>
+                                </StopPointInJourneyPattern>
+                            </pointsInSequence>
+                        </JourneyPattern>
+                        <JourneyPattern version="1" id="AVI:JourneyPattern:35186283">
+                            <RouteRef ref="AVI:Route:35186283" version="1"/>
+                            <DestinationDisplayRef ref="AVI:DestinationDisplay:35186283" version="1"/>
+                            <pointsInSequence>
+                                <StopPointInJourneyPattern order="1" version="1" id="AVI:StopPointInJourneyPattern:3518628301">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:65706" version="1"/>
+                                    <ForAlighting>false</ForAlighting>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:3518628302">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:69447" version="1"/>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="3" version="1" id="AVI:StopPointInJourneyPattern:3518628303">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:78568" version="1"/>
+                                    <ForBoarding>false</ForBoarding>
+                                </StopPointInJourneyPattern>
+                            </pointsInSequence>
+                        </JourneyPattern>
+                        <JourneyPattern version="1" id="AVI:JourneyPattern:82679444">
+                            <RouteRef ref="AVI:Route:82679444" version="1"/>
+                            <DestinationDisplayRef ref="AVI:DestinationDisplay:82679444" version="1"/>
+                            <pointsInSequence>
+                                <StopPointInJourneyPattern order="1" version="1" id="AVI:StopPointInJourneyPattern:8267944401">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:78568" version="1"/>
+                                    <ForAlighting>false</ForAlighting>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:8267944402">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:69447" version="1"/>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="3" version="1" id="AVI:StopPointInJourneyPattern:8267944403">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:65706" version="1"/>
+                                    <ForBoarding>false</ForBoarding>
+                                </StopPointInJourneyPattern>
+                            </pointsInSequence>
+                        </JourneyPattern>
+                        <JourneyPattern version="1" id="AVI:JourneyPattern:87832170">
+                            <RouteRef ref="AVI:Route:87832170" version="1"/>
+                            <DestinationDisplayRef ref="AVI:DestinationDisplay:87832170" version="1"/>
+                            <pointsInSequence>
+                                <StopPointInJourneyPattern order="1" version="1" id="AVI:StopPointInJourneyPattern:8783217001">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:65706" version="1"/>
+                                    <ForAlighting>false</ForAlighting>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:8783217002">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:82283" version="1"/>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="3" version="1" id="AVI:StopPointInJourneyPattern:8783217003">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:71727" version="1"/>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="4" version="1" id="AVI:StopPointInJourneyPattern:8783217004">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:78568" version="1"/>
+                                    <ForBoarding>false</ForBoarding>
+                                </StopPointInJourneyPattern>
+                            </pointsInSequence>
+                        </JourneyPattern>
+                    </journeyPatterns>
+                </ServiceFrame>
+                <TimetableFrame version="1" id="AVI:TimetableFrame:1936348">
+                    <vehicleJourneys>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF193-01-82679444">
+                            <DepartureTime>16:40:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Mon_13" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Tue_14" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Wed_15" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Thu_16" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Fri_17" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Sun_19" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:82679444" version="1"/>
+                            <PublicCode>WF193</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:8267944401" version="1"/>
+                                    <DepartureTime>16:40:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:8267944402" version="1"/>
+                                    <ArrivalTime>17:40:00Z</ArrivalTime>
+                                    <DepartureTime>17:55:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:8267944403" version="1"/>
+                                    <ArrivalTime>18:25:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF196-01-35186283">
+                            <DepartureTime>18:55:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Mon_13" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Tue_14" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Wed_15" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Thu_16" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Fri_17" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Sun_19" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:35186283" version="1"/>
+                            <PublicCode>WF196</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:3518628301" version="1"/>
+                                    <DepartureTime>18:55:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:3518628302" version="1"/>
+                                    <ArrivalTime>19:30:00Z</ArrivalTime>
+                                    <DepartureTime>19:45:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:3518628303" version="1"/>
+                                    <ArrivalTime>20:45:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF196-02-35186283">
+                            <DepartureTime>17:55:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Mon_13" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Tue_14" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Wed_15" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Thu_16" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Fri_17" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Sun_19" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:35186283" version="1"/>
+                            <PublicCode>WF196</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:3518628301" version="1"/>
+                                    <DepartureTime>17:55:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:3518628302" version="1"/>
+                                    <ArrivalTime>18:30:00Z</ArrivalTime>
+                                    <DepartureTime>18:45:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:3518628303" version="1"/>
+                                    <ArrivalTime>19:45:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF148-01-87832170">
+                            <DepartureTime>06:40:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Mon_13" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Tue_14" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Wed_15" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Thu_16" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Fri_17" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:87832170" version="1"/>
+                            <PublicCode>WF148</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:8783217001" version="1"/>
+                                    <DepartureTime>06:40:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:8783217002" version="1"/>
+                                    <ArrivalTime>07:15:00Z</ArrivalTime>
+                                    <DepartureTime>07:35:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:8783217003" version="1"/>
+                                    <ArrivalTime>08:05:00Z</ArrivalTime>
+                                    <DepartureTime>08:25:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:8783217004" version="1"/>
+                                    <ArrivalTime>09:25:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF148-02-87832170">
+                            <DepartureTime>07:50:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Mon_13" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Tue_14" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Wed_15" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Thu_16" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Fri_17" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:87832170" version="1"/>
+                            <PublicCode>WF148</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:8783217001" version="1"/>
+                                    <DepartureTime>07:50:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:8783217002" version="1"/>
+                                    <ArrivalTime>08:25:00Z</ArrivalTime>
+                                    <DepartureTime>08:45:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:8783217003" version="1"/>
+                                    <ArrivalTime>09:17:00Z</ArrivalTime>
+                                    <DepartureTime>09:35:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:8783217004" version="1"/>
+                                    <ArrivalTime>10:40:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF148-03-87832170">
+                            <DepartureTime>06:40:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Mon_13" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Tue_14" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Wed_15" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Thu_16" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Fri_17" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:87832170" version="1"/>
+                            <PublicCode>WF148</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:8783217001" version="1"/>
+                                    <DepartureTime>06:40:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:8783217002" version="1"/>
+                                    <ArrivalTime>07:15:00Z</ArrivalTime>
+                                    <DepartureTime>07:35:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:8783217003" version="1"/>
+                                    <ArrivalTime>08:07:00Z</ArrivalTime>
+                                    <DepartureTime>08:23:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:8783217004" version="1"/>
+                                    <ArrivalTime>09:25:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF162-01-20379188">
+                            <DepartureTime>04:15:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Mon_13" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Tue_14" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Wed_15" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Thu_16" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Fri_17" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:20379188" version="1"/>
+                            <PublicCode>WF162</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:2037918801" version="1"/>
+                                    <DepartureTime>04:15:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:2037918802" version="1"/>
+                                    <ArrivalTime>05:05:00Z</ArrivalTime>
+                                    <DepartureTime>05:22:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:2037918803" version="1"/>
+                                    <ArrivalTime>05:55:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF162-02-20379188">
+                            <DepartureTime>05:20:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Mon_13" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Tue_14" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Wed_15" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Thu_16" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Fri_17" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:20379188" version="1"/>
+                            <PublicCode>WF162</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:2037918801" version="1"/>
+                                    <DepartureTime>05:20:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:2037918802" version="1"/>
+                                    <ArrivalTime>06:10:00Z</ArrivalTime>
+                                    <DepartureTime>06:27:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:2037918803" version="1"/>
+                                    <ArrivalTime>07:00:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF162-03-20379188">
+                            <DepartureTime>04:00:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Mon_13" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Tue_14" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Thu_16" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Fri_17" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:20379188" version="1"/>
+                            <PublicCode>WF162</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:2037918801" version="1"/>
+                                    <DepartureTime>04:00:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:2037918802" version="1"/>
+                                    <ArrivalTime>04:50:00Z</ArrivalTime>
+                                    <DepartureTime>05:05:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:2037918803" version="1"/>
+                                    <ArrivalTime>05:35:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF162-04-20379188">
+                            <DepartureTime>04:00:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Wed_15" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:20379188" version="1"/>
+                            <PublicCode>WF162</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:2037918801" version="1"/>
+                                    <DepartureTime>04:00:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:2037918802" version="1"/>
+                                    <ArrivalTime>04:50:00Z</ArrivalTime>
+                                    <DepartureTime>05:07:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:2037918803" version="1"/>
+                                    <ArrivalTime>05:40:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF142-01-20379188">
+                            <DepartureTime>08:45:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Sat_18" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:20379188" version="1"/>
+                            <PublicCode>WF142</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:2037918801" version="1"/>
+                                    <DepartureTime>08:45:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:2037918802" version="1"/>
+                                    <ArrivalTime>09:35:00Z</ArrivalTime>
+                                    <DepartureTime>09:50:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:2037918803" version="1"/>
+                                    <ArrivalTime>10:23:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF142-02-20379188">
+                            <DepartureTime>07:45:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Sat_18" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:20379188" version="1"/>
+                            <PublicCode>WF142</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:2037918801" version="1"/>
+                                    <DepartureTime>07:45:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:2037918802" version="1"/>
+                                    <ArrivalTime>08:35:00Z</ArrivalTime>
+                                    <DepartureTime>08:50:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:2037918803" version="1"/>
+                                    <ArrivalTime>09:23:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF163-01-13824491">
+                            <DepartureTime>18:00:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Mon_13" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Tue_14" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Wed_15" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Thu_16" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Fri_17" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Sun_19" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:13824491" version="1"/>
+                            <PublicCode>WF163</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1382449101" version="1"/>
+                                    <DepartureTime>18:00:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1382449102" version="1"/>
+                                    <ArrivalTime>18:35:00Z</ArrivalTime>
+                                    <DepartureTime>18:50:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1382449103" version="1"/>
+                                    <ArrivalTime>19:40:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF163-02-13824491">
+                            <DepartureTime>19:10:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Mon_13" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Tue_14" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Wed_15" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Thu_16" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Fri_17" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Sun_19" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:13824491" version="1"/>
+                            <PublicCode>WF163</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1382449101" version="1"/>
+                                    <DepartureTime>19:10:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1382449102" version="1"/>
+                                    <ArrivalTime>19:45:00Z</ArrivalTime>
+                                    <DepartureTime>20:00:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1382449103" version="1"/>
+                                    <ArrivalTime>20:50:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF143-01-13824491">
+                            <DepartureTime>10:30:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Sat_18" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:13824491" version="1"/>
+                            <PublicCode>WF143</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1382449101" version="1"/>
+                                    <DepartureTime>10:30:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1382449102" version="1"/>
+                                    <ArrivalTime>11:05:00Z</ArrivalTime>
+                                    <DepartureTime>11:20:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1382449103" version="1"/>
+                                    <ArrivalTime>12:07:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF143-02-13824491">
+                            <DepartureTime>11:30:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Sat_18" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:13824491" version="1"/>
+                            <PublicCode>WF143</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1382449101" version="1"/>
+                                    <DepartureTime>11:30:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1382449102" version="1"/>
+                                    <ArrivalTime>12:05:00Z</ArrivalTime>
+                                    <DepartureTime>12:20:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1382449103" version="1"/>
+                                    <ArrivalTime>13:10:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF149-01-12431890">
+                            <DepartureTime>14:00:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Mon_13" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Tue_14" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Wed_15" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Thu_16" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Fri_17" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Sun_19" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:12431890" version="1"/>
+                            <PublicCode>WF149</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1243189001" version="1"/>
+                                    <DepartureTime>14:00:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1243189002" version="1"/>
+                                    <ArrivalTime>15:10:00Z</ArrivalTime>
+                                    <DepartureTime>15:30:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1243189003" version="1"/>
+                                    <ArrivalTime>16:05:00Z</ArrivalTime>
+                                    <DepartureTime>16:20:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1243189004" version="1"/>
+                                    <ArrivalTime>16:55:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF149-02-12431890">
+                            <DepartureTime>15:05:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Mon_13" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Tue_14" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Wed_15" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Thu_16" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Fri_17" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Sun_19" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:12431890" version="1"/>
+                            <PublicCode>WF149</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1243189001" version="1"/>
+                                    <DepartureTime>15:05:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1243189002" version="1"/>
+                                    <ArrivalTime>16:10:00Z</ArrivalTime>
+                                    <DepartureTime>16:30:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1243189003" version="1"/>
+                                    <ArrivalTime>17:05:00Z</ArrivalTime>
+                                    <DepartureTime>17:27:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1243189004" version="1"/>
+                                    <ArrivalTime>18:00:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF149-03-12431890">
+                            <DepartureTime>14:05:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Mon_13" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Tue_14" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Wed_15" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Thu_16" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Fri_17" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:12431890" version="1"/>
+                            <PublicCode>WF149</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1243189001" version="1"/>
+                                    <DepartureTime>14:05:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1243189002" version="1"/>
+                                    <ArrivalTime>15:15:00Z</ArrivalTime>
+                                    <DepartureTime>15:30:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1243189003" version="1"/>
+                                    <ArrivalTime>16:05:00Z</ArrivalTime>
+                                    <DepartureTime>16:20:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1243189004" version="1"/>
+                                    <ArrivalTime>16:55:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF135-01-13472272">
+                            <DepartureTime>10:10:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Sat_18" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:13472272" version="1"/>
+                            <PublicCode>WF135</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1347227201" version="1"/>
+                                    <DepartureTime>10:10:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1347227202" version="1"/>
+                                    <ArrivalTime>11:15:00Z</ArrivalTime>
+                                    <DepartureTime>11:35:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1347227203" version="1"/>
+                                    <ArrivalTime>12:00:00Z</ArrivalTime>
+                                    <DepartureTime>12:20:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1347227204" version="1"/>
+                                    <ArrivalTime>12:55:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF166-01-17537650">
+                            <DepartureTime>17:55:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Mon_13" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Tue_14" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Wed_15" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Thu_16" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Fri_17" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1342077009-Mar_Sun_19" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:17537650" version="1"/>
+                            <PublicCode>WF166</PublicCode>
+                            <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1753765001" version="1"/>
+                                    <DepartureTime>17:55:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1753765002" version="1"/>
+                                    <ArrivalTime>18:45:00Z</ArrivalTime>
+                                    <DepartureTime>19:00:00Z</DepartureTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1753765003" version="1"/>
+                                    <ArrivalTime>20:05:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                        </ServiceJourney>
+                    </vehicleJourneys>
+                </TimetableFrame>
+                <ServiceCalendarFrame version="1" id="AVI:ServiceCalendarFrame:8773825">
+                    <dayTypes>
+                        <DayType version="1" id="AVI:DayType:1342077009-Mar_Mon_13"/>
+                        <DayType version="1" id="AVI:DayType:1342077009-Mar_Tue_14"/>
+                        <DayType version="1" id="AVI:DayType:1342077009-Mar_Wed_15"/>
+                        <DayType version="1" id="AVI:DayType:1342077009-Mar_Thu_16"/>
+                        <DayType version="1" id="AVI:DayType:1342077009-Mar_Fri_17"/>
+                        <DayType version="1" id="AVI:DayType:1342077009-Mar_Sat_18"/>
+                        <DayType version="1" id="AVI:DayType:1342077009-Mar_Sun_19"/>
+                    </dayTypes>
+                    <dayTypeAssignments>
+                        <DayTypeAssignment order="2" version="1" id="AVI:DayTypeAssignment:1342077009-Mar_Mon_13">
+                            <Date>2017-03-13Z</Date>
+                            <DayTypeRef ref="AVI:DayType:1342077009-Mar_Mon_13" version="1"/>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="3" version="1" id="AVI:DayTypeAssignment:1342077009-Mar_Tue_14">
+                            <Date>2017-03-14Z</Date>
+                            <DayTypeRef ref="AVI:DayType:1342077009-Mar_Tue_14" version="1"/>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="4" version="1" id="AVI:DayTypeAssignment:1342077009-Mar_Wed_15">
+                            <Date>2017-03-15Z</Date>
+                            <DayTypeRef ref="AVI:DayType:1342077009-Mar_Wed_15" version="1"/>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="5" version="1" id="AVI:DayTypeAssignment:1342077009-Mar_Thu_16">
+                            <Date>2017-03-16Z</Date>
+                            <DayTypeRef ref="AVI:DayType:1342077009-Mar_Thu_16" version="1"/>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="6" version="1" id="AVI:DayTypeAssignment:1342077009-Mar_Fri_17">
+                            <Date>2017-03-17Z</Date>
+                            <DayTypeRef ref="AVI:DayType:1342077009-Mar_Fri_17" version="1"/>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="1" version="1" id="AVI:DayTypeAssignment:1342077009-Mar_Sat_18">
+                            <Date>2017-03-18Z</Date>
+                            <DayTypeRef ref="AVI:DayType:1342077009-Mar_Sat_18" version="1"/>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="7" version="1" id="AVI:DayTypeAssignment:1342077009-Mar_Sun_19">
+                            <Date>2017-03-19Z</Date>
+                            <DayTypeRef ref="AVI:DayType:1342077009-Mar_Sun_19" version="1"/>
+                        </DayTypeAssignment>
+                    </dayTypeAssignments>
+                </ServiceCalendarFrame>
+            </frames>
+        </CompositeFrame>
+    </dataObjects>
+</PublicationDelivery>

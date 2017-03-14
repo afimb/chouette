@@ -207,7 +207,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
     }
 
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
-    public void verifyExportLine() throws Exception {
+    public void verifyExportAvinorLine() throws Exception {
         importLines("C_NETEX_1.xml", 1, 1);
 
         Context context = initExportContext();
@@ -240,10 +240,48 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
             Reporter.log(info.toString(), true);
         }
 
-        // TODO enable when validation is in place
-        //ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
-        //Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
-        //Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
+        ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
+        Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
+        Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
+    }
+
+    @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
+    public void verifyExportAvinorLineWithMultipleStops() throws Exception {
+        importLines("C_NETEX_5.xml", 1, 1);
+
+        Context context = initExportContext();
+        NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
+        configuration.setAddMetadata(true);
+        configuration.setReferencesType("line");
+        configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
+
+        Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
+
+        try {
+            command.execute(context);
+        } catch (Exception ex) {
+            log.error("test failed", ex);
+            throw ex;
+        }
+
+        ActionReport report = (ActionReport) context.get(REPORT);
+        Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+        Assert.assertEquals(report.getFiles().size(), 1, "file reported");
+
+        for (FileReport info : report.getFiles()) {
+            Reporter.log(info.toString(),true);
+        }
+
+        Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 1, "line reported");
+
+        for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+            Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "line status");
+            Reporter.log(info.toString(), true);
+        }
+
+        ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
+        Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
+        Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
     }
 
     private void importLines(String file, int fileCount, int lineCount) throws Exception {
