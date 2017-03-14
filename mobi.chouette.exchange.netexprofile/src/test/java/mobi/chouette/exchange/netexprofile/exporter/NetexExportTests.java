@@ -208,7 +208,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void verifyExportAvinorLine() throws Exception {
-        importLines("C_NETEX_1.xml", 1, 1);
+        importLines("C_NETEX_1.xml", 1, 1, "AVI,http://www.rutebanken.org/ns/avi");
 
         Context context = initExportContext();
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
@@ -247,7 +247,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void verifyExportAvinorLineWithMultipleStops() throws Exception {
-        importLines("C_NETEX_5.xml", 1, 1);
+        importLines("C_NETEX_5.xml", 1, 1, "AVI,http://www.rutebanken.org/ns/avi");
 
         Context context = initExportContext();
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
@@ -284,7 +284,46 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
     }
 
-    private void importLines(String file, int fileCount, int lineCount) throws Exception {
+    @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
+    public void verifyExportRuterLine() throws Exception {
+        importLines("ruter_single_line_210_with_commondata.zip", 2, 1, "RUT,http://www.rutebanken.org/ns/rut");
+
+        Context context = initExportContext();
+        NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
+        configuration.setAddMetadata(true);
+        configuration.setReferencesType("line");
+        configuration.setValidCodespaces("RUT,http://www.rutebanken.org/ns/rut");
+
+        Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
+
+        try {
+            command.execute(context);
+        } catch (Exception ex) {
+            log.error("test failed", ex);
+            throw ex;
+        }
+
+        ActionReport report = (ActionReport) context.get(REPORT);
+        Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+        Assert.assertEquals(report.getFiles().size(), 1, "file reported");
+
+        for (FileReport info : report.getFiles()) {
+            Reporter.log(info.toString(),true);
+        }
+
+        Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 1, "line reported");
+
+        for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+            Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "line status");
+            Reporter.log(info.toString(), true);
+        }
+
+        ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
+        Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
+        Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
+    }
+
+    private void importLines(String file, int fileCount, int lineCount, String validCodespaces) throws Exception {
         Context context = initImportContext();
         NetexTestUtils.copyFile(file);
         JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
@@ -295,7 +334,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
         configuration.setNoSave(false);
         configuration.setCleanRepository(true);
-        configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
+        configuration.setValidCodespaces(validCodespaces);
 
         try {
             command.execute(context);
