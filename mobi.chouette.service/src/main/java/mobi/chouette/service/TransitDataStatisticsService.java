@@ -1,7 +1,8 @@
 package mobi.chouette.service;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.CalendarPatternAnalyzer;
+import org.rutebanken.helper.calendar.CalendarPattern;
+import org.rutebanken.helper.calendar.CalendarPatternAnalyzer;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.TimetableDAO;
 import mobi.chouette.model.CalendarDay;
@@ -17,7 +18,6 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -284,11 +284,11 @@ public class TransitDataStatisticsService {
 		Set<java.time.LocalDate> includedDays = calendarDays.stream().filter(CalendarDay::getIncluded)
 				                                        .map(c -> c.getDate().toLocalDate()).collect(Collectors.toSet());
 
-		CalendarPatternAnalyzer.ValidityInterval validityInterval = new CalendarPatternAnalyzer().computeValidityInterval(includedDays);
+		CalendarPattern pattern = new CalendarPatternAnalyzer().computeCalendarPattern(includedDays);
 
-		if (validityInterval != null) {
-			Date from = java.sql.Date.valueOf(validityInterval.from);
-			Date to = java.sql.Date.valueOf(validityInterval.to);
+		if (pattern != null) {
+			Date from = java.sql.Date.valueOf(pattern.from);
+			Date to = java.sql.Date.valueOf(pattern.to);
 			return new Period(from, to);
 		}
 		return null;

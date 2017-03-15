@@ -105,6 +105,10 @@
 		<groupId>joda-time</groupId>
 		<artifactId>joda-time</artifactId>
 		</dependency>
+       <dependency>
+           <groupId>org.rutebanken.helpers</groupId>
+           <artifactId>calendar-helper</artifactId>
+       </dependency>
       <!-- Modules -->
       <dependency>
          <groupId>${project.groupId}</groupId>
@@ -124,12 +128,6 @@
          <type>ejb</type>
          <version>${project.version}</version>
       </dependency>
-       <dependency>
-           <groupId>${project.groupId}</groupId>
-           <artifactId>mobi.chouette.common</artifactId>
-           <type>ejb</type>
-           <version>${project.version}</version>
-       </dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
