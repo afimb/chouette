@@ -100,7 +100,6 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 				reporter.setFileState(context, p.getFileName().toString(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.ERROR);
             }
             context.put(NETEX_FILE_PATHS, allFilePaths);
-            
 
             // schema validation
  
@@ -205,6 +204,9 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
         boolean level3validation = context.get(VALIDATION) != null;
 
         List<Command> commands = new ArrayList<>();
+
+        // TODO consider adding separate command for cleaning up netex referential, or split in 2 (common & line)
+
         try {
             if (level3validation) {
                 // add shared data validation

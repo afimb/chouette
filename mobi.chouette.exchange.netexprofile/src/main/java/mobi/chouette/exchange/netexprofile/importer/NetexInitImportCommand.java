@@ -8,6 +8,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexNamespaceContext;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
@@ -52,6 +53,7 @@ public class NetexInitImportCommand implements Command, Constant {
 			context.put(NETEX_XPATH, xpath);
 
 			context.put(REFERENTIAL, new Referential());
+			context.put(NETEX_REFERENTIAL, new NetexReferential());
 			context.put(VALIDATION_DATA, new ValidationData());
 
 			Map<String, NetexProfileValidator> availableProfileValidators = new HashMap<>();

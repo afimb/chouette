@@ -172,4 +172,8 @@ public class NetexParserUtils extends ParserUtils {
 		return version;
 	}
 
+	public static String netexId(String objectIdPrefix, String elementName, String objectIdSuffix) {
+		return objectIdPrefix + ":" + elementName + ":" + objectIdSuffix;
+	}
+
 }

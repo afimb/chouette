@@ -214,6 +214,89 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		utx.rollback();
 	}
 
+	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")
+	public void verifyImportSingleLineWithOperatingPeriods() throws Exception {
+		Context context = initImportContext();
+		NetexTestUtils.copyFile("C_NETEX_6.xml");
+
+		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
+		jobData.setInputFilename("C_NETEX_6.xml");
+
+		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(initialContext, NetexprofileImporterCommand.class.getName());
+
+		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
+		configuration.setNoSave(false);
+		configuration.setCleanRepository(true);
+		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
+
+		boolean result;
+		try {
+			result = command.execute(context);
+		} catch (Exception ex) {
+			log.error("test failed", ex);
+			throw ex;
+		}
+
+		ActionReport report = (ActionReport) context.get(REPORT);
+		Reporter.log("report :" + report.toString(), true);
+		dumpReports(context);
+
+		Assert.assertEquals(report.getResult(), STATUS_OK, "fileValidationResult");
+		Assert.assertEquals(report.getFiles().size(), 1, "file reported");
+		Assert.assertNotNull(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE), "line reported");
+		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 1, "line reported");
+
+		for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+			Reporter.log("report line :" + info.toString(), true);
+			Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "line status");
+		}
+
+		utx.begin();
+		em.joinTransaction();
+
+		Line line = lineDao.findByObjectId("AVI:Line:WF_TRD-MOL");
+
+		Assert.assertNotNull(line, "Line not found");
+
+		int numVehicleJourneys = 0;
+		int numJourneyPatterns = 0;
+		int numTimetables = 0;
+
+		for (Route route : line.getRoutes()) {
+			Assert.assertNotEquals(route.getJourneyPatterns().size(), 0, "line routes must have journeyPattens");
+
+			for (JourneyPattern jp : route.getJourneyPatterns()) {
+
+				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0, " journeyPattern should have VehicleJourneys");
+
+				for (VehicleJourney vj : jp.getVehicleJourneys()) {
+					Assert.assertNotEquals(vj.getTimetables().size(), 0, " vehicleJourney should have timetables");
+					List<Timetable> timetables = vj.getTimetables();
+
+					for (Timetable timetable : timetables) {
+						Assert.assertNotNull(timetable.getStartOfPeriod());
+						Assert.assertNotNull(timetable.getEndOfPeriod());
+
+						Assert.assertNotEquals(timetable.getDayTypes(), 0, " timetable should have day types");
+						Assert.assertNotEquals(timetable.getExcludedDates(), 0, " timetable should have excluded dates");
+
+						numTimetables++;
+					}
+
+					numVehicleJourneys++;
+				}
+				numJourneyPatterns++;
+			}
+		}
+
+		assertEquals(numJourneyPatterns, 2, "number of journeyPatterns");
+		assertEquals(numVehicleJourneys, 3, "number of vehicleJourneys");
+		assertEquals(numTimetables, 3, "number of timetables");
+
+		utx.rollback();
+		Assert.assertTrue(result, "Importer command execution failed: " + report.getFailure());
+	}
+
 	@Test
 	public void verifyImportSingleLineWithCommonDataAvinor() throws Exception {
 		Context context = initImportContext();

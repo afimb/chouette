@@ -6,6 +6,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
+import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.*;
@@ -52,13 +53,13 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 				List<ServiceCalendarFrame> serviceCalendarFrames = NetexObjectUtil.getFrames(ServiceCalendarFrame.class, frames);
 
 				// pre processing
-				preParseReferentialDependencies(context, serviceFrames , isCommonDelivery);
+				preParseReferentialDependencies(context, serviceFrames, serviceCalendarFrames, isCommonDelivery);
 
 				// normal processing
 				parseResourceFrames(context, resourceFrames);
 				parseSiteFrames(context, siteFrames);
 				parseServiceFrames(context, serviceFrames , isCommonDelivery);
-				parseServiceCalendarFrame(context, serviceCalendarFrames);
+				//parseServiceCalendarFrame(context, serviceCalendarFrames);
 
 				if (!isCommonDelivery) {
 					List<TimetableFrame> timetableFrames = NetexObjectUtil.getFrames(TimetableFrame.class, frames);
@@ -74,13 +75,13 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 			List<ServiceCalendarFrame> serviceCalendarFrames = NetexObjectUtil.getFrames(ServiceCalendarFrame.class, dataObjectFrames);
 
 			// pre processing
-			preParseReferentialDependencies(context, serviceFrames, isCommonDelivery);
+			preParseReferentialDependencies(context, serviceFrames, serviceCalendarFrames, isCommonDelivery);
 
 			// normal processing
 			parseResourceFrames(context, resourceFrames);
 			parseSiteFrames(context, siteFrames);
 			parseServiceFrames(context, serviceFrames, isCommonDelivery);
-			parseServiceCalendarFrame(context, serviceCalendarFrames);
+			//parseServiceCalendarFrame(context, serviceCalendarFrames);
 
 			if (!isCommonDelivery) {
 				List<TimetableFrame> timetableFrames = NetexObjectUtil.getFrames(TimetableFrame.class, dataObjectFrames);
@@ -93,7 +94,9 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 		updateBoardingAlighting(referential);
 	}
 
-	private void preParseReferentialDependencies(Context context, List<ServiceFrame> serviceFrames, boolean isCommonDelivery) throws Exception {
+	private void preParseReferentialDependencies(Context context, List<ServiceFrame> serviceFrames, List<ServiceCalendarFrame> serviceCalendarFrames, boolean isCommonDelivery) throws Exception {
+		NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
+
 		for (ServiceFrame serviceFrame : serviceFrames) {
 
 			// pre parsing route points
@@ -118,6 +121,66 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 				}
 			}
         }
+
+		// TODO we also need to parse get and parse valid between, and probably put into context
+
+		for (ServiceCalendarFrame serviceCalendarFrame : serviceCalendarFrames) {
+
+			// service calendar frame level
+			if (serviceCalendarFrame.getDayTypes() != null) {
+				for (JAXBElement<? extends DataManagedObjectStructure> dayTypeElement : serviceCalendarFrame.getDayTypes().getDayType_()) {
+					DayType dayType = (DayType) dayTypeElement.getValue();
+					NetexObjectUtil.addDayTypeRef(netexReferential, dayType.getId(), dayType);
+				}
+			}
+			if (serviceCalendarFrame.getDayTypeAssignments() != null) {
+				for (DayTypeAssignment dayTypeAssignment : serviceCalendarFrame.getDayTypeAssignments().getDayTypeAssignment()) {
+					String dayTypeIdRef = dayTypeAssignment.getDayTypeRef().getValue().getRef();
+					NetexObjectUtil.addDayTypeAssignmentRef(netexReferential, dayTypeIdRef, dayTypeAssignment);
+				}
+			}
+			if (serviceCalendarFrame.getOperatingPeriods() != null) {
+				for (OperatingPeriod_VersionStructure operatingPeriodStruct : serviceCalendarFrame.getOperatingPeriods().getOperatingPeriodOrUicOperatingPeriod()) {
+					OperatingPeriod operatingPeriod = (OperatingPeriod) operatingPeriodStruct;
+					NetexObjectUtil.addOperatingPeriodRef(netexReferential, operatingPeriod.getId(), operatingPeriod);
+				}
+			}
+			if (serviceCalendarFrame.getOperatingDays() != null) {
+				for (OperatingDay operatingDay : serviceCalendarFrame.getOperatingDays().getOperatingDay()) {
+					NetexObjectUtil.addOperatingDayRef(netexReferential, operatingDay.getId(), operatingDay);
+				}
+			}
+
+			// service calendar level
+			if (serviceCalendarFrame.getServiceCalendar() != null) {
+				ServiceCalendar serviceCalendar = serviceCalendarFrame.getServiceCalendar();
+
+				if (serviceCalendar.getDayTypes() != null) {
+					for (JAXBElement<?> dayTypeElement : serviceCalendar.getDayTypes().getDayTypeRefOrDayType_()) {
+						DayType dayType = (DayType) dayTypeElement.getValue();
+						NetexObjectUtil.addDayTypeRef(netexReferential, dayType.getId(), dayType);
+					}
+				}
+				if (serviceCalendar.getDayTypeAssignments() != null) {
+					for (DayTypeAssignment dayTypeAssignment : serviceCalendar.getDayTypeAssignments().getDayTypeAssignment()) {
+						String dayTypeIdRef = dayTypeAssignment.getDayTypeRef().getValue().getRef();
+						NetexObjectUtil.addDayTypeAssignmentRef(netexReferential, dayTypeIdRef, dayTypeAssignment);
+					}
+				}
+				if (serviceCalendar.getOperatingPeriods() != null) {
+					for (Object genericOperatingPeriod : serviceCalendar.getOperatingPeriods().getOperatingPeriodRefOrOperatingPeriodOrUicOperatingPeriod()) {
+						OperatingPeriod operatingPeriod = (OperatingPeriod) genericOperatingPeriod;
+						NetexObjectUtil.addOperatingPeriodRef(netexReferential, operatingPeriod.getId(), operatingPeriod);
+					}
+				}
+				if (serviceCalendar.getOperatingDays() != null) {
+					for (Object genericOperatingDay : serviceCalendarFrame.getServiceCalendar().getOperatingDays().getOperatingDayRefOrOperatingDay()) {
+						OperatingDay operatingDay = (OperatingDay) genericOperatingDay;
+						NetexObjectUtil.addOperatingDayRef(netexReferential, operatingDay.getId(), operatingDay);
+					}
+				}
+			}
+		}
     }
 
     private void parseResourceFrames(Context context, List<ResourceFrame> resourceFrames) throws Exception {
