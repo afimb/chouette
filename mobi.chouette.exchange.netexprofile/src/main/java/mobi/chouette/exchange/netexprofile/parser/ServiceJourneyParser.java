@@ -28,13 +28,12 @@ import java.util.Comparator;
 import java.util.List;
 
 import static mobi.chouette.exchange.netexprofile.parser.NetexParserUtils.netexId;
+import static mobi.chouette.exchange.netexprofile.parser.NetexParserUtils.toOffsetDateTime;
 
 @Log4j
 public class ServiceJourneyParser extends NetexParser implements Parser, Constant {
 
     private static final ZoneId LOCAL_ZONE_ID = ZoneId.systemDefault();
-
-    // TODO could be necessary with parsing operating periods and days here too, remember that an OperatingPeriod can have both dates or refs to OperatingDays
 
     @Override
     public void parse(Context context) throws Exception {
@@ -66,7 +65,7 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
                 String dayTypeIdRef = dayTypeRefStructElement.getValue().getRef();
                 DayType dayType = NetexObjectUtil.getDayType(netexReferential, dayTypeIdRef);
                 if (dayType != null) {
-                    parseDayType(netexReferential, dayType, timetable);
+                    parseDayType(context, netexReferential, dayType, timetable);
                 }
             }
             timetable.setFilled(true);
@@ -106,8 +105,13 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
         }
     }
 
-    // TODO find out how to get the validity condition, maybe put the validity condition somewhere in context
-    private void parseDayType(NetexReferential netexReferential, DayType dayType, Timetable timetable) throws Exception {
+    private void parseDayType(Context context, NetexReferential netexReferential, DayType dayType, Timetable timetable) throws Exception {
+        Context parsingContext = (Context) context.get(PARSING_CONTEXT);
+        Context calendarContext = (Context) parsingContext.get(ServiceCalendarParser.LOCAL_CONTEXT);
+
+        Context calendarObjectContext = (Context) calendarContext.get(dayType.getId());
+        ValidBetween validBetween = (ValidBetween) calendarObjectContext.get(ServiceCalendarParser.VALID_BETWEEN);
+
         if (timetable.getObjectVersion() == null) {
             timetable.setObjectVersion(NetexParserUtils.getVersion(dayType));
         }
@@ -150,33 +154,44 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
                     endDate = ParserUtils.getSQLDate(operatingPeriod.getToDate().toString());
                 }
 
+                validBetween = new ValidBetween()
+                        .withFromDate(toOffsetDateTime(startDate))
+                        .withToDate(toOffsetDateTime(endDate));
+
                 timetable.addPeriod(new Period(startDate, endDate));
-            } else if (dayTypeAssignment.getOperatingDayRef() != null) {
+            } else {
+                OffsetDateTime fromDate = validBetween.getFromDate();
+                OffsetDateTime toDate = validBetween.getToDate();
+
+                if (fromDate != null && toDate != null && fromDate.isBefore(toDate)) {
+                    Date sqlFromDate = Date.valueOf(fromDate.toLocalDate());
+                    Date sqlToDate = Date.valueOf(toDate.toLocalDate());
+                    timetable.addPeriod(new Period(sqlFromDate, sqlToDate));
+                } else {
+                    log.error("Validity condition is not valid");
+                    throw new RuntimeException("Validity condition is not valid");
+                }
+            }
+
+            if (dayTypeAssignment.getOperatingDayRef() != null) {
                 String operatingDayIdRef = dayTypeAssignment.getOperatingDayRef().getRef();
                 OperatingDay operatingDay = NetexObjectUtil.getOperatingDay(netexReferential, operatingDayIdRef);
-                OffsetDateTime dateOfOperation = operatingDay.getCalendarDate();
 
-                if (dateOfOperation != null) {
+                if (operatingDay.getCalendarDate() != null && isWithinValidRange(operatingDay.getCalendarDate(), validBetween)) {
                     boolean included = dayTypeAssignment.isIsAvailable() != null ? dayTypeAssignment.isIsAvailable() : Boolean.TRUE;
-                    timetable.addCalendarDay(new CalendarDay(java.sql.Date.valueOf(dateOfOperation.toLocalDate()), included));
+                    timetable.addCalendarDay(new CalendarDay(java.sql.Date.valueOf(operatingDay.getCalendarDate().toLocalDate()), included));
                 }
-
-                // TODO check if date of operation is within valid range, for now just adding to timetable
-                //if (dateOfOperation != null && isWithinValidRange(dateOfOperation, calendarValidBetween)) {
-                //}
             } else {
-                OffsetDateTime dateOfOperation = dayTypeAssignment.getDate();
-
-                if (dateOfOperation != null) {
+                if (dayTypeAssignment.getDate() != null && isWithinValidRange(dayTypeAssignment.getDate(), validBetween)) {
                     boolean included = dayTypeAssignment.isIsAvailable() != null ? dayTypeAssignment.isIsAvailable() : Boolean.TRUE;
-                    timetable.addCalendarDay(new CalendarDay(java.sql.Date.valueOf(dateOfOperation.toLocalDate()), included));
+                    timetable.addCalendarDay(new CalendarDay(java.sql.Date.valueOf(dayTypeAssignment.getDate().toLocalDate()), included));
                 }
-
-                // TODO check if date of operation is within valid range, for now just adding to timetable
-                //if (dateOfOperation != null && isWithinValidRange(dateOfOperation, calendarValidBetween)) {
-                //}
             }
         }
+    }
+
+    private boolean isWithinValidRange(OffsetDateTime dateOfOperation, ValidBetween validBetween) {
+        return !dateOfOperation.isBefore(validBetween.getFromDate()) && !dateOfOperation.isAfter(validBetween.getToDate());
     }
 
     private void parseTimetabledPassingTimes(Context context, Referential referential, ServiceJourney serviceJourney, VehicleJourney vehicleJourney) {

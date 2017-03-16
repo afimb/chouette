@@ -59,7 +59,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 				parseResourceFrames(context, resourceFrames);
 				parseSiteFrames(context, siteFrames);
 				parseServiceFrames(context, serviceFrames , isCommonDelivery);
-				//parseServiceCalendarFrame(context, serviceCalendarFrames);
+				parseServiceCalendarFrame(context, serviceCalendarFrames);
 
 				if (!isCommonDelivery) {
 					List<TimetableFrame> timetableFrames = NetexObjectUtil.getFrames(TimetableFrame.class, frames);
@@ -81,7 +81,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 			parseResourceFrames(context, resourceFrames);
 			parseSiteFrames(context, siteFrames);
 			parseServiceFrames(context, serviceFrames, isCommonDelivery);
-			//parseServiceCalendarFrame(context, serviceCalendarFrames);
+			parseServiceCalendarFrame(context, serviceCalendarFrames);
 
 			if (!isCommonDelivery) {
 				List<TimetableFrame> timetableFrames = NetexObjectUtil.getFrames(TimetableFrame.class, dataObjectFrames);
@@ -102,13 +102,15 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 			// pre parsing route points
 			if (serviceFrame.getRoutePoints() != null) {
 				context.put(NETEX_LINE_DATA_CONTEXT, serviceFrame.getRoutePoints());
-				ParserFactory.create(RoutePointParser.class.getName()).parse(context);
+				Parser routePointParser = ParserFactory.create(RoutePointParser.class.getName());
+				routePointParser.parse(context);
 			}
 
 			// stop assignments
 			if (serviceFrame.getStopAssignments() != null) {
 				context.put(NETEX_LINE_DATA_CONTEXT, serviceFrame.getStopAssignments());
-				ParserFactory.create(StopAssignmentParser.class.getName()).parse(context);
+				Parser stopAssignmentParser = ParserFactory.create(StopAssignmentParser.class.getName());
+				stopAssignmentParser.parse(context);
 			}
 
 			if (!isCommonDelivery) {
@@ -121,67 +123,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 				}
 			}
         }
-
-		// TODO we also need to parse get and parse valid between, and probably put into context
-
-		for (ServiceCalendarFrame serviceCalendarFrame : serviceCalendarFrames) {
-
-			// service calendar frame level
-			if (serviceCalendarFrame.getDayTypes() != null) {
-				for (JAXBElement<? extends DataManagedObjectStructure> dayTypeElement : serviceCalendarFrame.getDayTypes().getDayType_()) {
-					DayType dayType = (DayType) dayTypeElement.getValue();
-					NetexObjectUtil.addDayTypeRef(netexReferential, dayType.getId(), dayType);
-				}
-			}
-			if (serviceCalendarFrame.getDayTypeAssignments() != null) {
-				for (DayTypeAssignment dayTypeAssignment : serviceCalendarFrame.getDayTypeAssignments().getDayTypeAssignment()) {
-					String dayTypeIdRef = dayTypeAssignment.getDayTypeRef().getValue().getRef();
-					NetexObjectUtil.addDayTypeAssignmentRef(netexReferential, dayTypeIdRef, dayTypeAssignment);
-				}
-			}
-			if (serviceCalendarFrame.getOperatingPeriods() != null) {
-				for (OperatingPeriod_VersionStructure operatingPeriodStruct : serviceCalendarFrame.getOperatingPeriods().getOperatingPeriodOrUicOperatingPeriod()) {
-					OperatingPeriod operatingPeriod = (OperatingPeriod) operatingPeriodStruct;
-					NetexObjectUtil.addOperatingPeriodRef(netexReferential, operatingPeriod.getId(), operatingPeriod);
-				}
-			}
-			if (serviceCalendarFrame.getOperatingDays() != null) {
-				for (OperatingDay operatingDay : serviceCalendarFrame.getOperatingDays().getOperatingDay()) {
-					NetexObjectUtil.addOperatingDayRef(netexReferential, operatingDay.getId(), operatingDay);
-				}
-			}
-
-			// service calendar level
-			if (serviceCalendarFrame.getServiceCalendar() != null) {
-				ServiceCalendar serviceCalendar = serviceCalendarFrame.getServiceCalendar();
-
-				if (serviceCalendar.getDayTypes() != null) {
-					for (JAXBElement<?> dayTypeElement : serviceCalendar.getDayTypes().getDayTypeRefOrDayType_()) {
-						DayType dayType = (DayType) dayTypeElement.getValue();
-						NetexObjectUtil.addDayTypeRef(netexReferential, dayType.getId(), dayType);
-					}
-				}
-				if (serviceCalendar.getDayTypeAssignments() != null) {
-					for (DayTypeAssignment dayTypeAssignment : serviceCalendar.getDayTypeAssignments().getDayTypeAssignment()) {
-						String dayTypeIdRef = dayTypeAssignment.getDayTypeRef().getValue().getRef();
-						NetexObjectUtil.addDayTypeAssignmentRef(netexReferential, dayTypeIdRef, dayTypeAssignment);
-					}
-				}
-				if (serviceCalendar.getOperatingPeriods() != null) {
-					for (Object genericOperatingPeriod : serviceCalendar.getOperatingPeriods().getOperatingPeriodRefOrOperatingPeriodOrUicOperatingPeriod()) {
-						OperatingPeriod operatingPeriod = (OperatingPeriod) genericOperatingPeriod;
-						NetexObjectUtil.addOperatingPeriodRef(netexReferential, operatingPeriod.getId(), operatingPeriod);
-					}
-				}
-				if (serviceCalendar.getOperatingDays() != null) {
-					for (Object genericOperatingDay : serviceCalendarFrame.getServiceCalendar().getOperatingDays().getOperatingDayRefOrOperatingDay()) {
-						OperatingDay operatingDay = (OperatingDay) genericOperatingDay;
-						NetexObjectUtil.addOperatingDayRef(netexReferential, operatingDay.getId(), operatingDay);
-					}
-				}
-			}
-		}
-    }
+	}
 
     private void parseResourceFrames(Context context, List<ResourceFrame> resourceFrames) throws Exception {
 		for (ResourceFrame resourceFrame : resourceFrames) {
@@ -240,9 +182,12 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 
 	private void parseServiceCalendarFrame(Context context, List<ServiceCalendarFrame> serviceCalendarFrames) throws Exception {
 		for (ServiceCalendarFrame serviceCalendarFrame : serviceCalendarFrames) {
+
 			parseValidityConditionsInFrame(context, serviceCalendarFrame);
+
 			context.put(NETEX_LINE_DATA_CONTEXT, serviceCalendarFrame);
-			ParserFactory.create(ServiceCalendarParser.class.getName()).parse(context);
+			Parser serviceCalendarParser = ParserFactory.create(ServiceCalendarParser.class.getName());
+			serviceCalendarParser.parse(context);
 		}
 	}
 
@@ -287,7 +232,6 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 		}
 	}
 
-	// TODO add support for multiple validity conditions
 	private void addValidBetween(Context context, String contextKey, ValidBetween validBetween) {
 		Context localContext = getLocalContext(context, LOCAL_CONTEXT);
 
