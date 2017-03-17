@@ -284,7 +284,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
     }
 
-    @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
+    @Test(enabled = false, groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void verifyExportRuterLine() throws Exception {
         importLines("ruter_single_line_210_with_commondata.zip", 2, 1, "RUT,http://www.rutebanken.org/ns/rut");
 

@@ -55,6 +55,18 @@ public class NetexParserUtils extends ParserUtils {
 		return zoneId.getRules().getOffset(Instant.now(Clock.system(zoneId)));
 	}
 
+	public static OffsetDateTime toOffsetDateTime(java.util.Date date) {
+		if (date == null) {
+			return null;
+		}
+		if (date instanceof java.sql.Date) {
+			java.sql.Date sqlDate = (java.sql.Date) date;
+			ZonedDateTime zonedDateTime = sqlDate.toLocalDate().atStartOfDay(ZoneId.systemDefault());
+			return OffsetDateTime.ofInstant(zonedDateTime.toInstant(), ZoneId.systemDefault());
+		}
+		return OffsetDateTime.ofInstant(date.toInstant(), ZoneOffset.systemDefault());
+	}
+
 	public static Date convertToDate(OffsetDateTime offsetDateTime) {
 		return Date.from(offsetDateTime.toLocalDate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 	}
@@ -170,6 +182,10 @@ public class NetexParserUtils extends ParserUtils {
 			log.warn("Unable to parse " + obj.getVersion() + " to Integer as supported by Neptune, returning 0");
 		}
 		return version;
+	}
+
+	public static String netexId(String objectIdPrefix, String elementName, String objectIdSuffix) {
+		return objectIdPrefix + ":" + elementName + ":" + objectIdSuffix;
 	}
 
 }

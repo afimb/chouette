@@ -11,6 +11,7 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
+import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.netexprofile.parser.PublicationDeliveryParser;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
@@ -32,90 +33,94 @@ import java.util.Map;
 @Log4j
 public class NetexCommonFilesParserCommand implements Command, Constant {
 
-	public static final String COMMAND = "NetexCommonFilesParserCommand";
+    public static final String COMMAND = "NetexCommonFilesParserCommand";
 
-	@Override
-	public boolean execute(Context context) throws Exception {
-		boolean result = ERROR;
+    @Override
+    public boolean execute(Context context) throws Exception {
+        boolean result = ERROR;
 
-		Monitor monitor = MonitorFactory.start(COMMAND);
-		String fileName = (String) context.get(FILE_NAME);
-		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
-		context.put(NETEX_WITH_COMMON_DATA, Boolean.TRUE);
-		
-   		Map<IdVersion, List<String>> commonIds = (Map<IdVersion, List<String>>) context.get(mobi.chouette.exchange.netexprofile.Constant.NETEX_COMMON_FILE_IDENTIFICATORS);
+        Monitor monitor = MonitorFactory.start(COMMAND);
+        String fileName = (String) context.get(FILE_NAME);
+        ActionReporter actionReporter = ActionReporter.Factory.getInstance();
+        context.put(NETEX_WITH_COMMON_DATA, Boolean.TRUE);
 
-			try {
+        Map<IdVersion, List<String>> commonIds = (Map<IdVersion, List<String>>) context.get(mobi.chouette.exchange.netexprofile.Constant.NETEX_COMMON_FILE_IDENTIFICATORS);
 
-				Referential referential = (Referential) context.get(REFERENTIAL);
-				if (referential != null) {
-					referential.clear(true);
-				}
+        try {
 
-				Document dom = (Document) context.get(NETEX_DATA_DOM);
+            Referential referential = (Referential) context.get(REFERENTIAL);
+            if (referential != null) {
+                referential.clear(true);
+            }
+            NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
+            if (netexReferential != null) {
+                netexReferential.clear();
+            }
 
-				// Find id-fields and check for duplicates
-				collectEntityIdentificators(context, fileName, dom, commonIds);
-				
-				PublicationDeliveryParser parser = (PublicationDeliveryParser) ParserFactory.create(PublicationDeliveryParser.class.getName());
-				parser.parse(context);
+            Document dom = (Document) context.get(NETEX_DATA_DOM);
 
-				// report service
-				actionReporter.setFileState(context, fileName, IO_TYPE.INPUT, ActionReporter.FILE_STATE.OK);
+            // Find id-fields and check for duplicates
+            collectEntityIdentificators(context, fileName, dom, commonIds);
 
-				result = SUCCESS;
-			} catch (Exception e) {
-				// report service
-				log.error("parsing failed ", e);
-				actionReporter.addFileErrorInReport(context, fileName, ActionReporter.FILE_ERROR_CODE.INTERNAL_ERROR, e.toString());
-			} finally {
-				log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
-			}
-		
-		return result;
-	}
+            PublicationDeliveryParser parser = (PublicationDeliveryParser) ParserFactory.create(PublicationDeliveryParser.class.getName());
+            parser.parse(context);
 
-	protected void collectEntityIdentificators(Context context, String fileName, Document parseFileToDom, Map<IdVersion, List<String>> commonIds)
-			throws XPathExpressionException {
-		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+            // report service
+            actionReporter.setFileState(context, fileName, IO_TYPE.INPUT, ActionReporter.FILE_STATE.OK);
 
-		XPath xpath = (XPath) context.get(NETEX_XPATH);
-		NodeList nodes = (NodeList) xpath.evaluate("//n:*[not(name()='Codespace') and @id]", parseFileToDom, XPathConstants.NODESET);
-		int idCount = nodes.getLength();
-		for (int i = 0; i < idCount; i++) {
-			
-			Node n = nodes.item(i);
-			String elementName = n.getNodeName();
-			String id = n.getAttributes().getNamedItem("id").getNodeValue();
-			String version = null;
-			Node versionAttribute = n.getAttributes().getNamedItem("version");
-			if(versionAttribute != null) {
-				version = versionAttribute.getNodeValue();
-			}
-			IdVersion idVersion = new IdVersion(id, version,elementName,fileName,(Integer)n.getUserData(PositionalXMLReader.LINE_NUMBER_KEY_NAME),(Integer)n.getUserData(PositionalXMLReader.COLUMN_NUMBER_KEY_NAME));
+            result = SUCCESS;
+        } catch (Exception e) {
+            // report service
+            log.error("parsing failed ", e);
+            actionReporter.addFileErrorInReport(context, fileName, ActionReporter.FILE_ERROR_CODE.INTERNAL_ERROR, e.toString());
+        } finally {
+            log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+        }
 
-			data.getDataLocations().put(idVersion.getId(), DataLocationHelper.findDataLocation(idVersion));
+        return result;
+    }
 
-			List<String> list = commonIds.get(idVersion);
-			if(list == null) {
-				list = new ArrayList<String>();
-				commonIds.put(idVersion,list);
-			}
-			list.add(fileName);
-		}
-	}
+    protected void collectEntityIdentificators(Context context, String fileName, Document parseFileToDom, Map<IdVersion, List<String>> commonIds)
+            throws XPathExpressionException {
+        ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 
-	public static class DefaultCommandFactory extends CommandFactory {
+        XPath xpath = (XPath) context.get(NETEX_XPATH);
+        NodeList nodes = (NodeList) xpath.evaluate("//n:*[not(name()='Codespace') and @id]", parseFileToDom, XPathConstants.NODESET);
+        int idCount = nodes.getLength();
+        for (int i = 0; i < idCount; i++) {
 
-		@Override
-		protected Command create(InitialContext context) throws IOException {
-			Command result = new NetexCommonFilesParserCommand();
-			return result;
-		}
-	}
+            Node n = nodes.item(i);
+            String elementName = n.getNodeName();
+            String id = n.getAttributes().getNamedItem("id").getNodeValue();
+            String version = null;
+            Node versionAttribute = n.getAttributes().getNamedItem("version");
+            if (versionAttribute != null) {
+                version = versionAttribute.getNodeValue();
+            }
+            IdVersion idVersion = new IdVersion(id, version, elementName, fileName, (Integer) n.getUserData(PositionalXMLReader.LINE_NUMBER_KEY_NAME), (Integer) n.getUserData(PositionalXMLReader.COLUMN_NUMBER_KEY_NAME));
 
-	static {
-		CommandFactory.factories.put(NetexCommonFilesParserCommand.class.getName(), new DefaultCommandFactory());
-	}
+            data.getDataLocations().put(idVersion.getId(), DataLocationHelper.findDataLocation(idVersion));
+
+            List<String> list = commonIds.get(idVersion);
+            if (list == null) {
+                list = new ArrayList<String>();
+                commonIds.put(idVersion, list);
+            }
+            list.add(fileName);
+        }
+    }
+
+    public static class DefaultCommandFactory extends CommandFactory {
+
+        @Override
+        protected Command create(InitialContext context) throws IOException {
+            Command result = new NetexCommonFilesParserCommand();
+            return result;
+        }
+    }
+
+    static {
+        CommandFactory.factories.put(NetexCommonFilesParserCommand.class.getName(), new DefaultCommandFactory());
+    }
 
 }

@@ -6,6 +6,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
+import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.*;
@@ -52,7 +53,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 				List<ServiceCalendarFrame> serviceCalendarFrames = NetexObjectUtil.getFrames(ServiceCalendarFrame.class, frames);
 
 				// pre processing
-				preParseReferentialDependencies(context, serviceFrames , isCommonDelivery);
+				preParseReferentialDependencies(context, serviceFrames, serviceCalendarFrames, isCommonDelivery);
 
 				// normal processing
 				parseResourceFrames(context, resourceFrames);
@@ -74,7 +75,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 			List<ServiceCalendarFrame> serviceCalendarFrames = NetexObjectUtil.getFrames(ServiceCalendarFrame.class, dataObjectFrames);
 
 			// pre processing
-			preParseReferentialDependencies(context, serviceFrames, isCommonDelivery);
+			preParseReferentialDependencies(context, serviceFrames, serviceCalendarFrames, isCommonDelivery);
 
 			// normal processing
 			parseResourceFrames(context, resourceFrames);
@@ -93,19 +94,23 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 		updateBoardingAlighting(referential);
 	}
 
-	private void preParseReferentialDependencies(Context context, List<ServiceFrame> serviceFrames, boolean isCommonDelivery) throws Exception {
+	private void preParseReferentialDependencies(Context context, List<ServiceFrame> serviceFrames, List<ServiceCalendarFrame> serviceCalendarFrames, boolean isCommonDelivery) throws Exception {
+		NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
+
 		for (ServiceFrame serviceFrame : serviceFrames) {
 
 			// pre parsing route points
 			if (serviceFrame.getRoutePoints() != null) {
 				context.put(NETEX_LINE_DATA_CONTEXT, serviceFrame.getRoutePoints());
-				ParserFactory.create(RoutePointParser.class.getName()).parse(context);
+				Parser routePointParser = ParserFactory.create(RoutePointParser.class.getName());
+				routePointParser.parse(context);
 			}
 
 			// stop assignments
 			if (serviceFrame.getStopAssignments() != null) {
 				context.put(NETEX_LINE_DATA_CONTEXT, serviceFrame.getStopAssignments());
-				ParserFactory.create(StopAssignmentParser.class.getName()).parse(context);
+				Parser stopAssignmentParser = ParserFactory.create(StopAssignmentParser.class.getName());
+				stopAssignmentParser.parse(context);
 			}
 
 			if (!isCommonDelivery) {
@@ -118,7 +123,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 				}
 			}
         }
-    }
+	}
 
     private void parseResourceFrames(Context context, List<ResourceFrame> resourceFrames) throws Exception {
 		for (ResourceFrame resourceFrame : resourceFrames) {
@@ -177,9 +182,12 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 
 	private void parseServiceCalendarFrame(Context context, List<ServiceCalendarFrame> serviceCalendarFrames) throws Exception {
 		for (ServiceCalendarFrame serviceCalendarFrame : serviceCalendarFrames) {
+
 			parseValidityConditionsInFrame(context, serviceCalendarFrame);
+
 			context.put(NETEX_LINE_DATA_CONTEXT, serviceCalendarFrame);
-			ParserFactory.create(ServiceCalendarParser.class.getName()).parse(context);
+			Parser serviceCalendarParser = ParserFactory.create(ServiceCalendarParser.class.getName());
+			serviceCalendarParser.parse(context);
 		}
 	}
 
@@ -224,7 +232,6 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 		}
 	}
 
-	// TODO add support for multiple validity conditions
 	private void addValidBetween(Context context, String contextKey, ValidBetween validBetween) {
 		Context localContext = getLocalContext(context, LOCAL_CONTEXT);
 

@@ -4,20 +4,31 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.model.*;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
+import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
+import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
 
 import javax.xml.bind.JAXBElement;
+import java.sql.Date;
+import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.util.Comparator;
+import java.util.List;
+
+import static mobi.chouette.exchange.netexprofile.parser.NetexParserUtils.netexId;
+import static mobi.chouette.exchange.netexprofile.parser.NetexParserUtils.toOffsetDateTime;
 
 @Log4j
 public class ServiceJourneyParser extends NetexParser implements Parser, Constant {
@@ -27,15 +38,16 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
     @Override
     public void parse(Context context) throws Exception {
         Referential referential = (Referential) context.get(REFERENTIAL);
-        Context parsingContext = (Context) context.get(PARSING_CONTEXT);
-        Context calendarContext = (Context) parsingContext.get(ServiceCalendarParser.LOCAL_CONTEXT);
-
+        NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
         JourneysInFrame_RelStructure journeyStruct = (JourneysInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
 
-        for (Journey_VersionStructure serviceJourneyStruct : journeyStruct.getDatedServiceJourneyOrDeadRunOrServiceJourney()) {
-            ServiceJourney serviceJourney = (ServiceJourney) serviceJourneyStruct;
-            VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, serviceJourney.getId());
+        List<Journey_VersionStructure> serviceJourneys = journeyStruct.getDatedServiceJourneyOrDeadRunOrServiceJourney();
+        String[] idSequence = NetexProducerUtils.generateIdSequence(serviceJourneys.size());
 
+        for (int i = 0; i < serviceJourneys.size(); i++) {
+            ServiceJourney serviceJourney = (ServiceJourney) serviceJourneys.get(i);
+
+            VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, serviceJourney.getId());
             vehicleJourney.setObjectVersion(NetexParserUtils.getVersion(serviceJourney));
 
             // TODO check out if this gives the problem with journey names in digitransit (OSL-BGO instead of SK4887)
@@ -44,16 +56,19 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
             }
             vehicleJourney.setPublishedJourneyIdentifier(serviceJourney.getPublicCode());
 
+            String timetableIdSuffix = vehicleJourney.objectIdSuffix() + "-" +  StringUtils.leftPad(idSequence[i], 2, "0");
+            String timetableId = netexId(vehicleJourney.objectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY, timetableIdSuffix);
+            Timetable timetable = ObjectFactory.getTimetable(referential, timetableId);
+            timetable.addVehicleJourney(vehicleJourney);
+
             for (JAXBElement<? extends DayTypeRefStructure> dayTypeRefStructElement : serviceJourney.getDayTypes().getDayTypeRef()) {
                 String dayTypeIdRef = dayTypeRefStructElement.getValue().getRef();
-                Context calendarObjectContext = (Context) calendarContext.get(dayTypeIdRef);
-                String timetableId = (String) calendarObjectContext.get(ServiceCalendarParser.TIMETABLE_ID);
-
-                if (timetableId != null && !timetableId.isEmpty()) {
-                    Timetable timetable = ObjectFactory.getTimetable(referential, timetableId);
-                    timetable.addVehicleJourney(vehicleJourney);
+                DayType dayType = NetexObjectUtil.getDayType(netexReferential, dayTypeIdRef);
+                if (dayType != null) {
+                    parseDayType(context, netexReferential, dayType, timetable);
                 }
             }
+            timetable.setFilled(true);
 
             String journeyPatternIdRef = null;
             if (serviceJourney.getJourneyPatternRef() != null) {
@@ -88,6 +103,95 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
             parseTimetabledPassingTimes(context, referential, serviceJourney, vehicleJourney);
             vehicleJourney.setFilled(true);
         }
+    }
+
+    private void parseDayType(Context context, NetexReferential netexReferential, DayType dayType, Timetable timetable) throws Exception {
+        Context parsingContext = (Context) context.get(PARSING_CONTEXT);
+        Context calendarContext = (Context) parsingContext.get(ServiceCalendarParser.LOCAL_CONTEXT);
+
+        Context calendarObjectContext = (Context) calendarContext.get(dayType.getId());
+        ValidBetween validBetween = (ValidBetween) calendarObjectContext.get(ServiceCalendarParser.VALID_BETWEEN);
+
+        if (timetable.getObjectVersion() == null) {
+            timetable.setObjectVersion(NetexParserUtils.getVersion(dayType));
+        }
+        if (dayType.getProperties() != null) {
+            for (PropertyOfDay propertyOfDay : dayType.getProperties().getPropertyOfDay()) {
+                List<DayOfWeekEnumeration> daysOfWeeks = propertyOfDay.getDaysOfWeek();
+
+                for (DayOfWeekEnumeration dayOfWeek : daysOfWeeks) {
+                    List<DayTypeEnum> dayTypeEnums = NetexParserUtils.convertDayOfWeek(dayOfWeek);
+
+                    for (DayTypeEnum dayTypeEnum : dayTypeEnums) {
+                        timetable.addDayType(dayTypeEnum);
+                    }
+                }
+            }
+        }
+
+        DayTypeAssignment dayTypeAssignment = null;
+        if (netexReferential.getDayTypeAssignments().containsKey(dayType.getId())) {
+            dayTypeAssignment = netexReferential.getDayTypeAssignments().get(dayType.getId());
+        }
+        if (dayTypeAssignment != null) {
+            if (dayTypeAssignment.getOperatingPeriodRef() != null) {
+                String operatingPeriodIdRef = dayTypeAssignment.getOperatingPeriodRef().getRef();
+                OperatingPeriod operatingPeriod = NetexObjectUtil.getOperatingPeriod(netexReferential, operatingPeriodIdRef);
+
+                Date startDate;
+                Date endDate;
+
+                if (operatingPeriod.getFromOperatingDayRef() != null) {
+                    OperatingDay operatingDay = NetexObjectUtil.getOperatingDay(netexReferential, operatingPeriod.getFromOperatingDayRef().getRef());
+                    startDate = ParserUtils.getSQLDate(operatingDay.getCalendarDate().toString());
+                } else {
+                    startDate = ParserUtils.getSQLDate(operatingPeriod.getFromDate().toString());
+                }
+                if (operatingPeriod.getToOperatingDayRef() != null) {
+                    OperatingDay operatingDay = NetexObjectUtil.getOperatingDay(netexReferential, operatingPeriod.getToOperatingDayRef().getRef());
+                    endDate = ParserUtils.getSQLDate(operatingDay.getCalendarDate().toString());
+                } else {
+                    endDate = ParserUtils.getSQLDate(operatingPeriod.getToDate().toString());
+                }
+
+                validBetween = new ValidBetween()
+                        .withFromDate(toOffsetDateTime(startDate))
+                        .withToDate(toOffsetDateTime(endDate));
+
+                timetable.addPeriod(new Period(startDate, endDate));
+            } else {
+                OffsetDateTime fromDate = validBetween.getFromDate();
+                OffsetDateTime toDate = validBetween.getToDate();
+
+                if (fromDate != null && toDate != null && fromDate.isBefore(toDate)) {
+                    Date sqlFromDate = Date.valueOf(fromDate.toLocalDate());
+                    Date sqlToDate = Date.valueOf(toDate.toLocalDate());
+                    timetable.addPeriod(new Period(sqlFromDate, sqlToDate));
+                } else {
+                    log.error("Validity condition is not valid");
+                    throw new RuntimeException("Validity condition is not valid");
+                }
+            }
+
+            if (dayTypeAssignment.getOperatingDayRef() != null) {
+                String operatingDayIdRef = dayTypeAssignment.getOperatingDayRef().getRef();
+                OperatingDay operatingDay = NetexObjectUtil.getOperatingDay(netexReferential, operatingDayIdRef);
+
+                if (operatingDay.getCalendarDate() != null && isWithinValidRange(operatingDay.getCalendarDate(), validBetween)) {
+                    boolean included = dayTypeAssignment.isIsAvailable() != null ? dayTypeAssignment.isIsAvailable() : Boolean.TRUE;
+                    timetable.addCalendarDay(new CalendarDay(java.sql.Date.valueOf(operatingDay.getCalendarDate().toLocalDate()), included));
+                }
+            } else {
+                if (dayTypeAssignment.getDate() != null && isWithinValidRange(dayTypeAssignment.getDate(), validBetween)) {
+                    boolean included = dayTypeAssignment.isIsAvailable() != null ? dayTypeAssignment.isIsAvailable() : Boolean.TRUE;
+                    timetable.addCalendarDay(new CalendarDay(java.sql.Date.valueOf(dayTypeAssignment.getDate().toLocalDate()), included));
+                }
+            }
+        }
+    }
+
+    private boolean isWithinValidRange(OffsetDateTime dateOfOperation, ValidBetween validBetween) {
+        return !dateOfOperation.isBefore(validBetween.getFromDate()) && !dateOfOperation.isAfter(validBetween.getToDate());
     }
 
     private void parseTimetabledPassingTimes(Context context, Referential referential, ServiceJourney serviceJourney, VehicleJourney vehicleJourney) {
@@ -132,13 +236,13 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
         OffsetTime arrivalTime = timetabledPassingTime.getArrivalTime();
 
         if (departureTime != null) {
-            
-        	// TODO rewrite when time handlings is specified
-        	vehicleJourneyAtStop.setDepartureTime(NetexParserUtils.convertToSqlTime(departureTime, NetexParserUtils.getZoneOffset(LOCAL_ZONE_ID)));
 
-            
+            // TODO rewrite when time handlings is specified
+            vehicleJourneyAtStop.setDepartureTime(NetexParserUtils.convertToSqlTime(departureTime, NetexParserUtils.getZoneOffset(LOCAL_ZONE_ID)));
+
+
             //
-//        	
+//
 //        	ZoneOffset zoneOffset = departureTime.getOffset();
 //
 //            if (zoneOffset.equals(ZoneOffset.UTC)) {
