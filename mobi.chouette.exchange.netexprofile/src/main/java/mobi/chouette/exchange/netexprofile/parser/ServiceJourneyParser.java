@@ -28,7 +28,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import static mobi.chouette.exchange.netexprofile.parser.NetexParserUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.parser.NetexParserUtils.toOffsetDateTime;
 
 @Log4j
 public class ServiceJourneyParser extends NetexParser implements Parser, Constant {
@@ -108,14 +107,20 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
     private void parseDayType(Context context, NetexReferential netexReferential, DayType dayType, Timetable timetable) throws Exception {
         Context parsingContext = (Context) context.get(PARSING_CONTEXT);
         Context calendarContext = (Context) parsingContext.get(ServiceCalendarParser.LOCAL_CONTEXT);
-
         Context calendarObjectContext = (Context) calendarContext.get(dayType.getId());
         ValidBetween validBetween = (ValidBetween) calendarObjectContext.get(ServiceCalendarParser.VALID_BETWEEN);
 
         if (timetable.getObjectVersion() == null) {
             timetable.setObjectVersion(NetexParserUtils.getVersion(dayType));
         }
+
+        DayTypeAssignment dayTypeAssignment = null;
+        if (netexReferential.getDayTypeAssignments().containsKey(dayType.getId())) {
+            dayTypeAssignment = netexReferential.getDayTypeAssignments().get(dayType.getId());
+        }
+
         if (dayType.getProperties() != null) {
+
             for (PropertyOfDay propertyOfDay : dayType.getProperties().getPropertyOfDay()) {
                 List<DayOfWeekEnumeration> daysOfWeeks = propertyOfDay.getDaysOfWeek();
 
@@ -127,66 +132,65 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
                     }
                 }
             }
-        }
+            if (dayTypeAssignment != null) {
 
-        DayTypeAssignment dayTypeAssignment = null;
-        if (netexReferential.getDayTypeAssignments().containsKey(dayType.getId())) {
-            dayTypeAssignment = netexReferential.getDayTypeAssignments().get(dayType.getId());
-        }
-        if (dayTypeAssignment != null) {
-            if (dayTypeAssignment.getOperatingPeriodRef() != null) {
-                String operatingPeriodIdRef = dayTypeAssignment.getOperatingPeriodRef().getRef();
-                OperatingPeriod operatingPeriod = NetexObjectUtil.getOperatingPeriod(netexReferential, operatingPeriodIdRef);
+                if (dayTypeAssignment.getOperatingPeriodRef() != null) {
+                    String operatingPeriodIdRef = dayTypeAssignment.getOperatingPeriodRef().getRef();
+                    OperatingPeriod operatingPeriod = NetexObjectUtil.getOperatingPeriod(netexReferential, operatingPeriodIdRef);
 
-                Date startDate;
-                Date endDate;
+                    Date startDate;
+                    Date endDate;
 
-                if (operatingPeriod.getFromOperatingDayRef() != null) {
-                    OperatingDay operatingDay = NetexObjectUtil.getOperatingDay(netexReferential, operatingPeriod.getFromOperatingDayRef().getRef());
-                    startDate = ParserUtils.getSQLDate(operatingDay.getCalendarDate().toString());
+                    if (operatingPeriod.getFromOperatingDayRef() != null) {
+                        OperatingDay operatingDay = NetexObjectUtil.getOperatingDay(netexReferential, operatingPeriod.getFromOperatingDayRef().getRef());
+                        startDate = ParserUtils.getSQLDate(operatingDay.getCalendarDate().toString());
+                    } else {
+                        startDate = ParserUtils.getSQLDate(operatingPeriod.getFromDate().toString());
+                    }
+                    if (operatingPeriod.getToOperatingDayRef() != null) {
+                        OperatingDay operatingDay = NetexObjectUtil.getOperatingDay(netexReferential, operatingPeriod.getToOperatingDayRef().getRef());
+                        endDate = ParserUtils.getSQLDate(operatingDay.getCalendarDate().toString());
+                    } else {
+                        endDate = ParserUtils.getSQLDate(operatingPeriod.getToDate().toString());
+                    }
+
+                    timetable.addPeriod(new Period(startDate, endDate));
+
                 } else {
-                    startDate = ParserUtils.getSQLDate(operatingPeriod.getFromDate().toString());
-                }
-                if (operatingPeriod.getToOperatingDayRef() != null) {
-                    OperatingDay operatingDay = NetexObjectUtil.getOperatingDay(netexReferential, operatingPeriod.getToOperatingDayRef().getRef());
-                    endDate = ParserUtils.getSQLDate(operatingDay.getCalendarDate().toString());
-                } else {
-                    endDate = ParserUtils.getSQLDate(operatingPeriod.getToDate().toString());
-                }
+                    OffsetDateTime fromDate = validBetween.getFromDate();
+                    OffsetDateTime toDate = validBetween.getToDate();
 
-                validBetween = new ValidBetween()
-                        .withFromDate(toOffsetDateTime(startDate))
-                        .withToDate(toOffsetDateTime(endDate));
-
-                timetable.addPeriod(new Period(startDate, endDate));
-            } else {
-                OffsetDateTime fromDate = validBetween.getFromDate();
-                OffsetDateTime toDate = validBetween.getToDate();
-
-                if (fromDate != null && toDate != null && fromDate.isBefore(toDate)) {
-                    Date sqlFromDate = Date.valueOf(fromDate.toLocalDate());
-                    Date sqlToDate = Date.valueOf(toDate.toLocalDate());
-                    timetable.addPeriod(new Period(sqlFromDate, sqlToDate));
-                } else {
-                    log.error("Validity condition is not valid");
-                    throw new RuntimeException("Validity condition is not valid");
+                    if (fromDate != null && toDate != null && fromDate.isBefore(toDate)) {
+                        Date sqlFromDate = Date.valueOf(fromDate.toLocalDate());
+                        Date sqlToDate = Date.valueOf(toDate.toLocalDate());
+                        timetable.addPeriod(new Period(sqlFromDate, sqlToDate));
+                    } else {
+                        log.error("Validity condition is not valid");
+                        throw new RuntimeException("Validity condition is not valid");
+                    }
                 }
             }
 
-            if (dayTypeAssignment.getOperatingDayRef() != null) {
-                String operatingDayIdRef = dayTypeAssignment.getOperatingDayRef().getRef();
-                OperatingDay operatingDay = NetexObjectUtil.getOperatingDay(netexReferential, operatingDayIdRef);
+        } else {
 
-                if (operatingDay.getCalendarDate() != null && isWithinValidRange(operatingDay.getCalendarDate(), validBetween)) {
-                    boolean included = dayTypeAssignment.isIsAvailable() != null ? dayTypeAssignment.isIsAvailable() : Boolean.TRUE;
-                    timetable.addCalendarDay(new CalendarDay(java.sql.Date.valueOf(operatingDay.getCalendarDate().toLocalDate()), included));
-                }
-            } else {
-                if (dayTypeAssignment.getDate() != null && isWithinValidRange(dayTypeAssignment.getDate(), validBetween)) {
-                    boolean included = dayTypeAssignment.isIsAvailable() != null ? dayTypeAssignment.isIsAvailable() : Boolean.TRUE;
-                    timetable.addCalendarDay(new CalendarDay(java.sql.Date.valueOf(dayTypeAssignment.getDate().toLocalDate()), included));
+            if (dayTypeAssignment != null) {
+                if (dayTypeAssignment.getOperatingDayRef() != null) {
+                    String operatingDayIdRef = dayTypeAssignment.getOperatingDayRef().getRef();
+                    OperatingDay operatingDay = NetexObjectUtil.getOperatingDay(netexReferential, operatingDayIdRef);
+
+                    if (operatingDay.getCalendarDate() != null && isWithinValidRange(operatingDay.getCalendarDate(), validBetween)) {
+                        boolean included = dayTypeAssignment.isIsAvailable() != null ? dayTypeAssignment.isIsAvailable() : Boolean.TRUE;
+                        timetable.addCalendarDay(new CalendarDay(java.sql.Date.valueOf(operatingDay.getCalendarDate().toLocalDate()), included));
+                    }
+
+                } else {
+                    if (dayTypeAssignment.getDate() != null && isWithinValidRange(dayTypeAssignment.getDate(), validBetween)) {
+                        boolean included = dayTypeAssignment.isIsAvailable() != null ? dayTypeAssignment.isIsAvailable() : Boolean.TRUE;
+                        timetable.addCalendarDay(new CalendarDay(java.sql.Date.valueOf(dayTypeAssignment.getDate().toLocalDate()), included));
+                    }
                 }
             }
+
         }
     }
 
