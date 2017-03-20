@@ -6,7 +6,6 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.model.*;
@@ -14,9 +13,7 @@ import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
-import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
-import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
 
 import javax.xml.bind.JAXBElement;
@@ -27,8 +24,6 @@ import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
 
-import static mobi.chouette.exchange.netexprofile.parser.NetexParserUtils.netexId;
-
 @Log4j
 public class ServiceJourneyParser extends NetexParser implements Parser, Constant {
 
@@ -36,15 +31,17 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 
     @Override
     public void parse(Context context) throws Exception {
+        Context parsingContext = (Context) context.get(PARSING_CONTEXT);
+        Context mainDeliveryContext = (Context) parsingContext.get(PublicationDeliveryParser.LOCAL_CONTEXT);
+
         Referential referential = (Referential) context.get(REFERENTIAL);
         NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
-        JourneysInFrame_RelStructure journeyStruct = (JourneysInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
 
-        List<Journey_VersionStructure> serviceJourneys = journeyStruct.getDatedServiceJourneyOrDeadRunOrServiceJourney();
-        String[] idSequence = NetexProducerUtils.generateIdSequence(serviceJourneys.size());
+        JourneysInFrame_RelStructure journeyStructs = (JourneysInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
+        List<Journey_VersionStructure> serviceJourneys = journeyStructs.getDatedServiceJourneyOrDeadRunOrServiceJourney();
 
-        for (int i = 0; i < serviceJourneys.size(); i++) {
-            ServiceJourney serviceJourney = (ServiceJourney) serviceJourneys.get(i);
+        for (Journey_VersionStructure journeyStruct : serviceJourneys) {
+            ServiceJourney serviceJourney = (ServiceJourney) journeyStruct;
 
             VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, serviceJourney.getId());
             vehicleJourney.setObjectVersion(NetexParserUtils.getVersion(serviceJourney));
@@ -55,19 +52,22 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
             }
             vehicleJourney.setPublishedJourneyIdentifier(serviceJourney.getPublicCode());
 
-            String timetableIdSuffix = vehicleJourney.objectIdSuffix() + "-" +  StringUtils.leftPad(idSequence[i], 2, "0");
-            String timetableId = netexId(vehicleJourney.objectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY, timetableIdSuffix);
+            Context journeyObjectContext = (Context) mainDeliveryContext.get(serviceJourney.getId());
+            String timetableId = (String) journeyObjectContext.get(PublicationDeliveryParser.TIMETABLE_ID);
+
             Timetable timetable = ObjectFactory.getTimetable(referential, timetableId);
             timetable.addVehicleJourney(vehicleJourney);
 
-            for (JAXBElement<? extends DayTypeRefStructure> dayTypeRefStructElement : serviceJourney.getDayTypes().getDayTypeRef()) {
-                String dayTypeIdRef = dayTypeRefStructElement.getValue().getRef();
-                DayType dayType = NetexObjectUtil.getDayType(netexReferential, dayTypeIdRef);
-                if (dayType != null) {
-                    parseDayType(context, netexReferential, dayType, timetable);
+            if (!timetable.isFilled()) {
+                for (JAXBElement<? extends DayTypeRefStructure> dayTypeRefStructElement : serviceJourney.getDayTypes().getDayTypeRef()) {
+                    String dayTypeIdRef = dayTypeRefStructElement.getValue().getRef();
+                    DayType dayType = NetexObjectUtil.getDayType(netexReferential, dayTypeIdRef);
+                    if (dayType != null) {
+                        parseDayType(context, netexReferential, dayType, timetable);
+                    }
                 }
+                timetable.setFilled(true);
             }
-            timetable.setFilled(true);
 
             String journeyPatternIdRef = null;
             if (serviceJourney.getJourneyPatternRef() != null) {
@@ -108,6 +108,7 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
         Context parsingContext = (Context) context.get(PARSING_CONTEXT);
         Context calendarContext = (Context) parsingContext.get(ServiceCalendarParser.LOCAL_CONTEXT);
         Context calendarObjectContext = (Context) calendarContext.get(dayType.getId());
+
         ValidBetween validBetween = (ValidBetween) calendarObjectContext.get(ServiceCalendarParser.VALID_BETWEEN);
 
         if (timetable.getObjectVersion() == null) {
