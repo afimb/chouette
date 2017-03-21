@@ -29,6 +29,8 @@ public final class NetexObjectIdTypes {
     public static final String DESTINATION_DISPLAY = "DestinationDisplay";
     public static final String DAY_TYPE_KEY = "DayType";
     public static final String DAY_TYPE_ASSIGNMENT_KEY = "DayTypeAssignment";
+    public static final String OPERATING_PERIOD_KEY = "OperatingPeriod";
+    public static final String OPERATING_DAY_KEY = "OperatingDay";
     public static final String AVAILABILITY_CONDITION_KEY = "AvailabilityCondition";
     public static final String SERVICE_JOURNEY_KEY = "ServiceJourney";
     public static final String PASSENGER_STOP_ASSIGNMENT_KEY = "PassengerStopAssignment";

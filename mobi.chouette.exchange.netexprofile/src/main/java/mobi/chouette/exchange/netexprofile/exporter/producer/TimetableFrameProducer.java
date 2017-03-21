@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.VehicleJourney;
@@ -14,7 +15,7 @@ public class TimetableFrameProducer extends NetexProducer implements NetexFrameP
     private static ServiceJourneyProducer serviceJourneyProducer = new ServiceJourneyProducer();
 
     @Override
-    public TimetableFrame produce(ExportableData data) {
+    public TimetableFrame produce(Context context, ExportableData data) {
         Line line = data.getLine();
 
         String timetableFrameId = netexId(line.objectIdPrefix(), TIMETABLE_FRAME_KEY, line.objectIdSuffix());
@@ -26,7 +27,7 @@ public class TimetableFrameProducer extends NetexProducer implements NetexFrameP
         JourneysInFrame_RelStructure journeysInFrame = netexFactory.createJourneysInFrame_RelStructure();
 
         for (VehicleJourney vehicleJourney : data.getVehicleJourneys()) {
-            ServiceJourney serviceJourney = serviceJourneyProducer.produce(vehicleJourney, line);
+            ServiceJourney serviceJourney = serviceJourneyProducer.produce(context, vehicleJourney, line);
             journeysInFrame.getDatedServiceJourneyOrDeadRunOrServiceJourney().add(serviceJourney);
         }
 

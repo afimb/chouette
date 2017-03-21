@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
@@ -21,7 +22,7 @@ public class ServiceFrameProducer extends NetexProducer implements NetexFramePro
     private static JourneyPatternProducer journeyPatternProducer = new JourneyPatternProducer();
 
     @Override
-    public ServiceFrame produce(ExportableData data) {
+    public ServiceFrame produce(Context context, ExportableData data) {
         mobi.chouette.model.Line neptuneLine = data.getLine();
         mobi.chouette.model.Network neptuneNetwork = neptuneLine.getNetwork();
 

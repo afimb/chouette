@@ -8,6 +8,7 @@ import org.rutebanken.netex.model.DayOfWeekEnumeration;
 import java.sql.Time;
 import java.time.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -50,6 +51,16 @@ public class NetexProducerUtils {
         return time == null ? null : time.toLocalTime().atOffset(getZoneOffset(LOCAL_ZONE_ID)).withOffsetSameInstant(ZoneOffset.UTC);
     }
 
+    public static LocalDate toLocalDate(java.util.Date date) {
+        if (date == null) {
+            return null;
+        }
+        if (date instanceof java.sql.Date) {
+            return ((java.sql.Date) date).toLocalDate();
+        } else {
+            return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+        }
+    }
 
     public static OffsetDateTime toOffsetDateTime(java.util.Date date) {
         if (date == null) {
@@ -149,40 +160,53 @@ public class NetexProducerUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static DayOfWeekEnumeration toDayOfWeekEnumeration(List<DayTypeEnum> dayTypeEnums) {
-        EnumSet weekend = EnumSet.of(DayTypeEnum.Saturday, DayTypeEnum.Sunday);
-        EnumSet weekdays = EnumSet.of(DayTypeEnum.Monday, DayTypeEnum.Tuesday, DayTypeEnum.Wednesday, DayTypeEnum.Thursday, DayTypeEnum.Friday);
-        EnumSet everyday = EnumSet.of(DayTypeEnum.Monday, DayTypeEnum.Tuesday, DayTypeEnum.Wednesday, DayTypeEnum.Thursday, DayTypeEnum.Friday, DayTypeEnum.Saturday, DayTypeEnum.Sunday);
+    public static List<DayOfWeekEnumeration> toDayOfWeekEnumeration(List<DayTypeEnum> dayTypeEnums) {
         EnumSet actualDaysOfWeek = EnumSet.noneOf(DayTypeEnum.class);
-
         for (DayTypeEnum dayTypeEnum : dayTypeEnums) {
             actualDaysOfWeek.add(dayTypeEnum);
         }
+
         if (actualDaysOfWeek.isEmpty()) {
-            return DayOfWeekEnumeration.NONE;
-        } else if (actualDaysOfWeek.equals(EnumSet.of(DayTypeEnum.Monday))) {
-            return DayOfWeekEnumeration.MONDAY;
-        } else if (actualDaysOfWeek.equals(EnumSet.of(DayTypeEnum.Tuesday))) {
-            return DayOfWeekEnumeration.TUESDAY;
-        } else if (actualDaysOfWeek.equals(EnumSet.of(DayTypeEnum.Wednesday))) {
-            return DayOfWeekEnumeration.WEDNESDAY;
-        } else if (actualDaysOfWeek.equals(EnumSet.of(DayTypeEnum.Thursday))) {
-            return DayOfWeekEnumeration.THURSDAY;
-        } else if (actualDaysOfWeek.equals(EnumSet.of(DayTypeEnum.Friday))) {
-            return DayOfWeekEnumeration.FRIDAY;
-        } else if (actualDaysOfWeek.equals(EnumSet.of(DayTypeEnum.Saturday))) {
-            return DayOfWeekEnumeration.SATURDAY;
-        } else if (actualDaysOfWeek.equals(EnumSet.of(DayTypeEnum.Sunday))) {
-            return DayOfWeekEnumeration.SUNDAY;
-        } else if (actualDaysOfWeek.equals(weekdays)) {
-            return DayOfWeekEnumeration.WEEKDAYS;
-        } else if (actualDaysOfWeek.equals(weekend)) {
-            return DayOfWeekEnumeration.WEEKEND;
-        } else if (actualDaysOfWeek.equals(everyday)) {
-            return DayOfWeekEnumeration.EVERYDAY;
+            return Collections.singletonList(DayOfWeekEnumeration.NONE);
+        } else if (actualDaysOfWeek.equals(EnumSet.of(DayTypeEnum.Monday, DayTypeEnum.Tuesday,
+                DayTypeEnum.Wednesday, DayTypeEnum.Thursday, DayTypeEnum.Friday))) {
+            return Collections.singletonList(DayOfWeekEnumeration.WEEKDAYS);
+        } else if (actualDaysOfWeek.equals(EnumSet.of(DayTypeEnum.Saturday, DayTypeEnum.Sunday))) {
+            return Collections.singletonList(DayOfWeekEnumeration.WEEKEND);
+        } else if (actualDaysOfWeek.equals(EnumSet.of(DayTypeEnum.Monday, DayTypeEnum.Tuesday, DayTypeEnum.Wednesday,
+                DayTypeEnum.Thursday, DayTypeEnum.Friday, DayTypeEnum.Saturday, DayTypeEnum.Sunday))) {
+            return Collections.singletonList(DayOfWeekEnumeration.EVERYDAY);
         }
 
-        return null;
+        List<DayOfWeekEnumeration> dayOfWeekEnumerations = new ArrayList<>();
+
+        for (DayTypeEnum dayTypeEnum : dayTypeEnums) {
+            switch (dayTypeEnum) {
+                case Monday:
+                    dayOfWeekEnumerations.add(DayOfWeekEnumeration.MONDAY);
+                    break;
+                case Tuesday:
+                    dayOfWeekEnumerations.add(DayOfWeekEnumeration.TUESDAY);
+                    break;
+                case Wednesday:
+                    dayOfWeekEnumerations.add(DayOfWeekEnumeration.WEDNESDAY);
+                    break;
+                case Thursday:
+                    dayOfWeekEnumerations.add(DayOfWeekEnumeration.THURSDAY);
+                    break;
+                case Friday:
+                    dayOfWeekEnumerations.add(DayOfWeekEnumeration.FRIDAY);
+                    break;
+                case Saturday:
+                    dayOfWeekEnumerations.add(DayOfWeekEnumeration.SATURDAY);
+                    break;
+                case Sunday:
+                    dayOfWeekEnumerations.add(DayOfWeekEnumeration.SUNDAY);
+                    break;
+            }
+        }
+
+        return dayOfWeekEnumerations;
     }
 
 }

@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
@@ -14,7 +15,7 @@ public class ResourceFrameProducer extends NetexProducer implements NetexFramePr
     private static OperatorProducer operatorProducer = new OperatorProducer();
 
     @Override
-    public ResourceFrame produce(ExportableData data) {
+    public ResourceFrame produce(Context context, ExportableData data) {
         Line line = data.getLine();
         String resourceFrameId = netexId(line.objectIdPrefix(), RESOURCE_FRAME_KEY, line.objectIdSuffix());
 

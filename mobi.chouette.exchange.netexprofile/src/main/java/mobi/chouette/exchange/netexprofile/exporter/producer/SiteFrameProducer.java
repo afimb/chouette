@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
@@ -17,7 +18,7 @@ public class SiteFrameProducer extends NetexProducer implements NetexFrameProduc
     private static StopPlaceProducer stopPlaceProducer = new StopPlaceProducer();
 
     @Override
-    public SiteFrame produce(ExportableData data) {
+    public SiteFrame produce(Context context, ExportableData data) {
         Line line = data.getLine();
         Set<StopArea> stopAreas = new HashSet<>();
         stopAreas.addAll(data.getStopPlaces());
