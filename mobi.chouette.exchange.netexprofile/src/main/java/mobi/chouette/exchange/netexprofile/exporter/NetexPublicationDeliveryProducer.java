@@ -115,25 +115,20 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
         Frames_RelStructure frames = netexFactory.createFrames_RelStructure();
         compositeFrame.setFrames(frames);
 
-        // resource frame
-        ResourceFrame resourceFrame = resourceFrameProducer.produce(exportableData);
+        ResourceFrame resourceFrame = resourceFrameProducer.produce(context, exportableData);
         frames.getCommonFrame().add(netexFactory.createResourceFrame(resourceFrame));
 
-        // site frame
-        SiteFrame siteFrame = siteFrameProducer.produce(exportableData);
+        SiteFrame siteFrame = siteFrameProducer.produce(context, exportableData);
         frames.getCommonFrame().add(netexFactory.createSiteFrame(siteFrame));
 
-        // service frame
-        ServiceFrame serviceFrame = serviceFrameProducer.produce(exportableData);
+        ServiceFrame serviceFrame = serviceFrameProducer.produce(context, exportableData);
         frames.getCommonFrame().add(netexFactory.createServiceFrame(serviceFrame));
 
-        // timetable frame
-        TimetableFrame timetableFrame = timetableFrameProducer.produce(exportableData);
-        frames.getCommonFrame().add(netexFactory.createTimetableFrame(timetableFrame));
-
-        // service calendar frame
-        ServiceCalendarFrame serviceCalendarFrame = serviceCalendarFrameProducer.produce(exportableData);
+        ServiceCalendarFrame serviceCalendarFrame = serviceCalendarFrameProducer.produce(context, exportableData);
         frames.getCommonFrame().add(netexFactory.createServiceCalendarFrame(serviceCalendarFrame));
+
+        TimetableFrame timetableFrame = timetableFrameProducer.produce(context, exportableData);
+        frames.getCommonFrame().add(netexFactory.createTimetableFrame(timetableFrame));
 
         PublicationDeliveryStructure.DataObjects dataObjects = netexFactory.createPublicationDeliveryStructureDataObjects();
         dataObjects.getCompositeFrameOrCommonFrame().add(netexFactory.createCompositeFrame(compositeFrame));

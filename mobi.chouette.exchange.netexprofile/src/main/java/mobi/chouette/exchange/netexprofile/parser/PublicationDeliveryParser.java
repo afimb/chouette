@@ -68,13 +68,12 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 				parseServiceCalendarFrame(context, serviceCalendarFrames);
 
 				if (!isCommonDelivery) {
-					//List<TimetableFrame> timetableFrames = NetexObjectUtil.getFrames(TimetableFrame.class, frames);
 					parseTimetableFrames(context, timetableFrames);
 				}
 			}
 		} else {
 
-			// Not using composite frame
+			// no composite frame present
 			List<ResourceFrame> resourceFrames = NetexObjectUtil.getFrames(ResourceFrame.class, dataObjectFrames);
 			List<ServiceFrame> serviceFrames = NetexObjectUtil.getFrames(ServiceFrame.class, dataObjectFrames);
 			List<SiteFrame> siteFrames = NetexObjectUtil.getFrames(SiteFrame.class, dataObjectFrames);
@@ -91,7 +90,6 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 			parseServiceCalendarFrame(context, serviceCalendarFrames);
 
 			if (!isCommonDelivery) {
-				//List<TimetableFrame> timetableFrames = NetexObjectUtil.getFrames(TimetableFrame.class, dataObjectFrames);
 				parseTimetableFrames(context, timetableFrames);
 			}
 		}
