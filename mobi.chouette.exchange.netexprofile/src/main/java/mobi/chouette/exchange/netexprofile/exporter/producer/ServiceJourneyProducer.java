@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.netexprofile.parser.PublicationDeliveryParser;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.*;
@@ -14,10 +13,10 @@ import java.sql.Time;
 import java.util.Comparator;
 import java.util.List;
 
-import static mobi.chouette.exchange.netexprofile.Constant.PARSING_CONTEXT;
 import static mobi.chouette.exchange.netexprofile.Constant.PRODUCING_CONTEXT;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SERVICE_JOURNEY_KEY;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.STOP_POINT_IN_JOURNEY_PATTERN_KEY;
 
 public class ServiceJourneyProducer extends NetexProducer { //implements NetexEntityProducer<ServiceJourney, VehicleJourney> {
 

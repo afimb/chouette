@@ -14,9 +14,11 @@ import org.rutebanken.netex.model.*;
 import java.math.BigInteger;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.toLocalDate;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.toOffsetDateTime;
@@ -46,20 +48,16 @@ public class ServiceCalendarFrameProducer extends NetexProducer implements Netex
         Set<String> processedIds = new HashSet<>();
 
         for (Timetable timetable : data.getTimetables()) {
+            //timetable.computeLimitOfPeriods(); // necessary before export?
 
-            // TODO find out if this is necessary for export
-            timetable.computeLimitOfPeriods();
+            String version = timetable.getObjectVersion() > 0 ? String.valueOf(timetable.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
 
             if (CollectionUtils.isNotEmpty(timetable.getDayTypes())) {
-
-                // TODO maybe we should get the effective period(s) from timtable and base the OperatingPeriod on that.
-                // TODO extract all period stuff to separate method?
                 Period period = timetable.getPeriods().get(0);
                 LocalDate localStartDate = toLocalDate(period.getStartDate());
                 LocalDate localEndDate = toLocalDate(period.getEndDate());
 
-                // TODO how can we split the day types into weekdays, and weekend days?
-                //SortedSet<DayOfWeekEnumeration> daysOfWeek = pattern.significantDays.stream().map(sd -> toDayOfWeekEnumeration(sd)).collect(Collectors.toCollection(TreeSet::new));
+                // TODO split the day types into weekdays, and weekend days, and sort by weekday nr.
                 List<DayOfWeekEnumeration> dayOfWeekEnumerations = NetexProducerUtils.toDayOfWeekEnumeration(timetable.getDayTypes());
                 StringBuilder dayOfWeekBuilder = new StringBuilder();
 
@@ -68,14 +66,10 @@ public class ServiceCalendarFrameProducer extends NetexProducer implements Netex
                 }
 
                 Object[] dayTypeIdSuffixParts = {line.objectIdSuffix(), format(localStartDate), format(localEndDate), dayOfWeekBuilder.toString()};
-                String dayTypeIdSuffix = StringUtils.join(dayTypeIdSuffixParts, "-");
-                String dayTypeId = netexId(timetable.objectIdPrefix(), DAY_TYPE_KEY, dayTypeIdSuffix);
+                String dayTypeId = createDayTypeId(timetable.objectIdPrefix(), dayTypeIdSuffixParts);
 
                 if (!processedIds.contains(dayTypeId)) {
-                    DayType dayType = netexFactory.createDayType();
-                    String version = timetable.getObjectVersion() > 0 ? String.valueOf(timetable.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
-                    dayType.setVersion(version);
-                    dayType.setId(dayTypeId);
+                    DayType dayType = createDayType(version, dayTypeId);
 
                     String operatingPeriodIdSuffix = Joiner.on("-").join(line.objectIdSuffix(), format(localStartDate), format(localEndDate));
                     String operatingPeriodId = netexId(timetable.objectIdPrefix(), OPERATING_PERIOD_KEY, operatingPeriodIdSuffix);
@@ -88,9 +82,7 @@ public class ServiceCalendarFrameProducer extends NetexProducer implements Netex
                                 .withToDate(toOffsetDateTime(period.getEndDate()));
                         operatingPeriodStruct.getOperatingPeriodOrUicOperatingPeriod().add(operatingPeriod);
 
-                        // TODO sort periods by from date?
-                        //operatingPeriodStruct.getOperatingPeriodOrUicOperatingPeriod().sort(Comparator.comparing(OperatingPeriod_VersionStructure::getFromDate));
-                        //serviceCalendarFrame.withOperatingPeriods(operatingPeriodStruct);
+                        // TODO sort periods by from date
 
                         processedIds.add(operatingPeriodId);
                     }
@@ -132,14 +124,10 @@ public class ServiceCalendarFrameProducer extends NetexProducer implements Netex
 
             if (CollectionUtils.isNotEmpty(timetable.getPeculiarDates())) {
                 for (Date includedDate : timetable.getPeculiarDates()) {
-                    String dayTypeIdSuffix = StringUtils.join(new Object[] {line.objectIdSuffix(), format(toLocalDate(includedDate))}, "-");
-                    String dayTypeId = netexId(timetable.objectIdPrefix(), DAY_TYPE_KEY, dayTypeIdSuffix);
+                    String dayTypeId = createDayTypeId(timetable.objectIdPrefix(), new Object[] {line.objectIdSuffix(), format(toLocalDate(includedDate))});
 
                     if (!processedIds.contains(dayTypeId)) {
-                        DayType dayType = netexFactory.createDayType();
-                        String version = timetable.getObjectVersion() > 0 ? String.valueOf(timetable.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
-                        dayType.setVersion(version);
-                        dayType.setId(dayTypeId);
+                        DayType dayType = createDayType(version, dayTypeId);
 
                         String dayTypeAssignmentId = netexId(timetable.objectIdPrefix(), DAY_TYPE_ASSIGNMENT_KEY, objectIdSuffix(dayTypeId));
 
@@ -166,14 +154,10 @@ public class ServiceCalendarFrameProducer extends NetexProducer implements Netex
 
             if (CollectionUtils.isNotEmpty(timetable.getExcludedDates())) {
                 for (Date excludedDate : timetable.getExcludedDates()) {
-                    String dayTypeIdSuffix = StringUtils.join(new Object[] {line.objectIdSuffix(), format(toLocalDate(excludedDate)), "X"}, "-");
-                    String dayTypeId = netexId(timetable.objectIdPrefix(), DAY_TYPE_KEY, dayTypeIdSuffix);
+                    String dayTypeId = createDayTypeId(timetable.objectIdPrefix(), new Object[] {line.objectIdSuffix(), format(toLocalDate(excludedDate)), "X"});
 
                     if (!processedIds.contains(dayTypeId)) {
-                        DayType dayType = netexFactory.createDayType();
-                        String version = timetable.getObjectVersion() > 0 ? String.valueOf(timetable.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
-                        dayType.setVersion(version);
-                        dayType.setId(dayTypeId);
+                        DayType dayType = createDayType(version, dayTypeId);
 
                         String dayTypeAssignmentId = netexId(timetable.objectIdPrefix(), DAY_TYPE_ASSIGNMENT_KEY, objectIdSuffix(dayTypeId));
 
@@ -213,6 +197,16 @@ public class ServiceCalendarFrameProducer extends NetexProducer implements Netex
         }
 
         return serviceCalendarFrame;
+    }
+
+    private String createDayTypeId(String dayTypeIdPrefix, Object[] dayTypeIdSuffixParts) {
+        return netexId(dayTypeIdPrefix, DAY_TYPE_KEY, StringUtils.join(dayTypeIdSuffixParts, "-"));
+    }
+
+    private DayType createDayType(String version, String dayTypeId) {
+        return netexFactory.createDayType()
+                .withVersion(version)
+                .withId(dayTypeId);
     }
 
     private String format(LocalDate localDate) {
