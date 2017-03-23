@@ -8,11 +8,11 @@ import mobi.chouette.exchange.parameters.AbstractExportParameter;
 
 import javax.xml.bind.annotation.*;
 
-@XmlRootElement(name = "netex-export")
+@XmlRootElement(name = "netexprofile-export")
 @NoArgsConstructor
 @ToString(callSuper = true)
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"projectionType","addExtension"})
+@XmlType(propOrder={"projectionType","addExtension", "validCodespaces"})
 public class NetexprofileExportParameters extends AbstractExportParameter {
 
     @Getter
