@@ -9,6 +9,7 @@ import mobi.chouette.exchange.netexprofile.exporter.producer.*;
 import mobi.chouette.exchange.netexprofile.jaxb.JaxbNetexFileConverter;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
+import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
 
 import java.io.File;
@@ -16,28 +17,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.AVAILABILITY_CONDITION_KEY;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.COMPOSITE_FRAME_KEY;
 
 public class NetexPublicationDeliveryProducer extends NetexProducer implements Constant {
 
-    private static final String NETEX_PROFILE_VERSION = "1.04:NO-NeTEx-networktimetable:1.0";
     public static final String NETEX_DATA_OJBECT_VERSION = "1";
-    public static final String DEFAULT_ZONE_ID = "UTC";
-    public static final String DEFAULT_LANGUAGE = "no";
 
-    public static final String NSR_XMLNS = "NSR";
-    public static final String NSR_XMLNSURL = "http://www.rutebanken.org/ns/nsr";
-
-    public static final String AVINOR_XMLNS = "AVI";
-    public static final String AVINOR_XMLNSURL = "http://www.rutebanken.org/ns/avi";
-
-    public static final String RUTER_XMLNS = "RUT";
-    public static final String RUTER_XMLNSURL = "http://www.rutebanken.org/ns/rut";
+    private static final String NETEX_PROFILE_VERSION = "1.04:NO-NeTEx-networktimetable:1.0";
+    private static final String DEFAULT_ZONE_ID = "UTC";
+    private static final String DEFAULT_LANGUAGE = "no";
+    private static final String NSR_XMLNS = "NSR";
+    private static final String NSR_XMLNSURL = "http://www.rutebanken.org/ns/nsr";
 
     private static ResourceFrameProducer resourceFrameProducer = new ResourceFrameProducer();
     private static SiteFrameProducer siteFrameProducer = new SiteFrameProducer();
@@ -48,8 +41,21 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
     private static final Map<String, Codespace> codespaceMapping = new HashMap<>();
 
     static {
-        codespaceMapping.put("AVI", netexFactory.createCodespace().withId(AVINOR_XMLNS.toLowerCase()).withXmlns(AVINOR_XMLNS).withXmlnsUrl(AVINOR_XMLNSURL));
-        codespaceMapping.put("RUT", netexFactory.createCodespace().withId(RUTER_XMLNS.toLowerCase()).withXmlns(RUTER_XMLNS).withXmlnsUrl(RUTER_XMLNSURL));
+        Properties properties = new Properties();
+        try {
+            properties.load(NetexPublicationDeliveryProducer.class.getResourceAsStream("/codespaces.properties"));
+            Set<String> propertyKeys = properties.stringPropertyNames();
+
+            for (String key : propertyKeys) {
+                Codespace codespace = netexFactory.createCodespace()
+                        .withId(key.toLowerCase())
+                        .withXmlns(key)
+                        .withXmlnsUrl(properties.getProperty(key));
+                codespaceMapping.put(key, codespace);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Could not load codespaces from file");
+        }
     }
 
     public void produce(Context context) throws Exception {
@@ -98,7 +104,30 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
                 .withXmlns(NSR_XMLNS)
                 .withXmlnsUrl(NSR_XMLNSURL);
 
-        Codespace operatorCodespace = codespaceMapping.get(line.objectIdPrefix().toUpperCase());
+        NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
+
+        Codespace operatorCodespace = null;
+        if (configuration.getValidCodespaces() != null) {
+            Map<String, Codespace> validCodespaces = new HashMap<>();
+            String[] validCodespacesTuples = StringUtils.split(configuration.getValidCodespaces(), ",");
+
+            for (int i = 0; i < validCodespacesTuples.length; i += 2) {
+                Codespace codespace = netexFactory.createCodespace()
+                        .withId(validCodespacesTuples[i].toLowerCase())
+                        .withXmlns(validCodespacesTuples[i])
+                        .withXmlnsUrl(validCodespacesTuples[i + 1]);
+                validCodespaces.put(validCodespacesTuples[i].toUpperCase(), codespace);
+            }
+            if (validCodespaces.containsKey(line.objectIdPrefix().toUpperCase())) {
+                operatorCodespace = validCodespaces.get(line.objectIdPrefix().toUpperCase());
+            }
+        } else {
+            if (codespaceMapping.containsKey(line.objectIdPrefix().toUpperCase())) {
+                operatorCodespace = codespaceMapping.get(line.objectIdPrefix().toUpperCase());
+            } else {
+                throw new RuntimeException("Unknown operator codespace");
+            }
+        }
 
         Codespaces_RelStructure codespaces = netexFactory.createCodespaces_RelStructure()
                 .withCodespaceRefOrCodespace(Arrays.asList(operatorCodespace, nsrCodespace));
