@@ -1,15 +1,10 @@
 package mobi.chouette.command;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
 import lombok.Data;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
+
+import javax.xml.bind.annotation.*;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -25,6 +20,8 @@ public class Parameters {
 			@XmlElement(name = "gtfs-export", type = mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters.class),
 			@XmlElement(name = "netex-import", type = mobi.chouette.exchange.netex.importer.NetexImportParameters.class),
 			@XmlElement(name = "netex-export", type = mobi.chouette.exchange.netex.exporter.NetexExportParameters.class),
+			@XmlElement(name = "netexprofile-import", type = mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters.class),
+			@XmlElement(name = "netexprofile-export", type = mobi.chouette.exchange.netexprofile.exporter.NetexprofileExportParameters.class),
 			@XmlElement(name = "kml-export", type = mobi.chouette.exchange.kml.exporter.KmlExportParameters.class),
 			@XmlElement(name = "hub-export", type = mobi.chouette.exchange.hub.exporter.HubExportParameters.class),
 			@XmlElement(name = "regtopp-import", type = mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters.class),
