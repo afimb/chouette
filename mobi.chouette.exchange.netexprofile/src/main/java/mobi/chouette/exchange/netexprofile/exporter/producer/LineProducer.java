@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes;
 import mobi.chouette.model.Route;
 import org.rutebanken.netex.model.*;
 
@@ -46,12 +47,12 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
         }
 
         OperatorRefStructure operatorRefStruct = netexFactory.createOperatorRefStructure();
-        operatorRefStruct.setRef(neptuneLine.getCompany().getObjectId());
+        String operatorId = netexId(neptuneLine.getCompany().objectIdPrefix(), NetexObjectIdTypes.OPERATOR_KEY, neptuneLine.getCompany().objectIdSuffix());
+        operatorRefStruct.setRef(operatorId);
 
         // TODO handle version attribute differently, false when in separate export (common file), true if in same export, for now only supporting single line files
         //line.setOperatorRef(isFrequentOperator ? netexObjectFactory.createOperatorRefStructure(operatorId, Boolean.FALSE) : netexObjectFactory.createOperatorRefStructure(operatorId, Boolean.TRUE));
         //withRefValidation ? operatorRefStruct.withVersion(VERSION_ONE) : operatorRefStruct;
-        operatorRefStruct.setVersion(String.valueOf(neptuneLine.getCompany().getObjectVersion()));
         operatorRefStruct.setVersion(neptuneLine.getCompany().getObjectVersion() != null ? String.valueOf(neptuneLine.getCompany().getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 
         netexLine.setOperatorRef(operatorRefStruct);
