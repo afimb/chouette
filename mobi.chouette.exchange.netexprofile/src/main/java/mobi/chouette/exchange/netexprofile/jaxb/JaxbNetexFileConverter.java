@@ -12,10 +12,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URISyntaxException;
 
 @Log4j
@@ -69,7 +66,8 @@ public class JaxbNetexFileConverter {
 */
 
     public void write(JAXBElement<PublicationDeliveryStructure> rootObject, File file) throws JAXBException, IOException {
-        write(rootObject, new FileOutputStream(file));
+        //write(rootObject, new FileOutputStream(file));
+        write(rootObject, new BufferedOutputStream(new FileOutputStream(file), 4096));
     }
 
     public void write(JAXBElement<PublicationDeliveryStructure> network, OutputStream stream) throws JAXBException, IOException {
