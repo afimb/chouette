@@ -246,6 +246,48 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
     }
 
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
+    public void verifyExportAvinorMultipleLines() throws Exception {
+        importLines("avinor_multiple_lines_with_commondata.zip", 4, 3, "AVI,http://www.rutebanken.org/ns/avi");
+
+        Context context = initExportContext();
+        NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
+        configuration.setValidateAfterExport(true);
+        configuration.setAddMetadata(true);
+        configuration.setReferencesType("line");
+        configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
+
+        Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
+
+        try {
+            command.execute(context);
+        } catch (Exception ex) {
+            log.error("test failed", ex);
+            throw ex;
+        }
+
+/*
+        ActionReport report = (ActionReport) context.get(REPORT);
+        Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+        Assert.assertEquals(report.getFiles().size(), 3, "file reported");
+
+        for (FileReport info : report.getFiles()) {
+            Reporter.log(info.toString(),true);
+        }
+
+        Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 3, "line reported");
+
+        for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+            Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "line status");
+            Reporter.log(info.toString(), true);
+        }
+
+        ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
+        Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
+        Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
+*/
+    }
+
+    @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void verifyExportAvinorLineWithMixedDayTypes() throws Exception {
         importLines("C_NETEX_7.xml", 1, 1, "AVI,http://www.rutebanken.org/ns/avi");
 
