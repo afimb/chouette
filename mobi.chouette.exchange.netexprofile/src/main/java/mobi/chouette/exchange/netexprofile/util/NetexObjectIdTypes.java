@@ -4,13 +4,28 @@ public final class NetexObjectIdTypes {
 
     private NetexObjectIdTypes() {}
 
+    public static final String PUBLICATION_DELIVERY = "PublicationDelivery";
+    public static final String PUBLICATION_TIMESTAMP = "PublicationTimestamp";
+    public static final String PARTICIPANT_REF = "ParticipantRef";
+    public static final String DESCRIPTION = "Description";
+    public static final String DATA_OBJECTS = "dataObjects";
+    public static final String VALIDITY_CONDITIONS = "validityConditions";
+    public static final String CODESPACES = "codespaces";
+    public static final String CODESPACE = "Codespace";
+    public static final String FRAME_DEFAULTS = "FrameDefaults";
+    public static final String DEFAULT_LOCALE = "DefaultLocale";
+    public static final String TIME_ZONE = "TimeZone";
+    public static final String DEFAULT_LANGUAGE = "DefaultLanguage";
+    public static final String FRAMES = "frames";
+    public static final String VEHICLE_JOURNEYS = "vehicleJourneys";
+
     // frame id keys
-    public static final String COMPOSITE_FRAME_KEY = "CompositeFrame";
+    public static final String COMPOSITE_FRAME = "CompositeFrame";
     public static final String RESOURCE_FRAME_KEY = "ResourceFrame";
     public static final String SITE_FRAME_KEY = "SiteFrame";
     public static final String SERVICE_FRAME_KEY = "ServiceFrame";
     public static final String SERVICE_CALENDAR_FRAME_KEY = "ServiceCalendarFrame";
-    public static final String TIMETABLE_FRAME_KEY = "TimetableFrame";
+    public static final String TIMETABLE_FRAME = "TimetableFrame";
 
     // entity id keys
     public static final String AUTHORITY_KEY = "Authority";
