@@ -66,14 +66,13 @@ public class NetexXmlStreamMarshaller {
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(javax.xml.bind.Marshaller.JAXB_ENCODING, StandardCharsets.UTF_8.name());
         marshaller.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        //marshaller.setEventHandler(new NetexValidationEventHandler());
         //marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new NetexNamespacePrefixMapper());
         //marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, schemaLocation);
         //marshaller.setProperty(Marshaller.JAXB_NO_NAMESPACE_SCHEMA_LOCATION, noNamespaceSchemaLocation);
 
         if (netexSchema != null) {
-            //marshaller.setSchema(netexSchema);
-            //marshaller.setEventHandler(event -> event.getSeverity() == ValidationEvent.WARNING);
+            marshaller.setSchema(netexSchema);
+            marshaller.setEventHandler(new NetexValidationEventHandler());
         }
         return marshaller;
     }
@@ -95,11 +94,6 @@ public class NetexXmlStreamMarshaller {
         if (element == null) {
             throw new IllegalArgumentException("Cannot marshall a NULL object");
         }
-
-        // wrap in custom XMLStreamWriter to workaround JAXB bug: http://java.net/jira/browse/JAXB-614
-        //IndentingXMLStreamWriter writer = new IndentingXMLStreamWriter(new EscapingXMLStreamWriter(xmlStreamWriter)); // TODO find out if we need filtering
-        //IndentingXMLStreamWriter writer = new IndentingXMLStreamWriter(xmlStreamWriter);
-
         try {
             // must create a new instance of marshaller as its not thread safe
             Marshaller marshaller = createMarshaller();

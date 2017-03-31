@@ -15,7 +15,6 @@ import mobi.chouette.exchange.report.IO_TYPE;
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
 
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -48,7 +47,6 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
     private static ResourceFrameProducer resourceFrameProducer = new ResourceFrameProducer();
     private static SiteFrameProducer siteFrameProducer = new SiteFrameProducer();
     private static ServiceFrameProducer serviceFrameProducer = new ServiceFrameProducer();
-    private static TimetableFrameProducer timetableFrameProducer = new TimetableFrameProducer();
     private static ServiceCalendarFrameProducer serviceCalendarFrameProducer = new ServiceCalendarFrameProducer();
 
     private static ServiceJourneyProducer serviceJourneyProducer = new ServiceJourneyProducer();
@@ -152,40 +150,24 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
     }
 
     private void writeToXml(Context context, Path path, ExportableData exportableData) throws IOException, XMLStreamException {
-        //try (OutputStream out = new BufferedOutputStream(Files.newOutputStream(path, CREATE, APPEND), 4096)) {
         try (Writer bufferedWriter = Files.newBufferedWriter(path, StandardCharsets.UTF_8, CREATE, APPEND)) {
             XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
-            outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.TRUE);
+            //outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.TRUE);
             XMLStreamWriter xmlStreamWriter = null;
 
             try {
-                //writer = outputFactory.createXMLStreamWriter(outputStream, StandardCharsets.UTF_8.name());
                 xmlStreamWriter = outputFactory.createXMLStreamWriter(bufferedWriter);
+                xmlStreamWriter.setDefaultNamespace(DEFAULT_NAMESPACE);
+                //xmlStreamWriter.setNamespaceContext(namespaces);
+
                 IndentingXMLStreamWriter writer = new IndentingXMLStreamWriter(xmlStreamWriter);
-
-                writer.setDefaultNamespace(DEFAULT_NAMESPACE);
-                //writer.setNamespaceContext(namespaces);
-
-                writer.setNamespaceContext(new NamespaceContext() {
-                    public Iterator getPrefixes(String namespaceURI) {
-                        return null;
-                    }
-
-                    public String getPrefix(String namespaceURI) {
-                        return "";
-                    }
-
-                    public String getNamespaceURI(String prefix) {
-                        return null;
-                    }
-                });
 
                 writer.writeStartDocument(StandardCharsets.UTF_8.name(), "1.0");
                 writePublicationDeliveryElement(context, writer, exportableData);
             } finally {
                 if (xmlStreamWriter != null) {
                     try {
-                        //writer.writeCharacters("\n");
+                        //xmlStreamWriter.writeCharacters("\n");
                         xmlStreamWriter.writeEndDocument();
                         xmlStreamWriter.flush();
                         xmlStreamWriter.close();
