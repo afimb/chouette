@@ -12,6 +12,7 @@ import mobi.chouette.exchange.netexprofile.exporter.producer.*;
 import mobi.chouette.exchange.netexprofile.jaxb.NetexXmlStreamMarshaller;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.model.Company;
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
 
@@ -26,7 +27,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
 import static java.nio.file.StandardOpenOption.APPEND;
@@ -44,11 +44,14 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
     private static final String NSR_XMLNS = "NSR";
     private static final String NSR_XMLNSURL = "http://www.rutebanken.org/ns/nsr";
 
-    private static ResourceFrameProducer resourceFrameProducer = new ResourceFrameProducer();
-    private static SiteFrameProducer siteFrameProducer = new SiteFrameProducer();
-    private static ServiceFrameProducer serviceFrameProducer = new ServiceFrameProducer();
     private static ServiceCalendarFrameProducer serviceCalendarFrameProducer = new ServiceCalendarFrameProducer();
 
+    private static OperatorProducer operatorProducer = new OperatorProducer();
+    private static StopPlaceProducer stopPlaceProducer = new StopPlaceProducer();
+    private static NetworkProducer networkProducer = new NetworkProducer();
+    private static LineProducer lineProducer = new LineProducer();
+    private static RouteProducer routeProducer = new RouteProducer();
+    private static JourneyPatternProducer journeyPatternProducer = new JourneyPatternProducer();
     private static ServiceJourneyProducer serviceJourneyProducer = new ServiceJourneyProducer();
 
     private static final Map<String, Codespace> codespaceMapping = new HashMap<>();
@@ -242,9 +245,11 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
     }
 
     private void writeValidityConditionsElement(XMLStreamWriter writer, mobi.chouette.model.Line line) {
+        AvailabilityCondition availabilityCondition = createAvailabilityCondition(line);
+
         try {
             writer.writeStartElement(VALIDITY_CONDITIONS);
-            marshaller.marshal(netexFactory.createAvailabilityCondition(createAvailabilityCondition(line)), writer);
+            marshaller.marshal(netexFactory.createAvailabilityCondition(availabilityCondition), writer);
             writer.writeEndElement();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -291,27 +296,75 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
     }
 
     private void writeFramesElement(Context context, XMLStreamWriter writer, ExportableData exportableData) {
-        ResourceFrame resourceFrame = resourceFrameProducer.produce(context, exportableData);
-        SiteFrame siteFrame = siteFrameProducer.produce(context, exportableData);
-        ServiceFrame serviceFrame = serviceFrameProducer.produce(context, exportableData);
         ServiceCalendarFrame serviceCalendarFrame = serviceCalendarFrameProducer.produce(context, exportableData);
 
         try {
             writer.writeStartElement(FRAMES);
+            writeResourceFrameElement(writer, exportableData);
+            writeSiteFrameElement(writer, exportableData);
+            writeServiceFrameElement(writer, exportableData);
 
-            marshaller.marshal(netexFactory.createResourceFrame(resourceFrame), writer);
-            marshaller.marshal(netexFactory.createSiteFrame(siteFrame), writer);
-            marshaller.marshal(netexFactory.createServiceFrame(serviceFrame), writer);
             marshaller.marshal(netexFactory.createServiceCalendarFrame(serviceCalendarFrame), writer);
 
-            writeTimetableFrameElement(context, exportableData, writer);
+            writeTimetableFrameElement(context, writer, exportableData);
             writer.writeEndElement();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void writeTimetableFrameElement(Context context, ExportableData exportableData, XMLStreamWriter writer) {
+    private void writeResourceFrameElement(XMLStreamWriter writer, ExportableData exportableData) {
+        mobi.chouette.model.Line line = exportableData.getLine();
+        String resourceFrameId = netexId(line.objectIdPrefix(), RESOURCE_FRAME, line.objectIdSuffix());
+
+        try {
+            writer.writeStartElement(RESOURCE_FRAME);
+            writer.writeAttribute(VERSION, NETEX_DATA_OJBECT_VERSION);
+            writer.writeAttribute(ID, resourceFrameId);
+            writeOrganisationsElement(writer, exportableData);
+            writer.writeEndElement();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void writeSiteFrameElement(XMLStreamWriter writer, ExportableData exportableData) {
+        mobi.chouette.model.Line line = exportableData.getLine();
+        String siteFrameId = netexId(line.objectIdPrefix(), SITE_FRAME, line.objectIdSuffix());
+
+        try {
+            writer.writeStartElement(SITE_FRAME);
+            writer.writeAttribute(VERSION, NETEX_DATA_OJBECT_VERSION);
+            writer.writeAttribute(ID, siteFrameId);
+            writeStoPlacesElement(writer, exportableData);
+            writer.writeEndElement();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void writeServiceFrameElement(XMLStreamWriter writer, ExportableData exportableData) {
+        mobi.chouette.model.Line line = exportableData.getLine();
+        String serviceFrameId = netexId(line.objectIdPrefix(), SERVICE_FRAME, line.objectIdSuffix());
+
+        try {
+            writer.writeStartElement(SERVICE_FRAME);
+            writer.writeAttribute(VERSION, NETEX_DATA_OJBECT_VERSION);
+            writer.writeAttribute(ID, serviceFrameId);
+            writeNetworkElement(writer, line);
+            writeRoutePointsElement(writer, line);
+            writeRoutesElement(writer, line);
+            writeLinesElement(writer, line);
+            writeScheduledStopPointsElement(writer, line);
+            writeStopAssignmentsElement(writer, line);
+            writeJourneyPatternsElement(writer, line);
+            writer.writeEndElement();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void writeTimetableFrameElement(Context context, XMLStreamWriter writer, ExportableData exportableData) {
         mobi.chouette.model.Line line = exportableData.getLine();
         String timetableFrameId = netexId(line.objectIdPrefix(), TIMETABLE_FRAME, line.objectIdSuffix());
 
@@ -319,21 +372,181 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
             writer.writeStartElement(TIMETABLE_FRAME);
             writer.writeAttribute(VERSION, NETEX_DATA_OJBECT_VERSION);
             writer.writeAttribute(ID, timetableFrameId);
-            writeVehicleJourneysElement(context, exportableData, writer);
+            writeVehicleJourneysElement(context, writer, exportableData);
             writer.writeEndElement();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void writeVehicleJourneysElement(Context context, ExportableData exportableData, XMLStreamWriter writer) {
+    private void writeOrganisationsElement(XMLStreamWriter writer, ExportableData exportableData) {
+        Company company = exportableData.getLine().getCompany();
+        List<Operator> operators = Collections.singletonList(operatorProducer.produce(company));
+
+        try {
+            writer.writeStartElement(ORGANISATIONS);
+
+            for (Operator operator : operators) {
+                marshaller.marshal(netexFactory.createOperator(operator), writer);
+                //writer.flush(); // necessary?
+            }
+
+            writer.writeEndElement();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void writeStoPlacesElement(XMLStreamWriter writer, ExportableData exportableData) {
+        Set<mobi.chouette.model.StopArea> stopAreas = new HashSet<>();
+        stopAreas.addAll(exportableData.getStopPlaces());
+        stopAreas.addAll(exportableData.getCommercialStops());
+        List<StopPlace> stopPlaces = new ArrayList<>();
+
+        for (mobi.chouette.model.StopArea stopArea : stopAreas) {
+            StopPlace stopPlace = stopPlaceProducer.produce(stopArea);
+            stopPlaces.add(stopPlace);
+        }
+        try {
+            writer.writeStartElement(STOP_PLACES);
+
+            for (StopPlace stopPlace : stopPlaces) {
+                marshaller.marshal(netexFactory.createStopPlace(stopPlace), writer);
+                //writer.flush(); // necessary?
+            }
+
+            writer.writeEndElement();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void writeNetworkElement(XMLStreamWriter writer, mobi.chouette.model.Line line) {
+        org.rutebanken.netex.model.Network network = networkProducer.produce(line.getNetwork());
+
+        try {
+            marshaller.marshal(netexFactory.createNetwork(network), writer);
+            //writer.flush(); // necessary?
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void writeRoutePointsElement(XMLStreamWriter writer, mobi.chouette.model.Line line) {
+        Set<RoutePoint> routePoints = createRoutePoints(line.getRoutes());
+
+        try {
+            writer.writeStartElement(ROUTE_POINTS);
+
+            for (RoutePoint routePoint : routePoints) {
+                marshaller.marshal(netexFactory.createRoutePoint(routePoint), writer);
+                //writer.flush(); // necessary?
+            }
+
+            writer.writeEndElement();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void writeRoutesElement(XMLStreamWriter writer, mobi.chouette.model.Line line) {
+        List<org.rutebanken.netex.model.Route> routes = new ArrayList<>();
+
+        for (mobi.chouette.model.Route neptuneRoute : line.getRoutes()) {
+            org.rutebanken.netex.model.Route netexRoute = routeProducer.produce(neptuneRoute);
+            routes.add(netexRoute);
+        }
+        try {
+            writer.writeStartElement(ROUTES);
+
+            for (org.rutebanken.netex.model.Route route : routes) {
+                marshaller.marshal(netexFactory.createRoute(route), writer);
+                //writer.flush(); // necessary?
+            }
+
+            writer.writeEndElement();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void writeLinesElement(XMLStreamWriter writer, mobi.chouette.model.Line line) {
+        org.rutebanken.netex.model.Line netexLine = lineProducer.produce(line);
+
+        try {
+            writer.writeStartElement(LINES);
+            marshaller.marshal(netexFactory.createLine(netexLine), writer);
+            //writer.flush(); // necessary?
+            writer.writeEndElement();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void writeScheduledStopPointsElement(XMLStreamWriter writer, mobi.chouette.model.Line line) {
+        Set<ScheduledStopPoint> scheduledStopPoints = createScheduledStopPoints(line.getRoutes());
+
+        try {
+            writer.writeStartElement(SCHEDULED_STOP_POINTS);
+
+            for (ScheduledStopPoint scheduledStopPoint : scheduledStopPoints) {
+                marshaller.marshal(netexFactory.createScheduledStopPoint(scheduledStopPoint), writer);
+                //writer.flush(); // necessary?
+            }
+
+            writer.writeEndElement();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void writeStopAssignmentsElement(XMLStreamWriter writer, mobi.chouette.model.Line line) {
+        Set<PassengerStopAssignment> stopAssignments = createStopAssignments(line.getRoutes());
+
+        try {
+            writer.writeStartElement(STOP_ASSIGNMENTS);
+
+            for (PassengerStopAssignment stopAssignment : stopAssignments) {
+                marshaller.marshal(netexFactory.createPassengerStopAssignment(stopAssignment), writer);
+                //writer.flush(); // necessary?
+            }
+
+            writer.writeEndElement();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void writeJourneyPatternsElement(XMLStreamWriter writer, mobi.chouette.model.Line line) {
+        List<org.rutebanken.netex.model.JourneyPattern> journeyPatterns = new ArrayList<>();
+
+        for (mobi.chouette.model.Route route : line.getRoutes()) {
+            for (mobi.chouette.model.JourneyPattern neptuneJourneyPattern : route.getJourneyPatterns()) {
+                org.rutebanken.netex.model.JourneyPattern netexJourneyPattern = journeyPatternProducer.produce(neptuneJourneyPattern);
+                journeyPatterns.add(netexJourneyPattern);
+            }
+        }
+        try {
+            writer.writeStartElement(JOURNEY_PATTERNS);
+
+            for (JourneyPattern journeyPattern : journeyPatterns) {
+                marshaller.marshal(netexFactory.createJourneyPattern(journeyPattern), writer);
+                //writer.flush(); // necessary?
+            }
+
+            writer.writeEndElement();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void writeVehicleJourneysElement(Context context, XMLStreamWriter writer, ExportableData exportableData) {
         List<ServiceJourney> serviceJourneys = new ArrayList<>();
 
         for (mobi.chouette.model.VehicleJourney vehicleJourney : exportableData.getVehicleJourneys()) {
             ServiceJourney serviceJourney = serviceJourneyProducer.produce(context, vehicleJourney, exportableData.getLine());
             serviceJourneys.add(serviceJourney);
         }
-
         try {
             writer.writeStartElement(VEHICLE_JOURNEYS);
 
@@ -346,17 +559,6 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private AvailabilityCondition createAvailabilityCondition(mobi.chouette.model.Line line) {
-        String availabilityConditionId = netexId(line.objectIdPrefix(), AVAILABILITY_CONDITION_KEY, line.objectIdSuffix());
-        AvailabilityCondition availabilityCondition = netexFactory.createAvailabilityCondition();
-        availabilityCondition.setVersion(line.getObjectVersion() > 0 ? String.valueOf(line.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-        availabilityCondition.setId(availabilityConditionId);
-
-        availabilityCondition.setFromDate(OffsetDateTime.now(ZoneId.systemDefault())); // TODO fix correct from date, for now using dummy dates
-        availabilityCondition.setToDate(availabilityCondition.getFromDate().plusMonths(1L)); // TODO fix correct to date, for now using dummy dates
-        return availabilityCondition;
     }
 
     private void writeElement(XMLStreamWriter writer, String element, String value) {

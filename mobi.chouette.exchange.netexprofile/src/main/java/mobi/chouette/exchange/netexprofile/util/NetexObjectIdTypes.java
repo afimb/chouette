@@ -18,20 +18,28 @@ public final class NetexObjectIdTypes {
     public static final String DEFAULT_LANGUAGE = "DefaultLanguage";
     public static final String FRAMES = "frames";
     public static final String VEHICLE_JOURNEYS = "vehicleJourneys";
+    public static final String ORGANISATIONS = "organisations";
+    public static final String ROUTE_POINTS = "routePoints";
+    public static final String ROUTES = "routes";
+    public static final String LINES = "lines";
+    public static final String STOP_PLACES = "stopPlaces";
+    public static final String SCHEDULED_STOP_POINTS = "scheduledStopPoints";
+    public static final String STOP_ASSIGNMENTS = "stopAssignments";
+    public static final String JOURNEY_PATTERNS = "journeyPatterns";
 
     // frame id keys
     public static final String COMPOSITE_FRAME = "CompositeFrame";
-    public static final String RESOURCE_FRAME_KEY = "ResourceFrame";
-    public static final String SITE_FRAME_KEY = "SiteFrame";
-    public static final String SERVICE_FRAME_KEY = "ServiceFrame";
-    public static final String SERVICE_CALENDAR_FRAME_KEY = "ServiceCalendarFrame";
+    public static final String RESOURCE_FRAME = "ResourceFrame";
+    public static final String SITE_FRAME = "SiteFrame";
+    public static final String SERVICE_FRAME = "ServiceFrame";
+    public static final String SERVICE_CALENDAR_FRAME = "ServiceCalendarFrame";
     public static final String TIMETABLE_FRAME = "TimetableFrame";
 
     // entity id keys
     public static final String AUTHORITY_KEY = "Authority";
     public static final String OPERATOR_KEY = "Operator";
-    public static final String NETWORK_KEY = "Network";
-    public static final String LINE_KEY = "Line";
+    public static final String NETWORK = "Network";
+    public static final String LINE = "Line";
     public static final String ROUTE_KEY = "Route";
     public static final String STOP_PLACE_KEY = "StopPlace";
     public static final String QUAY_KEY = "Quay";

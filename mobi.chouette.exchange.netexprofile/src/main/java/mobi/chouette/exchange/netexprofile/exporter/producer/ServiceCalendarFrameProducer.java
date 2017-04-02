@@ -35,7 +35,7 @@ public class ServiceCalendarFrameProducer extends NetexProducer implements Netex
     public ServiceCalendarFrame produce(Context context, ExportableData data) {
         Line line = data.getLine();
 
-        String serviceCalendarFrameId = netexId(line.objectIdPrefix(), SERVICE_CALENDAR_FRAME_KEY, line.objectIdSuffix());
+        String serviceCalendarFrameId = netexId(line.objectIdPrefix(), SERVICE_CALENDAR_FRAME, line.objectIdSuffix());
 
         ServiceCalendarFrame serviceCalendarFrame = netexFactory.createServiceCalendarFrame()
                 .withVersion("any")
