@@ -5,7 +5,7 @@ import mobi.chouette.model.Route;
 import org.rutebanken.netex.model.*;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.LINE_KEY;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.LINE;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.ROUTE_KEY;
 
 public class LineProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Line, mobi.chouette.model.Line> {
@@ -16,7 +16,7 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
 
         netexLine.setVersion(neptuneLine.getObjectVersion() > 0 ? String.valueOf(neptuneLine.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 
-        String lineId = netexId(neptuneLine.objectIdPrefix(), LINE_KEY, neptuneLine.objectIdSuffix());
+        String lineId = netexId(neptuneLine.objectIdPrefix(), LINE, neptuneLine.objectIdSuffix());
         netexLine.setId(lineId);
 
         if (isSet(neptuneLine.getName())) {
