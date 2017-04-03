@@ -207,7 +207,7 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
             writer.writeAttribute(VERSION, NETEX_PROFILE_VERSION);
 
             writeElement(writer, PUBLICATION_TIMESTAMP, timestampFormatted);
-            writeElement(writer, PARTICIPANT_REF, ""); // TODO fill with real data
+            writeElement(writer, PARTICIPANT_REF, NSR_XMLNS);
             writeElement(writer, DESCRIPTION, exportableData.getLine().getName());
             writeDataObjectsElement(context, writer, exportableData, timestampFormatted);
 
@@ -398,7 +398,6 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
 
             for (Operator operator : operators) {
                 marshaller.marshal(netexFactory.createOperator(operator), writer);
-                //writer.flush(); // necessary?
             }
 
             writer.writeEndElement();
@@ -422,7 +421,6 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
 
             for (StopPlace stopPlace : stopPlaces) {
                 marshaller.marshal(netexFactory.createStopPlace(stopPlace), writer);
-                //writer.flush(); // necessary?
             }
 
             writer.writeEndElement();
@@ -436,7 +434,6 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
 
         try {
             marshaller.marshal(netexFactory.createNetwork(network), writer);
-            //writer.flush(); // necessary?
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -450,7 +447,6 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
 
             for (RoutePoint routePoint : routePoints) {
                 marshaller.marshal(netexFactory.createRoutePoint(routePoint), writer);
-                //writer.flush(); // necessary?
             }
 
             writer.writeEndElement();
@@ -471,7 +467,6 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
 
             for (org.rutebanken.netex.model.Route route : routes) {
                 marshaller.marshal(netexFactory.createRoute(route), writer);
-                //writer.flush(); // necessary?
             }
 
             writer.writeEndElement();
@@ -486,7 +481,6 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
         try {
             writer.writeStartElement(LINES);
             marshaller.marshal(netexFactory.createLine(netexLine), writer);
-            //writer.flush(); // necessary?
             writer.writeEndElement();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -501,7 +495,6 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
 
             for (ScheduledStopPoint scheduledStopPoint : scheduledStopPoints) {
                 marshaller.marshal(netexFactory.createScheduledStopPoint(scheduledStopPoint), writer);
-                //writer.flush(); // necessary?
             }
 
             writer.writeEndElement();
@@ -518,7 +511,6 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
 
             for (PassengerStopAssignment stopAssignment : stopAssignments) {
                 marshaller.marshal(netexFactory.createPassengerStopAssignment(stopAssignment), writer);
-                //writer.flush(); // necessary?
             }
 
             writer.writeEndElement();
@@ -541,7 +533,6 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
 
             for (JourneyPattern journeyPattern : journeyPatterns) {
                 marshaller.marshal(netexFactory.createJourneyPattern(journeyPattern), writer);
-                //writer.flush(); // necessary?
             }
 
             writer.writeEndElement();
@@ -562,7 +553,6 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
 
             for (ServiceJourney serviceJourney : serviceJourneys) {
                 marshaller.marshal(netexFactory.createServiceJourney(serviceJourney), writer);
-                //writer.flush(); // necessary?
             }
 
             writer.writeEndElement();
