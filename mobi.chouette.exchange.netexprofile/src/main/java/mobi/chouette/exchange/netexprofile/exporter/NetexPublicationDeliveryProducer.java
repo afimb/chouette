@@ -9,6 +9,7 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
 import mobi.chouette.exchange.netexprofile.exporter.producer.*;
+import mobi.chouette.exchange.netexprofile.jaxb.EscapingXMLStreamWriter;
 import mobi.chouette.exchange.netexprofile.jaxb.NetexXmlStreamMarshaller;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
@@ -172,8 +173,7 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
                 xmlStreamWriter.setDefaultNamespace(DEFAULT_NAMESPACE);
                 //xmlStreamWriter.setNamespaceContext(namespaces);
 
-                IndentingXMLStreamWriter writer = new IndentingXMLStreamWriter(xmlStreamWriter);
-
+                IndentingXMLStreamWriter writer = new IndentingXMLStreamWriter(new EscapingXMLStreamWriter(xmlStreamWriter));
                 writer.writeStartDocument(StandardCharsets.UTF_8.name(), "1.0");
                 writePublicationDeliveryElement(context, writer, exportableData);
             } finally {
