@@ -207,7 +207,7 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
             writer.writeAttribute(VERSION, NETEX_PROFILE_VERSION);
 
             writeElement(writer, PUBLICATION_TIMESTAMP, timestampFormatted);
-            writeElement(writer, PARTICIPANT_REF, ""); // TODO fill with real data
+            writeElement(writer, PARTICIPANT_REF, NSR_XMLNS);
             writeElement(writer, DESCRIPTION, exportableData.getLine().getName());
             writeDataObjectsElement(context, writer, exportableData, timestampFormatted);
 
