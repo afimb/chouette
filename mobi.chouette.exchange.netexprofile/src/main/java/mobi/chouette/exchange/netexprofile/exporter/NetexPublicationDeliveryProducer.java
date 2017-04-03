@@ -27,6 +27,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.*;
 
 import static java.nio.file.StandardOpenOption.APPEND;
@@ -43,6 +46,12 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
     private static final String DEFAULT_LANGUAGE_CODE = "no";
     private static final String NSR_XMLNS = "NSR";
     private static final String NSR_XMLNSURL = "http://www.rutebanken.org/ns/nsr";
+
+    private final static DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd'T'HH:mm:ss")
+            .optionalStart().appendFraction(ChronoField.MILLI_OF_SECOND, 0, 3, true).optionalEnd()
+            .optionalStart().appendPattern("XXXXX")
+            .optionalEnd()
+            .parseDefaulting(ChronoField.OFFSET_SECONDS,OffsetDateTime.now().getLong(ChronoField.OFFSET_SECONDS) ).toFormatter();
 
     private static ServiceCalendarFrameProducer serviceCalendarFrameProducer = new ServiceCalendarFrameProducer();
 
@@ -187,6 +196,7 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
 
     private void writePublicationDeliveryElement(Context context, XMLStreamWriter writer, ExportableData exportableData) {
         OffsetDateTime timestamp = OffsetDateTime.now();
+        String timestampFormatted = formatter.format(timestamp);
 
         try {
             writer.writeStartElement(PUBLICATION_DELIVERY);
@@ -196,10 +206,10 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
             writer.writeNamespace("ns3", "http://www.siri.org.uk/siri");
             writer.writeAttribute(VERSION, NETEX_PROFILE_VERSION);
 
-            writeElement(writer, PUBLICATION_TIMESTAMP, timestamp.toString());
+            writeElement(writer, PUBLICATION_TIMESTAMP, timestampFormatted);
             writeElement(writer, PARTICIPANT_REF, ""); // TODO fill with real data
             writeElement(writer, DESCRIPTION, exportableData.getLine().getName());
-            writeDataObjectsElement(context, writer, exportableData, timestamp);
+            writeDataObjectsElement(context, writer, exportableData, timestampFormatted);
 
             writer.writeEndElement();
         } catch (XMLStreamException e) {
@@ -207,7 +217,7 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
         }
     }
 
-    private void writeDataObjectsElement(Context context, XMLStreamWriter writer, ExportableData exportableData, OffsetDateTime timestamp) {
+    private void writeDataObjectsElement(Context context, XMLStreamWriter writer, ExportableData exportableData, String timestamp) {
         try {
             writer.writeStartElement(DATA_OBJECTS);
             writeCompositeFrameElement(context, writer, exportableData, timestamp);
@@ -217,7 +227,7 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
         }
     }
 
-    private void writeCompositeFrameElement(Context context, XMLStreamWriter writer, ExportableData exportableData, OffsetDateTime timestamp) {
+    private void writeCompositeFrameElement(Context context, XMLStreamWriter writer, ExportableData exportableData, String timestamp) {
         mobi.chouette.model.Line line = exportableData.getLine();
 
         try {
@@ -227,7 +237,7 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
                 OffsetDateTime createdDateTime = NetexProducerUtils.toOffsetDateTime(line.getNetwork().getVersionDate());
                 writer.writeAttribute(CREATED, createdDateTime.toString());
             } else {
-                writer.writeAttribute(CREATED, timestamp.toString());
+                writer.writeAttribute(CREATED, timestamp);
             }
 
             writer.writeAttribute(VERSION, NETEX_DATA_OJBECT_VERSION);
