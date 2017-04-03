@@ -235,7 +235,7 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
 
             if (line.getNetwork().getVersionDate() != null) {
                 OffsetDateTime createdDateTime = NetexProducerUtils.toOffsetDateTime(line.getNetwork().getVersionDate());
-                writer.writeAttribute(CREATED, createdDateTime.toString());
+                writer.writeAttribute(CREATED, formatter.format(createdDateTime));
             } else {
                 writer.writeAttribute(CREATED, timestamp);
             }
