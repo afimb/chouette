@@ -38,6 +38,9 @@ public class ServiceJourneyProducer extends NetexProducer { //implements NetexEn
         if (isSet(vehicleJourney.getPublishedJourneyIdentifier())) {
             serviceJourney.setShortName(getMultilingualString(vehicleJourney.getPublishedJourneyIdentifier()));
             serviceJourney.setPublicCode(vehicleJourney.getPublishedJourneyIdentifier());
+        } else {
+            serviceJourney.setShortName(getMultilingualString(vehicleJourney.objectIdSuffix()));
+            serviceJourney.setPublicCode(vehicleJourney.objectIdSuffix());
         }
         if (isSet(vehicleJourney.getComment())) {
             serviceJourney.setDescription(getMultilingualString(vehicleJourney.getComment()));
