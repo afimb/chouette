@@ -607,8 +607,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				journeyKey += "," + buildStopsKey(vehicleJourney);
 			}
 
-			log.info(Color.YELLOW + "trip " + gtfsTrip.getTripId() + " journey key = " + journeyKey + Color.NORMAL);
-
 			JourneyPattern journeyPattern = journeyPatternByStopSequence.get(journeyKey);
 			if (journeyPattern == null) {
 				journeyPattern = createJourneyPattern(context, referential, configuration, gtfsTrip, gtfsShapes,
