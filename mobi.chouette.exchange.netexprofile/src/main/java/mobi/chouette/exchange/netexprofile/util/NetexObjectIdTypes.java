@@ -26,6 +26,9 @@ public final class NetexObjectIdTypes {
     public static final String SCHEDULED_STOP_POINTS = "scheduledStopPoints";
     public static final String STOP_ASSIGNMENTS = "stopAssignments";
     public static final String JOURNEY_PATTERNS = "journeyPatterns";
+    public static final String DAY_TYPES = "dayTypes";
+    public static final String DAY_TYPE_ASSIGNMENTS = "dayTypeAssignments";
+    public static final String OPERATING_PERIODS = "operatingPeriods";
 
     // frame id keys
     public static final String COMPOSITE_FRAME = "CompositeFrame";

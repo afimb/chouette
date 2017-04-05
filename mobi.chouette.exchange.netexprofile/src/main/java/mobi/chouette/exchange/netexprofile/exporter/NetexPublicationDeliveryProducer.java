@@ -14,6 +14,7 @@ import mobi.chouette.exchange.netexprofile.jaxb.NetexXmlStreamMarshaller;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Company;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
 
@@ -35,6 +36,7 @@ import java.util.*;
 
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer.*;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 @Log4j
@@ -54,14 +56,13 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
             .optionalEnd()
             .parseDefaulting(ChronoField.OFFSET_SECONDS,OffsetDateTime.now().getLong(ChronoField.OFFSET_SECONDS) ).toFormatter();
 
-    private static ServiceCalendarFrameProducer serviceCalendarFrameProducer = new ServiceCalendarFrameProducer();
-
     private static OperatorProducer operatorProducer = new OperatorProducer();
     private static StopPlaceProducer stopPlaceProducer = new StopPlaceProducer();
     private static NetworkProducer networkProducer = new NetworkProducer();
     private static LineProducer lineProducer = new LineProducer();
     private static RouteProducer routeProducer = new RouteProducer();
     private static JourneyPatternProducer journeyPatternProducer = new JourneyPatternProducer();
+    private static CalendarProducer calendarProducer = new CalendarProducer();
     private static ServiceJourneyProducer serviceJourneyProducer = new ServiceJourneyProducer();
 
     private static final Map<String, Codespace> codespaceMapping = new HashMap<>();
@@ -306,16 +307,12 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
     }
 
     private void writeFramesElement(Context context, XMLStreamWriter writer, ExportableData exportableData) {
-        ServiceCalendarFrame serviceCalendarFrame = serviceCalendarFrameProducer.produce(context, exportableData);
-
         try {
             writer.writeStartElement(FRAMES);
             writeResourceFrameElement(writer, exportableData);
             writeSiteFrameElement(writer, exportableData);
             writeServiceFrameElement(writer, exportableData);
-
-            marshaller.marshal(netexFactory.createServiceCalendarFrame(serviceCalendarFrame), writer);
-
+            writeServiceCalendarFrameElement(context, writer, exportableData);
             writeTimetableFrameElement(context, writer, exportableData);
             writer.writeEndElement();
         } catch (Exception e) {
@@ -368,6 +365,33 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
             writeScheduledStopPointsElement(writer, line);
             writeStopAssignmentsElement(writer, line);
             writeJourneyPatternsElement(writer, line);
+            writer.writeEndElement();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void writeServiceCalendarFrameElement(Context context, XMLStreamWriter writer, ExportableData exportableData) {
+        mobi.chouette.model.Line line = exportableData.getLine();
+        String serviceCalendarFrameId = netexId(line.objectIdPrefix(), SERVICE_CALENDAR_FRAME, line.objectIdSuffix());
+
+        Map<String, List<? extends DataManagedObjectStructure>> calendarData = calendarProducer.produce(context, exportableData);
+        List<DayType> dayTypes = (List<DayType>) calendarData.get(DAY_TYPES_KEY);
+        List<DayTypeAssignment> dayTypeAssignments = (List<DayTypeAssignment>) calendarData.get(DAY_TYPE_ASSIGNMENTS_KEY);
+        List<OperatingPeriod> operatingPeriods = (List<OperatingPeriod>) calendarData.get(OPERATING_PERIODS_KEY);
+
+        try {
+            writer.writeStartElement(SERVICE_CALENDAR_FRAME);
+            writer.writeAttribute(VERSION, NETEX_DATA_OJBECT_VERSION);
+            writer.writeAttribute(ID, serviceCalendarFrameId);
+            writeDayTypesElement(writer, dayTypes);
+
+            if (CollectionUtils.isNotEmpty(operatingPeriods)) {
+                writeOperatingPeriodsElement(writer, operatingPeriods);
+            }
+
+            writeDayTypeAssignmentsElement(writer, dayTypeAssignments);
             writer.writeEndElement();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -553,6 +577,48 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
 
             for (ServiceJourney serviceJourney : serviceJourneys) {
                 marshaller.marshal(netexFactory.createServiceJourney(serviceJourney), writer);
+            }
+
+            writer.writeEndElement();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void writeDayTypesElement(XMLStreamWriter writer, List<DayType> dayTypes) {
+        try {
+            writer.writeStartElement(DAY_TYPES);
+
+            for (DayType dayType : dayTypes) {
+                marshaller.marshal(netexFactory.createDayType(dayType), writer);
+            }
+
+            writer.writeEndElement();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void writeDayTypeAssignmentsElement(XMLStreamWriter writer, List<DayTypeAssignment> dayTypeAssignments) {
+        try {
+            writer.writeStartElement(DAY_TYPE_ASSIGNMENTS);
+
+            for (DayTypeAssignment dayTypeAssignment : dayTypeAssignments) {
+                marshaller.marshal(netexFactory.createDayTypeAssignment(dayTypeAssignment), writer);
+            }
+
+            writer.writeEndElement();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void writeOperatingPeriodsElement(XMLStreamWriter writer, List<OperatingPeriod> operatingPeriods) {
+        try {
+            writer.writeStartElement(OPERATING_PERIODS);
+
+            for (OperatingPeriod operatingPeriod : operatingPeriods) {
+                marshaller.marshal(netexFactory.createOperatingPeriod(operatingPeriod), writer);
             }
 
             writer.writeEndElement();

@@ -22,8 +22,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.TIMETABLE_FRAME;
-
 @Log4j
 public class NetexXmlStreamMarshaller {
 
