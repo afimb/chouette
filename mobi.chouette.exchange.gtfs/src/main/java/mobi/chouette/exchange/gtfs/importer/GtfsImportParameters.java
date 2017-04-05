@@ -33,6 +33,10 @@ public class GtfsImportParameters extends AbstractImportParameter {
 	private String objectIdPrefix;
 
 	@Getter@Setter
+	@XmlElement(name = "split_id_on_dot", defaultValue="true")
+	private boolean splitIdOnDot = true;
+
+	@Getter@Setter
 	@XmlElement(name = "max_distance_for_connection_link", defaultValue="0")
 	private int maxDistanceForConnectionLink = 0;
 

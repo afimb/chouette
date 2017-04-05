@@ -186,7 +186,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		Index<GtfsRoute> routes = importer.getRouteById();
 		GtfsRoute gtfsRoute = routes.getValue(gtfsRouteId);
 
-		String lineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY,
+		String lineId = AbstractConverter.composeObjectId(configuration, Line.LINE_KEY,
 				gtfsRouteId, log);
 		Line line = ObjectFactory.getLine(referential, lineId);
 		convert(context, gtfsRoute, line);
@@ -199,7 +199,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 
 		// Company
 		if (gtfsRoute.getAgencyId() != null) {
-			String companyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
+			String companyId = AbstractConverter.composeObjectId(configuration,
 					Company.COMPANY_KEY, gtfsRoute.getAgencyId(), log);
 			Company company = ObjectFactory.getCompany(referential, companyId);
 			line.setCompany(company);
