@@ -56,7 +56,7 @@ public class GtfsStopTime extends GtfsObject implements Serializable
 
    @Getter
    @Setter
-   private Integer timepoint;
+   private TimepointType timepoint;
 
    // @Override
    // public String toString()
@@ -72,5 +72,10 @@ public class GtfsStopTime extends GtfsObject implements Serializable
    public enum PickupType implements Serializable
    {
       Scheduled, NoAvailable, AgencyCall, DriverCall;
+   }
+   
+   public enum TimepointType implements Serializable
+   {
+	   Approximate, Exact;
    }
 }

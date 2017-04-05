@@ -50,10 +50,8 @@ public class GtfsAgency extends GtfsObject implements Serializable
    @Setter
    private URL agencyFareUrl;
 
-   // @Override
-   // public String toString()
-   // {
-   // return id + ":" + AgencyExporter.CONVERTER.to(new Context(), this);
-   // }
+   @Getter
+   @Setter
+   private String agencyEmail;
 
 }
