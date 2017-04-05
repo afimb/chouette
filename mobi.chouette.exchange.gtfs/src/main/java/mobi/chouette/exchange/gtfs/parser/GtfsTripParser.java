@@ -674,6 +674,27 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 		}
 
+		// clean boarding and alighting info when all normal in route
+		for (Route route : referential.getRoutes().values()) {
+			boolean allNominal = true;
+			for (StopPoint point : route.getStopPoints()) {
+				if (point.getForAlighting() != null && !point.getForAlighting().equals(AlightingPossibilityEnum.normal)) {
+					allNominal = false;
+					break;
+				}
+				if (point.getForBoarding() != null && !point.getForBoarding().equals(BoardingPossibilityEnum.normal)) {
+					allNominal = false;
+					break;
+				}
+			}
+			if (allNominal) {
+				for (StopPoint point : route.getStopPoints()) {
+					point.setForAlighting(null);
+					point.setForBoarding(null);
+				}
+			}
+		}
+
 		// Clean empty journeyPatterns and routes
 		List<Route> rToBeRemoved = new ArrayList<>();
 		for (Route route : referential.getRoutes().values()) {
