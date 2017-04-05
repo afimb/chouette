@@ -75,13 +75,13 @@ public class GtfsRouteParserCommand implements Command, Constant {
 						referential.getSharedCompanies().size());
 			}
 
-//			// StopArea
+//			// StopArea are managed in stopparser before line parsing 
 //			if (referential.getSharedStopAreas().isEmpty()) {
 //				GtfsStopParser gtfsStopParser = (GtfsStopParser) ParserFactory.create(GtfsStopParser.class.getName());
 //				gtfsStopParser.parse(context);
 //			}
 //
-//			// ConnectionLink
+//			// ConnectionLink are managed in stopparser before line parsing 
 //			if (importer.hasTransferImporter()) {
 //				if (referential.getSharedConnectionLinks().isEmpty()) {
 //					GtfsTransferParser gtfsTransferParser = (GtfsTransferParser) ParserFactory

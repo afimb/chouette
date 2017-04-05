@@ -27,7 +27,7 @@ public class NominalTests extends AbstractPhase1Tests {
 
 	}
 	
-	@Test(groups = { "Minimal" }, description = "minimum valid files",priority=2)
+	@Test(groups = { "Nominal" }, description = "minimum valid files",priority=2)
 	public void verifyTest_2() throws Exception {
 		log.info(Color.GREEN + "Minimal : minimum valid files" + Color.NORMAL);
 		Context context = new Context();
@@ -35,7 +35,7 @@ public class NominalTests extends AbstractPhase1Tests {
 
 	}
 
-	@Test(groups = { "Nominal stop" }, description = "valid stops files",priority=3)
+	@Test(groups = { "Nominal" }, description = "valid stops files",priority=3)
 	public void verifyTest_3() throws Exception {
 		log.info(Color.GREEN + "Nominal : valid stops files" + Color.NORMAL);
 		Context context = new Context();
@@ -43,13 +43,14 @@ public class NominalTests extends AbstractPhase1Tests {
 
 	}
 	
-	@Test(groups = { "Minimal stop" }, description = "minimum valid stops files",priority=4)
+	@Test(groups = { "Nominal" }, description = "minimum valid stops files",priority=4)
 	public void verifyTest_4() throws Exception {
 		log.info(Color.GREEN + "Minimal : minimum valid stops files" + Color.NORMAL);
 		Context context = new Context();
 		verifyValidation( log, context, "stops_mini", "NONE",SEVERITY.ERROR, RESULT.NOK,false);
 
 	}
+
 
 
 }
