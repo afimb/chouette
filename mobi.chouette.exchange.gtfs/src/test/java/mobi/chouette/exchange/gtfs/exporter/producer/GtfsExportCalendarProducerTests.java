@@ -52,7 +52,7 @@ public class GtfsExportCalendarProducerTests
 
       List<Timetable> tms = new ArrayList<>();
       tms.add(neptuneObject);
-      producer.save(tms,  "GTFS");
+      producer.save(tms,  "GTFS",false);
       Reporter.log("verifyCalendarProducer1");
       Assert.assertEquals(mock.getExportedCalendars().size(),1,"Calendar must be returned");
       GtfsCalendar gtfsObject = mock.getExportedCalendars().get(0);
@@ -94,7 +94,7 @@ public class GtfsExportCalendarProducerTests
 
       List<Timetable> tms = new ArrayList<>();
       tms.add(neptuneObject);
-      producer.save(tms,  "GTFS");
+      producer.save(tms,  "GTFS",false);
       Reporter.log("verifyCalendarProducer2");
 
       Assert.assertEquals(mock.getExportedCalendars().size(), 0, "no calendar produced");
@@ -148,7 +148,7 @@ public class GtfsExportCalendarProducerTests
 
       List<Timetable> tms = new ArrayList<>();
       tms.add(neptuneObject);
-      producer.save(tms,  "GTFS");
+      producer.save(tms,  "GTFS",false);
       Reporter.log("verifyCalendarProducer3");
       Assert.assertEquals(mock.getExportedCalendars().size(),1,"Calendar must be returned");
       GtfsCalendar gtfsObject = mock.getExportedCalendars().get(0);
@@ -214,7 +214,7 @@ public class GtfsExportCalendarProducerTests
 
       List<Timetable> tms = new ArrayList<>();
       tms.add(neptuneObject);
-      producer.save(tms,  "GTFS");
+      producer.save(tms,  "GTFS",false);
       Reporter.log("verifyCalendarProducer4");
 
       Assert.assertEquals(mock.getExportedCalendars().size(), 0, "no calendar produced");

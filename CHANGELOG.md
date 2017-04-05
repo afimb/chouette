@@ -1,3 +1,12 @@
+# Version 3.4.2 (01/12/2016)
+* Correction
+  * PullRequest #34 : When querying for jobs, expose job action and status as parameters
+  * PullRequest #36 : Truncate all tables when cleaning before import
+  * PullRequest #37 : Robustify dao
+  * PullRequest #38 : Add switch to skip importing of Lines where last calendar date is in the past
+  * PullRequest #40 : Do not fail GTFS export on empty timetables
+  * PullRequest #42 : Add GTFS export parameter to keep objectId from Chouette on export
+
 # Version 3.4.1 (28/11/2016)
 * Correction
   * Mantis 50126: Validation Neptune : informations manquantes dans le rapport provoquant plantage de l'IHM
