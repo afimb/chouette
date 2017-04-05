@@ -511,7 +511,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			if (!hasTimes)
 				continue;
 
-			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
+			String objectId = AbstractConverter.composeObjectId(configuration,
 					VehicleJourney.VEHICLEJOURNEY_KEY, gtfsTrip.getTripId(), log);
 			VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, objectId);
 			convert(context, gtfsTrip, vehicleJourney);
@@ -537,7 +537,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			Collections.sort(vehicleJourney.getVehicleJourneyAtStops(), VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
 
 			// Timetable
-			String timetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
+			String timetableId = AbstractConverter.composeObjectId(configuration,
 					Timetable.TIMETABLE_KEY, gtfsTrip.getServiceId(), log);
 			if (afterMidnight) {
 				timetableId += GtfsCalendarParser.AFTER_MIDNIGHT_SUFFIX;
@@ -588,7 +588,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		for (GtfsFrequency frequency : importer.getFrequencyByTrip().values(gtfsTrip.getTripId())) {
 			vehicleJourney.setJourneyCategory(JourneyCategoryEnum.Frequency);
 
-			String timeBandObjectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
+			String timeBandObjectId = AbstractConverter.composeObjectId(configuration,
 					Timeband.TIMETABLE_KEY, gtfsTrip.getTripId() + "-" + count++, log);
 			Timeband timeband = ObjectFactory.getTimeband(referential, timeBandObjectId);
 			timeband.setName(getTimebandName(frequency));
@@ -813,14 +813,14 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	 * @return
 	 */
 	private Route createRoute(Referential referential, GtfsImportParameters configuration, GtfsTrip gtfsTrip) {
-		String lineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY,
+		String lineId = AbstractConverter.composeObjectId(configuration, Line.LINE_KEY,
 				gtfsTrip.getRouteId(), log);
 		Line line = ObjectFactory.getLine(referential, lineId);
 		String routeKey = gtfsTrip.getRouteId() + "_" + gtfsTrip.getDirectionId().ordinal();
 		if (gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty())
 			routeKey += "_" + gtfsTrip.getShapeId();
 		routeKey += "_" + line.getRoutes().size();
-		String routeId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.ROUTE_KEY,
+		String routeId = AbstractConverter.composeObjectId(configuration, Route.ROUTE_KEY,
 				routeKey, log);
 
 		Route route = ObjectFactory.getRoute(referential, routeId);
@@ -910,7 +910,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 			StopPoint stopPoint = ObjectFactory.getStopPoint(referential, stopKey);
 
-			String stopAreaId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
+			String stopAreaId = AbstractConverter.composeObjectId(configuration,
 					StopArea.STOPAREA_KEY, wrapper.stopId, log);
 			StopArea stopArea = ObjectFactory.getStopArea(referential, stopAreaId);
 			stopPoint.setContainedInStopArea(stopArea);
