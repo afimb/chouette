@@ -105,7 +105,7 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 
 		for (GtfsTransfer gtfsTransfer : importer.getTransferByFromStop()) {
 
-			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
+			String objectId = AbstractConverter.composeObjectId(configuration,
 					ConnectionLink.CONNECTIONLINK_KEY, gtfsTransfer.getFromStopId() + "_" + gtfsTransfer.getToStopId(),
 					log);
 			ConnectionLink connectionLink = ObjectFactory.getConnectionLink(referential, objectId);
@@ -119,10 +119,10 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
 		StopArea startOfLink = ObjectFactory.getStopArea(referential, AbstractConverter.composeObjectId(
-				configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, gtfsTransfer.getFromStopId(), log));
+				configuration, StopArea.STOPAREA_KEY, gtfsTransfer.getFromStopId(), log));
 		connectionLink.setStartOfLink(startOfLink);
 		StopArea endOfLink = ObjectFactory.getStopArea(referential, AbstractConverter.composeObjectId(
-				configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, gtfsTransfer.getToStopId(), log));
+				configuration, StopArea.STOPAREA_KEY, gtfsTransfer.getToStopId(), log));
 		connectionLink.setEndOfLink(endOfLink);
 		connectionLink.setCreationTime(Calendar.getInstance().getTime());
 		connectionLink.setLinkType(ConnectionLinkTypeEnum.Overground);

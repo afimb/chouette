@@ -5,6 +5,7 @@ import java.sql.Time;
 import java.util.TimeZone;
 
 import mobi.chouette.common.Constant;
+import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsTime;
 
 import org.apache.log4j.Logger;
@@ -34,16 +35,19 @@ public abstract class AbstractConverter implements Constant{
 		return time;
 	}
 
-	public static String composeObjectId(String prefix, String type, String id, Logger logger) {
+	public static String composeObjectId(GtfsImportParameters configuration, String type, String id, Logger logger) {
 
 		if (id == null || id.isEmpty() ) return "";
-		String[] tokens = id.split("\\.");
-		if (tokens.length == 2) {
-			// id should be produced by Chouette
-			return tokens[0].trim().replaceAll("[^a-zA-Z_0-9]", "_") + ":" + type + ":"
-					+ tokens[1].trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
+		
+		if(configuration.isSplitIdOnDot()) {
+			String[] tokens = id.split("\\.");
+			if (tokens.length == 2) {
+				// id should be produced by Chouette
+				return tokens[0].trim().replaceAll("[^a-zA-Z_0-9]", "_") + ":" + type + ":"+ tokens[1].trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
+			}
 		}
-		return prefix + ":" + type + ":" + id.trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
+		return configuration.getObjectIdPrefix() + ":" + type + ":" + id.trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
+			
 	}
 
 	public static String toString(URL url) {
