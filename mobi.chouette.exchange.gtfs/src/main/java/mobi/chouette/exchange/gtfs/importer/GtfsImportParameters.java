@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 @ToString(callSuper=true)
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder={"objectIdPrefix",
+		"splitIdOnDot",
 		"maxDistanceForConnectionLink",
 		"maxDistanceForCommercial",
 		"ignoreEndChars",
