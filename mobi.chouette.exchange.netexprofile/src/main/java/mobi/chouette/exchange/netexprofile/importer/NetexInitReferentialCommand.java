@@ -10,7 +10,6 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
 import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.report.ActionReporter;
@@ -63,9 +62,9 @@ public class NetexInitReferentialCommand implements Command, Constant {
 			
 			context.put(NETEX_DATA_JAVA, netexJava);
 			context.put(NETEX_DATA_DOM, netexDom);
+
 			if(lineFile) {
 				context.put(NETEX_WITH_COMMON_DATA, Boolean.FALSE);
-				context.put(NETEX_REFERENTIAL, new NetexReferential());
 			} else {
 				context.put(NETEX_WITH_COMMON_DATA, Boolean.TRUE);
 			}

@@ -1,10 +1,11 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes;
 import mobi.chouette.model.Route;
 import org.rutebanken.netex.model.*;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.LINE_KEY;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.LINE;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.ROUTE_KEY;
 
 public class LineProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Line, mobi.chouette.model.Line> {
@@ -15,7 +16,7 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
 
         netexLine.setVersion(neptuneLine.getObjectVersion() > 0 ? String.valueOf(neptuneLine.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 
-        String lineId = netexId(neptuneLine.objectIdPrefix(), LINE_KEY, neptuneLine.objectIdSuffix());
+        String lineId = netexId(neptuneLine.objectIdPrefix(), LINE, neptuneLine.objectIdSuffix());
         netexLine.setId(lineId);
 
         if (isSet(neptuneLine.getName())) {
@@ -46,11 +47,13 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
         }
 
         OperatorRefStructure operatorRefStruct = netexFactory.createOperatorRefStructure();
-        operatorRefStruct.setRef(neptuneLine.getCompany().getObjectId());
+        String operatorId = netexId(neptuneLine.getCompany().objectIdPrefix(), NetexObjectIdTypes.OPERATOR_KEY, neptuneLine.getCompany().objectIdSuffix());
+        operatorRefStruct.setRef(operatorId);
 
-        // TODO handle version attribute differently, false when in separate export (common file), true if in same export
+        // TODO handle version attribute differently, false when in separate export (common file), true if in same export, for now only supporting single line files
         //line.setOperatorRef(isFrequentOperator ? netexObjectFactory.createOperatorRefStructure(operatorId, Boolean.FALSE) : netexObjectFactory.createOperatorRefStructure(operatorId, Boolean.TRUE));
         //withRefValidation ? operatorRefStruct.withVersion(VERSION_ONE) : operatorRefStruct;
+        operatorRefStruct.setVersion(neptuneLine.getCompany().getObjectVersion() != null ? String.valueOf(neptuneLine.getCompany().getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 
         netexLine.setOperatorRef(operatorRefStruct);
 

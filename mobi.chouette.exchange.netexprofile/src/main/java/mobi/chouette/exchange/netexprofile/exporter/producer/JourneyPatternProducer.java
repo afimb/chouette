@@ -2,6 +2,8 @@ package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.type.AlightingPossibilityEnum;
+import mobi.chouette.model.type.BoardingPossibilityEnum;
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
 
@@ -51,8 +53,6 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 
         netexJourneyPattern.setRouteRef(routeRefStruct);
 
-        // TODO add points in sequence
-
         PointsInJourneyPattern_RelStructure pointsInJourneyPattern = netexFactory.createPointsInJourneyPattern_RelStructure();
         List<StopPoint> stopPoints = neptuneJourneyPattern.getStopPoints();
         String[] idSequence = NetexProducerUtils.generateIdSequence(stopPoints.size());
@@ -79,7 +79,12 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 
             stopPointInJourneyPattern.setScheduledStopPointRef(netexFactory.createScheduledStopPointRef(stopPointRefStruct));
 
-            // TODO solve issue with for boarding/alighting
+            if (stopPoint.getForBoarding().equals(BoardingPossibilityEnum.normal) && stopPoint.getForAlighting().equals(AlightingPossibilityEnum.forbidden)) {
+                stopPointInJourneyPattern.setForAlighting(false);
+            }
+            if (stopPoint.getForAlighting().equals(AlightingPossibilityEnum.normal) && stopPoint.getForBoarding().equals(BoardingPossibilityEnum.forbidden)) {
+                stopPointInJourneyPattern.setForBoarding(false);
+            }
 
             stopPointInJourneyPattern.setOrder(BigInteger.valueOf(i + 1));
             pointsInJourneyPattern.getPointInJourneyPatternOrStopPointInJourneyPatternOrTimingPointInJourneyPattern().add(stopPointInJourneyPattern);
