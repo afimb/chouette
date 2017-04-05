@@ -24,7 +24,7 @@ public class ServiceJourneyProducer extends NetexProducer { //implements NetexEn
     @SuppressWarnings("unchecked")
     public ServiceJourney produce(Context context, VehicleJourney vehicleJourney, Line line) {
         Context producingContext = (Context) context.get(PRODUCING_CONTEXT);
-        Context calendarContext = (Context) producingContext.get(ServiceCalendarFrameProducer.LOCAL_CONTEXT);
+        Context calendarContext = (Context) producingContext.get(CalendarProducer.LOCAL_CONTEXT);
 
         ServiceJourney serviceJourney = netexFactory.createServiceJourney();
         serviceJourney.setVersion(vehicleJourney.getObjectVersion() > 0 ? String.valueOf(vehicleJourney.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
@@ -58,7 +58,7 @@ public class ServiceJourneyProducer extends NetexProducer { //implements NetexEn
         serviceJourney.setLineRef(netexFactory.createLineRef(lineRefStruct));
 
         Context objectContext = (Context) calendarContext.get(vehicleJourney.getObjectId());
-        List<String> dayTypeIds = (List<String>) objectContext.get(ServiceCalendarFrameProducer.DAY_TYPE_IDS);
+        List<String> dayTypeIds = (List<String>) objectContext.get(CalendarProducer.DAY_TYPE_IDS);
 
         List<Timetable> timetables = vehicleJourney.getTimetables();
         DayTypeRefs_RelStructure dayTypeStruct = netexFactory.createDayTypeRefs_RelStructure();
