@@ -14,6 +14,8 @@ import mobi.chouette.exchange.netexprofile.jaxb.NetexXmlStreamMarshaller;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Company;
+import mobi.chouette.model.Line;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
@@ -113,7 +115,11 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
         initializeCodespaces(configuration, exportableData);
 
         Path outputPath = Paths.get(jobData.getPathName(), OUTPUT);
-        String fileName = exportableData.getLine().getObjectId().replaceAll(":", "-") + ".xml";
+        
+        
+        
+        Line line = exportableData.getLine();
+		String fileName = line.getObjectId().replaceAll(":", "-") + (line.getNumber() != null ? line.getNumber()+"-" : "") + (line.getPublishedName() != null ? line.getPublishedName().replace(' ', '_') : "")+ ".xml";
         Path filePath = new File(outputPath.toFile(), fileName).toPath();
         writeToXml(context, filePath, exportableData);
 
@@ -122,8 +128,8 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
         if (metadata != null) {
             metadata.getResources().add(metadata.new Resource(
                     fileName,
-                    NeptuneObjectPresenter.getName(exportableData.getLine().getNetwork()),
-                    NeptuneObjectPresenter.getName(exportableData.getLine())));
+                    NeptuneObjectPresenter.getName(line.getNetwork()),
+                    NeptuneObjectPresenter.getName(line)));
         }
     }
 
