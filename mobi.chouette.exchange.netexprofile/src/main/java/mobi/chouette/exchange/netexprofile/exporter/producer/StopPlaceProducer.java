@@ -1,10 +1,14 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.util.NetexObjectUtil;
+import mobi.chouette.exchange.netexprofile.util.NetexReferential;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.*;
 
+import static mobi.chouette.exchange.netexprofile.Constant.NETEX_REFERENTIAL;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
@@ -13,7 +17,8 @@ public class StopPlaceProducer extends NetexProducer implements NetexEntityProdu
     private static final String DEFAULT_COORDINATE_SYSTEM = "WGS84";
 
     @Override
-    public StopPlace produce(StopArea stopArea) {
+    public StopPlace produce(Context context, StopArea stopArea) {
+        NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
         StopPlace stopPlace = netexFactory.createStopPlace();
         stopPlace.setVersion(stopArea.getObjectVersion() > 0 ? String.valueOf(stopArea.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 
@@ -134,6 +139,7 @@ public class StopPlaceProducer extends NetexProducer implements NetexEntityProdu
             stopPlace.setQuays(quayStruct);
         }
 
+        NetexObjectUtil.addSharedStopPlace(netexReferential, stopPlaceId, stopPlace);
         return stopPlace;
     }
 

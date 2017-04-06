@@ -15,7 +15,6 @@ import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
@@ -315,9 +314,9 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
     private void writeFramesElement(Context context, XMLStreamWriter writer, ExportableData exportableData) {
         try {
             writer.writeStartElement(FRAMES);
-            writeResourceFrameElement(writer, exportableData);
-            writeSiteFrameElement(writer, exportableData);
-            writeServiceFrameElement(writer, exportableData);
+            writeResourceFrameElement(context, writer, exportableData);
+            writeSiteFrameElement(context, writer, exportableData);
+            writeServiceFrameElement(context, writer, exportableData);
             writeServiceCalendarFrameElement(context, writer, exportableData);
             writeTimetableFrameElement(context, writer, exportableData);
             writer.writeEndElement();
@@ -326,7 +325,7 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
         }
     }
 
-    private void writeResourceFrameElement(XMLStreamWriter writer, ExportableData exportableData) {
+    private void writeResourceFrameElement(Context context, XMLStreamWriter writer, ExportableData exportableData) {
         mobi.chouette.model.Line line = exportableData.getLine();
         String resourceFrameId = netexId(line.objectIdPrefix(), RESOURCE_FRAME, line.objectIdSuffix());
 
@@ -334,14 +333,14 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
             writer.writeStartElement(RESOURCE_FRAME);
             writer.writeAttribute(VERSION, NETEX_DATA_OJBECT_VERSION);
             writer.writeAttribute(ID, resourceFrameId);
-            writeOrganisationsElement(writer, exportableData);
+            writeOrganisationsElement(context, writer, exportableData);
             writer.writeEndElement();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void writeSiteFrameElement(XMLStreamWriter writer, ExportableData exportableData) {
+    private void writeSiteFrameElement(Context context, XMLStreamWriter writer, ExportableData exportableData) {
         mobi.chouette.model.Line line = exportableData.getLine();
         String siteFrameId = netexId(line.objectIdPrefix(), SITE_FRAME, line.objectIdSuffix());
 
@@ -349,14 +348,14 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
             writer.writeStartElement(SITE_FRAME);
             writer.writeAttribute(VERSION, NETEX_DATA_OJBECT_VERSION);
             writer.writeAttribute(ID, siteFrameId);
-            writeStoPlacesElement(writer, exportableData);
+            writeStoPlacesElement(context, writer, exportableData);
             writer.writeEndElement();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void writeServiceFrameElement(XMLStreamWriter writer, ExportableData exportableData) {
+    private void writeServiceFrameElement(Context context, XMLStreamWriter writer, ExportableData exportableData) {
         mobi.chouette.model.Line line = exportableData.getLine();
         String serviceFrameId = netexId(line.objectIdPrefix(), SERVICE_FRAME, line.objectIdSuffix());
 
@@ -364,13 +363,13 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
             writer.writeStartElement(SERVICE_FRAME);
             writer.writeAttribute(VERSION, NETEX_DATA_OJBECT_VERSION);
             writer.writeAttribute(ID, serviceFrameId);
-            writeNetworkElement(writer, line);
+            writeNetworkElement(context, writer, line);
             writeRoutePointsElement(writer, line);
-            writeRoutesElement(writer, line);
-            writeLinesElement(writer, line);
+            writeRoutesElement(context, writer, line);
+            writeLinesElement(context, writer, line);
             writeScheduledStopPointsElement(writer, line);
             writeStopAssignmentsElement(writer, line);
-            writeJourneyPatternsElement(writer, line);
+            writeJourneyPatternsElement(context, writer, line);
             writer.writeEndElement();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -419,9 +418,9 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
         }
     }
 
-    private void writeOrganisationsElement(XMLStreamWriter writer, ExportableData exportableData) {
+    private void writeOrganisationsElement(Context context, XMLStreamWriter writer, ExportableData exportableData) {
         Company company = exportableData.getLine().getCompany();
-        List<Operator> operators = Collections.singletonList(operatorProducer.produce(company));
+        List<Operator> operators = Collections.singletonList(operatorProducer.produce(context, company));
 
         try {
             writer.writeStartElement(ORGANISATIONS);
@@ -436,14 +435,14 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
         }
     }
 
-    private void writeStoPlacesElement(XMLStreamWriter writer, ExportableData exportableData) {
+    private void writeStoPlacesElement(Context context, XMLStreamWriter writer, ExportableData exportableData) {
         Set<mobi.chouette.model.StopArea> stopAreas = new HashSet<>();
         stopAreas.addAll(exportableData.getStopPlaces());
         stopAreas.addAll(exportableData.getCommercialStops());
         List<StopPlace> stopPlaces = new ArrayList<>();
 
         for (mobi.chouette.model.StopArea stopArea : stopAreas) {
-            StopPlace stopPlace = stopPlaceProducer.produce(stopArea);
+            StopPlace stopPlace = stopPlaceProducer.produce(context, stopArea);
             stopPlaces.add(stopPlace);
         }
         try {
@@ -459,8 +458,8 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
         }
     }
 
-    private void writeNetworkElement(XMLStreamWriter writer, mobi.chouette.model.Line line) {
-        org.rutebanken.netex.model.Network network = networkProducer.produce(line.getNetwork());
+    private void writeNetworkElement(Context context, XMLStreamWriter writer, mobi.chouette.model.Line line) {
+        org.rutebanken.netex.model.Network network = networkProducer.produce(context, line.getNetwork());
 
         try {
             marshaller.marshal(netexFactory.createNetwork(network), writer);
@@ -485,11 +484,11 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
         }
     }
 
-    private void writeRoutesElement(XMLStreamWriter writer, mobi.chouette.model.Line line) {
+    private void writeRoutesElement(Context context, XMLStreamWriter writer, mobi.chouette.model.Line line) {
         List<org.rutebanken.netex.model.Route> routes = new ArrayList<>();
 
         for (mobi.chouette.model.Route neptuneRoute : line.getRoutes()) {
-            org.rutebanken.netex.model.Route netexRoute = routeProducer.produce(neptuneRoute);
+            org.rutebanken.netex.model.Route netexRoute = routeProducer.produce(context, neptuneRoute);
             routes.add(netexRoute);
         }
         try {
@@ -505,8 +504,8 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
         }
     }
 
-    private void writeLinesElement(XMLStreamWriter writer, mobi.chouette.model.Line line) {
-        org.rutebanken.netex.model.Line netexLine = lineProducer.produce(line);
+    private void writeLinesElement(Context context, XMLStreamWriter writer, mobi.chouette.model.Line line) {
+        org.rutebanken.netex.model.Line netexLine = lineProducer.produce(context, line);
 
         try {
             writer.writeStartElement(LINES);
@@ -549,12 +548,12 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
         }
     }
 
-    private void writeJourneyPatternsElement(XMLStreamWriter writer, mobi.chouette.model.Line line) {
+    private void writeJourneyPatternsElement(Context context, XMLStreamWriter writer, mobi.chouette.model.Line line) {
         List<org.rutebanken.netex.model.JourneyPattern> journeyPatterns = new ArrayList<>();
 
         for (mobi.chouette.model.Route route : line.getRoutes()) {
             for (mobi.chouette.model.JourneyPattern neptuneJourneyPattern : route.getJourneyPatterns()) {
-                org.rutebanken.netex.model.JourneyPattern netexJourneyPattern = journeyPatternProducer.produce(neptuneJourneyPattern);
+                org.rutebanken.netex.model.JourneyPattern netexJourneyPattern = journeyPatternProducer.produce(context, neptuneJourneyPattern);
                 journeyPatterns.add(netexJourneyPattern);
             }
         }

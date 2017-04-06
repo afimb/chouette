@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.model.StopPoint;
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
@@ -12,7 +13,7 @@ import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 public class RouteProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Route, mobi.chouette.model.Route> {
 
     @Override
-    public org.rutebanken.netex.model.Route produce(mobi.chouette.model.Route neptuneRoute) {
+    public org.rutebanken.netex.model.Route produce(Context context, mobi.chouette.model.Route neptuneRoute) {
         org.rutebanken.netex.model.Route netexRoute = netexFactory.createRoute();
         netexRoute.setVersion(neptuneRoute.getObjectVersion() > 0 ? String.valueOf(neptuneRoute.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 

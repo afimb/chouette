@@ -93,6 +93,15 @@ public class NetexObjectUtil {
         return operatingDay;
     }
 
+    public static void addSharedStopPlace(NetexReferential referential, String objectId, StopPlace stopPlace) {
+        if (stopPlace == null) {
+            throw new NullPointerException("Unknown stop place : " + objectId);
+        }
+        if (!referential.getSharedStopPlaces().containsKey(objectId)) {
+            referential.getSharedStopPlaces().put(objectId, stopPlace);
+        }
+    }
+
     public static <T> List<T> getFrames(Class<T> clazz, List<JAXBElement<? extends Common_VersionFrameStructure>> dataObjectFrames) {
         List<T> foundFrames = new ArrayList<>();
 

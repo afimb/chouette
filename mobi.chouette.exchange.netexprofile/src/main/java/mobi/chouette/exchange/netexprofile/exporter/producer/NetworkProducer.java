@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import mobi.chouette.common.Context;
 import org.rutebanken.netex.model.KeyValueStructure;
 import org.rutebanken.netex.model.PrivateCodeStructure;
 
@@ -11,7 +12,7 @@ import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NETWOR
 public class NetworkProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Network, mobi.chouette.model.Network> {
 
     @Override
-    public org.rutebanken.netex.model.Network produce(mobi.chouette.model.Network neptuneNetwork) {
+    public org.rutebanken.netex.model.Network produce(Context context, mobi.chouette.model.Network neptuneNetwork) {
         org.rutebanken.netex.model.Network netexNetwork = netexFactory.createNetwork();
         netexNetwork.setVersion(neptuneNetwork.getObjectVersion() > 0 ? String.valueOf(neptuneNetwork.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 
