@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.netexprofile.importer.util;
+package mobi.chouette.exchange.netexprofile.util;
 
 import org.rutebanken.netex.model.*;
 

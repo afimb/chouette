@@ -96,6 +96,16 @@ public class NetexExporterProcessingCommands implements ProcessingCommands, Cons
 
     @Override
     public List<? extends Command> getDisposeCommands(Context context, boolean withDao) {
-        return new ArrayList<>();
+        InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
+        List<Command> commands = new ArrayList<>();
+
+        try {
+            commands.add(CommandFactory.create(initialContext, NetexDisposeExportCommand.class.getName()));
+        } catch (Exception e) {
+            log.error(e, e);
+            throw new RuntimeException("unable to call factories");
+        }
+
+        return commands;
     }
 }
