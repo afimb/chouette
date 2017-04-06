@@ -26,7 +26,7 @@ public class NetexprofileExportParameters extends AbstractExportParameter {
 
     @Getter
     @Setter
-    @XmlElement(name = "valid_codespaces", required = false)
+    @XmlElement(name = "valid_codespaces", required = true)
     private String validCodespaces;
 
 }
