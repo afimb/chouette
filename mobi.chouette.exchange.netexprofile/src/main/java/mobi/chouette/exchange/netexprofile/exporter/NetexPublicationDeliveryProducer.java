@@ -117,9 +117,11 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
         Path outputPath = Paths.get(jobData.getPathName(), OUTPUT);
         
         
-       String v = "NSB-Line-19Trondheim_S_--_Bodø.xml";
         Line line = exportableData.getLine();
-		String fileName = line.getObjectId().replaceAll(":", "-") + (line.getNumber() != null ? line.getNumber()+"-" : "") + (line.getPublishedName() != null ? "-"+line.getPublishedName().replace(' ', '_') : "")+ ".xml";
+        String[] objectId = line.getObjectId().split(":");
+		
+        String fileName = objectId[0] + "-"+objectId[2]+"-"+(line.getNumber() != null ? line.getNumber()+"-" : "") + (line.getPublishedName() != null ? line.getPublishedName().replace(' ', '_') : "")+ ".xml";
+        
         Path filePath = new File(outputPath.toFile(), fileName).toPath();
         writeToXml(context, filePath, exportableData);
 
