@@ -2,7 +2,6 @@ package mobi.chouette.exchange.netexprofile.exporter;
 
 import com.sun.xml.txw2.output.IndentingXMLStreamWriter;
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.exporter.writer.AbstractNetexWriter.Mode;
 import mobi.chouette.exchange.netexprofile.exporter.writer.PublicationDeliveryWriter;

@@ -2,13 +2,7 @@ package mobi.chouette.exchange.netexprofile.exporter;
 
 import lombok.Getter;
 import lombok.Setter;
-import mobi.chouette.model.*;
 import org.rutebanken.netex.model.*;
-import org.rutebanken.netex.model.JourneyPattern;
-import org.rutebanken.netex.model.Line;
-import org.rutebanken.netex.model.Network;
-import org.rutebanken.netex.model.Route;
-import org.rutebanken.netex.model.StopArea;
 
 import java.util.*;
 

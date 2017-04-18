@@ -35,6 +35,10 @@ public class NetexDisposeExportCommand implements Command, Constant {
             if (netexReferential != null) {
                 netexReferential.dispose();
             }
+            ExportableNetexData exportableNetexData = (ExportableNetexData) context.get(EXPORTABLE_NETEX_DATA);
+            if (exportableNetexData != null) {
+                exportableNetexData.dispose();
+            }
 
             NetexProducer.resetContext(context);
             result = SUCCESS;
