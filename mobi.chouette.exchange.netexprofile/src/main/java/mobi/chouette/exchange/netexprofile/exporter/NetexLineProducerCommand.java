@@ -84,9 +84,6 @@ public class NetexLineProducerCommand implements Command, Constant {
 
             if (cont) {
                 try {
-                    //NetexLineDeliveryProducer producer = new NetexLineDeliveryProducer();
-                    //producer.produce(context);
-
                     NetexLineDataProducer producer = new NetexLineDataProducer();
                     producer.produce(context);
 

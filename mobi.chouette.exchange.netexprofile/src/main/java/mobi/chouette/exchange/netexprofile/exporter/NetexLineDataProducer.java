@@ -340,7 +340,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
     static {
         try {
             Properties properties = new Properties();
-            properties.load(NetexLineDeliveryProducer.class.getResourceAsStream("/codespaces.properties"));
+            properties.load(NetexLineDataProducer.class.getResourceAsStream("/codespaces.properties"));
             Set<String> propertyKeys = properties.stringPropertyNames();
 
             for (String key : propertyKeys) {
