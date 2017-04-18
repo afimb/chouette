@@ -315,11 +315,11 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         if (isSet(stopPoint.getContainedInStopArea())) {
             if (isSet(stopPoint.getContainedInStopArea().getParent())) {
                 mobi.chouette.model.StopArea parentStopArea = stopPoint.getContainedInStopArea().getParent();
-                String stopPlaceVersion = parentStopArea.getObjectVersion() > 0 ? String.valueOf(parentStopArea.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
+                //String stopPlaceVersion = parentStopArea.getObjectVersion() > 0 ? String.valueOf(parentStopArea.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
                 String stopPlaceIdRef = netexId(parentStopArea.objectIdPrefix(), STOP_PLACE_KEY, parentStopArea.objectIdSuffix());
 
                 StopPlaceRefStructure stopPlaceRefStruct = netexFactory.createStopPlaceRefStructure()
-                        .withVersion(stopPlaceVersion)
+                        //.withVersion(stopPlaceVersion)
                         .withRef(stopPlaceIdRef);
                 stopAssignment.setStopPlaceRef(stopPlaceRefStruct);
             }

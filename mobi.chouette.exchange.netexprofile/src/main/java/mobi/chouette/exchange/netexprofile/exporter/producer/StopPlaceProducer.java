@@ -20,7 +20,7 @@ public class StopPlaceProducer extends NetexProducer implements NetexEntityProdu
     public StopPlace produce(Context context, StopArea stopArea) {
         NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
         StopPlace stopPlace = netexFactory.createStopPlace();
-        //stopPlace.setVersion(stopArea.getObjectVersion() > 0 ? String.valueOf(stopArea.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+        stopPlace.setVersion(stopArea.getObjectVersion() > 0 ? String.valueOf(stopArea.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 
         String stopPlaceId = netexId(stopArea.objectIdPrefix(), STOP_PLACE_KEY, stopArea.objectIdSuffix());
         stopPlace.setId(stopPlaceId);
