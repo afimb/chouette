@@ -133,7 +133,7 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
                 ServiceFrameWriter.write(writer, exportableData, exportableNetexData);
                 ServiceCalendarFrameWriter.write(writer, exportableData, exportableNetexData);
                 TimetableFrameWriter.write(writer, exportableData, exportableNetexData);
-            } else {
+            } else { // shared data
                 SiteFrameWriter.write(writer, exportableData, exportableNetexData);
             }
 

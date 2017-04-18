@@ -25,7 +25,7 @@ class NetexFileWriter implements Constant {
 
     private static final String DEFAULT_NAMESPACE = "http://www.netex.org.uk/netex";
 
-    void writeXmlFile(Context context, Path filePath, ExportableData exportableData, ExportableNetexData exportableNetexData, Mode mode) {
+    void writeXmlFile(Path filePath, ExportableData exportableData, ExportableNetexData exportableNetexData, Mode mode) {
         try (Writer bufferedWriter = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8, CREATE, APPEND)) {
             XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
             //outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.TRUE);

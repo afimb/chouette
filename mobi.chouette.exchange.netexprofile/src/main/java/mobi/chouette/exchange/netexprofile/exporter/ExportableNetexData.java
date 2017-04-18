@@ -2,12 +2,15 @@ package mobi.chouette.exchange.netexprofile.exporter;
 
 import lombok.Getter;
 import lombok.Setter;
+import mobi.chouette.model.*;
 import org.rutebanken.netex.model.*;
+import org.rutebanken.netex.model.JourneyPattern;
+import org.rutebanken.netex.model.Line;
+import org.rutebanken.netex.model.Network;
+import org.rutebanken.netex.model.Route;
+import org.rutebanken.netex.model.StopArea;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ExportableNetexData {
 
@@ -33,7 +36,7 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private Set<StopPlace> stopPlaces = new HashSet<>();
+    private Map<String, StopPlace> sharedStopPlaces = new HashMap<>();
 
     @Getter
     @Setter
@@ -77,7 +80,6 @@ public class ExportableNetexData {
         network = null;
         line = null;
         operators.clear();
-        stopPlaces.clear();
         stopPoints.clear();
         stopAssignments.clear();
         routePoints.clear();
@@ -88,4 +90,10 @@ public class ExportableNetexData {
         dayTypeAssignments.clear();
         operatingPeriods.clear();
     }
+
+    public void dispose() {
+        // clear();
+        sharedStopPlaces.clear();
+    }
+
 }

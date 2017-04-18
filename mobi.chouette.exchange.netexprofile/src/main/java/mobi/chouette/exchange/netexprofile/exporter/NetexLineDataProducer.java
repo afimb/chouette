@@ -14,7 +14,6 @@ import mobi.chouette.model.*;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
-import mobi.chouette.model.util.Referential;
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
 
@@ -42,6 +41,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
     private static final Map<String, Codespace> CODESPACE_MAP = new HashMap<>();
 
     private static OperatorProducer operatorProducer = new OperatorProducer();
+    private static StopPlaceProducer stopPlaceProducer = new StopPlaceProducer();
     private static NetworkProducer networkProducer = new NetworkProducer();
     private static LineProducer lineProducer = new LineProducer();
     private static RouteProducer routeProducer = new RouteProducer();
@@ -60,7 +60,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
         Line neptuneLine = exportableData.getLine();
         initializeCodespaces(configuration, exportableData, exportableNetexData);
-        collectStopAreas(context, exportableData);
+        collectStopAreas(context, exportableData, exportableNetexData);
         produceAndCollectNetexData(context, exportableData, exportableNetexData);
 
         String fileName = neptuneLine.getObjectId().replaceAll(":", "-") + (neptuneLine.getNumber() != null ?
@@ -69,7 +69,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         Path filePath = new File(outputPath.toFile(), fileName).toPath();
 
         NetexFileWriter writer = new NetexFileWriter();
-        writer.writeXmlFile(context, filePath, exportableData, exportableNetexData, Mode.line);
+        writer.writeXmlFile(filePath, exportableData, exportableNetexData, Mode.line);
 
         reporter.addFileReport(context, fileName, IO_TYPE.OUTPUT);
 
@@ -117,16 +117,15 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         exportableNetexData.getCodespaces().addAll(Arrays.asList(operatorCodespace, nsrCodespace));
     }
 
-    private void collectStopAreas(Context context, ExportableData exportableData) {
-        Referential referential = (Referential) context.get(REFERENTIAL);
-
+    private void collectStopAreas(Context context, ExportableData exportableData, ExportableNetexData exportableNetexData) {
         Set<StopArea> stopAreas = new HashSet<>();
         stopAreas.addAll(exportableData.getStopPlaces());
         stopAreas.addAll(exportableData.getCommercialStops());
 
         for (mobi.chouette.model.StopArea stopArea : stopAreas) {
-            if (!referential.getSharedStopAreas().containsKey(stopArea.getObjectId())) {
-                referential.getSharedStopAreas().put(stopArea.getObjectId(), stopArea);
+            if (!exportableNetexData.getSharedStopPlaces().containsKey(stopArea.getObjectId())) {
+                StopPlace stopPlace = stopPlaceProducer.produce(context, stopArea);
+                exportableNetexData.getSharedStopPlaces().put(stopArea.getObjectId(), stopPlace);
             }
         }
     }
@@ -170,11 +169,6 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         Set<PassengerStopAssignment> stopAssignments = createStopAssignments(neptuneLine.getRoutes());
         exportableNetexData.getStopAssignments().addAll(stopAssignments);
 
-        for (mobi.chouette.model.VehicleJourney vehicleJourney : exportableData.getVehicleJourneys()) {
-            ServiceJourney serviceJourney = serviceJourneyProducer.produce(context, vehicleJourney, exportableData.getLine());
-            exportableNetexData.getServiceJourneys().add(serviceJourney);
-        }
-
         Map<String, List<? extends DataManagedObjectStructure>> calendarData = calendarProducer.produce(context, exportableData);
 
         List<DayType> dayTypes = (List<DayType>) calendarData.get(DAY_TYPES_KEY);
@@ -185,6 +179,11 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
         List<OperatingPeriod> operatingPeriods = (List<OperatingPeriod>) calendarData.get(OPERATING_PERIODS_KEY);
         exportableNetexData.getOperatingPeriods().addAll(operatingPeriods);
+
+        for (mobi.chouette.model.VehicleJourney vehicleJourney : exportableData.getVehicleJourneys()) {
+            ServiceJourney serviceJourney = serviceJourneyProducer.produce(context, vehicleJourney, exportableData.getLine());
+            exportableNetexData.getServiceJourneys().add(serviceJourney);
+        }
     }
 
     private AvailabilityCondition createAvailabilityCondition(mobi.chouette.model.Line line) {

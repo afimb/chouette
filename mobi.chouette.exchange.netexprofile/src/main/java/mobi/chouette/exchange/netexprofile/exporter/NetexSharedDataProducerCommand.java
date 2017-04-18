@@ -43,7 +43,7 @@ public class NetexSharedDataProducerCommand implements Command, Constant {
             if (sharedStopAreas != null && !sharedStopAreas.isEmpty()) {
                 NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
                 //TimeZone timezone = TimeZone.getTimeZone(configuration.getTimeZone());
-                String prefix = configuration.getObjectIdPrefix(); // TODO derive prefix from producer instead
+                //String prefix = configuration.getObjectIdPrefix(); // TODO derive prefix from producer instead
 
                 //reporter.setStatToObjectReport(context, line.getObjectId(), ActionReporter.OBJECT_TYPE.LINE, ActionReporter.OBJECT_TYPE.STOP_AREA, stopAreas.size());
 

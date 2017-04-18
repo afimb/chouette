@@ -31,7 +31,7 @@ public class SiteFrameWriter extends AbstractNetexWriter {
     private static void writeStoPlacesElement(XMLStreamWriter writer, ExportableNetexData exportableData) {
         try {
             writer.writeStartElement(STOP_PLACES);
-            for (StopPlace stopPlace : exportableData.getStopPlaces()) {
+            for (StopPlace stopPlace : exportableData.getSharedStopPlaces().values()) {
                 marshaller.marshal(netexFactory.createStopPlace(stopPlace), writer);
             }
             writer.writeEndElement();
