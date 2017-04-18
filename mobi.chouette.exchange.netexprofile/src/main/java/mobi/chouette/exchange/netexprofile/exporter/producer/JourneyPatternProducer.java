@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
@@ -16,7 +17,7 @@ import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 public class JourneyPatternProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.JourneyPattern, mobi.chouette.model.JourneyPattern> {
 
     @Override
-    public org.rutebanken.netex.model.JourneyPattern produce(mobi.chouette.model.JourneyPattern neptuneJourneyPattern) {
+    public org.rutebanken.netex.model.JourneyPattern produce(Context context, mobi.chouette.model.JourneyPattern neptuneJourneyPattern) {
         org.rutebanken.netex.model.JourneyPattern netexJourneyPattern = netexFactory.createJourneyPattern();
         netexJourneyPattern.setVersion(neptuneJourneyPattern.getObjectVersion() > 0 ? String.valueOf(neptuneJourneyPattern.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 

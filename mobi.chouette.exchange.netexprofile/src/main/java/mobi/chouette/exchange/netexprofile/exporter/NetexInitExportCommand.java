@@ -10,6 +10,7 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.util.NetexReferential;
 import mobi.chouette.model.util.Referential;
 
 import javax.naming.InitialContext;
@@ -36,6 +37,7 @@ public class NetexInitExportCommand implements Command, Constant {
             JobData jobData = (JobData) context.get(JOB_DATA);
             jobData.setOutputFilename("export_" + jobData.getType() + "_" + jobData.getId() + ".zip");
             context.put(REFERENTIAL, new Referential());
+            context.put(NETEX_REFERENTIAL, new NetexReferential());
 
             Metadata metadata = new Metadata();
             metadata.setDate(Calendar.getInstance());

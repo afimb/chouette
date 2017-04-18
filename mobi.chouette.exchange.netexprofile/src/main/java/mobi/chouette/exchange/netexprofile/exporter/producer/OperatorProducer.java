@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes;
 import mobi.chouette.model.Company;
 import org.rutebanken.netex.model.ContactStructure;
@@ -11,7 +12,7 @@ import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProduce
 public class OperatorProducer extends NetexProducer implements NetexEntityProducer<Operator, Company> {
 
     @Override
-    public Operator produce(Company company) {
+    public Operator produce(Context context, Company company) {
         Operator operator = netexFactory.createOperator();
 
         operator.setVersion(company.getObjectVersion() > 0 ? String.valueOf(company.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);

@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.netexprofile.importer.util;
+package mobi.chouette.exchange.netexprofile.util;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,12 +36,20 @@ public class NetexReferential implements Serializable {
     @Setter
     private Map<String, OperatingDay> operatingDays = new HashMap<>();
 
+    @Getter
+    @Setter
+    private Map<String, StopPlace> sharedStopPlaces = new HashMap<>();
+
     public void clear() {
         stopPointsInJourneyPattern.clear();
         dayTypes.clear();
         dayTypeAssignments.clear();
         operatingPeriods.clear();
         operatingDays.clear();
+    }
+
+    public void dispose() {
+        sharedStopPlaces.clear();
     }
 
 }

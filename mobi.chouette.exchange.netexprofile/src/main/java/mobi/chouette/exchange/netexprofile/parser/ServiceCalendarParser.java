@@ -4,8 +4,8 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.importer.util.NetexObjectUtil;
-import mobi.chouette.exchange.netexprofile.importer.util.NetexReferential;
+import mobi.chouette.exchange.netexprofile.util.NetexObjectUtil;
+import mobi.chouette.exchange.netexprofile.util.NetexReferential;
 import org.rutebanken.netex.model.*;
 
 import javax.xml.bind.JAXBElement;

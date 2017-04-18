@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes;
 import mobi.chouette.model.Route;
 import org.rutebanken.netex.model.*;
@@ -11,7 +12,7 @@ import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.ROUTE_
 public class LineProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Line, mobi.chouette.model.Line> {
 
     @Override
-    public org.rutebanken.netex.model.Line produce(mobi.chouette.model.Line neptuneLine) {
+    public org.rutebanken.netex.model.Line produce(Context context, mobi.chouette.model.Line neptuneLine) {
         org.rutebanken.netex.model.Line netexLine = netexFactory.createLine();
 
         netexLine.setVersion(neptuneLine.getObjectVersion() > 0 ? String.valueOf(neptuneLine.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);

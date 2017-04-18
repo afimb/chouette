@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.netexprofile.importer.util;
+package mobi.chouette.exchange.netexprofile.util;
 
 import org.rutebanken.netex.model.*;
 
@@ -91,6 +91,15 @@ public class NetexObjectUtil {
             throw new NullPointerException("Unknown operating day : " + objectId);
         }
         return operatingDay;
+    }
+
+    public static void addSharedStopPlace(NetexReferential referential, String objectId, StopPlace stopPlace) {
+        if (stopPlace == null) {
+            throw new NullPointerException("Unknown stop place : " + objectId);
+        }
+        if (!referential.getSharedStopPlaces().containsKey(objectId)) {
+            referential.getSharedStopPlaces().put(objectId, stopPlace);
+        }
     }
 
     public static <T> List<T> getFrames(Class<T> clazz, List<JAXBElement<? extends Common_VersionFrameStructure>> dataObjectFrames) {
