@@ -16,6 +16,8 @@ import static mobi.chouette.exchange.netexprofile.Constant.EXPORTABLE_NETEX_DATA
 
 public class NetexSharedDataProducer extends NetexProducer implements Constant {
 
+    private static final String SHARED_DATA_FILE_NAME = "_Shared-Data.xml";
+
     public void produce(Context context) throws Exception {
         ActionReporter reporter = ActionReporter.Factory.getInstance();
         JobData jobData = (JobData) context.get(JOB_DATA);
@@ -23,12 +25,11 @@ public class NetexSharedDataProducer extends NetexProducer implements Constant {
         ExportableData exportableData = (ExportableData) context.get(EXPORTABLE_DATA);
         ExportableNetexData exportableNetexData = (ExportableNetexData) context.get(EXPORTABLE_NETEX_DATA);
 
-        String fileName = "_SharedData.xml";
-        Path filePath = new File(outputPath.toFile(), fileName).toPath();
+        Path filePath = new File(outputPath.toFile(), SHARED_DATA_FILE_NAME).toPath();
 
         NetexFileWriter writer = new NetexFileWriter();
         writer.writeXmlFile(filePath, exportableData, exportableNetexData, Mode.shared);
 
-        reporter.addFileReport(context, fileName, IO_TYPE.OUTPUT);
+        reporter.addFileReport(context, SHARED_DATA_FILE_NAME, IO_TYPE.OUTPUT);
     }
 }
