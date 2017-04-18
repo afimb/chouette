@@ -11,13 +11,17 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.*;
+import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 
 import javax.naming.InitialContext;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Log4j
 public class NetexValidateExportCommand implements Command, Constant {
@@ -31,8 +35,8 @@ public class NetexValidateExportCommand implements Command, Constant {
         Monitor monitor = MonitorFactory.start(COMMAND);
 
         try {
-            Context validateContext = new Context();
-            validateContext.putAll(context);
+            Context validateExportContext = new Context();
+            validateExportContext.putAll(context);
 
             NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
 
@@ -44,8 +48,8 @@ public class NetexValidateExportCommand implements Command, Constant {
             parameters.setReferentialName(configuration.getReferentialName());
             parameters.setValidCodespaces(configuration.getValidCodespaces());
 
-            validateContext.put(CONFIGURATION, parameters);
-            validateContext.put(REPORT, context.get(REPORT));
+            validateExportContext.put(CONFIGURATION, parameters);
+            validateExportContext.put(REPORT, context.get(REPORT));
 
             JobData jobData = (JobData) context.get(JOB_DATA);
             String pathName = jobData.getPathName();
@@ -60,39 +64,70 @@ public class NetexValidateExportCommand implements Command, Constant {
             InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 
             try {
-                Command init = CommandFactory.create(initialContext, NetexInitImportCommand.class.getName());
-                init.execute(validateContext);
+                Command initImportCommand = CommandFactory.create(initialContext, NetexInitImportCommand.class.getName());
+                initImportCommand.execute(validateExportContext);
 
                 Path path = Paths.get(jobData.getPathName(), INPUT);
                 List<Path> filePaths = FileUtil.listFiles(path, "*.xml",".*.xml");
-                validateContext.put(NETEX_FILE_PATHS, filePaths);
+                validateExportContext.put(NETEX_FILE_PATHS, filePaths);
 
                 Command schemaValidationCommand = CommandFactory.create(initialContext, NetexSchemaValidationCommand.class.getName());
-                schemaValidationCommand.execute(validateContext);
+                schemaValidationCommand.execute(validateExportContext);
 
-                for (Path file : filePaths) {
+                List<Path> commonFilePaths = filePaths.stream()
+                        .filter(filePath -> filePath.getFileName() != null && filePath.getFileSystem()
+                                .getPathMatcher("glob:_*.xml").matches(filePath.getFileName()))
+                        .collect(Collectors.toList());
+
+                Map<IdVersion, List<String>> commonIds = new HashMap<>();
+                validateExportContext.put(NETEX_COMMON_FILE_IDENTIFICATORS, commonIds);
+
+                for (Path file : commonFilePaths) {
+                    String url = file.toUri().toURL().toExternalForm();
+
+                    NetexInitReferentialCommand initReferentialCommand = (NetexInitReferentialCommand) CommandFactory.create(initialContext, NetexInitReferentialCommand.class.getName());
+                    initReferentialCommand.setFileURL(url);
+                    initReferentialCommand.setLineFile(false);
+                    initReferentialCommand.execute(validateExportContext);
+
+                    Command validationCommand = CommandFactory.create(initialContext, NetexValidationCommand.class.getName());
+                    validationCommand.execute(validateExportContext);
+
+                    NetexCommonFilesParserCommand commonFilesParserCommand = (NetexCommonFilesParserCommand) CommandFactory.create(initialContext, NetexCommonFilesParserCommand.class.getName());
+                    commonFilesParserCommand.execute(validateExportContext);
+                }
+
+                DuplicateIdCheckerCommand duplicateIdCheckerCommand = (DuplicateIdCheckerCommand) CommandFactory.create(initialContext, DuplicateIdCheckerCommand.class.getName());
+                duplicateIdCheckerCommand.execute(validateExportContext);
+
+                List<Path> lineFilePaths = filePaths.stream()
+                        .filter(filePath -> filePath.getFileName() != null && !filePath.getFileSystem()
+                                .getPathMatcher("glob:_*.xml").matches(filePath.getFileName()))
+                        .collect(Collectors.toList());
+
+                for (Path file : lineFilePaths) {
                     String url = file.toUri().toURL().toExternalForm();
 
                     NetexInitReferentialCommand initRefsCommand = (NetexInitReferentialCommand) CommandFactory.create(initialContext, NetexInitReferentialCommand.class.getName());
                     initRefsCommand.setFileURL(url);
                     initRefsCommand.setLineFile(true);
-                    initRefsCommand.execute(validateContext);
+                    initRefsCommand.execute(validateExportContext);
 
                     Command validator = CommandFactory.create(initialContext, NetexValidationCommand.class.getName());
-                    validator.execute(validateContext);
+                    validator.execute(validateExportContext);
 
                     NetexLineParserCommand parserCommand = (NetexLineParserCommand) CommandFactory.create(initialContext, NetexLineParserCommand.class.getName());
                     parserCommand.setFileURL(url);
-                    parserCommand.execute(validateContext);
+                    parserCommand.execute(validateExportContext);
                 }
             } catch (Exception ex) {
-                log.error("problem in validation" + ex);
+                log.error("Problem in validation " + ex);
             } finally {
                 input.renameTo(output);
                 Command disposeImportCommand = CommandFactory.create(initialContext, NetexDisposeImportCommand.class.getName());
-                disposeImportCommand.execute(validateContext);
+                disposeImportCommand.execute(validateExportContext);
             }
-            context.put(VALIDATION_REPORT, validateContext.get(VALIDATION_REPORT));
+            context.put(VALIDATION_REPORT, validateExportContext.get(VALIDATION_REPORT));
             result = SUCCESS;
 
         } catch (Exception e) {

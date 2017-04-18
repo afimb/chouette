@@ -227,7 +227,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
         ActionReport report = (ActionReport) context.get(REPORT);
         Assert.assertEquals(report.getResult(), STATUS_OK, "result");
-        Assert.assertEquals(report.getFiles().size(), 1, "file reported");
+        Assert.assertEquals(report.getFiles().size(), 2, "file reported");
 
         for (FileReport info : report.getFiles()) {
             Reporter.log(info.toString(),true);
@@ -308,7 +308,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
         ActionReport report = (ActionReport) context.get(REPORT);
         Assert.assertEquals(report.getResult(), STATUS_OK, "result");
-        Assert.assertEquals(report.getFiles().size(), 1, "file reported");
+        Assert.assertEquals(report.getFiles().size(), 2, "file reported");
 
         for (FileReport info : report.getFiles()) {
             Reporter.log(info.toString(),true);
@@ -347,7 +347,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
         ActionReport report = (ActionReport) context.get(REPORT);
         Assert.assertEquals(report.getResult(), STATUS_OK, "result");
-        Assert.assertEquals(report.getFiles().size(), 1, "file reported");
+        Assert.assertEquals(report.getFiles().size(), 2, "file reported");
 
         for (FileReport info : report.getFiles()) {
             Reporter.log(info.toString(),true);
