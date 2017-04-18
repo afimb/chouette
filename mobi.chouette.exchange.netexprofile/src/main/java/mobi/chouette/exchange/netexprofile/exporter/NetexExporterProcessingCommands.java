@@ -79,6 +79,8 @@ public class NetexExporterProcessingCommands implements ProcessingCommands, Cons
         List<Command> commands = new ArrayList<>();
 
         try {
+            commands.add(CommandFactory.create(initialContext, NetexSharedDataProducerCommand.class.getName()));
+
             if (parameters.isValidateAfterExport()) {
                 commands.add(CommandFactory.create(initialContext, NetexValidateExportCommand.class.getName()));
             }

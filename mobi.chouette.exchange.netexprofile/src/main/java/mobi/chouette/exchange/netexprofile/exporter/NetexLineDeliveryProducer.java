@@ -1,48 +1,13 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
-import com.sun.xml.txw2.output.IndentingXMLStreamWriter;
-import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
-import mobi.chouette.common.Context;
-import mobi.chouette.common.JobData;
-import mobi.chouette.exchange.metadata.Metadata;
-import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
-import mobi.chouette.exchange.netexprofile.exporter.producer.*;
-import mobi.chouette.exchange.netexprofile.jaxb.EscapingXMLStreamWriter;
-import mobi.chouette.exchange.netexprofile.jaxb.NetexXmlStreamMarshaller;
-import mobi.chouette.exchange.report.ActionReporter;
-import mobi.chouette.exchange.report.IO_TYPE;
-import mobi.chouette.model.Company;
-import mobi.chouette.model.Line;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.rutebanken.netex.model.*;
-
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
-import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.temporal.ChronoField;
-import java.util.*;
-
-import static java.nio.file.StandardOpenOption.APPEND;
-import static java.nio.file.StandardOpenOption.CREATE;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer.*;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
+import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer;
 
 @Log4j
-public class NetexPublicationDeliveryProducer extends NetexProducer implements Constant {
+public class NetexLineDeliveryProducer extends NetexProducer implements Constant {
 
+/*
     public static final String NETEX_DATA_OJBECT_VERSION = "1";
 
     private static final String NETEX_PROFILE_VERSION = "1.04:NO-NeTEx-networktimetable:1.0";
@@ -83,7 +48,7 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
     static {
         try {
             Properties properties = new Properties();
-            properties.load(NetexPublicationDeliveryProducer.class.getResourceAsStream("/codespaces.properties"));
+            properties.load(NetexLineDeliveryProducer.class.getResourceAsStream("/codespaces.properties"));
             Set<String> propertyKeys = properties.stringPropertyNames();
 
             for (String key : propertyKeys) {
@@ -97,6 +62,7 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
             throw new RuntimeException("Could not load codespaces from file");
         }
 
+        // TODO could be an idea to put the marshaller in context
         try {
             marshaller = NetexXmlStreamMarshaller.getInstance();
         } catch (Exception e) {
@@ -105,20 +71,20 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
     }
 
     public void produce(Context context) throws Exception {
+        // TODO everything here should be moved to calling class, on a higher level, because we must make the writers more generic,
+        // TODO because we are now writing both line and shared data.
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         ActionReporter reporter = ActionReporter.Factory.getInstance();
         ExportableData exportableData = (ExportableData) context.get(EXPORTABLE_DATA);
         JobData jobData = (JobData) context.get(JOB_DATA);
         Metadata metadata = (Metadata) context.get(METADATA);
+        Path outputPath = Paths.get(jobData.getPathName(), OUTPUT);
 
         initializeCodespaces(configuration, exportableData);
+        collectStopAreas(context, exportableData);
 
-        Path outputPath = Paths.get(jobData.getPathName(), OUTPUT);
-        
-        
-       String v = "NSB-Line-19Trondheim_S_--_Bodø.xml";
         Line line = exportableData.getLine();
-		String fileName = line.getObjectId().replaceAll(":", "-") + (line.getNumber() != null ? line.getNumber()+"-" : "") + (line.getPublishedName() != null ? "-"+line.getPublishedName().replace(' ', '_') : "")+ ".xml";
+        String fileName = line.getObjectId().replaceAll(":", "-") + (line.getNumber() != null ? line.getNumber() + "-" : "") + (line.getPublishedName() != null ? "-" + line.getPublishedName().replace(' ', '_') : "") + ".xml";
         Path filePath = new File(outputPath.toFile(), fileName).toPath();
         writeToXml(context, filePath, exportableData);
 
@@ -129,6 +95,21 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
                     fileName,
                     NeptuneObjectPresenter.getName(line.getNetwork()),
                     NeptuneObjectPresenter.getName(line)));
+        }
+    }
+
+    // TODO move up the hierarchy, to where exportable data is collected
+    private void collectStopAreas(Context context, ExportableData exportableData) {
+        Referential referential = (Referential) context.get(REFERENTIAL);
+
+        Set<mobi.chouette.model.StopArea> stopAreas = new HashSet<>();
+        stopAreas.addAll(exportableData.getStopPlaces());
+        stopAreas.addAll(exportableData.getCommercialStops());
+
+        for (mobi.chouette.model.StopArea stopArea : stopAreas) {
+            if (!referential.getSharedStopAreas().containsKey(stopArea.getObjectId())) {
+                referential.getSharedStopAreas().put(stopArea.getObjectId(), stopArea);
+            }
         }
     }
 
@@ -641,5 +622,6 @@ public class NetexPublicationDeliveryProducer extends NetexProducer implements C
             throw new RuntimeException(e);
         }
     }
+*/
 
 }

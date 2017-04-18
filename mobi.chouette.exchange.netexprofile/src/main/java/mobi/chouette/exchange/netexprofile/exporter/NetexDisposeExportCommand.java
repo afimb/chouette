@@ -10,6 +10,7 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer;
 import mobi.chouette.exchange.netexprofile.util.NetexReferential;
+import mobi.chouette.model.util.Referential;
 
 import javax.naming.InitialContext;
 import java.io.IOException;
@@ -26,6 +27,10 @@ public class NetexDisposeExportCommand implements Command, Constant {
         Monitor monitor = MonitorFactory.start(COMMAND);
 
         try {
+            Referential referential = (Referential) context.get(REFERENTIAL);
+            if (referential != null) {
+                referential.dispose();
+            }
             NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
             if (netexReferential != null) {
                 netexReferential.dispose();

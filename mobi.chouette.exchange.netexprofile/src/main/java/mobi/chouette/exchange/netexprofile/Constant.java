@@ -25,5 +25,6 @@ public interface Constant extends mobi.chouette.common.Constant {
 	public static final String PARSING_CONTEXT = "parsing_context";
 	public static final String PRODUCING_CONTEXT = "producing_context";
 	public static final String NETEX_PROFILE_VALIDATORS = "netex_profile_validators";
+	public static final String EXPORTABLE_NETEX_DATA = "exportable_netex_data";
 
 }

@@ -45,6 +45,14 @@ public class NetexLineProducerCommand implements Command, Constant {
                 collection.clear();
             }
 
+            ExportableNetexData exportableNetexData = (ExportableNetexData) context.get(EXPORTABLE_NETEX_DATA);
+            if (exportableNetexData == null) {
+                exportableNetexData = new ExportableNetexData();
+                context.put(EXPORTABLE_NETEX_DATA, exportableNetexData);
+            } else {
+                exportableNetexData.clear();
+            }
+
             SharedDataKeys sharedData = (SharedDataKeys) context.get(SHARED_DATA_KEYS);
             if (sharedData == null) {
                 sharedData = new SharedDataKeys();
@@ -76,7 +84,10 @@ public class NetexLineProducerCommand implements Command, Constant {
 
             if (cont) {
                 try {
-                    NetexPublicationDeliveryProducer producer = new NetexPublicationDeliveryProducer();
+                    //NetexLineDeliveryProducer producer = new NetexLineDeliveryProducer();
+                    //producer.produce(context);
+
+                    NetexLineDataProducer producer = new NetexLineDataProducer();
                     producer.produce(context);
 
                     reporter.setStatToObjectReport(context, line.getObjectId(), ActionReporter.OBJECT_TYPE.LINE, ActionReporter.OBJECT_TYPE.LINE, 1);
@@ -112,7 +123,6 @@ public class NetexLineProducerCommand implements Command, Constant {
         } finally {
             log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
         }
-
 
         return result;
     }
