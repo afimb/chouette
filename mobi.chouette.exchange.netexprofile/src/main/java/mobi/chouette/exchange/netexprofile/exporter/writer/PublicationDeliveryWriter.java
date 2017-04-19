@@ -128,14 +128,15 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
     private static void writeFramesElement(XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData, Mode mode) {
         try {
             writer.writeStartElement(FRAMES);
-            ServiceFrameWriter.write(writer, exportableData, exportableNetexData, mode);
 
             if (mode.equals(Mode.line)) {
+                ServiceFrameWriter.write(writer, exportableData, exportableNetexData, mode);
                 ServiceCalendarFrameWriter.write(writer, exportableData, exportableNetexData);
                 TimetableFrameWriter.write(writer, exportableData, exportableNetexData);
             } else { // shared data
                 ResourceFrameWriter.write(writer, exportableNetexData);
                 SiteFrameWriter.write(writer, exportableNetexData);
+                ServiceFrameWriter.write(writer, exportableData, exportableNetexData, mode);
             }
 
             writer.writeEndElement();
