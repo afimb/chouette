@@ -8,6 +8,7 @@ import org.rutebanken.netex.model.Operator;
 import org.rutebanken.netex.model.OrganisationTypeEnumeration;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 
 public class OperatorProducer extends NetexProducer implements NetexEntityProducer<Operator, Company> {
 

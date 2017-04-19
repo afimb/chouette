@@ -18,7 +18,7 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private Network network;
+    private Network sharedNetwork = null;
 
     @Getter
     @Setter
@@ -26,7 +26,7 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private Set<Operator> operators = new HashSet<>();
+    private Map<String, Operator> sharedOperators = new HashMap<>();
 
     @Getter
     @Setter
@@ -71,9 +71,7 @@ public class ExportableNetexData {
     public void clear() {
         availabilityCondition = null;
         codespaces.clear();
-        network = null;
         line = null;
-        operators.clear();
         stopPoints.clear();
         stopAssignments.clear();
         routePoints.clear();
@@ -86,7 +84,9 @@ public class ExportableNetexData {
     }
 
     public void dispose() {
-        // clear();
+        clear();
+        sharedNetwork = null;
+        sharedOperators.clear();
         sharedStopPlaces.clear();
     }
 
