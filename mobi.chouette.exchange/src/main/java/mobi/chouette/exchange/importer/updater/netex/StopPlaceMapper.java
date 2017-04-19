@@ -76,7 +76,13 @@ public class StopPlaceMapper {
     }
 
     private void mapId(StopArea stopArea, Zone_VersionStructure zone) {
-        zone.setId(stopArea.getObjectId());
+    	if(stopArea.getAreaType() == ChouetteAreaEnum.BoardingPosition) {
+            zone.setId(stopArea.getObjectId().replaceAll("StopArea", "Quay"));
+    	} else if(stopArea.getAreaType() == ChouetteAreaEnum.CommercialStopPoint) {
+            zone.setId(stopArea.getObjectId().replaceAll("StopArea", "StopPlace"));
+    	} else {
+            zone.setId(stopArea.getObjectId());
+    	}
     }
 
     private void mapCentroid(StopArea stopArea, Zone_VersionStructure zone) {

@@ -166,7 +166,7 @@ public class NeTExStopPlaceRegisterUpdater {
 			// Find transport mode for stop place
 			for (StopPlace sp : stopPlaces) {
 
-				StopArea sa = referential.getSharedStopAreas().get(sp.getId());
+				StopArea sa = referential.getSharedStopAreas().get(sp.getId().replaceAll("Quay", "StopArea").replaceAll("StopPlace", "StopArea"));
 				if (sa == null) {
 					log.error("Could not find StopArea for objectId=" + ToStringBuilder.reflectionToString(sp)
 							+ " correlationId: " + correlationId);
@@ -377,7 +377,7 @@ public class NeTExStopPlaceRegisterUpdater {
 				// Split value
 				String[] existingIds = StringUtils.split(s.getValue(), IMPORTED_ID_VALUE_SEPARATOR);
 				for (String id : existingIds) {
-					map.put(id, newStopPlaceId);
+					map.put(id.replaceAll("Quay", "StopArea").replaceAll("StopPlace", "StopArea"), newStopPlaceId);
 				}
 			}
 		}
