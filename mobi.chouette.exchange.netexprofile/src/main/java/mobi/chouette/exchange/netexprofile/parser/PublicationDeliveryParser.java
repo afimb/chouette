@@ -46,7 +46,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 
 		if(compositeFrames.size() > 0) {
 			
-			// Parse inside a composite frame
+			// parse composite frame elements
 			for(CompositeFrame compositeFrame : compositeFrames) {
 
 				parseValidityConditionsInFrame(context, compositeFrame);
@@ -212,12 +212,13 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 
 	private void parseServiceFrames(Context context, List<ServiceFrame> serviceFrames, boolean isCommonDelivery) throws Exception {
 		for (ServiceFrame serviceFrame : serviceFrames) {
-			if (!isCommonDelivery) {
+			if (serviceFrame.getNetwork() != null) {
 				Network network = serviceFrame.getNetwork();
 				context.put(NETEX_LINE_DATA_CONTEXT, network);
 				NetworkParser networkParser = (NetworkParser) ParserFactory.create(NetworkParser.class.getName());
 				networkParser.parse(context);
-
+			}
+			if (!isCommonDelivery) {
 				LinesInFrame_RelStructure linesInFrameStruct = serviceFrame.getLines();
 				context.put(NETEX_LINE_DATA_CONTEXT, linesInFrameStruct);
 				LineParser lineParser = (LineParser) ParserFactory.create(LineParser.class.getName());
@@ -227,9 +228,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 				context.put(NETEX_LINE_DATA_CONTEXT, routesInFrameStruct);
 				RouteParser routeParser = (RouteParser) ParserFactory.create(RouteParser.class.getName());
 				routeParser.parse(context);
-			}
 
-			if (!isCommonDelivery) {
 				JourneyPatternsInFrame_RelStructure journeyPatternStruct = serviceFrame.getJourneyPatterns();
 				context.put(NETEX_LINE_DATA_CONTEXT, journeyPatternStruct);
 				JourneyPatternParser journeyPatternParser = (JourneyPatternParser) ParserFactory.create(JourneyPatternParser.class.getName());

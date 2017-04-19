@@ -11,13 +11,10 @@ import java.time.temporal.ChronoField;
 
 public class AbstractNetexWriter {
 
-    static final String NETEX_DATA_OJBECT_VERSION = "1";
-
     static final String NETEX_PROFILE_VERSION = "1.04:NO-NeTEx-networktimetable:1.0";
     static final String DEFAULT_ZONE_ID = "UTC";
     static final String DEFAULT_LANGUAGE_CODE = "no";
     static final String NSR_XMLNS = "NSR";
-    static final String NSR_XMLNSURL = "http://www.rutebanken.org/ns/nsr";
 
     static final String DEFAULT_NAMESPACE = "http://www.netex.org.uk/netex";
     static final String VERSION = "version";

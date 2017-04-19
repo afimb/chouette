@@ -10,6 +10,7 @@ import org.rutebanken.netex.model.*;
 
 import static mobi.chouette.exchange.netexprofile.Constant.NETEX_REFERENTIAL;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 public class StopPlaceProducer extends NetexProducer implements NetexEntityProducer<StopPlace, StopArea> {

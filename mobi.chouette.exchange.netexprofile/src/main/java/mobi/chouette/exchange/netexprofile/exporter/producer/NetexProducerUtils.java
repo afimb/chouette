@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.model.*;
 import mobi.chouette.model.type.DayTypeEnum;
 import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
 import org.rutebanken.netex.model.DayOfWeekEnumeration;
@@ -16,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Log4j
 public class NetexProducerUtils {
 
+    private static final String OBJECT_ID_SPLIT_CHAR = ":";
     private static final ZoneId LOCAL_ZONE_ID = ZoneId.of("Europe/Oslo");
 
     public static boolean isSet(Object... objects) {
@@ -207,6 +209,56 @@ public class NetexProducerUtils {
         }
 
         return dayOfWeekEnumerations;
+    }
+
+    private static String netexModelName(NeptuneIdentifiedObject model) {
+        if (model == null)
+            return null;
+        if (model instanceof StopArea) {
+            return "StopArea";
+        } else if (model instanceof AccessPoint) {
+            return "AccessPoint";
+        } else if (model instanceof Company) {
+            return "Operator";
+        } else if (model instanceof AccessLink) {
+            return "AccessLink";
+        } else if (model instanceof StopPoint) {
+            return "StopPoint";
+        } else if (model instanceof Network) {
+            return "GroupOfLine";
+        } else if (model instanceof Line) {
+            return "Line";
+        } else if (model instanceof Route) {
+            return "Route";
+        } else if (model instanceof GroupOfLine) {
+            return "GroupOfLine";
+        } else if (model instanceof JourneyPattern) {
+            return "JourneyPattern";
+        } else if (model instanceof ConnectionLink) {
+            return "ConnectionLink";
+        } else if (model instanceof Timetable) {
+            return "Timetable";
+        } else if (model instanceof VehicleJourney) {
+            return "ServiceJourney";
+        } else {
+            return null;
+        }
+    }
+
+    public static String netexId(NeptuneIdentifiedObject model) {
+        return model == null ? null : model.objectIdPrefix() + OBJECT_ID_SPLIT_CHAR + netexModelName(model) + OBJECT_ID_SPLIT_CHAR + model.objectIdSuffix();
+    }
+
+    public static String netexId(String objectIdPrefix, String elementName, String objectIdSuffix) {
+        return objectIdPrefix + OBJECT_ID_SPLIT_CHAR + elementName + OBJECT_ID_SPLIT_CHAR + objectIdSuffix;
+    }
+
+    public static String objectIdPrefix(String objectId) {
+        return objectId.split(OBJECT_ID_SPLIT_CHAR).length > 2 ? objectId.split(OBJECT_ID_SPLIT_CHAR)[0].trim() : "";
+    }
+
+    public static String objectIdSuffix(String objectId) {
+        return objectId.split(OBJECT_ID_SPLIT_CHAR).length > 2 ? objectId.split(OBJECT_ID_SPLIT_CHAR)[2].trim() : "";
     }
 
 }

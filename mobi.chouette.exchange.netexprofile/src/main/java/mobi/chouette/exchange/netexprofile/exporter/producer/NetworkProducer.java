@@ -7,6 +7,7 @@ import org.rutebanken.netex.model.PrivateCodeStructure;
 import java.time.OffsetDateTime;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NETWORK;
 
 public class NetworkProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Network, mobi.chouette.model.Network> {

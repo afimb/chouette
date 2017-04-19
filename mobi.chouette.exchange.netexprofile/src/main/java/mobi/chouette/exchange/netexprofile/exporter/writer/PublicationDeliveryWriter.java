@@ -9,8 +9,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.time.OffsetDateTime;
 
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DATA_OJBECT_VERSION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexId;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 public class PublicationDeliveryWriter extends AbstractNetexWriter {
@@ -127,14 +128,14 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
     private static void writeFramesElement(XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData, Mode mode) {
         try {
             writer.writeStartElement(FRAMES);
+            ServiceFrameWriter.write(writer, exportableData, exportableNetexData, mode);
 
             if (mode.equals(Mode.line)) {
-                ResourceFrameWriter.write(writer, exportableData, exportableNetexData);
-                ServiceFrameWriter.write(writer, exportableData, exportableNetexData);
                 ServiceCalendarFrameWriter.write(writer, exportableData, exportableNetexData);
                 TimetableFrameWriter.write(writer, exportableData, exportableNetexData);
             } else { // shared data
-                SiteFrameWriter.write(writer, exportableData, exportableNetexData);
+                ResourceFrameWriter.write(writer, exportableNetexData);
+                SiteFrameWriter.write(writer, exportableNetexData);
             }
 
             writer.writeEndElement();
