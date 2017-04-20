@@ -136,13 +136,14 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
                 ServiceCalendarFrameWriter.write(writer, exportableNetexData);
                 TimetableFrameWriter.write(writer, exportableNetexData);
             } else { // shared data
+                ResourceFrameWriter.write(writer, exportableNetexData);
+                SiteFrameWriter.write(writer, exportableNetexData);
+
                 for (Network network : exportableNetexData.getSharedNetworks().values()) {
                     ServiceFrameWriter.write(writer, network);
                 }
 
-                ResourceFrameWriter.write(writer, exportableNetexData);
-                SiteFrameWriter.write(writer, exportableNetexData);
-                ServiceFrameWriter.write(writer, exportableNetexData, NetexFragmentMode.SHARED);
+                //ServiceFrameWriter.write(writer, exportableNetexData, NetexFragmentMode.SHARED); // TODO enable when supporting shared stop points and assignments
             }
 
             writer.writeEndElement();
