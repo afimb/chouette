@@ -47,6 +47,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE = "1-NETEXPROFILE-ServiceFrame-Line-PublicCode";
 	public static final String _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN_ROUTE_REF = "1-NETEXPROFILE-ServiceFrame_JourneyPattern_RouteRef";
 	public static final String _1_NETEX_SERVICE_FRAME_LINE_TRANSPORTMODE = "1-NETEXPROFILE-ServiceFrame_Line_TransportMode";
+	public static final String _1_NETEX_SERVICE_FRAME_LINE_GROUPOFLINES_OR_NETWORK = "1-NETEXPROFILE-ServiceFrame_Line_GroupOfLinesNetwork";
 	public static final String _1_NETEX_SERVICE_FRAME_ROUTE_INDIRECTION = "1-NETEXPROFILE-ServiceFrame_Route";
 	public static final String _1_NETEX_SERVICE_FRAME_ROUTE_NAME = "1-NETEXPROFILE-ServiceFrame_Route_Name";
 	public static final String _1_NETEX_SERVICE_FRAME_ROUTE_LINEREF = "1-NETEXPROFILE-ServiceFrame_Route_LineRef";
@@ -108,6 +109,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK_NAME, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE, "W");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_TRANSPORTMODE, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_GROUPOFLINES_OR_NETWORK, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_ROUTE_INDIRECTION, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_ROUTE_NAME, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_ROUTE_LINEREF, "E");
@@ -209,10 +211,15 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		
 		Map<String,Set<String>> allowedSubstitutions = new HashMap<>();
+
+		Set<String> groupOfLinesRefSubstitutions = new HashSet<>();
+		groupOfLinesRefSubstitutions.add("Network");
+		groupOfLinesRefSubstitutions.add("GroupOfLines");
+		allowedSubstitutions.put("RepresentedByGroupRef", groupOfLinesRefSubstitutions);
+		
 		Set<String> projectedPointRefSubstitutions = new HashSet<>();
 		projectedPointRefSubstitutions.add("ScheduledStopPoint");
 		projectedPointRefSubstitutions.add("RoutePoint");
-		
 		allowedSubstitutions.put("ProjectedPointRef", projectedPointRefSubstitutions);
 		allowedSubstitutions.put("ToPointRef", projectedPointRefSubstitutions);
 		allowedSubstitutions.put("FromPointRef", projectedPointRefSubstitutions);

@@ -72,6 +72,8 @@
                             <routes>
                                 <RouteRef ref="AVI:Route:DY121" version="1"/>
                             </routes>
+                            <RepresentedByGroupRef ref="AVI:Network:DY" version="1"/>
+                            
                         </Line>
                     </lines>
                     <journeyPatterns>
