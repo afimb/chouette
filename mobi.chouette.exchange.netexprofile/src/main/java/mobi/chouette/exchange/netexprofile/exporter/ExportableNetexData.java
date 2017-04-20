@@ -18,7 +18,7 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private Network sharedNetwork = null;
+    private Map<String, Network> sharedNetworks = new HashMap<>();
 
     @Getter
     @Setter
@@ -85,7 +85,7 @@ public class ExportableNetexData {
 
     public void dispose() {
         clear();
-        sharedNetwork = null;
+        sharedNetworks.clear();
         sharedOperators.clear();
         sharedStopPlaces.clear();
     }

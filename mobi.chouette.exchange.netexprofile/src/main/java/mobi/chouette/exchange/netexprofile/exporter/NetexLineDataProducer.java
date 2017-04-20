@@ -7,7 +7,6 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
 import mobi.chouette.exchange.netexprofile.exporter.producer.*;
-import mobi.chouette.exchange.netexprofile.exporter.writer.AbstractNetexWriter.Mode;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.*;
@@ -70,7 +69,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         Path filePath = new File(outputPath.toFile(), fileName).toPath();
 
         NetexFileWriter writer = new NetexFileWriter();
-        writer.writeXmlFile(filePath, exportableData, exportableNetexData, Mode.line);
+        writer.writeXmlFile(filePath, exportableData, exportableNetexData, NetexFragmentMode.LINE);
 
         reporter.addFileReport(context, fileName, IO_TYPE.OUTPUT);
 
@@ -170,9 +169,9 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         // networks
         mobi.chouette.model.Network neptuneNetwork = exportableData.getLine().getNetwork();
 
-        if (exportableNetexData.getSharedNetwork() == null) {
+        if (!exportableNetexData.getSharedNetworks().containsKey(neptuneNetwork.getObjectId())) {
             org.rutebanken.netex.model.Network netexNetwork = networkProducer.produce(context, neptuneNetwork);
-            exportableNetexData.setSharedNetwork(netexNetwork);
+            exportableNetexData.getSharedNetworks().put(neptuneNetwork.getObjectId(), netexNetwork);
         }
 
         // operators

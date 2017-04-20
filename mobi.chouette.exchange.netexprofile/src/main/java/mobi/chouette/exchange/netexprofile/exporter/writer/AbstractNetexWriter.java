@@ -31,10 +31,6 @@ public class AbstractNetexWriter {
             .optionalEnd()
             .parseDefaulting(ChronoField.OFFSET_SECONDS, OffsetDateTime.now().getLong(ChronoField.OFFSET_SECONDS) ).toFormatter();
 
-    public enum Mode {
-        line, shared
-    }
-
     static {
         try {
             marshaller = NetexXmlStreamMarshaller.getInstance();

@@ -1,31 +1,47 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
-import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
-import org.rutebanken.netex.model.JourneyPattern;
-import org.rutebanken.netex.model.PassengerStopAssignment;
-import org.rutebanken.netex.model.RoutePoint;
-import org.rutebanken.netex.model.ScheduledStopPoint;
+import mobi.chouette.exchange.netexprofile.exporter.NetexFragmentMode;
+import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
+import org.rutebanken.netex.model.*;
 
 import javax.xml.stream.XMLStreamWriter;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DATA_OJBECT_VERSION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.objectIdPrefix;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 public class ServiceFrameWriter extends AbstractNetexWriter {
 
-    public static void write(XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData, Mode mode) {
-        mobi.chouette.model.Line line = exportableData.getLine();
-        String serviceFrameId = netexId(line.objectIdPrefix(), SERVICE_FRAME, line.objectIdSuffix());
+    public static void write(XMLStreamWriter writer, Network network) {
+        // TODO temporary generating random id suffix, find a better way to create object id suffixes
+        String serviceFrameId = netexId(objectIdPrefix(network.getId()), SERVICE_FRAME, String.valueOf(NetexProducerUtils.generateRandomId()));
+
+        try {
+            writer.writeStartElement(SERVICE_FRAME);
+            writer.writeAttribute(VERSION, NETEX_DATA_OJBECT_VERSION);
+            writer.writeAttribute(ID, serviceFrameId);
+            writeNetworkElement(writer, network);
+            writer.writeEndElement();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void write(XMLStreamWriter writer, ExportableNetexData exportableNetexData, NetexFragmentMode fragmentMode) {
+
+        // TODO temporary generating random id suffix, find a better way to create object id suffixes
+        Network network = exportableNetexData.getSharedNetworks().values().iterator().next();
+        String serviceFrameId = netexId(objectIdPrefix(network.getId()), SERVICE_FRAME, String.valueOf(NetexProducerUtils.generateRandomId()));
 
         try {
             writer.writeStartElement(SERVICE_FRAME);
             writer.writeAttribute(VERSION, NETEX_DATA_OJBECT_VERSION);
             writer.writeAttribute(ID, serviceFrameId);
 
-            if (mode.equals(Mode.line)) {
+            if (fragmentMode.equals(NetexFragmentMode.LINE)) {
                 writeRoutePointsElement(writer, exportableNetexData);
                 writeRoutesElement(writer, exportableNetexData);
                 writeLinesElement(writer, exportableNetexData);
@@ -33,7 +49,7 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
                 writeStopAssignmentsElement(writer, exportableNetexData);
                 writeJourneyPatternsElement(writer, exportableNetexData);
             } else { // shared data
-                writeNetworkElement(writer, exportableNetexData);
+                // TODO implement
             }
 
             writer.writeEndElement();
@@ -42,9 +58,9 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
         }
     }
 
-    private static void writeNetworkElement(XMLStreamWriter writer, ExportableNetexData exportableData) {
+    private static void writeNetworkElement(XMLStreamWriter writer, Network network) {
         try {
-            marshaller.marshal(netexFactory.createNetwork(exportableData.getSharedNetwork()), writer);
+            marshaller.marshal(netexFactory.createNetwork(network), writer);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

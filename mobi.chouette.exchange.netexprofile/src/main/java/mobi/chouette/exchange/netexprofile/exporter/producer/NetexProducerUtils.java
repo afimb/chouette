@@ -8,10 +8,7 @@ import org.rutebanken.netex.model.DayOfWeekEnumeration;
 
 import java.sql.Time;
 import java.time.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Log4j
@@ -243,6 +240,17 @@ public class NetexProducerUtils {
         } else {
             return null;
         }
+    }
+
+    public static final int DEFAULT_START_INCLUSIVE = 1111111;
+    public static final int DEFAULT_END_EXCLUSIVE = 8888888;
+
+    public static int generateRandomId() {
+        return generateRandomId(DEFAULT_START_INCLUSIVE, DEFAULT_END_EXCLUSIVE);
+    }
+
+    public static int generateRandomId(int startInclusive, int endExclusive) {
+        return Math.abs((startInclusive) + new Random().nextInt(endExclusive));
     }
 
     public static String netexId(NeptuneIdentifiedObject model) {
