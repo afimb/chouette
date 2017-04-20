@@ -217,6 +217,10 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		groupOfLinesRefSubstitutions.add("GroupOfLines");
 		allowedSubstitutions.put("RepresentedByGroupRef", groupOfLinesRefSubstitutions);
 		
+		Set<String> inverseRouteRefSubstitutions = new HashSet<>();
+		inverseRouteRefSubstitutions.add("Route");
+		allowedSubstitutions.put("InverseRouteRef", inverseRouteRefSubstitutions);
+		
 		Set<String> projectedPointRefSubstitutions = new HashSet<>();
 		projectedPointRefSubstitutions.add("ScheduledStopPoint");
 		projectedPointRefSubstitutions.add("RoutePoint");
