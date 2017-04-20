@@ -17,8 +17,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.toLocalDate;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.toOffsetDateTime;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.*;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 public class CalendarProducer extends NetexProducer {

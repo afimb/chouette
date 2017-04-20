@@ -29,12 +29,12 @@ import java.util.*;
 import static mobi.chouette.exchange.netexprofile.Constant.EXPORTABLE_NETEX_DATA;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer.*;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 @Log4j
 public class NetexLineDataProducer extends NetexProducer implements Constant {
 
-    public static final String NETEX_DATA_OJBECT_VERSION = "1";
     private static final String NSR_XMLNS = "NSR";
     private static final String NSR_XMLNSURL = "http://www.rutebanken.org/ns/nsr";
 
@@ -60,8 +60,9 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
         Line neptuneLine = exportableData.getLine();
         initializeCodespaces(configuration, exportableData, exportableNetexData);
-        collectStopAreas(context, exportableData, exportableNetexData);
-        produceAndCollectNetexData(context, exportableData, exportableNetexData);
+
+        produceAndCollectLineData(context, exportableData, exportableNetexData);
+        produceAndCollectSharedData(context, exportableData, exportableNetexData);
 
         String fileName = neptuneLine.getObjectId().replaceAll(":", "-") + (neptuneLine.getNumber() != null ?
                 neptuneLine.getNumber() + "-" : "") + (neptuneLine.getPublishedName() != null ?
@@ -117,33 +118,12 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         exportableNetexData.getCodespaces().addAll(Arrays.asList(operatorCodespace, nsrCodespace));
     }
 
-    private void collectStopAreas(Context context, ExportableData exportableData, ExportableNetexData exportableNetexData) {
-        Set<StopArea> stopAreas = new HashSet<>();
-        stopAreas.addAll(exportableData.getStopPlaces());
-        stopAreas.addAll(exportableData.getCommercialStops());
-
-        for (mobi.chouette.model.StopArea stopArea : stopAreas) {
-            if (!exportableNetexData.getSharedStopPlaces().containsKey(stopArea.getObjectId())) {
-                StopPlace stopPlace = stopPlaceProducer.produce(context, stopArea);
-                exportableNetexData.getSharedStopPlaces().put(stopArea.getObjectId(), stopPlace);
-            }
-        }
-    }
-
     @SuppressWarnings("unchecked")
-    private void produceAndCollectNetexData(Context context, ExportableData exportableData, ExportableNetexData exportableNetexData) {
+    private void produceAndCollectLineData(Context context, ExportableData exportableData, ExportableNetexData exportableNetexData) {
         Line neptuneLine = exportableData.getLine();
 
         AvailabilityCondition availabilityCondition = createAvailabilityCondition(neptuneLine);
         exportableNetexData.setAvailabilityCondition(availabilityCondition);
-
-        //Set<Company> companies = exportableData.getCompanies();
-        Company company = exportableData.getLine().getCompany();
-        Operator operator = operatorProducer.produce(context, company);
-        exportableNetexData.getOperators().add(operator);
-
-        org.rutebanken.netex.model.Network network = networkProducer.produce(context, neptuneLine.getNetwork());
-        exportableNetexData.setNetwork(network);
 
         org.rutebanken.netex.model.Line netexLine = lineProducer.produce(context, neptuneLine);
         exportableNetexData.setLine(netexLine);
@@ -183,6 +163,36 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         for (mobi.chouette.model.VehicleJourney vehicleJourney : exportableData.getVehicleJourneys()) {
             ServiceJourney serviceJourney = serviceJourneyProducer.produce(context, vehicleJourney, exportableData.getLine());
             exportableNetexData.getServiceJourneys().add(serviceJourney);
+        }
+    }
+
+    private void produceAndCollectSharedData(Context context, ExportableData exportableData, ExportableNetexData exportableNetexData) {
+        // networks
+        mobi.chouette.model.Network neptuneNetwork = exportableData.getLine().getNetwork();
+
+        if (exportableNetexData.getSharedNetwork() == null) {
+            org.rutebanken.netex.model.Network netexNetwork = networkProducer.produce(context, neptuneNetwork);
+            exportableNetexData.setSharedNetwork(netexNetwork);
+        }
+
+        // operators
+        Company company = exportableData.getLine().getCompany();
+
+        if (!exportableNetexData.getSharedOperators().containsKey(company.getObjectId())) {
+            Operator operator = operatorProducer.produce(context, company);
+            exportableNetexData.getSharedOperators().put(company.getObjectId(), operator);
+        }
+
+        // stop places
+        Set<StopArea> stopAreas = new HashSet<>();
+        stopAreas.addAll(exportableData.getStopPlaces());
+        stopAreas.addAll(exportableData.getCommercialStops());
+
+        for (mobi.chouette.model.StopArea stopArea : stopAreas) {
+            if (!exportableNetexData.getSharedStopPlaces().containsKey(stopArea.getObjectId())) {
+                StopPlace stopPlace = stopPlaceProducer.produce(context, stopArea);
+                exportableNetexData.getSharedStopPlaces().put(stopArea.getObjectId(), stopPlace);
+            }
         }
     }
 

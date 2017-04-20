@@ -9,8 +9,9 @@ import org.rutebanken.netex.model.OperatingPeriod;
 
 import javax.xml.stream.XMLStreamWriter;
 
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DATA_OJBECT_VERSION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexId;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 public class ServiceCalendarFrameWriter extends AbstractNetexWriter {
