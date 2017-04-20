@@ -14,6 +14,7 @@ import java.time.OffsetDateTime;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DATA_OJBECT_VERSION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.objectIdPrefix;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 public class PublicationDeliveryWriter extends AbstractNetexWriter {
@@ -56,6 +57,10 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
     private static void writeCompositeFrameElement(XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData, String timestamp, NetexFragmentMode fragmentMode) {
         mobi.chouette.model.Line line = exportableData.getLine();
 
+        // TODO temporary generating random id suffix, find a better way to create object id suffixes
+        Network network = exportableNetexData.getSharedNetworks().values().iterator().next();
+        String compositeFrameId = netexId(objectIdPrefix(network.getId()), COMPOSITE_FRAME, String.valueOf(NetexProducerUtils.generateRandomId()));
+
         try {
             writer.writeStartElement(COMPOSITE_FRAME);
 
@@ -67,7 +72,7 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
             }
 
             writer.writeAttribute(VERSION, NETEX_DATA_OJBECT_VERSION);
-            writer.writeAttribute(ID, netexId(line.objectIdPrefix(), COMPOSITE_FRAME, line.objectIdSuffix()));
+            writer.writeAttribute(ID, compositeFrameId);
 
             writeValidityConditionsElement(writer, exportableNetexData);
             writeCodespacesElement(writer, exportableNetexData);
