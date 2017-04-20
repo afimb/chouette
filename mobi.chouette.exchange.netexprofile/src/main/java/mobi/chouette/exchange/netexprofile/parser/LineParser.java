@@ -33,6 +33,7 @@ public class LineParser implements Parser, Constant {
 
             chouetteLine.setObjectVersion(NetexParserUtils.getVersion(netexLine));
 
+            // TODO select network via RepresentByGroupRef
             for (mobi.chouette.model.Network network : chouetteReferential.getPtNetworks().values()) {
                 if (network.isFilled()) {
                     chouetteLine.setNetwork(network);
