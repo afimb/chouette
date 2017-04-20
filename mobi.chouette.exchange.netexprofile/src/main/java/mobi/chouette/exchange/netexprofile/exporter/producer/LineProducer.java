@@ -55,7 +55,7 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
         // TODO handle version attribute differently, false when in separate export (common file), true if in same export, for now only supporting single line files
         //line.setOperatorRef(isFrequentOperator ? netexObjectFactory.createOperatorRefStructure(operatorId, Boolean.FALSE) : netexObjectFactory.createOperatorRefStructure(operatorId, Boolean.TRUE));
         //withRefValidation ? operatorRefStruct.withVersion(VERSION_ONE) : operatorRefStruct;
-        operatorRefStruct.setVersion(neptuneLine.getCompany().getObjectVersion() != null ? String.valueOf(neptuneLine.getCompany().getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+        //operatorRefStruct.setVersion(neptuneLine.getCompany().getObjectVersion() != null ? String.valueOf(neptuneLine.getCompany().getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 
         netexLine.setOperatorRef(operatorRefStruct);
 
