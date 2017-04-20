@@ -7,8 +7,7 @@ import org.rutebanken.netex.model.*;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.LINE;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.ROUTE_KEY;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 public class LineProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Line, mobi.chouette.model.Line> {
 
@@ -68,6 +67,11 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
                 routeRefsStruct.getRouteRef().add(routeRefStruct);
         }
         netexLine.setRoutes(routeRefsStruct);
+
+        mobi.chouette.model.Network neptuneNetwork = neptuneLine.getNetwork();
+        String networkId = netexId(neptuneNetwork.objectIdPrefix(), NETWORK, neptuneNetwork.objectIdSuffix());
+        GroupOfLinesRefStructure groupOfLinesRefStruct = netexFactory.createGroupOfLinesRefStructure().withRef(networkId);
+        netexLine.setRepresentedByGroupRef(groupOfLinesRefStruct);
 
         return netexLine;
     }
