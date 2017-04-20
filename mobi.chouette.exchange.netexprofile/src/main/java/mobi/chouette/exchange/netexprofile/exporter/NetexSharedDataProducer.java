@@ -4,7 +4,6 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer;
-import mobi.chouette.exchange.netexprofile.exporter.writer.AbstractNetexWriter.Mode;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 
@@ -28,7 +27,7 @@ public class NetexSharedDataProducer extends NetexProducer implements Constant {
         Path filePath = new File(outputPath.toFile(), SHARED_DATA_FILE_NAME).toPath();
 
         NetexFileWriter writer = new NetexFileWriter();
-        writer.writeXmlFile(filePath, exportableData, exportableNetexData, Mode.shared);
+        writer.writeXmlFile(filePath, exportableData, exportableNetexData, NetexFragmentMode.SHARED);
 
         reporter.addFileReport(context, SHARED_DATA_FILE_NAME, IO_TYPE.OUTPUT);
     }

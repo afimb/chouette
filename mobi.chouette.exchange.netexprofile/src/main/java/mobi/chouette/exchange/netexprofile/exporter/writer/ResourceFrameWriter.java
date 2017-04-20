@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
+import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 import org.rutebanken.netex.model.Network;
 import org.rutebanken.netex.model.Operator;
 
@@ -8,15 +9,18 @@ import javax.xml.stream.XMLStreamWriter;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DATA_OJBECT_VERSION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.*;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.objectIdPrefix;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.ORGANISATIONS;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.RESOURCE_FRAME;
 
 public class ResourceFrameWriter extends AbstractNetexWriter {
 
     public static void write(XMLStreamWriter writer, ExportableNetexData exportableNetexData) {
-        Network network = exportableNetexData.getSharedNetwork();
-        String resourceFrameId = netexId(objectIdPrefix(network.getId()), RESOURCE_FRAME, objectIdSuffix(network.getId()));
+
+        // TODO temporary generating random id suffix, find a better way to create object id suffixes
+        Network network = exportableNetexData.getSharedNetworks().values().iterator().next();
+        String resourceFrameId = netexId(objectIdPrefix(network.getId()), RESOURCE_FRAME, String.valueOf(NetexProducerUtils.generateRandomId()));
 
         try {
             writer.writeStartElement(RESOURCE_FRAME);
