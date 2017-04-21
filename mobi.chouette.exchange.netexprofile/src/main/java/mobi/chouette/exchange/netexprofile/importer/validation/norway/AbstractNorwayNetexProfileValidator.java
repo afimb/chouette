@@ -228,9 +228,6 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		allowedSubstitutions.put("ToPointRef", projectedPointRefSubstitutions);
 		allowedSubstitutions.put("FromPointRef", projectedPointRefSubstitutions);
 		
-		
-		
-		
 		for(IdVersion id : localRefs) {
 			String referencingElement = id.getElementName();
 			
