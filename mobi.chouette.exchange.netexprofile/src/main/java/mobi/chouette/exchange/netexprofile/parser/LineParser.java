@@ -30,13 +30,24 @@ public class LineParser implements Parser, Constant {
         for (JAXBElement<? extends DataManagedObjectStructure> lineElement : lineElements) {
             org.rutebanken.netex.model.Line netexLine = (org.rutebanken.netex.model.Line) lineElement.getValue();
             mobi.chouette.model.Line chouetteLine = ObjectFactory.getLine(chouetteReferential, netexLine.getId());
-
             chouetteLine.setObjectVersion(NetexParserUtils.getVersion(netexLine));
 
-            // TODO select network via RepresentByGroupRef
-            for (mobi.chouette.model.Network network : chouetteReferential.getPtNetworks().values()) {
-                if (network.isFilled()) {
-                    chouetteLine.setNetwork(network);
+            if (netexLine.getRepresentedByGroupRef() != null) {
+                GroupOfLinesRefStructure representedByGroupRef = netexLine.getRepresentedByGroupRef();
+                String networkId = representedByGroupRef.getRef();
+
+                for (mobi.chouette.model.Network network : chouetteReferential.getSharedPTNetworks().values()) {
+                    if (network.getObjectId().equals(networkId) && network.isFilled()) {
+                        chouetteLine.setNetwork(network);
+                        break;
+                    }
+                }
+            } else {
+                for (mobi.chouette.model.Network network : chouetteReferential.getPtNetworks().values()) {
+                    if (network.isFilled()) {
+                        chouetteLine.setNetwork(network);
+                        break;
+                    }
                 }
             }
 

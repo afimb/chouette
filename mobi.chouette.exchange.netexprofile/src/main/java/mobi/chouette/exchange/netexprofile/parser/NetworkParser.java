@@ -5,9 +5,16 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+import org.rutebanken.netex.model.GroupOfLines;
+import org.rutebanken.netex.model.GroupsOfLinesInFrame_RelStructure;
+import org.rutebanken.netex.model.LineRefStructure;
+
+import javax.xml.bind.JAXBElement;
+import java.util.List;
 
 @Log4j
 public class NetworkParser implements Parser, Constant {
@@ -40,7 +47,6 @@ public class NetworkParser implements Parser, Constant {
             chouetteNetwork.getLines().add(line);
         }
 
-/*
         GroupsOfLinesInFrame_RelStructure groupsOfLinesStruct = netexNetwork.getGroupsOfLines();
 
         if (groupsOfLinesStruct != null) {
@@ -50,21 +56,22 @@ public class NetworkParser implements Parser, Constant {
                 GroupOfLine groupOfLine = ObjectFactory.getGroupOfLine(referential, groupOfLines.getId());
                 groupOfLine.setName(groupOfLines.getName().getValue());
 
-                List<JAXBElement<? extends LineRefStructure>> lineRefStructs = groupOfLines.getMembers().getLineRef();
+                if (groupOfLines.getMembers() != null) {
+                    List<JAXBElement<? extends LineRefStructure>> lineRefStructs = groupOfLines.getMembers().getLineRef();
 
-                for (JAXBElement<? extends LineRefStructure> lineRefRelStruct : lineRefStructs) {
-                    String lineIdRef = lineRefRelStruct.getValue().getRef();
-                    Line line = ObjectFactory.getLine(referential, lineIdRef);
+                    for (JAXBElement<? extends LineRefStructure> lineRefRelStruct : lineRefStructs) {
+                        String lineIdRef = lineRefRelStruct.getValue().getRef();
+                        Line line = ObjectFactory.getLine(referential, lineIdRef);
 
-                    if (line != null) {
-                        groupOfLine.addLine(line);
+                        if (line != null) {
+                            groupOfLine.addLine(line);
+                        }
                     }
                 }
 
                 groupOfLine.setFilled(true);
             }
         }
-*/
 
         chouetteNetwork.setFilled(true);
     }

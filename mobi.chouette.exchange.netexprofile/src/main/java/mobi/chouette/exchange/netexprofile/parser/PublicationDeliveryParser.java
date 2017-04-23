@@ -212,12 +212,14 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 
 	private void parseServiceFrames(Context context, List<ServiceFrame> serviceFrames, boolean isCommonDelivery) throws Exception {
 		for (ServiceFrame serviceFrame : serviceFrames) {
+
 			if (serviceFrame.getNetwork() != null) {
 				Network network = serviceFrame.getNetwork();
 				context.put(NETEX_LINE_DATA_CONTEXT, network);
 				NetworkParser networkParser = (NetworkParser) ParserFactory.create(NetworkParser.class.getName());
 				networkParser.parse(context);
 			}
+
 			if (!isCommonDelivery) {
 				LinesInFrame_RelStructure linesInFrameStruct = serviceFrame.getLines();
 				context.put(NETEX_LINE_DATA_CONTEXT, linesInFrameStruct);
