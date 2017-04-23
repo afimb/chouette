@@ -39,12 +39,14 @@ public class LineParser implements Parser, Constant {
                 for (mobi.chouette.model.Network network : chouetteReferential.getSharedPTNetworks().values()) {
                     if (network.getObjectId().equals(networkId) && network.isFilled()) {
                         chouetteLine.setNetwork(network);
+                        break;
                     }
                 }
             } else {
                 for (mobi.chouette.model.Network network : chouetteReferential.getPtNetworks().values()) {
                     if (network.isFilled()) {
                         chouetteLine.setNetwork(network);
+                        break;
                     }
                 }
             }
