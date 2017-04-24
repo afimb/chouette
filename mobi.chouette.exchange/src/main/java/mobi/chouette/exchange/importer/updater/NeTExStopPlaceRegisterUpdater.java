@@ -13,6 +13,7 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
@@ -164,24 +165,30 @@ public class NeTExStopPlaceRegisterUpdater {
 			stopPlaces = stopPlaces.stream().filter(s -> uniqueIds.remove(s.getId())).collect(Collectors.toList());
 
 			// Find transport mode for stop place
-			for (StopPlace sp : stopPlaces) {
+			for (StopPlace stopPlace : stopPlaces) {
 
-				StopArea sa = referential.getSharedStopAreas().get(sp.getId().replaceAll("Quay", "StopArea").replaceAll("StopPlace", "StopArea"));
-				if (sa == null) {
-					log.error("Could not find StopArea for objectId=" + ToStringBuilder.reflectionToString(sp)
+				String id = stopPlace.getId();
+				StopArea stopArea = referential.getSharedStopAreas().get(stopPlace.getId());
+				if(id.contains(ObjectIdTypes.STOPAREA_KEY)) {
+					// Only replace IDs if ID already contains Chouette ID key (StopArea)
+					stopPlaceMapper.replaceIdIfQuayOrStopPlace(stopPlace);
+				}
+
+				if (stopArea == null) {
+					log.error("Could not find StopArea for objectId=" + ToStringBuilder.reflectionToString(stopPlace)
 							+ " correlationId: " + correlationId);
 				} else {
 					// Recursively find all transportModes
-					Set<TransportModeNameEnum> transportMode = findTransportModeForStopArea(new HashSet<>(), sa);
+					Set<TransportModeNameEnum> transportMode = findTransportModeForStopArea(new HashSet<>(), stopArea);
 					if (transportMode.size() > 1) {
-						log.warn("Found more than one transport mode for StopArea with id " + sp.getId() + ": "
+						log.warn("Found more than one transport mode for StopArea with id " + stopPlace.getId() + ": "
 								+ ToStringBuilder.reflectionToString(transportMode.toArray(),ToStringStyle.SIMPLE_STYLE) + ", will use "
 								+ transportMode.iterator().next()+ " correlationId: "+correlationId);
-						stopPlaceMapper.mapTransportMode(sp, transportMode.iterator().next());
+						stopPlaceMapper.mapTransportMode(stopPlace, transportMode.iterator().next());
 					} else if (transportMode.size() == 1) {
-						stopPlaceMapper.mapTransportMode(sp, transportMode.iterator().next());
+						stopPlaceMapper.mapTransportMode(stopPlace, transportMode.iterator().next());
 					} else {
-						log.warn("No transport modes found for StopArea with id " + sp.getId() + " correlationId: "
+						log.warn("No transport modes found for StopArea with id " + stopPlace.getId() + " correlationId: "
 								+ correlationId);
 					}
 				}
