@@ -42,6 +42,7 @@ public final class NetexObjectIdTypes {
     public static final String AUTHORITY_KEY = "Authority";
     public static final String OPERATOR_KEY = "Operator";
     public static final String NETWORK = "Network";
+    public static final String GROUP_OF_LINES = "GroupOfLines";
     public static final String LINE = "Line";
     public static final String ROUTE_KEY = "Route";
     public static final String STOP_PLACE_KEY = "StopPlace";
