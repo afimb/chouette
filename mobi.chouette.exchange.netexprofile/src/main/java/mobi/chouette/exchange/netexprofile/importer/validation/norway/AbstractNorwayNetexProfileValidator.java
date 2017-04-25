@@ -224,12 +224,10 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		Set<String> projectedPointRefSubstitutions = new HashSet<>();
 		projectedPointRefSubstitutions.add("ScheduledStopPoint");
 		projectedPointRefSubstitutions.add("RoutePoint");
+		allowedSubstitutions.put("ProjectToPointRef", projectedPointRefSubstitutions);
 		allowedSubstitutions.put("ProjectedPointRef", projectedPointRefSubstitutions);
 		allowedSubstitutions.put("ToPointRef", projectedPointRefSubstitutions);
 		allowedSubstitutions.put("FromPointRef", projectedPointRefSubstitutions);
-		
-		
-		
 		
 		for(IdVersion id : localRefs) {
 			String referencingElement = id.getElementName();
