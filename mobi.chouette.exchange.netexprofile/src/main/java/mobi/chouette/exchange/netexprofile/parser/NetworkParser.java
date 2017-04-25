@@ -10,14 +10,16 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import org.rutebanken.netex.model.GroupOfLines;
-import org.rutebanken.netex.model.GroupsOfLinesInFrame_RelStructure;
 import org.rutebanken.netex.model.LineRefStructure;
 
 import javax.xml.bind.JAXBElement;
 import java.util.List;
 
 @Log4j
-public class NetworkParser implements Parser, Constant {
+public class NetworkParser extends NetexParser implements Parser, Constant {
+
+    static final String LOCAL_CONTEXT = "Network";
+    static final String NETWORK_ID = "networkId";
 
     @Override
     public void parse(Context context) throws Exception {
@@ -47,19 +49,15 @@ public class NetworkParser implements Parser, Constant {
             chouetteNetwork.getLines().add(line);
         }
 
-        GroupsOfLinesInFrame_RelStructure groupsOfLinesStruct = netexNetwork.getGroupsOfLines();
-
-        if (groupsOfLinesStruct != null) {
-            List<GroupOfLines> groupsOfLines = groupsOfLinesStruct.getGroupOfLines();
+        if (netexNetwork.getGroupsOfLines() != null) {
+            List<GroupOfLines> groupsOfLines = netexNetwork.getGroupsOfLines().getGroupOfLines();
 
             for (GroupOfLines groupOfLines : groupsOfLines) {
                 GroupOfLine groupOfLine = ObjectFactory.getGroupOfLine(referential, groupOfLines.getId());
                 groupOfLine.setName(groupOfLines.getName().getValue());
 
                 if (groupOfLines.getMembers() != null) {
-                    List<JAXBElement<? extends LineRefStructure>> lineRefStructs = groupOfLines.getMembers().getLineRef();
-
-                    for (JAXBElement<? extends LineRefStructure> lineRefRelStruct : lineRefStructs) {
+                    for (JAXBElement<? extends LineRefStructure> lineRefRelStruct : groupOfLines.getMembers().getLineRef()) {
                         String lineIdRef = lineRefRelStruct.getValue().getRef();
                         Line line = ObjectFactory.getLine(referential, lineIdRef);
 
@@ -69,11 +67,17 @@ public class NetworkParser implements Parser, Constant {
                     }
                 }
 
+                addNetworkId(context, groupOfLines.getId(), netexNetwork.getId());
                 groupOfLine.setFilled(true);
             }
         }
 
         chouetteNetwork.setFilled(true);
+    }
+
+    private void addNetworkId(Context context, String objectId, String networkId) {
+        Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
+        objectContext.put(NETWORK_ID, networkId);
     }
 
     static {

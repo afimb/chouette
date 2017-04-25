@@ -606,6 +606,114 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	}
 
 	@Test
+	public void importMultipleGroupsOfLinesAvinor() throws Exception {
+		Context context = initImportContext();
+		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
+				initialContext, NetexprofileImporterCommand.class.getName());
+
+		NetexTestUtils.copyFile("avinor_multiple_groups_of_lines.zip");
+
+		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
+		jobData.setInputFilename("avinor_multiple_groups_of_lines.zip");
+
+		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
+		configuration.setNoSave(false);
+		configuration.setCleanRepository(true);
+		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
+
+		boolean result;
+		try {
+			result = command.execute(context);
+		} catch (Exception ex) {
+			log.error("test failed", ex);
+			throw ex;
+		}
+
+		ActionReport report = (ActionReport) context.get(REPORT);
+
+		dumpReports(context);
+
+		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+		Assert.assertEquals(report.getFiles().size(), 13, "files reported");
+		Assert.assertNotNull(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE), "lines reported");
+		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 12, "lines reported");
+
+		for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+			Reporter.log("report lines :" + info.toString(), true);
+			Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "lines status");
+		}
+
+		utx.begin();
+		em.joinTransaction();
+
+		// check FlyViking line
+		Line vfLine = lineDao.findByObjectId("AVI:Line:VF_BOO-HFT");
+		Assert.assertNotNull(vfLine, "Line not found");
+		Assert.assertNotNull(vfLine.getNetwork(), "line must have a network");
+		Assert.assertEquals(vfLine.getNetwork().getObjectId(),"AVI:Network:VF", "Network objectId is not correct");
+		Assert.assertTrue(vfLine.getGroupOfLines().isEmpty(), "line must not have group of lines");
+
+		// check SAS lines
+		Collection<String> sasObjectIds = Arrays.asList("AVI:Line:SK_BGO-AES", "AVI:Line:SK_SVG-AES", "AVI:Line:SK_SVG-BGO");
+		List<Line> sasLines = lineDao.findByObjectId(sasObjectIds);
+
+		for (Line line : sasLines) {
+			Assert.assertNotNull(line, "Line not found");
+			Assert.assertNotNull(line.getNetwork(), "line must have a network");
+			Assert.assertEquals(line.getNetwork().getObjectId(), "AVI:Network:SK", "Network objectId is not correct");
+			Assert.assertTrue(!line.getGroupOfLines().isEmpty(), "line must have group of lines");
+			Assert.assertTrue(line.getGroupOfLines().size() == 1, "line must belong to 1 group");
+			Assert.assertEquals(line.getGroupOfLines().get(0).getObjectId(), "AVI:GroupOfLines:SK-VEST", "Line group objectId is not correct");
+			Assert.assertEquals(line.getGroupOfLines().get(0).getName(), "SAS Vestlandet", "Line group name is not correct");
+		}
+
+		// check Wideroe lines in group north
+		Collection<String> wfNorthObjectIds = Arrays.asList("AVI:Line:WF_TOS-ALF", "AVI:Line:WF_TOS-HFT", "AVI:Line:WF_TRD-EVE");
+		List<Line> wfNorthLines = lineDao.findByObjectId(wfNorthObjectIds);
+
+		for (Line line : wfNorthLines) {
+			Assert.assertNotNull(line, "Line not found");
+			Assert.assertNotNull(line.getNetwork(), "line must have a network");
+			Assert.assertEquals(line.getNetwork().getObjectId(), "AVI:Network:WF", "Network objectId is not correct");
+			Assert.assertTrue(!line.getGroupOfLines().isEmpty(), "line must have group of lines");
+			Assert.assertTrue(line.getGroupOfLines().size() == 1, "line must belong to 1 group");
+			Assert.assertEquals(line.getGroupOfLines().get(0).getObjectId(), "AVI:GroupOfLines:WF-NORD", "Line group objectId is not correct");
+			Assert.assertEquals(line.getGroupOfLines().get(0).getName(), "Widerøe Nord-Norge", "Line group name is not correct");
+		}
+
+		// check Wideroe lines in group middle
+		Collection<String> wfMiddleObjectIds = Arrays.asList("AVI:Line:WF_OSL-SDN", "AVI:Line:WF_TRD-MOL");
+		List<Line> wfMiddleLines = lineDao.findByObjectId(wfMiddleObjectIds);
+
+		for (Line line : wfMiddleLines) {
+			Assert.assertNotNull(line, "Line not found");
+			Assert.assertNotNull(line.getNetwork(), "line must have a network");
+			Assert.assertEquals(line.getNetwork().getObjectId(), "AVI:Network:WF", "Network objectId is not correct");
+			Assert.assertTrue(!line.getGroupOfLines().isEmpty(), "line must have group of lines");
+			Assert.assertTrue(line.getGroupOfLines().size() == 1, "line must belong to 1 group");
+			Assert.assertEquals(line.getGroupOfLines().get(0).getObjectId(), "AVI:GroupOfLines:WF-MIDT", "Line group objectId is not correct");
+			Assert.assertEquals(line.getGroupOfLines().get(0).getName(), "Widerøe Midt-Norge", "Line group name is not correct");
+		}
+
+		// check Wideroe lines in group west
+		Collection<String> wfWestObjectIds = Arrays.asList("AVI:Line:WF_BGO-AES", "AVI:Line:WF_BGO-HAU", "AVI:Line:WF_BGO-SVG");
+		List<Line> wfWestLines = lineDao.findByObjectId(wfWestObjectIds);
+
+		for (Line line : wfWestLines) {
+			Assert.assertNotNull(line, "Line not found");
+			Assert.assertNotNull(line.getNetwork(), "line must have a network");
+			Assert.assertEquals(line.getNetwork().getObjectId(), "AVI:Network:WF", "Network objectId is not correct");
+			Assert.assertTrue(!line.getGroupOfLines().isEmpty(), "line must have group of lines");
+			Assert.assertTrue(line.getGroupOfLines().size() == 1, "line must belong to 1 group");
+			Assert.assertEquals(line.getGroupOfLines().get(0).getObjectId(), "AVI:GroupOfLines:WF-VEST", "Line group objectId is not correct");
+			Assert.assertEquals(line.getGroupOfLines().get(0).getName(), "Widerøe Vestlandet", "Line group name is not correct");
+		}
+
+		utx.rollback();
+		Assert.assertTrue(result, "Importer command execution failed: " + report.getFailure());
+	}
+
+	@Test
 	public void verifyImportSingleLineWithCommonDataRuter() throws Exception {
 		Context context = initImportContext();
 		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
