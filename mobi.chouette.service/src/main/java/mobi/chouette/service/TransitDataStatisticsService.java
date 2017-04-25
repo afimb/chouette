@@ -262,7 +262,7 @@ public class TransitDataStatisticsService {
 						// log.info("Adding timetable period " + period);
 						timetable.getPeriods().add(period);
 					} else {
-						log.warn("No from/to in timetable objectId=" + t.getObjectId() + " id=" + t.getId());
+						log.debug("No from/to in timetable objectId=" + t.getObjectId() + " id=" + t.getId());
 					}
 
 				}
@@ -272,7 +272,7 @@ public class TransitDataStatisticsService {
 			Period fromCalendarDaysPattern = calculatePeriodFromCalendarDaysPattern(calendarDaysForLine);
 
 			if (fromCalendarDaysPattern != null) {
-				log.info("Successfully created validity interval from included days for line: " + line.getId());
+				log.debug("Successfully created validity interval from included days for line: " + line.getId());
 				timetableForCalendarDays.getPeriods().add(fromCalendarDaysPattern);
 			}
 
