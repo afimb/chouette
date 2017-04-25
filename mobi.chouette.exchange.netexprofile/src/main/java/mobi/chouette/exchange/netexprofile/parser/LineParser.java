@@ -6,7 +6,9 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes;
 import mobi.chouette.model.Company;
+import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 import mobi.chouette.model.util.ObjectFactory;
@@ -23,27 +25,49 @@ public class LineParser implements Parser, Constant {
 
     @Override
     public void parse(Context context) throws Exception {
-        Referential chouetteReferential = (Referential) context.get(REFERENTIAL);
+        Referential referential = (Referential) context.get(REFERENTIAL);
+        Context parsingContext = (Context) context.get(PARSING_CONTEXT);
+        Context networkContext = (Context) parsingContext.get(NetworkParser.LOCAL_CONTEXT);
         LinesInFrame_RelStructure linesInFrameStruct = (LinesInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
-        List<JAXBElement<? extends DataManagedObjectStructure>> lineElements = linesInFrameStruct.getLine_();
 
-        for (JAXBElement<? extends DataManagedObjectStructure> lineElement : lineElements) {
+        for (JAXBElement<? extends DataManagedObjectStructure> lineElement : linesInFrameStruct.getLine_()) {
             org.rutebanken.netex.model.Line netexLine = (org.rutebanken.netex.model.Line) lineElement.getValue();
-            mobi.chouette.model.Line chouetteLine = ObjectFactory.getLine(chouetteReferential, netexLine.getId());
+            mobi.chouette.model.Line chouetteLine = ObjectFactory.getLine(referential, netexLine.getId());
             chouetteLine.setObjectVersion(NetexParserUtils.getVersion(netexLine));
 
             if (netexLine.getRepresentedByGroupRef() != null) {
                 GroupOfLinesRefStructure representedByGroupRef = netexLine.getRepresentedByGroupRef();
-                String networkId = representedByGroupRef.getRef();
+                String groupIdRef = representedByGroupRef.getRef();
+                String dataTypeName = groupIdRef.split(":")[1];
 
-                for (mobi.chouette.model.Network network : chouetteReferential.getSharedPTNetworks().values()) {
-                    if (network.getObjectId().equals(networkId) && network.isFilled()) {
-                        chouetteLine.setNetwork(network);
-                        break;
+                if (dataTypeName.equals(NetexObjectIdTypes.NETWORK)) {
+                    for (mobi.chouette.model.Network network : referential.getSharedPTNetworks().values()) {
+                        if (network.getObjectId().equals(groupIdRef) && network.isFilled()) {
+                            chouetteLine.setNetwork(network);
+                            break;
+                        }
                     }
+                } else if (dataTypeName.equals(NetexObjectIdTypes.GROUP_OF_LINES)) {
+                    for (GroupOfLine groupOfLine : referential.getSharedGroupOfLines().values()) {
+                        if (groupOfLine.getObjectId().equals(groupIdRef) && groupOfLine.isFilled()) {
+                            chouetteLine.getGroupOfLines().add(groupOfLine);
+
+                            if (chouetteLine.getNetwork() == null) {
+                                Context groupOfLinesObjectContext = (Context) networkContext.get(groupIdRef);
+                                String networkId = (String) groupOfLinesObjectContext.get(NetworkParser.NETWORK_ID);
+                                mobi.chouette.model.Network network = ObjectFactory.getPTNetwork(referential, networkId);
+                                chouetteLine.setNetwork(network);
+                            }
+
+                            break;
+                        }
+                    }
+                } else {
+                    log.error("Invalid id reference, could not retrieve correct instance");
+                    throw new RuntimeException("Invalid id reference, could not retrieve correct instance");
                 }
             } else {
-                for (mobi.chouette.model.Network network : chouetteReferential.getPtNetworks().values()) {
+                for (mobi.chouette.model.Network network : referential.getPtNetworks().values()) {
                     if (network.isFilled()) {
                         chouetteLine.setNetwork(network);
                         break;
@@ -85,7 +109,7 @@ public class LineParser implements Parser, Constant {
             }
 
             String operatorRefValue = netexLine.getOperatorRef().getRef();
-            Company company = ObjectFactory.getCompany(chouetteReferential, operatorRefValue);
+            Company company = ObjectFactory.getCompany(referential, operatorRefValue);
             chouetteLine.setCompany(company);
 
             // TODO find out how to handle in chouette

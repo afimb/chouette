@@ -76,13 +76,15 @@ public class StopPlaceMapper {
     }
 
     private void mapId(StopArea stopArea, Zone_VersionStructure zone) {
-    	if(stopArea.getAreaType() == ChouetteAreaEnum.BoardingPosition) {
-            zone.setId(stopArea.getObjectId().replaceAll("StopArea", "Quay"));
-    	} else if(stopArea.getAreaType() == ChouetteAreaEnum.CommercialStopPoint) {
-            zone.setId(stopArea.getObjectId().replaceAll("StopArea", "StopPlace"));
-    	} else {
-            zone.setId(stopArea.getObjectId());
-    	}
+        zone.setId(stopArea.getObjectId());
+    }
+
+    public void replaceIdIfQuayOrStopPlace(Zone_VersionStructure zone) {
+        if(zone instanceof Quay) {
+            zone.setId(zone.getId().replaceAll("StopArea", "Quay"));
+        } else if(zone instanceof StopPlace) {
+            zone.setId(zone.getId().replaceAll("StopArea", "StopPlace"));
+        }
     }
 
     private void mapCentroid(StopArea stopArea, Zone_VersionStructure zone) {
