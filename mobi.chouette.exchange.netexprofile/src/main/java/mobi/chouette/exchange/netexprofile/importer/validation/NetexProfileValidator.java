@@ -13,5 +13,6 @@ public interface NetexProfileValidator {
 	Collection<String> getSupportedProfiles();
 	
 	boolean isCommonFileValidator();
-
+	
+	void addExternalReferenceValidator(ExternalReferenceValidator v);
 }

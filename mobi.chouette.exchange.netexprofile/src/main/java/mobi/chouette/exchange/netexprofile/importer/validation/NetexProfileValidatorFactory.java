@@ -9,7 +9,7 @@ public abstract class NetexProfileValidatorFactory {
 
     public static Map<String, NetexProfileValidatorFactory> factories = new HashMap<String, NetexProfileValidatorFactory>();
 
-    protected abstract NetexProfileValidator create(Context context);
+    protected abstract NetexProfileValidator create(Context context) throws ClassNotFoundException;
 
     public static final NetexProfileValidator create(String name, Context context) throws ClassNotFoundException {
         if (!factories.containsKey(name)) {
