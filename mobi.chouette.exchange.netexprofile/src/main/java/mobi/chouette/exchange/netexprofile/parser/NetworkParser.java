@@ -54,7 +54,10 @@ public class NetworkParser extends NetexParser implements Parser, Constant {
 
             for (GroupOfLines groupOfLines : groupsOfLines) {
                 GroupOfLine groupOfLine = ObjectFactory.getGroupOfLine(referential, groupOfLines.getId());
-                groupOfLine.setName(groupOfLines.getName().getValue());
+
+                if (groupOfLines.getName() != null) {
+                    groupOfLine.setName(groupOfLines.getName().getValue());
+                }
 
                 if (groupOfLines.getMembers() != null) {
                     for (JAXBElement<? extends LineRefStructure> lineRefRelStruct : groupOfLines.getMembers().getLineRef()) {
