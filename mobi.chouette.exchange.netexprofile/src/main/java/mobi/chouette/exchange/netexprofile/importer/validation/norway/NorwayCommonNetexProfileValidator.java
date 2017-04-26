@@ -27,7 +27,7 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 		@SuppressWarnings("unchecked")
 		Set<ProfileValidatorCodespace> validCodespaces = (Set<ProfileValidatorCodespace>) context.get(NETEX_VALID_CODESPACES);
 
-		// StopRegistryIdValidator stopRegisterValidator = new StopRegistryIdValidator();
+		// StopReferentialIdValidator stopRegisterValidator = new StopReferentialIdValidator();
 
 		// Null check, this is a bug if happens
 		if (validCodespaces == null) {
