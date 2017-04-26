@@ -22,6 +22,10 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
+    private Map<String, GroupOfLines> sharedGroupsOfLines = new HashMap<>();
+
+    @Getter
+    @Setter
     private Line line;
 
     @Getter
@@ -86,6 +90,7 @@ public class ExportableNetexData {
     public void dispose() {
         clear();
         sharedNetworks.clear();
+        sharedGroupsOfLines.clear();
         sharedOperators.clear();
         sharedStopPlaces.clear();
     }

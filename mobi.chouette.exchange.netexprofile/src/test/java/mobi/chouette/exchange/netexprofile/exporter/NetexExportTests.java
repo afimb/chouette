@@ -365,6 +365,54 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
     }
 
+    @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
+    public void exportLinesInGroups() throws Exception {
+        importLines("avinor_multiple_groups_of_lines.zip", 13, 12, "AVI,http://www.rutebanken.org/ns/avi");
+
+        Context context = initExportContext();
+        NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
+        configuration.setValidateAfterExport(true);
+        configuration.setAddMetadata(true);
+        configuration.setReferencesType("line");
+        configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
+
+        Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
+
+        try {
+            command.execute(context);
+        } catch (Exception ex) {
+            log.error("test failed", ex);
+            throw ex;
+        }
+
+        ActionReport report = (ActionReport) context.get(REPORT);
+        Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+        Assert.assertEquals(report.getFiles().size(), 13, "file reported");
+
+        for (FileReport info : report.getFiles()) {
+            Reporter.log(info.toString(),true);
+        }
+
+        Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 12, "line reported");
+
+        for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+            Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "line status");
+            Reporter.log(info.toString(), true);
+        }
+
+        ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
+        Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
+        Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
+
+/*
+        for (CheckPointErrorReport checkPointErrorReport : vreport.getCheckPointErrors()) {
+            Assert.assertFalse(checkPointErrorReport.getTestId().contains("-NETEXPROFILE-"), "netex profile validation status");
+        }
+        Assert.assertEquals(vreport.getResult(), ValidationReporter.VALIDATION_RESULT.OK, "validation report status");
+        Reporter.log(vreport.toString(), true);
+*/
+    }
+
     @Test(enabled = false, groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void verifyExportRuterLine() throws Exception {
         importLines("ruter_single_line_210_with_commondata.zip", 2, 1, "RUT,http://www.rutebanken.org/ns/rut");

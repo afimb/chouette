@@ -2,7 +2,9 @@ package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes;
+import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Route;
+import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.*;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
@@ -68,10 +70,17 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
         }
         netexLine.setRoutes(routeRefsStruct);
 
-        mobi.chouette.model.Network neptuneNetwork = neptuneLine.getNetwork();
-        String networkId = netexId(neptuneNetwork.objectIdPrefix(), NETWORK, neptuneNetwork.objectIdSuffix());
-        GroupOfLinesRefStructure groupOfLinesRefStruct = netexFactory.createGroupOfLinesRefStructure().withRef(networkId);
-        netexLine.setRepresentedByGroupRef(groupOfLinesRefStruct);
+        if (CollectionUtils.isNotEmpty(neptuneLine.getGroupOfLines())) {
+            GroupOfLine groupOfLine = neptuneLine.getGroupOfLines().get(0);
+            String groupOfLinesId = netexId(groupOfLine.objectIdPrefix(), GROUP_OF_LINES, groupOfLine.objectIdSuffix());
+            GroupOfLinesRefStructure groupOfLinesRefStruct = netexFactory.createGroupOfLinesRefStructure().withRef(groupOfLinesId);
+            netexLine.setRepresentedByGroupRef(groupOfLinesRefStruct);
+        } else {
+            mobi.chouette.model.Network neptuneNetwork = neptuneLine.getNetwork();
+            String networkId = netexId(neptuneNetwork.objectIdPrefix(), NETWORK, neptuneNetwork.objectIdSuffix());
+            GroupOfLinesRefStructure groupOfLinesRefStruct = netexFactory.createGroupOfLinesRefStructure().withRef(networkId);
+            netexLine.setRepresentedByGroupRef(groupOfLinesRefStruct);
+        }
 
         return netexLine;
     }
