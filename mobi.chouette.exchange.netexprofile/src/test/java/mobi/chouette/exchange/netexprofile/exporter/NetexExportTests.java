@@ -12,9 +12,7 @@ import mobi.chouette.exchange.netexprofile.NetexTestUtils;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImporterCommand;
 import mobi.chouette.exchange.report.*;
-import mobi.chouette.exchange.validation.report.CheckPointReport;
-import mobi.chouette.exchange.validation.report.ValidationReport;
-import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.exchange.validation.report.*;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -405,11 +403,16 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
 
 /*
-        for (CheckPointErrorReport checkPointErrorReport : vreport.getCheckPointErrors()) {
-            Assert.assertFalse(checkPointErrorReport.getTestId().contains("-NETEXPROFILE-"), "netex profile validation status");
+        for (CheckPointErrorReport errorReport : vreport.getCheckPointErrors()) {
+            Location sourceLocation = errorReport.getSource();
+            FileLocation fileLocation = sourceLocation.getFile();
+
+            log.error("Validation checkpoint " + errorReport.getTestId() + " failed for objectId: " + sourceLocation.getObjectId()
+                    + " at location: " + fileLocation.getFilename() + " Line " + fileLocation.getLineNumber() + " Column " + fileLocation.getColumnNumber());
         }
+
+        Reporter.log("validation error report size : " + vreport.getCheckPointErrors().size(), true);
         Assert.assertEquals(vreport.getResult(), ValidationReporter.VALIDATION_RESULT.OK, "validation report status");
-        Reporter.log(vreport.toString(), true);
 */
     }
 
