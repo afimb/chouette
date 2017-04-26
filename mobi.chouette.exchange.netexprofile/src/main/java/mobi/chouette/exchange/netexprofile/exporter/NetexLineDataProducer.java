@@ -13,6 +13,7 @@ import mobi.chouette.model.*;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
 
@@ -165,13 +166,30 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         }
     }
 
+    @SuppressWarnings("Java8MapApi")
     private void produceAndCollectSharedData(Context context, ExportableData exportableData, ExportableNetexData exportableNetexData) {
         // networks
         mobi.chouette.model.Network neptuneNetwork = exportableData.getLine().getNetwork();
+        org.rutebanken.netex.model.Network netexNetwork = exportableNetexData.getSharedNetworks().get(neptuneNetwork.getObjectId());
 
-        if (!exportableNetexData.getSharedNetworks().containsKey(neptuneNetwork.getObjectId())) {
-            org.rutebanken.netex.model.Network netexNetwork = networkProducer.produce(context, neptuneNetwork);
+        if (netexNetwork == null) {
+            netexNetwork = networkProducer.produce(context, neptuneNetwork);
             exportableNetexData.getSharedNetworks().put(neptuneNetwork.getObjectId(), netexNetwork);
+        }
+        if (CollectionUtils.isNotEmpty(exportableData.getLine().getGroupOfLines())) {
+            GroupOfLine groupOfLine = exportableData.getLine().getGroupOfLines().get(0);
+            GroupOfLines groupOfLines = exportableNetexData.getSharedGroupsOfLines().get(groupOfLine.getObjectId());
+
+            if (groupOfLines == null) {
+                groupOfLines = createGroupOfLines(groupOfLine);
+                exportableNetexData.getSharedGroupsOfLines().put(groupOfLine.getObjectId(), groupOfLines);
+            }
+            if (netexNetwork.getGroupsOfLines() == null) {
+                netexNetwork.setGroupsOfLines(netexFactory.createGroupsOfLinesInFrame_RelStructure());
+            }
+            if (!netexNetwork.getGroupsOfLines().getGroupOfLines().contains(groupOfLines)) {
+                netexNetwork.getGroupsOfLines().getGroupOfLines().add(groupOfLines);
+            }
         }
 
         // operators
@@ -193,6 +211,18 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 exportableNetexData.getSharedStopPlaces().put(stopArea.getObjectId(), stopPlace);
             }
         }
+    }
+
+    private GroupOfLines createGroupOfLines(GroupOfLine groupOfLine) {
+        GroupOfLines groupOfLines = netexFactory.createGroupOfLines();
+        groupOfLines.setVersion(groupOfLine.getObjectVersion() > 0 ? String.valueOf(groupOfLine.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+        groupOfLines.setId(groupOfLine.getObjectId());
+
+        if (isSet(groupOfLine.getName())) {
+            groupOfLines.setName(getMultilingualString(groupOfLine.getName()));
+        }
+
+        return groupOfLines;
     }
 
     private AvailabilityCondition createAvailabilityCondition(mobi.chouette.model.Line line) {
