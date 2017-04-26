@@ -1,7 +1,21 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.naming.InitialContext;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
@@ -11,6 +25,7 @@ import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexNamespaceContext;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
+import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidatorFactory;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.NorwayCommonNetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.NorwayLineNetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.util.NetexReferential;
@@ -18,17 +33,6 @@ import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.model.util.Referential;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
-
-import javax.naming.InitialContext;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathFactory;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 @Log4j
 public class NetexInitImportCommand implements Command, Constant {
@@ -59,11 +63,15 @@ public class NetexInitImportCommand implements Command, Constant {
 			Map<String, NetexProfileValidator> availableProfileValidators = new HashMap<>();
 
 			// Register profiles for Norway
-			registerProfileValidator(availableProfileValidators, new NorwayLineNetexProfileValidator());
-			registerProfileValidator(availableProfileValidators, new NorwayCommonNetexProfileValidator());
+
+			NetexProfileValidator norwayLineValidator = NetexProfileValidatorFactory.create(NorwayLineNetexProfileValidator.class.getName(), context);
+			NetexProfileValidator norwayCommonFileValidator = NetexProfileValidatorFactory.create(NorwayCommonNetexProfileValidator.class.getName(), context);
+
+			registerProfileValidator(availableProfileValidators, norwayLineValidator);
+			registerProfileValidator(availableProfileValidators, norwayCommonFileValidator);
 
 			context.put(NETEX_PROFILE_VALIDATORS, availableProfileValidators);
-			
+
 			// Decode codespace definition if provided
 			if (configuration.getValidCodespaces() != null) {
 				Set<ProfileValidatorCodespace> validCodespaces = new HashSet<>();
@@ -98,11 +106,11 @@ public class NetexInitImportCommand implements Command, Constant {
 	}
 
 	private void registerProfileValidator(Map<String, NetexProfileValidator> availableProfileValidators, NetexProfileValidator profileValidator) {
-	for (String supportedProfile : profileValidator.getSupportedProfiles()) {
-		availableProfileValidators.put(supportedProfile+ (profileValidator.isCommonFileValidator() ? "-common": ""), profileValidator);
-	}
+		for (String supportedProfile : profileValidator.getSupportedProfiles()) {
+			availableProfileValidators.put(supportedProfile + (profileValidator.isCommonFileValidator() ? "-common" : ""), profileValidator);
+		}
 
-}
+	}
 
 	public static class DefaultCommandFactory extends CommandFactory {
 

@@ -1,17 +1,24 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+
+import org.apache.commons.lang.StringUtils;
+import org.rutebanken.netex.model.DataManagedObjectStructure;
+import org.w3c.dom.Node;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
-import org.apache.commons.lang.StringUtils;
-import org.rutebanken.netex.model.DataManagedObjectStructure;
-import org.w3c.dom.Node;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-import java.util.*;
 
 public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexProfileValidator {
 
@@ -224,12 +231,10 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		Set<String> projectedPointRefSubstitutions = new HashSet<>();
 		projectedPointRefSubstitutions.add("ScheduledStopPoint");
 		projectedPointRefSubstitutions.add("RoutePoint");
+		allowedSubstitutions.put("ProjectToPointRef", projectedPointRefSubstitutions);
 		allowedSubstitutions.put("ProjectedPointRef", projectedPointRefSubstitutions);
 		allowedSubstitutions.put("ToPointRef", projectedPointRefSubstitutions);
 		allowedSubstitutions.put("FromPointRef", projectedPointRefSubstitutions);
-		
-		
-		
 		
 		for(IdVersion id : localRefs) {
 			String referencingElement = id.getElementName();
