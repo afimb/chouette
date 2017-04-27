@@ -63,8 +63,7 @@ public class NetexLineParserCommand implements Command, Constant {
 			reporter.setFileState(context, fileName, IO_TYPE.INPUT, ActionReporter.FILE_STATE.OK);
             result = SUCCESS;
         } catch (Exception e) {
-            reporter.addFileErrorInReport(context, fileName, FILE_ERROR_CODE.INTERNAL_ERROR, e.toString());
-            log.error("Parsing failed ", e);
+        	reporter.addFileErrorInReport(context, fileName, FILE_ERROR_CODE.INTERNAL_ERROR, e.toString());
             throw e;
         } finally {
             log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);

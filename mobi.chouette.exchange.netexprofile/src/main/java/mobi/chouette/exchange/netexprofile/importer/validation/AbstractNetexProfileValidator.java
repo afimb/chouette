@@ -45,7 +45,6 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 	public static final String _1_NETEX_INVALID_ID_STRUCTURE_NAME = "1-NETEXPROFILE-InvalidIdStructureName";
 	public static final String _1_NETEX_UNAPPROVED_CODESPACE_DEFINED = "1-NETEXPROFILE-UnapprovedCodespaceDefined";
 	public static final String _1_NETEX_USE_OF_UNAPPROVED_CODESPACE = "1-NETEXPROFILE-UseOfUnapprovedCodespace";
-	protected static final String PREFIX = "2-NETEX-";
 	protected static final String OBJECT_IDS = "encountered_ids";
 	public static final String _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_FILES = "1-NETEXPROFILE-DuplicateIdentificatorsAcrossLineFiles";
 
@@ -274,16 +273,19 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		Set<IdVersion> nonVersionedLocalRefs = localRefs.stream().filter(e -> e.getVersion() == null).collect(Collectors.toSet());
 		Set<String> localIdsWithoutVersion = localIds.stream().map(e -> e.getId()).collect(Collectors.toSet());
 
+		boolean foundErrors = false;
+		
 		if (nonVersionedLocalRefs.size() > 0) {
 			for (IdVersion id : nonVersionedLocalRefs) {
 				if (localIdsWithoutVersion.contains(id.getId())) {
-					// TODO add correct location
+					foundErrors = true;
 					validationReporter.addCheckPointReportError(context, _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS, null,
 							DataLocationHelper.findDataLocation(id), id.getId());
 					log.error("Found local reference to " + id.getId() + " in line file without use of version-attribute");
 				}
 			}
-		} else {
+		} 
+		if(!foundErrors) {
 			validationReporter.reportSuccess(context, _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS);
 
 		}

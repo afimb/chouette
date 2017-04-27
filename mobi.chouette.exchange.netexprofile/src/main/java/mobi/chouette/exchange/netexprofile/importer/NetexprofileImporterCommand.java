@@ -17,6 +17,9 @@ import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.model.util.Referential;
 
 import javax.naming.InitialContext;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
+
 import java.io.IOException;
 
 @Log4j
@@ -55,8 +58,9 @@ public class NetexprofileImporterCommand extends AbstractImporterCommand impleme
 			actionReporter.setActionError(context, ActionReporter.ERROR_CODE.INTERNAL_ERROR, "Command cancelled");
 			log.error(e.getMessage());
 		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-			actionReporter.setActionError(context, ActionReporter.ERROR_CODE.INTERNAL_ERROR, "Fatal :" + e);
+			String fileName = (String) context.get(FILE_NAME);
+			log.error("Error parsing Netex file "+fileName+": "+e.getMessage(), e);
+			actionReporter.setActionError(context, ActionReporter.ERROR_CODE.INTERNAL_ERROR, "Internal error while parsing Netex files: "+e.toString());
 		} finally {
 			progression.dispose(context);
 			log.info(Color.YELLOW + monitor.stop() + Color.NORMAL);
