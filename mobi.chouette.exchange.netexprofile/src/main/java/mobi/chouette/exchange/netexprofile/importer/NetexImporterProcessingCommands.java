@@ -97,7 +97,7 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
             // stream all file paths once
             List<Path> allFilePaths = FileUtil.listFiles(path, "*.xml",".*.xml");
             for(Path p : allFilePaths) {
-				reporter.setFileState(context, p.getFileName().toString(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.ERROR);
+				reporter.setFileState(context, p.getFileName().toString(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.IGNORED);
             }
             context.put(NETEX_FILE_PATHS, allFilePaths);
 
@@ -192,7 +192,6 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 
         } catch (Exception e) {
             log.error("Error creating importer commands",e);
-        	// TODO: add exception handling here
         }
 
         return commands;
