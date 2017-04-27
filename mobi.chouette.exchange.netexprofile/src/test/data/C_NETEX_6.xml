@@ -115,8 +115,6 @@
                 <ServiceFrame version="1" id="AVI:ServiceFrame:7722364">
                     <Network changed="2017-02-20T14:39:25.305Z" version="1" id="AVI:Network:WF">
                         <Name>Widerøe</Name>
-                        <ShortName>WF</ShortName>
-                        <AuthorityRef ref="AVI:Authority:Avinor" version="1"/>
                     </Network>
                     <routePoints>
                         <RoutePoint version="1" id="AVI:RoutePoint:76522">

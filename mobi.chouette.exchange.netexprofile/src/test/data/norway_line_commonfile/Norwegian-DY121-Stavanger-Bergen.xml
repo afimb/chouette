@@ -32,7 +32,6 @@
                 <ServiceFrame version="1" id="AVI:ServiceFrame:DY121">
                     <Network changed="2016-12-20T08:47:47.159Z" version="1" id="AVI:Network:DY">
                         <Name>Norwegian</Name>
-                        <AuthorityRef ref="AVI:Authority:Avinor" version="1"/>
                     </Network>
                     <routePoints>
                         <RoutePoint version="1" id="AVI:RoutePoint:SVG">
