@@ -13,7 +13,6 @@ import org.rutebanken.netex.model.Organisation_VersionStructure;
 import org.rutebanken.netex.model.OrganisationsInFrame_RelStructure;
 
 import javax.xml.bind.JAXBElement;
-import java.util.List;
 
 @Log4j
 public class OrganisationParser implements Parser, Constant {
@@ -22,26 +21,28 @@ public class OrganisationParser implements Parser, Constant {
     public void parse(Context context) throws Exception {
         Referential referential = (Referential) context.get(REFERENTIAL);
         OrganisationsInFrame_RelStructure organisationsInFrameStruct = (OrganisationsInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
-        List<JAXBElement<? extends DataManagedObjectStructure>> organisationElements = organisationsInFrameStruct.getOrganisation_();
 
-        for (JAXBElement<? extends DataManagedObjectStructure> organisationElement : organisationElements) {
+        for (JAXBElement<? extends DataManagedObjectStructure> organisationElement : organisationsInFrameStruct.getOrganisation_()) {
             DataManagedObjectStructure organisation = organisationElement.getValue();
-            String organisationId = organisation.getId();
+            Organisation_VersionStructure organisationStruct = (Organisation_VersionStructure) organisation;
 
-            Organisation_VersionStructure org = (Organisation_VersionStructure) organisation;
-            Company company = ObjectFactory.getCompany(referential, organisationId);
+            Company company = ObjectFactory.getCompany(referential, organisation.getId());
             company.setObjectVersion(NetexParserUtils.getVersion(organisation));
-            company.setName(org.getName().getValue());
-            if (org.getLegalName() != null) {
-                company.setOperatingDepartmentName(org.getLegalName().getValue());
+            company.setName(organisationStruct.getName().getValue());
+
+            if (organisationStruct.getLegalName() != null) {
+                company.setOperatingDepartmentName(organisationStruct.getLegalName().getValue());
             }
-            company.setRegistrationNumber(org.getCompanyNumber());
-            if(org.getContactDetails() != null) {
-                company.setPhone(org.getContactDetails().getPhone());
-                company.setUrl(org.getContactDetails().getUrl());
-                company.setEmail(org.getContactDetails().getEmail());
-                company.setFilled(true);
+
+            company.setRegistrationNumber(organisationStruct.getCompanyNumber());
+
+            if (organisationStruct.getContactDetails() != null) {
+                company.setPhone(organisationStruct.getContactDetails().getPhone());
+                company.setUrl(organisationStruct.getContactDetails().getUrl());
+                company.setEmail(organisationStruct.getContactDetails().getEmail());
             }
+
+            company.setFilled(true);
         }
     }
 

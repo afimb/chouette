@@ -30,6 +30,10 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
+    private Map<String, Authority> sharedAuthorities = new HashMap<>();
+
+    @Getter
+    @Setter
     private Map<String, Operator> sharedOperators = new HashMap<>();
 
     @Getter
@@ -99,6 +103,7 @@ public class ExportableNetexData {
         clear();
         sharedNetworks.clear();
         sharedGroupsOfLines.clear();
+        sharedAuthorities.clear();
         sharedOperators.clear();
         sharedStopPlaces.clear();
         sharedStopAssignments.clear();
