@@ -274,16 +274,19 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		Set<IdVersion> nonVersionedLocalRefs = localRefs.stream().filter(e -> e.getVersion() == null).collect(Collectors.toSet());
 		Set<String> localIdsWithoutVersion = localIds.stream().map(e -> e.getId()).collect(Collectors.toSet());
 
+		boolean foundErrors = false;
+		
 		if (nonVersionedLocalRefs.size() > 0) {
 			for (IdVersion id : nonVersionedLocalRefs) {
 				if (localIdsWithoutVersion.contains(id.getId())) {
-					// TODO add correct location
+					foundErrors = true;
 					validationReporter.addCheckPointReportError(context, _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS, null,
 							DataLocationHelper.findDataLocation(id), id.getId());
 					log.error("Found local reference to " + id.getId() + " in line file without use of version-attribute");
 				}
 			}
-		} else {
+		} 
+		if(!foundErrors) {
 			validationReporter.reportSuccess(context, _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS);
 
 		}
