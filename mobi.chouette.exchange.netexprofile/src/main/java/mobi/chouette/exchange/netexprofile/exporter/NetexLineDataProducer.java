@@ -143,11 +143,11 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
             }
         }
 
-        //Set<ScheduledStopPoint> stopPoints = createScheduledStopPoints(neptuneLine.getRoutes());
-        //exportableNetexData.getStopPoints().addAll(stopPoints);
+        Set<ScheduledStopPoint> stopPoints = createScheduledStopPoints(neptuneLine.getRoutes());
+        exportableNetexData.getStopPoints().addAll(stopPoints);
 
-//        Set<PassengerStopAssignment> stopAssignments = createStopAssignments(neptuneLine.getRoutes());
-//        exportableNetexData.getStopAssignments().addAll(stopAssignments);
+        Set<PassengerStopAssignment> stopAssignments = createStopAssignments(neptuneLine.getRoutes());
+        exportableNetexData.getStopAssignments().addAll(stopAssignments);
 
         Map<String, List<? extends DataManagedObjectStructure>> calendarData = calendarProducer.produce(context, exportableData);
 
@@ -213,6 +213,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         }
 
         // stop points
+/*
         Set<ScheduledStopPoint> stopPoints = createScheduledStopPoints(exportableData.getLine().getRoutes());
 
         for (ScheduledStopPoint stopPoint : stopPoints) {
@@ -220,8 +221,10 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 exportableNetexData.getSharedStopPoints().put(stopPoint.getId(), stopPoint);
             }
         }
+*/
 
         // stop assignments
+/*
         Set<PassengerStopAssignment> stopAssignments = createStopAssignments(exportableData.getLine().getRoutes());
 
         for (PassengerStopAssignment stopAssignment : stopAssignments) {
@@ -229,6 +232,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 exportableNetexData.getSharedStopAssignments().put(stopAssignment.getId(), stopAssignment);
             }
         }
+*/
     }
 
     private GroupOfLines createGroupOfLines(GroupOfLine groupOfLine) {
