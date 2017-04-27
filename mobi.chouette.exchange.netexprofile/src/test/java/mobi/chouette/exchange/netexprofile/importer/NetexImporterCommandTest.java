@@ -762,6 +762,59 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		Assert.assertTrue(result, "Importer command execution failed: " + report.getFailure());
 	}
 
+	@Test(enabled = false)
+	public void importMultipleLinesVKT() throws Exception {
+		Context context = initImportContext();
+		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
+		String inputFileName = "NeTEx_VKT_r1.10.zip";
+
+		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
+				initialContext, NetexprofileImporterCommand.class.getName());
+
+		NetexTestUtils.copyFile(inputFileName);
+		jobData.setInputFilename(inputFileName);
+
+		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
+		configuration.setNoSave(false);
+		configuration.setCleanRepository(true);
+		configuration.setValidCodespaces("VKT,http://www.rutebanken.org/ns/vkt");
+
+		boolean result;
+		try {
+			result = command.execute(context);
+		} catch (Exception ex) {
+			log.error("test failed", ex);
+			throw ex;
+		}
+
+		ActionReport report = (ActionReport) context.get(REPORT);
+
+		dumpReports(context);
+
+		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+		Assert.assertEquals(report.getFiles().size(), 3, "files reported");
+		Assert.assertNotNull(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE), "lines reported");
+		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 2, "lines reported");
+
+		for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+			Reporter.log("report lines :" + info.toString(), true);
+			Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "lines status");
+		}
+
+		utx.begin();
+		em.joinTransaction();
+
+		Collection<String> objectIds = Arrays.asList("VKT:Line:1106", "VKT:Line:1107");
+		List<Line> lines = lineDao.findByObjectId(objectIds);
+
+		for (Line line : lines) {
+			Assert.assertNotNull(line, "Line not found");
+		}
+
+		utx.rollback();
+		Assert.assertTrue(result, "Importer command execution failed: " + report.getFailure());
+	}
+
 	private void assertGlobalLines(ActionReport report, int lines) {
 		assertEquals(report.findObjectReport("global", ActionReporter.OBJECT_TYPE.LINE).getStats().get(ActionReporter.OBJECT_TYPE.LINE).intValue(), lines,
 				"lines reported");
