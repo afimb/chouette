@@ -143,11 +143,11 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
             }
         }
 
-        Set<ScheduledStopPoint> stopPoints = createScheduledStopPoints(neptuneLine.getRoutes());
-        exportableNetexData.getStopPoints().addAll(stopPoints);
+        //Set<ScheduledStopPoint> stopPoints = createScheduledStopPoints(neptuneLine.getRoutes());
+        //exportableNetexData.getStopPoints().addAll(stopPoints);
 
-        Set<PassengerStopAssignment> stopAssignments = createStopAssignments(neptuneLine.getRoutes());
-        exportableNetexData.getStopAssignments().addAll(stopAssignments);
+//        Set<PassengerStopAssignment> stopAssignments = createStopAssignments(neptuneLine.getRoutes());
+//        exportableNetexData.getStopAssignments().addAll(stopAssignments);
 
         Map<String, List<? extends DataManagedObjectStructure>> calendarData = calendarProducer.produce(context, exportableData);
 
@@ -209,6 +209,24 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
             if (!exportableNetexData.getSharedStopPlaces().containsKey(stopArea.getObjectId())) {
                 StopPlace stopPlace = stopPlaceProducer.produce(context, stopArea);
                 exportableNetexData.getSharedStopPlaces().put(stopArea.getObjectId(), stopPlace);
+            }
+        }
+
+        // stop points
+        Set<ScheduledStopPoint> stopPoints = createScheduledStopPoints(exportableData.getLine().getRoutes());
+
+        for (ScheduledStopPoint stopPoint : stopPoints) {
+            if (!exportableNetexData.getSharedStopPoints().containsKey(stopPoint.getId())) {
+                exportableNetexData.getSharedStopPoints().put(stopPoint.getId(), stopPoint);
+            }
+        }
+
+        // stop assignments
+        Set<PassengerStopAssignment> stopAssignments = createStopAssignments(exportableData.getLine().getRoutes());
+
+        for (PassengerStopAssignment stopAssignment : stopAssignments) {
+            if (!exportableNetexData.getSharedStopAssignments().containsKey(stopAssignment.getId())) {
+                exportableNetexData.getSharedStopAssignments().put(stopAssignment.getId(), stopAssignment);
             }
         }
     }

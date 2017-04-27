@@ -402,7 +402,6 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
         Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
 
-/*
         for (CheckPointErrorReport errorReport : vreport.getCheckPointErrors()) {
             Location sourceLocation = errorReport.getSource();
             FileLocation fileLocation = sourceLocation.getFile();
@@ -413,7 +412,6 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
         Reporter.log("validation error report size : " + vreport.getCheckPointErrors().size(), true);
         Assert.assertEquals(vreport.getResult(), ValidationReporter.VALIDATION_RESULT.OK, "validation report status");
-*/
     }
 
     @Test(enabled = false, groups = {"ExportLine"}, description = "Export Plugin should export file")
