@@ -70,9 +70,6 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 					actionReporter.addFileErrorInReport(context, schemaValidationTask.getFile().getName(), ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT,
 							"Netex schema compliance failed");
 					result = ERROR;
-//				} else {
-//					actionReporter.setFileState(context, schemaValidationTask.getFile().getName(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.OK);
-
 				}
 			}
 		} catch (Exception e) {
@@ -82,6 +79,11 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 			executor.shutdown();
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
+		
+		if(result == SUCCESS) {
+			validationReporter.reportSuccess(context, AbstractNetexProfileValidator._1_NETEX_SCHEMA_VALIDATION_ERROR);
+		}
+		
 		return result;
 	}
 
