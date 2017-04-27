@@ -11,6 +11,7 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import org.rutebanken.netex.model.GroupOfLines;
 import org.rutebanken.netex.model.LineRefStructure;
+import org.rutebanken.netex.model.OrganisationRefStructure;
 
 import javax.xml.bind.JAXBElement;
 import java.util.List;
@@ -35,9 +36,12 @@ public class NetworkParser extends NetexParser implements Parser, Constant {
         if (netexNetwork.getChanged() != null) {
             chouetteNetwork.setVersionDate(NetexParserUtils.convertToDate(netexNetwork.getChanged()));
         }
-        if (netexNetwork.getName() != null) {
-            chouetteNetwork.setName(netexNetwork.getName().getValue());
-        }
+
+        chouetteNetwork.setName(netexNetwork.getName().getValue());
+
+        OrganisationRefStructure authorityRefStruct = netexNetwork.getTransportOrganisationRef().getValue();
+        chouetteNetwork.setSourceIdentifier(authorityRefStruct.getRef());
+
         if (netexNetwork.getDescription() != null) {
             chouetteNetwork.setDescription(netexNetwork.getDescription().getValue());
         }

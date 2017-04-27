@@ -2,6 +2,7 @@ package mobi.chouette.exchange.netexprofile.exporter.writer;
 
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
+import org.rutebanken.netex.model.Authority;
 import org.rutebanken.netex.model.Network;
 import org.rutebanken.netex.model.Operator;
 
@@ -36,6 +37,9 @@ public class ResourceFrameWriter extends AbstractNetexWriter {
     private static void writeOrganisationsElement(XMLStreamWriter writer, ExportableNetexData exportableNetexData) {
         try {
             writer.writeStartElement(ORGANISATIONS);
+            for (Authority authority : exportableNetexData.getSharedAuthorities().values()) {
+                marshaller.marshal(netexFactory.createAuthority(authority), writer);
+            }
             for (Operator operator : exportableNetexData.getSharedOperators().values()) {
                 marshaller.marshal(netexFactory.createOperator(operator), writer);
             }

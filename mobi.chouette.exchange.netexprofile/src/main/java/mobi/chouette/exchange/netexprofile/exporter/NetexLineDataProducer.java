@@ -11,6 +11,7 @@ import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.*;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import org.apache.commons.collections.CollectionUtils;
@@ -37,6 +38,11 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
     private static final String NSR_XMLNS = "NSR";
     private static final String NSR_XMLNSURL = "http://www.rutebanken.org/ns/nsr";
+    private static final String NSR_OBJECT_ID = "NSR:Authority:NSR";
+    private static final String NSR_COMPANY_NUMBER = "917422575";
+    private static final String NSR_NAME = "Nasjonal Stoppestedsregister";
+    private static final String NSR_LEGAL_NAME = "NASJONAL STOPPESTEDSREGISTER";
+    private static final String NSR_PHONE = "0047 236 20 000";
 
     private static final Map<String, Codespace> CODESPACE_MAP = new HashMap<>();
 
@@ -192,6 +198,16 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
             }
         }
 
+        // authorities
+        if (!exportableNetexData.getSharedAuthorities().containsKey(neptuneNetwork.getSourceIdentifier())) {
+            Authority networkAuthority = createNetworkAuthority(neptuneNetwork);
+            exportableNetexData.getSharedAuthorities().put(neptuneNetwork.getSourceIdentifier(), networkAuthority);
+        }
+        if (!exportableNetexData.getSharedAuthorities().containsKey(NSR_OBJECT_ID)) {
+            Authority nsrAuthority = createNsrAuthority(neptuneNetwork);
+            exportableNetexData.getSharedAuthorities().put(NSR_OBJECT_ID, nsrAuthority);
+        }
+
         // operators
         Company company = exportableData.getLine().getCompany();
 
@@ -211,6 +227,56 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 exportableNetexData.getSharedStopPlaces().put(stopArea.getObjectId(), stopPlace);
             }
         }
+
+        // stop points
+/*
+        Set<ScheduledStopPoint> stopPoints = createScheduledStopPoints(exportableData.getLine().getRoutes());
+
+        for (ScheduledStopPoint stopPoint : stopPoints) {
+            if (!exportableNetexData.getSharedStopPoints().containsKey(stopPoint.getId())) {
+                exportableNetexData.getSharedStopPoints().put(stopPoint.getId(), stopPoint);
+            }
+        }
+*/
+
+        // stop assignments
+/*
+        Set<PassengerStopAssignment> stopAssignments = createStopAssignments(exportableData.getLine().getRoutes());
+
+        for (PassengerStopAssignment stopAssignment : stopAssignments) {
+            if (!exportableNetexData.getSharedStopAssignments().containsKey(stopAssignment.getId())) {
+                exportableNetexData.getSharedStopAssignments().put(stopAssignment.getId(), stopAssignment);
+            }
+        }
+*/
+    }
+
+    public Authority createNetworkAuthority(Network network) {
+        return netexFactory.createAuthority()
+                .withVersion(network.getObjectVersion() > 0 ? String.valueOf(network.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION)
+                .withId(network.getSourceIdentifier())
+                .withCompanyNumber("999999999")
+                .withName(getMultilingualString("Dummy Authority"))
+                .withLegalName(getMultilingualString("DUMMY AUTHORITY"))
+                .withContactDetails(createContactStructure("0047 999 99 999", "http://www.dummy-authority.org/"))
+                .withOrganisationType(OrganisationTypeEnumeration.AUTHORITY);
+    }
+
+    public Authority createNsrAuthority(Network network) {
+        return netexFactory.createAuthority()
+                .withVersion(network.getObjectVersion() > 0 ? String.valueOf(network.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION)
+                .withId(NSR_OBJECT_ID)
+                .withCompanyNumber(NSR_COMPANY_NUMBER)
+                .withName(getMultilingualString(NSR_NAME))
+                .withLegalName(getMultilingualString(NSR_LEGAL_NAME))
+                .withContactDetails(createContactStructure(NSR_PHONE, NSR_XMLNSURL))
+                .withOrganisationType(OrganisationTypeEnumeration.AUTHORITY);
+    }
+
+    public ContactStructure createContactStructure(String phone, String url) {
+        return netexFactory.createContactStructure()
+                .withPhone(phone)
+                .withUrl(url);
     }
 
     private GroupOfLines createGroupOfLines(GroupOfLine groupOfLine) {

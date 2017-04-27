@@ -49,7 +49,8 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
                 writeStopAssignmentsElement(writer, exportableNetexData);
                 writeJourneyPatternsElement(writer, exportableNetexData);
             } else { // shared data
-                // TODO implement
+                //writeScheduledStopPointsElement(writer, exportableNetexData);
+                //writeStopAssignmentsElement(writer, exportableNetexData);
             }
 
             writer.writeEndElement();
@@ -106,6 +107,11 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
             for (ScheduledStopPoint scheduledStopPoint : exportableData.getStopPoints()) {
                 marshaller.marshal(netexFactory.createScheduledStopPoint(scheduledStopPoint), writer);
             }
+/*
+            for (ScheduledStopPoint scheduledStopPoint : exportableData.getSharedStopPoints().values()) {
+                marshaller.marshal(netexFactory.createScheduledStopPoint(scheduledStopPoint), writer);
+            }
+*/
             writer.writeEndElement();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -118,6 +124,11 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
             for (PassengerStopAssignment stopAssignment : exportableData.getStopAssignments()) {
                 marshaller.marshal(netexFactory.createPassengerStopAssignment(stopAssignment), writer);
             }
+/*
+            for (PassengerStopAssignment stopAssignment : exportableData.getSharedStopAssignments().values()) {
+                marshaller.marshal(netexFactory.createPassengerStopAssignment(stopAssignment), writer);
+            }
+*/
             writer.writeEndElement();
         } catch (Exception e) {
             throw new RuntimeException(e);
