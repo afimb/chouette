@@ -45,7 +45,6 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 	public static final String _1_NETEX_INVALID_ID_STRUCTURE_NAME = "1-NETEXPROFILE-InvalidIdStructureName";
 	public static final String _1_NETEX_UNAPPROVED_CODESPACE_DEFINED = "1-NETEXPROFILE-UnapprovedCodespaceDefined";
 	public static final String _1_NETEX_USE_OF_UNAPPROVED_CODESPACE = "1-NETEXPROFILE-UseOfUnapprovedCodespace";
-	protected static final String PREFIX = "2-NETEX-";
 	protected static final String OBJECT_IDS = "encountered_ids";
 	public static final String _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_FILES = "1-NETEXPROFILE-DuplicateIdentificatorsAcrossLineFiles";
 

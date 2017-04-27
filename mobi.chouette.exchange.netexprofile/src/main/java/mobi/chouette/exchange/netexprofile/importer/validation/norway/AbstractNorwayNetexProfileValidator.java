@@ -43,7 +43,6 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_SERVICE_CALENDAR_FRAME = "1-NETEXPROFILE-ServiceCalendarFrame";
 	public static final String _1_NETEX_SERVICE_FRAME = "1-NETEXPROFILE-ServiceFrame";
 	public static final String _1_NETEX_CODESPACE = "1-NETEXPROFILE-CompositeFrame-Codespace";
-	public static final String _1_NETEX_COMPOSITE_FRAME = "1-NETEXPROFILE-CompositeFrame";
 	public static final String _1_NETEX_SITE_FRAME = "1-NETEXPROFILE-SiteFrame";
 	public static final String _1_NETEX_SERVICE_FRAME_GROUPOFLINES_OUTSIDE_NETWORK = "1-NETEXPROFILE-ServiceFrame-GroupOfLinesOutsideNetwork";
 	public static final String _1_NETEX_SERVICE_FRAME_LINE = "1-NETEXPROFILE-ServiceFrame-Line";
@@ -101,7 +100,6 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_USE_OF_UNAPPROVED_CODESPACE, "E");
 		addCheckpoints(context, _1_NETEX_REFERENCE_TO_ILLEGAL_ELEMENT, "E");
 
-		addCheckpoints(context, _1_NETEX_COMPOSITE_FRAME, "E");
 		addCheckpoints(context, _1_NETEX_RESOURCE_FRAME, "E");
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME, "E");
 		addCheckpoints(context, _1_NETEX_SITE_FRAME, "W");
