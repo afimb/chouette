@@ -27,7 +27,15 @@ public class RoutePointParser extends NetexParser implements Parser, Constant {
             for (JAXBElement<?> projectionRefElement : routePoint.getProjections().getProjectionRefOrProjection()) {
                 if (stopPointId == null) {
                     PointProjection pointProjection = (PointProjection) projectionRefElement.getValue();
-                    stopPointId = pointProjection.getProjectedPointRef().getRef();
+
+                    if (pointProjection.getProjectedPointRef() != null) {
+                        stopPointId = pointProjection.getProjectedPointRef().getRef();
+                    } else if (pointProjection.getProjectToPointRef() != null) {
+                        stopPointId = pointProjection.getProjectToPointRef().getRef();
+                    } else {
+                        log.error("Could not find point reference for projection with id : " + pointProjection.getId());
+                        throw new RuntimeException("missing point reference");
+                    }
                 }
             }
 
