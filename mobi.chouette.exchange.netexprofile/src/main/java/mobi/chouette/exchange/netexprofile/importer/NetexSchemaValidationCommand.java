@@ -55,8 +55,6 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 
 			for (Path filePath : allFiles) {
 				SchemaValidationTask schemaValidationTask = new SchemaValidationTask(context, actionReporter, validationReporter, importer, filePath.toFile());
-				String fileName = filePath.toFile().getName();
-				actionReporter.addFileReport(context, fileName, IO_TYPE.INPUT);
 				schemaValidationResults.add(executor.submit(schemaValidationTask));
 			}
 

@@ -70,8 +70,6 @@ public class NetexCommonFilesParserCommand implements Command, Constant {
 
             result = SUCCESS;
         } catch (Exception e) {
-            // report service
-            log.error("parsing failed ", e);
             actionReporter.addFileErrorInReport(context, fileName, ActionReporter.FILE_ERROR_CODE.INTERNAL_ERROR, e.toString());
         } finally {
             log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
