@@ -1,8 +1,6 @@
 package mobi.chouette.service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import mobi.chouette.model.statistics.LineStatistics;
 import mobi.chouette.model.statistics.PublicLine;
@@ -26,8 +24,16 @@ public class TransitDataStatisticsServiceTest {
 		lineStats.getPublicLines().add(createPublicLine("validCat1", startDate.plusDays(-5), startDate.plusDays(7)));
 		lineStats.getPublicLines().add(createPublicLine("validCat2", startDate.plusDays(-5), startDate.plusDays(15)));
 
-		new TransitDataStatisticsService().categorizeValidity(lineStats, startDate.toDate(), new Integer[]{5, 10});
+
+		Map<Integer, String> minDaysValidityCategories=new HashMap<>();
+		minDaysValidityCategories.put(5, "OK");
+		minDaysValidityCategories.put(10,"GOOD");
+		new TransitDataStatisticsService().categorizeValidity(lineStats, startDate.toDate(), minDaysValidityCategories);
 		Assert.assertEquals(lineStats.getValidityCategories().size(), 4);
+		Assert.assertEquals("INVALID",getCategory(lineStats, -1).getName());
+		Assert.assertEquals("EXPIRING",getCategory(lineStats, 0).getName());
+		Assert.assertEquals("OK",getCategory(lineStats, 5).getName());
+		Assert.assertEquals("GOOD",getCategory(lineStats, 10).getName());
 		Assert.assertTrue(getCategory(lineStats, -1).getLineNumbers().contains("invalidNoDate"));
 		Assert.assertTrue(getCategory(lineStats, -1).getLineNumbers().contains("invalidHistoricToDate"));
 		Assert.assertTrue(getCategory(lineStats, -1).getLineNumbers().contains("invalidFutureFromDate"));

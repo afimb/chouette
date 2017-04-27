@@ -17,6 +17,7 @@ import lombok.Getter;
 @XmlType(propOrder = { "numDaysAtLeastValid", "lineNumbers" })
 @Getter
 public class ValidityCategory {
+	private String name;
 	private Integer numDaysAtLeastValid;
 	private List<String> lineNumbers = new ArrayList<String>();
 }
