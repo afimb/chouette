@@ -1,5 +1,18 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
@@ -7,14 +20,8 @@ import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidatorFactory;
+import mobi.chouette.exchange.netexprofile.importer.validation.norway.StopReferentialIdValidator.DefaultExternalReferenceValidatorFactory;
 import mobi.chouette.exchange.validation.ValidationData;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-import java.util.*;
 
 @Log4j
 public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileValidator implements NetexProfileValidator {
@@ -32,7 +39,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 		Set<ProfileValidatorCodespace> validCodespaces = (Set<ProfileValidatorCodespace>) context.get(NETEX_VALID_CODESPACES);
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 
-		// StopRegistryIdValidator stopRegisterValidator = new StopRegistryIdValidator();
+		// StopReferentialIdValidator stopRegisterValidator = new StopReferentialIdValidator();
 
 		@SuppressWarnings("unchecked")
 		Map<IdVersion, List<String>> commonIds = (Map<IdVersion, List<String>>) context.get(NETEX_COMMON_FILE_IDENTIFICATORS);
@@ -60,8 +67,8 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 		verifyUseOfVersionOnLocalElements(context, localIds);
 		verifyUseOfVersionOnRefsToLocalElements(context, localIds, localRefs);
 		verifyReferencesToCommonElements(context, localRefs, localIds, commonIds);
-		verifyReferencesToCorrectEntityTypes(context,localRefs);
-		
+		verifyReferencesToCorrectEntityTypes(context, localRefs);
+
 		NodeList compositeFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:CompositeFrame", xpath, dom);
 		if (compositeFrames.getLength() > 0) {
 			// Using composite frames
@@ -152,13 +159,17 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 
 		if (subLevel != null) {
 
-			//validateElementPresent(context, xpath, subLevel, "n:Network", _1_NETEX_SERVICE_FRAME_NETWORK);
+			validateElementNotPresent(context, xpath, subLevel, "n:Network[not(n:AuthorityRef)]", _1_NETEX_SERVICE_FRAME_NETWORK_AUTHORITY_REF);
 			validateElementNotPresent(context, xpath, subLevel, "n:Network[not(n:Name)]", _1_NETEX_SERVICE_FRAME_NETWORK_NAME);
+			validateElementNotPresent(context, xpath, subLevel, "n:groupOfLines", _1_NETEX_SERVICE_FRAME_GROUPOFLINES_OUTSIDE_NETWORK);
+			validateElementNotPresent(context, xpath, subLevel, "n:GroupOfLine[not(n:Name)]", _1_NETEX_SERVICE_FRAME_NETWORK_GROUPOFLINE_NAME);
 			validateElementPresent(context, xpath, subLevel, "n:lines/n:Line", _1_NETEX_SERVICE_FRAME_LINE);
 			validateElementNotPresent(context, xpath, subLevel, "n:lines/n:Line[not(n:PublicCode)]", _1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE);
+			validateElementNotPresent(context, xpath, subLevel, "n:lines/n:Line[not(n:OperatorRef)]", _1_NETEX_SERVICE_FRAME_LINE_OPERATOR_REF);
 			validateElementNotPresent(context, xpath, subLevel, "n:lines/n:Line[not(n:TransportMode)]", _1_NETEX_SERVICE_FRAME_LINE_TRANSPORTMODE);
 			validateElementNotPresent(context, xpath, subLevel, "n:lines/n:Line/n:routes/n:Route", _1_NETEX_SERVICE_FRAME_ROUTE_INDIRECTION);
-			validateElementNotPresent(context, xpath, subLevel, "n:lines/n:Line[not(n:RepresentedByGroupRef)]", _1_NETEX_SERVICE_FRAME_LINE_GROUPOFLINES_OR_NETWORK);
+			validateElementNotPresent(context, xpath, subLevel, "n:lines/n:Line[not(n:RepresentedByGroupRef)]",
+					_1_NETEX_SERVICE_FRAME_LINE_GROUPOFLINES_OR_NETWORK);
 
 			validateAtLeastElementPresent(context, xpath, subLevel, "n:routes/n:Route", 1, _1_NETEX_SERVICE_FRAME_ROUTE_INDIRECTION);
 			validateElementNotPresent(context, xpath, subLevel, "n:routes/n:Route[not(n:Name)]", _1_NETEX_SERVICE_FRAME_ROUTE_NAME);
@@ -173,8 +184,10 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 					_1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN_ROUTE_REF);
 
 			validateElementNotPresent(context, xpath, subLevel, "n:timingPoints", _1_NETEX_SERVICE_FRAME_TIMING_POINTS);
-			validateElementNotPresent(context, xpath, subLevel, "n:destinationDisplays/n:DestinationDisplay[not(n:FrontText)]", _1_NETEX_SERVICE_FRAME_DESTINATION_DISPLAY_FRONTTEXT);
-			validateElementNotPresent(context, xpath, subLevel, "//n:StopPointInJourneyPattern[n:ForAlighting = 'false' and n:ForBoarding = 'false']", _1_NETEX_SERVICE_FRAME_STOP_WITHOUT_BOARDING_OR_ALIGHTING);
+			validateElementNotPresent(context, xpath, subLevel, "n:destinationDisplays/n:DestinationDisplay[not(n:FrontText)]",
+					_1_NETEX_SERVICE_FRAME_DESTINATION_DISPLAY_FRONTTEXT);
+			validateElementNotPresent(context, xpath, subLevel, "//n:StopPointInJourneyPattern[n:ForAlighting = 'false' and n:ForBoarding = 'false']",
+					_1_NETEX_SERVICE_FRAME_STOP_WITHOUT_BOARDING_OR_ALIGHTING);
 		}
 	}
 
@@ -192,14 +205,12 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney[count(n:passingTimes/n:TimetabledPassingTime) < 2]",
 					_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIMES);
 			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney/n:calls", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_CALLS);
-			validateElementNotPresent(context, xpath, subLevel,
-					"//n:TimetabledPassingTime[not(n:DepartureTime)][position() < last()]",
+			validateElementNotPresent(context, xpath, subLevel, "//n:TimetabledPassingTime[not(n:DepartureTime)][position() < last()]",
 					_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_DEPARTURETIME);
 			validateElementNotPresent(context, xpath, subLevel,
 					"n:vehicleJourneys/n:ServiceJourney[count(n:passingTimes/n:TimetabledPassingTime[last()]/n:ArrivalTime) = 0]",
 					_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_LAST_ARRIVAL);
-			validateElementNotPresent(context, xpath, subLevel,
-					"//n:TimetabledPassingTime[n:DepartureTime = n:ArrivalTime]",
+			validateElementNotPresent(context, xpath, subLevel, "//n:TimetabledPassingTime[n:DepartureTime = n:ArrivalTime]",
 					_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_SAME_VALUE);
 
 			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney[not(n:JourneyPatternRef)]",
@@ -210,10 +221,15 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 
 	public static class DefaultValidatorFactory extends NetexProfileValidatorFactory {
 		@Override
-		protected NetexProfileValidator create(Context context) {
+		protected NetexProfileValidator create(Context context) throws ClassNotFoundException {
 			NetexProfileValidator instance = (NetexProfileValidator) context.get(NAME);
 			if (instance == null) {
 				instance = new NorwayLineNetexProfileValidator();
+
+				StopReferentialIdValidator stopRegistryValidator = (StopReferentialIdValidator) DefaultExternalReferenceValidatorFactory
+						.create(StopReferentialIdValidator.class.getName(), context);
+				instance.addExternalReferenceValidator(stopRegistryValidator);
+
 				context.put(NAME, instance);
 			}
 			return instance;

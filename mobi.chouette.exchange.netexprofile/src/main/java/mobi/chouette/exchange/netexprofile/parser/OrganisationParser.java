@@ -32,6 +32,9 @@ public class OrganisationParser implements Parser, Constant {
             Company company = ObjectFactory.getCompany(referential, organisationId);
             company.setObjectVersion(NetexParserUtils.getVersion(organisation));
             company.setName(org.getName().getValue());
+            if (org.getLegalName() != null) {
+                company.setOperatingDepartmentName(org.getLegalName().getValue());
+            }
             company.setRegistrationNumber(org.getCompanyNumber());
             if(org.getContactDetails() != null) {
                 company.setPhone(org.getContactDetails().getPhone());

@@ -1,17 +1,24 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+
+import org.apache.commons.lang.StringUtils;
+import org.rutebanken.netex.model.DataManagedObjectStructure;
+import org.w3c.dom.Node;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
-import org.apache.commons.lang.StringUtils;
-import org.rutebanken.netex.model.DataManagedObjectStructure;
-import org.w3c.dom.Node;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-import java.util.*;
 
 public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexProfileValidator {
 
@@ -38,13 +45,16 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_CODESPACE = "1-NETEXPROFILE-CompositeFrame-Codespace";
 	public static final String _1_NETEX_COMPOSITE_FRAME = "1-NETEXPROFILE-CompositeFrame";
 	public static final String _1_NETEX_SITE_FRAME = "1-NETEXPROFILE-SiteFrame";
+	public static final String _1_NETEX_SERVICE_FRAME_GROUPOFLINES_OUTSIDE_NETWORK = "1-NETEXPROFILE-ServiceFrame-GroupOfLinesOutsideNetwork";
 	public static final String _1_NETEX_SERVICE_FRAME_LINE = "1-NETEXPROFILE-ServiceFrame-Line";
-	public static final String _1_NETEX_SERVICE_FRAME_NETWORK = "1-NETEXPROFILE-ServiceFrame-Network";
+	public static final String _1_NETEX_SERVICE_FRAME_NETWORK_AUTHORITY_REF = "1-NETEXPROFILE-ServiceFrame-Network-AutorityRef";
 	public static final String _1_NETEX_SERVICE_FRAME_NETWORK_NAME = "1-NETEXPROFILE-ServiceFrame-Network-Name";
+	public static final String _1_NETEX_SERVICE_FRAME_NETWORK_GROUPOFLINE_NAME = "1-NETEXPROFILE-ServiceFrame-Network-GroupOfLine-Name";
 	public static final String _1_NETEX_SERVICE_FRAME_TIMING_POINTS = "1-NETEXPROFILE-ServiceFrame_TimingPoints";
 	public static final String _1_NETEX_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN = "1-NETEXPROFILE-ServiceFrame-ServiceJourneyPattern";
 	public static final String _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN = "1-NETEXPROFILE-ServiceFrame_JourneyPattern";
 	public static final String _1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE = "1-NETEXPROFILE-ServiceFrame-Line-PublicCode";
+	public static final String _1_NETEX_SERVICE_FRAME_LINE_OPERATOR_REF = "1-NETEXPROFILE-ServiceFrame-Line-OperatorRef";
 	public static final String _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN_ROUTE_REF = "1-NETEXPROFILE-ServiceFrame_JourneyPattern_RouteRef";
 	public static final String _1_NETEX_SERVICE_FRAME_LINE_TRANSPORTMODE = "1-NETEXPROFILE-ServiceFrame_Line_TransportMode";
 	public static final String _1_NETEX_SERVICE_FRAME_LINE_GROUPOFLINES_OR_NETWORK = "1-NETEXPROFILE-ServiceFrame_Line_GroupOfLinesNetwork";
@@ -105,9 +115,12 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		// addCheckpoints(context, _1_NETEX_SERVICE_CALENDAR_FRAME, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE, "E");
-		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_GROUPOFLINES_OUTSIDE_NETWORK, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK_AUTHORITY_REF, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK_GROUPOFLINE_NAME, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK_NAME, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE, "W");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_OPERATOR_REF, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_TRANSPORTMODE, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_GROUPOFLINES_OR_NETWORK, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_ROUTE_INDIRECTION, "E");
@@ -224,12 +237,10 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		Set<String> projectedPointRefSubstitutions = new HashSet<>();
 		projectedPointRefSubstitutions.add("ScheduledStopPoint");
 		projectedPointRefSubstitutions.add("RoutePoint");
+		allowedSubstitutions.put("ProjectToPointRef", projectedPointRefSubstitutions);
 		allowedSubstitutions.put("ProjectedPointRef", projectedPointRefSubstitutions);
 		allowedSubstitutions.put("ToPointRef", projectedPointRefSubstitutions);
 		allowedSubstitutions.put("FromPointRef", projectedPointRefSubstitutions);
-		
-		
-		
 		
 		for(IdVersion id : localRefs) {
 			String referencingElement = id.getElementName();

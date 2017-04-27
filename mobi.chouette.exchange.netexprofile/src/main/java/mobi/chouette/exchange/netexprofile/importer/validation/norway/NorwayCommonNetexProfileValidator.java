@@ -27,7 +27,7 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 		@SuppressWarnings("unchecked")
 		Set<ProfileValidatorCodespace> validCodespaces = (Set<ProfileValidatorCodespace>) context.get(NETEX_VALID_CODESPACES);
 
-		// StopRegistryIdValidator stopRegisterValidator = new StopRegistryIdValidator();
+		// StopReferentialIdValidator stopRegisterValidator = new StopReferentialIdValidator();
 
 		// Null check, this is a bug if happens
 		if (validCodespaces == null) {
@@ -129,8 +129,9 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 
 		if (subLevel != null) {
 
-			// TODO shall we allow Network to be defined in the common file?
-			// validateElementPresent(context, xpath, subLevel, "n:Network", _1_NETEX_SERVICE_FRAME_NETWORK);
+			validateElementNotPresent(context, xpath, subLevel, "n:GroupOfLine[not(n:Name)]", _1_NETEX_SERVICE_FRAME_NETWORK_GROUPOFLINE_NAME);
+			validateElementNotPresent(context, xpath, subLevel, "n:Network[not(n:AuthorityRef)]", _1_NETEX_SERVICE_FRAME_NETWORK_AUTHORITY_REF);
+			validateElementNotPresent(context, xpath, subLevel, "n:groupOfLines", _1_NETEX_SERVICE_FRAME_GROUPOFLINES_OUTSIDE_NETWORK);
 			validateElementNotPresent(context, xpath, subLevel, "n:lines/n:Line", _1_NETEX_COMMON_SERVICE_FRAME_LINE);
 			validateElementNotPresent(context, xpath, subLevel, "n:routes/n:Route", _1_NETEX_COMMON_SERVICE_FRAME_ROUTE);
 			validateElementNotPresent(context, xpath, subLevel, "n:journeyPatterns/n:JourneyPattern | n:journeyPatterns/n:ServiceJourneyPattern",

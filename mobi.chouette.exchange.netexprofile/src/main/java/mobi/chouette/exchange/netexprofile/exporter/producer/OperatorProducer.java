@@ -33,6 +33,10 @@ public class OperatorProducer extends NetexProducer implements NetexEntityProduc
             operator.setName(getMultilingualString(company.getName()));
         }
 
+        if (isSet(company.getOperatingDepartmentName())) {
+            operator.setLegalName(getMultilingualString(company.getOperatingDepartmentName()));
+        }
+
         if (isSet(company.getShortName())) {
             operator.setShortName(getMultilingualString(company.getShortName()));
         }

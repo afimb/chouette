@@ -12,9 +12,7 @@ import mobi.chouette.exchange.netexprofile.NetexTestUtils;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImporterCommand;
 import mobi.chouette.exchange.report.*;
-import mobi.chouette.exchange.validation.report.CheckPointReport;
-import mobi.chouette.exchange.validation.report.ValidationReport;
-import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.exchange.validation.report.*;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -363,6 +361,59 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
         Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
         Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
+    }
+
+    @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
+    public void exportLinesInGroups() throws Exception {
+        importLines("avinor_multiple_groups_of_lines.zip", 13, 12, "AVI,http://www.rutebanken.org/ns/avi");
+
+        Context context = initExportContext();
+        NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
+        configuration.setValidateAfterExport(true);
+        configuration.setAddMetadata(true);
+        configuration.setReferencesType("line");
+        configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
+
+        Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
+
+        try {
+            command.execute(context);
+        } catch (Exception ex) {
+            log.error("test failed", ex);
+            throw ex;
+        }
+
+        ActionReport report = (ActionReport) context.get(REPORT);
+        Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+        Assert.assertEquals(report.getFiles().size(), 13, "file reported");
+
+        for (FileReport info : report.getFiles()) {
+            Reporter.log(info.toString(),true);
+        }
+
+        Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 12, "line reported");
+
+        for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+            Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "line status");
+            Reporter.log(info.toString(), true);
+        }
+
+        ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
+        Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
+        Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
+
+/*
+        for (CheckPointErrorReport errorReport : vreport.getCheckPointErrors()) {
+            Location sourceLocation = errorReport.getSource();
+            FileLocation fileLocation = sourceLocation.getFile();
+
+            log.error("Validation checkpoint " + errorReport.getTestId() + " failed for objectId: " + sourceLocation.getObjectId()
+                    + " at location: " + fileLocation.getFilename() + " Line " + fileLocation.getLineNumber() + " Column " + fileLocation.getColumnNumber());
+        }
+
+        Reporter.log("validation error report size : " + vreport.getCheckPointErrors().size(), true);
+        Assert.assertEquals(vreport.getResult(), ValidationReporter.VALIDATION_RESULT.OK, "validation report status");
+*/
     }
 
     @Test(enabled = false, groups = {"ExportLine"}, description = "Export Plugin should export file")

@@ -1,13 +1,20 @@
 package mobi.chouette.exchange.netexprofile.importer.validation;
 
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Context;
-import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.importer.PositionalXMLReader;
-import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
-import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
-import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
-import mobi.chouette.exchange.validation.report.ValidationReporter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -16,16 +23,17 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.importer.PositionalXMLReader;
+import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
+import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
+import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 
 @Log4j
-public abstract class AbstractNetexProfileValidator implements Constant {
+public abstract class AbstractNetexProfileValidator implements Constant, NetexProfileValidator {
 
 	public static final String _1_NETEX_SCHEMA_VALIDATION_ERROR = "1-NETEXPROFILE-SchemaValidationError";
 	public static final String _1_NETEX_UNKNOWN_PROFILE = "1-NETEXPROFILE-UnknownProfile";
@@ -41,6 +49,16 @@ public abstract class AbstractNetexProfileValidator implements Constant {
 	protected static final String OBJECT_IDS = "encountered_ids";
 	public static final String _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_FILES = "1-NETEXPROFILE-DuplicateIdentificatorsAcrossLineFiles";
 
+	
+	private List<ExternalReferenceValidator> externalReferenceValidators = new ArrayList<>();
+	
+	@Override
+	public void addExternalReferenceValidator(ExternalReferenceValidator v) {
+		if(!externalReferenceValidators.contains(v)) {
+			externalReferenceValidators.add(v);
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static void resetContext(Context context) {
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
@@ -157,7 +175,7 @@ public abstract class AbstractNetexProfileValidator implements Constant {
 		}
 	}
 
-	protected abstract void initializeCheckPoints(Context context);
+	public abstract void initializeCheckPoints(Context context);
 
 	protected abstract void addObjectReference(Context context, DataManagedObjectStructure object);
 
@@ -221,6 +239,13 @@ public abstract class AbstractNetexProfileValidator implements Constant {
 			unresolvedReferences.removeAll(nonVersionedLocalIds);
 
 			Set<String> commonIdsWithoutVersion = commonIds.keySet().stream().map(e -> e.getId()).collect(Collectors.toSet());
+
+			// Make sure we dont modify the set of unresolved ids
+			Set<String> immutableUnresolvedReferences = Collections.unmodifiableSet(unresolvedReferences);
+			for(ExternalReferenceValidator validator : externalReferenceValidators) {
+				unresolvedReferences.removeAll(validator.validateReferenceIds(immutableUnresolvedReferences));
+			}
+			
 			if (commonIdsWithoutVersion.size() > 0) {
 				for (String localRef : unresolvedReferences) {
 					if (!commonIdsWithoutVersion.contains(localRef)) {
@@ -474,23 +499,5 @@ public abstract class AbstractNetexProfileValidator implements Constant {
 		}
 		return ids;
 	}
-
-	/*
-	 * public static void validateExternalReferenceCorrect(Context context, XPath xpath, Document dom, String expression, ExternalReferenceValidator
-	 * externalIdValidator, String checkpointName) throws XPathExpressionException {
-	 * 
-	 * ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-	 * 
-	 * NodeList nodes = (NodeList) xpath.evaluate(expression, dom, XPathConstants.NODESET);
-	 * 
-	 * Set<String> ids = new HashSet<String>();
-	 * 
-	 * for (int i = 0; i < nodes.getLength(); i++) { Node item = nodes.item(i); String id = item.getTextContent(); ids.add(id); }
-	 * 
-	 * Collection<String> invalidIds = externalIdValidator.validateReferenceIds(ids); if (invalidIds.isEmpty()) {
-	 * validationReporter.updateCheckPointReportState(context, checkpointName, ValidationReporter.RESULT.OK); } else {
-	 * validationReporter.updateCheckPointReportState(context, checkpointName, ValidationReporter.RESULT.NOK); for (String s : invalidIds) { // TODO add details
-	 * log.error("Netex profile validation error, invalid external reference " + s); } } }
-	 */
 
 }

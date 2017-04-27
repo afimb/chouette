@@ -220,6 +220,7 @@
                 <ServiceFrame version="1" id="AVI:ServiceFrame:7722364">
                     <Network changed="2017-03-13T00:00:00.000Z" version="1" id="AVI:Network:WF">
                         <Name>Widerøe</Name>
+                        <AuthorityRef ref="AVI:Authority:Avinor" version="1"/>
                     </Network>
                     <routePoints>
                         <RoutePoint version="1" id="AVI:RoutePoint:65706">
