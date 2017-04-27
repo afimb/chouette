@@ -242,6 +242,8 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		allowedSubstitutions.put("ToPointRef", projectedPointRefSubstitutions);
 		allowedSubstitutions.put("FromPointRef", projectedPointRefSubstitutions);
 		
+		boolean foundErrors = false;
+		
 		for(IdVersion id : localRefs) {
 			String referencingElement = id.getElementName();
 			
@@ -259,13 +261,16 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 					}
 				}
 				
-				
+				foundErrors = true;
 				validationReporter.addCheckPointReportError(context, _1_NETEX_REFERENCE_TO_ILLEGAL_ELEMENT, null,
 						DataLocationHelper.findDataLocation(id),referencedElement,referencingElement);
 				
 			}
 			
 			
+		}
+		if(!foundErrors) {
+			validationReporter.reportSuccess(context, _1_NETEX_REFERENCE_TO_ILLEGAL_ELEMENT);
 		}
 	}
 
