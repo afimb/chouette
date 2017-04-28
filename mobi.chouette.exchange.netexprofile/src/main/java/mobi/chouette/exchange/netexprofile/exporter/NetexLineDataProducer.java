@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
 import static mobi.chouette.exchange.netexprofile.Constant.EXPORTABLE_NETEX_DATA;
@@ -129,7 +127,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         Line neptuneLine = exportableData.getLine();
 
         AvailabilityCondition availabilityCondition = createAvailabilityCondition(neptuneLine);
-        exportableNetexData.setAvailabilityCondition(availabilityCondition);
+        exportableNetexData.setLineCondition(availabilityCondition);
 
         org.rutebanken.netex.model.Line netexLine = lineProducer.produce(context, neptuneLine);
         exportableNetexData.setLine(netexLine);
@@ -289,17 +287,6 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         }
 
         return groupOfLines;
-    }
-
-    private AvailabilityCondition createAvailabilityCondition(mobi.chouette.model.Line line) {
-        String availabilityConditionId = netexId(line.objectIdPrefix(), AVAILABILITY_CONDITION_KEY, line.objectIdSuffix());
-        AvailabilityCondition availabilityCondition = netexFactory.createAvailabilityCondition();
-        availabilityCondition.setVersion(line.getObjectVersion() > 0 ? String.valueOf(line.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-        availabilityCondition.setId(availabilityConditionId);
-
-        availabilityCondition.setFromDate(OffsetDateTime.now(ZoneId.systemDefault())); // TODO fix correct from date, for now using dummy dates
-        availabilityCondition.setToDate(availabilityCondition.getFromDate().plusMonths(1L)); // TODO fix correct to date, for now using dummy dates
-        return availabilityCondition;
     }
 
     private Set<RoutePoint> createRoutePoints(List<Route> routes) {

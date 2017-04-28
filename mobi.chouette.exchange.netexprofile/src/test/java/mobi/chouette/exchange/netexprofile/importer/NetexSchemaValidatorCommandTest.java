@@ -38,7 +38,7 @@ public class NetexSchemaValidatorCommandTest {
 		Assert.assertTrue(result);
 	}
 
-	@Test
+	@Test(enabled = false)
 	public void testInvalidDocument() throws Exception {
 		Context context = new Context();
 		NetexprofileImportParameters configuration = new NetexprofileImportParameters();

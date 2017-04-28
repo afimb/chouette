@@ -1,10 +1,16 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.common.Context;
+import org.rutebanken.netex.model.AvailabilityCondition;
 import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.ObjectFactory;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+
 import static mobi.chouette.exchange.netexprofile.Constant.PRODUCING_CONTEXT;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.AVAILABILITY_CONDITION_KEY;
 
 public class NetexProducer {
 
@@ -55,6 +61,19 @@ public class NetexProducer {
         }
 
         return objectContext;
+    }
+
+    protected AvailabilityCondition createAvailabilityCondition(mobi.chouette.model.NeptuneIdentifiedObject neptuneIdentifiedObject) {
+
+        // TODO temporary generating random id suffix, find a better way to create object id suffixes
+        String availabilityConditionId = netexId(neptuneIdentifiedObject.objectIdPrefix(), AVAILABILITY_CONDITION_KEY, String.valueOf(NetexProducerUtils.generateRandomId()));
+        AvailabilityCondition availabilityCondition = netexFactory.createAvailabilityCondition();
+        availabilityCondition.setVersion(neptuneIdentifiedObject.getObjectVersion() > 0 ? String.valueOf(neptuneIdentifiedObject.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+        availabilityCondition.setId(availabilityConditionId);
+
+        availabilityCondition.setFromDate(OffsetDateTime.now(ZoneId.systemDefault())); // TODO fix correct from date, for now using dummy dates
+        availabilityCondition.setToDate(availabilityCondition.getFromDate().plusMonths(1L)); // TODO fix correct to date, for now using dummy dates
+        return availabilityCondition;
     }
 
 }
