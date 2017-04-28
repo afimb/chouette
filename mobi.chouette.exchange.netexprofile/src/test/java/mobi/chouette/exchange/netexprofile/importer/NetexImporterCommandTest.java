@@ -4,8 +4,6 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
-import mobi.chouette.dao.RouteDAO;
-import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.DummyChecker;
 import mobi.chouette.exchange.netexprofile.JobDataTest;
@@ -54,16 +52,10 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	protected static InitialContext initialContext;
 
 	@EJB
-	LineDAO lineDao;
-
-	@EJB
-	RouteDAO routeDao;
-
-	@EJB
-	VehicleJourneyDAO vjDao;
+	private LineDAO lineDao;
 
 	@PersistenceContext(unitName = "referential")
-	EntityManager em;
+	private EntityManager em;
 
 	@Inject
 	UserTransaction utx;
@@ -183,8 +175,6 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 			throw ex;
 		}
 
-		// dumpReports(context);
-
 		ActionReport report = (ActionReport) context.get(REPORT);
 		Reporter.log("report :" + report.toString(), true);
 		dumpReports(context);
@@ -199,15 +189,16 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 			Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "line status");
 		}
 
+		NetexTestUtils.verifyValidationReport(context);
 		NetexTestUtils.checkLine(context);
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Assert.assertNotEquals(referential.getTimetables(), 0, "timetables");
 		Assert.assertNotEquals(referential.getSharedTimetables(), 0, "shared timetables");
 
-		// line should be saved
 		utx.begin();
 		em.joinTransaction();
+
 		Line line = lineDao.findByObjectId("AVI:Line:WF_TRD-MOL");
 		Assert.assertNotNull(line, "Line not found");
 
@@ -249,6 +240,8 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 			Reporter.log("report line :" + info.toString(), true);
 			Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "line status");
 		}
+
+		NetexTestUtils.verifyValidationReport(context);
 
 		Referential referential = (Referential) context.get(Constant.REFERENTIAL);
 		Assert.assertEquals(referential.getLines().size(), 1, "lines size");
@@ -298,6 +291,8 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 			Reporter.log("report line :" + info.toString(), true);
 			Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "line status");
 		}
+
+		NetexTestUtils.verifyValidationReport(context);
 
 		utx.begin();
 		em.joinTransaction();
@@ -383,6 +378,8 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 			Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "lines status");
 		}
 
+		NetexTestUtils.verifyValidationReport(context);
+
 		utx.begin();
 		em.joinTransaction();
 
@@ -432,7 +429,8 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 			Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "lines status");
 		}
 
-		// lines should be saved
+		NetexTestUtils.verifyValidationReport(context);
+
 		utx.begin();
 		em.joinTransaction();
 
@@ -530,7 +528,8 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 			Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "lines status");
 		}
 
-		// lines should be saved
+		NetexTestUtils.verifyValidationReport(context);
+
 		utx.begin();
 		em.joinTransaction();
 
@@ -643,6 +642,8 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 			Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "lines status");
 		}
 
+		NetexTestUtils.verifyValidationReport(context);
+
 		utx.begin();
 		em.joinTransaction();
 
@@ -751,6 +752,8 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 			Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "lines status");
 		}
 
+		NetexTestUtils.verifyValidationReport(context);
+
 		utx.begin();
 		em.joinTransaction();
 
@@ -800,6 +803,8 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 			Reporter.log("report lines :" + info.toString(), true);
 			Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "lines status");
 		}
+
+		NetexTestUtils.verifyValidationReport(context);
 
 		utx.begin();
 		em.joinTransaction();

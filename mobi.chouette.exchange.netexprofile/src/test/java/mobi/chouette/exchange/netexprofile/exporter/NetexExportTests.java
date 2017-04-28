@@ -4,7 +4,6 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.netexprofile.DummyChecker;
 import mobi.chouette.exchange.netexprofile.JobDataTest;
@@ -12,7 +11,9 @@ import mobi.chouette.exchange.netexprofile.NetexTestUtils;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImporterCommand;
 import mobi.chouette.exchange.report.*;
-import mobi.chouette.exchange.validation.report.*;
+import mobi.chouette.exchange.validation.report.CheckPointReport;
+import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -28,7 +29,6 @@ import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
 
-import javax.ejb.EJB;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.io.File;
@@ -39,9 +39,6 @@ import java.util.Locale;
 
 @Log4j
 public class NetexExportTests extends Arquillian implements Constant, ReportConstant {
-
-    @EJB
-    LineDAO lineDao;
 
     protected static InitialContext initialContext;
 
@@ -238,12 +235,11 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
             Reporter.log(info.toString(), true);
         }
 
-        ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
-        Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
-        Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
+        NetexTestUtils.verifyValidationReport(context);
     }
 
-    @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
+    // TODO enable when stops and assignments are extracted to common file
+    @Test(enabled = false, groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void verifyExportAvinorMultipleLines() throws Exception {
         importLines("avinor_multiple_lines_with_commondata.zip", 4, 3, "AVI,http://www.rutebanken.org/ns/avi");
 
@@ -263,26 +259,22 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
             throw ex;
         }
 
-/*
         ActionReport report = (ActionReport) context.get(REPORT);
         Assert.assertEquals(report.getResult(), STATUS_OK, "result");
-        Assert.assertEquals(report.getFiles().size(), 3, "file reported");
+        Assert.assertEquals(report.getFiles().size(), 4, "files reported");
 
         for (FileReport info : report.getFiles()) {
             Reporter.log(info.toString(),true);
         }
 
-        Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 3, "line reported");
+        Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 3, "lines reported");
 
         for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
             Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "line status");
             Reporter.log(info.toString(), true);
         }
 
-        ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
-        Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
-        Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
-*/
+        NetexTestUtils.verifyValidationReport(context);
     }
 
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
@@ -319,9 +311,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
             Reporter.log(info.toString(), true);
         }
 
-        ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
-        Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
-        Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
+        NetexTestUtils.verifyValidationReport(context);
     }
 
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
@@ -358,12 +348,11 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
             Reporter.log(info.toString(), true);
         }
 
-        ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
-        Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
-        Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
+        NetexTestUtils.verifyValidationReport(context);
     }
 
-    @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
+    // TODO enable when stops and assignments are extracted to common file
+    @Test(enabled = false, groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void exportLinesInGroups() throws Exception {
         importLines("avinor_multiple_groups_of_lines.zip", 13, 12, "AVI,http://www.rutebanken.org/ns/avi");
 
@@ -398,22 +387,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
             Reporter.log(info.toString(), true);
         }
 
-        ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
-        Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
-        Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
-
-/*
-        for (CheckPointErrorReport errorReport : vreport.getCheckPointErrors()) {
-            Location sourceLocation = errorReport.getSource();
-            FileLocation fileLocation = sourceLocation.getFile();
-
-            log.error("Validation checkpoint " + errorReport.getTestId() + " failed for objectId: " + sourceLocation.getObjectId()
-                    + " at location: " + fileLocation.getFilename() + " Line " + fileLocation.getLineNumber() + " Column " + fileLocation.getColumnNumber());
-        }
-
-        Reporter.log("validation error report size : " + vreport.getCheckPointErrors().size(), true);
-        Assert.assertEquals(vreport.getResult(), ValidationReporter.VALIDATION_RESULT.OK, "validation report status");
-*/
+        NetexTestUtils.verifyValidationReport(context);
     }
 
     @Test(enabled = false, groups = {"ExportLine"}, description = "Export Plugin should export file")
@@ -450,9 +424,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
             Reporter.log(info.toString(), true);
         }
 
-        ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
-        Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
-        Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
+        NetexTestUtils.verifyValidationReport(context);
     }
 
     private void importLines(String file, int fileCount, int lineCount, String validCodespaces) throws Exception {
