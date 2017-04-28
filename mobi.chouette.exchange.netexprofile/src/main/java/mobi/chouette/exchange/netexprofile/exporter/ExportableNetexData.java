@@ -10,7 +10,11 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private AvailabilityCondition availabilityCondition;
+    private AvailabilityCondition commonCondition;
+
+    @Getter
+    @Setter
+    private AvailabilityCondition lineCondition;
 
     @Getter
     @Setter
@@ -85,7 +89,7 @@ public class ExportableNetexData {
     private Set<OperatingPeriod> operatingPeriods = new HashSet<>();
 
     public void clear() {
-        availabilityCondition = null;
+        lineCondition = null;
         codespaces.clear();
         line = null;
         stopPoints.clear();
@@ -101,6 +105,7 @@ public class ExportableNetexData {
 
     public void dispose() {
         clear();
+        commonCondition = null;
         sharedNetworks.clear();
         sharedGroupsOfLines.clear();
         sharedAuthorities.clear();

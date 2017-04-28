@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
 import static mobi.chouette.exchange.netexprofile.Constant.EXPORTABLE_NETEX_DATA;
@@ -129,7 +127,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         Line neptuneLine = exportableData.getLine();
 
         AvailabilityCondition availabilityCondition = createAvailabilityCondition(neptuneLine);
-        exportableNetexData.setAvailabilityCondition(availabilityCondition);
+        exportableNetexData.setLineCondition(availabilityCondition);
 
         org.rutebanken.netex.model.Line netexLine = lineProducer.produce(context, neptuneLine);
         exportableNetexData.setLine(netexLine);
@@ -148,12 +146,6 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 exportableNetexData.getJourneyPatterns().add(netexJourneyPattern);
             }
         }
-
-        Set<ScheduledStopPoint> stopPoints = createScheduledStopPoints(neptuneLine.getRoutes());
-        exportableNetexData.getStopPoints().addAll(stopPoints);
-
-        Set<PassengerStopAssignment> stopAssignments = createStopAssignments(neptuneLine.getRoutes());
-        exportableNetexData.getStopAssignments().addAll(stopAssignments);
 
         Map<String, List<? extends DataManagedObjectStructure>> calendarData = calendarProducer.produce(context, exportableData);
 
@@ -229,7 +221,6 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         }
 
         // stop points
-/*
         Set<ScheduledStopPoint> stopPoints = createScheduledStopPoints(exportableData.getLine().getRoutes());
 
         for (ScheduledStopPoint stopPoint : stopPoints) {
@@ -237,10 +228,8 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 exportableNetexData.getSharedStopPoints().put(stopPoint.getId(), stopPoint);
             }
         }
-*/
 
         // stop assignments
-/*
         Set<PassengerStopAssignment> stopAssignments = createStopAssignments(exportableData.getLine().getRoutes());
 
         for (PassengerStopAssignment stopAssignment : stopAssignments) {
@@ -248,7 +237,6 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 exportableNetexData.getSharedStopAssignments().put(stopAssignment.getId(), stopAssignment);
             }
         }
-*/
     }
 
     public Authority createNetworkAuthority(Network network) {
@@ -291,17 +279,6 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         return groupOfLines;
     }
 
-    private AvailabilityCondition createAvailabilityCondition(mobi.chouette.model.Line line) {
-        String availabilityConditionId = netexId(line.objectIdPrefix(), AVAILABILITY_CONDITION_KEY, line.objectIdSuffix());
-        AvailabilityCondition availabilityCondition = netexFactory.createAvailabilityCondition();
-        availabilityCondition.setVersion(line.getObjectVersion() > 0 ? String.valueOf(line.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-        availabilityCondition.setId(availabilityConditionId);
-
-        availabilityCondition.setFromDate(OffsetDateTime.now(ZoneId.systemDefault())); // TODO fix correct from date, for now using dummy dates
-        availabilityCondition.setToDate(availabilityCondition.getFromDate().plusMonths(1L)); // TODO fix correct to date, for now using dummy dates
-        return availabilityCondition;
-    }
-
     private Set<RoutePoint> createRoutePoints(List<Route> routes) {
         Set<RoutePoint> routePoints = new HashSet<>();
         Set<String> distinctRoutePointIds = new HashSet<>();
@@ -332,7 +309,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), STOP_POINT_KEY, stopPointIdSuffix);
 
         PointRefStructure pointRefStruct = netexFactory.createPointRefStructure()
-                .withVersion(pointVersion)
+                //.withVersion(pointVersion)
                 .withRef(stopPointIdRef);
 
         String pointProjectionId = netexId(stopPoint.objectIdPrefix(), POINT_PROJECTION_KEY, stopPointIdSuffix);
@@ -413,7 +390,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 .withOrder(new BigInteger(Integer.toString(order)));
 
         ScheduledStopPointRefStructure scheduledStopPointRefStruct = netexFactory.createScheduledStopPointRefStructure()
-                .withVersion(pointVersion)
+                //.withVersion(pointVersion)
                 .withRef(stopPointIdRef);
         stopAssignment.setScheduledStopPointRef(scheduledStopPointRefStruct);
 

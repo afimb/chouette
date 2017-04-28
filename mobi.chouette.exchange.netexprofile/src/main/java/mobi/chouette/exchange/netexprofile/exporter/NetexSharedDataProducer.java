@@ -6,6 +6,8 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.model.Network;
+import org.rutebanken.netex.model.AvailabilityCondition;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -23,6 +25,10 @@ public class NetexSharedDataProducer extends NetexProducer implements Constant {
         Path outputPath = Paths.get(jobData.getPathName(), OUTPUT);
         ExportableData exportableData = (ExportableData) context.get(EXPORTABLE_DATA);
         ExportableNetexData exportableNetexData = (ExportableNetexData) context.get(EXPORTABLE_NETEX_DATA);
+
+        Network firstOccurrenceNetwork = exportableData.getNetworks().iterator().next();
+        AvailabilityCondition availabilityCondition = createAvailabilityCondition(firstOccurrenceNetwork);
+        exportableNetexData.setCommonCondition(availabilityCondition);
 
         Path filePath = new File(outputPath.toFile(), SHARED_DATA_FILE_NAME).toPath();
 

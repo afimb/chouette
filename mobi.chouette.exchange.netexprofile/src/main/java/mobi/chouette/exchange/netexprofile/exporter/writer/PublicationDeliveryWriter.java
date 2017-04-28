@@ -4,6 +4,7 @@ import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
 import mobi.chouette.exchange.netexprofile.exporter.NetexFragmentMode;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
+import org.rutebanken.netex.model.AvailabilityCondition;
 import org.rutebanken.netex.model.Codespace;
 import org.rutebanken.netex.model.Network;
 
@@ -74,7 +75,7 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
             writer.writeAttribute(VERSION, NETEX_DATA_OJBECT_VERSION);
             writer.writeAttribute(ID, compositeFrameId);
 
-            writeValidityConditionsElement(writer, exportableNetexData);
+            writeValidityConditionsElement(writer, exportableNetexData, fragmentMode);
             writeCodespacesElement(writer, exportableNetexData);
             writeFrameDefaultsElement(writer);
             writeFramesElement(writer, exportableNetexData, fragmentMode);
@@ -85,10 +86,18 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
         }
     }
 
-    private static void writeValidityConditionsElement(XMLStreamWriter writer, ExportableNetexData exportableData) {
+    private static void writeValidityConditionsElement(XMLStreamWriter writer, ExportableNetexData exportableData, NetexFragmentMode fragmentMode) {
         try {
             writer.writeStartElement(VALIDITY_CONDITIONS);
-            marshaller.marshal(netexFactory.createAvailabilityCondition(exportableData.getAvailabilityCondition()), writer);
+
+            AvailabilityCondition availabilityCondition;
+            if (fragmentMode.equals(NetexFragmentMode.LINE)) {
+                availabilityCondition = exportableData.getLineCondition();
+            } else { // shared data
+                availabilityCondition = exportableData.getCommonCondition();
+            }
+
+            marshaller.marshal(netexFactory.createAvailabilityCondition(availabilityCondition), writer);
             writer.writeEndElement();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -148,7 +157,7 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
                     ServiceFrameWriter.write(writer, network);
                 }
 
-                //ServiceFrameWriter.write(writer, exportableNetexData, NetexFragmentMode.SHARED); // TODO enable when supporting shared stop points and assignments
+                ServiceFrameWriter.write(writer, exportableNetexData, NetexFragmentMode.SHARED);
             }
 
             writer.writeEndElement();

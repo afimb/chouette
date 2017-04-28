@@ -72,11 +72,11 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
             String[] idSuffixSplit = StringUtils.splitByWholeSeparator(stopPoint.objectIdSuffix(), "-");
             String stopPointIdSuffix = idSuffixSplit[idSuffixSplit.length - 1];
 
-            String stopRefVersion = stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
             String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), STOP_POINT_KEY, stopPointIdSuffix);
+            //String stopRefVersion = stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
 
             ScheduledStopPointRefStructure stopPointRefStruct = netexFactory.createScheduledStopPointRefStructure()
-                .withVersion(stopRefVersion) // TODO consider making this a boolean parameter
+                //.withVersion(stopRefVersion)
                 .withRef(stopPointIdRef);
 
             stopPointInJourneyPattern.setScheduledStopPointRef(netexFactory.createScheduledStopPointRef(stopPointRefStruct));
