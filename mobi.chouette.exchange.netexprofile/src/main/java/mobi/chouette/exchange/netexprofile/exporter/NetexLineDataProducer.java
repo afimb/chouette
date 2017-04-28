@@ -70,7 +70,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
         String fileName = neptuneLine.getObjectId().replaceAll(":", "-") + (neptuneLine.getNumber() != null ?
                 neptuneLine.getNumber() + "-" : "") + (neptuneLine.getPublishedName() != null ?
-                "-" + neptuneLine.getPublishedName().replace(' ', '_') : "") + ".xml";
+                "-" + neptuneLine.getPublishedName().replace(' ', '_').replace('/', '_') : "") + ".xml";
         Path filePath = new File(outputPath.toFile(), fileName).toPath();
 
         NetexFileWriter writer = new NetexFileWriter();
@@ -147,12 +147,6 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
             }
         }
 
-        Set<ScheduledStopPoint> stopPoints = createScheduledStopPoints(neptuneLine.getRoutes());
-        exportableNetexData.getStopPoints().addAll(stopPoints);
-
-        Set<PassengerStopAssignment> stopAssignments = createStopAssignments(neptuneLine.getRoutes());
-        exportableNetexData.getStopAssignments().addAll(stopAssignments);
-
         Map<String, List<? extends DataManagedObjectStructure>> calendarData = calendarProducer.produce(context, exportableData);
 
         List<DayType> dayTypes = (List<DayType>) calendarData.get(DAY_TYPES_KEY);
@@ -227,7 +221,6 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         }
 
         // stop points
-/*
         Set<ScheduledStopPoint> stopPoints = createScheduledStopPoints(exportableData.getLine().getRoutes());
 
         for (ScheduledStopPoint stopPoint : stopPoints) {
@@ -235,10 +228,8 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 exportableNetexData.getSharedStopPoints().put(stopPoint.getId(), stopPoint);
             }
         }
-*/
 
         // stop assignments
-/*
         Set<PassengerStopAssignment> stopAssignments = createStopAssignments(exportableData.getLine().getRoutes());
 
         for (PassengerStopAssignment stopAssignment : stopAssignments) {
@@ -246,7 +237,6 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 exportableNetexData.getSharedStopAssignments().put(stopAssignment.getId(), stopAssignment);
             }
         }
-*/
     }
 
     public Authority createNetworkAuthority(Network network) {
@@ -319,7 +309,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), STOP_POINT_KEY, stopPointIdSuffix);
 
         PointRefStructure pointRefStruct = netexFactory.createPointRefStructure()
-                .withVersion(pointVersion)
+                //.withVersion(pointVersion)
                 .withRef(stopPointIdRef);
 
         String pointProjectionId = netexId(stopPoint.objectIdPrefix(), POINT_PROJECTION_KEY, stopPointIdSuffix);
@@ -400,7 +390,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 .withOrder(new BigInteger(Integer.toString(order)));
 
         ScheduledStopPointRefStructure scheduledStopPointRefStruct = netexFactory.createScheduledStopPointRefStructure()
-                .withVersion(pointVersion)
+                //.withVersion(pointVersion)
                 .withRef(stopPointIdRef);
         stopAssignment.setScheduledStopPointRef(scheduledStopPointRefStruct);
 
