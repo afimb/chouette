@@ -1,18 +1,23 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidatorFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-import java.util.Set;
 
 public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfileValidator implements NetexProfileValidator {
 
@@ -27,8 +32,6 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 		@SuppressWarnings("unchecked")
 		Set<ProfileValidatorCodespace> validCodespaces = (Set<ProfileValidatorCodespace>) context.get(NETEX_VALID_CODESPACES);
 
-		// StopReferentialIdValidator stopRegisterValidator = new StopReferentialIdValidator();
-
 		// Null check, this is a bug if happens
 		if (validCodespaces == null) {
 			throw new RuntimeException("valid codespaces are empty - did you forget to include in context?");
@@ -39,6 +42,10 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 
 		// Validate elements in common files
 		verifyAcceptedCodespaces(context, xpath, commonDom, validCodespaces);
+		
+		// Verify that local ids er ok
+		Set<IdVersion> localIds = collectEntityIdentificators(context, xpath, commonDom, new HashSet<>(Arrays.asList("Codespace")));
+		verifyIdStructure(context, localIds, ID_STRUCTURE_REGEXP, validCodespaces);
 
 		Set<IdVersion> localRefs = collectEntityReferences(context, xpath, commonDom, null);
 		verifyReferencesToCorrectEntityTypes(context,localRefs);
