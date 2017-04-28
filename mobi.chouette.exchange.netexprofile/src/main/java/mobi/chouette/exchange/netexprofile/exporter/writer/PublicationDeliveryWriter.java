@@ -157,7 +157,7 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
                     ServiceFrameWriter.write(writer, network);
                 }
 
-                //ServiceFrameWriter.write(writer, exportableNetexData, NetexFragmentMode.SHARED); // TODO enable when supporting shared stop points and assignments
+                ServiceFrameWriter.write(writer, exportableNetexData, NetexFragmentMode.SHARED);
             }
 
             writer.writeEndElement();

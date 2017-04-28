@@ -238,8 +238,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         NetexTestUtils.verifyValidationReport(context);
     }
 
-    // TODO enable when stops and assignments are extracted to common file
-    @Test(enabled = false, groups = {"ExportLine"}, description = "Export Plugin should export file")
+    @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void verifyExportAvinorMultipleLines() throws Exception {
         importLines("avinor_multiple_lines_with_commondata.zip", 4, 3, "AVI,http://www.rutebanken.org/ns/avi");
 
@@ -351,8 +350,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         NetexTestUtils.verifyValidationReport(context);
     }
 
-    // TODO enable when stops and assignments are extracted to common file
-    @Test(enabled = false, groups = {"ExportLine"}, description = "Export Plugin should export file")
+    @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void exportLinesInGroups() throws Exception {
         importLines("avinor_multiple_groups_of_lines.zip", 13, 12, "AVI,http://www.rutebanken.org/ns/avi");
 
