@@ -244,7 +244,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 			// TODO decomposing of Ids should be in a common class
 			String[] idParts = StringUtils.split(id.getId(), ":");
-			if (idParts.length == 2) {
+			if (idParts.length == 3) {
 				String referencedElement = idParts[1];
 
 				// Dumb attemt first, must be of same type
