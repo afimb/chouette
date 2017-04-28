@@ -26,7 +26,6 @@ import mobi.chouette.exchange.validation.ValidationData;
 @Log4j
 public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileValidator implements NetexProfileValidator {
 
-	private static final String ID_STRUCTURE_REGEXP = "^([A-Z]{3}):([A-Za-z]*):([0-9A-Za-z_\\-]*)$";
 	public static final String NAME = "NorwayLineNetexProfileValidator";
 
 	@Override
@@ -60,7 +59,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 		validCodespaces.add(new ProfileValidatorCodespace(AbstractNorwayNetexProfileValidator.NSR_XMLNS, AbstractNorwayNetexProfileValidator.NSR_XMLNSURL));
 
 		verifyAcceptedCodespaces(context, xpath, dom, validCodespaces);
-		verifyIdStructure(context, localIds, commonIds, ID_STRUCTURE_REGEXP, validCodespaces);
+		verifyIdStructure(context, localIds, ID_STRUCTURE_REGEXP, validCodespaces);
 		verifyNoDuplicatesWithCommonElements(context, localIds, commonIds);
 		verifyNoDuplicatesAcrossLineFiles(context, localIds, new HashSet<>(Arrays.asList("ResourceFrame", "Network", "Authority", "Operator", "SiteFrame",
 				"PointProjection", "RoutePoint", "StopPlace", "AvailabilityCondition")));

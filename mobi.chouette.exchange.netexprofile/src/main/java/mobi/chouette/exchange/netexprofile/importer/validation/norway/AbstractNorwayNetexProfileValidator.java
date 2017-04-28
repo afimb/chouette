@@ -26,7 +26,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 	public static final String NSR_XMLNSURL = "http://www.rutebanken.org/ns/nsr";
 	public static final String NSR_XMLNS = "NSR";
-	
+
 	public static final String _1_NETEX_REFERENCE_TO_ILLEGAL_ELEMENT = "1-NETEXPROFILE-ReferenceToIllegalElement";
 
 	public static final String _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CUSTOMER_SERVICE_CONTACT_DETAILS = "1-NETEXPROFILE-ResourceFrame-Organisations-Operator-CustomerServiceContactDetails";
@@ -80,8 +80,8 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_COMMON_SERVICE_FRAME_ROUTE = "1-NETEXPROFILE-CommonFile-ServiceFrame-RouteNotAllowed";
 	public static final String _1_NETEX_COMMON_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN = "1-NETEXPROFILE-CommonFile-ServiceFrame-JourneyPatternNotAllowed";
 
-	
-	
+	protected static final String ID_STRUCTURE_REGEXP = "^([A-Z]{3}):([A-Za-z]*):([0-9A-Za-z_\\-]*)$";
+
 	@Override
 	public void addObjectReference(Context context, DataManagedObjectStructure object) {
 	}
@@ -107,7 +107,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_COMPOSITE_FRAME_VALIDITYCONDTITIONS, "E");
 		addCheckpoints(context, _1_NETEX_VALIDITYCONDITIONS_ON_FRAMES_INSIDE_COMPOSITEFRAME, "E");
 		addCheckpoints(context, _1_NETEX_MULTIPLE_FRAMES_OF_SAME_TYPE_WITHOUT_VALIDITYCONDITIONS, "E");
-		
+
 		addCheckpoints(context, _1_NETEX_CODESPACE, "E");
 
 		// addCheckpoints(context, _1_NETEX_SERVICE_CALENDAR_FRAME, "E");
@@ -132,7 +132,6 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_DESTINATION_DISPLAY_FRONTTEXT, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_STOP_WITHOUT_BOARDING_OR_ALIGHTING, "W");
 
-		
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY, "E");
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_TRANSPORT_MODE, "W");
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_SERVICEJOURNEY_JOURNEYPATTERN_REF, "E");
@@ -153,13 +152,13 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS, "E");
 
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME, "E");
-		
+
 		// Common file specific checkpoints
 		addCheckpoints(context, _1_NETEX_COMMON_TIMETABLE_FRAME, "E");
 		addCheckpoints(context, _1_NETEX_COMMON_SERVICE_FRAME_LINE, "E");
 		addCheckpoints(context, _1_NETEX_COMMON_SERVICE_FRAME_ROUTE, "E");
 		addCheckpoints(context, _1_NETEX_COMMON_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN, "E");
-		
+
 	}
 
 	private void addCheckpoints(Context context, String checkpointName, String error) {
@@ -167,17 +166,16 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		validationReporter.addItemToValidationReport(context, checkpointName, error);
 	}
 
-	
 	protected void validateResourceFrame(Context context, XPath xpath, Node dom, String subLevelPath) throws XPathExpressionException {
 		Node subLevel = dom;
 		if (subLevelPath != null) {
 			subLevel = selectNode(subLevelPath, xpath, dom);
 		}
-	
+
 		if (subLevel != null) {
 			Node organisations = selectNode("n:organisations", xpath, subLevel);
 			if (organisations != null && organisations.hasChildNodes()) {
-	
+
 				validateElementNotPresent(context, xpath, organisations, "n:Operator[not(n:CompanyNumber)]",
 						_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_COMPANY_NUMBER);
 				validateElementNotPresent(context, xpath, organisations, "n:Operator[not(n:Name)]", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_NAME);
@@ -187,7 +185,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 						_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CONTACT_DETAILS);
 				validateElementNotPresent(context, xpath, organisations, "n:Operator[not(n:CustomerServiceContactDetails)]",
 						_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CUSTOMER_SERVICE_CONTACT_DETAILS);
-	
+
 				validateElementNotPresent(context, xpath, organisations, "n:Authority[not(n:CompanyNumber)]",
 						_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_COMPANY_NUMBER);
 				validateElementNotPresent(context, xpath, organisations, "n:Authority[not(n:Name)]",
@@ -205,33 +203,32 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		if (subLevelPath != null) {
 			subLevel = selectNode(subLevelPath, xpath, dom);
 		}
-	
+
 		if (subLevel != null) {
 			// TODO add validation logic for service calendar frames
-	
+
 		}
-	
+
 	}
 
 	public Collection<String> getSupportedProfiles() {
 		return Arrays.asList(new String[] { PROFILE_ID_1 });
 	}
 
-	
 	protected void verifyReferencesToCorrectEntityTypes(Context context, Set<IdVersion> localRefs) {
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-		
-		Map<String,Set<String>> allowedSubstitutions = new HashMap<>();
+
+		Map<String, Set<String>> allowedSubstitutions = new HashMap<>();
 
 		Set<String> groupOfLinesRefSubstitutions = new HashSet<>();
 		groupOfLinesRefSubstitutions.add("Network");
 		groupOfLinesRefSubstitutions.add("GroupOfLines");
 		allowedSubstitutions.put("RepresentedByGroupRef", groupOfLinesRefSubstitutions);
-		
+
 		Set<String> inverseRouteRefSubstitutions = new HashSet<>();
 		inverseRouteRefSubstitutions.add("Route");
 		allowedSubstitutions.put("InverseRouteRef", inverseRouteRefSubstitutions);
-		
+
 		Set<String> projectedPointRefSubstitutions = new HashSet<>();
 		projectedPointRefSubstitutions.add("ScheduledStopPoint");
 		projectedPointRefSubstitutions.add("RoutePoint");
@@ -239,38 +236,43 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		allowedSubstitutions.put("ProjectedPointRef", projectedPointRefSubstitutions);
 		allowedSubstitutions.put("ToPointRef", projectedPointRefSubstitutions);
 		allowedSubstitutions.put("FromPointRef", projectedPointRefSubstitutions);
-		
+
 		boolean foundErrors = false;
-		
-		for(IdVersion id : localRefs) {
+
+		for (IdVersion id : localRefs) {
 			String referencingElement = id.getElementName();
-			
+
 			// TODO decomposing of Ids should be in a common class
-			String[] idParts = StringUtils.split(id.getId(),":");
-			String referencedElement = idParts[1];
-			
-			// Dumb attemt first, must be of same type
-			if(!(referencedElement+"Ref").equals(referencingElement) && !("Default"+referencedElement+"Ref").equals(referencingElement)) {
-				Set<String> possibleSubstitutions = allowedSubstitutions.get(referencingElement);
-				if(possibleSubstitutions != null) {
-					if(possibleSubstitutions.contains(referencedElement)) {
-						// Allowed substitution
-						continue;
+			String[] idParts = StringUtils.split(id.getId(), ":");
+			if (idParts.length == 2) {
+				String referencedElement = idParts[1];
+
+				// Dumb attemt first, must be of same type
+				if (!(referencedElement + "Ref").equals(referencingElement) && !("Default" + referencedElement + "Ref").equals(referencingElement)) {
+					Set<String> possibleSubstitutions = allowedSubstitutions.get(referencingElement);
+					if (possibleSubstitutions != null) {
+						if (possibleSubstitutions.contains(referencedElement)) {
+							// Allowed substitution
+							continue;
+						}
 					}
+
+					foundErrors = true;
+					validationReporter.addCheckPointReportError(context, _1_NETEX_REFERENCE_TO_ILLEGAL_ELEMENT, null, DataLocationHelper.findDataLocation(id),
+							referencedElement, referencingElement);
+
 				}
-				
+			} else {
 				foundErrors = true;
-				validationReporter.addCheckPointReportError(context, _1_NETEX_REFERENCE_TO_ILLEGAL_ELEMENT, null,
-						DataLocationHelper.findDataLocation(id),referencedElement,referencingElement);
-				
+				validationReporter.addCheckPointReportError(context, _1_NETEX_REFERENCE_TO_ILLEGAL_ELEMENT, null, DataLocationHelper.findDataLocation(id),
+						referencingElement, referencingElement);
+
 			}
-			
-			
+
 		}
-		if(!foundErrors) {
+		if (!foundErrors) {
 			validationReporter.reportSuccess(context, _1_NETEX_REFERENCE_TO_ILLEGAL_ELEMENT);
 		}
 	}
-
 
 }
