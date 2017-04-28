@@ -72,7 +72,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
         String fileName = neptuneLine.getObjectId().replaceAll(":", "-") + (neptuneLine.getNumber() != null ?
                 neptuneLine.getNumber() + "-" : "") + (neptuneLine.getPublishedName() != null ?
-                "-" + neptuneLine.getPublishedName().replace(' ', '_') : "") + ".xml";
+                "-" + neptuneLine.getPublishedName().replace(' ', '_').replace('/', '_') : "") + ".xml";
         Path filePath = new File(outputPath.toFile(), fileName).toPath();
 
         NetexFileWriter writer = new NetexFileWriter();
