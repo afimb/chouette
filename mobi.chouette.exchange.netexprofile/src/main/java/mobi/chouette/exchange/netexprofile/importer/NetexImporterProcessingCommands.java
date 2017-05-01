@@ -23,10 +23,15 @@ import mobi.chouette.exchange.validation.ImportedLineValidatorCommand;
 import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
 
 import javax.naming.InitialContext;
+
+import org.apache.commons.io.comparator.NameFileComparator;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,6 +119,8 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
                     .filter(filePath -> filePath.getFileName() != null && filePath.getFileSystem()
                             .getPathMatcher("glob:_*.xml").matches(filePath.getFileName()))
                     .collect(Collectors.toList());
+            
+            Collections.sort(commonFilePaths);
 
             Chain commonFileChains = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
             mainChain.add(commonFileChains);
@@ -149,6 +156,8 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
                     .filter(filePath -> filePath.getFileName() != null && !filePath.getFileSystem()
                             .getPathMatcher("glob:_*.xml").matches(filePath.getFileName()))
                     .collect(Collectors.toList());
+
+            Collections.sort(lineFilePaths);
 
             Chain lineChains = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
             mainChain.add(lineChains);
