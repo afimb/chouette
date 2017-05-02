@@ -37,9 +37,22 @@ public class StopReferentialIdValidator implements ExternalReferenceValidator {
 
 	public final long timeToLiveMs = 1000 * 60 * 60 * 20; // 20 minutes
 
-	public StopReferentialIdValidator(String quayEndpoint, String stopPlaceEndpoint) {
-		this.quayEndpoint = quayEndpoint;
-		this.stopPlaceEndpoint = stopPlaceEndpoint;
+	
+	public StopReferentialIdValidator() {
+
+		String quayEndpointPropertyKey = "iev.stop.place.register.mapping.quay";
+		quayEndpoint = System.getProperty(quayEndpointPropertyKey);
+		if (quayEndpoint == null) {
+			log.warn("Could not find property named " + quayEndpointPropertyKey + " in iev.properties");
+			quayEndpoint = "https://api-test.rutebanken.org/tiamat/1.0/quay/id_mapping?recordsPerRoundTrip=220000";
+		}
+
+		String stopPlaceEndpointPropertyKey = "iev.stop.place.register.mapping.stopplace";
+		stopPlaceEndpoint = System.getProperty(stopPlaceEndpointPropertyKey);
+		if (stopPlaceEndpoint == null) {
+			log.warn("Could not find property named " + stopPlaceEndpointPropertyKey + " in iev.properties");
+			stopPlaceEndpoint = "https://api-test.rutebanken.org/tiamat/1.0/stop_place/id_mapping?recordsPerRoundTrip=220000";
+		}
 	}
 
 	@Override
@@ -59,7 +72,7 @@ public class StopReferentialIdValidator implements ExternalReferenceValidator {
 
 		}
 
-		log.info("About to validate external ids: " + ToStringBuilder.reflectionToString(externalIds, ToStringStyle.NO_FIELD_NAMES_STYLE));
+		log.info("About to validate external "+externalIds.size()+" ids");
 
 		Set<String> validIds = new HashSet<>();
 
@@ -72,7 +85,7 @@ public class StopReferentialIdValidator implements ExternalReferenceValidator {
 			}
 		}
 
-		log.info("Ids ok: " + ToStringBuilder.reflectionToString(validIds, ToStringStyle.NO_FIELD_NAMES_STYLE));
+		log.info("Found "+validIds.size()+" ids ok, "+(externalIds.size()-validIds.size())+" remaining");
 
 		return validIds;
 	}
@@ -82,10 +95,7 @@ public class StopReferentialIdValidator implements ExternalReferenceValidator {
 		protected ExternalReferenceValidator create(Context context) {
 			ExternalReferenceValidator instance = (ExternalReferenceValidator) context.get(NAME);
 			if (instance == null) {
-				// TODO Fetch urls from iev.properties
-				instance = new StopReferentialIdValidator("https://api-test.rutebanken.org/tiamat/1.0/quay/id_mapping?recordsPerRoundTrip=220000",
-						"https://api-test.rutebanken.org/tiamat/1.0/stop_place/id_mapping?recordsPerRoundTrip=220000");
-
+				instance = new StopReferentialIdValidator();
 				context.put(NAME, instance);
 			}
 			return instance;
