@@ -1,8 +1,10 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
 import mobi.chouette.exchange.netexprofile.exporter.NetexFragmentMode;
+import mobi.chouette.exchange.netexprofile.exporter.NetexprofileExportParameters;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 import org.rutebanken.netex.model.AvailabilityCondition;
 import org.rutebanken.netex.model.Codespace;
@@ -12,6 +14,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.time.OffsetDateTime;
 
+import static mobi.chouette.common.Constant.CONFIGURATION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DATA_OJBECT_VERSION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
@@ -23,7 +26,7 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
     private static final String OPENGIS_NAMESPACE = "http://www.opengis.net/gml/3.2";
     private static final String SIRI_NAMESPACE = "http://www.siri.org.uk/siri";
 
-    public static void write(XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData, NetexFragmentMode fragmentMode) {
+    public static void write(Context context, XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData, NetexFragmentMode fragmentMode) {
         OffsetDateTime timestamp = OffsetDateTime.now();
         String timestampFormatted = formatter.format(timestamp);
 
@@ -36,26 +39,31 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
 
             writeElement(writer, PUBLICATION_TIMESTAMP, timestampFormatted);
             writeElement(writer, PARTICIPANT_REF, NSR_XMLNS);
-            writeElement(writer, DESCRIPTION, exportableData.getLine().getName());
-            writeDataObjectsElement(writer, exportableData, exportableNetexData, timestampFormatted, fragmentMode);
 
+            if (fragmentMode.equals(NetexFragmentMode.LINE)) {
+                writeElement(writer, DESCRIPTION, exportableData.getLine().getName());
+            } else {
+                writeElement(writer, DESCRIPTION, "Shared data used across line files");
+            }
+
+            writeDataObjectsElement(context, writer, exportableData, exportableNetexData, timestampFormatted, fragmentMode);
             writer.writeEndElement();
         } catch (XMLStreamException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static void writeDataObjectsElement(XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData, String timestamp, NetexFragmentMode fragmentMode) {
+    private static void writeDataObjectsElement(Context context, XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData, String timestamp, NetexFragmentMode fragmentMode) {
         try {
             writer.writeStartElement(DATA_OBJECTS);
-            writeCompositeFrameElement(writer, exportableData, exportableNetexData, timestamp, fragmentMode);
+            writeCompositeFrameElement(context, writer, exportableData, exportableNetexData, timestamp, fragmentMode);
             writer.writeEndElement();
         } catch (XMLStreamException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static void writeCompositeFrameElement(XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData, String timestamp, NetexFragmentMode fragmentMode) {
+    private static void writeCompositeFrameElement(Context context, XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData, String timestamp, NetexFragmentMode fragmentMode) {
         mobi.chouette.model.Line line = exportableData.getLine();
 
         // TODO temporary generating random id suffix, find a better way to create object id suffixes
@@ -65,9 +73,13 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
         try {
             writer.writeStartElement(COMPOSITE_FRAME);
 
-            if (line.getNetwork().getVersionDate() != null) {
-                OffsetDateTime createdDateTime = NetexProducerUtils.toOffsetDateTime(line.getNetwork().getVersionDate());
-                writer.writeAttribute(CREATED, formatter.format(createdDateTime));
+            if (fragmentMode.equals(NetexFragmentMode.LINE)) {
+                if (line.getNetwork().getVersionDate() != null) {
+                    OffsetDateTime createdDateTime = NetexProducerUtils.toOffsetDateTime(line.getNetwork().getVersionDate());
+                    writer.writeAttribute(CREATED, formatter.format(createdDateTime));
+                } else {
+                    writer.writeAttribute(CREATED, timestamp);
+                }
             } else {
                 writer.writeAttribute(CREATED, timestamp);
             }
@@ -78,7 +90,7 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
             writeValidityConditionsElement(writer, exportableNetexData, fragmentMode);
             writeCodespacesElement(writer, exportableNetexData);
             writeFrameDefaultsElement(writer);
-            writeFramesElement(writer, exportableNetexData, fragmentMode);
+            writeFramesElement(context, writer, exportableNetexData, fragmentMode);
 
             writer.writeEndElement();
         } catch (XMLStreamException e) {
@@ -141,7 +153,9 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
         }
     }
 
-    private static void writeFramesElement(XMLStreamWriter writer, ExportableNetexData exportableNetexData, NetexFragmentMode fragmentMode) {
+    private static void writeFramesElement(Context context, XMLStreamWriter writer, ExportableNetexData exportableNetexData, NetexFragmentMode fragmentMode) {
+        NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
+
         try {
             writer.writeStartElement(FRAMES);
 
@@ -151,7 +165,10 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
                 TimetableFrameWriter.write(writer, exportableNetexData);
             } else { // shared data
                 ResourceFrameWriter.write(writer, exportableNetexData);
-                SiteFrameWriter.write(writer, exportableNetexData);
+
+                if (configuration.isExportStops()) {
+                    SiteFrameWriter.write(writer, exportableNetexData);
+                }
 
                 for (Network network : exportableNetexData.getSharedNetworks().values()) {
                     ServiceFrameWriter.write(writer, network);
