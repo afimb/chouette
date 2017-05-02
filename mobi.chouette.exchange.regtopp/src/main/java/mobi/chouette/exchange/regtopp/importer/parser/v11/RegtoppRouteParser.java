@@ -159,7 +159,6 @@ public class RegtoppRouteParser extends LineSpecificParser {
 		String chouetteNetworkId = ObjectIdCreator.createNetworkId(configuration, adminCode);
 		Network ptNetwork = ObjectFactory.getPTNetwork(referential, chouetteNetworkId);
 		if (!ptNetwork.isFilled()) {
-			ptNetwork.setSourceIdentifier("Regtopp");
 			ptNetwork.setName(adminCode);
 			ptNetwork.setRegistrationNumber(adminCode);
 			ptNetwork.setFilled(true);
