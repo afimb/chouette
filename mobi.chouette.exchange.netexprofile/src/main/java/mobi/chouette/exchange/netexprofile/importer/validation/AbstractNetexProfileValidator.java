@@ -361,7 +361,7 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		}
 	}
 
-	protected void verifyIdStructure(Context context, Set<IdVersion> localIds, Map<IdVersion, List<String>> commonIds, String regex,
+	protected void verifyIdStructure(Context context, Set<IdVersion> localIds, String regex,
 			Set<ProfileValidatorCodespace> validCodespaces) {
 		Set<String> validPrefixes = null;
 		if (validCodespaces != null) {
@@ -381,7 +381,6 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		for (IdVersion id : localIds) {
 			Matcher m = p.matcher(id.getId());
 			if (!m.matches()) {
-				// TODO add correct location
 				validationReporter.addCheckPointReportError(context, _1_NETEX_INVALID_ID_STRUCTURE, null, DataLocationHelper.findDataLocation(id), id.getId());
 				log.error("Id " + id + " in line file have an invalid format. Correct format is " + regex);
 				allIdStructuresValid = false;
@@ -390,17 +389,16 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 					String expectedId = m.group(1) + ":" + id.getElementName() + ":" + m.group(3);
 					validationReporter.addCheckPointReportError(context, _1_NETEX_INVALID_ID_STRUCTURE_NAME, null, DataLocationHelper.findDataLocation(id),
 							id.getId(), expectedId);
-					log.error("Id " + id + " in line file have an invalid format for the name part. Expected " + expectedId);
+					log.error("Id " + id + " in file have an invalid format for the name part. Expected " + expectedId);
 					allIdStructuresNameValid = false;
 				}
 
 				if (validPrefixes != null) {
 					String prefix = m.group(1);
 					if (!validPrefixes.contains(prefix)) {
-						// TODO add correct location
 						validationReporter.addCheckPointReportError(context, _1_NETEX_USE_OF_UNAPPROVED_CODESPACE, null,
 								DataLocationHelper.findDataLocation(id), id.getId());
-						log.error("Id " + id + " in line file are using an unaccepted codepsace prefix " + prefix + ". Valid prefixes are "
+						log.error("Id " + id + " in file are using an unaccepted codepsace prefix " + prefix + ". Valid prefixes are "
 								+ ToStringBuilder.reflectionToString(validPrefixes, ToStringStyle.SIMPLE_STYLE));
 						allCodespacesValid = false;
 					}
@@ -408,49 +406,7 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 			}
 		}
 
-		if (commonIds != null) {
-			for (IdVersion id : commonIds.keySet()) {
-				Matcher m = p.matcher(id.getId());
-				if (!m.matches()) {
-					for (String commonFileName : commonIds.get(id)) {
-						// TODO add correct location
-						validationReporter.addCheckPointReportError(context, _1_NETEX_INVALID_ID_STRUCTURE, null,
-								DataLocationHelper.findDataLocation(commonFileName, id), id.getId());
-						log.error("Id " + id + " in common file file " + commonFileName + "have an invalid format. Correct format is " + regex);
-						allIdStructuresValid = false;
-
-					}
-				} else {
-					if (!m.group(2).equals(id.getElementName())) {
-						for (String commonFileName : commonIds.get(id)) {
-							String expectedId = m.group(1) + ":" + id.getElementName() + ":" + m.group(3);
-							validationReporter.addCheckPointReportError(context, _1_NETEX_INVALID_ID_STRUCTURE_NAME, null,
-									DataLocationHelper.findDataLocation(commonFileName, id), id.getId(), expectedId);
-							log.error(
-									"Id " + id + " in common file file " + commonFileName + "have an invalid format for the name part. Expected " + expectedId);
-						
-						}
-						allIdStructuresNameValid = false;
-					}
-
-					if (validPrefixes != null) {
-						String prefix = m.group(1);
-						if (!validPrefixes.contains(prefix)) {
-							for (String commonFileName : commonIds.get(id)) {
-								// TODO add correct location
-								validationReporter.addCheckPointReportError(context, _1_NETEX_USE_OF_UNAPPROVED_CODESPACE, null,
-										DataLocationHelper.findDataLocation(commonFileName, id), id.getId());
-								log.error("Id " + id + " in common file are using an unaccepted codepsace prefix " + prefix + ". Valid prefixes are "
-										+ ToStringBuilder.reflectionToString(validPrefixes, ToStringStyle.SIMPLE_STYLE));
-								allCodespacesValid = false;
-
-							}
-
-						}
-					}
-				}
-			}
-		}
+	
 		if (allIdStructuresValid) {
 			validationReporter.reportSuccess(context, _1_NETEX_INVALID_ID_STRUCTURE);
 		}
