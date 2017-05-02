@@ -16,6 +16,9 @@ public class NetexProducer {
 
     public static final String NETEX_DATA_OJBECT_VERSION = "0";
 
+    protected static final String NSR_XMLNS = "NSR";
+    protected static final String NSR_XMLNSURL = "http://www.rutebanken.org/ns/nsr";
+
     public static ObjectFactory netexFactory = null;
 
     static {
