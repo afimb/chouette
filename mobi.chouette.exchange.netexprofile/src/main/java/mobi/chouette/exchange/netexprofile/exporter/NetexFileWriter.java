@@ -2,6 +2,7 @@ package mobi.chouette.exchange.netexprofile.exporter;
 
 import com.sun.xml.txw2.output.IndentingXMLStreamWriter;
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.exporter.writer.PublicationDeliveryWriter;
 import mobi.chouette.exchange.netexprofile.jaxb.EscapingXMLStreamWriter;
@@ -23,7 +24,7 @@ class NetexFileWriter implements Constant {
 
     private static final String DEFAULT_NAMESPACE = "http://www.netex.org.uk/netex";
 
-    void writeXmlFile(Path filePath, ExportableData exportableData, ExportableNetexData exportableNetexData, NetexFragmentMode fragmentMode) {
+    void writeXmlFile(Context context, Path filePath, ExportableData exportableData, ExportableNetexData exportableNetexData, NetexFragmentMode fragmentMode) {
         try (Writer bufferedWriter = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8, CREATE, APPEND)) {
             XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
             //outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.TRUE);
@@ -36,7 +37,7 @@ class NetexFileWriter implements Constant {
 
                 IndentingXMLStreamWriter writer = new IndentingXMLStreamWriter(new EscapingXMLStreamWriter(xmlStreamWriter));
                 writer.writeStartDocument(StandardCharsets.UTF_8.name(), "1.0");
-                PublicationDeliveryWriter.write(writer, exportableData, exportableNetexData, fragmentMode);
+                PublicationDeliveryWriter.write(context, writer, exportableData, exportableNetexData, fragmentMode);
             } finally {
                 if (xmlStreamWriter != null) {
                     try {

@@ -17,9 +17,6 @@ import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.model.util.Referential;
 
 import javax.naming.InitialContext;
-
-import org.apache.commons.lang.exception.ExceptionUtils;
-
 import java.io.IOException;
 
 @Log4j

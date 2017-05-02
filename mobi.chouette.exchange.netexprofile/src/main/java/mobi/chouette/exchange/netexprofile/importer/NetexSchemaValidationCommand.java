@@ -11,7 +11,6 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
 import mobi.chouette.exchange.report.ActionReporter;
-import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import org.xml.sax.ErrorHandler;
