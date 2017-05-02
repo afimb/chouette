@@ -11,11 +11,9 @@ import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.util.Referential;
-import org.rutebanken.netex.model.StopPlace;
 
 import javax.naming.InitialContext;
 import java.io.IOException;
-import java.util.Map;
 
 @Log4j
 public class NetexSharedDataProducerCommand implements Command, Constant {
@@ -39,18 +37,15 @@ public class NetexSharedDataProducerCommand implements Command, Constant {
                 return ERROR;
             }
 
-            Map<String, StopPlace> sharedStopPlaces = exportableNetexData.getSharedStopPlaces();
-            if (sharedStopPlaces != null && !sharedStopPlaces.isEmpty()) {
-                NetexSharedDataProducer producer = new NetexSharedDataProducer();
-                producer.produce(context);
+            NetexSharedDataProducer producer = new NetexSharedDataProducer();
+            producer.produce(context);
 
-                reporter.addObjectReport(context, "merged", ActionReporter.OBJECT_TYPE.STOP_AREA,
-                        "stop areas", ActionReporter.OBJECT_STATE.OK, IO_TYPE.OUTPUT);
-                reporter.setStatToObjectReport(context, "merged", ActionReporter.OBJECT_TYPE.STOP_AREA,
-                        ActionReporter.OBJECT_TYPE.STOP_AREA, referential.getSharedStopAreas().size());
+            reporter.addObjectReport(context, "merged", ActionReporter.OBJECT_TYPE.STOP_AREA,
+                    "stop areas", ActionReporter.OBJECT_STATE.OK, IO_TYPE.OUTPUT);
+            reporter.setStatToObjectReport(context, "merged", ActionReporter.OBJECT_TYPE.STOP_AREA,
+                    ActionReporter.OBJECT_TYPE.STOP_AREA, referential.getSharedStopAreas().size());
 
-                result = SUCCESS;
-            }
+            result = SUCCESS;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         } finally {
