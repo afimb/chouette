@@ -18,7 +18,7 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private Set<Codespace> codespaces = new HashSet<>();
+    private Map<String, Codespace> sharedCodespaces = new HashMap<>();
 
     @Getter
     @Setter
@@ -90,7 +90,6 @@ public class ExportableNetexData {
 
     public void clear() {
         lineCondition = null;
-        codespaces.clear();
         line = null;
         stopPoints.clear();
         stopAssignments.clear();
@@ -106,6 +105,7 @@ public class ExportableNetexData {
     public void dispose() {
         clear();
         commonCondition = null;
+        sharedCodespaces.clear();
         sharedNetworks.clear();
         sharedGroupsOfLines.clear();
         sharedAuthorities.clear();

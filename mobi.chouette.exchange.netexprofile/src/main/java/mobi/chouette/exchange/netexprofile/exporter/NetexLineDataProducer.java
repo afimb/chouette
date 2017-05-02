@@ -11,6 +11,7 @@ import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.*;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import org.apache.commons.collections.CollectionUtils;
@@ -32,6 +33,12 @@ import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 @Log4j
 public class NetexLineDataProducer extends NetexProducer implements Constant {
+
+    private static final String NSR_OBJECT_ID = "NSR:Authority:NSR";
+    private static final String NSR_COMPANY_NUMBER = "917422575";
+    private static final String NSR_NAME = "Nasjonal Stoppestedsregister";
+    private static final String NSR_LEGAL_NAME = "NASJONAL STOPPESTEDSREGISTER";
+    private static final String NSR_PHONE = "0047 236 20 000";
 
     private static final Map<String, Codespace> CODESPACE_MAP = new HashMap<>();
 
@@ -62,10 +69,10 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         String fileName = neptuneLine.getObjectId().replaceAll(":", "-") + (neptuneLine.getNumber() != null ?
                 neptuneLine.getNumber() + "-" : "") + (neptuneLine.getPublishedName() != null ?
                 "-" + neptuneLine.getPublishedName().replace(' ', '_').replace('/', '_') : "") + ".xml";
-        Path filePath = new File(outputPath.toFile(), fileName).toPath();
+        Path filePath = new File(outputPath.toFile(), replaceInvalidCharsInFileName(fileName)).toPath();
 
         NetexFileWriter writer = new NetexFileWriter();
-        writer.writeXmlFile(filePath, exportableData, exportableNetexData, NetexFragmentMode.LINE);
+        writer.writeXmlFile(context, filePath, exportableData, exportableNetexData, NetexFragmentMode.LINE);
 
         reporter.addFileReport(context, fileName, IO_TYPE.OUTPUT);
 
@@ -107,10 +114,12 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 throw new RuntimeException("Unknown operator codespace");
             }
         }
-        if (!exportableNetexData.getCodespaces().isEmpty()) {
-            exportableNetexData.getCodespaces().clear();
+        if (!exportableNetexData.getSharedCodespaces().containsKey(line.objectIdPrefix().toUpperCase())) {
+            exportableNetexData.getSharedCodespaces().put(line.objectIdPrefix().toUpperCase(), operatorCodespace);
         }
-        exportableNetexData.getCodespaces().addAll(Arrays.asList(operatorCodespace, nsrCodespace));
+        if (!exportableNetexData.getSharedCodespaces().containsKey(NSR_XMLNS)) {
+            exportableNetexData.getSharedCodespaces().put(NSR_XMLNS, nsrCodespace);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -157,6 +166,8 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
     @SuppressWarnings("Java8MapApi")
     private void produceAndCollectSharedData(Context context, ExportableData exportableData, ExportableNetexData exportableNetexData) {
+        NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
+
         // networks
         mobi.chouette.model.Network neptuneNetwork = exportableData.getLine().getNetwork();
         org.rutebanken.netex.model.Network netexNetwork = exportableNetexData.getSharedNetworks().get(neptuneNetwork.getObjectId());
@@ -181,6 +192,30 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
             }
         }
 
+        // authorities
+        Network firstOccurrenceNetwork = exportableData.getNetworks().iterator().next();
+        AvailabilityCondition availabilityCondition = createAvailabilityCondition(firstOccurrenceNetwork);
+        exportableNetexData.setCommonCondition(availabilityCondition);
+
+        if (isSet(firstOccurrenceNetwork.getSourceIdentifier())) {
+            if (!exportableNetexData.getSharedAuthorities().containsKey(firstOccurrenceNetwork.getSourceIdentifier())) {
+                Authority networkAuthority = createNetworkAuthority(firstOccurrenceNetwork);
+                exportableNetexData.getSharedAuthorities().put(firstOccurrenceNetwork.getSourceIdentifier(), networkAuthority);
+            }
+        } else {
+            String version = firstOccurrenceNetwork.getObjectVersion() > 0 ? String.valueOf(firstOccurrenceNetwork.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
+            String objectId = netexId(firstOccurrenceNetwork.objectIdPrefix(), AUTHORITY, firstOccurrenceNetwork.objectIdPrefix());
+
+            if (!exportableNetexData.getSharedAuthorities().containsKey(objectId)) {
+                Authority networkAuthority = createNetworkAuthority(version, objectId);
+                exportableNetexData.getSharedAuthorities().put(objectId, networkAuthority);
+            }
+        }
+        if (!exportableNetexData.getSharedAuthorities().containsKey(NSR_OBJECT_ID)) {
+            Authority nsrAuthority = createNsrAuthority(firstOccurrenceNetwork);
+            exportableNetexData.getSharedAuthorities().put(NSR_OBJECT_ID, nsrAuthority);
+        }
+
         // operators
         Company company = exportableData.getLine().getCompany();
 
@@ -190,14 +225,16 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         }
 
         // stop places
-        Set<StopArea> stopAreas = new HashSet<>();
-        stopAreas.addAll(exportableData.getStopPlaces());
-        stopAreas.addAll(exportableData.getCommercialStops());
+        if (configuration.isExportStops()) {
+            Set<StopArea> stopAreas = new HashSet<>();
+            stopAreas.addAll(exportableData.getStopPlaces());
+            stopAreas.addAll(exportableData.getCommercialStops());
 
-        for (mobi.chouette.model.StopArea stopArea : stopAreas) {
-            if (!exportableNetexData.getSharedStopPlaces().containsKey(stopArea.getObjectId())) {
-                StopPlace stopPlace = stopPlaceProducer.produce(context, stopArea);
-                exportableNetexData.getSharedStopPlaces().put(stopArea.getObjectId(), stopPlace);
+            for (mobi.chouette.model.StopArea stopArea : stopAreas) {
+                if (!exportableNetexData.getSharedStopPlaces().containsKey(stopArea.getObjectId())) {
+                    StopPlace stopPlace = stopPlaceProducer.produce(context, stopArea);
+                    exportableNetexData.getSharedStopPlaces().put(stopArea.getObjectId(), stopPlace);
+                }
             }
         }
 
@@ -370,6 +407,47 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         }
 
         return stopAssignment;
+    }
+
+    private Authority createNetworkAuthority(Network network) {
+        return createNetworkAuthority(network.getObjectVersion() > 0 ? String.valueOf(network.getObjectVersion()) :
+                NETEX_DATA_OJBECT_VERSION, network.getSourceIdentifier());
+    }
+
+    private Authority createNetworkAuthority(String version, String objectId) {
+        return netexFactory.createAuthority()
+                .withVersion(version)
+                .withId(objectId)
+                .withCompanyNumber("999999999")
+                .withName(getMultilingualString("Dummy Authority"))
+                .withLegalName(getMultilingualString("DUMMY AUTHORITY"))
+                .withContactDetails(createContactStructure("0047 999 99 999", "http://www.dummy-authority.org/"))
+                .withOrganisationType(OrganisationTypeEnumeration.AUTHORITY);
+    }
+
+    private Authority createNsrAuthority(Network network) {
+        return netexFactory.createAuthority()
+                .withVersion(network.getObjectVersion() > 0 ? String.valueOf(network.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION)
+                .withId(NSR_OBJECT_ID)
+                .withCompanyNumber(NSR_COMPANY_NUMBER)
+                .withName(getMultilingualString(NSR_NAME))
+                .withLegalName(getMultilingualString(NSR_LEGAL_NAME))
+                .withContactDetails(createContactStructure(NSR_PHONE, NSR_XMLNSURL))
+                .withOrganisationType(OrganisationTypeEnumeration.AUTHORITY);
+    }
+
+    private ContactStructure createContactStructure(String phone, String url) {
+        return netexFactory.createContactStructure()
+                .withPhone(phone)
+                .withUrl(url);
+    }
+
+    private String replaceInvalidCharsInFileName(String originalFileName) {
+        return StringUtils.replaceEach(
+                originalFileName,
+                new String[]{"Å", "Æ", "Ø", "å", "æ", "ø", "Ö", "Ä", "ö", "ä"},
+                new String[]{"AA", "AE", "OE", "aa", "ae", "oe", "O", "A", "o", "a"}
+        );
     }
 
     static {

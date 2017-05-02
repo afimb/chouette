@@ -1,5 +1,11 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.importer.validation.ExternalReferenceValidator;
+import mobi.chouette.exchange.netexprofile.importer.validation.ExternalReferenceValidatorFactory;
+import org.apache.commons.lang.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -10,15 +16,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Context;
-import mobi.chouette.exchange.netexprofile.importer.validation.ExternalReferenceValidator;
-import mobi.chouette.exchange.netexprofile.importer.validation.ExternalReferenceValidatorFactory;
 
 @Log4j
 public class StopReferentialIdValidator implements ExternalReferenceValidator {
