@@ -9,6 +9,7 @@ import java.time.OffsetDateTime;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.AUTHORITY;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NETWORK;
 
 public class NetworkProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Network, mobi.chouette.model.Network> {
@@ -37,12 +38,19 @@ public class NetworkProducer extends NetexProducer implements NetexEntityProduce
             netexNetwork.setName(getMultilingualString(neptuneNetwork.getName()));
         }
 
+        AuthorityRefStructure authorityRefStruct = netexFactory.createAuthorityRefStructure();
+        authorityRefStruct.setVersion(neptuneNetwork.getObjectVersion() > 0 ? String.valueOf(neptuneNetwork.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+
+        String authorityIdRef;
+
         if (isSet(neptuneNetwork.getSourceIdentifier())) {
-            AuthorityRefStructure authorityRefStruct = netexFactory.createAuthorityRefStructure();
-            authorityRefStruct.setRef(neptuneNetwork.getSourceIdentifier());
-            authorityRefStruct.setVersion(neptuneNetwork.getObjectVersion() > 0 ? String.valueOf(neptuneNetwork.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-            netexNetwork.setTransportOrganisationRef(netexFactory.createAuthorityRef(authorityRefStruct));
+            authorityIdRef = neptuneNetwork.getSourceIdentifier();
+        } else {
+            authorityIdRef = netexId(neptuneNetwork.objectIdPrefix(), AUTHORITY, neptuneNetwork.objectIdSuffix());
         }
+
+        authorityRefStruct.setRef(authorityIdRef);
+        netexNetwork.setTransportOrganisationRef(netexFactory.createAuthorityRef(authorityRefStruct));
 
         if (isSet(neptuneNetwork.getDescription())) {
             netexNetwork.setDescription(getMultilingualString(neptuneNetwork.getDescription()));
