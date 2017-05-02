@@ -88,7 +88,7 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
             writer.writeAttribute(ID, compositeFrameId);
 
             writeValidityConditionsElement(writer, exportableNetexData, fragmentMode);
-            writeCodespacesElement(writer, exportableNetexData);
+            writeCodespacesElement(writer, exportableData, exportableNetexData, fragmentMode);
             writeFrameDefaultsElement(writer);
             writeFramesElement(context, writer, exportableNetexData, fragmentMode);
 
@@ -116,12 +116,19 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
         }
     }
 
-    private static void writeCodespacesElement(XMLStreamWriter writer, ExportableNetexData exportableData) {
+    private static void writeCodespacesElement(XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData, NetexFragmentMode fragmentMode) {
         try {
             writer.writeStartElement(CODESPACES);
-            for (Codespace codespace : exportableData.getCodespaces()) {
-                writeCodespaceElement(writer, codespace);
+
+            if (fragmentMode.equals(NetexFragmentMode.LINE)) {
+                writeCodespaceElement(writer, exportableNetexData.getSharedCodespaces().get(NSR_XMLNS));
+
+                String lineObjectPrefix = exportableData.getLine().objectIdPrefix().toUpperCase();
+                writeCodespaceElement(writer, exportableNetexData.getSharedCodespaces().get(lineObjectPrefix));
+            } else { // shared data
+                writeCodespaceElement(writer, exportableNetexData.getSharedCodespaces().get(NSR_XMLNS));
             }
+
             writer.writeEndElement();
         } catch (Exception e) {
             throw new RuntimeException(e);

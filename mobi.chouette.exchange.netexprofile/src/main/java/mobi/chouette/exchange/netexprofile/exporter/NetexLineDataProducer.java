@@ -114,10 +114,12 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 throw new RuntimeException("Unknown operator codespace");
             }
         }
-        if (!exportableNetexData.getCodespaces().isEmpty()) {
-            exportableNetexData.getCodespaces().clear();
+        if (!exportableNetexData.getSharedCodespaces().containsKey(line.objectIdPrefix().toUpperCase())) {
+            exportableNetexData.getSharedCodespaces().put(line.objectIdPrefix().toUpperCase(), operatorCodespace);
         }
-        exportableNetexData.getCodespaces().addAll(Arrays.asList(operatorCodespace, nsrCodespace));
+        if (!exportableNetexData.getSharedCodespaces().containsKey(NSR_XMLNS)) {
+            exportableNetexData.getSharedCodespaces().put(NSR_XMLNS, nsrCodespace);
+        }
     }
 
     @SuppressWarnings("unchecked")
