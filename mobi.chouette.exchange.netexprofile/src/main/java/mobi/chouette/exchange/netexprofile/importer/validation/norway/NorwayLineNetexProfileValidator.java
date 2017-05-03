@@ -55,9 +55,8 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 		verifyAcceptedCodespaces(context, xpath, dom, validCodespaces);
 		verifyIdStructure(context, localIds, ID_STRUCTURE_REGEXP, validCodespaces);
 		verifyNoDuplicatesWithCommonElements(context, localIds, commonIds);
-		verifyNoDuplicatesAcrossLineFiles(context, localIds, new HashSet<>(Arrays.asList("ResourceFrame", "Network", "Authority", "Operator", "SiteFrame",
-				"PointProjection", "RoutePoint", "StopPlace", "AvailabilityCondition")));
-		// Should be: 		verifyNoDuplicatesAcrossLineFiles(context, localIds, new HashSet<>(Arrays.asList("ResourceFrame", "SiteFrame", "CompsiteFrame","TimetableFrame","ServiceFrame" )));
+		// Allow Frame ID duplicates - not used for anything
+		verifyNoDuplicatesAcrossLineFiles(context, localIds, new HashSet<>(Arrays.asList("ResourceFrame", "SiteFrame", "CompsiteFrame","TimetableFrame","ServiceFrame","ServiceCalendarFrame" )));
 
 		verifyUseOfVersionOnLocalElements(context, localIds);
 		verifyUseOfVersionOnRefsToLocalElements(context, localIds, localRefs);
