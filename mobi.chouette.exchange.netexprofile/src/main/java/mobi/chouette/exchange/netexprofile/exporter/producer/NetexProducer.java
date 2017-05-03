@@ -7,6 +7,7 @@ import org.rutebanken.netex.model.ObjectFactory;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.regex.Pattern;
 
 import static mobi.chouette.exchange.netexprofile.Constant.PRODUCING_CONTEXT;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
@@ -18,6 +19,7 @@ public class NetexProducer {
 
     protected static final String NSR_XMLNS = "NSR";
     protected static final String NSR_XMLNSURL = "http://www.rutebanken.org/ns/nsr";
+    protected static final Pattern idStructurePattern = Pattern.compile("^([A-Z]{3}):([A-Za-z]*):([0-9A-Za-z_\\-]*)$");
 
     public static ObjectFactory netexFactory = null;
 

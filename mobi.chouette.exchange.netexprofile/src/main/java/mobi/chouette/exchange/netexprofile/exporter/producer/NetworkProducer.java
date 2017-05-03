@@ -40,16 +40,15 @@ public class NetworkProducer extends NetexProducer implements NetexEntityProduce
 
         AuthorityRefStructure authorityRefStruct = netexFactory.createAuthorityRefStructure();
         authorityRefStruct.setVersion(neptuneNetwork.getObjectVersion() > 0 ? String.valueOf(neptuneNetwork.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+        String sourceIdentifier = neptuneNetwork.getSourceIdentifier();
 
-        String authorityIdRef;
-
-        if (isSet(neptuneNetwork.getSourceIdentifier())) {
-            authorityIdRef = neptuneNetwork.getSourceIdentifier();
+        if (isSet(sourceIdentifier) && idStructurePattern.matcher(sourceIdentifier).matches()) {
+            authorityRefStruct.setRef(sourceIdentifier);
         } else {
-            authorityIdRef = netexId(neptuneNetwork.objectIdPrefix(), AUTHORITY, neptuneNetwork.objectIdSuffix());
+            String authorityIdRef = netexId(neptuneNetwork.objectIdPrefix(), AUTHORITY, neptuneNetwork.objectIdSuffix());
+            authorityRefStruct.setRef(authorityIdRef);
         }
 
-        authorityRefStruct.setRef(authorityIdRef);
         netexNetwork.setTransportOrganisationRef(netexFactory.createAuthorityRef(authorityRefStruct));
 
         if (isSet(neptuneNetwork.getDescription())) {

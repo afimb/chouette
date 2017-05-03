@@ -192,19 +192,18 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
             }
         }
 
-        // authorities
-        Network firstOccurrenceNetwork = exportableData.getNetworks().iterator().next();
-        AvailabilityCondition availabilityCondition = createAvailabilityCondition(firstOccurrenceNetwork);
+        AvailabilityCondition availabilityCondition = createAvailabilityCondition(neptuneNetwork);
         exportableNetexData.setCommonCondition(availabilityCondition);
+        String sourceIdentifier = neptuneNetwork.getSourceIdentifier();
 
-        if (isSet(firstOccurrenceNetwork.getSourceIdentifier())) {
-            if (!exportableNetexData.getSharedAuthorities().containsKey(firstOccurrenceNetwork.getSourceIdentifier())) {
-                Authority networkAuthority = createNetworkAuthority(firstOccurrenceNetwork);
-                exportableNetexData.getSharedAuthorities().put(firstOccurrenceNetwork.getSourceIdentifier(), networkAuthority);
+        if (isSet(sourceIdentifier) && idStructurePattern.matcher(sourceIdentifier).matches()) {
+            if (!exportableNetexData.getSharedAuthorities().containsKey(sourceIdentifier)) {
+                Authority networkAuthority = createNetworkAuthority(neptuneNetwork);
+                exportableNetexData.getSharedAuthorities().put(sourceIdentifier, networkAuthority);
             }
         } else {
-            String version = firstOccurrenceNetwork.getObjectVersion() > 0 ? String.valueOf(firstOccurrenceNetwork.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
-            String objectId = netexId(firstOccurrenceNetwork.objectIdPrefix(), AUTHORITY, firstOccurrenceNetwork.objectIdSuffix());
+            String version = neptuneNetwork.getObjectVersion() > 0 ? String.valueOf(neptuneNetwork.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
+            String objectId = netexId(neptuneNetwork.objectIdPrefix(), AUTHORITY, neptuneNetwork.objectIdSuffix());
 
             if (!exportableNetexData.getSharedAuthorities().containsKey(objectId)) {
                 Authority networkAuthority = createNetworkAuthority(version, objectId);
@@ -212,7 +211,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
             }
         }
         if (!exportableNetexData.getSharedAuthorities().containsKey(NSR_OBJECT_ID)) {
-            Authority nsrAuthority = createNsrAuthority(firstOccurrenceNetwork);
+            Authority nsrAuthority = createNsrAuthority(neptuneNetwork);
             exportableNetexData.getSharedAuthorities().put(NSR_OBJECT_ID, nsrAuthority);
         }
 
