@@ -81,13 +81,18 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 
             stopPointInJourneyPattern.setScheduledStopPointRef(netexFactory.createScheduledStopPointRef(stopPointRefStruct));
 
-            if (stopPoint.getForBoarding().equals(BoardingPossibilityEnum.normal) && stopPoint.getForAlighting().equals(AlightingPossibilityEnum.forbidden)) {
-                stopPointInJourneyPattern.setForAlighting(false);
-            }
-            if (stopPoint.getForAlighting().equals(AlightingPossibilityEnum.normal) && stopPoint.getForBoarding().equals(BoardingPossibilityEnum.forbidden)) {
-                stopPointInJourneyPattern.setForBoarding(false);
-            }
+            BoardingPossibilityEnum forBoarding = stopPoint.getForBoarding();
+            AlightingPossibilityEnum forAlighting = stopPoint.getForAlighting();
 
+            if (forBoarding != null && forAlighting != null) {
+                if (forBoarding.equals(BoardingPossibilityEnum.normal) && forAlighting.equals(AlightingPossibilityEnum.forbidden)) {
+                    stopPointInJourneyPattern.setForAlighting(false);
+                }
+                if (forAlighting.equals(AlightingPossibilityEnum.normal) && forBoarding.equals(BoardingPossibilityEnum.forbidden)) {
+                    stopPointInJourneyPattern.setForBoarding(false);
+                }
+            }
+            
             stopPointInJourneyPattern.setOrder(BigInteger.valueOf(i + 1));
             pointsInJourneyPattern.getPointInJourneyPatternOrStopPointInJourneyPatternOrTimingPointInJourneyPattern().add(stopPointInJourneyPattern);
         }
