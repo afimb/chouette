@@ -179,7 +179,7 @@ public class NetexParserUtils extends ParserUtils {
 		try {
 			version = Integer.parseInt(obj.getVersion());
 		} catch (NumberFormatException e) {
-			log.warn("Unable to parse " + obj.getVersion() + " to Integer as supported by Neptune, returning 0");
+			log.debug("Unable to parse " + obj.getVersion() + " to Integer as supported by Neptune, returning 0");
 		}
 		return version;
 	}
