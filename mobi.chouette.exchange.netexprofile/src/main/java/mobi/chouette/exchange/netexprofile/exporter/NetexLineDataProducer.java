@@ -445,8 +445,8 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
     private String replaceInvalidCharsInFileName(String originalFileName) {
         return StringUtils.replaceEach(
                 originalFileName,
-                new String[]{"Å", "Æ", "Ø", "å", "æ", "ø", "Ö", "Ä", "ö", "ä"},
-                new String[]{"AA", "AE", "OE", "aa", "ae", "oe", "O", "A", "o", "a"}
+                new String[]{"Å", "Æ", "Ø", "å", "æ", "ø", "Ö", "Ä", "ö", "ä", "Á", "á"},
+                new String[]{"AA", "AE", "OE", "aa", "ae", "oe", "OE", "AE", "oe", "ae", "AA", "aa"}
         );
     }
 
