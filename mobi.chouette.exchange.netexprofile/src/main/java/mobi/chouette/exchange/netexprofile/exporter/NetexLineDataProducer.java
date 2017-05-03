@@ -204,7 +204,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
             }
         } else {
             String version = firstOccurrenceNetwork.getObjectVersion() > 0 ? String.valueOf(firstOccurrenceNetwork.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
-            String objectId = netexId(firstOccurrenceNetwork.objectIdPrefix(), AUTHORITY, firstOccurrenceNetwork.objectIdPrefix());
+            String objectId = netexId(firstOccurrenceNetwork.objectIdPrefix(), AUTHORITY, firstOccurrenceNetwork.objectIdSuffix());
 
             if (!exportableNetexData.getSharedAuthorities().containsKey(objectId)) {
                 Authority networkAuthority = createNetworkAuthority(version, objectId);
