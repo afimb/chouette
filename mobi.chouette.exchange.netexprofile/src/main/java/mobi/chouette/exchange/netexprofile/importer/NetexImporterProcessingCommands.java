@@ -93,6 +93,7 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 
             // stream all file paths once
             List<Path> allFilePaths = FileUtil.listFiles(path, "*.xml",".*.xml");
+            Collections.sort(allFilePaths);
             for(Path p : allFilePaths) {
 				reporter.setFileState(context, p.getFileName().toString(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.IGNORED);
             }
@@ -111,8 +112,6 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
                     .filter(filePath -> filePath.getFileName() != null && filePath.getFileSystem()
                             .getPathMatcher("glob:_*.xml").matches(filePath.getFileName()))
                     .collect(Collectors.toList());
-            
-            Collections.sort(commonFilePaths);
 
             Chain commonFileChains = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
             mainChain.add(commonFileChains);
@@ -148,8 +147,6 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
                     .filter(filePath -> filePath.getFileName() != null && !filePath.getFileSystem()
                             .getPathMatcher("glob:_*.xml").matches(filePath.getFileName()))
                     .collect(Collectors.toList());
-
-            Collections.sort(lineFilePaths);
 
             Chain lineChains = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
             mainChain.add(lineChains);
