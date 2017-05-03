@@ -1,11 +1,5 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Context;
-import mobi.chouette.exchange.netexprofile.importer.validation.ExternalReferenceValidator;
-import mobi.chouette.exchange.netexprofile.importer.validation.ExternalReferenceValidatorFactory;
-import org.apache.commons.lang.StringUtils;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,6 +10,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang.StringUtils;
+
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
+import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
+import mobi.chouette.exchange.netexprofile.importer.validation.ExternalReferenceValidator;
+import mobi.chouette.exchange.netexprofile.importer.validation.ExternalReferenceValidatorFactory;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 
 @Log4j
 public class StopReferentialIdValidator implements ExternalReferenceValidator {
@@ -34,7 +38,6 @@ public class StopReferentialIdValidator implements ExternalReferenceValidator {
 
 	public final long timeToLiveMs = 1000 * 60 * 60 * 5; // 20 minutes
 
-	
 	public StopReferentialIdValidator() {
 
 		String quayEndpointPropertyKey = "iev.stop.place.register.mapping.quay";
@@ -53,7 +56,9 @@ public class StopReferentialIdValidator implements ExternalReferenceValidator {
 	}
 
 	@Override
-	public Set<String> validateReferenceIds(Set<String> externalIds) {
+	public Set<IdVersion> validateReferenceIds(Context context, Set<IdVersion> externalIds) {
+
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 
 		if (lastUpdated < System.currentTimeMillis() - timeToLiveMs) {
 			// Fetch data and populate caches
@@ -69,20 +74,26 @@ public class StopReferentialIdValidator implements ExternalReferenceValidator {
 
 		}
 
-		log.info("About to validate external "+externalIds.size()+" ids");
+		log.info("About to validate external " + externalIds.size() + " ids");
 
-		Set<String> validIds = new HashSet<>();
+		Set<IdVersion> validIds = new HashSet<>();
 
-		Set<String> idsToCheck = externalIds.stream().filter(e -> e.contains(":Quay:") || e.contains(":StopPlace:")).collect(Collectors.toSet());
-		for (String id : idsToCheck) {
-			if (id.contains(":Quay:") && quayCache.containsKey(id)) {
+		Set<IdVersion> idsToCheck = externalIds.stream().filter(e -> e.getId().contains(":Quay:") || e.getId().contains(":StopPlace:"))
+				.collect(Collectors.toSet());
+		for (IdVersion id : idsToCheck) {
+			if (id.getId().contains(":Quay:")) {
+				if (!quayCache.containsKey(id.getId())) {
+					validationReporter.addCheckPointReportError(context,
+							AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN_PASSENGERSTOPASSIGNMENT_QUAYREF,
+							DataLocationHelper.findDataLocation(id));
+				}
 				validIds.add(id);
-			} else if (id.contains(":StopPlace:") && stopPlaceCache.containsKey(id)) {
+			} else if (id.getId().contains(":StopPlace:") && stopPlaceCache.containsKey(id.getId())) {
 				validIds.add(id);
-			}
+			} 
 		}
 
-		log.info("Found "+validIds.size()+" ids ok, "+(externalIds.size()-validIds.size())+" remaining");
+		log.info("Found " + validIds.size() + " ids ok, " + (externalIds.size() - validIds.size()) + " remaining");
 
 		return validIds;
 	}
