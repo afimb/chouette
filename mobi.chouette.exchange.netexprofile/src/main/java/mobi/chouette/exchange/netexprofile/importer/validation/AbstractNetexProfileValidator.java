@@ -223,6 +223,9 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		if (commonIds != null) {
 			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 
+			
+			// TODO refactor this
+			
 			Set<String> nonVersionedLocalRefs = localRefs.stream().map(e -> e.getId()).collect(Collectors.toSet());
 			Set<String> nonVersionedLocalIds = localIds.stream().map(e -> e.getId()).collect(Collectors.toSet());
 
@@ -232,9 +235,11 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 			Set<String> commonIdsWithoutVersion = commonIds.keySet().stream().map(e -> e.getId()).collect(Collectors.toSet());
 
 			// Make sure we dont modify the set of unresolved ids
-			Set<String> immutableUnresolvedReferences = Collections.unmodifiableSet(unresolvedReferences);
+			Set<IdVersion> versionedUnresolvedReferences = new HashSet<>(localRefs);
+			versionedUnresolvedReferences.removeAll(localIds);
+			Set<IdVersion> immutableUnresolvedReferences = Collections.unmodifiableSet(versionedUnresolvedReferences);
 			for(ExternalReferenceValidator validator : externalReferenceValidators) {
-				unresolvedReferences.removeAll(validator.validateReferenceIds(immutableUnresolvedReferences));
+				unresolvedReferences.removeAll(validator.validateReferenceIds(context,immutableUnresolvedReferences).stream().map(e -> e.getId()).collect(Collectors.toSet()));
 			}
 			
 			if (commonIdsWithoutVersion.size() > 0) {
