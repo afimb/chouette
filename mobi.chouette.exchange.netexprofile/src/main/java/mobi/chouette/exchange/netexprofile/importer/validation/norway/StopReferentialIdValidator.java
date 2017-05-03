@@ -32,7 +32,7 @@ public class StopReferentialIdValidator implements ExternalReferenceValidator {
 
 	private long lastUpdated = 0;
 
-	public final long timeToLiveMs = 1000 * 60 * 60 * 20; // 20 minutes
+	public final long timeToLiveMs = 1000 * 60 * 60 * 5; // 20 minutes
 
 	
 	public StopReferentialIdValidator() {

@@ -193,13 +193,17 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 		if (subLevel != null) {
 
 			validateAtLeastElementPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney", 1, _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY);
+			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney/n:calls", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_CALLS);
+
 			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney[count(n:TransportMode) = 1]",
 					_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_TRANSPORT_MODE);
-			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney[count(n:passingTimes/n:TimetabledPassingTime) < 2]",
+			
+			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney[not(n:passingTimes)]",
 					_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIMES);
-			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney/n:calls", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_CALLS);
-			validateElementNotPresent(context, xpath, subLevel, "//n:TimetabledPassingTime[not(n:DepartureTime)][position() < last()]",
-					_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_DEPARTURETIME);
+			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney/n:passingTimes/n:TimetabledPassingTime[not(n:DepartureTime) and not(n:ArrivalTime)]",
+					_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_MISSING_DEPARTURE_OR_ARRIVAL);
+			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney[not(n:passingTimes/n:TimetabledPassingTime[1]/n:DepartureTime)]",
+					_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_FIRST_DEPARTURE);
 			validateElementNotPresent(context, xpath, subLevel,
 					"n:vehicleJourneys/n:ServiceJourney[count(n:passingTimes/n:TimetabledPassingTime[last()]/n:ArrivalTime) = 0]",
 					_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_LAST_ARRIVAL);
