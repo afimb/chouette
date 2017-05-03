@@ -385,6 +385,7 @@ public class NeTExStopPlaceRegisterUpdater {
 				String[] existingIds = StringUtils.split(s.getValue(), IMPORTED_ID_VALUE_SEPARATOR);
 				for (String id : existingIds) {
 					map.put(id.replaceAll("Quay", "StopArea").replaceAll("StopPlace", "StopArea"), newStopPlaceId);
+					map.put(id, newStopPlaceId);
 				}
 			}
 		}
