@@ -24,6 +24,14 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
 
         if (isSet(neptuneLine.getName())) {
             netexLine.setName(getMultilingualString(neptuneLine.getName()));
+        } else {
+            if (isSet(neptuneLine.getPublishedName())) {
+                netexLine.setName(getMultilingualString(neptuneLine.getPublishedName()));
+            } else if (isSet(neptuneLine.getNumber())) {
+                netexLine.setName(getMultilingualString(neptuneLine.getNumber()));
+            } else {
+                netexLine.setName(getMultilingualString(neptuneLine.objectIdSuffix()));
+            }
         }
 
         if (isSet(neptuneLine.getPublishedName())) {
@@ -39,7 +47,7 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
             netexLine.setTransportMode(vehicleModeOfTransport);
         }
 
-        if (isSet(neptuneLine .getNumber())) {
+        if (isSet(neptuneLine.getNumber())) {
             netexLine.setPublicCode(neptuneLine.getNumber());
         }
 
@@ -62,11 +70,11 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
 
         RouteRefs_RelStructure routeRefsStruct = netexFactory.createRouteRefs_RelStructure();
         for (Route route : neptuneLine.getRoutes()) {
-                RouteRefStructure routeRefStruct = netexFactory.createRouteRefStructure();
-                routeRefStruct.setVersion(route.getObjectVersion() != null ? String.valueOf(route.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-                String routeIdRef = netexId(route.objectIdPrefix(), ROUTE_KEY, route.objectIdSuffix());
-                routeRefStruct.setRef(routeIdRef);
-                routeRefsStruct.getRouteRef().add(routeRefStruct);
+            RouteRefStructure routeRefStruct = netexFactory.createRouteRefStructure();
+            routeRefStruct.setVersion(route.getObjectVersion() != null ? String.valueOf(route.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+            String routeIdRef = netexId(route.objectIdPrefix(), ROUTE_KEY, route.objectIdSuffix());
+            routeRefStruct.setRef(routeIdRef);
+            routeRefsStruct.getRouteRef().add(routeRefStruct);
         }
         netexLine.setRoutes(routeRefsStruct);
 
