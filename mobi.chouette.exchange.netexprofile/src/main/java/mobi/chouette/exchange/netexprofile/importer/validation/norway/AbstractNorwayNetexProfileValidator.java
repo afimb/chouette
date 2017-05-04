@@ -95,7 +95,8 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_UNAPPROVED_CODESPACE_DEFINED, "E");
 		addCheckpoints(context, _1_NETEX_USE_OF_UNAPPROVED_CODESPACE, "E");
 		addCheckpoints(context, _1_NETEX_REFERENCE_TO_ILLEGAL_ELEMENT, "E");
-
+		addCheckpoints(context, _1_NETEX_UNRESOLVED_EXTERNAL_REFERENCE, "E");
+		
 		addCheckpoints(context, _1_NETEX_RESOURCE_FRAME, "E");
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME, "E");
 		addCheckpoints(context, _1_NETEX_SITE_FRAME, "W");

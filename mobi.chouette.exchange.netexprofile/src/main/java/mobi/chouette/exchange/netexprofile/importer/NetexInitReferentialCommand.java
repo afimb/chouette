@@ -1,7 +1,21 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.naming.InitialContext;
+import javax.xml.namespace.QName;
+
+import org.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.w3c.dom.Document;
+
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -16,25 +30,16 @@ import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
-import org.rutebanken.netex.model.PublicationDeliveryStructure;
-import org.w3c.dom.Document;
-
-import javax.naming.InitialContext;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Map;
 
 @Log4j
 public class NetexInitReferentialCommand implements Command, Constant {
 
 	public static final String COMMAND = "NetexInitReferentialCommand";
 
-
 	@Getter
 	@Setter
 	private String fileURL;
-	
+
 	@Getter
 	@Setter
 	private boolean lineFile;
@@ -44,6 +49,7 @@ public class NetexInitReferentialCommand implements Command, Constant {
 		boolean result = SUCCESS;
 		Monitor monitor = MonitorFactory.start(COMMAND);
 		context.put(FILE_URL, fileURL);
+		NetexprofileImportParameters parameters = (NetexprofileImportParameters) context.get(CONFIGURATION);
 
 		ActionReporter reporter = ActionReporter.Factory.getInstance();
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
@@ -55,15 +61,20 @@ public class NetexInitReferentialCommand implements Command, Constant {
 		context.put(FILE_NAME, fileName);
 
 		try {
+			Set<QName> elementsToSkip = new HashSet<>();
+			if (!parameters.isParseSiteFrames()) {
+				// Do not parse SiteFrames at all
+				elementsToSkip.add(new QName("http://www.netex.org.uk/netex", "SiteFrame"));
+			}
 
 			NetexImporter importer = (NetexImporter) context.get(IMPORTER);
-			Document netexDom = importer.parseFileToDom(file);
+			Document netexDom = importer.parseFileToDom(file, elementsToSkip);
 			PublicationDeliveryStructure netexJava = importer.unmarshal(netexDom);
-			
+
 			context.put(NETEX_DATA_JAVA, netexJava);
 			context.put(NETEX_DATA_DOM, netexDom);
 
-			if(lineFile) {
+			if (lineFile) {
 				context.put(NETEX_WITH_COMMON_DATA, Boolean.FALSE);
 			} else {
 				context.put(NETEX_WITH_COMMON_DATA, Boolean.TRUE);
@@ -72,10 +83,10 @@ public class NetexInitReferentialCommand implements Command, Constant {
 			Map<String, NetexProfileValidator> availableProfileValidators = (Map<String, NetexProfileValidator>) context.get(NETEX_PROFILE_VALIDATORS);
 
 			String profileVersion = netexJava.getVersion();
-			if(!lineFile) {
+			if (!lineFile) {
 				profileVersion += "-common";
 			}
-			
+
 			NetexProfileValidator profileValidator = availableProfileValidators.get(profileVersion);
 			if (profileValidator != null) {
 				profileValidator.initializeCheckPoints(context);
@@ -84,7 +95,8 @@ public class NetexInitReferentialCommand implements Command, Constant {
 			} else {
 				log.error("Unsupported NeTEx profile in PublicationDelivery/@version: " + profileVersion);
 				// TODO fix reporting with lineNumber etc
-				validationReporter.addCheckPointReportError(context, AbstractNetexProfileValidator._1_NETEX_UNKNOWN_PROFILE, null,new DataLocation(fileName),profileVersion);
+				validationReporter.addCheckPointReportError(context, AbstractNetexProfileValidator._1_NETEX_UNKNOWN_PROFILE, null, new DataLocation(fileName),
+						profileVersion);
 				result = ERROR;
 			}
 

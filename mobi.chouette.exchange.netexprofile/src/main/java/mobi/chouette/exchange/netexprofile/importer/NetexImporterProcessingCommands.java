@@ -116,9 +116,8 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
             Chain commonFileChains = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
             mainChain.add(commonFileChains);
 
-    		Map<IdVersion, List<String>> commonIds = new HashMap<>();
-    		context.put(mobi.chouette.exchange.netexprofile.Constant.NETEX_COMMON_FILE_IDENTIFICATORS, commonIds);
-
+    		context.put(mobi.chouette.exchange.netexprofile.Constant.NETEX_COMMON_FILE_IDENTIFICATORS, new HashMap<IdVersion, List<String>>());
+ 
     		for (Path file : commonFilePaths) {
                 String url = file.toUri().toURL().toExternalForm();
                 Chain commonFileChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
@@ -138,11 +137,11 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 	            commonFileChain.add(commonFilesParser);
             }
     		
+    		// Check for duplicate identifiers declared in common files
     		DuplicateIdCheckerCommand duplicateIdChecker = (DuplicateIdCheckerCommand) CommandFactory.create(initialContext, DuplicateIdCheckerCommand.class.getName());
             mainChain.add(duplicateIdChecker);
     		
             // line file processing
-
             List<Path> lineFilePaths = allFilePaths.stream()
                     .filter(filePath -> filePath.getFileName() != null && !filePath.getFileSystem()
                             .getPathMatcher("glob:_*.xml").matches(filePath.getFileName()))
