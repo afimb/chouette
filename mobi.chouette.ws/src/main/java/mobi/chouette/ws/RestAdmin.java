@@ -31,6 +31,7 @@ import mobi.chouette.model.iev.Stat;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
 
+import mobi.chouette.service.ReferentialService;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -50,6 +51,9 @@ public class RestAdmin implements Constant {
 
 	@Inject
 	JobServiceManager jobServiceManager;
+
+	@Inject
+	ReferentialService referentialService;
 
 	@Inject
 	ContenerChecker checker;
@@ -212,6 +216,23 @@ public class RestAdmin implements Constant {
 			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+
+	@GET
+	@Path("referentials")
+	public Response listReferentials() {
+		try {
+			JSONArray resjson = new JSONArray();
+			for (String referential:referentialService.getReferentials()) {
+				resjson.put(referential);
+			}
+			return Response.ok(resjson.toString()).build();
+		} catch (Exception e) {
+			log.error("Failed to fetch list of referentials: " + e.getMessage(), e);
+			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 
 	private Response checkKey(final String authorisationKey) {
 		if (authorisationKey == null || authorisationKey.isEmpty()) {
