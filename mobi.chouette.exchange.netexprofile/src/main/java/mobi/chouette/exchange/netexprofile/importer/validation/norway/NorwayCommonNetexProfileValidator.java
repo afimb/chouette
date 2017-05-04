@@ -1,20 +1,25 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidatorFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import mobi.chouette.exchange.netexprofile.importer.validation.norway.StopReferentialIdValidator.DefaultExternalReferenceValidatorFactory;
+import mobi.chouette.exchange.netexprofile.util.NetexIdExtractorHelper;
 
 public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfileValidator implements NetexProfileValidator {
 
@@ -25,7 +30,7 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 		XPath xpath = (XPath) context.get(NETEX_XPATH);
 
 		Document commonDom = (Document) context.get(Constant.NETEX_DATA_DOM);
-
+		
 		@SuppressWarnings("unchecked")
 		Set<ProfileValidatorCodespace> validCodespaces = (Set<ProfileValidatorCodespace>) context.get(NETEX_VALID_CODESPACES);
 
@@ -41,12 +46,15 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 		verifyAcceptedCodespaces(context, xpath, commonDom, validCodespaces);
 		
 		// Verify that local ids er ok
-		Set<IdVersion> localIds = collectEntityIdentificators(context, xpath, commonDom, new HashSet<>(Arrays.asList("Codespace")));
+		Set<IdVersion> localIds = NetexIdExtractorHelper.collectEntityIdentificators(context, xpath, commonDom, new HashSet<>(Arrays.asList("Codespace")));
+		Set<IdVersion> localRefs = NetexIdExtractorHelper.collectEntityReferences(context, xpath, commonDom, null);
 		verifyIdStructure(context, localIds, ID_STRUCTURE_REGEXP, validCodespaces);
 
-		Set<IdVersion> localRefs = collectEntityReferences(context, xpath, commonDom, null);
 		verifyReferencesToCorrectEntityTypes(context,localRefs);
-
+		verifyUseOfVersionOnLocalElements(context, localIds);
+		verifyUseOfVersionOnRefsToLocalElements(context, localIds, localRefs);
+		verifyExternalRefs(context, localRefs,localIds);
+		
 		NodeList compositeFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:CompositeFrame", xpath, commonDom);
 		if (compositeFrames.getLength() > 0) {
 			// Using composite frames
@@ -61,6 +69,8 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 
 		return;
 	}
+
+	
 
 	protected void validateWithoutCompositeFrame(Context context, XPath xpath, Document dom) throws XPathExpressionException {
 		// Validate that we have exactly one ResourceFrame
@@ -145,10 +155,19 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 
 	public static class DefaultValidatorFactory extends NetexProfileValidatorFactory {
 		@Override
-		protected NetexProfileValidator create(Context context) {
+		protected NetexProfileValidator create(Context context) throws ClassNotFoundException {
 			NetexProfileValidator instance = (NetexProfileValidator) context.get(NAME);
 			if (instance == null) {
 				instance = new NorwayCommonNetexProfileValidator();
+
+				// Shitty, should use inversion of control pattern and dependency injection
+				if("true".equals(context.get("testng"))) {
+					instance.addExternalReferenceValidator(new DummyStopReferentialIdValidator());
+				} else {
+					StopReferentialIdValidator stopRegistryValidator = (StopReferentialIdValidator) DefaultExternalReferenceValidatorFactory
+							.create(StopReferentialIdValidator.class.getName(), context);
+					instance.addExternalReferenceValidator(stopRegistryValidator);
+				}
 				context.put(NAME, instance);
 			}
 			return instance;
