@@ -173,7 +173,22 @@ public class NeTExStopPlaceRegisterUpdater {
 					// Only replace IDs if ID already contains Chouette ID key (StopArea)
 					stopPlaceMapper.replaceIdIfQuayOrStopPlace(stopPlace);
 				}
-
+				
+				Quays_RelStructure quays = stopPlace.getQuays();
+				if(quays != null && quays.getQuayRefOrQuay() != null) {
+					for (Object q : quays.getQuayRefOrQuay()) {
+						if(q instanceof Quay) {
+							Quay quay= (Quay) q;
+							String qId = quay.getId();
+							if(qId.contains(ObjectIdTypes.STOPAREA_KEY)) {
+								// Only replace IDs if ID already contains Chouette ID key (StopArea)
+								stopPlaceMapper.replaceIdIfQuayOrStopPlace(quay);
+							}
+						}
+					}
+				}
+				
+				
 				if (stopArea == null) {
 					log.error("Could not find StopArea for objectId=" + ToStringBuilder.reflectionToString(stopPlace)
 							+ " correlationId: " + correlationId);
