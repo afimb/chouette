@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.neptune.exporter.util.NeptuneObjectUtil;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
@@ -17,6 +18,9 @@ import javax.xml.bind.JAXBElement;
 import java.util.Comparator;
 import java.util.List;
 
+import static mobi.chouette.exchange.importer.ParserUtils.objectIdPrefix;
+import static mobi.chouette.exchange.importer.ParserUtils.objectIdSuffix;
+
 @Log4j
 public class RouteParser implements Parser, Constant {
 
@@ -24,9 +28,9 @@ public class RouteParser implements Parser, Constant {
     public void parse(Context context) throws Exception {
         Referential referential = (Referential) context.get(REFERENTIAL);
         RoutesInFrame_RelStructure routesInFrameStruct = (RoutesInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
-        Context parsingCtx = (Context) context.get(PARSING_CONTEXT);
-        Context routePointCtx = (Context) parsingCtx.get(RoutePointParser.LOCAL_CONTEXT);
-        Context stopAssignmentCtx = (Context) parsingCtx.get(StopAssignmentParser.LOCAL_CONTEXT);
+        Context parsingContext = (Context) context.get(PARSING_CONTEXT);
+        Context routePointContext = (Context) parsingContext.get(RoutePointParser.LOCAL_CONTEXT);
+        Context stopAssignmentContext = (Context) parsingContext.get(StopAssignmentParser.LOCAL_CONTEXT);
 
         List<JAXBElement<? extends LinkSequence_VersionStructure>> routeElements = routesInFrameStruct.getRoute_();
 
@@ -66,12 +70,51 @@ public class RouteParser implements Parser, Constant {
                 }
             }
 
+            // new loop
+
+            for (PointOnRoute pointOnRoute : netexRoute.getPointsInSequence().getPointOnRoute()) {
+                if (pointOnRoute.getPointRef() != null) {
+                    String routePointIdRef = pointOnRoute.getPointRef().getValue().getRef();
+                    Context routePointObjectContext = (Context) routePointContext.get(routePointIdRef);
+                    String scheduledStopPointId = (String) routePointObjectContext.get(RoutePointParser.STOP_POINT_ID);
+
+                    Context stopAssignmentObjectCtx = (Context) stopAssignmentContext.get(scheduledStopPointId);
+                    String quayId = (String) stopAssignmentObjectCtx.get(StopAssignmentParser.QUAY_ID);
+
+                    StopArea stopArea = ObjectFactory.getStopArea(referential, quayId);
+
+                    if (stopArea != null) {
+                        String stopPointId = NetexParserUtils.netexId(objectIdPrefix(pointOnRoute.getId()), "StopPoint", objectIdSuffix(pointOnRoute.getId()));
+
+/*
+                        String stopPointId = String.format("%s:StopPoint:%s-%s",
+                                objectIdPrefix(chouetteRoute.getObjectId()),
+                                objectIdSuffix(pointOnRoute.getId()),
+                                objectIdSuffix(scheduledStopPointId));
+*/
+
+                        StopPoint stopPoint = ObjectFactory.getStopPoint(referential, stopPointId);
+                        stopPoint.setObjectVersion(NetexParserUtils.getVersion(pointOnRoute));
+                        stopPoint.setContainedInStopArea(stopArea);
+                        stopPoint.setRoute(chouetteRoute);
+                        stopPoint.setFilled(true);
+
+                        log.debug("Added StopPoint " + scheduledStopPointId + " to Route " +
+                                chouetteRoute.getObjectId() + ". ContainedInStopArea is " + stopArea.getObjectId());
+                    } else {
+                        log.warn("StopArea with id " + quayId + " not found in cache. Not adding StopPoint " + scheduledStopPointId + " to Route.");
+                    }
+                }
+            }
+
+            // old loop
+/*
             for (PointOnRoute pointOnRoute : netexRoute.getPointsInSequence().getPointOnRoute()) {
                 String routePointIdRef = pointOnRoute.getPointRef().getValue().getRef();
-                Context routePointObjectCtx = (Context) routePointCtx.get(routePointIdRef);
+                Context routePointObjectCtx = (Context) routePointContext.get(routePointIdRef);
                 String scheduledStopPointId = (String) routePointObjectCtx.get(RoutePointParser.STOP_POINT_ID);
 
-                Context stopAssignmentObjectCtx = (Context) stopAssignmentCtx.get(scheduledStopPointId);
+                Context stopAssignmentObjectCtx = (Context) stopAssignmentContext.get(scheduledStopPointId);
                 String quayId = (String) stopAssignmentObjectCtx.get(StopAssignmentParser.QUAY_ID);
 
                 StopArea stopArea = ObjectFactory.getStopArea(referential, quayId);
@@ -94,6 +137,7 @@ public class RouteParser implements Parser, Constant {
                     log.warn("StopArea with id " + quayId + " not found in cache. Not adding StopPoint " + scheduledStopPointId + " to Route.");
                 }
             }
+*/
 
             chouetteRoute.getStopPoints().forEach(stopPoint -> stopPoint.setPosition(chouetteRoute.getStopPoints().indexOf(stopPoint)));
             chouetteRoute.getStopPoints().sort(Comparator.comparingInt(StopPoint::getPosition));

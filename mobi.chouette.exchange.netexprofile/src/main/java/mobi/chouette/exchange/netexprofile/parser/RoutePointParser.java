@@ -6,6 +6,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import org.rutebanken.netex.model.PointProjection;
+import org.rutebanken.netex.model.Projections_RelStructure;
 import org.rutebanken.netex.model.RoutePoint;
 import org.rutebanken.netex.model.RoutePointsInFrame_RelStructure;
 
@@ -22,24 +23,28 @@ public class RoutePointParser extends NetexParser implements Parser, Constant {
         RoutePointsInFrame_RelStructure routePointStruct = (RoutePointsInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
 
         for (RoutePoint routePoint : routePointStruct.getRoutePoint()) {
-            String stopPointId = null;
+            if (routePoint.getProjections() != null) {
+                String stopPointId = null;
 
-            for (JAXBElement<?> projectionRefElement : routePoint.getProjections().getProjectionRefOrProjection()) {
-                if (stopPointId == null) {
-                    PointProjection pointProjection = (PointProjection) projectionRefElement.getValue();
+                for (JAXBElement<?> projectionRefElement : routePoint.getProjections().getProjectionRefOrProjection()) {
+                    if (stopPointId == null) {
+                        PointProjection pointProjection = (PointProjection) projectionRefElement.getValue();
 
-                    if (pointProjection.getProjectedPointRef() != null) {
-                        stopPointId = pointProjection.getProjectedPointRef().getRef();
-                    } else if (pointProjection.getProjectToPointRef() != null) {
-                        stopPointId = pointProjection.getProjectToPointRef().getRef();
-                    } else {
-                        log.error("Could not find point reference for projection with id : " + pointProjection.getId());
-                        throw new RuntimeException("missing point reference");
+                        if (pointProjection.getProjectedPointRef() != null) {
+                            stopPointId = pointProjection.getProjectedPointRef().getRef();
+                        } else if (pointProjection.getProjectToPointRef() != null) {
+                            stopPointId = pointProjection.getProjectToPointRef().getRef();
+                        } else {
+                            log.error("Could not find point reference for projection with id : " + pointProjection.getId());
+                            throw new RuntimeException("missing point reference");
+                        }
                     }
                 }
-            }
 
-            addStopPointId(context, routePoint.getId(), stopPointId);
+                addStopPointId(context, routePoint.getId(), stopPointId);
+            } else {
+                throw new RuntimeException("Could not parse RoutePoints");
+            }
         }
     }
 
