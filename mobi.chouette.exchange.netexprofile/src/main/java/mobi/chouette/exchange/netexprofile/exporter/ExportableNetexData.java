@@ -62,6 +62,10 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
+    private Map<String, RoutePoint> sharedRoutePoints = new HashMap<>();
+
+    @Getter
+    @Setter
     private Set<RoutePoint> routePoints = new HashSet<>();
 
     @Getter
@@ -113,6 +117,7 @@ public class ExportableNetexData {
         sharedStopPlaces.clear();
         sharedStopAssignments.clear();
         sharedStopPoints.clear();
+        sharedRoutePoints.clear();
     }
 
 }

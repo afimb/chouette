@@ -58,7 +58,7 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
         }
 
         OperatorRefStructure operatorRefStruct = netexFactory.createOperatorRefStructure();
-        String operatorId = netexId(neptuneLine.getCompany().objectIdPrefix(), NetexObjectIdTypes.OPERATOR_KEY, neptuneLine.getCompany().objectIdSuffix());
+        String operatorId = netexId(neptuneLine.getCompany().objectIdPrefix(), NetexObjectIdTypes.OPERATOR, neptuneLine.getCompany().objectIdSuffix());
         operatorRefStruct.setRef(operatorId);
 
         // TODO handle version attribute differently, false when in separate export (common file), true if in same export, for now only supporting single line files
@@ -72,7 +72,7 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
         for (Route route : neptuneLine.getRoutes()) {
             RouteRefStructure routeRefStruct = netexFactory.createRouteRefStructure();
             routeRefStruct.setVersion(route.getObjectVersion() != null ? String.valueOf(route.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-            String routeIdRef = netexId(route.objectIdPrefix(), ROUTE_KEY, route.objectIdSuffix());
+            String routeIdRef = netexId(route.objectIdPrefix(), ROUTE, route.objectIdSuffix());
             routeRefStruct.setRef(routeIdRef);
             routeRefsStruct.getRouteRef().add(routeRefStruct);
         }

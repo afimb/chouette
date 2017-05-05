@@ -23,7 +23,7 @@ public class StopPlaceProducer extends NetexProducer implements NetexEntityProdu
         StopPlace stopPlace = netexFactory.createStopPlace();
         stopPlace.setVersion(stopArea.getObjectVersion() > 0 ? String.valueOf(stopArea.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 
-        String stopPlaceId = netexId(stopArea.objectIdPrefix(), STOP_PLACE_KEY, stopArea.objectIdSuffix());
+        String stopPlaceId = netexId(stopArea.objectIdPrefix(), STOP_PLACE, stopArea.objectIdSuffix());
         stopPlace.setId(stopPlaceId);
 
         if (isSet(stopArea.getName())) {
@@ -56,7 +56,7 @@ public class StopPlaceProducer extends NetexProducer implements NetexEntityProdu
         if (isSet(stopArea.getParent())) {
             ZoneRefStructure zoneRefStruct = netexFactory.createZoneRefStructure();
             zoneRefStruct.setVersion(String.valueOf(stopArea.getParent().getObjectVersion()));
-            String parentStopPlaceId = netexId(stopArea.getParent().objectIdPrefix(), STOP_PLACE_KEY, stopArea.getParent().objectIdSuffix());
+            String parentStopPlaceId = netexId(stopArea.getParent().objectIdPrefix(), STOP_PLACE, stopArea.getParent().objectIdSuffix());
             zoneRefStruct.setRef(parentStopPlaceId);
             stopPlace.setParentZoneRef(zoneRefStruct);
         }
@@ -75,7 +75,7 @@ public class StopPlaceProducer extends NetexProducer implements NetexEntityProdu
 
         if (isSet(stopArea.getFareCode())) {
             TariffZoneRefs_RelStructure tariffZoneRefsStruct = netexFactory.createTariffZoneRefs_RelStructure();
-            String tariffZoneIdRef = netexId(stopArea.objectIdPrefix(), TARIFF_ZONE_REF_KEY, String.valueOf(stopArea.getFareCode()));
+            String tariffZoneIdRef = netexId(stopArea.objectIdPrefix(), TARIFF_ZONE_REF, String.valueOf(stopArea.getFareCode()));
             TariffZoneRef tariffZoneRef = netexFactory.createTariffZoneRef().withRef(tariffZoneIdRef);
             tariffZoneRefsStruct.withTariffZoneRef(tariffZoneRef);
             stopPlace.setTariffZones(tariffZoneRefsStruct);
@@ -88,7 +88,7 @@ public class StopPlaceProducer extends NetexProducer implements NetexEntityProdu
                 Quay quay = netexFactory.createQuay();
                 quay.setVersion(containedStopArea.getObjectVersion() > 0 ? String.valueOf(containedStopArea.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 
-                String quayId = netexId(containedStopArea.objectIdPrefix(), QUAY_KEY, containedStopArea.objectIdSuffix());
+                String quayId = netexId(containedStopArea.objectIdPrefix(), QUAY, containedStopArea.objectIdSuffix());
                 quay.setId(quayId);
 
                 if (isSet(quay.getName())) {
@@ -128,7 +128,7 @@ public class StopPlaceProducer extends NetexProducer implements NetexEntityProdu
 
                 if (isSet(containedStopArea.getFareCode())) {
                     TariffZoneRefs_RelStructure tariffZoneRefsStruct = netexFactory.createTariffZoneRefs_RelStructure();
-                    String tariffZoneIdRef = netexId(containedStopArea.objectIdPrefix(), TARIFF_ZONE_REF_KEY, String.valueOf(containedStopArea.getFareCode()));
+                    String tariffZoneIdRef = netexId(containedStopArea.objectIdPrefix(), TARIFF_ZONE_REF, String.valueOf(containedStopArea.getFareCode()));
                     TariffZoneRef tariffZoneRef = netexFactory.createTariffZoneRef().withRef(tariffZoneIdRef);
                     tariffZoneRefsStruct.withTariffZoneRef(tariffZoneRef);
                     quay.setTariffZones(tariffZoneRefsStruct);

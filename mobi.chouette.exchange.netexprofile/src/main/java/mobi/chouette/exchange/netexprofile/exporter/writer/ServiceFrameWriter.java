@@ -42,11 +42,11 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
             writer.writeAttribute(ID, serviceFrameId);
 
             if (fragmentMode.equals(NetexFragmentMode.LINE)) {
-                writeRoutePointsElement(writer, exportableNetexData);
                 writeRoutesElement(writer, exportableNetexData);
                 writeLinesElement(writer, exportableNetexData);
                 writeJourneyPatternsElement(writer, exportableNetexData);
             } else { // shared data
+                writeRoutePointsElement(writer, exportableNetexData);
                 writeScheduledStopPointsElement(writer, exportableNetexData);
                 writeStopAssignmentsElement(writer, exportableNetexData);
             }
@@ -68,7 +68,7 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
     private static void writeRoutePointsElement(XMLStreamWriter writer, ExportableNetexData exportableData) {
         try {
             writer.writeStartElement(ROUTE_POINTS);
-            for (RoutePoint routePoint : exportableData.getRoutePoints()) {
+            for (RoutePoint routePoint : exportableData.getSharedRoutePoints().values()) {
                 marshaller.marshal(netexFactory.createRoutePoint(routePoint), writer);
             }
             writer.writeEndElement();

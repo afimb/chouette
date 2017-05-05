@@ -1,9 +1,11 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.common.Context;
-import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.*;
+import mobi.chouette.model.StopArea;
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
+import org.rutebanken.netex.model.Route;
 
 import java.util.List;
 
@@ -18,7 +20,7 @@ public class RouteProducer extends NetexProducer implements NetexEntityProducer<
         org.rutebanken.netex.model.Route netexRoute = netexFactory.createRoute();
         netexRoute.setVersion(neptuneRoute.getObjectVersion() > 0 ? String.valueOf(neptuneRoute.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 
-        String routeId = netexId(neptuneRoute.objectIdPrefix(), ROUTE_KEY, neptuneRoute.objectIdSuffix());
+        String routeId = netexId(neptuneRoute.objectIdPrefix(), ROUTE, neptuneRoute.objectIdSuffix());
         netexRoute.setId(routeId);
 
         if (isSet(neptuneRoute.getComment(), neptuneRoute.getNumber())) {
@@ -54,14 +56,41 @@ public class RouteProducer extends NetexProducer implements NetexEntityProducer<
         lineRefStruct.setRef(neptuneRoute.getLine().getObjectId());
         netexRoute.setLineRef(netexFactory.createLineRef(lineRefStruct));
 
-        PointsOnRoute_RelStructure pointsOnRoute = netexFactory.createPointsOnRoute_RelStructure();
         List<StopPoint> stopPoints = neptuneRoute.getStopPoints();
         String[] idSequence = NetexProducerUtils.generateIdSequence(stopPoints.size());
+        PointsOnRoute_RelStructure pointsOnRoute = netexFactory.createPointsOnRoute_RelStructure();
 
+        // NEW LOOP
+        for (StopPoint stopPoint : neptuneRoute.getStopPoints()) {
+            if (stopPoint != null) {
+                String pointVersion = neptuneRoute.getObjectVersion() > 0 ? String.valueOf(neptuneRoute.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
+                String pointOnRouteIdSuffix = stopPoint.objectIdSuffix() + "-" + stopPoint.getPosition();
+                String pointOnRouteId = netexId(stopPoint.objectIdPrefix(), POINT_ON_ROUTE, pointOnRouteIdSuffix);
+
+                PointOnRoute pointOnRoute = netexFactory.createPointOnRoute()
+                        .withVersion(pointVersion)
+                        .withId(pointOnRouteId);
+                pointsOnRoute.getPointOnRoute().add(pointOnRoute);
+
+                if (stopPoint.getContainedInStopArea() != null) {
+                    String routePointIdSuffix = stopPoint.getContainedInStopArea().objectIdSuffix();
+                    String routePointId = netexId(neptuneRoute.objectIdPrefix(), ROUTE_POINT, routePointIdSuffix);
+
+                    RoutePointRefStructure routePointRefStruct = netexFactory.createRoutePointRefStructure()
+                            //.withVersion(pointVersion)
+                            .withRef(routePointId);
+                    pointOnRoute.setPointRef(netexFactory.createRoutePointRef(routePointRefStruct));
+                } else {
+                    throw new RuntimeException("StopPoint with id : " + stopPoint.getObjectId() + " is not contained in a StopArea. Cannot produce RoutePoint reference.");
+                }
+            }
+        }
+
+/*
         for (int i = 0; i < stopPoints.size(); i++) {
             StopPoint stopPoint = stopPoints.get(i);
             String pointOnRouteIdSuffix = neptuneRoute.objectIdSuffix() + StringUtils.leftPad(idSequence[i], 2, "0");
-            String pointOnRouteId = netexId(neptuneRoute.objectIdPrefix(), POINT_ON_ROUTE_KEY, pointOnRouteIdSuffix);
+            String pointOnRouteId = netexId(neptuneRoute.objectIdPrefix(), POINT_ON_ROUTE, pointOnRouteIdSuffix);
             String routeVersion = neptuneRoute.getObjectVersion() > 0 ? String.valueOf(neptuneRoute.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
 
             PointOnRoute pointOnRoute = netexFactory.createPointOnRoute()
@@ -71,13 +100,14 @@ public class RouteProducer extends NetexProducer implements NetexEntityProducer<
 
             String[] idSuffixSplit = StringUtils.splitByWholeSeparator(stopPoint.objectIdSuffix(), "-");
             String stopPointIdSuffix = idSuffixSplit[idSuffixSplit.length - 1];
-            String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), ROUTE_POINT_KEY, stopPointIdSuffix);
+            String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), ROUTE_POINT, stopPointIdSuffix);
 
             RoutePointRefStructure routePointRefStruct = netexFactory.createRoutePointRefStructure()
                     .withVersion(routeVersion)
                     .withRef(stopPointIdRef);
             pointOnRoute.setPointRef(netexFactory.createRoutePointRef(routePointRefStruct));
         }
+*/
 
         netexRoute.setPointsInSequence(pointsOnRoute);
 
@@ -85,7 +115,7 @@ public class RouteProducer extends NetexProducer implements NetexEntityProducer<
             RouteRefStructure routeRefStruct = netexFactory.createRouteRefStructure();
             routeRefStruct.setVersion(neptuneRoute.getOppositeRoute().getObjectVersion() > 0 ? String.valueOf(neptuneRoute.getOppositeRoute().getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 
-            String inverseRouteIdRef = netexId(neptuneRoute.getOppositeRoute().objectIdPrefix(), ROUTE_KEY, neptuneRoute.getOppositeRoute().objectIdSuffix());
+            String inverseRouteIdRef = netexId(neptuneRoute.getOppositeRoute().objectIdPrefix(), ROUTE, neptuneRoute.getOppositeRoute().objectIdSuffix());
             routeRefStruct.setRef(inverseRouteIdRef);
 
             netexRoute.setInverseRouteRef(routeRefStruct);

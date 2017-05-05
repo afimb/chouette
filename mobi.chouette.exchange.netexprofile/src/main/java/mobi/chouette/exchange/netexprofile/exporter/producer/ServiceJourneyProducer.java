@@ -16,8 +16,8 @@ import java.util.List;
 import static mobi.chouette.exchange.netexprofile.Constant.PRODUCING_CONTEXT;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SERVICE_JOURNEY_KEY;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.STOP_POINT_IN_JOURNEY_PATTERN_KEY;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SERVICE_JOURNEY;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.STOP_POINT_IN_JOURNEY_PATTERN;
 
 public class ServiceJourneyProducer extends NetexProducer { //implements NetexEntityProducer<ServiceJourney, VehicleJourney> {
 
@@ -30,7 +30,7 @@ public class ServiceJourneyProducer extends NetexProducer { //implements NetexEn
         ServiceJourney serviceJourney = netexFactory.createServiceJourney();
         serviceJourney.setVersion(vehicleJourney.getObjectVersion() > 0 ? String.valueOf(vehicleJourney.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 
-        String serviceJourneyId = netexId(vehicleJourney.objectIdPrefix(), SERVICE_JOURNEY_KEY, vehicleJourney.objectIdSuffix());
+        String serviceJourneyId = netexId(vehicleJourney.objectIdPrefix(), SERVICE_JOURNEY, vehicleJourney.objectIdSuffix());
         serviceJourney.setId(serviceJourneyId);
 
         if (isSet(vehicleJourney.getPublishedJourneyName())) {
@@ -89,8 +89,11 @@ public class ServiceJourneyProducer extends NetexProducer { //implements NetexEn
                 StopPointInJourneyPatternRefStructure pointInPatternRefStruct = netexFactory.createStopPointInJourneyPatternRefStructure();
                 pointInPatternRefStruct.setVersion(stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 
-                String pointInPatternIdSuffix = journeyPattern.objectIdSuffix() + StringUtils.leftPad(idSequence[i], 2, "0");
-                String pointInPatternIdRef = netexId(vehicleJourney.objectIdPrefix(), STOP_POINT_IN_JOURNEY_PATTERN_KEY, pointInPatternIdSuffix);
+                //String pointInPatternIdSuffix = journeyPattern.objectIdSuffix() + StringUtils.leftPad(idSequence[i], 2, "0");
+                String pointInPatternIdSuffix = stopPoint.objectIdSuffix() + "-" + stopPoint.getPosition();
+                //String pointInPatternIdRef = netexId(vehicleJourney.objectIdPrefix(), STOP_POINT_IN_JOURNEY_PATTERN, pointInPatternIdSuffix);
+                //String stopPointInJourneyPatternId = netexId(stopPoint.objectIdPrefix(), STOP_POINT_IN_JOURNEY_PATTERN, pointInPatternIdSuffix);
+                String pointInPatternIdRef = netexId(stopPoint.objectIdPrefix(), STOP_POINT_IN_JOURNEY_PATTERN, pointInPatternIdSuffix);
                 pointInPatternRefStruct.setRef(pointInPatternIdRef);
                 timetabledPassingTime.setPointInJourneyPatternRef(netexFactory.createStopPointInJourneyPatternRef(pointInPatternRefStruct));
 

@@ -66,7 +66,7 @@ public class CalendarProducer extends NetexProducer {
                     dayTypes.add(dayType);
 
                     String operatingPeriodIdSuffix = Joiner.on("-").join(line.objectIdSuffix(), format(localStartDate), format(localEndDate));
-                    String operatingPeriodId = netexId(timetable.objectIdPrefix(), OPERATING_PERIOD_KEY, operatingPeriodIdSuffix);
+                    String operatingPeriodId = netexId(timetable.objectIdPrefix(), OPERATING_PERIOD, operatingPeriodIdSuffix);
 
                     if (!processedIds.contains(operatingPeriodId)) {
                         OperatingPeriod operatingPeriod = createOperatingPeriod(version, operatingPeriodId, period);
@@ -146,11 +146,11 @@ public class CalendarProducer extends NetexProducer {
     }
 
     private String createDayTypeId(String dayTypeIdPrefix, Object[] dayTypeIdSuffixParts) {
-        return netexId(dayTypeIdPrefix, DAY_TYPE_KEY, StringUtils.join(dayTypeIdSuffixParts, "-"));
+        return netexId(dayTypeIdPrefix, DAY_TYPE, StringUtils.join(dayTypeIdSuffixParts, "-"));
     }
 
     private String createDayTypeAssignmentId(Timetable timetable, String dayTypeId) {
-        return netexId(timetable.objectIdPrefix(), DAY_TYPE_ASSIGNMENT_KEY, objectIdSuffix(dayTypeId));
+        return netexId(timetable.objectIdPrefix(), DAY_TYPE_ASSIGNMENT, objectIdSuffix(dayTypeId));
     }
 
     private DayType createDayType(String version, String dayTypeId) {
