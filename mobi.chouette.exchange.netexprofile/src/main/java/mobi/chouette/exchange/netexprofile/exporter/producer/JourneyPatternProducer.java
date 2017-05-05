@@ -5,7 +5,6 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
-import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
 
 import java.math.BigInteger;
@@ -59,9 +58,7 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
         PointsInJourneyPattern_RelStructure pointsInJourneyPattern = netexFactory.createPointsInJourneyPattern_RelStructure();
         List<StopPoint> stopPoints = neptuneJourneyPattern.getStopPoints();
         stopPoints.sort(Comparator.comparingInt(StopPoint::getPosition));
-        String[] idSequence = NetexProducerUtils.generateIdSequence(stopPoints.size());
 
-        // NEW LOOP
         for (int i = 0; i < stopPoints.size(); i++) {
             StopPoint stopPoint = stopPoints.get(i);
 
@@ -99,46 +96,6 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
                 pointsInJourneyPattern.getPointInJourneyPatternOrStopPointInJourneyPatternOrTimingPointInJourneyPattern().add(stopPointInJourneyPattern);
             }
         }
-
-/*
-        for (int i = 0; i < stopPoints.size(); i++) {
-            StopPoint stopPoint = stopPoints.get(i);
-
-            StopPointInJourneyPattern stopPointInJourneyPattern = netexFactory.createStopPointInJourneyPattern();
-            stopPointInJourneyPattern.setVersion(stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-
-            String pointInPatternIdSuffix = neptuneJourneyPattern.objectIdSuffix() + StringUtils.leftPad(idSequence[i], 2, "0");
-            String stopPointInJourneyPatternId = netexId(neptuneJourneyPattern.objectIdPrefix(), STOP_POINT_IN_JOURNEY_PATTERN, pointInPatternIdSuffix);
-            stopPointInJourneyPattern.setId(stopPointInJourneyPatternId);
-
-            String[] idSuffixSplit = StringUtils.splitByWholeSeparator(stopPoint.objectIdSuffix(), "-");
-            String stopPointIdSuffix = idSuffixSplit[idSuffixSplit.length - 1];
-
-            String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, stopPointIdSuffix);
-            //String stopRefVersion = stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
-
-            ScheduledStopPointRefStructure stopPointRefStruct = netexFactory.createScheduledStopPointRefStructure()
-                //.withVersion(stopRefVersion)
-                .withRef(stopPointIdRef);
-
-            stopPointInJourneyPattern.setScheduledStopPointRef(netexFactory.createScheduledStopPointRef(stopPointRefStruct));
-
-            BoardingPossibilityEnum forBoarding = stopPoint.getForBoarding();
-            AlightingPossibilityEnum forAlighting = stopPoint.getForAlighting();
-
-            if (forBoarding != null && forAlighting != null) {
-                if (forBoarding.equals(BoardingPossibilityEnum.normal) && forAlighting.equals(AlightingPossibilityEnum.forbidden)) {
-                    stopPointInJourneyPattern.setForAlighting(false);
-                }
-                if (forAlighting.equals(AlightingPossibilityEnum.normal) && forBoarding.equals(BoardingPossibilityEnum.forbidden)) {
-                    stopPointInJourneyPattern.setForBoarding(false);
-                }
-            }
-            
-            stopPointInJourneyPattern.setOrder(BigInteger.valueOf(i + 1));
-            pointsInJourneyPattern.getPointInJourneyPatternOrStopPointInJourneyPatternOrTimingPointInJourneyPattern().add(stopPointInJourneyPattern);
-        }
-*/
 
         netexJourneyPattern.setPointsInSequence(pointsInJourneyPattern);
         return netexJourneyPattern;

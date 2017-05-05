@@ -6,7 +6,6 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import org.rutebanken.netex.model.PointProjection;
-import org.rutebanken.netex.model.Projections_RelStructure;
 import org.rutebanken.netex.model.RoutePoint;
 import org.rutebanken.netex.model.RoutePointsInFrame_RelStructure;
 
