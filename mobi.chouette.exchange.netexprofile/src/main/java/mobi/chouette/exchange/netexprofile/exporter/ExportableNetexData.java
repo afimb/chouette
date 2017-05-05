@@ -66,10 +66,6 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private Set<RoutePoint> routePoints = new HashSet<>();
-
-    @Getter
-    @Setter
     private List<Route> routes = new ArrayList<>();
 
     @Getter
@@ -97,7 +93,6 @@ public class ExportableNetexData {
         line = null;
         stopPoints.clear();
         stopAssignments.clear();
-        routePoints.clear();
         routes.clear();
         journeyPatterns.clear();
         serviceJourneys. clear();
