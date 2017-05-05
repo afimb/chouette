@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 import static mobi.chouette.exchange.netexprofile.Constant.PRODUCING_CONTEXT;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.AVAILABILITY_CONDITION_KEY;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.AVAILABILITY_CONDITION;
 
 public class NetexProducer {
 
@@ -71,7 +71,7 @@ public class NetexProducer {
     protected AvailabilityCondition createAvailabilityCondition(mobi.chouette.model.NeptuneIdentifiedObject neptuneIdentifiedObject) {
 
         // TODO temporary generating random id suffix, find a better way to create object id suffixes
-        String availabilityConditionId = netexId(neptuneIdentifiedObject.objectIdPrefix(), AVAILABILITY_CONDITION_KEY, String.valueOf(NetexProducerUtils.generateRandomId()));
+        String availabilityConditionId = netexId(neptuneIdentifiedObject.objectIdPrefix(), AVAILABILITY_CONDITION, String.valueOf(NetexProducerUtils.generateRandomId()));
         AvailabilityCondition availabilityCondition = netexFactory.createAvailabilityCondition();
         availabilityCondition.setVersion(neptuneIdentifiedObject.getObjectVersion() > 0 ? String.valueOf(neptuneIdentifiedObject.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
         availabilityCondition.setId(availabilityConditionId);

@@ -40,30 +40,27 @@ public final class NetexObjectIdTypes {
 
     // entity id keys
     public static final String AUTHORITY = "Authority";
-    public static final String OPERATOR_KEY = "Operator";
+    public static final String OPERATOR = "Operator";
     public static final String NETWORK = "Network";
     public static final String GROUP_OF_LINES = "GroupOfLines";
     public static final String LINE = "Line";
-    public static final String ROUTE_KEY = "Route";
-    public static final String STOP_PLACE_KEY = "StopPlace";
-    public static final String QUAY_KEY = "Quay";
-    public static final String STOP_POINT_KEY = "ScheduledStopPoint";
-    public static final String POINT_PROJECTION_KEY = "PointProjection";
-    public static final String ROUTE_POINT_KEY = "RoutePoint";
-    public static final String POINT_ON_ROUTE_KEY = "PointOnRoute";
-    public static final String JOURNEY_PATTERN_KEY = "JourneyPattern";
-    public static final String STOP_POINT_IN_JOURNEY_PATTERN_KEY = "StopPointInJourneyPattern";
-    public static final String DESTINATION_DISPLAY = "DestinationDisplay";
-    public static final String DAY_TYPE_KEY = "DayType";
-    public static final String DAY_TYPE_ASSIGNMENT_KEY = "DayTypeAssignment";
-    public static final String OPERATING_PERIOD_KEY = "OperatingPeriod";
-    public static final String OPERATING_DAY_KEY = "OperatingDay";
-    public static final String AVAILABILITY_CONDITION_KEY = "AvailabilityCondition";
-    public static final String SERVICE_JOURNEY_KEY = "ServiceJourney";
-    public static final String PASSENGER_STOP_ASSIGNMENT_KEY = "PassengerStopAssignment";
-    public static final String SERVICE_CALENDAR_KEY = "ServiceCalendar";
+    public static final String ROUTE = "Route";
+    public static final String STOP_PLACE = "StopPlace";
+    public static final String QUAY = "Quay";
+    public static final String SCHEDULED_STOP_POINT = "ScheduledStopPoint";
+    public static final String POINT_PROJECTION = "PointProjection";
+    public static final String ROUTE_POINT = "RoutePoint";
+    public static final String POINT_ON_ROUTE = "PointOnRoute";
+    public static final String JOURNEY_PATTERN = "JourneyPattern";
+    public static final String STOP_POINT_IN_JOURNEY_PATTERN = "StopPointInJourneyPattern";
+    public static final String DAY_TYPE = "DayType";
+    public static final String DAY_TYPE_ASSIGNMENT = "DayTypeAssignment";
+    public static final String OPERATING_PERIOD = "OperatingPeriod";
+    public static final String AVAILABILITY_CONDITION = "AvailabilityCondition";
+    public static final String SERVICE_JOURNEY = "ServiceJourney";
+    public static final String PASSENGER_STOP_ASSIGNMENT = "PassengerStopAssignment";
 
     // entity id ref keys
-    public static final String TARIFF_ZONE_REF_KEY = "TariffZoneRef";
+    public static final String TARIFF_ZONE_REF = "TariffZoneRef";
 
 }

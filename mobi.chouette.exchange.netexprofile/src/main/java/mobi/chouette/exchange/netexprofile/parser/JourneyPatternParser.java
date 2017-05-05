@@ -32,7 +32,6 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
 
         for (JAXBElement<?> journeyPatternElement : journeyPatternStruct.getJourneyPattern_OrJourneyPatternView()) {
             org.rutebanken.netex.model.JourneyPattern netexJourneyPattern = (org.rutebanken.netex.model.JourneyPattern) journeyPatternElement.getValue();
-
             mobi.chouette.model.JourneyPattern chouetteJourneyPattern = ObjectFactory.getJourneyPattern(referential, netexJourneyPattern.getId());
 
             chouetteJourneyPattern.setObjectVersion(NetexParserUtils.getVersion(netexJourneyPattern));
@@ -52,10 +51,6 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
             }
 
             parseStopPointsInJourneyPattern(context, referential, netexJourneyPattern, chouetteJourneyPattern, route.getStopPoints());
-
-            // TODO: add all remaining optional elements, for now we only support RouteRef and pointsInSequence.
-            //      See: https://rutebanken.atlassian.net/wiki/display/PUBLIC/network#network-JourneyPattern
-
             chouetteJourneyPattern.setFilled(true);
         }
     }

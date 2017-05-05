@@ -132,8 +132,8 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         org.rutebanken.netex.model.Line netexLine = lineProducer.produce(context, neptuneLine);
         exportableNetexData.setLine(netexLine);
 
-        Set<RoutePoint> routePoints = createRoutePoints(neptuneLine.getRoutes());
-        exportableNetexData.getRoutePoints().addAll(routePoints);
+//        Set<RoutePoint> routePoints = createRoutePoints(neptuneLine.getRoutes());
+//        exportableNetexData.getRoutePoints().addAll(routePoints);
 
         for (mobi.chouette.model.Route neptuneRoute : neptuneLine.getRoutes()) {
             org.rutebanken.netex.model.Route netexRoute = routeProducer.produce(context, neptuneRoute);
@@ -237,7 +237,13 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
             }
         }
 
+        // route points
+        produceAndCollectRoutePoints(exportableData.getLine().getRoutes(), exportableNetexData);
+
         // stop points
+        produceAndCollectScheduledStopPoints(exportableData.getLine().getRoutes(), exportableNetexData);
+
+/*
         Set<ScheduledStopPoint> stopPoints = createScheduledStopPoints(exportableData.getLine().getRoutes());
 
         for (ScheduledStopPoint stopPoint : stopPoints) {
@@ -245,8 +251,12 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 exportableNetexData.getSharedStopPoints().put(stopPoint.getId(), stopPoint);
             }
         }
+*/
 
         // stop assignments
+        produceAndCollectStopAssignments(exportableData.getLine().getRoutes(), exportableNetexData);
+
+/*
         Set<PassengerStopAssignment> stopAssignments = createStopAssignments(exportableData.getLine().getRoutes());
 
         for (PassengerStopAssignment stopAssignment : stopAssignments) {
@@ -254,6 +264,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 exportableNetexData.getSharedStopAssignments().put(stopAssignment.getId(), stopAssignment);
             }
         }
+*/
     }
 
     private GroupOfLines createGroupOfLines(GroupOfLine groupOfLine) {
@@ -268,6 +279,27 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         return groupOfLines;
     }
 
+    private void produceAndCollectRoutePoints(List<Route> routes, ExportableNetexData exportableNetexData) {
+        for (mobi.chouette.model.Route route : routes) {
+            for (StopPoint stopPoint : route.getStopPoints()) {
+                if (stopPoint != null) {
+                    if (isSet(stopPoint.getContainedInStopArea())) {
+                        String routePointIdSuffix = stopPoint.getContainedInStopArea().objectIdSuffix();
+                        String routePointId = netexId(route.objectIdPrefix(), ROUTE_POINT, routePointIdSuffix);
+
+                        if (!exportableNetexData.getSharedRoutePoints().containsKey(routePointId)) {
+                            RoutePoint routePoint = createRoutePointNew(routePointId, stopPoint);
+                            exportableNetexData.getSharedRoutePoints().put(routePointId, routePoint);
+                        }
+                    } else {
+                        throw new RuntimeException("StopPoint with id : " + stopPoint.getObjectId() + " is not contained in a StopArea. Cannot produce RoutePoint.");
+                    }
+                }
+            }
+        }
+    }
+
+/*
     private Set<RoutePoint> createRoutePoints(List<Route> routes) {
         Set<RoutePoint> routePoints = new HashSet<>();
         Set<String> distinctRoutePointIds = new HashSet<>();
@@ -276,7 +308,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
             for (StopPoint stopPoint : route.getStopPoints()) {
                 String[] idSuffixSplit = StringUtils.splitByWholeSeparator(stopPoint.objectIdSuffix(), "-");
                 String stopPointIdSuffix = idSuffixSplit[idSuffixSplit.length - 1];
-                String routePointId = netexId(stopPoint.objectIdPrefix(), ROUTE_POINT_KEY, stopPointIdSuffix);
+                String routePointId = netexId(stopPoint.objectIdPrefix(), ROUTE_POINT, stopPointIdSuffix);
 
                 if (!distinctRoutePointIds.contains(routePointId)) {
                     RoutePoint routePoint = createRoutePoint(routePointId, stopPoint, stopPointIdSuffix);
@@ -287,21 +319,26 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         }
         return routePoints;
     }
+*/
 
-    private RoutePoint createRoutePoint(String routePointId, StopPoint stopPoint, String stopPointIdSuffix) {
+    private RoutePoint createRoutePointNew(String routePointId, StopPoint stopPoint) {
         String pointVersion = stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
 
         RoutePoint routePoint = netexFactory.createRoutePoint()
                 .withVersion(pointVersion)
                 .withId(routePointId);
 
-        String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), STOP_POINT_KEY, stopPointIdSuffix);
+        String containedInPrefix = stopPoint.getContainedInStopArea().objectIdPrefix();
+        String containedInSuffix = stopPoint.getContainedInStopArea().objectIdSuffix();
+
+        //String pointRefVersion = stopPoint.getContainedInStopArea().getObjectVersion() > 0 ? String.valueOf(stopPoint.getContainedInStopArea().getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
+        String stopPointIdRef = netexId(containedInPrefix, SCHEDULED_STOP_POINT, containedInSuffix);
 
         PointRefStructure pointRefStruct = netexFactory.createPointRefStructure()
-                //.withVersion(pointVersion)
+                //.withVersion(pointRefVersion)
                 .withRef(stopPointIdRef);
 
-        String pointProjectionId = netexId(stopPoint.objectIdPrefix(), POINT_PROJECTION_KEY, stopPointIdSuffix);
+        String pointProjectionId = netexId(containedInPrefix, POINT_PROJECTION, containedInSuffix);
 
         PointProjection pointProjection = netexFactory.createPointProjection()
                 .withVersion(pointVersion)
@@ -314,6 +351,57 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         return routePoint;
     }
 
+/*
+    private RoutePoint createRoutePoint(String routePointId, StopPoint stopPoint, String stopPointIdSuffix) {
+        String pointVersion = stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
+
+        RoutePoint routePoint = netexFactory.createRoutePoint()
+                .withVersion(pointVersion)
+                .withId(routePointId);
+
+        String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, stopPointIdSuffix);
+
+        PointRefStructure pointRefStruct = netexFactory.createPointRefStructure()
+                //.withVersion(pointVersion)
+                .withRef(stopPointIdRef);
+
+        String pointProjectionId = netexId(stopPoint.objectIdPrefix(), POINT_PROJECTION, stopPointIdSuffix);
+
+        PointProjection pointProjection = netexFactory.createPointProjection()
+                .withVersion(pointVersion)
+                .withId(pointProjectionId)
+                .withProjectedPointRef(pointRefStruct);
+
+        Projections_RelStructure projections = netexFactory.createProjections_RelStructure()
+                .withProjectionRefOrProjection(netexFactory.createPointProjection(pointProjection));
+        routePoint.setProjections(projections);
+        return routePoint;
+    }
+*/
+
+    private void produceAndCollectScheduledStopPoints(List<mobi.chouette.model.Route> routes, ExportableNetexData exportableNetexData) {
+        for (mobi.chouette.model.Route route : routes) {
+            for (StopPoint stopPoint : route.getStopPoints()) {
+
+                if (stopPoint != null) {
+                    if (isSet(stopPoint.getContainedInStopArea())) {
+                        String scheduledStopPointIdPrefix = stopPoint.getContainedInStopArea().objectIdPrefix();
+                        String scheduledStopPointIdSuffix = stopPoint.getContainedInStopArea().objectIdSuffix();
+                        String scheduledStopPointId = netexId(scheduledStopPointIdPrefix, SCHEDULED_STOP_POINT, scheduledStopPointIdSuffix);
+
+                        if (!exportableNetexData.getSharedStopPoints().containsKey(scheduledStopPointId)) {
+                            ScheduledStopPoint scheduledStopPoint = createScheduledStopPoint(stopPoint, scheduledStopPointId);
+                            exportableNetexData.getSharedStopPoints().put(scheduledStopPointId, scheduledStopPoint);
+                        }
+                    } else {
+                        throw new RuntimeException("StopPoint with id : " + stopPoint.getObjectId() + " is not contained in a StopArea. Cannot produce ScheduledStopPoint.");
+                    }
+                }
+            }
+        }
+    }
+
+/*
     private Set<ScheduledStopPoint> createScheduledStopPoints(List<mobi.chouette.model.Route> routes) {
         Set<ScheduledStopPoint> scheduledStopPoints = new HashSet<>();
         Set<String> distinctStopPointIds = new HashSet<>();
@@ -322,7 +410,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
             for (StopPoint stopPoint : route.getStopPoints()) {
                 String[] idSuffixSplit = StringUtils.splitByWholeSeparator(stopPoint.objectIdSuffix(), "-");
                 String stopPointIdSuffix = idSuffixSplit[idSuffixSplit.length - 1];
-                String stopPointId = netexId(stopPoint.objectIdPrefix(), STOP_POINT_KEY, stopPointIdSuffix);
+                String stopPointId = netexId(stopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, stopPointIdSuffix);
 
                 if (!distinctStopPointIds.contains(stopPointId)) {
                     ScheduledStopPoint scheduledStopPoint = createScheduledStopPoint(stopPoint, stopPointId);
@@ -333,10 +421,12 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         }
         return scheduledStopPoints;
     }
+*/
 
     private ScheduledStopPoint createScheduledStopPoint(StopPoint stopPoint, String stopPointId) {
+        Integer objectVersion = stopPoint.getContainedInStopArea().getObjectVersion();
         ScheduledStopPoint scheduledStopPoint = netexFactory.createScheduledStopPoint();
-        scheduledStopPoint.setVersion(stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+        scheduledStopPoint.setVersion(objectVersion > 0 ? String.valueOf(objectVersion) : NETEX_DATA_OJBECT_VERSION);
         scheduledStopPoint.setId(stopPointId);
 
         if (isSet(stopPoint.getContainedInStopArea().getName())) {
@@ -346,6 +436,31 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         return scheduledStopPoint;
     }
 
+    private void produceAndCollectStopAssignments(List<mobi.chouette.model.Route> routes, ExportableNetexData exportableNetexData) {
+        int index = 1;
+        for (mobi.chouette.model.Route route : routes) {
+            for (StopPoint stopPoint : route.getStopPoints()) {
+
+                if (stopPoint != null) {
+                    if (isSet(stopPoint.getContainedInStopArea())) {
+                        String stopAssignmentIdPrefix = stopPoint.getContainedInStopArea().objectIdPrefix();
+                        String stopAssignmentIdSuffix = stopPoint.getContainedInStopArea().objectIdSuffix();
+                        String stopAssignmentId = netexId(stopAssignmentIdPrefix, PASSENGER_STOP_ASSIGNMENT, stopAssignmentIdSuffix);
+
+                        if (!exportableNetexData.getSharedStopAssignments().containsKey(stopAssignmentId)) {
+                            PassengerStopAssignment stopAssignment = createStopAssignmentNew(stopPoint, stopAssignmentId, index);
+                            exportableNetexData.getSharedStopAssignments().put(stopAssignmentId, stopAssignment);
+                            index++;
+                        }
+                    } else {
+                        throw new RuntimeException("StopPoint with id : " + stopPoint.getObjectId() + " is not contained in a StopArea. Cannot produce StopAssignment.");
+                    }
+                }
+            }
+        }
+    }
+
+/*
     private Set<PassengerStopAssignment> createStopAssignments(List<mobi.chouette.model.Route> routes) {
         Set<PassengerStopAssignment> stopAssignments = new HashSet<>();
         Set<String> distinctStopPointIdRefs = new HashSet<>();
@@ -355,7 +470,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
             for (StopPoint stopPoint : route.getStopPoints()) {
                 String[] idSuffixSplit = StringUtils.splitByWholeSeparator(stopPoint.objectIdSuffix(), "-");
                 String stopPointIdSuffix = idSuffixSplit[idSuffixSplit.length - 1];
-                String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), STOP_POINT_KEY, stopPointIdSuffix);
+                String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, stopPointIdSuffix);
 
                 if (!distinctStopPointIdRefs.contains(stopPointIdRef)) {
                     PassengerStopAssignment stopAssignment = createStopAssignment(stopPoint, stopPointIdSuffix, index, stopPointIdRef);
@@ -368,10 +483,44 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
         return stopAssignments;
     }
+*/
 
+    private PassengerStopAssignment createStopAssignmentNew(StopPoint stopPoint, String stopAssignmentId, int order) {
+        String pointVersion = stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
+
+        PassengerStopAssignment stopAssignment = netexFactory.createPassengerStopAssignment()
+                .withVersion(pointVersion)
+                .withId(stopAssignmentId)
+                .withOrder(new BigInteger(Integer.toString(order)));
+
+        String stopPointIdRef = netexId(stopPoint.getContainedInStopArea().objectIdPrefix(), SCHEDULED_STOP_POINT, stopPoint.getContainedInStopArea().objectIdSuffix());
+
+        ScheduledStopPointRefStructure scheduledStopPointRefStruct = netexFactory.createScheduledStopPointRefStructure().withRef(stopPointIdRef);
+        stopAssignment.setScheduledStopPointRef(scheduledStopPointRefStruct);
+
+        if (isSet(stopPoint.getContainedInStopArea())) {
+            if (isSet(stopPoint.getContainedInStopArea().getParent())) {
+                mobi.chouette.model.StopArea parentStopArea = stopPoint.getContainedInStopArea().getParent();
+                String stopPlaceIdRef = netexId(parentStopArea.objectIdPrefix(), STOP_PLACE, parentStopArea.objectIdSuffix());
+
+                StopPlaceRefStructure stopPlaceRefStruct = netexFactory.createStopPlaceRefStructure().withRef(stopPlaceIdRef);
+                stopAssignment.setStopPlaceRef(stopPlaceRefStruct);
+            }
+
+            mobi.chouette.model.StopArea containedInStopArea = stopPoint.getContainedInStopArea();
+            String quayIdRef = netexId(containedInStopArea.objectIdPrefix(), QUAY, containedInStopArea.objectIdSuffix());
+
+            QuayRefStructure quayRefStruct = netexFactory.createQuayRefStructure().withRef(quayIdRef);
+            stopAssignment.setQuayRef(quayRefStruct);
+        }
+
+        return stopAssignment;
+    }
+
+/*
     private PassengerStopAssignment createStopAssignment(StopPoint stopPoint, String stopPointIdSuffix, int order, String stopPointIdRef) {
         String pointVersion = stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
-        String stopAssignmentId = netexId(stopPoint.objectIdPrefix(), PASSENGER_STOP_ASSIGNMENT_KEY, stopPointIdSuffix);
+        String stopAssignmentId = netexId(stopPoint.objectIdPrefix(), PASSENGER_STOP_ASSIGNMENT, stopPointIdSuffix);
 
         PassengerStopAssignment stopAssignment = netexFactory.createPassengerStopAssignment()
                 .withVersion(pointVersion)
@@ -387,7 +536,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
             if (isSet(stopPoint.getContainedInStopArea().getParent())) {
                 mobi.chouette.model.StopArea parentStopArea = stopPoint.getContainedInStopArea().getParent();
                 //String stopPlaceVersion = parentStopArea.getObjectVersion() > 0 ? String.valueOf(parentStopArea.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
-                String stopPlaceIdRef = netexId(parentStopArea.objectIdPrefix(), STOP_PLACE_KEY, parentStopArea.objectIdSuffix());
+                String stopPlaceIdRef = netexId(parentStopArea.objectIdPrefix(), STOP_PLACE, parentStopArea.objectIdSuffix());
 
                 StopPlaceRefStructure stopPlaceRefStruct = netexFactory.createStopPlaceRefStructure()
                         //.withVersion(stopPlaceVersion)
@@ -397,7 +546,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
             mobi.chouette.model.StopArea containedInStopArea = stopPoint.getContainedInStopArea();
             //String quayVersion = containedInStopArea.getObjectVersion() > 0 ? String.valueOf(containedInStopArea.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
-            String quayIdRef = netexId(containedInStopArea.objectIdPrefix(), QUAY_KEY, containedInStopArea.objectIdSuffix());
+            String quayIdRef = netexId(containedInStopArea.objectIdPrefix(), QUAY, containedInStopArea.objectIdSuffix());
 
             QuayRefStructure quayRefStruct = netexFactory.createQuayRefStructure()
                     //.withVersion(quayVersion)
@@ -407,6 +556,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
         return stopAssignment;
     }
+*/
 
     private Authority createNetworkAuthority(Network network) {
         return createNetworkAuthority(network.getObjectVersion() > 0 ? String.valueOf(network.getObjectVersion()) :
