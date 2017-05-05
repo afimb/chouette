@@ -275,10 +275,9 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 .withVersion(pointVersion)
                 .withId(routePointId);
 
-        String containedInPrefix = stopPoint.getContainedInStopArea().objectIdPrefix();
         String containedInSuffix = stopPoint.getContainedInStopArea().objectIdSuffix();
-        String stopPointIdRef = netexId(containedInPrefix, SCHEDULED_STOP_POINT, containedInSuffix);
-        String pointProjectionId = netexId(containedInPrefix, POINT_PROJECTION, containedInSuffix);
+        String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, containedInSuffix);
+        String pointProjectionId = netexId(stopPoint.objectIdPrefix(), POINT_PROJECTION, containedInSuffix);
 
         PointRefStructure pointRefStruct = netexFactory.createPointRefStructure().withRef(stopPointIdRef);
 
@@ -300,9 +299,8 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
                 if (stopPoint != null) {
                     if (isSet(stopPoint.getContainedInStopArea())) {
-                        String scheduledStopPointIdPrefix = stopPoint.getContainedInStopArea().objectIdPrefix();
                         String scheduledStopPointIdSuffix = stopPoint.getContainedInStopArea().objectIdSuffix();
-                        String scheduledStopPointId = netexId(scheduledStopPointIdPrefix, SCHEDULED_STOP_POINT, scheduledStopPointIdSuffix);
+                        String scheduledStopPointId = netexId(stopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, scheduledStopPointIdSuffix);
 
                         if (!exportableNetexData.getSharedStopPoints().containsKey(scheduledStopPointId)) {
                             ScheduledStopPoint scheduledStopPoint = createScheduledStopPoint(stopPoint, scheduledStopPointId);
@@ -336,9 +334,8 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
                 if (stopPoint != null) {
                     if (isSet(stopPoint.getContainedInStopArea())) {
-                        String stopAssignmentIdPrefix = stopPoint.getContainedInStopArea().objectIdPrefix();
                         String stopAssignmentIdSuffix = stopPoint.getContainedInStopArea().objectIdSuffix();
-                        String stopAssignmentId = netexId(stopAssignmentIdPrefix, PASSENGER_STOP_ASSIGNMENT, stopAssignmentIdSuffix);
+                        String stopAssignmentId = netexId(stopPoint.objectIdPrefix(), PASSENGER_STOP_ASSIGNMENT, stopAssignmentIdSuffix);
 
                         if (!exportableNetexData.getSharedStopAssignments().containsKey(stopAssignmentId)) {
                             PassengerStopAssignment stopAssignment = createStopAssignmentNew(stopPoint, stopAssignmentId, index);
