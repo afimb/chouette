@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="All" verbose="5">
+  <test name="AllTest">
+    <packages>
+      <package name="mobi.chouette.exchange.stopplace.*"> </package>
+    </packages>
+  </test>
+</suite>

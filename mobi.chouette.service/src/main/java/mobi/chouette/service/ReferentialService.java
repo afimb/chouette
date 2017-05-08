@@ -14,10 +14,10 @@ public class ReferentialService {
     public static final String BEAN_NAME = "ReferentialService";
 
     @EJB
-    ReferentialDAO jobDAO;
+    ReferentialDAO referentialDAO;
 
 
     public List<String> getReferentials(){
-        return jobDAO.getReferentials();
+        return referentialDAO.getReferentials();
     }
 }

@@ -141,5 +141,12 @@
          <scope>test</scope>
       </dependency>
 
+       <dependency>
+           <groupId>${project.groupId}</groupId>
+           <artifactId>mobi.chouette.exchange.stopplace</artifactId>
+           <type>ejb</type>
+           <version>${project.version}</version>
+       </dependency>
+
    </dependencies>
    </project>

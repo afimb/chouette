@@ -25,6 +25,7 @@ public class Application extends javax.ws.rs.core.Application implements
 		result.add(RestService.class);
 		result.add(RestAdmin.class);
 		result.add(RestStatisticsService.class);
+		result.add(RestNetexStopPlaceService.class);
 		return result;
 	}
 
