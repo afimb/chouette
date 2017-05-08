@@ -121,7 +121,8 @@ public class NetexValidateExportCommand implements Command, Constant {
                     parserCommand.execute(validateExportContext);
                 }
             } catch (Exception ex) {
-                log.error("Problem in validation " + ex);
+                log.error("Exception during validation of exported files : ", ex);
+                throw ex;
             } finally {
                 input.renameTo(output);
                 Command disposeImportCommand = CommandFactory.create(initialContext, NetexDisposeImportCommand.class.getName());
