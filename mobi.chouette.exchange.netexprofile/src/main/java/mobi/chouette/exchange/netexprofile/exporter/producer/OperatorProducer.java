@@ -18,7 +18,7 @@ public class OperatorProducer extends NetexProducer implements NetexEntityProduc
 
         operator.setVersion(company.getObjectVersion() > 0 ? String.valueOf(company.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 
-        String operatorId = netexId(company.objectIdPrefix(), NetexObjectIdTypes.OPERATOR_KEY, company.objectIdSuffix());
+        String operatorId = netexId(company.objectIdPrefix(), NetexObjectIdTypes.OPERATOR, company.objectIdSuffix());
         operator.setId(operatorId);
 
         if (isSet(company.getCode())) {
