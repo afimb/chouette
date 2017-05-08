@@ -338,7 +338,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                         String stopAssignmentId = netexId(stopPoint.objectIdPrefix(), PASSENGER_STOP_ASSIGNMENT, stopAssignmentIdSuffix);
 
                         if (!exportableNetexData.getSharedStopAssignments().containsKey(stopAssignmentId)) {
-                            PassengerStopAssignment stopAssignment = createStopAssignmentNew(stopPoint, stopAssignmentId, index);
+                            PassengerStopAssignment stopAssignment = createStopAssignment(stopPoint, stopAssignmentId, index);
                             exportableNetexData.getSharedStopAssignments().put(stopAssignmentId, stopAssignment);
                             index++;
                         }
@@ -350,7 +350,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         }
     }
 
-    private PassengerStopAssignment createStopAssignmentNew(StopPoint stopPoint, String stopAssignmentId, int order) {
+    private PassengerStopAssignment createStopAssignment(StopPoint stopPoint, String stopAssignmentId, int order) {
         String pointVersion = stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
 
         PassengerStopAssignment stopAssignment = netexFactory.createPassengerStopAssignment()
@@ -358,7 +358,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 .withId(stopAssignmentId)
                 .withOrder(new BigInteger(Integer.toString(order)));
 
-        String stopPointIdRef = netexId(stopPoint.getContainedInStopArea().objectIdPrefix(), SCHEDULED_STOP_POINT, stopPoint.getContainedInStopArea().objectIdSuffix());
+        String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, stopPoint.getContainedInStopArea().objectIdSuffix());
 
         ScheduledStopPointRefStructure scheduledStopPointRefStruct = netexFactory.createScheduledStopPointRefStructure().withRef(stopPointIdRef);
         stopAssignment.setScheduledStopPointRef(scheduledStopPointRefStruct);
