@@ -69,7 +69,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         String fileName = neptuneLine.getObjectId().replaceAll(":", "-") + (neptuneLine.getNumber() != null ?
                 neptuneLine.getNumber() + "-" : "") + (neptuneLine.getPublishedName() != null ?
                 "-" + neptuneLine.getPublishedName().replace(' ', '_').replace('/', '_') : "") + ".xml";
-        Path filePath = new File(outputPath.toFile(), replaceInvalidCharsInFileName(fileName)).toPath();
+        Path filePath = new File(outputPath.toFile(), fileName).toPath();
 
         NetexFileWriter writer = new NetexFileWriter();
         writer.writeXmlFile(context, filePath, exportableData, exportableNetexData, NetexFragmentMode.LINE);
@@ -413,14 +413,6 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         return netexFactory.createContactStructure()
                 .withPhone(phone)
                 .withUrl(url);
-    }
-
-    private String replaceInvalidCharsInFileName(String originalFileName) {
-        return StringUtils.replaceEach(
-                originalFileName,
-                new String[]{"Å", "Æ", "Ø", "å", "æ", "ø", "Ö", "Ä", "ö", "ä", "Á", "á"},
-                new String[]{"AA", "AE", "OE", "aa", "ae", "oe", "OE", "AE", "oe", "ae", "AA", "aa"}
-        );
     }
 
     static {
