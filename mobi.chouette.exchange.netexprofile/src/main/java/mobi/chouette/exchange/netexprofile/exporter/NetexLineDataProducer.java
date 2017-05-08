@@ -69,7 +69,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         String fileName = neptuneLine.getObjectId().replaceAll(":", "-") + (neptuneLine.getNumber() != null ?
                 neptuneLine.getNumber() + "-" : "") + (neptuneLine.getPublishedName() != null ?
                 "-" + neptuneLine.getPublishedName().replace(' ', '_').replace('/', '_') : "") + ".xml";
-        Path filePath = new File(outputPath.toFile(), replaceInvalidCharsInFileName(fileName)).toPath();
+        Path filePath = new File(outputPath.toFile(), fileName).toPath();
 
         NetexFileWriter writer = new NetexFileWriter();
         writer.writeXmlFile(context, filePath, exportableData, exportableNetexData, NetexFragmentMode.LINE);
@@ -338,7 +338,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                         String stopAssignmentId = netexId(stopPoint.objectIdPrefix(), PASSENGER_STOP_ASSIGNMENT, stopAssignmentIdSuffix);
 
                         if (!exportableNetexData.getSharedStopAssignments().containsKey(stopAssignmentId)) {
-                            PassengerStopAssignment stopAssignment = createStopAssignmentNew(stopPoint, stopAssignmentId, index);
+                            PassengerStopAssignment stopAssignment = createStopAssignment(stopPoint, stopAssignmentId, index);
                             exportableNetexData.getSharedStopAssignments().put(stopAssignmentId, stopAssignment);
                             index++;
                         }
@@ -350,7 +350,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         }
     }
 
-    private PassengerStopAssignment createStopAssignmentNew(StopPoint stopPoint, String stopAssignmentId, int order) {
+    private PassengerStopAssignment createStopAssignment(StopPoint stopPoint, String stopAssignmentId, int order) {
         String pointVersion = stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
 
         PassengerStopAssignment stopAssignment = netexFactory.createPassengerStopAssignment()
@@ -358,7 +358,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 .withId(stopAssignmentId)
                 .withOrder(new BigInteger(Integer.toString(order)));
 
-        String stopPointIdRef = netexId(stopPoint.getContainedInStopArea().objectIdPrefix(), SCHEDULED_STOP_POINT, stopPoint.getContainedInStopArea().objectIdSuffix());
+        String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, stopPoint.getContainedInStopArea().objectIdSuffix());
 
         ScheduledStopPointRefStructure scheduledStopPointRefStruct = netexFactory.createScheduledStopPointRefStructure().withRef(stopPointIdRef);
         stopAssignment.setScheduledStopPointRef(scheduledStopPointRefStruct);
@@ -413,14 +413,6 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         return netexFactory.createContactStructure()
                 .withPhone(phone)
                 .withUrl(url);
-    }
-
-    private String replaceInvalidCharsInFileName(String originalFileName) {
-        return StringUtils.replaceEach(
-                originalFileName,
-                new String[]{"Å", "Æ", "Ø", "å", "æ", "ø", "Ö", "Ä", "ö", "ä", "Á", "á"},
-                new String[]{"AA", "AE", "OE", "aa", "ae", "oe", "OE", "AE", "oe", "ae", "AA", "aa"}
-        );
     }
 
     static {
