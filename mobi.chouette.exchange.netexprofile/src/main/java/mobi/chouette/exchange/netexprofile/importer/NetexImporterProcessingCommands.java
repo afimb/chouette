@@ -135,9 +135,10 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 				commonFileChain.add(initializer);
 
 				// profile validation
-				Command validator = CommandFactory.create(initialContext, NetexValidationCommand.class.getName());
-				commonFileChain.add(validator);
-
+				if(parameters.isValidateAgainstProfile()) {
+					Command validator = CommandFactory.create(initialContext, NetexValidationCommand.class.getName());
+					commonFileChain.add(validator);
+				}
 				NetexCommonFilesParserCommand commonFilesParser = (NetexCommonFilesParserCommand) CommandFactory.create(initialContext,
 						NetexCommonFilesParserCommand.class.getName());
 				commonFileChain.add(commonFilesParser);
@@ -169,9 +170,10 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 				lineChain.add(initializer);
 
 				// profile validation
-				Command validator = CommandFactory.create(initialContext, NetexValidationCommand.class.getName());
-				lineChain.add(validator);
-
+				if(parameters.isValidateAgainstProfile()) {
+					Command validator = CommandFactory.create(initialContext, NetexValidationCommand.class.getName());
+					lineChain.add(validator);
+				}
 				// parsing
 				NetexLineParserCommand parser = (NetexLineParserCommand) CommandFactory.create(initialContext, NetexLineParserCommand.class.getName());
 				parser.setFileURL(url);
