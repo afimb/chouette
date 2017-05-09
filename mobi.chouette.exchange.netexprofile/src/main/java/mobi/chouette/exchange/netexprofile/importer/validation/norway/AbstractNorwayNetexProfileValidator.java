@@ -263,7 +263,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 				}
 			} else {
 				foundErrors = true;
-				validationReporter.addCheckPointReportError(context, _1_NETEX_REFERENCE_TO_ILLEGAL_ELEMENT, null, DataLocationHelper.findDataLocation(id),
+				validationReporter.addCheckPointReportError(context, _1_NETEX_INVALID_ID_STRUCTURE, null, DataLocationHelper.findDataLocation(id),
 						referencingElement, referencingElement);
 
 			}
