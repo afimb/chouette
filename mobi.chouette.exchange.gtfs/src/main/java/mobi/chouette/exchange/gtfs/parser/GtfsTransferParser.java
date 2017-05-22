@@ -118,11 +118,21 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
-		StopArea startOfLink = ObjectFactory.getStopArea(referential, AbstractConverter.composeObjectId(
-				configuration, StopArea.STOPAREA_KEY, gtfsTransfer.getFromStopId(), log));
+		StopArea startOfLink = referential.getSharedStopAreas().get(AbstractConverter.composeObjectId(configuration, "StopPlace", gtfsTransfer.getFromStopId(), log));
+		if(startOfLink == null) {
+			// Create between quays by default
+			startOfLink = ObjectFactory.getStopArea(referential, AbstractConverter.composeObjectId(
+						configuration, "Quay", gtfsTransfer.getFromStopId(), log));
+		}
+		
+		StopArea endOfLink = referential.getSharedStopAreas().get(AbstractConverter.composeObjectId(configuration, "StopPlace", gtfsTransfer.getToStopId(), log));
+		if(endOfLink == null) {
+			endOfLink = ObjectFactory.getStopArea(referential, AbstractConverter.composeObjectId(
+					configuration, "Quay", gtfsTransfer.getToStopId(), log));
+		}
+
+		
 		connectionLink.setStartOfLink(startOfLink);
-		StopArea endOfLink = ObjectFactory.getStopArea(referential, AbstractConverter.composeObjectId(
-				configuration, StopArea.STOPAREA_KEY, gtfsTransfer.getToStopId(), log));
 		connectionLink.setEndOfLink(endOfLink);
 		connectionLink.setCreationTime(Calendar.getInstance().getTime());
 		connectionLink.setLinkType(ConnectionLinkTypeEnum.Overground);

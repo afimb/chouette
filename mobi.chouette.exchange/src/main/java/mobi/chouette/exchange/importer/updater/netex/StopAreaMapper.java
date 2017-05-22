@@ -13,7 +13,10 @@ import org.rutebanken.netex.model.*;
 public class StopAreaMapper {
 
     public StopArea mapCommercialStopPoint(Referential referential, StopArea stopArea) {
-        StopArea parent = ObjectFactory.getStopArea(referential, stopArea.getObjectId() + "-PARENT");
+        String split[] = stopArea.getObjectId().split(":");
+        String parentId = split[0]+":StopPlace:"+split[2];
+        
+    	StopArea parent = ObjectFactory.getStopArea(referential, parentId);
         parent.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
         parent.setLatitude(stopArea.getLatitude());
         parent.setLongitude(stopArea.getLongitude());
