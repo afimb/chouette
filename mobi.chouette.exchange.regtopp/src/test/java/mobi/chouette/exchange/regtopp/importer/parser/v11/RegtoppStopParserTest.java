@@ -89,7 +89,7 @@ public class RegtoppStopParserTest {
 
 
     private StopArea getStopArea(RegtoppImportParameters configuration, String stopId) {
-        String objectId = ObjectIdCreator.createStopAreaId(configuration, stopId);
+        String objectId = ObjectIdCreator.createStopPlaceId(configuration, stopId);
         return ObjectFactory.getStopArea(referential, objectId);
     }
 

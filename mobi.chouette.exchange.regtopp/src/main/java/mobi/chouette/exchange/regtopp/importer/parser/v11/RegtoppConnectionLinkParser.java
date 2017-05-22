@@ -71,7 +71,7 @@ public class RegtoppConnectionLinkParser extends LineSpecificParser {
 
 	protected String createStopAreaIdForConnectionLink(RegtoppImportParameters configuration,
 			String stopId) {
-		return ObjectIdCreator.createStopAreaId(configuration,stopId+RegtoppStopParser.BOARDING_POSITION_ID_SUFFIX);
+		return ObjectIdCreator.createQuayId(configuration,stopId);
 	}
 
 	static {

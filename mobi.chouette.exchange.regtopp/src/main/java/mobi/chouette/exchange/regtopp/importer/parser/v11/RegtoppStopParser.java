@@ -80,15 +80,15 @@ public class RegtoppStopParser implements Parser {
 
 	protected void mapRegtoppStop(AbstractRegtoppStopHPL stop, RegtoppImportParameters configuration,
 								  Referential referential, String projection) {
-		String stopPlaceObjectId = ObjectIdCreator.createStopAreaId(configuration, stop.getFullStopId());
+		String stopPlaceObjectId = ObjectIdCreator.createStopPlaceId(configuration, stop.getFullStopId());
 		StopArea stopArea = ObjectFactory.getStopArea(referential, stopPlaceObjectId);
 		stopArea.setName(stop.getFullName());
 		// stopArea.setRegistrationNumber(stop.getShortName());
 		stopArea.setAreaType(PARENT_STOP_PLACE_TYPE);
 		convertAndSetCoordinates(stopArea, stop.getX(), stop.getY(), projection);
 
-		String boardingPositionObjectId = ObjectIdCreator.createStopAreaId(configuration,
-				stop.getFullStopId() + BOARDING_POSITION_ID_SUFFIX);
+		String boardingPositionObjectId = ObjectIdCreator.createQuayId(configuration,
+				stop.getFullStopId());
 		StopArea boardingPosition = ObjectFactory.getStopArea(referential, boardingPositionObjectId);
 		boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
 		convertAndSetCoordinates(boardingPosition, stop.getX(), stop.getY(), projection);

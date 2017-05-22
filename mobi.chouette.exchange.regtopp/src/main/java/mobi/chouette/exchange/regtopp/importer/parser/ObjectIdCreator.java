@@ -76,8 +76,12 @@ public abstract class ObjectIdCreator {
 		return createStopPointId(configuration, localId);
 	}
 
-	public static String createStopAreaId(RegtoppImportParameters configuration, String stopAreaId) {
-		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPAREA_KEY, stopAreaId);
+	public static String createStopPlaceId(RegtoppImportParameters configuration, String stopAreaId) {
+		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), "StopPlace", stopAreaId);
+	}
+
+	public static String createQuayId(RegtoppImportParameters configuration, String stopAreaId) {
+		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), "Quay", stopAreaId);
 	}
 
 	public static String createRouteId(RegtoppImportParameters configuration, RouteKey routeKey) {

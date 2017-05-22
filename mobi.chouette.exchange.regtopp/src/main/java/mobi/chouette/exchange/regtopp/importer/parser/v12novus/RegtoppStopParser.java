@@ -44,7 +44,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 			List<StopArea> boardingPositions = boardingPositionsByStopArea.get(commercialStopAreaId);
 			if (boardingPositions.size() > 0) {
 				// Create parent stopArea
-				String objectId = ObjectIdCreator.createStopAreaId(configuration, commercialStopAreaId);
+				String objectId = ObjectIdCreator.createStopPlaceId(configuration, commercialStopAreaId);
 				StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
 				stopArea.setName(boardingPositions.get(0).getName()); // TODO using name of first stop point, should be identical for all boarding positions according to spec
 				stopArea.setAreaType(PARENT_STOP_PLACE_TYPE);
@@ -82,7 +82,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 
 	public void createBoardingPosition(AbstractRegtoppStopHPL stop,
 									   RegtoppImportParameters regtoppImportParameters, Referential referential) {
-		String objectId = ObjectIdCreator.createStopAreaId(regtoppImportParameters, stop.getFullStopId());
+		String objectId = ObjectIdCreator.createQuayId(regtoppImportParameters, stop.getFullStopId());
 
 		StopArea boardingPosition = ObjectFactory.getStopArea(referential, objectId);
 		boardingPosition.setName(stop.getFullName());
