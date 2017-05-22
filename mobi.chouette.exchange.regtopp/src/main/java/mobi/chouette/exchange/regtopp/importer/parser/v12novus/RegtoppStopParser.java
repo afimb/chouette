@@ -89,7 +89,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
     	String chouetteStopPointId;
     	
     	// Do not append stopPointId if values is "00"
-    	if(stop.getStopPointId() == "00") {
+    	if(stop.getStopPointId().equals("00")) {
     		chouetteStopPointId = ObjectIdCreator.createQuayId(regtoppImportParameters,
     				stop.getStopId());
     	} else {
