@@ -97,9 +97,8 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
     				stop.getFullStopId());
     	}
 
-		String objectId = ObjectIdCreator.createQuayId(regtoppImportParameters, chouetteStopPointId);
 
-		StopArea boardingPosition = ObjectFactory.getStopArea(referential, objectId);
+		StopArea boardingPosition = ObjectFactory.getStopArea(referential, chouetteStopPointId);
 		boardingPosition.setName(stop.getFullName());
 		boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
 		convertAndSetCoordinates(boardingPosition, stop.getX(), stop.getY(), regtoppImportParameters.getCoordinateProjection());
