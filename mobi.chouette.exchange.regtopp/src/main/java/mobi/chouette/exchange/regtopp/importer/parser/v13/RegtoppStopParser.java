@@ -59,8 +59,18 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
                     List<RegtoppStopPointSTP> stopPoints = stopPointsByStopId.getValue(stop.getStopId());
                     if (stopPoints != null) {
                         for (RegtoppStopPointSTP regtoppStopPoint : stopPoints) {
-                            String chouetteStopPointId = ObjectIdCreator.createQuayId(configuration,
-                                    regtoppStopPoint.getFullStopId());
+                        	
+                        	String chouetteStopPointId;
+                        	
+                        	// Do not append stopPointId if values is "00"
+                        	if(regtoppStopPoint.getStopPointId() == "00") {
+                        		chouetteStopPointId = ObjectIdCreator.createQuayId(configuration,
+                                        regtoppStopPoint.getStopId());
+                        	} else {
+                        		chouetteStopPointId = ObjectIdCreator.createQuayId(configuration,
+                                        regtoppStopPoint.getFullStopId());
+                        	}
+                            
                             StopArea boardingPosition = ObjectFactory.getStopArea(referential, chouetteStopPointId);
 
                             convertAndSetCoordinates(boardingPosition, regtoppStopPoint.getX(), regtoppStopPoint.getY(),
