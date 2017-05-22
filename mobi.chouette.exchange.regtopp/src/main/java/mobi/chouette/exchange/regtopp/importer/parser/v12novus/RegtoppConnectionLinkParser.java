@@ -11,7 +11,7 @@ public class RegtoppConnectionLinkParser
 	@Override
 	protected String createStopAreaIdForConnectionLink(RegtoppImportParameters configuration, String stopId) {
 		// Regtopp 1.1D and 1.2 now using new parent stop structure with BOARDIN_POSITION_ID_SUFFIX appended. Not applicable for 1.2N and 1.3A
-		return ObjectIdCreator.createStopAreaId(configuration,stopId);
+		return ObjectIdCreator.createStopPlaceId(configuration,stopId);
 	}
 
 	static {
