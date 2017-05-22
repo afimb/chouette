@@ -80,11 +80,9 @@ public class StopPlaceMapper {
     }
 
     public void replaceIdIfQuayOrStopPlace(Zone_VersionStructure zone) {
-        if(zone instanceof Quay) {
-            zone.setId(zone.getId().replaceAll("StopArea", "Quay"));
-        } else if(zone instanceof StopPlace) {
-            zone.setId(zone.getId().replaceAll("StopArea", "StopPlace"));
-        }
+        zone.setId(zone.getId());
+            
+   
     }
 
     private void mapCentroid(StopArea stopArea, Zone_VersionStructure zone) {
