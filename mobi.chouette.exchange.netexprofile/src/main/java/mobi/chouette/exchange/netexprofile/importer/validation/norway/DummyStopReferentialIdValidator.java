@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,7 +17,7 @@ public class DummyStopReferentialIdValidator implements ExternalReferenceValidat
 	public Set<IdVersion> validateReferenceIds(Context context, Set<IdVersion> externalIds) {
 		
 		// Return all of supported type
-		return isOfSupportedTypes(externalIds);
+		return new HashSet<IdVersion>();
 	}
 
 	@Override
