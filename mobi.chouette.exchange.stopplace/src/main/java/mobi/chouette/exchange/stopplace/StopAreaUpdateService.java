@@ -3,9 +3,11 @@ package mobi.chouette.exchange.stopplace;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.exchange.importer.updater.StopAreaUpdater;
 import mobi.chouette.exchange.importer.updater.Updater;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 
 import javax.ejb.EJB;
@@ -26,6 +28,10 @@ public class StopAreaUpdateService {
 
     @EJB
     private StopAreaDAO stopAreaDAO;
+
+    @EJB
+    private StopPointDAO stopPointDAO;
+
 
     @EJB(beanName = StopAreaUpdater.BEAN_NAME)
     private Updater<StopArea> stopAreaUpdater;
@@ -49,12 +55,20 @@ public class StopAreaUpdateService {
                         Function.identity()));
 
                 stopAreaUpdater.update(context, existing, stopArea);
-
                 existing.getContainedStopAreas().clear();
                 for (StopArea quay : new ArrayList<>(stopArea.getContainedStopAreas())) {
 
                     StopArea existingQuay = existingQuays.remove(quay.getObjectId());
+
+
                     if (existingQuay == null) {
+
+                        // Quay with ID does not already exist for this StopArea, but may exist for another. If so, remove the existing quay.
+                        StopArea quayAlreadyExisting = stopAreaDAO.findByObjectId(quay.getObjectId());
+                        if (quayAlreadyExisting != null) {
+                            removeQuay(quayAlreadyExisting);
+                        }
+
                         log.debug("Creating new StopArea(Quay) : " + quay);
                         quay.setParent(existing);
                         stopAreaDAO.create(quay);
@@ -66,10 +80,7 @@ public class StopAreaUpdateService {
                 }
 
                 for (StopArea obsoleteStopArea : existingQuays.values()) {
-                    log.debug("Detected and ignored obsolete quay: " + obsoleteStopArea);
-//                    // TODO what if referenced?
-//                    log.debug("Deleting obsolete quay: " + obsoleteStopArea.getId());
-//                    stopAreaDAO.delete(obsoleteStopArea);
+                    removeQuay(obsoleteStopArea);
                 }
 
                 stopAreaDAO.update(existing);
@@ -77,6 +88,18 @@ public class StopAreaUpdateService {
                 throw new RuntimeException("Failed to update stop place: " + e.getMessage(), e);
             }
         }
+    }
+
+    private void removeQuay(StopArea obsoleteStopArea) {
+        log.debug("Deleting obsolete quay: " + obsoleteStopArea.getObjectId());
+        obsoleteStopArea.getContainedStopPoints().forEach(stopPoint -> removeStopAreaReferenceFromStopPoint(stopPoint));
+        stopAreaDAO.delete(obsoleteStopArea);
+    }
+
+
+    private void removeStopAreaReferenceFromStopPoint(StopPoint stopPoint) {
+        stopPoint.setContainedInStopArea(null);
+        stopPointDAO.update(stopPoint);
     }
 
 }

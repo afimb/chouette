@@ -13,7 +13,7 @@ public class AccessPointDAOImpl extends GenericDAOImpl<AccessPoint> implements A
 		super(AccessPoint.class);
 	}
 
-	@PersistenceContext(unitName = "referential")
+	@PersistenceContext(unitName = "public")
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
 	}

@@ -121,7 +121,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 
 		List<StopArea> areas = NeptuneUtil.getStopAreaOfRoute(route);
 		for (int j = 1; j < areas.size(); j++) {
-			if (areas.get(j - 1).equals(areas.get(j))) {
+			if (isSame(areas.get(j - 1), areas.get(j))) {
 				// failure encountered, add route 1
 				DataLocation location = buildLocation(context, route);
 				DataLocation targetLocation = buildLocation(context, areas.get(j));
@@ -132,6 +132,13 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 			}
 		}
 
+	}
+
+	private boolean isSame(StopArea area1, StopArea area2) {
+		if (area1 == null || area2 == null) {
+			return false;
+		}
+		return area1.equals(area2);
 	}
 
 	/**
@@ -149,8 +156,12 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		// test can be passed if areas exist and have parents
 		if (areas.isEmpty())
 			return;
-		StopArea first = areas.get(0).getParent();
-		StopArea last = areas.get(areas.size() - 1).getParent();
+		StopArea firstChild = areas.get(0);
+		StopArea lastChild = areas.get(areas.size() - 1);
+		if (firstChild == null || lastChild == null)
+			return;
+		StopArea first = firstChild.getParent();
+		StopArea last = lastChild.getParent();
 		if (first == null || last == null)
 			return;
 		Route routeWb = route.getOppositeRoute();
@@ -207,7 +218,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		for (int i = 1; i < areas.size(); i++) {
 			StopArea firstArea = areas.get(i - 1);
 			StopArea nextArea = areas.get(i);
-			if (!firstArea.hasCoordinates() || !nextArea.hasCoordinates())
+			if (firstArea == null || nextArea == null || !firstArea.hasCoordinates() || !nextArea.hasCoordinates())
 				continue;
 			double distance = distance(firstArea, nextArea);
 			if (distance < distanceMin) {
@@ -273,8 +284,12 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		// test can be passed if areas exist and have parents
 		if (areas.isEmpty())
 			return;
-		StopArea first = areas.get(0).getParent();
-		StopArea last = areas.get(areas.size() - 1).getParent();
+		StopArea firstBoarding=areas.get(0);
+		StopArea lastBoarding=areas.get(areas.size() - 1);
+		if (firstBoarding == null || lastBoarding == null)
+			return;
+		StopArea first =firstBoarding.getParent();
+		StopArea last =lastBoarding.getParent();
 		if (first == null || last == null)
 			return;
 		prepareCheckPoint(context, ROUTE_5);
@@ -338,7 +353,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		List<StopPoint> points = new ArrayList<StopPoint>(route.getStopPoints());
 		for (Iterator<StopPoint> iterator = points.iterator(); iterator.hasNext();) {
 			StopPoint stopPoint = iterator.next();
-			if (stopPoint == null)
+			if (stopPoint == null || stopPoint.getContainedInStopArea() == null)
 				iterator.remove();
 		}
 		for (JourneyPattern jp : route.getJourneyPatterns()) {

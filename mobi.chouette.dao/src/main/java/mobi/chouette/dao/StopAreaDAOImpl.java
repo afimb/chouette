@@ -12,7 +12,7 @@ public class StopAreaDAOImpl extends GenericDAOImpl<StopArea> implements StopAre
 		super(StopArea.class);
 	}
 
-	@PersistenceContext(unitName = "referential")
+	@PersistenceContext(unitName = "public")
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
 	}

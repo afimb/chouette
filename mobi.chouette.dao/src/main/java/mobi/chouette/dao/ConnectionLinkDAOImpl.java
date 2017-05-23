@@ -22,7 +22,7 @@ public class ConnectionLinkDAOImpl extends GenericDAOImpl<ConnectionLink> implem
 		super(ConnectionLink.class);
 	}
 
-	@PersistenceContext(unitName = "referential")
+	@PersistenceContext(unitName = "public")
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
 	}

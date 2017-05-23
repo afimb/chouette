@@ -13,7 +13,7 @@ public class AccessLinkDAOImpl extends GenericDAOImpl<AccessLink> implements Acc
 		super(AccessLink.class);
 	}
 
-	@PersistenceContext(unitName = "referential")
+	@PersistenceContext(unitName = "public")
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
 	}

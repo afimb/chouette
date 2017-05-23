@@ -3,21 +3,7 @@ package mobi.chouette.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -385,8 +371,9 @@ public class StopArea extends NeptuneLocalizedObject {
 	 */
 	@Getter
 	@Setter
-	@ManyToMany
-	@JoinTable(name = "routing_constraints_lines", joinColumns = { @JoinColumn(name = "stop_area_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "line_id", nullable = false, updatable = false) })
+//	@ManyToMany
+//	@JoinTable(name = "routing_constraints_lines", joinColumns = { @JoinColumn(name = "stop_area_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "line_id", nullable = false, updatable = false) })
+	@Transient
 	private List<Line> routingConstraintLines = new ArrayList<Line>(0);
 
 	/**
@@ -427,7 +414,8 @@ public class StopArea extends NeptuneLocalizedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "containedInStopArea")
+//	@OneToMany(mappedBy = "containedInStopArea")
+	@Transient
 	private List<StopPoint> containedStopPoints = new ArrayList<StopPoint>(0);
 
 	/**
@@ -455,8 +443,9 @@ public class StopArea extends NeptuneLocalizedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(cascade = { CascadeType.PERSIST })
-	@JoinColumn(name = "departure_id") //, updatable = false)
+//	@OneToMany(cascade = { CascadeType.PERSIST })
+//	@JoinColumn(name = "departure_id") //, updatable = false)
+@Transient
 	private List<RouteSection> routeSectionDepartures = new ArrayList<RouteSection>(
 			0);
 
@@ -471,8 +460,9 @@ public class StopArea extends NeptuneLocalizedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(cascade = { CascadeType.PERSIST })
-	@JoinColumn(name = "arrival_id") //, updatable = false)
+//	@OneToMany(cascade = { CascadeType.PERSIST })
+//	@JoinColumn(name = "arrival_id") //, updatable = false)
+	@Transient
 	private List<RouteSection> routeSectionArrivals = new ArrayList<RouteSection>(
 			0);
 

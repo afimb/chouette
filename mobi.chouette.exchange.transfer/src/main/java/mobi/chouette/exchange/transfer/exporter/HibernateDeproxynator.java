@@ -1,23 +1,16 @@
 package mobi.chouette.exchange.transfer.exporter;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.model.*;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.model.NeptuneObject;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 @Log4j
 public class HibernateDeproxynator<T> {
@@ -76,7 +69,7 @@ public class HibernateDeproxynator<T> {
 		T ret = (T) deepDeproxy(maybeProxy, clazz);
 		boolean deproxyAgain = false;
 		if (visited.contains(ret)) {
-			if(ret instanceof NeptuneObject) {
+			if(isReferentialObject(ret)) {
 				NeptuneObject rs = (NeptuneObject) ret;
 				if(rs.getId() != null) {
 					deproxyAgain = true;
@@ -88,7 +81,7 @@ public class HibernateDeproxynator<T> {
 		}
 		visited.add(ret);
 
-		if (ret instanceof NeptuneObject) {
+		if (isReferentialObject(ret)) {
 			((NeptuneObject) ret).setId(null);
 			((NeptuneObject) ret).setDetached(true);
 
@@ -121,7 +114,12 @@ public class HibernateDeproxynator<T> {
 			} else if (ret instanceof List) {
 				List valueList = (List) ret;
 				for (int i = 0; i < valueList.size(); i++) {
-					valueList.set(i, deepDeproxy(valueList.get(i), visited, moreObjectsToFollow));
+					T proxY=deepDeproxy(valueList.get(i), visited, moreObjectsToFollow);
+					if (i>=valueList.size()){
+					log.warn("Would have outbounded array: " + proxY + " for " + maybeProxy);
+					} else {
+						valueList.set(i, proxY);
+					}
 				}
 			}
 		} else {
@@ -205,7 +203,7 @@ public class HibernateDeproxynator<T> {
 						if (needToSetProperty) {
 							PropertyUtils.setProperty(ret, name, value);
 						}
-						if (value instanceof NeptuneObject) {
+						if (isReferentialObject(value)) {
 							// Follow any Neptune data relations to discover
 							// more
 							// proxies
@@ -226,6 +224,10 @@ public class HibernateDeproxynator<T> {
 		}
 
 		return ret;
+	}
+
+	private boolean isReferentialObject(Object ret) {
+		return ret instanceof NeptuneObject && !(ret instanceof StopArea || ret instanceof AccessLink || ret instanceof AccessPoint || ret instanceof ConnectionLink);
 	}
 
 	private <T> T deepDeproxy(Object maybeProxy, Class<T> baseClass) throws ClassCastException {

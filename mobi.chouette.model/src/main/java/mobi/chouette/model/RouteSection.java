@@ -2,14 +2,7 @@ package mobi.chouette.model;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -96,8 +89,9 @@ public class RouteSection extends NeptuneIdentifiedObject {
 	 * @return The actual value
 	 */
 	@Getter
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "departure_id")
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "departure_id")
+	@Transient
 	private StopArea departure;
 
 	/**
@@ -115,8 +109,9 @@ public class RouteSection extends NeptuneIdentifiedObject {
 	 * @return The actual value
 	 */
 	@Getter
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "arrival_id")
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "arrival_id")
+	@Transient
 	private StopArea arrival;
 
 	/**
