@@ -240,6 +240,20 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 				if (connectionsStruct != null) {
 					// TODO implement connection link parser
 				}
+
+				// TODO implement parsing of notices and assignments
+
+				if (serviceFrame.getNotices() != null) {
+					List<Notice> notices = serviceFrame.getNotices().getNotice();
+
+					for (Notice notice : notices) {
+					}
+				}
+				if (serviceFrame.getNoticeAssignments() != null) {
+					for (JAXBElement<? extends DataManagedObjectStructure> noticeAssignmentElement : serviceFrame.getNoticeAssignments().getNoticeAssignment_()) {
+
+					}
+				}
 			}
 		}
 	}
@@ -264,6 +278,21 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 			context.put(NETEX_LINE_DATA_CONTEXT, vehicleJourneysStruct);
 			Parser serviceJourneyParser = ParserFactory.create(ServiceJourneyParser.class.getName());
 			serviceJourneyParser.parse(context);
+
+			// TODO implement parsing of notices and assignments
+
+			if (timetableFrame.getNotices() != null) {
+				List<Notice> notices = timetableFrame.getNotices().getNotice();
+
+				for (Notice notice : notices) {
+				}
+			}
+			if (timetableFrame.getNoticeAssignments() != null) {
+				for (JAXBElement<? extends DataManagedObjectStructure> noticeAssignmentElement : timetableFrame.getNoticeAssignments().getNoticeAssignment_()) {
+
+				}
+			}
+
 		}
 	}
 
