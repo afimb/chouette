@@ -427,6 +427,44 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         NetexTestUtils.verifyValidationReport(context);
     }
 
+    @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
+    public void exportLineWithNotices() throws Exception {
+        importLines("avinor_single_line_with_notices.zip", 2, 1, "AVI,http://www.rutebanken.org/ns/avi");
+
+        Context context = initExportContext();
+        NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
+        configuration.setValidateAfterExport(true);
+        configuration.setAddMetadata(true);
+        configuration.setReferencesType("line");
+        configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
+
+        Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
+
+        try {
+            command.execute(context);
+        } catch (Exception ex) {
+            log.error("test failed", ex);
+            throw ex;
+        }
+
+        ActionReport report = (ActionReport) context.get(REPORT);
+        Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+        Assert.assertEquals(report.getFiles().size(), 2, "file reported");
+
+        for (FileReport info : report.getFiles()) {
+            Reporter.log(info.toString(),true);
+        }
+
+        Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 1, "line reported");
+
+        for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+            Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "line status");
+            Reporter.log(info.toString(), true);
+        }
+
+        NetexTestUtils.verifyValidationReport(context);
+    }
+
     private void importLines(String file, int fileCount, int lineCount, String validCodespaces) throws Exception {
         Context context = initImportContext();
         NetexTestUtils.copyFile(file);

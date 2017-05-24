@@ -18,6 +18,8 @@ public final class NetexObjectIdTypes {
     public static final String DEFAULT_LANGUAGE = "DefaultLanguage";
     public static final String FRAMES = "frames";
     public static final String VEHICLE_JOURNEYS = "vehicleJourneys";
+    public static final String NOTICES = "notices";
+    public static final String NOTICE_ASSIGNMENTS = "noticeAssignments";
     public static final String ORGANISATIONS = "organisations";
     public static final String ROUTE_POINTS = "routePoints";
     public static final String ROUTES = "routes";
@@ -59,6 +61,9 @@ public final class NetexObjectIdTypes {
     public static final String AVAILABILITY_CONDITION = "AvailabilityCondition";
     public static final String SERVICE_JOURNEY = "ServiceJourney";
     public static final String PASSENGER_STOP_ASSIGNMENT = "PassengerStopAssignment";
+
+    public static final String NOTICE = "Notice";
+    public static final String NOTICE_ASSIGNMENT = "NoticeAssignment";
 
     // entity id ref keys
     public static final String TARIFF_ZONE_REF = "TariffZoneRef";

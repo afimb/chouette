@@ -158,6 +158,45 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         for (mobi.chouette.model.VehicleJourney vehicleJourney : exportableData.getVehicleJourneys()) {
             ServiceJourney serviceJourney = serviceJourneyProducer.produce(context, vehicleJourney, exportableData.getLine());
             exportableNetexData.getServiceJourneys().add(serviceJourney);
+
+            for (int i = 0; i < vehicleJourney.getFootnotes().size(); i++) {
+                Footnote footnote = vehicleJourney.getFootnotes().get(i);
+
+                String version = vehicleJourney.getObjectVersion() > 0 ? String.valueOf(vehicleJourney.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
+                String objectIdSuffix = vehicleJourney.objectIdSuffix() + "-" + i + 1;
+                String noticeId = netexId(vehicleJourney.objectIdPrefix(), NOTICE, objectIdSuffix);
+                String noticeAssignmentId = netexId(vehicleJourney.objectIdPrefix(), NOTICE_ASSIGNMENT, objectIdSuffix);
+
+                Notice notice = netexFactory.createNotice()
+                        .withVersion(version)
+                        .withId(noticeId);
+
+                if (isSet(footnote.getLabel())) {
+                    notice.setText(getMultilingualString(footnote.getLabel()));
+                }
+                if (isSet(footnote.getCode())) {
+                    notice.setPublicCode(footnote.getCode());
+                }
+
+                exportableNetexData.getNotices().add(notice);
+
+                NoticeRefStructure noticeRefStruct = netexFactory.createNoticeRefStructure()
+                        .withVersion(version)
+                        .withRef(noticeId);
+
+                VersionOfObjectRefStructure versionOfObjectRefStruct = netexFactory.createVersionOfObjectRefStructure()
+                        .withVersion(version)
+                        .withRef(serviceJourney.getId());
+
+                NoticeAssignment noticeAssignment = netexFactory.createNoticeAssignment()
+                        .withVersion(version)
+                        .withId(noticeAssignmentId)
+                        .withOrder(BigInteger.valueOf(i + 1))
+                        .withNoticeRef(noticeRefStruct)
+                        .withNoticedObjectRef(versionOfObjectRefStruct);
+
+                exportableNetexData.getNoticeAssignments().add(noticeAssignment);
+            }
         }
     }
 
