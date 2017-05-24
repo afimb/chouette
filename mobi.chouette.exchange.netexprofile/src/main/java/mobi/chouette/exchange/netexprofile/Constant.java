@@ -23,9 +23,11 @@ public interface Constant extends mobi.chouette.common.Constant {
 	public static final String NETEX_VALID_CODESPACES = "netex_valid_codespaces";
 	public static final String NETEX_EXISTING_LINE_IDS = "netex_existing_line_ids";
 	public static final String PARSING_CONTEXT = "parsing_context";
+	public static final String PARSING_CONTEXT_LINE_ID = "parsing_context_line_id";
 	public static final String PRODUCING_CONTEXT = "producing_context";
 	public static final String NETEX_PROFILE_VALIDATORS = "netex_profile_validators";
 	public static final String EXPORTABLE_NETEX_DATA = "exportable_netex_data";
 	public static final String NETEX_EXPORT_WITH_STOPS = "netex_export_with_stops";
+	public static final String NEPTUNE_FOOTNOTES = "neptune_footnotes";
 
 }
