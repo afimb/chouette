@@ -78,6 +78,14 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
+    private List<Notice> notices = new ArrayList<>();
+
+    @Getter
+    @Setter
+    private Set<NoticeAssignment> noticeAssignments = new HashSet<>();
+
+    @Getter
+    @Setter
     private Set<DayType> dayTypes = new HashSet<>();
 
     @Getter
@@ -96,6 +104,8 @@ public class ExportableNetexData {
         routes.clear();
         journeyPatterns.clear();
         serviceJourneys. clear();
+        notices.clear();
+        noticeAssignments.clear();
         dayTypes.clear();
         dayTypeAssignments.clear();
         operatingPeriods.clear();
