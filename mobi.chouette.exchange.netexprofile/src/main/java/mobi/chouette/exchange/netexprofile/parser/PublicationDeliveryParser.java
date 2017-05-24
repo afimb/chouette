@@ -7,9 +7,9 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 import mobi.chouette.exchange.netexprofile.util.NetexObjectUtil;
+import mobi.chouette.model.*;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
-import mobi.chouette.model.*;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
@@ -19,7 +19,6 @@ import mobi.chouette.model.util.Referential;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
-import org.rutebanken.netex.model.Line;
 import org.rutebanken.netex.model.Network;
 
 import javax.xml.bind.JAXBElement;
@@ -102,7 +101,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 	private void preParseReferentialDependencies(Context context, Referential referential, List<ServiceFrame> serviceFrames,
 			List<TimetableFrame> timetableFrames, boolean isCommonDelivery) throws Exception {
 
-		Line line = null;
+		org.rutebanken.netex.model.Line line = null;
 
 		for (ServiceFrame serviceFrame : serviceFrames) {
 
@@ -122,7 +121,8 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 
 			if (!isCommonDelivery) {
 				if (line == null) {
-					line = (Line) serviceFrame.getLines().getLine_().get(0).getValue();
+					line = (org.rutebanken.netex.model.Line) serviceFrame.getLines().getLine_().get(0).getValue();
+					context.put(PARSING_CONTEXT_LINE_ID, line.getId());
 				}
 
 				// preparsing mandatory for stop places to parse correctly
@@ -241,19 +241,29 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 					// TODO implement connection link parser
 				}
 
-				// TODO implement parsing of notices and assignments
+				Map<String, String> noticeAssignmentMap = new HashMap<>();
 
-				if (serviceFrame.getNotices() != null) {
-					List<Notice> notices = serviceFrame.getNotices().getNotice();
-
-					for (Notice notice : notices) {
-					}
-				}
 				if (serviceFrame.getNoticeAssignments() != null) {
 					for (JAXBElement<? extends DataManagedObjectStructure> noticeAssignmentElement : serviceFrame.getNoticeAssignments().getNoticeAssignment_()) {
+						NoticeAssignment noticeAssignment = (NoticeAssignment) noticeAssignmentElement.getValue();
 
+						if (noticeAssignment.getNoticeRef() != null && noticeAssignment.getNoticedObjectRef() != null) {
+							String noticeRef = noticeAssignment.getNoticeRef().getRef();
+							String objectRef = noticeAssignment.getNoticedObjectRef().getRef();
+							noticeAssignmentMap.put(noticeRef, objectRef);
+						}
 					}
 				}
+
+				Map<String, List<Footnote>> objectFootnotes = new HashMap<>();
+
+				if (serviceFrame.getNotices() != null) {
+					for (Notice notice : serviceFrame.getNotices().getNotice()) {
+						parseNotice(context, notice, noticeAssignmentMap, objectFootnotes);
+					}
+				}
+
+				context.put(NEPTUNE_FOOTNOTES, objectFootnotes);
 			}
 		}
 	}
@@ -274,25 +284,82 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 
 			parseValidityConditionsInFrame(context, timetableFrame);
 
+			Map<String, String> noticeAssignmentMap = new HashMap<>();
+
+			if (timetableFrame.getNoticeAssignments() != null) {
+				for (JAXBElement<? extends DataManagedObjectStructure> noticeAssignmentElement : timetableFrame.getNoticeAssignments().getNoticeAssignment_()) {
+					NoticeAssignment noticeAssignment = (NoticeAssignment) noticeAssignmentElement.getValue();
+
+					if (noticeAssignment.getNoticeRef() != null && noticeAssignment.getNoticedObjectRef() != null) {
+						String noticeRef = noticeAssignment.getNoticeRef().getRef();
+						String objectRef = noticeAssignment.getNoticedObjectRef().getRef();
+						noticeAssignmentMap.put(noticeRef, objectRef);
+					}
+				}
+			}
+
+			Map<String, List<Footnote>> objectFootnotes = new HashMap<>();
+
+			if (timetableFrame.getNotices() != null) {
+				for (Notice notice : timetableFrame.getNotices().getNotice()) {
+					parseNotice(context, notice, noticeAssignmentMap, objectFootnotes);
+				}
+			}
+
+			context.put(NEPTUNE_FOOTNOTES, objectFootnotes);
+
 			JourneysInFrame_RelStructure vehicleJourneysStruct = timetableFrame.getVehicleJourneys();
 			context.put(NETEX_LINE_DATA_CONTEXT, vehicleJourneysStruct);
 			Parser serviceJourneyParser = ParserFactory.create(ServiceJourneyParser.class.getName());
 			serviceJourneyParser.parse(context);
+		}
+	}
 
-			// TODO implement parsing of notices and assignments
+	private void parseNotice(Context context, Notice notice, Map<String, String> noticeAssignmentMap, Map<String, List<Footnote>> objectFootnotes) {
+		Referential referential = (Referential) context.get(REFERENTIAL);
 
-			if (timetableFrame.getNotices() != null) {
-				List<Notice> notices = timetableFrame.getNotices().getNotice();
+		if (noticeAssignmentMap.containsKey(notice.getId())) {
+			Footnote footnote = new Footnote();
+			footnote.setKey(notice.getId());
 
-				for (Notice notice : notices) {
+			if (notice.getName() != null) {
+				//footnote.setLabel(notice.getName().getValue());
+			}
+			if (notice.getText() != null) {
+				footnote.setLabel(notice.getText().getValue());
+			}
+			if (notice.getPublicCode() !=  null) {
+				footnote.setCode(notice.getPublicCode());
+			}
+			if (notice.getTypeOfNoticeRef() != null) {
+				String typeOfNoticeRef = notice.getTypeOfNoticeRef().getRef();
+				// TODO find out if this reference should be preserved in neptune model
+			}
+			if (notice.getVariants() != null) {
+				for (DeliveryVariant deliveryVariant : notice.getVariants().getDeliveryVariant()) {
+					DeliveryVariantTypeEnumeration deliveryVariantMediaType = deliveryVariant.getDeliveryVariantMediaType();
+					MultilingualString variantText = deliveryVariant.getVariantText();
+					// TODO find out if these properties should be preserved in neptune model
 				}
 			}
-			if (timetableFrame.getNoticeAssignments() != null) {
-				for (JAXBElement<? extends DataManagedObjectStructure> noticeAssignmentElement : timetableFrame.getNoticeAssignments().getNoticeAssignment_()) {
 
-				}
+			String lineId = (String) context.get(PARSING_CONTEXT_LINE_ID);
+			mobi.chouette.model.Line line = ObjectFactory.getLine(referential, lineId);
+			line.getFootnotes().add(footnote);
+
+			footnote.setLine(line);
+			footnote.setCreatedAt(new Date());
+			footnote.setDetached(true);
+
+			String objectRef = noticeAssignmentMap.get(notice.getId());
+
+			if (!objectFootnotes.containsKey(objectRef)) {
+				List<Footnote> footnotes = new ArrayList<>();
+				footnotes.add(footnote);
+				objectFootnotes.put(objectRef, footnotes);
+			} else {
+				objectFootnotes.get(objectRef).add(footnote);
 			}
-
 		}
 	}
 
