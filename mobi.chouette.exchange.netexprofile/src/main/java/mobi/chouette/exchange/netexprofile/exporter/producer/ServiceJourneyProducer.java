@@ -78,7 +78,9 @@ public class ServiceJourneyProducer extends NetexProducer {
             Time firstStopDepartureTime = null;
             TimetabledPassingTimes_RelStructure passingTimesStruct = netexFactory.createTimetabledPassingTimes_RelStructure();
 
-            for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourneyAtStops) {
+            for (int i = 0; i < vehicleJourneyAtStops.size(); i++) {
+                VehicleJourneyAtStop vehicleJourneyAtStop = vehicleJourneyAtStops.get(i);
+
                 TimetabledPassingTime timetabledPassingTime = netexFactory.createTimetabledPassingTime();
 
                 StopPoint stopPoint = vehicleJourneyAtStop.getStopPoint();
@@ -94,12 +96,25 @@ public class ServiceJourneyProducer extends NetexProducer {
                     firstStopDepartureTime = vehicleJourneyAtStop.getDepartureTime();
                     serviceJourney.setDepartureTime(NetexProducerUtils.toOffsetTimeUtc(firstStopDepartureTime));
                 }
-                if (vehicleJourneyAtStop.getArrivalTime() != null) {
-                    timetabledPassingTime.setArrivalTime(NetexProducerUtils.toOffsetTimeUtc(vehicleJourneyAtStop.getArrivalTime()));
+
+                Time departureTime = vehicleJourneyAtStop.getDepartureTime();
+                Time arrivalTime = vehicleJourneyAtStop.getArrivalTime();
+
+                if (arrivalTime != null) {
+                    if (arrivalTime.equals(departureTime)) {
+                        if (!(i + 1 < vehicleJourneyAtStops.size())) {
+                            timetabledPassingTime.setArrivalTime(NetexProducerUtils.toOffsetTimeUtc(arrivalTime));
+                        }
+                    } else {
+                        timetabledPassingTime.setArrivalTime(NetexProducerUtils.toOffsetTimeUtc(arrivalTime));
+                    }
                 }
-                if (vehicleJourneyAtStop.getDepartureTime() != null) {
-                    timetabledPassingTime.setDepartureTime(NetexProducerUtils.toOffsetTimeUtc(vehicleJourneyAtStop.getDepartureTime()));
+                if (departureTime != null) {
+                    if ((i + 1 < vehicleJourneyAtStops.size())) {
+                        timetabledPassingTime.setDepartureTime(NetexProducerUtils.toOffsetTimeUtc(departureTime));
+                    }
                 }
+
                 passingTimesStruct.getTimetabledPassingTime().add(timetabledPassingTime);
             }
 
