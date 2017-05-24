@@ -6,6 +6,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
+import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
 import mobi.chouette.exchange.netexprofile.util.NetexObjectUtil;
 import mobi.chouette.model.*;
 import mobi.chouette.model.JourneyPattern;
@@ -39,6 +40,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 	public void parse(Context context) throws Exception {
 		boolean isCommonDelivery = (boolean) context.get(NETEX_WITH_COMMON_DATA);
 		Referential referential = (Referential) context.get(REFERENTIAL);
+		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
  		PublicationDeliveryStructure publicationDelivery = (PublicationDeliveryStructure) context.get(NETEX_DATA_JAVA);
 		List<JAXBElement<? extends Common_VersionFrameStructure>> dataObjectFrames = publicationDelivery.getDataObjects().getCompositeFrameOrCommonFrame();
 		List<CompositeFrame> compositeFrames = NetexObjectUtil.getFrames(CompositeFrame.class, dataObjectFrames);
@@ -62,7 +64,10 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 
 				// normal processing
 				parseResourceFrames(context, resourceFrames);
-				parseSiteFrames(context, siteFrames);
+				
+				if(configuration.isParseSiteFrames()) {
+					parseSiteFrames(context, siteFrames);
+				}
 				parseServiceFrames(context, serviceFrames , isCommonDelivery);
 				parseServiceCalendarFrame(context, serviceCalendarFrames);
 
@@ -84,7 +89,9 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 
 			// normal processing
 			parseResourceFrames(context, resourceFrames);
-			parseSiteFrames(context, siteFrames);
+			if(configuration.isParseSiteFrames()) {
+				parseSiteFrames(context, siteFrames);
+			}
 			parseServiceFrames(context, serviceFrames, isCommonDelivery);
 			parseServiceCalendarFrame(context, serviceCalendarFrames);
 

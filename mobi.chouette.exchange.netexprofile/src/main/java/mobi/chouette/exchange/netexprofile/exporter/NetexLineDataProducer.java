@@ -279,7 +279,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, containedInSuffix);
         String pointProjectionId = netexId(stopPoint.objectIdPrefix(), POINT_PROJECTION, containedInSuffix);
 
-        PointRefStructure pointRefStruct = netexFactory.createPointRefStructure().withRef(stopPointIdRef);
+        PointRefStructure pointRefStruct = netexFactory.createPointRefStructure().withRef(stopPointIdRef).withVersion(pointVersion);
 
         PointProjection pointProjection = netexFactory.createPointProjection()
                 .withVersion(pointVersion)
@@ -360,7 +360,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
         String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, stopPoint.getContainedInStopArea().objectIdSuffix());
 
-        ScheduledStopPointRefStructure scheduledStopPointRefStruct = netexFactory.createScheduledStopPointRefStructure().withRef(stopPointIdRef);
+        ScheduledStopPointRefStructure scheduledStopPointRefStruct = netexFactory.createScheduledStopPointRefStructure().withRef(stopPointIdRef).withVersion(pointVersion);
         stopAssignment.setScheduledStopPointRef(scheduledStopPointRefStruct);
 
         if (isSet(stopPoint.getContainedInStopArea())) {

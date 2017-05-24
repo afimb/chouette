@@ -12,6 +12,7 @@ import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.netexprofile.parser.PublicationDeliveryParser;
+import mobi.chouette.exchange.netexprofile.util.NetexIdExtractorHelper;
 import mobi.chouette.exchange.netexprofile.util.NetexReferential;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
@@ -27,8 +28,11 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Log4j
 public class NetexCommonFilesParserCommand implements Command, Constant {
@@ -59,9 +63,21 @@ public class NetexCommonFilesParserCommand implements Command, Constant {
 
             Document dom = (Document) context.get(NETEX_DATA_DOM);
 
-            // Find id-fields and check for duplicates
-            collectEntityIdentificators(context, fileName, dom, commonIds);
+            XPath xpath = (XPath) context.get(NETEX_XPATH);
 
+            // Find id-fields and to check for duplicates later
+    		Set<IdVersion> localIds = NetexIdExtractorHelper.collectEntityIdentificators(context, xpath, dom, new HashSet<>(Arrays.asList("Codespace")));
+            ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+    		for(IdVersion id : localIds) {
+                data.getDataLocations().put(id.getId(), DataLocationHelper.findDataLocation(id));
+                List<String> list = commonIds.get(id);
+                if (list == null) {
+                    list = new ArrayList<String>();
+                    commonIds.put(id, list);
+                }
+                list.add(fileName);
+    		}
+    		
             PublicationDeliveryParser parser = (PublicationDeliveryParser) ParserFactory.create(PublicationDeliveryParser.class.getName());
             parser.parse(context);
 
@@ -77,36 +93,8 @@ public class NetexCommonFilesParserCommand implements Command, Constant {
 
         return result;
     }
-
-    protected void collectEntityIdentificators(Context context, String fileName, Document parseFileToDom, Map<IdVersion, List<String>> commonIds)
-            throws XPathExpressionException {
-        ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-
-        XPath xpath = (XPath) context.get(NETEX_XPATH);
-        NodeList nodes = (NodeList) xpath.evaluate("//n:*[not(name()='Codespace') and @id]", parseFileToDom, XPathConstants.NODESET);
-        int idCount = nodes.getLength();
-        for (int i = 0; i < idCount; i++) {
-
-            Node n = nodes.item(i);
-            String elementName = n.getNodeName();
-            String id = n.getAttributes().getNamedItem("id").getNodeValue();
-            String version = null;
-            Node versionAttribute = n.getAttributes().getNamedItem("version");
-            if (versionAttribute != null) {
-                version = versionAttribute.getNodeValue();
-            }
-            IdVersion idVersion = new IdVersion(id, version, elementName, fileName, (Integer) n.getUserData(PositionalXMLReader.LINE_NUMBER_KEY_NAME), (Integer) n.getUserData(PositionalXMLReader.COLUMN_NUMBER_KEY_NAME));
-
-            data.getDataLocations().put(idVersion.getId(), DataLocationHelper.findDataLocation(idVersion));
-
-            List<String> list = commonIds.get(idVersion);
-            if (list == null) {
-                list = new ArrayList<String>();
-                commonIds.put(idVersion, list);
-            }
-            list.add(fileName);
-        }
-    }
+    
+  
 
     public static class DefaultCommandFactory extends CommandFactory {
 

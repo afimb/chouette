@@ -39,6 +39,7 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 	public static final String _1_NETEX_USE_OF_UNAPPROVED_CODESPACE = "1-NETEXPROFILE-UseOfUnapprovedCodespace";
 	protected static final String OBJECT_IDS = "encountered_ids";
 	public static final String _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_FILES = "1-NETEXPROFILE-DuplicateIdentificatorsAcrossLineFiles";
+	public static final String _1_NETEX_UNRESOLVED_EXTERNAL_REFERENCE = "1-NETEXPROFILE-UnresolvedExternalReference";
 
 	
 	private List<ExternalReferenceValidator> externalReferenceValidators = new ArrayList<>();
@@ -223,25 +224,20 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		if (commonIds != null) {
 			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 
-			
-			// TODO refactor this
-			
 			Set<String> nonVersionedLocalRefs = localRefs.stream().map(e -> e.getId()).collect(Collectors.toSet());
 			Set<String> nonVersionedLocalIds = localIds.stream().map(e -> e.getId()).collect(Collectors.toSet());
 
 			Set<String> unresolvedReferences = new HashSet<>(nonVersionedLocalRefs);
 			unresolvedReferences.removeAll(nonVersionedLocalIds);
-
-			Set<String> commonIdsWithoutVersion = commonIds.keySet().stream().map(e -> e.getId()).collect(Collectors.toSet());
-
-			// Make sure we dont modify the set of unresolved ids
-			Set<IdVersion> versionedUnresolvedReferences = new HashSet<>(localRefs);
-			versionedUnresolvedReferences.removeAll(localIds);
-			Set<IdVersion> immutableUnresolvedReferences = Collections.unmodifiableSet(versionedUnresolvedReferences);
-			for(ExternalReferenceValidator validator : externalReferenceValidators) {
-				unresolvedReferences.removeAll(validator.validateReferenceIds(context,immutableUnresolvedReferences).stream().map(e -> e.getId()).collect(Collectors.toSet()));
+			
+			// Dont report on references that are supposed to be validated externally
+			for(ExternalReferenceValidator v : externalReferenceValidators) {
+				Set<IdVersion> ofSupportedTypes = v.isOfSupportedTypes(localRefs);
+				unresolvedReferences.removeAll(ofSupportedTypes.stream().map(e -> e.getId()).collect(Collectors.toSet()));
 			}
 			
+			Set<String> commonIdsWithoutVersion = commonIds.keySet().stream().map(e -> e.getId()).collect(Collectors.toSet());
+
 			if (commonIdsWithoutVersion.size() > 0) {
 				for (String localRef : unresolvedReferences) {
 					if (!commonIdsWithoutVersion.contains(localRef)) {
@@ -357,6 +353,28 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 			validationReporter.reportSuccess(context, _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_FILES);
 		}
 	}
+	
+	protected void verifyExternalRefs(Context context, Set<IdVersion> externalRefs, Set<IdVersion> localIds) {
+		
+		Set<IdVersion> possibleExternalReferences = externalRefs.stream().filter(e -> !localIds.contains(e)).collect(Collectors.toSet());
+		
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		Set<IdVersion> unverifiedExternalRefs = new HashSet<>();
+		
+		for(ExternalReferenceValidator validator : externalReferenceValidators) {
+			unverifiedExternalRefs.addAll(validator.validateReferenceIds(context,possibleExternalReferences));
+		}
+		
+		if(unverifiedExternalRefs.size() > 0) {
+			for(IdVersion id : unverifiedExternalRefs) {
+				validationReporter.addCheckPointReportError(context, _1_NETEX_UNRESOLVED_EXTERNAL_REFERENCE, null,
+						DataLocationHelper.findDataLocation(id), id.getId());
+			}
+			
+		} else {
+			validationReporter.reportSuccess(context, _1_NETEX_UNRESOLVED_EXTERNAL_REFERENCE);
+		}
+	}
 
 	protected void verifyIdStructure(Context context, Set<IdVersion> localIds, String regex,
 			Set<ProfileValidatorCodespace> validCodespaces) {
@@ -415,44 +433,5 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		}
 	}
 
-	protected Set<IdVersion> collectEntityIdentificators(Context context, XPath xpath, Document dom, Set<String> ignorableElementNames)
-			throws XPathExpressionException {
-		return collectIdOrRefWithVersion(context, xpath, dom, "id", ignorableElementNames);
-	}
-
-	protected Set<IdVersion> collectEntityReferences(Context context, XPath xpath, Document dom, Set<String> ignorableElementNames)
-			throws XPathExpressionException {
-		return collectIdOrRefWithVersion(context, xpath, dom, "ref", ignorableElementNames);
-	}
-
-	protected Set<IdVersion> collectIdOrRefWithVersion(Context context, XPath xpath, Document dom, String attributeName, Set<String> ignorableElementNames)
-			throws XPathExpressionException {
-		StringBuilder filterClause = new StringBuilder();
-		filterClause.append("//n:*[");
-		if (ignorableElementNames != null) {
-			for (String elementName : ignorableElementNames) {
-				filterClause.append("not(name()='" + elementName + "') and ");
-			}
-		}
-		filterClause.append("@" + attributeName + "]");
-
-		NodeList nodes = (NodeList) xpath.evaluate(filterClause.toString(), dom, XPathConstants.NODESET);
-		Set<IdVersion> ids = new HashSet<IdVersion>();
-		int idCount = nodes.getLength();
-		for (int i = 0; i < idCount; i++) {
-			Node n = nodes.item(i);
-			String elementName = n.getNodeName();
-			String id = n.getAttributes().getNamedItem(attributeName).getNodeValue();
-			String version = null;
-			Node versionAttribute = n.getAttributes().getNamedItem("version");
-			if (versionAttribute != null) {
-				version = versionAttribute.getNodeValue();
-			}
-			ids.add(new IdVersion(id, version, elementName, (String) context.get(Constant.FILE_NAME),
-					(Integer) n.getUserData(PositionalXMLReader.LINE_NUMBER_KEY_NAME), (Integer) n.getUserData(PositionalXMLReader.COLUMN_NUMBER_KEY_NAME)));
-
-		}
-		return ids;
-	}
 
 }
