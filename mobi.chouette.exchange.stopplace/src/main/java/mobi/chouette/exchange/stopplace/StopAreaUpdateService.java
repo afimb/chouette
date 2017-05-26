@@ -76,7 +76,6 @@ public class StopAreaUpdateService {
 
                     StopArea existingQuayForSameStopPlace = existingQuays.remove(quay.getObjectId());
 
-
                     if (existingQuayForSameStopPlace == null) {
 
                         // Quay with ID does not already exist for this StopArea, but may exist for another. If so, remove the existing quay.

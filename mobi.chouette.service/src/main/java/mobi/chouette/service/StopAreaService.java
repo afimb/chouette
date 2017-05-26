@@ -9,6 +9,7 @@ import mobi.chouette.exchange.stopplace.StopAreaUpdateService;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.Referential;
+import org.rutebanken.netex.model.PublicationDeliveryStructure;
 
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -28,12 +29,14 @@ public class StopAreaService {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void createOrUpdateStopPlacesFromNetexStopPlaces(InputStream inputStream) {
-        Collection<StopArea> stopAreas = new PublicationDeliveryStopPlaceParser().parseStopPlaces(inputStream);
+        PublicationDeliveryStopPlaceParser parser = new PublicationDeliveryStopPlaceParser(inputStream);
 
-        if (stopAreas.size() > 0) {
-            log.info("Updating " + stopAreas.size() + " stop areas");
+        int changedStopCnt = parser.getActiveStopAreas().size() + parser.getInactiveStopAreaIds().size();
+
+        if (changedStopCnt > 0) {
+            log.info("Updating " + changedStopCnt + " stop areas");
             Context context = createContext();
-            stopAreaUpdateService.createOrUpdateStopAreas(context, stopAreas);
+            stopAreaUpdateService.createOrUpdateStopAreas(context, parser.getActiveStopAreas(), parser.getInactiveStopAreaIds());
         } else {
             log.debug("Received update without any stop areas. Doing nothing");
         }
