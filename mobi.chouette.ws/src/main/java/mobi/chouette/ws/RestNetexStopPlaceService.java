@@ -25,18 +25,15 @@ public class RestNetexStopPlaceService {
     @Inject
     private JobServiceManager jobServiceManager;
 
-
     @POST
-    @Path("/{ref}")
     @Consumes({MediaType.APPLICATION_XML})
-    public Response createOrUpdateStops(@PathParam("ref") String referential, InputStream inputStream) {
+    public Response createOrUpdateStops(InputStream inputStream) {
         try {
-            if (existsActiveJobsForReferential(referential)) {
+            if (existsActiveJobs()) {
                 return Response.status(423).entity("Cannot update stops for referential with active jobs").build();
             }
-
-            log.info(Color.CYAN + "Create or update stop places for referential = " + referential + Color.NORMAL);
-            stopAreaService.createOrUpdateStopPlacesFromNetexStopPlaces(referential, inputStream);
+            log.info(Color.CYAN + "Create or update stop places");
+            stopAreaService.createOrUpdateStopPlacesFromNetexStopPlaces(inputStream);
             Response.ResponseBuilder builder = Response.ok();
             builder.header(api_version_key, api_version);
             return builder.build();
@@ -46,8 +43,8 @@ public class RestNetexStopPlaceService {
         }
     }
 
-    private boolean existsActiveJobsForReferential(String referential) {
-        return jobServiceManager.activeJobs().stream().anyMatch(job -> job.getReferential().equals(referential));
+    private boolean existsActiveJobs() {
+        return !jobServiceManager.activeJobs().isEmpty();
     }
 
 }

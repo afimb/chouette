@@ -51,6 +51,7 @@ public class ValidationDataCollector {
 			collection.getRoutes().add(route);
 			addAllStopPoints(collection, route, cache);
 			for (StopPoint stopPoint : route.getStopPoints()) {
+				collection.getStopPoints().add(stopPoint);
 				if (stopPoint != null && stopPoint.getContainedInStopArea()!=null) // protection from missing stopPoint ranks
 					collectStopAreas(collection, stopPoint.getContainedInStopArea(), cache);
 			}
