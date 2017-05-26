@@ -36,7 +36,7 @@ public class ConnectionLink extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-	@SequenceGenerator(name = "connection_links_id_seq", sequenceName = "connection_links_id_seq", allocationSize = 20)
+	@SequenceGenerator(name = "connection_links_id_seq", sequenceName = "connection_links_id_seq", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "connection_links_id_seq")
 	@Id
 	@Column(name = "id", nullable = false)
