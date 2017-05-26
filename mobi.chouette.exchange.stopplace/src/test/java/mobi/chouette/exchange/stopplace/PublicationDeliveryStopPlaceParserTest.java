@@ -13,9 +13,16 @@ public class PublicationDeliveryStopPlaceParserTest {
 
     @Test
     public void testParseStopPlacesFromPublicationDelivery() throws Exception {
-        Set<String> expectedIds= Sets.newHashSet("NSR:StopPlace:51566","NSR:Quay:87130","NSR:Quay:87131","NSR:StopPlace:10089","NSR:Quay:50496","NSR:Quay:50502");
-        Collection<StopArea> stopAreas = new PublicationDeliveryStopPlaceParser().parseStopPlaces(new FileInputStream("src/test/resources/netex/PublicationDeliveryWithStopPlaces.xml"));
-        Assert.assertEquals(stopAreas.size(), expectedIds.size());
-        Assert.assertTrue(stopAreas.stream().allMatch(sa -> expectedIds.remove(sa.getObjectId())));
+        Set<String> expectedActiveIds= Sets.newHashSet("NSR:StopPlace:51566");
+        Set<String> expectedRemovedIds= Sets.newHashSet("NSR:StopPlace:10089");
+        PublicationDeliveryStopPlaceParser parser = new PublicationDeliveryStopPlaceParser(new FileInputStream("src/test/resources/netex/PublicationDeliveryWithStopPlaces.xml"));
+
+        Collection<StopArea> activeStopAreas=parser.getActiveStopAreas();
+        Assert.assertEquals(activeStopAreas.size(), expectedActiveIds.size());
+        Assert.assertTrue(activeStopAreas.stream().allMatch(sa -> expectedActiveIds.remove(sa.getObjectId())));
+
+        Collection<String> inactiveStopAreas=parser.getInactiveStopAreaIds();
+        Assert.assertEquals(inactiveStopAreas.size(), expectedRemovedIds.size());
+        Assert.assertTrue(inactiveStopAreas.stream().allMatch(id -> expectedRemovedIds.remove(id)));
     }
 }

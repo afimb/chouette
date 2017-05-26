@@ -57,13 +57,12 @@ public class StopAreaRelationInterceptor extends EmptyInterceptor {
      * Populate stop area with contained stop points relevant for the current context. If no referential is set in the context the population is omitted.
      */
     private void populateContainedStopPoints(StopArea stopArea) {
-        List<StopPoint> containedStopPoints = new ArrayList<>();
-
         if (ContextHolder.getContext() != null) {
+            List<StopPoint> containedStopPoints = new ArrayList<>();
             containedStopPoints.addAll(stopPointDAO.getStopPointsContainedInStopArea(stopArea.getId()));
+            log.info("Populated stopPoints for stop area: " + stopArea.getId() + ". Points: " + containedStopPoints);
+            stopArea.getContainedStopPoints().addAll(containedStopPoints);
         }
-        log.info("Populated stopPoints for stop area: " + stopArea.getId() + ". Points: " + containedStopPoints);
-        stopArea.getContainedStopPoints().addAll(containedStopPoints);
     }
 
 

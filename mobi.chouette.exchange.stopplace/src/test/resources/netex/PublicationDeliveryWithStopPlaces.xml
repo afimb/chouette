@@ -74,6 +74,7 @@
                 <StopPlace created="2017-05-02T13:07:03.765+02:00" modification="new" version="1" id="NSR:StopPlace:10089">
                     <ValidBetween>
                         <FromDate>2017-05-02T13:07:03.765+02:00</FromDate>
+                        <ToDate>2017-05-15T13:07:03.765+02:00</ToDate>
                     </ValidBetween>
                     <keyList>
                         <KeyValue>
