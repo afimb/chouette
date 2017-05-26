@@ -38,7 +38,7 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	
 	@Getter
 	@Setter
-	@SequenceGenerator(name = "access_links_id_seq", sequenceName = "access_links_id_seq", allocationSize = 20)
+	@SequenceGenerator(name = "access_links_id_seq", sequenceName = "access_links_id_seq", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "access_links_id_seq")
 	@Id
 	@Column(name = "id", nullable = false)

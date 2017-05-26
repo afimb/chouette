@@ -57,7 +57,7 @@ public class StopArea extends NeptuneLocalizedObject {
 
 	@Getter
 	@Setter
-	@SequenceGenerator(name = "stop_areas_id_seq", sequenceName = "stop_areas_id_seq", allocationSize = 20)
+	@SequenceGenerator(name = "stop_areas_id_seq", sequenceName = "stop_areas_id_seq", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stop_areas_id_seq")
 	@Id
 	@Column(name = "id", nullable = false)
