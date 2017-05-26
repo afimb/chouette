@@ -77,7 +77,7 @@
          <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect" />
 			<property name="javax.persistence.validation.mode" value="none" />
 
-			<property name="hibernate.ejb.interceptor" value="mobi.chouette.dao.interceptor.StopAreaRelationInterceptor"/>
+			<property name="hibernate.ejb.interceptor" value="mobi.chouette.dao.interceptor.StopPointRelationInterceptor"/>
 		</properties>
 	</persistence-unit>
 
