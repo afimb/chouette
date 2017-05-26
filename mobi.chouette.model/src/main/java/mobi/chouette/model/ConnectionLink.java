@@ -5,15 +5,7 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,11 +36,8 @@ public class ConnectionLink extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-	@GenericGenerator(name = "connection_links_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
-		parameters = {
-			@Parameter(name = "sequence_name", value = "connection_links_id_seq"),
-			@Parameter(name = "increment_size", value = "100") })
-	@GeneratedValue(generator = "connection_links_id_seq")
+	@SequenceGenerator(name = "connection_links_id_seq", sequenceName = "connection_links_id_seq", allocationSize = 20)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "connection_links_id_seq")
 	@Id
 	@Column(name = "id", nullable = false)
 	protected Long id;
