@@ -1,7 +1,6 @@
 package mobi.chouette.dao.interceptor;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
@@ -11,8 +10,9 @@ import org.hibernate.type.Type;
 
 import javax.enterprise.inject.spi.CDI;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * StopPoint and StopArea reside in separate schemas. This Interceptor enriches these entities with relations between them upon load.
@@ -60,13 +60,20 @@ public class StopAreaRelationInterceptor extends EmptyInterceptor {
      */
     private void populateContainedStopPoints(StopArea stopArea, String stopAreaObjectId) {
         if (ContextHolder.getContext() != null) {
-            List<StopPoint> containedStopPoints = new ArrayList<>();
-            containedStopPoints.addAll(stopPointDAO.getStopPointsContainedInStopArea(stopAreaObjectId));
-            log.debug("Populated stopPoints for stop area: " + stopArea.getId() + ". Points: " + containedStopPoints);
-            stopArea.getContainedStopPoints().addAll(containedStopPoints);
+            List<StopPoint> stopPoints = stopPointDAO.getStopPointsContainedInStopArea(stopAreaObjectId);
+
+            List<StopPoint> notAlreadyInCollectionStopPoints = stopPoints.stream()
+                                                                       .filter(stopPoint -> !alreadyExistingInStopAresCollection(stopArea, stopPoint))
+                                                                       .collect(Collectors.toList());
+
+            log.debug("Populated stopPoints for stop area: " + stopArea.getId() + ". Points: " + notAlreadyInCollectionStopPoints);
+            stopArea.getContainedStopPoints().addAll(notAlreadyInCollectionStopPoints);
         }
     }
 
+    private boolean alreadyExistingInStopAresCollection(StopArea stopArea, StopPoint stopPoint) {
+        return stopArea.getContainedStopPoints().stream().anyMatch(existingStopPoint -> Objects.equals(existingStopPoint.getId(), stopPoint.getId()));
+    }
 
     private void init() {
         if (stopPointDAO == null) {
