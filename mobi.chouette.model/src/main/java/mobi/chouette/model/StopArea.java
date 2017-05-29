@@ -411,7 +411,6 @@ public class StopArea extends NeptuneLocalizedObject {
 	 */
 	@Getter
 	@Setter
-//	@OneToMany(mappedBy = "containedInStopArea")
 	@Transient
 	private List<StopPoint> containedStopPoints = new ArrayList<StopPoint>(0);
 

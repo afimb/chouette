@@ -72,7 +72,7 @@ public class CompassBearingGenerator {
 				StopPoint next = null;
 
 				List<StopPoint> stopPointsInJourneyPattern = jp.getStopPoints();
-// TODO null check getContainedInStopArea
+
 				if (jp.getDepartureStopPoint().getContainedInStopArea().getObjectId()
 						.equals(stop.getContainedInStopArea().getObjectId())) {
 					next = stopPointsInJourneyPattern.get(1);
