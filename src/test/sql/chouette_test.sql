@@ -27,6 +27,11 @@ DROP SCHEMA IF EXISTS chouette_gui CASCADE;
 
 CREATE SCHEMA chouette_gui ;
 
+DROP SCHEMA IF EXISTS public CASCADE;
+
+CREATE SCHEMA public ;
+
+
 SET search_path = chouette_gui, pg_catalog;
 
 --
@@ -34,7 +39,7 @@ SET search_path = chouette_gui, pg_catalog;
 -- Name: access_links; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE TABLE access_links (
+CREATE TABLE public.access_links (
     id bigint NOT NULL,
     access_point_id bigint,
     stop_area_id bigint,
@@ -58,14 +63,14 @@ CREATE TABLE access_links (
 );
 
 
-ALTER TABLE chouette_gui.access_links OWNER TO chouette;
+ALTER TABLE public.access_links OWNER TO chouette;
 
 --
 -- TOC entry 175 (class 1259 OID 938857)
 -- Name: access_links_id_seq; Type: SEQUENCE; Schema: chouette_gui; Owner: chouette
 --
 
-CREATE SEQUENCE access_links_id_seq
+CREATE SEQUENCE public.access_links_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -73,23 +78,23 @@ CREATE SEQUENCE access_links_id_seq
     CACHE 1;
 
 
-ALTER TABLE chouette_gui.access_links_id_seq OWNER TO chouette;
+ALTER TABLE public.access_links_id_seq OWNER TO chouette;
 
 --
 -- TOC entry 4252 (class 0 OID 0)
 -- Dependencies: 175
--- Name: access_links_id_seq; Type: SEQUENCE OWNED BY; Schema: chouette_gui; Owner: chouette
+-- Name: access_links_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: chouette
 --
 
-ALTER SEQUENCE access_links_id_seq OWNED BY access_links.id;
+ALTER SEQUENCE public.access_links_id_seq OWNED BY public.access_links.id;
 
 
 --
 -- TOC entry 176 (class 1259 OID 938859)
--- Name: access_points; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
+-- Name: access_points; Type: TABLE; Schema: public; Owner: chouette; Tablespace:
 --
 
-CREATE TABLE access_points (
+CREATE TABLE public.access_points (
     id bigint NOT NULL,
     objectid character varying(255),
     object_version integer,
@@ -115,14 +120,14 @@ CREATE TABLE access_points (
 );
 
 
-ALTER TABLE chouette_gui.access_points OWNER TO chouette;
+ALTER TABLE public.access_points OWNER TO chouette;
 
 --
 -- TOC entry 177 (class 1259 OID 938865)
 -- Name: access_points_id_seq; Type: SEQUENCE; Schema: chouette_gui; Owner: chouette
 --
 
-CREATE SEQUENCE access_points_id_seq
+CREATE SEQUENCE public.access_points_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -130,7 +135,7 @@ CREATE SEQUENCE access_points_id_seq
     CACHE 1;
 
 
-ALTER TABLE chouette_gui.access_points_id_seq OWNER TO chouette;
+ALTER TABLE public.access_points_id_seq OWNER TO chouette;
 
 --
 -- TOC entry 4253 (class 0 OID 0)
@@ -138,7 +143,7 @@ ALTER TABLE chouette_gui.access_points_id_seq OWNER TO chouette;
 -- Name: access_points_id_seq; Type: SEQUENCE OWNED BY; Schema: chouette_gui; Owner: chouette
 --
 
-ALTER SEQUENCE access_points_id_seq OWNED BY access_points.id;
+ALTER SEQUENCE public.access_points_id_seq OWNED BY public.access_points.id;
 
 
 
@@ -198,7 +203,7 @@ ALTER SEQUENCE companies_id_seq OWNED BY companies.id;
 -- Name: connection_links; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
 --
 
-CREATE TABLE connection_links (
+CREATE TABLE public.connection_links (
     id bigint NOT NULL,
     departure_id bigint,
     arrival_id bigint,
@@ -221,14 +226,14 @@ CREATE TABLE connection_links (
 );
 
 
-ALTER TABLE chouette_gui.connection_links OWNER TO chouette;
+ALTER TABLE public.connection_links OWNER TO chouette;
 
 --
 -- TOC entry 183 (class 1259 OID 938889)
 -- Name: connection_links_id_seq; Type: SEQUENCE; Schema: chouette_gui; Owner: chouette
 --
 
-CREATE SEQUENCE connection_links_id_seq
+CREATE SEQUENCE public.connection_links_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -236,7 +241,7 @@ CREATE SEQUENCE connection_links_id_seq
     CACHE 1;
 
 
-ALTER TABLE chouette_gui.connection_links_id_seq OWNER TO chouette;
+ALTER TABLE public.connection_links_id_seq OWNER TO chouette;
 
 --
 -- TOC entry 4256 (class 0 OID 0)
@@ -244,7 +249,7 @@ ALTER TABLE chouette_gui.connection_links_id_seq OWNER TO chouette;
 -- Name: connection_links_id_seq; Type: SEQUENCE OWNED BY; Schema: chouette_gui; Owner: chouette
 --
 
-ALTER SEQUENCE connection_links_id_seq OWNED BY connection_links.id;
+ALTER SEQUENCE public.connection_links_id_seq OWNED BY public.connection_links.id;
 
 
 
@@ -860,7 +865,7 @@ ALTER TABLE chouette_gui.routing_constraints_lines OWNER TO chouette;
 -- Name: stop_areas; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE TABLE stop_areas (
+CREATE TABLE public.stop_areas (
     id bigint NOT NULL,
     parent_id bigint,
     objectid character varying(255) NOT NULL,
@@ -890,14 +895,14 @@ CREATE TABLE stop_areas (
 );
 
 
-ALTER TABLE chouette_gui.stop_areas OWNER TO chouette;
+ALTER TABLE public.stop_areas OWNER TO chouette;
 
 --
 -- TOC entry 217 (class 1259 OID 939023)
 -- Name: stop_areas_id_seq; Type: SEQUENCE; Schema: chouette_gui; Owner: chouette
 --
 
-CREATE SEQUENCE stop_areas_id_seq
+CREATE SEQUENCE public.stop_areas_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -905,7 +910,7 @@ CREATE SEQUENCE stop_areas_id_seq
     CACHE 1;
 
 
-ALTER TABLE chouette_gui.stop_areas_id_seq OWNER TO chouette;
+ALTER TABLE public.stop_areas_id_seq OWNER TO chouette;
 
 --
 -- TOC entry 4273 (class 0 OID 0)
@@ -913,7 +918,7 @@ ALTER TABLE chouette_gui.stop_areas_id_seq OWNER TO chouette;
 -- Name: stop_areas_id_seq; Type: SEQUENCE OWNED BY; Schema: chouette_gui; Owner: chouette
 --
 
-ALTER SEQUENCE stop_areas_id_seq OWNED BY stop_areas.id;
+ALTER SEQUENCE public.stop_areas_id_seq OWNED BY public.stop_areas.id;
 
 
 --
@@ -921,13 +926,13 @@ ALTER SEQUENCE stop_areas_id_seq OWNED BY stop_areas.id;
 -- Name: stop_areas_stop_areas; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE TABLE stop_areas_stop_areas (
+CREATE TABLE public.stop_areas_stop_areas (
     child_id bigint,
     parent_id bigint
 );
 
 
-ALTER TABLE chouette_gui.stop_areas_stop_areas OWNER TO chouette;
+ALTER TABLE public.stop_areas_stop_areas OWNER TO chouette;
 
 --
 -- TOC entry 219 (class 1259 OID 939028)
@@ -937,7 +942,7 @@ ALTER TABLE chouette_gui.stop_areas_stop_areas OWNER TO chouette;
 CREATE TABLE stop_points (
     id bigint NOT NULL,
     route_id bigint,
-    stop_area_id bigint,
+    stop_area_objectid_key CHARACTER VARYING(256),
     objectid character varying(255) NOT NULL,
     object_version integer,
     creation_time timestamp without time zone,
@@ -1262,7 +1267,7 @@ ALTER SEQUENCE vehicle_journeys_id_seq OWNED BY vehicle_journeys.id;
 -- Name: id; Type: DEFAULT; Schema: chouette_gui; Owner: chouette
 --
 
-ALTER TABLE ONLY access_links ALTER COLUMN id SET DEFAULT nextval('access_links_id_seq'::regclass);
+ALTER TABLE ONLY public.access_links ALTER COLUMN id SET DEFAULT nextval('public.access_links_id_seq'::regclass);
 
 
 --
@@ -1270,7 +1275,7 @@ ALTER TABLE ONLY access_links ALTER COLUMN id SET DEFAULT nextval('access_links_
 -- Name: id; Type: DEFAULT; Schema: chouette_gui; Owner: chouette
 --
 
-ALTER TABLE ONLY access_points ALTER COLUMN id SET DEFAULT nextval('access_points_id_seq'::regclass);
+ALTER TABLE ONLY public.access_points ALTER COLUMN id SET DEFAULT nextval('public.access_points_id_seq'::regclass);
 
 
 
@@ -1287,7 +1292,7 @@ ALTER TABLE ONLY companies ALTER COLUMN id SET DEFAULT nextval('companies_id_seq
 -- Name: id; Type: DEFAULT; Schema: chouette_gui; Owner: chouette
 --
 
-ALTER TABLE ONLY connection_links ALTER COLUMN id SET DEFAULT nextval('connection_links_id_seq'::regclass);
+ALTER TABLE ONLY public.connection_links ALTER COLUMN id SET DEFAULT nextval('public.connection_links_id_seq'::regclass);
 
 
 --
@@ -1385,7 +1390,7 @@ ALTER TABLE ONLY routes ALTER COLUMN id SET DEFAULT nextval('routes_id_seq'::reg
 -- Name: id; Type: DEFAULT; Schema: chouette_gui; Owner: chouette
 --
 
-ALTER TABLE ONLY stop_areas ALTER COLUMN id SET DEFAULT nextval('stop_areas_id_seq'::regclass);
+ALTER TABLE ONLY public.stop_areas ALTER COLUMN id SET DEFAULT nextval('public.stop_areas_id_seq'::regclass);
 
 
 --
@@ -1450,7 +1455,7 @@ ALTER TABLE ONLY vehicle_journeys ALTER COLUMN id SET DEFAULT nextval('vehicle_j
 -- Name: access_links_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-ALTER TABLE ONLY access_links
+ALTER TABLE ONLY public.access_links
     ADD CONSTRAINT access_links_pkey PRIMARY KEY (id);
 
 
@@ -1459,7 +1464,7 @@ ALTER TABLE ONLY access_links
 -- Name: access_points_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-ALTER TABLE ONLY access_points
+ALTER TABLE ONLY public.access_points
     ADD CONSTRAINT access_points_pkey PRIMARY KEY (id);
 
 
@@ -1478,7 +1483,7 @@ ALTER TABLE ONLY companies
 -- Name: connection_links_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-ALTER TABLE ONLY connection_links
+ALTER TABLE ONLY public.connection_links
     ADD CONSTRAINT connection_links_pkey PRIMARY KEY (id);
 
 
@@ -1588,7 +1593,7 @@ ALTER TABLE ONLY routes
 -- Name: stop_areas_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-ALTER TABLE ONLY stop_areas
+ALTER TABLE ONLY public.stop_areas
     ADD CONSTRAINT stop_areas_pkey PRIMARY KEY (id);
 
 
@@ -1661,7 +1666,7 @@ ALTER TABLE ONLY vehicle_journeys
 -- Name: access_links_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE UNIQUE INDEX access_links_objectid_key ON access_links USING btree (objectid);
+CREATE UNIQUE INDEX access_links_objectid_key ON public.access_links USING btree (objectid);
 
 
 --
@@ -1669,7 +1674,7 @@ CREATE UNIQUE INDEX access_links_objectid_key ON access_links USING btree (objec
 -- Name: access_points_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE UNIQUE INDEX access_points_objectid_key ON access_points USING btree (objectid);
+CREATE UNIQUE INDEX access_points_objectid_key ON public.access_points USING btree (objectid);
 
 
 --
@@ -1693,7 +1698,7 @@ CREATE INDEX companies_registration_number_key ON companies USING btree (registr
 -- Name: connection_links_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE UNIQUE INDEX connection_links_objectid_key ON connection_links USING btree (objectid);
+CREATE UNIQUE INDEX connection_links_objectid_key ON public.connection_links USING btree (objectid);
 
 
 
@@ -1767,7 +1772,7 @@ CREATE UNIQUE INDEX index_jps_on_journey_pattern_id_and_route_section_id_and_ran
 -- Name: index_stop_areas_on_parent_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE INDEX index_stop_areas_on_parent_id ON stop_areas USING btree (parent_id);
+CREATE INDEX index_stop_areas_on_parent_id ON public.stop_areas USING btree (parent_id);
 
 
 
@@ -1888,7 +1893,7 @@ CREATE UNIQUE INDEX routes_objectid_key ON routes USING btree (objectid);
 -- Name: stop_areas_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE UNIQUE INDEX stop_areas_objectid_key ON stop_areas USING btree (objectid);
+CREATE UNIQUE INDEX stop_areas_objectid_key ON public.stop_areas USING btree (objectid);
 
 
 --
@@ -1921,8 +1926,8 @@ CREATE UNIQUE INDEX vehicle_journeys_objectid_key ON vehicle_journeys USING btre
 -- Name: access_area_fkey; Type: FK CONSTRAINT; Schema: chouette_gui; Owner: chouette
 --
 
-ALTER TABLE ONLY access_points
-    ADD CONSTRAINT access_area_fkey FOREIGN KEY (stop_area_id) REFERENCES stop_areas(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.access_points
+    ADD CONSTRAINT access_area_fkey FOREIGN KEY (stop_area_id) REFERENCES public.stop_areas(id) ON DELETE CASCADE;
 
 
 --
@@ -1930,8 +1935,8 @@ ALTER TABLE ONLY access_points
 -- Name: aclk_acpt_fkey; Type: FK CONSTRAINT; Schema: chouette_gui; Owner: chouette
 --
 
-ALTER TABLE ONLY access_links
-    ADD CONSTRAINT aclk_acpt_fkey FOREIGN KEY (access_point_id) REFERENCES access_points(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.access_links
+    ADD CONSTRAINT aclk_acpt_fkey FOREIGN KEY (access_point_id) REFERENCES public.access_points(id) ON DELETE CASCADE;
 
 
 --
@@ -1939,8 +1944,8 @@ ALTER TABLE ONLY access_links
 -- Name: aclk_area_fkey; Type: FK CONSTRAINT; Schema: chouette_gui; Owner: chouette
 --
 
-ALTER TABLE ONLY access_links
-    ADD CONSTRAINT aclk_area_fkey FOREIGN KEY (stop_area_id) REFERENCES stop_areas(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.access_links
+    ADD CONSTRAINT aclk_area_fkey FOREIGN KEY (stop_area_id) REFERENCES public.stop_areas(id) ON DELETE CASCADE;
 
 
 --
@@ -1948,8 +1953,8 @@ ALTER TABLE ONLY access_links
 -- Name: area_parent_fkey; Type: FK CONSTRAINT; Schema: chouette_gui; Owner: chouette
 --
 
-ALTER TABLE ONLY stop_areas
-    ADD CONSTRAINT area_parent_fkey FOREIGN KEY (parent_id) REFERENCES stop_areas(id) ON DELETE SET NULL;
+ALTER TABLE ONLY public.stop_areas
+    ADD CONSTRAINT area_parent_fkey FOREIGN KEY (parent_id) REFERENCES public.stop_areas(id) ON DELETE SET NULL;
 
 
 --
@@ -1966,8 +1971,8 @@ ALTER TABLE ONLY journey_patterns
 -- Name: colk_endarea_fkey; Type: FK CONSTRAINT; Schema: chouette_gui; Owner: chouette
 --
 
-ALTER TABLE ONLY connection_links
-    ADD CONSTRAINT colk_endarea_fkey FOREIGN KEY (arrival_id) REFERENCES stop_areas(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.connection_links
+    ADD CONSTRAINT colk_endarea_fkey FOREIGN KEY (arrival_id) REFERENCES public.stop_areas(id) ON DELETE CASCADE;
 
 
 --
@@ -1975,8 +1980,8 @@ ALTER TABLE ONLY connection_links
 -- Name: colk_startarea_fkey; Type: FK CONSTRAINT; Schema: chouette_gui; Owner: chouette
 --
 
-ALTER TABLE ONLY connection_links
-    ADD CONSTRAINT colk_startarea_fkey FOREIGN KEY (departure_id) REFERENCES stop_areas(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.connection_links
+    ADD CONSTRAINT colk_startarea_fkey FOREIGN KEY (departure_id) REFERENCES public.stop_areas(id) ON DELETE CASCADE;
 
 
 --
@@ -2097,21 +2102,12 @@ ALTER TABLE ONLY routing_constraints_lines
 
 
 --
--- TOC entry 4114 (class 2606 OID 940061)
--- Name: routingconstraint_stoparea_fkey; Type: FK CONSTRAINT; Schema: chouette_gui; Owner: chouette
---
-
-ALTER TABLE ONLY routing_constraints_lines
-    ADD CONSTRAINT routingconstraint_stoparea_fkey FOREIGN KEY (stop_area_id) REFERENCES stop_areas(id) ON DELETE CASCADE;
-
-
---
 -- TOC entry 4118 (class 2606 OID 940066)
 -- Name: stoparea_child_fkey; Type: FK CONSTRAINT; Schema: chouette_gui; Owner: chouette
 --
 
-ALTER TABLE ONLY stop_areas_stop_areas
-    ADD CONSTRAINT stoparea_child_fkey FOREIGN KEY (child_id) REFERENCES stop_areas(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.stop_areas_stop_areas
+    ADD CONSTRAINT stoparea_child_fkey FOREIGN KEY (child_id) REFERENCES public.stop_areas(id) ON DELETE CASCADE;
 
 
 --
@@ -2119,17 +2115,9 @@ ALTER TABLE ONLY stop_areas_stop_areas
 -- Name: stoparea_parent_fkey; Type: FK CONSTRAINT; Schema: chouette_gui; Owner: chouette
 --
 
-ALTER TABLE ONLY stop_areas_stop_areas
-    ADD CONSTRAINT stoparea_parent_fkey FOREIGN KEY (parent_id) REFERENCES stop_areas(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.stop_areas_stop_areas
+    ADD CONSTRAINT stoparea_parent_fkey FOREIGN KEY (parent_id) REFERENCES public.stop_areas(id) ON DELETE CASCADE;
 
-
---
--- TOC entry 4120 (class 2606 OID 940076)
--- Name: stoppoint_area_fkey; Type: FK CONSTRAINT; Schema: chouette_gui; Owner: chouette
---
-
-ALTER TABLE ONLY stop_points
-    ADD CONSTRAINT stoppoint_area_fkey FOREIGN KEY (stop_area_id) REFERENCES stop_areas(id);
 
 
 --
