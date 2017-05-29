@@ -92,12 +92,6 @@
 			<type>ejb</type>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>mobi.chouette.exchange.neptune</artifactId>
-			<type>ejb</type>
-			<version>${project.version}</version>
-		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
