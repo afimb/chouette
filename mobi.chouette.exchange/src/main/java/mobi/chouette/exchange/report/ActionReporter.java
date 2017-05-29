@@ -9,6 +9,7 @@ public interface ActionReporter {
 		NETWORK,
 		COMPANY,
 		STOP_AREA,
+		STOP_POINT,
 		CONNECTION_LINK,
 		ACCESS_POINT,
 		TIMETABLE,

@@ -249,6 +249,10 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 			VehicleJourneyAtStop vjas0 = vjasList.get(i - 1);
 			VehicleJourneyAtStop vjas1 = vjasList.get(i);
 
+			if (vjas0.getStopPoint().getContainedInStopArea() == null || vjas1.getStopPoint().getContainedInStopArea() == null) {
+				continue;
+			}
+
 			long diffTime = diffTime(vjas0.getDepartureTime(), vjas0.getDepartureDayOffset(), vjas1.getArrivalTime(),
 					vjas1.getArrivalDayOffset());
 			/** GJT */
@@ -469,6 +473,10 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 
 		List<VehicleJourneyAtStop> vjasList = vj.getVehicleJourneyAtStops();
 		for (VehicleJourneyAtStop vjas : vjasList) {
+
+			if (vjas.getStopPoint().getContainedInStopArea() == null) {
+				continue;
+			}
 
 			/** First stop */
 			if (previous_vjas == null) {

@@ -30,7 +30,6 @@ public class StopPointCheckPoints extends AbstractValidation<StopPoint> implemen
     }
 
     private void validateStopPointIsContainedInStopArea(Context context, StopPoint stopPoint) {
-        log.info("Validating stopPoint: " + stopPoint);
         if (stopPoint != null && stopPoint.getContainedInStopArea() == null) {
             log.info("Registering error for : " + stopPoint);
             ValidationReporter reporter = ValidationReporter.Factory.getInstance();
