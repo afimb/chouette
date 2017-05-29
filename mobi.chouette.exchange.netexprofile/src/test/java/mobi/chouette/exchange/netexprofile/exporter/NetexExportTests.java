@@ -1,20 +1,14 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Context;
-import mobi.chouette.common.chain.Command;
-import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.neptune.Constant;
-import mobi.chouette.exchange.netexprofile.DummyChecker;
-import mobi.chouette.exchange.netexprofile.JobDataTest;
-import mobi.chouette.exchange.netexprofile.NetexTestUtils;
-import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
-import mobi.chouette.exchange.netexprofile.importer.NetexprofileImporterCommand;
-import mobi.chouette.exchange.report.*;
-import mobi.chouette.exchange.validation.report.CheckPointReport;
-import mobi.chouette.exchange.validation.report.ValidationReport;
-import mobi.chouette.exchange.validation.report.ValidationReporter;
-import mobi.chouette.persistence.hibernate.ContextHolder;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.testng.Arquillian;
@@ -29,13 +23,25 @@ import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
+import mobi.chouette.common.chain.Command;
+import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.netexprofile.DummyChecker;
+import mobi.chouette.exchange.netexprofile.JobDataTest;
+import mobi.chouette.exchange.netexprofile.NetexTestUtils;
+import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
+import mobi.chouette.exchange.netexprofile.importer.NetexprofileImporterCommand;
+import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.FileReport;
+import mobi.chouette.exchange.report.ObjectReport;
+import mobi.chouette.exchange.report.ReportConstant;
+import mobi.chouette.exchange.validation.report.CheckPointReport;
+import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.persistence.hibernate.ContextHolder;
 
 @Log4j
 public class NetexExportTests extends Arquillian implements Constant, ReportConstant {
