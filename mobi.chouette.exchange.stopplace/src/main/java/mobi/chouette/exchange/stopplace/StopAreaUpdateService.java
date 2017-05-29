@@ -3,20 +3,17 @@ package mobi.chouette.exchange.stopplace;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
-import mobi.chouette.dao.StopPointDAO;
-import mobi.chouette.dao.iev.ReferentialDAO;
 import mobi.chouette.exchange.importer.updater.StopAreaUpdater;
 import mobi.chouette.exchange.importer.updater.Updater;
 import mobi.chouette.model.StopArea;
-import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.type.ChouetteAreaEnum;
-import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -28,12 +25,6 @@ public class StopAreaUpdateService {
 
     @EJB
     private StopAreaDAO stopAreaDAO;
-
-    @EJB
-    private StopPointDAO stopPointDAO;
-
-    @EJB
-    private ReferentialDAO referentialDao;
 
     @EJB(beanName = StopAreaUpdater.BEAN_NAME)
     private Updater<StopArea> stopAreaUpdater;
@@ -110,30 +101,10 @@ public class StopAreaUpdateService {
     private void removeQuay(StopArea obsoleteStopArea) {
         log.info("Deleting obsolete StopArea (Quay): " + obsoleteStopArea.getObjectId());
 
-        try {
-            for (String referential : referentialDao.getReferentials()) {
-                ContextHolder.setContext(referential);
-
-                List<StopPoint> containedStopPoints = stopPointDAO.getStopPointsContainedInStopArea(obsoleteStopArea.getObjectId());
-                if (containedStopPoints.size() > 0) {
-                    log.info("Clearing references for " + containedStopPoints.size() + " stop points referring to obsolete StopArea (Quay): " + obsoleteStopArea.getObjectId());
-                    containedStopPoints.forEach((stopPoint -> removeStopAreaReferenceFromStopPoint(stopPoint)));
-                }
-            }
-        } finally {
-            ContextHolder.setContext(null);
-        }
-
         StopArea oldParent=obsoleteStopArea.getParent();
         obsoleteStopArea.setParent(null);
         stopAreaDAO.update(oldParent);
         stopAreaDAO.delete(obsoleteStopArea);
-    }
-
-
-    private void removeStopAreaReferenceFromStopPoint(StopPoint stopPoint) {
-        stopPoint.setContainedInStopArea(null);
-        stopPointDAO.update(stopPoint);
     }
 
 }
