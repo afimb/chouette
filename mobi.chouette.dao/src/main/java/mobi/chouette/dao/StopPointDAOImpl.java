@@ -21,9 +21,7 @@ public class StopPointDAOImpl extends GenericDAOImpl<StopPoint> implements StopP
     }
 
     @Override
-    public List<StopPoint> getStopPointsContainedInStopArea(Long stopAreaId) {
-
-        return em.createQuery("select sp from StopPoint sp where sp.containedInStopAreaId=:stopAreaId", StopPoint.class).setParameter("stopAreaId", stopAreaId).getResultList();
-
+    public List<StopPoint> getStopPointsContainedInStopArea(String stopAreaObjectId) {
+        return em.createQuery("select sp from StopPoint sp where sp.containedInStopAreaObjectId=:stopAreaObjectId", StopPoint.class).setParameter("stopAreaObjectId", stopAreaObjectId).getResultList();
     }
 }

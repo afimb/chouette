@@ -114,7 +114,7 @@ public class StopAreaUpdateService {
             for (String referential : referentialDao.getReferentials()) {
                 ContextHolder.setContext(referential);
 
-                List<StopPoint> containedStopPoints = stopPointDAO.getStopPointsContainedInStopArea(obsoleteStopArea.getId());
+                List<StopPoint> containedStopPoints = stopPointDAO.getStopPointsContainedInStopArea(obsoleteStopArea.getObjectId());
                 if (containedStopPoints.size() > 0) {
                     log.info("Clearing references for " + containedStopPoints.size() + " stop points referring to obsolete StopArea (Quay): " + obsoleteStopArea.getObjectId());
                     containedStopPoints.forEach((stopPoint -> removeStopAreaReferenceFromStopPoint(stopPoint)));

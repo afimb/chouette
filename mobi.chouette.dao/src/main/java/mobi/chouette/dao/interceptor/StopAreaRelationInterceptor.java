@@ -23,6 +23,8 @@ public class StopAreaRelationInterceptor extends EmptyInterceptor {
 
     private StopPointDAO stopPointDAO;
 
+    private static final String STOP_AREA_OBJECT_ID_PROPERTY = "objectId";
+
 
     @Override
     public boolean onLoad(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
@@ -31,8 +33,8 @@ public class StopAreaRelationInterceptor extends EmptyInterceptor {
         if (entity instanceof StopArea) {
 
             StopArea stopArea = (StopArea) entity;
-            log.warn("On load StopArea id: " + stopArea.getId());
-            populateContainedStopPoints(stopArea);
+            log.trace("On load StopArea id: " + stopArea.getId());
+            populateContainedStopPoints(stopArea, getProperty(STOP_AREA_OBJECT_ID_PROPERTY, propertyNames, state));
 
         }
 
@@ -40,12 +42,12 @@ public class StopAreaRelationInterceptor extends EmptyInterceptor {
     }
 
 
-    private Object getProperty(String propertyName, String[] propertyNames, Object[] state) {
+    private <T> T getProperty(String propertyName, String[] propertyNames, Object[] state) {
 
         for (int i = 0; i < propertyNames.length; i++) {
 
             if (propertyName.equals(propertyNames[i])) {
-                return state[i];
+                return (T) state[i];
             }
 
         }
@@ -56,11 +58,11 @@ public class StopAreaRelationInterceptor extends EmptyInterceptor {
     /**
      * Populate stop area with contained stop points relevant for the current context. If no referential is set in the context the population is omitted.
      */
-    private void populateContainedStopPoints(StopArea stopArea) {
+    private void populateContainedStopPoints(StopArea stopArea, String stopAreaObjectId) {
         if (ContextHolder.getContext() != null) {
             List<StopPoint> containedStopPoints = new ArrayList<>();
-            containedStopPoints.addAll(stopPointDAO.getStopPointsContainedInStopArea(stopArea.getId()));
-            log.info("Populated stopPoints for stop area: " + stopArea.getId() + ". Points: " + containedStopPoints);
+            containedStopPoints.addAll(stopPointDAO.getStopPointsContainedInStopArea(stopAreaObjectId));
+            log.debug("Populated stopPoints for stop area: " + stopArea.getId() + ". Points: " + containedStopPoints);
             stopArea.getContainedStopPoints().addAll(containedStopPoints);
         }
     }

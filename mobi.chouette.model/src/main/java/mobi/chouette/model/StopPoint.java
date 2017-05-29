@@ -85,8 +85,8 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	 * @return The actual value
 	 */
 	@Getter
-	@Column(name = "stop_area_id")
-	private Long containedInStopAreaId; // TODO switch to objectId
+	@Column(name = "stop_area_objectid_key")
+	private String containedInStopAreaObjectId;
 
 	/**
 	 * stop area container
@@ -110,16 +110,8 @@ public class StopPoint extends NeptuneIdentifiedObject {
 		this.containedInStopArea = stopArea;
 		if (stopArea != null) {
             stopArea.getContainedStopPoints().add(this);
-            containedInStopAreaId = stopArea.getId();
+            containedInStopAreaObjectId = stopArea.getObjectId();
         }
-	}
-
-
-	public void initializeContainedInStopArea(StopArea stopArea){
-		this.containedInStopArea=stopArea;
-		if (stopArea != null) {
-			containedInStopAreaId = stopArea.getId();
-		}
 	}
 
 
