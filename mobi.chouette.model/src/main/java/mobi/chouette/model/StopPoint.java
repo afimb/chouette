@@ -79,11 +79,7 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	   @Column(name = "for_alighting")
 	   private AlightingPossibilityEnum forAlighting;
 
-	   /**
-	 * stop area container
-	 *
-	 * @return The actual value
-	 */
+
 	@Getter
 	@Column(name = "stop_area_objectid_key")
 	private String containedInStopAreaObjectId;

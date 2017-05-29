@@ -2,6 +2,7 @@ package mobi.chouette.dao.interceptor;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import org.hibernate.EmptyInterceptor;
@@ -9,32 +10,34 @@ import org.hibernate.type.Type;
 
 import javax.enterprise.inject.spi.CDI;
 import java.io.Serializable;
-
-/**
- * StopPoint and StopArea reside in separate schemas. This Interceptor enriches these entities with relations between them upon load.
- */
 @Log4j
-public class StopPointRelationInterceptor extends EmptyInterceptor {
+public class RouteSectionRelationInterceptor extends EmptyInterceptor {
 
     private StopAreaDAO stopAreaDAO;
 
-    private static final String STOP_POINT_CONTAINED_IN_STOP_AREA_ID_PROPERTY = "containedInStopAreaObjectId";
+    private static final String DEPARTURE_STOP_AREA_ID_PROPERTY = "arrivalStopAreaObjectId";
+
+    private static final String ARRIVAL_STOP_AREA_ID_PROPERTY = "arrivalStopAreaObjectId";
 
 
     @Override
     public boolean onLoad(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
         init();
 
-        if (entity instanceof StopPoint) {
+        if (entity instanceof RouteSection) {
 
-            StopPoint stopPoint = (StopPoint) entity;
-            log.trace("On load StopPoint id: " + stopPoint.getId());
-            String containedInStopAreaId = getProperty(STOP_POINT_CONTAINED_IN_STOP_AREA_ID_PROPERTY, propertyNames, state);
+            RouteSection routeSection = (RouteSection) entity;
+            log.trace("On load RouteSection id: " + routeSection.getId());
 
-            if (containedInStopAreaId != null) {
-                stopPoint.setContainedInStopArea(stopAreaDAO.findByObjectId(containedInStopAreaId));
+            String arrivalStopAreaId = getProperty(ARRIVAL_STOP_AREA_ID_PROPERTY, propertyNames, state);
+            if (arrivalStopAreaId != null) {
+                routeSection.setArrival(stopAreaDAO.findByObjectId(arrivalStopAreaId));
             }
 
+            String departureStopAreaId = getProperty(DEPARTURE_STOP_AREA_ID_PROPERTY, propertyNames, state);
+            if (departureStopAreaId != null) {
+                routeSection.setDeparture(stopAreaDAO.findByObjectId(departureStopAreaId));
+            }
         }
         return super.onLoad(entity, id, state, propertyNames, types);
     }

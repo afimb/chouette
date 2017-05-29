@@ -16,4 +16,9 @@ public class StopAreaDAOImpl extends GenericDAOImpl<StopArea> implements StopAre
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
 	}
+
+	@Override
+	protected String getTableName() {
+		return "public." + super.getTableName();
+	}
 }

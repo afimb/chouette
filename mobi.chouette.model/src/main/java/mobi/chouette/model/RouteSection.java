@@ -83,14 +83,17 @@ public class RouteSection extends NeptuneIdentifiedObject {
 	@Type(type = "org.hibernate.spatial.GeometryType")
 	private LineString processedGeometry;
 
+	@Getter
+	@Column(name = "departure_stop_area_objectid_key")
+	private String departureStopAreaObjectId;
+
+
 	/**
 	 * first stop area connected to route section
 	 * 
 	 * @return The actual value
 	 */
 	@Getter
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "departure_id")
 	@Transient
 	private StopArea departure;
 
@@ -100,8 +103,17 @@ public class RouteSection extends NeptuneIdentifiedObject {
 	 * @param stopArea
 	 */
 	public void setDeparture(StopArea stopArea) {
+		if (stopArea != null) {
+			this.departureStopAreaObjectId = stopArea.getObjectId();
+		}
+
 		this.departure = stopArea;
 	}
+
+
+	@Getter
+	@Column(name = "arrival_stop_area_objectid_key")
+	private String arrivalStopAreaObjectId;
 
 	/**
 	 * last stop area connected to link
@@ -109,8 +121,6 @@ public class RouteSection extends NeptuneIdentifiedObject {
 	 * @return The actual value
 	 */
 	@Getter
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "arrival_id")
 	@Transient
 	private StopArea arrival;
 
@@ -120,6 +130,10 @@ public class RouteSection extends NeptuneIdentifiedObject {
 	 * @param stopArea
 	 */
 	public void setArrival(StopArea stopArea) {
+		if (stopArea != null) {
+			this.arrivalStopAreaObjectId = stopArea.getObjectId();
+		}
+
 		this.arrival = stopArea;
 	}
 

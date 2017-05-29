@@ -18,4 +18,8 @@ public class AccessPointDAOImpl extends GenericDAOImpl<AccessPoint> implements A
 		this.em = em;
 	}
 
+	@Override
+	protected String getTableName() {
+		return "public." + super.getTableName();
+	}
 }

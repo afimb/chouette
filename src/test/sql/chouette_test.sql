@@ -759,8 +759,8 @@ CREATE TABLE referentials (
 
 CREATE TABLE route_sections (
     id bigint NOT NULL,
-    departure_id integer,
-    arrival_id integer,
+    departure_stop_area_objectid_key character varying(255),
+    arrival_stop_area_objectid_key character varying(255),
     objectid character varying(255) NOT NULL,
     object_version integer,
     creation_time timestamp without time zone,

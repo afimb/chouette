@@ -41,4 +41,9 @@ public class ConnectionLinkDAOImpl extends GenericDAOImpl<ConnectionLink> implem
 		result = query.executeUpdate();
 		return result;
 	}
+
+	@Override
+	protected String getTableName() {
+		return "public." + super.getTableName();
+	}
 }
