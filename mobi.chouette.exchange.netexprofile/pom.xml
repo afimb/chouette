@@ -105,16 +105,6 @@
 			<type>ejb</type>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>mobi.chouette.exchange.neptune</artifactId>
-			<type>ejb</type>
-			<version>${project.version}</version>
-		</dependency>
-        <dependency>
-            <groupId>mobi.chouette</groupId>
-            <artifactId>mobi.chouette.exchange.netex</artifactId>
-        </dependency>
     </dependencies>
 	<build>
 		<plugins>
