@@ -524,36 +524,36 @@
 				<artifactId>mobi.chouette.exchange</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<dependency>
+<!-- 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>mobi.chouette.exchange.neptune</artifactId>
 				<version>${project.version}</version>
-			</dependency>
+			</dependency> -->
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>mobi.chouette.exchange.gtfs</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<dependency>
+	<!-- 		<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>mobi.chouette.exchange.netex</artifactId>
 				<version>${project.version}</version>
-			</dependency>
+			</dependency> -->
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>mobi.chouette.exchange.netexprofile</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<dependency>
+		<!-- 	<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>mobi.chouette.exchange.kml</artifactId>
 				<version>${project.version}</version>
-			</dependency>
-			<dependency>
+			</dependency> -->
+		<!-- 	<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>mobi.chouette.exchange.hub</artifactId>
 				<version>${project.version}</version>
-			</dependency>
+			</dependency> -->
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>mobi.chouette.exchange.regtopp</artifactId>
@@ -574,12 +574,12 @@
 				<artifactId>mobi.chouette.exchange.stopplace</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<dependency>
+<!-- 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>mobi.chouette.exchange.converter</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<dependency>
+ -->			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>mobi.chouette.service</artifactId>
 				<version>${project.version}</version>
@@ -879,18 +879,18 @@
 		<module>mobi.chouette.dao</module>
 		<module>mobi.chouette.dao.iev</module>
 		<module>mobi.chouette.exchange</module>
-		<module>mobi.chouette.exchange.neptune</module>
-		<module>mobi.chouette.exchange.netex</module>
+<!-- 		<module>mobi.chouette.exchange.neptune</module> -->
+<!-- 		<module>mobi.chouette.exchange.netex</module> -->
 		<module>mobi.chouette.exchange.netexprofile</module>
-		<module>mobi.chouette.exchange.kml</module>
-		<module>mobi.chouette.exchange.hub</module>
+<!-- 		<module>mobi.chouette.exchange.kml</module> -->
+<!-- 		<module>mobi.chouette.exchange.hub</module> -->
 		<module>mobi.chouette.exchange.gtfs</module>
-		<module>mobi.chouette.exchange.geojson</module>
-        <module>mobi.chouette.exchange.sig</module>
+<!-- 		<module>mobi.chouette.exchange.geojson</module> -->
+<!--         <module>mobi.chouette.exchange.sig</module> -->
 		<module>mobi.chouette.exchange.regtopp</module>
 		<module>mobi.chouette.exchange.stopplace</module>
 		<module>mobi.chouette.exchange.validator</module>
-		<module>mobi.chouette.exchange.converter</module>
+<!-- 		<module>mobi.chouette.exchange.converter</module> -->
 		<module>mobi.chouette.exchange.transfer</module>
 		<module>mobi.chouette.service</module>
 		<module>mobi.chouette.schema.checker</module>

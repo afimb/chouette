@@ -127,19 +127,19 @@
          <type>ejb</type>
          <version>${project.version}</version>
       </dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>mobi.chouette.exchange.neptune</artifactId>
 			<type>ejb</type>
 			<version>${project.version}</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>mobi.chouette.exchange.gtfs</artifactId>
 			<type>ejb</type>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>mobi.chouette.exchange.geojson</artifactId>
 			<type>ejb</type>
@@ -150,14 +150,14 @@
 			<artifactId>mobi.chouette.exchange.netex</artifactId>
 			<type>ejb</type>
 			<version>${project.version}</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>mobi.chouette.exchange.netexprofile</artifactId>
 			<type>ejb</type>
 			<version>${project.version}</version>
 		</dependency>
-      <dependency>
+<!--       <dependency>
          <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.exchange.kml</artifactId>
          <type>ejb</type>
@@ -168,19 +168,19 @@
          <artifactId>mobi.chouette.exchange.sig</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
-      </dependency>
+      </dependency> -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>mobi.chouette.exchange.stopplace</artifactId>
             <type>ejb</type>
             <version>${project.version}</version>
         </dependency>
-      <dependency>
+  <!--     <dependency>
          <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.exchange.hub</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
-      </dependency>
+      </dependency> -->
         <dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>mobi.chouette.exchange.regtopp</artifactId>
@@ -193,12 +193,12 @@
          <type>ejb</type>
          <version>${project.version}</version>
       </dependency>
-      <dependency>
+ <!--      <dependency>
          <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.exchange.converter</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
-      </dependency>
+      </dependency> -->
       <dependency>
          <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.exchange.transfer</artifactId>
