@@ -42,16 +42,7 @@ public class CleanRepositoryCommand implements Command {
 	public static final String COMMAND = "CleanRepositoryCommand";
 
 	@EJB
-	private AccessLinkDAO accessLinkDAO;
-
-	@EJB
-	private AccessPointDAO accessPointDAO;
-
-	@EJB
 	private CompanyDAO companyDAO;
-
-	@EJB
-	private ConnectionLinkDAO connectionLinkDAO;
 
 	@EJB
 	private GroupOfLineDAO groupOfLineDAO;
@@ -73,9 +64,6 @@ public class CleanRepositoryCommand implements Command {
 
 	@EJB
 	private RouteSectionDAO routeSectionDAO;
-
-	@EJB
-	private StopAreaDAO stopAreaDAO;
 
 	@EJB
 	private StopPointDAO stopPointDAO;
@@ -101,10 +89,8 @@ public class CleanRepositoryCommand implements Command {
 
 		try {
 
-			accessLinkDAO.truncate();
-			accessPointDAO.truncate();
 			companyDAO.truncate();
-			connectionLinkDAO.truncate();
+
 			groupOfLineDAO.truncate();
 			journeyFrequencyDAO.truncate();
 			journeyPatternDAO.truncate();
@@ -112,7 +98,7 @@ public class CleanRepositoryCommand implements Command {
 			networkDAO.truncate();
 			routeDAO.truncate();
 			routeSectionDAO.truncate();
-			stopAreaDAO.truncate();
+
 			stopPointDAO.truncate();
 			timetableDAO.truncate();
 			timebandDAO.truncate();

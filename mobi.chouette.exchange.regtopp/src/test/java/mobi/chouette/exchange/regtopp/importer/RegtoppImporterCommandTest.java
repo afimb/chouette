@@ -1,10 +1,12 @@
 package mobi.chouette.exchange.regtopp.importer;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
+import mobi.chouette.exchange.importer.CleanStopAreaRepositoryCommand;
 import mobi.chouette.exchange.regtopp.DummyChecker;
 import mobi.chouette.exchange.regtopp.JobDataTest;
 import mobi.chouette.exchange.regtopp.RegtoppTestUtils;
@@ -350,6 +352,9 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		FileUtils.copyFileToDirectory(f, dest);
 		JobDataTest job = (JobDataTest) context.get(JOB_DATA);
 		job.setInputFilename(f.getName());
+
+		Command cleanStopsCommand = CommandFactory.create(new InitialContext(), CleanStopAreaRepositoryCommand.class.getName());
+		cleanStopsCommand.execute(null);
 
 		RegtoppImporterCommand command = (RegtoppImporterCommand) CommandFactory.create(initialContext, RegtoppImporterCommand.class.getName());
 
