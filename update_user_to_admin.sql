@@ -1,1 +1,0 @@
-UPDATE public.users SET role=2 WHERE email='admin@rutebanken.org';
