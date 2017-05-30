@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PublicationDelivery xmlns="http://www.netex.org.uk/netex" xmlns:ns2="http://www.opengis.net/gml/3.2" xmlns:ns3="http://www.siri.org.uk/siri" version="any">
+    <PublicationTimestamp>2017-05-03T11:13:15.276+02:00</PublicationTimestamp>
+    <ParticipantRef>NSR</ParticipantRef>
+    <dataObjects>
+        <SiteFrame created="2017-05-03T11:13:14.98+02:00" modification="new" version="1" id="NSR:SiteFrame:843072317">
+            <stopPlaces modificationSet="all">
+                <StopPlace created="2017-05-02T13:07:03.764+02:00" modification="new" version="2" id="NSR:StopPlace:1">
+                    <ValidBetween>
+                        <FromDate>2017-05-02T13:07:03.764+02:00</FromDate>
+                        <ToDate>2017-05-25T13:07:03.765+02:00</ToDate>
+                    </ValidBetween>
+                    <keyList>
+                        <KeyValue>
+                            <Key>imported-id</Key>
+                            <Value>TRO:StopPlace:19035306</Value>
+                        </KeyValue>
+                    </keyList>
+                    <Name lang="nb">Møkkeland</Name>
+                    <Centroid>
+                        <Location>
+                            <Longitude>16.420000</Longitude>
+                            <Latitude>68.823500</Latitude>
+                        </Location>
+                    </Centroid>
+                    <AccessibilityAssessment modification="new" version="2" id="NSR:AccessibilityAssessment:51718">
+                        <MobilityImpairedAccess>unknown</MobilityImpairedAccess>
+                        <limitations>
+                            <AccessibilityLimitation modification="new" version="1">
+                                <WheelchairAccess>unknown</WheelchairAccess>
+                                <StepFreeAccess>unknown</StepFreeAccess>
+                            </AccessibilityLimitation>
+                        </limitations>
+                    </AccessibilityAssessment>
+                    <AccessModes></AccessModes>
+                    <OtherTransportModes></OtherTransportModes>
+                    <StopPlaceType>onstreetBus</StopPlaceType>
+                    <quays>
+                        <Quay modification="new" version="2" id="NSR:Quay:1a">
+                            <keyList>
+                                <KeyValue>
+                                    <Key>imported-id</Key>
+                                    <Value>TRO:Quay:19035306,TRO:Quay:1903530602</Value>
+                                </KeyValue>
+                            </keyList>
+                            <Centroid>
+                                <Location>
+                                    <Longitude>16.417000</Longitude>
+                                    <Latitude>68.824000</Latitude>
+                                </Location>
+                            </Centroid>
+                            <AccessModes></AccessModes>
+                            <OtherTransportModes></OtherTransportModes>
+                            <PublicCode>02</PublicCode>
+                        </Quay>
+                        <Quay modification="new" version="2" id="NSR:Quay:1b">
+                            <keyList>
+                                <KeyValue>
+                                    <Key>imported-id</Key>
+                                    <Value>,TRO:Quay:1903530601</Value>
+                                </KeyValue>
+                            </keyList>
+                            <Centroid>
+                                <Location>
+                                    <Longitude>16.423000</Longitude>
+                                    <Latitude>68.823000</Latitude>
+                                </Location>
+                            </Centroid>
+                            <AccessModes></AccessModes>
+                            <OtherTransportModes></OtherTransportModes>
+                            <PublicCode>01</PublicCode>
+                        </Quay>
+                    </quays>
+                </StopPlace>
+
+                <StopPlace created="2017-05-02T13:07:03.764+02:00" modification="new" version="2" id="NSR:StopPlace:2">
+                    <ValidBetween>
+                        <FromDate>2017-05-02T13:07:03.764+02:00</FromDate>
+                    </ValidBetween>
+                    <keyList>
+                        <KeyValue>
+                            <Key>imported-id</Key>
+                            <Value>TRO:StopPlace:19035306</Value>
+                        </KeyValue>
+                    </keyList>
+                    <Name lang="nb">Møkkeland</Name>
+                    <Centroid>
+                        <Location>
+                            <Longitude>16.420000</Longitude>
+                            <Latitude>68.823500</Latitude>
+                        </Location>
+                    </Centroid>
+                    <AccessModes></AccessModes>
+                    <OtherTransportModes></OtherTransportModes>
+                    <StopPlaceType>onstreetBus</StopPlaceType>
+                    <quays>
+                        <Quay modification="new" version="2" id="NSR:Quay:3a">
+                            <keyList>
+                                <KeyValue>
+                                    <Key>imported-id</Key>
+                                    <Value>TRO:Quay:19035306,TRO:Quay:1903530602</Value>
+                                </KeyValue>
+                            </keyList>
+                            <Centroid>
+                                <Location>
+                                    <Longitude>16.417000</Longitude>
+                                    <Latitude>68.824000</Latitude>
+                                </Location>
+                            </Centroid>
+                            <AccessModes></AccessModes>
+                            <OtherTransportModes></OtherTransportModes>
+                            <PublicCode>02</PublicCode>
+                        </Quay>
+                        <Quay modification="new" version="2" id="NSR:Quay:2b">
+                            <keyList>
+                                <KeyValue>
+                                    <Key>imported-id</Key>
+                                    <Value>TRO:Quay:19035306,TRO:Quay:1903530602</Value>
+                                </KeyValue>
+                            </keyList>
+                            <Centroid>
+                                <Location>
+                                    <Longitude>16.417000</Longitude>
+                                    <Latitude>68.824000</Latitude>
+                                </Location>
+                            </Centroid>
+                            <AccessModes></AccessModes>
+                            <OtherTransportModes></OtherTransportModes>
+                            <PublicCode>02</PublicCode>
+                        </Quay>
+                    </quays>
+                </StopPlace>
+
+                <StopPlace created="2017-05-02T13:07:03.764+02:00" modification="new" version="2" id="NSR:StopPlace:3">
+                    <ValidBetween>
+                        <FromDate>2017-05-02T13:07:03.764+02:00</FromDate>
+                    </ValidBetween>
+                    <keyList>
+                        <KeyValue>
+                            <Key>imported-id</Key>
+                            <Value>TRO:StopPlace:19035306</Value>
+                        </KeyValue>
+                    </keyList>
+                    <Name lang="nb">Møkkeland</Name>
+                    <Centroid>
+                        <Location>
+                            <Longitude>16.420000</Longitude>
+                            <Latitude>68.823500</Latitude>
+                        </Location>
+                    </Centroid>
+                    <AccessModes></AccessModes>
+                    <OtherTransportModes></OtherTransportModes>
+                    <StopPlaceType>onstreetBus</StopPlaceType>
+                    <quays>
+                    </quays>
+                </StopPlace>
+
+
+            </stopPlaces>
+        </SiteFrame>
+    </dataObjects>
+</PublicationDelivery>
