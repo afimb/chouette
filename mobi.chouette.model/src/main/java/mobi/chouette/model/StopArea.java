@@ -55,6 +55,8 @@ import org.hibernate.annotations.Parameter;
 public class StopArea extends NeptuneLocalizedObject {
 	private static final long serialVersionUID = 4548672479038099240L;
 
+	public static final String READ_ONLY_MODE = "STOP_AREA_READ_ONLY_MODE";
+
 	@Getter
 	@Setter
 	@SequenceGenerator(name = "stop_areas_id_seq", sequenceName = "stop_areas_id_seq", allocationSize = 1)
@@ -102,6 +104,14 @@ public class StopArea extends NeptuneLocalizedObject {
 	public void setComment(String value) {
 		comment = StringUtils.abbreviate(value, 255);
 	}
+
+	/**
+	 * Whether or not this stop area was created in "readOnly" mode for stop areas. If flag is set the object will not be persisted by cascade.
+	 */
+	@Getter
+	@Setter
+	@Transient
+	private boolean readOnly = false;
 
 	/**
 	 * area type

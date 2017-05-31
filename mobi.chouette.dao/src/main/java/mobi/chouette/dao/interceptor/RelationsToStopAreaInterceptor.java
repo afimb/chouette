@@ -83,7 +83,7 @@ public class RelationsToStopAreaInterceptor extends EmptyInterceptor {
             StopPoint stopPoint = ((StopPoint) entity);
             StopArea stopArea = stopPoint.getContainedInStopArea();
             if (stopArea != null) {
-                if (stopArea.getId() == null) {
+                if (stopArea.getId() == null && !stopArea.isDetached() && !stopArea.isReadOnly()) {
                     log.debug("Cascading persist of new stop area +" + stopArea.getObjectId() + "+ for created/updated stop point: " + stopPoint.getObjectId());
                     stopAreaDAO.create(stopArea);
                 }

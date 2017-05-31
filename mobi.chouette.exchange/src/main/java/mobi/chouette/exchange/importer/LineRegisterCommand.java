@@ -38,13 +38,7 @@ import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.exchange.report.IO_TYPE;
-import mobi.chouette.model.JourneyPattern;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.Route;
-import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.Timetable;
-import mobi.chouette.model.VehicleJourney;
-import mobi.chouette.model.VehicleJourneyAtStop;
+import mobi.chouette.model.*;
 import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
 
@@ -87,6 +81,8 @@ public class LineRegisterCommand implements Command {
 		context.put(CACHE, cache);
 
 		AbstractImportParameter importParameter = (AbstractImportParameter) context.get(CONFIGURATION);
+
+		context.put(StopArea.READ_ONLY_MODE, !importParameter.isImportStopPlaces() && !importParameter.isUpdateStopPlaces());
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
