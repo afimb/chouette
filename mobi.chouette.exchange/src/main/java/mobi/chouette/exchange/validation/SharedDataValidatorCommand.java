@@ -18,7 +18,16 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.validation.checkpoint.*;
+import mobi.chouette.exchange.validation.checkpoint.AccessLinkCheckPoints;
+import mobi.chouette.exchange.validation.checkpoint.AccessPointCheckPoints;
+import mobi.chouette.exchange.validation.checkpoint.CompanyCheckPoints;
+import mobi.chouette.exchange.validation.checkpoint.ConnectionLinkCheckPoints;
+import mobi.chouette.exchange.validation.checkpoint.GroupOfLineCheckPoints;
+import mobi.chouette.exchange.validation.checkpoint.NetworkCheckPoints;
+import mobi.chouette.exchange.validation.checkpoint.SharedLineCheckPoints;
+import mobi.chouette.exchange.validation.checkpoint.StopAreaCheckPoints;
+import mobi.chouette.exchange.validation.checkpoint.StopPointCheckPoints;
+import mobi.chouette.exchange.validation.checkpoint.TimetableCheckPoints;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 
 import com.jamonapi.Monitor;

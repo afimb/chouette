@@ -1,17 +1,8 @@
 package mobi.chouette.exchange.transfer.exporter;
 
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Context;
-import mobi.chouette.common.chain.Command;
-import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.LineDAO;
-import mobi.chouette.dao.RouteSectionDAO;
-import mobi.chouette.exchange.ProgressionCommand;
-import mobi.chouette.exchange.importer.CleanRepositoryCommand;
-import mobi.chouette.exchange.transfer.Constant;
-import mobi.chouette.model.*;
-import mobi.chouette.model.util.Referential;
-import org.jboss.ejb3.annotation.TransactionTimeout;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -21,9 +12,26 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
+import mobi.chouette.common.chain.Command;
+import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.dao.LineDAO;
+import mobi.chouette.dao.RouteSectionDAO;
+import mobi.chouette.exchange.ProgressionCommand;
+import mobi.chouette.exchange.importer.CleanRepositoryCommand;
+import mobi.chouette.exchange.transfer.Constant;
+import mobi.chouette.model.JourneyPattern;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.Route;
+import mobi.chouette.model.RouteSection;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.VehicleJourneyAtStop;
+import mobi.chouette.model.util.Referential;
+
+import org.jboss.ejb3.annotation.TransactionTimeout;
 
 @Log4j
 @Stateless(name = TransferExportDataWriter.COMMAND)

@@ -87,7 +87,7 @@ public class GtfsTripProducer extends AbstractProducer {
 		List<RouteSection> routeSections = vj.getJourneyPattern().getRouteSections();
 		int index = 0;
 		for (VehicleJourneyAtStop vjas : lvjas) {
-			// TODO
+
 			if (vjas.getStopPoint().getContainedInStopArea()!=null){
 				time.setStopId(toGtfsId(vjas.getStopPoint().getContainedInStopArea().getObjectId(), sharedPrefix, keepOriginalId));
 			}

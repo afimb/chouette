@@ -15,7 +15,11 @@ import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
-import mobi.chouette.model.*;
+import mobi.chouette.model.JourneyFrequency;
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.Timeband;
+import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.JourneyCategoryEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 

@@ -1,16 +1,27 @@
 package mobi.chouette.exchange.transfer.exporter;
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.model.*;
+import mobi.chouette.model.AccessLink;
+import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.ConnectionLink;
+import mobi.chouette.model.NeptuneObject;
+import mobi.chouette.model.StopArea;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
-
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
 
 @Log4j
 public class HibernateDeproxynator<T> {

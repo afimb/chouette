@@ -16,9 +16,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.ContenerChecker;
@@ -38,9 +35,19 @@ import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.exchange.report.IO_TYPE;
-import mobi.chouette.model.*;
+import mobi.chouette.model.JourneyPattern;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.Route;
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.Timetable;
+import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
+
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 
 @Log4j
 @Stateless(name = LineRegisterCommand.COMMAND)

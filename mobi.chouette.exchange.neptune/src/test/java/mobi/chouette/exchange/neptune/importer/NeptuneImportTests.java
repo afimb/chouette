@@ -1,5 +1,19 @@
 package mobi.chouette.exchange.neptune.importer;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import javax.ejb.EJB;
+import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.UserTransaction;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
@@ -21,6 +35,7 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
+
 import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.testng.Arquillian;
@@ -34,19 +49,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
-
-import javax.ejb.EJB;
-import javax.inject.Inject;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.UserTransaction;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 @Log4j
 public class NeptuneImportTests extends Arquillian implements Constant, ReportConstant {
