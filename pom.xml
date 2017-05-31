@@ -535,11 +535,11 @@
 				<artifactId>mobi.chouette.exchange.gtfs</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-	<!-- 		<dependency>
+	 		<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>mobi.chouette.exchange.netex</artifactId>
 				<version>${project.version}</version>
-			</dependency> -->
+			</dependency> 
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>mobi.chouette.exchange.netexprofile</artifactId>
@@ -881,7 +881,7 @@
 		<module>mobi.chouette.dao.iev</module>
 		<module>mobi.chouette.exchange</module>
  		<module>mobi.chouette.exchange.neptune</module>
-<!-- 		<module>mobi.chouette.exchange.netex</module> -->
+ 		<module>mobi.chouette.exchange.netex</module> 
 		<module>mobi.chouette.exchange.netexprofile</module>
 <!-- 		<module>mobi.chouette.exchange.kml</module> -->
 <!-- 		<module>mobi.chouette.exchange.hub</module> -->
