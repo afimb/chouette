@@ -11,8 +11,15 @@ public interface ExternalReferenceValidator {
 	 * Return a collection of IDs that this external reference validator could validate.
 	 * @param context 
 	 * 
-	 * @return the IDs that were validated OK
+	 * @return the IDs that were of the supported type but unable to verify
 	 */
 	public Set<IdVersion> validateReferenceIds(Context context, Set<IdVersion> externalIdsToValidate);
+	
+	/**
+	 * Returns the set of ids this external validator supports to validate
+	 * @param references
+	 * @return
+	 */
+	public Set<IdVersion> isOfSupportedTypes(Set<IdVersion> references);
 	
 }

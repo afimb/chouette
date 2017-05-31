@@ -14,6 +14,7 @@ import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.*;
 
 import javax.xml.bind.JAXBElement;
@@ -23,6 +24,7 @@ import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 @Log4j
 public class ServiceJourneyParser extends NetexParser implements Parser, Constant {
@@ -30,6 +32,7 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
     private static final ZoneId LOCAL_ZONE_ID = ZoneId.systemDefault();
 
     @Override
+    @SuppressWarnings("unchecked")
     public void parse(Context context) throws Exception {
         Context parsingContext = (Context) context.get(PARSING_CONTEXT);
         Context mainDeliveryContext = (Context) parsingContext.get(PublicationDeliveryParser.LOCAL_CONTEXT);
@@ -39,6 +42,8 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 
         JourneysInFrame_RelStructure journeyStructs = (JourneysInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
         List<Journey_VersionStructure> serviceJourneys = journeyStructs.getDatedServiceJourneyOrDeadRunOrServiceJourney();
+
+        Map<String, List<Footnote>> journeyFootnotes = (Map<String, List<Footnote>>) context.get(NEPTUNE_FOOTNOTES);
 
         for (Journey_VersionStructure journeyStruct : serviceJourneys) {
             ServiceJourney serviceJourney = (ServiceJourney) journeyStruct;
@@ -100,6 +105,15 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
             }
 
             parseTimetabledPassingTimes(context, referential, serviceJourney, vehicleJourney);
+
+            if (journeyFootnotes.containsKey(serviceJourney.getId())) {
+                List<Footnote> footnotes = journeyFootnotes.get(serviceJourney.getId());
+
+                if (CollectionUtils.isNotEmpty(footnotes)) {
+                    vehicleJourney.setFootnotes(footnotes);
+                }
+            }
+
             vehicleJourney.setFilled(true);
         }
     }

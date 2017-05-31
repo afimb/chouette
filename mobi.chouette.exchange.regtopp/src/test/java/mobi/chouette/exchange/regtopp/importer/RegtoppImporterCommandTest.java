@@ -13,6 +13,7 @@ import mobi.chouette.exchange.regtopp.RegtoppTestUtils;
 import mobi.chouette.exchange.regtopp.importer.version.RegtoppVersion;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileReport;
+import mobi.chouette.exchange.report.ObjectCollectionReport;
 import mobi.chouette.exchange.report.ObjectReport;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.CheckPointReport;
@@ -823,13 +824,17 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 				logOk(System.out,toString);
 			}
 		}
-		for (ObjectReport object : actionReport.getCollections().get(OBJECT_TYPE.LINE).getObjectReports()) {
-			String toString = ToStringBuilder.reflectionToString(object, ToStringStyle.SHORT_PREFIX_STYLE, true);
-			if(object.getStatus() == OBJECT_STATE.ERROR) {
-				logError(toString);
-			} else {
-				logOk(System.out,toString);
+		ObjectCollectionReport objectCollectionReport = actionReport.getCollections().get(OBJECT_TYPE.LINE);
+		if(objectCollectionReport != null) {
+			for (ObjectReport object : actionReport.getCollections().get(OBJECT_TYPE.LINE).getObjectReports()) {
+				String toString = ToStringBuilder.reflectionToString(object, ToStringStyle.SHORT_PREFIX_STYLE, true);
+				if(object.getStatus() == OBJECT_STATE.ERROR) {
+					logError(toString);
+				} else {
+					logOk(System.out,toString);
+				}
 			}
+			
 		}
 
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);

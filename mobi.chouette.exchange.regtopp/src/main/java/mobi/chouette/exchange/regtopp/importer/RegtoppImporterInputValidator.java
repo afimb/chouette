@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -17,8 +16,8 @@ import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
 import mobi.chouette.exchange.TestDescription;
 import mobi.chouette.exchange.importer.updater.DatabaseTestUtils;
-import mobi.chouette.exchange.neptune.validation.TestUtils;
 import mobi.chouette.exchange.parameters.AbstractParameter;
+import mobi.chouette.exchange.regtopp.validation.TestUtils;
 import mobi.chouette.exchange.validation.checkpoint.AbstractValidation;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 

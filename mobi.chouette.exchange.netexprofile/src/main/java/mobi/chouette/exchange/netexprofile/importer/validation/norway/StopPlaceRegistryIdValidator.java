@@ -5,9 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,13 +20,13 @@ import mobi.chouette.exchange.netexprofile.importer.validation.ExternalReference
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 
 @Log4j
-public class StopReferentialIdValidator implements ExternalReferenceValidator {
+public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator {
 
-	public static final String NAME = "StopReferentialIdValidator";
+	public static final String NAME = "StopPlaceRegistryIdValidator";
 
-	private Map<String, String> stopPlaceCache = new HashMap<>();
+	private Set<String> stopPlaceCache = new HashSet<>();
 
-	private Map<String, String> quayCache = new HashMap<>();
+	private Set<String> quayCache = new HashSet<>();
 
 	private String quayEndpoint;
 
@@ -36,9 +34,9 @@ public class StopReferentialIdValidator implements ExternalReferenceValidator {
 
 	private long lastUpdated = 0;
 
-	public final long timeToLiveMs = 1000 * 60 * 60 * 5; // 20 minutes
+	public final long timeToLiveMs = 1000 * 60 * 60 * 5; // 5 minutes
 
-	public StopReferentialIdValidator() {
+	public StopPlaceRegistryIdValidator() {
 
 		String quayEndpointPropertyKey = "iev.stop.place.register.mapping.quay";
 		quayEndpoint = System.getProperty(quayEndpointPropertyKey);
@@ -71,31 +69,30 @@ public class StopReferentialIdValidator implements ExternalReferenceValidator {
 			} else {
 				log.error("Error updating caches");
 			}
-
 		}
 
 		log.info("About to validate external " + externalIds.size() + " ids");
 
-		Set<IdVersion> validIds = new HashSet<>();
+		Set<IdVersion> invalidIds = new HashSet<>();
 
-		Set<IdVersion> idsToCheck = externalIds.stream().filter(e -> e.getId().contains(":Quay:") || e.getId().contains(":StopPlace:"))
-				.collect(Collectors.toSet());
+		Set<IdVersion> idsToCheck = isOfSupportedTypes(externalIds);
+
 		for (IdVersion id : idsToCheck) {
-			if (id.getId().contains(":Quay:")) {
-				if (!quayCache.containsKey(id.getId())) {
-					validationReporter.addCheckPointReportError(context,
-							AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN_PASSENGERSTOPASSIGNMENT_QUAYREF,
-							DataLocationHelper.findDataLocation(id));
-				}
-				validIds.add(id);
-			} else if (id.getId().contains(":StopPlace:") && stopPlaceCache.containsKey(id.getId())) {
-				validIds.add(id);
-			} 
+			if (id.getId().contains(":Quay:") && !quayCache.contains(id.getId())) {
+
+				invalidIds.add(id);
+				validationReporter.addCheckPointReportError(context,
+						AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN_PASSENGERSTOPASSIGNMENT_QUAYREF,
+						DataLocationHelper.findDataLocation(id));
+
+			} else if (id.getId().contains(":StopPlace:") && !stopPlaceCache.contains(id.getId()))  {
+				invalidIds.add(id);
+			}
 		}
 
-		log.info("Found " + validIds.size() + " ids ok, " + (externalIds.size() - validIds.size()) + " remaining");
+		log.info("Found " + invalidIds.size() + " ids invalid");
 
-		return validIds;
+		return invalidIds;
 	}
 
 	public static class DefaultExternalReferenceValidatorFactory extends ExternalReferenceValidatorFactory {
@@ -103,7 +100,7 @@ public class StopReferentialIdValidator implements ExternalReferenceValidator {
 		protected ExternalReferenceValidator create(Context context) {
 			ExternalReferenceValidator instance = (ExternalReferenceValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new StopReferentialIdValidator();
+				instance = new StopPlaceRegistryIdValidator();
 				context.put(NAME, instance);
 			}
 			return instance;
@@ -111,11 +108,12 @@ public class StopReferentialIdValidator implements ExternalReferenceValidator {
 	}
 
 	static {
-		ExternalReferenceValidatorFactory.factories.put(StopReferentialIdValidator.class.getName(),
-				new StopReferentialIdValidator.DefaultExternalReferenceValidatorFactory());
+		ExternalReferenceValidatorFactory.factories.put(StopPlaceRegistryIdValidator.class.getName(),
+				new StopPlaceRegistryIdValidator.DefaultExternalReferenceValidatorFactory());
 	}
 
-	private boolean populateCache(Map<String, String> cache, String u) {
+	private boolean populateCache(Set<String> cache, String u) {
+		cache.clear();
 		HttpURLConnection connection = null;
 
 		try {
@@ -133,11 +131,11 @@ public class StopReferentialIdValidator implements ExternalReferenceValidator {
 			while ((line = rd.readLine()) != null) {
 				String[] split = StringUtils.split(line, ",");
 				if (split.length == 2) {
-					cache.put(split[0], split[1]);
+					cache.add(split[0]);
+					cache.add(split[1]);
 				} else {
 					log.error("NSR contains illegal mappings: " + u + " " + line);
 				}
-
 			}
 			rd.close();
 			return true;
@@ -149,6 +147,12 @@ public class StopReferentialIdValidator implements ExternalReferenceValidator {
 
 		return false;
 
+	}
+
+	@Override
+	public Set<IdVersion> isOfSupportedTypes(Set<IdVersion> externalIds) {
+		// These are the references we want to check externally
+		return externalIds.stream().filter(e -> e.getId().contains(":Quay:") || e.getId().contains(":StopPlace:")).collect(Collectors.toSet());
 	}
 
 }

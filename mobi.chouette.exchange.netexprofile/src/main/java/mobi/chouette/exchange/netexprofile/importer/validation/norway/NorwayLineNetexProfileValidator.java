@@ -5,9 +5,11 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
+import mobi.chouette.exchange.netexprofile.importer.validation.ExternalReferenceValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidatorFactory;
-import mobi.chouette.exchange.netexprofile.importer.validation.norway.StopReferentialIdValidator.DefaultExternalReferenceValidatorFactory;
+import mobi.chouette.exchange.netexprofile.importer.validation.norway.StopPlaceRegistryIdValidator.DefaultExternalReferenceValidatorFactory;
+import mobi.chouette.exchange.netexprofile.util.NetexIdExtractorHelper;
 import mobi.chouette.exchange.validation.ValidationData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -16,6 +18,7 @@ import org.w3c.dom.NodeList;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Log4j
 public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileValidator implements NetexProfileValidator {
@@ -32,13 +35,13 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 		Set<ProfileValidatorCodespace> validCodespaces = (Set<ProfileValidatorCodespace>) context.get(NETEX_VALID_CODESPACES);
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 
-		// StopReferentialIdValidator stopRegisterValidator = new StopReferentialIdValidator();
+		// StopPlaceRegistryIdValidator stopRegisterValidator = new StopPlaceRegistryIdValidator();
 
 		@SuppressWarnings("unchecked")
 		Map<IdVersion, List<String>> commonIds = (Map<IdVersion, List<String>>) context.get(NETEX_COMMON_FILE_IDENTIFICATORS);
 
-		Set<IdVersion> localIds = collectEntityIdentificators(context, xpath, dom, new HashSet<>(Arrays.asList("Codespace")));
-		Set<IdVersion> localRefs = collectEntityReferences(context, xpath, dom, null);
+		Set<IdVersion> localIds = NetexIdExtractorHelper.collectEntityIdentificators(context, xpath, dom, new HashSet<>(Arrays.asList("Codespace")));
+		Set<IdVersion> localRefs = NetexIdExtractorHelper.collectEntityReferences(context, xpath, dom, null);
 
 		for (IdVersion id : localIds) {
 			data.getDataLocations().put(id.getId(), DataLocationHelper.findDataLocation(id));
@@ -56,12 +59,14 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 		verifyIdStructure(context, localIds, ID_STRUCTURE_REGEXP, validCodespaces);
 		verifyNoDuplicatesWithCommonElements(context, localIds, commonIds);
 		// Allow Frame ID duplicates - not used for anything
-		verifyNoDuplicatesAcrossLineFiles(context, localIds, new HashSet<>(Arrays.asList("ResourceFrame", "SiteFrame", "CompsiteFrame","TimetableFrame","ServiceFrame","ServiceCalendarFrame" )));
+		verifyNoDuplicatesAcrossLineFiles(context, localIds,
+				new HashSet<>(Arrays.asList("ResourceFrame", "SiteFrame", "CompsiteFrame", "TimetableFrame", "ServiceFrame", "ServiceCalendarFrame","RoutePoint","PointProjection","ScheduledStopPoint")));
 
 		verifyUseOfVersionOnLocalElements(context, localIds);
 		verifyUseOfVersionOnRefsToLocalElements(context, localIds, localRefs);
 		verifyReferencesToCommonElements(context, localRefs, localIds, commonIds);
 		verifyReferencesToCorrectEntityTypes(context, localRefs);
+		verifyExternalRefs(context, localRefs, localIds);
 
 		NodeList compositeFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:CompositeFrame", xpath, dom);
 		if (compositeFrames.getLength() > 0) {
@@ -198,12 +203,14 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 
 			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney[count(n:TransportMode) = 1]",
 					_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_TRANSPORT_MODE);
-			
+
 			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney[not(n:passingTimes)]",
 					_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIMES);
-			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney/n:passingTimes/n:TimetabledPassingTime[not(n:DepartureTime) and not(n:ArrivalTime)]",
+			validateElementNotPresent(context, xpath, subLevel,
+					"n:vehicleJourneys/n:ServiceJourney/n:passingTimes/n:TimetabledPassingTime[not(n:DepartureTime) and not(n:ArrivalTime)]",
 					_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_MISSING_DEPARTURE_OR_ARRIVAL);
-			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney[not(n:passingTimes/n:TimetabledPassingTime[1]/n:DepartureTime)]",
+			validateElementNotPresent(context, xpath, subLevel,
+					"n:vehicleJourneys/n:ServiceJourney[not(n:passingTimes/n:TimetabledPassingTime[1]/n:DepartureTime)]",
 					_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_FIRST_DEPARTURE);
 			validateElementNotPresent(context, xpath, subLevel,
 					"n:vehicleJourneys/n:ServiceJourney[count(n:passingTimes/n:TimetabledPassingTime[last()]/n:ArrivalTime) = 0]",
@@ -224,9 +231,14 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 			if (instance == null) {
 				instance = new NorwayLineNetexProfileValidator();
 
-				StopReferentialIdValidator stopRegistryValidator = (StopReferentialIdValidator) DefaultExternalReferenceValidatorFactory
-						.create(StopReferentialIdValidator.class.getName(), context);
-				instance.addExternalReferenceValidator(stopRegistryValidator);
+				// Shitty, should use inversion of control pattern and dependency injection
+				if("true".equals(context.get("testng"))) {
+					instance.addExternalReferenceValidator(new DummyStopReferentialIdValidator());
+				} else {
+					StopPlaceRegistryIdValidator stopRegistryValidator = (StopPlaceRegistryIdValidator) DefaultExternalReferenceValidatorFactory
+							.create(StopPlaceRegistryIdValidator.class.getName(), context);
+					instance.addExternalReferenceValidator(stopRegistryValidator);
+				}
 
 				context.put(NAME, instance);
 			}

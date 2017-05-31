@@ -26,14 +26,21 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 		StopArea stopArea = null;
 		StopPoint stopPoint = null;
 		
-		String chouetteStopAreaId = ObjectIdCreator.createStopAreaId(configuration,routeSegment.getStopId() + routeSegment.getStopPointIdDeparture());
+		String chouetteStopAreaId;
+		// Do not use empty stopppoint id if 00
+		if("00".equals(routeSegment.getStopPointIdDeparture())) {
+			 chouetteStopAreaId = ObjectIdCreator.createQuayId(configuration,routeSegment.getStopId());
+		} else {
+			 chouetteStopAreaId = ObjectIdCreator.createQuayId(configuration,routeSegment.getStopId() + routeSegment.getStopPointIdDeparture());
+		}
+		
 
 		if (referential.getSharedStopAreas().containsKey(chouetteStopAreaId)) {
 			stopArea = ObjectFactory.getStopArea(referential, chouetteStopAreaId);
 
 		} else {
 
-			String chouetteParentStopAreaId = ObjectIdCreator.createStopAreaId(configuration,routeSegment.getStopId());
+			String chouetteParentStopAreaId = ObjectIdCreator.createStopPlaceId(configuration,routeSegment.getStopId());
 
 			if (referential.getSharedStopAreas().containsKey(chouetteParentStopAreaId)) {
 				log.info("StopPoint " + chouetteStopPointId + " is refering to non existent StopArea " + chouetteStopAreaId

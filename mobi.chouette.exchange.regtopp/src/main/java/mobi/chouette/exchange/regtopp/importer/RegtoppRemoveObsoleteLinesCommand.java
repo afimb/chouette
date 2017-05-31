@@ -47,49 +47,55 @@ public class RegtoppRemoveObsoleteLinesCommand implements Command {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		try {
-		
-			// Find any lines that were registered with a dataset with the same date header, but that are not included in the current dataset delivery (regtopp file set)
-			
+
+			// Find any lines that were registered with a dataset with the same
+			// date header, but that are not included in the current dataset
+			// delivery (regtopp file set)
+
 			RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 			RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 			Index<AbstractRegtoppTripIndexTIX> index = importer.getUniqueLinesByTripIndex();
 			Iterator<String> keys = index.keys();
-	
+
 			String calendarStartDate = (String) context.get(RegtoppConstant.CALENDAR_START_DATE);
-			if(calendarStartDate == null) {
+			if (calendarStartDate == null) {
 				DaycodeById dayCodeIndex = (DaycodeById) importer.getDayCodeById();
 				RegtoppDayCodeHeaderDKO header = dayCodeIndex.getHeader();
 				calendarStartDate = header.getDate().toString();
 
 			}
 
-			// Register all lineIds that should be present with the given calendarStartDate
+			// Register all lineIds that should be present with the given
+			// calendarStartDate
 			Set<String> objectIdSet = new HashSet<>();
-			while(keys.hasNext()) {
+			while (keys.hasNext()) {
 				objectIdSet.add(ObjectIdCreator.createLineId(configuration, keys.next(), calendarStartDate));
 			}
 
 			List<Line> findAll = lineDAO.findAll();
-			
-			for(Line existingLine : findAll ) {
-				
-				String adminCode = importer.getTripIndex().iterator().next().getAdminCode();
-				String authority = null;
-				if(existingLine.getNetwork() != null) {
-					authority = existingLine.getNetwork().getRegistrationNumber();
-				}
-				
-				if(adminCode.equals(authority) && ObjectIdCreator.getCalendarStartDate(existingLine.getObjectId()).equals(calendarStartDate)) {
-					if(!objectIdSet.contains(existingLine.getObjectId())) {
-						log.info("Delete obsolete line : " + existingLine.getObjectId() + " "+existingLine.getName());
-						lineDAO.delete(existingLine);
-						
+
+			for (Line existingLine : findAll) {
+
+				Iterator<AbstractRegtoppTripIndexTIX> iterator = importer.getTripIndex().iterator();
+				if (iterator.hasNext()) {
+					String adminCode = iterator.next().getAdminCode();
+					String authority = null;
+					if (existingLine.getNetwork() != null) {
+						authority = existingLine.getNetwork().getRegistrationNumber();
+					}
+
+					if (adminCode.equals(authority) && ObjectIdCreator.getCalendarStartDate(existingLine.getObjectId()).equals(calendarStartDate)) {
+						if (!objectIdSet.contains(existingLine.getObjectId())) {
+							log.info("Delete obsolete line : " + existingLine.getObjectId() + " " + existingLine.getName());
+							lineDAO.delete(existingLine);
+
+						}
 					}
 				}
 			}
 
 			lineDAO.flush();
-		
+
 			result = SUCCESS;
 		} catch (Exception ex) {
 			log.error(ex.getMessage());

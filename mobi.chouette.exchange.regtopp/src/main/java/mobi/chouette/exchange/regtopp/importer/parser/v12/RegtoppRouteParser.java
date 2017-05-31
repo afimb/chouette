@@ -98,7 +98,7 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 
-		String chouetteStopAreaId = ObjectIdCreator.createStopAreaId(configuration, routeSegment.getStopId() + RegtoppStopParser.BOARDING_POSITION_ID_SUFFIX);
+		String chouetteStopAreaId = ObjectIdCreator.createQuayId(configuration, routeSegment.getStopId());
 		log.debug("Created chouette stop area ID with suffix from route segment stop ID: " + chouetteStopAreaId);
 		if(referential.getSharedStopAreas().containsKey(chouetteStopAreaId)) {
 			log.debug("Referential contains key for created chouette stop area ID " + chouetteStopAreaId + " in shared stop areas.");

@@ -18,6 +18,7 @@ import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.parser.CentroidGenerator;
 import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppStopHPL;
+import mobi.chouette.exchange.regtopp.model.v12novus.RegtoppStopHPL;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.ObjectFactory;
@@ -44,7 +45,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 			List<StopArea> boardingPositions = boardingPositionsByStopArea.get(commercialStopAreaId);
 			if (boardingPositions.size() > 0) {
 				// Create parent stopArea
-				String objectId = ObjectIdCreator.createStopAreaId(configuration, commercialStopAreaId);
+				String objectId = ObjectIdCreator.createStopPlaceId(configuration, commercialStopAreaId);
 				StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
 				stopArea.setName(boardingPositions.get(0).getName()); // TODO using name of first stop point, should be identical for all boarding positions according to spec
 				stopArea.setAreaType(PARENT_STOP_PLACE_TYPE);
@@ -80,11 +81,24 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 		}
 	}
 
-	public void createBoardingPosition(AbstractRegtoppStopHPL stop,
+	public void createBoardingPosition(AbstractRegtoppStopHPL s,
 									   RegtoppImportParameters regtoppImportParameters, Referential referential) {
-		String objectId = ObjectIdCreator.createStopAreaId(regtoppImportParameters, stop.getFullStopId());
+		
+		RegtoppStopHPL stop = (RegtoppStopHPL) s;
+		
+    	String chouetteStopPointId;
+    	
+    	// Do not append stopPointId if values is "00"
+    	if(stop.getStopPointId().equals("00")) {
+    		chouetteStopPointId = ObjectIdCreator.createQuayId(regtoppImportParameters,
+    				stop.getStopId());
+    	} else {
+    		chouetteStopPointId = ObjectIdCreator.createQuayId(regtoppImportParameters,
+    				stop.getFullStopId());
+    	}
 
-		StopArea boardingPosition = ObjectFactory.getStopArea(referential, objectId);
+
+		StopArea boardingPosition = ObjectFactory.getStopArea(referential, chouetteStopPointId);
 		boardingPosition.setName(stop.getFullName());
 		boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
 		convertAndSetCoordinates(boardingPosition, stop.getX(), stop.getY(), regtoppImportParameters.getCoordinateProjection());
