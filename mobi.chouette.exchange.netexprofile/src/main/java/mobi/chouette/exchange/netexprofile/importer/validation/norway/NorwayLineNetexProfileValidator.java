@@ -8,7 +8,7 @@ import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespa
 import mobi.chouette.exchange.netexprofile.importer.validation.ExternalReferenceValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidatorFactory;
-import mobi.chouette.exchange.netexprofile.importer.validation.norway.StopReferentialIdValidator.DefaultExternalReferenceValidatorFactory;
+import mobi.chouette.exchange.netexprofile.importer.validation.norway.StopPlaceRegistryIdValidator.DefaultExternalReferenceValidatorFactory;
 import mobi.chouette.exchange.netexprofile.util.NetexIdExtractorHelper;
 import mobi.chouette.exchange.validation.ValidationData;
 import org.w3c.dom.Document;
@@ -35,7 +35,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 		Set<ProfileValidatorCodespace> validCodespaces = (Set<ProfileValidatorCodespace>) context.get(NETEX_VALID_CODESPACES);
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 
-		// StopReferentialIdValidator stopRegisterValidator = new StopReferentialIdValidator();
+		// StopPlaceRegistryIdValidator stopRegisterValidator = new StopPlaceRegistryIdValidator();
 
 		@SuppressWarnings("unchecked")
 		Map<IdVersion, List<String>> commonIds = (Map<IdVersion, List<String>>) context.get(NETEX_COMMON_FILE_IDENTIFICATORS);
@@ -235,8 +235,8 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 				if("true".equals(context.get("testng"))) {
 					instance.addExternalReferenceValidator(new DummyStopReferentialIdValidator());
 				} else {
-					StopReferentialIdValidator stopRegistryValidator = (StopReferentialIdValidator) DefaultExternalReferenceValidatorFactory
-							.create(StopReferentialIdValidator.class.getName(), context);
+					StopPlaceRegistryIdValidator stopRegistryValidator = (StopPlaceRegistryIdValidator) DefaultExternalReferenceValidatorFactory
+							.create(StopPlaceRegistryIdValidator.class.getName(), context);
 					instance.addExternalReferenceValidator(stopRegistryValidator);
 				}
 

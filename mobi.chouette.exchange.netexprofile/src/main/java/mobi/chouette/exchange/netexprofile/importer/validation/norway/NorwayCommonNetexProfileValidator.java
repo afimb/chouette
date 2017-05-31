@@ -17,7 +17,7 @@ import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidatorFactory;
-import mobi.chouette.exchange.netexprofile.importer.validation.norway.StopReferentialIdValidator.DefaultExternalReferenceValidatorFactory;
+import mobi.chouette.exchange.netexprofile.importer.validation.norway.StopPlaceRegistryIdValidator.DefaultExternalReferenceValidatorFactory;
 import mobi.chouette.exchange.netexprofile.util.NetexIdExtractorHelper;
 
 public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfileValidator implements NetexProfileValidator {
@@ -165,8 +165,8 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 				if("true".equals(context.get("testng"))) {
 					instance.addExternalReferenceValidator(new DummyStopReferentialIdValidator());
 				} else {
-					StopReferentialIdValidator stopRegistryValidator = (StopReferentialIdValidator) DefaultExternalReferenceValidatorFactory
-							.create(StopReferentialIdValidator.class.getName(), context);
+					StopPlaceRegistryIdValidator stopRegistryValidator = (StopPlaceRegistryIdValidator) DefaultExternalReferenceValidatorFactory
+							.create(StopPlaceRegistryIdValidator.class.getName(), context);
 					instance.addExternalReferenceValidator(stopRegistryValidator);
 				}
 				context.put(NAME, instance);
