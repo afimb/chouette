@@ -54,6 +54,7 @@ RUN rm -rf /opt/jboss/wildfly/standalone/configuration/standalone_xml_history \
 USER root
 
 COPY disk_usage_notifier.sh /disk_usage_notifier.sh
+RUN chmod a+x /disk_usage_notifier.sh
 
 # This argument comes from https://github.com/jboss-dockerfiles/wildfly
 # It enables the admin interface.
