@@ -8,6 +8,7 @@ import mobi.chouette.exchange.InputValidatorFactory;
 import mobi.chouette.exchange.TestDescription;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -46,6 +47,23 @@ public class NetexprofileImporterInputValidator extends AbstractInputValidator {
 			log.error("invalid parameters for Netex import " + abstractParameter.getClass().getName());
 			return false;
 		}
+
+		NetexprofileImportParameters parameters = (NetexprofileImportParameters) abstractParameter;
+
+		// Validate profile parameters
+		if (StringUtils.trimToNull(parameters.getValidCodespaces()) != null) {
+			String[] validCodespacesTuples = StringUtils.split(parameters.getValidCodespaces(), ",");
+			if (validCodespacesTuples.length > 0) {
+				// Check for odd numbers of commas
+				if (validCodespacesTuples.length % 2 != 0) {
+					log.error("Unable to decode valid codepsaces "+parameters.getValidCodespaces()+" String must be comma separated with a pattern like PREFIX,URL,PREFIX,URL, ...");
+					return false;
+				}
+			}
+		} else {
+			return false;
+		}
+
 		return true;
 	}
 

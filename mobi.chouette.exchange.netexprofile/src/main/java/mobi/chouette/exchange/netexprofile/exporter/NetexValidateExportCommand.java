@@ -46,6 +46,7 @@ public class NetexValidateExportCommand implements Command, Constant {
             parameters.setName(configuration.getName());
             parameters.setNoSave(true);
             parameters.setReferentialName(configuration.getReferentialName());
+            parameters.setValidCodespaces(configuration.getValidCodespaces());
 
             validateExportContext.put(CONFIGURATION, parameters);
             validateExportContext.put(REPORT, context.get(REPORT));

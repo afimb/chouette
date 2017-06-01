@@ -165,6 +165,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
+		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
 		try {
 			command.execute(context);
@@ -216,6 +217,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
+		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
 		try {
 			command.execute(context);
@@ -265,6 +267,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
+		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
 		boolean result;
 		try {
@@ -350,6 +353,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
+		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
 		boolean result;
 		try {
@@ -400,6 +404,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
+		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
 		boolean result;
 		try {
@@ -498,6 +503,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
+		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
 		boolean result;
 		try {
@@ -611,6 +617,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
+		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
 		boolean result;
 		try {
@@ -720,6 +727,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
+		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
 		boolean result;
 		try {
@@ -793,6 +801,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
+		configuration.setValidCodespaces("RUT,http://www.rutebanken.org/ns/rut");
 
 		boolean result;
 		try {
@@ -844,6 +853,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
+		configuration.setValidCodespaces("VKT,http://www.rutebanken.org/ns/vkt");
 
 		boolean result;
 		try {
