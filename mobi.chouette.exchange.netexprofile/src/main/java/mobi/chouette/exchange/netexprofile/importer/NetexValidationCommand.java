@@ -11,7 +11,6 @@ import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.report.ActionReporter;
-import mobi.chouette.model.util.Referential;
 
 import javax.naming.InitialContext;
 import java.io.IOException;
@@ -29,9 +28,6 @@ public class NetexValidationCommand implements Command, Constant {
         String fileName = (String) context.get(FILE_NAME);
 
         try {
-            Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
-            Referential referential = (Referential) context.get(REFERENTIAL);
-
             NetexProfileValidator validator = (NetexProfileValidator) context.get(NETEX_PROFILE_VALIDATOR);
             validator.validate(context);
 

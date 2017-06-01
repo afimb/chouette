@@ -3,7 +3,6 @@ package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.NetexImporter;
-import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexNamespaceContext;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.report.ActionReport;
@@ -12,6 +11,7 @@ import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.Codespace;
 import mobi.chouette.model.util.Referential;
 import org.rutebanken.netex.model.PublicationDeliveryStructure;
 import org.testng.Assert;
@@ -37,8 +37,11 @@ public class NorwayLineNetexProfileValidatorTest {
 		ValidationReport vr = new ValidationReport();
 		context.put(Constant.VALIDATION_REPORT	, vr);
 
-		Set<ProfileValidatorCodespace> validCodespaces = new HashSet<>();
-		validCodespaces.add(new ProfileValidatorCodespace("AVI","http://avinor.no/"));
+		Set<Codespace> validCodespaces = new HashSet<>();
+		Codespace validCodespace = new Codespace();
+		validCodespace.setXmlns("AVI");
+		validCodespace.setXmlnsUrl("http://avinor.no/");
+		validCodespaces.add(validCodespace);
 		context.put(Constant.NETEX_VALID_CODESPACES, validCodespaces);
 
 		Document dom = importer.parseFileToDom(new File("src/test/data/WF739-201608311015.xml"));
@@ -74,12 +77,19 @@ public class NorwayLineNetexProfileValidatorTest {
 		Referential referential =new Referential();
 		context.put(Constant.REFERENTIAL,referential);
 
+		Set<Codespace> validCodespaces = new HashSet<>();
 
-		Set<ProfileValidatorCodespace> validCodespaces = new HashSet<>();
-		validCodespaces.add(new ProfileValidatorCodespace(AbstractNorwayNetexProfileValidator.NSR_XMLNS, AbstractNorwayNetexProfileValidator.NSR_XMLNSURL));
-		validCodespaces.add(new ProfileValidatorCodespace("AVI","http://www.rutebanken.org/ns/avi"));
+		Codespace nsrCodespace = new Codespace();
+		nsrCodespace.setXmlns(AbstractNorwayNetexProfileValidator.NSR_XMLNS);
+		nsrCodespace.setXmlnsUrl(AbstractNorwayNetexProfileValidator.NSR_XMLNSURL);
+		validCodespaces.add(nsrCodespace);
+
+		Codespace avinorCodespace = new Codespace();
+		avinorCodespace.setXmlns("AVI");
+		avinorCodespace.setXmlnsUrl("http://www.rutebanken.org/ns/avi");
+		validCodespaces.add(avinorCodespace);
+
 		context.put(Constant.NETEX_VALID_CODESPACES, validCodespaces);
-
 
 		Document commonDom = importer.parseFileToDom(new File("src/test/data/norway_line_commonfile/_avinor_common_elements.xml"));
 		PublicationDeliveryStructure commonStructure =importer.unmarshal(commonDom);

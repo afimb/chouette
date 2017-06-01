@@ -7,6 +7,7 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.netexprofile.CodespaceDaoReader;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexNamespaceContext;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
@@ -17,20 +18,25 @@ import mobi.chouette.exchange.netexprofile.util.NetexReferential;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.model.Codespace;
 import mobi.chouette.model.util.Referential;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import javax.ejb.EJB;
 import javax.naming.InitialContext;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Log4j
 public class NetexInitImportCommand implements Command, Constant {
 
 	public static final String COMMAND = "NetexInitImportCommand";
+
+	@EJB private CodespaceDaoReader codespaceReader;
 
 	@Override
 	public boolean execute(Context context) throws Exception {
@@ -39,8 +45,6 @@ public class NetexInitImportCommand implements Command, Constant {
 
 		try {
 			log.info("Context on NetexInitImportCommand=" + ToStringBuilder.reflectionToString(context));
-
-			NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 
 			NetexImporter importer = new NetexImporter();
 			context.put(IMPORTER, importer);
@@ -65,8 +69,13 @@ public class NetexInitImportCommand implements Command, Constant {
 
 			context.put(NETEX_PROFILE_VALIDATORS, availableProfileValidators);
 
-			// TODO consider fetching valid codespaces here
-			//context.put(NETEX_VALID_CODESPACES, validCodespaces);
+			Set<Codespace> validCodespaces = codespaceReader.loadCodespaces();
+			if (validCodespaces.isEmpty()) {
+				log.error("no valid codespaces present for referential");
+				return ERROR;
+			}
+
+			context.put(NETEX_VALID_CODESPACES, validCodespaces);
 
 			ActionReporter reporter = ActionReporter.Factory.getInstance();
 			reporter.addObjectReport(context, "merged", ActionReporter.OBJECT_TYPE.NETWORK, "networks", ActionReporter.OBJECT_STATE.OK, IO_TYPE.INPUT);
