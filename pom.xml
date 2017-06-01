@@ -20,7 +20,7 @@
 		<version.ejb.plugin>2.4</version.ejb.plugin>
 		<version.ear.plugin>2.9.1</version.ear.plugin>
 		<shrinkwrap.bom-version>2.1.1</shrinkwrap.bom-version>
-		<postgresql.version>9.4.1212</postgresql.version>
+		<postgresql.version>9.3-1103-jdbc41</postgresql.version>
 		<postgis.version>2.1.7.2</postgis.version>
 		<hibernate-spatial.version>4.3</hibernate-spatial.version>
 		<jts.version>1.13</jts.version>
