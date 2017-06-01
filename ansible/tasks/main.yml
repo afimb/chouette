@@ -13,6 +13,9 @@
 - name: Upload the wildfly setup directory to the docker host
   synchronize: src=files/wildfly dest=/usr/src/chouette/.
 
+- name: Upload disk usage notifier
+  copy: src=disk_usage_notifier.sh dest=/usr/src/chouette/disk_usage_notifier.sh
+
 - name: Copy the chouette sources to staging directory
   command: rsync -ar {{ build_home }}/chouette_iev/target/chouette.ear {{chouette_root}}/chouette.ear
 
