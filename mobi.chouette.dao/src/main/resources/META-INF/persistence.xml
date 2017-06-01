@@ -35,9 +35,10 @@
 		<class>mobi.chouette.model.AccessLink</class>
 		<class>mobi.chouette.model.AccessPoint</class>
 		<class>mobi.chouette.model.CalendarDay</class>
+		<class>mobi.chouette.model.Codespace</class>
 		<class>mobi.chouette.model.Company</class>
 		<class>mobi.chouette.model.ConnectionLink</class>
-      <class>mobi.chouette.model.Footnote</class>
+		<class>mobi.chouette.model.Footnote</class>
 		<class>mobi.chouette.model.GroupOfLine</class>
 		<class>mobi.chouette.model.JourneyFrequency</class>
 		<class>mobi.chouette.model.JourneyPattern</class>
@@ -45,7 +46,7 @@
 		<class>mobi.chouette.model.Period</class>
 		<class>mobi.chouette.model.Network</class>
 		<class>mobi.chouette.model.Route</class>
-      <class>mobi.chouette.model.RouteSection</class>
+		<class>mobi.chouette.model.RouteSection</class>
 		<class>mobi.chouette.model.StopArea</class>
 		<class>mobi.chouette.model.StopPoint</class>
 		<class>mobi.chouette.model.Timeband</class>
