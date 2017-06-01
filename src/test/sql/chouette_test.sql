@@ -153,27 +153,30 @@ CREATE TABLE codespaces (
 );
 
 
-ALTER TABLE :SCH.codespaces OWNER TO chouette;
+ALTER TABLE chouette_gui.codespaces OWNER TO chouette;
+
 
 --
 -- Name: codespaces_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
 --
 
 CREATE SEQUENCE codespaces_id_seq
-START WITH 1
-INCREMENT BY 1
-NO MINVALUE
-NO MAXVALUE
-CACHE 1;
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
 
 
-ALTER TABLE :SCH.codespaces_id_seq OWNER TO chouette;
+ALTER TABLE chouette_gui.codespaces_id_seq OWNER TO chouette;
+
 
 --
 -- Name: codespaces_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
 --
 
-ALTER SEQUENCE codespaces_id_seq OWNED BY footnotes.id;
+ALTER SEQUENCE codespaces_id_seq OWNED BY codespaces.id;
+
 
 --
 -- TOC entry 180 (class 1259 OID 938875)
