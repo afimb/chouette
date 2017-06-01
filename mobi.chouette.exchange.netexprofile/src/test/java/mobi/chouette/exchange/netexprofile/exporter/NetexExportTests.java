@@ -480,7 +480,6 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
         configuration.setNoSave(false);
         configuration.setCleanRepository(true);
-        configuration.setValidCodespaces(validCodespaces);
 
         try {
             command.execute(context);

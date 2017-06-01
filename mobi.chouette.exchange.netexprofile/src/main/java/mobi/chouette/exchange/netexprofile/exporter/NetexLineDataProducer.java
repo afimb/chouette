@@ -10,13 +10,11 @@ import mobi.chouette.exchange.netexprofile.exporter.producer.*;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.*;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.Network;
-import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
+import org.rutebanken.netex.model.Codespace;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,7 +58,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         ExportableData exportableData = (ExportableData) context.get(EXPORTABLE_DATA);
         ExportableNetexData exportableNetexData = (ExportableNetexData) context.get(EXPORTABLE_NETEX_DATA);
 
-        Line neptuneLine = exportableData.getLine();
+        mobi.chouette.model.Line neptuneLine = exportableData.getLine();
         initializeCodespaces(configuration, exportableData, exportableNetexData);
 
         produceAndCollectLineData(context, exportableData, exportableNetexData);
@@ -124,7 +122,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
     @SuppressWarnings("unchecked")
     private void produceAndCollectLineData(Context context, ExportableData exportableData, ExportableNetexData exportableNetexData) {
-        Line neptuneLine = exportableData.getLine();
+        mobi.chouette.model.Line neptuneLine = exportableData.getLine();
 
         AvailabilityCondition availabilityCondition = createAvailabilityCondition(neptuneLine);
         exportableNetexData.setLineCondition(availabilityCondition);
@@ -287,7 +285,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         return groupOfLines;
     }
 
-    private void produceAndCollectRoutePoints(List<Route> routes, ExportableNetexData exportableNetexData) {
+    private void produceAndCollectRoutePoints(List<mobi.chouette.model.Route> routes, ExportableNetexData exportableNetexData) {
         for (mobi.chouette.model.Route route : routes) {
             for (StopPoint stopPoint : route.getStopPoints()) {
                 if (stopPoint != null) {
@@ -421,7 +419,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         return stopAssignment;
     }
 
-    private Authority createNetworkAuthority(Network network) {
+    private Authority createNetworkAuthority(mobi.chouette.model.Network network) {
         return createNetworkAuthority(network.getObjectVersion() > 0 ? String.valueOf(network.getObjectVersion()) :
                 NETEX_DATA_OJBECT_VERSION, network.getSourceIdentifier());
     }
@@ -437,7 +435,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 .withOrganisationType(OrganisationTypeEnumeration.AUTHORITY);
     }
 
-    private Authority createNsrAuthority(Network network) {
+    private Authority createNsrAuthority(mobi.chouette.model.Network network) {
         return netexFactory.createAuthority()
                 .withVersion(network.getObjectVersion() > 0 ? String.valueOf(network.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION)
                 .withId(NSR_OBJECT_ID)

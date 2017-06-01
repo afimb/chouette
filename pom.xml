@@ -125,6 +125,7 @@
 							<autocommit>true</autocommit>
 							<srcFiles>
 								<srcFile>${project.rootDir}/src/test/sql/chouette_test.sql</srcFile>
+								<srcFile>${project.rootDir}/src/test/sql/codespaces.sql</srcFile>
 							</srcFiles>
 						</configuration>
 					</execution>
