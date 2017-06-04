@@ -7,7 +7,7 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.netexprofile.CodespaceDaoReader;
+import mobi.chouette.dao.CodespaceDAO;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexNamespaceContext;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
@@ -22,23 +22,29 @@ import mobi.chouette.model.Codespace;
 import mobi.chouette.model.util.Referential;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import javax.ejb.EJB;
+import javax.annotation.Resource;
+import javax.ejb.*;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Log4j
+@Stateless(name = NetexInitImportCommand.COMMAND)
 public class NetexInitImportCommand implements Command, Constant {
 
 	public static final String COMMAND = "NetexInitImportCommand";
 
-	@EJB private CodespaceDaoReader codespaceReader;
+	@Resource
+	private SessionContext daoContext;
+
+	@EJB
+	private CodespaceDAO codespaceDAO;
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
@@ -69,13 +75,17 @@ public class NetexInitImportCommand implements Command, Constant {
 
 			context.put(NETEX_PROFILE_VALIDATORS, availableProfileValidators);
 
-			Set<Codespace> validCodespaces = codespaceReader.loadCodespaces();
-			if (validCodespaces.isEmpty()) {
+			List<Codespace> referentialCodespaces = codespaceDAO.findAll();
+			if (referentialCodespaces.isEmpty()) {
 				log.error("no valid codespaces present for referential");
 				return ERROR;
 			}
 
+			Set<Codespace> validCodespaces = new HashSet<>(referentialCodespaces);
 			context.put(NETEX_VALID_CODESPACES, validCodespaces);
+
+			daoContext.setRollbackOnly();
+			codespaceDAO.clear();
 
 			ActionReporter reporter = ActionReporter.Factory.getInstance();
 			reporter.addObjectReport(context, "merged", ActionReporter.OBJECT_TYPE.NETWORK, "networks", ActionReporter.OBJECT_STATE.OK, IO_TYPE.INPUT);
@@ -109,13 +119,24 @@ public class NetexInitImportCommand implements Command, Constant {
 
 		@Override
 		protected Command create(InitialContext context) throws IOException {
-			Command result = new NetexInitImportCommand();
+			Command result = null;
+			try {
+				String name = "java:app/mobi.chouette.exchange.netexprofile/" + COMMAND;
+				result = (Command) context.lookup(name);
+			} catch (NamingException e) {
+				String name = "java:module/" + COMMAND;
+				try {
+					result = (Command) context.lookup(name);
+				} catch (NamingException e1) {
+					log.error(e);
+				}
+			}
 			return result;
 		}
 	}
 
 	static {
-		CommandFactory.factories.put(NetexInitImportCommand.class.getName(), new DefaultCommandFactory());
+		CommandFactory.factories.put(NetexInitImportCommand.class.getName(), new NetexInitImportCommand.DefaultCommandFactory());
 	}
 
 }

@@ -18,6 +18,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -207,7 +208,10 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 			codespace.setXmlns((String) xpath.evaluate("n:Xmlns", n, XPathConstants.STRING));
 			codespace.setXmlnsUrl((String) xpath.evaluate("n:XmlnsUrl", n, XPathConstants.STRING));
 
-			if (!acceptedCodespaces.contains(codespace)) {
+			Predicate<Codespace> equalsXmlns = (validCodespace) -> validCodespace.getXmlns().equals(codespace.getXmlns());
+			Predicate<Codespace> equalsXmlnsUrl = (validCodespace) -> validCodespace.getXmlnsUrl().equals(codespace.getXmlnsUrl());
+
+			if (acceptedCodespaces.stream().noneMatch(equalsXmlns.and(equalsXmlnsUrl))) {
 				// TODO add correct location
 				validationReporter.addCheckPointReportError(context, _1_NETEX_UNAPPROVED_CODESPACE_DEFINED, null,
 						DataLocationHelper.findDataLocation(context, n), codespace.getXmlns() + "/" + codespace.getXmlnsUrl(), referenceValue);
