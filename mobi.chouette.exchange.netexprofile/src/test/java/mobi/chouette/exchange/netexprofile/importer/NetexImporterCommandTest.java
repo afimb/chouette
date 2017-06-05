@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.*;
 
+import static mobi.chouette.exchange.netexprofile.NetexTestUtils.createCodespace;
 import static org.testng.Assert.*;
 
 @Log4j
@@ -176,15 +177,6 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		codespaceDao.flush();
 		utx.commit();
 		codespaceDao.clear();
-	}
-
-	private Codespace createCodespace(String xmlns, String xmlnsUrl) {
-		Codespace codespace = new Codespace();
-		codespace.setXmlns(xmlns);
-		codespace.setXmlnsUrl(xmlnsUrl);
-		codespace.setCreatedAt(new Date());
-		codespace.setUpdatedAt(new Date());
-		return codespace;
 	}
 
 	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")

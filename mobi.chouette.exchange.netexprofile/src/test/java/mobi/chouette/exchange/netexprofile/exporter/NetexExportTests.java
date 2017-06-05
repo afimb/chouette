@@ -1,14 +1,22 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
+import mobi.chouette.common.chain.Command;
+import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.dao.CodespaceDAO;
+import mobi.chouette.exchange.netexprofile.DummyChecker;
+import mobi.chouette.exchange.netexprofile.JobDataTest;
+import mobi.chouette.exchange.netexprofile.NetexTestUtils;
+import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
+import mobi.chouette.exchange.netexprofile.importer.NetexprofileImporterCommand;
+import mobi.chouette.exchange.report.*;
+import mobi.chouette.exchange.validation.report.CheckPointReport;
+import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.Codespace;
+import mobi.chouette.persistence.hibernate.ContextHolder;
 import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.testng.Arquillian;
@@ -23,30 +31,35 @@ import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
 
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Constant;
-import mobi.chouette.common.Context;
-import mobi.chouette.common.chain.Command;
-import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.netexprofile.DummyChecker;
-import mobi.chouette.exchange.netexprofile.JobDataTest;
-import mobi.chouette.exchange.netexprofile.NetexTestUtils;
-import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
-import mobi.chouette.exchange.netexprofile.importer.NetexprofileImporterCommand;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.ActionReporter;
-import mobi.chouette.exchange.report.FileReport;
-import mobi.chouette.exchange.report.ObjectReport;
-import mobi.chouette.exchange.report.ReportConstant;
-import mobi.chouette.exchange.validation.report.CheckPointReport;
-import mobi.chouette.exchange.validation.report.ValidationReport;
-import mobi.chouette.exchange.validation.report.ValidationReporter;
-import mobi.chouette.persistence.hibernate.ContextHolder;
+import javax.ejb.EJB;
+import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.UserTransaction;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+
+import static mobi.chouette.exchange.netexprofile.NetexTestUtils.createCodespace;
 
 @Log4j
 public class NetexExportTests extends Arquillian implements Constant, ReportConstant {
 
     protected static InitialContext initialContext;
+
+    @EJB
+    private CodespaceDAO codespaceDao;
+
+    @PersistenceContext(unitName = "referential")
+    private EntityManager em;
+
+    @Inject
+    UserTransaction utx;
 
     @Deployment
     public static EnterpriseArchive createDeployment() {
@@ -207,15 +220,40 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         return context;
     }
 
+    private void clearCodespaceRecords() throws Exception {
+        utx.begin();
+        em.joinTransaction();
+        log.info("Dumping old codespace records...");
+        codespaceDao.deleteAll();
+        codespaceDao.flush();
+        utx.commit();
+    }
+
+    private void insertCodespaceRecords(List<Codespace> codespaces) throws Exception {
+        utx.begin();
+        em.joinTransaction();
+        log.info("Inserting codespace records...");
+
+        for (Codespace codespace : codespaces) {
+            codespaceDao.create(codespace);
+        }
+
+        codespaceDao.flush();
+        utx.commit();
+        codespaceDao.clear();
+    }
+
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void verifyExportAvinorLine() throws Exception {
-        importLines("C_NETEX_1.xml", 1, 1, "AVI,http://www.rutebanken.org/ns/avi");
+        importLines("C_NETEX_1.xml", 1, 1, Arrays.asList(
+                createCodespace("NSR", "http://www.rutebanken.org/ns/nsr"),
+                createCodespace("AVI", "http://www.rutebanken.org/ns/avi"))
+        );
 
         Context context = initExportContext();
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
-        configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -246,14 +284,16 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void verifyExportAvinorMultipleLines() throws Exception {
-        importLines("avinor_multiple_lines_with_commondata.zip", 4, 3, "AVI,http://www.rutebanken.org/ns/avi");
+        importLines("avinor_multiple_lines_with_commondata.zip", 4, 3, Arrays.asList(
+                createCodespace("NSR", "http://www.rutebanken.org/ns/nsr"),
+                createCodespace("AVI", "http://www.rutebanken.org/ns/avi"))
+        );
 
         Context context = initExportContext();
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setValidateAfterExport(true);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
-        configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -284,13 +324,15 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void verifyExportAvinorLineWithMixedDayTypes() throws Exception {
-        importLines("C_NETEX_7.xml", 1, 1, "AVI,http://www.rutebanken.org/ns/avi");
+        importLines("C_NETEX_7.xml", 1, 1, Arrays.asList(
+                createCodespace("NSR", "http://www.rutebanken.org/ns/nsr"),
+                createCodespace("AVI", "http://www.rutebanken.org/ns/avi"))
+        );
 
         Context context = initExportContext();
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
-        configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -321,13 +363,15 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void verifyExportAvinorLineWithMultipleStops() throws Exception {
-        importLines("C_NETEX_5.xml", 1, 1, "AVI,http://www.rutebanken.org/ns/avi");
+        importLines("C_NETEX_5.xml", 1, 1, Arrays.asList(
+                createCodespace("NSR", "http://www.rutebanken.org/ns/nsr"),
+                createCodespace("AVI", "http://www.rutebanken.org/ns/avi"))
+        );
 
         Context context = initExportContext();
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
-        configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -358,14 +402,16 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void exportLinesInGroups() throws Exception {
-        importLines("avinor_multiple_groups_of_lines.zip", 13, 12, "AVI,http://www.rutebanken.org/ns/avi");
+        importLines("avinor_multiple_groups_of_lines.zip", 13, 12, Arrays.asList(
+                createCodespace("NSR", "http://www.rutebanken.org/ns/nsr"),
+                createCodespace("AVI", "http://www.rutebanken.org/ns/avi"))
+        );
 
         Context context = initExportContext();
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setValidateAfterExport(true);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
-        configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -396,13 +442,15 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
     @Test(enabled = false, groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void verifyExportRuterLine() throws Exception {
-        importLines("ruter_single_line_210_with_commondata.zip", 2, 1, "RUT,http://www.rutebanken.org/ns/rut");
+        importLines("ruter_single_line_210_with_commondata.zip", 2, 1, Arrays.asList(
+                createCodespace("NSR", "http://www.rutebanken.org/ns/nsr"),
+                createCodespace("RUT", "http://www.rutebanken.org/ns/ruter"))
+        );
 
         Context context = initExportContext();
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
-        configuration.setValidCodespaces("RUT,http://www.rutebanken.org/ns/rut");
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -433,14 +481,16 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void exportLineWithNotices() throws Exception {
-        importLines("avinor_single_line_with_notices.zip", 2, 1, "AVI,http://www.rutebanken.org/ns/avi");
+        importLines("avinor_single_line_with_notices.zip", 2, 1, Arrays.asList(
+                createCodespace("NSR", "http://www.rutebanken.org/ns/nsr"),
+                createCodespace("AVI", "http://www.rutebanken.org/ns/avi"))
+        );
 
         Context context = initExportContext();
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setValidateAfterExport(true);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
-        configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -469,8 +519,12 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         NetexTestUtils.verifyValidationReport(context);
     }
 
-    private void importLines(String file, int fileCount, int lineCount, String validCodespaces) throws Exception {
+    private void importLines(String file, int fileCount, int lineCount, List<Codespace> codespaces) throws Exception {
         Context context = initImportContext();
+
+        clearCodespaceRecords();
+        insertCodespaceRecords(codespaces);
+
         NetexTestUtils.copyFile(file);
         JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
         jobData.setInputFilename(file);

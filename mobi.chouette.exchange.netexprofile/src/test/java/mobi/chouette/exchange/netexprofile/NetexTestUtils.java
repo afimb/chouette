@@ -11,6 +11,7 @@ import org.testng.Reporter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,6 +21,15 @@ import static mobi.chouette.common.Constant.VALIDATION_REPORT;
 public class NetexTestUtils  {
 
 	protected static final String path = "src/test/data";
+
+	public static Codespace createCodespace(String xmlns, String xmlnsUrl) {
+		Codespace codespace = new Codespace();
+		codespace.setXmlns(xmlns);
+		codespace.setXmlnsUrl(xmlnsUrl);
+		codespace.setCreatedAt(new Date());
+		codespace.setUpdatedAt(new Date());
+		return codespace;
+	}
 
 	public static  void copyFile(String fileName) throws IOException {
 		File srcFile = new File(path, fileName);

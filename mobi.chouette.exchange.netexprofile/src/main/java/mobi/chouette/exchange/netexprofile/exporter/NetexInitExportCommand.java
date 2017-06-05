@@ -8,12 +8,17 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.dao.CodespaceDAO;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.util.NetexReferential;
+import mobi.chouette.model.Codespace;
 import mobi.chouette.model.util.Referential;
 
+import javax.annotation.Resource;
+import javax.ejb.*;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -21,13 +26,24 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Log4j
+@Stateless(name = NetexInitExportCommand.COMMAND)
 public class NetexInitExportCommand implements Command, Constant {
 
     public static final String COMMAND = "NetexInitExportCommand";
 
+    @Resource
+    private SessionContext daoContext;
+
+    @EJB
+    private CodespaceDAO codespaceDAO;
+
     @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public boolean execute(Context context) throws Exception {
         boolean result = ERROR;
 
@@ -57,8 +73,19 @@ public class NetexInitExportCommand implements Command, Constant {
                 Files.createDirectories(path);
             }
 
-            result = SUCCESS;
+            List<Codespace> referentialCodespaces = codespaceDAO.findAll();
+            if (referentialCodespaces.isEmpty()) {
+                log.error("no valid codespaces present for referential");
+                return ERROR;
+            }
 
+            Set<Codespace> validCodespaces = new HashSet<>(referentialCodespaces);
+            context.put(NETEX_VALID_CODESPACES, validCodespaces);
+
+            daoContext.setRollbackOnly();
+            codespaceDAO.clear();
+
+            result = SUCCESS;
         } catch (Exception e) {
             log.error(e, e);
             throw e;
@@ -73,11 +100,24 @@ public class NetexInitExportCommand implements Command, Constant {
 
         @Override
         protected Command create(InitialContext context) throws IOException {
-            return new NetexInitExportCommand();
+            Command result = null;
+            try {
+                String name = "java:app/mobi.chouette.exchange.netexprofile/" + COMMAND;
+                result = (Command) context.lookup(name);
+            } catch (NamingException e) {
+                String name = "java:module/" + COMMAND;
+                try {
+                    result = (Command) context.lookup(name);
+                } catch (NamingException e1) {
+                    log.error(e);
+                }
+            }
+            return result;
         }
     }
 
     static {
         CommandFactory.factories.put(NetexInitExportCommand.class.getName(), new NetexInitExportCommand.DefaultCommandFactory());
     }
+
 }
