@@ -24,30 +24,27 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import static mobi.chouette.exchange.netexprofile.NetexTestUtils.createCodespace;
+
 public class NorwayLineNetexProfileValidatorTest {
 
 
 	@Test public void testValidateSimpleFile() throws Exception {
-		
 		NetexImporter importer = new NetexImporter();
 
 		Context context = createContext(importer);
-		
 
 		ValidationReport vr = new ValidationReport();
 		context.put(Constant.VALIDATION_REPORT	, vr);
 
 		Set<Codespace> validCodespaces = new HashSet<>();
-		Codespace validCodespace = new Codespace();
-		validCodespace.setXmlns("AVI");
-		validCodespace.setXmlnsUrl("http://avinor.no/");
+		Codespace validCodespace = createCodespace(1L, "AVI", "http://www.rutebanken.org/ns/avi");
 		validCodespaces.add(validCodespace);
 		context.put(Constant.NETEX_VALID_CODESPACES, validCodespaces);
 
 		Document dom = importer.parseFileToDom(new File("src/test/data/WF739-201608311015.xml"));
 		PublicationDeliveryStructure lineDeliveryStructure =importer.unmarshal(dom);
 
-		// Parse (convert to chouette objects)
 		context.put(Constant.NETEX_DATA_JAVA, lineDeliveryStructure);
 		context.put(Constant.NETEX_DATA_DOM, dom);
 		
@@ -67,7 +64,6 @@ public class NorwayLineNetexProfileValidatorTest {
 	}
 
 	@Test public void testValidateWithCommonFile() throws Exception {
-		
 		NetexImporter importer = new NetexImporter();
 		Context context = createContext(importer);
 
@@ -79,14 +75,10 @@ public class NorwayLineNetexProfileValidatorTest {
 
 		Set<Codespace> validCodespaces = new HashSet<>();
 
-		Codespace nsrCodespace = new Codespace();
-		nsrCodespace.setXmlns(AbstractNorwayNetexProfileValidator.NSR_XMLNS);
-		nsrCodespace.setXmlnsUrl(AbstractNorwayNetexProfileValidator.NSR_XMLNSURL);
+		Codespace nsrCodespace = createCodespace(1L, "NSR", "http://www.rutebanken.org/ns/nsr");
 		validCodespaces.add(nsrCodespace);
 
-		Codespace avinorCodespace = new Codespace();
-		avinorCodespace.setXmlns("AVI");
-		avinorCodespace.setXmlnsUrl("http://www.rutebanken.org/ns/avi");
+		Codespace avinorCodespace = createCodespace(2L, "AVI", "http://www.rutebanken.org/ns/avi");
 		validCodespaces.add(avinorCodespace);
 
 		context.put(Constant.NETEX_VALID_CODESPACES, validCodespaces);

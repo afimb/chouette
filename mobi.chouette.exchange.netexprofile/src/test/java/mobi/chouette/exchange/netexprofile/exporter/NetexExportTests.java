@@ -246,8 +246,8 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void verifyExportAvinorLine() throws Exception {
         importLines("C_NETEX_1.xml", 1, 1, Arrays.asList(
-                createCodespace("NSR", "http://www.rutebanken.org/ns/nsr"),
-                createCodespace("AVI", "http://www.rutebanken.org/ns/avi"))
+                createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+                createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
         );
 
         Context context = initExportContext();
@@ -285,8 +285,8 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void verifyExportAvinorMultipleLines() throws Exception {
         importLines("avinor_multiple_lines_with_commondata.zip", 4, 3, Arrays.asList(
-                createCodespace("NSR", "http://www.rutebanken.org/ns/nsr"),
-                createCodespace("AVI", "http://www.rutebanken.org/ns/avi"))
+                createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+                createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
         );
 
         Context context = initExportContext();
@@ -325,8 +325,8 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void verifyExportAvinorLineWithMixedDayTypes() throws Exception {
         importLines("C_NETEX_7.xml", 1, 1, Arrays.asList(
-                createCodespace("NSR", "http://www.rutebanken.org/ns/nsr"),
-                createCodespace("AVI", "http://www.rutebanken.org/ns/avi"))
+                createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+                createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
         );
 
         Context context = initExportContext();
@@ -364,8 +364,8 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void verifyExportAvinorLineWithMultipleStops() throws Exception {
         importLines("C_NETEX_5.xml", 1, 1, Arrays.asList(
-                createCodespace("NSR", "http://www.rutebanken.org/ns/nsr"),
-                createCodespace("AVI", "http://www.rutebanken.org/ns/avi"))
+                createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+                createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
         );
 
         Context context = initExportContext();
@@ -403,8 +403,8 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void exportLinesInGroups() throws Exception {
         importLines("avinor_multiple_groups_of_lines.zip", 13, 12, Arrays.asList(
-                createCodespace("NSR", "http://www.rutebanken.org/ns/nsr"),
-                createCodespace("AVI", "http://www.rutebanken.org/ns/avi"))
+                createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+                createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
         );
 
         Context context = initExportContext();
@@ -443,8 +443,8 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
     @Test(enabled = false, groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void verifyExportRuterLine() throws Exception {
         importLines("ruter_single_line_210_with_commondata.zip", 2, 1, Arrays.asList(
-                createCodespace("NSR", "http://www.rutebanken.org/ns/nsr"),
-                createCodespace("RUT", "http://www.rutebanken.org/ns/ruter"))
+                createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+                createCodespace(null, "RUT", "http://www.rutebanken.org/ns/ruter"))
         );
 
         Context context = initExportContext();
@@ -482,8 +482,8 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void exportLineWithNotices() throws Exception {
         importLines("avinor_single_line_with_notices.zip", 2, 1, Arrays.asList(
-                createCodespace("NSR", "http://www.rutebanken.org/ns/nsr"),
-                createCodespace("AVI", "http://www.rutebanken.org/ns/avi"))
+                createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+                createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
         );
 
         Context context = initExportContext();

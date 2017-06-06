@@ -22,8 +22,10 @@ public class NetexTestUtils  {
 
 	protected static final String path = "src/test/data";
 
-	public static Codespace createCodespace(String xmlns, String xmlnsUrl) {
+	public static Codespace createCodespace(Long id, String xmlns, String xmlnsUrl) {
 		Codespace codespace = new Codespace();
+		if (id != null)
+			codespace.setId(id);
 		codespace.setXmlns(xmlns);
 		codespace.setXmlnsUrl(xmlnsUrl);
 		codespace.setCreatedAt(new Date());
