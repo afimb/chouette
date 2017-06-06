@@ -1,5 +1,18 @@
 package mobi.chouette.exchange.stopplace;
 
+import java.io.InputStream;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
@@ -8,22 +21,12 @@ import mobi.chouette.exchange.netexprofile.parser.StopPlaceParser;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.Referential;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.Common_VersionFrameStructure;
 import org.rutebanken.netex.model.PublicationDeliveryStructure;
 import org.rutebanken.netex.model.Site_VersionFrameStructure;
 import org.rutebanken.netex.model.StopPlace;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
-import java.io.InputStream;
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
 
 import static javax.xml.bind.JAXBContext.newInstance;
 import static mobi.chouette.exchange.netexprofile.Constant.NETEX_LINE_DATA_CONTEXT;
@@ -60,17 +63,19 @@ public class PublicationDeliveryStopPlaceParser {
         Context context = new Context();
         Referential referential = new Referential();
         context.put(Constant.REFERENTIAL, referential);
+        StopPlaceParser stopPlaceParser = (StopPlaceParser) ParserFactory.create(StopPlaceParser.class.getName());
 
         for (JAXBElement<? extends Common_VersionFrameStructure> frameStructureElmt : incomingPublicationDelivery.getDataObjects().getCompositeFrameOrCommonFrame()) {
             Common_VersionFrameStructure frameStructure = frameStructureElmt.getValue();
+
             if (frameStructure instanceof Site_VersionFrameStructure) {
                 Site_VersionFrameStructure siteFrame = (Site_VersionFrameStructure) frameStructure;
 
                 if (siteFrame.getStopPlaces() != null) {
-
+                    context.put(NETEX_LINE_DATA_CONTEXT, siteFrame.getTariffZones());
+                    stopPlaceParser.parse(context);
 
                     context.put(NETEX_LINE_DATA_CONTEXT, siteFrame.getStopPlaces());
-                    StopPlaceParser stopPlaceParser = (StopPlaceParser) ParserFactory.create(StopPlaceParser.class.getName());
                     stopPlaceParser.parse(context);
 
 
