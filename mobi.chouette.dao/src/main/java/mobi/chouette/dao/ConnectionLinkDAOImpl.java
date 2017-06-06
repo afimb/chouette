@@ -22,7 +22,7 @@ public class ConnectionLinkDAOImpl extends GenericDAOImpl<ConnectionLink> implem
 		super(ConnectionLink.class);
 	}
 
-	@PersistenceContext(unitName = "referential")
+	@PersistenceContext(unitName = "public")
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
 	}
@@ -40,5 +40,10 @@ public class ConnectionLinkDAOImpl extends GenericDAOImpl<ConnectionLink> implem
 		Query query = em.createQuery(delete);
 		result = query.executeUpdate();
 		return result;
+	}
+
+	@Override
+	protected String getTableName() {
+		return "public." + super.getTableName();
 	}
 }

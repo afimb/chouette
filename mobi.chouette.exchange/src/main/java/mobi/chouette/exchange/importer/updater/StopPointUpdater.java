@@ -139,10 +139,10 @@ public class StopPointUpdater implements Updater<StopPoint> {
 				log.error("ValidationReporter (validationReporter) is null");
 			}
 			if(oldSA == null) {
-				log.error("StopArea (oldSA) is null");
+				log.warn("StopArea (oldSA) is null");
 			}
 			if(newSA == null) {
-				log.error("StopArea (newSA) is null");
+				log.warn("StopArea (newSA) is null");
 			}
 			if(data == null) {
 				log.error("ValidationData (data) is null");

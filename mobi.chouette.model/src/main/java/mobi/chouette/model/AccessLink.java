@@ -12,9 +12,11 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -27,8 +29,6 @@ import mobi.chouette.model.type.LinkOrientationEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
 /**
  * Chouette AccessLink : relation between an AccessPoint and a StopArea
@@ -48,11 +48,8 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	
 	@Getter
 	@Setter
-	@GenericGenerator(name = "access_links_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
-		parameters = {
-			@Parameter(name = "sequence_name", value = "access_links_id_seq"),
-			@Parameter(name = "increment_size", value = "100") })
-	@GeneratedValue(generator = "access_links_id_seq")
+	@SequenceGenerator(name = "access_links_id_seq", sequenceName = "access_links_id_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "access_links_id_seq")
 	@Id
 	@Column(name = "id", nullable = false)
 	protected Long id;

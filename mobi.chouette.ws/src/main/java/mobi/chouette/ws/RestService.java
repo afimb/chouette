@@ -6,6 +6,7 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.CleanRepositoryCommand;
+import mobi.chouette.exchange.importer.CleanStopAreaRepositoryCommand;
 import mobi.chouette.model.iev.Job;
 import mobi.chouette.model.iev.Job.STATUS;
 import mobi.chouette.model.iev.Link;
@@ -62,8 +63,8 @@ public class RestService implements Constant {
 		try {
 			log.info(Color.CYAN + "Call upload referential = " + referential + ", action = " + action
 					+ (type == null ? "" : ", type = " + type) + Color.NORMAL);
-			
-			
+
+
 
 			// Convertir les parametres fournis
 			type = parseType(type);
@@ -108,9 +109,9 @@ public class RestService implements Constant {
 			log.info(Color.CYAN + "upload returns" + Color.NORMAL);
 		}
 	}
-	
-	
-	
+
+
+
 
 	private WebApplicationException toWebApplicationException(ServiceException exception) {
 		return new WebApplicationException(exception.getMessage(), toWebApplicationCode(exception.getExceptionCode()));
@@ -206,6 +207,24 @@ public class RestService implements Constant {
 			log.info(Color.CYAN + "clean returns" + Color.NORMAL);
 		}
 	}
+
+    @POST
+    @Path("/stop_areas/clean")
+    public Response cleanStopAreas() {
+        log.info(Color.CYAN + "Call clean stop areas" + Color.NORMAL);
+        try {
+            Command command = CommandFactory.create(new InitialContext(), CleanStopAreaRepositoryCommand.class.getName());
+            command.execute(null);
+            return Response.ok().build();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
+        } finally {
+            ContextHolder.setContext(null);
+            log.info(Color.CYAN + "clean returns" + Color.NORMAL);
+        }
+    }
+
 
 
 	// download attached file
@@ -382,7 +401,7 @@ public class RestService implements Constant {
 					URI uri = URI.create(uriInfo.getBaseUri() + link.getHref());
 					builder.link(URI.create(uri.toASCIIString()), link.getRel());
 				}
-			
+
 			builder.header(api_version_key, api_version);
 
 			return result;

@@ -188,6 +188,9 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		long maxDiffTime = parameters.getInterStopDurationMax();
 		List<VehicleJourneyAtStop> vjasList = vj.getVehicleJourneyAtStops();
 		for (VehicleJourneyAtStop vjas : vjasList) {
+			if (vjas.getStopPoint().getContainedInStopArea() == null)
+				continue;
+
 			long diffTime = Math.abs(diffTime(vjas.getArrivalTime(), vjas.getArrivalDayOffset(),
 					vjas.getDepartureTime(), vjas.getDepartureDayOffset()));
 			/** GJT */
@@ -219,6 +222,10 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 
 	private double getDistance(StopArea stop1, StopArea stop2)
 	{
+		if (stop1==null || stop2==null){
+			return 0;  // Cannot compute distance when either stop is missing
+		}
+
 		String key = stop1.getObjectId()+"#"+stop2.getObjectId();
 		if (distances.containsKey(key))
 		{
@@ -245,6 +252,10 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		for (int i = 1; i < vjasList.size(); i++) {
 			VehicleJourneyAtStop vjas0 = vjasList.get(i - 1);
 			VehicleJourneyAtStop vjas1 = vjasList.get(i);
+
+			if (vjas0.getStopPoint().getContainedInStopArea() == null || vjas1.getStopPoint().getContainedInStopArea() == null) {
+				continue;
+			}
 
 			long diffTime = diffTime(vjas0.getDepartureTime(), vjas0.getDepartureDayOffset(), vjas1.getArrivalTime(),
 					vjas1.getArrivalDayOffset());
@@ -365,11 +376,18 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 						.getDepartureDayOffset(), vjas.get(j).getArrivalTime(), vjas.get(j)
 						.getArrivalDayOffset());
 				if (Math.abs(duration - diffTimes.get(j-1)) > maxDuration) {
+
 					DataLocation source = buildLocation(context, vehicleJourney);
-					DataLocation target1 = buildLocation(context, vjas.get(j - 1).getStopPoint()
-							.getContainedInStopArea());
-					DataLocation target2 = buildLocation(context, vjas.get(j).getStopPoint()
-							.getContainedInStopArea());
+					StopArea stopArea1 = vjas.get(j - 1).getStopPoint().getContainedInStopArea();
+					StopArea stopArea2 = vjas.get(j).getStopPoint().getContainedInStopArea();
+
+					if (stopArea1 == null || stopArea2 == null) {
+						continue;
+					}
+
+					DataLocation target1 = buildLocation(context, stopArea1);
+
+					DataLocation target2 = buildLocation(context, stopArea2);
 
 					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_3, "1", source,
@@ -459,6 +477,10 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 
 		List<VehicleJourneyAtStop> vjasList = vj.getVehicleJourneyAtStops();
 		for (VehicleJourneyAtStop vjas : vjasList) {
+
+			if (vjas.getStopPoint().getContainedInStopArea() == null) {
+				continue;
+			}
 
 			/** First stop */
 			if (previous_vjas == null) {

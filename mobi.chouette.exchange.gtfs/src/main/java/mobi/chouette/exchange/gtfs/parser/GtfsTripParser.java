@@ -665,11 +665,17 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		route.setFilled(true);
 
 		if (route.getName() == null) {
+
 			if (!route.getStopPoints().isEmpty()) {
-				String first = route.getStopPoints().get(0).getContainedInStopArea().getName();
-				String last = route.getStopPoints().get(route.getStopPoints().size() - 1).getContainedInStopArea()
-						.getName();
-				route.setName(first + " -> " + last);
+				StopPoint firstStopPoint=route.getStopPoints().get(0);
+				StopPoint lastStopPoint=route.getStopPoints().get(route.getStopPoints().size() - 1);
+
+				if (firstStopPoint.getContainedInStopArea()!=null && lastStopPoint.getContainedInStopArea()!=null) {
+					String first = firstStopPoint.getContainedInStopArea().getName();
+					String last = lastStopPoint.getContainedInStopArea()
+							              .getName();
+					route.setName(first + " -> " + last);
+				}
 			}
 		}
 

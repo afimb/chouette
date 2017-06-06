@@ -31,7 +31,6 @@ import mobi.chouette.model.iev.Stat;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
 
-import mobi.chouette.service.ReferentialService;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -51,9 +50,6 @@ public class RestAdmin implements Constant {
 
 	@Inject
 	JobServiceManager jobServiceManager;
-
-	@Inject
-	ReferentialService referentialService;
 
 	@Inject
 	ContenerChecker checker;
@@ -137,16 +133,16 @@ public class RestAdmin implements Constant {
 			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@GET
 	@Path("/test_list/{action}{type:(/[^/]+?)?}")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getTestList(@PathParam("action") String action,
 			@PathParam("type") String type) {
-	
+
 			log.info(Color.BLUE + "Call getTestList action = " + action
 					+ (type == null ? "" : ", type = " + type) + Color.NORMAL);
-			
+
 			// Convertir les parametres fournis
 			type = parseType(type);
 			try {
@@ -161,7 +157,7 @@ public class RestAdmin implements Constant {
 					result.put("level", test.getLevel());
 					result.put("code", test.getCode());
 					result.put("severity", test.getSeverity());
-					
+
 					restests.put(result);
 				}
 
@@ -174,11 +170,11 @@ public class RestAdmin implements Constant {
 				log.error(ex.getMessage(), ex);
 				throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
 			} finally {
-				
+
 				log.info(Color.BLUE + "getTestList returns" + Color.NORMAL);
 			}
 	}
-	
+
 	// global stat listing
 	@GET
 	@Path("/get_monthly_stats")
@@ -216,23 +212,6 @@ public class RestAdmin implements Constant {
 			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
 		}
 	}
-
-
-	@GET
-	@Path("referentials")
-	public Response listReferentials() {
-		try {
-			JSONArray resjson = new JSONArray();
-			for (String referential:referentialService.getReferentials()) {
-				resjson.put(referential);
-			}
-			return Response.ok(resjson.toString()).build();
-		} catch (Exception e) {
-			log.error("Failed to fetch list of referentials: " + e.getMessage(), e);
-			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
-		}
-	}
-
 
 	private Response checkKey(final String authorisationKey) {
 		if (authorisationKey == null || authorisationKey.isEmpty()) {
