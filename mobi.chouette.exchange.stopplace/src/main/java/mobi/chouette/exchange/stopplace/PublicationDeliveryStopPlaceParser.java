@@ -72,8 +72,11 @@ public class PublicationDeliveryStopPlaceParser {
                 Site_VersionFrameStructure siteFrame = (Site_VersionFrameStructure) frameStructure;
 
                 if (siteFrame.getStopPlaces() != null) {
-                    context.put(NETEX_LINE_DATA_CONTEXT, siteFrame.getTariffZones());
-                    stopPlaceParser.parse(context);
+
+                    if (siteFrame.getTariffZones()!=null) {
+                        context.put(NETEX_LINE_DATA_CONTEXT, siteFrame.getTariffZones());
+                        stopPlaceParser.parse(context);
+                    }
 
                     context.put(NETEX_LINE_DATA_CONTEXT, siteFrame.getStopPlaces());
                     stopPlaceParser.parse(context);
