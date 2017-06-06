@@ -21,7 +21,7 @@ import java.io.IOException;
 @Stateless(name = DaoNetexLineProducerCommand.COMMAND)
 public class DaoNetexLineProducerCommand implements Command, Constant {
 
-    public static final String COMMAND = "DaoNetexLineProducerCommand";
+    public static final String COMMAND = "DaoNetexprofileLineProducerCommand";
 
     @Resource
     private SessionContext daoContext;
