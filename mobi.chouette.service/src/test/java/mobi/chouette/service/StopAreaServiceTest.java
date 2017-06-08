@@ -105,6 +105,10 @@ public class StopAreaServiceTest extends Arquillian {
         Assert.assertNull(stopAreaDAO.findByObjectId("NSR:StopPlace:4a"), "Did not expect to find quay for inactive stop place");
         Assert.assertNull(stopAreaDAO.findByObjectId("NSR:StopPlace:4b"), "Did not expect to find quay for inactive stop place");
 
+        utx.commit();
+        utx.begin();
+        em.joinTransaction();
+
         // Update stop places
         stopAreaService.createOrUpdateStopPlacesFromNetexStopPlaces(new FileInputStream("src/test/data/StopAreasUpdate.xml"));
 
@@ -116,7 +120,12 @@ public class StopAreaServiceTest extends Arquillian {
         assertStopPlace("NSR:StopPlace:2", "NSR:Quay:3a", "NSR:Quay:2b");
         Assert.assertNull(stopAreaDAO.findByObjectId("NSR:Quay:2a"), "Did not expect to find removed quay");
         assertStopPlace("NSR:StopPlace:3");
-        utx.rollback();
+
+        utx.commit();
+        utx.begin();
+        em.joinTransaction();
+        stopAreaService.createOrUpdateStopPlacesFromNetexStopPlaces(new FileInputStream("src/test/data/StopAreasUpdateMergedStops.xml"));
+        utx.commit();
     }
 
     private StopArea assertStopPlace(String stopPlaceId, String... quayIds) {
