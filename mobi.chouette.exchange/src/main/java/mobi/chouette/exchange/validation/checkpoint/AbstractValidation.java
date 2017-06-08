@@ -166,8 +166,11 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static void initCheckPoint(Context context, String key, SEVERITY severity) {
 		ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 		reporter.addItemToValidationReport(context, key, severity.toString());
+	}
 
-		return;
+	protected static void initCheckPoint(Context context, String key, String detail, SEVERITY severity) {
+		ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+		reporter.addItemToValidationReport(context, key+"_"+detail, severity.toString());
 	}
 
 	/**
@@ -179,6 +182,17 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static void prepareCheckPoint(Context context, String checkPointKey) {
 		ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 		reporter.prepareCheckPointReport(context, checkPointKey);
+	}
+
+	/**
+	 * pass checkpoint to ok if uncheck
+	 * 
+	 * @param validationReport
+	 * @param checkPointKey
+	 */
+	protected static void prepareCheckPoint(Context context, String checkPointKey, String detail) {
+		ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+		reporter.prepareCheckPointReport(context, checkPointKey+"_"+detail);
 	}
 
 	/**
