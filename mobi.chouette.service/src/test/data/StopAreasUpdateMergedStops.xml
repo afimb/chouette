@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PublicationDelivery xmlns="http://www.netex.org.uk/netex" xmlns:ns2="http://www.opengis.net/gml/3.2" xmlns:ns3="http://www.siri.org.uk/siri" version="any">
+    <PublicationTimestamp>2017-06-08T10:24:18.879+02:00</PublicationTimestamp>
+    <ParticipantRef>NSR</ParticipantRef>
+    <dataObjects>
+        <SiteFrame created="2017-06-08T10:23:48.796+02:00" modification="new" version="1" id="NSR:SiteFrame:272682227">
+            <stopPlaces modificationSet="all">
+
+                <StopPlace created="2017-05-24T13:28:36.186+02:00" modification="new" version="1" id="NSR:StopPlace:180">
+                    <ValidBetween>
+                        <FromDate>2017-05-24T13:28:36.186+02:00</FromDate>
+                    </ValidBetween>
+                    <keyList>
+                        <KeyValue>
+                            <Key>jbvCode</Key>
+                            <Value>HSS</Value>
+                        </KeyValue>
+                        <KeyValue>
+                            <Key>uicCode</Key>
+                            <Value>7600729</Value>
+                        </KeyValue>
+                        <KeyValue>
+                            <Key>grailsId</Key>
+                            <Value>290</Value>
+                        </KeyValue>
+                        <KeyValue>
+                            <Key>iffCode</Key>
+                            <Value>7600729</Value>
+                        </KeyValue>
+                        <KeyValue>
+                            <Key>lisaId</Key>
+                            <Value>729</Value>
+                        </KeyValue>
+                        <KeyValue>
+                            <Key>imported-id</Key>
+                            <Value>NRI:StopPlace:761019147,NSB:StopPlace:07600729,NSB:StopPlace:007600729,FLT:StopPlace:7600729</Value>
+                        </KeyValue>
+                    </keyList>
+                    <Name lang="no">Hunderfossen</Name>
+                    <Centroid>
+                        <Location>
+                            <Longitude>10.438605</Longitude>
+                            <Latitude>61.223647</Latitude>
+                        </Location>
+                    </Centroid>
+                    <AccessibilityAssessment modification="new" version="1" id="NSR:AccessibilityAssessment:180">
+                        <MobilityImpairedAccess>partial</MobilityImpairedAccess>
+                        <limitations>
+                            <AccessibilityLimitation modification="new" version="1">
+                                <WheelchairAccess>true</WheelchairAccess>
+                                <StepFreeAccess>true</StepFreeAccess>
+                            </AccessibilityLimitation>
+                        </limitations>
+                    </AccessibilityAssessment>
+                    <AccessModes></AccessModes>
+                    <TopographicPlaceRef ref="KVE:TopographicPlace:0501" created="2017-06-08T10:23:52.656+02:00"/>
+                    <OtherTransportModes></OtherTransportModes>
+                    <StopPlaceType>railStation</StopPlaceType>
+                    <Weighting>interchangeAllowed</Weighting>
+                    <quays>
+                        <Quay modification="new" version="1" id="NSR:Quay:314">
+                            <keyList>
+                                <KeyValue>
+                                    <Key>grails-platformId</Key>
+                                    <Value>736266</Value>
+                                </KeyValue>
+                                <KeyValue>
+                                    <Key>uicCode</Key>
+                                    <Value>7600729</Value>
+                                </KeyValue>
+                                <KeyValue>
+                                    <Key>imported-id</Key>
+                                    <Value>NSB:Quay:007600729,NSB:Quay:00760072,NSB:Quay:0076007291,NSB:Quay:076007291</Value>
+                                </KeyValue>
+                            </keyList>
+                            <PrivateCode type="StopPoint">1</PrivateCode>
+                            <Centroid>
+                                <Location>
+                                    <Longitude>10.438605</Longitude>
+                                    <Latitude>61.223647</Latitude>
+                                </Location>
+                            </Centroid>
+                            <AccessModes></AccessModes>
+                            <OtherTransportModes></OtherTransportModes>
+                            <PublicCode>1</PublicCode>
+                        </Quay>
+                    </quays>
+                </StopPlace>
+                <StopPlace created="2017-05-24T13:28:36.906+02:00" modification="new" version="1" id="NSR:StopPlace:304">
+                    <ValidBetween>
+                        <FromDate>2017-05-24T13:28:36.906+02:00</FromDate>
+                    </ValidBetween>
+                    <keyList>
+                        <KeyValue>
+                            <Key>jbvCode</Key>
+                            <Value>VAR</Value>
+                        </KeyValue>
+                        <KeyValue>
+                            <Key>uicCode</Key>
+                            <Value>7610607</Value>
+                        </KeyValue>
+                        <KeyValue>
+                            <Key>grailsId</Key>
+                            <Value>772</Value>
+                        </KeyValue>
+                        <KeyValue>
+                            <Key>iffCode</Key>
+                            <Value>760607A</Value>
+                        </KeyValue>
+                        <KeyValue>
+                            <Key>lisaId</Key>
+                            <Value>0607A</Value>
+                        </KeyValue>
+                        <KeyValue>
+                            <Key>imported-id</Key>
+                            <Value>FLT:StopPlace:7610607,NRI:StopPlace:761008129,NSB:StopPlace:07610607,NSB:StopPlace:007610607</Value>
+                        </KeyValue>
+                    </keyList>
+                    <Name lang="no">Varingskollen</Name>
+                    <Centroid>
+                        <Location>
+                            <Longitude>10.846636</Longitude>
+                            <Latitude>60.106226</Latitude>
+                        </Location>
+                    </Centroid>
+                    <AccessibilityAssessment modification="new" version="1" id="NSR:AccessibilityAssessment:304">
+                        <MobilityImpairedAccess>partial</MobilityImpairedAccess>
+                        <limitations>
+                            <AccessibilityLimitation modification="new" version="1">
+                                <WheelchairAccess>false</WheelchairAccess>
+                                <StepFreeAccess>false</StepFreeAccess>
+                            </AccessibilityLimitation>
+                        </limitations>
+                    </AccessibilityAssessment>
+                    <AccessModes></AccessModes>
+                    <TopographicPlaceRef ref="KVE:TopographicPlace:0233" created="2017-06-08T10:23:54.994+02:00"/>
+                    <OtherTransportModes></OtherTransportModes>
+                    <StopPlaceType>railStation</StopPlaceType>
+                    <Weighting>interchangeAllowed</Weighting>
+                    <quays>
+                        <Quay modification="new" version="1" id="NSR:Quay:512">
+                            <keyList>
+                                <KeyValue>
+                                    <Key>grails-platformId</Key>
+                                    <Value>617803</Value>
+                                </KeyValue>
+                                <KeyValue>
+                                    <Key>uicCode</Key>
+                                    <Value>7610607</Value>
+                                </KeyValue>
+                                <KeyValue>
+                                    <Key>imported-id</Key>
+                                    <Value>NSB:Quay:0076106071,NSB:Quay:00761060,NSB:Quay:007610607,NSB:Quay:076106071</Value>
+                                </KeyValue>
+                            </keyList>
+                            <PrivateCode type="StopPoint">1</PrivateCode>
+                            <Centroid>
+                                <Location>
+                                    <Longitude>10.846636</Longitude>
+                                    <Latitude>60.106226</Latitude>
+                                </Location>
+                            </Centroid>
+                            <AccessModes></AccessModes>
+                            <OtherTransportModes></OtherTransportModes>
+                            <PublicCode>1</PublicCode>
+                        </Quay>
+                    </quays>
+                </StopPlace>
+            </stopPlaces>
+        </SiteFrame>
+    </dataObjects>
+</PublicationDelivery>
