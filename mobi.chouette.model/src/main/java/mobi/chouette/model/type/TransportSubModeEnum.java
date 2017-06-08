@@ -69,8 +69,6 @@ public enum TransportSubModeEnum {
 
     public static final EnumSet<TransportSubModeEnum> CABELWAY_SUB_MODES = EnumSet.of(TransportSubModeEnum.Telecabin);
     public static final EnumSet<TransportSubModeEnum> FUNICULAR_SUB_MODES = EnumSet.of(TransportSubModeEnum.Funicular);
-    public static final EnumSet<TransportSubModeEnum> METRO_SUB_MODES = EnumSet.of(TransportSubModeEnum.Metro);
-    public static final EnumSet<TransportSubModeEnum> TRAM_SUB_MODES = EnumSet.of(TransportSubModeEnum.LocalTram);
 
     public static final EnumSet<TransportSubModeEnum> AIR_SUB_MODES = EnumSet.of(
             TransportSubModeEnum.DomesticFlight,
@@ -86,6 +84,14 @@ public enum TransportSubModeEnum {
             TransportSubModeEnum.NightRail,
             TransportSubModeEnum.RegionalRail,
             TransportSubModeEnum.TouristRailway
+    );
+
+    public static final EnumSet<TransportSubModeEnum> FERRY_SUB_MODES = EnumSet.of(
+            TransportSubModeEnum.InternationalCarFerry,
+            TransportSubModeEnum.InternationalPassengerFerry,
+            TransportSubModeEnum.LocalCarFerry,
+            TransportSubModeEnum.LocalPassengerFerry,
+            TransportSubModeEnum.NationalCarFerry
     );
 
     public static final EnumSet<TransportSubModeEnum> WATER_SUB_MODES = EnumSet.of(
