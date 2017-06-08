@@ -11,7 +11,9 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -32,16 +34,20 @@ public class StopAreaUpdateService {
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void createOrUpdateStopAreas(Context context, Set<StopArea> createdOrUpdatedStopAreas, Set<String> removedStopAreas) {
 
-        removedStopAreas.stream().forEach(stopAreaId -> removeStopArea(stopAreaId));
-        createdOrUpdatedStopAreas.forEach(sa -> createOrUpdate(context, sa));
+        Map<String, StopArea> removedQuays = new HashMap<>();
+
+        removedStopAreas.stream().forEach(stopAreaId -> removeStopArea(stopAreaId, removedQuays));
+        createdOrUpdatedStopAreas.forEach(sa -> createOrUpdate(context, sa, removedQuays));
+
+        removedQuays.values().forEach(quay -> removeQuay(quay));
     }
 
-    private void removeStopArea(String objectId) {
+    private void removeStopArea(String objectId, Map<String, StopArea> removedQuays) {
         log.info("Deleting obsolete StopArea (StopPlace) : " + objectId);
 
         StopArea stopArea = stopAreaDAO.findByObjectId(objectId);
         if (stopArea != null) {
-            new ArrayList<>(stopArea.getContainedStopAreas()).forEach(quay -> removeQuay(quay));
+            new ArrayList<>(stopArea.getContainedStopAreas()).forEach(quay -> removeQuay(quay, removedQuays));
             stopAreaDAO.delete(stopArea);
         } else {
             log.warn("Could not remove unknown stopArea: " + objectId);
@@ -49,7 +55,12 @@ public class StopAreaUpdateService {
 
     }
 
-    private void createOrUpdate(Context context, StopArea stopArea) {
+    private void removeQuay(StopArea quay) {
+        log.info("Deleting obsolete StopArea (Quay): " + quay.getObjectId());
+        stopAreaDAO.delete(quay);
+    }
+
+    private void createOrUpdate(Context context, StopArea stopArea, Map<String, StopArea> removedQuays) {
         StopArea existing = stopAreaDAO.findByObjectId(stopArea.getObjectId());
         if (existing == null) {
             log.debug("Creating new StopArea(StopPlace) : " + stopArea);
@@ -66,6 +77,9 @@ public class StopAreaUpdateService {
                 for (StopArea quay : new ArrayList<>(stopArea.getContainedStopAreas())) {
 
                     StopArea existingQuayForSameStopPlace = existingQuays.remove(quay.getObjectId());
+
+                    // Remove from removed collection to avoid moved quay being deleted
+                    removedQuays.remove(quay.getObjectId());
 
                     if (existingQuayForSameStopPlace == null) {
 
@@ -88,7 +102,7 @@ public class StopAreaUpdateService {
                 }
 
                 for (StopArea obsoleteStopArea : existingQuays.values()) {
-                    removeQuay(obsoleteStopArea);
+                    removeQuay(obsoleteStopArea, removedQuays);
                 }
 
                 stopAreaDAO.update(existing);
@@ -98,13 +112,11 @@ public class StopAreaUpdateService {
         }
     }
 
-    private void removeQuay(StopArea obsoleteStopArea) {
-        log.info("Deleting obsolete StopArea (Quay): " + obsoleteStopArea.getObjectId());
-
-        StopArea oldParent=obsoleteStopArea.getParent();
+    private void removeQuay(StopArea obsoleteStopArea, Map<String, StopArea> removedQuays) {
+        StopArea oldParent = obsoleteStopArea.getParent();
         obsoleteStopArea.setParent(null);
         stopAreaDAO.update(oldParent);
-        stopAreaDAO.delete(obsoleteStopArea);
+        removedQuays.put(obsoleteStopArea.getObjectId(), obsoleteStopArea);
     }
 
 }

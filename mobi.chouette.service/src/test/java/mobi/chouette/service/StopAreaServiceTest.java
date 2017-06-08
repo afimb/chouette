@@ -105,6 +105,10 @@ public class StopAreaServiceTest extends Arquillian {
         Assert.assertNull(stopAreaDAO.findByObjectId("NSR:StopPlace:4a"), "Did not expect to find quay for inactive stop place");
         Assert.assertNull(stopAreaDAO.findByObjectId("NSR:StopPlace:4b"), "Did not expect to find quay for inactive stop place");
 
+        utx.commit();
+        utx.begin();
+        em.joinTransaction();
+
         // Update stop places
         stopAreaService.createOrUpdateStopPlacesFromNetexStopPlaces(new FileInputStream("src/test/data/StopAreasUpdate.xml"));
 
