@@ -1,6 +1,5 @@
 package mobi.chouette.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -40,7 +39,7 @@ public class StopPoint extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-	@GenericGenerator(name = "stop_points_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
+	@GenericGenerator(name = "stop_points_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator",
 		parameters = {
 			@Parameter(name = "sequence_name", value = "stop_points_id_seq"),
 			@Parameter(name = "increment_size", value = "100") })
@@ -48,10 +47,10 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	@Id
 	@Column(name = "id", nullable = false)
 	protected Long id;
-	
+
 	/**
 	 * position on the route
-	 * 
+	 *
 	 * @param position
 	 *            New value
 	 * @return The actual value
@@ -63,11 +62,11 @@ public class StopPoint extends NeptuneIdentifiedObject {
 
 	   /**
 	    * boarding possibility
-	    * 
+	    *
 	    * @param forBoarding
 	    *           New value
 	    * @return The actual value
-	    * 
+	    *
 	    * @since 2.5.2
 	    */
 	   @Getter
@@ -78,11 +77,11 @@ public class StopPoint extends NeptuneIdentifiedObject {
 
 	   /**
 	    * alighting possibility
-	    * 
+	    *
 	    * @param forAlighting
 	    *           New value
 	    * @return The actual value
-	    * 
+	    *
 	    * @since 2.5.2
 	    */
 	   @Getter
@@ -91,19 +90,24 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	   @Column(name = "for_alighting")
 	   private AlightingPossibilityEnum forAlighting;
 
-	   /**
+
+	@Getter
+	@Column(name = "stop_area_objectid_key")
+	private String containedInStopAreaObjectId;
+
+	/**
 	 * stop area container
-	 * 
+	 *
 	 * @return The actual value
 	 */
 	@Getter
-	@ManyToOne(fetch = FetchType.LAZY , cascade = { CascadeType.PERSIST})
-	@JoinColumn(name = "stop_area_id")
+	@Transient
 	private StopArea containedInStopArea;
+
 
 	/**
 	 * set stop area
-	 * 
+	 *
 	 * @param stopArea
 	 */
 	public void setContainedInStopArea(StopArea stopArea) {
@@ -112,13 +116,15 @@ public class StopPoint extends NeptuneIdentifiedObject {
 		}
 		this.containedInStopArea = stopArea;
 		if (stopArea != null) {
-			stopArea.getContainedStopPoints().add(this);
-		}
+            stopArea.getContainedStopPoints().add(this);
+            containedInStopAreaObjectId = stopArea.getObjectId();
+        }
 	}
+
 
 	/**
 	 * route
-	 * 
+	 *
 	 * @return The actual value
 	 */
 	@Getter
@@ -128,7 +134,7 @@ public class StopPoint extends NeptuneIdentifiedObject {
 
 	/**
 	 * set route
-	 * 
+	 *
 	 * @param route
 	 */
 	public void setRoute(Route route) {
@@ -140,10 +146,10 @@ public class StopPoint extends NeptuneIdentifiedObject {
 			route.getStopPoints().add(this);
 		}
 	}
-	
+
 	/**
 	 * comment : not saved, use for extension
-	 * 
+	 *
 	 * @param : comment
 	 * @return the actual value
 	 */

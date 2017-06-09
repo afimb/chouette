@@ -66,6 +66,11 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		}
 		newValue.setSaved(true);
 
+		if (Boolean.TRUE.equals(context.get(StopArea.READ_ONLY_MODE))){
+			oldValue.setReadOnly(true);
+			newValue.setReadOnly(true);
+		}
+
 		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
 		Referential referential = (Referential) context.get(REFERENTIAL);

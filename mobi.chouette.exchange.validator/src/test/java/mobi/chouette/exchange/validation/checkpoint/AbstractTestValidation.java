@@ -14,7 +14,9 @@ import javax.naming.NamingException;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.importer.CleanStopAreaRepositoryCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneImporterCommand;
 import mobi.chouette.exchange.report.ActionReport;
@@ -160,6 +162,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 		Context context = initImportContext();
 
 
+		Command cleanStopAreasCommand = CommandFactory.create(new InitialContext(), CleanStopAreaRepositoryCommand.class.getName());
 		NeptuneImporterCommand command = (NeptuneImporterCommand) CommandFactory.create(initialContext,
 				NeptuneImporterCommand.class.getName());
 		copyFile(file);
@@ -169,6 +172,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(cleanRepo);
 		try {
+			cleanStopAreasCommand.execute(context);
 			command.execute(context);
 		} catch (Exception ex) {
 			log.error("test failed", ex);

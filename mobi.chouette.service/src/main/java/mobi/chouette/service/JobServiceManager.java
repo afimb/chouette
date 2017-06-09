@@ -27,6 +27,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Paths;
@@ -39,6 +41,8 @@ import java.util.*;
 public class JobServiceManager {
 
 	public static final String BEAN_NAME = "JobServiceManager";
+
+	public static final String CONFIG_LOCATION_PROPERTY = "config.location";
 
 	@EJB
 	JobDAO jobDAO;
@@ -72,27 +76,18 @@ public class JobServiceManager {
 			// set default properties
 			System.setProperty(checker.getContext() + PropertyNames.ROOT_DIRECTORY, System.getProperty("user.home"));
 
-			// try to read properties
-			File propertyFile = new File("/etc/chouette/" + context + "/" + context + ".properties");
-			if (propertyFile.exists() && propertyFile.isFile()) {
-				try {
-					FileInputStream fileInput = new FileInputStream(propertyFile);
-					Properties properties = new Properties();
-					properties.load(fileInput);
-					fileInput.close();
-					log.info("reading properties from " + propertyFile.getAbsolutePath());
-					for (String key : properties.stringPropertyNames()) {
-						if (key.startsWith(context))
-							System.setProperty(key, properties.getProperty(key));
-						else
-							System.setProperty(context + "." + key, properties.getProperty(key));
-					}
-				} catch (IOException e) {
-					log.error("cannot read properties " + propertyFile.getAbsolutePath()
-							+ " , using default properties", e);
-				}
+			String configLocation = System.getProperty(CONFIG_LOCATION_PROPERTY, "/etc/chouette/" + context + "/" + context + ".properties");
+			Properties properties = new Properties();
+			if (configLocation.startsWith("http")) {
+				loadPropertiesFromHttpEndpoint(configLocation, properties);
 			} else {
-				log.info("no property file found " + propertyFile.getAbsolutePath() + " , using default properties");
+				loadPropertiesFromFile(configLocation.replace("file:/", ""), properties);
+			}
+			for (String key : properties.stringPropertyNames()) {
+				if (key.startsWith(context))
+					System.setProperty(key, properties.getProperty(key));
+				else
+					System.setProperty(context + "." + key, properties.getProperty(key));
 			}
 		} catch (Exception e) {
 			log.error("cannot process properties", e);
@@ -102,6 +97,35 @@ public class JobServiceManager {
 
 		// migrate jobs
 		jobDAO.migrate();
+	}
+
+	private void loadPropertiesFromFile(String fileName, Properties properties) {
+		// try to read properties
+		File propertyFile = new File(fileName);
+		if (propertyFile.exists() && propertyFile.isFile()) {
+			try {
+				FileInputStream fileInput = new FileInputStream(propertyFile);
+				properties.load(fileInput);
+				fileInput.close();
+				log.info("reading properties from " + propertyFile.getAbsolutePath());
+			} catch (IOException e) {
+				log.error("cannot read properties " + propertyFile.getAbsolutePath()
+						          + " , using default properties", e);
+			}
+		} else {
+			log.info("no property file found " + propertyFile.getAbsolutePath() + " , using default properties");
+		}
+	}
+
+	protected void loadPropertiesFromHttpEndpoint(String endpoint, Properties properties) {
+		log.info("Loading remote properties from: " + endpoint);
+		try {
+			HttpURLConnection con = (HttpURLConnection) new URL(endpoint).openConnection();
+			properties.load(con.getInputStream());
+		} catch (Exception e) {
+			log.error("Failed to load properties from remote source: " + e.getMessage(), e);
+		}
+
 	}
 
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)

@@ -13,31 +13,25 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.jboss.ejb3.annotation.TransactionTimeout;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.AccessLinkDAO;
-import mobi.chouette.dao.ConnectionLinkDAO;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.RouteSectionDAO;
-import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.importer.CleanRepositoryCommand;
 import mobi.chouette.exchange.transfer.Constant;
-import mobi.chouette.model.AccessLink;
-import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.RouteSection;
-import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.util.Referential;
+
+import org.jboss.ejb3.annotation.TransactionTimeout;
 
 @Log4j
 @Stateless(name = TransferExportDataWriter.COMMAND)
@@ -49,15 +43,6 @@ public class TransferExportDataWriter implements Command, Constant {
 
 	@EJB
 	private LineDAO lineDAO;
-
-	@EJB
-	private StopAreaDAO stopAreaDAO;
-
-	@EJB
-	private ConnectionLinkDAO connectionLinkDAO;
-
-	@EJB
-	private AccessLinkDAO accessLinkDAO;
 
 	@EJB
 	private RouteSectionDAO routeSectionDAO;
@@ -97,81 +82,9 @@ public class TransferExportDataWriter implements Command, Constant {
 							referential.getRouteSections().putIfAbsent(rs.getObjectId(), rs);
 						}
 					}
-					
-					
-					for (StopPoint sp : r.getStopPoints()) {
-						StopArea sa = sp.getContainedInStopArea();
 
-						if (sa != null) {
-							referential.getStopAreas().putIfAbsent(sa.getObjectId(), sa);
-							if (sa.getParent() != null) {
-								referential.getStopAreas().putIfAbsent(sa.getParent().getObjectId(), sa.getParent());
-							}
-							for (ConnectionLink cle : sa.getConnectionEndLinks()) {
-								if (cle.getEndOfLink() != null) {
-									referential.getStopAreas().putIfAbsent(cle.getEndOfLink().getObjectId(), cle.getEndOfLink());
-								}
-								if (cle.getStartOfLink() != null) {
-									referential.getStopAreas().putIfAbsent(cle.getStartOfLink().getObjectId(),
-											cle.getStartOfLink());
-								}
-
-								referential.getConnectionLinks().putIfAbsent(cle.getObjectId(), cle);
-							}
-							for (ConnectionLink cle : sa.getConnectionStartLinks()) {
-								if (cle.getEndOfLink() != null) {
-									referential.getStopAreas().putIfAbsent(cle.getEndOfLink().getObjectId(), cle.getEndOfLink());
-								}
-								if (cle.getStartOfLink() != null) {
-									referential.getStopAreas().putIfAbsent(cle.getStartOfLink().getObjectId(),
-											cle.getStartOfLink());
-								}
-								referential.getConnectionLinks().putIfAbsent(cle.getObjectId(), cle);
-							}
-							for (AccessLink cle : sa.getAccessLinks()) {
-								if (cle.getStopArea() != null) {
-									referential.getStopAreas().putIfAbsent(cle.getStopArea().getObjectId(), cle.getStopArea());
-								}
-								referential.getAccessLinks().putIfAbsent(cle.getObjectId(), cle);
-							}
-							
-							for(RouteSection rs : sa.getRouteSectionArrivals()) {
-								referential.getRouteSections().putIfAbsent(rs.getObjectId(), rs);
-							}
-							for(RouteSection rs : sa.getRouteSectionDepartures()) {
-								referential.getRouteSections().putIfAbsent(rs.getObjectId(), rs);
-							}
-						}
-					}
 				}
 			}
-			
-
-
-
-			log.info("Inserting " + referential.getStopAreas().size() + " stopareas");
-			for (StopArea sa : referential.getStopAreas().values()) {
-				stopAreaDAO.create(sa);
-			}
-			log.info("Flushing " + referential.getStopAreas().size() + " stopareas");
-			stopAreaDAO.flush();
-			progression.execute(context);
-
-			log.info("Inserting " + referential.getConnectionLinks().size() + " connection links");
-			for (ConnectionLink sa : referential.getConnectionLinks().values()) {
-				connectionLinkDAO.create(sa);
-			}
-			log.info("Flushing " + referential.getConnectionLinks().size() + " connection links");
-			connectionLinkDAO.flush();
-			progression.execute(context);
-
-			log.info("Inserting " + referential.getAccessLinks().size() + " access links");
-			for (AccessLink sa : referential.getAccessLinks().values()) {
-				accessLinkDAO.create(sa);
-			}
-			log.info("Flushing " + referential.getAccessLinks().size() + " access links");
-			accessLinkDAO.flush();
-			progression.execute(context);
 
 			log.info("Inserting " + referential.getRouteSections().size() + " route sections");
 			for (RouteSection sa : referential.getRouteSections().values()) {

@@ -146,6 +146,10 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 			double plotFirstLong = 0;
 			double plotLastLong = 0;
 
+			if (rs.getDeparture() == null || rs.getArrival() == null) {
+				continue;
+			}
+
 			if (rs.getNoProcessing()) {
 				plotFirstLong = rs.getInputGeometry().getStartPoint().getX();
 				plotFirstLat = rs.getInputGeometry().getStartPoint().getY();

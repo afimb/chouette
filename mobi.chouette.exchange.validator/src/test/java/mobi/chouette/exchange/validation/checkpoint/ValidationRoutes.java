@@ -582,6 +582,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Line line1 = beans.get(0);
 
 		Route route1 = line1.getRoutes().get(0);
+		route1.getStopPoints().forEach(stopPoint -> toString()); // Force load collection (clear was not working)
 		route1.getStopPoints().clear();
 
 		route1.setObjectId("NINOXE:Route:first");

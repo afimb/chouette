@@ -23,6 +23,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -422,7 +423,8 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 */
 	@Getter
 	@Setter
-	@ManyToMany(mappedBy = "routingConstraintLines", cascade = { CascadeType.PERSIST })
+//	@ManyToMany(mappedBy = "routingConstraintLines", cascade = { CascadeType.PERSIST })
+	@Transient
 	private List<StopArea> routingConstraints = new ArrayList<StopArea>(0);
 
 	/* -------------------------------------- */

@@ -53,10 +53,10 @@ import org.testng.annotations.Test;
 @Log4j
 public class NeptuneImportTests extends Arquillian implements Constant, ReportConstant {
 
-	@EJB 
+	@EJB
 	LineDAO lineDao;
 
-	@EJB 
+	@EJB
 	VehicleJourneyDAO vjDao;
 
 
@@ -91,7 +91,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		}
 		File[] filesDao = Maven.resolver().loadPomFromFile("pom.xml")
 				.resolve("mobi.chouette:mobi.chouette.dao").withTransitivity().asFile();
-		if (filesDao.length == 0) 
+		if (filesDao.length == 0)
 		{
 			throw new NullPointerException("no dao");
 		}
@@ -99,7 +99,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 			if (file.getName().startsWith("mobi.chouette.dao"))
 			{
 				String name = file.getName().split("\\-")[0]+".jar";
-				
+
 				JavaArchive archive = ShrinkWrap
 						  .create(ZipImporter.class, name)
 						  .importFrom(file)
@@ -119,7 +119,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 				.addClass(NeptuneTestsUtils.class)
 				.addClass(DummyChecker.class)
 				.addClass(JobDataTest.class);
-		
+
 		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
 				.addAsLibraries(jars.toArray(new File[0]))
 				.addAsModules(modules.toArray(new JavaArchive[0]))
@@ -129,7 +129,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 	}
 
 	protected static InitialContext initialContext;
-	
+
 
 	protected void init() {
 		Locale.setDefault(Locale.ENGLISH);
@@ -139,8 +139,8 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 			} catch (NamingException e) {
 				e.printStackTrace();
 			}
-			
-			
+
+
 		}
 	}
 	protected Context initImportContext() {
@@ -294,9 +294,9 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 			Reporter.log("report line :" + info.toString(), true);
 			Assert.assertEquals(info.getStatus(), OBJECT_STATE.OK, "line status");
 		}
-		
+
 		NeptuneTestsUtils.checkLine(context);
-		
+
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Assert.assertNotEquals(referential.getTimetables(),0, "timetables" );
 		Assert.assertNotEquals(referential.getSharedTimetables(),0, "shared timetables" );
@@ -305,9 +305,9 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		utx.begin();
 		em.joinTransaction();
 		Line line = lineDao.findByObjectId("NINOXE:Line:15574334");
-		
+
 		NeptuneTestsUtils.checkMinimalLine(line);
-		
+
 		utx.rollback();
 
 	}
@@ -340,7 +340,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		}
 
 		NeptuneTestsUtils.checkLineWithFrequencies(context);
-		
+
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Assert.assertNotEquals(referential.getTimetables(),0, "timetables" );
 		Assert.assertNotEquals(referential.getSharedTimetables(),0, "shared timetables" );
@@ -349,9 +349,9 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		utx.begin();
 		em.joinTransaction();
 		Line line = lineDao.findByObjectId("NINOXE:Line:15574334");
-		
+
 		NeptuneTestsUtils.checkMinimalLine(line);
-		
+
 		utx.rollback();
 
 	}

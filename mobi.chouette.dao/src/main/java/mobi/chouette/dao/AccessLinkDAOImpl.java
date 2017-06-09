@@ -7,15 +7,19 @@ import javax.persistence.PersistenceContext;
 import mobi.chouette.model.AccessLink;
 
 @Stateless
-public class AccessLinkDAOImpl extends GenericDAOImpl<AccessLink> implements AccessLinkDAO{
+public class AccessLinkDAOImpl extends GenericDAOImpl<AccessLink> implements AccessLinkDAO {
 
-	public AccessLinkDAOImpl() {
-		super(AccessLink.class);
-	}
+    public AccessLinkDAOImpl() {
+        super(AccessLink.class);
+    }
 
-	@PersistenceContext(unitName = "referential")
-	public void setEntityManager(EntityManager em) {
-		this.em = em;
-	}
+    @PersistenceContext(unitName = "public")
+    public void setEntityManager(EntityManager em) {
+        this.em = em;
+    }
 
+    @Override
+    protected String getTableName() {
+        return "public." + super.getTableName();
+    }
 }

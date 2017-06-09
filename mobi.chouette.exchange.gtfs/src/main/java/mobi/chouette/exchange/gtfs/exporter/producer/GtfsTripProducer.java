@@ -87,7 +87,11 @@ public class GtfsTripProducer extends AbstractProducer {
 		List<RouteSection> routeSections = vj.getJourneyPattern().getRouteSections();
 		int index = 0;
 		for (VehicleJourneyAtStop vjas : lvjas) {
-			time.setStopId(toGtfsId(vjas.getStopPoint().getContainedInStopArea().getObjectId(), sharedPrefix, keepOriginalId));
+
+			if (vjas.getStopPoint().getContainedInStopArea()!=null){
+				time.setStopId(toGtfsId(vjas.getStopPoint().getContainedInStopArea().getObjectId(), sharedPrefix, keepOriginalId));
+			}
+
 			Time arrival = vjas.getArrivalTime();
 			arrivalOffset = vjas.getArrivalDayOffset(); /** GJT */
 			

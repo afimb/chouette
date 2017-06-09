@@ -237,6 +237,7 @@ public class TransferExporterCommandTest extends Arquillian implements mobi.chou
 
 		StopArea stop1 = ObjectFactory.getStopArea(referential, "TST:StopPlace:1");
 		stop1.setName("Stop1");
+		stop1.setDetached(false);
 		stop1.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 
 		StopPoint stopPoint1 = ObjectFactory.getStopPoint(referential, "TST:StopPoint:1");
@@ -247,6 +248,7 @@ public class TransferExporterCommandTest extends Arquillian implements mobi.chou
 
 		StopArea stop2 = ObjectFactory.getStopArea(referential, "TST:StopPlace:2");
 		stop2.setName("Stop2");
+		stop2.setDetached(false);
 		stop2.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 
 		StopPoint stopPoint2 = ObjectFactory.getStopPoint(referential, "TST:StopPoint:2");

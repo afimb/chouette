@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
@@ -200,7 +201,7 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 		if (!stopArea2.getAreaType().equals(stopArea.getAreaType()))
 			return;
 		// same name; same code; same address ...
-		if (!stopArea.getName().equals(stopArea2.getName())) {
+		if (!Objects.equals(stopArea.getName(),stopArea2.getName())) {
 			return;
 		}
 		if (stopArea.getStreetName() != null && !stopArea.getStreetName().equals(stopArea2.getStreetName())) {

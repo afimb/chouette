@@ -59,6 +59,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	}
 
 	// test keys
+	protected static final String STOP_POINT_1 = "rutebanken_3-StopPoint-1";
 	protected static final String STOP_AREA_1 = "3-StopArea-1";
 	protected static final String STOP_AREA_2 = "3-StopArea-2";
 	protected static final String STOP_AREA_3 = "3-StopArea-3";
@@ -166,8 +167,11 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static void initCheckPoint(Context context, String key, SEVERITY severity) {
 		ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 		reporter.addItemToValidationReport(context, key, severity.toString());
+	}
 
-		return;
+	protected static void initCheckPoint(Context context, String key, String detail, SEVERITY severity) {
+		ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+		reporter.addItemToValidationReport(context, key+"_"+detail, severity.toString());
 	}
 
 	/**
@@ -179,6 +183,17 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static void prepareCheckPoint(Context context, String checkPointKey) {
 		ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 		reporter.prepareCheckPointReport(context, checkPointKey);
+	}
+
+	/**
+	 * pass checkpoint to ok if uncheck
+	 * 
+	 * @param validationReport
+	 * @param checkPointKey
+	 */
+	protected static void prepareCheckPoint(Context context, String checkPointKey, String detail) {
+		ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+		reporter.prepareCheckPointReport(context, checkPointKey+"_"+detail);
 	}
 
 	/**
@@ -750,7 +765,8 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	public static List<TestDescription> getTestLevel3DatabaseList() {
 		if(testLevel3DatabaseList == null) {
 			testLevel3DatabaseList = new ArrayList<TestDescription>();
-			
+
+			testLevel3DatabaseList.add(new TestDescription(3, STOP_POINT_1, "ERROR"));
 			testLevel3DatabaseList.add(new TestDescription(3, STOP_AREA_1, "ERROR"));
 			testLevel3DatabaseList.add(new TestDescription(3, STOP_AREA_2, "WARNING"));
 			testLevel3DatabaseList.add(new TestDescription(3, STOP_AREA_3, "WARNING"));

@@ -68,7 +68,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 			if (file.getName().startsWith("mobi.chouette.exchange"))
 			{
 				String name = file.getName().split("\\-")[0]+".jar";
-				
+
 				JavaArchive archive = ShrinkWrap
 						  .create(ZipImporter.class, name)
 						  .importFrom(file)
@@ -80,10 +80,10 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 				jars.add(file);
 			}
 		}
-		
+
 		File[] filesDao = Maven.resolver().loadPomFromFile("pom.xml")
 				.resolve("mobi.chouette:mobi.chouette.dao").withTransitivity().asFile();
-		if (filesDao.length == 0) 
+		if (filesDao.length == 0)
 		{
 			throw new NullPointerException("no dao");
 		}
@@ -91,7 +91,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 			if (file.getName().startsWith("mobi.chouette.dao"))
 			{
 				String name = file.getName().split("\\-")[0]+".jar";
-				
+
 				JavaArchive archive = ShrinkWrap
 						  .create(ZipImporter.class, name)
 						  .importFrom(file)
@@ -107,14 +107,14 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 			}
 		}
 
-        
+
 
 		final WebArchive testWar = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
 				.addClass(GtfsExportTests.class)
 				.addClass(GtfsTestsUtils.class)
 				.addClass(DummyChecker.class)
 				.addClass(JobDataTest.class);
-		
+
 		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
 				.addAsLibraries(jars.toArray(new File[0]))
 				.addAsModules(modules.toArray(new JavaArchive[0]))
@@ -126,7 +126,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 
 
 	protected static InitialContext initialContext;
-	
+
 
 	protected void init() {
 		Locale.setDefault(Locale.ENGLISH);
@@ -136,8 +136,8 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 			} catch (NamingException e) {
 				e.printStackTrace();
 			}
-			
-			
+
+
 		}
 	}
 	protected Context initImportContext() {
@@ -212,7 +212,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		return context;
 
 	}
-	
+
 
    @Test(groups = { "export" }, description = "test export GTFS Line")
    public void verifyExportLines() throws Exception
@@ -236,7 +236,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 			log.error("test failed", ex);
 			throw ex;
 		}
-		
+
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
@@ -279,27 +279,27 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 			log.error("test failed", ex);
 			throw ex;
 		}
-		
+
 		ActionReport report = (ActionReport) context.get(REPORT);
 		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
 		for (FileReport info : report.getFiles()) {
 			Reporter.log(info.toString(),true);
 		}
 		Assert.assertEquals(report.getFiles().size(), 1, "file reported");
-		
+
 
 
    }
 
-    @EJB 
+    @EJB
     protected LineDAO lineDAO;
-   
+
     @PersistenceContext(unitName = "referential")
     EntityManager em;
 
     @Inject
     UserTransaction utx;
-   
+
     @Test(groups = { "export" }, description = "test not export GTFS Line than has no Company")
     public void verifyNotExportLineWithNoCompany() throws Exception
     {
@@ -308,14 +308,14 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 	// export data
 	Context context = initExportContext();
 
-               
+
 	utx.begin();
 	em.joinTransaction();
 	Line myLine = lineDAO.findByObjectId("CITURA:Line:01");
 	myLine.setCompany(null);
 	String myLineName = myLine.getName();
 	utx.commit();
-               
+
 	GtfsExportParameters configuration = (GtfsExportParameters) context.get(CONFIGURATION);
 	configuration.setAddMetadata(true);
 	configuration.setReferencesType("line");
@@ -330,9 +330,9 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 	    log.error("test failed", ex);
 	    throw ex;
 	}
-               
+
 	ActionReport report = (ActionReport) context.get(REPORT);
-               
+
 	Assert.assertEquals(report.getResult(), STATUS_OK, "result");
 	for (FileReport info : report.getFiles()) {
 	    Reporter.log(info.toString(),true);
@@ -375,7 +375,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		ActionReport report = (ActionReport) context.get(REPORT);
 		Reporter.log(report.toString(),true);
 		ValidationReport valReport = (ValidationReport) context.get(VALIDATION_REPORT);
-		for (CheckPointReport cp : valReport.getCheckPoints()) 
+		for (CheckPointReport cp : valReport.getCheckPoints())
 		{
 			if (cp.getState().equals(RESULT.NOK))
 			{

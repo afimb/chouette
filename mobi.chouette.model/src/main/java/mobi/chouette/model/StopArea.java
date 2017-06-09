@@ -11,13 +11,16 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,8 +30,6 @@ import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
 /**
  * Chouette StopArea
@@ -69,13 +70,12 @@ import org.hibernate.annotations.Parameter;
 public class StopArea extends NeptuneLocalizedObject {
 	private static final long serialVersionUID = 4548672479038099240L;
 
+	public static final String READ_ONLY_MODE = "STOP_AREA_READ_ONLY_MODE";
+
 	@Getter
 	@Setter
-	@GenericGenerator(name = "stop_areas_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
-		parameters = {
-			@Parameter(name = "sequence_name", value = "stop_areas_id_seq"),
-			@Parameter(name = "increment_size", value = "100") })
-	@GeneratedValue(generator = "stop_areas_id_seq")
+	@SequenceGenerator(name = "stop_areas_id_seq", sequenceName = "stop_areas_id_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stop_areas_id_seq")
 	@Id
 	@Column(name = "id", nullable = false)
 	protected Long id;
@@ -119,6 +119,14 @@ public class StopArea extends NeptuneLocalizedObject {
 	public void setComment(String value) {
 		comment = StringUtils.abbreviate(value, 255);
 	}
+
+	/**
+	 * Whether or not this stop area was created in "readOnly" mode for stop areas. If flag is set the object will not be persisted by cascade.
+	 */
+	@Getter
+	@Setter
+	@Transient
+	private boolean readOnly = false;
 
 	/**
 	 * area type
@@ -385,8 +393,9 @@ public class StopArea extends NeptuneLocalizedObject {
 	 */
 	@Getter
 	@Setter
-	@ManyToMany
-	@JoinTable(name = "routing_constraints_lines", joinColumns = { @JoinColumn(name = "stop_area_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "line_id", nullable = false, updatable = false) })
+//	@ManyToMany
+//	@JoinTable(name = "routing_constraints_lines", joinColumns = { @JoinColumn(name = "stop_area_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "line_id", nullable = false, updatable = false) })
+	@Transient
 	private List<Line> routingConstraintLines = new ArrayList<Line>(0);
 
 	/**
@@ -427,7 +436,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "containedInStopArea")
+	@Transient
 	private List<StopPoint> containedStopPoints = new ArrayList<StopPoint>(0);
 
 	/**
@@ -444,37 +453,6 @@ public class StopArea extends NeptuneLocalizedObject {
 	@JoinColumn(name = "stop_area_id", updatable = false)
 	private List<AccessLink> accessLinks = new ArrayList<AccessLink>(0);
 
-	/**
-	 * routeSections where this stop is at start position<br/>
-	 * only for areaType == BoardingPosition or Quay
-	 * 
-	 * @param routeSectionDepartures
-	 *            New value
-	 * @return The actual value
-	 * @since 3.2.0
-	 */
-	@Getter
-	@Setter
-	@OneToMany(cascade = { CascadeType.PERSIST })
-	@JoinColumn(name = "departure_id") //, updatable = false)
-	private List<RouteSection> routeSectionDepartures = new ArrayList<RouteSection>(
-			0);
-
-	/**
-	 * routeSections where this stop is at end position<br/>
-	 * only for areaType == BoardingPosition or Quay
-	 * 
-	 * @param routeSectionArrivals
-	 *            New value
-	 * @return The actual value
-	 * @since 3.2.0
-	 */
-	@Getter
-	@Setter
-	@OneToMany(cascade = { CascadeType.PERSIST })
-	@JoinColumn(name = "arrival_id") //, updatable = false)
-	private List<RouteSection> routeSectionArrivals = new ArrayList<RouteSection>(
-			0);
 
 	/**
 	 * connection links where this stop is at start position<br/>
