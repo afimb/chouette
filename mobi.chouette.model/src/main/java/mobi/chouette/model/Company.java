@@ -10,19 +10,15 @@ package mobi.chouette.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Cacheable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import mobi.chouette.model.type.OrganisationTypeEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -53,7 +49,20 @@ public class Company extends NeptuneIdentifiedObject {
 	@Id
 	@Column(name = "id", nullable = false)
 	protected Long id;
-	
+
+	/**
+	 * Organisation type
+	 *
+	 * @param organisationType
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@Enumerated(EnumType.STRING)
+	@Column(name = "organisation_type")
+	private OrganisationTypeEnum organisationType;
+
 	/**
 	 * name
 	 * 
