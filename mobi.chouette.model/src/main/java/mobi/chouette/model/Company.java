@@ -104,6 +104,26 @@ public class Company extends NeptuneIdentifiedObject {
 	}
 
 	/**
+	 * legal name
+	 *
+	 * @return The actual value
+	 */
+	@Getter
+	@Column(name = "legal_name")
+	private String legalName;
+
+	/**
+	 * set legal name <br/>
+	 * truncated to 255 characters if too long
+	 *
+	 * @param value
+	 *            New value
+	 */
+	public void setLegalName(String value) {
+		legalName = StringUtils.abbreviate(value, 255);
+	}
+
+	/**
 	 * organizational unit
 	 * 
 	 * @return The actual value
