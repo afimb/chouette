@@ -209,7 +209,7 @@ public class RestService implements Constant {
 	}
 
     @POST
-    @Path("/stop_areas/clean")
+    @Path("/clean/stop_areas")
     public Response cleanStopAreas() {
         log.info(Color.CYAN + "Call clean stop areas" + Color.NORMAL);
         try {
