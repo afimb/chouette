@@ -145,6 +145,42 @@ ALTER TABLE public.access_points_id_seq OWNER TO chouette;
 
 ALTER SEQUENCE public.access_points_id_seq OWNED BY public.access_points.id;
 
+--
+-- Name: codespaces; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace:
+--
+
+CREATE TABLE codespaces (
+    id bigint NOT NULL,
+    xmlns character(3),
+    xmlns_url character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE chouette_gui.codespaces OWNER TO chouette;
+
+
+--
+-- Name: codespaces_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
+--
+
+CREATE SEQUENCE codespaces_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE chouette_gui.codespaces_id_seq OWNER TO chouette;
+
+
+--
+-- Name: codespaces_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
+--
+
+ALTER SEQUENCE codespaces_id_seq OWNED BY codespaces.id;
 
 
 --

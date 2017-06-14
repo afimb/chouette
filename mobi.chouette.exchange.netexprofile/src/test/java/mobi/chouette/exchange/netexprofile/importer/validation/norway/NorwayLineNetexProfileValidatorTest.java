@@ -3,7 +3,6 @@ package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.NetexImporter;
-import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexNamespaceContext;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.report.ActionReport;
@@ -12,6 +11,7 @@ import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.Codespace;
 import mobi.chouette.model.util.Referential;
 import org.rutebanken.netex.model.PublicationDeliveryStructure;
 import org.testng.Assert;
@@ -24,27 +24,27 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import static mobi.chouette.exchange.netexprofile.NetexTestUtils.createCodespace;
+
 public class NorwayLineNetexProfileValidatorTest {
 
 
 	@Test public void testValidateSimpleFile() throws Exception {
-		
 		NetexImporter importer = new NetexImporter();
 
 		Context context = createContext(importer);
-		
 
 		ValidationReport vr = new ValidationReport();
 		context.put(Constant.VALIDATION_REPORT	, vr);
 
-		Set<ProfileValidatorCodespace> validCodespaces = new HashSet<>();
-		validCodespaces.add(new ProfileValidatorCodespace("AVI","http://avinor.no/"));
+		Set<Codespace> validCodespaces = new HashSet<>();
+		Codespace validCodespace = createCodespace(1L, "AVI", "http://www.rutebanken.org/ns/avi");
+		validCodespaces.add(validCodespace);
 		context.put(Constant.NETEX_VALID_CODESPACES, validCodespaces);
 
 		Document dom = importer.parseFileToDom(new File("src/test/data/WF739-201608311015.xml"));
 		PublicationDeliveryStructure lineDeliveryStructure =importer.unmarshal(dom);
 
-		// Parse (convert to chouette objects)
 		context.put(Constant.NETEX_DATA_JAVA, lineDeliveryStructure);
 		context.put(Constant.NETEX_DATA_DOM, dom);
 		
@@ -64,7 +64,6 @@ public class NorwayLineNetexProfileValidatorTest {
 	}
 
 	@Test public void testValidateWithCommonFile() throws Exception {
-		
 		NetexImporter importer = new NetexImporter();
 		Context context = createContext(importer);
 
@@ -74,12 +73,15 @@ public class NorwayLineNetexProfileValidatorTest {
 		Referential referential =new Referential();
 		context.put(Constant.REFERENTIAL,referential);
 
+		Set<Codespace> validCodespaces = new HashSet<>();
 
-		Set<ProfileValidatorCodespace> validCodespaces = new HashSet<>();
-		validCodespaces.add(new ProfileValidatorCodespace(AbstractNorwayNetexProfileValidator.NSR_XMLNS, AbstractNorwayNetexProfileValidator.NSR_XMLNSURL));
-		validCodespaces.add(new ProfileValidatorCodespace("AVI","http://www.rutebanken.org/ns/avi"));
+		Codespace nsrCodespace = createCodespace(1L, "NSR", "http://www.rutebanken.org/ns/nsr");
+		validCodespaces.add(nsrCodespace);
+
+		Codespace avinorCodespace = createCodespace(2L, "AVI", "http://www.rutebanken.org/ns/avi");
+		validCodespaces.add(avinorCodespace);
+
 		context.put(Constant.NETEX_VALID_CODESPACES, validCodespaces);
-
 
 		Document commonDom = importer.parseFileToDom(new File("src/test/data/norway_line_commonfile/_avinor_common_elements.xml"));
 		PublicationDeliveryStructure commonStructure =importer.unmarshal(commonDom);

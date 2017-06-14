@@ -3,16 +3,14 @@ package mobi.chouette.exchange.netexprofile.importer.validation;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.importer.PositionalXMLReader;
 import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
-import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.Codespace;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.rutebanken.netex.model.DataManagedObjectStructure;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -20,6 +18,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -193,23 +192,30 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		return node;
 	}
 
-	protected void verifyAcceptedCodespaces(Context context, XPath xpath, Node dom, Set<ProfileValidatorCodespace> acceptedCodespaces)
+	protected void verifyAcceptedCodespaces(Context context, XPath xpath, Node dom, Set<Codespace> acceptedCodespaces)
 			throws XPathExpressionException {
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 
-		String referenceValue = StringUtils.join(acceptedCodespaces.stream().map(e -> e.getXmlns() + "/" + e.getXmlnsurl()).collect(Collectors.toList()), ' ');
+		String referenceValue = StringUtils.join(acceptedCodespaces.stream()
+				.map(codespace -> codespace.getXmlns() + "/" + codespace.getXmlnsUrl())
+				.collect(Collectors.toList()), ' ');
 
 		boolean onlyAcceptedCodespaces = true;
 		NodeList codespaces = selectNodeSet("//n:Codespace", xpath, dom);
 		for (int i = 0; i < codespaces.getLength(); i++) {
 			Node n = codespaces.item(i);
-			ProfileValidatorCodespace cs = new ProfileValidatorCodespace((String) xpath.evaluate("n:Xmlns", n, XPathConstants.STRING),
-					(String) xpath.evaluate("n:XmlnsUrl", n, XPathConstants.STRING));
-			if (!acceptedCodespaces.contains(cs)) {
+			Codespace codespace = new Codespace();
+			codespace.setXmlns((String) xpath.evaluate("n:Xmlns", n, XPathConstants.STRING));
+			codespace.setXmlnsUrl((String) xpath.evaluate("n:XmlnsUrl", n, XPathConstants.STRING));
+
+			Predicate<Codespace> equalsXmlns = (validCodespace) -> validCodespace.getXmlns().equals(codespace.getXmlns());
+			Predicate<Codespace> equalsXmlnsUrl = (validCodespace) -> validCodespace.getXmlnsUrl().equals(codespace.getXmlnsUrl());
+
+			if (acceptedCodespaces.stream().noneMatch(equalsXmlns.and(equalsXmlnsUrl))) {
 				// TODO add correct location
 				validationReporter.addCheckPointReportError(context, _1_NETEX_UNAPPROVED_CODESPACE_DEFINED, null,
-						DataLocationHelper.findDataLocation(context, n), cs.getXmlns() + "/" + cs.getXmlnsurl(), referenceValue);
-				log.error("Codespace " + cs + " is not accepted for this validation");
+						DataLocationHelper.findDataLocation(context, n), codespace.getXmlns() + "/" + codespace.getXmlnsUrl(), referenceValue);
+				log.error("Codespace " + codespace + " is not accepted for this validation");
 				onlyAcceptedCodespaces = false;
 			}
 		}
@@ -376,13 +382,12 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		}
 	}
 
-	protected void verifyIdStructure(Context context, Set<IdVersion> localIds, String regex,
-			Set<ProfileValidatorCodespace> validCodespaces) {
+	protected void verifyIdStructure(Context context, Set<IdVersion> localIds, String regex, Set<Codespace> validCodespaces) {
 		Set<String> validPrefixes = null;
 		if (validCodespaces != null) {
 			validPrefixes = new HashSet<>();
-			for (ProfileValidatorCodespace cs : validCodespaces) {
-				validPrefixes.add(cs.getXmlns());
+			for (Codespace codespace : validCodespaces) {
+				validPrefixes.add(codespace.getXmlns());
 			}
 		}
 
