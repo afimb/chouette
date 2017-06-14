@@ -3,6 +3,7 @@ package mobi.chouette.exchange.netexprofile.importer;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.dao.CodespaceDAO;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.DummyChecker;
@@ -43,6 +44,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.*;
 
+import static mobi.chouette.exchange.netexprofile.NetexTestUtils.createCodespace;
 import static org.testng.Assert.*;
 
 @Log4j
@@ -52,6 +54,9 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 	@EJB
 	private LineDAO lineDao;
+
+	@EJB
+	private CodespaceDAO codespaceDao;
 
 	@PersistenceContext(unitName = "referential")
 	private EntityManager em;
@@ -149,12 +154,61 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		context.put("testng", "true");
 		context.put(OPTIMIZED, Boolean.FALSE);
 		return context;
+	}
 
+	private void clearCodespaceRecords() throws Exception {
+		utx.begin();
+		em.joinTransaction();
+		log.info("Dumping old codespace records...");
+		codespaceDao.deleteAll();
+		codespaceDao.flush();
+		utx.commit();
+	}
+
+	private void insertCodespaceRecords(List<Codespace> codespaces) throws Exception {
+		utx.begin();
+		em.joinTransaction();
+		log.info("Inserting codespace records...");
+
+		for (Codespace codespace : codespaces) {
+			codespaceDao.create(codespace);
+		}
+
+		codespaceDao.flush();
+		utx.commit();
+		codespaceDao.clear();
+	}
+
+	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")
+	public void codespaceReadTest() throws Exception {
+		Context context = initImportContext();
+		clearCodespaceRecords();
+
+		insertCodespaceRecords(Arrays.asList(
+				createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+				createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
+		);
+
+		utx.begin();
+		em.joinTransaction();
+
+		List<Codespace> codespaces = codespaceDao.findAll();
+		assertNotNull(codespaces, "Codespace list is null");
+		assertEquals(codespaces.size(), 2, "No available codespaces");
+
+		utx.rollback();
 	}
 
 	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")
 	public void verifyImportLine() throws Exception {
 		Context context = initImportContext();
+		clearCodespaceRecords();
+
+		insertCodespaceRecords(Arrays.asList(
+				createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+				createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
+		);
+
 		NetexTestUtils.copyFile("C_NETEX_1.xml");
 
 		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
@@ -165,7 +219,6 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
-		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
 		try {
 			command.execute(context);
@@ -207,6 +260,13 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")
 	public void verifyImportLineMergeTimetables() throws Exception {
 		Context context = initImportContext();
+		clearCodespaceRecords();
+
+		insertCodespaceRecords(Arrays.asList(
+				createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+				createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
+		);
+
 		NetexTestUtils.copyFile("C_NETEX_1.xml");
 
 		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
@@ -217,7 +277,6 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
-		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
 		try {
 			command.execute(context);
@@ -257,6 +316,13 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")
 	public void verifyImportSingleLineWithOperatingPeriods() throws Exception {
 		Context context = initImportContext();
+		clearCodespaceRecords();
+
+		insertCodespaceRecords(Arrays.asList(
+				createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+				createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
+		);
+
 		NetexTestUtils.copyFile("C_NETEX_6.xml");
 
 		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
@@ -267,7 +333,6 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
-		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
 		boolean result;
 		try {
@@ -342,6 +407,13 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")
 	public void verifyImportSingleLinesWithCommonsAndMixedDayTypes() throws Exception {
 		Context context = initImportContext();
+		clearCodespaceRecords();
+
+		insertCodespaceRecords(Arrays.asList(
+				createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+				createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
+		);
+
 		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
 				initialContext, NetexprofileImporterCommand.class.getName());
 
@@ -353,7 +425,6 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
-		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
 		boolean result;
 		try {
@@ -393,6 +464,13 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	@Test
 	public void verifyImportSingleLineWithCommonDataAvinor() throws Exception {
 		Context context = initImportContext();
+		clearCodespaceRecords();
+
+		insertCodespaceRecords(Arrays.asList(
+				createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+				createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
+		);
+
 		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
 				initialContext, NetexprofileImporterCommand.class.getName());
 
@@ -404,7 +482,6 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
-		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
 		boolean result;
 		try {
@@ -492,6 +569,13 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	@Test
 	public void verifyImportMultipleLinesWithCommonDataAvinor() throws Exception {
 		Context context = initImportContext();
+		clearCodespaceRecords();
+
+		insertCodespaceRecords(Arrays.asList(
+				createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+				createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
+		);
+
 		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
 				initialContext, NetexprofileImporterCommand.class.getName());
 
@@ -503,7 +587,6 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
-		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
 		boolean result;
 		try {
@@ -606,6 +689,13 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	@Test
 	public void importMultipleGroupsOfLinesAvinor() throws Exception {
 		Context context = initImportContext();
+		clearCodespaceRecords();
+
+		insertCodespaceRecords(Arrays.asList(
+				createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+				createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
+		);
+
 		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
 				initialContext, NetexprofileImporterCommand.class.getName());
 
@@ -617,7 +707,6 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
-		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
 		boolean result;
 		try {
@@ -716,6 +805,13 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	@Test
 	public void importSingleLineWithNotices() throws Exception {
 		Context context = initImportContext();
+		clearCodespaceRecords();
+
+		insertCodespaceRecords(Arrays.asList(
+				createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+				createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
+		);
+
 		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
 				initialContext, NetexprofileImporterCommand.class.getName());
 
@@ -727,7 +823,6 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
-		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
 
 		boolean result;
 		try {
@@ -790,6 +885,13 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	@Test(enabled = false)
 	public void verifyImportSingleLineWithCommonDataRuter() throws Exception {
 		Context context = initImportContext();
+		clearCodespaceRecords();
+
+		insertCodespaceRecords(Arrays.asList(
+				createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+				createCodespace(null, "RUT", "http://www.rutebanken.org/ns/ruter"))
+		);
+
 		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
 				initialContext, NetexprofileImporterCommand.class.getName());
 
@@ -801,7 +903,6 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
-		configuration.setValidCodespaces("RUT,http://www.rutebanken.org/ns/rut");
 
 		boolean result;
 		try {
@@ -841,6 +942,13 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	@Test(enabled = false)
 	public void importMultipleLinesVKT() throws Exception {
 		Context context = initImportContext();
+		clearCodespaceRecords();
+
+		insertCodespaceRecords(Arrays.asList(
+				createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+				createCodespace(null, "VKT", "http://www.rutebanken.org/ns/vkt"))
+		);
+
 		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
 		String inputFileName = "NeTEx_VKT_r1.10.zip";
 
@@ -853,7 +961,6 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
-		configuration.setValidCodespaces("VKT,http://www.rutebanken.org/ns/vkt");
 
 		boolean result;
 		try {

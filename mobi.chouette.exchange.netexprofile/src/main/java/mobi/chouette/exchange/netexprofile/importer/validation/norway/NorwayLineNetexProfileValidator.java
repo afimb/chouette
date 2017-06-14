@@ -4,13 +4,12 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
-import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
-import mobi.chouette.exchange.netexprofile.importer.validation.ExternalReferenceValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidatorFactory;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.StopPlaceRegistryIdValidator.DefaultExternalReferenceValidatorFactory;
 import mobi.chouette.exchange.netexprofile.util.NetexIdExtractorHelper;
 import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.model.Codespace;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -18,7 +17,6 @@ import org.w3c.dom.NodeList;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Log4j
 public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileValidator implements NetexProfileValidator {
@@ -32,7 +30,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 		Document dom = (Document) context.get(NETEX_DATA_DOM);
 
 		@SuppressWarnings("unchecked")
-		Set<ProfileValidatorCodespace> validCodespaces = (Set<ProfileValidatorCodespace>) context.get(NETEX_VALID_CODESPACES);
+		Set<Codespace> validCodespaces = (Set<Codespace>) context.get(NETEX_VALID_CODESPACES);
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 
 		// StopPlaceRegistryIdValidator stopRegisterValidator = new StopPlaceRegistryIdValidator();
@@ -46,14 +44,6 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 		for (IdVersion id : localIds) {
 			data.getDataLocations().put(id.getId(), DataLocationHelper.findDataLocation(id));
 		}
-
-		// Null check, this is a bug if happens
-		if (validCodespaces == null) {
-			throw new RuntimeException("valid codespaces are empty - did you forget to include in context?");
-		}
-
-		// Add valid codespace for NSR
-		validCodespaces.add(new ProfileValidatorCodespace(AbstractNorwayNetexProfileValidator.NSR_XMLNS, AbstractNorwayNetexProfileValidator.NSR_XMLNSURL));
 
 		verifyAcceptedCodespaces(context, xpath, dom, validCodespaces);
 		verifyIdStructure(context, localIds, ID_STRUCTURE_REGEXP, validCodespaces);

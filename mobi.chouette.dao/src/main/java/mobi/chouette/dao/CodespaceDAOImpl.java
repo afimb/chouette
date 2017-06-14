@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Stateless
+@Stateless (name="CodespaceDAO")
 public class CodespaceDAOImpl extends GenericDAOImpl<Codespace> implements CodespaceDAO {
 
     public CodespaceDAOImpl() {

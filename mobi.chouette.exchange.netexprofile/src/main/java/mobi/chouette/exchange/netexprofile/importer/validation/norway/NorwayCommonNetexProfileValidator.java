@@ -1,24 +1,22 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
-import mobi.chouette.exchange.netexprofile.importer.util.ProfileValidatorCodespace;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidatorFactory;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.StopPlaceRegistryIdValidator.DefaultExternalReferenceValidatorFactory;
 import mobi.chouette.exchange.netexprofile.util.NetexIdExtractorHelper;
+import mobi.chouette.model.Codespace;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfileValidator implements NetexProfileValidator {
 
@@ -31,15 +29,7 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 		Document commonDom = (Document) context.get(Constant.NETEX_DATA_DOM);
 		
 		@SuppressWarnings("unchecked")
-		Set<ProfileValidatorCodespace> validCodespaces = (Set<ProfileValidatorCodespace>) context.get(NETEX_VALID_CODESPACES);
-
-		// Null check, this is a bug if happens
-		if (validCodespaces == null) {
-			throw new RuntimeException("valid codespaces are empty - did you forget to include in context?");
-		}
-
-		// Add valid codespace for NSR
-		validCodespaces.add(new ProfileValidatorCodespace(AbstractNorwayNetexProfileValidator.NSR_XMLNS, AbstractNorwayNetexProfileValidator.NSR_XMLNSURL));
+		Set<Codespace> validCodespaces = (Set<Codespace>) context.get(NETEX_VALID_CODESPACES);
 
 		// Validate elements in common files
 		verifyAcceptedCodespaces(context, xpath, commonDom, validCodespaces);

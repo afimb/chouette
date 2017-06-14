@@ -10,22 +10,21 @@ import mobi.chouette.exchange.netexprofile.exporter.producer.*;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.*;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.Network;
-import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static mobi.chouette.exchange.netexprofile.Constant.EXPORTABLE_NETEX_DATA;
+import static mobi.chouette.exchange.netexprofile.Constant.NETEX_VALID_CODESPACES;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer.*;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
@@ -40,8 +39,6 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
     private static final String NSR_LEGAL_NAME = "NASJONAL STOPPESTEDSREGISTER";
     private static final String NSR_PHONE = "0047 236 20 000";
 
-    private static final Map<String, Codespace> CODESPACE_MAP = new HashMap<>();
-
     private static OperatorProducer operatorProducer = new OperatorProducer();
     private static StopPlaceProducer stopPlaceProducer = new StopPlaceProducer();
     private static NetworkProducer networkProducer = new NetworkProducer();
@@ -52,16 +49,13 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
     private static ServiceJourneyProducer serviceJourneyProducer = new ServiceJourneyProducer();
 
     public void produce(Context context) throws Exception {
-        NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         ActionReporter reporter = ActionReporter.Factory.getInstance();
         JobData jobData = (JobData) context.get(JOB_DATA);
         Metadata metadata = (Metadata) context.get(METADATA);
         Path outputPath = Paths.get(jobData.getPathName(), OUTPUT);
         ExportableData exportableData = (ExportableData) context.get(EXPORTABLE_DATA);
         ExportableNetexData exportableNetexData = (ExportableNetexData) context.get(EXPORTABLE_NETEX_DATA);
-
-        Line neptuneLine = exportableData.getLine();
-        initializeCodespaces(configuration, exportableData, exportableNetexData);
+        mobi.chouette.model.Line neptuneLine = exportableData.getLine();
 
         produceAndCollectLineData(context, exportableData, exportableNetexData);
         produceAndCollectSharedData(context, exportableData, exportableNetexData);
@@ -84,47 +78,9 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         }
     }
 
-    private void initializeCodespaces(NetexprofileExportParameters configuration, ExportableData exportableData, ExportableNetexData exportableNetexData) {
-        mobi.chouette.model.Line line = exportableData.getLine();
-
-        Codespace nsrCodespace = netexFactory.createCodespace()
-                .withId(NSR_XMLNS.toLowerCase())
-                .withXmlns(NSR_XMLNS)
-                .withXmlnsUrl(NSR_XMLNSURL);
-
-        Codespace operatorCodespace = null;
-        if (configuration.getValidCodespaces() != null) {
-            Map<String, Codespace> validCodespaces = new HashMap<>();
-            String[] validCodespacesTuples = StringUtils.split(configuration.getValidCodespaces(), ",");
-
-            for (int i = 0; i < validCodespacesTuples.length; i += 2) {
-                Codespace codespace = netexFactory.createCodespace()
-                        .withId(validCodespacesTuples[i].toLowerCase())
-                        .withXmlns(validCodespacesTuples[i])
-                        .withXmlnsUrl(validCodespacesTuples[i + 1]);
-                validCodespaces.put(validCodespacesTuples[i].toUpperCase(), codespace);
-            }
-            if (validCodespaces.containsKey(line.objectIdPrefix().toUpperCase())) {
-                operatorCodespace = validCodespaces.get(line.objectIdPrefix().toUpperCase());
-            }
-        } else {
-            if (CODESPACE_MAP.containsKey(line.objectIdPrefix().toUpperCase())) {
-                operatorCodespace = CODESPACE_MAP.get(line.objectIdPrefix().toUpperCase());
-            } else {
-                throw new RuntimeException("Unknown operator codespace");
-            }
-        }
-        if (!exportableNetexData.getSharedCodespaces().containsKey(line.objectIdPrefix().toUpperCase())) {
-            exportableNetexData.getSharedCodespaces().put(line.objectIdPrefix().toUpperCase(), operatorCodespace);
-        }
-        if (!exportableNetexData.getSharedCodespaces().containsKey(NSR_XMLNS)) {
-            exportableNetexData.getSharedCodespaces().put(NSR_XMLNS, nsrCodespace);
-        }
-    }
-
     @SuppressWarnings("unchecked")
     private void produceAndCollectLineData(Context context, ExportableData exportableData, ExportableNetexData exportableNetexData) {
-        Line neptuneLine = exportableData.getLine();
+        mobi.chouette.model.Line neptuneLine = exportableData.getLine();
 
         AvailabilityCondition availabilityCondition = createAvailabilityCondition(neptuneLine);
         exportableNetexData.setLineCondition(availabilityCondition);
@@ -204,6 +160,8 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
     private void produceAndCollectSharedData(Context context, ExportableData exportableData, ExportableNetexData exportableNetexData) {
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
 
+        produceAndCollectCodespaces(context, exportableNetexData);
+
         mobi.chouette.model.Network neptuneNetwork = exportableData.getLine().getNetwork();
         org.rutebanken.netex.model.Network netexNetwork = exportableNetexData.getSharedNetworks().get(neptuneNetwork.getObjectId());
 
@@ -275,6 +233,22 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         produceAndCollectStopAssignments(exportableData.getLine().getRoutes(), exportableNetexData);
     }
 
+    @SuppressWarnings("unchecked")
+    private void produceAndCollectCodespaces(Context context, ExportableNetexData exportableNetexData) {
+        Set<mobi.chouette.model.Codespace> validCodespaces = (Set<mobi.chouette.model.Codespace>) context.get(NETEX_VALID_CODESPACES);
+
+        for (mobi.chouette.model.Codespace validCodespace : validCodespaces) {
+            if (!exportableNetexData.getSharedCodespaces().containsKey(validCodespace.getXmlns())) {
+                org.rutebanken.netex.model.Codespace netexCodespace = netexFactory.createCodespace()
+                        .withId(validCodespace.getXmlns().toLowerCase())
+                        .withXmlns(validCodespace.getXmlns())
+                        .withXmlnsUrl(validCodespace.getXmlnsUrl());
+
+                exportableNetexData.getSharedCodespaces().put(validCodespace.getXmlns(), netexCodespace);
+            }
+        }
+    }
+
     private GroupOfLines createGroupOfLines(GroupOfLine groupOfLine) {
         GroupOfLines groupOfLines = netexFactory.createGroupOfLines();
         groupOfLines.setVersion(groupOfLine.getObjectVersion() > 0 ? String.valueOf(groupOfLine.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
@@ -287,7 +261,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         return groupOfLines;
     }
 
-    private void produceAndCollectRoutePoints(List<Route> routes, ExportableNetexData exportableNetexData) {
+    private void produceAndCollectRoutePoints(List<mobi.chouette.model.Route> routes, ExportableNetexData exportableNetexData) {
         for (mobi.chouette.model.Route route : routes) {
             for (StopPoint stopPoint : route.getStopPoints()) {
                 if (stopPoint != null) {
@@ -421,7 +395,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         return stopAssignment;
     }
 
-    private Authority createNetworkAuthority(Network network) {
+    private Authority createNetworkAuthority(mobi.chouette.model.Network network) {
         return createNetworkAuthority(network.getObjectVersion() > 0 ? String.valueOf(network.getObjectVersion()) :
                 NETEX_DATA_OJBECT_VERSION, network.getSourceIdentifier());
     }
@@ -437,7 +411,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 .withOrganisationType(OrganisationTypeEnumeration.AUTHORITY);
     }
 
-    private Authority createNsrAuthority(Network network) {
+    private Authority createNsrAuthority(mobi.chouette.model.Network network) {
         return netexFactory.createAuthority()
                 .withVersion(network.getObjectVersion() > 0 ? String.valueOf(network.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION)
                 .withId(NSR_OBJECT_ID)
@@ -452,24 +426,6 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         return netexFactory.createContactStructure()
                 .withPhone(phone)
                 .withUrl(url);
-    }
-
-    static {
-        try {
-            Properties properties = new Properties();
-            properties.load(NetexLineDataProducer.class.getResourceAsStream("/codespaces.properties"));
-            Set<String> propertyKeys = properties.stringPropertyNames();
-
-            for (String key : propertyKeys) {
-                Codespace codespace = netexFactory.createCodespace()
-                        .withId(key.toLowerCase())
-                        .withXmlns(key)
-                        .withXmlnsUrl(properties.getProperty(key));
-                CODESPACE_MAP.put(key, codespace);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Could not load codespaces from file");
-        }
     }
 
 }
