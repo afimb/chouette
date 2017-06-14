@@ -210,7 +210,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@ManyToMany(cascade = { CascadeType.ALL})
+	@ManyToMany
 	@OrderBy(value="position")
 	@JoinTable(name = "journey_patterns_stop_points", joinColumns = { @JoinColumn(name = "journey_pattern_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "stop_point_id", nullable = false, updatable = false) })
 	private List<StopPoint> stopPoints = new ArrayList<StopPoint>(0);
@@ -224,7 +224,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "journeyPattern", cascade = { CascadeType.ALL})
+	@OneToMany(mappedBy = "journeyPattern", cascade = { CascadeType.PERSIST})
 	private List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>(
 			0);
 
