@@ -27,6 +27,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.model.type.ChouetteAreaEnum;
+import mobi.chouette.model.type.StopAreaImportModeEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 
 import org.apache.commons.lang.StringUtils;
@@ -70,7 +71,7 @@ import org.apache.commons.lang.StringUtils;
 public class StopArea extends NeptuneLocalizedObject {
 	private static final long serialVersionUID = 4548672479038099240L;
 
-	public static final String READ_ONLY_MODE = "STOP_AREA_READ_ONLY_MODE";
+	public static final String IMPORT_MODE = "STOP_AREA_IMPORT_MODE";
 
 	@Getter
 	@Setter
@@ -126,7 +127,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	@Getter
 	@Setter
 	@Transient
-	private boolean readOnly = false;
+	private StopAreaImportModeEnum importMode = StopAreaImportModeEnum.CREATE_OR_UPDATE;
 
 	/**
 	 * area type

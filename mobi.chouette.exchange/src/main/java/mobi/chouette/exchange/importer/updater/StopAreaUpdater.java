@@ -21,6 +21,7 @@ import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.type.StopAreaImportModeEnum;
 import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -66,9 +67,11 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		}
 		newValue.setSaved(true);
 
-		if (Boolean.TRUE.equals(context.get(StopArea.READ_ONLY_MODE))){
-			oldValue.setReadOnly(true);
-			newValue.setReadOnly(true);
+		setImportMode(context, oldValue, newValue);
+
+		if (oldValue.getId() != null && !oldValue.getImportMode().shouldUpdateStopAreas()) {
+			log.debug("Skip update of existing stop area: " + oldValue.getObjectId());
+			return;
 		}
 
 		Monitor monitor = MonitorFactory.start(BEAN_NAME);
@@ -381,6 +384,15 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		}
 		monitor.stop();
 
+	}
+
+	private void setImportMode(Context context, StopArea oldValue, StopArea newValue) {
+		Object importModeObj = context.get(StopArea.IMPORT_MODE);
+		if (importModeObj instanceof StopAreaImportModeEnum) {
+			StopAreaImportModeEnum importMode= (StopAreaImportModeEnum)importModeObj;
+			oldValue.setImportMode(importMode);
+			newValue.setImportMode(importMode);
+		}
 	}
 
 	/**
