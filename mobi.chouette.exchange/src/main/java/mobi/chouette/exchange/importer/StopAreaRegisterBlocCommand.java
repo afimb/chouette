@@ -72,8 +72,10 @@ public class StopAreaRegisterBlocCommand implements Command {
 
 			for (StopArea newValue : areas) {
 				StopArea oldValue = cache.getStopAreas().get(newValue.getObjectId());
-				stopUpdater.update(context, oldValue, newValue);
-				stopAreaDAO.create(oldValue);
+					stopUpdater.update(context, oldValue, newValue);
+				if (shouldPersistStopArea(oldValue)) {
+					stopAreaDAO.create(oldValue);
+				}
 			}
 			// log.info(Color.CYAN + monitorUpdate.stop() + Color.NORMAL);
 			// Monitor monitorFlush = MonitorFactory.start(COMMAND + ".flush");
@@ -88,6 +90,16 @@ public class StopAreaRegisterBlocCommand implements Command {
 		}
 		return result;
 
+	}
+
+	/**
+	 * Only persist stop area if importMode=CREATE_OR_UPDATE or stop area is new and mode=CREATE_NEW
+	 */
+	private boolean shouldPersistStopArea(StopArea oldValue) {
+		if (oldValue.getId() == null && oldValue.getImportMode().shouldCreateMissingStopAreas()) {
+			return true;
+		}
+		return oldValue.getImportMode().shouldUpdateStopAreas();
 	}
 
 	private void initializeStopArea(Referential cache, Collection<StopArea> list) {
