@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
+import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.DummyChecker;
 import mobi.chouette.exchange.netexprofile.JobDataTest;
@@ -13,6 +14,8 @@ import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.*;
+import mobi.chouette.model.type.ChouetteAreaEnum;
+import mobi.chouette.model.type.StopAreaImportModeEnum;
 import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 import org.apache.commons.io.FileUtils;
@@ -52,6 +55,9 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 	@EJB
 	private LineDAO lineDao;
+
+	@EJB
+	private StopAreaDAO stopAreaDAO;
 
 	@PersistenceContext(unitName = "referential")
 	private EntityManager em;
@@ -154,6 +160,97 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")
 	public void verifyImportLine() throws Exception {
+		stopAreaDAO.truncate();
+		StopArea existingStopArea=createExistingStopArea();
+
+		importLine(StopAreaImportModeEnum.CREATE_OR_UPDATE);
+
+		utx.begin();
+		em.joinTransaction();
+
+		Line line = lineDao.findByObjectId("AVI:Line:WF_TRD-MOL");
+		assertNotNull(line, "Line not found");
+
+		for (Route route : line.getRoutes()) {
+			for (StopPoint stopPoint : route.getStopPoints()) {
+				if (stopPoint.getObjectId().equals("AVI:StopPoint:1263628002")) {
+					assertEquals(stopPoint.getContainedInStopArea().getObjectId(), existingStopArea.getObjectId());
+					assertEquals(stopPoint.getContainedInStopArea().getName(), "Molde Lufthavn", "Expected name of existing stop area to be updated by import data");
+				} else {
+					assertNotNull(stopPoint.getContainedInStopArea(), "Expected not existing stop area to have been created by import");
+				}
+			}
+		}
+
+		utx.rollback();
+	}
+
+	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")
+	public void verifyImportLineWithStopAreaImportModeCreateNew() throws Exception {
+		stopAreaDAO.truncate();
+		StopArea existingStopArea=createExistingStopArea();
+
+		importLine(StopAreaImportModeEnum.CREATE_NEW);
+
+		utx.begin();
+		em.joinTransaction();
+
+		Line line = lineDao.findByObjectId("AVI:Line:WF_TRD-MOL");
+		assertNotNull(line, "Line not found");
+
+		for (Route route : line.getRoutes()) {
+			for (StopPoint stopPoint : route.getStopPoints()) {
+				if (stopPoint.getObjectId().equals("AVI:StopPoint:1263628002")) {
+					assertEquals(stopPoint.getContainedInStopArea().getObjectId(), existingStopArea.getObjectId());
+					assertEquals(stopPoint.getContainedInStopArea().getName(), existingStopArea.getName(), "Expected name of existing stop area to be unchanged by import");
+				} else {
+					assertNotNull(stopPoint.getContainedInStopArea(), "Expected not existing stop area to have been created by import");
+				}
+			}
+		}
+
+		utx.rollback();
+	}
+
+	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")
+	public void verifyImportLineWithStopAreaImportModeReadOnly() throws Exception {
+		stopAreaDAO.truncate();
+		StopArea existingStopArea=createExistingStopArea();
+
+		importLine(StopAreaImportModeEnum.READ_ONLY);
+
+		utx.begin();
+		em.joinTransaction();
+
+		Line line = lineDao.findByObjectId("AVI:Line:WF_TRD-MOL");
+		assertNotNull(line, "Line not found");
+
+		for (Route route : line.getRoutes()) {
+			for (StopPoint stopPoint : route.getStopPoints()) {
+				if (stopPoint.getObjectId().equals("AVI:StopPoint:1263628002")) {
+					assertEquals(stopPoint.getContainedInStopArea().getObjectId(), existingStopArea.getObjectId(), "Expected existing stop area to be matched correctly");
+					assertEquals(stopPoint.getContainedInStopArea().getName(), existingStopArea.getName(), "Expected name of existing stop area to be unchanged by import");
+				} else if (stopPoint.getObjectId().equals("AVI:StopPoint:1869688101")) {
+					assertEquals(stopPoint.getContainedInStopArea().getObjectId(), existingStopArea.getObjectId(), "Expected existing stop area to be matched correctly");
+				} else {
+					assertNull(stopPoint.getContainedInStopArea(), "Did not expect stop areas to be created by import");
+				}
+			}
+		}
+
+		utx.rollback();
+	}
+
+	private StopArea createExistingStopArea(){
+		StopArea stopArea=new StopArea();
+		stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
+		stopArea.setObjectId("AVI:Quay:MOL");
+		stopArea.setName("Name for stop area referenced in C_NETEX_1.xml");
+		stopAreaDAO.create(stopArea);
+		return stopArea;
+	}
+
+	private void importLine(StopAreaImportModeEnum stopAreaImportMode) throws Exception {
 		Context context = initImportContext();
 		NetexTestUtils.copyFile("C_NETEX_1.xml");
 
@@ -165,7 +262,8 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
-		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
+
+		configuration.setStopAreaImportMode(stopAreaImportMode);
 
 		try {
 			command.execute(context);
@@ -194,14 +292,6 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		assertNotEquals(referential.getTimetables(), 0, "timetables");
 		assertNotEquals(referential.getSharedTimetables(), 0, "shared timetables");
-
-		utx.begin();
-		em.joinTransaction();
-
-		Line line = lineDao.findByObjectId("AVI:Line:WF_TRD-MOL");
-		assertNotNull(line, "Line not found");
-
-		utx.rollback();
 	}
 
 	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")

@@ -165,7 +165,7 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 			RegtoppStopParserCommand parser = (RegtoppStopParserCommand) CommandFactory.create(initialContext,
 					RegtoppStopParserCommand.class.getName());
 			chain.add(parser);
-			if (withDao && !parameters.isNoSave() && parameters.isImportStopPlaces()) {
+			if (withDao && !parameters.isNoSave() && parameters.getStopAreaImportMode().shouldCreateMissingStopAreas()) {
 
 				// register
 				Command register = CommandFactory.create(initialContext, StopAreaRegisterCommand.class.getName());

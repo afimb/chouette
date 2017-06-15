@@ -43,6 +43,7 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
+import mobi.chouette.model.type.StopAreaImportModeEnum;
 import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
 
@@ -87,18 +88,18 @@ public class LineRegisterCommand implements Command {
 		Referential cache = new Referential();
 		context.put(CACHE, cache);
 
-		AbstractImportParameter importParameter = (AbstractImportParameter) context.get(CONFIGURATION);
-
-		context.put(StopArea.READ_ONLY_MODE, !importParameter.isImportStopPlaces() && !importParameter.isUpdateStopPlaces());
-
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		// Use property based enabling of stop place updater, but allow disabling if property exist in context
 		Line newValue = referential.getLines().values().iterator().next();
-		
-		if(importParameter.isKeepObsoleteLines() || isLineValidInFuture(newValue)) {
+
+		AbstractImportParameter importParameter = (AbstractImportParameter) context.get(CONFIGURATION);
+		context.put(StopArea.IMPORT_MODE, importParameter.getStopAreaImportMode());
+		log.info("Importing line: " + newValue.getObjectId() + " with stop area import mode: " + importParameter.getStopAreaImportMode());
+
+		if (importParameter.isKeepObsoleteLines() || isLineValidInFuture(newValue)) {
 			boolean shouldUpdateStopPlaceRegistry =
-					Boolean.parseBoolean(System.getProperty(checker.getContext() + PropertyNames.STOP_PLACE_REGISTER_UPDATE)) && importParameter.isUpdateStopPlaces();
+					Boolean.parseBoolean(System.getProperty(checker.getContext() + PropertyNames.STOP_PLACE_REGISTER_UPDATE)) && importParameter.isUpdateExternalStopAreaRegistry();
 			if(shouldUpdateStopPlaceRegistry) {
 				stopPlaceRegisterUpdater.update(context, referential);
 			} else {
