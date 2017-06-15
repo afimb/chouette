@@ -61,6 +61,9 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	@EJB
 	private CodespaceDAO codespaceDao;
 
+	@EJB
+	private StopAreaDAO stopAreaDAO;
+
 	@PersistenceContext(unitName = "referential")
 	private EntityManager em;
 
@@ -313,7 +316,6 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
-
 		configuration.setStopAreaImportMode(stopAreaImportMode);
 
 		try {
