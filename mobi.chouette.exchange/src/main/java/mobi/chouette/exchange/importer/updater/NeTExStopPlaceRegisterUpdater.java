@@ -339,6 +339,7 @@ public class NeTExStopPlaceRegisterUpdater {
 
 		{
 			referential.getStopAreas().remove(obsoleteObjectId);
+			referential.getSharedStopAreas().remove(obsoleteObjectId);
 		}
 
 		for (
@@ -347,6 +348,7 @@ public class NeTExStopPlaceRegisterUpdater {
 
 		{
 			referential.getStopAreas().remove(sa.getObjectId());
+			referential.getSharedStopAreas().remove(sa.getObjectId());
 		}
 
 	}
