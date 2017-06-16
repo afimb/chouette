@@ -178,4 +178,8 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		em.clear();
 		
 	}
+
+	public void deleteById(Long id){
+		delete(find(id));
+	}
 }

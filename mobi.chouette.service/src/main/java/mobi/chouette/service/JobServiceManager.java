@@ -211,7 +211,7 @@ public class JobServiceManager {
 		Job job = jobService.getJob();
 		if (job != null && job.getId() != null) {
 			log.info("deleting bad job " + job.getId());
-			jobDAO.delete(job);
+			jobDAO.deleteById(job.getId());
 		}
 
 	}

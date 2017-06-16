@@ -10,12 +10,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import mobi.chouette.model.type.StopAreaImportModeEnum;
+
 import org.apache.log4j.Logger;
 
 @NoArgsConstructor
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "noSave", "cleanRepository", "updateStopPlaces", "importStopPlaces", "keepObsoleteLines" }, name = "actionImportParameter")
+@XmlType(propOrder = { "noSave", "cleanRepository", "updateExternalStopAreaRegistry", "stopAreaImportMode", "keepObsoleteLines" }, name = "actionImportParameter")
 public class AbstractImportParameter extends AbstractParameter {
 
 	@XmlElement(name = "no_save", defaultValue = "false")
@@ -32,18 +34,19 @@ public class AbstractImportParameter extends AbstractParameter {
 	 * Whether or not stop places from import files should be used to update remote stop area repository (NSR).
 	 *
 	 */
-	@XmlElement(name = "update_stop_places", defaultValue = "true")
+	@XmlElement(name = "update_external_stop_area_registry", defaultValue = "true")
 	@Getter
 	@Setter
-	private boolean updateStopPlaces = true;
+	private boolean updateExternalStopAreaRegistry = true;
 
 	/**
-	 * Whether or not stop places from import files should be imported to chouette stop area repository.
+	 * How stop areas in import file should be treated by chouette.
 	 */
-	@XmlElement(name = "import_stop_places", defaultValue = "true")
+	@XmlElement(name = "stop_area_import_mode", defaultValue = "true")
 	@Getter
 	@Setter
-	private boolean importStopPlaces = true;
+	private StopAreaImportModeEnum stopAreaImportMode = StopAreaImportModeEnum.CREATE_OR_UPDATE;
+
 	@XmlElement(name = "keep_obsolete_lines", defaultValue = "false")
 	@Getter
 	@Setter

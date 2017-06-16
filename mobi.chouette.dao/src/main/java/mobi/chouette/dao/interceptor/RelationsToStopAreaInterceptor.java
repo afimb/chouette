@@ -5,10 +5,13 @@ import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.type.StopAreaImportModeEnum;
+
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
 
 import javax.enterprise.inject.spi.CDI;
+
 import java.io.Serializable;
 
 /**
@@ -83,7 +86,7 @@ public class RelationsToStopAreaInterceptor extends EmptyInterceptor {
             StopPoint stopPoint = ((StopPoint) entity);
             StopArea stopArea = stopPoint.getContainedInStopArea();
             if (stopArea != null) {
-                if (stopArea.getId() == null && !stopArea.isDetached() && !stopArea.isReadOnly()) {
+                if (stopArea.getId() == null && !stopArea.isDetached() && stopArea.getImportMode().shouldCreateMissingStopAreas()) {
                     log.debug("Cascading persist of new stop area +" + stopArea.getObjectId() + "+ for created/updated stop point: " + stopPoint.getObjectId());
                     stopAreaDAO.create(stopArea);
                 }
