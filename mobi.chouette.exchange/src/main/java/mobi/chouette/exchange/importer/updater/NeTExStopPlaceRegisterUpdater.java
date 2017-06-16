@@ -340,12 +340,6 @@ public class NeTExStopPlaceRegisterUpdater {
 				for (StopPoint sp : r.getStopPoints()) {
 					updateStopArea(correlationId, stopPlaceRegisterMap, referential, discardedStopAreas, sp, "containedInStopArea");
 				}
-				for(JourneyPattern jp : r.getJourneyPatterns()) {
-					for (StopPoint sp : jp.getStopPoints()) {
-						updateStopArea(correlationId, stopPlaceRegisterMap, referential, discardedStopAreas, sp, "containedInStopArea");
-					}
-				}
-				
 			}
 		}
 		for (RouteSection rs : referential.getRouteSections().values()) {
