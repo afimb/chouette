@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import java.io.InputStream;
 
 @Log4j
@@ -34,6 +35,24 @@ public class RestNetexStopPlaceService {
             }
             log.info(Color.CYAN + "Create or update stop places");
             stopAreaService.createOrUpdateStopPlacesFromNetexStopPlaces(inputStream);
+            Response.ResponseBuilder builder = Response.ok();
+            builder.header(api_version_key, api_version);
+            return builder.build();
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw new WebApplicationException("INTERNAL_ERROR: " + ex.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DELETE
+    @Path("/{objectId}")
+    public Response createOrUpdateStops(@PathParam("objectId") String objectId) {
+        try {
+            if (existsActiveJobs()) {
+                return Response.status(423).entity("Cannot update stop area with active jobs").build();
+            }
+            log.info(Color.CYAN + "Deleting stop area " + objectId);
+            stopAreaService.deleteStopArea(objectId);
             Response.ResponseBuilder builder = Response.ok();
             builder.header(api_version_key, api_version);
             return builder.build();

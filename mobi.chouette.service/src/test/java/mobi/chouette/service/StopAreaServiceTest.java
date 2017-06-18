@@ -3,6 +3,7 @@ package mobi.chouette.service;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.testng.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -20,6 +21,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -46,13 +48,13 @@ public class StopAreaServiceTest extends Arquillian {
 
         EnterpriseArchive result;
         File[] files = Maven.resolver().loadPomFromFile("pom.xml").resolve("mobi.chouette:mobi.chouette.service")
-                               .withTransitivity().asFile();
+                .withTransitivity().asFile();
         List<File> jars = new ArrayList<>();
         List<JavaArchive> modules = new ArrayList<>();
         for (File file : files) {
             if (file.getName().startsWith("mobi.chouette.exchange")
-                        || file.getName().startsWith("mobi.chouette.service")
-                        || file.getName().startsWith("mobi.chouette.dao")) {
+                    || file.getName().startsWith("mobi.chouette.service")
+                    || file.getName().startsWith("mobi.chouette.dao")) {
                 String name = file.getName().split("\\-")[0] + ".jar";
                 JavaArchive archive = ShrinkWrap.create(ZipImporter.class, name).importFrom(file).as(JavaArchive.class);
                 modules.add(archive);
@@ -61,7 +63,7 @@ public class StopAreaServiceTest extends Arquillian {
             }
         }
         File[] filesDao = Maven.resolver().loadPomFromFile("pom.xml").resolve("mobi.chouette:mobi.chouette.dao")
-                                  .withTransitivity().asFile();
+                .withTransitivity().asFile();
         if (filesDao.length == 0) {
             throw new NullPointerException("no dao");
         }
@@ -79,13 +81,13 @@ public class StopAreaServiceTest extends Arquillian {
             }
         }
         final WebArchive testWar = ShrinkWrap.create(WebArchive.class, "test.war")
-                                           .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
-                                           .addAsWebInfResource("postgres-ds.xml").addClass(DummyChecker.class)
-                                           .addClass(StopAreaServiceTest.class);
+                .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
+                .addAsWebInfResource("postgres-ds.xml").addClass(DummyChecker.class)
+                .addClass(StopAreaServiceTest.class);
 
         result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear").addAsLibraries(jars.toArray(new File[0]))
-                         .addAsModules(modules.toArray(new JavaArchive[0])).addAsModule(testWar)
-                         .addAsResource(EmptyAsset.INSTANCE, "beans.xml");
+                .addAsModules(modules.toArray(new JavaArchive[0])).addAsModule(testWar)
+                .addAsResource(EmptyAsset.INSTANCE, "beans.xml");
         return result;
     }
 
@@ -126,6 +128,24 @@ public class StopAreaServiceTest extends Arquillian {
         em.joinTransaction();
         stopAreaService.createOrUpdateStopPlacesFromNetexStopPlaces(new FileInputStream("src/test/data/StopAreasUpdateMergedStops.xml"));
         utx.commit();
+    }
+
+    @Test
+    public void testDeleteStopAreaWithQuays() throws Exception {
+        String stopAreaId = "NSR:StopPlace:1";
+        utx.begin();
+        em.joinTransaction();
+
+        stopAreaService.createOrUpdateStopPlacesFromNetexStopPlaces(new FileInputStream("src/test/data/StopAreasInitialSynch.xml"));
+        assertStopPlace(stopAreaId, "NSR:Quay:1a", "NSR:Quay:1b");
+
+        stopAreaService.deleteStopArea(stopAreaId);
+
+        Assert.assertNull(stopAreaDAO.findByObjectId(stopAreaId));
+        Assert.assertNull(stopAreaDAO.findByObjectId("NSR:Quay:1a"),"Expected quay to have been cascade deleted");
+        Assert.assertNull(stopAreaDAO.findByObjectId("NSR:Quay:1b"),"Expected quay to have been cascade deleted");
+
+        utx.rollback();
     }
 
     private StopArea assertStopPlace(String stopPlaceId, String... quayIds) {

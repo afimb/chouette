@@ -42,6 +42,22 @@ public class StopAreaUpdateService {
         removedQuays.values().forEach(quay -> removeQuay(quay));
     }
 
+    @TransactionAttribute
+    public void deleteStopArea(String objectId) {
+        StopArea stopArea = stopAreaDAO.findByObjectId(objectId);
+        if (stopArea != null) {
+            cascadeDeleteStopArea(stopArea);
+        } else {
+            log.info("Ignored delete for unknown stop area: " + objectId);
+        }
+    }
+
+    private void cascadeDeleteStopArea(StopArea stopArea) {
+        stopArea.getContainedStopAreas().forEach(child -> cascadeDeleteStopArea(child));
+        stopAreaDAO.delete(stopArea);
+        log.info("Deleted stop area: " + stopArea.getObjectId());
+    }
+
     private void removeStopArea(String objectId, Map<String, StopArea> removedQuays) {
         log.info("Deleting obsolete StopArea (StopPlace) : " + objectId);
 
