@@ -2,10 +2,13 @@ package mobi.chouette.exchange.stopplace;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.dao.ReferentialDAO;
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.exchange.importer.updater.StopAreaUpdater;
 import mobi.chouette.exchange.importer.updater.Updater;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -31,8 +34,14 @@ public class StopAreaUpdateService {
     @EJB(beanName = StopAreaUpdater.BEAN_NAME)
     private Updater<StopArea> stopAreaUpdater;
 
+    @EJB
+    private ReferentialDAO referentialDAO;
+
+    @EJB
+    private StopPointDAO stopPointDAO;
+
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void createOrUpdateStopAreas(Context context, Set<StopArea> createdOrUpdatedStopAreas, Set<String> removedStopAreas) {
+    public void createOrUpdateStopAreas(Context context, Set<StopArea> createdOrUpdatedStopAreas, Set<String> removedStopAreas, Map<String, String> mergedQuays) {
 
         Map<String, StopArea> removedQuays = new HashMap<>();
 
@@ -40,6 +49,7 @@ public class StopAreaUpdateService {
         createdOrUpdatedStopAreas.forEach(sa -> createOrUpdate(context, sa, removedQuays));
 
         removedQuays.values().forEach(quay -> removeQuay(quay));
+        mergedQuays.forEach((oldStopAreaId, newStopAreaId) -> updateStopAreaReference(oldStopAreaId, newStopAreaId));
     }
 
     @TransactionAttribute
@@ -49,6 +59,18 @@ public class StopAreaUpdateService {
             cascadeDeleteStopArea(stopArea);
         } else {
             log.info("Ignored delete for unknown stop area: " + objectId);
+        }
+    }
+
+    private void updateStopAreaReference(String oldStopAreaId, String newStopAreaId) {
+        String orgContext = ContextHolder.getContext();
+        try {
+            for (String referential : referentialDAO.getReferentials()) {
+                ContextHolder.setContext(referential);
+                stopPointDAO.replaceContainedInStopAreaReference(oldStopAreaId, newStopAreaId);
+            }
+        } finally {
+            ContextHolder.setContext(orgContext); // reset context
         }
     }
 

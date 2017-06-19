@@ -1,8 +1,11 @@
 package mobi.chouette.service;
 
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.testng.Arquillian;
@@ -35,6 +38,10 @@ public class StopAreaServiceTest extends Arquillian {
 
     @EJB
     StopAreaDAO stopAreaDAO;
+
+    @EJB
+    StopPointDAO stopPointDAO;
+
 
     @PersistenceContext(unitName = "public")
     private EntityManager em;
@@ -123,11 +130,26 @@ public class StopAreaServiceTest extends Arquillian {
         Assert.assertNull(stopAreaDAO.findByObjectId("NSR:Quay:2a"), "Did not expect to find removed quay");
         assertStopPlace("NSR:StopPlace:3");
 
+
+        // Create stop point contained in quay 5, later to be merged into quay 6.
+        ContextHolder.setContext("chouette_gui");
+        stopPointDAO.truncate();
+        StopPoint spToHaveStopAreaRefReplaced = createStopPoint("XXX:StopPoint:1", stopAreaDAO.findByObjectId("NSR:Quay:5"));
+
         utx.commit();
         utx.begin();
         em.joinTransaction();
         stopAreaService.createOrUpdateStopPlacesFromNetexStopPlaces(new FileInputStream("src/test/data/StopAreasUpdateMergedStops.xml"));
+
+
+        // Quay 5 merged with quay 6
+        Assert.assertNull(stopAreaDAO.findByObjectId("NSR:Quay:5"), "Did not expect to find quay merged into another quay");
+        assertStopPlace("NSR:StopPlace:6", "NSR:Quay:6");
         utx.commit();
+
+        StopPoint spWithReplacedStopAreaRef = stopPointDAO.findByObjectId(spToHaveStopAreaRefReplaced.getObjectId());
+        Assert.assertEquals(spWithReplacedStopAreaRef.getContainedInStopArea().getObjectId(), "NSR:Quay:6", "Expected stop point to updated when quays have been merged.");
+
     }
 
     @Test
@@ -142,8 +164,8 @@ public class StopAreaServiceTest extends Arquillian {
         stopAreaService.deleteStopArea(stopAreaId);
 
         Assert.assertNull(stopAreaDAO.findByObjectId(stopAreaId));
-        Assert.assertNull(stopAreaDAO.findByObjectId("NSR:Quay:1a"),"Expected quay to have been cascade deleted");
-        Assert.assertNull(stopAreaDAO.findByObjectId("NSR:Quay:1b"),"Expected quay to have been cascade deleted");
+        Assert.assertNull(stopAreaDAO.findByObjectId("NSR:Quay:1a"), "Expected quay to have been cascade deleted");
+        Assert.assertNull(stopAreaDAO.findByObjectId("NSR:Quay:1b"), "Expected quay to have been cascade deleted");
 
         utx.rollback();
     }
@@ -162,5 +184,14 @@ public class StopAreaServiceTest extends Arquillian {
 
         return stopPlace;
     }
+
+    private StopPoint createStopPoint(String id, StopArea stopArea) {
+        StopPoint sp = new StopPoint();
+        sp.setObjectId(id);
+        sp.setContainedInStopArea(stopArea);
+        stopPointDAO.create(sp);
+        return sp;
+    }
+
 
 }

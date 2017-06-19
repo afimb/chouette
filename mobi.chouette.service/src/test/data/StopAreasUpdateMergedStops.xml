@@ -12,26 +12,6 @@
                     </ValidBetween>
                     <keyList>
                         <KeyValue>
-                            <Key>jbvCode</Key>
-                            <Value>HSS</Value>
-                        </KeyValue>
-                        <KeyValue>
-                            <Key>uicCode</Key>
-                            <Value>7600729</Value>
-                        </KeyValue>
-                        <KeyValue>
-                            <Key>grailsId</Key>
-                            <Value>290</Value>
-                        </KeyValue>
-                        <KeyValue>
-                            <Key>iffCode</Key>
-                            <Value>7600729</Value>
-                        </KeyValue>
-                        <KeyValue>
-                            <Key>lisaId</Key>
-                            <Value>729</Value>
-                        </KeyValue>
-                        <KeyValue>
                             <Key>imported-id</Key>
                             <Value>NRI:StopPlace:761019147,NSB:StopPlace:07600729,NSB:StopPlace:007600729,FLT:StopPlace:7600729</Value>
                         </KeyValue>
@@ -92,26 +72,6 @@
                     </ValidBetween>
                     <keyList>
                         <KeyValue>
-                            <Key>jbvCode</Key>
-                            <Value>VAR</Value>
-                        </KeyValue>
-                        <KeyValue>
-                            <Key>uicCode</Key>
-                            <Value>7610607</Value>
-                        </KeyValue>
-                        <KeyValue>
-                            <Key>grailsId</Key>
-                            <Value>772</Value>
-                        </KeyValue>
-                        <KeyValue>
-                            <Key>iffCode</Key>
-                            <Value>760607A</Value>
-                        </KeyValue>
-                        <KeyValue>
-                            <Key>lisaId</Key>
-                            <Value>0607A</Value>
-                        </KeyValue>
-                        <KeyValue>
                             <Key>imported-id</Key>
                             <Value>FLT:StopPlace:7610607,NRI:StopPlace:761008129,NSB:StopPlace:07610607,NSB:StopPlace:007610607</Value>
                         </KeyValue>
@@ -166,6 +126,98 @@
                         </Quay>
                     </quays>
                 </StopPlace>
+
+
+                <StopPlace created="2017-05-02T13:07:03.765+02:00" modification="new" version="1" id="NSR:StopPlace:5">
+                    <ValidBetween>
+                        <FromDate>2017-05-02T15:07:03.765+02:00</FromDate>
+                        <ToDate>2017-05-02T15:07:03.765+02:00</ToDate>
+                    </ValidBetween>
+                    <keyList>
+                        <KeyValue>
+                            <Key>imported-id</Key>
+                            <Value>SKY:Quay:12348413-generated</Value>
+                        </KeyValue>
+                    </keyList>
+                    <Name lang="nb">Vassenden</Name>
+                    <Centroid>
+                        <Location>
+                            <Longitude>6.699178</Longitude>
+                            <Latitude>60.571918</Latitude>
+                        </Location>
+                    </Centroid>
+                    <AccessibilityAssessment modification="new" version="1" id="NSR:AccessibilityAssessment:10089">
+                        <MobilityImpairedAccess>unknown</MobilityImpairedAccess>
+                        <limitations>
+                            <AccessibilityLimitation modification="new" version="1">
+                                <WheelchairAccess>unknown</WheelchairAccess>
+                                <StepFreeAccess>unknown</StepFreeAccess>
+                            </AccessibilityLimitation>
+                        </limitations>
+                    </AccessibilityAssessment>
+                    <AccessModes></AccessModes>
+                    <OtherTransportModes></OtherTransportModes>
+                    <StopPlaceType>busStation</StopPlaceType>
+                    <quays>
+                    </quays>
+                </StopPlace>
+
+                <StopPlace created="2017-05-02T13:07:03.765+02:00" modification="new" version="1" id="NSR:StopPlace:6">
+                    <ValidBetween>
+                        <FromDate>2017-05-02T15:07:03.765+02:00</FromDate>
+                    </ValidBetween>
+                    <keyList>
+                        <KeyValue>
+                            <Key>imported-id</Key>
+                            <Value>SKY:Quay:12348413-generated</Value>
+                        </KeyValue>
+                    </keyList>
+                    <Name lang="nb">Vassenden</Name>
+                    <Centroid>
+                        <Location>
+                            <Longitude>6.699178</Longitude>
+                            <Latitude>60.571918</Latitude>
+                        </Location>
+                    </Centroid>
+                    <AccessibilityAssessment modification="new" version="1" id="NSR:AccessibilityAssessment:10089">
+                        <MobilityImpairedAccess>unknown</MobilityImpairedAccess>
+                        <limitations>
+                            <AccessibilityLimitation modification="new" version="1">
+                                <WheelchairAccess>unknown</WheelchairAccess>
+                                <StepFreeAccess>unknown</StepFreeAccess>
+                            </AccessibilityLimitation>
+                        </limitations>
+                    </AccessibilityAssessment>
+                    <AccessModes></AccessModes>
+                    <OtherTransportModes></OtherTransportModes>
+                    <StopPlaceType>busStation</StopPlaceType>
+                    <quays>
+                        <Quay modification="new" version="2" id="NSR:Quay:6">
+                            <keyList>
+                                <KeyValue>
+                                    <Key>imported-id</Key>
+                                    <Value>SKY:Quay:12348414</Value>
+                                </KeyValue>
+                                <KeyValue>
+                                    <Key>merged-id</Key>
+                                    <Value>NSR:Quay:5</Value>
+                                </KeyValue>
+                            </keyList>
+                            <Centroid>
+                                <Location>
+                                    <Longitude>6.699334</Longitude>
+                                    <Latitude>60.571903</Latitude>
+                                </Location>
+                            </Centroid>
+                            <AccessModes></AccessModes>
+                            <OtherTransportModes></OtherTransportModes>
+                            <PublicCode>4</PublicCode>
+                        </Quay>
+                    </quays>
+                </StopPlace>
+
+
+
             </stopPlaces>
         </SiteFrame>
     </dataObjects>
