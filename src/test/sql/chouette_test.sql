@@ -734,7 +734,7 @@ ALTER SEQUENCE pt_links_id_seq OWNED BY pt_links.id;
 -- Name: referentials; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
-CREATE TABLE referentials (
+CREATE TABLE public.referentials (
     id bigint NOT NULL,
     name character varying(255),
     slug character varying(255),
@@ -751,6 +751,7 @@ CREATE TABLE referentials (
     data_format character varying(255)
 );
 
+insert into public.referentials (id,name,slug) values (1,'Test referential','chouette_gui');
 
 --
 -- TOC entry 376 (class 1259 OID 942335)

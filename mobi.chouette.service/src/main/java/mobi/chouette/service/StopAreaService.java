@@ -38,7 +38,7 @@ public class StopAreaService {
         if (changedStopCnt > 0) {
             log.info("Updating " + changedStopCnt + " stop areas");
             Context context = createContext();
-            stopAreaUpdateService.createOrUpdateStopAreas(context, parser.getActiveStopAreas(), parser.getInactiveStopAreaIds());
+            stopAreaUpdateService.createOrUpdateStopAreas(context, parser.getActiveStopAreas(), parser.getInactiveStopAreaIds(), parser.getMergedQuays());
         } else {
             log.debug("Received update without any stop areas. Doing nothing");
         }

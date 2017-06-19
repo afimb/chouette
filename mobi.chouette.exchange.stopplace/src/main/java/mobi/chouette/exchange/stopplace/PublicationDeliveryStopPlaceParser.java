@@ -3,7 +3,10 @@ package mobi.chouette.exchange.stopplace;
 import java.io.InputStream;
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,6 +28,7 @@ import mobi.chouette.model.util.Referential;
 import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.Common_VersionFrameStructure;
 import org.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.rutebanken.netex.model.Quay;
 import org.rutebanken.netex.model.Site_VersionFrameStructure;
 import org.rutebanken.netex.model.StopPlace;
 
@@ -34,12 +38,14 @@ import static mobi.chouette.exchange.netexprofile.Constant.NETEX_LINE_DATA_CONTE
 @Log4j
 public class PublicationDeliveryStopPlaceParser {
 
-
+    private static final String MERGED_ID_KEY = "merged-id";
+    private static final String MERGED_ID_VALUE_SEPARATOR = ",";
     private InputStream inputStream;
     private Instant now;
 
     private Set<String> inactiveStopAreaIds = new HashSet<>();
     private Set<StopArea> activeStopAreas;
+    private Map<String, String> mergedQuays = new HashMap<>();
 
     public PublicationDeliveryStopPlaceParser(InputStream inputStream) {
         this.inputStream = inputStream;
@@ -73,7 +79,7 @@ public class PublicationDeliveryStopPlaceParser {
 
                 if (siteFrame.getStopPlaces() != null) {
 
-                    if (siteFrame.getTariffZones()!=null) {
+                    if (siteFrame.getTariffZones() != null) {
                         context.put(NETEX_LINE_DATA_CONTEXT, siteFrame.getTariffZones());
                         stopPlaceParser.parse(context);
                     }
@@ -87,6 +93,8 @@ public class PublicationDeliveryStopPlaceParser {
                         if (!isActive(stopPlace, now)) {
                             inactiveStopAreaIds.add(stopPlace.getId());
                             referential.getStopAreas().remove(stopPlace.getId());
+                        } else {
+                            stopPlace.getQuays().getQuayRefOrQuay().forEach(quay -> collectMergedIdForQuay(quay));
                         }
 
                     }
@@ -96,6 +104,17 @@ public class PublicationDeliveryStopPlaceParser {
         }
 
         activeStopAreas = referential.getStopAreas().values().stream().filter(sa -> ChouetteAreaEnum.CommercialStopPoint.equals(sa.getAreaType())).collect(Collectors.toSet());
+    }
+
+    private void collectMergedIdForQuay(Object quayObj) {
+        if (quayObj instanceof Quay) {
+            Quay quay = (Quay) quayObj;
+            quay.getKeyList().getKeyValue().stream().filter(kv -> MERGED_ID_KEY.equals(kv.getKey())).forEach(kv -> addMergedIds(quay.getId(), kv.getValue()));
+        }
+    }
+
+    private void addMergedIds(String mergedToId, String mergedFromIds) {
+        Arrays.asList(mergedFromIds.split(MERGED_ID_VALUE_SEPARATOR)).forEach(mergedFromId -> mergedQuays.put(mergedFromId, mergedToId));
     }
 
     private boolean isActive(StopPlace stopPlace, Instant atTime) {
@@ -124,5 +143,9 @@ public class PublicationDeliveryStopPlaceParser {
 
     public Set<StopArea> getActiveStopAreas() {
         return activeStopAreas;
+    }
+
+    public Map<String, String> getMergedQuays() {
+        return mergedQuays;
     }
 }

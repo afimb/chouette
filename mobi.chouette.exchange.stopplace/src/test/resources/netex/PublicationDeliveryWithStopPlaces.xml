@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<PublicationDelivery xmlns="http://www.netex.org.uk/netex" xmlns:ns2="http://www.opengis.net/gml/3.2" xmlns:ns3="http://www.siri.org.uk/siri" version="any">
+<PublicationDelivery xmlns="http://www.netex.org.uk/netex" xmlns:ns2="http://www.opengis.net/gml/3.2"
+                     xmlns:ns3="http://www.siri.org.uk/siri" version="any">
     <PublicationTimestamp>2017-05-03T11:13:15.276+02:00</PublicationTimestamp>
     <ParticipantRef>NSR</ParticipantRef>
     <dataObjects>
         <SiteFrame created="2017-05-03T11:13:14.98+02:00" modification="new" version="1" id="NSR:SiteFrame:843072316">
             <stopPlaces modificationSet="all">
-                <StopPlace created="2017-05-02T13:07:03.764+02:00" modification="new" version="2" id="NSR:StopPlace:51566">
+                <StopPlace created="2017-05-02T13:07:03.764+02:00" modification="new" version="2"
+                           id="NSR:StopPlace:51566">
                     <ValidBetween>
                         <FromDate>2017-05-02T13:07:03.764+02:00</FromDate>
                     </ValidBetween>
@@ -71,7 +73,8 @@
                         </Quay>
                     </quays>
                 </StopPlace>
-                <StopPlace created="2017-05-02T13:07:03.765+02:00" modification="new" version="1" id="NSR:StopPlace:10089">
+                <StopPlace created="2017-05-02T13:07:03.765+02:00" modification="new" version="1"
+                           id="NSR:StopPlace:10089">
                     <ValidBetween>
                         <FromDate>2017-05-02T13:07:03.765+02:00</FromDate>
                         <ToDate>2017-05-15T13:07:03.765+02:00</ToDate>
@@ -138,6 +141,84 @@
                         </Quay>
                     </quays>
                 </StopPlace>
+
+
+                <StopPlace created="2017-05-02T13:07:03.765+02:00" modification="new" version="1"
+                           id="NSR:StopPlace:11001">
+                    <ValidBetween>
+                        <FromDate>2017-05-02T13:07:03.765+02:00</FromDate>
+                    </ValidBetween>
+                    <keyList>
+                        <KeyValue>
+                            <Key>imported-id</Key>
+                            <Value>SKY:Quay:12348413-generated</Value>
+                        </KeyValue>
+                    </keyList>
+                    <Name lang="nb">Vassenden</Name>
+                    <Centroid>
+                        <Location>
+                            <Longitude>6.699178</Longitude>
+                            <Latitude>60.571918</Latitude>
+                        </Location>
+                    </Centroid>
+                    <AccessibilityAssessment modification="new" version="1" id="NSR:AccessibilityAssessment:10089">
+                        <MobilityImpairedAccess>unknown</MobilityImpairedAccess>
+                        <limitations>
+                            <AccessibilityLimitation modification="new" version="1">
+                                <WheelchairAccess>unknown</WheelchairAccess>
+                                <StepFreeAccess>unknown</StepFreeAccess>
+                            </AccessibilityLimitation>
+                        </limitations>
+                    </AccessibilityAssessment>
+                    <AccessModes></AccessModes>
+                    <OtherTransportModes></OtherTransportModes>
+                    <StopPlaceType>busStation</StopPlaceType>
+                    <quays>
+                        <Quay modification="new" version="2" id="NSR:Quay:11001a">
+                            <keyList>
+                                <KeyValue>
+                                    <Key>imported-id</Key>
+                                    <Value>SKY:Quay:12348413</Value>
+                                </KeyValue>
+                                <KeyValue>
+                                    <Key>merged-id</Key>
+                                    <Value>NSR:Quay:11002,NSR:Quay:11003</Value>
+                                </KeyValue>
+                            </keyList>
+                            <Centroid>
+                                <Location>
+                                    <Longitude>6.699021</Longitude>
+                                    <Latitude>60.571934</Latitude>
+                                </Location>
+                            </Centroid>
+                            <AccessModes></AccessModes>
+                            <OtherTransportModes></OtherTransportModes>
+                            <PublicCode>3</PublicCode>
+                        </Quay>
+                        <Quay modification="new" version="2" id="NSR:Quay:11001b">
+                            <keyList>
+                                <KeyValue>
+                                    <Key>imported-id</Key>
+                                    <Value>SKY:Quay:12348413</Value>
+                                </KeyValue>
+                                <KeyValue>
+                                    <Key>merged-id</Key>
+                                    <Value>NSR:Quay:11004</Value>
+                                </KeyValue>
+                            </keyList>
+                            <Centroid>
+                                <Location>
+                                    <Longitude>6.699021</Longitude>
+                                    <Latitude>60.571934</Latitude>
+                                </Location>
+                            </Centroid>
+                            <AccessModes></AccessModes>
+                            <OtherTransportModes></OtherTransportModes>
+                            <PublicCode>3</PublicCode>
+                        </Quay>
+                    </quays>
+                </StopPlace>
+
             </stopPlaces>
         </SiteFrame>
     </dataObjects>
