@@ -213,8 +213,8 @@
 				  </sources> -->
 					<arguments>
 						<argument>-extension</argument>
-						<argument>-Xlocator</argument>
-						<!-- <argument>-b</argument>
+						<!-- <argument>-Xlocator</argument>
+						<argument>-b</argument>
 						<argument>src/main/xsd/bindings.xml</argument> -->
 					</arguments>
 				</configuration>

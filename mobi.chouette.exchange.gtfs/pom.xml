@@ -89,6 +89,7 @@
          <artifactId>mobi.chouette.exchange.neptune</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
+         <scope>test</scope>
       </dependency>
 
 	</dependencies>

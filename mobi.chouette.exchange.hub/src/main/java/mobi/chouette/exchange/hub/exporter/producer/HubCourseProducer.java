@@ -32,6 +32,8 @@ public class HubCourseProducer extends AbstractProducer {
 	}
 
 	private HubCourse hubObject = new HubCourse();
+	
+	private int compteur=1;
 
 	public boolean save(Context context,VehicleJourney neptuneObject, int pmrRenvoiId, int rank) {
 
@@ -66,9 +68,9 @@ public class HubCourseProducer extends AbstractProducer {
 			hubObject.getIdentifiantsRenvoi().add(Integer.decode(footnote.getKey()));
 		}
 
-		//hubObject.setIdentifiant(toInt(toHubId(neptuneObject)));
-		hubObject.setIdentifiant((vjas1.getId()).intValue());
-
+		// hubObject.setIdentifiant((vjas1.getId()).intValue());
+		hubObject.setIdentifiant(compteur++);
+		
 		try {
 			getExporter().getCourseExporter().export(hubObject);
 		} catch (IOException e) {
@@ -82,7 +84,8 @@ public class HubCourseProducer extends AbstractProducer {
 		hubObject.setHeure(toHubTime(vjas2.getArrivalTime()) + (86400 * vjas1.getArrivalDayOffset()));
 		hubObject.setType(HubCourse.TYPE_ARRIVEE);
 		hubObject.setIdentifiantArret(toInt(vjas2.getStopPoint().getContainedInStopArea().getRegistrationNumber()));
-		hubObject.setIdentifiant((vjas2.getId()).intValue());
+		hubObject.setIdentifiant(compteur++);
+		// hubObject.setIdentifiant((vjas2.getId()).intValue());
 		try {
 			getExporter().getCourseExporter().export(hubObject);
 		} catch (IOException e) {
