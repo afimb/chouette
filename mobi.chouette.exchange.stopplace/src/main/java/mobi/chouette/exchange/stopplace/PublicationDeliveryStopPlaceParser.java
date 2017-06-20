@@ -93,7 +93,7 @@ public class PublicationDeliveryStopPlaceParser {
                         if (!isActive(stopPlace, now)) {
                             inactiveStopAreaIds.add(stopPlace.getId());
                             referential.getStopAreas().remove(stopPlace.getId());
-                        } else {
+                        } else if (stopPlace.getQuays() != null && !CollectionUtils.isEmpty(stopPlace.getQuays().getQuayRefOrQuay())) {
                             stopPlace.getQuays().getQuayRefOrQuay().forEach(quay -> collectMergedIdForQuay(quay));
                         }
 
