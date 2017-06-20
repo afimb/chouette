@@ -16,11 +16,9 @@ import java.util.TimeZone;
 import java.util.zip.Adler32;
 import java.util.zip.Checksum;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
@@ -554,10 +552,10 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 				vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
 			}
-			// check if VJ is all on demand
+			// check if VJ is all on demand (flexible service)
 			ajustOnDemand(vehicleJourney);
 
-			// Si l'itinéraire présente un tracé
+			// if route with shape
 			if (gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty()
 					&& importer.getShapeById().containsKey(gtfsTrip.getShapeId())) {
 				Collections.sort(vehicleJourney.getVehicleJourneyAtStops(), VEHICLE_JOURNEY_AT_STOP_SHAPE_COMPARATOR);
@@ -588,16 +586,16 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			else
 				lstShapeVjas.clear();
 
-			// Si l'itinéraire présente un tracé
+			// if route with shape
 			if (gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty()
 					&& importer.getShapeById().containsKey(gtfsTrip.getShapeId())) {
 				for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney.getVehicleJourneyAtStops()) {
 					float shapeValue = ((VehicleJourneyAtStopWrapper) vehicleJourneyAtStop).shapeDistTraveled;
 					if (Float.valueOf(shapeValue) != null) {
-						// Ajout des points ayant une position sur un tracé
+						// add point with shape position 
 						lstShapeVjas.add(vehicleJourneyAtStop);
 					} else {
-						// Pb sur un point non placé (retiré)
+						// problem on point without shape position
 						vehicleJourneyAtStop.setVehicleJourney(null);
 					}
 				}
@@ -618,7 +616,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 			int length = journeyPattern.getStopPoints().size();
 
-			// Si l'itinéraire présente un tracé
+			// if route with shape
 			if (gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty()
 					&& importer.getShapeById().containsKey(gtfsTrip.getShapeId())) {
 				for (int i = 0; i < length; i++) {
@@ -642,33 +640,30 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		// dispose collections
 		journeyPatternByStopSequence.clear();
 
-		// Faire un parcours matriciel de la liste ordonnée
-		// Fusion des routes n'ayant pas de tracé
+		// merge routes without shapes
 		mergeRoutes(referential, lstNotShapedRoute);
 		lstNotShapedRoute.clear();
 
-		// fusion des routes avec tracé
+		// merge routes with shapes
 		for (List<Route> routes : mapRoutesByShapes.values()) {
 			mergeRoutes(referential, routes);
 			routes.clear();
 		}
 		mapRoutesByShapes.clear();
 
-		// log.warn("Debut TAD GTFS");
+		// Check if line has all trips as flexible service
 		int cptVjTad = 0;
 		for (VehicleJourney vj : referential.getVehicleJourneys().values()) {
 			if (vj.getFlexibleService() != null && vj.getFlexibleService())
 				cptVjTad++;
 		}
-		// Parcours des courses pour affection ou non de la tad à la ligne
+		// if all trips as flexible service : set flag on line and remove it on trips
 		if (cptVjTad == referential.getVehicleJourneys().size()) {
-			Line line = referential.getLines().get(0);
-
-			if (line != null) {
+			if (referential.getLines().size() > 0) {
+				Line line = referential.getLines().values().iterator().next();
 				line.setFlexibleService(true);
-				// log.warn(" Ligne à TAD : " + line.getObjectId());
 				for (VehicleJourney vj : referential.getVehicleJourneys().values())
-					vj.setFlexibleService(false);
+					vj.setFlexibleService(null);
 			}
 		}
 
@@ -697,7 +692,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		List<Route> rToBeRemoved = new ArrayList<>();
 		for (Route route : referential.getRoutes().values()) {
 			if (route.getJourneyPatterns().isEmpty()) {
-				// log.info(" route vide : " + route.getObjectId());
 				rToBeRemoved.add(route);
 			}
 		}
@@ -707,11 +701,10 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		}
 		lstShapeVjas.clear();
 
-		// log.warn("Fin TAD GTFS");
 	}
 
 	private void mergeRoutes(Referential referential, List<Route> routeList) {
-		// Ordonner les routes par taille de stopPoint list décroissante
+		// Sort routes by stopPointCount desc 
 		orderRouteListByStopPointListSize(routeList);
 
 		for (int i = 0; i < routeList.size(); i++) {
@@ -858,19 +851,19 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	 * @param lstGtfsStopTime
 	 * @return
 	 */
-	private GtfsStopTime getGtfsStopTimeFromStopPoint(StopPoint sp, Route route, Context context) {
-		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
-		Index<GtfsTrip> gtfsTrips = importer.getTripByRoute();
-
-		for (GtfsTrip gtfsTrip : gtfsTrips.values(route.getObjectId())) {
-			for (GtfsStopTime gtfsStopTime : importer.getStopTimeByTrip().values(gtfsTrip.getTripId())) {
-				if (gtfsStopTime.getStopId().equals(sp.getObjectId()))
-					return gtfsStopTime;
-			}
-		}
-
-		return null;
-	}
+//	private GtfsStopTime getGtfsStopTimeFromStopPoint(StopPoint sp, Route route, Context context) {
+//		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
+//		Index<GtfsTrip> gtfsTrips = importer.getTripByRoute();
+//
+//		for (GtfsTrip gtfsTrip : gtfsTrips.values(route.getObjectId())) {
+//			for (GtfsStopTime gtfsStopTime : importer.getStopTimeByTrip().values(gtfsTrip.getTripId())) {
+//				if (gtfsStopTime.getStopId().equals(sp.getObjectId()))
+//					return gtfsStopTime;
+//			}
+//		}
+//
+//		return null;
+//	}
 
 	/**
 	 * @param context
@@ -988,7 +981,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 		}
 
-		// Si la course ne présente pas de tracé
+		// trip without shape ? 
 		if (gtfsTrip.getShapeId() == null || gtfsTrip.getShapeId().isEmpty()) {
 			lstNotShapedRoute.add(route);
 		} else {
@@ -1382,36 +1375,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		return AlightingPossibilityEnum.normal;
 	}
 
-	/**
-	 * @author michel
-	 * 
-	 */
-	@AllArgsConstructor
-	class VehicleJourneyAtStopWrapper extends VehicleJourneyAtStop {
-
-		private static final long serialVersionUID = 5052093726657799027L;
-		String stopId;
-		int stopSequence;
-		Float shapeDistTraveled;
-		BoardingPossibilityEnum pickUpType = BoardingPossibilityEnum.normal;
-		AlightingPossibilityEnum dropOffType = AlightingPossibilityEnum.normal;
-
-		public void setBoardingPossibilityEnum(BoardingPossibilityEnum pickUpType) {
-			this.pickUpType = pickUpType;
-		}
-
-		public void setAlightingPossibilityEnum(AlightingPossibilityEnum dropOffType) {
-			this.dropOffType = dropOffType;
-		}
-
-	}
-
-	class VehicleJourneyWrapper extends VehicleJourney {
-		private static final long serialVersionUID = -2001837138013440802L;
-		String shapeId;
-
-	}
-
 	public static final Comparator<VehicleJourneyAtStop> VEHICLE_JOURNEY_AT_STOP_COMPARATOR = new Comparator<VehicleJourneyAtStop>() {
 		@Override
 		public int compare(VehicleJourneyAtStop right, VehicleJourneyAtStop left) {
@@ -1433,17 +1396,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			value = Math.round(rightIndexF - leftIndexF);
 
 			return value;
-		}
-	};
-
-	class OrderedCoordinate extends Coordinate {
-		private static final long serialVersionUID = 1L;
-		public int order;
-
-		public OrderedCoordinate(double x, double y, Integer order) {
-			this.x = x;
-			this.y = y;
-			this.order = order.intValue();
 		}
 	};
 
