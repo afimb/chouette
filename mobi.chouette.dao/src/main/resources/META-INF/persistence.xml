@@ -22,7 +22,7 @@
 			<property name="javax.persistence.validation.mode" value="none" />
 			<property name="hibernate.hbm2ddl.auto" value="update" />
 			<property name="hibernate.default_schema" value="public" />
-         <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+         <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect" />
 		</properties>
 		
 		

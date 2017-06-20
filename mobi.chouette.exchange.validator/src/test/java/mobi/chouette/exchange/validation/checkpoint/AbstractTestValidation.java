@@ -269,7 +269,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 	}
 	
 	protected void createRouteSection(Line line) {
-		GeometryFactory factory = new GeometryFactory(new PrecisionModel(10), 4326);
+		GeometryFactory factory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326);
 		int cpt = 0;
 		
 		for(Route r: line.getRoutes()) {

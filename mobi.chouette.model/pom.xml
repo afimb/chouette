@@ -92,12 +92,12 @@
 			<artifactId>hibernate-entitymanager</artifactId>
 			<scope>provided</scope>
 		</dependency>
-      <dependency>
+<!--       <dependency>
          <groupId>net.postgis</groupId>
          <artifactId>postgis-jdbc</artifactId>
          <scope>provided</scope>
       </dependency>
-      <dependency>
+ -->      <dependency>
          <groupId>org.geotools</groupId>
          <artifactId>gt-jts-wrapper</artifactId>
       </dependency>

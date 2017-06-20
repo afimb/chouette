@@ -341,7 +341,6 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 
 		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.OK, " checkPointReport must be ok");
 		
-		
 		rs.getDeparture().setLatitude(BigDecimal.valueOf(plotFirstLat));
 		rs.getArrival().setLatitude(BigDecimal.valueOf(plotLastLat + 0.0003));
 		
