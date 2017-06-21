@@ -123,16 +123,22 @@ public class HibernateDeproxynator<T> {
 				valueMap.clear();
 				valueMap.putAll(result);
 			} else if (ret instanceof List) {
-				List valueList = (List) ret;
-				for (int i = 0; i < valueList.size(); i++) {
-					T proxY=deepDeproxy(valueList.get(i), visited, moreObjectsToFollow);
-					if (i>=valueList.size()){
-					log.warn("Would have outbounded array: " + proxY + " for " + maybeProxy);
-					} else {
-						valueList.set(i, proxY);
-					}
-				}
-			}
+                List valueList = (List) ret;
+                // Deep de-proxying of entities in collection may alter the order of the collection it self because of
+				// back-references. Working on copies and replacing org collection afterwards
+                List orgList = new ArrayList(valueList);
+                List deProxiedValues = new ArrayList(valueList.size());
+                for (int i = 0; i < orgList.size(); i++) {
+                    T proxY = deepDeproxy(orgList.get(i), visited, moreObjectsToFollow);
+                    if (i >= orgList.size()) {
+                        log.warn("Would have outbounded array: " + proxY + " for " + maybeProxy);
+                    } else {
+                        deProxiedValues.add(proxY);
+                    }
+                }
+                valueList.clear();
+                valueList.addAll(deProxiedValues);
+            }
 		} else {
 
 			for (PropertyDescriptor property : PropertyUtils.getPropertyDescriptors(ret)) {
