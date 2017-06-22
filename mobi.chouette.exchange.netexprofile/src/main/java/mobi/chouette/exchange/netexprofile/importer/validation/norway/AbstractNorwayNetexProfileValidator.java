@@ -15,7 +15,8 @@ import java.util.*;
 
 public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexProfileValidator {
 
-	public static final String PROFILE_ID_1 = "1.04:NO-NeTEx-networktimetable:1.0";;
+	public static final String PROFILE_ID_1 = "1.04:NO-NeTEx-networktimetable:1.0";
+	public static final String PROFILE_ID_1_1 = "1.04:NO-NeTEx-networktimetable:1.1";
 
 	public static final String NSR_XMLNSURL = "http://www.rutebanken.org/ns/nsr";
 	public static final String NSR_XMLNS = "NSR";
@@ -213,7 +214,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	}
 
 	public Collection<String> getSupportedProfiles() {
-		return Arrays.asList(new String[] { PROFILE_ID_1 });
+		return Arrays.asList(new String[] { PROFILE_ID_1,PROFILE_ID_1_1 });
 	}
 
 	protected void verifyReferencesToCorrectEntityTypes(Context context, Set<IdVersion> localRefs) {
