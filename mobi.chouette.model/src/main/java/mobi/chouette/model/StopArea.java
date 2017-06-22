@@ -143,6 +143,45 @@ public class StopArea extends NeptuneLocalizedObject {
 	private ChouetteAreaEnum areaType;
 
 	/**
+	 * stop area type
+	 *
+	 * @param stopAreaType
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@Enumerated(EnumType.STRING)
+	@Column(name = "stop_place_type", nullable = false)
+	private StopAreaTypeEnum stopAreaType;
+
+	/**
+	 * Transport mode
+	 *
+	 * @param transportModeName
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@Enumerated(EnumType.STRING)
+	@Column(name = "transport_mode")
+	private TransportModeNameEnum transportModeName;
+
+	/**
+	 * Transport sub mode
+	 *
+	 * @param transportSubMode
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@Enumerated(EnumType.STRING)
+	@Column(name = "transport_sub_mode")
+	private TransportSubModeEnum transportSubMode;
+
+	/**
 	 * registration number
 	 * 
 	 * @return The actual value
@@ -289,12 +328,12 @@ public class StopArea extends NeptuneLocalizedObject {
 
 	/**
 	 * general compass bearing of traffic to stoparea
-	 * 
 	 *
-	 * 
+	 *
+	 *
 	 * @param compassBearing in degrees from 1 to 360
-	 *           
-	
+	 *
+
 	 */
 	@Getter
 	@Setter

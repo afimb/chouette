@@ -1,5 +1,10 @@
 package mobi.chouette.exchange.validation.checkpoint;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.index.quadtree.Quadtree;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -16,6 +21,10 @@ import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.model.type.TransportSubModeEnum;
+
+import java.util.*;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
@@ -57,9 +66,13 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 		initCheckPoint(context, STOP_AREA_3, SEVERITY.W);
 		initCheckPoint(context, STOP_AREA_4, SEVERITY.W);
 		initCheckPoint(context, STOP_AREA_5, SEVERITY.W);
+		initCheckPoint(context, STOP_AREA_6, SEVERITY.W);
+		initCheckPoint(context, STOP_AREA_7, SEVERITY.W);
 		prepareCheckPoint(context, STOP_AREA_2);
 		prepareCheckPoint(context, STOP_AREA_3);
 		prepareCheckPoint(context, STOP_AREA_5);
+		prepareCheckPoint(context, STOP_AREA_6);
+		prepareCheckPoint(context, STOP_AREA_7);
 
 		boolean test4_1 = (parameters.getCheckStopArea() != 0);
 		if (test4_1) {
@@ -104,8 +117,11 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 			if (!sourceFile) {
 				check3StopArea1(context, stopArea);
 			}
+
 			check3StopArea4(context, stopArea, enveloppe);
 			check3StopArea5(context, stopArea, parameters);
+			check3StopArea6(context, stopArea, parameters);
+
 			// 4-StopArea-1 : check columns constraints
 			if (test4_1)
 				check4Generic1(context, stopArea, L4_STOP_AREA_1, parameters, log);
@@ -254,6 +270,142 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 			reporter.addCheckPointReportError(context, STOP_AREA_5, source, Integer.toString((int) distance),
 					Integer.toString((int) distanceMax), target);
+		}
+	}
+
+	private void check3StopArea6(Context context, StopArea stopArea, ValidationParameters parameters) {
+		// 3-StopArea-6 : check if combination of stop area type and transport mode is valid
+		if (stopArea.getStopAreaType() == null)
+			return;
+
+		switch (stopArea.getStopAreaType()) {
+			case Airport:
+				if (!stopArea.getTransportModeName().equals(TransportModeNameEnum.Air)) {
+					DataLocation location = buildLocation(context, stopArea);
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					reporter.addCheckPointReportError(context, STOP_AREA_6, location);
+				}
+				break;
+			case BusStation:
+			case OnstreetBus:
+				if (!stopArea.getTransportModeName().equals(TransportModeNameEnum.Bus)) {
+					DataLocation location = buildLocation(context, stopArea);
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					reporter.addCheckPointReportError(context, STOP_AREA_6, location);
+				}
+				break;
+			case FerryPort:
+			case FerryStop:
+				if (!stopArea.getTransportModeName().equals(TransportModeNameEnum.Ferry)) {
+					DataLocation location = buildLocation(context, stopArea);
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					reporter.addCheckPointReportError(context, STOP_AREA_6, location);
+				}
+				break;
+			case HarbourPort:
+				if (!stopArea.getTransportModeName().equals(TransportModeNameEnum.Waterborne)) {
+					DataLocation location = buildLocation(context, stopArea);
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					reporter.addCheckPointReportError(context, STOP_AREA_6, location);
+				}
+				break;
+			case LiftStation:
+				if (!stopArea.getTransportModeName().equals(TransportModeNameEnum.Cabelway)) {
+					DataLocation location = buildLocation(context, stopArea);
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					reporter.addCheckPointReportError(context, STOP_AREA_6, location);
+				}
+				break;
+			case MetroStation:
+				if (!stopArea.getTransportModeName().equals(TransportModeNameEnum.Metro)) {
+					DataLocation location = buildLocation(context, stopArea);
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					reporter.addCheckPointReportError(context, STOP_AREA_6, location);
+				}
+				break;
+			case TramStation:
+			case OnstreetTram:
+				if (!stopArea.getTransportModeName().equals(TransportModeNameEnum.Tramway)) {
+					DataLocation location = buildLocation(context, stopArea);
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					reporter.addCheckPointReportError(context, STOP_AREA_6, location);
+				}
+				break;
+			case RailStation:
+				if (!EnumSet.of(TransportModeNameEnum.Train, TransportModeNameEnum.LocalTrain,
+						TransportModeNameEnum.LongDistanceTrain).contains(stopArea.getTransportModeName())) {
+					DataLocation location = buildLocation(context, stopArea);
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					reporter.addCheckPointReportError(context, STOP_AREA_6, location);
+				}
+				break;
+		}
+	}
+
+	private void check3StopArea7(Context context, StopArea stopArea, ValidationParameters parameters) {
+		// 3-StopArea-7 : check if combination of transport mode and sub mode is valid
+		if (stopArea.getTransportModeName() == null)
+			return;
+
+		switch (stopArea.getTransportModeName()) {
+			case Air:
+				if (!TransportSubModeEnum.AIR_SUB_MODES.contains(stopArea.getTransportSubMode())) {
+					DataLocation location = buildLocation(context, stopArea);
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
+				}
+				break;
+			case Bus:
+				if (!TransportSubModeEnum.BUS_SUB_MODES.contains(stopArea.getTransportSubMode())) {
+					DataLocation location = buildLocation(context, stopArea);
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
+				}
+				break;
+			case Cabelway:
+				if (!stopArea.getTransportSubMode().equals(TransportSubModeEnum.Telecabin)) {
+					DataLocation location = buildLocation(context, stopArea);
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
+				}
+				break;
+			case Funicular:
+				if (!stopArea.getTransportSubMode().equals(TransportSubModeEnum.Funicular)) {
+					DataLocation location = buildLocation(context, stopArea);
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
+				}
+				break;
+			case Metro:
+				if (!stopArea.getTransportSubMode().equals(TransportSubModeEnum.Metro)) {
+					DataLocation location = buildLocation(context, stopArea);
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
+				}
+				break;
+			case Train:
+				if (!TransportSubModeEnum.RAIL_SUB_MODES.contains(stopArea.getTransportSubMode())) {
+					DataLocation location = buildLocation(context, stopArea);
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
+				}
+				break;
+			case Tramway:
+				if (!stopArea.getTransportSubMode().equals(TransportSubModeEnum.LocalTram)) {
+					DataLocation location = buildLocation(context, stopArea);
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
+				}
+				break;
+			case Waterborne:
+				if (!TransportSubModeEnum.WATER_SUB_MODES.contains(stopArea.getTransportSubMode())) {
+					DataLocation location = buildLocation(context, stopArea);
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
+				}
+				break;
+			case Other:
+				break;
 		}
 	}
 
