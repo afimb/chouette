@@ -8,16 +8,7 @@
 
 package mobi.chouette.exchange.validation.checkpoint;
 
-import java.lang.reflect.Method;
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.regex.Pattern;
-
+import com.vividsolutions.jts.geom.*;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.TestDescription;
@@ -33,16 +24,13 @@ import mobi.chouette.model.NeptuneLocalizedObject;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.NamingUtil;
-
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
+import java.lang.reflect.Method;
+import java.sql.Time;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * @author michel
@@ -64,6 +52,8 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static final String STOP_AREA_3 = "3-StopArea-3";
 	protected static final String STOP_AREA_4 = "3-StopArea-4";
 	protected static final String STOP_AREA_5 = "3-StopArea-5";
+	protected static final String STOP_AREA_6 = "3-StopArea-6";
+	protected static final String STOP_AREA_7 = "3-StopArea-7";
 	protected static final String ACCESS_POINT_1 = "3-AccessPoint-1";
 	protected static final String ACCESS_POINT_2 = "3-AccessPoint-2";
 	protected static final String ACCESS_POINT_3 = "3-AccessPoint-3";
@@ -76,6 +66,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static final String LINE_1 = "3-Line-1";
 	protected static final String LINE_2 = "3-Line-2";
 	protected static final String LINE_3 = "3-Line-3";
+	protected static final String LINE_4 = "3-Line-4";
 	protected static final String ROUTE_1 = "3-Route-1";
 	protected static final String ROUTE_2 = "3-Route-2";
 	protected static final String ROUTE_3 = "3-Route-3";
@@ -697,7 +688,9 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			testLevel3FileList.add(new TestDescription(3, STOP_AREA_3, "WARNING"));
 			testLevel3FileList.add(new TestDescription(3, STOP_AREA_4, "WARNING"));
 			testLevel3FileList.add(new TestDescription(3, STOP_AREA_5, "WARNING"));
-			
+			testLevel3FileList.add(new TestDescription(3, STOP_AREA_6, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, STOP_AREA_7, "WARNING"));
+
 			testLevel3FileList.add(new TestDescription(3, CONNECTION_LINK_1, "WARNING"));
 			testLevel3FileList.add(new TestDescription(3, CONNECTION_LINK_2, "WARNING"));
 			testLevel3FileList.add(new TestDescription(3, CONNECTION_LINK_3, "WARNING"));
@@ -707,7 +700,8 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			testLevel3FileList.add(new TestDescription(3, ACCESS_LINK_3, "WARNING"));
 			
 			testLevel3FileList.add(new TestDescription(3, LINE_1, "WARNING"));
-			
+			testLevel3FileList.add(new TestDescription(3, LINE_4, "WARNING"));
+
 			testLevel3FileList.add(new TestDescription(3, ROUTE_1, "WARNING"));
 			testLevel3FileList.add(new TestDescription(3, ROUTE_2, "WARNING"));
 			testLevel3FileList.add(new TestDescription(3, ROUTE_3, "WARNING"));
@@ -756,7 +750,9 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			testLevel3DatabaseList.add(new TestDescription(3, STOP_AREA_3, "WARNING"));
 			testLevel3DatabaseList.add(new TestDescription(3, STOP_AREA_4, "WARNING"));
 			testLevel3DatabaseList.add(new TestDescription(3, STOP_AREA_5, "WARNING"));
-			
+			testLevel3DatabaseList.add(new TestDescription(3, STOP_AREA_6, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, STOP_AREA_7, "WARNING"));
+
 			testLevel3DatabaseList.add(new TestDescription(3, ACCESS_POINT_1, "ERROR"));
 			testLevel3DatabaseList.add(new TestDescription(3, ACCESS_POINT_2, "ERROR"));
 			testLevel3DatabaseList.add(new TestDescription(3, ACCESS_POINT_3, "ERROR"));
@@ -771,7 +767,8 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			
 			testLevel3DatabaseList.add(new TestDescription(3, LINE_1, "WARNING"));
 			testLevel3DatabaseList.add(new TestDescription(3, LINE_2, "ERROR"));
-			
+			testLevel3DatabaseList.add(new TestDescription(3, LINE_4, "WARNING"));
+
 			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_1, "WARNING"));
 			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_2, "WARNING"));
 			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_3, "WARNING"));

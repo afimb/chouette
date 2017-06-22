@@ -27,6 +27,8 @@ public enum TransportModeNameEnum
    Bicycle, 
    Shuttle, 
    Taxi, 
-   Val, 
+   Val,
+   Cabelway,
+   Funicular,
    Other;
 }

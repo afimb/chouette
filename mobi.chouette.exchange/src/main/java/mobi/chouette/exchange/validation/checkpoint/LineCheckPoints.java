@@ -7,9 +7,7 @@ import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
-import mobi.chouette.model.JourneyPattern;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.Route;
+import mobi.chouette.model.*;
 
 @Log4j
 public class LineCheckPoints extends AbstractValidation<Line> implements Validator<Line> {
@@ -40,6 +38,9 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 
 		// TODO initCheckPoint(context, LINE_3, SEVERITY.W);
 		// prepareCheckPoint(context, LINE_3);
+
+		initCheckPoint(context, LINE_4, SEVERITY.W);
+		prepareCheckPoint(context, LINE_4);
 
 		boolean test4_1 = parameters.getCheckLine() != 0;
 		boolean test4_2 = parameters.getCheckAllowedTransportModes() == 1;
@@ -75,6 +76,8 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 
 		// 3-Line-3 : check if line has plots
 		// TODO : check3Line3(context, bean);
+
+		check3Line4(context, bean);
 
 		// 4-Line-1 : check columns constraints
 		if (test4_1)
@@ -146,6 +149,62 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 			reporter.addCheckPointReportError(context, LINE_3, location);
+		}
+	}
+
+	private void check3Line4(Context context, Line line1) {
+		if (!isEmpty(line1.getRoutes())) {
+			for (Route route : line1.getRoutes()) {
+
+				if (!isEmpty(route.getStopPoints())) {
+					for (StopPoint stopPoint : route.getStopPoints()) {
+						StopArea containedInStopArea = stopPoint.getContainedInStopArea();
+
+						if (!line1.getTransportModeName().equals(containedInStopArea.getTransportModeName())) {
+							DataLocation location = buildLocation(context, containedInStopArea);
+							ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+							reporter.addCheckPointReportError(context, LINE_4, location, "Transport mode of StopArea "
+									+ containedInStopArea.getName() + " does not match the transport mode for this line ");
+						}
+
+						StopArea parentStopArea = stopPoint.getContainedInStopArea().getParent();
+
+						if (!line1.getTransportModeName().equals(parentStopArea.getTransportModeName())) {
+							DataLocation location = buildLocation(context, parentStopArea);
+							ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+							reporter.addCheckPointReportError(context, LINE_4, location, "Transport mode of StopArea "
+									+ parentStopArea.getName() + " does not match the transport mode for this line ");
+						}
+					}
+				}
+
+				if (!isEmpty(route.getJourneyPatterns())) {
+					for (JourneyPattern jp : route.getJourneyPatterns()) {
+
+						if (!isEmpty(jp.getStopPoints())) {
+							for (StopPoint stopPoint : jp.getStopPoints()) {
+								StopArea containedInStopArea = stopPoint.getContainedInStopArea();
+
+								if (!line1.getTransportModeName().equals(containedInStopArea.getTransportModeName())) {
+									DataLocation location = buildLocation(context, containedInStopArea);
+									ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+									reporter.addCheckPointReportError(context, LINE_4, location, "Transport mode of StopArea "
+											+ containedInStopArea.getName() + " does not match the transport mode for this line ");
+								}
+
+								StopArea parentStopArea = stopPoint.getContainedInStopArea().getParent();
+
+								if (!line1.getTransportModeName().equals(parentStopArea.getTransportModeName())) {
+									DataLocation location = buildLocation(context, parentStopArea);
+									ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+									reporter.addCheckPointReportError(context, LINE_4, location, "Transport mode of StopArea "
+											+ parentStopArea.getName() + " does not match the transport mode for this line ");
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 

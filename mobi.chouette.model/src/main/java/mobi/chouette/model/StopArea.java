@@ -23,8 +23,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import mobi.chouette.model.type.ChouetteAreaEnum;
-import mobi.chouette.model.type.UserNeedEnum;
+import mobi.chouette.model.type.*;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
@@ -132,6 +131,45 @@ public class StopArea extends NeptuneLocalizedObject {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "area_type", nullable = false)
 	private ChouetteAreaEnum areaType;
+
+	/**
+	 * stop area type
+	 *
+	 * @param stopAreaType
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@Enumerated(EnumType.STRING)
+	@Column(name = "stop_place_type", nullable = false)
+	private StopAreaTypeEnum stopAreaType;
+
+	/**
+	 * Transport mode
+	 *
+	 * @param transportModeName
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@Enumerated(EnumType.STRING)
+	@Column(name = "transport_mode")
+	private TransportModeNameEnum transportModeName;
+
+	/**
+	 * Transport sub mode
+	 *
+	 * @param transportSubMode
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@Enumerated(EnumType.STRING)
+	@Column(name = "transport_sub_mode")
+	private TransportSubModeEnum transportSubMode;
 
 	/**
 	 * registration number
