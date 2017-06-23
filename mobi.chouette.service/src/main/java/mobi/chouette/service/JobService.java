@@ -66,7 +66,7 @@ public class JobService implements JobData, ServiceConstants {
 		this.rootDirectory = rootDirectory;
 
 		if (!commandExists()) {
-			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_ACTION, "");
+			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_ACTION, "Command does not exist: " + getCommandName());
 		}
 	}
 
