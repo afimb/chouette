@@ -147,6 +147,7 @@ public class StopAreaServiceTest extends Arquillian {
         assertStopPlace("NSR:StopPlace:6", "NSR:Quay:6");
         utx.commit();
 
+        ContextHolder.setContext("chouette_gui");
         StopPoint spWithReplacedStopAreaRef = stopPointDAO.findByObjectId(spToHaveStopAreaRefReplaced.getObjectId());
         Assert.assertEquals(spWithReplacedStopAreaRef.getContainedInStopArea().getObjectId(), "NSR:Quay:6", "Expected stop point to updated when quays have been merged.");
 

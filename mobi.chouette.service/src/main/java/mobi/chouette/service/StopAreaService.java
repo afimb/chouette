@@ -9,6 +9,7 @@ import mobi.chouette.exchange.stopplace.StopAreaUpdateService;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.Referential;
+import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.rutebanken.netex.model.PublicationDeliveryStructure;
 
@@ -38,6 +39,7 @@ public class StopAreaService {
         if (changedStopCnt > 0) {
             log.info("Updating " + changedStopCnt + " stop areas");
             Context context = createContext();
+            ContextHolder.clear();
             stopAreaUpdateService.createOrUpdateStopAreas(context, parser.getActiveStopAreas(), parser.getInactiveStopAreaIds(), parser.getMergedQuays());
         } else {
             log.debug("Received update without any stop areas. Doing nothing");
@@ -46,6 +48,7 @@ public class StopAreaService {
 
     @TransactionAttribute
     public void deleteStopArea(String objectId) {
+        ContextHolder.clear();
         stopAreaUpdateService.deleteStopArea(objectId);
     }
 

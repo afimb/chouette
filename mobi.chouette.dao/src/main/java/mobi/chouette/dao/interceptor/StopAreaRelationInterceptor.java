@@ -66,7 +66,7 @@ public class StopAreaRelationInterceptor extends EmptyInterceptor {
                                                                        .filter(stopPoint -> !alreadyExistingInStopAresCollection(stopArea, stopPoint))
                                                                        .collect(Collectors.toList());
 
-            log.debug("Populated stopPoints for stop area: " + stopArea.getId() + ". Points: " + notAlreadyInCollectionStopPoints);
+            log.debug("Populated stopPoints for stop area: " + stopArea.getId() + ". New points: " + notAlreadyInCollectionStopPoints);
             stopArea.getContainedStopPoints().addAll(notAlreadyInCollectionStopPoints);
         }
     }
