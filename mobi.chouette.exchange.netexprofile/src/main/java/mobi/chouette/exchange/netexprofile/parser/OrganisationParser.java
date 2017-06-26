@@ -40,7 +40,7 @@ public class OrganisationParser implements Parser, Constant {
             }
 
             if (organisationStruct.getLegalName() != null) {
-                company.setOperatingDepartmentName(organisationStruct.getLegalName().getValue());
+                company.setLegalName(organisationStruct.getLegalName().getValue());
             }
 
             company.setRegistrationNumber(organisationStruct.getCompanyNumber());

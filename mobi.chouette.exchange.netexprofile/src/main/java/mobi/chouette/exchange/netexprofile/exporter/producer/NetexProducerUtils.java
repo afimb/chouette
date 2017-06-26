@@ -3,8 +3,10 @@ package mobi.chouette.exchange.netexprofile.exporter.producer;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.*;
 import mobi.chouette.model.type.DayTypeEnum;
+import mobi.chouette.model.type.OrganisationTypeEnum;
 import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
 import org.rutebanken.netex.model.DayOfWeekEnumeration;
+import org.rutebanken.netex.model.OrganisationTypeEnumeration;
 
 import java.sql.Time;
 import java.time.*;
@@ -71,6 +73,18 @@ public class NetexProducerUtils {
             return OffsetDateTime.ofInstant(zonedDateTime.toInstant(), ZoneId.systemDefault());
         }
         return OffsetDateTime.ofInstant(date.toInstant(), ZoneOffset.systemDefault());
+    }
+
+    public static OrganisationTypeEnumeration getOrganisationTypeEnumeration(OrganisationTypeEnum organisationTypeEnum) {
+        if (organisationTypeEnum == null)
+            return null;
+        switch (organisationTypeEnum) {
+            case Authority:
+                return OrganisationTypeEnumeration.AUTHORITY;
+            case Operator:
+                return OrganisationTypeEnumeration.OPERATOR;
+        }
+        return null;
     }
 
     public static AllVehicleModesOfTransportEnumeration toVehicleModeOfTransportEnum(String value) {

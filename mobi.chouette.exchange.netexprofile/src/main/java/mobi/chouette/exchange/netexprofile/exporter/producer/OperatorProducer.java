@@ -33,8 +33,8 @@ public class OperatorProducer extends NetexProducer implements NetexEntityProduc
             operator.setName(getMultilingualString(company.getName()));
         }
 
-        if (isSet(company.getOperatingDepartmentName())) {
-            operator.setLegalName(getMultilingualString(company.getOperatingDepartmentName()));
+        if (isSet(company.getLegalName())) {
+            operator.setLegalName(getMultilingualString(company.getLegalName()));
         }
 
         if (isSet(company.getShortName())) {
@@ -50,10 +50,27 @@ public class OperatorProducer extends NetexProducer implements NetexEntityProduc
                 contactStructure.setUrl(company.getUrl());
             }
             operator.setContactDetails(contactStructure);
+        }
+        if (isSet(company.getPublicPhone(), company.getPublicEmail(), company.getPublicUrl())) {
+            ContactStructure contactStructure = netexFactory.createContactStructure();
+            if (isSet(company.getPublicPhone())) {
+                contactStructure.setPhone(company.getPublicPhone());
+            }
+            if (isSet(company.getPublicEmail())) {
+                contactStructure.setPhone(company.getPublicEmail());
+            }
+            if (isSet(company.getPublicUrl())) {
+                contactStructure.setUrl(company.getPublicUrl());
+            }
             operator.setCustomerServiceContactDetails(contactStructure);
         }
 
-        operator.getOrganisationType().add(OrganisationTypeEnumeration.OPERATOR);
+        if (isSet(company.getOrganisationType())) {
+            OrganisationTypeEnumeration organisationTypeEnumeration = NetexProducerUtils.getOrganisationTypeEnumeration(company.getOrganisationType());
+            operator.getOrganisationType().add(organisationTypeEnumeration);
+        } else {
+            operator.getOrganisationType().add(OrganisationTypeEnumeration.OPERATOR);
+        }
 
         return operator;
     }
