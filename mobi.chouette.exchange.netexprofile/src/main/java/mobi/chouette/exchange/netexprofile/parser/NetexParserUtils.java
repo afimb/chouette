@@ -5,6 +5,7 @@ import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.model.type.*;
 import org.rutebanken.netex.model.DayOfWeekEnumeration;
 import org.rutebanken.netex.model.EntityInVersionStructure;
+import org.rutebanken.netex.model.OrganisationTypeEnumeration;
 
 import java.sql.Time;
 import java.time.*;
@@ -170,6 +171,18 @@ public class NetexParserUtils extends ParserUtils {
 				return BoardingPossibilityEnum.normal;
 			case BoardOnRequest:
 				return BoardingPossibilityEnum.request_stop;
+		}
+		return null;
+	}
+
+	public static OrganisationTypeEnum getOrganisationType(OrganisationTypeEnumeration organisationTypeEnumeration) {
+		if (organisationTypeEnumeration == null)
+			return null;
+		switch (organisationTypeEnumeration) {
+			case AUTHORITY:
+				return OrganisationTypeEnum.Authority;
+			case OPERATOR:
+				return OrganisationTypeEnum.Operator;
 		}
 		return null;
 	}

@@ -7,25 +7,18 @@
  */
 package mobi.chouette.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Cacheable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
+import mobi.chouette.model.type.OrganisationTypeEnum;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Chouette Company : a company providing public transport services.
@@ -53,7 +46,20 @@ public class Company extends NeptuneIdentifiedObject {
 	@Id
 	@Column(name = "id", nullable = false)
 	protected Long id;
-	
+
+	/**
+	 * Organisation type
+	 *
+	 * @param organisationType
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@Enumerated(EnumType.STRING)
+	@Column(name = "organisation_type")
+	private OrganisationTypeEnum organisationType;
+
 	/**
 	 * name
 	 * 
@@ -92,6 +98,26 @@ public class Company extends NeptuneIdentifiedObject {
 	 */
 	public void setShortName(String value) {
 		shortName = StringUtils.abbreviate(value, 255);
+	}
+
+	/**
+	 * legal name
+	 *
+	 * @return The actual value
+	 */
+	@Getter
+	@Column(name = "legal_name")
+	private String legalName;
+
+	/**
+	 * set legal name <br/>
+	 * truncated to 255 characters if too long
+	 *
+	 * @param value
+	 *            New value
+	 */
+	public void setLegalName(String value) {
+		legalName = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -215,6 +241,66 @@ public class Company extends NeptuneIdentifiedObject {
 	 */
 	public void setEmail(String value) {
 		email = StringUtils.abbreviate(value, 255);
+	}
+
+	/**
+	 * public phone
+	 *
+	 * @return The actual value
+	 */
+	@Getter
+	@Column(name = "public_phone")
+	private String publicPhone;
+
+	/**
+	 * set public phone <br/>
+	 * truncated to 255 characters if too long
+	 *
+	 * @param value
+	 *            New value
+	 */
+	public void setPublicPhone(String value) {
+		publicPhone = StringUtils.abbreviate(value, 255);
+	}
+
+	/**
+	 * public email
+	 *
+	 * @return The actual value
+	 */
+	@Getter
+	@Column(name = "public_email")
+	private String publicEmail;
+
+	/**
+	 * set public email <br/>
+	 * truncated to 255 characters if too long
+	 *
+	 * @param value
+	 *            New value
+	 */
+	public void setPublicEmail(String value) {
+		publicEmail = StringUtils.abbreviate(value, 255);
+	}
+
+	/**
+	 * public url
+	 *
+	 * @return The actual value
+	 */
+	@Getter
+	@Column(name = "public_url")
+	private String publicUrl;
+
+	/**
+	 * set public url <br/>
+	 * truncated to 255 characters if too long
+	 *
+	 * @param value
+	 *            New value
+	 */
+	public void setPublicUrl(String value) {
+		publicUrl = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
