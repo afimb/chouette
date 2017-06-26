@@ -47,7 +47,7 @@ public class RelationsToStopAreaInterceptor extends EmptyInterceptor {
         log.trace("On load StopPoint id: " + stopPoint.getId());
         String containedInStopAreaId = getProperty(STOP_POINT_CONTAINED_IN_STOP_AREA_ID_PROPERTY, propertyNames, state);
 
-        if (containedInStopAreaId != null) {
+        if (stopPoint.getContainedInStopArea() == null && containedInStopAreaId != null) {
             stopPoint.setContainedInStopArea(stopAreaDAO.findByObjectId(containedInStopAreaId));
         }
     }
@@ -57,12 +57,12 @@ public class RelationsToStopAreaInterceptor extends EmptyInterceptor {
         log.trace("On load RouteSection id: " + routeSection.getId());
 
         String arrivalStopAreaId = getProperty(ARRIVAL_STOP_AREA_ID_PROPERTY, propertyNames, state);
-        if (arrivalStopAreaId != null) {
+        if (entity.getArrival() == null && arrivalStopAreaId != null) {
             routeSection.setArrival(stopAreaDAO.findByObjectId(arrivalStopAreaId));
         }
 
         String departureStopAreaId = getProperty(DEPARTURE_STOP_AREA_ID_PROPERTY, propertyNames, state);
-        if (departureStopAreaId != null) {
+        if (entity.getDeparture() == null && departureStopAreaId != null) {
             routeSection.setDeparture(stopAreaDAO.findByObjectId(departureStopAreaId));
         }
     }
