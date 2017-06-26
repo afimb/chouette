@@ -6,11 +6,11 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.Company;
+import mobi.chouette.model.type.OrganisationTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import org.rutebanken.netex.model.DataManagedObjectStructure;
-import org.rutebanken.netex.model.Organisation_VersionStructure;
-import org.rutebanken.netex.model.OrganisationsInFrame_RelStructure;
+import org.apache.commons.collections.CollectionUtils;
+import org.rutebanken.netex.model.*;
 
 import javax.xml.bind.JAXBElement;
 
@@ -30,6 +30,15 @@ public class OrganisationParser implements Parser, Constant {
             company.setObjectVersion(NetexParserUtils.getVersion(organisation));
             company.setName(organisationStruct.getName().getValue());
 
+            OrganisationTypeEnumeration organisationTypeEnumeration = null;
+            if (CollectionUtils.isNotEmpty(organisationStruct.getOrganisationType())) {
+                organisationTypeEnumeration = organisationStruct.getOrganisationType().get(0);
+                OrganisationTypeEnum organisationType = NetexParserUtils.getOrganisationType(organisationTypeEnumeration);
+                if (organisationType != null) {
+                    company.setOrganisationType(organisationType);
+                }
+            }
+
             if (organisationStruct.getLegalName() != null) {
                 company.setOperatingDepartmentName(organisationStruct.getLegalName().getValue());
             }
@@ -40,6 +49,18 @@ public class OrganisationParser implements Parser, Constant {
                 company.setPhone(organisationStruct.getContactDetails().getPhone());
                 company.setUrl(organisationStruct.getContactDetails().getUrl());
                 company.setEmail(organisationStruct.getContactDetails().getEmail());
+            }
+
+            if ((organisationStruct instanceof Operator && organisationTypeEnumeration != null &&
+                    organisationTypeEnumeration.equals(OrganisationTypeEnumeration.OPERATOR))) {
+                Operator operator = (Operator) organisationStruct;
+
+                if (operator.getCustomerServiceContactDetails() != null) {
+                    ContactStructure customerServiceContactDetails = operator.getCustomerServiceContactDetails();
+                    company.setPublicPhone(customerServiceContactDetails.getPhone());
+                    company.setPublicEmail(customerServiceContactDetails.getEmail());
+                    company.setPublicUrl(customerServiceContactDetails.getUrl());
+                }
             }
 
             company.setFilled(true);
