@@ -5,6 +5,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.model.Company;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.ObjectFactory;
@@ -40,7 +41,8 @@ public class NetworkParser extends NetexParser implements Parser, Constant {
         chouetteNetwork.setName(netexNetwork.getName().getValue());
 
         OrganisationRefStructure authorityRefStruct = netexNetwork.getTransportOrganisationRef().getValue();
-        chouetteNetwork.setSourceIdentifier(authorityRefStruct.getRef());
+        Company company = ObjectFactory.getCompany(referential, authorityRefStruct.getRef());
+        chouetteNetwork.setCompany(company);
 
         if (netexNetwork.getDescription() != null) {
             chouetteNetwork.setDescription(netexNetwork.getDescription().getValue());

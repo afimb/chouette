@@ -675,6 +675,7 @@ ALTER SEQUENCE lines_id_seq OWNED BY lines.id;
 
 CREATE TABLE networks (
     id bigint NOT NULL,
+    company_id bigint,
     objectid character varying(255) NOT NULL,
     object_version integer,
     creation_time timestamp without time zone,
