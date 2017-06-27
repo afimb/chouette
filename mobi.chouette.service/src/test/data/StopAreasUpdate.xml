@@ -241,7 +241,123 @@
                     </quays>
                 </StopPlace>
 
-
+                <StopPlace created="2017-06-19T19:40:31.494+02:00" changed="2017-06-27T11:25:04.748+02:00" modification="new" version="3" id="NSR:StopPlace:25660">
+                    <ValidBetween>
+                        <FromDate>2017-06-27T11:24:53+02:00</FromDate>
+                    </ValidBetween>
+                    <keyList>
+                        <KeyValue>
+                            <Key>imported-id</Key>
+                            <Value>AKT:StopPlace:10141453,AKT:StopPlace:10141452,NRI:StopPlace:761040482</Value>
+                        </KeyValue>
+                    </keyList>
+                    <Name lang="no">Grovane stasjon</Name>
+                    <Description lang="no"/>
+                    <Centroid>
+                        <Location>
+                            <Longitude>7.981174</Longitude>
+                            <Latitude>58.295502</Latitude>
+                        </Location>
+                    </Centroid>
+                    <AccessibilityAssessment modification="new" version="4" id="NSR:AccessibilityAssessment:25812">
+                        <MobilityImpairedAccess>unknown</MobilityImpairedAccess>
+                        <limitations>
+                            <AccessibilityLimitation modification="new" version="1">
+                                <WheelchairAccess>unknown</WheelchairAccess>
+                                <StepFreeAccess>unknown</StepFreeAccess>
+                                <EscalatorFreeAccess>unknown</EscalatorFreeAccess>
+                                <LiftFreeAccess>unknown</LiftFreeAccess>
+                                <AudibleSignalsAvailable>unknown</AudibleSignalsAvailable>
+                            </AccessibilityLimitation>
+                        </limitations>
+                    </AccessibilityAssessment>
+                    <AccessModes></AccessModes>
+                    <TopographicPlaceRef ref="KVE:TopographicPlace:1014" created="2017-06-27T16:00:15.692+02:00"/>
+                    <TransportMode>bus</TransportMode>
+                    <OtherTransportModes></OtherTransportModes>
+                    <StopPlaceType>onstreetBus</StopPlaceType>
+                    <Weighting>interchangeAllowed</Weighting>
+                    <quays>
+                        <Quay changed="2017-06-27T11:25:04.748+02:00" modification="new" version="3" id="NSR:Quay:44522">
+                            <keyList>
+                                <KeyValue>
+                                    <Key>nvdb-road-side</Key>
+                                    <Value>V</Value>
+                                </KeyValue>
+                                <KeyValue>
+                                    <Key>nvdb-road-name</Key>
+                                    <Value>10RV0040500</Value>
+                                </KeyValue>
+                                <KeyValue>
+                                    <Key>nvdb-distance-meter</Key>
+                                    <Value>3983</Value>
+                                </KeyValue>
+                                <KeyValue>
+                                    <Key>imported-id</Key>
+                                    <Value>NRI:Quay:762118523,AKT:Quay:10141453</Value>
+                                </KeyValue>
+                            </keyList>
+                            <Description lang="no"></Description>
+                            <Centroid>
+                                <Location>
+                                    <Longitude>7.980822</Longitude>
+                                    <Latitude>58.295188</Latitude>
+                                </Location>
+                            </Centroid>
+                            <AccessModes></AccessModes>
+                            <OtherTransportModes></OtherTransportModes>
+                            <PublicCode></PublicCode>
+                            <CompassBearing>182.0</CompassBearing>
+                        </Quay>
+                        <Quay changed="2017-06-27T11:25:04.748+02:00" modification="new" version="3" id="NSR:Quay:44521">
+                            <keyList>
+                                <KeyValue>
+                                    <Key>nvdb-road-side</Key>
+                                    <Value>H</Value>
+                                </KeyValue>
+                                <KeyValue>
+                                    <Key>nvdb-road-name</Key>
+                                    <Value>10FV0040500</Value>
+                                </KeyValue>
+                                <KeyValue>
+                                    <Key>nvdb-distance-meter</Key>
+                                    <Value>4088</Value>
+                                </KeyValue>
+                                <KeyValue>
+                                    <Key>imported-id</Key>
+                                    <Value>AKT:Quay:10141452,NRI:Quay:762118522</Value>
+                                </KeyValue>
+                            </keyList>
+                            <Description lang="no"></Description>
+                            <Centroid>
+                                <Location>
+                                    <Longitude>7.981527</Longitude>
+                                    <Latitude>58.295817</Latitude>
+                                </Location>
+                            </Centroid>
+                            <AccessModes></AccessModes>
+                            <OtherTransportModes></OtherTransportModes>
+                            <PublicCode></PublicCode>
+                            <CompassBearing>4.0</CompassBearing>
+                        </Quay>
+                        <Quay created="2017-06-19T21:31:20.047+02:00" changed="2017-06-19T21:31:20.047+02:00" modification="new" version="1" id="NSR:Quay:99319">
+                            <keyList>
+                                <KeyValue>
+                                    <Key>imported-id</Key>
+                                    <Value>NRI:Quay:762132680</Value>
+                                </KeyValue>
+                            </keyList>
+                            <Centroid>
+                                <Location>
+                                    <Longitude>7.980211</Longitude>
+                                    <Latitude>58.295067</Latitude>
+                                </Location>
+                            </Centroid>
+                            <AccessModes></AccessModes>
+                            <OtherTransportModes></OtherTransportModes>
+                        </Quay>
+                    </quays>
+                </StopPlace>
 
             </stopPlaces>
         </SiteFrame>
