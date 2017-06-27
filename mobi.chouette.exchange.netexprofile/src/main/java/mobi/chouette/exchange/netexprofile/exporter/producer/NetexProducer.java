@@ -18,7 +18,6 @@ public class NetexProducer {
     public static final String NETEX_DATA_OJBECT_VERSION = "0";
 
     protected static final String NSR_XMLNSURL = "http://www.rutebanken.org/ns/nsr";
-    protected static final Pattern idStructurePattern = Pattern.compile("^([A-Z]{3}):([A-Za-z]*):([0-9A-Za-z_\\-]*)$");
 
     public static ObjectFactory netexFactory = null;
 

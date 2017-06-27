@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.model.Company;
 import org.rutebanken.netex.model.AuthorityRefStructure;
 import org.rutebanken.netex.model.KeyValueStructure;
 import org.rutebanken.netex.model.PrivateCodeStructure;
@@ -40,10 +41,9 @@ public class NetworkProducer extends NetexProducer implements NetexEntityProduce
 
         AuthorityRefStructure authorityRefStruct = netexFactory.createAuthorityRefStructure();
         authorityRefStruct.setVersion(neptuneNetwork.getObjectVersion() > 0 ? String.valueOf(neptuneNetwork.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-        String sourceIdentifier = neptuneNetwork.getSourceIdentifier();
 
-        if (isSet(sourceIdentifier) && idStructurePattern.matcher(sourceIdentifier).matches()) {
-            authorityRefStruct.setRef(sourceIdentifier);
+        if (isSet(neptuneNetwork.getCompany())) {
+            authorityRefStruct.setRef(neptuneNetwork.getCompany().getObjectId());
         } else {
             String authorityIdRef = netexId(neptuneNetwork.objectIdPrefix(), AUTHORITY, neptuneNetwork.objectIdSuffix());
             authorityRefStruct.setRef(authorityIdRef);

@@ -187,12 +187,11 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
         AvailabilityCondition availabilityCondition = createAvailabilityCondition(neptuneNetwork);
         exportableNetexData.setCommonCondition(availabilityCondition);
-        String sourceIdentifier = neptuneNetwork.getSourceIdentifier();
 
-        if (isSet(sourceIdentifier) && idStructurePattern.matcher(sourceIdentifier).matches()) {
-            if (!exportableNetexData.getSharedAuthorities().containsKey(sourceIdentifier)) {
+        if (isSet(neptuneNetwork.getCompany())) {
+            if (!exportableNetexData.getSharedAuthorities().containsKey(neptuneNetwork.getCompany().getObjectId())) {
                 Authority networkAuthority = createNetworkAuthority(neptuneNetwork);
-                exportableNetexData.getSharedAuthorities().put(sourceIdentifier, networkAuthority);
+                exportableNetexData.getSharedAuthorities().put(neptuneNetwork.getCompany().getObjectId(), networkAuthority);
             }
         } else {
             String version = neptuneNetwork.getObjectVersion() > 0 ? String.valueOf(neptuneNetwork.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
@@ -397,7 +396,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
     private Authority createNetworkAuthority(mobi.chouette.model.Network network) {
         return createNetworkAuthority(network.getObjectVersion() > 0 ? String.valueOf(network.getObjectVersion()) :
-                NETEX_DATA_OJBECT_VERSION, network.getSourceIdentifier());
+                NETEX_DATA_OJBECT_VERSION, network.getCompany().getObjectId());
     }
 
     private Authority createNetworkAuthority(String version, String objectId) {
