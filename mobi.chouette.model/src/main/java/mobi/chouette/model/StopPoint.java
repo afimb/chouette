@@ -121,6 +121,23 @@ public class StopPoint extends NeptuneIdentifiedObject {
         }
 	}
 
+	/**
+	 * ORM only setter for establishing stop area relation without loading lazy collections.
+	 *
+	 * NB! Do not use except when loading objects.
+	 */
+	@Transient
+	public void setContainedInStopAreaORMOnly(StopArea stopArea){
+		this.containedInStopArea = stopArea;
+		if (stopArea != null) {
+			containedInStopAreaObjectId = stopArea.getObjectId();
+		}
+	}
+
+	public StopArea getContainedInStopAreaORMOnly(){
+		return this.containedInStopArea;
+	}
+
 
 	/**
 	 * route
