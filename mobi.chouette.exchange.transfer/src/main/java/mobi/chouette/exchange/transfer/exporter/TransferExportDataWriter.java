@@ -144,7 +144,7 @@ public class TransferExportDataWriter implements Command, Constant {
 					for(StopPoint sp : r.getStopPoints()) {
 						em.detach(sp);
 						freedObjectCount++;
-						sp.setContainedInStopArea(null);
+						sp.setContainedInStopAreaORMOnly(null);
 					}
 					r.getStopPoints().clear();
 					
@@ -154,7 +154,7 @@ public class TransferExportDataWriter implements Command, Constant {
 						for(StopPoint sp : jp.getStopPoints()) {
 							em.detach(sp);
 							freedObjectCount++;
-							sp.setContainedInStopArea(null);
+							sp.setContainedInStopAreaORMOnly(null);
 							
 						}
 						jp.getStopPoints().clear();
