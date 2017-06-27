@@ -1,18 +1,22 @@
 package mobi.chouette.dao.interceptor;
 
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.enterprise.inject.spi.CDI;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.persistence.hibernate.ContextHolder;
+
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
-
-import javax.enterprise.inject.spi.CDI;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * StopPoint and StopArea reside in separate schemas. This Interceptor enriches these entities with relations between them upon load.
@@ -34,8 +38,12 @@ public class StopAreaRelationInterceptor extends EmptyInterceptor {
 
             StopArea stopArea = (StopArea) entity;
             log.trace("On load StopArea id: " + stopArea.getId());
-            populateContainedStopPoints(stopArea, getProperty(STOP_AREA_OBJECT_ID_PROPERTY, propertyNames, state));
 
+            String stopAreaObjectId = getProperty(STOP_AREA_OBJECT_ID_PROPERTY, propertyNames, state);
+
+            List<StopPoint> containedStopPointsProxy = (List<StopPoint>) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{List.class}, new LazyLoadContainedStopPointsInvocationHandler(stopAreaObjectId));
+
+            stopArea.setContainedStopPoints(containedStopPointsProxy);
         }
 
         return super.onLoad(entity, id, state, propertyNames, types);
@@ -55,29 +63,46 @@ public class StopAreaRelationInterceptor extends EmptyInterceptor {
         throw new RuntimeException("Property not found: " + propertyName);
     }
 
-    /**
-     * Populate stop area with contained stop points relevant for the current context. If no referential is set in the context the population is omitted.
-     */
-    private void populateContainedStopPoints(StopArea stopArea, String stopAreaObjectId) {
-        if (ContextHolder.getContext() != null) {
-            List<StopPoint> stopPoints = stopPointDAO.getStopPointsContainedInStopArea(stopAreaObjectId);
-
-            List<StopPoint> notAlreadyInCollectionStopPoints = stopPoints.stream()
-                                                                       .filter(stopPoint -> !alreadyExistingInStopAresCollection(stopArea, stopPoint))
-                                                                       .collect(Collectors.toList());
-
-            log.debug("Populated stopPoints for stop area: " + stopArea.getId() + ". New points: " + notAlreadyInCollectionStopPoints);
-            stopArea.getContainedStopPoints().addAll(notAlreadyInCollectionStopPoints);
-        }
-    }
-
-    private boolean alreadyExistingInStopAresCollection(StopArea stopArea, StopPoint stopPoint) {
-        return stopArea.getContainedStopPoints().stream().anyMatch(existingStopPoint -> Objects.equals(existingStopPoint.getId(), stopPoint.getId()));
-    }
 
     private void init() {
         if (stopPointDAO == null) {
             stopPointDAO = CDI.current().select(StopPointDAO.class).get();
         }
+    }
+
+    private class LazyLoadContainedStopPointsInvocationHandler implements InvocationHandler {
+
+        private String stopAreaObjectId;
+
+        private List<StopPoint> target;
+
+        public LazyLoadContainedStopPointsInvocationHandler(String stopAreaObjectId) {
+            this.stopAreaObjectId = stopAreaObjectId;
+        }
+
+        /**
+         * Populate stop area with contained stop points relevant for the current context. If no referential is set in the context the population is omitted.
+         */
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            if (target == null) {
+                setTarget();
+            }
+            return method.invoke(target, args);
+        }
+
+
+        private synchronized void setTarget() {
+            if (target == null) {
+                if (ContextHolder.getContext() != null) {
+                    log.debug("Lazy loading stop points for stop area: " + stopAreaObjectId);
+                    target = stopPointDAO.getStopPointsContainedInStopArea(stopAreaObjectId);
+                } else {
+                    log.debug("Initialize empty stop point list for stop area outside context: " + stopAreaObjectId);
+                    target = new ArrayList<>();
+                }
+            }
+        }
+
     }
 }

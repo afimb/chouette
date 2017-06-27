@@ -48,7 +48,7 @@ public class RelationsToStopAreaInterceptor extends EmptyInterceptor {
         String containedInStopAreaId = getProperty(STOP_POINT_CONTAINED_IN_STOP_AREA_ID_PROPERTY, propertyNames, state);
 
         if (stopPoint.getContainedInStopArea() == null && containedInStopAreaId != null) {
-            stopPoint.setContainedInStopArea(stopAreaDAO.findByObjectId(containedInStopAreaId));
+            stopPoint.setContainedInStopAreaORMOnly(stopAreaDAO.findByObjectId(containedInStopAreaId));
         }
     }
 
