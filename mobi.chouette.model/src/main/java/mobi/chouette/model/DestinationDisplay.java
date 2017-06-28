@@ -141,6 +141,17 @@ public class DestinationDisplay extends NeptuneObject {
     private Date updatedAt = new Date(createdAt.getTime());
 
     /**
+     * parent destination display reference <br/>
+     *
+     * @return The actual value
+     */
+    @Getter
+    @Setter
+    @JoinColumn
+    @ManyToOne
+    private DestinationDisplay parent;
+
+    /**
      * vias
      *
      * @param vias
@@ -149,7 +160,8 @@ public class DestinationDisplay extends NeptuneObject {
      */
     @Getter
     @Setter
-    @OneToMany(mappedBy = "destinationDisplay")
-    private List<Via> vias = new ArrayList<Via>(0);
+    @JoinColumn
+    @OneToMany(mappedBy = "parent")
+    private List<DestinationDisplay> vias = new ArrayList<>(0);
 
 }
