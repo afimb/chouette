@@ -168,8 +168,13 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		List<StopArea> areasWb = NeptuneUtil.getStopAreaOfRoute(routeWb);
 		// test can be passed if wayback areas exist and have parents
 		if (!areasWb.isEmpty()) {
-			StopArea firstWb = areasWb.get(0).getParent();
-			StopArea lastWb = areasWb.get(areasWb.size() - 1).getParent();
+			StopArea firstWbChild = areasWb.get(0);
+			StopArea lastWbChild = areasWb.get(areasWb.size() - 1);
+			if (firstWbChild == null || lastWbChild == null)
+				return;
+
+			StopArea firstWb = firstWbChild.getParent();
+			StopArea lastWb = lastWbChild.getParent();
 			if (firstWb == null || lastWb == null)
 				return;
 			prepareCheckPoint(context, ROUTE_2);
@@ -298,10 +303,17 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		List<StopArea> areasWb = NeptuneUtil.getStopAreaOfRoute(routeWb);
 		// test can be passed if wayback areas exist and have parents
 		if (!areasWb.isEmpty()) {
-			StopArea firstWb = areasWb.get(0).getParent();
-			StopArea lastWb = areasWb.get(areasWb.size() - 1).getParent();
+
+			StopArea firstWbChild = areasWb.get(0);
+			StopArea lastWbChild = areasWb.get(areasWb.size() - 1);
+			if (firstWbChild == null || lastWbChild == null)
+				return;
+
+			StopArea firstWb = firstWbChild.getParent();
+			StopArea lastWb = lastWbChild.getParent();
 			if (firstWb == null || lastWb == null)
 				return;
+
 			if (firstWb.equals(last) && lastWb.equals(first)) {
 				// Improvement encountered
 				DataLocation location = buildLocation(context, route);
