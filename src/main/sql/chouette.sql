@@ -276,7 +276,7 @@ CACHE 1;
 ALTER TABLE :SCH.destination_displays_id_seq OWNER TO chouette;
 
 
-ALTER SEQUENCE destination_displays_id_seq OWNED BY footnotes.id;
+ALTER SEQUENCE destination_displays_id_seq OWNED BY destination_displays.id;
 
 
 --
