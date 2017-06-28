@@ -458,14 +458,16 @@ public class NeTExStopPlaceRegisterUpdater {
 	}
 
 	private void addIdsToLookupMap(Map<String, String> map, KeyListStructure keyList, String newStopPlaceId) {
-		List<KeyValueStructure> keyValue = keyList.getKeyValue();
+		if (keyList != null && keyList.getKeyValue() != null) {
+			List<KeyValueStructure> keyValue = keyList.getKeyValue();
 
-		for (KeyValueStructure s : keyValue) {
-			if (s.getKey().equals(IMPORTED_ID)) {
-				// Split value
-				String[] existingIds = StringUtils.split(s.getValue(), IMPORTED_ID_VALUE_SEPARATOR);
-				for (String id : existingIds) {
-					map.put(id, newStopPlaceId);
+			for (KeyValueStructure s : keyValue) {
+				if (s != null && IMPORTED_ID.equals(s.getKey())) {
+					// Split value
+					String[] existingIds = StringUtils.split(s.getValue(), IMPORTED_ID_VALUE_SEPARATOR);
+					for (String id : existingIds) {
+						map.put(id, newStopPlaceId);
+					}
 				}
 			}
 		}
