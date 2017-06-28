@@ -248,7 +248,7 @@ ALTER SEQUENCE connection_links_id_seq OWNED BY connection_links.id;
 
 
 --
--- Name: destination_displays; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace:
+-- Name: destination_displays; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE destination_displays (
@@ -263,7 +263,7 @@ CREATE TABLE destination_displays (
 );
 
 
-ALTER TABLE :SCH.destination_displays OWNER TO chouette;
+ALTER TABLE chouette_gui.destination_displays OWNER TO chouette;
 
 
 CREATE SEQUENCE destination_displays_id_seq
@@ -274,7 +274,7 @@ NO MAXVALUE
 CACHE 1;
 
 
-ALTER TABLE :SCH.destination_displays_id_seq OWNER TO chouette;
+ALTER TABLE chouette_gui.destination_displays_id_seq OWNER TO chouette;
 
 
 ALTER SEQUENCE destination_displays_id_seq OWNED BY destination_displays.id;
