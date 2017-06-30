@@ -34,7 +34,7 @@ public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator 
 
 	private long lastUpdated = 0;
 
-	public final long timeToLiveMs = 1000 * 60 * 60 * 5; // 5 minutes
+	public final long timeToLiveMs = 1000 * 60 * 10; // 10 minutes
 
 	public StopPlaceRegistryIdValidator() {
 
