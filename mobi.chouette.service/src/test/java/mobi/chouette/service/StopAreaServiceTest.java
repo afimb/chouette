@@ -5,6 +5,9 @@ import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.type.StopAreaTypeEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.model.type.TransportSubModeEnum;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -156,6 +159,12 @@ public class StopAreaServiceTest extends Arquillian {
         stopAreaService.createOrUpdateStopPlacesFromNetexStopPlaces(new FileInputStream("src/test/data/StopAreasMovedQuay.xml"));
 
         Assert.assertEquals(stopAreaDAO.findByObjectId("NSR:Quay:99319").getParent().getObjectId(), "NSR:StopPlace:62006", "Expected quay to have moved to new parent stop area");
+
+        StopArea knownStopArea=stopAreaDAO.findByObjectId("NSR:StopPlace:62006");
+
+        Assert.assertEquals(knownStopArea.getStopAreaType(), StopAreaTypeEnum.RailStation);
+        Assert.assertEquals(knownStopArea.getTransportModeName(), TransportModeNameEnum.Train);
+        Assert.assertEquals(knownStopArea.getTransportSubMode(), TransportSubModeEnum.TouristRailway);
 
         utx.commit();
     }

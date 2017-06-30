@@ -77,6 +77,8 @@
                                     <Latitude>62.746489</Latitude>
                                 </Location>
                             </Centroid>
+                            <TransportMode>air</TransportMode>
+                            <AirSubmode>internationalFlight</AirSubmode>
                             <StopPlaceType>airport</StopPlaceType>
                             <quays>
                                 <Quay version="1" id="AVI:Quay:MOL">

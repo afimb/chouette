@@ -1,5 +1,24 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+
+import javax.ejb.EJB;
+import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.UserTransaction;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
@@ -10,15 +29,32 @@ import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.DummyChecker;
 import mobi.chouette.exchange.netexprofile.JobDataTest;
 import mobi.chouette.exchange.netexprofile.NetexTestUtils;
-import mobi.chouette.exchange.report.*;
+import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.FileReport;
+import mobi.chouette.exchange.report.ObjectCollectionReport;
+import mobi.chouette.exchange.report.ObjectReport;
+import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
-import mobi.chouette.model.*;
+import mobi.chouette.model.Codespace;
+import mobi.chouette.model.Footnote;
+import mobi.chouette.model.JourneyPattern;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.Route;
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.Timetable;
+import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.StopAreaImportModeEnum;
+import mobi.chouette.model.type.StopAreaTypeEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.model.type.TransportSubModeEnum;
 import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -32,20 +68,9 @@ import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
-
-import javax.ejb.EJB;
-import javax.inject.Inject;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.UserTransaction;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.*;
 
 import static mobi.chouette.exchange.netexprofile.NetexTestUtils.createCodespace;
 import static org.testng.Assert.*;
@@ -223,6 +248,11 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 				if (stopPoint.getObjectId().equals("AVI:StopPoint:1263628002")) {
 					assertEquals(stopPoint.getContainedInStopArea().getObjectId(), existingStopArea.getObjectId());
 					assertEquals(stopPoint.getContainedInStopArea().getName(), "Molde Lufthavn", "Expected name of existing stop area to be updated by import data");
+
+					StopArea stopAreaParent = stopPoint.getContainedInStopArea().getParent();
+					Assert.assertEquals(stopAreaParent.getStopAreaType(), StopAreaTypeEnum.Airport);
+					Assert.assertEquals(stopAreaParent.getTransportModeName(), TransportModeNameEnum.Air);
+					Assert.assertEquals(stopAreaParent.getTransportSubMode(), TransportSubModeEnum.InternationalFlight);
 				} else {
 					assertNotNull(stopPoint.getContainedInStopArea(), "Expected not existing stop area to have been created by import");
 				}

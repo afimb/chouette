@@ -114,6 +114,9 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			oldValue.setCityName(newValue.getCityName());
 			oldValue.setStreetName(newValue.getStreetName());
 			oldValue.setCompassBearing(newValue.getCompassBearing());
+			oldValue.setTransportModeName(newValue.getTransportModeName());
+			oldValue.setTransportSubMode(newValue.getTransportSubMode());
+			oldValue.setStopAreaType(newValue.getStopAreaType());
 			oldValue.setDetached(false);
 		} else {
 			twoDatabaseStopAreaTwoTest(validationReporter, context, oldValue, newValue, data);
@@ -195,6 +198,20 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			if (newValue.getCompassBearing() != null && !newValue.getCompassBearing().equals(oldValue.getCompassBearing())) {
 				oldValue.setCompassBearing(newValue.getCompassBearing());
 			}
+
+			if (newValue.getTransportModeName() != null && !newValue.getTransportModeName().equals(oldValue.getTransportModeName())) {
+				oldValue.setTransportModeName(newValue.getTransportModeName());
+			}
+			if (newValue.getTransportSubMode() != null && !newValue.getTransportSubMode().equals(oldValue.getTransportSubMode())) {
+				oldValue.setTransportSubMode(newValue.getTransportSubMode());
+			}
+			if (newValue.getStopAreaType() != null && !newValue.getStopAreaType().equals(oldValue.getStopAreaType())) {
+				oldValue.setStopAreaType(newValue.getStopAreaType());
+			}
+
+
+
+
 		}
 
 		// StopArea Parent
