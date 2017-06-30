@@ -15,6 +15,7 @@ public interface ActionReporter {
 		TIMETABLE,
 		LINE,
 		ROUTE,
+		ROUTE_SECTION,
 		JOURNEY_PATTERN,
 		VEHICLE_JOURNEY
 	};
