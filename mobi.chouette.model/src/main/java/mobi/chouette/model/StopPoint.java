@@ -152,4 +152,17 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	@Transient
 	private String comment;
 
+	/**
+	 * current destination display for this stop point
+	 *
+	 * @param destinationDisplay
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "destination_display_id")
+	private DestinationDisplay destinationDisplay;
+
 }

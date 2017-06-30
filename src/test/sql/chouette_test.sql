@@ -969,13 +969,14 @@ CREATE TABLE stop_points (
     id bigint NOT NULL,
     route_id bigint,
     stop_area_id bigint,
+    destination_display_id bigint,
     objectid character varying(255) NOT NULL,
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
     "position" integer,
     for_boarding character varying(255),
-    for_alighting character varying(255)
+    for_alighting character varying(255),
 );
 
 
