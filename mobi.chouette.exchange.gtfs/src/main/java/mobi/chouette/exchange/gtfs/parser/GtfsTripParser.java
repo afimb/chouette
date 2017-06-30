@@ -784,7 +784,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				coords.add(projection);
 				if (lastSegmentIncluded)
 					rank++;
-				String routeSectionId = prefix + ":" + RouteSection.ROUTE_SECTION_KEY + ":" + gtfsRouteId + "_" + shapeId + "_"
+				String routeSectionId = prefix + ":" + RouteSection.ROUTE_SECTION_KEY + ":" + journeyPattern.objectIdSuffix() + "_" + shapeId + "_"
 						+ previousLocation.objectIdSuffix() + "_" + location.objectIdSuffix() + "_" + intFactor;
 				RouteSection section = ObjectFactory.getRouteSection(referential, routeSectionId);
 				if (!section.isFilled()) {
