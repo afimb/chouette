@@ -58,17 +58,41 @@ public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator 
 
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 
+		
+		
+		
 		if (lastUpdated < System.currentTimeMillis() - timeToLiveMs) {
-			// Fetch data and populate caches
-			log.info("Cache is old, refreshing quay and stopplace cache");
-			boolean stopPlaceOk = populateCache(stopPlaceCache, stopPlaceEndpoint);
-			boolean quayOK = populateCache(quayCache, quayEndpoint);
+			int remainingUpdateRetries = 10;
 
-			if (quayOK && stopPlaceOk) {
-				lastUpdated = System.currentTimeMillis();
-			} else {
-				log.error("Error updating caches");
+			boolean result = false;
+			
+			while(!result && remainingUpdateRetries-- > 0) {
+				// Fetch data and populate caches
+				log.info("Cache is old, refreshing quay and stopplace cache");
+				boolean stopPlaceOk = populateCache(stopPlaceCache, stopPlaceEndpoint);
+				boolean quayOK = populateCache(quayCache, quayEndpoint);
+
+				if (quayOK && stopPlaceOk) {
+					lastUpdated = System.currentTimeMillis();
+					result = true;
+				} else {
+					log.error("Error updating caches, retries left = "+remainingUpdateRetries);
+					result = false;
+					
+					// TODO dodgy
+					try {
+						Thread.sleep(10*1000);
+					} catch (InterruptedException e) {
+						// Swallow
+					}
+				}
+				
 			}
+			
+			if(result == false) {
+				throw new RuntimeException("Could not update quay cache - cannot validate");
+			}
+			
 		}
 
 		log.info("About to validate external " + externalIds.size() + " ids");
