@@ -216,7 +216,55 @@
                     </quays>
                 </StopPlace>
 
-
+                <StopPlace created="2017-05-02T13:07:03.765+02:00" modification="new" version="1" id="NSR:StopPlace:7">
+                    <ValidBetween>
+                        <FromDate>2017-05-02T15:07:03.765+02:00</FromDate>
+                    </ValidBetween>
+                    <keyList>
+                        <KeyValue>
+                            <Key>imported-id</Key>
+                            <Value>SKY:Quay:777</Value>
+                        </KeyValue>
+                    </keyList>
+                    <Name lang="nb">Vassenden</Name>
+                    <Centroid>
+                        <Location>
+                            <Longitude>6.699178</Longitude>
+                            <Latitude>60.571918</Latitude>
+                        </Location>
+                    </Centroid>
+                    <AccessibilityAssessment modification="new" version="1" id="NSR:AccessibilityAssessment:10089">
+                        <MobilityImpairedAccess>unknown</MobilityImpairedAccess>
+                        <limitations>
+                            <AccessibilityLimitation modification="new" version="1">
+                                <WheelchairAccess>unknown</WheelchairAccess>
+                                <StepFreeAccess>unknown</StepFreeAccess>
+                            </AccessibilityLimitation>
+                        </limitations>
+                    </AccessibilityAssessment>
+                    <AccessModes></AccessModes>
+                    <OtherTransportModes></OtherTransportModes>
+                    <StopPlaceType>busStation</StopPlaceType>
+                    <quays>
+                        <Quay modification="new" version="2" id="NSR:Quay:7">
+                            <keyList>
+                                <KeyValue>
+                                    <Key>imported-id</Key>
+                                    <Value>SKY:Quay:777777</Value>
+                                </KeyValue>
+                            </keyList>
+                            <Centroid>
+                                <Location>
+                                    <Longitude>6.699334</Longitude>
+                                    <Latitude>60.571903</Latitude>
+                                </Location>
+                            </Centroid>
+                            <AccessModes></AccessModes>
+                            <OtherTransportModes></OtherTransportModes>
+                            <PublicCode>4</PublicCode>
+                        </Quay>
+                    </quays>
+                </StopPlace>
 
             </stopPlaces>
         </SiteFrame>
