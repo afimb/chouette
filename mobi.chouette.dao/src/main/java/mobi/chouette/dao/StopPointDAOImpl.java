@@ -7,6 +7,7 @@ import javax.persistence.PersistenceContext;
 import mobi.chouette.model.StopPoint;
 
 import java.util.List;
+import java.util.Set;
 
 @Stateless
 public class StopPointDAOImpl extends GenericDAOImpl<StopPoint> implements StopPointDAO {
@@ -26,8 +27,8 @@ public class StopPointDAOImpl extends GenericDAOImpl<StopPoint> implements StopP
     }
 
     @Override
-    public void replaceContainedInStopAreaReference(String oldStopAreaId, String newStopAreaId) {
+    public void replaceContainedInStopAreaReferences(Set<String> oldStopAreaIds, String newStopAreaId) {
         em.createQuery("update StopPoint sp set sp.containedInStopAreaObjectId=:newStopAreaId where " +
-                "sp.containedInStopAreaObjectId=:oldStopAreaId").setParameter("oldStopAreaId", oldStopAreaId).setParameter("newStopAreaId", newStopAreaId).executeUpdate();
+                "sp.containedInStopAreaObjectId in (:oldStopAreaIds)").setParameter("oldStopAreaIds", oldStopAreaIds).setParameter("newStopAreaId", newStopAreaId).executeUpdate();
     }
 }

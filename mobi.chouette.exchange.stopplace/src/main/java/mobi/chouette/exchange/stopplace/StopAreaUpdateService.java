@@ -44,7 +44,7 @@ public class StopAreaUpdateService {
     private StopPointDAO stopPointDAO;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void createOrUpdateStopAreas(Context context, Set<StopArea> createdOrUpdatedStopAreas, Set<String> removedStopAreas, Map<String, String> mergedQuays) {
+    public void createOrUpdateStopAreas(Context context, Set<StopArea> createdOrUpdatedStopAreas, Set<String> removedStopAreas, Map<String, Set<String>> mergedQuays) {
 
         Map<String, StopArea> removedQuays = new HashMap<>();
 
@@ -53,7 +53,7 @@ public class StopAreaUpdateService {
         createdOrUpdatedStopAreas.forEach(sa -> createOrUpdate(context, sa, removedQuays));
 
         removedQuays.values().forEach(quay -> removeQuay(quay));
-        mergedQuays.forEach((oldStopAreaId, newStopAreaId) -> updateStopAreaReference(oldStopAreaId, newStopAreaId));
+        mergedQuays.forEach((newStopAreaId, oldStopAreaIds) -> updateStopAreaReferences(oldStopAreaIds, newStopAreaId));
     }
 
     @TransactionAttribute
@@ -66,12 +66,12 @@ public class StopAreaUpdateService {
         }
     }
 
-    private void updateStopAreaReference(String oldStopAreaId, String newStopAreaId) {
+    private void updateStopAreaReferences(Set<String> oldStopAreaIds, String newStopAreaId) {
         String orgContext = ContextHolder.getContext();
         try {
             for (String referential : referentialDAO.getReferentials()) {
                 ContextHolder.setContext(referential);
-                stopPointDAO.replaceContainedInStopAreaReference(oldStopAreaId, newStopAreaId);
+                stopPointDAO.replaceContainedInStopAreaReferences(oldStopAreaIds, newStopAreaId);
             }
         } finally {
             ContextHolder.setContext(orgContext); // reset context

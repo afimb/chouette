@@ -26,6 +26,7 @@ import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.Referential;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.rutebanken.netex.model.Common_VersionFrameStructure;
 import org.rutebanken.netex.model.PublicationDeliveryStructure;
 import org.rutebanken.netex.model.Quay;
@@ -37,15 +38,15 @@ import static mobi.chouette.exchange.netexprofile.Constant.NETEX_LINE_DATA_CONTE
 
 @Log4j
 public class PublicationDeliveryStopPlaceParser {
-
+    private static final String IMPORT_ID_KEY = "imported-id";
     private static final String MERGED_ID_KEY = "merged-id";
-    private static final String MERGED_ID_VALUE_SEPARATOR = ",";
+    private static final String ID_VALUE_SEPARATOR = ",";
     private InputStream inputStream;
     private Instant now;
 
     private Set<String> inactiveStopAreaIds = new HashSet<>();
     private Set<StopArea> activeStopAreas;
-    private Map<String, String> mergedQuays = new HashMap<>();
+    private Map<String, Set<String>> mergedQuays = new HashMap<>();
 
     public PublicationDeliveryStopPlaceParser(InputStream inputStream) {
         this.inputStream = inputStream;
@@ -110,11 +111,18 @@ public class PublicationDeliveryStopPlaceParser {
         if (quayObj instanceof Quay) {
             Quay quay = (Quay) quayObj;
             quay.getKeyList().getKeyValue().stream().filter(kv -> MERGED_ID_KEY.equals(kv.getKey())).forEach(kv -> addMergedIds(quay.getId(), kv.getValue()));
+            quay.getKeyList().getKeyValue().stream().filter(kv -> IMPORT_ID_KEY.equals(kv.getKey())).forEach(kv -> addMergedIds(quay.getId(), kv.getValue()));
         }
     }
 
-    private void addMergedIds(String mergedToId, String mergedFromIds) {
-        Arrays.asList(mergedFromIds.split(MERGED_ID_VALUE_SEPARATOR)).forEach(mergedFromId -> mergedQuays.put(mergedFromId, mergedToId));
+    private void addMergedIds(String mergedToId, String mergedFromIdsAsString) {
+        Set<String> mergedFromIds = Arrays.asList(mergedFromIdsAsString.split(ID_VALUE_SEPARATOR)).stream().filter(id -> !StringUtils.isEmpty(id)).collect(Collectors.toSet());
+
+        if (mergedQuays.get(mergedToId) != null) {
+            mergedQuays.get(mergedToId).addAll(mergedFromIds);
+        } else {
+            mergedQuays.put(mergedToId, mergedFromIds);
+        }
     }
 
     private boolean isActive(StopPlace stopPlace, Instant atTime) {
@@ -145,7 +153,7 @@ public class PublicationDeliveryStopPlaceParser {
         return activeStopAreas;
     }
 
-    public Map<String, String> getMergedQuays() {
+    public Map<String, Set<String>> getMergedQuays() {
         return mergedQuays;
     }
 }
