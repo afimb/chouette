@@ -17,6 +17,7 @@ public class StopPointCheckPoints extends AbstractValidation<StopPoint> implemen
 
 
         ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+        
 
         if (data.getStopPoints().isEmpty()) {
             return;
@@ -33,8 +34,10 @@ public class StopPointCheckPoints extends AbstractValidation<StopPoint> implemen
         if (stopPoint != null && stopPoint.getContainedInStopArea() == null) {
             log.info("Registering error for : " + stopPoint);
             ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-            DataLocation location = buildLocation(context, stopPoint);
-            reporter.addCheckPointReportError(context, STOP_POINT_1, location);
+            DataLocation locationStopPoint = buildLocation(context, stopPoint);
+            DataLocation locationRoute = buildLocation(context, stopPoint.getRoute());
+           
+            reporter.addCheckPointReportError(context, STOP_POINT_1, locationStopPoint,stopPoint.getContainedInStopAreaObjectId(),null,locationRoute);
         }
     }
 }
