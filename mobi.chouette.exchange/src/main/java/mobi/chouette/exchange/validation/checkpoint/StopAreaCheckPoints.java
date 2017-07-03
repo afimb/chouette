@@ -108,6 +108,7 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 			check3StopArea4(context, stopArea, enveloppe);
 			check3StopArea5(context, stopArea, parameters);
 			check3StopArea6(context, stopArea, parameters);
+			// TODO enable this check3StopArea7(context, stopArea, parameters);
 
 			// 4-StopArea-1 : check columns constraints
 			if (test4_1)
@@ -262,8 +263,9 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 
 	private void check3StopArea6(Context context, StopArea stopArea, ValidationParameters parameters) {
 		// 3-StopArea-6 : check if combination of stop area type and transport mode is valid
-		if (stopArea.getStopAreaType() == null)
+		if (stopArea.getStopAreaType() == null || stopArea.getTransportModeName() == null)
 			return;
+		
 
 		switch (stopArea.getStopAreaType()) {
 			case Airport:
@@ -273,6 +275,7 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 					reporter.addCheckPointReportError(context, STOP_AREA_6, location);
 				}
 				break;
+			case CoachStation:
 			case BusStation:
 			case OnstreetBus:
 				if (!stopArea.getTransportModeName().equals(TransportModeNameEnum.Bus)) {
@@ -326,6 +329,10 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 					reporter.addCheckPointReportError(context, STOP_AREA_6, location);
 				}
 				break;
+			case VehicleRailInterchange:
+			case Other:
+				break;
+			
 		}
 	}
 
@@ -342,6 +349,8 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
 				}
 				break;
+			case Trolleybus:
+			case Coach:
 			case Bus:
 				if (!TransportSubModeEnum.BUS_SUB_MODES.contains(stopArea.getTransportSubMode())) {
 					DataLocation location = buildLocation(context, stopArea);
@@ -370,6 +379,9 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
 				}
 				break;
+			case LongDistanceTrain:
+			case LongDistanceTrain_2:
+			case LocalTrain:
 			case Train:
 				if (!TransportSubModeEnum.RAIL_SUB_MODES.contains(stopArea.getTransportSubMode())) {
 					DataLocation location = buildLocation(context, stopArea);
@@ -384,6 +396,7 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
 				}
 				break;
+			case Ferry:
 			case Waterborne:
 				if (!TransportSubModeEnum.WATER_SUB_MODES.contains(stopArea.getTransportSubMode())) {
 					DataLocation location = buildLocation(context, stopArea);
@@ -391,7 +404,14 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
 				}
 				break;
+			case Bicycle:
+			case PrivateVehicle:
+			case RapidTransit:
+			case Shuttle:
+			case Val:
+			case Walk:
 			case Other:
+			case Taxi:
 				break;
 		}
 	}
