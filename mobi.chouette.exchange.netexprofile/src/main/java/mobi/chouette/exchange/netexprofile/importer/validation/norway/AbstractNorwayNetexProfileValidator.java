@@ -281,4 +281,11 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		}
 	}
 
+	protected void validateServiceFrameCommonElements(Context context, XPath xpath, Node subLevel) throws XPathExpressionException {
+		validateElementNotPresent(context, xpath, subLevel, "n:Network[not(n:AuthorityRef)]", _1_NETEX_SERVICE_FRAME_NETWORK_AUTHORITY_REF);
+		validateElementNotPresent(context, xpath, subLevel, "n:Network[not(n:Name)]", _1_NETEX_SERVICE_FRAME_NETWORK_NAME);
+		validateElementNotPresent(context, xpath, subLevel, "n:Network/n:groupsOfLines/n:GroupOfLines[not(n:Name)]", _1_NETEX_SERVICE_FRAME_NETWORK_GROUPOFLINE_NAME);
+		validateElementNotPresent(context, xpath, subLevel, "n:groupsOfLines", _1_NETEX_SERVICE_FRAME_GROUPOFLINES_OUTSIDE_NETWORK);
+	}
+
 }
