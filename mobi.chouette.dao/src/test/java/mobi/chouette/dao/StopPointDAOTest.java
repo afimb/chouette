@@ -2,6 +2,7 @@ package mobi.chouette.dao;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -71,7 +72,7 @@ public class StopPointDAOTest extends Arquillian {
         Assert.assertTrue(stopPointDAO.getStopPointsContainedInStopArea(oldStopAreaRef1).containsAll(Arrays.asList(sp1, sp2)));
         Assert.assertTrue(stopPointDAO.getStopPointsContainedInStopArea(oldStopAreaRef2).containsAll(Arrays.asList(sp3)));
 
-        stopPointDAO.replaceContainedInStopAreaReferences(Sets.newHashSet(oldStopAreaRef1,oldStopAreaRef2), newStopAreaRef);
+        stopPointDAO.replaceContainedInStopAreaReferences(Sets.newHashSet(oldStopAreaRef1, oldStopAreaRef2), newStopAreaRef);
         Assert.assertTrue(stopPointDAO.getStopPointsContainedInStopArea(oldStopAreaRef1).isEmpty());
         Assert.assertTrue(stopPointDAO.getStopPointsContainedInStopArea(oldStopAreaRef2).isEmpty());
 
@@ -79,7 +80,37 @@ public class StopPointDAOTest extends Arquillian {
         Assert.assertEquals(stopPointsForNewStopAreaRef.size(), 3);
         Assert.assertTrue(stopPointsForNewStopAreaRef.containsAll(Arrays.asList(sp1, sp2, sp3)));
 
+
+        stopPointDAO.replaceContainedInStopAreaReferences(new HashSet<>(), "shouldNotFail");
+        stopPointDAO.replaceContainedInStopAreaReferences(null, "shouldNotFail");
     }
+
+    @Test
+    public void testGetAllStopAreaObjectIds() {
+        ContextHolder.setContext("chouette_gui"); // set tenant schema
+
+        String stopAreaRef1 = "sa";
+        StopArea stopArea1 = new StopArea();
+        stopArea1.setImportMode(StopAreaImportModeEnum.READ_ONLY);
+        stopArea1.setObjectId(stopAreaRef1);
+
+
+        String stopAreaRef2 = "sa-2";
+        StopArea stopArea2 = new StopArea();
+        stopArea2.setImportMode(StopAreaImportModeEnum.READ_ONLY);
+        stopArea2.setObjectId(stopAreaRef2);
+
+        StopPoint sp1 = createStopPoint("sp1AllStopAreas", stopArea1);
+        StopPoint sp2 = createStopPoint("sp2AllStopAreas", stopArea1);
+        StopPoint sp3 = createStopPoint("sp3AllStopAreas", stopArea2);
+        StopPoint sp4 = createStopPoint("sp4AllStopAreas", null);
+
+
+        List<String> allStopAreaObjectIds = stopPointDAO.getAllStopAreaObjectIds();
+
+        Assert.assertEquals(new HashSet<>(allStopAreaObjectIds), Sets.newHashSet(stopAreaRef1, stopAreaRef2));
+    }
+
 
     private StopPoint createStopPoint(String id, StopArea stopArea) {
         StopPoint sp = new StopPoint();

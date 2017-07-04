@@ -1,7 +1,9 @@
 package mobi.chouette.exchange.stopplace;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,11 +25,14 @@ import mobi.chouette.exchange.importer.updater.Updater;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton(name = StopAreaUpdateService.BEAN_NAME)
 @Log4j
 public class StopAreaUpdateService {
+
+    private static final int DELETE_UNUSED_BATCH_SIZE = 1000;
 
     public static final String BEAN_NAME = "StopAreaUpdateService";
 
@@ -43,8 +48,9 @@ public class StopAreaUpdateService {
     @EJB
     private StopPointDAO stopPointDAO;
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void createOrUpdateStopAreas(Context context, Set<StopArea> createdOrUpdatedStopAreas, Set<String> removedStopAreas, Map<String, Set<String>> mergedQuays) {
+
+    @TransactionAttribute
+    public void createOrUpdateStopAreas(Context context, Set<StopArea> createdOrUpdatedStopAreas, Set<String> removedStopAreas) {
 
         Map<String, StopArea> removedQuays = new HashMap<>();
 
@@ -53,8 +59,16 @@ public class StopAreaUpdateService {
         createdOrUpdatedStopAreas.forEach(sa -> createOrUpdate(context, sa, removedQuays));
 
         removedQuays.values().forEach(quay -> removeQuay(quay));
-        mergedQuays.forEach((newStopAreaId, oldStopAreaIds) -> updateStopAreaReferences(oldStopAreaIds, newStopAreaId));
     }
+
+    /**
+     * Update stop area references in seperate transaction in order to iterate over all referentials
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void updateStopAreaReferences(Map<String, Set<String>> replacementMap) {
+        replacementMap.forEach((newStopAreaId,oldStopAreaIds) -> stopPointDAO.replaceContainedInStopAreaReferences(oldStopAreaIds,newStopAreaId));
+    }
+
 
     @TransactionAttribute
     public void deleteStopArea(String objectId) {
@@ -66,17 +80,49 @@ public class StopAreaUpdateService {
         }
     }
 
-    private void updateStopAreaReferences(Set<String> oldStopAreaIds, String newStopAreaId) {
-        String orgContext = ContextHolder.getContext();
-        try {
-            for (String referential : referentialDAO.getReferentials()) {
-                ContextHolder.setContext(referential);
-                stopPointDAO.replaceContainedInStopAreaReferences(oldStopAreaIds, newStopAreaId);
-            }
-        } finally {
-            ContextHolder.setContext(orgContext); // reset context
+    @TransactionAttribute
+    public void deleteUnusedStopAreas() {
+        List<String> referentials = referentialDAO.getReferentials();
+        Set<String> boardingPositionObjectIds = new HashSet<>(stopAreaDAO.getBoardingPositionObjectIds());
+
+        log.debug("Total no of boarding positions: " + boardingPositionObjectIds.size());
+
+        for (String referential : referentials) {
+            ContextHolder.setContext(referential);
+            List<String> inUseBoardingPositionsForReferential = stopPointDAO.getAllStopAreaObjectIds();
+            boardingPositionObjectIds.removeAll(inUseBoardingPositionsForReferential);
+            log.debug("Removed: " + inUseBoardingPositionsForReferential.size() + " in use boarding positions for referential: " +
+                    referential + ". Potentially not used boarding positions left: " + boardingPositionObjectIds.size());
         }
+
+        if (boardingPositionObjectIds.size() > 0) {
+            log.info("Found " + boardingPositionObjectIds.size() + " unused boarding positions. Deleting stop areas where all quays are unused");
+
+            if (boardingPositionObjectIds.size() > DELETE_UNUSED_BATCH_SIZE) {
+                Lists.partition(new ArrayList<>(boardingPositionObjectIds), DELETE_UNUSED_BATCH_SIZE).forEach(batch -> deleteBatchOfUnusedStopAreas(batch));
+            } else {
+                deleteBatchOfUnusedStopAreas(boardingPositionObjectIds);
+            }
+
+        }
+        log.info("Finished deleting unused stop areas");
     }
+
+    private void deleteBatchOfUnusedStopAreas(Collection<String> unusedBoardingPositionObjectIds) {
+        List<StopArea> unusedStopAreas = stopAreaDAO.findByObjectId(unusedBoardingPositionObjectIds).stream()
+                .map(boardingPosition -> boardingPosition.getParent())
+                .distinct()
+                .filter(stop -> stop != null)
+                .filter(stop -> stop.getContainedStopAreas().stream().allMatch(boardingPosition -> unusedBoardingPositionObjectIds.contains(boardingPosition.getObjectId())))
+                .peek(stop -> log.debug("Deleting unused stop area: " + stop)).collect(Collectors.toList());
+
+
+        unusedStopAreas.forEach(stop -> stop.getContainedStopAreas().forEach(boardingPosition -> stopAreaDAO.delete(boardingPosition)));
+        unusedStopAreas.forEach(stop -> stopAreaDAO.delete(stop));
+
+        log.info("Deleted " + unusedStopAreas.size() + " unused stop areas");
+    }
+
 
     private void cascadeDeleteStopArea(StopArea stopArea) {
         stopArea.getContainedStopAreas().forEach(child -> cascadeDeleteStopArea(child));
