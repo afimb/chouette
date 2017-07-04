@@ -11,9 +11,16 @@ public interface StopPointDAO extends GenericDAO<StopPoint> {
 
     /**
      * Replace all existing references to a set of stop area objectIds with references to another stop area.
-     *
+     * <p>
      * Used when merging stop areas.
      */
     void replaceContainedInStopAreaReferences(Set<String> oldStopAreaIds, String newStopAreaId);
+
+    /**
+     * Return a list with objectid for all stop areas referred to from all stop points.
+     *
+     * @return
+     */
+    List<String> getAllStopAreaObjectIds();
 
 }

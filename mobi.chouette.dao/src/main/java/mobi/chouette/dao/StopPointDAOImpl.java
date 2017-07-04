@@ -1,13 +1,15 @@
 package mobi.chouette.dao;
 
+import java.util.List;
+import java.util.Set;
+
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import mobi.chouette.model.StopPoint;
-
-import java.util.List;
-import java.util.Set;
 
 @Stateless
 public class StopPointDAOImpl extends GenericDAOImpl<StopPoint> implements StopPointDAO {
@@ -32,5 +34,14 @@ public class StopPointDAOImpl extends GenericDAOImpl<StopPoint> implements StopP
             em.createQuery("update StopPoint sp set sp.containedInStopAreaObjectId=:newStopAreaId where " +
                     "sp.containedInStopAreaObjectId in (:oldStopAreaIds)").setParameter("oldStopAreaIds", oldStopAreaIds).setParameter("newStopAreaId", newStopAreaId).executeUpdate();
         }
+    }
+
+    /**
+     * Get in separate transactions in order to be able to iterate over all referentials
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    @Override
+    public List<String> getAllStopAreaObjectIds() {
+        return em.createQuery("select distinct(sp.containedInStopAreaObjectId) from StopPoint sp where sp.containedInStopAreaObjectId is not null", String.class).getResultList();
     }
 }

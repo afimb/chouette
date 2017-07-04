@@ -44,12 +44,31 @@ public class RestNetexStopPlaceService {
         }
     }
 
+
     @DELETE
-    @Path("/{objectId}")
-    public Response createOrUpdateStops(@PathParam("objectId") String objectId) {
+    @Path("/unused")
+    public Response deleteUnusedStopAreas() {
         try {
             if (existsActiveJobs()) {
-                return Response.status(423).entity("Cannot update stop area with active jobs").build();
+                return Response.status(423).entity("Cannot delete unused stop areas with active jobs").build();
+            }
+            log.info(Color.CYAN + "Deleting unused stop areas");
+            stopAreaService.deleteUnusedStopAreas();
+            Response.ResponseBuilder builder = Response.ok();
+            builder.header(api_version_key, api_version);
+            return builder.build();
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw new WebApplicationException("INTERNAL_ERROR: " + ex.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DELETE
+    @Path("/{objectId}")
+    public Response deleteStopArea(@PathParam("objectId") String objectId) {
+        try {
+            if (existsActiveJobs()) {
+                return Response.status(423).entity("Cannot delete stop area with active jobs").build();
             }
             log.info(Color.CYAN + "Deleting stop area " + objectId);
             stopAreaService.deleteStopArea(objectId);
@@ -61,6 +80,7 @@ public class RestNetexStopPlaceService {
             throw new WebApplicationException("INTERNAL_ERROR: " + ex.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     private boolean existsActiveJobs() {
         return !jobServiceManager.activeJobs().isEmpty();

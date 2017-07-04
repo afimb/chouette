@@ -85,6 +85,33 @@ public class StopPointDAOTest extends Arquillian {
         stopPointDAO.replaceContainedInStopAreaReferences(null, "shouldNotFail");
     }
 
+    @Test
+    public void testGetAllStopAreaObjectIds() {
+        ContextHolder.setContext("chouette_gui"); // set tenant schema
+
+        String stopAreaRef1 = "sa";
+        StopArea stopArea1 = new StopArea();
+        stopArea1.setImportMode(StopAreaImportModeEnum.READ_ONLY);
+        stopArea1.setObjectId(stopAreaRef1);
+
+
+        String stopAreaRef2 = "sa-2";
+        StopArea stopArea2 = new StopArea();
+        stopArea2.setImportMode(StopAreaImportModeEnum.READ_ONLY);
+        stopArea2.setObjectId(stopAreaRef2);
+
+        StopPoint sp1 = createStopPoint("sp1AllStopAreas", stopArea1);
+        StopPoint sp2 = createStopPoint("sp2AllStopAreas", stopArea1);
+        StopPoint sp3 = createStopPoint("sp3AllStopAreas", stopArea2);
+        StopPoint sp4 = createStopPoint("sp4AllStopAreas", null);
+
+
+        List<String> allStopAreaObjectIds = stopPointDAO.getAllStopAreaObjectIds();
+
+        Assert.assertEquals(new HashSet<>(allStopAreaObjectIds), Sets.newHashSet(stopAreaRef1, stopAreaRef2));
+    }
+
+
     private StopPoint createStopPoint(String id, StopArea stopArea) {
         StopPoint sp = new StopPoint();
         sp.setObjectId(id);

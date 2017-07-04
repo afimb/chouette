@@ -1,8 +1,19 @@
 package mobi.chouette.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.ejb.EJB;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.UserTransaction;
+
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.dao.StopPointDAO;
-import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -22,17 +33,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import javax.ejb.EJB;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.UserTransaction;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 public class StopAreaServiceTest extends Arquillian {
 
@@ -198,6 +198,52 @@ public class StopAreaServiceTest extends Arquillian {
 
         utx.rollback();
     }
+
+    @Test
+    public void testDeleteUnusedStopAreas() throws Exception {
+        utx.begin();
+        em.joinTransaction();
+        StopArea inUseStop = commercialStopWithTwoBoardingPositions("1");
+        StopArea unusedStop = commercialStopWithTwoBoardingPositions("2");
+
+        ContextHolder.setContext("chouette_gui");
+        stopPointDAO.truncate();
+        StopPoint stopPoint = createStopPoint("XXX:StopPoint:2", inUseStop.getContainedStopAreas().get(0));
+
+        utx.commit();
+
+        stopAreaService.deleteUnusedStopAreas();
+
+        utx.begin();
+        em.joinTransaction();
+        Assert.assertNull(stopAreaDAO.findByObjectId(unusedStop.getObjectId()), "Expected unused stop area to be deleted");
+
+        StopArea inUseStopAfterDelete = stopAreaDAO.findByObjectId(inUseStop.getObjectId());
+        Assert.assertNotNull(inUseStopAfterDelete, "Expected stop area referred to by stop point not to be deleted");
+        Assert.assertEquals(inUseStopAfterDelete.getContainedStopAreas().size(), 2);
+        utx.rollback();
+    }
+
+    private StopArea commercialStopWithTwoBoardingPositions(String id) {
+        StopArea bp1 = new StopArea();
+        bp1.setAreaType(ChouetteAreaEnum.BoardingPosition);
+        bp1.setObjectId("SKY:Quay:" + id + "a");
+
+        StopArea bp2 = new StopArea();
+        bp2.setAreaType(ChouetteAreaEnum.BoardingPosition);
+        bp2.setObjectId("SKY:Quay:" + id + "b");
+
+        StopArea commercialStop = new StopArea();
+        commercialStop.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
+        commercialStop.setObjectId("SKY:StopPlace:" + id);
+
+        bp1.setParent(commercialStop);
+        bp2.setParent(commercialStop);
+
+        stopAreaDAO.create(commercialStop);
+        return commercialStop;
+    }
+
 
     private StopArea assertStopPlace(String stopPlaceId, String... quayIds) {
         StopArea stopPlace = stopAreaDAO.findByObjectId(stopPlaceId);
