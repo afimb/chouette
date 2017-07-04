@@ -211,11 +211,11 @@
                     <journeyPatterns>
                         <JourneyPattern version="1" id="AVI:JourneyPattern:12636280">
                             <RouteRef ref="AVI:Route:12636280" version="1"/>
-                            <DestinationDisplayRef ref="AVI:DestinationDisplay:12636280" version="1"/>
                             <pointsInSequence>
                                 <StopPointInJourneyPattern order="1" version="1" id="AVI:StopPointInJourneyPattern:1263628001">
                                     <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:83334" version="1"/>
                                     <ForAlighting>false</ForAlighting>
+                                    <DestinationDisplayRef ref="AVI:DestinationDisplay:12636280" version="1"/>
                                 </StopPointInJourneyPattern>
                                 <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:1263628002">
                                     <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:76522" version="1"/>
@@ -225,11 +225,11 @@
                         </JourneyPattern>
                         <JourneyPattern version="1" id="AVI:JourneyPattern:18696881">
                             <RouteRef ref="AVI:Route:18696881" version="1"/>
-                            <DestinationDisplayRef ref="AVI:DestinationDisplay:18696881" version="1"/>
                             <pointsInSequence>
                                 <StopPointInJourneyPattern order="1" version="1" id="AVI:StopPointInJourneyPattern:1869688101">
                                     <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:76522" version="1"/>
                                     <ForAlighting>false</ForAlighting>
+                                    <DestinationDisplayRef ref="AVI:DestinationDisplay:18696881" version="1"/>
                                 </StopPointInJourneyPattern>
                                 <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:1869688102">
                                     <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:83334" version="1"/>
