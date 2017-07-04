@@ -28,7 +28,9 @@ public class StopPointDAOImpl extends GenericDAOImpl<StopPoint> implements StopP
 
     @Override
     public void replaceContainedInStopAreaReferences(Set<String> oldStopAreaIds, String newStopAreaId) {
-        em.createQuery("update StopPoint sp set sp.containedInStopAreaObjectId=:newStopAreaId where " +
-                "sp.containedInStopAreaObjectId in (:oldStopAreaIds)").setParameter("oldStopAreaIds", oldStopAreaIds).setParameter("newStopAreaId", newStopAreaId).executeUpdate();
+        if (oldStopAreaIds != null && oldStopAreaIds.size() > 0) {
+            em.createQuery("update StopPoint sp set sp.containedInStopAreaObjectId=:newStopAreaId where " +
+                    "sp.containedInStopAreaObjectId in (:oldStopAreaIds)").setParameter("oldStopAreaIds", oldStopAreaIds).setParameter("newStopAreaId", newStopAreaId).executeUpdate();
+        }
     }
 }

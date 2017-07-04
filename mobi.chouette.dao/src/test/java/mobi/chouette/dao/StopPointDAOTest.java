@@ -2,6 +2,7 @@ package mobi.chouette.dao;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -71,7 +72,7 @@ public class StopPointDAOTest extends Arquillian {
         Assert.assertTrue(stopPointDAO.getStopPointsContainedInStopArea(oldStopAreaRef1).containsAll(Arrays.asList(sp1, sp2)));
         Assert.assertTrue(stopPointDAO.getStopPointsContainedInStopArea(oldStopAreaRef2).containsAll(Arrays.asList(sp3)));
 
-        stopPointDAO.replaceContainedInStopAreaReferences(Sets.newHashSet(oldStopAreaRef1,oldStopAreaRef2), newStopAreaRef);
+        stopPointDAO.replaceContainedInStopAreaReferences(Sets.newHashSet(oldStopAreaRef1, oldStopAreaRef2), newStopAreaRef);
         Assert.assertTrue(stopPointDAO.getStopPointsContainedInStopArea(oldStopAreaRef1).isEmpty());
         Assert.assertTrue(stopPointDAO.getStopPointsContainedInStopArea(oldStopAreaRef2).isEmpty());
 
@@ -79,6 +80,9 @@ public class StopPointDAOTest extends Arquillian {
         Assert.assertEquals(stopPointsForNewStopAreaRef.size(), 3);
         Assert.assertTrue(stopPointsForNewStopAreaRef.containsAll(Arrays.asList(sp1, sp2, sp3)));
 
+
+        stopPointDAO.replaceContainedInStopAreaReferences(new HashSet<>(), "shouldNotFail");
+        stopPointDAO.replaceContainedInStopAreaReferences(null, "shouldNotFail");
     }
 
     private StopPoint createStopPoint(String id, StopArea stopArea) {
