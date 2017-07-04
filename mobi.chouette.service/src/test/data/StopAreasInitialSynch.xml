@@ -396,6 +396,34 @@
                 </StopPlace>
 
 
+                <StopPlace created="2017-05-02T13:07:03.765+02:00" modification="new" version="1" id="NSR:StopPlace:7">
+                    <ValidBetween>
+                        <FromDate>2017-05-02T13:07:03.765+02:00</FromDate>
+                    </ValidBetween>
+                    <Name lang="nb"></Name>
+                    <Centroid>
+                        <Location>
+                            <Longitude>6.699178</Longitude>
+                            <Latitude>60.571918</Latitude>
+                        </Location>
+                    </Centroid>
+                    <OtherTransportModes></OtherTransportModes>
+                    <StopPlaceType>busStation</StopPlaceType>
+                    <quays>
+                        <Quay modification="new" version="2" id="NSR:Quay:7">
+                            <Centroid>
+                                <Location>
+                                    <Longitude>6.699334</Longitude>
+                                    <Latitude>60.571903</Latitude>
+                                </Location>
+                            </Centroid>
+                            <AccessModes></AccessModes>
+                            <OtherTransportModes></OtherTransportModes>
+                            <PublicCode>4</PublicCode>
+                        </Quay>
+                    </quays>
+                </StopPlace>
+
 
             </stopPlaces>
         </SiteFrame>

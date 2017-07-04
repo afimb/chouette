@@ -22,6 +22,7 @@ import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.TransportSubModeEnum;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.testng.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -109,14 +110,16 @@ public class StopAreaServiceTest extends Arquillian {
 
         stopAreaService.createOrUpdateStopPlacesFromNetexStopPlaces(new FileInputStream("src/test/data/StopAreasInitialSynch.xml"));
 
+        Assert.assertTrue(StringUtils.isEmpty(stopAreaDAO.findByObjectId("NSR:Quay:7").getName()));
+
         assertStopPlace("NSR:StopPlace:1", "NSR:Quay:1a", "NSR:Quay:1b");
         assertStopPlace("NSR:StopPlace:2", "NSR:Quay:2a");
         assertStopPlace("NSR:StopPlace:3", "NSR:Quay:3a");
 
-
         Assert.assertNull(stopAreaDAO.findByObjectId("NSR:StopPlace:4"), "Did not expect to find inactive stop place");
         Assert.assertNull(stopAreaDAO.findByObjectId("NSR:StopPlace:4a"), "Did not expect to find quay for inactive stop place");
         Assert.assertNull(stopAreaDAO.findByObjectId("NSR:StopPlace:4b"), "Did not expect to find quay for inactive stop place");
+
 
         utx.commit();
         utx.begin();
@@ -124,6 +127,8 @@ public class StopAreaServiceTest extends Arquillian {
 
         // Update stop places
         stopAreaService.createOrUpdateStopPlacesFromNetexStopPlaces(new FileInputStream("src/test/data/StopAreasUpdate.xml"));
+
+        Assert.assertFalse(StringUtils.isEmpty(stopAreaDAO.findByObjectId("NSR:Quay:7").getName()), "Expected quay name to be updated");
 
         Assert.assertNull(stopAreaDAO.findByObjectId("NSR:StopPlace:1"), "Did not expect to find deactivated stop place");
         Assert.assertNull(stopAreaDAO.findByObjectId("NSR:Quay:1a"), "Did not expect to find quay for deactivated stop place");

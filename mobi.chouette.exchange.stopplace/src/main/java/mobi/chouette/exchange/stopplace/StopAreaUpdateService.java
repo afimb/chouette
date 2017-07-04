@@ -188,6 +188,7 @@ public class StopAreaUpdateService {
 
             } else {
                 log.debug("Updating existing StopArea (Quay) : " + stopArea);
+                stopAreaUpdater.update(context, existingQuayForSameStopPlace, quay);
                 stopAreaDAO.update(existingQuayForSameStopPlace);
             }
         }
