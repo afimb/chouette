@@ -84,6 +84,7 @@
                                 <StopPointInJourneyPattern order="1" version="1" id="AVI:StopPointInJourneyPattern:40203411">
                                     <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:SVG"/>
                                     <ForAlighting>false</ForAlighting>
+                                    <DestinationDisplayRef ref="AVI:DestinationDisplay:1"/>
                                 </StopPointInJourneyPattern>
                                 <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:40203412">
                                     <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:BGO"/>

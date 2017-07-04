@@ -617,6 +617,12 @@
                     </stopPlaces>
                 </SiteFrame>
                 <ServiceFrame version="1" id="AVI:ServiceFrame:4110881">
+                    <destinationDisplays>
+                        <DestinationDisplay id="AVI:DestinationDisplay:1" version="1">
+                            <FrontText>Fronttext</FrontText>
+                        </DestinationDisplay>
+                    </destinationDisplays>
+                    
                     <scheduledStopPoints>
                         <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:AES">
                             <Name>Ålesund Lufthavn</Name>
