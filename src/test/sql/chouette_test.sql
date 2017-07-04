@@ -288,6 +288,38 @@ ALTER TABLE chouette_gui.connection_links_id_seq OWNER TO chouette;
 ALTER SEQUENCE connection_links_id_seq OWNED BY connection_links.id;
 
 
+--
+-- Name: destination_displays; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
+--
+
+CREATE TABLE destination_displays (
+    id bigint NOT NULL,
+    parent_id bigint,
+    name character varying(255),
+    side_text character varying(255),
+    front_text character varying(255),
+    public_code character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE chouette_gui.destination_displays OWNER TO chouette;
+
+
+CREATE SEQUENCE destination_displays_id_seq
+START WITH 1
+INCREMENT BY 1
+NO MINVALUE
+NO MAXVALUE
+CACHE 1;
+
+
+ALTER TABLE chouette_gui.destination_displays_id_seq OWNER TO chouette;
+
+
+ALTER SEQUENCE destination_displays_id_seq OWNED BY destination_displays.id;
+
 
 --
 -- TOC entry 188 (class 1259 OID 938909)
@@ -982,13 +1014,14 @@ CREATE TABLE stop_points (
     id bigint NOT NULL,
     route_id bigint,
     stop_area_id bigint,
+    destination_display_id bigint,
     objectid character varying(255) NOT NULL,
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
     "position" integer,
     for_boarding character varying(255),
-    for_alighting character varying(255)
+    for_alighting character varying(255),
 );
 
 
