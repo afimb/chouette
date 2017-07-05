@@ -351,13 +351,13 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
     		netexDestinationDisplay.setVersion(objectVersion > 0 ? String.valueOf(objectVersion) : NETEX_DATA_OJBECT_VERSION);
                       
     		if(isSet(dd.getName())) {
-    			netexDestinationDisplay.setFrontText(getMultilingualString(dd.getName()));
+    			netexDestinationDisplay.setName(getMultilingualString(dd.getName()));
     		}
     		if(isSet(dd.getFrontText())) {
     			netexDestinationDisplay.setFrontText(getMultilingualString(dd.getFrontText()));
     		}
     		if(isSet(dd.getSideText())) {
-    			netexDestinationDisplay.setFrontText(getMultilingualString(dd.getSideText()));
+    			netexDestinationDisplay.setSideText(getMultilingualString(dd.getSideText()));
     		}
 
             exportableNetexData.getSharedDestinationDisplays().put(dd.getObjectId(), netexDestinationDisplay);
