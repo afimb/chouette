@@ -422,11 +422,20 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	 */
 	private void twoDatabaseStopAreaOneTest(ValidationReporter validationReporter, Context context, StopArea oldValue,
 			StopArea newValue, ValidationData data) {
-		if (!NeptuneUtil.sameValue(oldValue.getParent(), newValue.getParent()))
-			validationReporter.addCheckPointReportError(context, DATABASE_STOP_AREA_1,
-					data.getDataLocations().get(newValue.getObjectId()));
-		else
+		if (!NeptuneUtil.sameValue(oldValue.getParent(), newValue.getParent())) {
+			if(data != null && data.getDataLocations() != null) {
+				validationReporter.addCheckPointReportError(context, DATABASE_STOP_AREA_1,
+						data.getDataLocations().get(newValue.getObjectId()));
+			} else {
+				validationReporter.addCheckPointReportError(context, DATABASE_STOP_AREA_1,null);
+				
+			}
+			
+			
+		}
+		else {
 			validationReporter.reportSuccess(context, DATABASE_STOP_AREA_1);
+		}
 	}
 
 	/**
