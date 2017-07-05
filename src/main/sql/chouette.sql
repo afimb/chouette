@@ -252,6 +252,10 @@ ALTER SEQUENCE connection_links_id_seq OWNED BY connection_links.id;
 
 CREATE TABLE destination_displays (
     id bigint NOT NULL,
+    objectid character varying(255) NOT NULL,
+    object_version integer,
+    creation_time timestamp without time zone,
+    creator_id character varying(255),
     name character varying(255),
     side_text character varying(255),
     front_text character varying(255),

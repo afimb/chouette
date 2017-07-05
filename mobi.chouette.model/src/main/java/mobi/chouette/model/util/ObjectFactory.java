@@ -4,6 +4,7 @@ import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
+import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -230,6 +231,17 @@ public class ObjectFactory {
 			section.setObjectId(objectId);
 			section.setDetached(true);
 			referential.getRouteSections().put(objectId, section);
+		}
+		return section;
+	}
+
+	public static DestinationDisplay getDestinationDisplay(Referential referential, String objectId) {
+		DestinationDisplay section = referential.getDestinationDisplays().get(objectId);
+		if (section == null) {
+			section = new DestinationDisplay();
+			section.setObjectId(objectId);
+			section.setDetached(true);
+			referential.getDestinationDisplays().put(objectId, section);
 		}
 		return section;
 	}

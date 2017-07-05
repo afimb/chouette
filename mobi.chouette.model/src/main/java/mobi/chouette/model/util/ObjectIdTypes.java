@@ -78,4 +78,9 @@ public interface ObjectIdTypes {
 	    * default objectId type for vehicle journeys 
 	    */
 	   public static final String VEHICLEJOURNEY_KEY = "VehicleJourney";
+
+	   /**
+	    * default objectId type for vehicle journeys 
+	    */
+	   public static final String DESTINATIONDISPLAY_KEY = "DestinationDisplay";
 }

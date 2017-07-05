@@ -27,7 +27,7 @@ import java.util.List;
 @Entity
 @Table(name = "destination_displays")
 @NoArgsConstructor
-public class DestinationDisplay extends NeptuneObject {
+public class DestinationDisplay extends NeptuneIdentifiedObject{
 
     private static final long serialVersionUID = 6790138295242844540L;
 
@@ -96,25 +96,6 @@ public class DestinationDisplay extends NeptuneObject {
      */
     public void setFrontText(String value) {
         frontText = StringUtils.abbreviate(value, 255);
-    }
-
-    /**
-     * public code
-     *
-     * @return The actual value
-     */
-    @Getter
-    @Column(name = "public_code")
-    private String publicCode;
-
-    /**
-     * set public code <br/>
-     * truncated to 255 characters if too long
-     *
-     * @param value New value
-     */
-    public void setPublicCode(String value) {
-        publicCode = StringUtils.abbreviate(value, 255);
     }
 
     /**
