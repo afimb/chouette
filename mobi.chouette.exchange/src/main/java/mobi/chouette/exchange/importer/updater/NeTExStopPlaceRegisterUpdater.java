@@ -70,6 +70,8 @@ public class NeTExStopPlaceRegisterUpdater {
 
 	public static final String IMPORTED_ID = "imported-id";
 
+	public static final String MERGED_ID = "merged-id";
+
 	public static final String BEAN_NAME = "NeTExStopPlaceRegisterUpdater";
 
 	public static final String IMPORTED_ID_VALUE_SEPARATOR = ",";
@@ -458,11 +460,21 @@ public class NeTExStopPlaceRegisterUpdater {
 	}
 
 	private void addIdsToLookupMap(Map<String, String> map, KeyListStructure keyList, String newStopPlaceId) {
+		// Add current id to map as well to handle if we send correct id's in and receive the same back
+		map.put(newStopPlaceId, newStopPlaceId);
+		
 		if (keyList != null && keyList.getKeyValue() != null) {
 			List<KeyValueStructure> keyValue = keyList.getKeyValue();
 
 			for (KeyValueStructure s : keyValue) {
 				if (s != null && IMPORTED_ID.equals(s.getKey())) {
+					// Split value
+					String[] existingIds = StringUtils.split(s.getValue(), IMPORTED_ID_VALUE_SEPARATOR);
+					for (String id : existingIds) {
+						map.put(id, newStopPlaceId);
+					}
+				}
+				if (s != null && MERGED_ID.equals(s.getKey())) {
 					// Split value
 					String[] existingIds = StringUtils.split(s.getValue(), IMPORTED_ID_VALUE_SEPARATOR);
 					for (String id : existingIds) {
