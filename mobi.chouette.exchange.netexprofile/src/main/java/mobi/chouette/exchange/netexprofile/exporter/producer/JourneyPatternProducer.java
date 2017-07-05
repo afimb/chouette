@@ -58,6 +58,8 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
         PointsInJourneyPattern_RelStructure pointsInJourneyPattern = netexFactory.createPointsInJourneyPattern_RelStructure();
         List<StopPoint> stopPoints = neptuneJourneyPattern.getStopPoints();
         stopPoints.sort(Comparator.comparingInt(StopPoint::getPosition));
+        
+       
 
         for (int i = 0; i < stopPoints.size(); i++) {
             StopPoint stopPoint = stopPoints.get(i);
@@ -93,6 +95,13 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
                 }
 
                 stopPointInJourneyPattern.setOrder(BigInteger.valueOf(i + 1));
+                
+                if(stopPoint.getDestinationDisplay() != null) {
+                	DestinationDisplayRefStructure destinationDisplayRef = netexFactory.createDestinationDisplayRefStructure();
+                	destinationDisplayRef.setRef(stopPoint.getDestinationDisplay().getObjectId());
+                	stopPointInJourneyPattern.setDestinationDisplayRef(destinationDisplayRef);
+                }
+                
                 pointsInJourneyPattern.getPointInJourneyPatternOrStopPointInJourneyPatternOrTimingPointInJourneyPattern().add(stopPointInJourneyPattern);
             }
         }

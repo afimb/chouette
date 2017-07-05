@@ -26,7 +26,7 @@ import java.util.List;
 @Entity
 @Table(name = "destination_displays")
 @NoArgsConstructor
-public class DestinationDisplay extends NeptuneObject {
+public class DestinationDisplay extends NeptuneIdentifiedObject {
 
     private static final long serialVersionUID = 6790138295242844540L;
 
