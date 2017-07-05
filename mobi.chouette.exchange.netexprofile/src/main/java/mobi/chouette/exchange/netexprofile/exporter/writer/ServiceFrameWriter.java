@@ -69,8 +69,8 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
     private static void writeDestinationDisplaysElement(XMLStreamWriter writer, ExportableNetexData exportableData) {
         try {
             writer.writeStartElement(DESTINATION_DISPLAYS);
-            for (DestinationDisplay routePoint : exportableData.getSharedDestinationDisplays().values()) {
-                marshaller.marshal(netexFactory.createDestinationDisplay(routePoint), writer);
+            for (DestinationDisplay destinationDisplay : exportableData.getSharedDestinationDisplays().values()) {
+                marshaller.marshal(netexFactory.createDestinationDisplay(destinationDisplay), writer);
             }
             writer.writeEndElement();
         } catch (Exception e) {

@@ -370,8 +370,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
     				// Recurse into vias, create if missing
     				addDestinationDisplay(via,exportableNetexData);
     				
-    				DestinationDisplayRefStructure ref = netexFactory.createDestinationDisplayRefStructure();
-    				ref.setRef(via.getObjectId());
+    				DestinationDisplayRefStructure ref = netexFactory.createDestinationDisplayRefStructure().withRef(via.getObjectId()).withVersion(via.getObjectVersion() > 0 ? String.valueOf(via.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
     				Via_VersionedChildStructure e = netexFactory.createVia_VersionedChildStructure().withDestinationDisplayRef(ref );
     				netexDestinationDisplay.getVias().getVia().add(e);
     			}
