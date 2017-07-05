@@ -592,11 +592,19 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		DropOffType drop = (vehicleJourneyAtStop.dropOff == null? DropOffType.Scheduled : vehicleJourneyAtStop.dropOff);
 		PickupType pickup = (vehicleJourneyAtStop.pickup == null? PickupType.Scheduled : vehicleJourneyAtStop.pickup);
 		
+		String result = null;
+		
 		if(drop == DropOffType.Scheduled && pickup == PickupType.Scheduled) {
-			return vehicleJourneyAtStop.stopId;
+			result =  vehicleJourneyAtStop.stopId;
 		} else {
-			return vehicleJourneyAtStop.stopId+"."+drop.ordinal()+""+pickup.ordinal();
+			result = vehicleJourneyAtStop.stopId+"."+drop.ordinal()+""+pickup.ordinal();
 		}
+		
+		if(vehicleJourneyAtStop.stopHeadsign != null) {
+			result += vehicleJourneyAtStop.stopHeadsign;
+		}
+		
+		return result;
 	}
 
 	private void createJourneyFrequencies(Context context, Referential referential, GtfsImporter importer,
