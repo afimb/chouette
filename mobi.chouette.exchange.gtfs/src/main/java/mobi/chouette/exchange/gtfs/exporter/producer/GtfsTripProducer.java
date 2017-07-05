@@ -105,7 +105,9 @@ public class GtfsTripProducer extends AbstractProducer {
 			
 			time.setStopSequence((int) vjas.getStopPoint().getPosition());
 
-			// time.setStopHeadsign();
+			if(vjas.getStopPoint().getDestinationDisplay() != null) {
+				time.setStopHeadsign(vjas.getStopPoint().getDestinationDisplay().getFrontText());
+			}
 			addDropOffAndPickUpType(time, l, vj, vjas);
 			
 			if (vj.getJourneyPattern().getSectionStatus() == SectionStatusEnum.Completed) {
