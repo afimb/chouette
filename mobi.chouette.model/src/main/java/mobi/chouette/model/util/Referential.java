@@ -74,7 +74,6 @@ public class Referential implements java.io.Serializable {
 	@Setter
 	private Map<String, Timeband> sharedTimebands = new HashMap<String, Timeband>();
 
-
 	@Getter
 	@Setter
 	private Map<String, Route> routes = new HashMap<String, Route>();
@@ -182,8 +181,8 @@ public class Referential implements java.io.Serializable {
 			for (StopArea area : sharedStopAreas.values()) {
 				area.getContainedStopPoints().clear();
 			}
-			for (DestinationDisplay destinationDisplay : sharedDestinationDisplays.values()) {
-				destinationDisplay.getVias().clear();
+			for (DestinationDisplay display : sharedDestinationDisplays.values()) {
+				display.getVias().clear();
 			}
 		}
 		accessLinks.clear();

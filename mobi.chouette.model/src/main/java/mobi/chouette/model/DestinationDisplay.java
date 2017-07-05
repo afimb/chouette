@@ -99,25 +99,6 @@ public class DestinationDisplay extends NeptuneIdentifiedObject {
     }
 
     /**
-     * public code
-     *
-     * @return The actual value
-     */
-    @Getter
-    @Column(name = "public_code")
-    private String publicCode;
-
-    /**
-     * set public code <br/>
-     * truncated to 255 characters if too long
-     *
-     * @param value New value
-     */
-    public void setPublicCode(String value) {
-        publicCode = StringUtils.abbreviate(value, 255);
-    }
-
-    /**
      * creation time
      *
      * @param createdAt

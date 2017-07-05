@@ -6,12 +6,6 @@ import java.util.List;
 
 import javax.ejb.EJB;
 
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.model.DestinationDisplay;
-import mobi.chouette.model.JourneyPattern;
-import mobi.chouette.model.RouteSection;
-import mobi.chouette.persistence.hibernate.ContextHolder;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.testng.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -21,10 +15,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.PrecisionModel;
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.model.DestinationDisplay;
+import mobi.chouette.persistence.hibernate.ContextHolder;
 
 @Log4j
 public class DestinationDisplayDaoTest extends Arquillian {
@@ -63,11 +56,13 @@ public class DestinationDisplayDaoTest extends Arquillian {
 			parent.setName("Parent");
 			parent.setFrontText("FrontText");
 			parent.setSideText("SideText");
+			parent.setObjectId("X:DestinationDisplay:1");
 			
 			DestinationDisplay child = new DestinationDisplay();
 			child.setName("Child");
 			child.setFrontText("FrontText");
 			child.setSideText("SideText");
+			child.setObjectId("X:DestinationDisplay:2");
 			
 			parent.getVias().add(child);
 
@@ -75,6 +70,7 @@ public class DestinationDisplayDaoTest extends Arquillian {
 			child2.setName("Child2");
 			child2.setFrontText("FrontText");
 			child2.setSideText("SideText");
+			child2.setObjectId("X:DestinationDisplay:3");
 			
 			parent.getVias().add(child2);
 
@@ -89,7 +85,7 @@ public class DestinationDisplayDaoTest extends Arquillian {
 				Assert.assertNotNull(d.getFrontText());
 				Assert.assertNotNull(d.getSideText());
 			
-				if(d.getName().equals(parent.getName())) {
+				if(d.getObjectId().equals(parent.getObjectId())) {
 					Assert.assertEquals(2, d.getVias().size());
 					Assert.assertEquals(d.getVias().get(1).getName(), "Child2");
 				}
