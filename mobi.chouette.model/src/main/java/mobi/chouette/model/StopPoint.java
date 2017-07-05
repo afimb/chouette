@@ -161,7 +161,7 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
 	@JoinColumn(name = "destination_display_id")
 	private DestinationDisplay destinationDisplay;
 
