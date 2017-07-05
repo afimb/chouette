@@ -4,9 +4,12 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.dao.DestinationDisplayDAO;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.Company;
+import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.NeptuneUtil;
@@ -21,8 +24,16 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	@EJB
 	private StopAreaDAO stopAreaDAO;
 
+	@EJB
+	private DestinationDisplayDAO destinationDisplayDAO;
+
 	@EJB(beanName = StopAreaUpdater.BEAN_NAME)
 	private Updater<StopArea> stopAreaUpdater;
+	
+	@EJB(beanName = DestinationDisplayUpdater.BEAN_NAME)
+	private Updater<DestinationDisplay> destinationDisplayUpdater;
+	
+	
 
 	@Override
 	public void update(Context context, StopPoint oldValue, StopPoint newValue) throws Exception {
@@ -50,6 +61,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 			oldValue.setCreatorId(newValue.getCreatorId());
 			oldValue.setForAlighting(newValue.getForAlighting());
 			oldValue.setForBoarding(newValue.getForBoarding());
+			oldValue.setDestinationDisplay(newValue.getDestinationDisplay());
 			oldValue.setDetached(false);
 		} else {
 			twoDatabaseStopPointTwoTest(validationReporter, context, oldValue, newValue, data);
@@ -100,6 +112,29 @@ public class StopPointUpdater implements Updater<StopPoint> {
 			if (!context.containsKey(AREA_BLOC))
 			   stopAreaUpdater.update(context, oldValue.getContainedInStopArea(), newValue.getContainedInStopArea());
 		}
+		
+		// Destination display
+		if (newValue.getDestinationDisplay() == null) {
+			oldValue.setDestinationDisplay(null);
+		} else {
+			String objectId = newValue.getDestinationDisplay().getObjectId();
+			DestinationDisplay destinationDisplay = cache.getDestinationDisplays().get(objectId);
+			if (destinationDisplay == null) {
+				destinationDisplay = destinationDisplayDAO.findByObjectId(objectId);
+				if (destinationDisplay != null) {
+					cache.getDestinationDisplays().put(objectId, destinationDisplay);
+				}
+			}
+			if (destinationDisplay == null) {
+				destinationDisplay = ObjectFactory.getDestinationDisplay(cache, objectId);
+			}
+			oldValue.setDestinationDisplay(destinationDisplay);
+			
+			destinationDisplayUpdater.update(context, oldValue.getDestinationDisplay(), newValue.getDestinationDisplay());
+		}
+
+	
+		
 //		monitor.stop();
 
 	}
