@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.DestinationDisplay;
 import org.rutebanken.netex.model.DestinationDisplayRefStructure;
 import org.rutebanken.netex.model.DestinationDisplaysInFrame_RelStructure;
+import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.Via_VersionedChildStructure;
 
 import lombok.extern.log4j.Log4j;
@@ -31,16 +32,16 @@ public class DestinationDisplayParser implements Parser, Constant {
 
 			// TODO continue parsing
 
-			if (StringUtils.trimToNull(netexDestinationDisplay.getName().getValue()) != null) {
-				chouetteDestinationDisplay.setName(StringUtils.trimToNull(netexDestinationDisplay.getName().getValue()));
+			if (netexDestinationDisplay.getName() != null) {
+				chouetteDestinationDisplay.setName(getValue(netexDestinationDisplay.getName()));
 			}
 
-			if (StringUtils.trimToNull(netexDestinationDisplay.getFrontText().getValue()) != null) {
-				chouetteDestinationDisplay.setName(StringUtils.trimToNull(netexDestinationDisplay.getFrontText().getValue()));
+			if (netexDestinationDisplay.getFrontText() != null) {
+				chouetteDestinationDisplay.setName(getValue(netexDestinationDisplay.getFrontText()));
 			}
 
-			if (StringUtils.trimToNull(netexDestinationDisplay.getSideText().getValue()) != null) {
-				chouetteDestinationDisplay.setName(StringUtils.trimToNull(netexDestinationDisplay.getSideText().getValue()));
+			if (netexDestinationDisplay.getSideText() != null) {
+				chouetteDestinationDisplay.setName(getValue(netexDestinationDisplay.getSideText()));
 			}
 
 			if (netexDestinationDisplay.getVias() != null && netexDestinationDisplay.getVias().getVia().size() > 0) {
@@ -53,6 +54,16 @@ public class DestinationDisplayParser implements Parser, Constant {
 
 			chouetteDestinationDisplay.setFilled(true);
 		}
+	}
+	
+	private String getValue(MultilingualString m) {
+		String v = null;
+		if(m != null) {
+			v = StringUtils.trimToNull(m.getValue());
+		}
+		
+		return v;
+		
 	}
 
 	static {

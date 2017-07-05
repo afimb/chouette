@@ -485,6 +485,8 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
                 createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
                 createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
         );
+        
+        log.info("*********IMPORT COMPLETE, STARTING EXPORT**********@");
 
         Context context = initExportContext();
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
