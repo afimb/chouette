@@ -29,6 +29,7 @@ import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
 
@@ -534,6 +535,11 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 				for (StopPoint point : jp.getStopPoints()) {
 					numStopPoints++;
+					
+					if(jp.getStopPoints().get(0).equals(point)) {
+						Assert.assertNotNull(point.getDestinationDisplay());
+					}
+					
 					assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
 					bps.add(point.getContainedInStopArea());
 					assertNotNull(point.getForAlighting(), "no alighting info StopPoint=" + point);
