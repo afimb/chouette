@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -141,17 +142,6 @@ public class DestinationDisplay extends NeptuneObject {
     private Date updatedAt = new Date(createdAt.getTime());
 
     /**
-     * parent destination display reference <br/>
-     *
-     * @return The actual value
-     */
-    @Getter
-    @Setter
-    @JoinColumn
-    @ManyToOne
-    private DestinationDisplay parent;
-
-    /**
      * vias
      *
      * @param vias
@@ -160,8 +150,9 @@ public class DestinationDisplay extends NeptuneObject {
      */
     @Getter
     @Setter
-    @JoinColumn
-    @OneToMany(mappedBy = "parent")
+    @OrderColumn(name="position")
+    @ManyToMany(cascade = { CascadeType.PERSIST }, fetch = FetchType.EAGER)
+	@JoinTable(name = "destination_display_via", joinColumns = { @JoinColumn(name = "destination_display_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "via_id", nullable = false, updatable = false) })
     private List<DestinationDisplay> vias = new ArrayList<>(0);
 
 }
