@@ -17,12 +17,16 @@ import org.testng.annotations.Test;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.DestinationDisplay;
+import mobi.chouette.model.StopPoint;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 @Log4j
 public class DestinationDisplayDaoTest extends Arquillian {
 	@EJB 
 	DestinationDisplayDAO destinationDisplayDAO;
+
+	@EJB 
+	StopPointDAO stopPointDAO;
 
 	@Deployment
 	public static WebArchive createDeployment() {
@@ -45,7 +49,7 @@ public class DestinationDisplayDaoTest extends Arquillian {
 
 	
 	@Test
-	public void checkDestinationDisplay() {
+	public void checkDirectPersistDestinationDisplay() {
 		try {
 			ContextHolder.setContext("chouette_gui"); // set tenant schema
 			
@@ -93,6 +97,42 @@ public class DestinationDisplayDaoTest extends Arquillian {
 			
 			
 			
+			
+			
+		} catch (RuntimeException ex) {
+			Throwable cause = ex.getCause();
+			while (cause != null) {
+				log.error(cause);
+				if (cause instanceof SQLException)
+					traceSqlException((SQLException) cause);
+				cause = cause.getCause();
+			}
+			throw ex;
+		}
+	}
+	
+	@Test
+	public void checkCascadePersistViaStopPoint() {
+		try {
+			ContextHolder.setContext("chouette_gui"); // set tenant schema
+			
+			stopPointDAO.deleteAll();
+			
+			DestinationDisplay parent = new DestinationDisplay();
+			
+			parent.setName("Parent");
+			parent.setFrontText("FrontText");
+			parent.setSideText("SideText");
+			parent.setObjectId("X:DestinationDisplay:1");
+			
+			StopPoint sp = new StopPoint();
+			sp.setObjectId("X:StopPoint:1");
+			sp.setDestinationDisplay(parent);
+			
+			stopPointDAO.create(sp);
+			StopPoint read = stopPointDAO.find(sp.getId());
+			Assert.assertNotNull(read);
+			Assert.assertNotNull(read.getDestinationDisplay());
 			
 			
 		} catch (RuntimeException ex) {
