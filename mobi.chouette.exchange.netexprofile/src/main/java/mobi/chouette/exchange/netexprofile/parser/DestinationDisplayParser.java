@@ -7,7 +7,6 @@ import org.rutebanken.netex.model.DestinationDisplaysInFrame_RelStructure;
 import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.Via_VersionedChildStructure;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
@@ -15,7 +14,6 @@ import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-@Log4j
 public class DestinationDisplayParser implements Parser, Constant {
 
 	@Override
@@ -30,18 +28,16 @@ public class DestinationDisplayParser implements Parser, Constant {
 					netexDestinationDisplay.getId());
 			chouetteDestinationDisplay.setObjectVersion(NetexParserUtils.getVersion(netexDestinationDisplay));
 
-			// TODO continue parsing
-
 			if (netexDestinationDisplay.getName() != null) {
 				chouetteDestinationDisplay.setName(getValue(netexDestinationDisplay.getName()));
 			}
 
 			if (netexDestinationDisplay.getFrontText() != null) {
-				chouetteDestinationDisplay.setName(getValue(netexDestinationDisplay.getFrontText()));
+				chouetteDestinationDisplay.setFrontText(getValue(netexDestinationDisplay.getFrontText()));
 			}
 
 			if (netexDestinationDisplay.getSideText() != null) {
-				chouetteDestinationDisplay.setName(getValue(netexDestinationDisplay.getSideText()));
+				chouetteDestinationDisplay.setSideText(getValue(netexDestinationDisplay.getSideText()));
 			}
 
 			if (netexDestinationDisplay.getVias() != null && netexDestinationDisplay.getVias().getVia().size() > 0) {
