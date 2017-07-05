@@ -231,7 +231,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 			if(serviceFrame.getDestinationDisplays() != null) {
 				DestinationDisplaysInFrame_RelStructure destinationDisplaysInFrameStruct = serviceFrame.getDestinationDisplays();
 				context.put(NETEX_LINE_DATA_CONTEXT, destinationDisplaysInFrameStruct);
-				DestinationDisplayParser lineParser = (LineParser) ParserFactory.create(DestinationDisplayParser.class.getName());
+				DestinationDisplayParser lineParser = (DestinationDisplayParser) ParserFactory.create(DestinationDisplayParser.class.getName());
 				lineParser.parse(context);
 				
 			}
