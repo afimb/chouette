@@ -1,7 +1,5 @@
 package mobi.chouette.exchange.importer.updater;
 
-import java.util.Date;
-
 import javax.ejb.Stateless;
 
 import lombok.extern.log4j.Log4j;
@@ -41,9 +39,6 @@ public class DestinationDisplayUpdater implements Updater<DestinationDisplay> {
 		oldValue.getVias().clear();
 		oldValue.getVias().addAll(newValue.getVias());
 		
-		// Updated now anyhow
-		oldValue.setUpdatedAt(new Date());
-
 	}
 
 }

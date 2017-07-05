@@ -297,9 +297,7 @@ CREATE TABLE destination_displays (
     creator_id character varying(255),
     name character varying(255),
     side_text character varying(255),
-    front_text character varying(255),
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    front_text character varying(255)
 );
 
 
