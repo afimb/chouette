@@ -7,6 +7,7 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.util.NetexReferential;
+import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -69,6 +70,13 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
 
             String stopPointId = routeStopPoints.get(i).getObjectId();
             StopPoint stopPoint = ObjectFactory.getStopPoint(referential, stopPointId);
+            
+            if(pointInPattern.getDestinationDisplayRef() != null) {
+            	DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential, pointInPattern.getDestinationDisplayRef().getRef());
+            	stopPoint.setDestinationDisplay(destinationDisplay);
+            }
+            
+            
             chouetteJourneyPattern.addStopPoint(stopPoint);
 
             addStopPointId(context, pointInPattern.getId(), stopPointId);

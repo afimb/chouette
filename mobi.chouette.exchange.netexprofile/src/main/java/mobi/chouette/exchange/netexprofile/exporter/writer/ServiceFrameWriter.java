@@ -47,6 +47,7 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
                 writeJourneyPatternsElement(writer, exportableNetexData);
             } else { // shared data
                 writeRoutePointsElement(writer, exportableNetexData);
+                writeDestinationDisplaysElement(writer, exportableNetexData);
                 writeScheduledStopPointsElement(writer, exportableNetexData);
                 writeStopAssignmentsElement(writer, exportableNetexData);
             }
@@ -60,6 +61,18 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
     private static void writeNetworkElement(XMLStreamWriter writer, Network network) {
         try {
             marshaller.marshal(netexFactory.createNetwork(network), writer);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void writeDestinationDisplaysElement(XMLStreamWriter writer, ExportableNetexData exportableData) {
+        try {
+            writer.writeStartElement(DESTINATION_DISPLAYS);
+            for (DestinationDisplay destinationDisplay : exportableData.getSharedDestinationDisplays().values()) {
+                marshaller.marshal(netexFactory.createDestinationDisplay(destinationDisplay), writer);
+            }
+            writer.writeEndElement();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
