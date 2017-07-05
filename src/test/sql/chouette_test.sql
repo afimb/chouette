@@ -294,11 +294,9 @@ ALTER SEQUENCE connection_links_id_seq OWNED BY connection_links.id;
 
 CREATE TABLE destination_displays (
     id bigint NOT NULL,
-    parent_id bigint,
     name character varying(255),
     side_text character varying(255),
     front_text character varying(255),
-    public_code character varying(255),
     created_at timestamp without time zone,
     updated_at timestamp without time zone
 );
@@ -319,6 +317,32 @@ ALTER TABLE chouette_gui.destination_displays_id_seq OWNER TO chouette;
 
 
 ALTER SEQUENCE destination_displays_id_seq OWNED BY destination_displays.id;
+
+
+CREATE TABLE destination_display_via
+(
+    destination_display_id bigint NOT NULL,
+    via_id bigint NOT NULL,
+    "position" bigint,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE destination_display_via OWNER to chouette;
+
+-- Index: index_destination_display_id_on_destination_display_via
+
+-- DROP INDEX bra.index_destination_display_id_on_destination_display_via;
+
+CREATE INDEX index_destination_display_id_on_destination_display_via
+    ON destination_display_via USING btree
+    (destination_display_id)
+    TABLESPACE pg_default;
+    
 
 
 --
