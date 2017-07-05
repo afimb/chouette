@@ -49,16 +49,17 @@ public class StopAreaService {
     }
 
     private void updateStopAreaReferencesPerReferential(Map<String, Set<String>> replacementMap) {
-
+        int updatedStopPointCnt = 0;
         String orgContext = ContextHolder.getContext();
         try {
             for (String referential : referentialDAO.getReferentials()) {
                 ContextHolder.setContext(referential);
-                stopAreaUpdateService.updateStopAreaReferences(replacementMap);
+                updatedStopPointCnt += stopAreaUpdateService.updateStopAreaReferences(replacementMap);
             }
         } finally {
             ContextHolder.setContext(orgContext); // reset context
         }
+        log.info("Updated stop area references for " + updatedStopPointCnt + " stop points");
     }
 
     public void deleteStopArea(String objectId) {
