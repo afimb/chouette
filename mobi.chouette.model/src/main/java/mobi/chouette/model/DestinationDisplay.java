@@ -99,30 +99,6 @@ public class DestinationDisplay extends NeptuneIdentifiedObject{
     }
 
     /**
-     * creation time
-     *
-     * @param createdAt
-     * new creation time
-     * @return The actual creation time
-     */
-    @Getter
-    @Setter
-    @Column(name = "created_at")
-    private Date createdAt = GregorianCalendar.getInstance().getTime();
-
-    /**
-     * last update time
-     *
-     * @param updatedAt
-     * new last update time
-     * @return The actual last update time
-     */
-    @Getter
-    @Setter
-    @Column(name = "updated_at")
-    private Date updatedAt = new Date(createdAt.getTime());
-
-    /**
      * vias
      *
      * @param vias
