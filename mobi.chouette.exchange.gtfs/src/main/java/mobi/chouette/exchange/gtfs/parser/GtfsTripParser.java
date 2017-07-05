@@ -48,6 +48,7 @@ import mobi.chouette.exchange.gtfs.validation.GtfsValidationReporter;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
+import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -526,7 +527,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 			for (GtfsStopTime gtfsStopTime : importer.getStopTimeByTrip().values(gtfsTrip.getTripId())) {
 				VehicleJourneyAtStopWrapper vehicleJourneyAtStop = new VehicleJourneyAtStopWrapper(
-						gtfsStopTime.getStopId(), gtfsStopTime.getStopSequence(), gtfsStopTime.getShapeDistTraveled(), gtfsStopTime.getDropOffType(), gtfsStopTime.getPickupType());
+						gtfsStopTime.getStopId(), gtfsStopTime.getStopSequence(), gtfsStopTime.getShapeDistTraveled(), gtfsStopTime.getDropOffType(), gtfsStopTime.getPickupType(),gtfsStopTime.getStopHeadsign());
 				convert(context, gtfsStopTime, vehicleJourneyAtStop);
 
 				if (afterMidnight) {
@@ -857,7 +858,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		vehicleJourneyAtStop.setId(Long.valueOf(gtfsStopTime.getId().longValue()));
-
+		
 		String objectId = gtfsStopTime.getStopId();
 		StopPoint stopPoint = ObjectFactory.getStopPoint(referential, objectId);
 		vehicleJourneyAtStop.setStopPoint(stopPoint);
@@ -870,6 +871,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		 */
 		vehicleJourneyAtStop.setArrivalDayOffset(gtfsStopTime.getArrivalTime().getDay());
 		vehicleJourneyAtStop.setDepartureDayOffset(gtfsStopTime.getDepartureTime().getDay());
+
 	}
 	
 	private BoardingPossibilityEnum toBoardingPossibility(PickupType type) {
@@ -981,6 +983,15 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			stopPoint.setPosition(position++);
 			stopPoint.setForBoarding(toBoardingPossibility(wrapper.pickup));
 			stopPoint.setForAlighting(toAlightingPossibility(wrapper.dropOff));
+			
+			if(wrapper.stopHeadsign != null) {
+				DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential, stopKey);
+				destinationDisplay.setFrontText(wrapper.stopHeadsign);
+				destinationDisplay.setName(wrapper.stopHeadsign);
+					
+				stopPoint.setDestinationDisplay(destinationDisplay);
+			}
+
 
 			journeyPattern.addStopPoint(stopPoint);
 			stopPoint.setFilled(true);
@@ -997,6 +1008,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		Float shapeDistTraveled;
 		DropOffType dropOff;
 		PickupType pickup;
+		String stopHeadsign;
 	}
 
 	public static final Comparator<VehicleJourneyAtStop> VEHICLE_JOURNEY_AT_STOP_COMPARATOR = new Comparator<VehicleJourneyAtStop>() {
