@@ -1021,7 +1021,7 @@ CREATE TABLE stop_points (
     creator_id character varying(255),
     "position" integer,
     for_boarding character varying(255),
-    for_alighting character varying(255),
+    for_alighting character varying(255)
 );
 
 
