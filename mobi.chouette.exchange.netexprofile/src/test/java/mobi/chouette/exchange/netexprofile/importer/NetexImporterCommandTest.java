@@ -540,6 +540,14 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 						Assert.assertNotNull(point.getDestinationDisplay());
 					}
 					
+					if(point.getDestinationDisplay() != null && point.getDestinationDisplay().getObjectId().equals("AVI:DestinationDisplay:12636280")) {
+						// Verify that it has a via
+						DestinationDisplay destinationDisplay = point.getDestinationDisplay();
+						Assert.assertEquals(destinationDisplay.getVias().size(),1);
+						Assert.assertEquals(destinationDisplay.getVias().get(0).getObjectId(), "AVI:DestinationDisplay:18696881");
+						
+					}
+					
 					assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
 					bps.add(point.getContainedInStopArea());
 					assertNotNull(point.getForAlighting(), "no alighting info StopPoint=" + point);

@@ -48,7 +48,8 @@ public class DestinationDisplayParser implements Parser, Constant {
 				for (Via_VersionedChildStructure via : netexDestinationDisplay.getVias().getVia()) {
 					DestinationDisplayRefStructure destinationDisplayRef = via.getDestinationDisplayRef();
 					// Create referenced DestinationDisplay. Parent for loop is expected to populate values
-					ObjectFactory.getDestinationDisplay(referential, destinationDisplayRef.getRef());
+					mobi.chouette.model.DestinationDisplay viaDisplay = ObjectFactory.getDestinationDisplay(referential, destinationDisplayRef.getRef());
+					chouetteDestinationDisplay.getVias().add(viaDisplay);
 				}
 			}
 
