@@ -12,6 +12,10 @@ import org.apache.log4j.Logger;
 
 public abstract class AbstractConverter implements Constant{
 
+	public static String extractOriginalId(String chouetteObjectId) {
+		return chouetteObjectId.split(":")[2];
+	}
+
 	/**
 	 * @param source
 	 * @return
