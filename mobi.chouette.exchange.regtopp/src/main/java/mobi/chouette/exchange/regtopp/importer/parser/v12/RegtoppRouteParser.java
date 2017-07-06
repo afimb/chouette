@@ -12,11 +12,14 @@ import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.importer.parser.RouteKey;
 import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppStopParser;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppRouteTMS;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
 import mobi.chouette.model.*;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 import static mobi.chouette.common.Constant.*;
 
@@ -46,6 +49,7 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 
 		// Add routes and journey patterns
 		Index<AbstractRegtoppRouteTMS> routeIndex = importer.getRouteIndex();
+		Index<RegtoppDestinationDST> destinationById = importer.getDestinationById();
 
 		for (AbstractRegtoppRouteTMS routeSegment : routeIndex) {
 			if (lineId.equals(routeSegment.getLineId())) {
@@ -77,7 +81,7 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 				log.debug("Created chouette stop point ID: " + chouetteStopPointId);
 
 				// Might return null if invalid stopPoint
-				StopPoint stopPoint = createStopPoint(referential, context, routeSegment, chouetteStopPointId);
+				StopPoint stopPoint = createStopPoint(referential, context, routeSegment, chouetteStopPointId,destinationById);
 
 				if (stopPoint != null) {
 					// Add stop point to journey pattern AND route (for now)
@@ -87,13 +91,13 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 			}
 		}
 
-		sortStopPoints(referential);
+		sortStopPointsAndAddDepartureDestinationDisplay(referential,configuration);
 		updateRouteNames(referential, configuration);
 		linkOppositeRoutes(referential, configuration);
 
 	}
 
-	protected StopPoint createStopPoint(Referential referential, Context context, AbstractRegtoppRouteTMS routeSegment, String chouetteStopPointId)
+	protected StopPoint createStopPoint(Referential referential, Context context, AbstractRegtoppRouteTMS routeSegment, String chouetteStopPointId, Index<RegtoppDestinationDST> destinationById)
 			throws Exception {
 
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
@@ -106,6 +110,8 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 			
 			StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
 			stopPoint.setPosition(Integer.parseInt(routeSegment.getSequenceNumberStop()));
+			
+			appendDestinationDisplay(referential, routeSegment, destinationById, configuration, stopPoint);
 	
 			stopPoint.setContainedInStopArea(stopArea);
 			return stopPoint;
@@ -114,6 +120,23 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 		}
 
 		return null;
+	}
+
+	protected void appendDestinationDisplay(Referential referential, AbstractRegtoppRouteTMS routeSegment, Index<RegtoppDestinationDST> destinationById,
+			RegtoppImportParameters configuration, StopPoint stopPoint) {
+		RegtoppDestinationDST dst = destinationById.getValue(routeSegment.getDestinationId());
+		if(dst != null) {
+			DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential, ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), DestinationDisplay.DESTINATIONDISPLAY_KEY, routeSegment.getDestinationId()));
+			if(!destinationDisplay.isFilled()) {
+				String val = StringUtils.trimToNull(dst.getDestinationText());
+				if(val != null) {
+					destinationDisplay.setName(val);
+					destinationDisplay.setFrontText(val);
+					destinationDisplay.setFilled(true);
+					stopPoint.setDestinationDisplay(destinationDisplay);
+				}
+			}
+		}
 	}
 
 	static {
