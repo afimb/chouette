@@ -383,13 +383,13 @@ public class NeTExStopPlaceRegisterUpdater {
 		// diagram for usage of stoparea
 
 		// TODO? remove obsolete connectionLinks?
-		List<ConnectionLink> removedCollectionLinks = referential.getSharedConnectionLinks().values().stream()
-				.filter(e -> m.containsKey(e.getObjectId())).collect(Collectors.toList());
-
-		removedCollectionLinks.stream()
-				.peek(e -> log.info(
-						"Removing old connectionLink with id " + e.getObjectId() + ". correlationId: " + correlationId))
-				.map(e -> referential.getSharedConnectionLinks().remove(e.getObjectId())).collect(Collectors.toList());
+//		List<ConnectionLink> removedCollectionLinks = referential.getSharedConnectionLinks().values().stream()
+//				.filter(e -> m.containsKey(e.getObjectId())).collect(Collectors.toList());
+//
+//		removedCollectionLinks.stream()
+//				.peek(e -> log.info(
+//						"Removing old connectionLink with id " + e.getObjectId() + ". correlationId: " + correlationId))
+//				.map(e -> referential.getSharedConnectionLinks().remove(e.getObjectId())).collect(Collectors.toList());
 
 		// Clean referential from old garbage stop areas
 		for (String obsoleteObjectId : discardedStopAreas)
