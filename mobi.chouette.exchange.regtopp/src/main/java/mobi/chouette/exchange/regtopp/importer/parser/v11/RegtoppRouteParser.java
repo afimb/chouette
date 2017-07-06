@@ -239,7 +239,6 @@ public class RegtoppRouteParser extends LineSpecificParser {
 
 		// Sort stopPoints on JourneyPattern
 		Collection<JourneyPattern> journeyPatterns = referential.getJourneyPatterns().values();
-		int destinationDisplayCounter = 10000; // Regtopp can only handle 4
 												// digits
 		for (JourneyPattern jp : journeyPatterns) {
 			List<StopPoint> stopPoints = jp.getStopPoints();
@@ -247,15 +246,30 @@ public class RegtoppRouteParser extends LineSpecificParser {
 			jp.setDepartureStopPoint(stopPoints.get(0));
 			jp.setArrivalStopPoint(stopPoints.get(stopPoints.size() - 1));
 
-			if (jp.getDepartureStopPoint().getDestinationDisplay() == null) {
+			
+			
+			StopPoint departureStopPoint = jp.getDepartureStopPoint();
+			if (departureStopPoint.getDestinationDisplay() == null) {
 				// Create a forced DestinationDisplay
 				// Use JourneyPattern->PublishedName
+				
+				String stopPointId = ObjectIdCreator.extractOriginalId(departureStopPoint.getObjectId());
+				String journeyPatternId = ObjectIdCreator.extractOriginalId(jp.getObjectId());
+				
 				DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential,
 						ObjectIdCreator.composeGenericObjectId(parameters.getObjectIdPrefix(),
-								DestinationDisplay.DESTINATIONDISPLAY_KEY, Integer.toString(destinationDisplayCounter++)));
-				destinationDisplay.setName("Generated: "+jp.getPublishedName());
-				destinationDisplay.setFrontText(jp.getPublishedName());
-				jp.getDepartureStopPoint().setDestinationDisplay(destinationDisplay);
+								DestinationDisplay.DESTINATIONDISPLAY_KEY, journeyPatternId+"-"+stopPointId));
+				String content = jp.getPublishedName();
+				if(content == null) {
+					content = jp.getRoute().getPublishedName();
+				}
+				if(content == null) {
+					content = jp.getArrivalStopPoint().getContainedInStopArea().getName();
+				}
+				
+				destinationDisplay.setName("Generated: "+content);
+				destinationDisplay.setFrontText(content);
+				departureStopPoint.setDestinationDisplay(destinationDisplay);
 
 			}
 		}
