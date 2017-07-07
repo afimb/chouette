@@ -1,5 +1,12 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
+import static mobi.chouette.exchange.netexprofile.NetexTestUtils.createCodespace;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -18,6 +25,23 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.testng.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.testng.Assert;
+import org.testng.Reporter;
+import org.testng.annotations.Test;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -39,6 +63,7 @@ import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Codespace;
+import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -54,26 +79,6 @@ import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.TransportSubModeEnum;
 import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.testng.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.testng.Assert;
-import org.testng.Reporter;
-import org.testng.annotations.Test;
-
-import static mobi.chouette.exchange.netexprofile.NetexTestUtils.createCodespace;
-import static org.testng.Assert.*;
 
 @Log4j
 public class NetexImporterCommandTest extends Arquillian implements Constant, ReportConstant {
@@ -654,6 +659,19 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 				for (StopPoint point : jp.getStopPoints()) {
 					numStopPoints++;
+					
+					if(jp.getStopPoints().get(0).equals(point)) {
+						Assert.assertNotNull(point.getDestinationDisplay());
+					}
+					
+					if(point.getDestinationDisplay() != null && point.getDestinationDisplay().getObjectId().equals("AVI:DestinationDisplay:12636280")) {
+						// Verify that it has a via
+						DestinationDisplay destinationDisplay = point.getDestinationDisplay();
+						Assert.assertEquals(destinationDisplay.getVias().size(),1);
+						Assert.assertEquals(destinationDisplay.getVias().get(0).getObjectId(), "AVI:DestinationDisplay:18696881");
+						
+					}
+					
 					assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
 					bps.add(point.getContainedInStopArea());
 					assertNotNull(point.getForAlighting(), "no alighting info StopPoint=" + point);

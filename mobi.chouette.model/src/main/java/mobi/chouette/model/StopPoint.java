@@ -1,5 +1,6 @@
 package mobi.chouette.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,15 +13,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
-
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
 /**
  * Chouette StopPoint : a StopPoint on a route
@@ -174,5 +175,18 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	@Setter
 	@Transient
 	private String comment;
+
+	/**
+	 * current destination display for this stop point
+	 *
+	 * @param destinationDisplay
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+	@JoinColumn(name = "destination_display_id")
+	private DestinationDisplay destinationDisplay;
 
 }

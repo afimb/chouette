@@ -293,6 +293,64 @@ ALTER TABLE public.connection_links_id_seq OWNER TO chouette;
 ALTER SEQUENCE public.connection_links_id_seq OWNED BY public.connection_links.id;
 
 
+--
+-- Name: destination_displays; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
+--
+
+CREATE TABLE destination_displays (
+    id bigint NOT NULL,
+    objectid character varying(255) NOT NULL,
+    object_version integer,
+    creation_time timestamp without time zone,
+    creator_id character varying(255),
+    name character varying(255),
+    side_text character varying(255),
+    front_text character varying(255)
+);
+
+
+ALTER TABLE chouette_gui.destination_displays OWNER TO chouette;
+
+
+CREATE SEQUENCE destination_displays_id_seq
+START WITH 1
+INCREMENT BY 1
+NO MINVALUE
+NO MAXVALUE
+CACHE 1;
+
+
+ALTER TABLE chouette_gui.destination_displays_id_seq OWNER TO chouette;
+
+
+ALTER SEQUENCE destination_displays_id_seq OWNED BY destination_displays.id;
+
+
+CREATE TABLE destination_display_via
+(
+    destination_display_id bigint NOT NULL,
+    via_id bigint NOT NULL,
+    "position" bigint,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE destination_display_via OWNER to chouette;
+
+-- Index: index_destination_display_id_on_destination_display_via
+
+-- DROP INDEX bra.index_destination_display_id_on_destination_display_via;
+
+CREATE INDEX index_destination_display_id_on_destination_display_via
+    ON destination_display_via USING btree
+    (destination_display_id)
+    TABLESPACE pg_default;
+    
+
 
 --
 -- TOC entry 188 (class 1259 OID 938909)
@@ -989,6 +1047,7 @@ CREATE TABLE stop_points (
     id bigint NOT NULL,
     route_id bigint,
     stop_area_objectid_key CHARACTER VARYING(256),
+    destination_display_id bigint,
     objectid character varying(255) NOT NULL,
     object_version integer,
     creation_time timestamp without time zone,

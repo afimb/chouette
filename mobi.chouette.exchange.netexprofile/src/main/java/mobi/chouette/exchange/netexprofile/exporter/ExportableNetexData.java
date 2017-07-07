@@ -50,6 +50,10 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
+    private Map<String, DestinationDisplay> sharedDestinationDisplays = new HashMap<>();
+
+    @Getter
+    @Setter
     private Set<ScheduledStopPoint> stopPoints = new HashSet<>();
 
     @Getter

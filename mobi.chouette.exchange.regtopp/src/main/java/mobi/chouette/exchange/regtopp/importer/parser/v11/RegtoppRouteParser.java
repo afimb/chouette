@@ -36,7 +36,8 @@ public class RegtoppRouteParser extends LineSpecificParser {
 	/*
 	 * Validation rules of type III are checked at this step.
 	 */
-	// TODO. Rename this function "translate(Context context)" or "produce(Context context)", ...
+	// TODO. Rename this function "translate(Context context)" or
+	// "produce(Context context)", ...
 	@Override
 	public void parse(Context context) throws Exception {
 
@@ -45,12 +46,11 @@ public class RegtoppRouteParser extends LineSpecificParser {
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 		String calendarStartDate = (String) context.get(RegtoppConstant.CALENDAR_START_DATE);
 
-		String chouetteLineId = ObjectIdCreator.createLineId(configuration, lineId,calendarStartDate);
+		String chouetteLineId = ObjectIdCreator.createLineId(configuration, lineId, calendarStartDate);
 		Line line = ObjectFactory.getLine(referential, chouetteLineId);
 
 		Index<RegtoppRouteTDA> routeIndex = importer.getRouteSegmentByLineNumber();
 		Index<AbstractRegtoppTripIndexTIX> tripIndex = importer.getTripIndex();
-
 
 		for (AbstractRegtoppTripIndexTIX abstractTrip : tripIndex) {
 			if (abstractTrip.getLineId().equals(lineId)) {
@@ -81,17 +81,18 @@ public class RegtoppRouteParser extends LineSpecificParser {
 					Integer numStops = trip.getNumStops();
 					for (int i = 0; i < numStops; i++) {
 
-						// TODO use another identifier as it causes duplicate stoppoints in route
+						// TODO use another identifier as it causes duplicate
+						// stoppoints in route
 						String lineNumber = StringUtils.leftPad("" + (Integer.parseInt(firstStop) + i), 7, "0");
 						RegtoppRouteTDA routeSegment = routeIndex.getValue(lineNumber);
 
 						// Create stop point
-						String chouetteStopPointId = ObjectIdCreator.createStopPointId(configuration, routeKey, ""+i);
+						String chouetteStopPointId = ObjectIdCreator.createStopPointId(configuration, routeKey, "" + i);
 
 						String chouetteStopAreaId = ObjectIdCreator.createQuayId(configuration, routeSegment.getStopId());
 
-						StopArea stopArea= referential.getSharedStopAreas().get(chouetteStopAreaId);
-						if(stopArea != null) {
+						StopArea stopArea = referential.getSharedStopAreas().get(chouetteStopAreaId);
+						if (stopArea != null) {
 							// Link stoparea to referential
 							ObjectFactory.getStopArea(referential, chouetteStopAreaId);
 
@@ -99,15 +100,31 @@ public class RegtoppRouteParser extends LineSpecificParser {
 							stopPoint.setPosition(i);
 							stopPoint.setContainedInStopArea(stopArea);
 
-							// Warn: Using comment field as temporary storage for line pointer. Used for lookup when parsing passing times
+							// Warn: Using comment field as temporary storage
+							// for line pointer. Used for lookup when parsing
+							// passing times
 							stopPoint.setComment(lineNumber);
 
-							// Add stop point to journey pattern AND route (for now)
+							// Add stop point to journey pattern AND route (for
+							// now)
 							journeyPattern.addStopPoint(stopPoint);
 							stopPoint.setRoute(route);
-							log.debug("Adding StopPoint " + chouetteStopPointId + " to JourneyPattern " + chouetteJourneyPatternId + ". ContainedInStopArea is " + chouetteStopAreaId);
+							log.debug("Adding StopPoint "
+									+ chouetteStopPointId
+									+ " to JourneyPattern "
+									+ chouetteJourneyPatternId
+									+ ". ContainedInStopArea is "
+									+ chouetteStopAreaId);
 						} else {
-							log.warn("StopArea with id "+chouetteStopAreaId+" not found for JourneyPattern "+chouetteJourneyPatternId+ " in Line "+chouetteLineId + ". Not adding StopPoint " + chouetteStopPointId + " to JourneyPattern.");
+							log.warn("StopArea with id "
+									+ chouetteStopAreaId
+									+ " not found for JourneyPattern "
+									+ chouetteJourneyPatternId
+									+ " in Line "
+									+ chouetteLineId
+									+ ". Not adding StopPoint "
+									+ chouetteStopPointId
+									+ " to JourneyPattern.");
 						}
 					}
 					journeyPattern.setFilled(true);
@@ -116,7 +133,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 			}
 		}
 
-		sortStopPoints(referential);
+		sortStopPointsAndAddDepartureDestinationDisplay(referential, configuration);
 		updateRouteNames(referential, configuration);
 		linkOppositeRoutes(referential, configuration);
 
@@ -133,7 +150,8 @@ public class RegtoppRouteParser extends LineSpecificParser {
 		String chouetteRouteId = ObjectIdCreator.createRouteId(configuration, routeKey);
 		Route route = ObjectFactory.getRoute(referential, chouetteRouteId);
 		if (!route.isFilled()) {
-			// Filled = only a flag to indicate that we no longer should write data to this entity
+			// Filled = only a flag to indicate that we no longer should write
+			// data to this entity
 			RegtoppDestinationDST arrivalText = destinationIndex.getValue(destinationId);
 			if (arrivalText != null) {
 				route.setName(arrivalText.getDestinationText());
@@ -211,7 +229,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 		return false;
 	}
 
-	protected void sortStopPoints(Referential referential) {
+	protected void sortStopPointsAndAddDepartureDestinationDisplay(Referential referential, RegtoppImportParameters parameters) {
 		Comparator<StopPoint> stopPointSequenceComparator = new Comparator<StopPoint>() {
 			@Override
 			public int compare(StopPoint arg0, StopPoint arg1) {
@@ -221,11 +239,39 @@ public class RegtoppRouteParser extends LineSpecificParser {
 
 		// Sort stopPoints on JourneyPattern
 		Collection<JourneyPattern> journeyPatterns = referential.getJourneyPatterns().values();
+												// digits
 		for (JourneyPattern jp : journeyPatterns) {
 			List<StopPoint> stopPoints = jp.getStopPoints();
 			Collections.sort(stopPoints, stopPointSequenceComparator);
 			jp.setDepartureStopPoint(stopPoints.get(0));
 			jp.setArrivalStopPoint(stopPoints.get(stopPoints.size() - 1));
+
+			
+			
+			StopPoint departureStopPoint = jp.getDepartureStopPoint();
+			if (departureStopPoint.getDestinationDisplay() == null) {
+				// Create a forced DestinationDisplay
+				// Use JourneyPattern->PublishedName
+				
+				String stopPointId = ObjectIdCreator.extractOriginalId(departureStopPoint.getObjectId());
+				String journeyPatternId = ObjectIdCreator.extractOriginalId(jp.getObjectId());
+				
+				DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential,
+						ObjectIdCreator.composeGenericObjectId(parameters.getObjectIdPrefix(),
+								DestinationDisplay.DESTINATIONDISPLAY_KEY, journeyPatternId+"-"+stopPointId));
+				String content = jp.getPublishedName();
+				if(content == null) {
+					content = jp.getRoute().getPublishedName();
+				}
+				if(content == null) {
+					content = jp.getArrivalStopPoint().getContainedInStopArea().getName();
+				}
+				
+				destinationDisplay.setName("Generated: "+content);
+				destinationDisplay.setFrontText(content);
+				departureStopPoint.setDestinationDisplay(destinationDisplay);
+
+			}
 		}
 
 		// Sort stopPoints on route
@@ -285,7 +331,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 						log.warn("Giving up. No route name or last stop area present on route " + route);
 						return;
 					}
-					if(lastStopArea.getParent() == null) {
+					if (lastStopArea.getParent() == null) {
 						route.setName(lastStopArea.getName());
 					} else {
 						route.setName(lastStopArea.getParent().getName());
@@ -307,7 +353,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 	}
 
 	StopArea getUsefulStopArea(List<StopPoint> stopPoints) {
-		for (int i = stopPoints.size() - 2 ; i >= 0 ; i-- ) {
+		for (int i = stopPoints.size() - 2; i >= 0; i--) {
 			if (stopPoints.get(i).getContainedInStopArea() != null) {
 				return stopPoints.get(i).getContainedInStopArea();
 			} else {

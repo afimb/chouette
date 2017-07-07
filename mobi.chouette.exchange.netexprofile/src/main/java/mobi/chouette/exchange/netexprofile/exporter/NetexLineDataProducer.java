@@ -13,6 +13,7 @@ import mobi.chouette.model.*;
 import mobi.chouette.model.StopArea;
 import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.*;
+import org.rutebanken.netex.model.DestinationDisplay;
 
 import java.io.File;
 import java.math.BigInteger;
@@ -230,6 +231,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         produceAndCollectRoutePoints(exportableData.getLine().getRoutes(), exportableNetexData);
         produceAndCollectScheduledStopPoints(exportableData.getLine().getRoutes(), exportableNetexData);
         produceAndCollectStopAssignments(exportableData.getLine().getRoutes(), exportableNetexData);
+        produceAndCollectDestinationDisplays(exportableData.getLine().getRoutes(), exportableNetexData);
     }
 
     @SuppressWarnings("unchecked")
@@ -325,6 +327,59 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
             }
         }
     }
+
+    private void produceAndCollectDestinationDisplays(List<mobi.chouette.model.Route> routes, ExportableNetexData exportableNetexData) {
+        for (mobi.chouette.model.Route route : routes) {
+            for (StopPoint stopPoint : route.getStopPoints()) {
+                if (stopPoint != null) {
+                	mobi.chouette.model.DestinationDisplay dd = stopPoint.getDestinationDisplay();
+                    if(dd != null) {
+                    	addDestinationDisplay(dd, exportableNetexData);
+                    }
+                }
+            }
+        }
+    }
+
+	protected void addDestinationDisplay(mobi.chouette.model.DestinationDisplay dd,ExportableNetexData exportableNetexData) {
+
+        if (!exportableNetexData.getSharedDestinationDisplays().containsKey(dd.getObjectId())) {
+
+    		Integer objectVersion = dd.getObjectVersion();
+    		DestinationDisplay netexDestinationDisplay = netexFactory.createDestinationDisplay();
+    		netexDestinationDisplay.setId(dd.getObjectId());
+    		netexDestinationDisplay.setVersion(objectVersion > 0 ? String.valueOf(objectVersion) : NETEX_DATA_OJBECT_VERSION);
+                      
+    		if(isSet(dd.getName())) {
+    			netexDestinationDisplay.setName(getMultilingualString(dd.getName()));
+    		}
+    		if(isSet(dd.getFrontText())) {
+    			netexDestinationDisplay.setFrontText(getMultilingualString(dd.getFrontText()));
+    		}
+    		if(isSet(dd.getSideText())) {
+    			netexDestinationDisplay.setSideText(getMultilingualString(dd.getSideText()));
+    		}
+
+            exportableNetexData.getSharedDestinationDisplays().put(dd.getObjectId(), netexDestinationDisplay);
+
+    		if(dd.getVias() != null && dd.getVias().size() > 0) {
+    			Vias_RelStructure vias = netexFactory.createVias_RelStructure();
+    			netexDestinationDisplay.setVias(vias );
+    			for(mobi.chouette.model.DestinationDisplay via : dd.getVias()) {
+
+    				// Recurse into vias, create if missing
+    				addDestinationDisplay(via,exportableNetexData);
+    				
+    				DestinationDisplayRefStructure ref = netexFactory.createDestinationDisplayRefStructure().withRef(via.getObjectId()).withVersion(via.getObjectVersion() > 0 ? String.valueOf(via.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+    				Via_VersionedChildStructure e = netexFactory.createVia_VersionedChildStructure().withDestinationDisplayRef(ref );
+    				netexDestinationDisplay.getVias().getVia().add(e);
+    			}
+    		}
+
+        }
+		
+		
+	}
 
     private ScheduledStopPoint createScheduledStopPoint(StopPoint stopPoint, String stopPointId) {
         Integer objectVersion = stopPoint.getContainedInStopArea().getObjectVersion();

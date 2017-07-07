@@ -111,7 +111,11 @@ public class GtfsTripProducer extends AbstractProducer {
 			
 			time.setStopSequence((int) vjas.getStopPoint().getPosition());
 
-			// time.setStopHeadsign();
+			if(vjas.getStopPoint().getDestinationDisplay() != null) {
+				time.setStopHeadsign(vjas.getStopPoint().getDestinationDisplay().getFrontText());
+			} else {
+				time.setStopHeadsign(null);
+			}
 			addDropOffAndPickUpType(time, l, vj, vjas);
 			
 			if (vj.getJourneyPattern().getSectionStatus() == SectionStatusEnum.Completed) {
@@ -273,7 +277,9 @@ public class GtfsTripProducer extends AbstractProducer {
 
 		if (!isEmpty(name))
 			trip.setTripShortName(name);
-		else
+		else if (vj.getPublishedJourneyIdentifier() != null)
+			trip.setTripShortName(vj.getPublishedJourneyIdentifier());
+		else 
 			trip.setTripShortName(null);
 
 		if (!isEmpty(vj.getPublishedJourneyName()))

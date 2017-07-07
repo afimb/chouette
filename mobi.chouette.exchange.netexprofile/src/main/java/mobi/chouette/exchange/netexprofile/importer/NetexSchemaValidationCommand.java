@@ -1,7 +1,31 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.ejb.Stateless;
+import javax.naming.InitialContext;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Validator;
+
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
@@ -13,21 +37,6 @@ import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProf
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
-import javax.ejb.Stateless;
-import javax.naming.InitialContext;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Validator;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.*;
 
 @Log4j
 @Stateless(name = NetexSchemaValidationCommand.COMMAND)
@@ -47,7 +56,19 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 
 		validationReporter.addItemToValidationReport(context, AbstractNetexProfileValidator._1_NETEX_SCHEMA_VALIDATION_ERROR, "E");
 
-		ExecutorService executor = Executors.newFixedThreadPool(8);
+		final AtomicInteger counter = new AtomicInteger(0);
+		ThreadFactory threadFactory = new ThreadFactory() {
+			
+			@Override
+			public Thread newThread(Runnable r) {
+				Thread t = new Thread(r);
+				t.setName("netex-schema-validation-thread-"+(counter.incrementAndGet()));
+				t.setPriority(Thread.MIN_PRIORITY);
+				return t;
+			}
+		};
+		int processors = Runtime.getRuntime().availableProcessors();
+		ExecutorService executor = Executors.newFixedThreadPool(processors,threadFactory);
 
 		try {
 			List<Future<SchemaValidationTask>> schemaValidationResults = new ArrayList<>();
@@ -158,7 +179,11 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 				});
 				// Default to success, code above will update to ERROR if bogus data are found
 				fileValidationResult = SUCCESS;
+				
+				Monitor monitor = MonitorFactory.start("SchemaValidation");
+				log.info("Schema validating "+fileName);
 				validator.validate(xmlSource);
+				log.info("Schema validation finished "+fileName+ " "+monitor.stop());
 
 			} catch (SAXException e) {
 				log.error(e);
