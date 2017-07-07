@@ -109,7 +109,7 @@ public class StopAreaUpdateService {
             }
 
         }
-        log.info("Finished deleting unused stop areas");
+        log.info("Finished deleting unused stop areas. Cnt: " + deletedStopAreasCnt.get());
     }
 
     private int deleteBatchOfUnusedStopAreas(Collection<String> unusedBoardingPositionObjectIds) {
