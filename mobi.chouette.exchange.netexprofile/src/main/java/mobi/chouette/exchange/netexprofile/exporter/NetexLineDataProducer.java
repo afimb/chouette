@@ -382,7 +382,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 	}
 
     private ScheduledStopPoint createScheduledStopPoint(StopPoint stopPoint, String stopPointId) {
-        Integer objectVersion = stopPoint.getContainedInStopArea().getObjectVersion();
+        Integer objectVersion = stopPoint.getObjectVersion();
         ScheduledStopPoint scheduledStopPoint = netexFactory.createScheduledStopPoint();
         scheduledStopPoint.setVersion(objectVersion > 0 ? String.valueOf(objectVersion) : NETEX_DATA_OJBECT_VERSION);
         scheduledStopPoint.setId(stopPointId);
