@@ -258,13 +258,9 @@ public class StopPlaceParser implements Parser, Constant {
             boardingPosition.setNearestTopicName(quay.getLandmark().getValue());
         }
 
-        PrivateCodeStructure privateCodeStruct = quay.getPrivateCode();
-        if (privateCodeStruct != null) {
-            boardingPosition.setRegistrationNumber(privateCodeStruct.getValue());
-        } else {
-            if (quay.getShortName() != null) {
-                boardingPosition.setRegistrationNumber(quay.getShortName().getValue());
-            }
+        String publicCode = quay.getPublicCode();
+        if (publicCode != null) {
+            boardingPosition.setRegistrationNumber(publicCode);
         }
 
         SimplePoint_VersionStructure centroidStruct = quay.getCentroid();
