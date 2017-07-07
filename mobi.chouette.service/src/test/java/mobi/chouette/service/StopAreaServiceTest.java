@@ -179,12 +179,19 @@ public class StopAreaServiceTest extends Arquillian {
 
         StopArea knownStopArea = stopAreaDAO.findByObjectId("NSR:StopPlace:62006");
 
-        Assert.assertEquals(knownStopArea.getStopAreaType(), StopAreaTypeEnum.RailStation);
-        Assert.assertEquals(knownStopArea.getTransportModeName(), TransportModeNameEnum.Train);
-        Assert.assertEquals(knownStopArea.getTransportSubMode(), TransportSubModeEnum.TouristRailway);
+        assertCodeValuesForKnownStop(knownStopArea);
+        knownStopArea.getContainedStopAreas().forEach(quay -> assertCodeValuesForKnownStop(quay));
+
 
         utx.commit();
     }
+
+    private void assertCodeValuesForKnownStop(StopArea knownStopArea) {
+        Assert.assertEquals(knownStopArea.getStopAreaType(), StopAreaTypeEnum.RailStation);
+        Assert.assertEquals(knownStopArea.getTransportModeName(), TransportModeNameEnum.Train);
+        Assert.assertEquals(knownStopArea.getTransportSubMode(), TransportSubModeEnum.TouristRailway);
+    }
+
 
     @Test
     public void testDeleteStopAreaWithQuays() throws Exception {

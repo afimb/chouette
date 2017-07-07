@@ -88,6 +88,9 @@ public class StopPlaceParser implements Parser, Constant {
         stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
         stopArea.setObjectVersion(NetexParserUtils.getVersion(stopPlace));
         stopArea.setName(stopPlace.getName().getValue());
+        stopArea.setStopAreaType(mapStopAreaType(stopPlace.getStopPlaceType()));
+        stopArea.setTransportModeName(mapTransportModeName(stopPlace.getTransportMode()));
+        stopArea.setTransportSubMode(mapTransportSubMode(stopPlace));
 
         if (stopPlace.getDescription() != null) {
             stopArea.setComment(stopPlace.getDescription().getValue());
@@ -133,10 +136,6 @@ public class StopPlaceParser implements Parser, Constant {
                 parseQuay(context, stopArea, (Quay) quayObject);
             }
         }
-
-        stopArea.setStopAreaType(mapStopAreaType(stopPlace.getStopPlaceType()));
-        stopArea.setTransportModeName(mapTransportModeName(stopPlace.getTransportMode()));
-        stopArea.setTransportSubMode(mapTransportSubMode(stopPlace));
 
         stopArea.setFilled(true);
     }
@@ -278,6 +277,10 @@ public class StopPlaceParser implements Parser, Constant {
         if (tariffZonesStruct != null) {
             parseTariffZoneRefs(tariffZonesStruct, boardingPosition);
         }
+
+        boardingPosition.setStopAreaType(parentStopArea.getStopAreaType());
+        boardingPosition.setTransportModeName(parentStopArea.getTransportModeName());
+        boardingPosition.setTransportSubMode(parentStopArea.getTransportSubMode());
 
         boardingPosition.setFilled(true);
     }
