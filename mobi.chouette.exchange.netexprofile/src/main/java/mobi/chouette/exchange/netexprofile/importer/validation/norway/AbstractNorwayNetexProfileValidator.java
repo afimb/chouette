@@ -47,7 +47,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN = "1-NETEXPROFILE-ServiceFrame-ServiceJourneyPattern";
 	public static final String _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN = "1-NETEXPROFILE-ServiceFrame_JourneyPattern";
 	public static final String _1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE = "1-NETEXPROFILE-ServiceFrame-Line-PublicCode";
-	public static final String _1_NETEX_SERVICE_FRAME_LINE_OPERATOR_REF = "1-NETEXPROFILE-ServiceFrame-Line-OperatorRef";
+	public static final String _1_NETEX_TIMETABLE_FRAME_VEHICLEJOURNEY_OPERATORREF_OR_LINE_OPREATORREF = "1-NETEXPROFILE-TimetableFrame-ServiceJourney-OperatorRef-Or-Line-OperatorRef";
 	public static final String _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN_ROUTE_REF = "1-NETEXPROFILE-ServiceFrame_JourneyPattern_RouteRef";
 	public static final String _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN_PASSENGERSTOPASSIGNMENT_QUAYREF = "1-NETEXPROFILE-ServiceFrame_JourneyPattern_PassengerStopAssignment_QuayRef";
 	public static final String _1_NETEX_COMMON_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN_MISSING_DESTINATIONDISPLAY = "1-NETEXPROFILE-ServiceFrame_JourneyPattern_First_StopPointInJourneyPattern_DestinationDisplayRef";
@@ -117,7 +117,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK_GROUPOFLINE_NAME, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK_NAME, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE, "W");
-		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_OPERATOR_REF, "E");
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_VEHICLEJOURNEY_OPERATORREF_OR_LINE_OPREATORREF, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_TRANSPORTMODE, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_GROUPOFLINES_OR_NETWORK, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_ROUTE_INDIRECTION, "E");
