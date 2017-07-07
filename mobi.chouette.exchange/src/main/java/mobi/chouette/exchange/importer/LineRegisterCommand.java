@@ -20,14 +20,13 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.PropertyNames;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.exchange.importer.updater.LineOptimiser;
 import mobi.chouette.exchange.importer.updater.LineUpdater;
-import mobi.chouette.exchange.importer.updater.NeTExStopPlaceRegisterUpdater;
+import mobi.chouette.exchange.importer.updater.StopAreaIdMapper;
 import mobi.chouette.exchange.importer.updater.Updater;
 import mobi.chouette.exchange.parameters.AbstractImportParameter;
 import mobi.chouette.exchange.report.ActionReporter;
@@ -43,7 +42,6 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
-import mobi.chouette.model.type.StopAreaImportModeEnum;
 import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
 
@@ -71,8 +69,8 @@ public class LineRegisterCommand implements Command {
 	@EJB(beanName = LineUpdater.BEAN_NAME)
 	private Updater<Line> lineUpdater;
 
-	@EJB(beanName = NeTExStopPlaceRegisterUpdater.BEAN_NAME)
-	private NeTExStopPlaceRegisterUpdater stopPlaceRegisterUpdater;
+	@EJB(beanName = StopAreaIdMapper.BEAN_NAME)
+	private StopAreaIdMapper stopAreaIdMapper;
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -98,14 +96,10 @@ public class LineRegisterCommand implements Command {
 		log.info("Importing line: " + newValue.getObjectId() + " with stop area import mode: " + importParameter.getStopAreaImportMode());
 
 		if (importParameter.isKeepObsoleteLines() || isLineValidInFuture(newValue)) {
-			boolean shouldUpdateStopPlaceRegistry =
-					Boolean.parseBoolean(System.getProperty(checker.getContext() + PropertyNames.STOP_PLACE_REGISTER_UPDATE)) && importParameter.isUpdateExternalStopAreaRegistry();
-			if(shouldUpdateStopPlaceRegistry) {
-				stopPlaceRegisterUpdater.update(context, referential);
-			} else {
-				log.warn("Stop place register will not be updated. Neither is property " + PropertyNames.STOP_PLACE_REGISTER_UPDATE + " set nor has import parameter update_stop_registry = true.");
-			}
-		
+
+			// TODO add prop to control whether id map is used. Per provider? Use/replace existing for update stop place registry
+			stopAreaIdMapper.mapStopAreaIds(referential);
+
 			log.info("register line : " + newValue.getObjectId() + " " + newValue.getName() + " vehicleJourney count = "
 					+ referential.getVehicleJourneys().size());
 			try {
