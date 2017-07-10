@@ -60,6 +60,8 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_SERVICE_FRAME_ROUTE_POINTSINSEQUENCE = "1-NETEXPROFILE-ServiceFrame_Route_PointsInSequence";
 	public static final String _1_NETEX_SERVICE_FRAME_DESTINATION_DISPLAY_FRONTTEXT = "1-NETEXPROFILE-ServiceFrame-DestinationDisplay-FrontText";
 	public static final String _1_NETEX_SERVICE_FRAME_STOP_WITHOUT_BOARDING_OR_ALIGHTING = "1-NETEXPROFILE-ServiceFrame-StopPointInJourneyPattern-NoBoardingNoAlighting";
+	public static final String _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_SCHEDULEDSTOPPOINTREF = "1-NETEXPROFILE-ServiceFrame-PassengerStopAssignment-ScheduledStopPointRef";
+	public static final String _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_QUAYREF = "1-NETEXPROFILE-ServiceFrame-PassengerStopAssignment-QuayRef";
 	public static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY = "1-NETEXPROFILE-TimetableFrame-ServiceJourney";
 	public static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_TRANSPORT_MODE = "1-NETEXPROFILE-TimetableFrame-ServiceJourney-TransportMode";
 	public static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIMES = "1-NETEXPROFILE-TimetableFrame_ServiceJourney_TimetabledPassingTime";
@@ -132,6 +134,8 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_COMMON_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN_MISSING_DESTINATIONDISPLAY, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_DESTINATION_DISPLAY_FRONTTEXT, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_STOP_WITHOUT_BOARDING_OR_ALIGHTING, "W");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_SCHEDULEDSTOPPOINTREF, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_QUAYREF, "E");
 
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY, "E");
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_TRANSPORT_MODE, "W");
@@ -287,6 +291,8 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		validateElementNotPresent(context, xpath, subLevel, "n:Network/n:groupsOfLines/n:GroupOfLines[not(n:Name)]", _1_NETEX_SERVICE_FRAME_NETWORK_GROUPOFLINE_NAME);
 		validateElementNotPresent(context, xpath, subLevel, "n:groupsOfLines", _1_NETEX_SERVICE_FRAME_GROUPOFLINES_OUTSIDE_NETWORK);
 		validateElementNotPresent(context, xpath, subLevel, "n:timingPoints", _1_NETEX_SERVICE_FRAME_TIMING_POINTS);
+		validateElementNotPresent(context, xpath, subLevel, "n:stopAssignments/n:PassengerStopAssignment[not(n:ScheduledStopPointRef)]", _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_SCHEDULEDSTOPPOINTREF);
+		validateElementNotPresent(context, xpath, subLevel, "n:stopAssignments/n:PassengerStopAssignment[not(n:QuayRef)]", _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_QUAYREF);
 	}
 
 }

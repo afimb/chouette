@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<PublicationDelivery xmlns="http://www.netex.org.uk/netex" xmlns:ns2="http://www.opengis.net/gml/3.2" xmlns:ns3="http://www.siri.org.uk/siri" version="1.04:NO-NeTEx-networktimetable:1.0">
+<PublicationDelivery xmlns="http://www.netex.org.uk/netex" xmlns:ns2="http://www.opengis.net/gml/3.2"
+    xmlns:ns3="http://www.siri.org.uk/siri" version="1.04:NO-NeTEx-networktimetable:1.0">
     <PublicationTimestamp>2016-12-20T08:46:52.251Z</PublicationTimestamp>
     <ParticipantRef>Avinor</ParticipantRef>
     <dataObjects>
@@ -33,18 +34,18 @@
                             <Name>Avinor</Name>
                             <LegalName>AVINOR AS</LegalName>
                             <ContactDetails>
-<Phone>0047 815 30 550</Phone>
-<Url>http://www.avinor.no</Url>
+                                <Phone>0047 815 30 550</Phone>
+                                <Url>http://www.avinor.no</Url>
                             </ContactDetails>
                             <OrganisationType>authority</OrganisationType>
                         </Authority>
                         <Authority version="1" id="NSR:Authority:NSR">
-                            <CompanyNumber></CompanyNumber>
+                            <CompanyNumber/>
                             <Name>Nasjonal Stoppestedsregister</Name>
                             <LegalName>NASJONAL STOPPESTEDSREGISTER</LegalName>
                             <ContactDetails>
-<Phone></Phone>
-<Url>http://www.rutebanken.org/ns/nsr</Url>
+                                <Phone/>
+                                <Url>http://www.rutebanken.org/ns/nsr</Url>
                             </ContactDetails>
                             <OrganisationType>authority</OrganisationType>
                         </Authority>
@@ -53,13 +54,13 @@
                             <Name>Norwegian</Name>
                             <LegalName>NORWEGIAN AIR NORWAY AS</LegalName>
                             <ContactDetails>
-<Phone>0047 815 21 815</Phone>
-<Url>http://www.norwegian.no</Url>
+                                <Phone>0047 815 21 815</Phone>
+                                <Url>http://www.norwegian.no</Url>
                             </ContactDetails>
                             <OrganisationType>operator</OrganisationType>
                             <CustomerServiceContactDetails>
-<Phone>0047 815 21 815</Phone>
-<Url>http://www.norwegian.no</Url>
+                                <Phone>0047 815 21 815</Phone>
+                                <Url>http://www.norwegian.no</Url>
                             </CustomerServiceContactDetails>
                         </Operator>
                         <Operator version="1" id="AVI:Operator:SK">
@@ -67,13 +68,13 @@
                             <Name>SAS</Name>
                             <LegalName>SAS NORGE AS</LegalName>
                             <ContactDetails>
-<Phone>0047 648 16 050</Phone>
-<Url>http://www.sas.no</Url>
+                                <Phone>0047 648 16 050</Phone>
+                                <Url>http://www.sas.no</Url>
                             </ContactDetails>
                             <OrganisationType>operator</OrganisationType>
                             <CustomerServiceContactDetails>
-<Phone>0047 648 16 050</Phone>
-<Url>http://www.sas.no</Url>
+                                <Phone>0047 648 16 050</Phone>
+                                <Url>http://www.sas.no</Url>
                             </CustomerServiceContactDetails>
                         </Operator>
                         <Operator version="1" id="AVI:Operator:WF">
@@ -81,27 +82,27 @@
                             <Name>Widerøe</Name>
                             <LegalName>WIDERØE'S FLYVESELSKAP AS</LegalName>
                             <ContactDetails>
-<Phone>0047 755 13 500</Phone>
-<Url>http://www.wideroe.no</Url>
+                                <Phone>0047 755 13 500</Phone>
+                                <Url>http://www.wideroe.no</Url>
                             </ContactDetails>
                             <OrganisationType>operator</OrganisationType>
                             <CustomerServiceContactDetails>
-<Phone>0047 755 13 500</Phone>
-<Url>http://www.wideroe.no</Url>
+                                <Phone>0047 755 13 500</Phone>
+                                <Url>http://www.wideroe.no</Url>
                             </CustomerServiceContactDetails>
                         </Operator>
                         <Operator version="1" id="AVI:Operator:M3">
-                            <CompanyNumber></CompanyNumber>
+                            <CompanyNumber/>
                             <Name>Air Norway</Name>
                             <LegalName>AIR NORWAY</LegalName>
                             <ContactDetails>
-<Phone>0047 725 22 790</Phone>
-<Url>https://www.airnorway.no</Url>
+                                <Phone>0047 725 22 790</Phone>
+                                <Url>https://www.airnorway.no</Url>
                             </ContactDetails>
                             <OrganisationType>operator</OrganisationType>
                             <CustomerServiceContactDetails>
-<Phone>0047 725 22 790</Phone>
-<Url>https://www.airnorway.no</Url>
+                                <Phone>0047 725 22 790</Phone>
+                                <Url>https://www.airnorway.no</Url>
                             </CustomerServiceContactDetails>
                         </Operator>
                     </organisations>
@@ -112,507 +113,690 @@
                             <Name>Ålesund Lufthavn</Name>
                             <ShortName>AES</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>6.123</Longitude>
-    <Latitude>62.5823</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>6.123</Longitude>
+                                    <Latitude>62.5823</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:AES" version="1"/>
+                            </quays>
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:ALF">
                             <Name>Alta Lufthavn</Name>
                             <ShortName>ALF</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>23.34069</Longitude>
-    <Latitude>69.976058</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>23.34069</Longitude>
+                                    <Latitude>69.976058</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:ALF" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:ANX">
                             <Name>Andøya Lufthavn</Name>
                             <ShortName>ANX</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>16.121335</Longitude>
-    <Latitude>69.317744</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>16.121335</Longitude>
+                                    <Latitude>69.317744</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:ANX" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:BDU">
                             <Name>Bardufoss Lufthavn</Name>
                             <ShortName>BDU</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>18.510332</Longitude>
-    <Latitude>69.065297</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>18.510332</Longitude>
+                                    <Latitude>69.065297</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:BDU" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:BGO">
                             <Name>Bergen Lufthavn</Name>
                             <ShortName>BGO</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>5.2221</Longitude>
-    <Latitude>60.2923</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>5.2221</Longitude>
+                                    <Latitude>60.2923</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:BGO" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:BJF">
                             <Name>Båtsfjord Lufthavn</Name>
                             <ShortName>BJF</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>29.72702</Longitude>
-    <Latitude>70.6379</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>29.72702</Longitude>
+                                    <Latitude>70.6379</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:BJF" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:BNN">
                             <Name>Brønnøysund Lufthavn</Name>
                             <ShortName>BNN</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>12.205811</Longitude>
-    <Latitude>65.469845</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>12.205811</Longitude>
+                                    <Latitude>65.469845</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:BNN" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:BOO">
                             <Name>Bodø Lufthavn</Name>
                             <ShortName>BOO</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>14.59231</Longitude>
-    <Latitude>67.29449</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>14.59231</Longitude>
+                                    <Latitude>67.29449</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:BOO" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:BVG">
                             <Name>Berlevåg Lufthavn</Name>
                             <ShortName>BVG</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>29.10564</Longitude>
-    <Latitude>70.84142</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>29.10564</Longitude>
+                                    <Latitude>70.84142</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:BVG" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:EVE">
                             <Name>Harstad/Narvik Lufthavn</Name>
                             <ShortName>EVE</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>16.573734</Longitude>
-    <Latitude>68.582961</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>16.573734</Longitude>
+                                    <Latitude>68.582961</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:EVE" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:FDE">
                             <Name>Førde Lufthamn</Name>
                             <ShortName>FDE</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>5.65343</Longitude>
-    <Latitude>61.37589</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>5.65343</Longitude>
+                                    <Latitude>61.37589</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:FDE" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:FRO">
                             <Name>Florø Lufthamn</Name>
                             <ShortName>FRO</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>5.04397</Longitude>
-    <Latitude>61.60059</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>5.04397</Longitude>
+                                    <Latitude>61.60059</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:FRO" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:HAA">
                             <Name>Hasvik Lufthavn</Name>
                             <ShortName>HAA</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>22.139631</Longitude>
-    <Latitude>70.48833</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>22.139631</Longitude>
+                                    <Latitude>70.48833</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:HAA" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:HAU">
                             <Name>Haugesund Lufthavn</Name>
                             <ShortName>HAU</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>5.277621</Longitude>
-    <Latitude>59.355935</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>5.277621</Longitude>
+                                    <Latitude>59.355935</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:HAU" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:HFT">
                             <Name>Hammerfest Lufthavn</Name>
                             <ShortName>HFT</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>23.67996</Longitude>
-    <Latitude>70.66299</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>23.67996</Longitude>
+                                    <Latitude>70.66299</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:HFT" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:HOV">
                             <Name>Ørsta-Volda Lufthamn</Name>
                             <ShortName>HOV</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>6.1272</Longitude>
-    <Latitude>62.2029</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>6.1272</Longitude>
+                                    <Latitude>62.2029</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:HOV" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:HVG">
                             <Name>Honningsvåg Lufthavn</Name>
                             <ShortName>HVG</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>25.97076</Longitude>
-    <Latitude>70.98214</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>25.97076</Longitude>
+                                    <Latitude>70.98214</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:HVG" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:KKN">
                             <Name>Kirkenes Lufthavn</Name>
                             <ShortName>KKN</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>29.99221</Longitude>
-    <Latitude>69.69152</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>29.99221</Longitude>
+                                    <Latitude>69.69152</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:KKN" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:KRS">
                             <Name>Kristiansand Lufthavn</Name>
                             <ShortName>KRS</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>8.07991</Longitude>
-    <Latitude>58.20733</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>8.07991</Longitude>
+                                    <Latitude>58.20733</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:KRS" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:KSU">
                             <Name>Kristiansund Lufthavn</Name>
                             <ShortName>KSU</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>7.79234</Longitude>
-    <Latitude>63.11029</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>7.79234</Longitude>
+                                    <Latitude>63.11029</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:KSU" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:LKL">
                             <Name>Lakselv Lufthavn</Name>
                             <ShortName>LKL</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>25.000935</Longitude>
-    <Latitude>70.056306</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>25.000935</Longitude>
+                                    <Latitude>70.056306</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:LKL" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:LKN">
                             <Name>Leknes Lufthavn</Name>
                             <ShortName>LKN</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>13.611546</Longitude>
-    <Latitude>68.148182</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>13.611546</Longitude>
+                                    <Latitude>68.148182</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:LKN" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:LYR">
                             <Name>Svalbard Lufthavn</Name>
                             <ShortName>LYR</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>15.6315</Longitude>
-    <Latitude>78.2222</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>15.6315</Longitude>
+                                    <Latitude>78.2222</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:LYR" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:MEH">
                             <Name>Mehamn Lufthavn</Name>
                             <ShortName>MEH</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>27.85206</Longitude>
-    <Latitude>71.03883</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>27.85206</Longitude>
+                                    <Latitude>71.03883</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:MEH" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:MJF">
                             <Name>Mosjøen Lufthavn</Name>
                             <ShortName>MJF</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>13.2741</Longitude>
-    <Latitude>65.81893</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>13.2741</Longitude>
+                                    <Latitude>65.81893</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:MJF" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:MOL">
                             <Name>Molde Lufthavn</Name>
                             <ShortName>MOL</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>7.29143</Longitude>
-    <Latitude>62.75212</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>7.29143</Longitude>
+                                    <Latitude>62.75212</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:MOL" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:MQN">
                             <Name>Mo i Rana Lufthavn</Name>
                             <ShortName>MQN</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>14.321322</Longitude>
-    <Latitude>66.356186</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>14.321322</Longitude>
+                                    <Latitude>66.356186</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:MQN" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:NVK">
                             <Name>Narvik Lufthavn</Name>
                             <ShortName>NVK</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>17.40815</Longitude>
-    <Latitude>68.44052</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>17.40815</Longitude>
+                                    <Latitude>68.44052</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:NVK" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:OSL">
                             <Name>Oslo Lufthavn</Name>
                             <ShortName>OSL</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>11.099552</Longitude>
-    <Latitude>60.202586</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>11.099552</Longitude>
+                                    <Latitude>60.202586</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:OSL" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:OSY">
                             <Name>Namsos Lufthavn</Name>
                             <ShortName>OSY</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>11.099552</Longitude>
-    <Latitude>60.202586</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>11.099552</Longitude>
+                                    <Latitude>60.202586</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:OSY" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:RET">
                             <Name>Røst Lufthavn</Name>
                             <ShortName>RET</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>12.125261</Longitude>
-    <Latitude>67.518154</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>12.125261</Longitude>
+                                    <Latitude>67.518154</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:RET" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:RRS">
                             <Name>Røros Lufthavn</Name>
                             <ShortName>RRS</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>12.125261</Longitude>
-    <Latitude>67.518154</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>12.125261</Longitude>
+                                    <Latitude>67.518154</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:RRS" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:RVK">
                             <Name>Rørvik Lufthavn</Name>
                             <ShortName>RVK</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>11.23482</Longitude>
-    <Latitude>64.86556</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>11.23482</Longitude>
+                                    <Latitude>64.86556</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:RVK" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:SDN">
                             <Name>Sandane Lufthamn</Name>
                             <ShortName>SDN</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>6.220193</Longitude>
-    <Latitude>61.780673</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>6.220193</Longitude>
+                                    <Latitude>61.780673</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:SDN" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:SKN">
                             <Name>Stokmarknes Lufthavn</Name>
                             <ShortName>SKN</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>6.220193</Longitude>
-    <Latitude>61.780673</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>6.220193</Longitude>
+                                    <Latitude>61.780673</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:SKN" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:SOG">
                             <Name>Sogndal Lufthamn</Name>
                             <ShortName>SOG</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>6.220193</Longitude>
-    <Latitude>61.780673</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>6.220193</Longitude>
+                                    <Latitude>61.780673</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:SOG" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:SOJ">
                             <Name>Sørkjosen Lufthavn</Name>
                             <ShortName>SOJ</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>20.93912</Longitude>
-    <Latitude>69.79265</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>20.93912</Longitude>
+                                    <Latitude>69.79265</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:SOJ" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:SSJ">
                             <Name>Sandnessjøen Lufthavn</Name>
                             <ShortName>SSJ</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>12.60632</Longitude>
-    <Latitude>66.01263</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>12.60632</Longitude>
+                                    <Latitude>66.01263</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:SSJ" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:SVG">
                             <Name>Stavanger Lufthavn</Name>
                             <ShortName>SVG</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>5.62566</Longitude>
-    <Latitude>58.88959</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>5.62566</Longitude>
+                                    <Latitude>58.88959</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:SVG" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:SVJ">
                             <Name>Svolvær Lufthavn</Name>
                             <ShortName>SVJ</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>14.564524</Longitude>
-    <Latitude>68.23224</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>14.564524</Longitude>
+                                    <Latitude>68.23224</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:SVJ" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:TOS">
                             <Name>Tromsø Lufthavn</Name>
                             <ShortName>TOS</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>18.9567</Longitude>
-    <Latitude>69.6481</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>18.9567</Longitude>
+                                    <Latitude>69.6481</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:TOS" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:TRD">
                             <Name>Trondheim Lufthavn</Name>
                             <ShortName>TRD</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>10.920721</Longitude>
-    <Latitude>63.46954</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>10.920721</Longitude>
+                                    <Latitude>63.46954</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:TRD" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:VAW">
                             <Name>Vardø Lufthavn</Name>
                             <ShortName>VAW</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>31.105814</Longitude>
-    <Latitude>70.37033</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>31.105814</Longitude>
+                                    <Latitude>70.37033</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:VAW" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:VDB">
                             <Name>Fagernes Lufthamn</Name>
                             <ShortName>VDB</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>9.236697</Longitude>
-    <Latitude>60.985953</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>9.236697</Longitude>
+                                    <Latitude>60.985953</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:VDB" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:VDS">
                             <Name>Vadsø Lufthavn</Name>
                             <ShortName>VDS</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>29.7528</Longitude>
-    <Latitude>70.07306</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>29.7528</Longitude>
+                                    <Latitude>70.07306</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:VDS" version="1"/>
+                            </quays>
+
                         </StopPlace>
                         <StopPlace version="1" id="AVI:StopPlace:VRY">
                             <Name>Værøy Helikopterhavn</Name>
                             <ShortName>VRY</ShortName>
                             <Centroid>
-<Location srsName="WGS84">
-    <Longitude>12.726944</Longitude>
-    <Latitude>67.654444</Latitude>
-</Location>
+                                <Location srsName="WGS84">
+                                    <Longitude>12.726944</Longitude>
+                                    <Latitude>67.654444</Latitude>
+                                </Location>
                             </Centroid>
                             <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay id="AVI:Quay:VRY" version="1"/>
+                            </quays>
+
                         </StopPlace>
                     </stopPlaces>
                 </SiteFrame>
@@ -622,7 +806,7 @@
                             <FrontText>Fronttext</FrontText>
                         </DestinationDisplay>
                     </destinationDisplays>
-                    
+
                     <scheduledStopPoints>
                         <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:AES">
                             <Name>Ålesund Lufthavn</Name>
@@ -812,187 +996,187 @@
                     <stopAssignments>
                         <PassengerStopAssignment order="1" version="1" id="AVI:PassengerStopAssignment:AES">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:AES" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:AES" version="1"/>
+                            <QuayRef ref="AVI:Quay:AES" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="2" version="1" id="AVI:PassengerStopAssignment:ALF">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:ALF" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:ALF" version="1"/>
+                            <QuayRef ref="AVI:Quay:ALF" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="3" version="1" id="AVI:PassengerStopAssignment:ANX">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:ANX" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:ANX" version="1"/>
+                            <QuayRef ref="AVI:Quay:ANX" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="4" version="1" id="AVI:PassengerStopAssignment:BDU">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:BDU" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:BDU" version="1"/>
+                            <QuayRef ref="AVI:Quay:BDU" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="5" version="1" id="AVI:PassengerStopAssignment:BGO">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:BGO" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:BGO" version="1"/>
+                            <QuayRef ref="AVI:Quay:BGO" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="6" version="1" id="AVI:PassengerStopAssignment:BJF">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:BJF" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:BJF" version="1"/>
+                            <QuayRef ref="AVI:Quay:BJF" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="7" version="1" id="AVI:PassengerStopAssignment:BNN">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:BNN" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:BNN" version="1"/>
+                            <QuayRef ref="AVI:Quay:BNN" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="8" version="1" id="AVI:PassengerStopAssignment:BOO">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:BOO" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:BOO" version="1"/>
+                            <QuayRef ref="AVI:Quay:BOO" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="9" version="1" id="AVI:PassengerStopAssignment:BVG">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:BVG" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:BVG" version="1"/>
+                            <QuayRef ref="AVI:Quay:BVG" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="10" version="1" id="AVI:PassengerStopAssignment:EVE">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:EVE" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:EVE" version="1"/>
+                            <QuayRef ref="AVI:Quay:EVE" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="11" version="1" id="AVI:PassengerStopAssignment:FDE">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:FDE" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:FDE" version="1"/>
+                            <QuayRef ref="AVI:Quay:FDE" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="12" version="1" id="AVI:PassengerStopAssignment:FRO">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:FRO" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:FRO" version="1"/>
+                            <QuayRef ref="AVI:Quay:FRO" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="13" version="1" id="AVI:PassengerStopAssignment:HAA">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:HAA" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:HAA" version="1"/>
+                            <QuayRef ref="AVI:Quay:HAA" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="14" version="1" id="AVI:PassengerStopAssignment:HAU">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:HAU" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:HAU" version="1"/>
+                            <QuayRef ref="AVI:Quay:HAU" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="15" version="1" id="AVI:PassengerStopAssignment:HFT">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:HFT" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:HFT" version="1"/>
+                            <QuayRef ref="AVI:Quay:HFT" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="16" version="1" id="AVI:PassengerStopAssignment:HOV">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:HOV" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:HOV" version="1"/>
+                            <QuayRef ref="AVI:Quay:HOV" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="17" version="1" id="AVI:PassengerStopAssignment:HVG">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:HVG" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:HVG" version="1"/>
+                            <QuayRef ref="AVI:Quay:HVG" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="18" version="1" id="AVI:PassengerStopAssignment:KKN">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:KKN" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:KKN" version="1"/>
+                            <QuayRef ref="AVI:Quay:KKN" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="19" version="1" id="AVI:PassengerStopAssignment:KRS">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:KRS" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:KRS" version="1"/>
+                            <QuayRef ref="AVI:Quay:KRS" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="20" version="1" id="AVI:PassengerStopAssignment:KSU">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:KSU" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:KSU" version="1"/>
+                            <QuayRef ref="AVI:Quay:KSU" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="21" version="1" id="AVI:PassengerStopAssignment:LKL">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:LKL" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:LKL" version="1"/>
+                            <QuayRef ref="AVI:Quay:LKL" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="22" version="1" id="AVI:PassengerStopAssignment:LKN">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:LKN" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:LKN" version="1"/>
+                            <QuayRef ref="AVI:Quay:LKN" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="23" version="1" id="AVI:PassengerStopAssignment:LYR">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:LYR" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:LYR" version="1"/>
+                            <QuayRef ref="AVI:Quay:LYR" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="24" version="1" id="AVI:PassengerStopAssignment:MEH">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:MEH" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:MEH" version="1"/>
+                            <QuayRef ref="AVI:Quay:MEH" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="25" version="1" id="AVI:PassengerStopAssignment:MJF">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:MJF" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:MJF" version="1"/>
+                            <QuayRef ref="AVI:Quay:MJF" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="26" version="1" id="AVI:PassengerStopAssignment:MOL">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:MOL" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:MOL" version="1"/>
+                            <QuayRef ref="AVI:Quay:MOL" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="27" version="1" id="AVI:PassengerStopAssignment:MQN">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:MQN" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:MQN" version="1"/>
+                            <QuayRef ref="AVI:Quay:MQN" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="28" version="1" id="AVI:PassengerStopAssignment:NVK">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:NVK" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:NVK" version="1"/>
+                            <QuayRef ref="AVI:Quay:NVK" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="29" version="1" id="AVI:PassengerStopAssignment:OSL">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:OSL" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:OSL" version="1"/>
+                            <QuayRef ref="AVI:Quay:OSL" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="30" version="1" id="AVI:PassengerStopAssignment:OSY">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:OSY" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:OSY" version="1"/>
+                            <QuayRef ref="AVI:Quay:OSY" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="31" version="1" id="AVI:PassengerStopAssignment:RET">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:RET" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:RET" version="1"/>
+                            <QuayRef ref="AVI:Quay:RET" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="32" version="1" id="AVI:PassengerStopAssignment:RRS">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:RRS" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:RRS" version="1"/>
+                            <QuayRef ref="AVI:Quay:RRS" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="33" version="1" id="AVI:PassengerStopAssignment:RVK">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:RVK" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:RVK" version="1"/>
+                            <QuayRef ref="AVI:Quay:RVK" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="34" version="1" id="AVI:PassengerStopAssignment:SDN">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:SDN" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:SDN" version="1"/>
+                            <QuayRef ref="AVI:Quay:SDN" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="35" version="1" id="AVI:PassengerStopAssignment:SKN">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:SKN" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:SKN" version="1"/>
+                            <QuayRef ref="AVI:Quay:SKN" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="36" version="1" id="AVI:PassengerStopAssignment:SOG">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:SOG" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:SOG" version="1"/>
+                            <QuayRef ref="AVI:Quay:SOG" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="37" version="1" id="AVI:PassengerStopAssignment:SOJ">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:SOJ" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:SOJ" version="1"/>
+                            <QuayRef ref="AVI:Quay:SOJ" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="38" version="1" id="AVI:PassengerStopAssignment:SSJ">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:SSJ" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:SSJ" version="1"/>
+                            <QuayRef ref="AVI:Quay:SSJ" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="39" version="1" id="AVI:PassengerStopAssignment:SVG">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:SVG" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:SVG" version="1"/>
+                            <QuayRef ref="AVI:Quay:SVG" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="40" version="1" id="AVI:PassengerStopAssignment:SVJ">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:SVJ" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:SVJ" version="1"/>
+                            <QuayRef ref="AVI:Quay:SVJ" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="41" version="1" id="AVI:PassengerStopAssignment:TOS">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:TOS" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:TOS" version="1"/>
+                            <QuayRef ref="AVI:Quay:TOS" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="42" version="1" id="AVI:PassengerStopAssignment:TRD">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:TRD" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:TRD" version="1"/>
+                            <QuayRef ref="AVI:Quay:TRD" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="43" version="1" id="AVI:PassengerStopAssignment:VAW">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:VAW" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:VAW" version="1"/>
+                            <QuayRef ref="AVI:Quay:VAW" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="44" version="1" id="AVI:PassengerStopAssignment:VDB">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:VDB" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:VDB" version="1"/>
+                            <QuayRef ref="AVI:Quay:VDB" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="45" version="1" id="AVI:PassengerStopAssignment:VDS">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:VDS" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:VDS" version="1"/>
+                            <QuayRef ref="AVI:Quay:VDS" version="1"/>
                         </PassengerStopAssignment>
                         <PassengerStopAssignment order="46" version="1" id="AVI:PassengerStopAssignment:VRY">
                             <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:VRY" version="1"/>
-                            <StopPlaceRef ref="AVI:StopPlace:VRY" version="1"/>
+                            <QuayRef ref="AVI:Quay:VRY" version="1"/>
                         </PassengerStopAssignment>
                     </stopAssignments>
                 </ServiceFrame>
