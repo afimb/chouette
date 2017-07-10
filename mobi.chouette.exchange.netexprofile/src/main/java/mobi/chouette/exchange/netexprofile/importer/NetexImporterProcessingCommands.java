@@ -117,7 +117,9 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 					filePath -> filePath.getFileName() != null && filePath.getFileSystem().getPathMatcher("glob:_*.xml").matches(filePath.getFileName()))
 					.collect(Collectors.toList());
 
-			Chain commonFileChains = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
+			ChainCommand commonFileChains = (ChainCommand) CommandFactory.create(initialContext, ChainCommand.class.getName());
+			commonFileChains.setIgnored(parameters.isContinueOnLineErrors());
+
 			mainChain.add(commonFileChains);
 
 			context.put(mobi.chouette.exchange.netexprofile.Constant.NETEX_COMMON_FILE_IDENTIFICATORS, new HashMap<IdVersion, List<String>>());
