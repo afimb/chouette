@@ -1,23 +1,48 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.model.*;
-import mobi.chouette.model.type.DayTypeEnum;
-import mobi.chouette.model.type.OrganisationTypeEnum;
+import java.sql.Time;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
 import org.rutebanken.netex.model.DayOfWeekEnumeration;
 import org.rutebanken.netex.model.OrganisationTypeEnumeration;
 
-import java.sql.Time;
-import java.time.*;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.model.AccessLink;
+import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.Company;
+import mobi.chouette.model.ConnectionLink;
+import mobi.chouette.model.GroupOfLine;
+import mobi.chouette.model.JourneyPattern;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.NeptuneIdentifiedObject;
+import mobi.chouette.model.Network;
+import mobi.chouette.model.Route;
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.Timetable;
+import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.type.DayTypeEnum;
+import mobi.chouette.model.type.OrganisationTypeEnum;
 
 @Log4j
 public class NetexProducerUtils {
 
     private static final String OBJECT_ID_SPLIT_CHAR = ":";
-    private static final ZoneId LOCAL_ZONE_ID = ZoneId.of("Europe/Oslo");
+    public static final ZoneId LOCAL_ZONE_ID = ZoneId.of("Europe/Oslo");
 
     public static boolean isSet(Object... objects) {
         for (Object val : objects) {
@@ -51,7 +76,7 @@ public class NetexProducerUtils {
     public static OffsetTime toOffsetTimeUtc(Time time) {
         return time == null ? null : time.toLocalTime().atOffset(getZoneOffset(LOCAL_ZONE_ID)).withOffsetSameInstant(ZoneOffset.UTC);
     }
-
+    
     public static LocalDate toLocalDate(java.util.Date date) {
         if (date == null) {
             return null;
