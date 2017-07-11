@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -73,7 +75,16 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 		try {
 			List<Future<SchemaValidationTask>> schemaValidationResults = new ArrayList<>();
 
-			for (Path filePath : allFiles) {
+			// Compare by file size, largest first
+			List<Path> allPathsSortedLargestFirst = new ArrayList<>(allFiles);
+			Collections.sort(allPathsSortedLargestFirst,new Comparator<Path>() {
+				@Override
+				public int compare(Path o1, Path o2) {
+					return (int) (o2.toFile().length() - o1.toFile().length());
+				}
+			});
+			
+			for (Path filePath : allPathsSortedLargestFirst) {
 				SchemaValidationTask schemaValidationTask = new SchemaValidationTask(context, actionReporter, validationReporter, importer, filePath.toFile());
 				schemaValidationResults.add(executor.submit(schemaValidationTask));
 			}
