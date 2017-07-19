@@ -142,7 +142,10 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 		Context calendarObjectContext = (Context) calendarContext.get(dayType.getId());
 
 		ValidBetween validBetween = (ValidBetween) calendarObjectContext.get(ServiceCalendarParser.VALID_BETWEEN);
-
+		if(validBetween != null) {
+			timetable.setStartOfPeriod(new Date(validBetween.getFromDate().toInstant().toEpochMilli()));
+			timetable.setEndOfPeriod(new Date(validBetween.getToDate().toInstant().toEpochMilli()));
+		}
 		if (timetable.getObjectVersion() == null) {
 			timetable.setObjectVersion(NetexParserUtils.getVersion(dayType));
 		}
