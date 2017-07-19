@@ -30,6 +30,10 @@
 			<groupId>org.rutebanken</groupId>
 			<artifactId>netex-java-model</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.rutebanken.helpers</groupId>
+			<artifactId>calendar-helper</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>

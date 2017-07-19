@@ -2,11 +2,19 @@ package mobi.chouette.exchange.netexprofile.parser;
 
 import java.sql.Date;
 import java.text.ParseException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.JAXBElement;
 
+import org.joda.time.DateTimeConstants;
+import org.rutebanken.helper.calendar.CalendarPattern;
+import org.rutebanken.helper.calendar.CalendarPatternAnalyzer;
 import org.rutebanken.netex.model.DataManagedObjectStructure;
 import org.rutebanken.netex.model.DayOfWeekEnumeration;
 import org.rutebanken.netex.model.DayType;
@@ -99,8 +107,83 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
 				}
 			}
 		}
-		
+
 		convertCalendarToTimetable(context);
+		findSignificantDaysForTimetables(context);
+	}
+
+	private void findSignificantDaysForTimetables(Context context) {
+		Referential referential = (Referential) context.get(REFERENTIAL);
+
+		for (Timetable t : referential.getSharedTimetables().values()) {
+			if (t.getPeriods().size() == 0 && t.getDayTypes().size() == 0 && t.getPeculiarDates().size() > 0 && t.getExcludedDates().size() == 0) {
+				// Only handle simple included days for now
+
+				List<Date> includedDates = t.getPeculiarDates();
+				Set<LocalDate> includedDays = new HashSet<LocalDate>();
+				for (Date d : includedDates) {
+					includedDays.add(d.toLocalDate());
+				}
+
+				CalendarPattern pattern = new CalendarPatternAnalyzer().computeCalendarPattern(includedDays);
+				
+				
+				if (pattern != null && !pattern.significantDays.isEmpty()) {
+
+					// Remove and re-add
+					t.getCalendarDays().clear();
+
+					// Add the period detected
+					java.sql.Date from = Date.valueOf(pattern.from);
+					java.sql.Date to = Date.valueOf(pattern.to);
+					t.addPeriod(new Period(from, to));
+
+					// Convert from java.time.DayOfWeek to chouette DayTypeEnum
+					Set<DayTypeEnum> significantDayTypes = new HashSet<>();
+					for (DayOfWeek d : pattern.significantDays) {
+						significantDayTypes.add(convertFromDayOfWeek(d));
+					}
+
+					// Add day types
+					for (DayTypeEnum dayType : significantDayTypes) {
+						t.addDayType(dayType);
+					}
+
+					// Add extra inclusions and exclusions
+					for (LocalDate d : pattern.additionalDates) {
+						t.addCalendarDay(new CalendarDay(Date.valueOf(d), true));
+					}
+					for (LocalDate d : pattern.excludedDates) {
+						t.addCalendarDay(new CalendarDay(Date.valueOf(d), false));
+					}
+				}
+			}
+
+		}
+
+	}
+
+
+	private DayTypeEnum convertFromDayOfWeek(DayOfWeek dayType) {
+		switch (dayType) {
+		case MONDAY:
+			return DayTypeEnum.Monday;
+		case TUESDAY:
+			return DayTypeEnum.Tuesday;
+		case WEDNESDAY:
+			return DayTypeEnum.Wednesday;
+		case THURSDAY:
+			return DayTypeEnum.Thursday;
+		case FRIDAY:
+			return DayTypeEnum.Friday;
+		case SATURDAY:
+			return DayTypeEnum.Saturday;
+		case SUNDAY:
+			return DayTypeEnum.Sunday;
+		default:
+			return null;
+		}
+
 	}
 
 	private void convertCalendarToTimetable(Context context) throws ParseException {
