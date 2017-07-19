@@ -434,8 +434,12 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 		assertNotEquals(referential.getTimetables(), 0, "timetables");
 		assertNotEquals(referential.getSharedTimetables(), 0, "shared timetables");
-		assertEquals(referential.getTimetables().values().size(), 2, "expected 2 timetables");
-		assertEquals(referential.getSharedTimetables().values().size(), 2, "expected 2 timetables");
+
+		for(Timetable t : referential.getTimetables().values()) {
+			System.out.println(t);
+		}
+		assertEquals(referential.getTimetables().values().size(), 9, "num timetables");
+		assertEquals(referential.getSharedTimetables().values().size(), 9, "num timetables");
 	}
 
 	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")
@@ -523,7 +527,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 		assertEquals(numJourneyPatterns, 2, "number of journeyPatterns");
 		assertEquals(numVehicleJourneys, 3, "number of vehicleJourneys");
-		assertEquals(numTimetables, 3, "number of timetables");
+		assertEquals(numTimetables, 14, "number of timetables");
 
 		utx.rollback();
 		assertTrue(result, "Importer command execution failed: " + report.getFailure());

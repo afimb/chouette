@@ -46,17 +46,12 @@ public class NetexObjectUtil {
         if (dayTypeAssignment == null) {
             throw new NullPointerException("Unknown day type assignment : " + objectId);
         }
-        if (!referential.getDayTypeAssignments().containsKey(objectId)) {
-            referential.getDayTypeAssignments().put(objectId, dayTypeAssignment);
-        }
+        referential.getDayTypeAssignments().add(dayTypeAssignment);
     }
 
-    public static DayTypeAssignment getDayTypeAssignment(NetexReferential referential, String objectId) {
-        DayTypeAssignment dayTypeAssignment = referential.getDayTypeAssignments().get(objectId);
-        if (dayTypeAssignment == null) {
-            throw new NullPointerException("Unknown day type assignment : " + objectId);
-        }
-        return dayTypeAssignment;
+    public static List<DayTypeAssignment> getDayTypeAssignment(NetexReferential referential) {
+       
+        return referential.getDayTypeAssignments();
     }
 
     public static void addOperatingPeriodRef(NetexReferential referential, String objectId, OperatingPeriod operatingPeriod) {
