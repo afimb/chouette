@@ -230,7 +230,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
         produceAndCollectRoutePoints(exportableData.getLine().getRoutes(), exportableNetexData);
         produceAndCollectScheduledStopPoints(exportableData.getLine().getRoutes(), exportableNetexData);
-        produceAndCollectStopAssignments(exportableData.getLine().getRoutes(), exportableNetexData);
+        produceAndCollectStopAssignments(exportableData.getLine().getRoutes(), exportableNetexData,configuration);
         produceAndCollectDestinationDisplays(exportableData.getLine().getRoutes(), exportableNetexData);
     }
 
@@ -394,7 +394,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         return scheduledStopPoint;
     }
 
-    private void produceAndCollectStopAssignments(List<mobi.chouette.model.Route> routes, ExportableNetexData exportableNetexData) {
+    private void produceAndCollectStopAssignments(List<mobi.chouette.model.Route> routes, ExportableNetexData exportableNetexData, NetexprofileExportParameters parameters) {
         int index = 1;
         for (mobi.chouette.model.Route route : routes) {
             for (StopPoint stopPoint : route.getStopPoints()) {
@@ -405,7 +405,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                         String stopAssignmentId = netexId(stopPoint.objectIdPrefix(), PASSENGER_STOP_ASSIGNMENT, stopAssignmentIdSuffix);
 
                         if (!exportableNetexData.getSharedStopAssignments().containsKey(stopAssignmentId)) {
-                            PassengerStopAssignment stopAssignment = createStopAssignment(stopPoint, stopAssignmentId, index);
+                            PassengerStopAssignment stopAssignment = createStopAssignment(stopPoint, stopAssignmentId, index, parameters);
                             exportableNetexData.getSharedStopAssignments().put(stopAssignmentId, stopAssignment);
                             index++;
                         }
@@ -417,7 +417,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         }
     }
 
-    private PassengerStopAssignment createStopAssignment(StopPoint stopPoint, String stopAssignmentId, int order) {
+    private PassengerStopAssignment createStopAssignment(StopPoint stopPoint, String stopAssignmentId, int order, NetexprofileExportParameters parameters) {
         String pointVersion = stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
 
         PassengerStopAssignment stopAssignment = netexFactory.createPassengerStopAssignment()
@@ -431,18 +431,27 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
         stopAssignment.setScheduledStopPointRef(scheduledStopPointRefStruct);
 
         if (isSet(stopPoint.getContainedInStopArea())) {
-            if (isSet(stopPoint.getContainedInStopArea().getParent())) {
-                mobi.chouette.model.StopArea parentStopArea = stopPoint.getContainedInStopArea().getParent();
-                String stopPlaceIdRef = netexId(parentStopArea.objectIdPrefix(), STOP_PLACE, parentStopArea.objectIdSuffix());
-
-                StopPlaceRefStructure stopPlaceRefStruct = netexFactory.createStopPlaceRefStructure().withRef(stopPlaceIdRef);
-                stopAssignment.setStopPlaceRef(stopPlaceRefStruct);
-            }
+//            if (isSet(stopPoint.getContainedInStopArea().getParent())) {
+//                mobi.chouette.model.StopArea parentStopArea = stopPoint.getContainedInStopArea().getParent();
+//                String stopPlaceIdRef = netexId(parentStopArea.objectIdPrefix(), STOP_PLACE, parentStopArea.objectIdSuffix());
+//
+//                StopPlaceRefStructure stopPlaceRefStruct = netexFactory.createStopPlaceRefStructure().withRef(stopPlaceIdRef);
+//                if(parameters.isExportStops()) {
+//                	stopPlaceRefStruct.withVersion(parentStopArea.getObjectVersion() > 0 ? String.valueOf(parentStopArea.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+//                }
+//                stopAssignment.setStopPlaceRef(stopPlaceRefStruct);
+//            }
 
             mobi.chouette.model.StopArea containedInStopArea = stopPoint.getContainedInStopArea();
             String quayIdRef = netexId(containedInStopArea.objectIdPrefix(), QUAY, containedInStopArea.objectIdSuffix());
 
+            
+            
+            
             QuayRefStructure quayRefStruct = netexFactory.createQuayRefStructure().withRef(quayIdRef);
+            if(parameters.isExportStops()) {
+            	quayRefStruct.withVersion(containedInStopArea.getObjectVersion() > 0 ? String.valueOf(containedInStopArea.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+            }
             stopAssignment.setQuayRef(quayRefStruct);
         }
 

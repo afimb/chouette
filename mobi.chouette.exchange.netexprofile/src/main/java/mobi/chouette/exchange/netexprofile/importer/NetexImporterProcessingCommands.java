@@ -62,7 +62,6 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 				commands.add(CommandFactory.create(initialContext, CleanRepositoryCommand.class.getName()));
 			}
 			commands.add(CommandFactory.create(initialContext, UncompressCommand.class.getName()));
-			commands.add(CommandFactory.create(initialContext, NetexInitImportCommand.class.getName()));
 		} catch (Exception e) {
 			log.error(e, e);
 			throw new RuntimeException("unable to call factories");
@@ -83,6 +82,8 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 		Path path = Paths.get(jobData.getPathName(), INPUT);
 
 		try {
+			commands.add(CommandFactory.create(initialContext, NetexInitImportCommand.class.getName()));
+
 			Chain mainChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 			commands.add(mainChain);
 

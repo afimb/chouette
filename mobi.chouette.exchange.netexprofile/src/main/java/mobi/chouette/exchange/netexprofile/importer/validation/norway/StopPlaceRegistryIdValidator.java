@@ -97,26 +97,26 @@ public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator 
 
 		log.info("About to validate external " + externalIds.size() + " ids");
 
-		Set<IdVersion> invalidIds = new HashSet<>();
+		Set<IdVersion> validIds = new HashSet<>();
 
 		Set<IdVersion> idsToCheck = isOfSupportedTypes(externalIds);
 
 		for (IdVersion id : idsToCheck) {
-			if (id.getId().contains(":Quay:") && !quayCache.contains(id.getId())) {
+			if (id.getId().contains(":Quay:") && quayCache.contains(id.getId())) {
 
-				invalidIds.add(id);
-				validationReporter.addCheckPointReportError(context,
-						AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN_PASSENGERSTOPASSIGNMENT_QUAYREF,
-						DataLocationHelper.findDataLocation(id));
+				validIds.add(id);
+//				validationReporter.addCheckPointReportError(context,
+//						AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN_PASSENGERSTOPASSIGNMENT_QUAYREF,
+//						DataLocationHelper.findDataLocation(id));
 
-			} else if (id.getId().contains(":StopPlace:") && !stopPlaceCache.contains(id.getId()))  {
-				invalidIds.add(id);
+			} else if (id.getId().contains(":StopPlace:") && stopPlaceCache.contains(id.getId()))  {
+				validIds.add(id);
 			}
 		}
 
-		log.info("Found " + invalidIds.size() + " ids invalid");
+		log.info("Found " + validIds.size() + " ids invalid");
 
-		return invalidIds;
+		return validIds;
 	}
 
 	public static class DefaultExternalReferenceValidatorFactory extends ExternalReferenceValidatorFactory {
