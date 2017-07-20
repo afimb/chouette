@@ -1,9 +1,7 @@
 package mobi.chouette.exchange.netexprofile.util;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.xml.xpath.XPath;
@@ -17,22 +15,20 @@ import org.w3c.dom.NodeList;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.PositionalXMLReader;
-import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
-import mobi.chouette.exchange.validation.ValidationData;
 
 public class NetexIdExtractorHelper {
-	public static Set<IdVersion> collectEntityIdentificators(Context context, XPath xpath, Document dom, Set<String> ignorableElementNames)
+	public static List<IdVersion> collectEntityIdentificators(Context context, XPath xpath, Document dom, Set<String> ignorableElementNames)
 			throws XPathExpressionException {
 		return collectIdOrRefWithVersion(context, xpath, dom, "id", ignorableElementNames);
 	}
 
-	public static Set<IdVersion> collectEntityReferences(Context context, XPath xpath, Document dom, Set<String> ignorableElementNames)
+	public static List<IdVersion> collectEntityReferences(Context context, XPath xpath, Document dom, Set<String> ignorableElementNames)
 			throws XPathExpressionException {
 		return collectIdOrRefWithVersion(context, xpath, dom, "ref", ignorableElementNames);
 	}
 
-	public static Set<IdVersion> collectIdOrRefWithVersion(Context context, XPath xpath, Document dom, String attributeName, Set<String> ignorableElementNames)
+	public static List<IdVersion> collectIdOrRefWithVersion(Context context, XPath xpath, Document dom, String attributeName, Set<String> ignorableElementNames)
 			throws XPathExpressionException {
 		StringBuilder filterClause = new StringBuilder();
 		filterClause.append("//n:*[");
@@ -44,7 +40,7 @@ public class NetexIdExtractorHelper {
 		filterClause.append("@" + attributeName + "]");
 
 		NodeList nodes = (NodeList) xpath.evaluate(filterClause.toString(), dom, XPathConstants.NODESET);
-		Set<IdVersion> ids = new HashSet<IdVersion>();
+		List<IdVersion> ids = new ArrayList<IdVersion>();
 		int idCount = nodes.getLength();
 		for (int i = 0; i < idCount; i++) {
 			Node n = nodes.item(i);

@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PublicationDelivery xmlns="http://www.netex.org.uk/netex" version="1.04:NO-NeTEx-networktimetable:1.0">
+    <PublicationTimestamp>2017-03-25T00:00:00.000Z</PublicationTimestamp>
+    <ParticipantRef>Avinor</ParticipantRef>
+    <Description>Line: Trondheim-Molde</Description>
+    <dataObjects>
+        <CompositeFrame created="2017-03-25T00:00:00.000Z" version="1" id="AVI:CompositeFrame:WF-TRD-MOL">
+            <!--     <validityConditions>
+                <AvailabilityCondition version="1" id="AVI:AvailabilityCondition:3381461">
+                    <FromDate>2017-03-25T00:00:00Z</FromDate>
+                    <ToDate>2017-07-25T00:00:00Z</ToDate>
+                </AvailabilityCondition>
+            </validityConditions>-->
+            <codespaces>
+                <Codespace id="avi">
+                    <Xmlns>AVI</Xmlns>
+                    <XmlnsUrl>http://www.rutebanken.org/ns/avi</XmlnsUrl>
+                </Codespace>
+                <Codespace id="avi">
+                    <Xmlns>XXX</Xmlns>
+                    <XmlnsUrl>http://www.rutebanken.org/ns/xxx</XmlnsUrl>
+                </Codespace>
+                <Codespace id="nsr">
+                    <Xmlns>NSR</Xmlns>
+                    <XmlnsUrl>http://www.rutebanken.org/ns/nsr</XmlnsUrl>
+                </Codespace>
+            </codespaces>
+            <FrameDefaults>
+                <DefaultLocale>
+                    <TimeZone>UTC</TimeZone>
+                    <DefaultLanguage>no</DefaultLanguage>
+                </DefaultLocale>
+            </FrameDefaults>
+            <frames>
+                <ResourceFrame version="1" id="AVI:ResourceFrame:8356908">
+                    <validityConditions>
+                        <AvailabilityCondition version="1" id="AVI:AvailabilityCondition:3381461">
+                            <FromDate>2017-03-25T00:00:00Z</FromDate>
+                            <ToDate>2017-07-25T00:00:00Z</ToDate>
+                        </AvailabilityCondition>
+                    </validityConditions>
+                    <organisations>
+                        <Authority version="1" id="AVI:Authority:Avinor">
+                            <!-- <CompanyNumber>985198292</CompanyNumber>-->
+                            <!--<Name>Avinor</Name>-->
+                            <!--  <LegalName>AVINOR AS</LegalName>-->
+                            <!--   <ContactDetails>
+                                <Phone>0047 815 30 550</Phone>
+                                <Url>http://www.avinor.no</Url>
+                            </ContactDetails>-->
+                            <OrganisationType>authority</OrganisationType>
+                        </Authority>
+                        <Operator version="1" id="AVI:Operator:WF">
+                            <!--                          <CompanyNumber>917330557</CompanyNumber>
+                            <Name>Widerøe</Name>
+                            <LegalName>WIDERØE'S FLYVESELSKAP AS</LegalName>
+                            <ContactDetails>
+                                <Phone>0047 755 13 500</Phone>
+                                <Url>http://www.wideroe.no</Url>
+                            </ContactDetails>-->
+                            <OrganisationType>operator</OrganisationType>
+                            <!--       <CustomerServiceContactDetails>
+                                <Phone>0047 755 13 500</Phone>
+                                <Url>http://www.wideroe.no</Url>
+                            </CustomerServiceContactDetails>-->
+                        </Operator>
+                    </organisations>
+                </ResourceFrame>
+                <SiteFrame version="1" id="AVI:SiteFrame:6340436">
+                    <stopPlaces>
+                        <StopPlace version="1" id="AVI:StopPlace:MOL">
+                            <Name>Molde Lufthavn</Name>
+                            <ShortName>MOL</ShortName>
+                            <Centroid>
+                                <Location srsName="WGS84">
+                                    <Longitude>7.260955</Longitude>
+                                    <Latitude>62.746489</Latitude>
+                                </Location>
+                            </Centroid>
+                            <StopPlaceType>airport</StopPlaceType>
+                            <quays>
+                                <Quay version="1" id="AVI:Quay:MOLX">
+                                    <Centroid>
+                                        <Location srsName="WGS84">
+                                            <Longitude>7.260955</Longitude>
+                                            <Latitude>62.746489</Latitude>
+                                        </Location>
+                                    </Centroid>
+                                </Quay>
+                            </quays>
+                        </StopPlace>
+                     
+                    </stopPlaces>
+                </SiteFrame>
+                <ServiceFrame version="1" id="AVI:ServiceFrame:7722364">
+                    <Network changed="2017-03-25T00:00:00.000Z" version="1" id="AVI:Network:WF">
+                        <Name>Widerøe</Name>
+                        <AuthorityRef ref="AVI:Authority:Avinor" version="1"/>
+                    </Network>
+                    <routePoints>
+                        <RoutePoint version="1" id="AVI:RoutePoint:76522">
+                            <projections>
+                                <PointProjection version="1" id="AVI:PointProjection:76522">
+                                    <ProjectedPointRef ref="AVI:Authority:Avinor" version="1"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                        <RoutePoint version="1" id="AVI:RoutePoint:83334">
+                            <projections>
+                                <PointProjection version="1" id="AVI:PointProjection:83334">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:83334" version="1"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                    </routePoints>
+                    <routes>
+                        <Route id="AVI:Route:12636280">
+                            <Name>Trondheim-Molde</Name>
+                            <!-- <LineRef ref="AVI:Line:WF_TRD-MOL" version="1"/>-->
+                            <!-- <pointsInSequence>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1263628001">
+                                    <RoutePointRef ref="AVI:RoutePoint:83334" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1263628002">
+                                    <RoutePointRef ref="AVI:RoutePoint:76522" version="1"/>
+                                </PointOnRoute>
+                            </pointsInSequence>-->
+                        </Route>
+                        <Route version="1" id="AVI:Route:126362803"/>
+                    </routes>
+                    <lines>
+                        <Line version="1" id="AVI:Line:WF_TRD-MOL">
+                            <!--   <Name>Trondheim-Molde</Name>-->
+                            <!--  <TransportMode>air</TransportMode>-->
+                            <!-- <PublicCode>TRD-MOL</PublicCode>-->
+                            <!-- <OperatorRef ref="AVI:Operator:WF" version="1"/>-->
+                            <routes>
+                                <RouteRef ref="AVI:Route:12636280"/>
+                            </routes>
+                            <!--<RepresentedByGroupRef ref="AVI:Network:WF" version="1"/>-->
+
+                        </Line>
+                    </lines>
+                    <destinationDisplays>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:12636280">
+                            <!--<FrontText>Molde</FrontText>-->
+                        </DestinationDisplay>
+                        
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplayWrongName:12636280">
+                            <!--<FrontText>Molde</FrontText>-->
+                        </DestinationDisplay>
+                        
+                        <DestinationDisplay version="1" id="XXX:DestinationDisplay:126360280">
+                            <!--<FrontText>Molde</FrontText>-->
+                        </DestinationDisplay>
+                        
+                    </destinationDisplays>
+                    <scheduledStopPoints>
+                        <ScheduledStopPoint version="1" id="AVI:ScheduledStopPointXXX:76522:2323">
+                            <Name>Molde Lufthavn</Name>
+                            <ShortName>MOL</ShortName>
+                        </ScheduledStopPoint>
+                        <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:83334">
+                            <Name>Trondheim Lufthavn</Name>
+                            <ShortName>TRD</ShortName>
+                        </ScheduledStopPoint>
+                    </scheduledStopPoints>
+                    <stopAssignments>
+                        <PassengerStopAssignment order="26" version="1" id="AVI:PassengerStopAssignment:MOL">
+                            <!--<ScheduledStopPointRef ref="AVI:ScheduledStopPoint:76522" version="1"/>-->
+                            <StopPlaceRef version="1" ref="AVI:StopPlace:MOL"/>
+                            <QuayRef ref="AVI:Quay:MOL"/>
+                        </PassengerStopAssignment>
+                        <PassengerStopAssignment order="42" version="1" id="AVI:PassengerStopAssignment:TRD">
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:83334" version="1"/>
+                            <StopPlaceRef version="1" ref="AVI:StopPlace:TRD"/>
+                            <!-- <QuayRef ref="AVI:Quay:TRD" version="1"/>-->
+                        </PassengerStopAssignment>
+                    </stopAssignments>
+                    <timingPoints>
+                        <TimingPoint/>
+                    </timingPoints>
+                    <journeyPatterns>
+                        <JourneyPattern version="1" id="AVI:JourneyPattern:12636280">
+                            <!-- <RouteRef ref="AVI:Route:12636280" version="1"/>-->
+                            <pointsInSequence>
+                                <StopPointInJourneyPattern order="1" version="1" id="AVI:StopPointInJourneyPattern:1263628001">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:83334" version="1"/>
+                                    <ForAlighting>false</ForAlighting>
+                                    <!--  <DestinationDisplayRef ref="AVI:DestinationDisplay:12636280" version="1"/>-->
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:1263628002">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:76522" version="1"/>
+                                    <ForAlighting>false</ForAlighting>
+                                    <ForBoarding>false</ForBoarding>
+
+                                </StopPointInJourneyPattern>
+                            </pointsInSequence>
+                        </JourneyPattern>
+
+                    </journeyPatterns>
+
+                </ServiceFrame>
+                <ServiceFrame version="1" id="AVI:ServiceFrame:77212364">
+                    <Network id="AVI:Network:DUMMY" version="1">
+                        <groupsOfLines>
+                            <GroupOfLines id="AVI:GroupOfLines:23" version="1"> </GroupOfLines>
+                        </groupsOfLines>
+                    </Network>
+                    <groupsOfLines>
+                        <GroupOfLines id="AVI:GroupOfLines:233" version="2"/>
+                    </groupsOfLines>
+
+
+                </ServiceFrame>
+                <TimetableFrame version="1" id="AVI:TimetableFrame:765399894"> </TimetableFrame>
+                <TimetableFrame version="1" id="AVI:TimetableFrame:7653894">
+                    <vehicleJourneys>
+
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF536-12636280">
+                            <DepartureTime>08:00:00Z</DepartureTime>
+                            <dayTypes>
+                                <DayTypeRef ref="AVI:DayType:1484071731-Mar_Sat_25-Jul_Thu_20-MoTuWeTh" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1484071731-Mar_Sun_26-Jul_Sun_23-Su" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1484071731-Jun_Fri_16" version="1"/>
+                                <DayTypeRef ref="AVI:DayType:1484071731-Apr_Sun_16-X" version="1"/>
+                            </dayTypes>
+                            <JourneyPatternRef ref="AVI:JourneyPattern:12636280" version="1"/>
+                            <PublicCode>WF537</PublicCode>
+                            <LineRef ref="AVI:Line:WF_TRD-MOL" version="1"/>
+                            <passingTimes>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1263628001" version="1"/>
+                                    <!--  <DepartureTime>08:00:00Z</DepartureTime>-->
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1263628002" version="1"/>
+                                    <DepartureTime>08:45:00Z</DepartureTime>
+                                    <ArrivalTime>08:45:00Z</ArrivalTime>
+                                </TimetabledPassingTime>
+                                <TimetabledPassingTime>
+                                    <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:1263628002" version="1"/>
+                                    <DepartureTime>08:45:00Z</DepartureTime>
+
+                                </TimetabledPassingTime>
+                            </passingTimes>
+                            <calls/>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF536-126360080">
+                        </ServiceJourney>
+
+                    </vehicleJourneys>
+                </TimetableFrame>
+                <ServiceCalendarFrame version="1" id="AVI:ServiceCalendarFrame:3865628">
+                    <dayTypes>
+                        <DayType version="1" id="AVI:DayType:1484071731-Mar_Sat_25-Jul_Sun_23-MoTuWeThFr">
+                            <properties>
+                                <PropertyOfDay>
+                                    <DaysOfWeek>Monday Tuesday Wednesday Thursday Friday</DaysOfWeek>
+                                </PropertyOfDay>
+                            </properties>
+                        </DayType>
+                        <DayType version="1" id="AVI:DayType:1484071731-Mar_Sat_25-Jul_Thu_20-MoTuWeTh">
+                            <properties>
+                                <PropertyOfDay>
+                                    <DaysOfWeek>Monday Tuesday Wednesday Thursday</DaysOfWeek>
+                                </PropertyOfDay>
+                            </properties>
+                        </DayType>
+                        <DayType version="1" id="AVI:DayType:1484071731-Mar_Sun_26-Jul_Sun_23-Su">
+                            <properties>
+                                <PropertyOfDay>
+                                    <DaysOfWeek>Sunday</DaysOfWeek>
+                                </PropertyOfDay>
+                            </properties>
+                        </DayType>
+                        <DayType version="1" id="AVI:DayType:1484071731-Mar_Sun_26"/>
+                        <DayType version="1" id="AVI:DayType:1484071731-Jun_Fri_16"/>
+                        <DayType version="1" id="AVI:DayType:1484071731-Jul_Fri_21"/>
+                        <DayType version="1" id="AVI:DayType:1484071731-Mar_Mon_27-X"/>
+                        <DayType version="1" id="AVI:DayType:1484071731-Jul_Thu_20-X"/>
+                        <DayType version="1" id="AVI:DayType:1484071731-Apr_Sun_16-X"/>
+                    </dayTypes>
+                    <operatingDays>
+                        <OperatingDay version="1" id="AVI:OperatingDay:1484071731-Jul_Thu_20-X">
+                            <CalendarDate>2017-07-20Z</CalendarDate>
+                            <EarliestTime>00:00:00Z</EarliestTime>
+                        </OperatingDay>
+                        <OperatingDay version="1" id="AVI:OperatingDay:1484071731-Jul_Fri_21">
+                            <CalendarDate>2017-07-21Z</CalendarDate>
+                            <EarliestTime>00:00:00Z</EarliestTime>
+                        </OperatingDay>
+                    </operatingDays>
+                    <operatingPeriods>
+                        <OperatingPeriod version="1" id="AVI:OperatingPeriod:1484071731-Mar_Sat_25-Jul_Sun_23">
+                            <FromDate>2017-03-25T00:00:00Z</FromDate>
+                            <ToDate>2017-07-23T00:00:00Z</ToDate>
+                        </OperatingPeriod>
+                        <OperatingPeriod version="1" id="AVI:OperatingPeriod:1484071731-Mar_Sat_25-Jul_Thu_20">
+                            <FromDate>2017-03-25T00:00:00Z</FromDate>
+                            <ToDate>2017-07-20T00:00:00Z</ToDate>
+                        </OperatingPeriod>
+                        <OperatingPeriod version="1" id="AVI:OperatingPeriod:1484071731-Mar_Sun_26-Jul_Sun_23">
+                            <FromDate>2017-03-26T00:00:00Z</FromDate>
+                            <ToDate>2017-07-23T00:00:00Z</ToDate>
+                        </OperatingPeriod>
+                    </operatingPeriods>
+                    <dayTypeAssignments>
+                        <DayTypeAssignment order="1" version="1" id="AVI:DayTypeAssignment:1484071731-Mar_Sat_25-Jul_Sun_23-MoTuWeThFr">
+                            <OperatingPeriodRef ref="AVI:OperatingPeriod:1484071731-Mar_Sat_25-Jul_Sun_23" version="1"/>
+                            <DayTypeRef ref="AVI:DayType:1484071731-Mar_Sat_25-Jul_Sun_23-MoTuWeThFr" version="1"/>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="2" version="1" id="AVI:DayTypeAssignment:1484071731-Mar_Sat_25-Jul_Thu_20-MoTuWeTh">
+                            <OperatingPeriodRef ref="AVI:OperatingPeriod:1484071731-Mar_Sat_25-Jul_Thu_20" version="1"/>
+                            <DayTypeRef ref="AVI:DayType:1484071731-Mar_Sat_25-Jul_Thu_20-MoTuWeTh" version="1"/>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="3" version="1" id="AVI:DayTypeAssignment:1484071731-Mar_Sun_26-Jul_Sun_23-Su">
+                            <OperatingPeriodRef ref="AVI:OperatingPeriod:1484071731-Mar_Sun_26-Jul_Sun_23" version="1"/>
+                            <DayTypeRef ref="AVI:DayType:1484071731-Mar_Sun_26-Jul_Sun_23-Su" version="1"/>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="4" version="1" id="AVI:DayTypeAssignment:1484071731-Mar_Sun_26">
+                            <Date>2017-03-26Z</Date>
+                            <DayTypeRef ref="AVI:DayType:1484071731-Mar_Sun_26" version="1"/>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="5" version="1" id="AVI:DayTypeAssignment:1484071731-Jun_Fri_16">
+                            <Date>2017-06-16Z</Date>
+                            <DayTypeRef ref="AVI:DayType:1484071731-Jun_Fri_16" version="1"/>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="6" version="1" id="AVI:DayTypeAssignment:1484071731-Jul_Fri_21">
+                            <OperatingDayRef ref="AVI:OperatingDay:1484071731-Jul_Fri_21" version="1"/>
+                            <DayTypeRef ref="AVI:DayType:1484071731-Jul_Fri_21" version="1"/>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="7" version="1" id="AVI:DayTypeAssignment:1484071731-Mar_Mon_27-X">
+                            <Date>2017-03-27Z</Date>
+                            <DayTypeRef ref="AVI:DayType:1484071731-Mar_Mon_27-X" version="1"/>
+                            <isAvailable>false</isAvailable>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="8" version="1" id="AVI:DayTypeAssignment:1484071731-Apr_Sun_16-X">
+                            <Date>2017-04-16Z</Date>
+                            <DayTypeRef ref="AVI:DayType:1484071731-Apr_Sun_16-X" version="1"/>
+                            <isAvailable>false</isAvailable>
+                        </DayTypeAssignment>
+                        <DayTypeAssignment order="9" version="1" id="AVI:DayTypeAssignment:1484071731-Jul_Thu_20-X">
+                            <OperatingDayRef ref="AVI:OperatingDay:1484071731-Jul_Thu_20-X" version="1"/>
+                          <!--  <DayTypeRef ref="AVI:DayType:1484071731-Jul_Thu_20-X" version="1"/>-->
+                            <isAvailable>false</isAvailable>
+                        </DayTypeAssignment>
+                    </dayTypeAssignments>
+                </ServiceCalendarFrame>
+            </frames>
+        </CompositeFrame>
+
+        <CompositeFrame created="2017-03-25T00:00:00.000Z" version="1" id="AVI:CompositeFrame:WF-TRD-MOLX">
+            <frames/>
+
+        </CompositeFrame>
+
+    </dataObjects>
+</PublicationDelivery>

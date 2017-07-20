@@ -254,6 +254,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
+        configuration.setExportStops(true);
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -294,6 +295,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         configuration.setValidateAfterExport(true);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
+        configuration.setExportStops(true);
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -333,6 +335,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
+        configuration.setExportStops(true);
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -372,6 +375,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
+        configuration.setExportStops(true);
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -412,6 +416,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         configuration.setValidateAfterExport(true);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
+        configuration.setExportStops(true);
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -451,6 +456,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
+        configuration.setExportStops(true);
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -493,6 +499,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         configuration.setValidateAfterExport(true);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
+        configuration.setExportStops(true);
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -536,6 +543,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
         configuration.setNoSave(false);
         configuration.setCleanRepository(true);
+        configuration.setParseSiteFrames(true);
 
         try {
             command.execute(context);

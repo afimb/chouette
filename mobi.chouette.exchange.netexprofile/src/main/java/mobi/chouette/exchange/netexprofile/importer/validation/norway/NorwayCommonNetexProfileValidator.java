@@ -1,22 +1,29 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidatorFactory;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.StopPlaceRegistryIdValidator.DefaultExternalReferenceValidatorFactory;
 import mobi.chouette.exchange.netexprofile.util.NetexIdExtractorHelper;
+import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.model.Codespace;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfileValidator implements NetexProfileValidator {
 
@@ -27,6 +34,24 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 		XPath xpath = (XPath) context.get(NETEX_XPATH);
 
 		Document commonDom = (Document) context.get(Constant.NETEX_DATA_DOM);
+
+        Map<IdVersion, List<String>> commonIds = (Map<IdVersion, List<String>>) context.get(mobi.chouette.exchange.netexprofile.Constant.NETEX_COMMON_FILE_IDENTIFICATORS);
+        String fileName = (String) context.get(FILE_NAME);
+
+		
+        // Find id-fields and to check for duplicates later
+		Set<IdVersion> localIdsInCommonFile = new HashSet<>(NetexIdExtractorHelper.collectEntityIdentificators(context, xpath, commonDom, new HashSet<>(Arrays.asList("Codespace"))));
+        ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		for(IdVersion id : localIdsInCommonFile) {
+            data.getDataLocations().put(id.getId(), DataLocationHelper.findDataLocation(id));
+            List<String> list = commonIds.get(id);
+            if (list == null) {
+                list = new ArrayList<String>();
+                commonIds.put(id, list);
+            }
+            list.add(fileName);
+		}
+
 		
 		@SuppressWarnings("unchecked")
 		Set<Codespace> validCodespaces = (Set<Codespace>) context.get(NETEX_VALID_CODESPACES);
@@ -35,14 +60,14 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 		verifyAcceptedCodespaces(context, xpath, commonDom, validCodespaces);
 		
 		// Verify that local ids er ok
-		Set<IdVersion> localIds = NetexIdExtractorHelper.collectEntityIdentificators(context, xpath, commonDom, new HashSet<>(Arrays.asList("Codespace")));
-		Set<IdVersion> localRefs = NetexIdExtractorHelper.collectEntityReferences(context, xpath, commonDom, null);
+		Set<IdVersion> localIds = new HashSet<>(NetexIdExtractorHelper.collectEntityIdentificators(context, xpath, commonDom, new HashSet<>(Arrays.asList("Codespace"))));
+		List<IdVersion> localRefs = NetexIdExtractorHelper.collectEntityReferences(context, xpath, commonDom, null);
 		verifyIdStructure(context, localIds, ID_STRUCTURE_REGEXP, validCodespaces);
 
 		verifyReferencesToCorrectEntityTypes(context,localRefs);
 		verifyUseOfVersionOnLocalElements(context, localIds);
 		verifyUseOfVersionOnRefsToLocalElements(context, localIds, localRefs);
-		verifyExternalRefs(context, localRefs,localIds);
+		verifyExternalRefs(context, localRefs,localIds, new HashSet<IdVersion>());
 		
 		NodeList compositeFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:CompositeFrame", xpath, commonDom);
 		if (compositeFrames.getLength() > 0) {
