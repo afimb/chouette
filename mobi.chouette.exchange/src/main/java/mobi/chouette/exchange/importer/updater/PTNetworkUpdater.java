@@ -1,9 +1,14 @@
 package mobi.chouette.exchange.importer.updater;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.dao.CompanyDAO;
+import mobi.chouette.model.Company;
 import mobi.chouette.model.Network;
+import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
 
 
 @Stateless(name = PTNetworkUpdater.BEAN_NAME)
@@ -11,8 +16,15 @@ public class PTNetworkUpdater implements Updater<Network> {
 
 	public static final String BEAN_NAME = "PTNetworkUpdater";
 
+	@EJB(beanName = CompanyUpdater.BEAN_NAME)
+	private Updater<Company> companyUpdater;
+
+	@EJB
+	private CompanyDAO companyDAO;
+
+
 	@Override
-	public void update(Context context, Network oldValue, Network newValue) {
+	public void update(Context context, Network oldValue, Network newValue) throws Exception {
 
 		if (newValue.isSaved()) {
 			return;
@@ -71,6 +83,29 @@ public class PTNetworkUpdater implements Updater<Network> {
 						oldValue.getSourceIdentifier())) {
 			oldValue.setSourceIdentifier(newValue.getSourceIdentifier());
 		}
+		
+		// Company
+		Referential cache = (Referential) context.get(CACHE);
+
+		if (newValue.getCompany() == null) {
+			oldValue.setCompany(null);
+		} else {
+			String objectId = newValue.getCompany().getObjectId();
+			Company company = cache.getCompanies().get(objectId);
+			if (company == null) {
+				company = companyDAO.findByObjectId(objectId);
+				if (company != null) {
+					cache.getCompanies().put(objectId, company);
+				}
+			}
+
+			if (company == null) {
+				company = ObjectFactory.getCompany(cache, objectId);
+			}
+			oldValue.setCompany(company);
+			companyUpdater.update(context, oldValue.getCompany(), newValue.getCompany());
+		}
+
 	}
 
 }
