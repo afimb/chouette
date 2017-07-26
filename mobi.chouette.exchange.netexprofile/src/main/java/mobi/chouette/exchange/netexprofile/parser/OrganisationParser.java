@@ -10,6 +10,7 @@ import mobi.chouette.model.type.OrganisationTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.*;
 
 import javax.xml.bind.JAXBElement;
@@ -43,7 +44,7 @@ public class OrganisationParser implements Parser, Constant {
                 company.setLegalName(organisationStruct.getLegalName().getValue());
             }
 
-            company.setRegistrationNumber(organisationStruct.getCompanyNumber());
+            company.setRegistrationNumber(StringUtils.remove(organisationStruct.getCompanyNumber()," "));
 
             if (organisationStruct.getContactDetails() != null) {
                 company.setPhone(organisationStruct.getContactDetails().getPhone());
