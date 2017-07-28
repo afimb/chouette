@@ -5,14 +5,12 @@ import java.text.ParseException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.JAXBElement;
 
-import org.joda.time.DateTimeConstants;
 import org.rutebanken.helper.calendar.CalendarPattern;
 import org.rutebanken.helper.calendar.CalendarPatternAnalyzer;
 import org.rutebanken.netex.model.DataManagedObjectStructure;
@@ -253,7 +251,25 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
 					endDate = ParserUtils.getSQLDate(operatingPeriod.getToDate().toString());
 				}
 
-				timetable.addPeriod(new Period(startDate, endDate));
+				// Cut of operating period to validity condition
+				java.sql.Date validFrom = new java.sql.Date(validBetween.getFromDate().toInstant().toEpochMilli());
+				java.sql.Date validTo = new java.sql.Date(validBetween.getToDate().toInstant().toEpochMilli());
+				
+				if(endDate.before(validFrom) || startDate.after(validTo)) {
+					// Outside of validFrom/to envelope
+				} else {
+					// At least partially inside envelope
+					if(startDate.before(validFrom)) {
+						startDate = validFrom;
+					}
+					if(endDate.after(validTo)) {
+						endDate = validTo;
+					}
+					
+					
+					timetable.addPeriod(new Period(startDate, endDate));
+				}
+				
 			}
 		}
 

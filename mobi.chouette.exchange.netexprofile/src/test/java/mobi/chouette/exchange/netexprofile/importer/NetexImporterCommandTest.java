@@ -386,12 +386,9 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 					List<Timetable> timetables = vj.getTimetables();
 
 					for (Timetable timetable : timetables) {
-						if(!timetable.getCalendarDays().isEmpty() || !timetable.getPeriods().isEmpty()) {
-						assertNotNull(timetable.getStartOfPeriod());
-						assertNotNull(timetable.getEndOfPeriod());
-						}
-						assertNotEquals(timetable.getDayTypes(), 0, " timetable should have day types");
-						assertNotEquals(timetable.getExcludedDates(), 0, " timetable should have excluded dates");
+						// All daytypes outside of validitycondition
+						assertEquals(timetable.getCalendarDays().size(), 0);
+						assertEquals(timetable.getPeriods().size(), 0);
 
 						numTimetables++;
 					}
