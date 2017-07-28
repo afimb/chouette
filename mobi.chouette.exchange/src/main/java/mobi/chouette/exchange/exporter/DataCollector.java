@@ -62,6 +62,8 @@ public class DataCollector {
 						if (isValid) {
 							collection.getTimetables().addAll(vehicleJourney.getTimetables());
 							collection.getVehicleJourneys().add(vehicleJourney);
+							collection.getInterchanges().addAll(vehicleJourney.getFeederInterchanges());
+							collection.getInterchanges().addAll(vehicleJourney.getConsumerInterchanges());
 							validJourneyPattern = true;
 							validRoute = true;
 							validLine = true;
