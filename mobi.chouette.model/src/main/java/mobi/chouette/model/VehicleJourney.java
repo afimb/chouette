@@ -339,4 +339,25 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "vehicle_journey_id", updatable = false)
 	private List<JourneyFrequency> journeyFrequencies = new ArrayList<JourneyFrequency>(0);
+	
+	/**
+	 * list of interchanges where this vehicle journey participates as the feeder
+	 * 
+	 */
+	@Getter
+	@Setter
+	@OneToMany(mappedBy = "feederVehicleJourney", cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch = FetchType.LAZY)
+	private List<Interchange> feederInterchanges = new ArrayList<>(0);
+
+
+	/**
+	 * list of interchanges where this vehicle journey participates as the consumer
+	 * 
+	 */
+	@Getter
+	@Setter
+	@OneToMany(mappedBy = "consumerVehicleJourney", cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch = FetchType.LAZY)
+	private List<Interchange> consumerInterchanges = new ArrayList<>(0);
+
+
 }

@@ -11,7 +11,7 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 		GtfsConverter {
 
 	public static enum FIELDS {
-		from_stop_id, to_stop_id, transfer_type, min_transfer_time;
+		from_stop_id, to_stop_id, from_route_id,to_route_id,from_trip_id,to_trip_id, transfer_type, min_transfer_time;
 	};
 
 	public static final String FILENAME = "transfers.txt";
@@ -98,6 +98,49 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 			bean.setToStopId(STRING_CONVERTER.from(context, FIELDS.to_stop_id, value, true));
 		}
 		
+		// Route id
+		value = array[i++]; testExtraSpace(FIELDS.from_route_id.name(), value, bean);
+		if (value != null && !value.trim().isEmpty()) {
+			try {
+				bean.setFromRouteId(STRING_CONVERTER.from(context, FIELDS.from_route_id, value, false));
+			} catch (GtfsException ex) {
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.from_route_id.name()), FIELDS.from_route_id.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+			}
+		}
+		
+		value = array[i++]; testExtraSpace(FIELDS.to_route_id.name(), value, bean);
+		if (value != null && !value.trim().isEmpty()) {
+			try {
+				bean.setToRouteId(STRING_CONVERTER.from(context, FIELDS.to_route_id, value, false));
+			} catch (GtfsException ex) {
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.to_route_id.name()), FIELDS.to_route_id.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+			}
+		}
+		
+		// Trip id
+		value = array[i++]; testExtraSpace(FIELDS.from_trip_id.name(), value, bean);
+		if (value != null && !value.trim().isEmpty()) {
+			try {
+				bean.setFromTripId(STRING_CONVERTER.from(context, FIELDS.from_trip_id, value, false));
+			} catch (GtfsException ex) {
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.from_trip_id.name()), FIELDS.from_trip_id.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+			}
+		}
+		
+		value = array[i++]; testExtraSpace(FIELDS.to_trip_id.name(), value, bean);
+		if (value != null && !value.trim().isEmpty()) {
+			try {
+				bean.setToTripId(STRING_CONVERTER.from(context, FIELDS.to_trip_id, value, false));
+			} catch (GtfsException ex) {
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.to_trip_id.name()), FIELDS.to_trip_id.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+			}
+		}
+		
+		
 		value = array[i++]; testExtraSpace(FIELDS.transfer_type.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
 			if (withValidation)
@@ -150,6 +193,46 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 			result = false;
 		}
 
+		String fromRouteId = bean.getFromRouteId();
+		if (fromRouteId != null) {
+			if(dao.getRouteById().containsKey(fromRouteId)) {
+				bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
+			} else {
+				bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.from_route_id.name()), FIELDS.from_route_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, fromRouteId));
+				result = false;
+			}
+		}
+
+		String toRouteId = bean.getToRouteId();
+		if (toRouteId != null) {
+			if( dao.getRouteById().containsKey(toRouteId)) {
+				bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
+			} else {
+				bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.to_route_id.name()), FIELDS.to_route_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, toRouteId));
+				result = false;
+			}
+		}
+
+		String fromTripId = bean.getFromTripId();
+		if (fromTripId != null) {
+			if(dao.getTripById().containsKey(fromTripId)) {
+				bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
+			} else {
+				bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.from_trip_id.name()), FIELDS.from_trip_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, fromTripId));
+				result = false;
+			}
+		} 
+
+		String toTripId = bean.getToTripId();
+		if (toTripId != null) {
+			if(dao.getTripById().containsKey(toTripId)) {
+				bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
+			} else {
+				bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.to_trip_id.name()), FIELDS.to_trip_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, toTripId));
+				result = false;
+			}
+		}
+
 		return result;
 	}
 
@@ -160,6 +243,10 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 		bean.setMinTransferTime(null);
 		bean.setToStopId(null);
 		bean.setTransferType(null);
+		bean.setFromRouteId(null);
+		bean.setToRouteId(null);
+		bean.setFromTripId(null);
+		bean.setToTripId(null);
 	}
 
 	public static class DefaultImporterFactory extends IndexFactory {

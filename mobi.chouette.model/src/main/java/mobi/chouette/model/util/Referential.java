@@ -12,6 +12,7 @@ import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
+import mobi.chouette.model.Interchange;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
@@ -130,6 +131,10 @@ public class Referential implements java.io.Serializable {
 	@Setter
 	private Map<String, RouteSection> routeSections = new HashMap<String, RouteSection>();
 
+	@Getter
+	@Setter
+	private Map<String, Interchange> interchanges = new HashMap<String, Interchange>();
+
 	public void clear(boolean cascade) {
 		if (cascade) {
 			for (Line line : lines.values()) {
@@ -187,6 +192,7 @@ public class Referential implements java.io.Serializable {
 		timetables.clear();
 		vehicleJourneys.clear();
 		routeSections.clear();
+		interchanges.clear();
 	}
 
 	public void dispose() {

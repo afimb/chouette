@@ -513,6 +513,100 @@ ALTER TABLE chouette_gui.journey_pattern_sections_id_seq OWNER TO chouette;
 ALTER SEQUENCE journey_pattern_sections_id_seq OWNED BY journey_pattern_sections.id;
 
 
+
+-- Table: interchanges
+
+-- DROP TABLE interchanges;
+
+CREATE SEQUENCE interchanges_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1;
+
+ALTER SEQUENCE interchanges_id_seq
+    OWNER TO chouette;
+
+CREATE TABLE interchanges
+(
+    id bigint NOT NULL DEFAULT nextval('interchanges_id_seq'::regclass),
+    objectid character varying COLLATE pg_catalog."default" NOT NULL,
+    object_version integer,
+    creation_time timestamp without time zone,
+    creator_id character varying COLLATE pg_catalog."default",
+    name character varying COLLATE pg_catalog."default",
+    priority integer,
+    planned boolean,
+    guaranteed boolean,
+    advertised boolean,
+    maximum_wait_time time without time zone,
+    from_point character varying COLLATE pg_catalog."default" NOT NULL,
+    to_point character varying COLLATE pg_catalog."default" NOT NULL,
+    from_vehicle_journey character varying COLLATE pg_catalog."default" NOT NULL,
+    to_vehicle_journey character varying COLLATE pg_catalog."default" NOT NULL,
+    stay_seated boolean,
+    minimum_transfer_time time without time zone,
+    from_visit_number integer,
+    to_visit_number integer,
+
+    CONSTRAINT interchanges_pkey PRIMARY KEY (id)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE interchanges
+    OWNER to chouette;
+
+-- Index: interchanges_from_point_key
+
+-- DROP INDEX fin.interchanges_from_point_key;
+
+CREATE INDEX interchanges_from_point_key
+    ON interchanges USING btree
+    (from_point COLLATE pg_catalog."default")
+    TABLESPACE pg_default;
+
+-- Index: interchanges_from_vehicle_journey_key
+
+-- DROP INDEX fin.interchanges_from_vehicle_journey_key;
+
+CREATE INDEX interchanges_from_vehicle_journey_key
+    ON interchanges USING btree
+    (from_vehicle_journey COLLATE pg_catalog."default")
+    TABLESPACE pg_default;
+
+-- Index: interchanges_objectid_key
+
+-- DROP INDEX fin.interchanges_objectid_key;
+
+CREATE UNIQUE INDEX interchanges_objectid_key
+    ON interchanges USING btree
+    (objectid COLLATE pg_catalog."default")
+    TABLESPACE pg_default;
+
+-- Index: interchanges_to_poinnt_key
+
+-- DROP INDEX fin.interchanges_to_poinnt_key;
+
+CREATE INDEX interchanges_to_poinnt_key
+    ON interchanges USING btree
+    (to_point COLLATE pg_catalog."default")
+    TABLESPACE pg_default;
+
+-- Index: interchanges_to_vehicle_journey_key
+
+-- DROP INDEX fin.interchanges_to_vehicle_journey_key;
+
+CREATE INDEX interchanges_to_vehicle_journey_key
+    ON interchanges USING btree
+    (objectid COLLATE pg_catalog."default")
+    TABLESPACE pg_default;
+    
+
+
 --
 -- TOC entry 197 (class 1259 OID 938943)
 -- Name: journey_patterns; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 

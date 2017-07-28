@@ -28,6 +28,22 @@ public class GtfsTransfer extends GtfsObject implements Serializable
 
    @Getter
    @Setter
+   private String fromRouteId;
+
+   @Getter
+   @Setter
+   private String toRouteId;
+
+   @Getter
+   @Setter
+   private String fromTripId;
+
+   @Getter
+   @Setter
+   private String toTripId;
+
+   @Getter
+   @Setter
    private TransferType transferType;
 
    @Getter
@@ -38,6 +54,17 @@ public class GtfsTransfer extends GtfsObject implements Serializable
    {
       Recommended, Timed, Minimal, NoAllowed;
 
+   }
+   
+   public void clear() {
+	   fromStopId = null;
+	   toStopId = null;
+	   fromRouteId = null;
+	   toRouteId = null;
+	   fromTripId = null;
+	   toTripId = null;
+	   transferType = null;
+	   minTransferTime = null;
    }
 
    // @Override
