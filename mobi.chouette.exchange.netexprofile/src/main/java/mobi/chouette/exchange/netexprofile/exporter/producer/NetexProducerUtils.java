@@ -6,11 +6,13 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -323,7 +325,7 @@ public class NetexProducerUtils {
 		if (d == null) {
 			return null;
 		} else {
-			return new Time(d.toMillis());
+			return Time.valueOf(LocalTime.MIDNIGHT.plus(d));
 		}
 	}
 
