@@ -438,6 +438,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 				interchange = ObjectFactory.getInterchange(cache, item.getObjectId());
 			}
 			BeanUtils.setProperty(interchange, method, oldValue);
+			oldValueInterchanges.add(interchange);
 		}
 
 		Collection<Pair<Interchange, Interchange>> modifiedInterchange = CollectionUtil.intersection(
@@ -450,6 +451,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 				newValueInterchanges, NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Interchange interchange : removedInterchange) {
 			BeanUtils.setProperty(interchange, method, oldValue);
+			oldValueInterchanges.remove(interchange);
 		}
 
 	}
