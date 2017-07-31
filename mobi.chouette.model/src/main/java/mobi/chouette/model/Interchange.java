@@ -28,7 +28,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "interchanges")
 @NoArgsConstructor
-@ToString
+@ToString(exclude = { "consumerVehicleJourney", "feederVehicleJourney", "feederStopPoint", "consumerStopPoint" })
 public class Interchange extends NeptuneIdentifiedObject {
 	private static final long serialVersionUID = 84905295077539089L;
 
@@ -42,7 +42,6 @@ public class Interchange extends NeptuneIdentifiedObject {
 	@Column(name = "id", nullable = false)
 	protected Long id;
 
-
 	@Getter
 	@Setter
 	@Column(name = "name")
@@ -53,7 +52,6 @@ public class Interchange extends NeptuneIdentifiedObject {
 	@Column(name = "priority")
 	private Integer priority;
 
-	
 	@Getter
 	@Setter
 	@Column(name = "planned")
@@ -78,51 +76,51 @@ public class Interchange extends NeptuneIdentifiedObject {
 	@Setter
 	@Column(name = "maximum_wait_time")
 	private Time maximumWaitTime;
-	
+
 	@Getter
 	@Setter
 	@Column(name = "minimum_transfer_time")
 	private Time minimumTransferTime;
-	
-	
-	
-	// Field mapped twice in order to handle that the to_vehicle_journey contains an objectid which may reference a non existent vehicle journey in this space (but may be found in other spaces)
+
+	// Field mapped twice in order to handle that the to_vehicle_journey
+	// contains an objectid which may reference a non existent vehicle journey
+	// in this space (but may be found in other spaces)
 	@Getter
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "to_vehicle_journey",referencedColumnName = "objectid", insertable = false, updatable = false)
+	@JoinColumn(name = "to_vehicle_journey", referencedColumnName = "objectid", insertable = false, updatable = false)
 	private VehicleJourney consumerVehicleJourney;
 
 	public void setConsumerVehicleJourney(VehicleJourney vj) {
 		this.consumerVehicleJourney = vj;
 
-		if(vj != null) {
+		if (vj != null) {
 			this.consumerVehicleJourneyObjectid = vj.getObjectId();
 		} else {
 			this.consumerVehicleJourneyObjectid = null;
 		}
 	}
-	
+
 	@Getter
 	@Column(name = "to_vehicle_journey", insertable = true, updatable = true, nullable = false)
 	private String consumerVehicleJourneyObjectid;
-	
+
 	public void setConsumerVehicleJourneyObjectid(String objectid) {
-		this.consumerVehicleJourneyObjectid  = objectid;
+		this.consumerVehicleJourneyObjectid = objectid;
 		this.consumerVehicleJourney = null;
 	}
 
-	
-	
-	// Field mapped twice in order to handle that the to_vehicle_journey contains an objectid which may reference a non existent vehicle journey in this space (but may be found in other spaces)
+	// Field mapped twice in order to handle that the to_vehicle_journey
+	// contains an objectid which may reference a non existent vehicle journey
+	// in this space (but may be found in other spaces)
 	@Getter
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "from_vehicle_journey",referencedColumnName = "objectid", insertable = false, updatable = false)
+	@JoinColumn(name = "from_vehicle_journey", referencedColumnName = "objectid", insertable = false, updatable = false)
 	private VehicleJourney feederVehicleJourney;
 
 	public void setFeederVehicleJourney(VehicleJourney vj) {
 		this.feederVehicleJourney = vj;
 
-		if(vj != null) {
+		if (vj != null) {
 			this.feederVehicleJourneyObjectid = vj.getObjectId();
 		} else {
 			this.feederVehicleJourneyObjectid = null;
@@ -134,33 +132,34 @@ public class Interchange extends NeptuneIdentifiedObject {
 	private String feederVehicleJourneyObjectid;
 
 	public void setFeederVehicleJourneyObjectid(String objectid) {
-		this.feederVehicleJourneyObjectid  = objectid;
+		this.feederVehicleJourneyObjectid = objectid;
 		this.feederVehicleJourney = null;
 	}
 
-
-	// Field mapped twice in order to handle that the to_vehicle_journey contains an objectid which may reference a non existent vehicle journey in this space (but may be found in other spaces)
+	// Field mapped twice in order to handle that the to_vehicle_journey
+	// contains an objectid which may reference a non existent vehicle journey
+	// in this space (but may be found in other spaces)
 	@Getter
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "to_point",referencedColumnName = "objectid", insertable = false, updatable = false)
+	@JoinColumn(name = "to_point", referencedColumnName = "objectid", insertable = false, updatable = false)
 	private StopPoint consumerStopPoint;
 
 	public void setConsumerStopPoint(StopPoint vj) {
 		this.consumerStopPoint = vj;
 
-		if(vj != null) {
+		if (vj != null) {
 			this.consumerStopPointObjectid = vj.getObjectId();
 		} else {
 			this.consumerStopPointObjectid = null;
 		}
 	}
-	
+
 	@Getter
 	@Column(name = "to_point", insertable = true, updatable = true, nullable = false)
 	private String consumerStopPointObjectid;
-	
+
 	public void setConsumerStopPointObjectid(String objectid) {
-		this.consumerStopPointObjectid  = objectid;
+		this.consumerStopPointObjectid = objectid;
 		this.consumerStopPoint = null;
 	}
 
@@ -169,16 +168,18 @@ public class Interchange extends NeptuneIdentifiedObject {
 	@Column(name = "to_visit_number")
 	private Integer consumerVisitNumber;
 
-	// Field mapped twice in order to handle that the to_vehicle_journey contains an objectid which may reference a non existent vehicle journey in this space (but may be found in other spaces)
+	// Field mapped twice in order to handle that the to_vehicle_journey
+	// contains an objectid which may reference a non existent vehicle journey
+	// in this space (but may be found in other spaces)
 	@Getter
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "from_point",referencedColumnName = "objectid", insertable = false, updatable = false)
+	@JoinColumn(name = "from_point", referencedColumnName = "objectid", insertable = false, updatable = false)
 	private StopPoint feederStopPoint;
 
 	public void setFeederStopPoint(StopPoint vj) {
 		this.feederStopPoint = vj;
 
-		if(vj != null) {
+		if (vj != null) {
 			this.feederStopPointObjectid = vj.getObjectId();
 		} else {
 			this.feederStopPointObjectid = null;
@@ -190,7 +191,7 @@ public class Interchange extends NeptuneIdentifiedObject {
 	private String feederStopPointObjectid;
 
 	public void setFeederStopPointObjectid(String objectid) {
-		this.feederStopPointObjectid  = objectid;
+		this.feederStopPointObjectid = objectid;
 		this.feederStopPoint = null;
 	}
 
