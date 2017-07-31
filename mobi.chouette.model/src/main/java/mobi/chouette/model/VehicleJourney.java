@@ -44,7 +44,7 @@ import org.hibernate.annotations.Parameter;
 @Entity
 @Table(name = "vehicle_journeys")
 @NoArgsConstructor
-@ToString(callSuper = true, exclude = { "journeyPattern", "route", "timetables" })
+@ToString(callSuper = true, exclude = { "journeyPattern", "route", "timetables", "consumerInterchanges", "feederInterchanges" })
 public class VehicleJourney extends NeptuneIdentifiedObject {
 
 	private static final long serialVersionUID = 304336286208135064L;
