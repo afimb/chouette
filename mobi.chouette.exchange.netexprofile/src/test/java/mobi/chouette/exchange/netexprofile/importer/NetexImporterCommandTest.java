@@ -930,7 +930,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	}
 
 	@Test
-	public void importSingleLineWithInterchanges() throws Exception {
+	public void importSingleLineWithSameLineInterchanges() throws Exception {
 		Context context = initImportContext();
 		clearCodespaceRecords();
 
@@ -981,6 +981,88 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		VehicleJourney feederJourney = vehicleJourneyDao.findByObjectId("AVI:ServiceJourney:3273336");
 		assertNotNull(feederJourney, "Feeder journey not found");
 		VehicleJourney consumerJourney = vehicleJourneyDao.findByObjectId("AVI:ServiceJourney:4598614");
+		assertNotNull(consumerJourney, "Consumer journey not found");
+
+		
+		
+		assertEquals(feederJourney.getFeederInterchanges().size(), 1, " feederjourney should have feeder interchange");
+		assertEquals(consumerJourney.getConsumerInterchanges().size(), 1, " consumerjourney should have consumer interchange");
+
+		Interchange i = consumerJourney.getConsumerInterchanges().get(0);
+		
+		assertNotNull(i.getConsumerVehicleJourney());
+		assertNotNull(i.getFeederVehicleJourney());
+		assertNotNull(i.getConsumerStopPoint());
+		assertNotNull(i.getFeederStopPoint());
+		
+		assertEquals(i.getStaySeated(),Boolean.FALSE);
+		assertEquals(i.getPlanned(), Boolean.TRUE);
+		assertEquals(i.getGuaranteed(),Boolean.FALSE);
+		assertEquals(i.getAdvertised(),Boolean.TRUE);
+		
+		assertEquals(i.getMaximumWaitTime(),new Time(0,30,0));
+		assertNotNull(i.getName());
+		Assert.assertNull(i.getMinimumTransferTime());
+		
+	
+
+		utx.rollback();
+		assertTrue(result, "Importer command execution failed: " + report.getFailure());
+	}
+	
+	
+	@Test
+	public void importMultipleLinesWithInterchanges() throws Exception {
+		Context context = initImportContext();
+		clearCodespaceRecords();
+
+		insertCodespaceRecords(Arrays.asList(
+				createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+				createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
+		);
+
+		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
+				initialContext, NetexprofileImporterCommand.class.getName());
+
+		NetexTestUtils.copyFile("avinor_multiple_line_with_interchanges.zip");
+
+		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
+		jobData.setInputFilename("avinor_multiple_line_with_interchanges.zip");
+
+		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
+		configuration.setNoSave(false);
+		configuration.setCleanRepository(true);
+
+		boolean result;
+		try {
+			result = command.execute(context);
+		} catch (Exception ex) {
+			log.error("test failed", ex);
+			throw ex;
+		}
+
+		ActionReport report = (ActionReport) context.get(REPORT);
+
+		dumpReports(context);
+
+		assertEquals(report.getResult(), STATUS_OK, "result");
+		assertEquals(report.getFiles().size(), 3, "files reported");
+		assertNotNull(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE), "lines reported");
+		assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 2, "lines reported");
+
+		for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+			Reporter.log("report lines :" + info.toString(), true);
+			assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "lines status");
+		}
+
+		NetexTestUtils.verifyValidationReport(context);
+
+		utx.begin();
+		em.joinTransaction();
+
+		VehicleJourney feederJourney = vehicleJourneyDao.findByObjectId("AVI:ServiceJourney:Feeder");
+		assertNotNull(feederJourney, "Feeder journey not found");
+		VehicleJourney consumerJourney = vehicleJourneyDao.findByObjectId("AVI:ServiceJourney:Consumer");
 		assertNotNull(consumerJourney, "Consumer journey not found");
 
 		

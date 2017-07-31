@@ -118,6 +118,7 @@ public class ExportableNetexData {
         dayTypes.clear();
         dayTypeAssignments.clear();
         operatingPeriods.clear();
+        serviceJourneyInterchanges.clear();
     }
 
     public void dispose() {
