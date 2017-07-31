@@ -100,6 +100,11 @@ public class ExportableNetexData {
     @Setter
     private Set<OperatingPeriod> operatingPeriods = new HashSet<>();
 
+    @Getter
+    @Setter
+    private List<ServiceJourneyInterchange> serviceJourneyInterchanges = new ArrayList<>();
+
+
     public void clear() {
         lineCondition = null;
         line = null;

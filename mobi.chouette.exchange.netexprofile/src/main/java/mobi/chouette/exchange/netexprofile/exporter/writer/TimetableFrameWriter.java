@@ -1,20 +1,26 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
-import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
-import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DATA_OJBECT_VERSION;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.objectIdPrefix;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.JOURNEY_INTERCHANGES;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NOTICES;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NOTICE_ASSIGNMENTS;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.TIMETABLE_FRAME;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.VEHICLE_JOURNEYS;
+
+import javax.xml.stream.XMLStreamWriter;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.Network;
 import org.rutebanken.netex.model.Notice;
 import org.rutebanken.netex.model.NoticeAssignment;
 import org.rutebanken.netex.model.ServiceJourney;
+import org.rutebanken.netex.model.ServiceJourneyInterchange;
 
-import javax.xml.stream.XMLStreamWriter;
-
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DATA_OJBECT_VERSION;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.objectIdPrefix;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
+import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
+import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 
 public class TimetableFrameWriter extends AbstractNetexWriter {
 
@@ -34,6 +40,12 @@ public class TimetableFrameWriter extends AbstractNetexWriter {
                 writeNoticesElement(writer, exportableNetexData);
                 writeNoticeAssignmentsElement(writer, exportableNetexData);
             }
+            
+            if (CollectionUtils.isNotEmpty(exportableNetexData.getServiceJourneyInterchanges())) {
+                writeServiceJourneyInterchangesElement(writer, exportableNetexData);
+            }
+            
+            
 
             writer.writeEndElement();
         } catch (Exception e) {
@@ -76,5 +88,19 @@ public class TimetableFrameWriter extends AbstractNetexWriter {
             throw new RuntimeException(e);
         }
     }
+    
+    private static void writeServiceJourneyInterchangesElement(XMLStreamWriter writer, ExportableNetexData exportableData) {
+        try {
+            writer.writeStartElement(JOURNEY_INTERCHANGES);
+            for (ServiceJourneyInterchange serviceJourneyInterchange : exportableData.getServiceJourneyInterchanges()) {
+                marshaller.marshal(netexFactory.createServiceJourneyInterchange(serviceJourneyInterchange), writer);
+            }
+            writer.writeEndElement();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 
 }
