@@ -23,7 +23,11 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 	public TransferByFromStop(String name) throws IOException {
 		super(name, KEY, false);
 	}
-	
+
+	public TransferByFromStop(String name, String id, boolean unique) throws IOException {
+		super(name, id, unique);
+	}
+
 	@Override
 	protected void checkRequiredFields(Map<String, Integer> fields) {
 		for (String fieldName : fields.keySet()) {

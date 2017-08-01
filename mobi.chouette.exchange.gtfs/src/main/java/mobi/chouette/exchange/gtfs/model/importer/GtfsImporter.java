@@ -21,7 +21,7 @@ import mobi.chouette.exchange.gtfs.model.importer.GtfsException.ERROR;
 
 public class GtfsImporter {
 	public static enum INDEX {
-		AGENCY_BY_ID, CALENDAR_BY_SERVICE, CALENDAR_DATE_BY_SERVICE, FREQUENCY_BY_TRIP, ROUTE_BY_ID, STOP_BY_ID, STOP_TIME_BY_TRIP, TRANSFER_BY_FROM_STOP, SHAPE_BY_ID, TRIP_BY_ID, TRIP_BY_ROUTE, TRIP_BY_SERVICE;
+		AGENCY_BY_ID, CALENDAR_BY_SERVICE, CALENDAR_DATE_BY_SERVICE, FREQUENCY_BY_TRIP, ROUTE_BY_ID, STOP_BY_ID, STOP_TIME_BY_TRIP, TRANSFER_BY_FROM_STOP, TRANSFER_BY_FROM_TRIP, TRANSFER_BY_TO_TRIP, SHAPE_BY_ID, TRIP_BY_ID, TRIP_BY_ROUTE, TRIP_BY_SERVICE;
 	}
 
 	private String _path;
@@ -151,6 +151,18 @@ public class GtfsImporter {
 	public Index<GtfsTransfer> getTransferByFromStop() {
 		return getImporter(INDEX.TRANSFER_BY_FROM_STOP.name(),
 				TransferByFromStop.FILENAME, TransferByFromStop.class);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Index<GtfsTransfer> getTransferByToTrip() {
+		return getImporter(INDEX.TRANSFER_BY_TO_TRIP.name(),
+				TransferByFromStop.FILENAME, TransferByToTrip.class);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Index<GtfsTransfer> getTransferByFromTrip() {
+		return getImporter(INDEX.TRANSFER_BY_FROM_TRIP.name(),
+				TransferByFromStop.FILENAME, TransferByFromTrip.class);
 	}
 
 	@SuppressWarnings("unchecked")
