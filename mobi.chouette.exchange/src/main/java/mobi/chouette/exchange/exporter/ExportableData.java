@@ -14,6 +14,7 @@ import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
+import mobi.chouette.model.Interchange;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
@@ -102,7 +103,11 @@ public class ExportableData {
 //		}
 //		return null;
 //	}
-	
+
+	@Getter
+	@Setter
+	private Set<Interchange> interchanges = new HashSet<>();
+
 	public void clear()
 	{
 		networks.clear();
@@ -127,5 +132,6 @@ public class ExportableData {
 		routes.clear();
 		stopPoints.clear();
 		sharedStops.clear();
+		interchanges.clear();
 	}
 }

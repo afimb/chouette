@@ -3,6 +3,8 @@ package mobi.chouette.exchange.gtfs.parser;
 import java.sql.Time;
 import java.util.Calendar;
 
+import org.apache.commons.lang.StringUtils;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
@@ -17,7 +19,10 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
 import mobi.chouette.model.ConnectionLink;
+import mobi.chouette.model.Interchange;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -105,11 +110,30 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 
 		for (GtfsTransfer gtfsTransfer : importer.getTransferByFromStop()) {
 
-			String objectId = AbstractConverter.composeObjectId(configuration,
-					ConnectionLink.CONNECTIONLINK_KEY, gtfsTransfer.getFromStopId() + "_" + gtfsTransfer.getToStopId(),
-					log);
-			ConnectionLink connectionLink = ObjectFactory.getConnectionLink(referential, objectId);
-			convert(context, gtfsTransfer, connectionLink);
+			if(gtfsTransfer.getFromRouteId() == null && gtfsTransfer.getToRouteId() == null && gtfsTransfer.getFromTripId() == null && gtfsTransfer.getToTripId() == null) {
+				// Treat as conneciton link
+				String objectId = AbstractConverter.composeObjectId(configuration,
+						ConnectionLink.CONNECTIONLINK_KEY, gtfsTransfer.getFromStopId() + "_" + gtfsTransfer.getToStopId(),
+						log);
+				ConnectionLink connectionLink = ObjectFactory.getConnectionLink(referential, objectId);
+				convert(context, gtfsTransfer, connectionLink);
+			} else {
+				// Treat as interchange
+				String partialId = StringUtils.join(new String[] {
+						gtfsTransfer.getFromStopId(),
+						gtfsTransfer.getToStopId(),
+						gtfsTransfer.getFromRouteId(),
+						gtfsTransfer.getToRouteId(),
+						gtfsTransfer.getFromTripId(),
+						gtfsTransfer.getToTripId(),
+						},"_");
+				String objectId = AbstractConverter.composeObjectId(configuration,
+						ConnectionLink.CONNECTIONLINK_KEY, partialId,log);
+				Interchange interchange = ObjectFactory.getInterchange(referential, objectId);
+				convert(context, gtfsTransfer, interchange);
+				
+				
+			}
 		}
 	}
 
@@ -147,6 +171,51 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 		}
 		connectionLink.setFilled(true);
 //		AbstractConverter.addLocation(context, "transfers.txt", connectionLink.getObjectId(), gtfsTransfer.getId());
+	}
+
+	protected void convert(Context context, GtfsTransfer gtfsTransfer, Interchange interchange) {
+
+		Referential referential = (Referential) context.get(REFERENTIAL);
+		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
+		
+		if(gtfsTransfer.getFromTripId() != null && gtfsTransfer.getToTripId() != null) {
+			StopPoint feederStopPoint = ObjectFactory.getStopPoint(referential, AbstractConverter.composeObjectId(
+					configuration, StopPoint.STOPPOINT_KEY, gtfsTransfer.getFromStopId(), log));
+			interchange.setFeederStopPoint(feederStopPoint);
+			
+			StopPoint consumerStopPoint = ObjectFactory.getStopPoint(referential, AbstractConverter.composeObjectId(
+					configuration, StopPoint.STOPPOINT_KEY, gtfsTransfer.getToStopId(), log));
+			interchange.setConsumerStopPoint(consumerStopPoint);
+			
+			
+			
+			VehicleJourney feederVehicleJourney = ObjectFactory.getVehicleJourney(referential, AbstractConverter.composeObjectId(
+					configuration, VehicleJourney.VEHICLEJOURNEY_KEY, gtfsTransfer.getFromTripId(), log));
+			
+			VehicleJourney consumerVehicleJourney = ObjectFactory.getVehicleJourney(referential, AbstractConverter.composeObjectId(
+					configuration, VehicleJourney.VEHICLEJOURNEY_KEY, gtfsTransfer.getToTripId(), log));
+			
+			interchange.setFeederStopPoint(feederStopPoint);
+			interchange.setConsumerStopPoint(consumerStopPoint);
+			interchange.setFeederVehicleJourney(feederVehicleJourney);
+			interchange.setConsumerVehicleJourney(consumerVehicleJourney);
+			
+			interchange.setCreationTime(Calendar.getInstance().getTime());
+			
+			if (gtfsTransfer.getMinTransferTime() != null && gtfsTransfer.getTransferType() == TransferType.Minimal) {
+				interchange.setMinimumTransferTime(new Time(gtfsTransfer.getMinTransferTime() * 1000));
+				interchange.setGuaranteed(Boolean.FALSE);
+			} else if (gtfsTransfer.getTransferType().equals(TransferType.Timed)) {
+				interchange.setGuaranteed(Boolean.TRUE);
+			} 
+			
+			
+			interchange.setName(feederVehicleJourney.getObjectId()+" at "+interchange.getFeederStopPoint().getContainedInStopArea().getName() + " to "+consumerVehicleJourney.getObjectId()+" at "
+						+ interchange.getConsumerStopPoint().getContainedInStopArea().getName() + " ");
+			
+			interchange.setFilled(true);
+		}
+
 	}
 
 	static {

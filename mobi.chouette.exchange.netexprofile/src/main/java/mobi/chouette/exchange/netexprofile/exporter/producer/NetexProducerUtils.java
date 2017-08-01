@@ -1,14 +1,18 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import java.math.BigInteger;
 import java.sql.Time;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -18,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
 import org.rutebanken.netex.model.DayOfWeekEnumeration;
+import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.OrganisationTypeEnumeration;
 
 import lombok.extern.log4j.Log4j;
@@ -307,5 +312,38 @@ public class NetexProducerUtils {
     public static String objectIdSuffix(String objectId) {
         return objectId.split(OBJECT_ID_SPLIT_CHAR).length > 2 ? objectId.split(OBJECT_ID_SPLIT_CHAR)[2].trim() : "";
     }
+    
+    public static MultilingualString getMLString(String v) {
+    	if(v == null) {
+    		return null;
+    	} else {
+    		return new MultilingualString().withValue(v);
+    	}
+    }
+    
+	public static Time asTime(Duration d) {
+		if (d == null) {
+			return null;
+		} else {
+			return Time.valueOf(LocalTime.MIDNIGHT.plus(d));
+		}
+	}
+
+	public static Integer asInteger(BigInteger v) {
+		if (v == null) {
+			return null;
+		} else {
+			return v.intValue();
+		}
+	}
+
+	public static BigInteger asBigInteger(Integer v) {
+		if (v == null) {
+			return null;
+		} else {
+			return BigInteger.valueOf(v.longValue());
+		}
+	}
+
 
 }

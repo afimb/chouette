@@ -8,10 +8,13 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import org.apache.commons.beanutils.BeanUtils;
+
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.CompanyDAO;
+import mobi.chouette.dao.InterchangeDAO;
 import mobi.chouette.dao.JourneyFrequencyDAO;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.RouteDAO;
@@ -23,6 +26,7 @@ import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Footnote;
+import mobi.chouette.model.Interchange;
 import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -95,6 +99,9 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	@EJB
 	private LineDAO lineDAO;
 
+	@EJB
+	private InterchangeDAO interchangeDAO;
+
 	@EJB(beanName = TimetableUpdater.BEAN_NAME)
 	private Updater<Timetable> timetableUpdater;
 
@@ -106,6 +113,10 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 
 	@EJB(beanName = FootnoteUpdater.BEAN_NAME)
 	private Updater<Footnote> footnoteUpdater;
+
+	@EJB(beanName = InterchangeUpdater.BEAN_NAME)
+	private Updater<Interchange> interchangeUpdater;
+
 
 	@Override
 	public void update(Context context, VehicleJourney oldValue, VehicleJourney newValue) throws Exception {
@@ -397,11 +408,60 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		}
 
 		oldValue.setFootnotes(footnotes);
-//		monitor.stop();
+
+		updateInterchanges(context, oldValue, newValue);
+		//		monitor.stop();
 	}
+	
+	
+	public void updateInterchanges(Context context, VehicleJourney oldValue, VehicleJourney newValue) throws Exception {
+		updateInterchanges(context, oldValue, newValue, oldValue.getConsumerInterchanges(), newValue.getConsumerInterchanges(), "consumerVehicleJourney");
+		updateInterchanges(context, oldValue, newValue, oldValue.getFeederInterchanges(), newValue.getFeederInterchanges(), "feederVehicleJourney");
+	}
+	
+	private void updateInterchanges(Context context, VehicleJourney oldValue, VehicleJourney newValue, List<Interchange> oldValueInterchanges, List<Interchange> newValueInterchanges, String method) throws Exception {
+		Referential cache = (Referential) context.get(CACHE);
 
+		Collection<Interchange> addedInterchange = CollectionUtil.substract(newValueInterchanges,
+				oldValueInterchanges, NeptuneIdentifiedObjectComparator.INSTANCE);
 
+		List<Interchange> interchanges = null;
+		for (Interchange item : addedInterchange) {
 
+			Interchange interchange = cache.getInterchanges().get(item.getObjectId());
+			if (interchange == null) {
+				if (interchanges == null) {
+					interchanges = interchangeDAO.findByObjectId(UpdaterUtils.getObjectIds(addedInterchange));
+					for (Interchange object : interchanges) {
+						cache.getInterchanges().put(object.getObjectId(), object);
+					}
+				}
+				interchange = cache.getInterchanges().get(item.getObjectId());
+			}
+
+			if (interchange == null) {
+				interchange = ObjectFactory.getInterchange(cache, item.getObjectId());
+			}
+			BeanUtils.setProperty(interchange, method, oldValue);
+			oldValueInterchanges.add(interchange);
+		}
+
+		Collection<Pair<Interchange, Interchange>> modifiedInterchange = CollectionUtil.intersection(
+				oldValueInterchanges, newValueInterchanges, NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (Pair<Interchange, Interchange> pair : modifiedInterchange) {
+			interchangeUpdater.update(context, pair.getLeft(), pair.getRight());
+		}
+
+		Collection<Interchange> removedInterchange = CollectionUtil.substract(oldValueInterchanges,
+				newValueInterchanges, NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (Interchange interchange : removedInterchange) {
+			BeanUtils.setProperty(interchange, method, oldValue);
+			oldValueInterchanges.remove(interchange);
+		}
+
+	}
+	
+	
 	/**
 	 * Test 2-DATABASE-VehicleJourney-2
 	 * @param validationReporter

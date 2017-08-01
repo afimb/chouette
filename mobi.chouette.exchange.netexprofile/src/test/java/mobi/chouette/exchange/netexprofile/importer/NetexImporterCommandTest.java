@@ -10,6 +10,7 @@ import static org.testng.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -49,6 +50,7 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.CodespaceDAO;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.DummyChecker;
 import mobi.chouette.exchange.netexprofile.JobDataTest;
@@ -65,6 +67,7 @@ import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Codespace;
 import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.Footnote;
+import mobi.chouette.model.Interchange;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -87,6 +90,9 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 	@EJB
 	private LineDAO lineDao;
+
+	@EJB
+	private VehicleJourneyDAO vehicleJourneyDao;
 
 	@EJB
 	private CodespaceDAO codespaceDao;
@@ -510,11 +516,9 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 					List<Timetable> timetables = vj.getTimetables();
 
 					for (Timetable timetable : timetables) {
-						assertNotNull(timetable.getStartOfPeriod());
-						assertNotNull(timetable.getEndOfPeriod());
-
-						assertNotEquals(timetable.getDayTypes(), 0, " timetable should have day types");
-						assertNotEquals(timetable.getExcludedDates(), 0, " timetable should have excluded dates");
+						// All daytypes outside of validitycondition
+						assertEquals(timetable.getCalendarDays().size(), 0);
+						assertEquals(timetable.getPeriods().size(), 0);
 
 						numTimetables++;
 					}
@@ -1023,6 +1027,171 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		utx.rollback();
 		assertTrue(result, "Importer command execution failed: " + report.getFailure());
 	}
+
+	@Test
+	public void importSingleLineWithSameLineInterchanges() throws Exception {
+		Context context = initImportContext();
+		clearCodespaceRecords();
+
+		insertCodespaceRecords(Arrays.asList(
+				createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+				createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
+		);
+
+		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
+				initialContext, NetexprofileImporterCommand.class.getName());
+
+		NetexTestUtils.copyFile("avinor_single_line_with_interchanges.zip");
+
+		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
+		jobData.setInputFilename("avinor_single_line_with_interchanges.zip");
+
+		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
+		configuration.setNoSave(false);
+		configuration.setCleanRepository(true);
+
+		boolean result;
+		try {
+			result = command.execute(context);
+		} catch (Exception ex) {
+			log.error("test failed", ex);
+			throw ex;
+		}
+
+		ActionReport report = (ActionReport) context.get(REPORT);
+
+		dumpReports(context);
+
+		assertEquals(report.getResult(), STATUS_OK, "result");
+		assertEquals(report.getFiles().size(), 2, "files reported");
+		assertNotNull(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE), "lines reported");
+		assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 1, "lines reported");
+
+		for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+			Reporter.log("report lines :" + info.toString(), true);
+			assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "lines status");
+		}
+
+		NetexTestUtils.verifyValidationReport(context);
+
+		utx.begin();
+		em.joinTransaction();
+
+		VehicleJourney feederJourney = vehicleJourneyDao.findByObjectId("AVI:ServiceJourney:3273336");
+		assertNotNull(feederJourney, "Feeder journey not found");
+		VehicleJourney consumerJourney = vehicleJourneyDao.findByObjectId("AVI:ServiceJourney:4598614");
+		assertNotNull(consumerJourney, "Consumer journey not found");
+
+		
+		
+		assertEquals(feederJourney.getFeederInterchanges().size(), 1, " feederjourney should have feeder interchange");
+		assertEquals(consumerJourney.getConsumerInterchanges().size(), 1, " consumerjourney should have consumer interchange");
+
+		Interchange i = consumerJourney.getConsumerInterchanges().get(0);
+		
+		assertNotNull(i.getConsumerVehicleJourney());
+		assertNotNull(i.getFeederVehicleJourney());
+		assertNotNull(i.getConsumerStopPoint());
+		assertNotNull(i.getFeederStopPoint());
+		
+		assertEquals(i.getStaySeated(),Boolean.FALSE);
+		assertEquals(i.getPlanned(), Boolean.TRUE);
+		assertEquals(i.getGuaranteed(),Boolean.FALSE);
+		assertEquals(i.getAdvertised(),Boolean.TRUE);
+		
+		assertEquals(i.getMaximumWaitTime(),new Time(0,30,0));
+		assertNotNull(i.getName());
+		Assert.assertNull(i.getMinimumTransferTime());
+		
+	
+
+		utx.rollback();
+		assertTrue(result, "Importer command execution failed: " + report.getFailure());
+	}
+	
+	
+	@Test
+	public void importMultipleLinesWithInterchanges() throws Exception {
+		Context context = initImportContext();
+		clearCodespaceRecords();
+
+		insertCodespaceRecords(Arrays.asList(
+				createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+				createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
+		);
+
+		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(
+				initialContext, NetexprofileImporterCommand.class.getName());
+
+		NetexTestUtils.copyFile("avinor_multiple_line_with_interchanges.zip");
+
+		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
+		jobData.setInputFilename("avinor_multiple_line_with_interchanges.zip");
+
+		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
+		configuration.setNoSave(false);
+		configuration.setCleanRepository(true);
+
+		boolean result;
+		try {
+			result = command.execute(context);
+		} catch (Exception ex) {
+			log.error("test failed", ex);
+			throw ex;
+		}
+
+		ActionReport report = (ActionReport) context.get(REPORT);
+
+		dumpReports(context);
+
+		assertEquals(report.getResult(), STATUS_OK, "result");
+		assertEquals(report.getFiles().size(), 3, "files reported");
+		assertNotNull(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE), "lines reported");
+		assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 2, "lines reported");
+
+		for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+			Reporter.log("report lines :" + info.toString(), true);
+			assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "lines status");
+		}
+
+		NetexTestUtils.verifyValidationReport(context);
+
+		utx.begin();
+		em.joinTransaction();
+
+		VehicleJourney feederJourney = vehicleJourneyDao.findByObjectId("AVI:ServiceJourney:Feeder");
+		assertNotNull(feederJourney, "Feeder journey not found");
+		VehicleJourney consumerJourney = vehicleJourneyDao.findByObjectId("AVI:ServiceJourney:Consumer");
+		assertNotNull(consumerJourney, "Consumer journey not found");
+
+		
+		
+		assertEquals(feederJourney.getFeederInterchanges().size(), 1, " feederjourney should have feeder interchange");
+		assertEquals(consumerJourney.getConsumerInterchanges().size(), 1, " consumerjourney should have consumer interchange");
+
+		Interchange i = consumerJourney.getConsumerInterchanges().get(0);
+		
+		assertNotNull(i.getConsumerVehicleJourney());
+		assertNotNull(i.getFeederVehicleJourney());
+		assertNotNull(i.getConsumerStopPoint());
+		assertNotNull(i.getFeederStopPoint());
+		
+		assertEquals(i.getStaySeated(),Boolean.FALSE);
+		assertEquals(i.getPlanned(), Boolean.TRUE);
+		assertEquals(i.getGuaranteed(),Boolean.FALSE);
+		assertEquals(i.getAdvertised(),Boolean.TRUE);
+		
+		assertEquals(i.getMaximumWaitTime(),new Time(0,30,0));
+		assertNotNull(i.getName());
+		Assert.assertNull(i.getMinimumTransferTime());
+		
+	
+
+		utx.rollback();
+		assertTrue(result, "Importer command execution failed: " + report.getFailure());
+	}
+	
+	
 
 	@Test(enabled = false)
 	public void verifyImportSingleLineWithCommonDataRuter() throws Exception {

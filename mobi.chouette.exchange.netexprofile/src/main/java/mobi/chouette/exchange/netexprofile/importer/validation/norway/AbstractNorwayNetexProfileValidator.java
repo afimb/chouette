@@ -256,6 +256,11 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		noticedObjectRefSubstitutions.add("ServiceJourney");
 		allowedSubstitutions.put("NoticedObjectRef", noticedObjectRefSubstitutions);
 
+		Set<String> toJourneyRefSubstitutions = new HashSet<>();
+		toJourneyRefSubstitutions.add("ServiceJourney");
+		allowedSubstitutions.put("ToJourneyRef", toJourneyRefSubstitutions);
+		allowedSubstitutions.put("FromJourneyRef", toJourneyRefSubstitutions);
+
 		boolean foundErrors = false;
 
 		for (IdVersion id : localRefs) {

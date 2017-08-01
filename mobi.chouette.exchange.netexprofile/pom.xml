@@ -33,6 +33,7 @@
 		<dependency>
 			<groupId>org.rutebanken.helpers</groupId>
 			<artifactId>calendar-helper</artifactId>
+			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>

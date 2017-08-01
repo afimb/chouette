@@ -58,6 +58,7 @@
 		<class>mobi.chouette.model.Timetable</class>
 		<class>mobi.chouette.model.VehicleJourneyAtStop</class>
 		<class>mobi.chouette.model.VehicleJourney</class>
+		<class>mobi.chouette.model.Interchange</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<validation-mode>NONE</validation-mode>
 

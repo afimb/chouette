@@ -1,19 +1,20 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Constant;
-import mobi.chouette.common.Context;
-import mobi.chouette.common.JobData;
-import mobi.chouette.exchange.metadata.Metadata;
-import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
-import mobi.chouette.exchange.netexprofile.exporter.producer.*;
-import mobi.chouette.exchange.report.ActionReporter;
-import mobi.chouette.exchange.report.IO_TYPE;
-import mobi.chouette.model.*;
-import mobi.chouette.model.StopArea;
-import org.apache.commons.collections.CollectionUtils;
-import org.rutebanken.netex.model.*;
-import org.rutebanken.netex.model.DestinationDisplay;
+import static mobi.chouette.exchange.netexprofile.Constant.EXPORTABLE_NETEX_DATA;
+import static mobi.chouette.exchange.netexprofile.Constant.NETEX_VALID_CODESPACES;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer.DAY_TYPES_KEY;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer.DAY_TYPE_ASSIGNMENTS_KEY;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer.OPERATING_PERIODS_KEY;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.AUTHORITY;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NOTICE;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NOTICE_ASSIGNMENT;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.PASSENGER_STOP_ASSIGNMENT;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.POINT_PROJECTION;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.QUAY;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.ROUTE_POINT;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SCHEDULED_STOP_POINT;
 
 import java.io.File;
 import java.math.BigInteger;
@@ -24,12 +25,60 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static mobi.chouette.exchange.netexprofile.Constant.EXPORTABLE_NETEX_DATA;
-import static mobi.chouette.exchange.netexprofile.Constant.NETEX_VALID_CODESPACES;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer.*;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.rutebanken.netex.model.Authority;
+import org.rutebanken.netex.model.AvailabilityCondition;
+import org.rutebanken.netex.model.ContactStructure;
+import org.rutebanken.netex.model.DataManagedObjectStructure;
+import org.rutebanken.netex.model.DayType;
+import org.rutebanken.netex.model.DayTypeAssignment;
+import org.rutebanken.netex.model.DestinationDisplay;
+import org.rutebanken.netex.model.DestinationDisplayRefStructure;
+import org.rutebanken.netex.model.GroupOfLines;
+import org.rutebanken.netex.model.Notice;
+import org.rutebanken.netex.model.NoticeAssignment;
+import org.rutebanken.netex.model.NoticeRefStructure;
+import org.rutebanken.netex.model.OperatingPeriod;
+import org.rutebanken.netex.model.Operator;
+import org.rutebanken.netex.model.OrganisationTypeEnumeration;
+import org.rutebanken.netex.model.PassengerStopAssignment;
+import org.rutebanken.netex.model.PointProjection;
+import org.rutebanken.netex.model.PointRefStructure;
+import org.rutebanken.netex.model.Projections_RelStructure;
+import org.rutebanken.netex.model.QuayRefStructure;
+import org.rutebanken.netex.model.RoutePoint;
+import org.rutebanken.netex.model.ScheduledStopPoint;
+import org.rutebanken.netex.model.ScheduledStopPointRefStructure;
+import org.rutebanken.netex.model.ServiceJourney;
+import org.rutebanken.netex.model.StopPlace;
+import org.rutebanken.netex.model.VersionOfObjectRefStructure;
+import org.rutebanken.netex.model.Via_VersionedChildStructure;
+import org.rutebanken.netex.model.Vias_RelStructure;
+
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
+import mobi.chouette.common.JobData;
+import mobi.chouette.exchange.metadata.Metadata;
+import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
+import mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer;
+import mobi.chouette.exchange.netexprofile.exporter.producer.JourneyPatternProducer;
+import mobi.chouette.exchange.netexprofile.exporter.producer.LineProducer;
+import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer;
+import mobi.chouette.exchange.netexprofile.exporter.producer.NetworkProducer;
+import mobi.chouette.exchange.netexprofile.exporter.producer.OperatorProducer;
+import mobi.chouette.exchange.netexprofile.exporter.producer.RouteProducer;
+import mobi.chouette.exchange.netexprofile.exporter.producer.ServiceJourneyInterchangeProducer;
+import mobi.chouette.exchange.netexprofile.exporter.producer.ServiceJourneyProducer;
+import mobi.chouette.exchange.netexprofile.exporter.producer.StopPlaceProducer;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.model.Company;
+import mobi.chouette.model.Footnote;
+import mobi.chouette.model.GroupOfLine;
+import mobi.chouette.model.Interchange;
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
 
 @Log4j
 public class NetexLineDataProducer extends NetexProducer implements Constant {
@@ -48,7 +97,8 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
     private static JourneyPatternProducer journeyPatternProducer = new JourneyPatternProducer();
     private static CalendarProducer calendarProducer = new CalendarProducer();
     private static ServiceJourneyProducer serviceJourneyProducer = new ServiceJourneyProducer();
-
+    private static ServiceJourneyInterchangeProducer serviceJourneyInterchangeProducer = new ServiceJourneyInterchangeProducer();
+    
     public void produce(Context context) throws Exception {
         ActionReporter reporter = ActionReporter.Factory.getInstance();
         JobData jobData = (JobData) context.get(JOB_DATA);
@@ -153,6 +203,10 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                         .withNoticedObjectRef(versionOfObjectRefStruct);
 
                 exportableNetexData.getNoticeAssignments().add(noticeAssignment);
+            }
+            
+            for(Interchange interchange : vehicleJourney.getConsumerInterchanges()) {
+            	exportableNetexData.getServiceJourneyInterchanges().add(serviceJourneyInterchangeProducer.produce(context, interchange));
             }
         }
     }

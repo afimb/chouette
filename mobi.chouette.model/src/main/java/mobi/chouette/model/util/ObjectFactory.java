@@ -6,6 +6,7 @@ import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.GroupOfLine;
+import mobi.chouette.model.Interchange;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
@@ -249,5 +250,16 @@ public class ObjectFactory {
 		}
 		
 		return result;
+	}
+	
+	public static Interchange getInterchange(Referential referential, String objectId) {
+		Interchange interchange = referential.getInterchanges().get(objectId);
+		if (interchange == null) {
+			interchange = new Interchange();
+			interchange.setObjectId(objectId);
+			interchange.setDetached(true);
+			referential.getInterchanges().put(objectId, interchange);
+		}
+		return interchange;
 	}
 }
