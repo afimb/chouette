@@ -77,6 +77,10 @@ public class Referential implements java.io.Serializable {
 
 	@Getter
 	@Setter
+	private Map<String, Interchange> sharedInterchanges = new HashMap<String, Interchange>();
+
+	@Getter
+	@Setter
 	private Map<String, Route> routes = new HashMap<String, Route>();
 
 	@Getter
@@ -222,6 +226,7 @@ public class Referential implements java.io.Serializable {
 		sharedTimebands.clear();
 		sharedTimetables.clear();
 		sharedDestinationDisplays.clear();
+		sharedInterchanges.clear();
 	}
 
 }
