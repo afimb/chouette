@@ -70,6 +70,10 @@ public class Referential implements java.io.Serializable {
 	@Setter
 	private Map<String, Timeband> sharedTimebands = new HashMap<String, Timeband>();
 
+	@Getter
+	@Setter
+	private Map<String, Interchange> sharedInterchanges = new HashMap<String, Interchange>();
+
 
 	@Getter
 	@Setter
@@ -207,6 +211,7 @@ public class Referential implements java.io.Serializable {
 		sharedStopAreas.clear();
 		sharedTimebands.clear();
 		sharedTimetables.clear();
+		sharedInterchanges.clear();
 	}
 
 }

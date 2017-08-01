@@ -67,12 +67,12 @@ public class GtfsTransferProducer extends AbstractProducer {
 		}
 
 		transfer.setFromTripId(toGtfsId(neptuneObject.getFeederVehicleJourney().getObjectId(), prefix, keepOriginalId));
-		transfer.setFromRouteId(
-				toGtfsId(neptuneObject.getFeederVehicleJourney().getJourneyPattern().getRoute().getLine().getObjectId(), prefix, keepOriginalId));
+//		transfer.setFromRouteId(
+//				toGtfsId(neptuneObject.getFeederVehicleJourney().getRoute().getLine().getObjectId(), prefix, keepOriginalId));
 
 		transfer.setToTripId(toGtfsId(neptuneObject.getConsumerVehicleJourney().getObjectId(), prefix, keepOriginalId));
-		transfer.setToRouteId(
-				toGtfsId(neptuneObject.getConsumerVehicleJourney().getJourneyPattern().getRoute().getLine().getObjectId(), prefix, keepOriginalId));
+//		transfer.setToRouteId(
+//				toGtfsId(neptuneObject.getConsumerVehicleJourney().getRoute().getLine().getObjectId(), prefix, keepOriginalId));
 
 		try {
 			getExporter().getTransferExporter().export(transfer);
