@@ -12,6 +12,9 @@ import java.io.IOException;
 
 import javax.naming.InitialContext;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
@@ -23,14 +26,12 @@ import mobi.chouette.exchange.validation.checkpoint.AccessPointCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.CompanyCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.ConnectionLinkCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.GroupOfLineCheckPoints;
+import mobi.chouette.exchange.validation.checkpoint.InterchangeCheckpoints;
 import mobi.chouette.exchange.validation.checkpoint.NetworkCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.SharedLineCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.StopAreaCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.TimetableCheckPoints;
 import mobi.chouette.exchange.validation.report.ValidationReport;
-
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
 
 /**
  *
@@ -48,6 +49,7 @@ public class SharedDataValidatorCommand implements Command, Constant {
 	private ConnectionLinkCheckPoints connectionLinkCheckPoints = new ConnectionLinkCheckPoints();
 	private AccessPointCheckPoints accessPointCheckPoints = new AccessPointCheckPoints();
 	private AccessLinkCheckPoints accessLinkCheckPoints = new AccessLinkCheckPoints();
+	private InterchangeCheckpoints interchangeCheckPoints = new InterchangeCheckpoints();
 
 	@Override
 	public boolean execute(Context context) throws Exception {
@@ -72,6 +74,7 @@ public class SharedDataValidatorCommand implements Command, Constant {
 			connectionLinkCheckPoints.validate(context, null);
 			accessPointCheckPoints.validate(context, null);
 			accessLinkCheckPoints.validate(context, null);
+			interchangeCheckPoints.validate(context, null);
 
 			result = SUCCESS;
 		} catch (Exception e) {

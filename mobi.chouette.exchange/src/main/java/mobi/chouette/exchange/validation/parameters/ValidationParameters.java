@@ -71,7 +71,9 @@ import lombok.Data;
 		"checkTimetable",
 		"timetable",
 		"checkVehicleJourney",
-		"vehicleJourney"
+		"vehicleJourney",
+		"checkInterchange",
+		"interchange"
 })
 public class ValidationParameters {
 
@@ -254,5 +256,11 @@ public class ValidationParameters {
 
 	@XmlElement(name = "vehicle_journey")
 	private VehicleJourneyParameters vehicleJourney;
+
+	@XmlElement(name = "check_interchange", defaultValue="0")
+	private int checkInterchange = 0;
+
+	@XmlElement(name = "interchange")
+	private InterchangeParameters interchange;
 
 }
