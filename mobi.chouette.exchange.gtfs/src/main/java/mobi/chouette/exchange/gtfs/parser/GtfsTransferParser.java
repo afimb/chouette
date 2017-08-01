@@ -117,9 +117,9 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 						log);
 				ConnectionLink connectionLink = ObjectFactory.getConnectionLink(referential, objectId);
 				convert(context, gtfsTransfer, connectionLink);
-			} else if ("line".equals(configuration.getReferencesType()) && gtfsTransfer.getFromTripId() != null && gtfsTransfer.getToTripId() != null){
+			} else if (!("stop_area".equalsIgnoreCase(configuration.getReferencesType())) && gtfsTransfer.getFromTripId() != null && gtfsTransfer.getToTripId() != null){
 				// Treat as interchange
-				// TODO only handles transfers where both from and toTripId is set
+				// TODO only handles transfers where both fromTripId and toTripId are set
 				String partialId = StringUtils.join(new String[] {
 						gtfsTransfer.getFromStopId(),
 						gtfsTransfer.getToStopId(),
@@ -129,7 +129,7 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 						gtfsTransfer.getToTripId(),
 						},"_");
 				String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
-						ConnectionLink.INTERCHANGE_KEY, partialId,log);
+						Interchange.INTERCHANGE_KEY, partialId,log);
 				Interchange interchange = ObjectFactory.getInterchange(referential, objectId);
 				convert(context, gtfsTransfer, interchange);
 				
