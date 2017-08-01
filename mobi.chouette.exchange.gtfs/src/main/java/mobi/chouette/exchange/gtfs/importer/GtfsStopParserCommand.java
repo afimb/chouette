@@ -10,7 +10,9 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.gtfs.Constant;
+import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.parser.GtfsStopParser;
+import mobi.chouette.exchange.gtfs.parser.GtfsTransferParser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
@@ -39,15 +41,31 @@ public class GtfsStopParserCommand implements Command, Constant {
 				referential.clear(true);
 			}
 
+			GtfsImporter importer = (GtfsImporter) context.get(PARSER);
+
 			// StopArea
 			if (referential.getSharedStopAreas().isEmpty()) {
 				GtfsStopParser gtfsStopParser = (GtfsStopParser) ParserFactory.create(GtfsStopParser.class.getName());
 				gtfsStopParser.parse(context);
 			}
 
+			// ConnectionLink
+			if (importer.hasTransferImporter()) {
+				if (referential.getSharedConnectionLinks().isEmpty()) {
+					GtfsTransferParser gtfsTransferParser = (GtfsTransferParser) ParserFactory
+							.create(GtfsTransferParser.class.getName());
+					gtfsTransferParser.parse(context);
+				}
+			}
 			if (configuration.getMaxDistanceForCommercial() > 0) {
 				CommercialStopGenerator commercialStopGenerator = new CommercialStopGenerator();
 				commercialStopGenerator.createCommercialStopPoints(context);
+			}
+
+			if (configuration.getMaxDistanceForConnectionLink() > 0) {
+				ConnectionLinkGenerator connectionLinkGenerator = new ConnectionLinkGenerator();
+				connectionLinkGenerator.createConnectionLinks(context);
+
 			}
 
 			addStats(context, referential);
@@ -64,6 +82,10 @@ public class GtfsStopParserCommand implements Command, Constant {
 
 	private void addStats(Context context, Referential referential) {
 		ActionReporter reporter = ActionReporter.Factory.getInstance();
+		reporter.addObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, "connection links", OBJECT_STATE.OK,
+				IO_TYPE.INPUT);
+		reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, OBJECT_TYPE.CONNECTION_LINK,
+				referential.getSharedConnectionLinks().size());
 		reporter.addObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, "stop areas", OBJECT_STATE.OK, IO_TYPE.INPUT);
 		reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, OBJECT_TYPE.STOP_AREA, referential
 				.getSharedStopAreas().size());

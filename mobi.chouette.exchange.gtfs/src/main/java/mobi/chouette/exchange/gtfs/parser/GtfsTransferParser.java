@@ -118,8 +118,6 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 				ConnectionLink connectionLink = ObjectFactory.getConnectionLink(referential, objectId);
 				convert(context, gtfsTransfer, connectionLink);
 			} else if (!("stop_area".equalsIgnoreCase(configuration.getReferencesType())) && gtfsTransfer.getFromTripId() != null && gtfsTransfer.getToTripId() != null){
-				// Treat as interchange
-				// TODO only handles transfers where both fromTripId and toTripId are set
 				String partialId = StringUtils.join(new String[] {
 						gtfsTransfer.getFromStopId(),
 						gtfsTransfer.getToStopId(),
@@ -170,34 +168,21 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 		
 		if(gtfsTransfer.getFromTripId() != null && gtfsTransfer.getToTripId() != null) {
-
-			// Feeder
-			StopArea feederStopArea = ObjectFactory.getStopArea(referential, AbstractConverter.composeObjectId(
-					configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, gtfsTransfer.getFromStopId(), log));
-			
 			StopPoint feederStopPoint = ObjectFactory.getStopPoint(referential, AbstractConverter.composeObjectId(
 					configuration.getObjectIdPrefix(), StopPoint.STOPPOINT_KEY, gtfsTransfer.getFromStopId(), log));
-			feederStopPoint.setContainedInStopArea(feederStopArea);
 			interchange.setFeederStopPoint(feederStopPoint);
-
-			// Consumer
-			StopArea consumerStopArea = ObjectFactory.getStopArea(referential, AbstractConverter.composeObjectId(
-					configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, gtfsTransfer.getToStopId(), log));
-
+			
 			StopPoint consumerStopPoint = ObjectFactory.getStopPoint(referential, AbstractConverter.composeObjectId(
 					configuration.getObjectIdPrefix(), StopPoint.STOPPOINT_KEY, gtfsTransfer.getToStopId(), log));
-			consumerStopPoint.setContainedInStopArea(consumerStopArea);
 			interchange.setConsumerStopPoint(consumerStopPoint);
 			
 			
 			
 			VehicleJourney feederVehicleJourney = ObjectFactory.getVehicleJourney(referential, AbstractConverter.composeObjectId(
 					configuration.getObjectIdPrefix(), VehicleJourney.VEHICLEJOURNEY_KEY, gtfsTransfer.getFromTripId(), log));
-			feederVehicleJourney.getFeederInterchanges().add(interchange);
 			
 			VehicleJourney consumerVehicleJourney = ObjectFactory.getVehicleJourney(referential, AbstractConverter.composeObjectId(
 					configuration.getObjectIdPrefix(), VehicleJourney.VEHICLEJOURNEY_KEY, gtfsTransfer.getToTripId(), log));
-			consumerVehicleJourney.getConsumerInterchanges().add(interchange);
 			
 			interchange.setFeederStopPoint(feederStopPoint);
 			interchange.setConsumerStopPoint(consumerStopPoint);
@@ -214,8 +199,8 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 			} 
 			
 			
-			interchange.setName(feederVehicleJourney.getObjectId()+" at "+feederStopArea.getName() == null? feederStopArea.getObjectId() : feederStopArea.getName() + " to "+consumerVehicleJourney.getObjectId()+" at "
-						+consumerStopArea.getName() == null? consumerStopArea.getObjectId() : consumerStopArea.getName() + " ");
+			interchange.setName(feederVehicleJourney.getObjectId()+" at "+interchange.getFeederStopPoint().getContainedInStopArea().getName() + " to "+consumerVehicleJourney.getObjectId()+" at "
+						+ interchange.getConsumerStopPoint().getContainedInStopArea().getName() + " ");
 			
 			interchange.setFilled(true);
 		}

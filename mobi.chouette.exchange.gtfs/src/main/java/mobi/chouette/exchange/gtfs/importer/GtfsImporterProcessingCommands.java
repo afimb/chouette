@@ -107,7 +107,6 @@ public class GtfsImporterProcessingCommands implements ProcessingCommands, Const
 				}
 				commands.add(chain);
 			}
-			commands.add(CommandFactory.create(initialContext, GtfsTransferParserCommand.class.getName()));
 		} catch (Exception e) {
 			log.error(e, e);
 			throw new RuntimeException("unable to call factories");
@@ -134,7 +133,6 @@ public class GtfsImporterProcessingCommands implements ProcessingCommands, Const
 				Command register = CommandFactory.create(initialContext, StopAreaRegisterCommand.class.getName());
 				chain.add(register);
 			}
-			chain.add(CommandFactory.create(initialContext, GtfsTransferParserCommand.class.getName()));
 			commands.add(chain);
 
 		} catch (Exception e) {
