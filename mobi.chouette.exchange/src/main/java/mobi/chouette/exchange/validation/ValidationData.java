@@ -14,6 +14,7 @@ import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
+import mobi.chouette.model.Interchange;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
@@ -51,6 +52,8 @@ public class ValidationData {
 	private Line currentLine;
 	private Map<String,DataLocation> dataLocations = new HashMap<>();
 	private Map<String,Set<String>> linesOfStopAreas = new HashMap<>();
+	private Set<Interchange> interchanges = new HashSet<>();
+	
 
 	public void clear() {
 		vehicleJourneys.clear();
@@ -84,5 +87,6 @@ public class ValidationData {
 		timetableIds.clear();
 		dataLocations.clear();
 		linesOfStopAreas.clear();
+		interchanges.clear();
 	}
 }

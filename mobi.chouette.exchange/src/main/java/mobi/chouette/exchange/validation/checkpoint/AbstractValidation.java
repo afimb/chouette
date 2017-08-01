@@ -99,7 +99,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static final String VEHICLE_JOURNEY_8 = "3-VehicleJourney-8";
 	protected static final String FACILITY_1 = "3-Facility-1";
 	protected static final String FACILITY_2 = "3-Facility-2";
-
+	protected static final String INTERCHANGE_1 = "3-Interchange-1";
 	
 	protected static final String L4_NETWORK_1 = "4-Network-1";
 	protected static final String L4_COMPANY_1 = "4-Company-1";
@@ -119,6 +119,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static final String L4_JOURNEY_PATTERN_1 = "4-JourneyPattern-1";
 	protected static final String L4_VEHICLE_JOURNEY_1 = "4-VehicleJourney-1";
 	protected static final String L4_VEHICLE_JOURNEY_2 = "4-VehicleJourney-2";
+	protected static final String L4_INTERCHANGE_1 = "4-Interchange-1";
 
 	// parameter keys
 	protected static final String STOP_AREAS_AREA = "stop_areas_area";
@@ -731,7 +732,9 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			
 //			testLevel3FileList.add(new TestDescription(3, FACILITY_1, "WARNING"));
 //			testLevel3FileList.add(new TestDescription(3, FACILITY_2, "WARNING"));
-		}
+
+			testLevel3FileList.add(new TestDescription(3, INTERCHANGE_1, "WARNING"));
+}
 		
 		return testLevel3FileList;
 	}
@@ -799,6 +802,9 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			
 //			testLevel3DatabaseList.add(new TestDescription(3, FACILITY_1, "WARNING"));
 //			testLevel3DatabaseList.add(new TestDescription(3, FACILITY_2, "WARNING"));
+			
+			testLevel3DatabaseList.add(new TestDescription(3, INTERCHANGE_1, "WARNING"));
+			
 		}
 		
 		return testLevel3DatabaseList;
@@ -831,7 +837,9 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			testLevel4DatabaseList.add(new TestDescription(4, L4_VEHICLE_JOURNEY_2, "WARNING"));
 			
 			testLevel4DatabaseList.add(new TestDescription(4, L4_TIME_TABLE_1, "ERROR"));
-		}
+
+			testLevel4DatabaseList.add(new TestDescription(4, L4_INTERCHANGE_1, "ERROR"));
+}
 		
 		return testLevel4DatabaseList;
 	}
