@@ -703,32 +703,32 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	protected void createInterchangeName(Interchange interchange) {
 		StringBuilder nameBuilder = new StringBuilder();
 		nameBuilder.append("From ");
-		if(interchange.getFeederVehicleJourney() != null) {
-			nameBuilder.append(interchange.getFeederVehicleJourney().getObjectId());
+		if(interchange.getFeederVehicleJourneyObjectid() != null) {
+			nameBuilder.append(interchange.getFeederVehicleJourneyObjectid());
 		} else {
 			nameBuilder.append(" <unknown> ");
 		}
 		
 		nameBuilder.append(" at ");
 		
-		if(interchange.getFeederStopPoint() != null) {
-			nameBuilder.append(interchange.getFeederStopPoint().getObjectId());
+		if(interchange.getFeederStopPointObjectid() != null) {
+			nameBuilder.append(interchange.getFeederStopPointObjectid());
 		} else {
 			nameBuilder.append(" <unknown> ");
 		}
 		
 		nameBuilder.append(" to ");
 		
-		if(interchange.getConsumerVehicleJourney() != null) {
-			nameBuilder.append(interchange.getConsumerVehicleJourney().getObjectId());
+		if(interchange.getConsumerVehicleJourneyObjectid() != null) {
+			nameBuilder.append(interchange.getConsumerVehicleJourneyObjectid());
 		} else {
 			nameBuilder.append(" <unknown> ");
 		}
 		
 		nameBuilder.append(" at ");
 		
-		if(interchange.getConsumerStopPoint() != null) {
-			nameBuilder.append(interchange.getConsumerStopPoint().getObjectId());
+		if(interchange.getConsumerStopPointObjectid() != null) {
+			nameBuilder.append(interchange.getConsumerStopPointObjectid());
 		} else {
 			nameBuilder.append(" <unknown> ");
 		}

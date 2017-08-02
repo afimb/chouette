@@ -2,6 +2,8 @@ package mobi.chouette.model;
 
 import java.sql.Time;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -101,7 +103,7 @@ public class Interchange extends NeptuneIdentifiedObject {
 	}
 
 	@Getter
-	@Column(name = "to_vehicle_journey", insertable = true, updatable = true, nullable = false)
+	@Column(name = "to_vehicle_journey", insertable = true, updatable = true)
 	private String consumerVehicleJourneyObjectid;
 
 	public void setConsumerVehicleJourneyObjectid(String objectid) {
@@ -128,7 +130,7 @@ public class Interchange extends NeptuneIdentifiedObject {
 	}
 
 	@Getter
-	@Column(name = "from_vehicle_journey", insertable = true, updatable = true, nullable = false)
+	@Column(name = "from_vehicle_journey", insertable = true, updatable = true)
 	private String feederVehicleJourneyObjectid;
 
 	public void setFeederVehicleJourneyObjectid(String objectid) {
@@ -141,11 +143,11 @@ public class Interchange extends NeptuneIdentifiedObject {
 	// in this space (but may be found in other spaces)
 	@Getter
 	@ManyToOne(fetch = FetchType.LAZY)
+	@Access(AccessType.FIELD)
 	@JoinColumn(name = "to_point", referencedColumnName = "objectid", insertable = false, updatable = false)
 	private StopPoint consumerStopPoint;
 
 	public void setConsumerStopPoint(StopPoint vj) {
-		this.consumerStopPoint = vj;
 
 		if (vj != null) {
 			this.consumerStopPointObjectid = vj.getObjectId();
@@ -155,7 +157,7 @@ public class Interchange extends NeptuneIdentifiedObject {
 	}
 
 	@Getter
-	@Column(name = "to_point", insertable = true, updatable = true, nullable = false)
+	@Column(name = "to_point", insertable = true, updatable = true)
 	private String consumerStopPointObjectid;
 
 	public void setConsumerStopPointObjectid(String objectid) {
@@ -174,11 +176,10 @@ public class Interchange extends NeptuneIdentifiedObject {
 	@Getter
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "from_point", referencedColumnName = "objectid", insertable = false, updatable = false)
+	@Access(AccessType.FIELD)
 	private StopPoint feederStopPoint;
 
 	public void setFeederStopPoint(StopPoint vj) {
-		this.feederStopPoint = vj;
-
 		if (vj != null) {
 			this.feederStopPointObjectid = vj.getObjectId();
 		} else {
@@ -187,7 +188,7 @@ public class Interchange extends NeptuneIdentifiedObject {
 	}
 
 	@Getter
-	@Column(name = "from_point", insertable = true, updatable = true, nullable = false)
+	@Column(name = "from_point", insertable = true, updatable = true)
 	private String feederStopPointObjectid;
 
 	public void setFeederStopPointObjectid(String objectid) {
