@@ -44,6 +44,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 	private IntBuffer _index;
 	private int _total;
 	private boolean _unique;
+	private boolean _ignoreRowsWithMissingKey;
 
 	public IndexImpl(String path, String key) throws IOException {
 		this(path, key, "", true);
@@ -54,10 +55,14 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 	}
 
 	public IndexImpl(String path, String key, String value, boolean unique) throws IOException {
+		this(path,key,value,unique,false);
+	}
+	public IndexImpl(String path, String key, String value, boolean unique, boolean ignoreRowsWithMissingKey) throws IOException {
 		_path = path;
 		_key = key;
 		_value = value;
 		_unique = unique;
+		_ignoreRowsWithMissingKey = ignoreRowsWithMissingKey;
 		_total = 0;
 
 		initialize();
@@ -251,7 +256,11 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 				String key = getField(_key);
 								
 				if (key == null || key.trim().isEmpty()) { // key cannot be null! "" or GtfsAgency.DEFAULT_ID
-					throw new GtfsException(_path, _total, getIndex(_key), _key, GtfsException.ERROR.MISSING_FIELD, null, null);
+					if(_ignoreRowsWithMissingKey) {
+						continue;
+					} else {
+						throw new GtfsException(_path, _total, getIndex(_key), _key, GtfsException.ERROR.MISSING_FIELD, null, null);
+					}
 				}
 				
 				if (GtfsAgency.DEFAULT_ID.equals(key)) {
@@ -311,6 +320,10 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 		while (_reader.hasNext()) {
 			if (_reader.next()) {
 				String key = getField(_key);				
+				if ((key == null || key.trim().isEmpty()) && _ignoreRowsWithMissingKey) { // key cannot be null! "" or GtfsAgency.DEFAULT_ID
+					continue;
+				}
+
 				Token token = _tokens.get(key);
 				for (int i = 0; i < token.lenght; i++) {
 					int n = token.offset + i * 2;

@@ -241,7 +241,7 @@ public class ObjectFactory {
 			interchange = new Interchange();
 			interchange.setObjectId(objectId);
 			interchange.setDetached(true);
-			referential.getInterchanges().put(objectId, interchange);
+			referential.getSharedInterchanges().put(objectId, interchange);
 		}
 		
 		if (!referential.getInterchanges().containsKey(objectId)) {
