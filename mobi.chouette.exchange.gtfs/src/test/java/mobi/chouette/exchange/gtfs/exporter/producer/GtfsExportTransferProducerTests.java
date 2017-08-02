@@ -2,6 +2,8 @@ package mobi.chouette.exchange.gtfs.exporter.producer;
 
 import java.sql.Time;
 
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.reflect.FieldUtils;
 import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
@@ -88,7 +90,7 @@ public class GtfsExportTransferProducerTests
    }
 
    @Test(groups = { "Producers" }, description = "test transfer without default duration")
-   public void verifyTransferProducerWithInterchange() throws ChouetteException
+   public void verifyTransferProducerWithInterchange() throws ChouetteException, IllegalAccessException
    {
 
       mock.reset();
@@ -119,8 +121,13 @@ public class GtfsExportTransferProducerTests
 
       
       Interchange interchange = new Interchange();
+      
+      // Set via reflection due to StopPoint is unset after set, but available after reload from database (cannot be transient)
+      FieldUtils.writeField(interchange, "feederStopPoint",feederSP, true);
       interchange.setFeederStopPoint(feederSP);
       interchange.setFeederVehicleJourney(feederVJ);
+      
+      FieldUtils.writeField(interchange, "consumerStopPoint",consumerSP, true);
       interchange.setConsumerStopPoint(consumerSP);
       interchange.setConsumerVehicleJourney(consumerVJ);
       interchange.setGuaranteed(Boolean.TRUE);
