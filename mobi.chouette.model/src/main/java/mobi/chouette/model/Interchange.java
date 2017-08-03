@@ -89,17 +89,17 @@ public class Interchange extends NeptuneIdentifiedObject {
 	// in this space (but may be found in other spaces)
 	@Getter
 	@ManyToOne(fetch = FetchType.LAZY)
+	@Access(AccessType.FIELD)
 	@JoinColumn(name = "to_vehicle_journey", referencedColumnName = "objectid", insertable = false, updatable = false)
 	private VehicleJourney consumerVehicleJourney;
 
 	public void setConsumerVehicleJourney(VehicleJourney vj) {
-		this.consumerVehicleJourney = vj;
-
 		if (vj != null) {
 			this.consumerVehicleJourneyObjectid = vj.getObjectId();
 		} else {
 			this.consumerVehicleJourneyObjectid = null;
 		}
+		this.consumerVehicleJourney = null;
 	}
 
 	@Getter
@@ -116,17 +116,18 @@ public class Interchange extends NeptuneIdentifiedObject {
 	// in this space (but may be found in other spaces)
 	@Getter
 	@ManyToOne(fetch = FetchType.LAZY)
+	@Access(AccessType.FIELD)
 	@JoinColumn(name = "from_vehicle_journey", referencedColumnName = "objectid", insertable = false, updatable = false)
 	private VehicleJourney feederVehicleJourney;
 
 	public void setFeederVehicleJourney(VehicleJourney vj) {
-		this.feederVehicleJourney = vj;
-
 		if (vj != null) {
 			this.feederVehicleJourneyObjectid = vj.getObjectId();
 		} else {
 			this.feederVehicleJourneyObjectid = null;
 		}
+		this.feederVehicleJourney = null;
+
 	}
 
 	@Getter
@@ -154,6 +155,7 @@ public class Interchange extends NeptuneIdentifiedObject {
 		} else {
 			this.consumerStopPointObjectid = null;
 		}
+		this.consumerStopPoint = null;
 	}
 
 	@Getter
@@ -185,6 +187,8 @@ public class Interchange extends NeptuneIdentifiedObject {
 		} else {
 			this.feederStopPointObjectid = null;
 		}
+
+		this.feederStopPoint = null;
 	}
 
 	@Getter
