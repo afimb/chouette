@@ -4,12 +4,12 @@ import java.io.IOException;
 
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer;
 
-public class TransferByToTrip extends TransferByFromStop {
+public class TransferByToTrip extends TransferIndex {
 
 	public static final String KEY = FIELDS.to_trip_id.name();
 
 	public TransferByToTrip(String name) throws IOException {
-		super(name, KEY, false);
+		super(name, KEY, false,true);
 	}
 
 	public static class DefaultImporterFactory extends IndexFactory {

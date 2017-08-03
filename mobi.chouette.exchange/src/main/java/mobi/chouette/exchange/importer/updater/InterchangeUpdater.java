@@ -2,9 +2,6 @@ package mobi.chouette.exchange.importer.updater;
 
 import javax.ejb.Stateless;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 import mobi.chouette.common.Context;
 import mobi.chouette.model.Interchange;
 
@@ -15,11 +12,6 @@ public class InterchangeUpdater implements Updater<Interchange> {
 
 	@Override
 	public void update(Context context, Interchange oldValue, Interchange newValue) {
-
-		if (newValue.isSaved()) {
-			return;
-		}
-		newValue.setSaved(true);
 
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
