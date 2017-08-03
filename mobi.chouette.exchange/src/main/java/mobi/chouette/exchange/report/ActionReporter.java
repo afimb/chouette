@@ -15,7 +15,8 @@ public interface ActionReporter {
 		LINE,
 		ROUTE,
 		JOURNEY_PATTERN,
-		VEHICLE_JOURNEY
+		VEHICLE_JOURNEY,
+		INTERCHANGE
 	};
 	
 	public enum FILE_STATE {
