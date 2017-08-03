@@ -188,6 +188,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 	protected Context initGtfsImportContext() {
 		GtfsImportParameters configuration = new GtfsImportParameters();
 		configuration.setObjectIdPrefix("CITURA");
+		configuration.setParseInterchanges(true);
 		return initImportContext("gtfs", configuration);
 	}
 
