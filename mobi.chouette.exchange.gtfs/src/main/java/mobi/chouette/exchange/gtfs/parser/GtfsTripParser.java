@@ -14,6 +14,10 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import org.apache.commons.lang.StringUtils;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineSegment;
+import com.vividsolutions.jts.geom.PrecisionModel;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -45,6 +49,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
 import mobi.chouette.model.Interchange;
+import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -61,11 +66,6 @@ import mobi.chouette.model.type.SectionStatusEnum;
 import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineSegment;
-import com.vividsolutions.jts.geom.PrecisionModel;
 
 @Log4j
 public class GtfsTripParser implements Parser, Validator, Constant {
@@ -796,7 +796,32 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				journeyPattern.setSectionStatus(SectionStatusEnum.Completed);
 			}
 		}
+		
+		addSyntheticDestinationDisplayIfMissingOnFirstStopPoint(configuration,referential,journeyPattern);
+		
 		return journeyPattern;
+	}
+	
+	private void addSyntheticDestinationDisplayIfMissingOnFirstStopPoint(GtfsImportParameters configuration, Referential referential, JourneyPattern jp) {
+		StopPoint departureStopPoint = jp.getDepartureStopPoint();
+		if (departureStopPoint.getDestinationDisplay() == null) {
+			// Create a forced DestinationDisplay
+			// Use JourneyPattern->PublishedName
+
+			String stopPointId = AbstractConverter.extractOriginalId(departureStopPoint.getObjectId());
+			String journeyPatternId = AbstractConverter.extractOriginalId(jp.getObjectId());
+			
+			DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential,
+					AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
+							DestinationDisplay.DESTINATIONDISPLAY_KEY, journeyPatternId+"-"+stopPointId,null));
+			String content = jp.getArrivalStopPoint().getContainedInStopArea().getName();
+			
+			destinationDisplay.setName("Generated: "+content);
+			destinationDisplay.setFrontText(content);
+			departureStopPoint.setDestinationDisplay(destinationDisplay);
+
+		}
+
 	}
 
 	private static final double narrow = 0.0000001;
@@ -965,7 +990,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		vehicleJourneyAtStop.setId(Long.valueOf(gtfsStopTime.getId().longValue()));
-
+		
 		String objectId = gtfsStopTime.getStopId();
 		StopPoint stopPoint = ObjectFactory.getStopPoint(referential, objectId);
 		vehicleJourneyAtStop.setStopPoint(stopPoint);
@@ -978,7 +1003,14 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		 */
 		vehicleJourneyAtStop.setArrivalDayOffset(gtfsStopTime.getArrivalTime().getDay());
 		vehicleJourneyAtStop.setDepartureDayOffset(gtfsStopTime.getDepartureTime().getDay());
-	}
+
+		if(gtfsStopTime.getStopHeadsign() != null) {
+			DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential, gtfsStopTime.getTripId()+"-"+gtfsStopTime.getStopSequence()+"-"+gtfsStopTime.getStopId());
+			destinationDisplay.setFrontText(gtfsStopTime.getStopHeadsign());
+			stopPoint.setDestinationDisplay(destinationDisplay);
+		}
+
+}
 
 	protected void convert(Context context, GtfsTrip gtfsTrip, VehicleJourney vehicleJourney) {
 
