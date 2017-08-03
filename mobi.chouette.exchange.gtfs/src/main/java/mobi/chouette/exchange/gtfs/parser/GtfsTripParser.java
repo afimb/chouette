@@ -583,7 +583,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 
 			
-			if(importer.hasTransferImporter()) {
+			if(configuration.isParseInterchanges() && importer.hasTransferImporter()) {
 				createInterchanges(context, referential, importer, configuration, gtfsTrip, vehicleJourney);
 			}
 
