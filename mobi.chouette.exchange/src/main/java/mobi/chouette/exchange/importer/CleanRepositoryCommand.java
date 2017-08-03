@@ -21,6 +21,7 @@ import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.dao.CompanyDAO;
 import mobi.chouette.dao.ConnectionLinkDAO;
+import mobi.chouette.dao.DestinationDisplayDAO;
 import mobi.chouette.dao.GroupOfLineDAO;
 import mobi.chouette.dao.JourneyFrequencyDAO;
 import mobi.chouette.dao.JourneyPatternDAO;
@@ -80,6 +81,9 @@ public class CleanRepositoryCommand implements Command {
 	@EJB
 	private VehicleJourneyAtStopDAO vehicleJourneyAtStopDAO;
 
+	@EJB
+	private DestinationDisplayDAO destinationDisplayDAO;
+
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public boolean execute(Context context) throws Exception {
@@ -104,7 +108,8 @@ public class CleanRepositoryCommand implements Command {
 			timebandDAO.truncate();
 			vehicleJourneyDAO.truncate();
 			vehicleJourneyAtStopDAO.truncate();
-
+			destinationDisplayDAO.truncate();
+			
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error(e);

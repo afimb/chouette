@@ -14,6 +14,10 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import org.apache.commons.lang.StringUtils;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineSegment;
+import com.vividsolutions.jts.geom.PrecisionModel;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -53,6 +57,7 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
 import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.Interchange;
+import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -1035,6 +1040,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		vehicleJourneyAtStop.setArrivalDayOffset(gtfsStopTime.getArrivalTime().getDay());
 		vehicleJourneyAtStop.setDepartureDayOffset(gtfsStopTime.getDepartureTime().getDay());
 
+		if(gtfsStopTime.getStopHeadsign() != null) {
+			DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential, gtfsStopTime.getTripId()+"-"+gtfsStopTime.getStopSequence()+"-"+gtfsStopTime.getStopId());
+			destinationDisplay.setFrontText(gtfsStopTime.getStopHeadsign());
+			stopPoint.setDestinationDisplay(destinationDisplay);
+		}
 	}
 	
 	private BoardingPossibilityEnum toBoardingPossibility(PickupType type) {

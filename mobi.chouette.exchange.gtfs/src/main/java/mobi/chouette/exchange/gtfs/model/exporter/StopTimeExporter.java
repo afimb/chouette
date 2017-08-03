@@ -45,6 +45,7 @@ public class StopTimeExporter extends ExporterImpl<GtfsStopTime> implements Gtfs
 			bean.setStopSequence(INTEGER_CONVERTER.from(context, FIELDS.stop_sequence, values.get(i++), true));
 			bean.setArrivalTime(GTFSTIME_CONVERTER.from(context, FIELDS.arrival_time, values.get(i++), true));
 			bean.setDepartureTime(GTFSTIME_CONVERTER.from(context, FIELDS.departure_time, values.get(i++), true));
+			bean.setStopHeadsign(STRING_CONVERTER.from(context, FIELDS.stop_headsign, values.get(i++), false));
 			bean.setPickupType(PICKUP_CONVERTER.from(context, FIELDS.pickup_type, values.get(i++),
 					PickupType.Scheduled, false));
 			bean.setDropOffType(DROPOFFTYPE_CONVERTER.from(context, FIELDS.drop_off_type, values.get(i++),
@@ -64,6 +65,7 @@ public class StopTimeExporter extends ExporterImpl<GtfsStopTime> implements Gtfs
 			values.add(INTEGER_CONVERTER.to(context, FIELDS.stop_sequence, input.getStopSequence(), true));
 			values.add(GTFSTIME_CONVERTER.to(context, FIELDS.arrival_time, input.getArrivalTime(), true));
 			values.add(GTFSTIME_CONVERTER.to(context, FIELDS.departure_time, input.getDepartureTime(), true));
+			values.add(STRING_CONVERTER.to(context, FIELDS.stop_headsign, input.getStopHeadsign(), false));
 			values.add(PICKUP_CONVERTER.to(context, FIELDS.pickup_type, input.getPickupType(), false));
 			values.add(DROPOFFTYPE_CONVERTER.to(context, FIELDS.drop_off_type, input.getDropOffType(), false));
  			values.add(FLOAT_CONVERTER.to(context, FIELDS.shape_dist_traveled, input.getShapeDistTraveled(), false));
