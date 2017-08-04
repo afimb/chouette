@@ -15,10 +15,9 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.util.NetexReferential;
 import mobi.chouette.model.Interchange;
-import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -43,14 +42,14 @@ public class ServiceJourneyInterchangeParser implements Parser, Constant {
 					interchange.setName(netexInterchange.getName().getValue());
 				}
 
-				interchange.setPriority(NetexProducerUtils.asInteger(netexInterchange.getPriority()));
+				interchange.setPriority(ConversionUtil.asInteger(netexInterchange.getPriority()));
 				interchange.setStaySeated(netexInterchange.isStaySeated());
 				interchange.setPlanned(netexInterchange.isPlanned());
 				interchange.setAdvertised(netexInterchange.isAdvertised());
 				interchange.setGuaranteed(netexInterchange.isGuaranteed());
 
-				interchange.setMaximumWaitTime(NetexProducerUtils.asTime(netexInterchange.getMaximumWaitTime()));
-				interchange.setMinimumTransferTime(NetexProducerUtils.asTime(netexInterchange.getMinimumTransferTime()));
+				interchange.setMaximumWaitTime(ConversionUtil.asTime(netexInterchange.getMaximumWaitTime()));
+				interchange.setMinimumTransferTime(ConversionUtil.asTime(netexInterchange.getMinimumTransferTime()));
 
 				// Parse journeys
 				String feederVehicleJourneyObjectId = netexInterchange.getFromJourneyRef().getRef();
@@ -72,7 +71,7 @@ public class ServiceJourneyInterchangeParser implements Parser, Constant {
 				}
 
 				// Parse stop points
-				interchange.setFeederVisitNumber(NetexProducerUtils.asInteger(netexInterchange.getFromVisitNumber()));
+				interchange.setFeederVisitNumber(ConversionUtil.asInteger(netexInterchange.getFromVisitNumber()));
 
 				String feederScheduledStopPointObjectId = netexInterchange.getFromPointRef().getRef();
                 String feederStopPointInJourneyPatternId = findStopPointInJourneyPatternForScheduledStopPoint(context, feederScheduledStopPointObjectId, interchange.getFeederVisitNumber());
@@ -84,7 +83,7 @@ public class ServiceJourneyInterchangeParser implements Parser, Constant {
 				}
 				
 
-				interchange.setConsumerVisitNumber(NetexProducerUtils.asInteger(netexInterchange.getToVisitNumber()));
+				interchange.setConsumerVisitNumber(ConversionUtil.asInteger(netexInterchange.getToVisitNumber()));
 				String consumerScheduledStopPointObjectId = netexInterchange.getToPointRef().getRef();
                 String consumerStopPointInJourneyPatternId = findStopPointInJourneyPatternForScheduledStopPoint(context, consumerScheduledStopPointObjectId, interchange.getConsumerVisitNumber());
 				if(consumerStopPointInJourneyPatternId != null) {

@@ -12,6 +12,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
@@ -87,7 +88,7 @@ public class StopPlaceParser implements Parser, Constant {
         StopArea stopArea = ObjectFactory.getStopArea(referential, stopPlace.getId());
         stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
         stopArea.setObjectVersion(NetexParserUtils.getVersion(stopPlace));
-        stopArea.setName(stopPlace.getName().getValue());
+        stopArea.setName(ConversionUtil.getValue(stopPlace.getName()));
         stopArea.setStopAreaType(mapStopAreaType(stopPlace.getStopPlaceType()));
         stopArea.setTransportModeName(mapTransportModeName(stopPlace.getTransportMode()));
         stopArea.setTransportSubMode(mapTransportSubMode(stopPlace));

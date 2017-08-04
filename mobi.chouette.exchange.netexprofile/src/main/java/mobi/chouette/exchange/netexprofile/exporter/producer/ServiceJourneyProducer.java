@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexTimeConversionUtil;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -110,7 +111,7 @@ public class ServiceJourneyProducer extends NetexProducer {
                 if (departureTime != null) {
                     if ((i + 1 < vehicleJourneyAtStops.size())) {
                     	NetexTimeConversionUtil.populatePassingTimeUtc(timetabledPassingTime, false, vehicleJourneyAtStop);
-                        timetabledPassingTime.setDepartureTime(NetexProducerUtils.toOffsetTimeUtc(departureTime));
+                        timetabledPassingTime.setDepartureTime(ConversionUtil.toOffsetTimeUtc(departureTime));
                         if(vehicleJourneyAtStop.getDepartureDayOffset() > 0) {
                         	timetabledPassingTime.setDepartureDayOffset(BigInteger.valueOf(vehicleJourneyAtStop.getDepartureDayOffset()));
                         }

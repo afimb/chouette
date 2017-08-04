@@ -1,16 +1,15 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
-import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.DestinationDisplay;
 import org.rutebanken.netex.model.DestinationDisplayRefStructure;
 import org.rutebanken.netex.model.DestinationDisplaysInFrame_RelStructure;
-import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.Via_VersionedChildStructure;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -27,18 +26,9 @@ public class DestinationDisplayParser implements Parser, Constant {
 			mobi.chouette.model.DestinationDisplay chouetteDestinationDisplay = ObjectFactory.getDestinationDisplay(referential,
 					netexDestinationDisplay.getId());
 			chouetteDestinationDisplay.setObjectVersion(NetexParserUtils.getVersion(netexDestinationDisplay));
-
-			if (netexDestinationDisplay.getName() != null) {
-				chouetteDestinationDisplay.setName(getValue(netexDestinationDisplay.getName()));
-			}
-
-			if (netexDestinationDisplay.getFrontText() != null) {
-				chouetteDestinationDisplay.setFrontText(getValue(netexDestinationDisplay.getFrontText()));
-			}
-
-			if (netexDestinationDisplay.getSideText() != null) {
-				chouetteDestinationDisplay.setSideText(getValue(netexDestinationDisplay.getSideText()));
-			}
+			chouetteDestinationDisplay.setName(ConversionUtil.getValue(netexDestinationDisplay.getName()));
+			chouetteDestinationDisplay.setFrontText(ConversionUtil.getValue(netexDestinationDisplay.getFrontText()));
+			chouetteDestinationDisplay.setSideText(ConversionUtil.getValue(netexDestinationDisplay.getSideText()));
 
 			if (netexDestinationDisplay.getVias() != null && netexDestinationDisplay.getVias().getVia().size() > 0) {
 				for (Via_VersionedChildStructure via : netexDestinationDisplay.getVias().getVia()) {
@@ -51,16 +41,6 @@ public class DestinationDisplayParser implements Parser, Constant {
 
 			chouetteDestinationDisplay.setFilled(true);
 		}
-	}
-	
-	private String getValue(MultilingualString m) {
-		String v = null;
-		if(m != null) {
-			v = StringUtils.trimToNull(m.getValue());
-		}
-		
-		return v;
-		
 	}
 
 	static {

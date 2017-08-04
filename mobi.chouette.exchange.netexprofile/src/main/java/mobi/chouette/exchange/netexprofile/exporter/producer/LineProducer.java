@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Route;
@@ -43,7 +44,7 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
         }
 
         if (isSet(neptuneLine.getTransportModeName())) {
-            AllVehicleModesOfTransportEnumeration vehicleModeOfTransport = NetexProducerUtils.toVehicleModeOfTransportEnum(neptuneLine.getTransportModeName().name());
+            AllVehicleModesOfTransportEnumeration vehicleModeOfTransport = ConversionUtil.toVehicleModeOfTransportEnum(neptuneLine.getTransportModeName().name());
             netexLine.setTransportMode(vehicleModeOfTransport);
         }
 
