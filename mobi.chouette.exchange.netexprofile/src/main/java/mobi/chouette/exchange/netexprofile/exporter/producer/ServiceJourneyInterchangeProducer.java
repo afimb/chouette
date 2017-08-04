@@ -1,12 +1,12 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.getMLString;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SCHEDULED_STOP_POINT;
 
 import org.rutebanken.netex.model.ServiceJourneyInterchange;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.model.Interchange;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
@@ -22,8 +22,8 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
         netex.setId(interchange.getObjectId());
 
         
-        netex.setName(getMLString(interchange.getName()));
-        netex.setPriority(NetexProducerUtils.asBigInteger(interchange.getPriority()));
+        netex.setName(ConversionUtil.getMLString(interchange.getName()));
+        netex.setPriority(ConversionUtil.asBigInteger(interchange.getPriority()));
         netex.setStaySeated(interchange.getStaySeated());
         netex.setAdvertised(interchange.getAdvertised());
         netex.setPlanned(interchange.getPlanned());
@@ -40,7 +40,7 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
             netex.setToPointRef(netexFactory.createScheduledStopPointRefStructure().withRef(interchange.getConsumerStopPointObjectid()));
         }
 
-        netex.setToVisitNumber(NetexProducerUtils.asBigInteger(interchange.getConsumerVisitNumber()));
+        netex.setToVisitNumber(ConversionUtil.asBigInteger(interchange.getConsumerVisitNumber()));
 
         // Consumer vehicle journey ref
         VehicleJourney consumerVehicleJourney = interchange.getConsumerVehicleJourney();
@@ -62,7 +62,7 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
         } else {
             netex.setFromPointRef(netexFactory.createScheduledStopPointRefStructure().withRef(interchange.getFeederStopPointObjectid()));
         }
-        netex.setFromVisitNumber(NetexProducerUtils.asBigInteger(interchange.getFeederVisitNumber()));
+        netex.setFromVisitNumber(ConversionUtil.asBigInteger(interchange.getFeederVisitNumber()));
 
         // Feeder vehicle journey ref
 		String feederVehicleJourneyVersion = null;

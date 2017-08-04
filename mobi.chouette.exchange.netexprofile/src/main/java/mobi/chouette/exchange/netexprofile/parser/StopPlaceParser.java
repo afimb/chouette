@@ -6,6 +6,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
@@ -67,11 +68,8 @@ public class StopPlaceParser implements Parser, Constant {
 		StopArea stopArea = ObjectFactory.getStopArea(referential, stopPlace.getId());
 		stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 		stopArea.setObjectVersion(NetexParserUtils.getVersion(stopPlace));
-		stopArea.setName(stopPlace.getName().getValue());
-
-		if (stopPlace.getDescription() != null) {
-			stopArea.setComment(stopPlace.getDescription().getValue());
-		}
+		stopArea.setName(ConversionUtil.getValue(stopPlace.getName()));
+		stopArea.setComment(ConversionUtil.getValue(stopPlace.getDescription()));
 		if (stopPlace.getLandmark() != null) {
 			stopArea.setNearestTopicName(stopPlace.getLandmark().getValue());
 		}
@@ -122,7 +120,6 @@ public class StopPlaceParser implements Parser, Constant {
 
 		StopArea boardingPosition = ObjectFactory.getStopArea(referential, quay.getId());
 		boardingPosition.setAreaType(ChouetteAreaEnum.BoardingPosition);
-		//boardingPosition.setAreaType(ChouetteAreaEnum.Quay);
 
 		boardingPosition.setObjectVersion(NetexParserUtils.getVersion(quay));
 		if(quay.getName() == null) {
@@ -131,10 +128,7 @@ public class StopPlaceParser implements Parser, Constant {
 			boardingPosition.setName(quay.getName().getValue());
 		}
 		boardingPosition.setParent(parentStopArea);
-
-		if (quay.getDescription() != null) {
-			boardingPosition.setComment(quay.getDescription().getValue());
-		}
+		boardingPosition.setComment(ConversionUtil.getValue(quay.getDescription()));
 		if (quay.getLandmark() != null) {
 			boardingPosition.setNearestTopicName(quay.getLandmark().getValue());
 		}

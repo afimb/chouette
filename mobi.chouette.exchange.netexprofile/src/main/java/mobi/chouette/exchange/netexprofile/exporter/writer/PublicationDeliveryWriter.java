@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
 import mobi.chouette.exchange.netexprofile.exporter.NetexFragmentMode;
@@ -75,7 +76,7 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
 
             if (fragmentMode.equals(NetexFragmentMode.LINE)) {
                 if (line.getNetwork().getVersionDate() != null) {
-                    OffsetDateTime createdDateTime = NetexProducerUtils.toOffsetDateTime(line.getNetwork().getVersionDate());
+                    OffsetDateTime createdDateTime = ConversionUtil.toOffsetDateTime(line.getNetwork().getVersionDate());
                     writer.writeAttribute(CREATED, formatter.format(createdDateTime));
                 } else {
                     writer.writeAttribute(CREATED, timestamp);
