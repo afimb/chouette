@@ -36,7 +36,7 @@ public class StopAreaIdMapper {
 
 
     public void mapStopAreaIds(Referential referential) {
-        referential.setStopAreas(referential.getStopAreas().entrySet().stream().map(entry -> mapIdsForStopArea(entry.getValue())).collect(Collectors.toMap(StopArea::getObjectId, Function.identity())));
+        referential.setStopAreas(referential.getStopAreas().entrySet().stream().map(entry -> mapIdsForStopArea(entry.getValue())).distinct().collect(Collectors.toMap(StopArea::getObjectId, Function.identity())));
     }
 
 
@@ -70,7 +70,6 @@ public class StopAreaIdMapper {
             if (idsForOrgId.size() == 1) {
                 return idsForOrgId.values().iterator().next();
             }
-
 
             // Attempt to find stop type with best match for stop area transport mode(s)
             Set<TransportModeNameEnum> transportModeNames = findTransportModeForStopArea(new HashSet<>(), stopArea);
