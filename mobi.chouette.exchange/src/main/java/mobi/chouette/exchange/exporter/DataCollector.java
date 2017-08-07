@@ -9,6 +9,7 @@ import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.Footnote;
+import mobi.chouette.model.Interchange;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -62,6 +63,8 @@ public class DataCollector {
 						if (isValid) {
 							collection.getTimetables().addAll(vehicleJourney.getTimetables());
 							collection.getVehicleJourneys().add(vehicleJourney);
+							collection.getInterchanges().addAll(vehicleJourney.getFeederInterchanges());
+							collection.getInterchanges().addAll(vehicleJourney.getConsumerInterchanges());
 							validJourneyPattern = true;
 							validRoute = true;
 							validLine = true;
@@ -89,6 +92,8 @@ public class DataCollector {
 						}
 						if (isValid) {
 							collection.getVehicleJourneys().add(vehicleJourney);
+							collection.getInterchanges().addAll(vehicleJourney.getFeederInterchanges());
+							collection.getInterchanges().addAll(vehicleJourney.getConsumerInterchanges());
 							if (vehicleJourney.getCompany() != null) {
 								collection.getCompanies().add(vehicleJourney.getCompany());
 							}
@@ -145,7 +150,7 @@ public class DataCollector {
 		return !collection.getPhysicalStops().isEmpty();
 
 	}
-
+	
 	protected void completeSharedData(ExportableData collection) {
 		// force lazy dependencies to be loaded
 		for (ConnectionLink link : collection.getConnectionLinks()) {

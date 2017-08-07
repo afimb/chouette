@@ -1,5 +1,8 @@
 package mobi.chouette.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -175,6 +179,27 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	@Setter
 	@Transient
 	private String comment;
+	
+	/**
+	 * list of interchanges where this stop point participates as the feeder
+	 * 
+	 */
+	@Getter
+	@Setter
+	@OneToMany(mappedBy = "feederStopPoint", cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch = FetchType.LAZY)
+	private List<Interchange> feederInterchanges = new ArrayList<>(0);
+
+
+	/**
+	 * list of interchanges where this stop point participates as the consumer
+	 * 
+	 */
+	@Getter
+	@Setter
+	@OneToMany(mappedBy = "consumerStopPoint", cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch = FetchType.LAZY)
+	private List<Interchange> consumerInterchanges = new ArrayList<>(0);
+
+
 
 	/**
 	 * current destination display for this stop point

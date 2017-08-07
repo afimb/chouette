@@ -1,6 +1,8 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
+import mobi.chouette.exchange.netexprofile.importer.util.NetexTimeConversionUtil;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.*;
@@ -8,7 +10,10 @@ import mobi.chouette.model.VehicleJourney;
 import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.*;
 
+import java.math.BigInteger;
 import java.sql.Time;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
 import java.util.Comparator;
 import java.util.List;
 
@@ -75,7 +80,6 @@ public class ServiceJourneyProducer extends NetexProducer {
             List<VehicleJourneyAtStop> vehicleJourneyAtStops = vehicleJourney.getVehicleJourneyAtStops();
             vehicleJourneyAtStops.sort(Comparator.comparingInt(o -> o.getStopPoint().getPosition()));
 
-            Time firstStopDepartureTime = null;
             TimetabledPassingTimes_RelStructure passingTimesStruct = netexFactory.createTimetabledPassingTimes_RelStructure();
 
             for (int i = 0; i < vehicleJourneyAtStops.size(); i++) {
@@ -92,26 +96,26 @@ public class ServiceJourneyProducer extends NetexProducer {
                 pointInPatternRefStruct.setRef(pointInPatternIdRef);
                 timetabledPassingTime.setPointInJourneyPatternRef(netexFactory.createStopPointInJourneyPatternRef(pointInPatternRefStruct));
 
-                if (firstStopDepartureTime == null) {
-                    firstStopDepartureTime = vehicleJourneyAtStop.getDepartureTime();
-                    serviceJourney.setDepartureTime(NetexProducerUtils.toOffsetTimeUtc(firstStopDepartureTime));
-                }
-
                 Time departureTime = vehicleJourneyAtStop.getDepartureTime();
                 Time arrivalTime = vehicleJourneyAtStop.getArrivalTime();
 
                 if (arrivalTime != null) {
                     if (arrivalTime.equals(departureTime)) {
                         if (!(i + 1 < vehicleJourneyAtStops.size())) {
-                            timetabledPassingTime.setArrivalTime(NetexProducerUtils.toOffsetTimeUtc(arrivalTime));
+                        	NetexTimeConversionUtil.populatePassingTimeUtc(timetabledPassingTime, true, vehicleJourneyAtStop);
                         }
                     } else {
-                        timetabledPassingTime.setArrivalTime(NetexProducerUtils.toOffsetTimeUtc(arrivalTime));
+                    	NetexTimeConversionUtil.populatePassingTimeUtc(timetabledPassingTime, true, vehicleJourneyAtStop);
                     }
                 }
                 if (departureTime != null) {
                     if ((i + 1 < vehicleJourneyAtStops.size())) {
-                        timetabledPassingTime.setDepartureTime(NetexProducerUtils.toOffsetTimeUtc(departureTime));
+                    	NetexTimeConversionUtil.populatePassingTimeUtc(timetabledPassingTime, false, vehicleJourneyAtStop);
+                        timetabledPassingTime.setDepartureTime(ConversionUtil.toOffsetTimeUtc(departureTime));
+                        if(vehicleJourneyAtStop.getDepartureDayOffset() > 0) {
+                        	timetabledPassingTime.setDepartureDayOffset(BigInteger.valueOf(vehicleJourneyAtStop.getDepartureDayOffset()));
+                        }
+
                     }
                 }
 
@@ -123,5 +127,6 @@ public class ServiceJourneyProducer extends NetexProducer {
 
         return serviceJourney;
     }
+    
 
 }

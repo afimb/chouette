@@ -14,6 +14,10 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import org.apache.commons.lang.StringUtils;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineSegment;
+import com.vividsolutions.jts.geom.PrecisionModel;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -32,9 +36,11 @@ import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.GtfsShape;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.LocationType;
+import mobi.chouette.exchange.gtfs.model.GtfsTransfer.TransferType;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.DropOffType;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.PickupType;
+import mobi.chouette.exchange.gtfs.model.GtfsTransfer;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip.DirectionType;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
@@ -49,6 +55,8 @@ import mobi.chouette.exchange.gtfs.validation.GtfsValidationReporter;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
+import mobi.chouette.model.DestinationDisplay;
+import mobi.chouette.model.Interchange;
 import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.JourneyPattern;
@@ -584,6 +592,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				createJourneyFrequencies(context, referential, importer, configuration, gtfsTrip, vehicleJourney);
 			}
 
+			
+			if(configuration.isParseInterchanges() && importer.hasTransferImporter()) {
+				createInterchanges(context, referential, importer, configuration, gtfsTrip, vehicleJourney);
+			}
+
 		}
 		// dispose collections
 		journeyPatternByStopSequence.clear();
@@ -606,6 +619,127 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		}
 		
 		return result;
+	}
+
+	private void createInterchanges(Context context, Referential referential, GtfsImporter importer, GtfsImportParameters configuration, GtfsTrip gtfsTrip,
+			VehicleJourney vehicleJourney) {
+
+		
+		
+		for (GtfsTransfer gtfsTransfer : importer.getTransferByFromTrip().values(gtfsTrip.getTripId())) {
+			if (gtfsTransfer.getFromTripId() != null && gtfsTransfer.getToTripId() != null){
+				Interchange interchange = createInterchange(referential, configuration, gtfsTransfer);
+			
+				if (gtfsTransfer.getMinTransferTime() != null && gtfsTransfer.getTransferType() == TransferType.Minimal) {
+					interchange.setMinimumTransferTime(new Time(gtfsTransfer.getMinTransferTime() * 1000));
+					interchange.setGuaranteed(Boolean.FALSE);
+				} else if (gtfsTransfer.getTransferType().equals(TransferType.Timed)) {
+					interchange.setGuaranteed(Boolean.TRUE);
+				} 
+				
+				String feederStopAreaId = AbstractConverter.composeObjectId(configuration,
+						"Quay", gtfsTransfer.getFromStopId(), log);
+
+				// find stoppoint for this journey
+				JourneyPattern jp = vehicleJourney.getJourneyPattern();
+				for(StopPoint sp : jp.getStopPoints()) {
+					if(sp.getContainedInStopArea().getObjectId().equals(feederStopAreaId)) {
+						interchange.setFeederStopPoint(sp);
+						// Can be multiple matches, but GTFS does not specify which visit
+						break;
+					}
+				}
+
+				interchange.setFeederVehicleJourney(vehicleJourney);
+				vehicleJourney.getFeederInterchanges().add(interchange);
+				
+				createInterchangeName(interchange);
+			}
+		}
+		for (GtfsTransfer gtfsTransfer : importer.getTransferByToTrip().values(gtfsTrip.getTripId())) {
+			if (gtfsTransfer.getFromTripId() != null && gtfsTransfer.getToTripId() != null){
+				Interchange interchange = createInterchange(referential, configuration, gtfsTransfer);
+			
+				if (gtfsTransfer.getMinTransferTime() != null && gtfsTransfer.getTransferType() == TransferType.Minimal) {
+					interchange.setMinimumTransferTime(new Time(gtfsTransfer.getMinTransferTime() * 1000));
+					interchange.setGuaranteed(Boolean.FALSE);
+				} else if (gtfsTransfer.getTransferType().equals(TransferType.Timed)) {
+					interchange.setGuaranteed(Boolean.TRUE);
+				} 
+				
+				String consumerStopAreaId = AbstractConverter.composeObjectId(configuration,
+						"Quay", gtfsTransfer.getToStopId(), log);
+
+
+				// find stoppoint for this journey
+				JourneyPattern jp = vehicleJourney.getJourneyPattern();
+				for(StopPoint sp : jp.getStopPoints()) {
+					if(sp.getContainedInStopArea().getObjectId().equals(consumerStopAreaId)) {
+						interchange.setConsumerStopPoint(sp);
+						// Can be multiple matches, but GTFS does not specify which visit
+						break;
+					}
+				}
+
+				interchange.setConsumerVehicleJourney(vehicleJourney);
+				vehicleJourney.getConsumerInterchanges().add(interchange);
+				
+				createInterchangeName(interchange);
+			}
+		}
+		
+	}
+
+	protected Interchange createInterchange(Referential referential, GtfsImportParameters configuration, GtfsTransfer gtfsTransfer) {
+		String partialId = StringUtils.join(new String[] {
+				gtfsTransfer.getFromStopId(),
+				gtfsTransfer.getToStopId(),
+				gtfsTransfer.getFromRouteId(),
+				gtfsTransfer.getToRouteId(),
+				gtfsTransfer.getFromTripId(),
+				gtfsTransfer.getToTripId(),
+				},"_");
+		String objectId = AbstractConverter.composeObjectId(configuration,
+				Interchange.INTERCHANGE_KEY, partialId,log);
+		Interchange interchange = ObjectFactory.getInterchange(referential, objectId);
+		return interchange;
+	}
+
+	protected void createInterchangeName(Interchange interchange) {
+		StringBuilder nameBuilder = new StringBuilder();
+		nameBuilder.append("From ");
+		if(interchange.getFeederVehicleJourneyObjectid() != null) {
+			nameBuilder.append(interchange.getFeederVehicleJourneyObjectid());
+		} else {
+			nameBuilder.append(" <unknown> ");
+		}
+		
+		nameBuilder.append(" at ");
+		
+		if(interchange.getFeederStopPointObjectid() != null) {
+			nameBuilder.append(interchange.getFeederStopPointObjectid());
+		} else {
+			nameBuilder.append(" <unknown> ");
+		}
+		
+		nameBuilder.append(" to ");
+		
+		if(interchange.getConsumerVehicleJourneyObjectid() != null) {
+			nameBuilder.append(interchange.getConsumerVehicleJourneyObjectid());
+		} else {
+			nameBuilder.append(" <unknown> ");
+		}
+		
+		nameBuilder.append(" at ");
+		
+		if(interchange.getConsumerStopPointObjectid() != null) {
+			nameBuilder.append(interchange.getConsumerStopPointObjectid());
+		} else {
+			nameBuilder.append(" <unknown> ");
+		}
+		
+		
+		interchange.setName(nameBuilder.toString());
 	}
 
 	private void createJourneyFrequencies(Context context, Referential referential, GtfsImporter importer,
@@ -906,6 +1040,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		vehicleJourneyAtStop.setArrivalDayOffset(gtfsStopTime.getArrivalTime().getDay());
 		vehicleJourneyAtStop.setDepartureDayOffset(gtfsStopTime.getDepartureTime().getDay());
 
+		if(gtfsStopTime.getStopHeadsign() != null) {
+			DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential, gtfsStopTime.getTripId()+"-"+gtfsStopTime.getStopSequence()+"-"+gtfsStopTime.getStopId());
+			destinationDisplay.setFrontText(gtfsStopTime.getStopHeadsign());
+			stopPoint.setDestinationDisplay(destinationDisplay);
+		}
 	}
 	
 	private BoardingPossibilityEnum toBoardingPossibility(PickupType type) {

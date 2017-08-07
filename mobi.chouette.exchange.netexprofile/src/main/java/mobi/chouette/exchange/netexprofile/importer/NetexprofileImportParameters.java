@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.*;
 @NoArgsConstructor
 @ToString(callSuper = true)
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "parseSiteFrames", "validateAgainstSchema", "validateAgainstProfile" })
+@XmlType(propOrder = { "parseSiteFrames", "validateAgainstSchema", "validateAgainstProfile", "continueOnLineErrors" })
 public class NetexprofileImportParameters extends AbstractImportParameter {
 
 	@Getter
@@ -29,5 +29,10 @@ public class NetexprofileImportParameters extends AbstractImportParameter {
 	@Setter
 	@XmlElement(name = "validate_against_profile", required = false)
 	private boolean validateAgainstProfile = true;
+
+	@Getter
+	@Setter
+	@XmlElement(name = "continue_on_line_errors", required = false)
+	private boolean continueOnLineErrors = false;
 
 }

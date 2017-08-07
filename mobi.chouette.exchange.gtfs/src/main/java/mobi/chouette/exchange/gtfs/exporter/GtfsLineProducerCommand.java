@@ -94,6 +94,8 @@ public class GtfsLineProducerCommand implements Command, Constant {
 					.getRoutes().size());
 			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY,
 					collection.getVehicleJourneys().size());
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.INTERCHANGE,
+					collection.getInterchanges().size());
 
 			if (cont) {
 				context.put(EXPORTABLE_DATA, collection);

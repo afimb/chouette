@@ -17,6 +17,9 @@ import java.util.TimeZone;
 
 import javax.naming.InitialContext;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
@@ -35,11 +38,9 @@ import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
+import mobi.chouette.model.Interchange;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.Timetable;
-
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
 
 /**
  *
@@ -106,6 +107,7 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 		Set<StopArea> physicalStops = collection.getPhysicalStops();
 		Set<ConnectionLink> connectionLinks = collection.getConnectionLinks();
 		Set<Company> companies = collection.getCompanies();
+		Set<Interchange> interchanges = collection.getInterchanges();
 		if (!companies.isEmpty()) {
 			agencyProducer = new GtfsAgencyProducer(exporter);
 		}
@@ -137,6 +139,11 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 				continue;
 			}
 			transferProducer.save(link, sharedPrefix, configuration.isKeepOriginalId());
+		}
+		
+		// produce interchanges
+		for(Interchange interchange : interchanges) {
+			transferProducer.save(interchange, sharedPrefix, configuration.isKeepOriginalId());
 		}
 
 		for (Company company : companies) {

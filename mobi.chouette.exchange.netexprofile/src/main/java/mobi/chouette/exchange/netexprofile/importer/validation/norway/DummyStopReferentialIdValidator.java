@@ -15,7 +15,7 @@ public class DummyStopReferentialIdValidator implements ExternalReferenceValidat
 
 	@Override
 	public Set<IdVersion> validateReferenceIds(Context context, Set<IdVersion> externalIds) {
-		
+
 		// Return all of supported type
 		return new HashSet<IdVersion>();
 	}

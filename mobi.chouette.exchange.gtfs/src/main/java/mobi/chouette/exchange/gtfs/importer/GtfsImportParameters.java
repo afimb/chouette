@@ -26,7 +26,8 @@ import org.apache.log4j.Logger;
 		"maxDistanceForCommercial",
 		"ignoreEndChars",
 		"ignoreLastWord",
-		"referencesType"})
+		"referencesType",
+		"parseInterchanges"})
 public class GtfsImportParameters extends AbstractImportParameter {
 
 	@Getter@Setter
@@ -56,6 +57,10 @@ public class GtfsImportParameters extends AbstractImportParameter {
 	@Getter@Setter
 	@XmlElement(name = "references_type")
 	private String referencesType;
+
+	@Getter@Setter
+	@XmlElement(name = "parse_interchanges")
+	private boolean parseInterchanges = false;
 
 
 	public boolean isValid(Logger log, String[] allowedTypes)

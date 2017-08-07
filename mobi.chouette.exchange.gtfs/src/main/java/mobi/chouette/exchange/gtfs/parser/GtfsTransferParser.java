@@ -105,11 +105,15 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 
 		for (GtfsTransfer gtfsTransfer : importer.getTransferByFromStop()) {
 
-			String objectId = AbstractConverter.composeObjectId(configuration,
-					ConnectionLink.CONNECTIONLINK_KEY, gtfsTransfer.getFromStopId() + "_" + gtfsTransfer.getToStopId(),
-					log);
-			ConnectionLink connectionLink = ObjectFactory.getConnectionLink(referential, objectId);
-			convert(context, gtfsTransfer, connectionLink);
+			if(gtfsTransfer.getFromRouteId() == null && gtfsTransfer.getToRouteId() == null && gtfsTransfer.getFromTripId() == null && gtfsTransfer.getToTripId() == null) {
+				// Treat as conneciton link
+				String objectId = AbstractConverter.composeObjectId(configuration,
+						ConnectionLink.CONNECTIONLINK_KEY, gtfsTransfer.getFromStopId() + "_" + gtfsTransfer.getToStopId(),
+						log);
+				ConnectionLink connectionLink = ObjectFactory.getConnectionLink(referential, objectId);
+				convert(context, gtfsTransfer, connectionLink);
+
+			} 
 		}
 	}
 
@@ -148,6 +152,7 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 		connectionLink.setFilled(true);
 //		AbstractConverter.addLocation(context, "transfers.txt", connectionLink.getObjectId(), gtfsTransfer.getId());
 	}
+
 
 	static {
 		ParserFactory.register(GtfsTransferParser.class.getName(), new ParserFactory() {

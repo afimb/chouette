@@ -143,55 +143,55 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
         }
 
 		if (!isCommonDelivery) {
-			Map<String, Set<String>> journeyDayTypeIdMap = new HashMap<>();
-
-			for (TimetableFrame timetableFrame : timetableFrames) {
-				for (Journey_VersionStructure journeyStruct : timetableFrame.getVehicleJourneys().getDatedServiceJourneyOrDeadRunOrServiceJourney()) {
-					ServiceJourney serviceJourney = (ServiceJourney) journeyStruct;
-					Set<String> dayTypeIds = new HashSet<>();
-
-					for (JAXBElement<? extends DayTypeRefStructure> dayTypeRefStructElement : serviceJourney.getDayTypes().getDayTypeRef()) {
-						dayTypeIds.add(dayTypeRefStructElement.getValue().getRef());
-					}
-
-					journeyDayTypeIdMap.put(serviceJourney.getId(), dayTypeIds);
-				}
-			}
-
-			Set<String> processedIds = new HashSet<>();
-			List<Set<String>> calendarGroups = new ArrayList<>();
-
-			for (Map.Entry<String, Set<String>> entry1 : journeyDayTypeIdMap.entrySet()) {
-				if (!processedIds.contains(entry1.getKey())) {
-					Set<String> groupedJourneyIds = new HashSet<>();
-					groupedJourneyIds.add(entry1.getKey());
-
-					for (Map.Entry<String, Set<String>> entry2 : journeyDayTypeIdMap.entrySet()) {
-						if (!entry1.getKey().equals(entry2.getKey())) {
-							if (CollectionUtils.isEqualCollection(entry1.getValue(), entry2.getValue())) {
-								groupedJourneyIds.add(entry2.getKey());
-								processedIds.add(entry2.getKey());
-							}
-						}
-					}
-					calendarGroups.add(groupedJourneyIds);
-					processedIds.add(entry1.getKey());
-				}
-			}
-
-			assert line != null;
-			String[] idParts = StringUtils.split(line.getId(), ":");
-			String[] idSequence = NetexProducerUtils.generateIdSequence(calendarGroups.size());
-
-			for (int i = 0; i < calendarGroups.size(); i++) {
-				String timetableIdSuffix = idParts[2] + "-" + StringUtils.leftPad(idSequence[i], 2, "0");
-				String timetableId = netexId(idParts[0], ObjectIdTypes.TIMETABLE_KEY, timetableIdSuffix);
-				Timetable timetable = ObjectFactory.getTimetable(referential, timetableId);
-
-				for (String journeyId : calendarGroups.get(i)) {
-					addTimetableId(context, journeyId, timetable.getObjectId());
-				}
-			}
+//			Map<String, Set<String>> journeyDayTypeIdMap = new HashMap<>();
+//
+//			for (TimetableFrame timetableFrame : timetableFrames) {
+//				for (Journey_VersionStructure journeyStruct : timetableFrame.getVehicleJourneys().getDatedServiceJourneyOrDeadRunOrServiceJourney()) {
+//					ServiceJourney serviceJourney = (ServiceJourney) journeyStruct;
+//					Set<String> dayTypeIds = new HashSet<>();
+//
+//					for (JAXBElement<? extends DayTypeRefStructure> dayTypeRefStructElement : serviceJourney.getDayTypes().getDayTypeRef()) {
+//						dayTypeIds.add(dayTypeRefStructElement.getValue().getRef());
+//					}
+//
+//					journeyDayTypeIdMap.put(serviceJourney.getId(), dayTypeIds);
+//				}
+//			}
+//
+//			Set<String> processedIds = new HashSet<>();
+//			List<Set<String>> calendarGroups = new ArrayList<>();
+//
+//			for (Map.Entry<String, Set<String>> entry1 : journeyDayTypeIdMap.entrySet()) {
+//				if (!processedIds.contains(entry1.getKey())) {
+//					Set<String> groupedJourneyIds = new HashSet<>();
+//					groupedJourneyIds.add(entry1.getKey());
+//
+//					for (Map.Entry<String, Set<String>> entry2 : journeyDayTypeIdMap.entrySet()) {
+//						if (!entry1.getKey().equals(entry2.getKey())) {
+//							if (CollectionUtils.isEqualCollection(entry1.getValue(), entry2.getValue())) {
+//								groupedJourneyIds.add(entry2.getKey());
+//								processedIds.add(entry2.getKey());
+//							}
+//						}
+//					}
+//					calendarGroups.add(groupedJourneyIds);
+//					processedIds.add(entry1.getKey());
+//				}
+//			}
+//
+//			assert line != null;
+//			String[] idParts = StringUtils.split(line.getId(), ":");
+//			String[] idSequence = NetexProducerUtils.generateIdSequence(calendarGroups.size());
+//
+//			for (int i = 0; i < calendarGroups.size(); i++) {
+//				String timetableIdSuffix = idParts[2] + "-" + StringUtils.leftPad(idSequence[i], 2, "0");
+//				String timetableId = netexId(idParts[0], ObjectIdTypes.TIMETABLE_KEY, timetableIdSuffix);
+//				Timetable timetable = ObjectFactory.getTimetable(referential, timetableId);
+//
+//				for (String journeyId : calendarGroups.get(i)) {
+//					addTimetableId(context, journeyId, timetable.getObjectId());
+//				}
+//			}
 		}
 	}
 
@@ -328,6 +328,16 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 			context.put(NETEX_LINE_DATA_CONTEXT, vehicleJourneysStruct);
 			Parser serviceJourneyParser = ParserFactory.create(ServiceJourneyParser.class.getName());
 			serviceJourneyParser.parse(context);
+			
+			JourneyInterchangesInFrame_RelStructure journeyInterchangesStruct = timetableFrame.getJourneyInterchanges();
+			if(journeyInterchangesStruct != null) {
+				context.put(NETEX_LINE_DATA_CONTEXT, journeyInterchangesStruct);
+				Parser serviceInterchangeParser = ParserFactory.create(ServiceJourneyInterchangeParser.class.getName());
+				serviceInterchangeParser.parse(context);
+			}
+			
+			
+			
 		}
 	}
 

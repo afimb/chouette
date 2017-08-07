@@ -1,22 +1,22 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Constant;
-import mobi.chouette.common.Context;
-import mobi.chouette.common.chain.Command;
-import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.CodespaceDAO;
-import mobi.chouette.exchange.netexprofile.DummyChecker;
-import mobi.chouette.exchange.netexprofile.JobDataTest;
-import mobi.chouette.exchange.netexprofile.NetexTestUtils;
-import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
-import mobi.chouette.exchange.netexprofile.importer.NetexprofileImporterCommand;
-import mobi.chouette.exchange.report.*;
-import mobi.chouette.exchange.validation.report.CheckPointReport;
-import mobi.chouette.exchange.validation.report.ValidationReport;
-import mobi.chouette.exchange.validation.report.ValidationReporter;
-import mobi.chouette.model.Codespace;
-import mobi.chouette.persistence.hibernate.ContextHolder;
+import static mobi.chouette.exchange.netexprofile.NetexTestUtils.createCodespace;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+
+import javax.ejb.EJB;
+import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.UserTransaction;
+
 import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.testng.Arquillian;
@@ -31,21 +31,28 @@ import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
 
-import javax.ejb.EJB;
-import javax.inject.Inject;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.UserTransaction;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-
-import static mobi.chouette.exchange.netexprofile.NetexTestUtils.createCodespace;
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
+import mobi.chouette.common.chain.Command;
+import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.dao.CodespaceDAO;
+import mobi.chouette.dao.LineDAO;
+import mobi.chouette.exchange.netexprofile.DummyChecker;
+import mobi.chouette.exchange.netexprofile.JobDataTest;
+import mobi.chouette.exchange.netexprofile.NetexTestUtils;
+import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
+import mobi.chouette.exchange.netexprofile.importer.NetexprofileImporterCommand;
+import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.FileReport;
+import mobi.chouette.exchange.report.ObjectReport;
+import mobi.chouette.exchange.report.ReportConstant;
+import mobi.chouette.exchange.validation.report.CheckPointReport;
+import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.Codespace;
+import mobi.chouette.persistence.hibernate.ContextHolder;
 
 @Log4j
 public class NetexExportTests extends Arquillian implements Constant, ReportConstant {
@@ -54,6 +61,9 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
     @EJB
     private CodespaceDAO codespaceDao;
+
+    @EJB
+    private LineDAO lineDao;
 
     @PersistenceContext(unitName = "referential")
     private EntityManager em;
@@ -220,12 +230,15 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         return context;
     }
 
-    private void clearCodespaceRecords() throws Exception {
+    private void clearOldDatabaseRecords() throws Exception {
         utx.begin();
         em.joinTransaction();
         log.info("Dumping old codespace records...");
         codespaceDao.deleteAll();
         codespaceDao.flush();
+        lineDao.deleteAll();
+        lineDao.flush();
+        
         utx.commit();
     }
 
@@ -254,6 +267,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
+        configuration.setExportStops(true);
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -295,6 +309,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         configuration.setValidateAfterExport(true);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
+        configuration.setExportStops(true);
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -334,6 +349,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
+        configuration.setExportStops(true);
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -373,6 +389,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
+        configuration.setExportStops(true);
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -414,6 +431,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         configuration.setValidateAfterExport(true);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
+        configuration.setExportStops(true);
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -453,6 +471,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
+        configuration.setExportStops(true);
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -495,6 +514,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         configuration.setValidateAfterExport(true);
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
+        configuration.setExportStops(true);
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -523,10 +543,96 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         NetexTestUtils.verifyValidationReport(context);
     }
 
+    @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
+    public void exportLineWithSameLineInterchanges() throws Exception {
+        importLines("avinor_single_line_with_interchanges.zip", 2, 1, Arrays.asList(
+                createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+                createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
+        );
+        
+        log.info("*********IMPORT COMPLETE, STARTING EXPORT**********@");
+
+        Context context = initExportContext();
+        NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
+        configuration.setValidateAfterExport(true);
+        configuration.setAddMetadata(true);
+        configuration.setReferencesType("line");
+        configuration.setExportStops(true);
+
+        Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
+
+        try {
+            command.execute(context);
+        } catch (Exception ex) {
+            log.error("test failed", ex);
+            throw ex;
+        }
+
+        ActionReport report = (ActionReport) context.get(REPORT);
+        Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+        Assert.assertEquals(report.getFiles().size(), 2, "file reported");
+
+        for (FileReport info : report.getFiles()) {
+            Reporter.log(info.toString(),true);
+        }
+
+        Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 1, "line reported");
+
+        for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+            Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "line status");
+            Reporter.log(info.toString(), true);
+        }
+
+        NetexTestUtils.verifyValidationReport(context);
+    }
+
+    @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
+    public void exportLinesWithInterchanges() throws Exception {
+        importLines("avinor_multiple_line_with_interchanges.zip", 3, 2, Arrays.asList(
+                createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+                createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
+        );
+        
+        log.info("*********IMPORT COMPLETE, STARTING EXPORT**********@");
+
+        Context context = initExportContext();
+        NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
+        configuration.setValidateAfterExport(true);
+        configuration.setAddMetadata(true);
+        configuration.setReferencesType("line");
+        configuration.setExportStops(true);
+
+        Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
+
+        try {
+            command.execute(context);
+        } catch (Exception ex) {
+            log.error("test failed", ex);
+            throw ex;
+        }
+
+        ActionReport report = (ActionReport) context.get(REPORT);
+        Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+        Assert.assertEquals(report.getFiles().size(), 3, "file reported");
+
+        for (FileReport info : report.getFiles()) {
+            Reporter.log(info.toString(),true);
+        }
+
+        Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 2, "line reported");
+
+        for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+            Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "line status");
+            Reporter.log(info.toString(), true);
+        }
+
+        NetexTestUtils.verifyValidationReport(context);
+    }
+
     private void importLines(String file, int fileCount, int lineCount, List<Codespace> codespaces) throws Exception {
         Context context = initImportContext();
 
-        clearCodespaceRecords();
+        clearOldDatabaseRecords();
         insertCodespaceRecords(codespaces);
 
         NetexTestUtils.copyFile(file);
@@ -538,6 +644,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
         configuration.setNoSave(false);
         configuration.setCleanRepository(true);
+        configuration.setParseSiteFrames(true);
 
         try {
             command.execute(context);

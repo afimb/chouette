@@ -155,6 +155,8 @@ public class GtfsRouteParserCommand implements Command, Constant {
 				.getRoutes().size());
 		reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY,
 				referential.getVehicleJourneys().size());
+		reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.INTERCHANGE,
+				referential.getInterchanges().size());
 
 	}
 

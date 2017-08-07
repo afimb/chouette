@@ -209,7 +209,7 @@ public class LineRegisterCommand implements Command {
 			for(JourneyPattern jp : (r.getJourneyPatterns() == null? new ArrayList<JourneyPattern>() : r.getJourneyPatterns())) {
 				for(VehicleJourney vj : (jp.getVehicleJourneys() == null? new ArrayList<VehicleJourney>() : jp.getVehicleJourneys())) {
 					for(Timetable t : (vj.getTimetables() == null ? new ArrayList<Timetable>() : vj.getTimetables())) {
-						t.computeLimitOfPeriods();
+						//t.computeLimitOfPeriods();
 						if(t.getEndOfPeriod() != null && !t.getEndOfPeriod().before(now)) {
 							return true;
 						}

@@ -42,7 +42,7 @@ public class TimetableUpdater implements Updater<Timetable> {
 		newValue.setSaved(true);
 		
 //        Monitor monitor = MonitorFactory.start(BEAN_NAME);
-		newValue.computeLimitOfPeriods();
+//		newValue.computeLimitOfPeriods();
 		// default processings
 		if (newValue.getComment() == null) {
 			NamingUtil.setDefaultName(newValue);

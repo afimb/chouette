@@ -29,6 +29,7 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 	public static final String _1_NETEX_SCHEMA_VALIDATION_ERROR = "1-NETEXPROFILE-SchemaValidationError";
 	public static final String _1_NETEX_UNKNOWN_PROFILE = "1-NETEXPROFILE-UnknownProfile";
 	public static final String _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_AND_COMMON_FILES = "1-NETEXPROFILE-DuplicateIdentificatorsAcrossLineAndCommonFiles";
+	public static final String _1_NETEX_DUPLICATE_IDS_ACROSS_COMMON_FILES = "1-NETEXPROFILE-DuplicateIdentificatorsAcrossCommonFiles";
 	public static final String _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS = "1-NETEXPROFILE-MissingVersionAttribute";
 	public static final String _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS = "1-NETEXPROFILE-MissingReferenceVersionAttribute";
 	public static final String _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS = "1-NETEXPROFILE-UnresolvedReferenceToCommonElements";
@@ -36,10 +37,10 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 	public static final String _1_NETEX_INVALID_ID_STRUCTURE_NAME = "1-NETEXPROFILE-InvalidIdStructureName";
 	public static final String _1_NETEX_UNAPPROVED_CODESPACE_DEFINED = "1-NETEXPROFILE-UnapprovedCodespaceDefined";
 	public static final String _1_NETEX_USE_OF_UNAPPROVED_CODESPACE = "1-NETEXPROFILE-UseOfUnapprovedCodespace";
-	protected static final String OBJECT_IDS = "encountered_ids";
 	public static final String _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_FILES = "1-NETEXPROFILE-DuplicateIdentificatorsAcrossLineFiles";
 	public static final String _1_NETEX_UNRESOLVED_EXTERNAL_REFERENCE = "1-NETEXPROFILE-UnresolvedExternalReference";
 
+	protected static final String OBJECT_IDS = "encountered_ids";
 	
 	private List<ExternalReferenceValidator> externalReferenceValidators = new ArrayList<>();
 	
@@ -137,9 +138,7 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 			validationReporter.reportSuccess(context, checkPointKey);
 		} else {
 			log.error("Checkpoint " + checkPointKey + " failed: " + expression + " did not return at least 1 node but " + nodes.getLength());
-			for (int i = 0; i < nodes.getLength(); i++) {
-				validationReporter.addCheckPointReportError(context, checkPointKey, DataLocationHelper.findDataLocation(context, nodes.item(i)));
-			}
+			validationReporter.addCheckPointReportError(context, checkPointKey, DataLocationHelper.findDataLocation(context, document));
 		}
 	}
 
@@ -225,7 +224,7 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		}
 	}
 
-	protected void verifyReferencesToCommonElements(Context context, Set<IdVersion> localRefs, Set<IdVersion> localIds,
+	protected void verifyReferencesToCommonElements(Context context, List<IdVersion> localRefs, Set<IdVersion> localIds,
 			Map<IdVersion, List<String>> commonIds) {
 		if (commonIds != null) {
 			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
@@ -238,7 +237,7 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 			
 			// Dont report on references that are supposed to be validated externally
 			for(ExternalReferenceValidator v : externalReferenceValidators) {
-				Set<IdVersion> ofSupportedTypes = v.isOfSupportedTypes(localRefs);
+				Set<IdVersion> ofSupportedTypes = v.isOfSupportedTypes(new HashSet<>(localRefs));
 				unresolvedReferences.removeAll(ofSupportedTypes.stream().map(e -> e.getId()).collect(Collectors.toSet()));
 			}
 			
@@ -266,11 +265,11 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		}
 	}
 
-	protected void verifyUseOfVersionOnRefsToLocalElements(Context context, Set<IdVersion> localIds, Set<IdVersion> localRefs) {
+	protected void verifyUseOfVersionOnRefsToLocalElements(Context context, Set<IdVersion> localIds, List<IdVersion> localRefs) {
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 
-		Set<IdVersion> nonVersionedLocalRefs = localRefs.stream().filter(e -> e.getVersion() == null).collect(Collectors.toSet());
-		Set<String> localIdsWithoutVersion = localIds.stream().map(e -> e.getId()).collect(Collectors.toSet());
+		List<IdVersion> nonVersionedLocalRefs = localRefs.stream().filter(e -> e.getVersion() == null).collect(Collectors.toList());
+		List<String> localIdsWithoutVersion = localIds.stream().map(e -> e.getId()).collect(Collectors.toList());
 
 		boolean foundErrors = false;
 		
@@ -360,19 +359,32 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		}
 	}
 	
-	protected void verifyExternalRefs(Context context, Set<IdVersion> externalRefs, Set<IdVersion> localIds) {
+	protected void verifyExternalRefs(Context context, List<IdVersion> externalRefs, Set<IdVersion> localIds, Set<IdVersion> commonIds) {
 		
 		Set<IdVersion> possibleExternalReferences = externalRefs.stream().filter(e -> !localIds.contains(e)).collect(Collectors.toSet());
-		
-		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-		Set<IdVersion> unverifiedExternalRefs = new HashSet<>();
-		
-		for(ExternalReferenceValidator validator : externalReferenceValidators) {
-			unverifiedExternalRefs.addAll(validator.validateReferenceIds(context,possibleExternalReferences));
+		Set<IdVersion> idsFoundInCommonFiles = new HashSet<>();
+		for(IdVersion possibleMissingReference : possibleExternalReferences) {
+			for(IdVersion commonId : commonIds) {
+				if(commonId.getId().equals(possibleMissingReference.getId())) {
+					idsFoundInCommonFiles.add(possibleMissingReference);
+				}
+			}
 		}
 		
-		if(unverifiedExternalRefs.size() > 0) {
-			for(IdVersion id : unverifiedExternalRefs) {
+		possibleExternalReferences.removeAll(idsFoundInCommonFiles);
+		
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		Set<IdVersion> verifiedExternalRefs = new HashSet<>();
+		
+		for(ExternalReferenceValidator validator : externalReferenceValidators) {
+			verifiedExternalRefs.addAll(validator.validateReferenceIds(context,possibleExternalReferences));
+		}
+		
+		possibleExternalReferences.removeAll(verifiedExternalRefs);
+		
+		if(possibleExternalReferences.size() > 0) {
+			for(IdVersion id : possibleExternalReferences) {
+				log.error("Unable to validate external reference "+id);
 				validationReporter.addCheckPointReportError(context, _1_NETEX_UNRESOLVED_EXTERNAL_REFERENCE, null,
 						DataLocationHelper.findDataLocation(id), id.getId());
 			}

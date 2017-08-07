@@ -62,7 +62,6 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 				commands.add(CommandFactory.create(initialContext, CleanRepositoryCommand.class.getName()));
 			}
 			commands.add(CommandFactory.create(initialContext, UncompressCommand.class.getName()));
-			commands.add(CommandFactory.create(initialContext, NetexInitImportCommand.class.getName()));
 		} catch (Exception e) {
 			log.error(e, e);
 			throw new RuntimeException("unable to call factories");
@@ -83,6 +82,8 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 		Path path = Paths.get(jobData.getPathName(), INPUT);
 
 		try {
+			commands.add(CommandFactory.create(initialContext, NetexInitImportCommand.class.getName()));
+
 			Chain mainChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 			commands.add(mainChain);
 
@@ -117,7 +118,9 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 					filePath -> filePath.getFileName() != null && filePath.getFileSystem().getPathMatcher("glob:_*.xml").matches(filePath.getFileName()))
 					.collect(Collectors.toList());
 
-			Chain commonFileChains = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
+			ChainCommand commonFileChains = (ChainCommand) CommandFactory.create(initialContext, ChainCommand.class.getName());
+			commonFileChains.setIgnored(parameters.isContinueOnLineErrors());
+
 			mainChain.add(commonFileChains);
 
 			context.put(mobi.chouette.exchange.netexprofile.Constant.NETEX_COMMON_FILE_IDENTIFICATORS, new HashMap<IdVersion, List<String>>());
@@ -154,7 +157,9 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 					filePath -> filePath.getFileName() != null && !filePath.getFileSystem().getPathMatcher("glob:_*.xml").matches(filePath.getFileName()))
 					.collect(Collectors.toList());
 
-			Chain lineChains = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
+			ChainCommand lineChains = (ChainCommand) CommandFactory.create(initialContext, ChainCommand.class.getName());
+			lineChains.setIgnored(parameters.isContinueOnLineErrors());
+			
 			mainChain.add(lineChains);
 
 			for (Path file : lineFilePaths) {
