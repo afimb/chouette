@@ -97,8 +97,12 @@ public class LineRegisterCommand implements Command {
 
 		if (importParameter.isKeepObsoleteLines() || isLineValidInFuture(newValue)) {
 
-			// TODO add prop to control whether id map is used. Per provider? Use/replace existing for update stop place registry
-			stopAreaIdMapper.mapStopAreaIds(referential);
+			if(importParameter.isStopAreaRemoteIdMapping()) {
+				stopAreaIdMapper.mapStopAreaIds(referential);
+			} else {
+				log.info("Will not map ids against external stop place registry as import parameter stop_registry_map_id != true");
+			}
+
 
 			log.info("register line : " + newValue.getObjectId() + " " + newValue.getName() + " vehicleJourney count = "
 					+ referential.getVehicleJourneys().size());

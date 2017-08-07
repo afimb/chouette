@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 @NoArgsConstructor
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "noSave", "cleanRepository", "updateExternalStopAreaRegistry", "stopAreaImportMode", "keepObsoleteLines" }, name = "actionImportParameter")
+@XmlType(propOrder = { "noSave", "cleanRepository", "stopAreaRemoteIdMapping", "stopAreaImportMode", "keepObsoleteLines" }, name = "actionImportParameter")
 public class AbstractImportParameter extends AbstractParameter {
 
 	@XmlElement(name = "no_save", defaultValue = "false")
@@ -31,13 +31,13 @@ public class AbstractImportParameter extends AbstractParameter {
 	private boolean cleanRepository = false;
 
 	/**
-	 * Whether or not stop places from import files should be used to update remote stop area repository (NSR).
+	 * Whether or not stop area ids from import files should be mapped against remote stop area registry (ie NSR).
 	 *
 	 */
-	@XmlElement(name = "update_external_stop_area_registry", defaultValue = "true")
+	@XmlElement(name = "stop_area_remote_id_mapping", defaultValue = "false")
 	@Getter
 	@Setter
-	private boolean updateExternalStopAreaRegistry = true;
+	private boolean stopAreaRemoteIdMapping = false;
 
 	/**
 	 * How stop areas in import file should be treated by chouette.
