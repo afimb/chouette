@@ -69,7 +69,7 @@ public class NetexProducer {
     protected AvailabilityCondition createAvailabilityCondition(mobi.chouette.model.NeptuneIdentifiedObject neptuneIdentifiedObject) {
 
         // TODO temporary generating random id suffix, find a better way to create object id suffixes
-        String availabilityConditionId = netexId(neptuneIdentifiedObject.objectIdPrefix(), AVAILABILITY_CONDITION, String.valueOf(NetexProducerUtils.generateRandomId()));
+        String availabilityConditionId = netexId(neptuneIdentifiedObject.objectIdPrefix(), AVAILABILITY_CONDITION, String.valueOf(NetexProducerUtils.generateSequentialId()));
         AvailabilityCondition availabilityCondition = netexFactory.createAvailabilityCondition();
         availabilityCondition.setVersion(neptuneIdentifiedObject.getObjectVersion() > 0 ? String.valueOf(neptuneIdentifiedObject.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
         availabilityCondition.setId(availabilityConditionId);

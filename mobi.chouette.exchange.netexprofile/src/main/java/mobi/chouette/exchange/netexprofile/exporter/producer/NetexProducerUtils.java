@@ -166,15 +166,14 @@ public class NetexProducerUtils {
 
     public static final int DEFAULT_START_INCLUSIVE = 1111111;
     public static final int DEFAULT_END_EXCLUSIVE = 8888888;
+    
+    private static AtomicInteger idCounter = new AtomicInteger(1);
 
-    public static int generateRandomId() {
-        return generateRandomId(DEFAULT_START_INCLUSIVE, DEFAULT_END_EXCLUSIVE);
+    public static int generateSequentialId() {
+        return idCounter.getAndIncrement();
     }
 
-    public static int generateRandomId(int startInclusive, int endExclusive) {
-        return Math.abs((startInclusive) + new Random().nextInt(endExclusive));
-    }
-
+  
     public static String netexId(NeptuneIdentifiedObject model) {
         return model == null ? null : model.objectIdPrefix() + OBJECT_ID_SPLIT_CHAR + netexModelName(model) + OBJECT_ID_SPLIT_CHAR + model.objectIdSuffix();
     }

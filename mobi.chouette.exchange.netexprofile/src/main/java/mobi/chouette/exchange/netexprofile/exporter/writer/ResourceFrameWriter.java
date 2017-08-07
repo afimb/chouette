@@ -21,7 +21,7 @@ public class ResourceFrameWriter extends AbstractNetexWriter {
 
         // TODO temporary generating random id suffix, find a better way to create object id suffixes
         Network network = exportableNetexData.getSharedNetworks().values().iterator().next();
-        String resourceFrameId = netexId(objectIdPrefix(network.getId()), RESOURCE_FRAME, String.valueOf(NetexProducerUtils.generateRandomId()));
+        String resourceFrameId = netexId(objectIdPrefix(network.getId()), RESOURCE_FRAME, String.valueOf(NetexProducerUtils.generateSequentialId()));
 
         try {
             writer.writeStartElement(RESOURCE_FRAME);

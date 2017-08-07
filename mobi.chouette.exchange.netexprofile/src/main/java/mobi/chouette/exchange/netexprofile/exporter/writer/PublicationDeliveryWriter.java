@@ -69,7 +69,7 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
 
         // TODO temporary generating random id suffix, find a better way to create object id suffixes
         Network network = exportableNetexData.getSharedNetworks().values().iterator().next();
-        String compositeFrameId = netexId(objectIdPrefix(network.getId()), COMPOSITE_FRAME, String.valueOf(NetexProducerUtils.generateRandomId()));
+        String compositeFrameId = netexId(objectIdPrefix(network.getId()), COMPOSITE_FRAME, String.valueOf(NetexProducerUtils.generateSequentialId()));
 
         try {
             writer.writeStartElement(COMPOSITE_FRAME);
