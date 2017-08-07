@@ -407,22 +407,23 @@ public class JobServiceManager {
 	}
 
 	public void abort(JobService jobService) {
+		if (jobService.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
+			jobService.setStatus(STATUS.ABORTED);
 
-		jobService.setStatus(STATUS.ABORTED);
+			// remove cancel link only
+			jobService.removeLink(Link.CANCEL_REL);
+			// set delete link
+			jobService.addLink(MediaType.APPLICATION_JSON, Link.DELETE_REL);
 
-		// remove cancel link only
-		jobService.removeLink(Link.CANCEL_REL);
-		// set delete link
-		jobService.addLink(MediaType.APPLICATION_JSON, Link.DELETE_REL);
+			// add validation report link
+			if (!jobService.linkExists(Link.VALIDATION_REL)) {
+				if (Files.exists(Paths.get(jobService.getPathName(), Constant.VALIDATION_FILE)))
+					jobService.addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_REL);
+			}
 
-		// add validation report link
-		if (!jobService.linkExists(Link.VALIDATION_REL)) {
-			if (Files.exists(Paths.get(jobService.getPathName(), Constant.VALIDATION_FILE)))
-				jobService.addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_REL);
+			jobService.setUpdated(new Date());
+			jobDAO.update(jobService.getJob());
 		}
-
-		jobService.setUpdated(new Date());
-		jobDAO.update(jobService.getJob());
 
 	}
 
