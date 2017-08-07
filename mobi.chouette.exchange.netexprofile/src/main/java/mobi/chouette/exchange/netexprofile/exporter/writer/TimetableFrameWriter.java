@@ -28,7 +28,7 @@ public class TimetableFrameWriter extends AbstractNetexWriter {
 
         // TODO temporary generating random id suffix, find a better way to create object id suffixes
         Network network = exportableNetexData.getSharedNetworks().values().iterator().next();
-        String timetableFrameId = netexId(objectIdPrefix(network.getId()), TIMETABLE_FRAME, String.valueOf(NetexProducerUtils.generateRandomId()));
+        String timetableFrameId = netexId(objectIdPrefix(network.getId()), TIMETABLE_FRAME, String.valueOf(NetexProducerUtils.generateSequentialId()));
 
         try {
             writer.writeStartElement(TIMETABLE_FRAME);

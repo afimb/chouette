@@ -20,7 +20,7 @@ public class SiteFrameWriter extends AbstractNetexWriter {
 
         // TODO temporary generating random id suffix, find a better way to create object id suffixes
         Network network = exportableNetexData.getSharedNetworks().values().iterator().next();
-        String siteFrameId = netexId(objectIdPrefix(network.getId()), SITE_FRAME, String.valueOf(NetexProducerUtils.generateRandomId()));
+        String siteFrameId = netexId(objectIdPrefix(network.getId()), SITE_FRAME, String.valueOf(NetexProducerUtils.generateSequentialId()));
 
         try {
             writer.writeStartElement(SITE_FRAME);

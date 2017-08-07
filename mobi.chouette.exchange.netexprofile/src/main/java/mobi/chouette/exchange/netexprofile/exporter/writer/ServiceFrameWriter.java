@@ -17,7 +17,7 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 
 	public static void write(XMLStreamWriter writer, Network network) {
 		// TODO temporary generating random id suffix, find a better way to create object id suffixes
-		String serviceFrameId = netexId(objectIdPrefix(network.getId()), SERVICE_FRAME, String.valueOf(NetexProducerUtils.generateRandomId()));
+		String serviceFrameId = netexId(objectIdPrefix(network.getId()), SERVICE_FRAME, String.valueOf(NetexProducerUtils.generateSequentialId()));
 
 		try {
 			writer.writeStartElement(SERVICE_FRAME);
@@ -34,7 +34,7 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 
 		// TODO temporary generating random id suffix, find a better way to create object id suffixes
 		Network network = exportableNetexData.getSharedNetworks().values().iterator().next();
-		String serviceFrameId = netexId(objectIdPrefix(network.getId()), SERVICE_FRAME, String.valueOf(NetexProducerUtils.generateRandomId()));
+		String serviceFrameId = netexId(objectIdPrefix(network.getId()), SERVICE_FRAME, String.valueOf(NetexProducerUtils.generateSequentialId()));
 
 		try {
 			writer.writeStartElement(SERVICE_FRAME);
