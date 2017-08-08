@@ -42,8 +42,11 @@ public class GtfsDataCollector extends DataCollector{
 			collection.getCommercialStops().add(stopArea);
 			collection.getConnectionLinks().addAll(stopArea.getConnectionStartLinks());
 			collection.getConnectionLinks().addAll(stopArea.getConnectionEndLinks());
+			for(StopArea sa : stopArea.getContainedStopAreas()) {
+				collectStopAreas(collection, sa, skipNoCoordinates, followLinks);
+			}
 		}
 	}
 
-
+    
 }
