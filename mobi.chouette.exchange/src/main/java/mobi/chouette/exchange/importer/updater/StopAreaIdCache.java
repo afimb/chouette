@@ -17,6 +17,7 @@ import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.StopTypeEnumeration;
+
 // TODO replace local cache in StopPlaceRegistryIdValidator with this
 @Log4j
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
@@ -74,7 +75,7 @@ public class StopAreaIdCache {
 
     public Map<StopTypeEnumeration, String> getQuayMapping(String localId) {
         ensureCacheIsValid();
-        return stopPlaceIdMap.get(localId);
+        return quayIdMap.get(localId);
     }
 
     private void ensureCacheIsValid() {
@@ -97,6 +98,7 @@ public class StopAreaIdCache {
             if (quayOK && stopPlaceOk) {
                 lastUpdated = System.currentTimeMillis();
                 result = true;
+                log.info("Updated id caches. Current size: stop places: " + stopPlaceIdMap.size() + ", quays=" + quayIdMap.size());
             } else {
                 log.error("Error updating caches, retries left = " + remainingUpdateRetries);
                 result = false;
