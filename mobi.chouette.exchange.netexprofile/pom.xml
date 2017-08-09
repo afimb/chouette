@@ -35,7 +35,11 @@
 			<artifactId>calendar-helper</artifactId>
 			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
-
+<dependency>
+    <groupId>net.sf.saxon</groupId>
+    <artifactId>Saxon-HE</artifactId>
+    <version>9.8.0-3</version>
+</dependency>
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-core</artifactId>

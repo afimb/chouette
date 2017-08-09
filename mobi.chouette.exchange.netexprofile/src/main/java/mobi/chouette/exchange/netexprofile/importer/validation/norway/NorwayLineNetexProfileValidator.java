@@ -219,6 +219,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 
 			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney[not(n:dayTypes/n:DayTypeRef)]", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_DAYTYPEREF);
 
+			validateElementNotPresent(context, xpath, subLevel, "for $a in n:vehicleJourneys/n:ServiceJourney return if(count(//n:JourneyPattern[@id = $a/n:JourneyPatternRef/@ref]/n:pointsInSequence/n:StopPointInJourneyPattern) != count($a/n:passingTimes/n:TimetabledPassingTime)) then $a else ()", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_MISSING_PASSING_TIME);
 			
 
 		}

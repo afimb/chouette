@@ -14,6 +14,7 @@ import java.util.Set;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.XPathFactoryConfigurationException;
 
 import org.rutebanken.netex.model.PublicationDeliveryStructure;
 import org.testng.Assert;
@@ -38,6 +39,7 @@ import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.exchange.validation.report.ValidationReporter.RESULT;
 import mobi.chouette.model.Codespace;
 import mobi.chouette.model.util.Referential;
+import net.sf.saxon.lib.NamespaceConstant;
 
 public class NorwayLineNetexProfileValidatorTest {
 
@@ -216,6 +218,8 @@ public class NorwayLineNetexProfileValidatorTest {
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_SAME_VALUE, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_SERVICEJOURNEY_JOURNEYPATTERN_REF, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_DAYTYPEREF, NOK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_MISSING_PASSING_TIME, NOK);
+		
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_COMPOSITE_FRAME_VALIDITYCONDTITIONS, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_VALIDITYCONDITIONS_ON_FRAMES_INSIDE_COMPOSITEFRAME, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_SERVICE_CALENDAR_FRAME_DAYTYPE_NOT_ASSIGNED, NOK);
@@ -286,7 +290,7 @@ public class NorwayLineNetexProfileValidatorTest {
 
 	}
 
-	protected Context createContext(NetexImporter importer) {
+	protected Context createContext(NetexImporter importer) throws XPathFactoryConfigurationException {
 		Context context = new Context();
 		context.put(Constant.IMPORTER, importer);
 
@@ -296,7 +300,11 @@ public class NorwayLineNetexProfileValidatorTest {
 		ValidationData data = new ValidationData();
 		context.put(Constant.VALIDATION_DATA, data);
 
-		XPath xpath = XPathFactory.newInstance().newXPath();
+		 System.setProperty("javax.xml.xpath.XPathFactory:" + NamespaceConstant.OBJECT_MODEL_SAXON, "net.sf.saxon.xpath.XPathFactoryImpl");
+	     XPathFactory xPathFactory = XPathFactory.newInstance(NamespaceConstant.OBJECT_MODEL_SAXON);
+	     XPath xpath = xPathFactory.newXPath();
+		
+//		XPath xpath = XPathFactory.newInstance().newXPath();
 		xpath.setNamespaceContext(new NetexNamespaceContext());
 		context.put(Constant.NETEX_XPATH, xpath);
 		return context;
