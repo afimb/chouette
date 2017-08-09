@@ -20,6 +20,8 @@ import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.model.Codespace;
 import mobi.chouette.model.util.Referential;
+import net.sf.saxon.lib.NamespaceConstant;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import javax.annotation.Resource;
@@ -55,7 +57,10 @@ public class NetexInitImportCommand implements Command, Constant {
 			NetexImporter importer = new NetexImporter();
 			context.put(IMPORTER, importer);
 
-			XPath xpath = XPathFactory.newInstance().newXPath();
+			 System.setProperty("javax.xml.xpath.XPathFactory:" + NamespaceConstant.OBJECT_MODEL_SAXON, "net.sf.saxon.xpath.XPathFactoryImpl");
+		     XPathFactory xPathFactory = XPathFactory.newInstance(NamespaceConstant.OBJECT_MODEL_SAXON);
+		     XPath xpath = xPathFactory.newXPath();
+//			XPath xpath = XPathFactory.newInstance().newXPath();
 			xpath.setNamespaceContext(new NetexNamespaceContext());
 			context.put(NETEX_XPATH, xpath);
 
