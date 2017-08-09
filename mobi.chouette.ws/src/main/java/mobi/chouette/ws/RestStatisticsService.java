@@ -35,13 +35,13 @@ public class RestStatisticsService implements Constant {
     @Inject
     TransitDataStatisticsService statisticsService;
 
-    private static final String PARAM_CATEGORY_SEPARATOR=";";
+    private static final String PARAM_CATEGORY_SEPARATOR = ";";
 
     @GET
     @Path("/{ref}/line")
     @Produces({MediaType.APPLICATION_JSON})
     public Response lineStats(@PathParam("ref") String referential, @QueryParam("startDate") Date startDate, @QueryParam("days") int days,
-                                     @QueryParam("minDaysValidityCategory") String minDaysValidityCategories[]) {
+                              @QueryParam("minDaysValidityCategory") String minDaysValidityCategories[]) {
         try {
             log.info(Color.CYAN + "Call lineStats referential = " + referential + Color.NORMAL);
 
@@ -59,6 +59,34 @@ public class RestStatisticsService implements Constant {
             throw new WebApplicationException("INTERNAL_ERROR: " + ex.getMessage(), Status.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GET
+    @Path("/line")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response lineStats(@QueryParam("startDate") Date startDate, @QueryParam("days") int days,
+                              @QueryParam("minDaysValidityCategory") String minDaysValidityCategories[], @QueryParam("referential") String referentials[]) {
+        try {
+            log.info(Color.CYAN + "Call lineStats for referentials:" + Arrays.toString(referentials) + Color.NORMAL);
+
+            Map<Integer, String> minDaysValidityCategoryMap = parseCategoryMap(minDaysValidityCategories);
+
+            Map<String, LineStatistics> lineStatsPerReferential = new HashMap<>();
+
+            for (String referential : referentials) {
+                lineStatsPerReferential.put(referential, statisticsService.getLineStatisticsByLineNumber(referential, startDate, days,
+                        minDaysValidityCategoryMap));
+            }
+            ResponseBuilder builder = Response.ok(lineStatsPerReferential);
+            builder.header(api_version_key, api_version);
+            return builder.build();
+
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw new WebApplicationException("INTERNAL_ERROR: " + ex.getMessage(), Status.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
 
     private Map<Integer, String> parseCategoryMap(@QueryParam("minDaysValidityCategory") String[] minDaysValidityCategories) {
         Map<Integer, String> minDaysValidityCategoryMap = new HashMap<>();
