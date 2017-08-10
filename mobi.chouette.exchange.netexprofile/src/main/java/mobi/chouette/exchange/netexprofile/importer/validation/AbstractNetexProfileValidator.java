@@ -7,6 +7,16 @@ import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Codespace;
+import net.sf.saxon.s9api.Axis;
+import net.sf.saxon.s9api.QName;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XPathCompiler;
+import net.sf.saxon.s9api.XPathSelector;
+import net.sf.saxon.s9api.XdmItem;
+import net.sf.saxon.s9api.XdmNode;
+import net.sf.saxon.s9api.XdmSequenceIterator;
+import net.sf.saxon.s9api.XdmValue;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -115,12 +125,14 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		return objectContext;
 	}
 
-	protected void validateElementPresent(Context context, XPath xpath, Node document, String expression, String checkPointKey)
-			throws XPathExpressionException {
+	protected void validateElementPresent(Context context, XPathCompiler xpath, XdmNode document, String expression, String checkPointKey)
+			throws XPathExpressionException, SaxonApiException {
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		validateCheckpointExists(context, checkPointKey, validationReporter);
-		NodeList nodes = (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
-		if (nodes.getLength() == 1) {
+		XPathSelector selector = xpath.compile(expression).load();
+		selector.setContextItem(document);
+		XdmValue nodes = selector.evaluate();
+		if (nodes.size() == 1) {
 			validationReporter.reportSuccess(context, checkPointKey);
 		} else {
 			log.error("Checkpoint " + checkPointKey + " failed: " + expression + " did not return 1 node");
@@ -129,33 +141,37 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		}
 	}
 
-	protected void validateAtLeastElementPresent(Context context, XPath xpath, Node document, String expression, int count, String checkPointKey)
-			throws XPathExpressionException {
+	protected void validateAtLeastElementPresent(Context context, XPathCompiler xpath, XdmNode document, String expression, int count, String checkPointKey)
+			throws XPathExpressionException, SaxonApiException {
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		validateCheckpointExists(context, checkPointKey, validationReporter);
-		NodeList nodes = (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
-		if (nodes.getLength() >= count) {
+		XPathSelector selector = xpath.compile(expression).load();
+		selector.setContextItem(document);
+		XdmValue nodes = selector.evaluate();
+		if (nodes.size() >= count) {
 			validationReporter.reportSuccess(context, checkPointKey);
 		} else {
-			log.error("Checkpoint " + checkPointKey + " failed: " + expression + " did not return at least 1 node but " + nodes.getLength());
+			log.error("Checkpoint " + checkPointKey + " failed: " + expression + " did not return at least 1 node but " + nodes.size());
 			validationReporter.addCheckPointReportError(context, checkPointKey, DataLocationHelper.findDataLocation(context, document));
 		}
 	}
 
-	protected void validateElementNotPresent(Context context, XPath xpath, Node document, String expression, String checkPointKey)
-			throws XPathExpressionException {
+	protected void validateElementNotPresent(Context context, XPathCompiler xpath, XdmNode document, String expression, String checkPointKey)
+			throws XPathExpressionException, SaxonApiException {
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		validateCheckpointExists(context, checkPointKey, validationReporter);
-		NodeList nodes = (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
-		if (nodes.getLength() == 0) {
+		XPathSelector selector = xpath.compile(expression).load();
+		selector.setContextItem(document);
+		XdmValue nodes = selector.evaluate();
+		if (nodes.size() == 0) {
 			validationReporter.reportSuccess(context, checkPointKey);
 		} else {
-			log.error("Checkpoint " + checkPointKey + " failed: " + expression + " should return 0 nodes, but returned " + nodes.getLength());
-			for (int i = 0; i < nodes.getLength(); i++) {
-				validationReporter.addCheckPointReportError(context, checkPointKey, DataLocationHelper.findDataLocation(context, nodes.item(i)));
+			log.error("Checkpoint " + checkPointKey + " failed: " + expression + " should return 0 nodes, but returned " + nodes.size());
+			for(XdmItem item : nodes)
+				validationReporter.addCheckPointReportError(context, checkPointKey, DataLocationHelper.findDataLocation(context, item));
 			}
 		}
-	}
+	
 
 	protected void validateCheckpointExists(Context context, String checkPointKey, ValidationReporter validationReporter) {
 		if (!validationReporter.checkIfCheckPointExists(context, checkPointKey)) {
@@ -181,18 +197,26 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		return text == null || text.isEmpty();
 	}
 
-	protected Node selectNode(String string, XPath xpath, Node dom) throws XPathExpressionException {
-		Node node = (Node) xpath.evaluate(string, dom, XPathConstants.NODE);
-		return node;
+	protected XdmItem selectNode(String expression, XPathCompiler xpath, XdmNode document) throws XPathExpressionException, SaxonApiException {
+		XPathSelector selector = xpath.compile(expression).load();
+		selector.setContextItem(document);
+		XdmValue nodes = selector.evaluate();
+		if(nodes.size() > 0) {
+		return nodes.iterator().next();
+		} else {
+			return null;
+		}
 	}
 
-	protected NodeList selectNodeSet(String string, XPath xpath, Node dom) throws XPathExpressionException {
-		NodeList node = (NodeList) xpath.evaluate(string, dom, XPathConstants.NODESET);
-		return node;
+	protected XdmValue selectNodeSet(String expression, XPathCompiler xpath, XdmNode document) throws XPathExpressionException, SaxonApiException {
+		XPathSelector selector = xpath.compile(expression).load();
+		selector.setContextItem(document);
+		XdmValue nodes = selector.evaluate();
+		return nodes;
 	}
 
-	protected void verifyAcceptedCodespaces(Context context, XPath xpath, Node dom, Set<Codespace> acceptedCodespaces)
-			throws XPathExpressionException {
+	protected void verifyAcceptedCodespaces(Context context, XPathCompiler xpath, XdmNode dom, Set<Codespace> acceptedCodespaces)
+			throws XPathExpressionException, SaxonApiException {
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 
 		String referenceValue = StringUtils.join(acceptedCodespaces.stream()
@@ -200,12 +224,13 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 				.collect(Collectors.toList()), ' ');
 
 		boolean onlyAcceptedCodespaces = true;
-		NodeList codespaces = selectNodeSet("//n:Codespace", xpath, dom);
-		for (int i = 0; i < codespaces.getLength(); i++) {
-			Node n = codespaces.item(i);
+        XPathSelector selector = xpath.compile("//n:Codespace").load();
+        selector.setContextItem(dom);
+		
+        for(XdmItem item : selector) {
 			Codespace codespace = new Codespace();
-			codespace.setXmlns((String) xpath.evaluate("n:Xmlns", n, XPathConstants.STRING));
-			codespace.setXmlnsUrl((String) xpath.evaluate("n:XmlnsUrl", n, XPathConstants.STRING));
+			codespace.setXmlns(getChild((XdmNode)item, new QName("n","http://www.netex.org.uk/netex","Xmlns")).getStringValue());
+			codespace.setXmlnsUrl(getChild((XdmNode)item, new QName("n","http://www.netex.org.uk/netex","XmlnsUrl")).getStringValue());
 
 			Predicate<Codespace> equalsXmlns = (validCodespace) -> validCodespace.getXmlns().equals(codespace.getXmlns());
 			Predicate<Codespace> equalsXmlnsUrl = (validCodespace) -> validCodespace.getXmlnsUrl().equals(codespace.getXmlnsUrl());
@@ -213,16 +238,27 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 			if (acceptedCodespaces.stream().noneMatch(equalsXmlns.and(equalsXmlnsUrl))) {
 				// TODO add correct location
 				validationReporter.addCheckPointReportError(context, _1_NETEX_UNAPPROVED_CODESPACE_DEFINED, null,
-						DataLocationHelper.findDataLocation(context, n), codespace.getXmlns() + "/" + codespace.getXmlnsUrl(), referenceValue);
+						DataLocationHelper.findDataLocation(context, (XdmNode)item), codespace.getXmlns() + "/" + codespace.getXmlnsUrl(), referenceValue);
 				log.error("Codespace " + codespace + " is not accepted for this validation");
 				onlyAcceptedCodespaces = false;
 			}
-		}
-
+        }
+        
+		
 		if (onlyAcceptedCodespaces) {
 			validationReporter.reportSuccess(context, _1_NETEX_UNAPPROVED_CODESPACE_DEFINED);
 		}
 	}
+	
+    private static XdmNode getChild(XdmNode parent, QName childName) {
+        XdmSequenceIterator iter = parent.axisIterator(Axis.CHILD, childName);
+        if (iter.hasNext()) {
+            return (XdmNode)iter.next();
+        } else {
+            return null;
+        }
+    }
+
 
 	protected void verifyReferencesToCommonElements(Context context, List<IdVersion> localRefs, Set<IdVersion> localIds,
 			Map<IdVersion, List<String>> commonIds) {

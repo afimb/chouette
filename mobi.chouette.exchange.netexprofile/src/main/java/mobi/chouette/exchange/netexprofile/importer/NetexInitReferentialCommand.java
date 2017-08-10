@@ -11,7 +11,6 @@ import javax.naming.InitialContext;
 import javax.xml.namespace.QName;
 
 import org.rutebanken.netex.model.PublicationDeliveryStructure;
-import org.w3c.dom.Document;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -30,6 +29,7 @@ import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import net.sf.saxon.s9api.XdmNode;
 
 @Log4j
 public class NetexInitReferentialCommand implements Command, Constant {
@@ -68,8 +68,10 @@ public class NetexInitReferentialCommand implements Command, Constant {
 			}
 
 			NetexImporter importer = (NetexImporter) context.get(IMPORTER);
-			Document netexDom = importer.parseFileToDom(file, elementsToSkip);
-			PublicationDeliveryStructure netexJava = importer.unmarshal(netexDom);
+			
+
+			XdmNode netexDom = importer.parseFileToXdmNode(file, elementsToSkip);
+			PublicationDeliveryStructure netexJava = importer.unmarshal(file);
 
 			context.put(NETEX_DATA_JAVA, netexJava);
 			context.put(NETEX_DATA_DOM, netexDom);

@@ -24,6 +24,11 @@ import mobi.chouette.exchange.netexprofile.importer.validation.norway.StopPlaceR
 import mobi.chouette.exchange.netexprofile.util.NetexIdExtractorHelper;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.model.Codespace;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XPathCompiler;
+import net.sf.saxon.s9api.XdmItem;
+import net.sf.saxon.s9api.XdmNode;
+import net.sf.saxon.s9api.XdmValue;
 
 public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfileValidator implements NetexProfileValidator {
 
@@ -31,9 +36,9 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 
 	@Override
 	public void validate(Context context) throws Exception {
-		XPath xpath = (XPath) context.get(NETEX_XPATH);
+		XPathCompiler xpath = (XPathCompiler) context.get(NETEX_XPATH_COMPILER);
 
-		Document commonDom = (Document) context.get(Constant.NETEX_DATA_DOM);
+		XdmNode commonDom = (XdmNode) context.get(Constant.NETEX_DATA_DOM);
 
         Map<IdVersion, List<String>> commonIds = (Map<IdVersion, List<String>>) context.get(mobi.chouette.exchange.netexprofile.Constant.NETEX_COMMON_FILE_IDENTIFICATORS);
         String fileName = (String) context.get(FILE_NAME);
@@ -69,11 +74,11 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 		verifyUseOfVersionOnRefsToLocalElements(context, localIds, localRefs);
 		verifyExternalRefs(context, localRefs,localIds, new HashSet<IdVersion>());
 		
-		NodeList compositeFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:CompositeFrame", xpath, commonDom);
-		if (compositeFrames.getLength() > 0) {
+		XdmValue compositeFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:CompositeFrame", xpath, commonDom);
+		if (compositeFrames.size() > 0) {
 			// Using composite frames
-			for (int i = 0; i < compositeFrames.getLength(); i++) {
-				validateCompositeFrame(context, xpath, compositeFrames.item(i));
+			for (XdmItem compositeFrame : compositeFrames) {
+				validateCompositeFrame(context, xpath, (XdmNode) compositeFrame);
 			}
 		} else {
 			// Not using composite frames
@@ -86,18 +91,18 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 
 	
 
-	protected void validateWithoutCompositeFrame(Context context, XPath xpath, Document dom) throws XPathExpressionException {
+	protected void validateWithoutCompositeFrame(Context context, XPathCompiler xpath, XdmNode dom) throws XPathExpressionException, SaxonApiException {
 		// Validate that we have exactly one ResourceFrame
 		// validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:ResourceFrame", _1_NETEX_RESOURCE_FRAME);
-		NodeList resourceFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:ResourceFrame", xpath, dom);
-		for (int i = 0; i < resourceFrames.getLength(); i++) {
-			validateResourceFrame(context, xpath, resourceFrames.item(i), null);
+		XdmValue resourceFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:ResourceFrame", xpath, dom);
+		for (XdmItem item : resourceFrames) {
+			validateResourceFrame(context, xpath, (XdmNode) item, null);
 		}
 		// Validate at least 1 ServiceFrame is present
 		// validateAtLeastElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:ServiceFrame", 1, _1_NETEX_SERVICE_FRAME);
-		NodeList serviceFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:ServiceFrame", xpath, dom);
-		for (int i = 0; i < serviceFrames.getLength(); i++) {
-			validateServiceFrame(context, xpath, serviceFrames.item(i), null);
+		XdmValue serviceFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:ServiceFrame", xpath, dom);
+		for (XdmItem serviceFrame : serviceFrames) {
+			validateServiceFrame(context, xpath, (XdmNode) serviceFrame, null);
 		}
 
 		// Validate no TimetableFrame defines in common files
@@ -121,7 +126,7 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 
 	}
 
-	private void validateCompositeFrame(Context context, XPath xpath, Node dom) throws XPathExpressionException {
+	private void validateCompositeFrame(Context context, XPathCompiler xpath, XdmNode dom) throws XPathExpressionException, SaxonApiException {
 		// Check that there are no overriding AvailabilityCondition which is identical to the one defined in the CompositeFrame
 		validateElementPresent(context, xpath, dom, "n:validityConditions", _1_NETEX_COMPOSITE_FRAME_VALIDITYCONDTITIONS);
 		validateElementNotPresent(context, xpath, dom, "n:frames//n:validityConditions", _1_NETEX_VALIDITYCONDITIONS_ON_FRAMES_INSIDE_COMPOSITEFRAME);
@@ -129,7 +134,7 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 		validateElementPresent(context, xpath, dom, "n:codespaces/n:Codespace[n:Xmlns = '" + NSR_XMLNS + "' and n:XmlnsUrl = '" + NSR_XMLNSURL + "']",
 				_1_NETEX_CODESPACE);
 
-		Node resourceFrame = selectNode("n:frames/n:ResourceFrame", xpath, dom);
+		XdmNode resourceFrame = (XdmNode) selectNode("n:frames/n:ResourceFrame", xpath, dom);
 		if (resourceFrame != null) {
 			validateResourceFrame(context, xpath, resourceFrame, null);
 		}
@@ -139,7 +144,7 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 		// Validate no TimetableFrame defines in common files
 		validateElementNotPresent(context, xpath, dom, "n:frames/n:TimetableFrame", _1_NETEX_COMMON_TIMETABLE_FRAME);
 
-		Node serviceCalendarFrame = selectNode("n:frames/n:ServiceCalendarFrame", xpath, dom);
+		XdmNode serviceCalendarFrame = (XdmNode) selectNode("n:frames/n:ServiceCalendarFrame", xpath, dom);
 		if (serviceCalendarFrame != null) {
 			validateServiceCalendarFrame(context, xpath, dom, null);
 		}
@@ -149,10 +154,10 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 		// validateExternalReferenceCorrect(context, xpath, dom, "//n:StopPlaceRef/@ref", stopRegisterValidator, _2_NETEX_STOPPLACE_REF);
 	}
 
-	private void validateServiceFrame(Context context, XPath xpath, Node dom, String subLevelPath) throws XPathExpressionException {
-		Node subLevel = dom;
+	private void validateServiceFrame(Context context, XPathCompiler xpath, XdmNode dom, String subLevelPath) throws XPathExpressionException, SaxonApiException {
+		XdmNode subLevel = dom;
 		if (subLevelPath != null) {
-			subLevel = selectNode(subLevelPath, xpath, dom);
+			subLevel = (XdmNode) selectNode(subLevelPath, xpath, dom);
 		}
 
 		if (subLevel != null) {

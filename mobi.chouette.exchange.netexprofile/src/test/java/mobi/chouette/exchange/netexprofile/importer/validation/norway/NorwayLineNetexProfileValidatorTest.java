@@ -40,6 +40,11 @@ import mobi.chouette.exchange.validation.report.ValidationReporter.RESULT;
 import mobi.chouette.model.Codespace;
 import mobi.chouette.model.util.Referential;
 import net.sf.saxon.lib.NamespaceConstant;
+import net.sf.saxon.s9api.DocumentBuilder;
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.WhitespaceStrippingPolicy;
+import net.sf.saxon.s9api.XPathCompiler;
+import net.sf.saxon.s9api.XdmNode;
 
 public class NorwayLineNetexProfileValidatorTest {
 
@@ -57,8 +62,9 @@ public class NorwayLineNetexProfileValidatorTest {
 		validCodespaces.add(validCodespace);
 		context.put(Constant.NETEX_VALID_CODESPACES, validCodespaces);
 
-		Document dom = importer.parseFileToDom(new File("src/test/data/WF739-201608311015.xml"));
-		PublicationDeliveryStructure lineDeliveryStructure = importer.unmarshal(dom);
+		File file = new File("src/test/data/WF739-201608311015.xml");
+		XdmNode dom = importer.parseFileToXdmNode(file, new HashSet<>());
+		PublicationDeliveryStructure lineDeliveryStructure = importer.unmarshal(file);
 
 		context.put(Constant.NETEX_DATA_JAVA, lineDeliveryStructure);
 		context.put(Constant.NETEX_DATA_DOM, dom);
@@ -100,8 +106,9 @@ public class NorwayLineNetexProfileValidatorTest {
 
 		context.put(Constant.NETEX_VALID_CODESPACES, validCodespaces);
 
-		Document commonDom = importer.parseFileToDom(new File("src/test/data/norway_line_commonfile/_avinor_common_elements.xml"));
-		PublicationDeliveryStructure commonStructure = importer.unmarshal(commonDom);
+		File file = new File("src/test/data/norway_line_commonfile/_avinor_common_elements.xml");
+		XdmNode commonDom = importer.parseFileToXdmNode(file, new HashSet<>());
+		PublicationDeliveryStructure commonStructure = importer.unmarshal(file);
 		context.put(Constant.NETEX_DATA_JAVA, commonStructure);
 		context.put(Constant.NETEX_DATA_DOM, commonDom);
 		context.put(mobi.chouette.exchange.netexprofile.Constant.NETEX_COMMON_FILE_IDENTIFICATORS, new HashMap<IdVersion, List<String>>());
@@ -124,8 +131,9 @@ public class NorwayLineNetexProfileValidatorTest {
 		DuplicateIdCheckerCommand duplicateChecker = new DuplicateIdCheckerCommand();
 		duplicateChecker.execute(context);
 		
-		Document lineDom = importer.parseFileToDom(new File("src/test/data/norway_line_commonfile/Norwegian-DY121-Stavanger-Bergen.xml"));
-		PublicationDeliveryStructure lineStructure = importer.unmarshal(lineDom);
+		File lineFile = new File("src/test/data/norway_line_commonfile/Norwegian-DY121-Stavanger-Bergen.xml");
+		XdmNode lineDom = importer.parseFileToXdmNode(lineFile, new HashSet<>());
+		PublicationDeliveryStructure lineStructure = importer.unmarshal(lineFile);
 		context.put(Constant.NETEX_DATA_JAVA, lineStructure);
 		context.put(Constant.NETEX_DATA_DOM, lineDom);
 
@@ -159,8 +167,9 @@ public class NorwayLineNetexProfileValidatorTest {
 		validCodespaces.add(validCodespace);
 		context.put(Constant.NETEX_VALID_CODESPACES, validCodespaces);
 
-		Document dom = importer.parseFileToDom(new File("src/test/data/Profile_Error_SingleLineFileCompositeFrame.xml"));
-		PublicationDeliveryStructure lineDeliveryStructure = importer.unmarshal(dom);
+	    File lineFile = new File("src/test/data/Profile_Error_SingleLineFileCompositeFrame.xml");
+		XdmNode dom = importer.parseFileToXdmNode(lineFile, new HashSet<>());
+		PublicationDeliveryStructure lineDeliveryStructure = importer.unmarshal(lineFile);
 
 		context.put(Constant.NETEX_DATA_JAVA, lineDeliveryStructure);
 		context.put(Constant.NETEX_DATA_DOM, dom);
@@ -300,13 +309,15 @@ public class NorwayLineNetexProfileValidatorTest {
 		ValidationData data = new ValidationData();
 		context.put(Constant.VALIDATION_DATA, data);
 
-		 System.setProperty("javax.xml.xpath.XPathFactory:" + NamespaceConstant.OBJECT_MODEL_SAXON, "net.sf.saxon.xpath.XPathFactoryImpl");
-	     XPathFactory xPathFactory = XPathFactory.newInstance(NamespaceConstant.OBJECT_MODEL_SAXON);
-	     XPath xpath = xPathFactory.newXPath();
+//		 System.setProperty("javax.xml.xpath.XPathFactory:" + NamespaceConstant.OBJECT_MODEL_SAXON, "net.sf.saxon.xpath.XPathFactoryImpl");
+//	     XPathFactory xPathFactory = XPathFactory.newInstance(NamespaceConstant.OBJECT_MODEL_SAXON);
+//	     XPath xpath = xPathFactory.newXPath();
 		
+	     
+	     
 //		XPath xpath = XPathFactory.newInstance().newXPath();
-		xpath.setNamespaceContext(new NetexNamespaceContext());
-		context.put(Constant.NETEX_XPATH, xpath);
+	//	xpath.setNamespaceContext(new NetexNamespaceContext());
+		context.put(Constant.NETEX_XPATH_COMPILER, importer.getXPathCompiler());
 		return context;
 	}
 
