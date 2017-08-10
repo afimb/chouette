@@ -130,15 +130,36 @@
                     </routes>
                     <lines>
                         <Line version="1" id="AVI:Line:WF_TRD-MOL">
+                            <TransportSubmode>
+                                <AirSubmode>airshipService</AirSubmode>
+                            </TransportSubmode>
                             <!--   <Name>Trondheim-Molde</Name>-->
                             <!--  <TransportMode>air</TransportMode>-->
                             <!-- <PublicCode>TRD-MOL</PublicCode>-->
                             <!-- <OperatorRef ref="AVI:Operator:WF" version="1"/>-->
+                            
                             <routes>
                                 <RouteRef ref="AVI:Route:12636280"/>
                             </routes>
                             <!--<RepresentedByGroupRef ref="AVI:Network:WF" version="1"/>-->
-
+                            
+                            
+                        </Line>
+                        <Line version="1" id="AVI:Line:WF_TRD-MOL2">
+                            <!--   <Name>Trondheim-Molde</Name>-->
+                             <TransportMode>selfDrive</TransportMode>
+                            <TransportSubmode>
+                                <AirSubmode>airshipService</AirSubmode>
+                            </TransportSubmode>
+                            <!-- <PublicCode>TRD-MOL</PublicCode>-->
+                            <!-- <OperatorRef ref="AVI:Operator:WF" version="1"/>-->
+                            
+                            <routes>
+                                <RouteRef ref="AVI:Route:12636280"/>
+                            </routes>
+                            <!--<RepresentedByGroupRef ref="AVI:Network:WF" version="1"/>-->
+                            
+                            
                         </Line>
                     </lines>
                     <destinationDisplays>
