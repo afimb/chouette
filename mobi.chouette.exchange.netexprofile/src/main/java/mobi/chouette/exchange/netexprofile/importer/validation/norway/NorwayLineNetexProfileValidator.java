@@ -5,13 +5,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.apache.commons.lang.StringUtils;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -33,6 +31,52 @@ import net.sf.saxon.s9api.XdmValue;
 public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileValidator implements NetexProfileValidator {
 
 	public static final String NAME = "NorwayLineNetexProfileValidator";
+	
+	private static final String[] validTransportModes = new String[] {
+			"bus",
+			"tram",
+			"rail",
+			"metro",
+			"air",
+			"water",
+			"cableway",
+			"funicular"
+	};
+	
+	
+	private static final String[] validTransportSubModes = new String[] {
+			"airportLinkBus",
+			"localTram",
+			"international",
+			"metro",
+			"domesticFlight",
+			"highSpeedPassengerService",
+			"telecabin",
+			"funicular",
+			"expressBus",
+			"interregionalRail",
+			"helicopterService",
+			"highSpeedVehicleService",
+			"localBus",
+			"local",
+			"internationalFlight",
+			"internationalCarFerry",
+			"nightBus",
+			"longDistance",
+			"internationalPassengerFerry",
+			"railReplacementBus",
+			"nightRail",
+			"localCarFerry",
+			"regionalBus",
+			"regionalRail",
+			"localPassengerFerry",
+			"schoolBus",
+			"touristRailway",
+			"nationalCarFerry",
+			"shuttleBus",
+			"sightseeingService",
+			"sightseeingBus"
+	};
 
 	@Override
 	public void validate(Context context) throws Exception {
@@ -192,6 +236,16 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 					_1_NETEX_SERVICE_FRAME_DESTINATION_DISPLAY_FRONTTEXT);
 			validateElementNotPresent(context, xpath, subLevel, "//n:StopPointInJourneyPattern[n:ForAlighting = 'false' and n:ForBoarding = 'false']",
 					_1_NETEX_SERVICE_FRAME_STOP_WITHOUT_BOARDING_OR_ALIGHTING);
+
+			List<String> validTransportModesWithQuotes = Arrays.asList(validTransportModes).stream().map(e -> "'"+e+"'").collect(Collectors.toList());
+			List<String> validTransportSubModesWithQuotes = Arrays.asList(validTransportSubModes).stream().map(e -> "'"+e+"'").collect(Collectors.toList());
+			
+			validateElementNotPresent(context, xpath, subLevel, "n:lines/n:Line/n:TransportMode[not(. = ("+StringUtils.join(validTransportModesWithQuotes,",")+"))]",
+					_1_NETEX_SERVICE_FRAME_INVALID_TRANSPORTMODE);
+			validateElementNotPresent(context, xpath, subLevel, "n:lines/n:Line/n:TransportSubmode/*[not(. = ("+StringUtils.join(validTransportSubModesWithQuotes,",")+"))]",
+					_1_NETEX_SERVICE_FRAME_INVALID_TRANSPORTSUBMODE);
+			
+			
 		}
 	}
 
@@ -205,9 +259,6 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 
 			validateAtLeastElementPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney", 1, _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY);
 			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney/n:calls", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_CALLS);
-
-//			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney[not(n:TransportMode)]",
-//					_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_TRANSPORT_MODE);
 
 			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney[not(n:passingTimes)]",
 					_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIMES);
