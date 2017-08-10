@@ -38,6 +38,8 @@ public class NetexImporter {
 	private static JAXBContext netexJaxBContext = null;
 	
 	private static Processor processor = new Processor(false);
+	
+	private static XPathCompiler xpathCompiler;
 
 	public synchronized Schema getNetexSchema() throws SAXException, IOException {
 
@@ -53,7 +55,7 @@ public class NetexImporter {
 		return netexSchema;
 	}
 
-	public JAXBContext getNetexJaxBContext() throws JAXBException {
+	public synchronized JAXBContext getNetexJaxBContext() throws JAXBException {
 		if (netexJaxBContext == null) {
 			log.info("Initializing JAXBContext, this may take a few seconds");
 			netexJaxBContext = JAXBContext.newInstance("net.opengis.gml._3:org.rutebanken.netex.model:uk.org.siri.siri");
@@ -80,16 +82,18 @@ public class NetexImporter {
 		return dom;
 	}
 	
-	public XPathCompiler getXPathCompiler() {
-        XPathCompiler xpath = processor.newXPathCompiler();
+	public synchronized XPathCompiler getXPathCompiler() {
         
-		xpath.declareNamespace("", "http://www.netex.org.uk/netex"); // Default
-		xpath.declareNamespace("n", "http://www.netex.org.uk/netex");
-		xpath.declareNamespace("s", "http://www.siri.org.uk/siri");
-		xpath.declareNamespace("g", "http://www.opengis.net/gml/3.2");
+		if(xpathCompiler == null) {
+			xpathCompiler = processor.newXPathCompiler();
+	        
+			xpathCompiler.declareNamespace("", "http://www.netex.org.uk/netex"); // Default
+			xpathCompiler.declareNamespace("n", "http://www.netex.org.uk/netex");
+			xpathCompiler.declareNamespace("s", "http://www.siri.org.uk/siri");
+			xpathCompiler.declareNamespace("g", "http://www.opengis.net/gml/3.2");
+		}
 		
-		return xpath;
-
+		return xpathCompiler;
 	}
 
 }
