@@ -64,14 +64,14 @@ public class NetexInitReferentialCommand implements Command, Constant {
 			Set<QName> elementsToSkip = new HashSet<>();
 			if (!parameters.isParseSiteFrames()) {
 				// Do not parse SiteFrames at all
-				elementsToSkip.add(new QName("http://www.netex.org.uk/netex", "SiteFrame"));
+				elementsToSkip.add(new QName(Constant.NETEX_NAMESPACE, "SiteFrame"));
 			}
 
 			NetexImporter importer = (NetexImporter) context.get(IMPORTER);
 			
 
 			XdmNode netexDom = importer.parseFileToXdmNode(file, elementsToSkip);
-			PublicationDeliveryStructure netexJava = importer.unmarshal(file);
+			PublicationDeliveryStructure netexJava = importer.unmarshal(file,elementsToSkip);
 
 			context.put(NETEX_DATA_JAVA, netexJava);
 			context.put(NETEX_DATA_DOM, netexDom);

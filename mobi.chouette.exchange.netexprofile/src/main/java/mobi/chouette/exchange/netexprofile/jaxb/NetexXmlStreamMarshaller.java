@@ -1,26 +1,31 @@
 package mobi.chouette.exchange.netexprofile.jaxb;
 
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.exchange.netexprofile.parser.xml.PredefinedSchemaListClasspathResourceResolver;
-import org.rutebanken.netex.model.DataManagedObjectStructure;
-import org.rutebanken.netex.model.ObjectFactory;
-import org.xml.sax.SAXException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 
 import javax.xml.XMLConstants;
-import javax.xml.bind.*;
-import javax.xml.bind.annotation.XmlElementDecl;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.JAXBIntrospector;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventHandler;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
+
+import org.rutebanken.netex.model.DataManagedObjectStructure;
+import org.rutebanken.netex.model.ObjectFactory;
+import org.xml.sax.SAXException;
+
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.exchange.netexprofile.parser.xml.PredefinedSchemaListClasspathResourceResolver;
 
 @Log4j
 public class NetexXmlStreamMarshaller {
@@ -99,43 +104,6 @@ public class NetexXmlStreamMarshaller {
             marshaller.marshal(element, writer);
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private <T> Method getJaxbElementFactoryMethod(Class<T> type) {
-        for (Method m : objectFactory.getClass().getMethods()) {
-            XmlElementDecl xmlElementDecl = m.getAnnotation(XmlElementDecl.class);
-            if (xmlElementDecl == null) {
-                continue;
-            }
-            Class<?>[] parameters = m.getParameterTypes();
-            if (parameters.length == 1 && parameters[0].isAssignableFrom(type)) {
-                return m;
-            }
-        }
-        return null;
-    }
-
-    private class NetexNamespacePrefixMapper extends NamespacePrefixMapper {
-        private static final String NETEX_PREFIX = ""; // DEFAULT NAMESPACE
-        private static final String NETEX_URI = "http://www.netex.org.uk/netex";
-
-        private static final String GML_PREFIX = "gml";
-        private static final String GML_URI = "http://www.opengis.net/gml/3.2";
-
-        private static final String SIRI_PREFIX = "siri";
-        private static final String SIRI_URI = "http://www.siri.org.uk/siri";
-
-        @Override
-        public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
-            if (NETEX_URI.equals(namespaceUri)) {
-                return NETEX_PREFIX;
-            } else if (GML_URI.equals(namespaceUri)) {
-                return GML_PREFIX;
-            } else if (SIRI_URI.equals(namespaceUri)) {
-                return SIRI_PREFIX;
-            }
-            return suggestion;
         }
     }
 

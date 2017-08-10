@@ -13,7 +13,9 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Source;
+import javax.xml.transform.stax.StAXSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -22,8 +24,9 @@ import org.rutebanken.netex.model.PublicationDeliveryStructure;
 import org.xml.sax.SAXException;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.parser.xml.PredefinedSchemaListClasspathResourceResolver;
-import mobi.chouette.exchange.netexprofile.parser.xml.SkippingSAXSourceFactory;
+import mobi.chouette.exchange.netexprofile.parser.xml.SkippingXMLStreamReaderFactory;
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -65,20 +68,21 @@ public class NetexImporter {
 	}
 
 	@SuppressWarnings("unchecked")
-	public PublicationDeliveryStructure unmarshal(File file) throws JAXBException {
+	public PublicationDeliveryStructure unmarshal(File file, Set<QName> elementsToSkip) throws JAXBException, XMLStreamException, IOException, SAXException {
 		JAXBContext netexJaxBContext = getNetexJaxBContext();
 		Unmarshaller createUnmarshaller = netexJaxBContext.createUnmarshaller();
 		JAXBElement<PublicationDeliveryStructure> commonDeliveryStructure = (JAXBElement<PublicationDeliveryStructure>) createUnmarshaller
-				.unmarshal(new StreamSource(file));
+				.unmarshal(SkippingXMLStreamReaderFactory.newXMLStreamReader(new BufferedInputStream(new FileInputStream(file)), elementsToSkip));
 		return commonDeliveryStructure.getValue();
 	}
 
-	public XdmNode parseFileToXdmNode(File file, Set<QName> elementsToSkip) throws SaxonApiException, FileNotFoundException, IOException, SAXException {
+	public XdmNode parseFileToXdmNode(File file, Set<QName> elementsToSkip) throws SaxonApiException, FileNotFoundException, IOException, SAXException, XMLStreamException {
         
         DocumentBuilder builder = processor.newDocumentBuilder();
         builder.setLineNumbering(true);
         builder.setWhitespaceStrippingPolicy(WhitespaceStrippingPolicy.ALL);
-		XdmNode dom = builder.build(SkippingSAXSourceFactory.newSAXSource(new BufferedInputStream(new FileInputStream(file)), elementsToSkip));
+        
+		XdmNode dom = builder.build(new StAXSource(SkippingXMLStreamReaderFactory.newXMLStreamReader(new BufferedInputStream(new FileInputStream(file)), elementsToSkip)));
 		return dom;
 	}
 	
@@ -87,10 +91,10 @@ public class NetexImporter {
 		if(xpathCompiler == null) {
 			xpathCompiler = processor.newXPathCompiler();
 	        
-			xpathCompiler.declareNamespace("", "http://www.netex.org.uk/netex"); // Default
-			xpathCompiler.declareNamespace("n", "http://www.netex.org.uk/netex");
-			xpathCompiler.declareNamespace("s", "http://www.siri.org.uk/siri");
-			xpathCompiler.declareNamespace("g", "http://www.opengis.net/gml/3.2");
+			xpathCompiler.declareNamespace("", Constant.NETEX_NAMESPACE); // Default
+			xpathCompiler.declareNamespace("n", Constant.NETEX_NAMESPACE);
+			xpathCompiler.declareNamespace("s", Constant.SIRI_NAMESPACE);
+			xpathCompiler.declareNamespace("g", Constant.OPENGIS_NAMESPACE);
 		}
 		
 		return xpathCompiler;
