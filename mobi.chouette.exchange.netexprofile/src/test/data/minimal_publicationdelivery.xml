@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PublicationDelivery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="1.0" xmlns="http://www.netex.org.uk/netex">
+  <PublicationTimestamp>2016-11-15T16:08:44+01:00</PublicationTimestamp>
+  <ParticipantRef>MR:avlsIntegrator</ParticipantRef>
+  <dataObjects>
+    <CompositeFrame version="20161115160844" id="MR:CompositeFrame:MR_line_1">
+    </CompositeFrame>
+  </dataObjects>
+</PublicationDelivery>

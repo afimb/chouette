@@ -71,7 +71,7 @@ public class NetexInitReferentialCommand implements Command, Constant {
 			
 
 			XdmNode netexDom = importer.parseFileToXdmNode(file, elementsToSkip);
-			PublicationDeliveryStructure netexJava = importer.unmarshal(file);
+			PublicationDeliveryStructure netexJava = importer.unmarshal(file,elementsToSkip);
 
 			context.put(NETEX_DATA_JAVA, netexJava);
 			context.put(NETEX_DATA_DOM, netexDom);

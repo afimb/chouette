@@ -64,7 +64,7 @@ public class NorwayLineNetexProfileValidatorTest {
 
 		File file = new File("src/test/data/WF739-201608311015.xml");
 		XdmNode dom = importer.parseFileToXdmNode(file, new HashSet<>());
-		PublicationDeliveryStructure lineDeliveryStructure = importer.unmarshal(file);
+		PublicationDeliveryStructure lineDeliveryStructure = importer.unmarshal(file, new HashSet<>());
 
 		context.put(Constant.NETEX_DATA_JAVA, lineDeliveryStructure);
 		context.put(Constant.NETEX_DATA_DOM, dom);
@@ -108,7 +108,7 @@ public class NorwayLineNetexProfileValidatorTest {
 
 		File file = new File("src/test/data/norway_line_commonfile/_avinor_common_elements.xml");
 		XdmNode commonDom = importer.parseFileToXdmNode(file, new HashSet<>());
-		PublicationDeliveryStructure commonStructure = importer.unmarshal(file);
+		PublicationDeliveryStructure commonStructure = importer.unmarshal(file, new HashSet<>());
 		context.put(Constant.NETEX_DATA_JAVA, commonStructure);
 		context.put(Constant.NETEX_DATA_DOM, commonDom);
 		context.put(mobi.chouette.exchange.netexprofile.Constant.NETEX_COMMON_FILE_IDENTIFICATORS, new HashMap<IdVersion, List<String>>());
@@ -133,7 +133,7 @@ public class NorwayLineNetexProfileValidatorTest {
 		
 		File lineFile = new File("src/test/data/norway_line_commonfile/Norwegian-DY121-Stavanger-Bergen.xml");
 		XdmNode lineDom = importer.parseFileToXdmNode(lineFile, new HashSet<>());
-		PublicationDeliveryStructure lineStructure = importer.unmarshal(lineFile);
+		PublicationDeliveryStructure lineStructure = importer.unmarshal(lineFile, new HashSet<>());
 		context.put(Constant.NETEX_DATA_JAVA, lineStructure);
 		context.put(Constant.NETEX_DATA_DOM, lineDom);
 
@@ -169,7 +169,7 @@ public class NorwayLineNetexProfileValidatorTest {
 
 	    File lineFile = new File("src/test/data/Profile_Error_SingleLineFileCompositeFrame.xml");
 		XdmNode dom = importer.parseFileToXdmNode(lineFile, new HashSet<>());
-		PublicationDeliveryStructure lineDeliveryStructure = importer.unmarshal(lineFile);
+		PublicationDeliveryStructure lineDeliveryStructure = importer.unmarshal(lineFile, new HashSet<>());
 
 		context.put(Constant.NETEX_DATA_JAVA, lineDeliveryStructure);
 		context.put(Constant.NETEX_DATA_DOM, dom);
