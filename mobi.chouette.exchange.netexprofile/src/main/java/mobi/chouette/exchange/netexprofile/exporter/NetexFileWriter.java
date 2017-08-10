@@ -22,8 +22,6 @@ import static java.nio.file.StandardOpenOption.CREATE;
 @Log4j
 class NetexFileWriter implements Constant {
 
-    private static final String DEFAULT_NAMESPACE = "http://www.netex.org.uk/netex";
-
     void writeXmlFile(Context context, Path filePath, ExportableData exportableData, ExportableNetexData exportableNetexData, NetexFragmentMode fragmentMode) {
         try (Writer bufferedWriter = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8, CREATE, APPEND)) {
             XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
@@ -32,7 +30,7 @@ class NetexFileWriter implements Constant {
 
             try {
                 xmlStreamWriter = outputFactory.createXMLStreamWriter(bufferedWriter);
-                xmlStreamWriter.setDefaultNamespace(DEFAULT_NAMESPACE);
+                xmlStreamWriter.setDefaultNamespace(Constant.NETEX_NAMESPACE);
                 //xmlStreamWriter.setNamespaceContext(namespaces);
 
                 IndentingXMLStreamWriter writer = new IndentingXMLStreamWriter(new EscapingXMLStreamWriter(xmlStreamWriter));

@@ -16,7 +16,6 @@ public class AbstractNetexWriter {
     static final String DEFAULT_LANGUAGE_CODE = "no";
     static final String NSR_XMLNS = "NSR";
 
-    static final String DEFAULT_NAMESPACE = "http://www.netex.org.uk/netex";
     static final String VERSION = "version";
     static final String ID = "id";
     static final String CREATED = "created";

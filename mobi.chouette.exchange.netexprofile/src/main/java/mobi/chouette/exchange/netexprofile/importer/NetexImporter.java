@@ -24,6 +24,7 @@ import org.rutebanken.netex.model.PublicationDeliveryStructure;
 import org.xml.sax.SAXException;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.parser.xml.PredefinedSchemaListClasspathResourceResolver;
 import mobi.chouette.exchange.netexprofile.parser.xml.SkippingXMLStreamReaderFactory;
 import net.sf.saxon.s9api.DocumentBuilder;
@@ -90,10 +91,10 @@ public class NetexImporter {
 		if(xpathCompiler == null) {
 			xpathCompiler = processor.newXPathCompiler();
 	        
-			xpathCompiler.declareNamespace("", "http://www.netex.org.uk/netex"); // Default
-			xpathCompiler.declareNamespace("n", "http://www.netex.org.uk/netex");
-			xpathCompiler.declareNamespace("s", "http://www.siri.org.uk/siri");
-			xpathCompiler.declareNamespace("g", "http://www.opengis.net/gml/3.2");
+			xpathCompiler.declareNamespace("", Constant.NETEX_NAMESPACE); // Default
+			xpathCompiler.declareNamespace("n", Constant.NETEX_NAMESPACE);
+			xpathCompiler.declareNamespace("s", Constant.SIRI_NAMESPACE);
+			xpathCompiler.declareNamespace("g", Constant.OPENGIS_NAMESPACE);
 		}
 		
 		return xpathCompiler;

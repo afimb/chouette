@@ -229,8 +229,8 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		
         for(XdmItem item : selector) {
 			Codespace codespace = new Codespace();
-			codespace.setXmlns(getChild((XdmNode)item, new QName("n","http://www.netex.org.uk/netex","Xmlns")).getStringValue());
-			codespace.setXmlnsUrl(getChild((XdmNode)item, new QName("n","http://www.netex.org.uk/netex","XmlnsUrl")).getStringValue());
+			codespace.setXmlns(getChild((XdmNode)item, new QName("n",Constant.NETEX_NAMESPACE,"Xmlns")).getStringValue());
+			codespace.setXmlnsUrl(getChild((XdmNode)item, new QName("n",Constant.NETEX_NAMESPACE,"XmlnsUrl")).getStringValue());
 
 			Predicate<Codespace> equalsXmlns = (validCodespace) -> validCodespace.getXmlns().equals(codespace.getXmlns());
 			Predicate<Codespace> equalsXmlnsUrl = (validCodespace) -> validCodespace.getXmlnsUrl().equals(codespace.getXmlnsUrl());

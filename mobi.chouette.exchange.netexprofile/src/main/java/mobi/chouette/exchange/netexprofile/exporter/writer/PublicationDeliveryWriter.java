@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
@@ -24,18 +25,15 @@ import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 public class PublicationDeliveryWriter extends AbstractNetexWriter {
 
-    private static final String OPENGIS_NAMESPACE = "http://www.opengis.net/gml/3.2";
-    private static final String SIRI_NAMESPACE = "http://www.siri.org.uk/siri";
-
     public static void write(Context context, XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData, NetexFragmentMode fragmentMode) {
         OffsetDateTime timestamp = OffsetDateTime.now();
         String timestampFormatted = formatter.format(timestamp);
 
         try {
             writer.writeStartElement(PUBLICATION_DELIVERY);
-            writer.writeDefaultNamespace(DEFAULT_NAMESPACE);
-            writer.writeNamespace("ns2", OPENGIS_NAMESPACE);
-            writer.writeNamespace("ns3", SIRI_NAMESPACE);
+            writer.writeDefaultNamespace(Constant.NETEX_NAMESPACE);
+            writer.writeNamespace("gis", Constant.OPENGIS_NAMESPACE);
+            writer.writeNamespace("siri", Constant.NETEX_NAMESPACE);
             writer.writeAttribute(VERSION, NETEX_PROFILE_VERSION);
 
             writeElement(writer, PUBLICATION_TIMESTAMP, timestampFormatted);
