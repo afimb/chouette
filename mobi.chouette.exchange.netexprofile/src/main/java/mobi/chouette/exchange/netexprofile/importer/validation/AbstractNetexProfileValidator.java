@@ -1,5 +1,23 @@
 package mobi.chouette.exchange.netexprofile.importer.validation;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import javax.xml.xpath.XPathExpressionException;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.rutebanken.netex.model.DataManagedObjectStructure;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
@@ -16,22 +34,6 @@ import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmSequenceIterator;
 import net.sf.saxon.s9api.XdmValue;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.rutebanken.netex.model.DataManagedObjectStructure;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Log4j
 public abstract class AbstractNetexProfileValidator implements Constant, NetexProfileValidator {
@@ -51,16 +53,16 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 	public static final String _1_NETEX_UNRESOLVED_EXTERNAL_REFERENCE = "1-NETEXPROFILE-UnresolvedExternalReference";
 
 	protected static final String OBJECT_IDS = "encountered_ids";
-	
+
 	private List<ExternalReferenceValidator> externalReferenceValidators = new ArrayList<>();
-	
+
 	@Override
 	public void addExternalReferenceValidator(ExternalReferenceValidator v) {
-		if(!externalReferenceValidators.contains(v)) {
+		if (!externalReferenceValidators.contains(v)) {
 			externalReferenceValidators.add(v);
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static void resetContext(Context context) {
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
@@ -135,8 +137,9 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		if (nodes.size() == 1) {
 			validationReporter.reportSuccess(context, checkPointKey);
 		} else {
-			log.error("Checkpoint " + checkPointKey + " failed: " + expression + " did not return 1 node");
-
+			if (log.isDebugEnabled()) {
+				log.info("Checkpoint " + checkPointKey + " failed: " + expression + " did not return 1 node");
+			}
 			validationReporter.addCheckPointReportError(context, checkPointKey, DataLocationHelper.findDataLocation(context, document));
 		}
 	}
@@ -151,7 +154,9 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		if (nodes.size() >= count) {
 			validationReporter.reportSuccess(context, checkPointKey);
 		} else {
-			log.error("Checkpoint " + checkPointKey + " failed: " + expression + " did not return at least 1 node but " + nodes.size());
+			if (log.isDebugEnabled()) {
+				log.debug("Checkpoint " + checkPointKey + " failed: " + expression + " did not return at least 1 node but " + nodes.size());
+			}
 			validationReporter.addCheckPointReportError(context, checkPointKey, DataLocationHelper.findDataLocation(context, document));
 		}
 	}
@@ -166,12 +171,14 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		if (nodes.size() == 0) {
 			validationReporter.reportSuccess(context, checkPointKey);
 		} else {
-			log.error("Checkpoint " + checkPointKey + " failed: " + expression + " should return 0 nodes, but returned " + nodes.size());
-			for(XdmItem item : nodes)
+			if (log.isDebugEnabled()) {
+				log.debug("Checkpoint " + checkPointKey + " failed: " + expression + " should return 0 nodes, but returned " + nodes.size());
+			}
+			for (XdmItem item : nodes) {
 				validationReporter.addCheckPointReportError(context, checkPointKey, DataLocationHelper.findDataLocation(context, item));
 			}
 		}
-	
+	}
 
 	protected void validateCheckpointExists(Context context, String checkPointKey, ValidationReporter validationReporter) {
 		if (!validationReporter.checkIfCheckPointExists(context, checkPointKey)) {
@@ -201,8 +208,8 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		XPathSelector selector = xpath.compile(expression).load();
 		selector.setContextItem(document);
 		XdmValue nodes = selector.evaluate();
-		if(nodes.size() > 0) {
-		return nodes.iterator().next();
+		if (nodes.size() > 0) {
+			return nodes.iterator().next();
 		} else {
 			return null;
 		}
@@ -219,18 +226,17 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 			throws XPathExpressionException, SaxonApiException {
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 
-		String referenceValue = StringUtils.join(acceptedCodespaces.stream()
-				.map(codespace -> codespace.getXmlns() + "/" + codespace.getXmlnsUrl())
-				.collect(Collectors.toList()), ' ');
+		String referenceValue = StringUtils
+				.join(acceptedCodespaces.stream().map(codespace -> codespace.getXmlns() + "/" + codespace.getXmlnsUrl()).collect(Collectors.toList()), ' ');
 
 		boolean onlyAcceptedCodespaces = true;
-        XPathSelector selector = xpath.compile("//n:Codespace").load();
-        selector.setContextItem(dom);
-		
-        for(XdmItem item : selector) {
+		XPathSelector selector = xpath.compile("//n:Codespace").load();
+		selector.setContextItem(dom);
+
+		for (XdmItem item : selector) {
 			Codespace codespace = new Codespace();
-			codespace.setXmlns(getChild((XdmNode)item, new QName("n",Constant.NETEX_NAMESPACE,"Xmlns")).getStringValue());
-			codespace.setXmlnsUrl(getChild((XdmNode)item, new QName("n",Constant.NETEX_NAMESPACE,"XmlnsUrl")).getStringValue());
+			codespace.setXmlns(getChild((XdmNode) item, new QName("n", Constant.NETEX_NAMESPACE, "Xmlns")).getStringValue());
+			codespace.setXmlnsUrl(getChild((XdmNode) item, new QName("n", Constant.NETEX_NAMESPACE, "XmlnsUrl")).getStringValue());
 
 			Predicate<Codespace> equalsXmlns = (validCodespace) -> validCodespace.getXmlns().equals(codespace.getXmlns());
 			Predicate<Codespace> equalsXmlnsUrl = (validCodespace) -> validCodespace.getXmlnsUrl().equals(codespace.getXmlnsUrl());
@@ -238,27 +244,25 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 			if (acceptedCodespaces.stream().noneMatch(equalsXmlns.and(equalsXmlnsUrl))) {
 				// TODO add correct location
 				validationReporter.addCheckPointReportError(context, _1_NETEX_UNAPPROVED_CODESPACE_DEFINED, null,
-						DataLocationHelper.findDataLocation(context, (XdmNode)item), codespace.getXmlns() + "/" + codespace.getXmlnsUrl(), referenceValue);
+						DataLocationHelper.findDataLocation(context, (XdmNode) item), codespace.getXmlns() + "/" + codespace.getXmlnsUrl(), referenceValue);
 				log.error("Codespace " + codespace + " is not accepted for this validation");
 				onlyAcceptedCodespaces = false;
 			}
-        }
-        
-		
+		}
+
 		if (onlyAcceptedCodespaces) {
 			validationReporter.reportSuccess(context, _1_NETEX_UNAPPROVED_CODESPACE_DEFINED);
 		}
 	}
-	
-    private static XdmNode getChild(XdmNode parent, QName childName) {
-        XdmSequenceIterator iter = parent.axisIterator(Axis.CHILD, childName);
-        if (iter.hasNext()) {
-            return (XdmNode)iter.next();
-        } else {
-            return null;
-        }
-    }
 
+	private static XdmNode getChild(XdmNode parent, QName childName) {
+		XdmSequenceIterator iter = parent.axisIterator(Axis.CHILD, childName);
+		if (iter.hasNext()) {
+			return (XdmNode) iter.next();
+		} else {
+			return null;
+		}
+	}
 
 	protected void verifyReferencesToCommonElements(Context context, List<IdVersion> localRefs, Set<IdVersion> localIds,
 			Map<IdVersion, List<String>> commonIds) {
@@ -270,13 +274,13 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 
 			Set<String> unresolvedReferences = new HashSet<>(nonVersionedLocalRefs);
 			unresolvedReferences.removeAll(nonVersionedLocalIds);
-			
+
 			// Dont report on references that are supposed to be validated externally
-			for(ExternalReferenceValidator v : externalReferenceValidators) {
+			for (ExternalReferenceValidator v : externalReferenceValidators) {
 				Set<IdVersion> ofSupportedTypes = v.isOfSupportedTypes(new HashSet<>(localRefs));
 				unresolvedReferences.removeAll(ofSupportedTypes.stream().map(e -> e.getId()).collect(Collectors.toSet()));
 			}
-			
+
 			Set<String> commonIdsWithoutVersion = commonIds.keySet().stream().map(e -> e.getId()).collect(Collectors.toSet());
 
 			if (commonIdsWithoutVersion.size() > 0) {
@@ -292,7 +296,9 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 						}
 						validationReporter.addCheckPointReportError(context, _1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS, null,
 								DataLocationHelper.findDataLocation(id), id.getId());
-						log.error("Unresolved reference to " + localRef + " in line file without any counterpart in the commonIds");
+						if (log.isDebugEnabled()) {
+							log.debug("Unresolved reference to " + localRef + " in line file without any counterpart in the commonIds");
+						}
 					}
 				}
 			} else {
@@ -308,18 +314,20 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		List<String> localIdsWithoutVersion = localIds.stream().map(e -> e.getId()).collect(Collectors.toList());
 
 		boolean foundErrors = false;
-		
+
 		if (nonVersionedLocalRefs.size() > 0) {
 			for (IdVersion id : nonVersionedLocalRefs) {
 				if (localIdsWithoutVersion.contains(id.getId())) {
 					foundErrors = true;
 					validationReporter.addCheckPointReportError(context, _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS, null,
 							DataLocationHelper.findDataLocation(id), id.getId());
-					log.error("Found local reference to " + id.getId() + " in line file without use of version-attribute");
+					if (log.isDebugEnabled()) {
+						log.info("Found local reference to " + id.getId() + " in line file without use of version-attribute");
+					}
 				}
 			}
-		} 
-		if(!foundErrors) {
+		}
+		if (!foundErrors) {
 			validationReporter.reportSuccess(context, _1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS);
 
 		}
@@ -331,10 +339,11 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		Set<IdVersion> nonVersionedLocalIds = localIds.stream().filter(e -> e.getVersion() == null).collect(Collectors.toSet());
 		if (nonVersionedLocalIds.size() > 0) {
 			for (IdVersion id : nonVersionedLocalIds) {
-				// TODO add correct location
 				validationReporter.addCheckPointReportError(context, _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS, null, DataLocationHelper.findDataLocation(id),
 						id.getId());
-				log.error("Id " + id + " in line file does not have version attribute set");
+				if (log.isDebugEnabled()) {
+					log.debug("Id " + id + " in line file does not have version attribute set");
+				}
 			}
 		} else {
 			validationReporter.reportSuccess(context, _1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS);
@@ -357,8 +366,10 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 								DataLocationHelper.findDataLocation(fileName, id), id.getId());
 
 					}
-					log.error("Id " + id + " used in both line file and common files "
-							+ ToStringBuilder.reflectionToString(commonFileNames.toArray(), ToStringStyle.SIMPLE_STYLE));
+					if (log.isDebugEnabled()) {
+						log.debug("Id " + id + " used in both line file and common files "
+								+ ToStringBuilder.reflectionToString(commonFileNames.toArray(), ToStringStyle.SIMPLE_STYLE));
+					}
 				}
 			} else {
 				validationReporter.reportSuccess(context, _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_AND_COMMON_FILES);
@@ -384,7 +395,10 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 				duplicateFound = true;
 				validationReporter.addCheckPointReportError(context, _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_FILES, null, DataLocationHelper.findDataLocation(id),
 						id.getId());
-				log.error("Id " + id + " in line file have already been defined in another file");
+
+				if (log.isDebugEnabled()) {
+					log.info("Id " + id + " in line file have already been defined in another file");
+				}
 			} else {
 				alreadyFoundLocalIds.add(id);
 			}
@@ -394,37 +408,39 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 			validationReporter.reportSuccess(context, _1_NETEX_DUPLICATE_IDS_ACROSS_LINE_FILES);
 		}
 	}
-	
+
 	protected void verifyExternalRefs(Context context, List<IdVersion> externalRefs, Set<IdVersion> localIds, Set<IdVersion> commonIds) {
-		
+
 		Set<IdVersion> possibleExternalReferences = externalRefs.stream().filter(e -> !localIds.contains(e)).collect(Collectors.toSet());
 		Set<IdVersion> idsFoundInCommonFiles = new HashSet<>();
-		for(IdVersion possibleMissingReference : possibleExternalReferences) {
-			for(IdVersion commonId : commonIds) {
-				if(commonId.getId().equals(possibleMissingReference.getId())) {
+		for (IdVersion possibleMissingReference : possibleExternalReferences) {
+			for (IdVersion commonId : commonIds) {
+				if (commonId.getId().equals(possibleMissingReference.getId())) {
 					idsFoundInCommonFiles.add(possibleMissingReference);
 				}
 			}
 		}
-		
+
 		possibleExternalReferences.removeAll(idsFoundInCommonFiles);
-		
+
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		Set<IdVersion> verifiedExternalRefs = new HashSet<>();
-		
-		for(ExternalReferenceValidator validator : externalReferenceValidators) {
-			verifiedExternalRefs.addAll(validator.validateReferenceIds(context,possibleExternalReferences));
+
+		for (ExternalReferenceValidator validator : externalReferenceValidators) {
+			verifiedExternalRefs.addAll(validator.validateReferenceIds(context, possibleExternalReferences));
 		}
-		
+
 		possibleExternalReferences.removeAll(verifiedExternalRefs);
-		
-		if(possibleExternalReferences.size() > 0) {
-			for(IdVersion id : possibleExternalReferences) {
-				log.error("Unable to validate external reference "+id);
-				validationReporter.addCheckPointReportError(context, _1_NETEX_UNRESOLVED_EXTERNAL_REFERENCE, null,
-						DataLocationHelper.findDataLocation(id), id.getId());
+
+		if (possibleExternalReferences.size() > 0) {
+			for (IdVersion id : possibleExternalReferences) {
+				if (log.isDebugEnabled()) {
+					log.info("Unable to validate external reference " + id);
+				}
+				validationReporter.addCheckPointReportError(context, _1_NETEX_UNRESOLVED_EXTERNAL_REFERENCE, null, DataLocationHelper.findDataLocation(id),
+						id.getId());
 			}
-			
+
 		} else {
 			validationReporter.reportSuccess(context, _1_NETEX_UNRESOLVED_EXTERNAL_REFERENCE);
 		}
@@ -450,14 +466,18 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 			Matcher m = p.matcher(id.getId());
 			if (!m.matches()) {
 				validationReporter.addCheckPointReportError(context, _1_NETEX_INVALID_ID_STRUCTURE, null, DataLocationHelper.findDataLocation(id), id.getId());
-				log.error("Id " + id + " in line file have an invalid format. Correct format is " + regex);
+				if (log.isDebugEnabled()) {
+					log.debug("Id " + id + " in line file have an invalid format. Correct format is " + regex);
+				}
 				allIdStructuresValid = false;
 			} else {
 				if (!m.group(2).equals(id.getElementName())) {
 					String expectedId = m.group(1) + ":" + id.getElementName() + ":" + m.group(3);
 					validationReporter.addCheckPointReportError(context, _1_NETEX_INVALID_ID_STRUCTURE_NAME, null, DataLocationHelper.findDataLocation(id),
 							id.getId(), expectedId);
-					log.error("Id " + id + " in file have an invalid format for the name part. Expected " + expectedId);
+					if (log.isDebugEnabled()) {
+						log.debug("Id " + id + " in file have an invalid format for the name part. Expected " + expectedId);
+					}
 					allIdStructuresNameValid = false;
 				}
 
@@ -466,15 +486,16 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 					if (!validPrefixes.contains(prefix)) {
 						validationReporter.addCheckPointReportError(context, _1_NETEX_USE_OF_UNAPPROVED_CODESPACE, null,
 								DataLocationHelper.findDataLocation(id), id.getId());
-						log.error("Id " + id + " in file are using an unaccepted codepsace prefix " + prefix + ". Valid prefixes are "
-								+ ToStringBuilder.reflectionToString(validPrefixes, ToStringStyle.SIMPLE_STYLE));
+						if (log.isDebugEnabled()) {
+							log.debug("Id " + id + " in file are using an unaccepted codepsace prefix " + prefix + ". Valid prefixes are "
+									+ ToStringBuilder.reflectionToString(validPrefixes, ToStringStyle.SIMPLE_STYLE));
+						}
 						allCodespacesValid = false;
 					}
 				}
 			}
 		}
 
-	
 		if (allIdStructuresValid) {
 			validationReporter.reportSuccess(context, _1_NETEX_INVALID_ID_STRUCTURE);
 		}
@@ -485,6 +506,5 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 			validationReporter.reportSuccess(context, _1_NETEX_USE_OF_UNAPPROVED_CODESPACE);
 		}
 	}
-
 
 }

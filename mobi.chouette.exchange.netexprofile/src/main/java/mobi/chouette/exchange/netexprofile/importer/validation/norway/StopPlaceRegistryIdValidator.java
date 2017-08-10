@@ -13,11 +13,9 @@ import org.apache.commons.lang.StringUtils;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.netexprofile.importer.validation.ExternalReferenceValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.ExternalReferenceValidatorFactory;
-import mobi.chouette.exchange.validation.report.ValidationReporter;
 
 @Log4j
 public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator {
@@ -56,17 +54,12 @@ public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator 
 	@Override
 	public Set<IdVersion> validateReferenceIds(Context context, Set<IdVersion> externalIds) {
 
-		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-
-		
-		
-		
 		if (lastUpdated < System.currentTimeMillis() - timeToLiveMs) {
 			int remainingUpdateRetries = 10;
 
 			boolean result = false;
-			
-			while(!result && remainingUpdateRetries-- > 0) {
+
+			while (!result && remainingUpdateRetries-- > 0) {
 				// Fetch data and populate caches
 				log.info("Cache is old, refreshing quay and stopplace cache");
 				boolean stopPlaceOk = populateCache(stopPlaceCache, stopPlaceEndpoint);
@@ -76,46 +69,42 @@ public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator 
 					lastUpdated = System.currentTimeMillis();
 					result = true;
 				} else {
-					log.error("Error updating caches, retries left = "+remainingUpdateRetries);
+					log.error("Error updating caches, retries left = " + remainingUpdateRetries);
 					result = false;
-					
+
 					// TODO dodgy
 					try {
-						Thread.sleep(10*1000);
+						Thread.sleep(10 * 1000);
 					} catch (InterruptedException e) {
 						// Swallow
 					}
 				}
-				
 			}
-			
-			if(result == false) {
+
+			if (result == false) {
 				throw new RuntimeException("Could not update quay cache - cannot validate");
 			}
-			
+
 		}
 
-		log.info("About to validate external " + externalIds.size() + " ids");
-
+		if (log.isDebugEnabled()) {
+			log.debug("About to validate external " + externalIds.size() + " ids");
+		}
 		Set<IdVersion> validIds = new HashSet<>();
 
 		Set<IdVersion> idsToCheck = isOfSupportedTypes(externalIds);
 
 		for (IdVersion id : idsToCheck) {
 			if (id.getId().contains(":Quay:") && quayCache.contains(id.getId())) {
-
 				validIds.add(id);
-//				validationReporter.addCheckPointReportError(context,
-//						AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN_PASSENGERSTOPASSIGNMENT_QUAYREF,
-//						DataLocationHelper.findDataLocation(id));
-
-			} else if (id.getId().contains(":StopPlace:") && stopPlaceCache.contains(id.getId()))  {
+			} else if (id.getId().contains(":StopPlace:") && stopPlaceCache.contains(id.getId())) {
 				validIds.add(id);
 			}
 		}
 
-		log.info("Found " + validIds.size() + " ids invalid");
-
+		if (log.isDebugEnabled()) {
+			log.info("Found " + validIds.size() + " ids valid");
+		}
 		return validIds;
 	}
 
