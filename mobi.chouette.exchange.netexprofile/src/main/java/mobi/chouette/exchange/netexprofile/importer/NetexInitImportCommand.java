@@ -1,7 +1,26 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Resource;
+import javax.ejb.EJB;
+import javax.ejb.SessionContext;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
@@ -9,7 +28,6 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.CodespaceDAO;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.importer.validation.NetexNamespaceContext;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidatorFactory;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.NorwayCommonNetexProfileValidator;
@@ -20,18 +38,6 @@ import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.model.Codespace;
 import mobi.chouette.model.util.Referential;
-import net.sf.saxon.lib.NamespaceConstant;
-
-import org.apache.commons.lang.builder.ToStringBuilder;
-
-import javax.annotation.Resource;
-import javax.ejb.*;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathFactory;
-import java.io.IOException;
-import java.util.*;
 
 @Log4j
 @Stateless(name = NetexInitImportCommand.COMMAND)
@@ -57,12 +63,8 @@ public class NetexInitImportCommand implements Command, Constant {
 			NetexImporter importer = new NetexImporter();
 			context.put(IMPORTER, importer);
 
-			 System.setProperty("javax.xml.xpath.XPathFactory:" + NamespaceConstant.OBJECT_MODEL_SAXON, "net.sf.saxon.xpath.XPathFactoryImpl");
-		     XPathFactory xPathFactory = XPathFactory.newInstance(NamespaceConstant.OBJECT_MODEL_SAXON);
-		     XPath xpath = xPathFactory.newXPath();
-//			XPath xpath = XPathFactory.newInstance().newXPath();
-			xpath.setNamespaceContext(new NetexNamespaceContext());
-			context.put(NETEX_XPATH, xpath);
+
+			context.put(NETEX_XPATH_COMPILER, importer.getXPathCompiler());
 
 			context.put(REFERENTIAL, new Referential());
 			context.put(NETEX_REFERENTIAL, new NetexReferential());

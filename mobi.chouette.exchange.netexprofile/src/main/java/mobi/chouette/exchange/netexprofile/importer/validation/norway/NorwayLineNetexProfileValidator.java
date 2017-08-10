@@ -1,5 +1,18 @@
 package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
@@ -10,13 +23,11 @@ import mobi.chouette.exchange.netexprofile.importer.validation.norway.StopPlaceR
 import mobi.chouette.exchange.netexprofile.util.NetexIdExtractorHelper;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.model.Codespace;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-import java.util.*;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XPathCompiler;
+import net.sf.saxon.s9api.XdmItem;
+import net.sf.saxon.s9api.XdmNode;
+import net.sf.saxon.s9api.XdmValue;
 
 @Log4j
 public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileValidator implements NetexProfileValidator {
@@ -25,9 +36,9 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 
 	@Override
 	public void validate(Context context) throws Exception {
-		XPath xpath = (XPath) context.get(NETEX_XPATH);
+		XPathCompiler xpath = (XPathCompiler) context.get(NETEX_XPATH_COMPILER);
 
-		Document dom = (Document) context.get(NETEX_DATA_DOM);
+		XdmNode dom = (XdmNode) context.get(NETEX_DATA_DOM);
 
 		@SuppressWarnings("unchecked")
 		Set<Codespace> validCodespaces = (Set<Codespace>) context.get(NETEX_VALID_CODESPACES);
@@ -58,11 +69,11 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 		verifyReferencesToCorrectEntityTypes(context, localRefs);
 		verifyExternalRefs(context, localRefs, localIds,commonIds != null ? commonIds.keySet() : new HashSet<>());
 
-		NodeList compositeFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:CompositeFrame", xpath, dom);
-		if (compositeFrames.getLength() > 0) {
+		XdmValue compositeFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:CompositeFrame", xpath, dom);
+		if (compositeFrames.size() > 0) {
 			// Using composite frames
-			for (int i = 0; i < compositeFrames.getLength(); i++) {
-				validateCompositeFrame(context, xpath, compositeFrames.item(i));
+			for (XdmItem compositeFrame : compositeFrames) {
+				validateCompositeFrame(context, xpath, (XdmNode) compositeFrame);
 			}
 		} else {
 			// Not using composite frames
@@ -72,23 +83,23 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 		return;
 	}
 
-	protected void validateWithoutCompositeFrame(Context context, XPath xpath, Document dom) throws XPathExpressionException {
+	protected void validateWithoutCompositeFrame(Context context, XPathCompiler xpath, XdmNode dom) throws XPathExpressionException, SaxonApiException {
 		// Validate that we have exactly one ResourceFrame
 		validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:ResourceFrame", _1_NETEX_RESOURCE_FRAME);
 		validateResourceFrame(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:ResourceFrame");
 
 		// Validate at least 1 ServiceFrame is present
 		validateAtLeastElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:ServiceFrame", 1, _1_NETEX_SERVICE_FRAME);
-		NodeList serviceFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:ServiceFrame", xpath, dom);
-		for (int i = 0; i < serviceFrames.getLength(); i++) {
-			validateServiceFrame(context, xpath, serviceFrames.item(i), null);
+		XdmValue serviceFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:ServiceFrame", xpath, dom);
+		for (XdmItem serviceFrame : serviceFrames) {
+			validateServiceFrame(context, xpath, (XdmNode) serviceFrame, null);
 		}
 
 		// Validate at least 1 TimetableFrame is present
 		validateAtLeastElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:TimetableFrame", 1, _1_NETEX_TIMETABLE_FRAME);
-		NodeList timetableFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:TimetableFrame", xpath, dom);
-		for (int i = 0; i < timetableFrames.getLength(); i++) {
-			validateTimetableFrame(context, xpath, timetableFrames.item(i), null);
+		XdmValue timetableFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:TimetableFrame", xpath, dom);
+		for (XdmItem timetalbeFrame : timetableFrames) {
+			validateTimetableFrame(context, xpath, (XdmNode) timetalbeFrame, null);
 		}
 
 		// No siteframe allowed
@@ -109,7 +120,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 
 	}
 
-	private void validateCompositeFrame(Context context, XPath xpath, Node dom) throws XPathExpressionException {
+	private void validateCompositeFrame(Context context,  XPathCompiler xpath, XdmNode dom) throws XPathExpressionException, SaxonApiException {
 		// Check that there are no overriding AvailabilityCondition which is identical to the one defined in the CompositeFrame
 		validateElementPresent(context, xpath, dom, "n:validityConditions", _1_NETEX_COMPOSITE_FRAME_VALIDITYCONDTITIONS);
 		validateElementNotPresent(context, xpath, dom, "n:frames//n:validityConditions", _1_NETEX_VALIDITYCONDITIONS_ON_FRAMES_INSIDE_COMPOSITEFRAME);
@@ -119,35 +130,35 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 				_1_NETEX_CODESPACE);
 
 		
-		NodeList resourceFrames = selectNodeSet("n:frames/n:ResourceFrame", xpath, dom);
-		for (int i = 0; i < resourceFrames.getLength(); i++) {
-			validateResourceFrame(context, xpath, resourceFrames.item(i), null);
+		XdmValue resourceFrames = selectNodeSet("n:frames/n:ResourceFrame", xpath, dom);
+		for (XdmItem resourceFrame : resourceFrames) {
+			validateResourceFrame(context, xpath, (XdmNode) resourceFrame, null);
 		}
 
 		validateAtLeastElementPresent(context, xpath, dom, "n:frames/n:ServiceFrame",1, _1_NETEX_SERVICE_FRAME);
-		NodeList serviceFrames = selectNodeSet("n:frames/n:ServiceFrame", xpath, dom);
-		for (int i = 0; i < serviceFrames.getLength(); i++) {
-			validateServiceFrame(context, xpath, serviceFrames.item(i), null);
+		XdmValue serviceFrames = selectNodeSet("n:frames/n:ServiceFrame", xpath, dom);
+		for (XdmItem serviceFrame : serviceFrames) {
+			validateServiceFrame(context, xpath, (XdmNode) serviceFrame, null);
 		}
 
 		validateAtLeastElementPresent(context, xpath, dom, "n:frames/n:TimetableFrame",1, _1_NETEX_TIMETABLE_FRAME);
-		NodeList timetableFrames = selectNodeSet("n:frames/n:TimetableFrame", xpath, dom);
-		for (int i = 0; i < timetableFrames.getLength(); i++) {
-			validateTimetableFrame(context, xpath, timetableFrames.item(i), null);
+		XdmValue timetableFrames = selectNodeSet("n:frames/n:TimetableFrame", xpath, dom);
+		for (XdmItem timetableFrame : timetableFrames) {
+			validateTimetableFrame(context, xpath, (XdmNode) timetableFrame, null);
 		}
 
-		NodeList serviceCalendarFrames = selectNodeSet("n:frames/n:ServiceCalendarFrame", xpath, dom);
-		for (int i = 0; i < serviceCalendarFrames.getLength(); i++) {
-			validateServiceCalendarFrame(context, xpath, serviceCalendarFrames.item(i), null);
+		XdmValue serviceCalendarFrames = selectNodeSet("n:frames/n:ServiceCalendarFrame", xpath, dom);
+		for (XdmItem serviceCalendarFrame : serviceCalendarFrames) {
+			validateServiceCalendarFrame(context, xpath, (XdmNode) serviceCalendarFrame, null);
 		}
 
 		validateElementNotPresent(context, xpath, dom, "n:frames/n:SiteFrame", _1_NETEX_SITE_FRAME);
 	}
 
-	private void validateServiceFrame(Context context, XPath xpath, Node dom, String subLevelPath) throws XPathExpressionException {
-		Node subLevel = dom;
+	private void validateServiceFrame(Context context,  XPathCompiler xpath, XdmNode dom, String subLevelPath) throws XPathExpressionException, SaxonApiException {
+		XdmNode subLevel = dom;
 		if (subLevelPath != null) {
-			subLevel = selectNode(subLevelPath, xpath, dom);
+			subLevel = (XdmNode) selectNode(subLevelPath, xpath, dom);
 		}
 
 		if (subLevel != null) {
@@ -184,10 +195,10 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 		}
 	}
 
-	private void validateTimetableFrame(Context context, XPath xpath, Node dom, String subLevelPath) throws XPathExpressionException {
-		Node subLevel = dom;
+	private void validateTimetableFrame(Context context, XPathCompiler xpath, XdmNode dom, String subLevelPath) throws XPathExpressionException, SaxonApiException {
+		XdmNode subLevel = dom;
 		if (subLevelPath != null) {
-			subLevel = selectNode(subLevelPath, xpath, dom);
+			subLevel = (XdmNode) selectNode(subLevelPath, xpath, dom);
 		}
 
 		if (subLevel != null) {
@@ -215,11 +226,11 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney[not(n:JourneyPatternRef)]",
 					_1_NETEX_TIMETABLE_FRAME_SERVICEJOURNEY_JOURNEYPATTERN_REF);
 			
-			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney[not(n:OperatorRef) and not(../../../n:ServiceFrame/n:lines/n:Line/n:OperatorRef)]", _1_NETEX_TIMETABLE_FRAME_VEHICLEJOURNEY_OPERATORREF_OR_LINE_OPREATORREF);
+			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney[not(n:OperatorRef) and not(//n:ServiceFrame/n:lines/n:Line/n:OperatorRef)]", _1_NETEX_TIMETABLE_FRAME_VEHICLEJOURNEY_OPERATORREF_OR_LINE_OPREATORREF);
 
 			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney[not(n:dayTypes/n:DayTypeRef)]", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_DAYTYPEREF);
 
-			validateElementNotPresent(context, xpath, subLevel, "for $a in n:vehicleJourneys/n:ServiceJourney return if(count(//n:JourneyPattern[@id = $a/n:JourneyPatternRef/@ref]/n:pointsInSequence/n:StopPointInJourneyPattern) != count($a/n:passingTimes/n:TimetabledPassingTime)) then $a else ()", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_MISSING_PASSING_TIME);
+			validateElementNotPresent(context, xpath, subLevel, "for $a in n:vehicleJourneys/n:ServiceJourney return if(count(//n:ServiceFrame/n:journeyPatterns/n:JourneyPattern[@id = $a/n:JourneyPatternRef/@ref]/n:pointsInSequence/n:StopPointInJourneyPattern) != count($a/n:passingTimes/n:TimetabledPassingTime)) then $a else ()", _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_MISSING_PASSING_TIME);
 			
 
 		}

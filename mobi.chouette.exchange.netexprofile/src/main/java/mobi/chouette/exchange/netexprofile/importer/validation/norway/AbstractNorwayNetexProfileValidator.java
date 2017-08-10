@@ -8,18 +8,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.DataManagedObjectStructure;
-import org.w3c.dom.Node;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XPathCompiler;
+import net.sf.saxon.s9api.XdmNode;
 
 public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexProfileValidator {
 
@@ -181,42 +182,39 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		validationReporter.addItemToValidationReport(context, checkpointName, error);
 	}
 
-	protected void validateResourceFrame(Context context, XPath xpath, Node dom, String subLevelPath) throws XPathExpressionException {
-		Node subLevel = dom;
+	protected void validateResourceFrame(Context context, XPathCompiler xpath, XdmNode dom, String subLevelPath) throws XPathExpressionException, SaxonApiException {
+		XdmNode subLevel = dom;
 		if (subLevelPath != null) {
-			subLevel = selectNode(subLevelPath, xpath, dom);
+			subLevel = (XdmNode)selectNode(subLevelPath, xpath, dom);
 		}
 
 		if (subLevel != null) {
-			Node organisations = selectNode("n:organisations", xpath, subLevel);
-			if (organisations != null && organisations.hasChildNodes()) {
 
-				validateElementNotPresent(context, xpath, organisations, "n:Operator[not(n:CompanyNumber)]",
-						_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_COMPANY_NUMBER);
-				validateElementNotPresent(context, xpath, organisations, "n:Operator[not(n:Name)]", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_NAME);
-				validateElementNotPresent(context, xpath, organisations, "n:Operator[not(n:LegalName)]",
-						_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_LEGAL_NAME);
-				validateElementNotPresent(context, xpath, organisations, "n:Operator[not(n:ContactDetails)]",
-						_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CONTACT_DETAILS);
-				validateElementNotPresent(context, xpath, organisations, "n:Operator[not(n:CustomerServiceContactDetails)]",
-						_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CUSTOMER_SERVICE_CONTACT_DETAILS);
+			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Operator[not(n:CompanyNumber)]",
+					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_COMPANY_NUMBER);
+			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Operator[not(n:Name)]", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_NAME);
+			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Operator[not(n:LegalName)]",
+					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_LEGAL_NAME);
+			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Operator[not(n:ContactDetails)]",
+					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CONTACT_DETAILS);
+			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Operator[not(n:CustomerServiceContactDetails)]",
+					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CUSTOMER_SERVICE_CONTACT_DETAILS);
 
-				validateElementNotPresent(context, xpath, organisations, "n:Authority[not(n:CompanyNumber)]",
-						_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_COMPANY_NUMBER);
-				validateElementNotPresent(context, xpath, organisations, "n:Authority[not(n:Name)]",
-						_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_NAME);
-				validateElementNotPresent(context, xpath, organisations, "n:Authority[not(n:LegalName)]",
-						_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_LEGAL_NAME);
-				validateElementNotPresent(context, xpath, organisations, "n:Authority[not(n:ContactDetails)]",
-						_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS);
-			}
+			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Authority[not(n:CompanyNumber)]",
+					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_COMPANY_NUMBER);
+			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Authority[not(n:Name)]",
+					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_NAME);
+			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Authority[not(n:LegalName)]",
+					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_LEGAL_NAME);
+			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Authority[not(n:ContactDetails)]",
+					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS);
 		}
 	}
 
-	protected void validateServiceCalendarFrame(Context context, XPath xpath, Node dom, String subLevelPath) throws XPathExpressionException {
-		Node subLevel = dom;
+	protected void validateServiceCalendarFrame(Context context, XPathCompiler xpath, XdmNode dom, String subLevelPath) throws XPathExpressionException, SaxonApiException {
+		XdmNode subLevel = dom;
 		if (subLevelPath != null) {
-			subLevel = selectNode(subLevelPath, xpath, dom);
+			subLevel = (XdmNode) selectNode(subLevelPath, xpath, dom);
 		}
 
 		if (subLevel != null) {
@@ -301,7 +299,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		}
 	}
 
-	protected void validateServiceFrameCommonElements(Context context, XPath xpath, Node subLevel) throws XPathExpressionException {
+	protected void validateServiceFrameCommonElements(Context context, XPathCompiler xpath, XdmNode subLevel) throws XPathExpressionException, SaxonApiException {
 		validateElementNotPresent(context, xpath, subLevel, "n:Network[not(n:AuthorityRef)]", _1_NETEX_SERVICE_FRAME_NETWORK_AUTHORITY_REF);
 		validateElementNotPresent(context, xpath, subLevel, "n:Network[not(n:Name)]", _1_NETEX_SERVICE_FRAME_NETWORK_NAME);
 		validateElementNotPresent(context, xpath, subLevel, "n:Network/n:groupsOfLines/n:GroupOfLines[not(n:Name)]", _1_NETEX_SERVICE_FRAME_NETWORK_GROUPOFLINE_NAME);
