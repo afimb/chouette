@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
+import mobi.chouette.exchange.netexprofile.importer.validation.norway.AbstractNorwayNetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.jaxb.NetexXmlStreamMarshaller;
 
 import javax.xml.stream.XMLStreamException;
@@ -11,7 +12,7 @@ import java.time.temporal.ChronoField;
 
 public class AbstractNetexWriter {
 
-    static final String NETEX_PROFILE_VERSION = "1.04:NO-NeTEx-networktimetable:1.0";
+    static final String NETEX_PROFILE_VERSION = AbstractNorwayNetexProfileValidator.EXPORT_PROFILE_ID;
     static final String DEFAULT_ZONE_ID = "UTC";
     static final String DEFAULT_LANGUAGE_CODE = "no";
     static final String NSR_XMLNS = "NSR";

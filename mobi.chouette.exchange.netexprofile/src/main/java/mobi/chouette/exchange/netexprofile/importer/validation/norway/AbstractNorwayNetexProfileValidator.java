@@ -26,7 +26,8 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 	public static final String PROFILE_ID_1 = "1.04:NO-NeTEx-networktimetable:1.0";
 	public static final String PROFILE_ID_1_1 = "1.04:NO-NeTEx-networktimetable:1.1";
-
+	public static final String EXPORT_PROFILE_ID = PROFILE_ID_1_1; // Update when new profile version is implemented
+	
 	public static final String NSR_XMLNSURL = "http://www.rutebanken.org/ns/nsr";
 	public static final String NSR_XMLNS = "NSR";
 
