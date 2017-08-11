@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.netex.exporter;
 
 import java.io.IOException;
-import java.sql.Date;
 
 import javax.naming.InitialContext;
 
@@ -21,6 +20,7 @@ import mobi.chouette.model.util.NamingUtil;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+import org.joda.time.LocalDate;
 
 @Log4j
 public class NetexLineProducerCommand implements Command, Constant {
@@ -56,14 +56,14 @@ public class NetexLineProducerCommand implements Command, Constant {
 				context.put(SHARED_DATA_KEYS, sharedData);
 			}
 
-			Date startDate = null;
+			LocalDate startDate = null;
 			if (configuration.getStartDate() != null) {
-				startDate = new Date(configuration.getStartDate().getTime());
+				startDate = new LocalDate(configuration.getStartDate());
 			}
 
-			Date endDate = null;
+			LocalDate endDate = null;
 			if (configuration.getEndDate() != null) {
-				endDate = new Date(configuration.getEndDate().getTime());
+				endDate = new LocalDate(configuration.getEndDate());
 			}
 
 			NetexDataCollector collector = new NetexDataCollector();

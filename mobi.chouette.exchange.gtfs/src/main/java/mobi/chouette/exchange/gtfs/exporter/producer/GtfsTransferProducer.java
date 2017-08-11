@@ -8,8 +8,6 @@
 
 package mobi.chouette.exchange.gtfs.exporter.producer;
 
-import java.sql.Time;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
@@ -29,19 +27,20 @@ public class GtfsTransferProducer extends AbstractProducer {
 
 	private GtfsTransfer transfer = new GtfsTransfer();
 
-	public boolean save(ConnectionLink neptuneObject, String prefix, boolean keepOriginalId) {
-		transfer.clear();
-		transfer.setFromStopId(toGtfsId(neptuneObject.getStartOfLink()
-				.getObjectId(), prefix, keepOriginalId));
-		transfer
-				.setToStopId(toGtfsId(neptuneObject.getEndOfLink().getObjectId(), prefix, keepOriginalId));
-		if (neptuneObject.getDefaultDuration() != null
-				&& neptuneObject.getDefaultDuration().getTime() > 1000) {
-			transfer.setMinTransferTime(Integer.valueOf((int) (neptuneObject.getDefaultDuration().getTime() / 1000)));
-			transfer.setTransferType(GtfsTransfer.TransferType.Minimal);
-		} else {
+   public boolean save(ConnectionLink neptuneObject, String prefix, boolean keepOriginalId){
+   transfer.clear();
+      transfer.setFromStopId(toGtfsId(neptuneObject.getStartOfLink()
+            .getObjectId(),prefix,keepOriginalId));
+      transfer
+            .setToStopId(toGtfsId(neptuneObject.getEndOfLink().getObjectId(),prefix, keepOriginalId));
+      if (neptuneObject.getDefaultDuration() != null
+            && neptuneObject.getDefaultDuration().getStandardSeconds() > 1) {
+         transfer.setMinTransferTime((int)neptuneObject.getDefaultDuration().getStandardSeconds());
+         transfer.setTransferType(GtfsTransfer.TransferType.Minimal);
+      } else
+      {
 			transfer.setTransferType(GtfsTransfer.TransferType.Recommended);
-		}
+         }
 
 		try {
 			getExporter().getTransferExporter().export(transfer);
@@ -61,12 +60,12 @@ public class GtfsTransferProducer extends AbstractProducer {
 
 		if (Boolean.TRUE.equals(neptuneObject.getGuaranteed())) {
 			transfer.setTransferType(GtfsTransfer.TransferType.Timed);
-		} else if (neptuneObject.getMinimumTransferTime() != null) {
-			transfer.setTransferType(GtfsTransfer.TransferType.Minimal);
-			transfer.setMinTransferTime(Integer.valueOf((int) (neptuneObject.getMinimumTransferTime().getTime() / 1000)));
-		}
+		} else if (neptuneObject.getMinimumTransferTime() !=null){
+         transfer.setTransferType(GtfsTransfer.TransferType.Minimal);
+         transfer.setMinTransferTime(Integer.valueOf((int) (neptuneObject.getMinimumTransferTime().getStandardSeconds())));
+      }
 
-		transfer.setFromTripId(toGtfsId(neptuneObject.getFeederVehicleJourney().getObjectId(), prefix, keepOriginalId));
+     transfer.setFromTripId(toGtfsId(neptuneObject.getFeederVehicleJourney().getObjectId(), prefix, keepOriginalId));
 //		transfer.setFromRouteId(
 //				toGtfsId(neptuneObject.getFeederVehicleJourney().getRoute().getLine().getObjectId(), prefix, keepOriginalId));
 
@@ -75,12 +74,14 @@ public class GtfsTransferProducer extends AbstractProducer {
 //				toGtfsId(neptuneObject.getConsumerVehicleJourney().getRoute().getLine().getObjectId(), prefix, keepOriginalId));
 
 		try {
-			getExporter().getTransferExporter().export(transfer);
-		} catch (Exception e) {
-			log.error("fail to produce transfer " + e.getClass().getName() + " " + e.getMessage());
-			return false;
-		}
-		return true;
-	}
+         getExporter().getTransferExporter().export(transfer);
+      }
+      catch (Exception e)
+      {
+          log.error("fail to produce transfer "+e.getClass().getName()+" "+e.getMessage());
+         return false;
+      }
+      return true;
+   }
 
 }

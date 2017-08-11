@@ -1,7 +1,6 @@
 package mobi.chouette.model.iev;
 
 import java.io.Serializable;
-import java.sql.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +14,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import org.joda.time.LocalDate;
 
 
 /**
@@ -82,5 +83,5 @@ public class Stat implements Serializable {
 	@Getter
 	@Setter
 	@Column(name = "date")
-	private Date date;
+	private LocalDate date;
 }

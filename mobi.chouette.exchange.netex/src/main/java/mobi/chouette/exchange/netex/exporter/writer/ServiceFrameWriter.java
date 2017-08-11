@@ -2,7 +2,6 @@ package mobi.chouette.exchange.netex.exporter.writer;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -21,13 +20,16 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 public class ServiceFrameWriter extends AbstractWriter{
 	
 
 	
 	public static void write(Writer writer, ExportableData data ) throws IOException, DatatypeConfigurationException 
 	{
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 		DatatypeFactory durationFactory = DatatypeFactory.newInstance();
 		Line line = data.getLine();
 		Network network = line.getNetwork();
@@ -36,7 +38,7 @@ public class ServiceFrameWriter extends AbstractWriter{
 		writer.write("<!-- ServiceFrame to map the PTNetwork  NEPTUNE Object -->\n");
 		writer.write("<ServiceFrame version=\"any\"  id=\""+line.objectIdPrefix()+":ServiceFrame:"+line.objectIdSuffix()+"\">\n");
 		writer.write("  <!-- NEPTUNE PTNetwork Mappling =========================================== -->\n");
-		writer.write("  <Network version=\""+network.getObjectVersion()+"\" changed=\""+dateFormat.format(line.getNetwork().getVersionDate())+"\" \n");
+		writer.write("  <Network version=\""+network.getObjectVersion()+"\" changed=\""+format.print(line.getNetwork().getVersionDate())+"\" \n");
 		writer.write("           id=\""+modelTranslator.netexId(network)+"\" >\n");
 		//      #if ( $network.comment )
 		if (isSet(network.getComment()))
@@ -315,19 +317,19 @@ public class ServiceFrameWriter extends AbstractWriter{
 		writer.write("      <TransferDuration>\n");
 		//        #if ( $connectionLink.defaultDuration)
 		if (isSet(connectionLink.getDefaultDuration())) 
-		writer.write("       <DefaultDuration>"+durationFactory.newDuration(connectionLink.getDefaultDuration().getTime())+"</DefaultDuration>\n");
+		writer.write("       <DefaultDuration>"+durationFactory.newDuration(connectionLink.getDefaultDuration().getMillis())+"</DefaultDuration>\n");
 		//        #end
 		//        #if ( $connectionLink.frequentTravellerDuration)
 		if (isSet(connectionLink.getFrequentTravellerDuration())) 
-		writer.write("        <FrequentTravellerDuration>"+durationFactory.newDuration(connectionLink.getFrequentTravellerDuration().getTime())+"</FrequentTravellerDuration>\n");
+		writer.write("        <FrequentTravellerDuration>"+durationFactory.newDuration(connectionLink.getFrequentTravellerDuration().getMillis())+"</FrequentTravellerDuration>\n");
 		//        #end
 		//        #if ( $connectionLink.occasionalTravellerDuration)
 		if (isSet(connectionLink.getOccasionalTravellerDuration())) 
-		writer.write("        <OccasionalTravellerDuration>"+durationFactory.newDuration(connectionLink.getOccasionalTravellerDuration().getTime())+"</OccasionalTravellerDuration>\n");
+		writer.write("        <OccasionalTravellerDuration>"+durationFactory.newDuration(connectionLink.getOccasionalTravellerDuration().getMillis())+"</OccasionalTravellerDuration>\n");
 		//        #end
 		//        #if ( $connectionLink.mobilityRestrictedTravellerDuration)
 		if (isSet(connectionLink.getMobilityRestrictedTravellerDuration())) 
-		writer.write("        <MobilityRestrictedTravellerDuration>"+durationFactory.newDuration(connectionLink.getMobilityRestrictedTravellerDuration().getTime())+"</MobilityRestrictedTravellerDuration>\n"); 
+		writer.write("        <MobilityRestrictedTravellerDuration>"+durationFactory.newDuration(connectionLink.getMobilityRestrictedTravellerDuration().getMillis())+"</MobilityRestrictedTravellerDuration>\n");
 		//        #end
 		writer.write("      </TransferDuration>\n");
 		}

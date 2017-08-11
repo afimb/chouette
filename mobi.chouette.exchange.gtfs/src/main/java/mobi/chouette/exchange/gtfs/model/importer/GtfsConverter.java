@@ -1,11 +1,8 @@
 package mobi.chouette.exchange.gtfs.model.importer;
 
-import java.awt.Color;
+import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Date;
-import java.sql.Time;
-import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
 import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate.ExceptionType;
@@ -20,10 +17,14 @@ import mobi.chouette.exchange.gtfs.model.GtfsTrip.DirectionType;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip.WheelchairAccessibleType;
 import mobi.chouette.exchange.gtfs.model.RouteTypeEnum;
 
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 public interface GtfsConverter {
 
-	public static SimpleDateFormat BASIC_ISO_DATE = new SimpleDateFormat(
-			"yyyyMMdd");
+	public static DateTimeFormatter BASIC_ISO_DATE =  DateTimeFormat.forPattern("yyyyMMdd");
 
 	public static DefaultFieldConverter<String> STRING_CONVERTER = new DefaultFieldConverter<String>() {
 
@@ -122,30 +123,16 @@ public interface GtfsConverter {
 		}
 	};
 
-	public static DefaultFieldConverter<Time> TIME_CONVERTER = new DefaultFieldConverter<Time>() {
+	public static DefaultFieldConverter<LocalDate> DATE_CONVERTER = new DefaultFieldConverter<LocalDate>() {
 
 		@Override
-		protected Time convertFrom(String input) throws Exception {
-			return Time.valueOf(input);
+		protected LocalDate convertFrom(String input) throws Exception {
+			return LocalDate.parse(input,BASIC_ISO_DATE);
 		}
 
 		@Override
-		protected String convertTo(Time input) throws Exception {
-			return (input != null) ? input.toString() : "";
-		}
-
-	};
-
-	public static DefaultFieldConverter<Date> DATE_CONVERTER = new DefaultFieldConverter<Date>() {
-
-		@Override
-		protected Date convertFrom(String input) throws Exception {
-			return new Date(BASIC_ISO_DATE.parse(input).getTime());
-		}
-
-		@Override
-		protected String convertTo(Date input) throws Exception {
-			return (input != null) ? BASIC_ISO_DATE.format(input) : "";
+		protected String convertTo(LocalDate input) throws Exception {
+			return (input != null) ? BASIC_ISO_DATE.print(input) : "";
 		}
 
 	};
@@ -230,7 +217,7 @@ public interface GtfsConverter {
 				throw new java.lang.IllegalArgumentException();
 			}
 
-			result.setTime(new Time(hour, minute, second));
+			result.setTime(new LocalTime(hour, minute, second));
 			result.setDay(day);
 
 			return result;
@@ -242,13 +229,13 @@ public interface GtfsConverter {
 			String result = "";
 			if (input != null && input.getTime() != null) {
 
-				Time value = input.getTime();
+				LocalTime value = input.getTime();
 
-				int hour = value.getHours() + (input.getDay() * 24);
-				if (value.getHours() > 23) throw new IllegalArgumentException("hour > 23 : "+value.getHours());
+				int hour = value.getHourOfDay() + (input.getDay() * 24);
+				if (value.getHourOfDay() > 23) throw new IllegalArgumentException("hour > 23 : "+value.getHourOfDay());
 				if (input.getDay() < 0 ) throw new IllegalArgumentException("time day < 0 : "+input.getDay());
-				int minute = value.getMinutes();
-				int second = value.getSeconds();
+				int minute = value.getMinuteOfHour();
+				int second = value.getSecondOfMinute();
 				String hourString;
 				String minuteString;
 				String secondString;

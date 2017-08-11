@@ -2,6 +2,8 @@ package mobi.chouette.exchange.netexprofile.exporter;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+import org.joda.time.LocalDateTime;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
@@ -56,7 +58,7 @@ public class NetexInitExportCommand implements Command, Constant {
             context.put(NETEX_REFERENTIAL, new NetexReferential());
 
             Metadata metadata = new Metadata();
-            metadata.setDate(Calendar.getInstance());
+            metadata.setDate(LocalDateTime.now());
             metadata.setFormat("application/xml");
             metadata.setTitle("Export NeTEx ");
 

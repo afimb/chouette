@@ -3,7 +3,6 @@ package mobi.chouette.exchange.validation.checkpoint;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -51,13 +50,14 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
-import org.apache.commons.io.FileUtils;
-import org.jboss.arquillian.testng.Arquillian;
-import org.testng.Assert;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.PrecisionModel;
+import org.apache.commons.io.FileUtils;
+import org.jboss.arquillian.testng.Arquillian;
+import org.joda.time.LocalTime;
+import org.joda.time.Seconds;
+import org.testng.Assert;
 
 @Log4j
 public abstract class AbstractTestValidation  extends Arquillian implements Constant, ReportConstant {
@@ -263,11 +263,11 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 		return distance * 1000.;
 	}
 
-	public static long diffTime(Time first, Time last)
+	public static long diffTime(LocalTime first, LocalTime last)
 	{
 		if (first == null || last == null)
 			return Long.MIN_VALUE; // TODO
-		long diff = last.getTime() / 1000L - first.getTime() / 1000L;
+		long diff = Seconds.secondsBetween(first, last).getSeconds();
 		if (diff < 0)
 			diff += 86400L; // step upon midnight : add one day in seconds
 		return diff;

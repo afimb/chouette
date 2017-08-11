@@ -1,10 +1,5 @@
 package mobi.chouette.exchange.neptune.parser;
 
-import java.sql.Date;
-import java.sql.Time;
-import java.text.SimpleDateFormat;
-
-import org.xmlpull.v1.XmlPullParser;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -20,6 +15,12 @@ import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Timeband;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
 public class TimeSlotParser implements Parser, Constant {
@@ -59,7 +60,7 @@ public class TimeSlotParser implements Parser, Constant {
 				timeSlot.setObjectVersion(version);
 				timeband.setObjectVersion(version);
 			} else if (xpp.getName().equals("creationTime")) {
-				Date creationTime = ParserUtils.getSQLDateTime(xpp.nextText());
+				LocalDateTime creationTime = ParserUtils.getLocalDateTime(xpp.nextText());
 				timeSlot.setCreationTime(creationTime);
 				timeband.setCreationTime(creationTime);
 			} else if (xpp.getName().equals("creatorId")) {
@@ -67,23 +68,23 @@ public class TimeSlotParser implements Parser, Constant {
 				timeSlot.setCreatorId(creatorId);
 				timeband.setCreatorId(creatorId);
 			} else if (xpp.getName().equals("beginningSlotTime")) {
-				Time beginningSlotTime = ParserUtils.getSQLTime(xpp.nextText());
+				LocalTime beginningSlotTime = ParserUtils.getLocalTime(xpp.nextText());
 				timeSlot.setBeginningSlotTime(beginningSlotTime);
 				timeband.setStartTime(beginningSlotTime);
 			} else if (xpp.getName().equals("endSlotTime")) {
-				Time endSlotTime = ParserUtils.getSQLTime(xpp.nextText());
+				LocalTime endSlotTime = ParserUtils.getLocalTime(xpp.nextText());
 				timeSlot.setEndSlotTime(endSlotTime);
 				timeband.setEndTime(endSlotTime);
 			} else if (xpp.getName().equals("firstDepartureTimeInSlot")) {
-				timeSlot.setFirstDepartureTimeInSlot(ParserUtils.getSQLTime(xpp.nextText()));
+				timeSlot.setFirstDepartureTimeInSlot(ParserUtils.getLocalTime(xpp.nextText()));
 			} else if (xpp.getName().equals("lastDepartureTimeInSlot")) {
-				timeSlot.setLastDepartureTimeInSlot(ParserUtils.getSQLTime(xpp.nextText()));
+				timeSlot.setLastDepartureTimeInSlot(ParserUtils.getLocalTime(xpp.nextText()));
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
-		SimpleDateFormat sdf = new SimpleDateFormat("HH:MM");
-		timeband.setName(sdf.format(timeband.getStartTime())+"->"+sdf.format(timeband.getEndTime()));
+		DateTimeFormatter timeFormatter = DateTimeFormat.forPattern("HH:MM");
+		timeband.setName(timeFormatter.print(timeband.getStartTime())+"->"+timeFormatter.print(timeband.getEndTime()));
 		validator.addLocation(context, timeSlot, lineNumber, columnNumber);
 	}
 

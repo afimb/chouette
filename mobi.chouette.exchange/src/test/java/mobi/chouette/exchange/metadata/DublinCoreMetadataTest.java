@@ -13,6 +13,8 @@ import java.nio.file.Paths;
 import java.util.Calendar;
 
 import org.apache.commons.io.FileUtils;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.BeforeGroups;
@@ -54,11 +56,11 @@ public class DublinCoreMetadataTest
 		end.set(2015,Calendar.MARCH,31,13,00);
 		Metadata data = new Metadata();
 		data.setCreator("the creator");
-		data.setDate(date);
+		data.setDate(LocalDateTime.fromCalendarFields(date));
 		data.setPublisher("the publisher");
 		data.setFormat("the format");
 		data.getSpatialCoverage().update(3.45678, 45.78965);
-		data.getTemporalCoverage().update(start, end);
+		data.getTemporalCoverage().update(LocalDate.fromCalendarFields(start), LocalDate.fromCalendarFields(end));
 		data.setTitle("the title");
 		data.setRelation(new URL("http://the.relation.com"));
 		return data;

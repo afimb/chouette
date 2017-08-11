@@ -2,13 +2,16 @@ package mobi.chouette.exchange.netexprofile.importer.util;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.sql.Time;
+
+import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 
+
 import org.rutebanken.netex.model.TimetabledPassingTime;
 
+import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 import mobi.chouette.exchange.netexprofile.parser.NetexParserUtils;
 import mobi.chouette.model.VehicleJourneyAtStop;
@@ -22,13 +25,12 @@ public class NetexTimeConversionUtil {
 	    if((arrival && vj.getArrivalTime() == null || (!arrival && vj.getDepartureTime() == null))) {
 	    	return;
 	    }
-	    
-	    int dayOffset = arrival ? vj.getArrivalDayOffset() : vj.getDepartureDayOffset();
-	    Time localTime = arrival ? vj.getArrivalTime() : vj.getDepartureTime();
-	    
-	    
-	    OffsetTime zuluTime = localTime.toLocalTime().atOffset(NetexProducerUtils.getZoneOffset(LOCAL_ZONE_ID)).withOffsetSameInstant(ZoneOffset.UTC);
-		if(zuluTime.getHour() > localTime.getHours()) {
+
+		int dayOffset = arrival ? vj.getArrivalDayOffset() : vj.getDepartureDayOffset();
+		LocalTime localTime = TimeUtil.toLocalTimeFromJoda(arrival ? vj.getArrivalTime() : vj.getDepartureTime());
+
+		OffsetTime zuluTime = localTime.atOffset(NetexProducerUtils.getZoneOffset(LOCAL_ZONE_ID)).withOffsetSameInstant(ZoneOffset.UTC);
+		if (zuluTime.getHour() > localTime.getHour()) {
 			// Shifted before midnight. Note only works for east of GMT?
 			dayOffset--;
 		}
@@ -56,24 +58,24 @@ public class NetexTimeConversionUtil {
 	    if(dayOffset == null) {
 	    	dayOffset = BigInteger.ZERO;
 	    }
-	    
-	    
-	    
-		Time localTime =  Time.valueOf(zuluTime.withOffsetSameInstant(NetexParserUtils.getZoneOffset(LOCAL_ZONE_ID)).toLocalTime());
-	    if(zuluTime.getHour() > localTime.getHours()) {
+
+
+
+		LocalTime localTime =  zuluTime.withOffsetSameInstant(NetexParserUtils.getZoneOffset(LOCAL_ZONE_ID)).toLocalTime();
+	    if(zuluTime.getHour() > localTime.getHour()) {
 	    	dayOffset = dayOffset.add(BigInteger.ONE);
 	    }
 		
 	    
 		if(arrival) {
-			vj.setArrivalTime(localTime);
-			
+			vj.setArrivalTime(TimeUtil.toJodaLocalTime(localTime));
+
 			if(!BigDecimal.ZERO.equals(dayOffset)) {
 				vj.setArrivalDayOffset(dayOffset.intValue());
 			}
 		} else {
-			vj.setDepartureTime(localTime);
-			
+			vj.setDepartureTime(TimeUtil.toJodaLocalTime(localTime));
+
 			if(!BigDecimal.ZERO.equals(dayOffset)) {
 				vj.setDepartureDayOffset(dayOffset.intValue());
 			}

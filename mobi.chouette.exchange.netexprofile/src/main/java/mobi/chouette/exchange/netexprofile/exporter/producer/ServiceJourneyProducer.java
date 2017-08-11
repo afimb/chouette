@@ -1,21 +1,29 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import java.math.BigInteger;
+import java.util.Comparator;
+import java.util.List;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexTimeConversionUtil;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.*;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
-import org.apache.commons.collections.CollectionUtils;
-import org.rutebanken.netex.model.*;
+import mobi.chouette.model.VehicleJourneyAtStop;
 
-import java.math.BigInteger;
-import java.sql.Time;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
-import java.util.Comparator;
-import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
+import org.joda.time.LocalTime;
+import org.rutebanken.netex.model.DayTypeRefStructure;
+import org.rutebanken.netex.model.DayTypeRefs_RelStructure;
+import org.rutebanken.netex.model.JourneyPatternRefStructure;
+import org.rutebanken.netex.model.LineRefStructure;
+import org.rutebanken.netex.model.ServiceJourney;
+import org.rutebanken.netex.model.StopPointInJourneyPatternRefStructure;
+import org.rutebanken.netex.model.TimetabledPassingTime;
+import org.rutebanken.netex.model.TimetabledPassingTimes_RelStructure;
 
 import static mobi.chouette.exchange.netexprofile.Constant.PRODUCING_CONTEXT;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
@@ -96,8 +104,8 @@ public class ServiceJourneyProducer extends NetexProducer {
                 pointInPatternRefStruct.setRef(pointInPatternIdRef);
                 timetabledPassingTime.setPointInJourneyPatternRef(netexFactory.createStopPointInJourneyPatternRef(pointInPatternRefStruct));
 
-                Time departureTime = vehicleJourneyAtStop.getDepartureTime();
-                Time arrivalTime = vehicleJourneyAtStop.getArrivalTime();
+                LocalTime departureTime = vehicleJourneyAtStop.getDepartureTime();
+                LocalTime arrivalTime = vehicleJourneyAtStop.getArrivalTime();
 
                 if (arrivalTime != null) {
                     if (arrivalTime.equals(departureTime)) {

@@ -1,8 +1,8 @@
 package mobi.chouette.exchange.gtfs.importer;
 
 import java.math.BigDecimal;
+import org.joda.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -135,7 +135,7 @@ public class CommercialStopGenerator extends AbstractGenerator {
 	 * @param objectId
 	 */
 	private StopArea initArea(Referential referential, StopArea stop, String objectId) {
-		Calendar now = Calendar.getInstance();
+		LocalDateTime now = LocalDateTime.now();
 		String[] token = stop.getObjectId().split(":");
 		if (objectId == null)
 			objectId = token[0] + ":" + token[1] + ":COM_" + token[2];
@@ -143,7 +143,7 @@ public class CommercialStopGenerator extends AbstractGenerator {
 		area.setName(stop.getName());
 		area.setObjectId(objectId);
 		area.setObjectVersion(stop.getObjectVersion());
-		area.setCreationTime(now.getTime());
+		area.setCreationTime(now);
 		area.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 		return area;
 	}

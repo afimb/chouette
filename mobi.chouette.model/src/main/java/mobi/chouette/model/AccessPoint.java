@@ -1,6 +1,5 @@
 package mobi.chouette.model;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,10 +10,12 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -26,6 +27,7 @@ import mobi.chouette.model.type.AccessPointTypeEnum;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.joda.time.LocalTime;
 
 /**
  * Chouette AccessPoint : relation between an AccessPoint and a StopArea
@@ -47,7 +49,7 @@ public class AccessPoint extends NeptuneLocalizedObject {
 	@Setter
 //	@SequenceGenerator(name="access_points_id_seq", sequenceName="access_points_id_seq", allocationSize=1)
 //    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="access_points_id_seq")
-	@GenericGenerator(name = "access_points_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
+	@GenericGenerator(name = "access_points_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator",
 		parameters = {
 			@Parameter(name = "sequence_name", value = "access_points_id_seq"),
 			@Parameter(name = "increment_size", value = "100") })
@@ -106,7 +108,7 @@ public class AccessPoint extends NeptuneLocalizedObject {
 	@Getter
 	@Setter
 	@Column(name = "openning_time")
-	private Time openingTime;
+	private LocalTime openingTime;
 
 	/**
 	 * access point closing time
@@ -118,7 +120,7 @@ public class AccessPoint extends NeptuneLocalizedObject {
 	@Getter
 	@Setter
 	@Column(name = "closing_time")
-	private Time closingTime;
+	private LocalTime closingTime;
 
 	/**
 	 * access type

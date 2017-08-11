@@ -1,11 +1,8 @@
 package mobi.chouette.exchange.neptune.exporter.producer;
 
 import java.math.BigInteger;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
@@ -17,6 +14,9 @@ import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Route;
 
 import org.apache.log4j.Logger;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 import org.trident.schema.trident.ObjectFactory;
 import org.trident.schema.trident.RegistrationType;
 import org.trident.schema.trident.TridentObjectType;
@@ -92,30 +92,43 @@ public abstract class AbstractJaxbNeptuneProducer<T extends TridentObjectType, U
 		return (value == null || value.isEmpty());
 	}
 
-	protected Duration toDuration(java.sql.Time time) {
-		if (time == null)
+	protected Duration toDuration(org.joda.time.Duration duration) {
+		if (duration == null)
 			return null;
-		Calendar c = Calendar.getInstance(TimeZone.getDefault());
-		c.setTimeInMillis(time.getTime());
-		long h = c.get(Calendar.HOUR_OF_DAY);
-		long m = c.get(Calendar.MINUTE);
-		long s = c.get(Calendar.SECOND);
-		long millis = (h * 3600 + m * 60 + s) * 1000;
-		Duration duration = typeFactory.newDuration(millis);
-		return duration;
+		Duration xmlDuration = typeFactory.newDuration(duration.getMillis());
+		return xmlDuration;
 	}
 
-	protected XMLGregorianCalendar toCalendar(Date date) {
+	protected XMLGregorianCalendar toCalendar(LocalDateTime date) {
 		if (date == null)
 			return null;
-		GregorianCalendar cal = new GregorianCalendar();
-		cal.setTime(date);
+		GregorianCalendar cal = date.toDateTime().toGregorianCalendar();
 		XMLGregorianCalendar c = typeFactory.newXMLGregorianCalendar(cal);
 		c.setTimezone(DatatypeConstants.FIELD_UNDEFINED);
 		c.setMillisecond(DatatypeConstants.FIELD_UNDEFINED);
 		return c;
 	}
 
+	protected XMLGregorianCalendar toCalendar(LocalDate date) {
+		if (date == null)
+			return null;
+		GregorianCalendar cal = date.toDateTimeAtStartOfDay().toGregorianCalendar();
+		XMLGregorianCalendar c = typeFactory.newXMLGregorianCalendar(cal);
+		c.setTimezone(DatatypeConstants.FIELD_UNDEFINED);
+		c.setMillisecond(DatatypeConstants.FIELD_UNDEFINED);
+		return c;
+	}
+
+	protected XMLGregorianCalendar toCalendar(LocalTime time) {
+		if (time == null)
+			return null;
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTimeInMillis(time.getMillisOfDay());
+		XMLGregorianCalendar c = typeFactory.newXMLGregorianCalendar(cal);
+		c.setTimezone(DatatypeConstants.FIELD_UNDEFINED);
+		c.setMillisecond(DatatypeConstants.FIELD_UNDEFINED);
+		return c;
+	}
 	@SuppressWarnings("unused")
 	protected boolean hasOppositeRoute(Route route, Logger log) {
 		// protect tests from opposite_id invalid foreign key

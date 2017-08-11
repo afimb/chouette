@@ -23,7 +23,7 @@ public class NetexTimeConverisonUtilTest {
 		
 		NetexTimeConversionUtil.parsePassingTimeUtc(tpt, false, vj);
 		
-		Assert.assertEquals(vj.getDepartureTime().getHours(), 20);
+		Assert.assertEquals(vj.getDepartureTime().getHourOfDay(), 20);
 		Assert.assertEquals(vj.getDepartureDayOffset(), 0);
 		
 		NetexTimeConversionUtil.populatePassingTimeUtc(tpt, false, vj);
@@ -46,7 +46,7 @@ public class NetexTimeConverisonUtilTest {
 		
 		NetexTimeConversionUtil.parsePassingTimeUtc(tpt, false, vj);
 		
-		Assert.assertEquals(vj.getDepartureTime().getHours(), 1);
+		Assert.assertEquals(vj.getDepartureTime().getHourOfDay(), 1);
 		Assert.assertEquals(vj.getDepartureDayOffset(), 1);
 		
 		NetexTimeConversionUtil.populatePassingTimeUtc(tpt, false, vj);

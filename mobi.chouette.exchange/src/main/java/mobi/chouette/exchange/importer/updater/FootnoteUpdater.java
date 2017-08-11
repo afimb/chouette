@@ -1,11 +1,11 @@
 package mobi.chouette.exchange.importer.updater;
 
-import java.util.Date;
-
 import javax.ejb.Stateless;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.model.Footnote;
+
+import org.joda.time.LocalDateTime;
 
 @Stateless(name = FootnoteUpdater.BEAN_NAME)
 public class FootnoteUpdater implements Updater<Footnote> {
@@ -31,7 +31,7 @@ public class FootnoteUpdater implements Updater<Footnote> {
 		}
 
 		// Updated now anyhow
-		oldValue.setUpdatedAt(new Date());
+		oldValue.setUpdatedAt(LocalDateTime.now());
 		
 	}
 

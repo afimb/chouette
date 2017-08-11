@@ -259,11 +259,10 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 			}
 		}
 
-		link.getDefaultDuration().setTime(link.getDefaultDuration().getTime() - 600000);
-		link.getOccasionalTravellerDuration().setTime(link.getOccasionalTravellerDuration().getTime() - 800000);
-		link.getFrequentTravellerDuration().setTime(link.getFrequentTravellerDuration().getTime() - 600000);
-		link.getMobilityRestrictedTravellerDuration().setTime(
-				link.getMobilityRestrictedTravellerDuration().getTime() - 900000);
+		link.setDefaultDuration(link.getDefaultDuration().minus(600000));
+		link.setOccasionalTravellerDuration(link.getOccasionalTravellerDuration().minus(800000));
+		link.setFrequentTravellerDuration(link.getFrequentTravellerDuration().minus(600000));
+		link.setMobilityRestrictedTravellerDuration(link.getMobilityRestrictedTravellerDuration().minus(900000));
 
 		ValidationData data = new ValidationData();
 		data.getConnectionLinks().addAll(beans);

@@ -96,7 +96,7 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 				// (e)
 				prepareCheckPoint(context, TIMETABLE_3);
 				for (Period period : timetable.getPeriods()) {
-					if (period.getEndDate().after(period.getStartDate()))
+					if (period.getEndDate().isAfter(period.getStartDate()))
 						continue;
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 					validationReporter.addCheckPointReportError(context, TIMETABLE_3, fileLocations.get(objectId));

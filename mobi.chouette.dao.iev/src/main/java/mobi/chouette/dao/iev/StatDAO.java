@@ -1,6 +1,6 @@
 package mobi.chouette.dao.iev;
 
-import java.sql.Date;
+
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -11,6 +11,8 @@ import javax.persistence.TypedQuery;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.iev.Stat;
+
+import org.joda.time.LocalDate;
 
 @Stateless
 @Log4j
@@ -26,7 +28,7 @@ public class StatDAO extends GenericDAOImpl<Stat> {
 		this.em = em;
 	}
 	
-	public void addStatToDatabase(Date date, String referential, String action, String type) {
+	public void addStatToDatabase(LocalDate date, String referential, String action, String type) {
 		// Insertion des statistiques d'import, export, validation dans la table stats
 		Stat chouetteStat = new Stat();
 		
@@ -59,7 +61,7 @@ public class StatDAO extends GenericDAOImpl<Stat> {
 		return lstStat;
 	}
 	
-	public void removeObsoleteStatFromDatabase(Date date) {
+	public void removeObsoleteStatFromDatabase(LocalDate date) {
 		Query query = em.createNativeQuery("DELETE FROM Stats s WHERE  s.date < (date '" + date + "' - interval '1 year')");
 		query.executeUpdate();
 	}

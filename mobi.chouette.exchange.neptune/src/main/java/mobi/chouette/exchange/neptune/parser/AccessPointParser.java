@@ -1,8 +1,6 @@
 package mobi.chouette.exchange.neptune.parser;
 
 import java.math.BigDecimal;
-import java.sql.Time;
-import java.util.Date;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
@@ -20,6 +18,8 @@ import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
@@ -51,7 +51,7 @@ public class AccessPointParser implements Parser, Constant {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				accessPoint.setObjectVersion(version);
 			} else if (xpp.getName().equals("creationTime")) {
-				Date creationTime = ParserUtils.getSQLDateTime(xpp.nextText());
+				LocalDateTime creationTime = ParserUtils.getLocalDateTime(xpp.nextText());
 				accessPoint.setCreationTime(creationTime);
 			} else if (xpp.getName().equals("creatorId")) {
 				accessPoint.setCreatorId(ParserUtils.getText(xpp.nextText()));
@@ -107,10 +107,10 @@ public class AccessPointParser implements Parser, Constant {
 					}
 				}
 			} else if (xpp.getName().equals("openingTime")) {
-				Time value = ParserUtils.getSQLTime(xpp.nextText());
+				LocalTime value = ParserUtils.getLocalTime(xpp.nextText());
 				accessPoint.setOpeningTime(value);
 			} else if (xpp.getName().equals("closingTime")) {
-				Time value = ParserUtils.getSQLTime(xpp.nextText());
+				LocalTime value = ParserUtils.getLocalTime(xpp.nextText());
 				accessPoint.setClosingTime(value);
 			} else if (xpp.getName().equals("type")) {
 				AccessPointTypeEnum value = ParserUtils.getEnum(

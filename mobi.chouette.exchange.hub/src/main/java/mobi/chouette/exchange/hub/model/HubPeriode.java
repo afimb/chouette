@@ -1,11 +1,12 @@
 package mobi.chouette.exchange.hub.model;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import org.joda.time.LocalDate;
 
 public class HubPeriode extends HubObject implements Comparable<HubPeriode>{
 	/**
@@ -33,7 +34,7 @@ public class HubPeriode extends HubObject implements Comparable<HubPeriode>{
 	 * TailleMax = 10
 	 */
 	@Getter @Setter
-	private Date dateDebut;
+	private LocalDate dateDebut;
 	
 	/**
 	 * rang = 4
@@ -42,7 +43,7 @@ public class HubPeriode extends HubObject implements Comparable<HubPeriode>{
 	 * TailleMax = 10
 	 */
 	@Getter @Setter
-	private Date dateFin;
+	private LocalDate dateFin;
 	
 	/**
 	 * rang = 5

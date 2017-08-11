@@ -47,6 +47,8 @@ import org.apache.commons.io.FileUtils;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 @Stateless(name = JobServiceManager.BEAN_NAME)
 @Startup
@@ -261,8 +263,8 @@ public class JobServiceManager {
 
 	public void start(JobService jobService) {
 		jobService.setStatus(STATUS.STARTED);
-		jobService.setUpdated(new Date());
-		jobService.setStarted(new Date());
+		jobService.setUpdated(LocalDateTime.now());
+		jobService.setStarted(LocalDateTime.now());
 		jobService.addLink(MediaType.APPLICATION_JSON, Link.REPORT_REL);
 		jobDAO.update(jobService.getJob());
 	}
@@ -283,7 +285,7 @@ public class JobServiceManager {
 			// set delete link
 			jobService.addLink(MediaType.APPLICATION_JSON, Link.DELETE_REL);
 
-			jobService.setUpdated(new Date());
+			jobService.setUpdated(LocalDateTime.now());
 			jobDAO.update(jobService.getJob());
 
 		}
@@ -354,15 +356,14 @@ public class JobServiceManager {
 			if (Files.exists(Paths.get(jobService.getPathName(), Constant.VALIDATION_FILE)))
 				jobService.addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_REL);
 		}
-		jobService.setUpdated(new Date());
+		jobService.setUpdated(LocalDateTime.now());
 		jobDAO.update(jobService.getJob());
 		
 		// update statistics
 		// Ajout des statistiques d'import, export ou validation en base de données
 		{
 			// log.info("BEGIN ADDING STAT referential : " + jobService.getReferential() + " action : " + jobService.getAction() + " type :" + jobService.getType());
-			java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-			
+			LocalDate now = LocalDate.now();
 			// Suppression des lignes de statistiques pour n'avoir que 12 mois glissants
 			statDAO.removeObsoleteStatFromDatabase(now);
 			
@@ -390,8 +391,8 @@ public class JobServiceManager {
 				jobService.addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_REL);
 		}
 
-		jobService.setUpdated(new Date());
-		jobDAO.update(jobService.getJob());
+            jobService.setUpdated(LocalDateTime.now());
+            jobDAO.update(jobService.getJob());
 
 	}
 
@@ -466,7 +467,7 @@ public class JobServiceManager {
 				// filter on update time if given, otherwise don't return
 				// deleted jobs
 				boolean versionZeroCondition = (version == 0) && job.getStatus().ordinal() < STATUS.DELETED.ordinal();
-				boolean versionNonZeroCondition = (version > 0) && version < job.getUpdated().getTime();
+				boolean versionNonZeroCondition = (version > 0) && version < job.getUpdated().toDate().getTime();
 
 				return versionZeroCondition || versionNonZeroCondition;
 			}

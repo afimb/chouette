@@ -3,10 +3,7 @@ package mobi.chouette.exchange.importer;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -15,9 +12,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
@@ -44,6 +38,12 @@ import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
+
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 @Log4j
 @Stateless(name = LineRegisterCommand.COMMAND)
@@ -189,15 +189,15 @@ public class LineRegisterCommand implements Command {
 
 	private boolean isLineIsValidInFuture(Line line) {
 
-		Date now = new Date();
+		LocalDate today = LocalDate.now();
 		
 		for(Route r : line.getRoutes()) {
 			for(JourneyPattern jp : r.getJourneyPatterns()) {
 				for(VehicleJourney vj : jp.getVehicleJourneys()) {
 					for(Timetable t : vj.getTimetables()) {
 						t.computeLimitOfPeriods();
-						log.info("Checking "+t.getEndOfPeriod()+ " against "+now);
-						if(!t.getEndOfPeriod().before(now)) {
+						log.info("Checking "+t.getEndOfPeriod()+ " against "+today);
+						if(!t.getEndOfPeriod().isBefore(today)) {
 							return true;
 						}
 					}
@@ -217,18 +217,18 @@ public class LineRegisterCommand implements Command {
 		// VehicleJourneyAtStop oldValue,
 		// VehicleJourneyAtStop newValue)
 
-		DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+		DateTimeFormatter timeFormat = DateTimeFormat.forPattern("HH:mm:ss");
 		buffer.write(vehicleJourney.getId().toString());
 		buffer.append(SEP);
 		buffer.write(stopPoint.getId().toString());
 		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getArrivalTime() != null)
-			buffer.write(timeFormat.format(vehicleJourneyAtStop.getArrivalTime()));
+			buffer.write(timeFormat.print(vehicleJourneyAtStop.getArrivalTime()));
 		else
 			buffer.write(NULL);
 		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getDepartureTime() != null)
-			buffer.write(timeFormat.format(vehicleJourneyAtStop.getDepartureTime()));
+			buffer.write(timeFormat.print(vehicleJourneyAtStop.getDepartureTime()));
 		else
 			buffer.write(NULL);
 		buffer.append(SEP);

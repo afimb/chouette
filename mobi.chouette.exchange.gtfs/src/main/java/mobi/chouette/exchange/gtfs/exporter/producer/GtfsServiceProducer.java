@@ -8,8 +8,6 @@
 
 package mobi.chouette.exchange.gtfs.exporter.producer;
 
-import java.sql.Date;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -26,6 +24,11 @@ import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.util.CopyUtil;
+
+import org.joda.time.DateTimeConstants;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 
 /**
  * convert Timetable to Gtfs Calendar and CalendarDate
@@ -178,32 +181,32 @@ AbstractProducer
 
    public Timetable removePeriods(Timetable timetable)
    {
-      Set<Date> excludedDates = new HashSet<Date>(
+      Set<LocalDate> excludedDates = new HashSet<LocalDate>(
     		  timetable.getExcludedDates());
-      Set<Date> includedDates = new HashSet<Date>(
+      Set<LocalDate> includedDates = new HashSet<LocalDate>(
     		  timetable.getPeculiarDates());
 
       for (Period period : timetable.getPeriods())
       {
-         Date checkedDate = period.getStartDate();
-         Date endDate = new Date(period.getEndDate().getTime() + Timetable.ONE_DAY);
-         while (checkedDate.before(endDate))
+         LocalDate checkedDate = period.getStartDate();
+         LocalDate endDate = period.getEndDate().plusDays(1);
+         while (checkedDate.isBefore(endDate))
          {
             if (!excludedDates.contains(checkedDate)
                   && !includedDates.contains(checkedDate))
             {
                if (checkValidDay(checkedDate, timetable))
                {
-                  includedDates.add(new Date(checkedDate.getTime()));
+                  includedDates.add(checkedDate);
                }
             }
-            checkedDate = new Date(checkedDate.getTime() + Timetable.ONE_DAY);
+            checkedDate = checkedDate.plusDays(1);
          }
       }
       timetable.getPeriods().clear();
       timetable.setIntDayTypes(Integer.valueOf(0));
       timetable.getCalendarDays().clear();
-      for (Date date : includedDates)
+      for (LocalDate date : includedDates)
       {
          timetable.addCalendarDay(new CalendarDay(date, true));
       }
@@ -212,36 +215,34 @@ AbstractProducer
 
    }
 
-   private boolean checkValidDay(Date checkedDate, Timetable timetable)
+   private boolean checkValidDay(LocalDate checkedDate, Timetable timetable)
    {
       boolean valid = false;
-      // to avoid timezone
-      Calendar c = Calendar.getInstance();
-      c.set(Calendar.HOUR_OF_DAY, 12);
-      java.util.Date aDate = new java.util.Date(checkedDate.getTime());
-      c.setTime(aDate);
+      // to avoid timezone // TODO NRP-1935 necessary?
+      LocalDateTime c = checkedDate.toLocalDateTime(new LocalTime(12,0,0));
+
       List<DayTypeEnum> dayTypes = timetable.getDayTypes();
-      switch (c.get(Calendar.DAY_OF_WEEK))
+      switch (c.getDayOfWeek())
       {
-      case Calendar.MONDAY :
+      case DateTimeConstants.MONDAY :
          if (dayTypes.contains(DayTypeEnum.Monday)) valid = true;
          break;
-      case Calendar.TUESDAY :
+      case DateTimeConstants.TUESDAY :
          if (dayTypes.contains(DayTypeEnum.Tuesday)) valid = true;
          break;
-      case Calendar.WEDNESDAY :
+      case DateTimeConstants.WEDNESDAY :
          if (dayTypes.contains(DayTypeEnum.Wednesday)) valid = true;
          break;
-      case Calendar.THURSDAY :
+      case DateTimeConstants.THURSDAY :
          if (dayTypes.contains(DayTypeEnum.Thursday)) valid = true;
          break;
-      case Calendar.FRIDAY :
+      case DateTimeConstants.FRIDAY :
          if (dayTypes.contains(DayTypeEnum.Friday)) valid = true;
          break;
-      case Calendar.SATURDAY :
+      case DateTimeConstants.SATURDAY :
          if (dayTypes.contains(DayTypeEnum.Saturday)) valid = true;
          break;
-      case Calendar.SUNDAY :
+      case DateTimeConstants.SUNDAY :
          if (dayTypes.contains(DayTypeEnum.Sunday)) valid = true;
          break;
       }

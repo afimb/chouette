@@ -2,7 +2,6 @@ package mobi.chouette.exchange.gtfs;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +18,7 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.Referential;
 
 import org.apache.commons.io.FileUtils;
+import org.joda.time.LocalTime;
 import org.testng.Assert;
 
 public class GtfsTestsUtils implements Constant, ReportConstant{
@@ -86,15 +86,8 @@ public class GtfsTestsUtils implements Constant, ReportConstant{
 			}
 		}
 		Assert.assertEquals(clinks.size(), 2, "line must have 2 connection link");
-		Calendar c = Calendar.getInstance();
 		for (ConnectionLink connectionLink : clinks) {
-
-			c.setTimeInMillis(connectionLink.getDefaultDuration().getTime());
-			int minutes = c.get(Calendar.MINUTE);
-			int hours = c.get(Calendar.HOUR_OF_DAY);
-			int seconds = c.get(Calendar.SECOND) + minutes * 60 + hours * 3600;
-
-			Assert.assertEquals(seconds, 4200, "line must have links duration of 1 hour and 10 minutes");
+			Assert.assertEquals(connectionLink.getDefaultDuration().getStandardSeconds(), 4200l, "line must have links duration of 1 hour and 10 minutes");
 			// Reporter.log(connectionLink.toString("\t", 1));
 
 		}
@@ -103,31 +96,15 @@ public class GtfsTestsUtils implements Constant, ReportConstant{
 		Set<AccessPoint> apoints = new HashSet<AccessPoint>();
 
 		for (AccessLink accessLink : alinks) {
-			c.setTimeInMillis(accessLink.getDefaultDuration().getTime());
-			int minutes = c.get(Calendar.MINUTE);
-			int hours = c.get(Calendar.HOUR_OF_DAY);
-			int seconds = c.get(Calendar.SECOND) + minutes * 60 + hours * 3600;
-
-			Assert.assertEquals(seconds, 60, "line must have links duration of 1 minutes");
+			Assert.assertEquals(accessLink.getDefaultDuration().getStandardSeconds(), 60l, "line must have links duration of 1 minutes");
 			// Reporter.log(accessLink.toString("\t", 1));
 			apoints.add(accessLink.getAccessPoint());
 
 		}
 		Assert.assertEquals(apoints.size(), 1, "line must have 1 access point");
 		for (AccessPoint accessPoint : apoints) {
-			c.setTimeInMillis(accessPoint.getOpeningTime().getTime());
-			int minutes = c.get(Calendar.MINUTE);
-			int hours = c.get(Calendar.HOUR_OF_DAY);
-			int seconds = c.get(Calendar.SECOND) + minutes * 60 + hours * 3600;
-
-			Assert.assertEquals(seconds, 6 * 3600, "line must have opening time of 6 hours");
-			c.setTimeInMillis(accessPoint.getClosingTime().getTime());
-			minutes = c.get(Calendar.MINUTE);
-			hours = c.get(Calendar.HOUR_OF_DAY);
-			seconds = c.get(Calendar.SECOND) + minutes * 60 + hours * 3600;
-
-			Assert.assertEquals(seconds, 22 * 3600 + 600, "line must have closing time of 22 hours 10");
-
+			Assert.assertEquals(accessPoint.getOpeningTime(), new LocalTime(6,0,0),"line must have opening time of 6 hours");
+			Assert.assertEquals(accessPoint.getClosingTime(),new LocalTime(22,10,0), "line must have closing time of 22 hours 10");
 		}
 
 	}

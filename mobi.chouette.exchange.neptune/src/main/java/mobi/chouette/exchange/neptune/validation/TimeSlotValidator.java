@@ -40,9 +40,9 @@ public class TimeSlotValidator extends AbstractValidator implements Validator<Ti
 				target.getFirstDepartureTimeInSlot() != null &&
 				target.getLastDepartureTimeInSlot() != null &&
 				target.getEndSlotTime() != null)
-			if (target.getBeginningSlotTime().after(target.getFirstDepartureTimeInSlot()) ||
-					target.getFirstDepartureTimeInSlot().after(target.getLastDepartureTimeInSlot()) ||
-					target.getLastDepartureTimeInSlot().after(target.getEndSlotTime()))
+			if (target.getBeginningSlotTime().isAfter(target.getFirstDepartureTimeInSlot()) ||
+					target.getFirstDepartureTimeInSlot().isAfter(target.getLastDepartureTimeInSlot()) ||
+					target.getLastDepartureTimeInSlot().isAfter(target.getEndSlotTime()))
 				; 
 		return ;
 	}

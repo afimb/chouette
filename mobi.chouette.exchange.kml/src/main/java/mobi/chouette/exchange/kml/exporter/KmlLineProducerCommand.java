@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,9 +24,9 @@ import mobi.chouette.exchange.kml.exporter.KmlData.KmlItem;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
 import mobi.chouette.exchange.report.ActionReporter;
-import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.JourneyPattern;
@@ -40,6 +39,7 @@ import mobi.chouette.model.util.NamingUtil;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+import org.joda.time.LocalDate;
 
 @Log4j
 public class KmlLineProducerCommand implements Command, Constant {
@@ -80,14 +80,14 @@ public class KmlLineProducerCommand implements Command, Constant {
 				shared = new SharedData();
 				context.put(SHARED_DATA, shared);
 			}
-			Date startDate = null;
+			LocalDate startDate = null;
 			if (configuration.getStartDate() != null) {
-				startDate = new Date(configuration.getStartDate().getTime());
+				startDate = new LocalDate(configuration.getStartDate());
 			}
 
-			Date endDate = null;
+			LocalDate endDate = null;
 			if (configuration.getEndDate() != null) {
-				endDate = new Date(configuration.getEndDate().getTime());
+				endDate = new LocalDate(configuration.getEndDate());
 			}
 			KmlDataCollector collector = new KmlDataCollector();
 

@@ -1,6 +1,6 @@
 package mobi.chouette.model.blueprint;
 
-import java.util.Date;
+
 import java.util.UUID;
 
 import mobi.chouette.model.Network;
@@ -9,6 +9,7 @@ import mobi.chouette.model.type.PTNetworkSourceTypeEnum;
 import com.tobedevoured.modelcitizen.annotation.Blueprint;
 import com.tobedevoured.modelcitizen.annotation.Default;
 import com.tobedevoured.modelcitizen.field.FieldCallback;
+import org.joda.time.LocalDate;
 
 @SuppressWarnings("deprecation")
 @Blueprint(Network.class)
@@ -34,7 +35,7 @@ public class NetworkBlueprint
 
    // TODO : Verify date
    @Default
-   Date versionDate = new Date(1234479600);
+   LocalDate versionDate = new LocalDate(1234479600);
 
    @Default
    String description = "Réseau de métro de la RATP";

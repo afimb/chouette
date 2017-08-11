@@ -1,6 +1,9 @@
 package mobi.chouette.exchange.gtfs.importer;
 
 import java.io.IOException;
+
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import java.util.Calendar;
 
 import javax.naming.InitialContext;
@@ -135,7 +138,7 @@ public class GtfsRouteParserCommand implements Command, Constant {
 		String prefix = configuration.getObjectIdPrefix();
 		String ptNetworkId = prefix + ":" + Network.PTNETWORK_KEY + ":" + prefix;
 		Network ptNetwork = ObjectFactory.getPTNetwork(referential, ptNetworkId);
-		ptNetwork.setVersionDate(Calendar.getInstance().getTime());
+		ptNetwork.setVersionDate(LocalDate.now());
 		ptNetwork.setName(prefix);
 		ptNetwork.setRegistrationNumber(prefix);
 		ptNetwork.setSourceName("GTFS");

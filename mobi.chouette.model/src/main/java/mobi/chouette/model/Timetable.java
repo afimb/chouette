@@ -1,8 +1,6 @@
 package mobi.chouette.model;
 
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +29,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.joda.time.LocalDate;
 
 /**
  * Chouette Timetable
@@ -60,8 +59,8 @@ public class Timetable extends NeptuneIdentifiedObject {
 	/**
 	 * mapping day type with enumerations
 	 */
-	public static final DayTypeEnum[] dayTypeByInt = { DayTypeEnum.Sunday, DayTypeEnum.Monday, DayTypeEnum.Tuesday,
-			DayTypeEnum.Wednesday, DayTypeEnum.Thursday, DayTypeEnum.Friday, DayTypeEnum.Saturday };
+	public static final DayTypeEnum[] dayTypeByInt = {DayTypeEnum.Monday, DayTypeEnum.Tuesday,
+			DayTypeEnum.Wednesday, DayTypeEnum.Thursday, DayTypeEnum.Friday, DayTypeEnum.Saturday, DayTypeEnum.Sunday};
 
 	/**
 	 * comment <br/>
@@ -174,7 +173,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@Column(name = "start_date")
-	private Date startOfPeriod;
+	private LocalDate startOfPeriod;
 
 	/**
 	 * last valid day in timetable
@@ -186,7 +185,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@Column(name = "end_date")
-	private Date endOfPeriod;
+	private LocalDate endOfPeriod;
 
 	/**
 	 * list of peculiar days
@@ -341,13 +340,13 @@ public class Timetable extends NeptuneIdentifiedObject {
 	 * @return a list of active dates and periods converted to dates if
 	 *         exclusion present
 	 */
-	public List<Date> getEffectiveDates() {
-		List<Date> ret = getPeculiarDates();
+	public List<LocalDate> getEffectiveDates() {
+		List<LocalDate> ret = getPeculiarDates();
 		if (!getExcludedDates().isEmpty())
 		{
 		for (Period period : periods) {
-			List<Date> added = toDates(period);
-			for (Date date : added) {
+			List<LocalDate> added = toDates(period);
+			for (LocalDate date : added) {
 				if (!ret.contains(date)) ret.add(date);
 			}
 		}
@@ -361,11 +360,11 @@ public class Timetable extends NeptuneIdentifiedObject {
 	 * 
 	 * @return a list of active dates
 	 */
-	public List<Date> getPeculiarDates() {
-		List<Date> ret = new ArrayList<>();
+	public List<LocalDate> getPeculiarDates() {
+		List<LocalDate> ret = new ArrayList<>();
 		for (CalendarDay day : getCalendarDays()) {
 			if (day.getIncluded())
-				ret.add(new Date(day.getDate().getTime()));
+				ret.add(day.getDate());
 		}
 		Collections.sort(ret);
 		return ret;
@@ -376,11 +375,11 @@ public class Timetable extends NeptuneIdentifiedObject {
 	 * 
 	 * @return a list of excluded dates
 	 */
-	public List<Date> getExcludedDates() {
-		List<Date> ret = new ArrayList<>();
+	public List<LocalDate> getExcludedDates() {
+		List<LocalDate> ret = new ArrayList<>();
 		for (CalendarDay day : getCalendarDays()) {
 			if (!day.getIncluded())
-				ret.add(new Date(day.getDate().getTime()));
+				ret.add(day.getDate());
 		}
 		return ret;
 	}
@@ -391,7 +390,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 	 * @param aDay
 	 * @return true if timetable is active on given date
 	 */
-	public boolean isActiveOn(final Date aDay) {
+	public boolean isActiveOn(final LocalDate aDay) {
 		if (getCalendarDays() != null) {
 			CalendarDay includedDay = new CalendarDay(aDay, true);
 			if (getCalendarDays().contains(includedDay))
@@ -401,10 +400,8 @@ public class Timetable extends NeptuneIdentifiedObject {
 				return false;
 		}
 		if (getIntDayTypes() != null && getIntDayTypes().intValue() != 0 && getPeriods() != null) {
-			Calendar c = Calendar.getInstance();
-			c.setTime(aDay);
 
-			int aDayOfWeek = c.get(Calendar.DAY_OF_WEEK) - 1; // zero on sunday
+			int aDayOfWeek = aDay.getDayOfWeek() - 1; // zero on monday
 			int aDayOfWeekFlag = buildDayTypeMask(dayTypeByInt[aDayOfWeek]);
 			if ((getIntDayTypes() & aDayOfWeekFlag) == aDayOfWeekFlag) {
 				// check if day is in a period
@@ -418,24 +415,23 @@ public class Timetable extends NeptuneIdentifiedObject {
 		return false;
 	}
 
-	public boolean isActiveBefore(final Date aDay) {
+	public boolean isActiveBefore(final LocalDate aDay) {
 		return isActiveOnPeriod(getStartOfPeriod(), aDay);
 	}
 
-	public boolean isActiveAfter(final Date aDay) {
+	public boolean isActiveAfter(final LocalDate aDay) {
 		return isActiveOnPeriod(aDay, getEndOfPeriod());
 	}
 
-	public boolean isActiveOnPeriod(final Date start, final Date end) {
+	public boolean isActiveOnPeriod(final LocalDate start, final LocalDate end) {
 		if(start == null || end == null) {
 			return false;
 		} else {
-			Date day = new Date(start.getTime());
-			while (day.before(end)) {
+			LocalDate day = start;
+			while (day.isBefore(end)) {
 				if (isActiveOn(day))
 					return true;
-				day.setTime(day.getTime() + ONE_DAY);
-	
+				day = day.plusDays(1);
 			}
 			return isActiveOn(end);
 		}
@@ -445,37 +441,32 @@ public class Timetable extends NeptuneIdentifiedObject {
 	 * calculate startOfPeriod and endOfPeriod form dates and periods
 	 */
 	public void computeLimitOfPeriods() {
-		Date startOfPeriod = null;
-		Date endOfPeriod = null;
+		LocalDate startOfPeriod = null;
+		LocalDate endOfPeriod = null;
 		for (Period period : getPeriods()) {
-			if (startOfPeriod == null || startOfPeriod.after(period.getStartDate())) {
-				startOfPeriod = (Date) period.getStartDate().clone();
+			if (startOfPeriod == null || startOfPeriod.isAfter(period.getStartDate())) {
+				startOfPeriod = period.getStartDate();
 			}
-			if (endOfPeriod == null || endOfPeriod.before(period.getEndDate())) {
-				endOfPeriod = (Date) period.getEndDate().clone();
+			if (endOfPeriod == null || endOfPeriod.isBefore(period.getEndDate())) {
+				endOfPeriod = period.getEndDate();
 			}
 		}
 		// check DayType
-		Calendar c = Calendar.getInstance();
 		if (startOfPeriod != null && endOfPeriod != null) {
-			while (startOfPeriod.before(endOfPeriod) && !isActiveOn(startOfPeriod)) {
-				c.setTime(startOfPeriod);
-				c.add(Calendar.DATE, 1);
-				startOfPeriod.setTime(c.getTimeInMillis());
+			while (startOfPeriod.isBefore(endOfPeriod) && !isActiveOn(startOfPeriod)) {
+				startOfPeriod = startOfPeriod.plusDays(1);
 			}
-			while (endOfPeriod.after(startOfPeriod) && !isActiveOn(endOfPeriod)) {
-				c.setTime(endOfPeriod);
-				c.add(Calendar.DATE, -1);
-				endOfPeriod.setTime(c.getTimeInMillis());
+			while (endOfPeriod.isAfter(startOfPeriod) && !isActiveOn(endOfPeriod)) {
+				endOfPeriod = startOfPeriod.minusDays(1);
 			}
 		}
 		for (CalendarDay calendarDay : getCalendarDays()) {
-			Date date = calendarDay.getDate();
+			LocalDate date = calendarDay.getDate();
 			if (calendarDay.getIncluded()) {
-				if (startOfPeriod == null || date.before(startOfPeriod))
-					startOfPeriod = (Date) date.clone();
-				if (endOfPeriod == null || date.after(endOfPeriod))
-					endOfPeriod = (Date) date.clone();
+				if (startOfPeriod == null || date.isBefore(startOfPeriod))
+					startOfPeriod = date;
+				if (endOfPeriod == null || date.isAfter(endOfPeriod))
+					endOfPeriod = date;
 			}
 		}
 		setStartOfPeriod(startOfPeriod);
@@ -507,7 +498,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 	 * @return periods
 	 */
 	private List<Period> getRealPeriods() {
-		List<Date> dates = getExcludedDates();
+		List<LocalDate> dates = getExcludedDates();
 		List<Period> effectivePeriods = new ArrayList<Period>();
 		if (!dates.isEmpty())
 			return effectivePeriods;
@@ -521,30 +512,27 @@ public class Timetable extends NeptuneIdentifiedObject {
 		return effectivePeriods;
 	}
 
-	private boolean dateEquals(Date first, Date second) {
-		long df = first.getTime() / 86400000;
-		long ds = second.getTime() / 86400000;
-		return df == ds;
+	private boolean dateEquals(LocalDate first, LocalDate second) {
+		return first.equals(second);
 	}
 
-	private List<Date> toDates(Period period) {
-		List<Date> dates = new ArrayList<>();
+	private List<LocalDate> toDates(Period period) {
+		List<LocalDate> dates = new ArrayList<>();
 
-		List<Date> excluded = getExcludedDates();
+		List<LocalDate> excluded = getExcludedDates();
 		if (getIntDayTypes() != null && getIntDayTypes().intValue() != 0) {
-			Calendar c = Calendar.getInstance();
-			c.setTime(period.getStartDate());
+			LocalDate date = period.getStartDate();
 
-			while (!c.getTime().after(period.getEndDate())) {
-				int aDayOfWeek = c.get(Calendar.DAY_OF_WEEK) - 1; // zero on
-																	// sunday
+			while (!date.isAfter(period.getEndDate())) {
+
+				int aDayOfWeek = date.getDayOfWeek() - 1; // zero on
+				// monday
 				int aDayOfWeekFlag = buildDayTypeMask(dayTypeByInt[aDayOfWeek]);
 				if ((getIntDayTypes() & aDayOfWeekFlag) == aDayOfWeekFlag) {
-					Date d = new Date(c.getTime().getTime());
-					if (!excluded.contains(d))
-					   dates.add(d);
+					if (!excluded.contains(date))
+						dates.add(date);
 				}
-				c.add(Calendar.DATE, 1);
+				date = date.plusDays(1);
 			}
 
 		}

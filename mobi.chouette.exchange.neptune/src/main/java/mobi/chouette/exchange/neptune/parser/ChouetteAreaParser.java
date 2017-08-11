@@ -2,7 +2,6 @@ package mobi.chouette.exchange.neptune.parser;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import lombok.extern.log4j.Log4j;
@@ -26,10 +25,10 @@ import mobi.chouette.model.type.UserNeedEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-import org.xmlpull.v1.XmlPullParser;
-
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import org.joda.time.LocalDateTime;
+import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
 public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
@@ -85,7 +84,7 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				stopArea.setObjectVersion(version);
 			} else if (xpp.getName().equals("creationTime")) {
-				Date creationTime = ParserUtils.getSQLDateTime(xpp.nextText());
+				LocalDateTime creationTime = ParserUtils.getLocalDateTime(xpp.nextText());
 				stopArea.setCreationTime(creationTime);
 			} else if (xpp.getName().equals("creatorId")) {
 				stopArea.setCreatorId(ParserUtils.getText(xpp.nextText()));

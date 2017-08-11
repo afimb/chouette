@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.neptune.exporter;
 
 import java.io.IOException;
-import java.sql.Date;
 
 import javax.naming.InitialContext;
 import javax.xml.bind.MarshalException;
@@ -20,10 +19,10 @@ import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.NamingUtil;
 
-import org.xml.sax.SAXParseException;
-
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+import org.joda.time.LocalDate;
+import org.xml.sax.SAXParseException;
 
 @Log4j
 public class NeptuneLineProducerCommand implements Command, Constant {
@@ -54,14 +53,14 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 				sharedData = new SharedDataKeys();
 				context.put(SHARED_DATA_KEYS, sharedData);
 			}
-			Date startDate = null;
+			LocalDate startDate = null;
 			if (configuration.getStartDate() != null) {
-				startDate = new Date(configuration.getStartDate().getTime());
+				startDate = new LocalDate(configuration.getStartDate());
 			}
 
-			Date endDate = null;
+			LocalDate endDate = null;
 			if (configuration.getEndDate() != null) {
-				endDate = new Date(configuration.getEndDate().getTime());
+				endDate = new LocalDate(configuration.getEndDate());
 			}
 
 			NeptuneDataCollector collector = new NeptuneDataCollector();

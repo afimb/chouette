@@ -6,12 +6,14 @@ package mobi.chouette.exchange.metadata;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 /**
  * @author michel
@@ -40,7 +42,7 @@ public class Metadata {
 	 */
 	@Getter
 	@Setter
-	private Calendar date = Calendar.getInstance();
+	private LocalDateTime date = LocalDateTime.now();
 
 	/**
 	 * content description if resources not available
@@ -171,12 +173,12 @@ public class Metadata {
 		 * minimum date covered by data
 		 */
 		@Getter
-		private Calendar start;
+		private LocalDate start;
 		/**
 		 * maximum date covered by data
 		 */
 		@Getter
-		private Calendar end;
+		private LocalDate end;
 
 		private Period() {
 		}
@@ -189,39 +191,20 @@ public class Metadata {
 		 * @param endDate
 		 *            timetable maximal date
 		 */
-		public void update(final Calendar startDate, final Calendar endDate) {
-			if (start == null || startDate.before(start))
-				start = (Calendar) startDate.clone();
-			if (end == null || endDate.after(end))
-				end = (Calendar) endDate.clone();
+		public void update(final LocalDate startDate, final LocalDate endDate) {
+			if (start == null || startDate.isBefore(start))
+				start = startDate;
+			if (end == null || endDate.isAfter(end))
+				end = endDate;
 		}
 
-		/**
-		 * update period if timetable overlaps it
-		 * 
-		 * @param startDate
-		 *            timetable minimal date
-		 * @param endDate
-		 *            timetable maximal date
-		 */
-		public void update(final Date startDate, final Date endDate) {
-			if (startDate != null && endDate != null) {
-				Calendar startCal = Calendar.getInstance();
-				startCal.setTime(startDate);
-				Calendar endCal = Calendar.getInstance();
-				endCal.setTime(endDate);
-				update(startCal, endCal);
-			}
-		}
 
-		public void force(Date startDate, Date endDate) {
+		public void force(LocalDate startDate, LocalDate endDate) {
 			if (startDate != null) {
-				start = Calendar.getInstance();
-				start.setTime(startDate);
+				start = startDate;
 			}
 			if (endDate != null) {
-				end = Calendar.getInstance();
-				end.setTime(endDate);
+				end = endDate;
 			}
 		}
 

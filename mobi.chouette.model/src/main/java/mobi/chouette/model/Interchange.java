@@ -1,7 +1,5 @@
 package mobi.chouette.model;
 
-import java.sql.Time;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -13,13 +11,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
+import org.joda.time.Duration;
 
 /**
  * Interchange between 2 service journeys at given points
@@ -77,12 +77,14 @@ public class Interchange extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@Column(name = "maximum_wait_time")
-	private Time maximumWaitTime;
+	@Type(type = "mobi.chouette.jadira.PersistentDurationAsSqlTime")
+	private Duration maximumWaitTime;
 
 	@Getter
 	@Setter
 	@Column(name = "minimum_transfer_time")
-	private Time minimumTransferTime;
+	@Type(type = "mobi.chouette.jadira.PersistentDurationAsSqlTime")
+	private Duration minimumTransferTime;
 
 	// Field mapped twice in order to handle that the to_vehicle_journey
 	// contains an objectid which may reference a non existent vehicle journey

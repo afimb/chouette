@@ -2,7 +2,6 @@ package mobi.chouette.exchange.importer.updater;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -182,16 +181,6 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 		double distance = 6378. * Math.acos(alpha);
 
 		return distance * 1000.;
-	}
-
-	public static long diffTime(Time first, Time last)
-	{
-		if (first == null || last == null)
-			return Long.MIN_VALUE; // TODO
-		long diff = last.getTime() / 1000L - first.getTime() / 1000L;
-		if (diff < 0)
-			diff += 86400L; // step upon midnight : add one day in seconds
-		return diff;
 	}
 
 	/**

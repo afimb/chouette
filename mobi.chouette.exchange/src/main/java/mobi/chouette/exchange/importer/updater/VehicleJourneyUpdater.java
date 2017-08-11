@@ -63,7 +63,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 					result = 0;
 				else if (o1.getTimeband().getStartTime() == null || o1.getTimeband().getEndTime() == null)
 					result = -1;
-				else if (o1.getTimeband().getEndTime().before(o2.getTimeband().getStartTime())
+				else if (o1.getTimeband().getEndTime().isBefore(o2.getTimeband().getStartTime())
 						|| o1.getTimeband().getEndTime().equals(o2.getTimeband().getStartTime()))
 					result = -1;
 			}

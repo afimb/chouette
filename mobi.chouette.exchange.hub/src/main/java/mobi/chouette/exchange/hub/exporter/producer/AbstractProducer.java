@@ -1,7 +1,5 @@
 package mobi.chouette.exchange.hub.exporter.producer;
 
-import java.sql.Time;
-import java.util.Calendar;
 import java.util.Collection;
 
 import lombok.Getter;
@@ -9,6 +7,8 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.hub.model.HubObject;
 import mobi.chouette.exchange.hub.model.exporter.HubExporterInterface;
 import mobi.chouette.model.NeptuneIdentifiedObject;
+
+import org.joda.time.LocalTime;
 
 @Log4j
 public abstract class AbstractProducer {
@@ -57,28 +57,18 @@ public abstract class AbstractProducer {
 
 	}
 
-	static protected Integer toHubTime(Time time)
+	static protected Integer toHubTime(LocalTime time)
 	{
 		if (time == null) return null;
-		// java.sql.Time to number of seconds
-		//long seconds = time.getTime()/1000;
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(time);
-		long seconds = ((calendar.get(Calendar.HOUR_OF_DAY) * 60) + calendar.get(Calendar.MINUTE)) * 60 + calendar.get(Calendar.SECOND);
+		long seconds = ((time.getHourOfDay() * 60) + time.getMinuteOfHour()) * 60 + time.getSecondOfMinute();
 		return Integer.valueOf((int) seconds);
 	}
 
-	static protected Integer toHubDelay(Time startTime, Time endTime)
+	static protected Integer toHubDelay(LocalTime startTime, LocalTime endTime)
 	{
 		if (startTime == null || endTime == null) return null;
-		
-		Calendar startCalendar = Calendar.getInstance();
-		startCalendar.setTime(startTime);
-		long startSeconds = ((startCalendar.get(Calendar.HOUR_OF_DAY) * 60) + startCalendar.get(Calendar.MINUTE)) * 60 + startCalendar.get(Calendar.SECOND);
-		
-		Calendar endCalendar = Calendar.getInstance();
-		endCalendar.setTime(endTime);
-		long endSeconds = ((endCalendar.get(Calendar.HOUR_OF_DAY) * 60) + endCalendar.get(Calendar.MINUTE)) * 60 + endCalendar.get(Calendar.SECOND);
+		long startSeconds =  toHubTime(startTime);
+		long endSeconds = toHubTime(endTime);
 		
 		long seconds = endSeconds - startSeconds;
 		return Integer.valueOf((int) seconds);

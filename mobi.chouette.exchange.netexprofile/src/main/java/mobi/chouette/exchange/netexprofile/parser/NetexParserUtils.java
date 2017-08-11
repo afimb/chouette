@@ -1,17 +1,24 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.importer.ParserUtils;
-import mobi.chouette.model.type.*;
+import mobi.chouette.model.type.AlightingPossibilityEnum;
+import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
+import mobi.chouette.model.type.BoardingPossibilityEnum;
+import mobi.chouette.model.type.DayTypeEnum;
+import mobi.chouette.model.type.OrganisationTypeEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
+
 import org.rutebanken.netex.model.DayOfWeekEnumeration;
 import org.rutebanken.netex.model.EntityInVersionStructure;
 import org.rutebanken.netex.model.OrganisationTypeEnumeration;
-
-import java.sql.Time;
-import java.time.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @Log4j
 public class NetexParserUtils extends ParserUtils {
@@ -54,29 +61,6 @@ public class NetexParserUtils extends ParserUtils {
 			return null;
 		}
 		return zoneId.getRules().getOffset(Instant.now(Clock.system(zoneId)));
-	}
-
-	public static OffsetDateTime toOffsetDateTime(java.util.Date date) {
-		if (date == null) {
-			return null;
-		}
-		if (date instanceof java.sql.Date) {
-			java.sql.Date sqlDate = (java.sql.Date) date;
-			ZonedDateTime zonedDateTime = sqlDate.toLocalDate().atStartOfDay(ZoneId.systemDefault());
-			return OffsetDateTime.ofInstant(zonedDateTime.toInstant(), ZoneId.systemDefault());
-		}
-		return OffsetDateTime.ofInstant(date.toInstant(), ZoneOffset.systemDefault());
-	}
-
-	public static Date convertToDate(OffsetDateTime offsetDateTime) {
-		return Date.from(offsetDateTime.toLocalDate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-	}
-
-	public static Time convertToSqlTime(OffsetTime offsetTime, ZoneOffset zoneOffset) {
-		if (offsetTime == null) {
-			return null;
-		}
-		return Time.valueOf(offsetTime.withOffsetSameInstant(zoneOffset).toLocalTime());
 	}
 
 	public static List<DayTypeEnum> convertDayOfWeek(DayOfWeekEnumeration dayOfWeek) {
