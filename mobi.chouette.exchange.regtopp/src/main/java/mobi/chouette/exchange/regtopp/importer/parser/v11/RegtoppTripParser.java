@@ -43,6 +43,7 @@ import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.model.type.TransportSubModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -110,7 +111,7 @@ public class RegtoppTripParser extends LineSpecificParser {
 					}
 
 					vehicleJourney.setPublishedJourneyIdentifier(StringUtils.trimToNull(trip.getLineNumberVisible()));
-					vehicleJourney.setTransportMode(convertTypeOfService(trip.getTypeOfService()));
+					transportModes.add(convertTypeOfService(trip.getTypeOfService()));
 					vehicleJourney.setJourneyPattern(journeyPattern);
 					vehicleJourney.setRoute(route);
 
@@ -273,27 +274,46 @@ public class RegtoppTripParser extends LineSpecificParser {
 		vehicleJourneyAtStop.setDepartureDayOffset(tripVisitTime.getDayOffset());
 	}
 
-	protected TransportModeNameEnum convertTypeOfService(TransportType typeOfService) {
+	protected TransportModePair convertTypeOfService(TransportType typeOfService) {
+		
+		TransportModePair pair = new TransportModePair();
+		
 		switch (typeOfService) {
 		case AirplaneOrAirportExpress:
+			pair.transportMode = TransportModeNameEnum.Bus;
+			pair.subMode = TransportSubModeNameEnum.AirportLinkBus;
+			break;
 		case ExpressCoach:
-			return TransportModeNameEnum.Coach;
+			pair.transportMode = TransportModeNameEnum.Bus;
+			pair.subMode = TransportSubModeNameEnum.ExpressBus;
+			break;
 		case FerryBoat:
-			return TransportModeNameEnum.Ferry;
+			pair.transportMode = TransportModeNameEnum.Water;
+			break;
 		case SchoolBus:
+			pair.transportMode = TransportModeNameEnum.Bus;
+			pair.subMode = TransportSubModeNameEnum.SchoolBus;
+			break;
 		case FlexibleBus:
 		case Bus:
-			return TransportModeNameEnum.Bus;
+			pair.transportMode = TransportModeNameEnum.Bus;
+			pair.subMode = TransportSubModeNameEnum.LocalBus;
+			break;
 		case Subway:
-			return TransportModeNameEnum.Metro;
+			pair.transportMode = TransportModeNameEnum.Metro;
+			break;
 		case Train:
-			return TransportModeNameEnum.Train;
+			pair.transportMode = TransportModeNameEnum.Rail;
+			break;
 		case Tram:
-			return TransportModeNameEnum.Tramway;
+			pair.transportMode = TransportModeNameEnum.Tram;
+			break;
 		case Various:
 		default:
-			return TransportModeNameEnum.Other;
 		}
+
+		return pair;
+		
 	}
 
 	public void addFootnote(String footnoteId, VehicleJourney vehicleJourney, List<Footnote> footnotes, RegtoppImporter importer) throws Exception {

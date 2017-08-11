@@ -95,6 +95,7 @@ public class LineUpdater implements Updater<Line> {
 			oldValue.setPublishedName(newValue.getPublishedName());
 			oldValue.setRegistrationNumber(newValue.getRegistrationNumber());
 			oldValue.setTransportModeName(newValue.getTransportModeName());
+			oldValue.setTransportSubModeName(newValue.getTransportSubModeName());
 			oldValue.setMobilityRestrictedSuitable(newValue.getMobilityRestrictedSuitable());
 			oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
 			oldValue.setUrl(newValue.getUrl());
@@ -136,6 +137,10 @@ public class LineUpdater implements Updater<Line> {
 			if (newValue.getTransportModeName() != null
 					&& !newValue.getTransportModeName().equals(oldValue.getTransportModeName())) {
 				oldValue.setTransportModeName(newValue.getTransportModeName());
+			}
+			if (newValue.getTransportSubModeName() != null
+					&& !newValue.getTransportSubModeName().equals(oldValue.getTransportSubModeName())) {
+				oldValue.setTransportSubModeName(newValue.getTransportSubModeName());
 			}
 			if (newValue.getMobilityRestrictedSuitable() != null
 					&& !newValue.getMobilityRestrictedSuitable().equals(oldValue.getMobilityRestrictedSuitable())) {
@@ -296,7 +301,6 @@ public class LineUpdater implements Updater<Line> {
 			oldValue.removeRoutingConstraint(stopArea);
 		}
 
-		// Footnotes - merge at this level
 		// This is the new list of footnotes
 		List<Footnote> footnotes = new ArrayList<Footnote>();
 

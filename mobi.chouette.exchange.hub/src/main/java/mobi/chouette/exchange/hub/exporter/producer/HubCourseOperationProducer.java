@@ -58,7 +58,7 @@ public class HubCourseOperationProducer extends AbstractProducer {
 				hubObject.setModeTransport(HubCourseOperation.MODE_TRANSPORT.AVION);
 				break;
 			case Ferry:
-			case Waterborne:
+			case Water:
 				hubObject.setModeTransport(HubCourseOperation.MODE_TRANSPORT.BATEAU);
 				break;
 			case Metro:
@@ -67,16 +67,13 @@ public class HubCourseOperationProducer extends AbstractProducer {
 			case Taxi:
 				hubObject.setModeTransport(HubCourseOperation.MODE_TRANSPORT.TAXIBUS);
 				break;
-			case LocalTrain:
-			case LongDistanceTrain:
-			case LongDistanceTrain_2:
-			case Train:
+			case Rail:
 				hubObject.setModeTransport(HubCourseOperation.MODE_TRANSPORT.TRAIN);
 				break;
-			case Tramway:
+			case Tram:
 				hubObject.setModeTransport(HubCourseOperation.MODE_TRANSPORT.TRAM);
 				break;
-			case Trolleybus:
+			case TrolleyBus:
 				hubObject.setModeTransport(HubCourseOperation.MODE_TRANSPORT.TROLLEY);
 				break;
 			case Bicycle:

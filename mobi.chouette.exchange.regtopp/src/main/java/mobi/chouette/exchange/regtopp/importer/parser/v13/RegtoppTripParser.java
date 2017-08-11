@@ -2,30 +2,49 @@ package mobi.chouette.exchange.regtopp.importer.parser.v13;
 
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.regtopp.importer.parser.v11.TransportModePair;
 import mobi.chouette.exchange.regtopp.model.enums.TransportType;
 import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.model.type.TransportSubModeNameEnum;
 
 public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.parser.v12.RegtoppTripParser {
 
 	@Override
-	protected TransportModeNameEnum convertTypeOfService(TransportType typeOfService) {
+	protected TransportModePair convertTypeOfService(TransportType typeOfService) {
+
+		TransportModePair pair = new TransportModePair();
 		switch(typeOfService) {
 		case LocalBus:
-			return TransportModeNameEnum.Bus;
+			pair.transportMode = TransportModeNameEnum.Bus;
+			pair.subMode = TransportSubModeNameEnum.LocalBus;
+			break;
 		case SchoolBus:
-			return TransportModeNameEnum.Bus;
+			pair.transportMode = TransportModeNameEnum.Bus;
+			pair.subMode = TransportSubModeNameEnum.SchoolBus;
+			break;
 		case AirportExpressBus:
-			return TransportModeNameEnum.Coach;
+			pair.transportMode = TransportModeNameEnum.Bus;
+			pair.subMode = TransportSubModeNameEnum.AirportLinkBus;
+			break;
 		case CarFerry:
-			return TransportModeNameEnum.Ferry;
+			pair.transportMode = TransportModeNameEnum.Water;
+			pair.subMode = TransportSubModeNameEnum.LocalCarFerry;
+			break;
 		case ExpressBoat:
-			return TransportModeNameEnum.Waterborne;
+			pair.transportMode = TransportModeNameEnum.Water;
+			pair.subMode = TransportSubModeNameEnum.HighSpeedPassengerService;
+			break;
 		case AirportExpressTrain:
-			return TransportModeNameEnum.Train;
+			pair.transportMode = TransportModeNameEnum.Rail;
+			break;
 		default:
-			return super.convertTypeOfService(typeOfService);
+			pair = super.convertTypeOfService(typeOfService);
 		}
+		
+		return pair;
 	}
+	
+
 
 	static {
 		ParserFactory.register(RegtoppTripParser.class.getName(), new ParserFactory() {
