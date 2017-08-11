@@ -45,6 +45,7 @@ import static mobi.chouette.common.Constant.*;
 @Log4j
 public class RegtoppLineParser extends LineSpecificParser {
 
+
 	/*
 	 * Validation rules of type III are checked at this step.
 	 */
@@ -80,18 +81,23 @@ public class RegtoppLineParser extends LineSpecificParser {
 
 		VersionHandler versionHandler = (VersionHandler) context.get(RegtoppConstant.VERSION_HANDLER);
 
+		
+		
 		// Parse Route and JourneyPattern
 		LineSpecificParser routeParser = versionHandler.createRouteParser();
 		routeParser.setLineId(lineId);
 		routeParser.parse(context);
 
 		// Parse VehicleJourney
+		HashSet<TransportModePair> transportModes = new HashSet<TransportModePair>();
+
 		LineSpecificParser tripParser = versionHandler.createTripParser();
 		tripParser.setLineId(lineId);
+		tripParser.setTransportModes(transportModes);
 		tripParser.parse(context);
 
 		// Update transport mode for line
-		updateLineTransportMode(referential, line);
+		updateLineTransportMode(referential, line,transportModes);
 
 		// Link line to footnotes
 		for (Footnote f : footnotes) {
@@ -485,19 +491,18 @@ public class RegtoppLineParser extends LineSpecificParser {
 		}
 	}
 
-	private void updateLineTransportMode(Referential referential, Line line) {
-		Set<TransportModeNameEnum> detectedTransportModes = new HashSet<TransportModeNameEnum>();
+	private void updateLineTransportMode(Referential referential, Line line, HashSet<TransportModePair> transportModes) {
 
-		for (VehicleJourney vj : referential.getVehicleJourneys().values()) {
-			detectedTransportModes.add(vj.getTransportMode());
-		}
-
-		if (detectedTransportModes.size() == 1) {
+		if (transportModes.size() == 1) {
+			
+			TransportModePair pair = transportModes.iterator().next();
 			// Only one transport mode used for all routes/journeys
-			line.setTransportModeName(detectedTransportModes.iterator().next());
+			line.setTransportModeName(pair.transportMode);
+			line.setTransportSubModeName(pair.subMode);
 		} else {
+			// TODO
 			line.setTransportModeName(TransportModeNameEnum.Other);
-			line.setComment("Multiple transport modes: " + StringUtils.join(detectedTransportModes.toArray()));
+			line.setComment("Multiple transport modes: " + StringUtils.join(transportModes.toArray()));
 		}
 	}
 

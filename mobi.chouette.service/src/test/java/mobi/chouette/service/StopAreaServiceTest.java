@@ -19,7 +19,7 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.StopAreaTypeEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
-import mobi.chouette.model.type.TransportSubModeEnum;
+import mobi.chouette.model.type.TransportSubModeNameEnum;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.apache.commons.lang3.StringUtils;
@@ -188,8 +188,8 @@ public class StopAreaServiceTest extends Arquillian {
 
     private void assertCodeValuesForKnownStop(StopArea knownStopArea) {
         Assert.assertEquals(knownStopArea.getStopAreaType(), StopAreaTypeEnum.RailStation);
-        Assert.assertEquals(knownStopArea.getTransportModeName(), TransportModeNameEnum.Train);
-        Assert.assertEquals(knownStopArea.getTransportSubMode(), TransportSubModeEnum.TouristRailway);
+        Assert.assertEquals(knownStopArea.getTransportModeName(), TransportModeNameEnum.Rail);
+        Assert.assertEquals(knownStopArea.getTransportSubMode(), TransportSubModeNameEnum.TouristRailway);
     }
 
 

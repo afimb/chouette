@@ -277,7 +277,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		utx.begin();
 		em.joinTransaction();
 		Line line = lineDao.findByObjectId("TST:Line:5560-2016-03-29");
-		assertEquals(line.getTransportModeName(), TransportModeNameEnum.Ferry);
+		assertEquals(line.getTransportModeName(), TransportModeNameEnum.Water);
 
 		Assert.assertNotNull(line, "Line not found");
 

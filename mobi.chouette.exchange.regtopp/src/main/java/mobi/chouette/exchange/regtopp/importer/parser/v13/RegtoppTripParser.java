@@ -2,36 +2,55 @@ package mobi.chouette.exchange.regtopp.importer.parser.v13;
 
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.regtopp.importer.parser.v11.TransportModePair;
 import mobi.chouette.exchange.regtopp.model.enums.TransportType;
 import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.model.type.TransportSubModeNameEnum;
 
 public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.parser.v12.RegtoppTripParser {
 
 	@Override
-	protected TransportModeNameEnum convertTypeOfService(TransportType typeOfService) {
+	protected TransportModePair convertTypeOfService(TransportType typeOfService) {
+
+		TransportModePair pair = new TransportModePair();
 		switch(typeOfService) {
+		case FlexibleBusRuter: // TODO mark as flexible
 		case LocalBus:
-			return TransportModeNameEnum.Bus;
-		case SchoolBus:
-			return TransportModeNameEnum.Bus;
-		case AirportExpressBus:
-			return TransportModeNameEnum.Coach;
-		case CarFerry:
-			return TransportModeNameEnum.Ferry;
-		case ExpressBoat:
-			return TransportModeNameEnum.Waterborne;
-		case AirportExpressTrain:
-			return TransportModeNameEnum.Train;
+			pair.transportMode = TransportModeNameEnum.Bus;
+			pair.subMode = TransportSubModeNameEnum.LocalBus;
+			break;
 		case SchoolBusRuter:
-			return TransportModeNameEnum.Bus;
-		case FlexibleBusRuter:
-			return TransportModeNameEnum.Bus;
+		case SchoolBus:
+			pair.transportMode = TransportModeNameEnum.Bus;
+			pair.subMode = TransportSubModeNameEnum.SchoolBus;
+			break;
+		case AirportExpressBus:
+			pair.transportMode = TransportModeNameEnum.Bus;
+			pair.subMode = TransportSubModeNameEnum.AirportLinkBus;
+			break;
+		case CarFerry:
+			pair.transportMode = TransportModeNameEnum.Water;
+			pair.subMode = TransportSubModeNameEnum.LocalCarFerry;
+			break;
+		case ExpressBoat:
+			pair.transportMode = TransportModeNameEnum.Water;
+			pair.subMode = TransportSubModeNameEnum.HighSpeedPassengerService;
+			break;
+		case AirportExpressTrain:
+			pair.transportMode = TransportModeNameEnum.Rail;
+			break;
 		case NightBusRuter:
-			return TransportModeNameEnum.Bus;
+			pair.transportMode = TransportModeNameEnum.Bus;
+			pair.subMode = TransportSubModeNameEnum.NightBus;
+			break;
 		default:
-			return super.convertTypeOfService(typeOfService);
+			pair = super.convertTypeOfService(typeOfService);
 		}
+		
+		return pair;
 	}
+	
+
 
 	static {
 		ParserFactory.register(RegtoppTripParser.class.getName(), new ParserFactory() {

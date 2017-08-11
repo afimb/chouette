@@ -111,7 +111,7 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 					}
 
 					vehicleJourney.setPublishedJourneyIdentifier(StringUtils.trimToNull(trip.getLineNumberVisible()));
-					vehicleJourney.setTransportMode(convertTypeOfService(trip.getTypeOfService()));
+					transportModes.add(convertTypeOfService(trip.getTypeOfService()));
 					vehicleJourney.setJourneyPattern(journeyPattern);
 					vehicleJourney.setRoute(route);
 
