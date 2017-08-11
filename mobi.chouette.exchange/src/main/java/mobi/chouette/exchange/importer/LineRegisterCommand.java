@@ -47,6 +47,9 @@ import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 @Log4j
 @Stateless(name = LineRegisterCommand.COMMAND)
@@ -207,14 +210,14 @@ public class LineRegisterCommand implements Command {
 
 	private boolean isLineValidInFuture(Line line) {
 
-		Date now = new Date();
+		LocalDate today = LocalDate.now();
 		
 		for(Route r : (line.getRoutes() == null? new ArrayList<Route>() : line.getRoutes())) {
 			for(JourneyPattern jp : (r.getJourneyPatterns() == null? new ArrayList<JourneyPattern>() : r.getJourneyPatterns())) {
 				for(VehicleJourney vj : (jp.getVehicleJourneys() == null? new ArrayList<VehicleJourney>() : jp.getVehicleJourneys())) {
 					for(Timetable t : (vj.getTimetables() == null ? new ArrayList<Timetable>() : vj.getTimetables())) {
 						//t.computeLimitOfPeriods();
-						if(t.getEndOfPeriod() != null && !t.getEndOfPeriod().before(now)) {
+						if(t.getEndOfPeriod() != null && !t.getEndOfPeriod().isBefore(today)) {
 							return true;
 						}
 					}
@@ -234,18 +237,18 @@ public class LineRegisterCommand implements Command {
 		// VehicleJourneyAtStop oldValue,
 		// VehicleJourneyAtStop newValue)
 
-		DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+		DateTimeFormatter timeFormat = DateTimeFormat.forPattern("HH:mm:ss");
 		buffer.write(vehicleJourney.getId().toString());
 		buffer.append(SEP);
 		buffer.write(stopPoint.getId().toString());
 		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getArrivalTime() != null)
-			buffer.write(timeFormat.format(vehicleJourneyAtStop.getArrivalTime()));
+			buffer.write(timeFormat.print(vehicleJourneyAtStop.getArrivalTime()));
 		else
 			buffer.write(NULL);
 		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getDepartureTime() != null)
-			buffer.write(timeFormat.format(vehicleJourneyAtStop.getDepartureTime()));
+			buffer.write(timeFormat.print(vehicleJourneyAtStop.getDepartureTime()));
 		else
 			buffer.write(NULL);
 		buffer.append(SEP);

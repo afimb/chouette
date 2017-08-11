@@ -1,10 +1,10 @@
 package mobi.chouette.exchange.regtopp.model.importer.parser;
 
 import mobi.chouette.exchange.regtopp.importer.parser.TripVisitTimeCalculator.TripVisitTime;
-import org.joda.time.Duration;
-import org.testng.annotations.Test;
 
-import java.sql.Time;
+import org.joda.time.Duration;
+import org.joda.time.LocalTime;
+import org.testng.annotations.Test;
 
 import static mobi.chouette.exchange.regtopp.importer.parser.TripVisitTimeCalculator.calculateTripVisitTime;
 import static org.testng.Assert.assertEquals;
@@ -17,7 +17,7 @@ public class TripVisitTimeCalculatorTest {
         Duration timeFromStart = Duration.ZERO;
         TripVisitTime tripVisitTime = calculateTripVisitTime(start, timeFromStart);
         assertEquals(tripVisitTime.getDayOffset(), 0);
-        assertEquals(tripVisitTime.getTime(), new Time(0,0,0));
+        assertEquals(tripVisitTime.getTime(), new LocalTime(0,0,0));
     }
 
     @Test
@@ -26,7 +26,7 @@ public class TripVisitTimeCalculatorTest {
         Duration timeFromStart = Duration.standardMinutes(12 * 60 + 30);
         TripVisitTime tripVisitTime = calculateTripVisitTime(start, timeFromStart);
         assertEquals(tripVisitTime.getDayOffset(), 0, "offset:");
-        assertEquals(tripVisitTime.getTime(), new Time(12,30,0), "time:");
+        assertEquals(tripVisitTime.getTime(), new LocalTime(12,30,0), "time:");
     }
 
     @Test
@@ -35,7 +35,7 @@ public class TripVisitTimeCalculatorTest {
         Duration timeFromStart = Duration.standardMinutes(24 * 60);
         TripVisitTime tripVisitTime = calculateTripVisitTime(start, timeFromStart);
         assertEquals(tripVisitTime.getDayOffset(), 1, "offset:");
-        assertEquals(tripVisitTime.getTime(), new Time(0,0,0), "time:");
+        assertEquals(tripVisitTime.getTime(), new LocalTime(0,0,0), "time:");
     }
 
     @Test
@@ -44,7 +44,7 @@ public class TripVisitTimeCalculatorTest {
         Duration timeFromStart = Duration.standardSeconds(23 * 60 * 60 + 59 * 60 + 59);
         TripVisitTime tripVisitTime = calculateTripVisitTime(start, timeFromStart);
         assertEquals(tripVisitTime.getDayOffset(), 0, "offset:");
-        assertEquals(tripVisitTime.getTime(), new Time(23,59,59), "time:");
+        assertEquals(tripVisitTime.getTime(), new LocalTime(23,59,59), "time:");
     }
 
     @Test
@@ -53,7 +53,7 @@ public class TripVisitTimeCalculatorTest {
         Duration timeFromStart = Duration.standardMinutes(24 * 60 + 30);
         TripVisitTime tripVisitTime = calculateTripVisitTime(start, timeFromStart);
         assertEquals(tripVisitTime.getDayOffset(), 1, "offset:");
-        assertEquals(tripVisitTime.getTime(), new Time(0,30,0), "time:");
+        assertEquals(tripVisitTime.getTime(), new LocalTime(0,30,0), "time:");
     }
 
     @Test
@@ -62,7 +62,7 @@ public class TripVisitTimeCalculatorTest {
         Duration timeFromStart = Duration.standardMinutes(24 * 60 + 30);
         TripVisitTime tripVisitTime = calculateTripVisitTime(start, timeFromStart);
         assertEquals(tripVisitTime.getDayOffset(), 2, "offset:");
-        assertEquals(tripVisitTime.getTime(), new Time(0,45,0), "time:");
+        assertEquals(tripVisitTime.getTime(), new LocalTime(0,45,0), "time:");
     }
 
 }

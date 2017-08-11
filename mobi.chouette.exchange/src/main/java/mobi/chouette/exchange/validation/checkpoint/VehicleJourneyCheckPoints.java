@@ -1,6 +1,5 @@
 package mobi.chouette.exchange.validation.checkpoint;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

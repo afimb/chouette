@@ -1,12 +1,7 @@
 package mobi.chouette.exchange.transfer.exporter;
 
-import static org.testng.Assert.assertEquals;
-
 import java.io.File;
 import java.io.IOException;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,15 +12,6 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
-
-import org.apache.commons.io.FileUtils;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.testng.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
@@ -53,6 +39,19 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 import mobi.chouette.scheduler.Scheduler;
+
+import org.apache.commons.io.FileUtils;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.testng.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertEquals;
 
 public class TransferExporterCommandTest extends Arquillian implements mobi.chouette.common.Constant {
 
@@ -259,8 +258,8 @@ public class TransferExporterCommandTest extends Arquillian implements mobi.chou
 
 		Timetable t = ObjectFactory.getTimetable(referential, "TST:Timetable:1");
 		Period p = new Period();
-		p.setStartDate(java.sql.Date.valueOf(LocalDate.now().minusDays(10)));
-		p.setEndDate(java.sql.Date.valueOf(LocalDate.now().plusDays(10)));
+		p.setStartDate(LocalDate.now().minusDays(10));
+		p.setEndDate(LocalDate.now().plusDays(10));
 		t.addPeriod(p);
 
 		VehicleJourney vj = ObjectFactory.getVehicleJourney(referential, "TST:ServiceJourney:1");
@@ -271,12 +270,12 @@ public class TransferExporterCommandTest extends Arquillian implements mobi.chou
 		t.addVehicleJourney(vj);
 
 		VehicleJourneyAtStop vjStop1 = ObjectFactory.getVehicleJourneyAtStop();
-		vjStop1.setDepartureTime(Time.valueOf(LocalTime.now()));
+		vjStop1.setDepartureTime(LocalTime.now());
 		vjStop1.setStopPoint(stopPoint1);
 		vjStop1.setVehicleJourney(vj);
 
 		VehicleJourneyAtStop vjStop2 = ObjectFactory.getVehicleJourneyAtStop();
-		vjStop2.setDepartureTime(Time.valueOf(LocalTime.now()));
+		vjStop2.setDepartureTime(LocalTime.now());
 		vjStop2.setStopPoint(stopPoint2);
 		vjStop2.setVehicleJourney(vj);
 

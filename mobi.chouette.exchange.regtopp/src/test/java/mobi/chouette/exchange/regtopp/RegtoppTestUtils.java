@@ -2,7 +2,6 @@ package mobi.chouette.exchange.regtopp;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,11 +20,13 @@ import mobi.chouette.model.type.JourneyCategoryEnum;
 import mobi.chouette.model.util.Referential;
 
 import org.apache.commons.io.FileUtils;
+import org.joda.time.Duration;
+import org.joda.time.LocalTime;
 import org.testng.Assert;
 
 public class RegtoppTestUtils implements RegtoppConstant, ReportConstant{
 
-	
+
 
 	protected static final String path = "src/test/data";
 	public static  void copyFile(String fileName) throws IOException {
@@ -36,7 +37,7 @@ public class RegtoppTestUtils implements RegtoppConstant, ReportConstant{
 
 	public static void checkLine(Context context)
 	{
-		
+
 		// checl line content before save (cause connection links could not be saved
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Assert.assertNotNull(referential, "referential");
@@ -93,15 +94,8 @@ public class RegtoppTestUtils implements RegtoppConstant, ReportConstant{
 			}
 		}
 		Assert.assertEquals(clinks.size(), 2, "line must have 2 connection link");
-		Calendar c = Calendar.getInstance();
 		for (ConnectionLink connectionLink : clinks) {
-
-			c.setTimeInMillis(connectionLink.getDefaultDuration().getTime());
-			int minutes = c.get(Calendar.MINUTE);
-			int hours = c.get(Calendar.HOUR_OF_DAY);
-			int seconds = c.get(Calendar.SECOND) + minutes * 60 + hours * 3600;
-
-			Assert.assertEquals(seconds, 4200, "line must have links duration of 1 hour and 10 minutes");
+			Assert.assertEquals(connectionLink.getDefaultDuration(), Duration.standardMinutes(70), "line must have links duration of 1 hour and 10 minutes");
 			// Reporter.log(connectionLink.toString("\t", 1));
 
 		}
@@ -110,38 +104,22 @@ public class RegtoppTestUtils implements RegtoppConstant, ReportConstant{
 		Set<AccessPoint> apoints = new HashSet<AccessPoint>();
 
 		for (AccessLink accessLink : alinks) {
-			c.setTimeInMillis(accessLink.getDefaultDuration().getTime());
-			int minutes = c.get(Calendar.MINUTE);
-			int hours = c.get(Calendar.HOUR_OF_DAY);
-			int seconds = c.get(Calendar.SECOND) + minutes * 60 + hours * 3600;
-
-			Assert.assertEquals(seconds, 60, "line must have links duration of 1 minutes");
+			Assert.assertEquals(accessLink.getDefaultDuration(), Duration.standardMinutes(1), "line must have links duration of 1 minutes");
 			// Reporter.log(accessLink.toString("\t", 1));
 			apoints.add(accessLink.getAccessPoint());
 
 		}
 		Assert.assertEquals(apoints.size(), 1, "line must have 1 access point");
 		for (AccessPoint accessPoint : apoints) {
-			c.setTimeInMillis(accessPoint.getOpeningTime().getTime());
-			int minutes = c.get(Calendar.MINUTE);
-			int hours = c.get(Calendar.HOUR_OF_DAY);
-			int seconds = c.get(Calendar.SECOND) + minutes * 60 + hours * 3600;
-
-			Assert.assertEquals(seconds, 6 * 3600, "line must have opening time of 6 hours");
-			c.setTimeInMillis(accessPoint.getClosingTime().getTime());
-			minutes = c.get(Calendar.MINUTE);
-			hours = c.get(Calendar.HOUR_OF_DAY);
-			seconds = c.get(Calendar.SECOND) + minutes * 60 + hours * 3600;
-
-			Assert.assertEquals(seconds, 22 * 3600 + 600, "line must have closing time of 22 hours 10");
-
+			Assert.assertEquals(accessPoint.getOpeningTime(), new LocalTime(6,0), "line must have opening time of 6 hours");
+			Assert.assertEquals(accessPoint.getClosingTime(), new LocalTime(22,10), "line must have closing time of 22 hours 10");
 		}
 
 	}
-	
+
 	public static void checkLineWithFrequencies(Context context)
 	{
-		
+
 		// checl line content before save (cause connection links could not be saved
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Assert.assertNotNull(referential, "referential");
@@ -181,11 +159,11 @@ public class RegtoppTestUtils implements RegtoppConstant, ReportConstant{
 		Assert.assertEquals(comms.size(), 1, "line must have 1 commercial stop point");
 
 	}
-	
+
 	public static void checkMinimalLine(Line line)
 	{
-		
-		// readed line after save 
+
+		// readed line after save
 		Assert.assertNotNull(line, "line");
 
 		// comptage des objets :
@@ -215,5 +193,5 @@ public class RegtoppTestUtils implements RegtoppConstant, ReportConstant{
 		}
 
 	}
-	
+
 }

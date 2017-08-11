@@ -11,6 +11,8 @@ import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.NeptuneUtil;
 
+import org.joda.time.LocalDate;
+
 @Log4j
 public class LineFilter {
 
@@ -84,11 +86,11 @@ public class LineFilter {
 		}
 
 		if (startDate == null)
-			return timetable.isActiveBefore(new java.sql.Date(endDate.getTime()));
+			return timetable.isActiveBefore(new LocalDate(endDate));
 		else if (endDate == null)
-			return timetable.isActiveAfter(new java.sql.Date(startDate.getTime()));
+			return timetable.isActiveAfter(new LocalDate(startDate));
 		else
-			return timetable.isActiveOnPeriod(new java.sql.Date(startDate.getTime()), new java.sql.Date(endDate.getTime()));
+			return timetable.isActiveOnPeriod(new LocalDate(startDate), new LocalDate(endDate));
 
 	}
 

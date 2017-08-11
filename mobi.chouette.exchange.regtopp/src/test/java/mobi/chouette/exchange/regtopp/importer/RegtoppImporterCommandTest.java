@@ -697,9 +697,9 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 	}
 
 	private void assertVehicleJourneyAtStopTimeAndOffset(VehicleJourneyAtStop vehicleJourneyAtStop) {
-		assertTrue(24 > vehicleJourneyAtStop.getArrivalTime().getHours());
+		assertTrue(24 > vehicleJourneyAtStop.getArrivalTime().getHourOfDay());
 		assertTrue(0 <= vehicleJourneyAtStop.getArrivalDayOffset());
-		assertTrue(24 > vehicleJourneyAtStop.getDepartureTime().getHours());
+		assertTrue(24 > vehicleJourneyAtStop.getDepartureTime().getHourOfDay());
 		assertTrue(0 <= vehicleJourneyAtStop.getDepartureDayOffset());
 	}
 

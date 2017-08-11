@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j;
-import org.joda.time.Duration;
-import org.joda.time.Period;
 
-import java.sql.Time;
+import org.joda.time.Duration;
+import org.joda.time.LocalTime;
+import org.joda.time.Period;
 
 @Log4j
 public class TripVisitTimeCalculator {
@@ -22,7 +22,7 @@ public class TripVisitTimeCalculator {
             log.trace("Reducing hours to " + period.getHours());
         }
 
-        java.sql.Time sqlTime = new java.sql.Time(period.getHours(), period.getMinutes(), period.getSeconds());
+        LocalTime sqlTime = new LocalTime(period.getHours(), period.getMinutes(), period.getSeconds());
 
         return new TripVisitTime(days, sqlTime);
     }
@@ -32,7 +32,7 @@ public class TripVisitTimeCalculator {
     @ToString
     public static class TripVisitTime {
         final int dayOffset;
-        final Time time;
+        final LocalTime time;
     }
 
 }

@@ -1,21 +1,11 @@
 package mobi.chouette.exchange.regtopp.importer.parser.v11;
 
-import static mobi.chouette.common.Constant.CONFIGURATION;
-import static mobi.chouette.common.Constant.PARSER;
-import static mobi.chouette.common.Constant.REFERENTIAL;
-
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.Duration;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -27,8 +17,8 @@ import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.index.v11.DaycodeById;
-import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
+import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
@@ -46,6 +36,11 @@ import mobi.chouette.model.type.BoardingPossibilityEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.LocalDate;
+
+import static mobi.chouette.common.Constant.*;
 
 @Log4j
 public class RegtoppLineParser extends LineSpecificParser {
@@ -438,7 +433,7 @@ public class RegtoppLineParser extends LineSpecificParser {
 		RegtoppDayCodeHeaderDKO header = dayCodeIndex.getHeader();
 		LocalDate calStartDate = header.getDate();
 		for (Network network : referential.getPtNetworks().values()) {
-			network.setVersionDate(calStartDate.toDateMidnight().toDate());
+			network.setVersionDate(calStartDate);
 		}
 	}
 
@@ -504,19 +499,6 @@ public class RegtoppLineParser extends LineSpecificParser {
 			line.setTransportModeName(TransportModeNameEnum.Other);
 			line.setComment("Multiple transport modes: " + StringUtils.join(detectedTransportModes.toArray()));
 		}
-	}
-
-	public static Time calculateTripVisitTime(Duration tripDepartureTime, Duration timeSinceTripDepatureTime) {
-		// TODO Ugly ugly ugly
-
-		LocalTime localTime = new LocalTime(0, 0, 0, 0)
-				.plusSeconds((int) (tripDepartureTime.getStandardSeconds() + timeSinceTripDepatureTime.getStandardSeconds()));
-
-		@SuppressWarnings("deprecation")
-		java.sql.Time sqlTime = new java.sql.Time(localTime.getHourOfDay(), localTime.getMinuteOfHour(), localTime.getSecondOfMinute());
-
-		return sqlTime;
-
 	}
 
 	private void updateBoardingAlighting(Referential referential, RegtoppImportParameters configuration) {

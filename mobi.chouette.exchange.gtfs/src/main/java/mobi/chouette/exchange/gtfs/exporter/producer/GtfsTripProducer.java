@@ -8,9 +8,7 @@
 
 package mobi.chouette.exchange.gtfs.exporter.producer;
 
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -36,6 +34,8 @@ import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
 import mobi.chouette.model.type.JourneyCategoryEnum;
 import mobi.chouette.model.type.SectionStatusEnum;
+
+import org.joda.time.LocalTime;
 
 /**
  * produce Trips and stop_times for vehicleJourney
@@ -92,7 +92,7 @@ public class GtfsTripProducer extends AbstractProducer {
 				time.setStopId(toGtfsId(vjas.getStopPoint().getContainedInStopArea().getObjectId(), sharedPrefix, keepOriginalId));
 			}
 
-			Time arrival = vjas.getArrivalTime();
+			LocalTime arrival = vjas.getArrivalTime();
 			arrivalOffset = vjas.getArrivalDayOffset(); /** GJT */
 			
 			if (arrival == null) {
@@ -101,7 +101,7 @@ public class GtfsTripProducer extends AbstractProducer {
 			}
 			time.setArrivalTime(new GtfsTime(arrival, arrivalOffset)); /** GJT */
 
-			Time departure = vjas.getDepartureTime();
+			LocalTime departure = vjas.getDepartureTime();
 			departureOffset = vjas.getDepartureDayOffset(); /** GJT */
 			if (departure == null) {
 				departure = vjas.getArrivalTime();
@@ -313,12 +313,11 @@ public class GtfsTripProducer extends AbstractProducer {
 				frequency.setTripId(tripId);
 				frequency.setExactTimes(journeyFrequency.getExactTime());
 				frequency.setStartTime(new GtfsTime(journeyFrequency.getFirstDepartureTime(), 0));
-				if (journeyFrequency.getFirstDepartureTime().getTime() <= journeyFrequency.getLastDepartureTime().getTime())
+				if (!journeyFrequency.getFirstDepartureTime().isAfter(journeyFrequency.getLastDepartureTime()))
 					frequency.setEndTime(new GtfsTime(journeyFrequency.getLastDepartureTime(), 0));
 				else
 					frequency.setEndTime(new GtfsTime(journeyFrequency.getLastDepartureTime(), 1));
-				int headwaySecs = numberOfsecondsInTheDay(journeyFrequency.getScheduledHeadwayInterval());
-				frequency.setHeadwaySecs(headwaySecs);
+				frequency.setHeadwaySecs((int) journeyFrequency.getScheduledHeadwayInterval().getStandardSeconds());
 				try {
 					getExporter().getFrequencyExporter().export(frequency);
 				} catch (Exception e) {
@@ -329,12 +328,6 @@ public class GtfsTripProducer extends AbstractProducer {
 		}
 		
 		return true;
-	}
-
-	private int numberOfsecondsInTheDay(Time time) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(time);
-		return ( ( cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE) ) * 60 + cal.get(Calendar.SECOND) );
 	}
 	
 }

@@ -1,25 +1,43 @@
 package mobi.chouette.service;
 
-import lombok.extern.log4j.Log4j;
-import org.rutebanken.helper.calendar.CalendarPattern;
-import org.rutebanken.helper.calendar.CalendarPatternAnalyzer;
-import mobi.chouette.dao.LineDAO;
-import mobi.chouette.dao.TimetableDAO;
-import mobi.chouette.model.CalendarDay;
-import mobi.chouette.model.statistics.*;
-import mobi.chouette.persistence.hibernate.ContextHolder;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.time.DateUtils;
-import org.joda.time.DateMidnight;
-import org.joda.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import java.util.*;
-import java.util.stream.Collectors;
+
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.dao.LineDAO;
+import mobi.chouette.dao.TimetableDAO;
+import mobi.chouette.model.CalendarDay;
+import mobi.chouette.model.statistics.Line;
+import mobi.chouette.model.statistics.LineAndTimetable;
+import mobi.chouette.model.statistics.LineStatistics;
+import mobi.chouette.model.statistics.Period;
+import mobi.chouette.model.statistics.PublicLine;
+import mobi.chouette.model.statistics.Timetable;
+import mobi.chouette.model.statistics.ValidityCategory;
+import mobi.chouette.persistence.hibernate.ContextHolder;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.time.DateUtils;
+import org.joda.time.DateMidnight;
+import org.joda.time.LocalDate;
+import org.rutebanken.helper.calendar.CalendarPattern;
+import org.rutebanken.helper.calendar.CalendarPatternAnalyzer;
 
 @Singleton(name = TransitDataStatisticsService.BEAN_NAME)
 @Log4j
@@ -251,14 +269,14 @@ public class TransitDataStatisticsService {
 				line.getTimetables().add(timetable);
 
 				if (t.getStartOfPeriod() != null && t.getEndOfPeriod() != null) {
-					timetable.getPeriods().add(new Period(t.getStartOfPeriod(), t.getEndOfPeriod()));
+					timetable.getPeriods().add(new Period(t.getStartOfPeriod().toDate(), t.getEndOfPeriod().toDate()));
 					foundStartEndDateOfTimetable = true;
 				} else {
 
 					if (t.getPeriods() != null && t.getPeriods().size() > 0) {
 						// Use periods
 						for (mobi.chouette.model.Period p : t.getPeriods()) {
-							Period period = new Period(p.getStartDate(), p.getEndDate());
+							Period period = new Period(p.getStartDate().toDate(), p.getEndDate().toDate());
 							if (!period.isEmpty() && !period.getTo().before(startDate)) {
 								// log.info("Adding normal period " + p);
 								timetable.getPeriods().add(period);
@@ -268,8 +286,8 @@ public class TransitDataStatisticsService {
 
 					if (t.getCalendarDays() != null) {
 						for (CalendarDay day : t.getCalendarDays()) {
-							if (day.getIncluded() && !startDate.after(day.getDate())) {
-								timetable.getPeriods().add(new Period(day.getDate(), day.getDate()));
+							if (day.getIncluded() && !startDate.after(day.getDate().toDate())) {
+								timetable.getPeriods().add(new Period(day.getDate().toDate(), day.getDate().toDate()));
 								calendarDaysForLine.add(day);
 								timetableForCalendarDays = timetable;
 							}
@@ -279,7 +297,7 @@ public class TransitDataStatisticsService {
 					if (timetable.getPeriods().isEmpty()) {
 						// Use timetable from/to as period
 						t.computeLimitOfPeriods();
-						Period period = new Period(t.getStartOfPeriod(), t.getEndOfPeriod());
+						Period period = new Period(t.getStartOfPeriod().toDate(), t.getEndOfPeriod().toDate());
 
 						// TODO could be separate days here as well that should
 						// be
@@ -312,7 +330,7 @@ public class TransitDataStatisticsService {
 	private Period calculatePeriodFromCalendarDaysPattern(Collection<CalendarDay> calendarDays) {
 
 		Set<java.time.LocalDate> includedDays = calendarDays.stream().filter(CalendarDay::getIncluded)
-				.map(c -> c.getDate().toLocalDate()).collect(Collectors.toSet());
+				.map(c -> java.time.LocalDate.of(c.getDate().getYear(),c.getDate().getMonthOfYear(),c.getDate().getDayOfMonth())).collect(Collectors.toSet());
 
 		CalendarPattern pattern = new CalendarPatternAnalyzer().computeCalendarPattern(includedDays);
 

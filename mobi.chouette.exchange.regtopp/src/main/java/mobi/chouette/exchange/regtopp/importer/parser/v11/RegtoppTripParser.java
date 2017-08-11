@@ -1,16 +1,8 @@
 package mobi.chouette.exchange.regtopp.importer.parser.v11;
 
-import static mobi.chouette.common.Constant.CONFIGURATION;
-import static mobi.chouette.common.Constant.PARSER;
-import static mobi.chouette.common.Constant.REFERENTIAL;
-
-import java.sql.Time;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.Duration;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -45,6 +37,13 @@ import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.Duration;
+import org.joda.time.LocalTime;
+import org.joda.time.Seconds;
+
+import static mobi.chouette.common.Constant.*;
 
 @Log4j
 public class RegtoppTripParser extends LineSpecificParser {
@@ -175,12 +174,11 @@ public class RegtoppTripParser extends LineSpecificParser {
 		}
 	}
 
-	protected Time interpolate(Time start, Time end) {
-		Time t = null;
+	protected LocalTime interpolate(LocalTime start, LocalTime end) {
+		LocalTime t = null;
 
 		if (start != null && end != null) {
-			long duration = end.getTime() - start.getTime();
-			t = new Time(start.getTime() + (duration / 2));
+			t = start.plus(Seconds.secondsBetween(start, end).dividedBy(2));
 		}
 		return t;
 	}

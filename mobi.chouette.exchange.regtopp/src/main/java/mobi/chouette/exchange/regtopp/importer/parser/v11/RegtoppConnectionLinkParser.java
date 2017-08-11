@@ -19,6 +19,8 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
+import org.joda.time.Duration;
+
 @Log4j
 public class RegtoppConnectionLinkParser extends LineSpecificParser {
 
@@ -58,7 +60,7 @@ public class RegtoppConnectionLinkParser extends LineSpecificParser {
 					String chouetteConnectionLinkId = ObjectIdCreator.createConnectionLinkId(configuration,pathway.getStopIdFrom() ,pathway.getStopIdTo());
 					ConnectionLink connectionLink = ObjectFactory.getConnectionLink(referential, chouetteConnectionLinkId);
 					connectionLink.setName(pathway.getStopIdFrom()+" -> "+pathway.getStopIdTo());
-					connectionLink.setDefaultDuration(new java.sql.Time(0, pathway.getDuration(), 0));
+					connectionLink.setDefaultDuration(Duration.standardMinutes(pathway.getDuration()));
 					connectionLink.setComment(pathway.getDescription());
 					connectionLink.setStartOfLink(startStopArea);
 					connectionLink.setEndOfLink(endStopArea);

@@ -1,7 +1,35 @@
 package mobi.chouette.service;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.ejb.ConcurrencyManagement;
+import javax.ejb.ConcurrencyManagementType;
+import javax.ejb.EJB;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.ws.rs.core.MediaType;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.ContenerChecker;
@@ -16,23 +44,12 @@ import mobi.chouette.model.iev.Link;
 import mobi.chouette.model.iev.Stat;
 import mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator;
 import mobi.chouette.scheduler.Scheduler;
-import org.apache.commons.io.FileUtils;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.ejb.*;
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.ws.rs.core.MediaType;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Paths;
-import java.util.*;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import org.apache.commons.io.FileUtils;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 @Singleton(name = JobServiceManager.BEAN_NAME)
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
@@ -266,8 +283,8 @@ public class JobServiceManager {
 
 	public void start(JobService jobService) {
 		jobService.setStatus(STATUS.STARTED);
-		jobService.setUpdated(new Date());
-		jobService.setStarted(new Date());
+		jobService.setUpdated(LocalDateTime.now());
+		jobService.setStarted(LocalDateTime.now());
 		jobService.addLink(MediaType.APPLICATION_JSON, Link.REPORT_REL);
 		jobDAO.update(jobService.getJob());
 	}
@@ -282,7 +299,7 @@ public class JobServiceManager {
 
 	public void reschedule(JobService jobService) {
 		jobService.setStatus(STATUS.RESCHEDULED);
-		jobService.setUpdated(new Date());
+		jobService.setUpdated(LocalDateTime.now());
 		jobService.setStarted(null);
 		jobService.removeLink(Link.REPORT_REL);
 		jobDAO.update(jobService.getJob());
@@ -314,7 +331,7 @@ public class JobServiceManager {
 			// set delete link
 			jobService.addLink(MediaType.APPLICATION_JSON, Link.DELETE_REL);
 
-			jobService.setUpdated(new Date());
+			jobService.setUpdated(LocalDateTime.now());
 			jobDAO.update(jobService.getJob());
 
 		}
@@ -385,15 +402,14 @@ public class JobServiceManager {
 			if (Files.exists(Paths.get(jobService.getPathName(), Constant.VALIDATION_FILE)))
 				jobService.addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_REL);
 		}
-		jobService.setUpdated(new Date());
+		jobService.setUpdated(LocalDateTime.now());
 		jobDAO.update(jobService.getJob());
 
 		// update statistics
 		// Ajout des statistiques d'import, export ou validation en base de données
 		{
 			// log.info("BEGIN ADDING STAT referential : " + jobService.getReferential() + " action : " + jobService.getAction() + " type :" + jobService.getType());
-			java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-
+			LocalDate now = LocalDate.now();
 			// Suppression des lignes de statistiques pour n'avoir que 12 mois glissants
 			statDAO.removeObsoleteStatFromDatabase(now);
 
@@ -421,8 +437,8 @@ public class JobServiceManager {
 					jobService.addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_REL);
 			}
 
-			jobService.setUpdated(new Date());
-			jobDAO.update(jobService.getJob());
+            jobService.setUpdated(LocalDateTime.now());
+            jobDAO.update(jobService.getJob());
 		}
 
 	}
@@ -499,7 +515,7 @@ public class JobServiceManager {
 				// filter on update time if given, otherwise don't return
 				// deleted jobs
 				boolean versionZeroCondition = (version == 0) && job.getStatus().ordinal() < STATUS.DELETED.ordinal();
-				boolean versionNonZeroCondition = (version > 0) && version < job.getUpdated().getTime();
+				boolean versionNonZeroCondition = (version > 0) && version < job.getUpdated().toDate().getTime();
 
 				return versionZeroCondition || versionNonZeroCondition;
 			}

@@ -8,7 +8,14 @@
 
 package mobi.chouette.exchange.validation.checkpoint;
 
-import com.vividsolutions.jts.geom.*;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.TestDescription;
@@ -24,16 +31,18 @@ import mobi.chouette.model.NeptuneLocalizedObject;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.NamingUtil;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.joda.time.Duration;
 import org.joda.time.LocalTime;
 import org.joda.time.Seconds;
-
-import java.lang.reflect.Method;
-import java.sql.Time;
-import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * @author michel

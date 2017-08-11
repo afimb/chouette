@@ -1,25 +1,38 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
-import com.google.common.base.Joiner;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.common.TimeUtil;
-import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
+
+import com.google.common.base.Joiner;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.rutebanken.netex.model.*;
+import org.rutebanken.netex.model.DataManagedObjectStructure;
+import org.rutebanken.netex.model.DayOfWeekEnumeration;
+import org.rutebanken.netex.model.DayType;
+import org.rutebanken.netex.model.DayTypeAssignment;
+import org.rutebanken.netex.model.DayTypeRefStructure;
+import org.rutebanken.netex.model.OperatingPeriod;
+import org.rutebanken.netex.model.OperatingPeriodRefStructure;
+import org.rutebanken.netex.model.PropertiesOfDay_RelStructure;
+import org.rutebanken.netex.model.PropertyOfDay;
 
-import java.math.BigInteger;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.*;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.objectIdSuffix;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 public class CalendarProducer extends NetexProducer {

@@ -1,17 +1,9 @@
 package mobi.chouette.exchange.regtopp.importer.parser.v11;
 
-import static mobi.chouette.common.Constant.CONFIGURATION;
-import static mobi.chouette.common.Constant.PARSER;
-import static mobi.chouette.common.Constant.REFERENTIAL;
-
 import java.time.DayOfWeek;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.joda.time.DateTimeConstants;
-import org.joda.time.LocalDate;
-import org.rutebanken.helper.calendar.CalendarPatternAnalyzer;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -30,6 +22,12 @@ import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+
+import org.joda.time.DateTimeConstants;
+import org.joda.time.LocalDate;
+import org.rutebanken.helper.calendar.CalendarPatternAnalyzer;
+
+import static mobi.chouette.common.Constant.*;
 
 @Log4j
 public class RegtoppTimetableParser implements Parser {
@@ -53,10 +51,10 @@ public class RegtoppTimetableParser implements Parser {
 			convertTimetable(referential, configuration, calStartDate, entry, header);
 		}
 
-		java.sql.Date latestCalEndDate = null;
+		LocalDate latestCalEndDate = null;
 		// Find latest date in timetables, update Timetable start/end to reflect this
 		for(Timetable t : referential.getTimetables().values()) {
-			if(latestCalEndDate == null || t.getEndOfPeriod().after(latestCalEndDate)) {
+			if(latestCalEndDate == null || t.getEndOfPeriod().isAfter(latestCalEndDate)) {
 				latestCalEndDate = t.getEndOfPeriod();
 			}
 		}
@@ -89,7 +87,7 @@ public class RegtoppTimetableParser implements Parser {
 			// Add separate dates
 			for (int i = 0; i < includedDays.length; i++) {
 				if (includedDays[i]) {
-					java.sql.Date currentDate = new java.sql.Date(calStartDate.plusDays(i).toDateMidnight().toDate().getTime());
+					LocalDate currentDate = calStartDate.plusDays(i);
 					timetable.addCalendarDay(new CalendarDay(currentDate, true));
 				}
 			}
@@ -107,24 +105,23 @@ public class RegtoppTimetableParser implements Parser {
 
 				// If not included, add extra day
 				if (includedDays[i] && !significantDayTypes.contains(dayType)) {
-					java.sql.Date currentDate = new java.sql.Date(calStartDate.plusDays(i).toDateMidnight().toDate().getTime());
+					LocalDate currentDate =calStartDate.plusDays(i);
 					timetable.addCalendarDay(new CalendarDay(currentDate, true));
 				}
 
 				// If excluded but included in pattern, add exclusion to day
 				if (!includedDays[i] && significantDayTypes.contains(dayType)) {
-					java.sql.Date currentDate = new java.sql.Date(calStartDate.plusDays(i).toDateMidnight().toDate().getTime());
+					LocalDate currentDate = calStartDate.plusDays(i);
 					timetable.addCalendarDay(new CalendarDay(currentDate, false));
 				}
 			}
 		}
 
-		java.sql.Date startDate = new java.sql.Date(calStartDate.toDateMidnight().toDate().getTime());
-		java.sql.Date endDate = new java.sql.Date(calStartDate.plusDays(includedDays.length).toDateMidnight().toDate().getTime());
+		LocalDate endDate = calStartDate.plusDays(includedDays.length);
 
-		timetable.setStartOfPeriod(startDate);
+		timetable.setStartOfPeriod(calStartDate);
 		timetable.setEndOfPeriod(endDate);
-		Period period = new Period(startDate, endDate);
+		Period period = new Period(calStartDate, endDate);
 		timetable.getPeriods().add(period);
 
 		NamingUtil.setDefaultName(timetable);
