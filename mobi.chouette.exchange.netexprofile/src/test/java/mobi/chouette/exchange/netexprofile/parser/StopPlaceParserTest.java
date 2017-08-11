@@ -6,7 +6,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.StopAreaTypeEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
-import mobi.chouette.model.type.TransportSubModeEnum;
+import mobi.chouette.model.type.TransportSubModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -49,8 +49,8 @@ public class StopPlaceParserTest {
 
         StopArea stopArea = ObjectFactory.getStopArea(referential, netexStopPlace.getId());
         Assert.assertEquals(StopAreaTypeEnum.RailStation, stopArea.getStopAreaType());
-        Assert.assertEquals(TransportModeNameEnum.Train, stopArea.getTransportModeName());
-        Assert.assertEquals(TransportSubModeEnum.International, stopArea.getTransportSubMode());
+        Assert.assertEquals(TransportModeNameEnum.Rail, stopArea.getTransportModeName());
+        Assert.assertEquals(TransportSubModeNameEnum.International, stopArea.getTransportSubMode());
     }
 
     @Test
@@ -68,72 +68,72 @@ public class StopPlaceParserTest {
     @Test
     public void testMapWaterSubmode() {
         StopPlaceParser parser = new StopPlaceParser();
-        Assert.assertEquals(parser.mapTransportSubMode(WaterSubmodeEnumeration.HIGH_SPEED_PASSENGER_SERVICE.value()), TransportSubModeEnum.HighSpeedPassengerService);
-        Assert.assertEquals(parser.mapTransportSubMode(WaterSubmodeEnumeration.HIGH_SPEED_VEHICLE_SERVICE.value()), TransportSubModeEnum.HighSpeedVehicleService);
-        Assert.assertEquals(parser.mapTransportSubMode(WaterSubmodeEnumeration.INTERNATIONAL_CAR_FERRY.value()), TransportSubModeEnum.InternationalCarFerry);
-        Assert.assertEquals(parser.mapTransportSubMode(WaterSubmodeEnumeration.INTERNATIONAL_PASSENGER_FERRY.value()), TransportSubModeEnum.InternationalPassengerFerry);
-        Assert.assertEquals(parser.mapTransportSubMode(WaterSubmodeEnumeration.LOCAL_CAR_FERRY.value()), TransportSubModeEnum.LocalCarFerry);
-        Assert.assertEquals(parser.mapTransportSubMode(WaterSubmodeEnumeration.LOCAL_PASSENGER_FERRY.value()), TransportSubModeEnum.LocalPassengerFerry);
-        Assert.assertEquals(parser.mapTransportSubMode(WaterSubmodeEnumeration.NATIONAL_CAR_FERRY.value()), TransportSubModeEnum.NationalCarFerry);
-        Assert.assertEquals(parser.mapTransportSubMode(WaterSubmodeEnumeration.SIGHTSEEING_SERVICE.value()), TransportSubModeEnum.SightseeingService);
+        Assert.assertEquals(parser.mapTransportSubMode(WaterSubmodeEnumeration.HIGH_SPEED_PASSENGER_SERVICE.value()), TransportSubModeNameEnum.HighSpeedPassengerService);
+        Assert.assertEquals(parser.mapTransportSubMode(WaterSubmodeEnumeration.HIGH_SPEED_VEHICLE_SERVICE.value()), TransportSubModeNameEnum.HighSpeedVehicleService);
+        Assert.assertEquals(parser.mapTransportSubMode(WaterSubmodeEnumeration.INTERNATIONAL_CAR_FERRY.value()), TransportSubModeNameEnum.InternationalCarFerry);
+        Assert.assertEquals(parser.mapTransportSubMode(WaterSubmodeEnumeration.INTERNATIONAL_PASSENGER_FERRY.value()), TransportSubModeNameEnum.InternationalPassengerFerry);
+        Assert.assertEquals(parser.mapTransportSubMode(WaterSubmodeEnumeration.LOCAL_CAR_FERRY.value()), TransportSubModeNameEnum.LocalCarFerry);
+        Assert.assertEquals(parser.mapTransportSubMode(WaterSubmodeEnumeration.LOCAL_PASSENGER_FERRY.value()), TransportSubModeNameEnum.LocalPassengerFerry);
+        Assert.assertEquals(parser.mapTransportSubMode(WaterSubmodeEnumeration.NATIONAL_CAR_FERRY.value()), TransportSubModeNameEnum.NationalCarFerry);
+        Assert.assertEquals(parser.mapTransportSubMode(WaterSubmodeEnumeration.SIGHTSEEING_SERVICE.value()), TransportSubModeNameEnum.SightseeingService);
     }
 
     @Test
     public void testMapAirSubmode() {
         StopPlaceParser parser = new StopPlaceParser();
-        Assert.assertEquals(parser.mapTransportSubMode(AirSubmodeEnumeration.DOMESTIC_FLIGHT.value()), TransportSubModeEnum.DomesticFlight);
-        Assert.assertEquals(parser.mapTransportSubMode(AirSubmodeEnumeration.HELICOPTER_SERVICE.value()), TransportSubModeEnum.HelicopterService);
-        Assert.assertEquals(parser.mapTransportSubMode(AirSubmodeEnumeration.INTERNATIONAL_FLIGHT.value()), TransportSubModeEnum.InternationalFlight);
+        Assert.assertEquals(parser.mapTransportSubMode(AirSubmodeEnumeration.DOMESTIC_FLIGHT.value()), TransportSubModeNameEnum.DomesticFlight);
+        Assert.assertEquals(parser.mapTransportSubMode(AirSubmodeEnumeration.HELICOPTER_SERVICE.value()), TransportSubModeNameEnum.HelicopterService);
+        Assert.assertEquals(parser.mapTransportSubMode(AirSubmodeEnumeration.INTERNATIONAL_FLIGHT.value()), TransportSubModeNameEnum.InternationalFlight);
     }
 
     @Test
     public void testMapBusSubmode() {
         StopPlaceParser parser = new StopPlaceParser();
-        Assert.assertEquals(parser.mapTransportSubMode(BusSubmodeEnumeration.AIRPORT_LINK_BUS.value()), TransportSubModeEnum.AirportLinkBus);
-        Assert.assertEquals(parser.mapTransportSubMode(BusSubmodeEnumeration.EXPRESS_BUS.value()), TransportSubModeEnum.ExpressBus);
-        Assert.assertEquals(parser.mapTransportSubMode(BusSubmodeEnumeration.LOCAL_BUS.value()), TransportSubModeEnum.LocalBus);
-        Assert.assertEquals(parser.mapTransportSubMode(BusSubmodeEnumeration.NIGHT_BUS.value()), TransportSubModeEnum.NightBus);
-        Assert.assertEquals(parser.mapTransportSubMode(BusSubmodeEnumeration.RAIL_REPLACEMENT_BUS.value()), TransportSubModeEnum.RailReplacementBus);
-        Assert.assertEquals(parser.mapTransportSubMode(BusSubmodeEnumeration.REGIONAL_BUS.value()), TransportSubModeEnum.RegionalBus);
-        Assert.assertEquals(parser.mapTransportSubMode(BusSubmodeEnumeration.SCHOOL_BUS.value()), TransportSubModeEnum.SchoolBus);
-        Assert.assertEquals(parser.mapTransportSubMode(BusSubmodeEnumeration.SHUTTLE_BUS.value()), TransportSubModeEnum.ShuttleBus);
-        Assert.assertEquals(parser.mapTransportSubMode(BusSubmodeEnumeration.SIGHTSEEING_BUS.value()), TransportSubModeEnum.SightseeingBus);
+        Assert.assertEquals(parser.mapTransportSubMode(BusSubmodeEnumeration.AIRPORT_LINK_BUS.value()), TransportSubModeNameEnum.AirportLinkBus);
+        Assert.assertEquals(parser.mapTransportSubMode(BusSubmodeEnumeration.EXPRESS_BUS.value()), TransportSubModeNameEnum.ExpressBus);
+        Assert.assertEquals(parser.mapTransportSubMode(BusSubmodeEnumeration.LOCAL_BUS.value()), TransportSubModeNameEnum.LocalBus);
+        Assert.assertEquals(parser.mapTransportSubMode(BusSubmodeEnumeration.NIGHT_BUS.value()), TransportSubModeNameEnum.NightBus);
+        Assert.assertEquals(parser.mapTransportSubMode(BusSubmodeEnumeration.RAIL_REPLACEMENT_BUS.value()), TransportSubModeNameEnum.RailReplacementBus);
+        Assert.assertEquals(parser.mapTransportSubMode(BusSubmodeEnumeration.REGIONAL_BUS.value()), TransportSubModeNameEnum.RegionalBus);
+        Assert.assertEquals(parser.mapTransportSubMode(BusSubmodeEnumeration.SCHOOL_BUS.value()), TransportSubModeNameEnum.SchoolBus);
+        Assert.assertEquals(parser.mapTransportSubMode(BusSubmodeEnumeration.SHUTTLE_BUS.value()), TransportSubModeNameEnum.ShuttleBus);
+        Assert.assertEquals(parser.mapTransportSubMode(BusSubmodeEnumeration.SIGHTSEEING_BUS.value()), TransportSubModeNameEnum.SightseeingBus);
     }
 
     @Test
     public void testMapTailSubmode() {
         StopPlaceParser parser = new StopPlaceParser();
-        Assert.assertEquals(parser.mapTransportSubMode(RailSubmodeEnumeration.INTERNATIONAL.value()), TransportSubModeEnum.International);
-        Assert.assertEquals(parser.mapTransportSubMode(RailSubmodeEnumeration.INTERREGIONAL_RAIL.value()), TransportSubModeEnum.InterregionalRail);
-        Assert.assertEquals(parser.mapTransportSubMode(RailSubmodeEnumeration.LOCAL.value()), TransportSubModeEnum.Local);
-        Assert.assertEquals(parser.mapTransportSubMode(RailSubmodeEnumeration.LONG_DISTANCE.value()), TransportSubModeEnum.LongDistance);
-        Assert.assertEquals(parser.mapTransportSubMode(RailSubmodeEnumeration.NIGHT_RAIL.value()), TransportSubModeEnum.NightRail);
-        Assert.assertEquals(parser.mapTransportSubMode(RailSubmodeEnumeration.REGIONAL_RAIL.value()), TransportSubModeEnum.RegionalRail);
-        Assert.assertEquals(parser.mapTransportSubMode(RailSubmodeEnumeration.TOURIST_RAILWAY.value()), TransportSubModeEnum.TouristRailway);
+        Assert.assertEquals(parser.mapTransportSubMode(RailSubmodeEnumeration.INTERNATIONAL.value()), TransportSubModeNameEnum.International);
+        Assert.assertEquals(parser.mapTransportSubMode(RailSubmodeEnumeration.INTERREGIONAL_RAIL.value()), TransportSubModeNameEnum.InterregionalRail);
+        Assert.assertEquals(parser.mapTransportSubMode(RailSubmodeEnumeration.LOCAL.value()), TransportSubModeNameEnum.Local);
+        Assert.assertEquals(parser.mapTransportSubMode(RailSubmodeEnumeration.LONG_DISTANCE.value()), TransportSubModeNameEnum.LongDistance);
+        Assert.assertEquals(parser.mapTransportSubMode(RailSubmodeEnumeration.NIGHT_RAIL.value()), TransportSubModeNameEnum.NightRail);
+        Assert.assertEquals(parser.mapTransportSubMode(RailSubmodeEnumeration.REGIONAL_RAIL.value()), TransportSubModeNameEnum.RegionalRail);
+        Assert.assertEquals(parser.mapTransportSubMode(RailSubmodeEnumeration.TOURIST_RAILWAY.value()), TransportSubModeNameEnum.TouristRailway);
     }
 
     @Test
     public void testMapTramSubmode() {
         StopPlaceParser parser = new StopPlaceParser();
-        Assert.assertEquals(parser.mapTransportSubMode(TramSubmodeEnumeration.LOCAL_TRAM.value()), TransportSubModeEnum.LocalTram);
+        Assert.assertEquals(parser.mapTransportSubMode(TramSubmodeEnumeration.LOCAL_TRAM.value()), TransportSubModeNameEnum.LocalTram);
     }
 
     @Test
     public void testMapFunicularSubmode() {
         StopPlaceParser parser = new StopPlaceParser();
-        Assert.assertEquals(parser.mapTransportSubMode(FunicularSubmodeEnumeration.FUNICULAR.value()), TransportSubModeEnum.Funicular);
+        Assert.assertEquals(parser.mapTransportSubMode(FunicularSubmodeEnumeration.FUNICULAR.value()), TransportSubModeNameEnum.Funicular);
     }
 
     @Test
     public void testMapMetroSubmode() {
         StopPlaceParser parser = new StopPlaceParser();
-        Assert.assertEquals(parser.mapTransportSubMode(MetroSubmodeEnumeration.METRO.value()), TransportSubModeEnum.Metro);
+        Assert.assertEquals(parser.mapTransportSubMode(MetroSubmodeEnumeration.METRO.value()), TransportSubModeNameEnum.Metro);
     }
 
     @Test
     public void testCablewaySubmode() {
         StopPlaceParser parser = new StopPlaceParser();
-        Assert.assertEquals(parser.mapTransportSubMode(TelecabinSubmodeEnumeration.TELECABIN.value()), TransportSubModeEnum.Telecabin);
+        Assert.assertEquals(parser.mapTransportSubMode(TelecabinSubmodeEnumeration.TELECABIN.value()), TransportSubModeNameEnum.Telecabin);
     }
 
 
@@ -143,16 +143,16 @@ public class StopPlaceParserTest {
         Assert.assertNull(parser.mapTransportModeName(null));
         Assert.assertEquals(parser.mapTransportModeName(VehicleModeEnumeration.AIR), TransportModeNameEnum.Air);
         Assert.assertEquals(parser.mapTransportModeName(VehicleModeEnumeration.BUS), TransportModeNameEnum.Bus);
-        Assert.assertEquals(parser.mapTransportModeName(VehicleModeEnumeration.RAIL), TransportModeNameEnum.Train);
+        Assert.assertEquals(parser.mapTransportModeName(VehicleModeEnumeration.RAIL), TransportModeNameEnum.Rail);
         Assert.assertEquals(parser.mapTransportModeName(VehicleModeEnumeration.TAXI), TransportModeNameEnum.Taxi);
-        Assert.assertEquals(parser.mapTransportModeName(VehicleModeEnumeration.TRAM), TransportModeNameEnum.Tramway);
+        Assert.assertEquals(parser.mapTransportModeName(VehicleModeEnumeration.TRAM), TransportModeNameEnum.Tram);
         Assert.assertEquals(parser.mapTransportModeName(VehicleModeEnumeration.COACH), TransportModeNameEnum.Coach);
         Assert.assertEquals(parser.mapTransportModeName(VehicleModeEnumeration.FERRY), TransportModeNameEnum.Ferry);
         Assert.assertEquals(parser.mapTransportModeName(VehicleModeEnumeration.METRO), TransportModeNameEnum.Metro);
-        Assert.assertEquals(parser.mapTransportModeName(VehicleModeEnumeration.WATER), TransportModeNameEnum.Waterborne);
-        Assert.assertEquals(parser.mapTransportModeName(VehicleModeEnumeration.CABLEWAY), TransportModeNameEnum.Cabelway);
+        Assert.assertEquals(parser.mapTransportModeName(VehicleModeEnumeration.WATER), TransportModeNameEnum.Water);
+        Assert.assertEquals(parser.mapTransportModeName(VehicleModeEnumeration.CABLEWAY), TransportModeNameEnum.Cableway);
         Assert.assertEquals(parser.mapTransportModeName(VehicleModeEnumeration.FUNICULAR), TransportModeNameEnum.Funicular);
-        Assert.assertEquals(parser.mapTransportModeName(VehicleModeEnumeration.TROLLEY_BUS), TransportModeNameEnum.Trolleybus);
+        Assert.assertEquals(parser.mapTransportModeName(VehicleModeEnumeration.TROLLEY_BUS), TransportModeNameEnum.TrolleyBus);
 
         Assert.assertEquals(parser.mapTransportModeName(VehicleModeEnumeration.OTHER), TransportModeNameEnum.Other);
         Assert.assertEquals(parser.mapTransportModeName(VehicleModeEnumeration.OTHER), TransportModeNameEnum.Other);

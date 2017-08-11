@@ -12,13 +12,14 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.JsonExtension;
+import mobi.chouette.exchange.neptune.model.TransportModeNameEnum;
 import mobi.chouette.exchange.neptune.validation.LineValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
-import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.model.type.TransportSubModeNameEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -66,8 +67,9 @@ public class LineParser implements Parser, Constant, JsonExtension {
 			} else if (xpp.getName().equals("publishedName")) {
 				line.setPublishedName(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("transportModeName")) {
+				
 				TransportModeNameEnum value = ParserUtils.getEnum(TransportModeNameEnum.class, xpp.nextText());
-				line.setTransportModeName(value);
+				convertNeptuneTransportModeToInternalModel(line,value);
 			} else if (xpp.getName().equals("lineEnd")) {
 				String lineEnd = ParserUtils.getText(xpp.nextText());
 				validator.addLineEnd(context, objectId, lineEnd);
@@ -118,6 +120,66 @@ public class LineParser implements Parser, Constant, JsonExtension {
 			}
 		}
 		validator.addLocation(context, line, lineNumber, columnNumber);
+	}
+
+
+	private void convertNeptuneTransportModeToInternalModel(Line line, TransportModeNameEnum value) {
+		log.warn("Mapping from Neptune to internal model is probably not correct - someone with Neptune expertise should look at it");
+		
+		switch(value) {
+		case Air:
+			line.setTransportModeName(mobi.chouette.model.type.TransportModeNameEnum.Air);
+			break;
+		case    Train: 
+			line.setTransportModeName(mobi.chouette.model.type.TransportModeNameEnum.Rail);
+			break;
+		case    LongDistanceTrain:
+		case    LongDistanceTrain_2:
+			line.setTransportModeName(mobi.chouette.model.type.TransportModeNameEnum.Rail);
+			line.setTransportSubModeName(TransportSubModeNameEnum.InterregionalRail);
+			break;
+		case    RapidTransit:
+		case    LocalTrain:
+			line.setTransportModeName(mobi.chouette.model.type.TransportModeNameEnum.Rail);
+			line.setTransportSubModeName(TransportSubModeNameEnum.Local);
+			break;
+		case    Metro:
+			line.setTransportModeName(mobi.chouette.model.type.TransportModeNameEnum.Metro);
+			break;
+		case    Tramway:
+			line.setTransportModeName(mobi.chouette.model.type.TransportModeNameEnum.Tram);
+			break;
+		case    Coach:
+			line.setTransportModeName(mobi.chouette.model.type.TransportModeNameEnum.Coach);
+			break;
+		case    Bus:
+			line.setTransportModeName(mobi.chouette.model.type.TransportModeNameEnum.Bus);
+			break;
+		case    Ferry:
+			line.setTransportModeName(mobi.chouette.model.type.TransportModeNameEnum.Ferry);
+			break;
+		case    Waterborne:
+			line.setTransportModeName(mobi.chouette.model.type.TransportModeNameEnum.Water);
+			break;
+		case    Trolleybus:
+			line.setTransportModeName(mobi.chouette.model.type.TransportModeNameEnum.TrolleyBus);
+			break;
+		case    Bicycle:
+			line.setTransportModeName(mobi.chouette.model.type.TransportModeNameEnum.Bicycle);
+			break;
+		case    Shuttle:
+			line.setTransportModeName(mobi.chouette.model.type.TransportModeNameEnum.Bus);
+			line.setTransportSubModeName(TransportSubModeNameEnum.ShuttleBus);
+			break;
+		case    Taxi:
+			line.setTransportModeName(mobi.chouette.model.type.TransportModeNameEnum.Taxi);
+			break;
+		case    Val:
+		case    Other:
+		case    PrivateVehicle:
+		case    Walk:
+			line.setTransportModeName(mobi.chouette.model.type.TransportModeNameEnum.Other);
+		}
 	}
 
 

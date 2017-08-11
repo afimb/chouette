@@ -14,7 +14,12 @@ import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.RouteSection;
+import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.VehicleJourneyAtStop;
+import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.model.type.TransportSubModeNameEnum;
 
 @Log4j
 public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern> implements Validator<JourneyPattern> {
@@ -37,6 +42,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 		if (!sourceFile)
 			initCheckPoint(context, JOURNEY_PATTERN_2, SEVERITY.E);
 		initCheckPoint(context, ROUTE_SECTION_1, SEVERITY.W);
+		initCheckPoint(context, JOURNEY_PATTERN_3, SEVERITY.W);
 		// 3-JourneyPattern-1 : check if two journey patterns use same stops
 		// 3-JourneyPattern-2 : Check if journey section routes count equals to
 		// journey stops count minus 1 (only from database)
@@ -65,6 +71,9 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 			// gap as parameter
 			check3RouteSection1(context, jp, parameters);
 
+			// 3-JourneyPattern-3: Check that Line.TransportMode matches StopArea.TransportMode
+			check3JourneyPattern3(context, jp);
+			
 			// 4-JourneyPattern-1 : check columns constraints
 			if (test4_1)
 				check4Generic1(context, jp, L4_JOURNEY_PATTERN_1, parameters, log);
@@ -189,5 +198,61 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 		}
 
 	}
+	
+	public void check3JourneyPattern3(Context context, JourneyPattern vj) {
+		
+		TransportModeNameEnum lineMode = vj.getRoute().getLine().getTransportModeName();
+		TransportSubModeNameEnum lineSubMode = vj.getRoute().getLine().getTransportSubModeName();
+		
+		for(StopPoint sp : vj.getStopPoints()) {
+			StopArea sa = sp.getContainedInStopArea();
+			if(sa != null) {
+				TransportModeNameEnum stopMode = sa.getTransportModeName();
+				TransportSubModeNameEnum stopSubMode = sa.getTransportSubMode();
+				
+				boolean valid = validCombination(lineMode,lineSubMode,stopMode,stopSubMode);
+			
+				if(!valid) {
+					DataLocation location = buildLocation(context, vj);
+					DataLocation targetLocation = buildLocation(context, sa);
+					
+					String referenceValue = stopMode + (stopSubMode != null ? "/"+stopSubMode : "");
+					String errorValue = lineMode + (lineSubMode != null ? "/"+lineSubMode : "");
+					
+					
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					reporter.addCheckPointReportError(context, JOURNEY_PATTERN_3, location, errorValue,
+							referenceValue, targetLocation);
+				}
+			}
+		}
+		
+	}
+
+	private boolean validCombination(TransportModeNameEnum lineMode, TransportSubModeNameEnum lineSubMode, TransportModeNameEnum stopMode,
+			TransportSubModeNameEnum stopSubMode) {
+		// TODO very simple checking
+		if(lineMode == null) {
+			return true;
+		} else if(stopMode == null) {
+			return true;
+		} else if( (TransportModeNameEnum.Coach.equals(lineMode) && TransportModeNameEnum.Bus.equals(stopMode)) || 
+				(TransportModeNameEnum.Bus.equals(lineMode) && TransportModeNameEnum.Coach.equals(stopMode))) {
+			// Coach and bus interchangable
+			return true;
+		
+		} else if(lineMode != stopMode) {
+			return false;
+		} else if(TransportSubModeNameEnum.RailReplacementBus.equals(stopSubMode) && (lineSubMode == null || TransportSubModeNameEnum.RailReplacementBus != stopSubMode)) {
+			return false;
+			// Only rail replacement bus service can visit rail replacement bus stops
+		}
+			
+			
+		return true;
+	
+	}
+
+	
 
 }

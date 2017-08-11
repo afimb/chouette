@@ -789,6 +789,7 @@ CREATE TABLE lines (
     number character varying(255),
     published_name character varying(255),
     transport_mode_name character varying(255),
+    transport_submode_name character varying(255),
     registration_number character varying(255),
     comment character varying(255),
     mobility_restricted_suitability boolean,

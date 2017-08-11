@@ -150,7 +150,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	/**
 	 * Transport sub mode
 	 *
-	 * @param transportSubMode
+	 * @param transportSubModeName
 	 *            New value
 	 * @return The actual value
 	 */
@@ -158,7 +158,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	@Setter
 	@Enumerated(EnumType.STRING)
 	@Column(name = "transport_sub_mode")
-	private TransportSubModeEnum transportSubMode;
+	private TransportSubModeNameEnum transportSubMode;
 
 	/**
 	 * registration number

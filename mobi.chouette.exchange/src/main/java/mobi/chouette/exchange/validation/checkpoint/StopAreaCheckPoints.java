@@ -15,7 +15,7 @@ import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
-import mobi.chouette.model.type.TransportSubModeEnum;
+import mobi.chouette.model.type.TransportSubModeNameEnum;
 
 import java.util.*;
 
@@ -108,7 +108,7 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 			check3StopArea4(context, stopArea, enveloppe);
 			check3StopArea5(context, stopArea, parameters);
 			check3StopArea6(context, stopArea, parameters);
-			// TODO enable this check3StopArea7(context, stopArea, parameters);
+			check3StopArea7(context, stopArea, parameters);
 
 			// 4-StopArea-1 : check columns constraints
 			if (test4_1)
@@ -261,17 +261,20 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 		}
 	}
 
-	private void check3StopArea6(Context context, StopArea stopArea, ValidationParameters parameters) {
+	public void check3StopArea6(Context context, StopArea stopArea, ValidationParameters parameters) {
 		// 3-StopArea-6 : check if combination of stop area type and transport mode is valid
 		if (stopArea.getStopAreaType() == null || stopArea.getTransportModeName() == null)
 			return;
-		
+		if(stopArea.getTransportModeName() == null) {
+			return;
+		}
+
+		ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 
 		switch (stopArea.getStopAreaType()) {
 			case Airport:
 				if (!stopArea.getTransportModeName().equals(TransportModeNameEnum.Air)) {
 					DataLocation location = buildLocation(context, stopArea);
-					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, STOP_AREA_6, location);
 				}
 				break;
@@ -280,138 +283,112 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 			case OnstreetBus:
 				if (!stopArea.getTransportModeName().equals(TransportModeNameEnum.Bus)) {
 					DataLocation location = buildLocation(context, stopArea);
-					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, STOP_AREA_6, location);
 				}
 				break;
 			case FerryPort:
 			case FerryStop:
-				if (!stopArea.getTransportModeName().equals(TransportModeNameEnum.Ferry)) {
-					DataLocation location = buildLocation(context, stopArea);
-					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-					reporter.addCheckPointReportError(context, STOP_AREA_6, location);
-				}
-				break;
 			case HarbourPort:
-				if (!stopArea.getTransportModeName().equals(TransportModeNameEnum.Waterborne)) {
+				if(!EnumSet.of(TransportModeNameEnum.Water, TransportModeNameEnum.Ferry
+						).contains(stopArea.getTransportModeName())) {
 					DataLocation location = buildLocation(context, stopArea);
-					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, STOP_AREA_6, location);
 				}
 				break;
 			case LiftStation:
-				if (!stopArea.getTransportModeName().equals(TransportModeNameEnum.Cabelway)) {
+				if (!stopArea.getTransportModeName().equals(TransportModeNameEnum.Cableway)) {
 					DataLocation location = buildLocation(context, stopArea);
-					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, STOP_AREA_6, location);
 				}
 				break;
 			case MetroStation:
 				if (!stopArea.getTransportModeName().equals(TransportModeNameEnum.Metro)) {
 					DataLocation location = buildLocation(context, stopArea);
-					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, STOP_AREA_6, location);
 				}
 				break;
 			case TramStation:
 			case OnstreetTram:
-				if (!stopArea.getTransportModeName().equals(TransportModeNameEnum.Tramway)) {
+				if (!stopArea.getTransportModeName().equals(TransportModeNameEnum.Tram)) {
 					DataLocation location = buildLocation(context, stopArea);
-					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, STOP_AREA_6, location);
 				}
 				break;
 			case RailStation:
-				if (!EnumSet.of(TransportModeNameEnum.Train, TransportModeNameEnum.LocalTrain,
-						TransportModeNameEnum.LongDistanceTrain).contains(stopArea.getTransportModeName())) {
+				if (!stopArea.getTransportModeName().equals(TransportModeNameEnum.Rail)) {
 					DataLocation location = buildLocation(context, stopArea);
-					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, STOP_AREA_6, location);
 				}
 				break;
-			case VehicleRailInterchange:
-			case Other:
-				break;
-			
+			default:
 		}
 	}
 
-	private void check3StopArea7(Context context, StopArea stopArea, ValidationParameters parameters) {
+	public void check3StopArea7(Context context, StopArea stopArea, ValidationParameters parameters) {
 		// 3-StopArea-7 : check if combination of transport mode and sub mode is valid
 		if (stopArea.getTransportModeName() == null)
 			return;
+		if(stopArea.getTransportSubMode() == null) {
+			return;
+		}
+		
+		ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 
 		switch (stopArea.getTransportModeName()) {
 			case Air:
-				if (!TransportSubModeEnum.AIR_SUB_MODES.contains(stopArea.getTransportSubMode())) {
+				if (!TransportSubModeNameEnum.AIR_SUB_MODES.contains(stopArea.getTransportSubMode())) {
 					DataLocation location = buildLocation(context, stopArea);
-					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
 				}
 				break;
-			case Trolleybus:
+			case TrolleyBus:
 			case Coach:
 			case Bus:
-				if (!TransportSubModeEnum.BUS_SUB_MODES.contains(stopArea.getTransportSubMode())) {
+				if (!TransportSubModeNameEnum.BUS_SUB_MODES.contains(stopArea.getTransportSubMode())) {
 					DataLocation location = buildLocation(context, stopArea);
-					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
 				}
 				break;
-			case Cabelway:
-				if (!stopArea.getTransportSubMode().equals(TransportSubModeEnum.Telecabin)) {
+			case Cableway:
+				if (!stopArea.getTransportSubMode().equals(TransportSubModeNameEnum.Telecabin)) {
 					DataLocation location = buildLocation(context, stopArea);
-					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
 				}
 				break;
 			case Funicular:
-				if (!stopArea.getTransportSubMode().equals(TransportSubModeEnum.Funicular)) {
+				if (!stopArea.getTransportSubMode().equals(TransportSubModeNameEnum.Funicular)) {
 					DataLocation location = buildLocation(context, stopArea);
-					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
 				}
 				break;
 			case Metro:
-				if (!stopArea.getTransportSubMode().equals(TransportSubModeEnum.Metro)) {
+				if (!stopArea.getTransportSubMode().equals(TransportSubModeNameEnum.Metro)) {
 					DataLocation location = buildLocation(context, stopArea);
-					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
 				}
 				break;
-			case LongDistanceTrain:
-			case LongDistanceTrain_2:
-			case LocalTrain:
-			case Train:
-				if (!TransportSubModeEnum.RAIL_SUB_MODES.contains(stopArea.getTransportSubMode())) {
+			case Rail:
+				if (!TransportSubModeNameEnum.RAIL_SUB_MODES.contains(stopArea.getTransportSubMode())) {
 					DataLocation location = buildLocation(context, stopArea);
-					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
 				}
 				break;
-			case Tramway:
-				if (!stopArea.getTransportSubMode().equals(TransportSubModeEnum.LocalTram)) {
+			case Tram:
+				if (!stopArea.getTransportSubMode().equals(TransportSubModeNameEnum.LocalTram)) {
 					DataLocation location = buildLocation(context, stopArea);
-					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
 				}
 				break;
+			case Water:
 			case Ferry:
-			case Waterborne:
-				if (!TransportSubModeEnum.WATER_SUB_MODES.contains(stopArea.getTransportSubMode())) {
+				if (!TransportSubModeNameEnum.WATER_SUB_MODES.contains(stopArea.getTransportSubMode())) {
 					DataLocation location = buildLocation(context, stopArea);
-					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
 				}
 				break;
 			case Bicycle:
-			case PrivateVehicle:
-			case RapidTransit:
-			case Shuttle:
-			case Val:
-			case Walk:
 			case Other:
-			case Taxi:
+				default:
 				break;
 		}
 	}

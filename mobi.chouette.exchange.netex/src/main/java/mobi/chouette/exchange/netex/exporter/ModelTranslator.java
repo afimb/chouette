@@ -230,23 +230,17 @@ public class ModelTranslator
    // <xsd:enumeration value="selfDrive">
    public String toTransportModeNetex(TransportModeNameEnum transportMode)
    {
+	  logger.error("Not implemented correctly after updating TransportMode and TransportSubMode");
       switch (transportMode)
       {
+ 
       case Air:
          return "air";
-      case Train:
+      case Rail:
          return "rail";
-      case LongDistanceTrain:
-         return "intercityRail";
-      case LongDistanceTrain_2:
-         return "intercityRail";
-      case LocalTrain:
-         return "urbanRail";
-      case RapidTransit:
-         return "urbanRail";
       case Metro:
          return "metro";
-      case Tramway:
+      case Tram:
          return "tram";
       case Coach:
          return "coach";
@@ -254,22 +248,14 @@ public class ModelTranslator
          return "bus";
       case Ferry:
          return "water";
-      case Waterborne:
+      case Water:
          return "water";
-      case PrivateVehicle:
-         return "selfDrive";
-      case Walk:
-         return "selfDrive";
-      case Trolleybus:
+      case TrolleyBus:
          return "trolleyBus";
       case Bicycle:
          return "selfDrive";
-      case Shuttle:
-         return "rail";
       case Taxi:
          return "taxi";
-      case Val:
-         return "rail";
       case Other:
          return "unknown";
       default:
@@ -279,30 +265,29 @@ public class ModelTranslator
 
    public TransportModeNameEnum readTransportMode(String netexMode)
    {
+		  logger.error("Not implemented correctly after updating TransportMode and TransportSubMode");
       if (netexMode == null)
          return null;
       else if (netexMode.equals("air"))
          return TransportModeNameEnum.Air;
       else if (netexMode.equals("rail"))
-         return TransportModeNameEnum.Train;
+         return TransportModeNameEnum.Rail;
       else if (netexMode.equals("intercityRail"))
-         return TransportModeNameEnum.LongDistanceTrain;
+         return TransportModeNameEnum.Rail;
       else if (netexMode.equals("urbanRail"))
-         return TransportModeNameEnum.LocalTrain;
+         return TransportModeNameEnum.Rail;
       else if (netexMode.equals("metro"))
          return TransportModeNameEnum.Metro;
       else if (netexMode.equals("tram"))
-         return TransportModeNameEnum.Tramway;
+         return TransportModeNameEnum.Tram;
       else if (netexMode.equals("coach"))
          return TransportModeNameEnum.Coach;
       else if (netexMode.equals("bus"))
          return TransportModeNameEnum.Bus;
       else if (netexMode.equals("water"))
          return TransportModeNameEnum.Ferry;
-      else if (netexMode.equals("selfDrive"))
-         return TransportModeNameEnum.Walk;
       else if (netexMode.equals("trolleyBus"))
-         return TransportModeNameEnum.Trolleybus;
+         return TransportModeNameEnum.TrolleyBus;
       else if (netexMode.equals("taxi"))
          return TransportModeNameEnum.Taxi;
       else if (netexMode.equals("unknown"))

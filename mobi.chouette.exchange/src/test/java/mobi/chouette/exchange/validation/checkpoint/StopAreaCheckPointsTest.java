@@ -3,12 +3,20 @@ package mobi.chouette.exchange.validation.checkpoint;
 import java.math.BigDecimal;
 
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
+import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.LongLatTypeEnum;
+import mobi.chouette.model.type.StopAreaTypeEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.model.type.TransportSubModeNameEnum;
 
 import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
+
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
 
 public class StopAreaCheckPointsTest {
 	@Test(groups = { "StopAreaCheckPoint" }, description = "near", priority = 101)
@@ -82,4 +90,67 @@ public class StopAreaCheckPointsTest {
 	}
 
 
+	@Test
+	public void testCheck3StopArea6Fail() {
+		StopAreaCheckPoints checkPoints = new StopAreaCheckPoints();
+		Context context = createValidationContext(AbstractValidation.STOP_AREA_6);
+		checkPoints.check3StopArea6(context, createStopArea(StopAreaTypeEnum.Airport, TransportModeNameEnum.Bus), new ValidationParameters());
+		checkPoints.check3StopArea6(context, createStopArea(StopAreaTypeEnum.TramStation, TransportModeNameEnum.Bus), new ValidationParameters());
+		checkPoints.check3StopArea6(context, createStopArea(StopAreaTypeEnum.MetroStation, TransportModeNameEnum.Bus), new ValidationParameters());
+		checkPoints.check3StopArea6(context, createStopArea(StopAreaTypeEnum.FerryPort, TransportModeNameEnum.Bus), new ValidationParameters());
+		checkPoints.check3StopArea6(context, createStopArea(StopAreaTypeEnum.HarbourPort, TransportModeNameEnum.Bus), new ValidationParameters());
+		checkPoints.check3StopArea6(context, createStopArea(StopAreaTypeEnum.RailStation, TransportModeNameEnum.Bus), new ValidationParameters());
+		Assert.assertEquals(((ValidationReport)context.get(Constant.VALIDATION_REPORT)).getCheckPointErrors().size(), 6);
+	}
+	
+	@Test
+	public void testCheck3StopArea6OK() {
+		StopAreaCheckPoints checkPoints = new StopAreaCheckPoints();
+		Context context = createValidationContext(AbstractValidation.STOP_AREA_6);
+		checkPoints.check3StopArea6(context, createStopArea(StopAreaTypeEnum.Airport, TransportModeNameEnum.Air), new ValidationParameters());
+		checkPoints.check3StopArea6(context, createStopArea(StopAreaTypeEnum.TramStation, TransportModeNameEnum.Tram), new ValidationParameters());
+		checkPoints.check3StopArea6(context, createStopArea(StopAreaTypeEnum.MetroStation, TransportModeNameEnum.Metro), new ValidationParameters());
+		checkPoints.check3StopArea6(context, createStopArea(StopAreaTypeEnum.FerryPort, TransportModeNameEnum.Water), new ValidationParameters());
+		checkPoints.check3StopArea6(context, createStopArea(StopAreaTypeEnum.HarbourPort, TransportModeNameEnum.Water), new ValidationParameters());
+		checkPoints.check3StopArea6(context, createStopArea(StopAreaTypeEnum.RailStation, TransportModeNameEnum.Rail), new ValidationParameters());
+		Assert.assertEquals(((ValidationReport)context.get(Constant.VALIDATION_REPORT)).getCheckPointErrors().size(), 0);
+	}
+	
+	@Test
+	public void testCheck3StopArea7Fail() {
+		StopAreaCheckPoints checkPoints = new StopAreaCheckPoints();
+		Context context = createValidationContext(AbstractValidation.STOP_AREA_7);
+		checkPoints.check3StopArea7(context, createStopArea(TransportModeNameEnum.Bus,TransportSubModeNameEnum.DomesticFlight), new ValidationParameters());
+		checkPoints.check3StopArea7(context, createStopArea(TransportModeNameEnum.Air,TransportSubModeNameEnum.RegionalBus ), new ValidationParameters());
+		checkPoints.check3StopArea7(context, createStopArea(TransportModeNameEnum.Ferry,TransportSubModeNameEnum.HelicopterService), new ValidationParameters());
+		checkPoints.check3StopArea7(context, createStopArea(TransportModeNameEnum.Water,TransportSubModeNameEnum.SchoolBus), new ValidationParameters());
+		checkPoints.check3StopArea7(context, createStopArea(TransportModeNameEnum.Water,null), new ValidationParameters());
+		Assert.assertEquals(((ValidationReport)context.get(Constant.VALIDATION_REPORT)).getCheckPointErrors().size(), 4);
+	}
+	
+	private StopArea createStopArea(StopAreaTypeEnum type, TransportModeNameEnum transportMode) {
+		StopArea sa = new StopArea();
+		sa.setStopAreaType(type);
+		sa.setTransportModeName(transportMode);
+		return sa;
+	}
+
+	private StopArea createStopArea(TransportModeNameEnum transportMode, TransportSubModeNameEnum subMode) {
+		StopArea sa = new StopArea();
+		
+		sa.setTransportModeName(transportMode);
+		sa.setTransportSubMode(subMode);
+		return sa;
+	}
+
+
+	protected Context createValidationContext(String checkPointName) {
+		Context context = new Context();
+		ValidationReport validationReport = new ValidationReport();
+		context.put(Constant.VALIDATION_REPORT, validationReport);
+		ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+		reporter.addItemToValidationReport(context, checkPointName,"E");
+		return context;
+	}
+	
 }

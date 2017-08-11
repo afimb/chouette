@@ -54,7 +54,7 @@ import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.StopAreaImportModeEnum;
 import mobi.chouette.model.type.StopAreaTypeEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
-import mobi.chouette.model.type.TransportSubModeEnum;
+import mobi.chouette.model.type.TransportSubModeNameEnum;
 import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
@@ -259,7 +259,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 					StopArea stopAreaParent = stopPoint.getContainedInStopArea().getParent();
 					Assert.assertEquals(stopAreaParent.getStopAreaType(), StopAreaTypeEnum.Airport);
 					Assert.assertEquals(stopAreaParent.getTransportModeName(), TransportModeNameEnum.Air);
-					Assert.assertEquals(stopAreaParent.getTransportSubMode(), TransportSubModeEnum.InternationalFlight);
+					Assert.assertEquals(stopAreaParent.getTransportSubMode(), TransportSubModeNameEnum.InternationalFlight);
 				} else {
 					assertNotNull(stopPoint.getContainedInStopArea(), "Expected not existing stop area to have been created by import");
 				}

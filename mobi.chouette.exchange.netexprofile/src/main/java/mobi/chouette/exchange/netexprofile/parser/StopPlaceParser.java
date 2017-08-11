@@ -18,7 +18,7 @@ import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.type.StopAreaTypeEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
-import mobi.chouette.model.type.TransportSubModeEnum;
+import mobi.chouette.model.type.TransportSubModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -155,7 +155,7 @@ public class StopPlaceParser implements Parser, Constant {
 
     }
 
-    TransportSubModeEnum mapTransportSubMode(StopPlace netexStop) {
+    TransportSubModeNameEnum mapTransportSubMode(StopPlace netexStop) {
         if (netexStop.getTransportMode() == null) {
             return null;
         }
@@ -187,9 +187,9 @@ public class StopPlaceParser implements Parser, Constant {
         return null;
     }
 
-    TransportSubModeEnum mapTransportSubMode(String netexValue) {
+    TransportSubModeNameEnum mapTransportSubMode(String netexValue) {
         try {
-            return TransportSubModeEnum.valueOf(StringUtils.capitalize(netexValue));
+            return TransportSubModeNameEnum.valueOf(StringUtils.capitalize(netexValue));
         } catch (IllegalArgumentException iae) {
             log.warn("Unable to map unknown TransportModeNameEnum value: " + netexValue);
             return null;
@@ -208,11 +208,11 @@ public class StopPlaceParser implements Parser, Constant {
             case BUS:
                 return TransportModeNameEnum.Bus;
             case RAIL:
-                return TransportModeNameEnum.Train;
+                return TransportModeNameEnum.Rail;
             case TAXI:
                 return TransportModeNameEnum.Taxi;
             case TRAM:
-                return TransportModeNameEnum.Tramway;
+                return TransportModeNameEnum.Tram;
             case COACH:
                 return TransportModeNameEnum.Coach;
             case FERRY:
@@ -220,13 +220,13 @@ public class StopPlaceParser implements Parser, Constant {
             case METRO:
                 return TransportModeNameEnum.Metro;
             case WATER:
-                return TransportModeNameEnum.Waterborne;
+                return TransportModeNameEnum.Water;
             case CABLEWAY:
-                return TransportModeNameEnum.Cabelway;
+                return TransportModeNameEnum.Cableway;
             case FUNICULAR:
                 return TransportModeNameEnum.Funicular;
             case TROLLEY_BUS:
-                return TransportModeNameEnum.Trolleybus;
+                return TransportModeNameEnum.TrolleyBus;
             case LIFT:
             case OTHER:
                 return TransportModeNameEnum.Other;
