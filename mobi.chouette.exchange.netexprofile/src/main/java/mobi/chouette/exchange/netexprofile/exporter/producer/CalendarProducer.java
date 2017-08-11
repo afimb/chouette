@@ -2,6 +2,7 @@ package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import com.google.common.base.Joiner;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.model.Line;
@@ -48,8 +49,8 @@ public class CalendarProducer extends NetexProducer {
 
             if (CollectionUtils.isNotEmpty(timetable.getDayTypes())) {
                 Period period = timetable.getPeriods().get(0);
-                LocalDate localStartDate = ConversionUtil.toLocalDate(period.getStartDate());
-                LocalDate localEndDate = ConversionUtil.toLocalDate(period.getEndDate());
+                LocalDate localStartDate = TimeUtil.toLocalTimeFromJoda(period.getStartDate());
+                LocalDate localEndDate = TimeUtil.toLocalTimeFromJoda(period.getEndDate());
 
                 // TODO split the day types into weekdays, and weekend days, and sort by weekday nr.
                 List<DayOfWeekEnumeration> dayOfWeekEnumerations = NetexProducerUtils.toDayOfWeekEnumeration(timetable.getDayTypes());
@@ -88,15 +89,15 @@ public class CalendarProducer extends NetexProducer {
             }
 
             if (CollectionUtils.isNotEmpty(timetable.getPeculiarDates())) {
-                for (Date includedDate : timetable.getPeculiarDates()) {
-                    String dayTypeId = createDayTypeId(timetable.objectIdPrefix(), new Object[] {line.objectIdSuffix(), format(ConversionUtil.toLocalDate(includedDate))});
+                for (org.joda.time.LocalDate includedDate : timetable.getPeculiarDates()) {
+                    String dayTypeId = createDayTypeId(timetable.objectIdPrefix(), new Object[] {line.objectIdSuffix(), format(TimeUtil.toLocalTimeFromJoda(includedDate))});
 
                     if (!processedIds.contains(dayTypeId)) {
                         DayType dayType = createDayType(version, dayTypeId);
                         dayTypes.add(dayType);
 
                         DayTypeAssignment dayTypeAssignment = createDayTypeAssignment(version, dayTypeId, createDayTypeAssignmentId(timetable, dayTypeId));
-                        dayTypeAssignment.setDate(ConversionUtil.toOffsetDateTime(includedDate));
+                        dayTypeAssignment.setDate(TimeUtil.toOffsetDateTime(includedDate));
                         dayTypeAssignments.add(dayTypeAssignment);
 
                         processedIds.add(dayTypeId);
@@ -107,15 +108,15 @@ public class CalendarProducer extends NetexProducer {
             }
 
             if (CollectionUtils.isNotEmpty(timetable.getExcludedDates())) {
-                for (Date excludedDate : timetable.getExcludedDates()) {
-                    String dayTypeId = createDayTypeId(timetable.objectIdPrefix(), new Object[] {line.objectIdSuffix(), format(ConversionUtil.toLocalDate(excludedDate)), "X"});
+                for (org.joda.time.LocalDate excludedDate : timetable.getExcludedDates()) {
+                    String dayTypeId = createDayTypeId(timetable.objectIdPrefix(), new Object[] {line.objectIdSuffix(), format(TimeUtil.toLocalTimeFromJoda(excludedDate)), "X"});
 
                     if (!processedIds.contains(dayTypeId)) {
                         DayType dayType = createDayType(version, dayTypeId);
                         dayTypes.add(dayType);
 
                         DayTypeAssignment dayTypeAssignment = createDayTypeAssignment(version, dayTypeId, createDayTypeAssignmentId(timetable, dayTypeId));
-                        dayTypeAssignment.setDate(ConversionUtil.toOffsetDateTime(excludedDate));
+                        dayTypeAssignment.setDate(TimeUtil.toOffsetDateTime(excludedDate));
                         dayTypeAssignment.setIsAvailable(Boolean.FALSE);
                         dayTypeAssignments.add(dayTypeAssignment);
 
@@ -175,8 +176,8 @@ public class CalendarProducer extends NetexProducer {
         return new OperatingPeriod()
                 .withVersion(version)
                 .withId(operatingPeriodId)
-                .withFromDate(ConversionUtil.toOffsetDateTime(period.getStartDate()))
-                .withToDate(ConversionUtil.toOffsetDateTime(period.getEndDate()));
+                .withFromDate(TimeUtil.toOffsetDateTime(period.getStartDate()))
+                .withToDate(TimeUtil.toOffsetDateTime(period.getEndDate()));
     }
 
     private OperatingPeriodRefStructure createOperatingPeriodRefStructure(String version, String operatingPeriodId) {

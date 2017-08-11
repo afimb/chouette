@@ -1,9 +1,5 @@
 package mobi.chouette.model.util;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
@@ -19,6 +15,11 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.DayTypeEnum;
+
+import org.joda.time.DateTimeConstants;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 public abstract class NamingUtil {
 
@@ -153,7 +154,7 @@ public abstract class NamingUtil {
 	public static void setDefaultName(Timetable timetable) {
 		if (isFilled(timetable.getComment()))
 			return;
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd");
 		String monday = (timetable.getDayTypes().contains(DayTypeEnum.Monday)) ? "Mo" : "..";
 		String tuesday = (timetable.getDayTypes().contains(DayTypeEnum.Tuesday)) ? "Tu" : "..";
 		String wednesday = (timetable.getDayTypes().contains(DayTypeEnum.Wednesday)) ? "We" : "..";
@@ -162,45 +163,44 @@ public abstract class NamingUtil {
 		String saturday = (timetable.getDayTypes().contains(DayTypeEnum.Saturday)) ? "Sa" : "..";
 		String sunday = (timetable.getDayTypes().contains(DayTypeEnum.Sunday)) ? "Su" : "..";
 
-		Date firstDate = null;
-		Date lastDate = null;
+		LocalDate firstDate = null;
+		LocalDate lastDate = null;
 		if (timetable.getPeriods() != null && !timetable.getPeriods().isEmpty()) {
 			for (Period period : timetable.getPeriods()) {
-				if (firstDate == null || period.getStartDate().before(firstDate))
+				if (firstDate == null || period.getStartDate().isBefore(firstDate))
 					firstDate = period.getStartDate();
-				if (lastDate == null || period.getEndDate().after(lastDate))
+				if (lastDate == null || period.getEndDate().isAfter(lastDate))
 					lastDate = period.getEndDate();
 			}
 		}
 		if (timetable.getCalendarDays() != null && !timetable.getCalendarDays().isEmpty()) {
-			Calendar cal = Calendar.getInstance();
-			for (Date date : timetable.getPeculiarDates()) {
-				cal.setTime(date);
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY)
+
+			for (LocalDate date : timetable.getPeculiarDates()) {
+				if (date.getDayOfWeek() == DateTimeConstants.MONDAY)
 					monday = "Mo";
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY)
+				if (date.getDayOfWeek() == DateTimeConstants.TUESDAY)
 					tuesday = "Tu";
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY)
+				if (date.getDayOfWeek() == DateTimeConstants.WEDNESDAY)
 					wednesday = "We";
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY)
+				if (date.getDayOfWeek() == DateTimeConstants.THURSDAY)
 					thursday = "Th";
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY)
+				if (date.getDayOfWeek() == DateTimeConstants.FRIDAY)
 					friday = "Fr";
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
+				if (date.getDayOfWeek() == DateTimeConstants.SATURDAY)
 					saturday = "Sa";
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+				if (date.getDayOfWeek() == DateTimeConstants.SUNDAY)
 					sunday = "Su";
-				if (firstDate == null || date.before(firstDate))
+				if (firstDate == null || date.isBefore(firstDate))
 					firstDate = date;
-				if (lastDate == null || date.after(lastDate))
+				if (lastDate == null || date.isAfter(lastDate))
 					lastDate = date;
 			}
 		}
 
 		// security if timetable is empty
 		if (firstDate != null && lastDate != null) {
-			String comment = timetable.objectIdSuffix() + " : " + format.format(firstDate) + " -> "
-					+ format.format(lastDate) + " : " + monday + tuesday + wednesday + thursday + friday + saturday
+			String comment = timetable.objectIdSuffix() + " : " + format.print(firstDate) + " -> "
+					+ format.print(lastDate) + " : " + monday + tuesday + wednesday + thursday + friday + saturday
 					+ sunday;
 			timetable.setComment(comment);
 		} else {

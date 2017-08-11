@@ -1,6 +1,5 @@
 package mobi.chouette.exchange.gtfs.exporter.producer;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -18,6 +17,7 @@ import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;
 
+import org.joda.time.LocalDate;
 import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
@@ -44,9 +44,9 @@ public class GtfsExportCalendarProducerTests
       neptuneObject.setComment("name");
       neptuneObject.addDayType(DayTypeEnum.Monday);
       neptuneObject.addDayType(DayTypeEnum.Saturday);
-      Date startDate = new Date(c.getTimeInMillis());
+      LocalDate startDate = LocalDate.fromCalendarFields(c);
       c.add(Calendar.DATE, 15);
-      Date endDate = new Date(c.getTimeInMillis());
+      LocalDate endDate = LocalDate.fromCalendarFields(c);
       Period period = new Period(startDate, endDate);
       neptuneObject.addPeriod(period);
 
@@ -84,10 +84,8 @@ public class GtfsExportCalendarProducerTests
       Timetable neptuneObject = new Timetable();
       neptuneObject.setObjectId("GTFS:Timetable:1234");
       neptuneObject.setComment("name");
-      for (int i = 0; i < 5; i++)
-      {
-         Date date = new Date(c.getTimeInMillis());
-         neptuneObject.addCalendarDay(new CalendarDay(date, true));
+      for (int i = 0; i < 5; i++) {
+         neptuneObject.addCalendarDay(new CalendarDay(LocalDate.fromCalendarFields(c), true));
          c.add(Calendar.DATE, 3);
       }
       Reporter.log(neptuneObject.toString());
@@ -103,10 +101,11 @@ public class GtfsExportCalendarProducerTests
       c.set(Calendar.YEAR, 2013);
       c.set(Calendar.MONTH, Calendar.JULY);
       c.set(Calendar.DAY_OF_MONTH, 1);
+
       for (GtfsCalendarDate gtfsCalendarDate : mock.getExportedCalendarDates())
       {
          Reporter.log(CalendarDateExporter.CONVERTER.to(context,gtfsCalendarDate));
-         Date date = new Date(c.getTimeInMillis());
+         LocalDate date = LocalDate.fromCalendarFields(c);
          c.add(Calendar.DATE, 3);
          Assert.assertEquals(gtfsCalendarDate.getServiceId(), toGtfsId(neptuneObject.getObjectId()), "service id must be correcty set");
          Assert.assertEquals(gtfsCalendarDate.getDate(), date, "calendar date must be correctly");
@@ -133,15 +132,14 @@ public class GtfsExportCalendarProducerTests
       neptuneObject.addDayType(DayTypeEnum.Thursday);
       neptuneObject.addDayType(DayTypeEnum.Friday);
       neptuneObject.addDayType(DayTypeEnum.Sunday);
-      Date startDate = new Date(c.getTimeInMillis());
+      LocalDate startDate = LocalDate.fromCalendarFields(c);
       c.add(Calendar.DATE, 15);
-      Date endDate = new Date(c.getTimeInMillis());
+      LocalDate endDate =  LocalDate.fromCalendarFields(c);
       Period period = new Period(startDate, endDate);
       neptuneObject.addPeriod(period);
       c.add(Calendar.DATE, 15);
-      for (int i = 0; i < 5; i++)
-      {
-         Date date = new Date(c.getTimeInMillis());
+      for (int i = 0; i < 5; i++) {
+         LocalDate date = LocalDate.fromCalendarFields(c);
          neptuneObject.addCalendarDay(new CalendarDay(date, true));
          c.add(Calendar.DATE, 3);
       }
@@ -172,7 +170,7 @@ public class GtfsExportCalendarProducerTests
       for (GtfsCalendarDate gtfsCalendarDate : mock.getExportedCalendarDates())
       {
          Reporter.log(CalendarDateExporter.CONVERTER.to(context,gtfsCalendarDate));
-         Date date = new Date(c.getTimeInMillis());
+         LocalDate date = LocalDate.fromCalendarFields(c);
          c.add(Calendar.DATE, 3);
          Assert.assertEquals(gtfsCalendarDate.getServiceId(), toGtfsId(neptuneObject.getObjectId()), "service id must be correcty set");
          Assert.assertEquals(gtfsCalendarDate.getDate(), date, "calendar date must be correctly");
@@ -200,15 +198,15 @@ public class GtfsExportCalendarProducerTests
       neptuneObject.addDayType(DayTypeEnum.Friday);
       neptuneObject.addDayType(DayTypeEnum.Saturday);
       neptuneObject.addDayType(DayTypeEnum.Sunday);
-      Date startDate1 = new Date(c.getTimeInMillis());
+      LocalDate startDate1 = LocalDate.fromCalendarFields(c);
       c.add(Calendar.DATE, 15);
-      Date endDate1 = new Date(c.getTimeInMillis());
+      LocalDate endDate1 = LocalDate.fromCalendarFields(c);
       Period period1 = new Period(startDate1, endDate1);
       neptuneObject.addPeriod(period1);
       c.add(Calendar.DATE, 60);
-      Date startDate2 = new Date(c.getTimeInMillis());
+      LocalDate startDate2 = LocalDate.fromCalendarFields(c);
       c.add(Calendar.DATE, 15);
-      Date endDate2 = new Date(c.getTimeInMillis());
+      LocalDate endDate2 = LocalDate.fromCalendarFields(c);
       Period period2 = new Period(startDate2, endDate2);
       neptuneObject.addPeriod(period2);
 
@@ -229,7 +227,7 @@ public class GtfsExportCalendarProducerTests
       for (GtfsCalendarDate gtfsCalendarDate : mock.getExportedCalendarDates())
       {
          Reporter.log(CalendarDateExporter.CONVERTER.to(context,gtfsCalendarDate));
-         Date date = new Date(c.getTimeInMillis());
+         LocalDate date = LocalDate.fromCalendarFields(c);
          cpt++;
          if (cpt == 14)
          {

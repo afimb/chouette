@@ -19,6 +19,7 @@ import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.LocalDateTime;
 import org.rutebanken.netex.model.*;
 import org.rutebanken.netex.model.Network;
 
@@ -374,7 +375,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 			line.getFootnotes().add(footnote);
 
 			footnote.setLine(line);
-			footnote.setCreatedAt(new Date());
+			footnote.setCreatedAt(LocalDateTime.now());
 			footnote.setDetached(true);
 
 			String objectRef = noticeAssignmentMap.get(notice.getId());

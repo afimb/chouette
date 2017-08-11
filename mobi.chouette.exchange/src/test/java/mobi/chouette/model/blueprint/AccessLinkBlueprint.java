@@ -1,7 +1,6 @@
 package mobi.chouette.model.blueprint;
 
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.util.UUID;
 
 import mobi.chouette.model.AccessLink;
@@ -12,6 +11,7 @@ import com.tobedevoured.modelcitizen.annotation.Blueprint;
 import com.tobedevoured.modelcitizen.annotation.Default;
 import com.tobedevoured.modelcitizen.annotation.Mapped;
 import com.tobedevoured.modelcitizen.field.FieldCallback;
+import org.joda.time.Duration;
 
 @SuppressWarnings("deprecation")
 @Blueprint(AccessLink.class)
@@ -46,13 +46,13 @@ public class AccessLinkBlueprint
    BigDecimal linkDistance = new BigDecimal(2);
 
    @Default
-   Time defaultDuration = new Time(173335738);
+   Duration defaultDuration = new Duration(173335738);
 
    @Default
-   Time frequentTravellerDuration = new Time(173335738);
+   Duration frequentTravellerDuration = new Duration(173335738);
 
    @Default
-   Time occasionalTravellerDuration = new Time(173335738);
+   Duration occasionalTravellerDuration = new Duration(173335738);
 
    @Mapped
    boolean mobilityRestrictedSuitable = true;

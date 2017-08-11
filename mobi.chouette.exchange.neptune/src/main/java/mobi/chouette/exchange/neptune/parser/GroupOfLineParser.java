@@ -1,6 +1,6 @@
 package mobi.chouette.exchange.neptune.parser;
 
-import java.util.Date;
+import org.joda.time.LocalDateTime;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
@@ -48,7 +48,7 @@ public class GroupOfLineParser implements Parser, Constant, JsonExtension {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				groupOfLine.setObjectVersion(version);
 			} else if (xpp.getName().equals("creationTime")) {
-				Date creationTime = ParserUtils.getSQLDateTime(xpp.nextText());
+				LocalDateTime creationTime = ParserUtils.getLocalDateTime(xpp.nextText());
 				groupOfLine.setCreationTime(creationTime);
 			} else if (xpp.getName().equals("creatorId")) {
 				groupOfLine.setCreatorId(ParserUtils.getText(xpp.nextText()));

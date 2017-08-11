@@ -1,9 +1,7 @@
 package mobi.chouette.exchange.neptune.parser;
 
-import java.sql.Time;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import lombok.extern.log4j.Log4j;
@@ -31,6 +29,10 @@ import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
+import org.joda.time.Duration;
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
+import org.joda.time.Seconds;
 import org.xmlpull.v1.XmlPullParser;
 //import mobi.chouette.common.Constant;
 
@@ -53,7 +55,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 		}
 	};
 	
-	private Time headwayFrequency = null;
+	private Duration headwayFrequency = null;
 
 	@Override
 	public void parse(Context context) throws Exception {
@@ -82,7 +84,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				vehicleJourney.setObjectVersion(version);
 			} else if (xpp.getName().equals("creationTime")) {
-				Date creationTime = ParserUtils.getSQLDateTime(xpp.nextText());
+				LocalDateTime creationTime = ParserUtils.getLocalDateTime(xpp.nextText());
 				vehicleJourney.setCreationTime(creationTime);
 			} else if (xpp.getName().equals("creatorId")) {
 				vehicleJourney.setCreatorId(ParserUtils.getText(xpp.nextText()));
@@ -185,22 +187,23 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 				Integer value = ParserUtils.getInt(xpp.nextText());
 				validator.addOrder(vehicleJourneyAtStopContext, value);
 			} else if (xpp.getName().equals("elapseDuration")) {
-				Time value = ParserUtils.getSQLDuration(xpp.nextText());
+				Duration value = ParserUtils.getDuration(xpp.nextText());
 				validator.addElapseDuration(vehicleJourneyAtStopContext, value);
 				// Use the elapseDuration to compute departureTime and arrivalTime
-				vehicleJourneyAtStop.setDepartureTime(value);
-				vehicleJourneyAtStop.setArrivalTime(value);
+				LocalTime time = new LocalTime(value.getMillis());
+				vehicleJourneyAtStop.setDepartureTime(time);
+				vehicleJourneyAtStop.setArrivalTime(time);
 			} else if (xpp.getName().equals("arrivalTime")) {
-				Time value = ParserUtils.getSQLTime(xpp.nextText());
+				LocalTime value = ParserUtils.getLocalTime(xpp.nextText());
 				vehicleJourneyAtStop.setArrivalTime(value);
 			} else if (xpp.getName().equals("departureTime")) {
-				Time value = ParserUtils.getSQLTime(xpp.nextText());
+				LocalTime value = ParserUtils.getLocalTime(xpp.nextText());
 				vehicleJourneyAtStop.setDepartureTime(value);
 			} else if (xpp.getName().equals("waitingTime")) {
-				Time value = ParserUtils.getSQLTime(xpp.nextText());
+				Duration value = ParserUtils.getDurationFromTime(xpp.nextText());
 				validator.addWaitingTime(vehicleJourneyAtStopContext, value);
 			} else if (xpp.getName().equals("headwayFrequency")) {
-				headwayFrequency = ParserUtils.getSQLDuration(xpp.nextText());
+				headwayFrequency = ParserUtils.getDuration(xpp.nextText());
 				validator.addHeadwayFrequency(vehicleJourneyAtStopContext, headwayFrequency);
 				if (journeyFrequency != null)
 					journeyFrequency.setScheduledHeadwayInterval(headwayFrequency);
@@ -211,7 +214,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 		// protection from missing arrival time (mandatory for Chouette)
 		if (vehicleJourneyAtStop.getArrivalTime() == null)
 		{
-			vehicleJourneyAtStop.setArrivalTime(new Time(vehicleJourneyAtStop.getDepartureTime().getTime()));
+			vehicleJourneyAtStop.setArrivalTime(vehicleJourneyAtStop.getDepartureTime());
 		}
 	}
 
@@ -265,17 +268,16 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 			}
 		}
 	}
-	
+
 	/**
 	 * Check if lastTime belongs to the next day
+	 *
 	 * @param firstTime
 	 * @param lastTime
 	 * @return
 	 */
-	private boolean checkIfDiffAfterMidnight(Time firstTime, Time lastTime) {
-		long diffTime = lastTime.getTime() - firstTime.getTime();
-		
-		return diffTime < 0;
+	private boolean checkIfDiffAfterMidnight(LocalTime firstTime, LocalTime lastTime) {
+		return lastTime.isBefore(firstTime);
 	}
 	
 	

@@ -243,7 +243,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements GtfsCo
 		
 		// startDate <= Enddate
 		if (bean.getStartDate() != null && bean.getEndDate() != null) {
-			if (bean.getStartDate().after(bean.getEndDate())) {
+			if (bean.getStartDate().isAfter(bean.getEndDate())) {
 				if (withValidation)
 					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.start_date.name()), FIELDS.start_date.name(), GtfsException.ERROR.START_DATE_AFTER_END_DATE, null, bean.getServiceId()));
 			} else {

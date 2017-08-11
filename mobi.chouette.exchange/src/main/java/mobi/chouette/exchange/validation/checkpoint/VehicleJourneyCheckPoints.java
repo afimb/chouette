@@ -23,6 +23,10 @@ import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.JourneyCategoryEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 
+import org.joda.time.DateTimeConstants;
+import org.joda.time.LocalTime;
+import org.joda.time.Seconds;
+
 /**
  * check a group of coherent vehicle journeys (i.e. on the same journey pattern)
  * <ul>
@@ -165,19 +169,11 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 	 * @param lastTimeOffset
 	 * @return
 	 */
-	private long diffTime(Time first, int firstTimeOffset, Time last, int lastTimeOffset) {
+	private long diffTime(LocalTime first, int firstTimeOffset, LocalTime last, int lastTimeOffset) {
 		if (first == null || last == null)
 			return Long.MIN_VALUE; // TODO
 
-		long firstOffset = firstTimeOffset * 86400L;
-		long lastOffset = lastTimeOffset * 86400L;
-
-		long lastTime = (last.getTime() / 1000L) + lastOffset;
-		long firstTime = (first.getTime() / 1000L) + firstOffset;
-
-		long diff = lastTime - firstTime;
-
-		return diff;
+		return Seconds.secondsBetween(first, last).getSeconds() + (lastTimeOffset - firstTimeOffset) * DateTimeConstants.SECONDS_PER_DAY;
 	}
 
 	private void check3VehicleJourney1(Context context, VehicleJourney vj, ValidationParameters parameters) {
@@ -568,23 +564,23 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 					for(JourneyFrequency jf: lstFrequency) {
 						for(JourneyFrequency jf2: lstFrequency) {
 							// jf2 inclus dans jf
-							if(jf.getFirstDepartureTime().getTime() < jf2.getFirstDepartureTime().getTime()  && jf.getLastDepartureTime().getTime()  > jf2.getLastDepartureTime().getTime()) {
+							if (jf.getFirstDepartureTime().isBefore(jf2.getFirstDepartureTime()) && jf.getLastDepartureTime().isAfter(jf2.getLastDepartureTime())) {
 								ok = false;
 								break;
 							}
 
 							//jf inclus dans jf2
-							if (jf.getFirstDepartureTime().getTime() > jf2.getFirstDepartureTime().getTime()  && jf.getLastDepartureTime().getTime()  < jf2.getLastDepartureTime().getTime()) {
+							if (jf.getFirstDepartureTime().isAfter(jf2.getFirstDepartureTime()) && jf.getLastDepartureTime().isBefore(jf2.getLastDepartureTime())) {
 								ok = false;
 								break;
 							}
 							// jf en partie sur le creneau de jf2
-							if (jf.getFirstDepartureTime().getTime() < jf2.getFirstDepartureTime().getTime()  && jf.getLastDepartureTime().getTime()  < jf2.getLastDepartureTime().getTime()) {
+							if (jf.getFirstDepartureTime().isBefore(jf2.getFirstDepartureTime()) && jf.getLastDepartureTime().isBefore(jf2.getLastDepartureTime())) {
 								ok = false;
 								break;
 							}
 							// jf2 en partie sur le creneau de jf1
-							if(jf.getFirstDepartureTime().getTime() > jf2.getFirstDepartureTime().getTime()  && jf.getLastDepartureTime().getTime()  > jf2.getLastDepartureTime().getTime()) {
+							if (jf.getFirstDepartureTime().isAfter(jf2.getFirstDepartureTime()) && jf.getLastDepartureTime().isAfter(jf2.getLastDepartureTime())) {
 								ok = false;
 								break;
 							}
@@ -618,7 +614,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 						if(jf.getTimeband() != null) {
 							Timeband currentTimeBand = jf.getTimeband();
 							// jf non inclus dans timeband associé
-							if(jf.getFirstDepartureTime().getTime() < currentTimeBand.getStartTime().getTime()  || jf.getLastDepartureTime().getTime()  > currentTimeBand.getEndTime().getTime()) {
+							if (jf.getFirstDepartureTime().isBefore(currentTimeBand.getStartTime()) || jf.getLastDepartureTime().isAfter(currentTimeBand.getEndTime())) {
 								ok = false;
 								break;
 							}
@@ -644,7 +640,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 				if(vj.getJourneyCategory().equals(JourneyCategoryEnum.Timesheet)) {
 					VehicleJourneyAtStop vjas = vj.getVehicleJourneyAtStops().get(0);
 					// heure debut vjas non inclus dans jfs
-					if(vjas.getDepartureTime().getTime() < jf.getFirstDepartureTime().getTime() ||  vjas.getDepartureTime().getTime() > jf.getLastDepartureTime().getTime()) {
+					if (vjas.getDepartureTime().isBefore(jf.getFirstDepartureTime()) || vjas.getDepartureTime().isAfter(jf.getLastDepartureTime())) {
 						ok = false;
 						log.info("current vj : " + currentVj.getObjectId() + " vj : " + vj.getObjectId());
 					}

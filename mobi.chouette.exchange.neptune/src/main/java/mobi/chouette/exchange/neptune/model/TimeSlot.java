@@ -1,18 +1,17 @@
 package mobi.chouette.exchange.neptune.model;
 
-import java.sql.Time;
-
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mobi.chouette.model.NeptuneIdentifiedObject;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+import org.joda.time.LocalTime;
 
 /**
  * Chouette TimeSlot a peroid for vehicleJourney with frequency
@@ -48,7 +47,7 @@ public class TimeSlot extends NeptuneIdentifiedObject
     */
    @Getter
    @Setter
-   private Time beginningSlotTime;
+   private LocalTime beginningSlotTime;
 
    /**
     * end of slot
@@ -59,7 +58,7 @@ public class TimeSlot extends NeptuneIdentifiedObject
     */
    @Getter
    @Setter
-   private Time endSlotTime;
+   private LocalTime endSlotTime;
 
    /**
     * first departure of journey in slot
@@ -70,7 +69,7 @@ public class TimeSlot extends NeptuneIdentifiedObject
     */
    @Getter
    @Setter
-   private Time firstDepartureTimeInSlot;
+   private LocalTime firstDepartureTimeInSlot;
 
    /**
     * last departure of journey in slot
@@ -81,5 +80,5 @@ public class TimeSlot extends NeptuneIdentifiedObject
     */
    @Getter
    @Setter
-   private Time lastDepartureTimeInSlot;
+   private LocalTime lastDepartureTimeInSlot;
 }

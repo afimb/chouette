@@ -1,7 +1,6 @@
 package mobi.chouette.model;
 
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +28,10 @@ import mobi.chouette.model.type.LinkOrientationEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
+import org.joda.time.Duration;
 
 /**
  * Chouette AccessLink : relation between an AccessPoint and a StopArea
@@ -163,7 +166,8 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@Column(name = "default_duration")
-	private Time defaultDuration;
+	@Type(type = "mobi.chouette.jadira.PersistentDurationAsSqlTime")
+	private Duration defaultDuration;
 
 	/**
 	 * time to follow the link for a frequent traveller <br/>
@@ -175,7 +179,8 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@Column(name = "frequent_traveller_duration")
-	private Time frequentTravellerDuration;
+	@Type(type = "mobi.chouette.jadira.PersistentDurationAsSqlTime")
+	private Duration frequentTravellerDuration;
 
 	/**
 	 * time to follow the link for an occasional traveller <br/>
@@ -188,7 +193,8 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@Column(name = "occasional_traveller_duration")
-	private Time occasionalTravellerDuration;
+	@Type(type = "mobi.chouette.jadira.PersistentDurationAsSqlTime")
+	private Duration occasionalTravellerDuration;
 
 	/**
 	 * time to follow the link for a traveller with mobility restriction <br/>
@@ -200,7 +206,8 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@Column(name = "mobility_restricted_traveller_duration")
-	private Time mobilityRestrictedTravellerDuration;
+	@Type(type = "mobi.chouette.jadira.PersistentDurationAsSqlTime")
+	private Duration mobilityRestrictedTravellerDuration;
 
 	/**
 	 * link type

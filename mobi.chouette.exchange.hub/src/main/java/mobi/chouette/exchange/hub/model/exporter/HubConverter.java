@@ -1,9 +1,10 @@
 package mobi.chouette.exchange.hub.model.exporter;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-
 import mobi.chouette.exchange.hub.model.HubException;
+
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 
 public interface HubConverter {
@@ -47,12 +48,12 @@ public interface HubConverter {
 	};
 
 
-	public static DefaultFieldConverter<Date> DATE_CONVERTER = new DefaultFieldConverter<Date>() {
+	public static DefaultFieldConverter<LocalDate> DATE_CONVERTER = new DefaultFieldConverter<LocalDate>() {
 
-		private final SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
+		private final DateTimeFormatter formater = DateTimeFormat.forPattern("dd/MM/yyyy");
 		@Override
-		protected String convertTo(Date input) throws Exception {
-			return (input != null) ? formater.format(input) : "";
+		protected String convertTo(LocalDate input) throws Exception {
+			return (input != null) ? formater.print(input) : "";
 		}
 
 	};

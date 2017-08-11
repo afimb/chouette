@@ -1,6 +1,5 @@
 package mobi.chouette.model.util;
 
-import java.sql.Date;
 import java.util.ArrayList;
 
 import mobi.chouette.model.AccessLink;
@@ -70,12 +69,12 @@ public abstract class CopyUtil {
 	      tm.setPeriods(new ArrayList<Period>());
 	      for (Period period : object.getPeriods())
 	      {
-	         tm.addPeriod(new Period((Date)(period.getStartDate().clone()),(Date)(period.getEndDate().clone())));
+	         tm.addPeriod(new Period(period.getStartDate(),period.getEndDate()));
 	      }
 	      tm.setCalendarDays(new ArrayList<CalendarDay>());
 	      for (CalendarDay day : object.getCalendarDays())
 	      {
-	         tm.addCalendarDay(new CalendarDay((Date)(day.getDate().clone()), day.getIncluded()));
+	         tm.addCalendarDay(new CalendarDay(day.getDate(), day.getIncluded()));
 	      }
 	      return tm;
 

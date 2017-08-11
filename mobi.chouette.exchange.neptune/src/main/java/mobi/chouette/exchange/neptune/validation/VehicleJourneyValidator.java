@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.neptune.validation;
 
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,6 +18,8 @@ import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.Referential;
+
+import org.joda.time.Duration;
 
 public class VehicleJourneyValidator extends AbstractValidator implements Validator<VehicleJourney> , Constant{
 
@@ -138,15 +139,15 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 
 	}
 
-	public void addWaitingTime(Context vjasCtx, Time value) {
+	public void addWaitingTime(Context vjasCtx, Duration value) {
 		vjasCtx.put(WAITING_TIME, value);
 	}
 
-	public void addElapseDuration(Context vjasCtx, Time value) {
+	public void addElapseDuration(Context vjasCtx, Duration value) {
 		vjasCtx.put(ELAPSE_DURATION, value);
 	}
 
-	public void addHeadwayFrequency(Context vjasCtx, Time value) {
+	public void addHeadwayFrequency(Context vjasCtx, Duration value) {
 		vjasCtx.put(HEADWAY_FREQUENCY, value);
 	}
 

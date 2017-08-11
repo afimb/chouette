@@ -1,6 +1,5 @@
 package mobi.chouette.exchange.netex.parser;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -175,18 +174,6 @@ public class NetexUtils extends ParserUtils {
 		}
 		return result;
 
-	}
-
-	public static List<Date> getCalendarDays(List<String> values) {
-		List<Date> result = new ArrayList<Date>();
-		for (String value : values) {
-			try {
-				result.add(NetexUtils.getSQLDate(value));
-			} catch (Exception e) {
-				log.error(e.getMessage(), e);
-			}
-		}
-		return result;
 	}
 
 	public static Long getTrainNumber(String value) {

@@ -1,6 +1,5 @@
 package mobi.chouette.exchange.hub.exporter;
 
-import java.sql.Date;
 import java.util.List;
 
 import lombok.extern.log4j.Log4j;
@@ -9,9 +8,11 @@ import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
 
+import org.joda.time.LocalDate;
+
 @Log4j
 public class HubDataCollector extends DataCollector {
-	public boolean collect(ExportableData collection, Line line, Date startDate, Date endDate) {
+	public boolean collect(ExportableData collection, Line line, LocalDate startDate, LocalDate endDate) {
 		boolean res = collect(collection, line, startDate, endDate, false, false);
 		if (line.getNetwork() == null) {
 			log.error("line " + line.getObjectId() + " : missing network");

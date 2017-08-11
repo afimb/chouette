@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.neptune.exporter.producer;
 
 import java.math.BigInteger;
-import java.sql.Time;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -18,6 +17,7 @@ import mobi.chouette.model.type.TransportModeNameEnum;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
+import org.joda.time.LocalTime;
 import org.trident.schema.trident.BoardingAlightingPossibilityType;
 import org.trident.schema.trident.TransportModeNameType;
 import org.trident.schema.trident.VehicleJourneyAtStopType;
@@ -76,7 +76,7 @@ public class VehicleJourneyProducer extends AbstractJaxbNeptuneProducer<VehicleJ
 			List<VehicleJourneyAtStop> lvjas = vehicleJourney.getVehicleJourneyAtStops();
 			Collections.sort(lvjas, VEHICLE_JOURNEY_AT_STOP_SORTER);
 			int order = 1;
-			Time firstDeparture = null;
+			LocalTime firstDeparture = null;
 			for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney.getVehicleJourneyAtStops()) {
 				if (vehicleJourneyAtStop != null) {
 					VehicleJourneyAtStopType jaxbVehicleJourneyAtStop = tridentFactory.createVehicleJourneyAtStopType();
@@ -97,7 +97,7 @@ public class VehicleJourneyProducer extends AbstractJaxbNeptuneProducer<VehicleJ
 						if (firstDeparture == null)
 							firstDeparture = vehicleJourneyAtStop.getDepartureTime();
 						
-						jaxbVehicleJourneyAtStop.setElapseDuration(toDuration(TimeUtil.substract(vehicleJourneyAtStop.getDepartureTime(), firstDeparture)));
+						jaxbVehicleJourneyAtStop.setElapseDuration(toDuration(TimeUtil.subtract(vehicleJourneyAtStop.getDepartureTime(), firstDeparture)));
 						jaxbVehicleJourneyAtStop.setHeadwayFrequency(toDuration(vehicleJourney.getJourneyFrequencies().get(count).getScheduledHeadwayInterval()));
 					}
 					jaxbVehicleJourney.getVehicleJourneyAtStop().add(jaxbVehicleJourneyAtStop);

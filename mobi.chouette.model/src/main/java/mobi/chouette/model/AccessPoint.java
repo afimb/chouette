@@ -1,6 +1,5 @@
 package mobi.chouette.model;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +25,9 @@ import lombok.ToString;
 import mobi.chouette.model.type.AccessPointTypeEnum;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+import org.joda.time.LocalTime;
 
 /**
  * Chouette AccessPoint : relation between an AccessPoint and a StopArea
@@ -101,7 +103,7 @@ public class AccessPoint extends NeptuneLocalizedObject {
 	@Getter
 	@Setter
 	@Column(name = "openning_time")
-	private Time openingTime;
+	private LocalTime openingTime;
 
 	/**
 	 * access point closing time
@@ -113,7 +115,7 @@ public class AccessPoint extends NeptuneLocalizedObject {
 	@Getter
 	@Setter
 	@Column(name = "closing_time")
-	private Time closingTime;
+	private LocalTime closingTime;
 
 	/**
 	 * access type

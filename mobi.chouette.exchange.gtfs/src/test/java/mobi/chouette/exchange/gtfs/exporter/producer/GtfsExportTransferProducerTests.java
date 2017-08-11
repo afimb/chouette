@@ -1,13 +1,5 @@
 package mobi.chouette.exchange.gtfs.exporter.producer;
 
-import java.sql.Time;
-
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang.reflect.FieldUtils;
-import org.testng.Assert;
-import org.testng.Reporter;
-import org.testng.annotations.Test;
-
 import mobi.chouette.core.ChouetteException;
 import mobi.chouette.exchange.gtfs.exporter.producer.mock.GtfsExporterMock;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer;
@@ -22,6 +14,12 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
+
+import org.apache.commons.lang.reflect.FieldUtils;
+import org.joda.time.Duration;
+import org.testng.Assert;
+import org.testng.Reporter;
+import org.testng.annotations.Test;
 
 public class GtfsExportTransferProducerTests 
 {
@@ -44,8 +42,7 @@ public class GtfsExportTransferProducerTests
       StopArea endOfLink = new StopArea();
       endOfLink.setObjectId("GTFS:StopArea:end");
       neptuneObject.setEndOfLink(endOfLink);
-      Time defaultDuration = new Time(60000);
-      neptuneObject.setDefaultDuration(defaultDuration);
+      neptuneObject.setDefaultDuration(Duration.millis(60000));
 
       producer.save(neptuneObject,  "GTFS",false);
       GtfsTransfer gtfsObject = mock.getExportedTransfers().get(0);
@@ -74,8 +71,7 @@ public class GtfsExportTransferProducerTests
       StopArea endOfLink = new StopArea();
       endOfLink.setObjectId("GTFS:StopArea:end");
       neptuneObject.setEndOfLink(endOfLink);
-      Time defaultDuration = new Time(500);
-      neptuneObject.setDefaultDuration(defaultDuration);
+      neptuneObject.setDefaultDuration(Duration.millis(500));
 
       producer.save(neptuneObject, "GTFS",false);
       GtfsTransfer gtfsObject = mock.getExportedTransfers().get(0);
@@ -100,38 +96,38 @@ public class GtfsExportTransferProducerTests
       feederSA.setObjectId("GTFS:StopArea:start");
       StopPoint feederSP = new StopPoint();
       feederSP.setContainedInStopArea(feederSA);
-      
+
       StopArea consumerSA = new StopArea();
       consumerSA.setObjectId("GTFS:StopArea:end");
       StopPoint consumerSP = new StopPoint();
       consumerSP.setContainedInStopArea(consumerSA);
-      
-      
+
+
       JourneyPattern feederJP = createLineStructure("GTFS:Line:feederLine");
-      
+
       VehicleJourney feederVJ = new VehicleJourney();
       feederVJ.setObjectId("GTFS:VehicleJourney:feederJourney");
       feederVJ.setJourneyPattern(feederJP);
-      
-      
+
+
       JourneyPattern consumerJP = createLineStructure("GTFS:Line:consumerLine");
       VehicleJourney consumerVJ = new VehicleJourney();
       consumerVJ.setObjectId("GTFS:VehicleJourney:consumerJourney");
       consumerVJ.setJourneyPattern(consumerJP);
 
-      
+
       Interchange interchange = new Interchange();
-      
+
       // Set via reflection due to StopPoint and VehicleJourney is unset after set, but available after reload from database (cannot be transient)
       FieldUtils.writeField(interchange, "feederStopPoint",feederSP, true);
       FieldUtils.writeField(interchange, "feederVehicleJourney",feederVJ, true);
       FieldUtils.writeField(interchange, "consumerStopPoint",consumerSP, true);
       FieldUtils.writeField(interchange, "consumerVehicleJourney",consumerVJ, true);
       interchange.setGuaranteed(Boolean.TRUE);
-      
+
       producer.save(interchange, "GTFS",false);
       GtfsTransfer gtfsObject = mock.getExportedTransfers().get(0);
-      
+
       Reporter.log(TransferExporter.CONVERTER.to(context,gtfsObject));
 
       Assert.assertEquals(gtfsObject.getFromStopId(), "start");
@@ -148,15 +144,15 @@ public class GtfsExportTransferProducerTests
 protected JourneyPattern createLineStructure(String lineId) {
 	Line feederLine = new Line();
       feederLine.setObjectId(lineId);
-      
+
       Route feederRoute = new Route();
       feederRoute.setLine(feederLine);
-      
+
       JourneyPattern feederJP = new JourneyPattern();
       feederJP.setRoute(feederRoute);
 	return feederJP;
 }
-   
-   
+
+
 
 }

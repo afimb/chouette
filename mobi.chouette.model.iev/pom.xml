@@ -76,6 +76,10 @@
          <artifactId>gt-epsg-hsql</artifactId>
       </dependency>
 
+      <dependency>
+         <groupId>joda-time</groupId>
+         <artifactId>joda-time</artifactId>
+      </dependency>
 
       <!-- Modules -->
       <dependency>

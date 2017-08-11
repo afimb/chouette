@@ -1,8 +1,5 @@
 package mobi.chouette.exchange.gtfs.parser;
 
-import java.sql.Time;
-import java.util.Calendar;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
@@ -21,6 +18,9 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+
+import org.joda.time.Duration;
+import org.joda.time.LocalDateTime;
 
 @Log4j
 public class GtfsTransferParser implements Parser, Validator, Constant {
@@ -138,10 +138,10 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 		
 		connectionLink.setStartOfLink(startOfLink);
 		connectionLink.setEndOfLink(endOfLink);
-		connectionLink.setCreationTime(Calendar.getInstance().getTime());
+		connectionLink.setCreationTime(LocalDateTime.now());
 		connectionLink.setLinkType(ConnectionLinkTypeEnum.Overground);
 		if (gtfsTransfer.getMinTransferTime() != null) {
-			connectionLink.setDefaultDuration(new Time(gtfsTransfer.getMinTransferTime() * 1000));
+			connectionLink.setDefaultDuration(Duration.standardSeconds(gtfsTransfer.getMinTransferTime()));
 		}
 		if (gtfsTransfer.getTransferType().equals(TransferType.NoAllowed)) {
 			connectionLink.setName("FORBIDDEN");

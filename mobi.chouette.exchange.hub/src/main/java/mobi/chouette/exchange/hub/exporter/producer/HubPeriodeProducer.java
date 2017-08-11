@@ -9,13 +9,14 @@
 package mobi.chouette.exchange.hub.exporter.producer;
 
 import java.io.IOException;
-import java.sql.Date;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.hub.model.HubPeriode;
 import mobi.chouette.exchange.hub.model.exporter.HubExporterInterface;
 import mobi.chouette.model.Timetable;
+
+import org.joda.time.LocalDate;
 
 /**
  * convert Timetable to Hub Calendar and CalendarDate
@@ -42,13 +43,12 @@ public class HubPeriodeProducer extends AbstractProducer {
         hubObject.setDateDebut(neptuneObject.getStartOfPeriod());
         hubObject.setDateFin(neptuneObject.getEndOfPeriod());
 
-        Date d = new Date(neptuneObject.getStartOfPeriod().getTime());
-        Date f = neptuneObject.getEndOfPeriod();
-        while (d.before(f) || d.equals(f))
-        {
-        	hubObject.getCalendrier().add(Boolean.valueOf(neptuneObject.isActiveOn(d)));
-            d.setTime(d.getTime()+Timetable.ONE_DAY);
-        }
+		LocalDate d = neptuneObject.getStartOfPeriod();
+		LocalDate f = neptuneObject.getEndOfPeriod();
+        while (d.isBefore(f) || d.equals(f)) {
+			hubObject.getCalendrier().add(Boolean.valueOf(neptuneObject.isActiveOn(d)));
+			d = d.plusDays(1);
+		}
 		
 		hubObject.setIdentifiant(compteur++);
 

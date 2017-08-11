@@ -1,6 +1,5 @@
 package mobi.chouette.model;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +19,7 @@ import lombok.ToString;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.joda.time.LocalTime;
 
 /**
  * Models the time band for journies in timesheet category.
@@ -76,7 +76,7 @@ public class Timeband extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@Column(name = "start_time", nullable = false)
-	private Time startTime;
+	private LocalTime startTime;
 
 	/**
 	 * end time
@@ -88,7 +88,7 @@ public class Timeband extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@Column(name = "end_time", nullable = false)
-	private Time endTime;
+	private LocalTime endTime;
 
 	@Getter
 	@Setter

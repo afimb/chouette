@@ -5,13 +5,15 @@ package mobi.chouette.exchange.metadata;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Locale;
 
 import mobi.chouette.exchange.metadata.Metadata.Box;
 import mobi.chouette.exchange.metadata.Metadata.Period;
 import mobi.chouette.exchange.metadata.Metadata.Resource;
+
+import org.joda.time.ReadablePartial;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * @author michel
@@ -20,16 +22,16 @@ import mobi.chouette.exchange.metadata.Metadata.Resource;
 public class TextFormater implements Formater
 {
 
-   private static DecimalFormat doubleFormat = new DecimalFormat("#.000",DecimalFormatSymbols.getInstance(Locale.US)); 
-   private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); 
+   private static DecimalFormat doubleFormat = new DecimalFormat("#.000",DecimalFormatSymbols.getInstance(Locale.US));
+   private static DateTimeFormatter dateFormat = DateTimeFormat.forPattern("dd/MM/yyyy");
    /* (non-Javadoc)
     * @see fr.certu.chouette.export.metadata.writer.Formater#format(fr.certu.chouette.export.metadata.model.Metadata.Period)
     */
    @Override
    public synchronized String format(Period period)
    {
-      return "du "+dateFormat.format(period.getStart().getTime())+
-            " au "+dateFormat.format(period.getEnd().getTime());
+      return "du "+dateFormat.print(period.getStart())+
+            " au "+dateFormat.print(period.getEnd());
    }
 
    /* (non-Javadoc)
@@ -68,9 +70,9 @@ public class TextFormater implements Formater
     * @see fr.certu.chouette.export.metadata.writer.Formater#formatDate(java.util.Calendar)
     */
    @Override
-   public synchronized String formatDate(Calendar date)
+   public synchronized String formatDate(ReadablePartial date)
    {
-      return dateFormat.format(date.getTime());
+      return dateFormat.print(date);
    }
 
 

@@ -1,7 +1,7 @@
 package mobi.chouette.exchange.neptune.exporter.util;
 
+import org.joda.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class NeptuneObjectUtil extends NeptuneUtil {
 			String endId = end.getObjectId().split(":")[2];
 			String objectId = baseId + startId + "A" + endId;
 			link.setObjectId(objectId);
-			link.setCreationTime(new Date());
+			link.setCreationTime(LocalDateTime.now());
 			link.setRoute(route);
 			ptLinks.add(link);
 		}

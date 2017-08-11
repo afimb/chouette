@@ -4,8 +4,6 @@
  */
 package mobi.chouette.model.factory;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -35,6 +33,8 @@ import mobi.chouette.model.type.DayTypeEnum;
 import com.tobedevoured.modelcitizen.CreateModelException;
 import com.tobedevoured.modelcitizen.ModelFactory;
 import com.tobedevoured.modelcitizen.RegisterBlueprintException;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 /**
  * 
@@ -227,27 +227,26 @@ public class ComplexModelFactory
          tm.addDayType(DayTypeEnum.values()[index % 7]);
          tm.addDayType(DayTypeEnum.values()[(index + 1) % 7]);
 
-         Calendar cal = Calendar.getInstance();
-         cal.add(Calendar.MONTH, index);
+         LocalDate date = LocalDate.now().plusMonths(1);
 
          tm.setCalendarDays(new ArrayList<CalendarDay>(5));
          for (int i = 0; i < 5; i++)
          {
-            tm.addCalendarDay(new CalendarDay(new Date(cal.getTimeInMillis()),
+            tm.addCalendarDay(new CalendarDay(date,
                   true));
-            cal.add(Calendar.DAY_OF_MONTH, 1);
+            date = date.plusDays(1);
          }
          tm.setPeriods(new ArrayList<Period>(5));
          for (int i = 0; i < 5; i++)
          {
             Period period = new Period();
-            period.setStartDate(new Date(cal.getTimeInMillis()));
-            cal.add(Calendar.DAY_OF_MONTH, 4);
-            period.setEndDate(new Date(cal.getTimeInMillis()));
+            period.setStartDate(date);
+            date = date.plusDays(4);
+            period.setEndDate(date);
 
             tm.addPeriod(period);
 
-            cal.add(Calendar.MONTH, 1);
+            date = date.plusMonths(1);
          }
       } catch (Exception ex)
       {
@@ -482,8 +481,8 @@ public class ComplexModelFactory
             vjas.setStopPoint(journeyPattern.getStopPoints().get(i));
             vjas.setVehicleJourney(vehicle);
 
-            vjas.setArrivalTime(new Time(calendar.getTime().getTime()));
-            vjas.setDepartureTime(new Time(calendar.getTime().getTime()));
+            vjas.setArrivalTime(LocalTime.fromCalendarFields(calendar));
+            vjas.setDepartureTime(LocalTime.fromCalendarFields(calendar));
             calendar.add(Calendar.MINUTE, 3);
             vjas = modelFactory.createModel(vjas);
 

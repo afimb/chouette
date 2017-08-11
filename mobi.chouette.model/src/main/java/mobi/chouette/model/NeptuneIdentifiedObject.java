@@ -7,7 +7,7 @@
  */
 package mobi.chouette.model;
 
-import java.util.Date;
+
 import java.util.regex.Pattern;
 
 import javax.persistence.Column;
@@ -22,6 +22,8 @@ import mobi.chouette.model.util.ObjectIdTypes;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.Type;
+import org.joda.time.LocalDateTime;
 
 /**
  * Abstract object used for all Identified Chouette Object
@@ -44,7 +46,7 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject implements
 	 * </li>
 	 * </ol>
 	 * This data must be unique in dataset
-	 * 
+	 *
 	 * @return The actual value
 	 */
 	@Getter
@@ -59,7 +61,7 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject implements
 
 	/**
 	 * object version
-	 * 
+	 *
 	 * @param objectVersion
 	 *            New value
 	 * @return The actual value
@@ -71,7 +73,7 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject implements
 
 	/**
 	 * creation time
-	 * 
+	 *
 	 * @param creationTime
 	 *            New value
 	 * @return The actual value
@@ -79,7 +81,8 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject implements
 	@Getter
 	@Setter
 	@Column(name = "creation_time")
-	protected Date creationTime = new Date();
+	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+	protected LocalDateTime creationTime = LocalDateTime.now();
 
 	/**
 	 * creator id

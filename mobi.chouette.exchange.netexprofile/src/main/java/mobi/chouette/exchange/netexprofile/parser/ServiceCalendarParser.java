@@ -26,6 +26,7 @@ import org.rutebanken.netex.model.ServiceCalendarFrame;
 import org.rutebanken.netex.model.ValidBetween;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
@@ -117,10 +118,10 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
 			if (t.getPeriods().size() == 0 && t.getDayTypes().size() == 0 && t.getPeculiarDates().size() > 0 && t.getExcludedDates().size() == 0) {
 				// Only handle simple included days for now
 
-				List<Date> includedDates = t.getPeculiarDates();
+				List<org.joda.time.LocalDate> includedDates = t.getPeculiarDates();
 				Set<LocalDate> includedDays = new HashSet<LocalDate>();
-				for (Date d : includedDates) {
-					includedDays.add(d.toLocalDate());
+				for (org.joda.time.LocalDate d : includedDates) {
+					includedDays.add(TimeUtil.toLocalDateFromJoda(d));
 				}
 
 				CalendarPattern pattern = new CalendarPatternAnalyzer().computeCalendarPattern(includedDays);
@@ -132,8 +133,8 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
 					t.getCalendarDays().clear();
 
 					// Add the period detected
-					java.sql.Date from = Date.valueOf(pattern.from);
-					java.sql.Date to = Date.valueOf(pattern.to);
+					org.joda.time.LocalDate from = TimeUtil.toJodaLocalDate(pattern.from);
+					org.joda.time.LocalDate to = TimeUtil.toJodaLocalDate(pattern.to);
 					t.addPeriod(new Period(from, to));
 
 					// Convert from java.time.DayOfWeek to chouette DayTypeEnum
@@ -149,10 +150,10 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
 
 					// Add extra inclusions and exclusions
 					for (LocalDate d : pattern.additionalDates) {
-						t.addCalendarDay(new CalendarDay(Date.valueOf(d), true));
+						t.addCalendarDay(new CalendarDay(TimeUtil.toJodaLocalDate(d), true));
 					}
 					for (LocalDate d : pattern.excludedDates) {
-						t.addCalendarDay(new CalendarDay(Date.valueOf(d), false));
+						t.addCalendarDay(new CalendarDay(TimeUtil.toJodaLocalDate(d), false));
 					}
 				}
 			}
@@ -194,8 +195,8 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
 		for (DayType dayType : netexReferential.getDayTypes().values()) {
 
 			Timetable timetable = ObjectFactory.getTimetable(referential, dayType.getId());
-			timetable.setStartOfPeriod(ParserUtils.getSQLDate(validBetween.getFromDate().toString()));
-			timetable.setEndOfPeriod(ParserUtils.getSQLDate(validBetween.getToDate().toString()));
+			timetable.setStartOfPeriod(TimeUtil.toJodaLocalDateTime(validBetween.getFromDate()).toLocalDate());
+			timetable.setEndOfPeriod(TimeUtil.toJodaLocalDateTime(validBetween.getToDate()).toLocalDate());
 			if (dayType.getProperties() != null) {
 				for (PropertyOfDay propertyOfDay : dayType.getProperties().getPropertyOfDay()) {
 					List<DayOfWeekEnumeration> daysOfWeeks = propertyOfDay.getDaysOfWeek();
@@ -220,7 +221,7 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
 
 				if (isWithinValidRange(date, validBetween)) {
 					boolean included = dayTypeAssignment.isIsAvailable() != null ? dayTypeAssignment.isIsAvailable() : Boolean.TRUE;
-					timetable.addCalendarDay(new CalendarDay(java.sql.Date.valueOf(date.toLocalDate()), included));
+					timetable.addCalendarDay(new CalendarDay(TimeUtil.toJodaLocalDate(date.toLocalDate()), included));
 				}
 			} else if (dayTypeAssignment.getOperatingDayRef() != null) {
 				String operatingDayIdRef = dayTypeAssignment.getOperatingDayRef().getRef();
@@ -228,41 +229,41 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
 
 				if (operatingDay.getCalendarDate() != null && isWithinValidRange(operatingDay.getCalendarDate(), validBetween)) {
 					boolean included = dayTypeAssignment.isIsAvailable() != null ? dayTypeAssignment.isIsAvailable() : Boolean.TRUE;
-					timetable.addCalendarDay(new CalendarDay(java.sql.Date.valueOf(operatingDay.getCalendarDate().toLocalDate()), included));
+					timetable.addCalendarDay(new CalendarDay(TimeUtil.toJodaLocalDate(operatingDay.getCalendarDate().toLocalDate()), included));
 				}
 
 			} else if (dayTypeAssignment.getOperatingPeriodRef() != null) {
 				String operatingPeriodIdRef = dayTypeAssignment.getOperatingPeriodRef().getRef();
 				OperatingPeriod operatingPeriod = NetexObjectUtil.getOperatingPeriod(netexReferential, operatingPeriodIdRef);
 
-				Date startDate;
-				Date endDate;
+				org.joda.time.LocalDate startDate;
+				org.joda.time.LocalDate endDate;
 
 				if (operatingPeriod.getFromOperatingDayRef() != null) {
 					OperatingDay operatingDay = NetexObjectUtil.getOperatingDay(netexReferential, operatingPeriod.getFromOperatingDayRef().getRef());
-					startDate = ParserUtils.getSQLDate(operatingDay.getCalendarDate().toString());
+					startDate = TimeUtil.toJodaLocalDateTime(operatingDay.getCalendarDate()).toLocalDate();
 				} else {
-					startDate = ParserUtils.getSQLDate(operatingPeriod.getFromDate().toString());
+					startDate = TimeUtil.toJodaLocalDateTime(operatingPeriod.getFromDate()).toLocalDate();
 				}
 				if (operatingPeriod.getToOperatingDayRef() != null) {
 					OperatingDay operatingDay = NetexObjectUtil.getOperatingDay(netexReferential, operatingPeriod.getToOperatingDayRef().getRef());
-					endDate = ParserUtils.getSQLDate(operatingDay.getCalendarDate().toString());
+					endDate = TimeUtil.toJodaLocalDateTime(operatingDay.getCalendarDate()).toLocalDate();
 				} else {
-					endDate = ParserUtils.getSQLDate(operatingPeriod.getToDate().toString());
+					endDate = TimeUtil.toJodaLocalDateTime(operatingPeriod.getToDate()).toLocalDate();
 				}
 
 				// Cut of operating period to validity condition
-				java.sql.Date validFrom = new java.sql.Date(validBetween.getFromDate().toInstant().toEpochMilli());
-				java.sql.Date validTo = new java.sql.Date(validBetween.getToDate().toInstant().toEpochMilli());
+				org.joda.time.LocalDate validFrom = new org.joda.time.LocalDate(validBetween.getFromDate().toInstant().toEpochMilli());
+				org.joda.time.LocalDate validTo = new org.joda.time.LocalDate(validBetween.getToDate().toInstant().toEpochMilli());
 				
-				if(endDate.before(validFrom) || startDate.after(validTo)) {
+				if(endDate.isBefore(validFrom) || startDate.isAfter(validTo)) {
 					// Outside of validFrom/to envelope
 				} else {
 					// At least partially inside envelope
-					if(startDate.before(validFrom)) {
+					if(startDate.isBefore(validFrom)) {
 						startDate = validFrom;
 					}
-					if(endDate.after(validTo)) {
+					if(endDate.isAfter(validTo)) {
 						endDate = validTo;
 					}
 					

@@ -1,6 +1,6 @@
 package mobi.chouette.model;
 
-import java.sql.Time;
+
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +21,7 @@ import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.joda.time.LocalTime;
 
 /**
  * Chouette VehicleJourneyAtStop : passing time on stops
@@ -87,7 +88,7 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 	@Getter
 	@Setter
 	@Column(name = "arrival_time")
-	private Time arrivalTime;
+	private LocalTime arrivalTime;
 
 	/**
 	 * departure time
@@ -99,7 +100,7 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 	@Getter
 	@Setter
 	@Column(name = "departure_time")
-	private Time departureTime;
+	private LocalTime departureTime;
 
 	
 	/**

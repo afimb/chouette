@@ -5,6 +5,7 @@ import java.util.Calendar;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.type.PTNetworkSourceTypeEnum;
 
+import org.joda.time.LocalDateTime;
 import org.trident.schema.trident.PTNetworkType;
 
 public class PTNetworkProducer extends
@@ -36,8 +37,7 @@ public class PTNetworkProducer extends
          jaxbPTNetwork.setVersionDate(toCalendar(ptNetwork.getVersionDate()));
       } else
       {
-         jaxbPTNetwork.setVersionDate(toCalendar(Calendar.getInstance()
-               .getTime()));
+         jaxbPTNetwork.setVersionDate(toCalendar(LocalDateTime.now()));
       }
 
       try

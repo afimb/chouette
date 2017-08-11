@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.netex.parser;
 
 import java.math.BigDecimal;
-import java.sql.Time;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -16,6 +15,7 @@ import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
+import org.joda.time.Duration;
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
@@ -72,19 +72,19 @@ public class ConnectionLinkParser implements Parser, Constant {
 								.toConnectionLinkType(xpp.nextText());
 						connectionLink.setLinkType(value);
 					} else if (xpp.getName().equals("DefaultDuration")) {
-						Time value = ParserUtils.getSQLDuration(xpp.nextText());
+						Duration value = ParserUtils.getDuration(xpp.nextText());
 						connectionLink.setDefaultDuration(value);
 					} else if (xpp.getName()
 							.equals("FrequentTravellerDuration")) {
-						Time value = ParserUtils.getSQLDuration(xpp.nextText());
+						Duration value = ParserUtils.getDuration(xpp.nextText());
 						connectionLink.setFrequentTravellerDuration(value);
 					} else if (xpp.getName().equals(
 							"OccasionalTravellerDuration")) {
-						Time value = ParserUtils.getSQLDuration(xpp.nextText());
+						Duration value = ParserUtils.getDuration(xpp.nextText());
 						connectionLink.setOccasionalTravellerDuration(value);
 					} else if (xpp.getName().equals(
 							"MobilityRestrictedTravellerDuration")) {
-						Time value = ParserUtils.getSQLDuration(xpp.nextText());
+						Duration value = ParserUtils.getDuration(xpp.nextText());
 						connectionLink
 								.setMobilityRestrictedTravellerDuration(value);
 					} else {

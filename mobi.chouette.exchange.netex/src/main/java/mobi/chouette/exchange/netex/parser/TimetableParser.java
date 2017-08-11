@@ -1,6 +1,5 @@
 package mobi.chouette.exchange.netex.parser;
 
-import java.sql.Date;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +16,7 @@ import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.util.Referential;
 
+import org.joda.time.LocalDate;
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
@@ -130,7 +130,7 @@ public class TimetableParser implements Parser, Constant {
 			if (xpp.getName().equals("OperatingDay")) {
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("CalendarDate")) {
-						Date date = ParserUtils.getSQLDate(xpp.nextText());
+						LocalDate date = ParserUtils.getLocalDate(xpp.nextText());
 						CalendarDay value = new CalendarDay(date, true);
 						timetable.addCalendarDay(value);
 					} else {
@@ -159,13 +159,13 @@ public class TimetableParser implements Parser, Constant {
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("FromDate")) {
 						try {
-							period.setStartDate(NetexUtils.getSQLDateTime(xpp
+							period.setStartDate(NetexUtils.getLocalDate(xpp
 									.nextText()));
 						} catch (ParseException ignored) {
 						}
 					} else if (xpp.getName().equals("ToDate")) {
 						try {
-							period.setEndDate(NetexUtils.getSQLDateTime(xpp
+							period.setEndDate(NetexUtils.getLocalDate(xpp
 									.nextText()));
 						} catch (ParseException ignored) {
 						}

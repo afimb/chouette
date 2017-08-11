@@ -3,8 +3,6 @@ package mobi.chouette.exchange.sig.exporter;
 import java.nio.file.Paths;
 import java.util.Date;
 
-import mobi.chouette.exchange.sig.exporter.SigExportParameters;
-import mobi.chouette.exchange.sig.exporter.SigExporterInputValidator;
 import mobi.chouette.exchange.parameters.AbstractExportParameter;
 
 import org.testng.Assert;

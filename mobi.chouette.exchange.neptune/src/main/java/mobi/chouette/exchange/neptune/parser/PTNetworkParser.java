@@ -1,7 +1,5 @@
 package mobi.chouette.exchange.neptune.parser;
 
-import java.util.Date;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
@@ -16,6 +14,8 @@ import mobi.chouette.model.type.PTNetworkSourceTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
@@ -46,12 +46,12 @@ public class PTNetworkParser implements Parser, Constant {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				network.setObjectVersion(version);
 			} else if (xpp.getName().equals("creationTime")) {
-				Date creationTime = ParserUtils.getSQLDateTime(xpp.nextText());
+				LocalDateTime creationTime = ParserUtils.getLocalDateTime(xpp.nextText());
 				network.setCreationTime(creationTime);
 			} else if (xpp.getName().equals("creatorId")) {
 				network.setCreatorId(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("versionDate")) {
-				Date versionDate = ParserUtils.getSQLDate(xpp.nextText());
+				LocalDate versionDate = ParserUtils.getLocalDate(xpp.nextText());
 				network.setVersionDate(versionDate);
 			} else if (xpp.getName().equals("description")) {
 				network.setDescription(ParserUtils.getText(xpp.nextText()));
