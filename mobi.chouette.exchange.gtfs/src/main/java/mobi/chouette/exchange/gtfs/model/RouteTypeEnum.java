@@ -1,149 +1,153 @@
 package mobi.chouette.exchange.gtfs.model;
 
+import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.model.type.TransportSubModeNameEnum;
+
 public enum RouteTypeEnum {
 
-	Tram(0), 
-	Subway(1), 
-	Rail(2), 
-	Bus(3), 
-	Ferry(4), 
-	Cable(5), 
-	Gondola(6), 
-	Funicular(7),
+	//TODO this mapping is adapted to submodes valid in Norway. TransportSubModeEnum must be extended to account for all possible types
+	Tram(0,TransportModeNameEnum.Tram), 
+	Subway(1,TransportModeNameEnum.Metro), 
+	Rail(2,TransportModeNameEnum.Rail), 
+	Bus(3,TransportModeNameEnum.Bus), 
+	Ferry(4,TransportModeNameEnum.Tram), 
+	Cable(5,TransportModeNameEnum.Funicular), 
+	Gondola(6,TransportModeNameEnum.Cableway), 
+	Funicular(7,TransportModeNameEnum.Funicular),
 	// extension Rail
-	RailwayService(100),
-	HighSpeedRailService(101),
-	LongDistanceTrains(102),
-	InterRegionalRailService(103),
-	CarTransportRailService(104),
-	SleeperRailService(105),
-	RegionalRailService(106),
-	TouristRailwayService(107),
-	RailShuttleWithinComplex(108),
-	SuburbanRailway(109),
-	ReplacementRailService(110),
-	SpecialRailService(111),
-	LorryTransportRailService(112),
-	AllRailServices(113),
-	CrossCountryRailService(114),
-	VehicleTransportRailService(115),
-	RackandPinionRailway(116),
-	AdditionalRailService(117),
+	RailwayService(100,TransportModeNameEnum.Rail),
+	HighSpeedRailService(101,TransportModeNameEnum.Rail),
+	LongDistanceTrains(102,TransportModeNameEnum.Rail,TransportSubModeNameEnum.LongDistance),
+	InterRegionalRailService(103,TransportModeNameEnum.Rail,TransportSubModeNameEnum.InterregionalRail),
+	CarTransportRailService(104,TransportModeNameEnum.Rail),
+	SleeperRailService(105,TransportModeNameEnum.Rail,TransportSubModeNameEnum.NightRail),
+	RegionalRailService(106,TransportModeNameEnum.Rail,TransportSubModeNameEnum.RegionalRail),
+	TouristRailwayService(107,TransportModeNameEnum.Rail,TransportSubModeNameEnum.TouristRailway),
+	RailShuttleWithinComplex(108,TransportModeNameEnum.Rail,TransportSubModeNameEnum.Local),
+	SuburbanRailway(109,TransportModeNameEnum.Rail,TransportSubModeNameEnum.Local),
+	ReplacementRailService(110,TransportModeNameEnum.Rail),
+	SpecialRailService(111,TransportModeNameEnum.Rail),
+	LorryTransportRailService(112,TransportModeNameEnum.Rail),
+	AllRailServices(113,TransportModeNameEnum.Rail),
+	CrossCountryRailService(114,TransportModeNameEnum.Rail,TransportSubModeNameEnum.International),
+	VehicleTransportRailService(115,TransportModeNameEnum.Rail),
+	RackandPinionRailway(116,TransportModeNameEnum.Rail),
+	AdditionalRailService(117,TransportModeNameEnum.Rail),
 	// extension Coach
-	CoachService(200),
-	InternationalCoachService(201),
-	NationalCoachService(202),
-	ShuttleCoachService(203),
-	RegionalCoachService(204),
-	SpecialCoachService(205),
-	SightseeingCoachService(206),
-	TouristCoachService(207),
-	CommuterCoachService(208),
-	AllCoachServices(209),
+	CoachService(200,TransportModeNameEnum.Coach),
+	InternationalCoachService(201,TransportModeNameEnum.Coach),
+	NationalCoachService(202,TransportModeNameEnum.Coach),
+	ShuttleCoachService(203,TransportModeNameEnum.Coach),
+	RegionalCoachService(204,TransportModeNameEnum.Coach),
+	SpecialCoachService(205,TransportModeNameEnum.Coach),
+	SightseeingCoachService(206,TransportModeNameEnum.Coach),
+	TouristCoachService(207,TransportModeNameEnum.Coach),
+	CommuterCoachService(208,TransportModeNameEnum.Coach),
+	AllCoachServices(209,TransportModeNameEnum.Coach),
 	// extension 
-	SuburbanRailwayService(300),
+	SuburbanRailwayService(300,TransportModeNameEnum.Rail,TransportSubModeNameEnum.Local),
 	// extension 
-	UrbanRailwayService(400),
-	MetroService(401),
-	UndergroundService(402),
-	UrbanRailwayService2(403),
-	AllUrbanRailwayServices(404),
-	Monorail(405),
+	UrbanRailwayService(400,TransportModeNameEnum.Metro),
+	MetroService(401,TransportModeNameEnum.Metro),
+	UndergroundService(402,TransportModeNameEnum.Metro),
+	UrbanRailwayService2(403,TransportModeNameEnum.Metro),
+	AllUrbanRailwayServices(404,TransportModeNameEnum.Metro),
+	Monorail(405,TransportModeNameEnum.Metro),
 	// extension 
-	MetroService2(500),
+	MetroService2(500,TransportModeNameEnum.Metro),
 	// extension 
-	UndergroundService2(600),
+	UndergroundService2(600,TransportModeNameEnum.Metro),
 	// extension 
-	BusService(700),
-	RegionalBusService(701),
-	ExpressBusService(702),
-	StoppingBusService(703),
-	LocalBusService(704),
-	NightBusService(705),
-	PostBusService(706),
-	SpecialNeedsBus(707),
-	MobilityBusService(708),
-	MobilityBusforRegisteredDisabled(709),
-	SightseeingBus(710),
-	ShuttleBus(711),
-	SchoolBus(712),
-	SchoolandPublicServiceBus(713),
-	RailReplacementBusService(714),
-	DemandandResponseBusService(715),
-	AllBusServices(716),
+	BusService(700,TransportModeNameEnum.Bus),
+	RegionalBusService(701,TransportModeNameEnum.Bus,TransportSubModeNameEnum.RegionalBus),
+	ExpressBusService(702,TransportModeNameEnum.Bus,TransportSubModeNameEnum.ExpressBus),
+	StoppingBusService(703,TransportModeNameEnum.Bus),
+	LocalBusService(704,TransportModeNameEnum.Bus,TransportSubModeNameEnum.LocalBus),
+	NightBusService(705,TransportModeNameEnum.Bus,TransportSubModeNameEnum.NightBus),
+	PostBusService(706,TransportModeNameEnum.Bus),
+	SpecialNeedsBus(707,TransportModeNameEnum.Bus),
+	MobilityBusService(708,TransportModeNameEnum.Bus),
+	MobilityBusforRegisteredDisabled(709,TransportModeNameEnum.Bus),
+	SightseeingBus(710,TransportModeNameEnum.Bus,TransportSubModeNameEnum.SightseeingBus),
+	ShuttleBus(711,TransportModeNameEnum.Bus,TransportSubModeNameEnum.ShuttleBus),
+	SchoolBus(712,TransportModeNameEnum.Bus,TransportSubModeNameEnum.SchoolBus),
+	SchoolandPublicServiceBus(713,TransportModeNameEnum.Bus),
+	RailReplacementBusService(714,TransportModeNameEnum.Bus,TransportSubModeNameEnum.RailReplacementBus),
+	DemandandResponseBusService(715,TransportModeNameEnum.Bus),
+	AllBusServices(716,TransportModeNameEnum.Bus),
 	// extension 
-	TrolleybusService(800),
+	TrolleybusService(800,TransportModeNameEnum.TrolleyBus),
 	// extension 
-	TramService(900),
-	CityTramService(901),
-	LocalTramService(902),
-	RegionalTramService(903),
-	SightseeingTramService(904),
-	ShuttleTramService(905),
-	AllTramServices(906),
+	TramService(900,TransportModeNameEnum.Tram),
+	CityTramService(901,TransportModeNameEnum.Tram),
+	LocalTramService(902,TransportModeNameEnum.Tram),
+	RegionalTramService(903,TransportModeNameEnum.Tram),
+	SightseeingTramService(904,TransportModeNameEnum.Tram),
+	ShuttleTramService(905,TransportModeNameEnum.Tram),
+	AllTramServices(906,TransportModeNameEnum.Tram),
 	// extension 
-	WaterTransportService(1000),
-	InternationalCarFerryService(1001),
-	NationalCarFerryService(1002),
-	RegionalCarFerryService(1003),
-	LocalCarFerryService(1004),
-	InternationalPassengerFerryService(1005),
-	NationalPassengerFerryService(1006),
-	RegionalPassengerFerryService(1007),
-	LocalPassengerFerryService(1008),
-	PostBoatService(1009),
-	TrainFerryService(1010),
-	RoadLinkFerryService(1011),
-	AirportLinkFerryService(1012),
-	CarHighSpeedFerryService(1013),
-	PassengerHighSpeedFerryService(1014),
-	SightseeingBoatService(1015),
-	SchoolBoat(1016),
-	CableDrawnBoatService(1017),
-	RiverBusService(1018),
-	ScheduledFerryService(1019),
-	ShuttleFerryService(1020),
-	AllWaterTransportServices(1021),
+	WaterTransportService(1000,TransportModeNameEnum.Water),
+	InternationalCarFerryService(1001,TransportModeNameEnum.Water,TransportSubModeNameEnum.InternationalCarFerry),
+	NationalCarFerryService(1002,TransportModeNameEnum.Water,TransportSubModeNameEnum.NationalCarFerry),
+	RegionalCarFerryService(1003,TransportModeNameEnum.Water,TransportSubModeNameEnum.LocalCarFerry),
+	LocalCarFerryService(1004,TransportModeNameEnum.Water,TransportSubModeNameEnum.LocalCarFerry),
+	InternationalPassengerFerryService(1005,TransportModeNameEnum.Water,TransportSubModeNameEnum.InternationalPassengerFerry),
+	NationalPassengerFerryService(1006,TransportModeNameEnum.Water,TransportSubModeNameEnum.NationalCarFerry),
+	RegionalPassengerFerryService(1007,TransportModeNameEnum.Water,TransportSubModeNameEnum.LocalPassengerFerry),
+	LocalPassengerFerryService(1008,TransportModeNameEnum.Water,TransportSubModeNameEnum.LocalPassengerFerry),
+	PostBoatService(1009,TransportModeNameEnum.Water),
+	TrainFerryService(1010,TransportModeNameEnum.Water),
+	RoadLinkFerryService(1011,TransportModeNameEnum.Water,TransportSubModeNameEnum.LocalCarFerry),
+	AirportLinkFerryService(1012,TransportModeNameEnum.Water,TransportSubModeNameEnum.LocalPassengerFerry),
+	CarHighSpeedFerryService(1013,TransportModeNameEnum.Water,TransportSubModeNameEnum.HighSpeedVehicleService),
+	PassengerHighSpeedFerryService(1014,TransportModeNameEnum.Water,TransportSubModeNameEnum.HighSpeedPassengerService),
+	SightseeingBoatService(1015,TransportModeNameEnum.Water,TransportSubModeNameEnum.SightseeingService),
+	SchoolBoat(1016,TransportModeNameEnum.Water,TransportSubModeNameEnum.LocalPassengerFerry),
+	CableDrawnBoatService(1017,TransportModeNameEnum.Water),
+	RiverBusService(1018,TransportModeNameEnum.Water,TransportSubModeNameEnum.LocalPassengerFerry),
+	ScheduledFerryService(1019,TransportModeNameEnum.Water),
+	ShuttleFerryService(1020,TransportModeNameEnum.Water),
+	AllWaterTransportServices(1021,TransportModeNameEnum.Water),
 	// extension 
-	AirService(1100),
-	InternationalAirService(1101),
-	DomesticAirService(1102),
-	IntercontinentalAirService(1103),
-	DomesticScheduledAirService(1104),
-	ShuttleAirService(1105),
-	IntercontinentalCharterAirService(1106),
-	InternationalCharterAirService(1107),
-	RoundTripCharterAirService(1108),
-	SightseeingAirService(1109),
-	HelicopterAirService(1110),
-	DomesticCharterAirService(1111),
-	SchengenAreaAirService(1112),
-	AirshipService(1113),
-	AllAirServices(1114),
+	AirService(1100,TransportModeNameEnum.Air),
+	InternationalAirService(1101,TransportModeNameEnum.Air,TransportSubModeNameEnum.InternationalFlight),
+	DomesticAirService(1102,TransportModeNameEnum.Air,TransportSubModeNameEnum.DomesticFlight),
+	IntercontinentalAirService(1103,TransportModeNameEnum.Air,TransportSubModeNameEnum.InternationalFlight),
+	DomesticScheduledAirService(1104,TransportModeNameEnum.Air,TransportSubModeNameEnum.DomesticFlight),
+	ShuttleAirService(1105,TransportModeNameEnum.Air),
+	IntercontinentalCharterAirService(1106,TransportModeNameEnum.Air,TransportSubModeNameEnum.InternationalFlight),
+	InternationalCharterAirService(1107,TransportModeNameEnum.Air,TransportSubModeNameEnum.InternationalFlight),
+	RoundTripCharterAirService(1108,TransportModeNameEnum.Air),
+	SightseeingAirService(1109,TransportModeNameEnum.Air),
+	HelicopterAirService(1110,TransportModeNameEnum.Air,TransportSubModeNameEnum.HelicopterService),
+	DomesticCharterAirService(1111,TransportModeNameEnum.Air),
+	SchengenAreaAirService(1112,TransportModeNameEnum.Air,TransportSubModeNameEnum.InternationalFlight),
+	AirshipService(1113,TransportModeNameEnum.Air),
+	AllAirServices(1114,TransportModeNameEnum.Air),
 	// extension 
-	FerryService(1200),
+	FerryService(1200,TransportModeNameEnum.Ferry),
 	// extension 
-	TelecabinService(1300),
-	TelecabinService2(1301),
-	CableCarService(1302),
-	ElevatorService(1303),
-	ChairLiftService(1304),
-	DragLiftService(1305),
-	SmallTelecabinService(1306),
-	AllTelecabinServices(1307),
+	TelecabinService(1300,TransportModeNameEnum.Cableway),
+	TelecabinService2(1301,TransportModeNameEnum.Cableway),
+	CableCarService(1302,TransportModeNameEnum.Funicular),
+	ElevatorService(1303,TransportModeNameEnum.Cableway),
+	ChairLiftService(1304,TransportModeNameEnum.Cableway),
+	DragLiftService(1305,TransportModeNameEnum.Cableway),
+	SmallTelecabinService(1306,TransportModeNameEnum.Cableway),
+	AllTelecabinServices(1307,TransportModeNameEnum.Cableway),
 	// extension 
-	FunicularService(1400),
-	FunicularService2(1401),
-	AllFunicularService(1402),
+	FunicularService(1400,TransportModeNameEnum.Funicular),
+	FunicularService2(1401,TransportModeNameEnum.Funicular),
+	AllFunicularService(1402,TransportModeNameEnum.Funicular),
 	// extension 
-	TaxiService(1500),
-	CommunalTaxiService(1501),
-	WaterTaxiService(1502),
-	RailTaxiService(1503),
-	BikeTaxiService(1504),
-	LicensedTaxiService(1505),
-	PrivateHireServiceVehicle(1506),
-	AllTaxiServices(1507),
+	TaxiService(1500,TransportModeNameEnum.Taxi),
+	CommunalTaxiService(1501,TransportModeNameEnum.Taxi),
+	WaterTaxiService(1502,TransportModeNameEnum.Water),
+	RailTaxiService(1503,TransportModeNameEnum.Rail),
+	BikeTaxiService(1504,TransportModeNameEnum.Bicycle),
+	LicensedTaxiService(1505,TransportModeNameEnum.Taxi),
+	PrivateHireServiceVehicle(1506,TransportModeNameEnum.Taxi),
+	AllTaxiServices(1507,TransportModeNameEnum.Taxi),
 	// extension 
 	SelfDrive(1600),
 	HireCar(1601),
@@ -152,10 +156,23 @@ public enum RouteTypeEnum {
 	HireCycle(1604),
 	// extension 
 	MiscellaneousService(1700),
-	CableCar(1701),
-	HorseDrawnCarriage(1702),
-;
+	CableCar(1701,TransportModeNameEnum.Funicular),
+	HorseDrawnCarriage(1702);
+	
 	private final int value;
+	private TransportModeNameEnum transportMode;
+	private TransportSubModeNameEnum subMode;
+
+	private RouteTypeEnum(final int value, TransportModeNameEnum transportMode, TransportSubModeNameEnum subMode) {
+		this.value = value;
+		this.transportMode = transportMode;
+		this.subMode = subMode;
+	}
+
+	private RouteTypeEnum(final int value, TransportModeNameEnum transportMode) {
+		this.value = value;
+		this.transportMode = transportMode;
+	}
 
 	private RouteTypeEnum(final int value) {
 		this.value = value;
@@ -173,4 +190,18 @@ public enum RouteTypeEnum {
 	public int value() {
 		return this.value;
 	}
+
+	public int getValue() {
+		return value;
+	}
+
+	public TransportModeNameEnum getTransportMode() {
+		return transportMode;
+	}
+
+	public TransportSubModeNameEnum getSubMode() {
+		return subMode;
+	}
+	
+	
 }
