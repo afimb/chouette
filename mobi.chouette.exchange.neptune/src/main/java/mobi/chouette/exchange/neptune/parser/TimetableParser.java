@@ -1,7 +1,5 @@
 package mobi.chouette.exchange.neptune.parser;
 
-import java.sql.Date;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
@@ -19,6 +17,8 @@ import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
@@ -51,7 +51,7 @@ public class TimetableParser implements Parser, Constant {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				timetable.setObjectVersion(version);
 			} else if (xpp.getName().equals("creationTime")) {
-				Date creationTime = ParserUtils.getSQLDateTime(xpp.nextText());
+				LocalDateTime creationTime = ParserUtils.getLocalDateTime(xpp.nextText());
 				timetable.setCreationTime(creationTime);
 			} else if (xpp.getName().equals("creatorId")) {
 				timetable.setCreatorId(ParserUtils.getText(xpp.nextText()));
@@ -64,17 +64,17 @@ public class TimetableParser implements Parser, Constant {
 						xpp.nextText());
 				timetable.addDayType(value);
 			} else if (xpp.getName().equals("calendarDay")) {
-				Date date = ParserUtils.getSQLDate(xpp.nextText());
+				LocalDate date = ParserUtils.getLocalDate(xpp.nextText());
 				CalendarDay value = new CalendarDay(date, true);
 				timetable.addCalendarDay(value);
 			} else if (xpp.getName().equals("period")) {
-				Date startOfPeriod = null;
-				Date endOfPeriod = null;
+				LocalDate startOfPeriod = null;
+				LocalDate endOfPeriod = null;
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("startOfPeriod")) {
-						startOfPeriod = ParserUtils.getSQLDate(xpp.nextText());
+						startOfPeriod = ParserUtils.getLocalDate(xpp.nextText());
 					} else if (xpp.getName().equals("endOfPeriod")) {
-						endOfPeriod = ParserUtils.getSQLDate(xpp.nextText());
+						endOfPeriod = ParserUtils.getLocalDate(xpp.nextText());
 					} else {
 						XPPUtil.skipSubTree(log, xpp);
 					}

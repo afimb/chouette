@@ -6,7 +6,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Calendar;
 
 import javax.naming.InitialContext;
 
@@ -23,6 +22,7 @@ import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+import org.joda.time.LocalDateTime;
 
 @Log4j
 public class HubInitExportCommand implements Command, Constant {
@@ -42,7 +42,7 @@ public class HubInitExportCommand implements Command, Constant {
 			context.put(REFERENTIAL, new Referential());
 			Metadata metadata = new Metadata(); // if not asked, will be used as
 												// dummy
-			metadata.setDate(Calendar.getInstance());
+			metadata.setDate(LocalDateTime.now());
 			metadata.setFormat("text");
 			metadata.setTitle("Export hub ");
 			try {

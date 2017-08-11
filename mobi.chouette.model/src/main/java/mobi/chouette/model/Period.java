@@ -1,7 +1,6 @@
 package mobi.chouette.model;
 
 import java.io.Serializable;
-import java.sql.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -11,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import org.joda.time.LocalDate;
 
 /**
  * Period : date period for Timetables
@@ -33,7 +34,7 @@ public class Period implements Serializable, Comparable<Period> {
 	@Getter
 	@Setter
 	@Column(name = "period_start")
-	private Date startDate;
+	private LocalDate startDate;
 
 	/**
 	 * last date of period
@@ -45,7 +46,7 @@ public class Period implements Serializable, Comparable<Period> {
 	@Getter
 	@Setter
 	@Column(name = "period_end")
-	private Date endDate;
+	private LocalDate endDate;
 
 	/**
 	 * check if a date is included in period
@@ -53,14 +54,14 @@ public class Period implements Serializable, Comparable<Period> {
 	 * @param aDay
 	 * @return true if date is active in period
 	 */
-	public boolean contains(Date aDay) {
+	public boolean contains(LocalDate aDay) {
 		if (startDate == null || endDate == null)
 			return false;
 		if (aDay.equals(startDate))
 			return true;
 		if (aDay.equals(endDate))
 			return true;
-		return aDay.after(startDate) && aDay.before(endDate);
+		return aDay.isAfter(startDate) && aDay.isBefore(endDate);
 	}
 
 	/*
@@ -79,9 +80,9 @@ public class Period implements Serializable, Comparable<Period> {
 		return startDate.compareTo(period.startDate);
 	}
 
-	public Period(Date startDate, Date endDate) {
-		this.startDate = new Date(startDate.getTime());
-		this.endDate = new Date(endDate.getTime());
+	public Period(LocalDate startDate, LocalDate endDate) {
+		this.startDate = startDate;
+		this.endDate = endDate;
 	}
 
 }

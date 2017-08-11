@@ -1,9 +1,7 @@
 package mobi.chouette.exchange.neptune.parser;
 
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import lombok.extern.log4j.Log4j;
@@ -24,6 +22,9 @@ import mobi.chouette.model.type.UserNeedEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
+import org.joda.time.Duration;
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
@@ -53,7 +54,7 @@ public class AccessLinkParser implements Parser, Constant {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				accessLink.setObjectVersion(version);
 			} else if (xpp.getName().equals("creationTime")) {
-				Date creationTime = ParserUtils.getSQLDateTime(xpp.nextText());
+				LocalDateTime creationTime = ParserUtils.getLocalDateTime(xpp.nextText());
 				accessLink.setCreationTime(creationTime);
 			} else if (xpp.getName().equals("creatorId")) {
 				accessLink.setCreatorId(ParserUtils.getText(xpp.nextText()));
@@ -126,17 +127,17 @@ public class AccessLinkParser implements Parser, Constant {
 					}
 				}
 			} else if (xpp.getName().equals("defaultDuration")) {
-				Time value = ParserUtils.getSQLDuration(xpp.nextText());
+				Duration value = ParserUtils.getDuration(xpp.nextText());
 				accessLink.setDefaultDuration(value);
 			} else if (xpp.getName().equals("frequentTravellerDuration")) {
-				Time value = ParserUtils.getSQLDuration(xpp.nextText());
+				Duration value = ParserUtils.getDuration(xpp.nextText());
 				accessLink.setFrequentTravellerDuration(value);
 			} else if (xpp.getName().equals("occasionalTravellerDuration")) {
-				Time value = ParserUtils.getSQLDuration(xpp.nextText());
+				Duration value = ParserUtils.getDuration(xpp.nextText());
 				accessLink.setOccasionalTravellerDuration(value);
 			} else if (xpp.getName().equals(
 					"mobilityRestrictedTravellerDuration")) {
-				Time value = ParserUtils.getSQLDuration(xpp.nextText());
+				Duration value = ParserUtils.getDuration(xpp.nextText());
 				accessLink.setMobilityRestrictedTravellerDuration(value);
 			} else if (xpp.getName().equals("linkType")) {
 				ConnectionLinkTypeEnum value = ParserUtils.getEnum(

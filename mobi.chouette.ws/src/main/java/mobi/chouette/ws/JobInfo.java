@@ -84,9 +84,9 @@ public class JobInfo implements ServiceConstants {
 		referential = job.getReferential();
 		action = job.getAction();
 		type = job.getType();
-		created = job.getCreated();
-		started = job.getStarted();
-		updated = job.getUpdated();
+		created = job.getCreated() == null ? null : job.getCreated().toDate();
+		started = job.getStarted() == null ? null : job.getStarted().toDate();
+		updated = job.getUpdated() == null ? null : job.getUpdated().toDate();
 		status = STATUS.valueOf(job.getStatus().name());
 
 		actionParameters = job.getActionParameter();

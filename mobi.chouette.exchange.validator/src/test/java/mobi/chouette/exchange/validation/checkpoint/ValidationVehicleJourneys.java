@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.validation.checkpoint;
 
 import java.io.File;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +39,7 @@ import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.joda.time.LocalTime;
 import org.testng.Assert;
 import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
@@ -257,7 +257,7 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		long maxDiffTime = 0;
 		for (VehicleJourneyAtStop vjas : vj1.getVehicleJourneyAtStops()) {
 			if (vjas.getArrivalTime().equals(vjas.getDepartureTime())) {
-				vjas.getArrivalTime().setTime(vjas.getArrivalTime().getTime() - 60000);
+				vjas.setArrivalTime(vjas.getArrivalTime().minusMinutes(1));
 			}
 			long diffTime = Math.abs(diffTime(vjas.getArrivalTime(), vjas.getDepartureTime()));
 			if (diffTime > maxDiffTime)
@@ -394,7 +394,7 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		Assert.assertNotNull(vj1, "tested vj not found");
 
 		VehicleJourneyAtStop vjas1 = vj1.getVehicleJourneyAtStops().get(1);
-		vjas1.getArrivalTime().setTime(vjas1.getArrivalTime().getTime() - 240000);
+		vjas1.setArrivalTime(vjas1.getArrivalTime().minusMinutes(4));
 
 		fullparameters.getModeBus().setInterStopDurationVariationMax(220);
 
@@ -545,15 +545,11 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		jf.setLastDepartureTime(listJF.get(0).getLastDepartureTime());
 		listJF.add(jf);
 		log.info("Test 3_6 : number of journey frequency : " + listJF.size());
-		Time firstDepartureTime = listJF.get(0).getFirstDepartureTime();
-		Time lastDepartureTime = listJF.get(0).getLastDepartureTime();
-		Time fDTime = new Time((long) (firstDepartureTime.getTime() - 6000L));
-		Time lDTime = new Time((long) (lastDepartureTime.getTime() + 6000L));
+		LocalTime firstDepartureTime = listJF.get(0).getFirstDepartureTime();
+		LocalTime lastDepartureTime = listJF.get(0).getLastDepartureTime();
 		
-
-		
-		listJF.get(1).setFirstDepartureTime(fDTime);
-		listJF.get(1).setLastDepartureTime(lDTime);
+		listJF.get(1).setFirstDepartureTime(firstDepartureTime.minusMinutes(10));
+		listJF.get(1).setLastDepartureTime(lastDepartureTime.plusMinutes(10));
 		
 		data.getVehicleJourneys().add(vj1);
 		context.put(VALIDATION_DATA, data);
@@ -634,14 +630,11 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		jf.setLastDepartureTime(listJF.get(0).getLastDepartureTime());
 		listJF.add(jf);
 		
-		Time firstDepartureTime = listJF.get(0).getTimeband().getStartTime();
-		Time lastDepartureTime = listJF.get(0).getTimeband().getEndTime();
-		
-		Time fDTime = new Time((long) (firstDepartureTime.getTime() - 6000L));
-		Time lDTime = new Time((long) (lastDepartureTime.getTime() + 6000L));
-		
-		listJF.get(0).setFirstDepartureTime(fDTime);
-		listJF.get(0).setLastDepartureTime(lDTime);
+		LocalTime firstDepartureTime = listJF.get(0).getTimeband().getStartTime();
+		LocalTime lastDepartureTime = listJF.get(0).getTimeband().getEndTime();
+
+		listJF.get(0).setFirstDepartureTime(firstDepartureTime.minusMinutes(10));
+		listJF.get(0).setLastDepartureTime(lastDepartureTime.plusMinutes(10));
 		
 		data.getVehicleJourneys().add(vj1);
 		context.put(VALIDATION_DATA, data);

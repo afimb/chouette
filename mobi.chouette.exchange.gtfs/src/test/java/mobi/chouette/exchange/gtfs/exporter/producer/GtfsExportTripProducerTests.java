@@ -1,7 +1,5 @@
 package mobi.chouette.exchange.gtfs.exporter.producer;
 
-import java.sql.Time;
-
 import mobi.chouette.exchange.gtfs.exporter.producer.mock.GtfsExporterMock;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
@@ -18,6 +16,7 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 
+import org.joda.time.LocalTime;
 import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
@@ -269,7 +268,7 @@ private VehicleJourney buildNeptuneObject(boolean full)
          vjas.setStopPoint(sp);
          vjas.setArrivalDayOffset(current_arrival_offset);
          vjas.setDepartureDayOffset(current_departure_offset);
-         vjas.setArrivalTime(new Time(h,m,0));
+         vjas.setArrivalTime(new LocalTime(h,m,0));
          
          h = h + 1;
          if (h > 23)
@@ -278,20 +277,20 @@ private VehicleJourney buildNeptuneObject(boolean full)
             
          }
       
-         vjas.setDepartureTime(new Time(h,m,0));
+         vjas.setDepartureTime(new LocalTime(h,m,0));
          
          if(previous_vjas == null) {
-        	 if(vjas.getDepartureTime().getTime() < vjas.getArrivalTime().getTime()) {
+        	 if(vjas.getDepartureTime().isBefore(vjas.getArrivalTime())) {
         		 current_departure_offset = current_departure_offset + 1;
                  vjas.setDepartureDayOffset(current_departure_offset);
         	 }
          } else {
-        	 if(vjas.getArrivalTime().getTime() < previous_vjas.getArrivalTime().getTime()) {
+        	 if(vjas.getArrivalTime().isBefore(previous_vjas.getArrivalTime())) {
         		 current_arrival_offset = current_arrival_offset + 1;
                  vjas.setArrivalDayOffset(current_arrival_offset);
         	 }
         	 
-        	 if(vjas.getDepartureTime().getTime() < previous_vjas.getDepartureTime().getTime()) {
+        	 if(vjas.getDepartureTime().isBefore(previous_vjas.getDepartureTime())) {
         		 current_departure_offset = current_departure_offset + 1;
                  vjas.setDepartureDayOffset(current_departure_offset);
         	 }

@@ -1,6 +1,5 @@
 package mobi.chouette.model;
 
-import java.sql.Time;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,13 +10,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
+import org.joda.time.Duration;
+import org.joda.time.LocalTime;
 
 /**
  * Models the frequencies for journeys in timesheet category.
@@ -104,7 +106,8 @@ public class JourneyFrequency extends NeptuneObject {
 	@Getter
 	@Setter
 	@Column(name = "scheduled_headway_interval", nullable = false)
-	private Time scheduledHeadwayInterval;
+	@Type(type = "mobi.chouette.jadira.PersistentDurationAsSqlTime")
+	private Duration scheduledHeadwayInterval;
 
 	/**
 	 * The first departure time
@@ -116,7 +119,7 @@ public class JourneyFrequency extends NeptuneObject {
 	@Getter
 	@Setter
 	@Column(name = "first_departure_time", nullable = false)
-	private Time firstDepartureTime;
+	private LocalTime firstDepartureTime;
 
 	/**
 	 * The last departure time
@@ -128,7 +131,7 @@ public class JourneyFrequency extends NeptuneObject {
 	@Getter
 	@Setter
 	@Column(name = "last_departure_time", nullable = false)
-	private Time lastDepartureTime;
+	private LocalTime lastDepartureTime;
 
 	/**
 	 * Are the first and last departure times exact or not.

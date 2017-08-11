@@ -1,7 +1,7 @@
 package mobi.chouette.model;
 
 import java.io.Serializable;
-import java.sql.Date;
+
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -9,6 +9,9 @@ import javax.persistence.Embeddable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 /**
  * peculiar date for Timetables
@@ -30,7 +33,7 @@ public class CalendarDay implements Serializable, Comparable<CalendarDay> {
 	@Getter
 	@Setter
 	@Column(name = "date")
-	private Date date;
+	private LocalDate date;
 
 	/**
 	 * included or excluded date <br/>
@@ -70,7 +73,7 @@ public class CalendarDay implements Serializable, Comparable<CalendarDay> {
 	 * @param included
 	 *            indicate if date is included or excluded on the timetable
 	 */
-	public CalendarDay(Date date, boolean included) {
+	public CalendarDay(LocalDate date, boolean included) {
 		this.date = date;
 		this.included = Boolean.valueOf(included);
 	}

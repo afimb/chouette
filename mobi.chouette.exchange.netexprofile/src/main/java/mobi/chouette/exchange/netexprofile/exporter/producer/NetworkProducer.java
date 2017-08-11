@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.model.Company;
 import org.rutebanken.netex.model.AuthorityRefStructure;
@@ -25,7 +26,7 @@ public class NetworkProducer extends NetexProducer implements NetexEntityProduce
         netexNetwork.setId(networkId);
 
         if (isSet(neptuneNetwork.getVersionDate())) {
-            OffsetDateTime changedDateTime = ConversionUtil.toOffsetDateTime(neptuneNetwork.getVersionDate());
+            OffsetDateTime changedDateTime = TimeUtil.toOffsetDateTime(neptuneNetwork.getVersionDate());
             netexNetwork.setChanged(changedDateTime);
         }
 

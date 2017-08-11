@@ -1,8 +1,5 @@
 package mobi.chouette.model;
 
-import java.util.Date;
-import java.util.GregorianCalendar;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,6 +17,7 @@ import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.joda.time.LocalDateTime;
 
 /**
  * Chouette Footnote : a note for vehicle journeys
@@ -113,7 +111,7 @@ public class Footnote extends NeptuneObject {
 	@Getter
 	@Setter
 	@Column(name = "created_at")
-	private Date createdAt = GregorianCalendar.getInstance().getTime();
+	private LocalDateTime createdAt = LocalDateTime.now();
 
 	/**
 	 * last update time
@@ -125,7 +123,7 @@ public class Footnote extends NeptuneObject {
 	@Getter
 	@Setter
 	@Column(name = "updated_at")
-	private Date updatedAt = new Date(createdAt.getTime());
+	private LocalDateTime updatedAt = createdAt;
 
 	/**
 	 * relative key for import/export

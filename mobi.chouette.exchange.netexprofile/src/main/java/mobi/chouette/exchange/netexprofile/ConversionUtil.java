@@ -1,27 +1,20 @@
 package mobi.chouette.exchange.netexprofile;
 
 import java.math.BigInteger;
-import java.sql.Time;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.time.OffsetTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
+import mobi.chouette.model.type.DayTypeEnum;
 
 import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
 import org.rutebanken.netex.model.DayOfWeekEnumeration;
 import org.rutebanken.netex.model.MultilingualString;
 
-import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
-import mobi.chouette.model.type.DayTypeEnum;
+import static mobi.chouette.common.TimeUtil.toLocalTimeFromJoda;
 
 public class ConversionUtil {
 
@@ -30,14 +23,6 @@ public class ConversionUtil {
 			return null;
 		} else {
 			return new MultilingualString().withValue(v);
-		}
-	}
-
-	public static Time asTime(Duration d) {
-		if (d == null) {
-			return null;
-		} else {
-			return Time.valueOf(LocalTime.MIDNIGHT.plus(d));
 		}
 	}
 
@@ -142,33 +127,6 @@ public class ConversionUtil {
 	        return AllVehicleModesOfTransportEnumeration.UNKNOWN;
 	}
 
-	public static OffsetDateTime toOffsetDateTime(java.util.Date date) {
-	    if (date == null) {
-	        return null;
-	    }
-	    if (date instanceof java.sql.Date) {
-	        java.sql.Date sqlDate = (java.sql.Date) date;
-	        ZonedDateTime zonedDateTime = sqlDate.toLocalDate().atStartOfDay(ZoneId.systemDefault());
-	        return OffsetDateTime.ofInstant(zonedDateTime.toInstant(), ZoneId.systemDefault());
-	    }
-	    return OffsetDateTime.ofInstant(date.toInstant(), ZoneOffset.systemDefault());
-	}
-
-	public static LocalDate toLocalDate(java.util.Date date) {
-	    if (date == null) {
-	        return null;
-	    }
-	    if (date instanceof java.sql.Date) {
-	        return ((java.sql.Date) date).toLocalDate();
-	    } else {
-	        return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
-	    }
-	}
-
-	public static OffsetTime toOffsetTimeUtc(Time time) {
-	    return time == null ? null : time.toLocalTime().atOffset(NetexProducerUtils.getZoneOffset(NetexProducerUtils.LOCAL_ZONE_ID)).withOffsetSameInstant(ZoneOffset.UTC);
-	}
-
 	public static String getValue(MultilingualString m) {
 		String v = null;
 		if(m != null) {
@@ -177,6 +135,10 @@ public class ConversionUtil {
 		
 		return v;
 		
+	}
+
+	public static OffsetTime toOffsetTimeUtc(org.joda.time.LocalTime time) {
+		return time == null ? null : toLocalTimeFromJoda(time).atOffset(NetexProducerUtils.getZoneOffset(NetexProducerUtils.LOCAL_ZONE_ID)).withOffsetSameInstant(ZoneOffset.UTC);
 	}
 
 }

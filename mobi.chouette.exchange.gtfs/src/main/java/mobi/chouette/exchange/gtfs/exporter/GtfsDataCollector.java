@@ -1,6 +1,5 @@
 package mobi.chouette.exchange.gtfs.exporter;
 
-import java.sql.Date;
 import java.util.Collection;
 
 import lombok.extern.log4j.Log4j;
@@ -9,9 +8,11 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 
+import org.joda.time.LocalDate;
+
 @Log4j
 public class GtfsDataCollector extends DataCollector{
-	public boolean collect(ExportableData collection, Line line, Date startDate, Date endDate) {
+	public boolean collect(ExportableData collection, Line line, LocalDate startDate, LocalDate endDate) {
        boolean res =  collect(collection,line,startDate,endDate,false,false);
 		if (line.getCompany() == null) {
 			log.error("line " + line.getObjectId() + " : missing company");

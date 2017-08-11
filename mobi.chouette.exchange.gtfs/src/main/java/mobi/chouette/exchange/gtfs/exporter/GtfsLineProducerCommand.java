@@ -9,7 +9,6 @@
 package mobi.chouette.exchange.gtfs.exporter;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +42,7 @@ import mobi.chouette.model.util.NamingUtil;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+import org.joda.time.LocalDate;
 
 /**
  *
@@ -75,14 +75,14 @@ public class GtfsLineProducerCommand implements Command, Constant {
 				return SUCCESS;
 			}
 
-			Date startDate = null;
+			LocalDate startDate = null;
 			if (configuration.getStartDate() != null) {
-				startDate = new Date(configuration.getStartDate().getTime());
+				startDate = new LocalDate(configuration.getStartDate());
 			}
 
-			Date endDate = null;
+			LocalDate endDate = null;
 			if (configuration.getEndDate() != null) {
-				endDate = new Date(configuration.getEndDate().getTime());
+				endDate = new LocalDate(configuration.getEndDate());
 			}
 
 			GtfsDataCollector collector = new GtfsDataCollector();

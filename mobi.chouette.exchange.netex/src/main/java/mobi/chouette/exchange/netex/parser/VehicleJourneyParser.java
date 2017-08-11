@@ -168,9 +168,9 @@ public class VehicleJourneyParser implements Parser, Constant {
 				vehicleJourneyAtStop.setStopPoint(stopPoint);
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("Arrival")) {
-				vehicleJourneyAtStop.setArrivalTime(NetexUtils.getSQLTime(getTime(xpp)));
+				vehicleJourneyAtStop.setArrivalTime(NetexUtils.getLocalTime(getTime(xpp)));
 			} else if (xpp.getName().equals("Departure")) {
-				vehicleJourneyAtStop.setDepartureTime(NetexUtils.getSQLTime(getTime(xpp)));
+				vehicleJourneyAtStop.setDepartureTime(NetexUtils.getLocalTime(getTime(xpp)));
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
 			}

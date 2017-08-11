@@ -1,11 +1,10 @@
 package mobi.chouette.exchange.neptune.exporter.producer;
 
-import java.sql.Date;
-
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;
 
+import org.joda.time.LocalDate;
 import org.trident.schema.trident.DayTypeType;
 import org.trident.schema.trident.PeriodType;
 import org.trident.schema.trident.TimetableType;
@@ -25,7 +24,7 @@ public class TimetableProducer extends
       jaxbTimetable.setComment(getNotEmptyString(timetable.getComment()));
       jaxbTimetable.setVersion(getNotEmptyString(timetable.getVersion()));
 
-      for (Date peculiarDay : timetable.getEffectiveDates())
+      for (LocalDate peculiarDay : timetable.getEffectiveDates())
       {
          if (peculiarDay != null)
          {

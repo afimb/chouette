@@ -339,10 +339,10 @@ public class ValidationAccessLinks extends AbstractTestValidation {
 		}
 		double distance = AbstractTestValidation.distance(link.getAccessPoint(), link.getStopArea());
 		link.setLinkDistance(BigDecimal.valueOf(distance));
-		link.getDefaultDuration().setTime(link.getDefaultDuration().getTime() - 150000);
-		link.getOccasionalTravellerDuration().setTime(link.getDefaultDuration().getTime());
-		link.getFrequentTravellerDuration().setTime(link.getDefaultDuration().getTime());
-		link.getMobilityRestrictedTravellerDuration().setTime(link.getDefaultDuration().getTime());
+		link.setDefaultDuration(link.getDefaultDuration().minus(150000));
+		link.setOccasionalTravellerDuration(link.getDefaultDuration());
+		link.setFrequentTravellerDuration(link.getDefaultDuration());
+		link.setMobilityRestrictedTravellerDuration(link.getDefaultDuration());
 
 		ValidationData data = new ValidationData();
 		data.getAccessLinks().addAll(beans);

@@ -1,6 +1,5 @@
 package mobi.chouette.exchange.gtfs.parser;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -328,18 +327,14 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 	private Period clonePeriodAfterMidnight(Period source) {
 		Period result = new Period();
 
-		result.setStartDate(new Date(source.getStartDate().getTime() + Timetable.ONE_DAY));
-		result.setEndDate(new Date(source.getEndDate().getTime() + Timetable.ONE_DAY));
+		result.setStartDate(source.getStartDate().plusDays(1));
+		result.setEndDate(source.getStartDate().plusDays(1));
 
 		return result;
 	}
 
-	private Date cloneDateAfterMidnight(Date source) {
-		return new Date(source.getTime() + Timetable.ONE_DAY);
-	}
-
 	private CalendarDay cloneDateAfterMidnight(CalendarDay source) {
-		return new CalendarDay(cloneDateAfterMidnight(source.getDate()), source.getIncluded().booleanValue());
+		return new CalendarDay(source.getDate().plusDays(1), source.getIncluded().booleanValue());
 	}
 
 	public static final String AFTER_MIDNIGHT_SUFFIX = "_after_midnight";

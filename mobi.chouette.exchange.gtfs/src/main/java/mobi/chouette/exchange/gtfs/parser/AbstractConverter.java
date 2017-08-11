@@ -1,13 +1,13 @@
 package mobi.chouette.exchange.gtfs.parser;
 
 import java.net.URL;
-import java.sql.Time;
 import java.util.TimeZone;
 
 import mobi.chouette.common.Constant;
 import mobi.chouette.exchange.gtfs.model.GtfsTime;
 
 import org.apache.log4j.Logger;
+import org.joda.time.LocalTime;
 
 public abstract class AbstractConverter implements Constant{
 
@@ -30,11 +30,11 @@ public abstract class AbstractConverter implements Constant{
 	 * @param gtfsTime
 	 * @return
 	 */
-	public static Time getTime(GtfsTime gtfsTime) {
+	public static LocalTime getTime(GtfsTime gtfsTime) {
 		if (gtfsTime == null)
 			return null;
 
-		Time time = gtfsTime.getTime();
+		LocalTime time = gtfsTime.getTime();
 		return time;
 	}
 

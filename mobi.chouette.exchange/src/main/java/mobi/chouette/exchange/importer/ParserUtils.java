@@ -1,20 +1,23 @@
 package mobi.chouette.exchange.importer;
 
 import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Time;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import lombok.extern.log4j.Log4j;
+
+import org.joda.time.Duration;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
+import org.joda.time.Seconds;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 @Log4j
 public class ParserUtils {
@@ -74,15 +77,13 @@ public class ParserUtils {
 	}
 
 	@SuppressWarnings("deprecation")
-	public static Time getSQLDuration(String value) {
-		Time result = null;
+	public static org.joda.time.Duration getDuration(String value) {
+		org.joda.time.Duration result = null;
 		assert value != null : "[DSU] invalid value : " + value;
 
 		if (value != null) {
 			try {
-				Duration duration = factory.newDuration(value);
-				result = new Time(duration.getHours(), duration.getMinutes(),
-						duration.getSeconds());
+				result = new org.joda.time.Duration(factory.newDuration(value).getTimeInMillis(new java.util.Date(0)));
 			} catch (Exception e) {
 				log.error(e.getMessage(), e);
 			}
@@ -90,57 +91,68 @@ public class ParserUtils {
 		return result;
 	}
 
-	public static Time getSQLTime(String value) throws ParseException {
-		Time result = null;
+
+	public static Duration getDurationFromTime(String value) throws ParseException {
+		Duration result = null;
 		assert value != null : "[DSU] invalid value : " + value;
 
 		if (value != null) {
-			DateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
-			result = new Time(getDate(TIME_FORMAT, value).getTime());
+			LocalTime time = getLocalTime(value);
+			result = Duration.standardSeconds(Seconds.secondsBetween(new LocalTime(0), time).getSeconds());
+		}
+		return result;
+	}
+
+
+	public static LocalTime getLocalTime(String value) throws ParseException {
+        LocalTime result = null;
+		assert value != null : "[DSU] invalid value : " + value;
+
+		if (value != null) {
+            result = LocalTime.parse(value, DateTimeFormat.forPattern("HH:mm:ss"));
 
 		}
 		return result;
 	}
 
-	public static Date getSQLDateTime(String value) throws ParseException {
-		Date result = null;
+	public static LocalDate getLocalDate(String value) throws ParseException {
+		LocalDate result = null;
+		assert value != null : "[DSU] invalid value : " + value;
+
+		if (value != null) {
+			result = LocalDate.parse(value, DateTimeFormat.forPattern("yyyy-MM-dd"));
+		}
+		return result;
+
+	}
+
+	public static LocalDate getDate(DateTimeFormatter format, String value)
+			throws ParseException {
+		LocalDate result = null;
+		assert value != null : "[DSU] invalid value : " + value;
+
+		if (value != null) {
+			result = format.parseLocalDate(value);
+		}
+		return result;
+	}
+
+	public static LocalDate getDate(String value) throws ParseException {
+		DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern(
+				"yyyy-MM-dd'T'HH:mm:ss'Z'");
+		return getDate(DATE_FORMAT, value);
+	}
+
+	public static LocalDateTime getLocalDateTime(String value) throws ParseException {
+		LocalDateTime result = null;
 		assert value != null : "[DSU] invalid value : " + value;
 
 		if (value != null) {
 			XMLGregorianCalendar calendar = factory
 					.newXMLGregorianCalendar(value);
-			result = new Date(calendar.toGregorianCalendar().getTimeInMillis());
+			result = new LocalDateTime(calendar.toGregorianCalendar().getTime());
 		}
 		return result;
-	}
-
-	public static Date getSQLDate(String value) throws ParseException {
-		Date result = null;
-		assert value != null : "[DSU] invalid value : " + value;
-
-		if (value != null) {
-			DateFormat SHORT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-			long  time = getDate(SHORT_DATE_FORMAT, value).getTime();
-			result = new Date(time);
-		}
-		return result;
-	}
-
-	public static java.util.Date getDate(DateFormat format, String value)
-			throws ParseException {
-		java.util.Date result = null;
-		assert value != null : "[DSU] invalid value : " + value;
-
-		if (value != null) {
-			result = format.parse(value);
-		}
-		return result;
-	}
-
-	public static java.util.Date getDate(String value) throws ParseException {
-		DateFormat DATE_FORMAT = new SimpleDateFormat(
-				"yyyy-MM-dd'T'HH:mm:ss'Z'");
-		return getDate(DATE_FORMAT, value);
 	}
 
 	public static BigDecimal getBigDecimal(String value) {
@@ -175,7 +187,7 @@ public class ParserUtils {
 	public static BigDecimal getY(String value) {
 		return ParserUtils.getBigDecimal(value, "[\\d\\.]+ ([\\d\\.]+)");
 	}
-	
+
 	public static String objectIdPrefix(String objectId) {
 		if (objectIdArray(objectId).length > 2) {
 			return objectIdArray(objectId)[0].trim();

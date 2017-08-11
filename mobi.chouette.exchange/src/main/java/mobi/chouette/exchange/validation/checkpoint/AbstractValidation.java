@@ -26,6 +26,9 @@ import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.NamingUtil;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
+import org.joda.time.Duration;
+import org.joda.time.LocalTime;
+import org.joda.time.Seconds;
 
 import java.lang.reflect.Method;
 import java.sql.Time;
@@ -345,10 +348,10 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param testCode
 	 * @param resultCode
 	 */
-	protected void checkLinkSpeed(Context context, NeptuneIdentifiedObject object, Time duration, double distance,
-			int maxDefaultSpeed, String testCode, String resultCode) {
+	protected void checkLinkSpeed(Context context, NeptuneIdentifiedObject object, Duration duration, double distance,
+								  int maxDefaultSpeed, String testCode, String resultCode) {
 		if (duration != null) {
-			long time = getTimeInSeconds(duration); // in seconds
+			long time = duration.getStandardSeconds(); // in seconds
 
 			if (time > 0) {
 				int speed = (int) (distance / (double) time * 36 / 10 + 0.5); // (km/h)
@@ -366,13 +369,6 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 				}
 			}
 		}
-	}
-
-	protected long getTimeInSeconds(Time time) {
-		TimeZone tz = TimeZone.getDefault();
-		long millis = 0;
-		millis = time.getTime() + tz.getRawOffset();
-		return millis / 1000;
 	}
 
 	protected void check4Generic1(Context context, T object, String testName, ValidationParameters parameters,
@@ -404,10 +400,10 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 				Object objVal = getter.invoke(object);
 				String value = "";
 				if (objVal != null) {
-					if (objVal instanceof Time) {
+					if (objVal instanceof LocalTime) {
 						// use value in seconds
-						Time t = (Time) objVal;
-						value = Long.toString(t.getTime() / 1000);
+						LocalTime t = (LocalTime) objVal;
+						value = Long.toString(Seconds.secondsBetween(new LocalTime(0, 0, 0), t).getSeconds());
 					} else {
 						value = objVal.toString();
 					}
@@ -457,7 +453,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			FieldParameters colParam, Object objVal, String value, PATTERN_OPTION pattern_opt, Logger log) {
 		int maxSize = Integer.parseInt(colParam.getMaxSize());
 		if (maxSize != 0) {
-			if (objVal instanceof Number || objVal instanceof Time || pattern_opt == PATTERN_OPTION.num) {
+			if (objVal instanceof Number || objVal instanceof LocalTime || pattern_opt == PATTERN_OPTION.num) {
 				// check numeric value
 				long val = Long.parseLong(value);
 				if (val > maxSize) {
@@ -512,7 +508,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			return;
 		}
 
-		if (objVal instanceof Number || objVal instanceof Time || pattern_opt == PATTERN_OPTION.num) {
+		if (objVal instanceof Number || objVal instanceof LocalTime || pattern_opt == PATTERN_OPTION.num) {
 			// check numeric value
 			long val = Long.parseLong(value);
 			if (val < minSize) {

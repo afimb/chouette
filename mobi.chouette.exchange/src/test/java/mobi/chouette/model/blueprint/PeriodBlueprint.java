@@ -1,18 +1,17 @@
 package mobi.chouette.model.blueprint;
 
-import java.util.Date;
-
 import mobi.chouette.model.Period;
 
 import com.tobedevoured.modelcitizen.annotation.Blueprint;
 import com.tobedevoured.modelcitizen.annotation.Default;
+import org.joda.time.LocalDate;
 
 @Blueprint(Period.class)
 public class PeriodBlueprint
 {
    @Default
-   Date startDate;
+   LocalDate startDate;
 
    @Default
-   Date endDate;
+   LocalDate endDate;
 }

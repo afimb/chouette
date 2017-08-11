@@ -2,7 +2,6 @@ package mobi.chouette.model.iev;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CollectionTable;
@@ -25,6 +24,8 @@ import javax.xml.bind.annotation.XmlType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+
+import org.joda.time.LocalDateTime;
 
 @EqualsAndHashCode(of = { "id" })
 @ToString(exclude = { "parametersAsString" })
@@ -61,13 +62,13 @@ public class Job implements Serializable {
 	private String outputFilename;
 
 	@Column(name = "created")
-	private Date created;
+	private LocalDateTime created;
 
 	@Column(name = "started")
-	private Date started;
+	private LocalDateTime started;
 
 	@Column(name = "updated")
-	private Date updated;
+	private LocalDateTime updated;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
@@ -83,8 +84,8 @@ public class Job implements Serializable {
 	public Job() {
 		super();
 		status = STATUS.CREATED;
-		created = new Date();
-		updated = new Date();
+		created = LocalDateTime.now();
+		updated = created;
 	}
 
 	public Job(String referential, String action, String type) {

@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.kml.exporter;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,9 +15,14 @@ import mobi.chouette.model.NeptuneLocalizedObject;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 
-import org.apache.commons.collections.map.ListOrderedMap;
-
 import com.vividsolutions.jts.geom.Coordinate;
+import org.apache.commons.collections.map.ListOrderedMap;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
+import org.joda.time.ReadablePartial;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 public class KmlData {
 	@Getter
@@ -129,19 +133,17 @@ public class KmlData {
 			this.longitude = x; 
 		}
 	}
-	
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z");
-	private static final SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ss");
+	private static final DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss Z");
+	private static final DateTimeFormatter timeFormat = DateTimeFormat.forPattern("hh:mm:ss");
+
 	private static String valueOf(Object data)
 	{
 		if (data == null) return "";
-		if (data instanceof java.sql.Time)
-		{
-			return timeFormat.format(data);
+		if (data instanceof LocalTime) {
+			return timeFormat.print((LocalTime) data);
 		}
-		if (data instanceof java.util.Date)
-		{
-			return dateFormat.format(data);
+		if (data instanceof LocalDate || data instanceof LocalDateTime) {
+			return dateFormat.print((ReadablePartial) data);
 		}
 		
 		return data.toString();

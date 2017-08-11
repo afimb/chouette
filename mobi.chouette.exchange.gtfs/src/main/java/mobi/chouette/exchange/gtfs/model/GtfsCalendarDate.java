@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.gtfs.model;
 
 import java.io.Serializable;
-import java.sql.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -9,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import org.joda.time.LocalDate;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
@@ -25,7 +26,7 @@ public class GtfsCalendarDate extends GtfsObject implements Serializable
 
    @Getter
    @Setter
-   private Date date;
+   private LocalDate date;
 
    @Getter
    @Setter
