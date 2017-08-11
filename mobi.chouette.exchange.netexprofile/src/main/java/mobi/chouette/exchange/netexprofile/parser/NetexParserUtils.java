@@ -22,29 +22,33 @@ public class NetexParserUtils extends ParserUtils {
 		else if (value.equals("air"))
 			return TransportModeNameEnum.Air;
 		else if (value.equals("rail"))
-			return TransportModeNameEnum.Train;
-		else if (value.equals("intercityRail"))
-			return TransportModeNameEnum.LongDistanceTrain;
-		else if (value.equals("urbanRail"))
-			return TransportModeNameEnum.LocalTrain;
+			return TransportModeNameEnum.Rail;
 		else if (value.equals("metro"))
 			return TransportModeNameEnum.Metro;
 		else if (value.equals("tram"))
-			return TransportModeNameEnum.Tramway;
+			return TransportModeNameEnum.Tram;
 		else if (value.equals("coach"))
 			return TransportModeNameEnum.Coach;
 		else if (value.equals("bus"))
 			return TransportModeNameEnum.Bus;
 		else if (value.equals("water"))
+			return TransportModeNameEnum.Water;
+		else if (value.equals("ferry"))
 			return TransportModeNameEnum.Ferry;
-		else if (value.equals("selfDrive"))
-			return TransportModeNameEnum.Walk;
 		else if (value.equals("trolleyBus"))
-			return TransportModeNameEnum.Trolleybus;
+			return TransportModeNameEnum.TrolleyBus;
 		else if (value.equals("taxi"))
 			return TransportModeNameEnum.Taxi;
+		else if (value.equals("cableway"))
+			return TransportModeNameEnum.Cableway;
+		else if (value.equals("funicular"))
+			return TransportModeNameEnum.Funicular;
+		else if (value.equals("lift"))
+			return TransportModeNameEnum.Lift;
 		else if (value.equals("unknown"))
 			return TransportModeNameEnum.Other;
+		else if (value.equals("bicycle"))
+			return TransportModeNameEnum.Bicycle;
 		else
 			return TransportModeNameEnum.Other;
 	}

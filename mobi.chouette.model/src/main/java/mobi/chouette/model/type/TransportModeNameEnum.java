@@ -7,28 +7,22 @@ package mobi.chouette.model.type;
 public enum TransportModeNameEnum
 {
    Air, 
-   Train, 
-   LongDistanceTrain, 
-   /**
-    * useless
-    */
-   LongDistanceTrain_2, 
-   LocalTrain, 
-   RapidTransit, 
-   Metro, 
-   Tramway, 
-   Coach, 
-   Bus, 
-   Ferry, 
-   Waterborne, 
-   PrivateVehicle, 
-   Walk, 
-   Trolleybus, 
-   Bicycle, 
-   Shuttle, 
-   Taxi, 
-   Val,
-   Cabelway,
+   Bus,
+   Coach,
+   Ferry,
+   Metro,
+   Rail,
+   TrolleyBus,
+   Tram,
+   Water,
+   Cableway,
    Funicular,
-   Other;
+   Lift,
+   // Added for HUB support
+   Taxi,
+   Bicycle,
+   //
+   Other
+   
+   
 }

@@ -51,23 +51,20 @@ public class HubModeTransportProducer extends AbstractProducer {
 		case Coach:
 			mode = HubModeTransport.MODE_TRANSPORT.CAR;
 			break;
-		case Waterborne:
+		case Water:
 		case Ferry:
 			mode = HubModeTransport.MODE_TRANSPORT.BATEAU;
 			break;
-		case LocalTrain:
-		case Train:
-		case LongDistanceTrain:
-		case LongDistanceTrain_2:
+		case Rail:
 			mode = HubModeTransport.MODE_TRANSPORT.TRAIN;
 			break;
 		case Metro:
 			mode = HubModeTransport.MODE_TRANSPORT.METRO;
 			break;
-		case Tramway:
+		case Tram:
 			mode = HubModeTransport.MODE_TRANSPORT.TRAM;
 			break;
-		case Trolleybus:
+		case TrolleyBus:
 			mode = HubModeTransport.MODE_TRANSPORT.TROLLEY;
 			break;
 
