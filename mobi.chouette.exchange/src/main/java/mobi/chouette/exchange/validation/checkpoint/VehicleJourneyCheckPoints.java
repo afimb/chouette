@@ -22,6 +22,7 @@ import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.JourneyCategoryEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.model.type.TransportSubModeNameEnum;
 
 /**
  * check a group of coherent vehicle journeys (i.e. on the same journey pattern)
@@ -651,6 +652,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 			compareVehicleJourneyFrequencyToOtherJourneyTimesheet(context, vj, beans);
 		}
 	}
+	
 
 	private void check4VehicleJourney2(Context context, VehicleJourney vj, ValidationParameters parameters) {
 		// 4-VehicleJourney-2 : (optional) check transport modes
