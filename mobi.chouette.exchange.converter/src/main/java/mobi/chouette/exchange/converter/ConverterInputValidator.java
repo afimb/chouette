@@ -19,6 +19,7 @@ import mobi.chouette.exchange.netex.importer.NetexImportParameters;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 
 @Log4j
@@ -126,7 +127,8 @@ public class ConverterInputValidator extends AbstractInputValidator {
 			log.error("input data expected");
 			return false;
 		}
-		if (!fileName.endsWith(".zip") && !fileName.endsWith(".xml")) {
+		String fileExtension = FilenameUtils.getExtension(fileName);
+		if (!fileExtension.equalsIgnoreCase("zip") && !fileExtension.equalsIgnoreCase("xml")) {
 			log.error("Zip archive or XML input data expected");
 			return false;
 		}

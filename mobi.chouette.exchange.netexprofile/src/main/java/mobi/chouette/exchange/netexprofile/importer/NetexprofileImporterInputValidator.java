@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
+
 @Log4j
 public class NetexprofileImporterInputValidator extends AbstractInputValidator {
 
@@ -56,7 +58,8 @@ public class NetexprofileImporterInputValidator extends AbstractInputValidator {
 			return false;
 		}
 
-		if (!fileName.endsWith(".zip") && !fileName.endsWith(".xml")) {
+		String fileExtension = FilenameUtils.getExtension(fileName);
+		if (!fileExtension.equalsIgnoreCase("zip") && !fileExtension.equalsIgnoreCase("xml")) {
 			log.error("xml or Zip archive input data expected");
 			return false;
 		}
