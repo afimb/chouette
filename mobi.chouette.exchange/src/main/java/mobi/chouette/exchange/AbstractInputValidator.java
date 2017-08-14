@@ -15,6 +15,8 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 
+import org.apache.commons.io.FilenameUtils;
+
 @Log4j
 public abstract class AbstractInputValidator implements InputValidator, Constant {
 	public boolean initReport(JobData data) {
@@ -42,8 +44,8 @@ public abstract class AbstractInputValidator implements InputValidator, Constant
 	
 	protected boolean checkFileExistenceInZip(String fileName, Path filePath, String format) {
 		boolean isZipFileValid = true;
-		
-		if (fileName.endsWith(".zip")) {
+		String fileExtension = FilenameUtils.getExtension(fileName);
+		if (fileExtension.equalsIgnoreCase("zip")) {
 			isZipFileValid = false;
 			ZipFile zipFile = null;
 			File file = null;
