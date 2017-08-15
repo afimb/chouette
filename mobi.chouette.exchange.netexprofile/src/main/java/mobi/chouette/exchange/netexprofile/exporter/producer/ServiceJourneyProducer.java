@@ -16,6 +16,7 @@ import mobi.chouette.model.VehicleJourneyAtStop;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.LocalTime;
+import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
 import org.rutebanken.netex.model.DayTypeRefStructure;
 import org.rutebanken.netex.model.DayTypeRefs_RelStructure;
 import org.rutebanken.netex.model.JourneyPatternRefStructure;
@@ -24,6 +25,7 @@ import org.rutebanken.netex.model.ServiceJourney;
 import org.rutebanken.netex.model.StopPointInJourneyPatternRefStructure;
 import org.rutebanken.netex.model.TimetabledPassingTime;
 import org.rutebanken.netex.model.TimetabledPassingTimes_RelStructure;
+import org.rutebanken.netex.model.TransportSubmodeStructure;
 
 import static mobi.chouette.exchange.netexprofile.Constant.PRODUCING_CONTEXT;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
@@ -57,7 +59,12 @@ public class ServiceJourneyProducer extends NetexProducer {
         if (isSet(vehicleJourney.getComment())) {
             serviceJourney.setDescription(getMultilingualString(vehicleJourney.getComment()));
         }
-
+        if (isSet(vehicleJourney.getTransportMode())) {
+            AllVehicleModesOfTransportEnumeration vehicleModeOfTransport = ConversionUtil.toVehicleModeOfTransportEnum(vehicleJourney.getTransportMode());
+            serviceJourney.setTransportMode(vehicleModeOfTransport);
+        }
+        serviceJourney.setTransportSubmode(ConversionUtil.toTransportSubmodeStructure(vehicleJourney.getTransportSubMode()));
+ 
         JourneyPattern journeyPattern = vehicleJourney.getJourneyPattern();
         JourneyPatternRefStructure journeyPatternRefStruct = netexFactory.createJourneyPatternRefStructure();
         journeyPatternRefStruct.setVersion(journeyPattern.getObjectVersion() != null ? String.valueOf(journeyPattern.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);

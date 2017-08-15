@@ -493,7 +493,17 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		em.joinTransaction();
 
 		Line line = lineDao.findByObjectId("AVI:Line:WF_TRD-MOL");
+		
+		Assert.assertEquals(line.getTransportModeName(), TransportModeNameEnum.Air);
+		Assert.assertEquals(line.getTransportSubModeName(), TransportSubModeNameEnum.DomesticFlight);
 
+		VehicleJourney j = vehicleJourneyDao.findByObjectId("AVI:ServiceJourney:WF538-01-18696881");
+		Assert.assertNotNull(j);
+		Assert.assertEquals(j.getTransportMode(), TransportModeNameEnum.Air);
+		Assert.assertEquals(j.getTransportSubMode(), TransportSubModeNameEnum.HelicopterService);
+		
+		
+		
 		assertNotNull(line, "Line not found");
 
 		int numVehicleJourneys = 0;

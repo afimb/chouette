@@ -24,6 +24,7 @@ import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.model.type.JourneyCategoryEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.model.type.TransportSubModeNameEnum;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
@@ -91,6 +92,16 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "transport_mode")
 	private TransportModeNameEnum transportMode;
+
+	/**
+	 * Transport sub mode 
+	 * 
+	 */
+	@Getter
+	@Setter
+	@Enumerated(EnumType.STRING)
+	@Column(name = "transport_submode_name")
+	private TransportSubModeNameEnum transportSubMode = null;
 
 	/**
 	 * published journey name
