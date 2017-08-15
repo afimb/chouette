@@ -196,21 +196,21 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 		if (subLevel != null) {
 
-			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Operator[not(n:CompanyNumber)]",
+			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Operator[not(n:CompanyNumber) or normalize-space(n:CompanyNumber) = '']",
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_COMPANY_NUMBER);
-			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Operator[not(n:Name)]", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_NAME);
-			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Operator[not(n:LegalName)]",
+			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Operator[not(n:Name) or normalize-space(n:Name) = '']", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_NAME);
+			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Operator[not(n:LegalName) or normalize-space(n:LegalName) = '']",
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_LEGAL_NAME);
 			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Operator[not(n:ContactDetails)]",
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CONTACT_DETAILS);
 			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Operator[not(n:CustomerServiceContactDetails)]",
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CUSTOMER_SERVICE_CONTACT_DETAILS);
 
-			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Authority[not(n:CompanyNumber)]",
+			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Authority[not(n:CompanyNumber) or normalize-space(n:CompanyNumber) = '']",
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_COMPANY_NUMBER);
-			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Authority[not(n:Name)]",
+			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Authority[not(n:Name) or normalize-space(n:Name) = '']",
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_NAME);
-			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Authority[not(n:LegalName)]",
+			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Authority[not(n:LegalName) or normalize-space(n:LegalName) = '']",
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_LEGAL_NAME);
 			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Authority[not(n:ContactDetails)]",
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS);
@@ -307,8 +307,8 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 	protected void validateServiceFrameCommonElements(Context context, XPathCompiler xpath, XdmNode subLevel) throws XPathExpressionException, SaxonApiException {
 		validateElementNotPresent(context, xpath, subLevel, "n:Network[not(n:AuthorityRef)]", _1_NETEX_SERVICE_FRAME_NETWORK_AUTHORITY_REF);
-		validateElementNotPresent(context, xpath, subLevel, "n:Network[not(n:Name)]", _1_NETEX_SERVICE_FRAME_NETWORK_NAME);
-		validateElementNotPresent(context, xpath, subLevel, "n:Network/n:groupsOfLines/n:GroupOfLines[not(n:Name)]", _1_NETEX_SERVICE_FRAME_NETWORK_GROUPOFLINE_NAME);
+		validateElementNotPresent(context, xpath, subLevel, "n:Network[not(n:Name) or normalize-space(n:Name) = '']", _1_NETEX_SERVICE_FRAME_NETWORK_NAME);
+		validateElementNotPresent(context, xpath, subLevel, "n:Network/n:groupsOfLines/n:GroupOfLines[not(n:Name)  or normalize-space(n:Name) = '']", _1_NETEX_SERVICE_FRAME_NETWORK_GROUPOFLINE_NAME);
 		validateElementNotPresent(context, xpath, subLevel, "n:groupsOfLines", _1_NETEX_SERVICE_FRAME_GROUPOFLINES_OUTSIDE_NETWORK);
 		validateElementNotPresent(context, xpath, subLevel, "n:timingPoints", _1_NETEX_SERVICE_FRAME_TIMING_POINTS);
 		validateElementNotPresent(context, xpath, subLevel, "n:stopAssignments/n:PassengerStopAssignment[not(n:ScheduledStopPointRef)]", _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_SCHEDULEDSTOPPOINTREF);
