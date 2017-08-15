@@ -1418,6 +1418,7 @@ CREATE TABLE vehicle_journeys (
     comment character varying(255),
     status_value character varying(255),
     transport_mode character varying(255),
+    transport_submode_name character varying(255),
     published_journey_name character varying(255),
     published_journey_identifier character varying(255),
     facility character varying(255),
