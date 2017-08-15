@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
@@ -22,6 +23,7 @@ import mobi.chouette.exchange.gtfs.model.GtfsStopTime.PickupType;
 import mobi.chouette.exchange.gtfs.model.GtfsTime;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
+import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -41,7 +43,7 @@ import org.joda.time.LocalTime;
  * produce Trips and stop_times for vehicleJourney
  * <p>
  * when vehicleJourney is on multiple timetables, it will be cloned for each
- * 
+ *
  * @ TODO : refactor to produce one calendar for each timetable groups
  */
 @Log4j
@@ -58,31 +60,25 @@ public class GtfsTripProducer extends AbstractProducer {
 
 	/**
 	 * produce stoptimes for vehiclejourneyatstops @ TODO see how to manage ITL
-	 * 
+	 *
 	 * @param vj
 	 * @param sharedPrefix
+	 * @param changesDestinationDisplay
 	 * @return list of stoptimes
 	 */
-	private boolean saveTimes(VehicleJourney vj, String prefix, String sharedPrefix, boolean keepOriginalId) {
+	private boolean saveTimes(VehicleJourney vj, String prefix, String sharedPrefix, boolean keepOriginalId, boolean changesDestinationDisplay, List<VehicleJourneyAtStop> lvjas) {
 		if (vj.getVehicleJourneyAtStops().isEmpty())
 			return false;
 		Line l = vj.getRoute().getLine();
-	
+
 		/**
-		 * GJT : Attributes used to handle times after midnight 
+		 * GJT : Attributes used to handle times after midnight
 		 */
 		int departureOffset = 0;
 		int arrivalOffset = 0;
-		
+
 		String tripId = toGtfsId(vj.getObjectId(), prefix, keepOriginalId);
 		time.setTripId(tripId);
-		List<VehicleJourneyAtStop> lvjas = new ArrayList<>(vj.getVehicleJourneyAtStops());
-		Collections.sort(lvjas, new Comparator<VehicleJourneyAtStop>() {
-			@Override
-			public int compare(VehicleJourneyAtStop o1, VehicleJourneyAtStop o2) {
-				return o1.getStopPoint().getPosition().compareTo(o2.getStopPoint().getPosition());
-			}
-		});
 		float distance = (float) 0.0;
 		List<RouteSection> routeSections = vj.getJourneyPattern().getRouteSections();
 		int index = 0;
@@ -94,7 +90,7 @@ public class GtfsTripProducer extends AbstractProducer {
 
 			LocalTime arrival = vjas.getArrivalTime();
 			arrivalOffset = vjas.getArrivalDayOffset(); /** GJT */
-			
+
 			if (arrival == null) {
 				arrival = vjas.getDepartureTime();
 				arrivalOffset = vjas.getDepartureDayOffset(); /** GJT */
@@ -108,16 +104,23 @@ public class GtfsTripProducer extends AbstractProducer {
 				departureOffset = vjas.getArrivalDayOffset(); /** GJT */
 			}
 			time.setDepartureTime(new GtfsTime(departure, departureOffset)); /** GJT */
-			
+
 			time.setStopSequence((int) vjas.getStopPoint().getPosition());
 
-			if(vjas.getStopPoint().getDestinationDisplay() != null) {
-				time.setStopHeadsign(vjas.getStopPoint().getDestinationDisplay().getFrontText());
-			} else {
-				time.setStopHeadsign(null);
+			if(changesDestinationDisplay && vjas.getStopPoint().getDestinationDisplay() != null) {
+				String stopHeadSign = vjas.getStopPoint().getDestinationDisplay().getFrontTextWithComputedVias();
+				if(trip.getTripHeadSign() != null) {
+					// Skip if equal to tripHeadSign
+					if(!trip.getTripHeadSign().equals(stopHeadSign)) {
+						time.setStopHeadsign(stopHeadSign);
+					}
+				} else {
+					// Always set if tripheadSign is null
+					time.setStopHeadsign(stopHeadSign);
+				}
 			}
 			addDropOffAndPickUpType(time, l, vj, vjas);
-			
+
 			if (vj.getJourneyPattern().getSectionStatus() == SectionStatusEnum.Completed) {
 				Float shapeDistTraveled = new Float(distance);
 				time.setShapeDistTraveled(shapeDistTraveled);
@@ -144,7 +147,7 @@ public class GtfsTripProducer extends AbstractProducer {
 		}
 		return true;
 	}
-	
+
 	private double computeDistance(RouteSection section)
 	{
 		if (isTrue(section.getNoProcessing()) || section.getProcessedGeometry() == null)
@@ -198,7 +201,7 @@ public class GtfsTripProducer extends AbstractProducer {
 			// If not set on StopPoint return defaultValue (that is, the previous value) or if not set; Scheduled
 			return defaultValue == null ? DropOffType.Scheduled : defaultValue;
 		}
-		
+
 		switch (forAlighting) {
 		case normal:
 			return DropOffType.Scheduled;
@@ -217,7 +220,7 @@ public class GtfsTripProducer extends AbstractProducer {
 			// If not set on StopPoint return defaultValue (that is, the previous value) or if not set; Scheduled
 			return defaultValue == null ? PickupType.Scheduled : defaultValue;
 		}
-		
+
 		switch (forBoarding) {
 		case normal:
 			return PickupType.Scheduled;
@@ -233,7 +236,7 @@ public class GtfsTripProducer extends AbstractProducer {
 
 	/**
 	 * convert vehicle journey to trip for a specific timetable
-	 * 
+	 *
 	 * @param vj
 	 *            vehicle journey
 	 * @param sharedPrefix
@@ -279,10 +282,30 @@ public class GtfsTripProducer extends AbstractProducer {
 			trip.setTripShortName(name);
 		else if (vj.getPublishedJourneyIdentifier() != null)
 			trip.setTripShortName(vj.getPublishedJourneyIdentifier());
-		else 
+		else
 			trip.setTripShortName(null);
 
-		if (!isEmpty(vj.getPublishedJourneyName()))
+		List<VehicleJourneyAtStop> lvjas = new ArrayList<>(vj.getVehicleJourneyAtStops());
+		Collections.sort(lvjas, new Comparator<VehicleJourneyAtStop>() {
+			@Override
+			public int compare(VehicleJourneyAtStop o1, VehicleJourneyAtStop o2) {
+				return o1.getStopPoint().getPosition().compareTo(o2.getStopPoint().getPosition());
+			}
+		});
+
+
+		List<DestinationDisplay> allDestinationDisplays = new ArrayList<>();
+		for(VehicleJourneyAtStop vjas : lvjas) {
+			if(vjas.getStopPoint().getDestinationDisplay() != null) {
+				allDestinationDisplays.add(vjas.getStopPoint().getDestinationDisplay());
+			}
+		}
+		DestinationDisplay startDestinationDisplay = vj.getVehicleJourneyAtStops().get(0).getStopPoint().getDestinationDisplay();
+		boolean changesDestinationDisplay = allDestinationDisplays.size() > 1;
+
+		if(startDestinationDisplay != null) {
+			trip.setTripHeadSign(startDestinationDisplay.getFrontTextWithComputedVias());
+		} else if (!isEmpty(vj.getPublishedJourneyName()))
 			trip.setTripHeadSign(vj.getPublishedJourneyName());
 		else if (!isEmpty(jp.getPublishedName()))
 			trip.setTripHeadSign(jp.getPublishedName());
@@ -298,7 +321,7 @@ public class GtfsTripProducer extends AbstractProducer {
 		// trip.setBikeAllowed();
 
 		// add StopTimes
-		if (saveTimes(vj,  prefix, sharedPrefix, keepOriginalId)) {
+		if (saveTimes(vj,  prefix, sharedPrefix, keepOriginalId,changesDestinationDisplay,lvjas)) {
 			try {
 				getExporter().getTripExporter().export(trip);
 			} catch (Exception e) {
@@ -306,7 +329,7 @@ public class GtfsTripProducer extends AbstractProducer {
 				return false;
 			}
 		}
-		
+
 		// add frequencies
 		if (JourneyCategoryEnum.Frequency == vj.getJourneyCategory()) {
 			for (JourneyFrequency journeyFrequency : vj.getJourneyFrequencies()) { // Don't care about Timebands !
@@ -326,8 +349,8 @@ public class GtfsTripProducer extends AbstractProducer {
 				}
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 }
