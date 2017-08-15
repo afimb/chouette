@@ -8,6 +8,7 @@ import mobi.chouette.exchange.gtfs.model.GtfsTrip.WheelchairAccessibleType;
 import mobi.chouette.exchange.gtfs.model.exporter.StopTimeExporter;
 import mobi.chouette.exchange.gtfs.model.exporter.TripExporter;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
+import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -222,6 +223,71 @@ public class GtfsExportTripProducerTests
       Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
       gtfsObject = mock.getExportedTrips().get(0);
       Assert.assertEquals(gtfsObject.getDirectionId(), DirectionType.Outbound, "DirectionId must be correctly set");
+   }
+
+   @Test(groups = { "Producers" }, description = "test trip headsign mapping")
+   public void verifyTripProducerForTripAndTripHeadSignWithDestinationDisplayOnFirst() throws Exception
+   {
+      mock.reset();
+
+      VehicleJourney neptuneObject = buildNeptuneObject(true);
+      DestinationDisplay destinationDisplay = new DestinationDisplay();
+      destinationDisplay.setFrontText("ShouldBeTripHeadSign");
+      neptuneObject.getVehicleJourneyAtStops().get(0).getStopPoint().setDestinationDisplay(destinationDisplay );
+      producer.save(neptuneObject, "tm_01", "GTFS", "GTFS",false);
+
+      Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
+      GtfsTrip gtfsObject = mock.getExportedTrips().get(0);
+      Assert.assertEquals(gtfsObject.getTripHeadSign(),"ShouldBeTripHeadSign" , "Trip headsign must be set based on first destination display");
+   }
+
+   @Test(groups = { "Producers" }, description = "test trip headsign mapping")
+   public void verifyTripProducerForTripAndTripHeadSignWithDestinationDisplayOnFirstWithVias() throws Exception
+   {
+      mock.reset();
+
+      VehicleJourney neptuneObject = buildNeptuneObject(true);
+      DestinationDisplay destinationDisplay = new DestinationDisplay();
+      destinationDisplay.setFrontText("MainDestination");
+      
+      DestinationDisplay via = new DestinationDisplay();
+      via.setFrontText("ViaDestination");
+      destinationDisplay.getVias().add(via);
+      
+      neptuneObject.getVehicleJourneyAtStops().get(0).getStopPoint().setDestinationDisplay(destinationDisplay );
+      producer.save(neptuneObject, "tm_01", "GTFS", "GTFS",false);
+
+      Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
+      GtfsTrip gtfsObject = mock.getExportedTrips().get(0);
+      Assert.assertEquals(gtfsObject.getTripHeadSign(),"MainDestination via ViaDestination" , "Trip headsign must be set based on first destination display");
+   }
+
+   @Test(groups = { "Producers" }, description = "test trip headsign mapping")
+   public void verifyTripProducerForTripAndStopHeadSignWithDestinationDisplay() throws Exception
+   {
+      mock.reset();
+
+      VehicleJourney neptuneObject = buildNeptuneObject(true);
+      DestinationDisplay firstDisplay = new DestinationDisplay();
+      firstDisplay.setFrontText("MainDestination");
+      
+      DestinationDisplay secondDisplay = new DestinationDisplay();
+      secondDisplay.setFrontText("UpdatedDestination");
+      
+      neptuneObject.getVehicleJourneyAtStops().get(0).getStopPoint().setDestinationDisplay(firstDisplay );
+      neptuneObject.getVehicleJourneyAtStops().get(2).getStopPoint().setDestinationDisplay(secondDisplay );
+      producer.save(neptuneObject, "tm_01", "GTFS", "GTFS",false);
+
+      Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
+      GtfsTrip gtfsObject = mock.getExportedTrips().get(0);
+      Assert.assertEquals(gtfsObject.getTripHeadSign(),"MainDestination" , "Trip headsign must be set based on first destination display");
+      
+      Assert.assertEquals(mock.getExportedStopTimes().size(), 4);
+      Assert.assertEquals(mock.getExportedStopTimes().get(0).getStopHeadsign(), null);
+      Assert.assertEquals(mock.getExportedStopTimes().get(1).getStopHeadsign(), null);
+      Assert.assertEquals(mock.getExportedStopTimes().get(2).getStopHeadsign(), "UpdatedDestination");
+      Assert.assertEquals(mock.getExportedStopTimes().get(3).getStopHeadsign(), "UpdatedDestination");
+      
    }
 
    /**

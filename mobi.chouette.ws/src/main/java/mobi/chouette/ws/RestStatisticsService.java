@@ -64,15 +64,15 @@ public class RestStatisticsService implements Constant {
     @Path("/line")
     @Produces({MediaType.APPLICATION_JSON})
     public Response lineStats(@QueryParam("startDate") Date startDate, @QueryParam("days") int days,
-                              @QueryParam("minDaysValidityCategory") String minDaysValidityCategories[], @QueryParam("referential") String referentials[]) {
+                              @QueryParam("minDaysValidityCategory") String minDaysValidityCategories[], @QueryParam("referentials") String referentials) {
         try {
-            log.info(Color.CYAN + "Call lineStats for referentials:" + Arrays.toString(referentials) + Color.NORMAL);
+            log.info(Color.CYAN + "Call lineStats for referentials:" + referentials + Color.NORMAL);
 
             Map<Integer, String> minDaysValidityCategoryMap = parseCategoryMap(minDaysValidityCategories);
 
             Map<String, LineStatistics> lineStatsPerReferential = new HashMap<>();
 
-            for (String referential : referentials) {
+            for (String referential : referentials.split(",")) {
                 lineStatsPerReferential.put(referential, statisticsService.getLineStatisticsByLineNumber(referential, startDate, days,
                         minDaysValidityCategoryMap));
             }
