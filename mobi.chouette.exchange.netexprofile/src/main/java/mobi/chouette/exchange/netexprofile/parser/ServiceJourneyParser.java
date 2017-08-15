@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.xml.bind.JAXBElement;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
 import org.rutebanken.netex.model.DayTypeRefStructure;
 import org.rutebanken.netex.model.DayTypeRefs_RelStructure;
 import org.rutebanken.netex.model.JourneyPatternRefStructure;
@@ -31,6 +32,7 @@ import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -97,6 +99,15 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 				vehicleJourney.setRoute(route);
 			}
 
+			
+			if(serviceJourney.getTransportMode() != null) {
+				AllVehicleModesOfTransportEnumeration transportMode = serviceJourney.getTransportMode();
+				TransportModeNameEnum transportModeName = NetexParserUtils.toTransportModeNameEnum(transportMode.value());
+				vehicleJourney.setTransportMode(transportModeName);
+			}
+			
+			vehicleJourney.setTransportSubMode(NetexParserUtils.toTransportSubModeNameEnum(serviceJourney.getTransportSubmode()));
+			
 			parseTimetabledPassingTimes(context, referential, serviceJourney, vehicleJourney);
 
 			if (journeyFootnotes.containsKey(serviceJourney.getId())) {

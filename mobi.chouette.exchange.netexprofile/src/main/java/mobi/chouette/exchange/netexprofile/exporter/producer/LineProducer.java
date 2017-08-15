@@ -44,9 +44,11 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
         }
 
         if (isSet(neptuneLine.getTransportModeName())) {
-            AllVehicleModesOfTransportEnumeration vehicleModeOfTransport = ConversionUtil.toVehicleModeOfTransportEnum(neptuneLine.getTransportModeName().name());
+            AllVehicleModesOfTransportEnumeration vehicleModeOfTransport = ConversionUtil.toVehicleModeOfTransportEnum(neptuneLine.getTransportModeName());
             netexLine.setTransportMode(vehicleModeOfTransport);
         }
+
+        netexLine.setTransportSubmode(ConversionUtil.toTransportSubmodeStructure(neptuneLine.getTransportSubModeName()));
 
         if (isSet(neptuneLine.getNumber())) {
             netexLine.setPublicCode(neptuneLine.getNumber());

@@ -93,8 +93,8 @@ public class LineParser implements Parser, Constant {
 			TransportModeNameEnum transportModeName = NetexParserUtils.toTransportModeNameEnum(transportMode.value());
 			chouetteLine.setTransportModeName(transportModeName);
 
-			// TODO find out how to handle this optional field in chouette model
-			// TransportSubmodeStructure transportSubmode = netexLine.getTransportSubmode();
+			chouetteLine.setTransportSubModeName(NetexParserUtils.toTransportSubModeNameEnum(netexLine.getTransportSubmode()));
+
 
 			String url = netexLine.getUrl();
 			if (StringUtils.isNotEmpty(url)) {

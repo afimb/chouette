@@ -164,6 +164,9 @@
                         <Line version="1" id="AVI:Line:WF_TRD-MOL">
                             <Name>Trondheim-Molde</Name>
                             <TransportMode>air</TransportMode>
+                            <TransportSubmode>
+                                <AirSubmode>domesticFlight</AirSubmode>
+                            </TransportSubmode>
                             <PublicCode>TRD-MOL</PublicCode>
                             <OperatorRef ref="AVI:Operator:WF" version="1"/>
                             <routes>
@@ -243,7 +246,12 @@
                 <TimetableFrame version="1" id="AVI:TimetableFrame:7653894">
                     <vehicleJourneys>
                         <ServiceJourney version="1" id="AVI:ServiceJourney:WF538-01-18696881">
+                            <TransportMode>air</TransportMode>
+                            <TransportSubmode>
+                                <AirSubmode>helicopterService</AirSubmode>
+                            </TransportSubmode>
                             <DepartureTime>06:55:00Z</DepartureTime>
+                            
                             <dayTypes>
                                 <DayTypeRef ref="AVI:DayType:958908505-Mar_Sun_26-Jul_Fri_14-MoTuWeThFr" version="1"/>
                                 <DayTypeRef ref="AVI:DayType:958908505-Mar_Sun_26-Jul_Fri_14-Su" version="1"/>
@@ -251,8 +259,11 @@
                                 <DayTypeRef ref="AVI:DayType:958908505-May_Wed_17-X" version="1"/>
                                 <DayTypeRef ref="AVI:DayType:958908505-Jul_Sun_09-X" version="1"/>
                             </dayTypes>
+                            
                             <JourneyPatternRef ref="AVI:JourneyPattern:18696881" version="1"/>
+                            
                             <PublicCode>WF538</PublicCode>
+                            
                             <LineRef ref="AVI:Line:WF_TRD-MOL" version="1"/>
                             <passingTimes>
                                 <TimetabledPassingTime>
