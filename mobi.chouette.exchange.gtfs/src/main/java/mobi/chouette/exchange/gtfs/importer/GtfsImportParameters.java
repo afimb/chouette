@@ -27,7 +27,8 @@ import org.apache.log4j.Logger;
 		"ignoreEndChars",
 		"ignoreLastWord",
 		"referencesType",
-		"parseInterchanges"})
+		"parseInterchanges",
+		"parseConnectionLinks"})
 public class GtfsImportParameters extends AbstractImportParameter {
 
 	@Getter@Setter
@@ -61,6 +62,10 @@ public class GtfsImportParameters extends AbstractImportParameter {
 	@Getter@Setter
 	@XmlElement(name = "parse_interchanges")
 	private boolean parseInterchanges = false;
+
+	@Getter@Setter
+	@XmlElement(name = "parse_connection_links")
+	private boolean parseConnectionLinks = false;
 
 
 	public boolean isValid(Logger log, String[] allowedTypes)

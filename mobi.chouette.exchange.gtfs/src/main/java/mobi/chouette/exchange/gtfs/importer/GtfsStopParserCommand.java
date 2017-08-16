@@ -50,7 +50,7 @@ public class GtfsStopParserCommand implements Command, Constant {
 			}
 
 			// ConnectionLink
-			if (importer.hasTransferImporter()) {
+			if (configuration.isParseConnectionLinks() && importer.hasTransferImporter()) {
 				if (referential.getSharedConnectionLinks().isEmpty()) {
 					GtfsTransferParser gtfsTransferParser = (GtfsTransferParser) ParserFactory
 							.create(GtfsTransferParser.class.getName());

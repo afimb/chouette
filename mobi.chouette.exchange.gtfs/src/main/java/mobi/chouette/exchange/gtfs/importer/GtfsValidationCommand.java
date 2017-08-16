@@ -111,9 +111,10 @@ public class GtfsValidationCommand implements Command, Constant {
 			}
 			
 			// transfers.txt
-			GtfsTransferParser transferParser = (GtfsTransferParser) ParserFactory.create(GtfsTransferParser.class.getName());
-			transferParser.validate(context);
-			
+			if(parameters.isParseConnectionLinks()) {
+				GtfsTransferParser transferParser = (GtfsTransferParser) ParserFactory.create(GtfsTransferParser.class.getName());
+				transferParser.validate(context);
+			}
 			result = SUCCESS;
 		} catch (GtfsException e) {
 			// log.error(e,e);
