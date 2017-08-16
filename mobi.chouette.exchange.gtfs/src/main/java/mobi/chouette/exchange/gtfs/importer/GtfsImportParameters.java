@@ -65,7 +65,7 @@ public class GtfsImportParameters extends AbstractImportParameter {
 
 	@Getter@Setter
 	@XmlElement(name = "parse_connection_links")
-	private boolean parseConnectionLinks = false;
+	private boolean parseConnectionLinks = true;
 
 
 	public boolean isValid(Logger log, String[] allowedTypes)
