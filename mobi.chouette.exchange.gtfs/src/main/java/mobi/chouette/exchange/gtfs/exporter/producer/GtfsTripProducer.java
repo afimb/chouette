@@ -274,17 +274,22 @@ public class GtfsTripProducer extends AbstractProducer {
 
 		trip.setServiceId(serviceId);
 
-		String name = vj.getPublishedJourneyName();
-		if (isEmpty(name) && vj.getNumber() != null && !vj.getNumber().equals(Long.valueOf(0)))
-			name = "" + vj.getNumber();
-
-		if (!isEmpty(name))
-			trip.setTripShortName(name);
-		else if (vj.getPublishedJourneyIdentifier() != null)
-			trip.setTripShortName(vj.getPublishedJourneyIdentifier());
-		else
+		// WARN workaround due to missing unique trip.id on NSB data 
+//		String name = null;
+		if (vj.getNumber() != null && !vj.getNumber().equals(Long.valueOf(0))) {
+			trip.setTripShortName(vj.getNumber().toString());
+		}
+//		} else {
+//			name = vj.getPublishedJourneyName();
+//		}
+//	
+//		if (!isEmpty(name))
+//			trip.setTripShortName(name);
+//		else if (vj.getPublishedJourneyIdentifier() != null)
+//			trip.setTripShortName(vj.getPublishedJourneyIdentifier());
+		else {
 			trip.setTripShortName(null);
-
+		}
 		List<VehicleJourneyAtStop> lvjas = new ArrayList<>(vj.getVehicleJourneyAtStops());
 		Collections.sort(lvjas, new Comparator<VehicleJourneyAtStop>() {
 			@Override
