@@ -19,6 +19,7 @@ import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
 
@@ -105,7 +106,8 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 
 		for (GtfsTransfer gtfsTransfer : importer.getTransferByFromStop()) {
 
-			if(gtfsTransfer.getFromRouteId() == null && gtfsTransfer.getToRouteId() == null && gtfsTransfer.getFromTripId() == null && gtfsTransfer.getToTripId() == null) {
+			if(StringUtils.trimToNull(gtfsTransfer.getFromRouteId()) == null && StringUtils.trimToNull(gtfsTransfer.getToRouteId()) == null
+					&& StringUtils.trimToNull(gtfsTransfer.getFromTripId()) == null && StringUtils.trimToNull(gtfsTransfer.getToTripId()) == null) {
 				// Treat as conneciton link
 				String objectId = AbstractConverter.composeObjectId(configuration,
 						ConnectionLink.CONNECTIONLINK_KEY, gtfsTransfer.getFromStopId() + "_" + gtfsTransfer.getToStopId(),
