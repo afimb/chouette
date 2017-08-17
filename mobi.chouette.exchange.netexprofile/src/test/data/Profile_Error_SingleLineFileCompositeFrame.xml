@@ -147,10 +147,26 @@
                         </Line>
                         <Line version="1" id="AVI:Line:WF_TRD-MOL2">
                             <!--   <Name>Trondheim-Molde</Name>-->
-                             <TransportMode>selfDrive</TransportMode>
+                            <TransportMode>selfDrive</TransportMode>
                             <TransportSubmode>
                                 <AirSubmode>airshipService</AirSubmode>
                             </TransportSubmode>
+                            <!-- <PublicCode>TRD-MOL</PublicCode>-->
+                            <!-- <OperatorRef ref="AVI:Operator:WF" version="1"/>-->
+                            
+                            <routes>
+                                <RouteRef ref="AVI:Route:12636280"/>
+                            </routes>
+                            <!--<RepresentedByGroupRef ref="AVI:Network:WF" version="1"/>-->
+                            
+                            
+                        </Line>
+                        <Line version="1" id="AVI:Line:WF_TRD-MOL2">
+                            <!--   <Name>Trondheim-Molde</Name>-->
+                            <TransportMode>water</TransportMode>
+                         <!--   <TransportSubmode>
+                                <AirSubmode>airshipService</AirSubmode>
+                            </TransportSubmode>-->
                             <!-- <PublicCode>TRD-MOL</PublicCode>-->
                             <!-- <OperatorRef ref="AVI:Operator:WF" version="1"/>-->
                             
@@ -273,7 +289,16 @@
                         </ServiceJourney>
                         <ServiceJourney version="1" id="AVI:ServiceJourney:WF536-126360080">
                         </ServiceJourney>
-
+                        
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF536-126360080-1">
+                            <TransportMode>air</TransportMode>
+                        </ServiceJourney>
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF536-126360080-1">
+                            <TransportSubmode>
+                                <AirSubmode>SchengenAreaFlight</AirSubmode>
+                            </TransportSubmode>
+                        </ServiceJourney>
+                        
                     </vehicleJourneys>
                 </TimetableFrame>
                 <ServiceCalendarFrame version="1" id="AVI:ServiceCalendarFrame:3865628">

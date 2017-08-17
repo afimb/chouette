@@ -78,6 +78,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 			"sightseeingBus"
 	};
 
+
 	@Override
 	public void validate(Context context) throws Exception {
 		XPathCompiler xpath = (XPathCompiler) context.get(NETEX_XPATH_COMPILER);
@@ -211,6 +212,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 			validateElementPresent(context, xpath, subLevel, "n:lines/n:Line", _1_NETEX_SERVICE_FRAME_LINE);
 			validateElementNotPresent(context, xpath, subLevel, "n:lines/n:Line[not(n:PublicCode) or normalize-space(n:PublicCode) = '']", _1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE);
 			validateElementNotPresent(context, xpath, subLevel, "n:lines/n:Line[not(n:TransportMode)]", _1_NETEX_SERVICE_FRAME_LINE_TRANSPORTMODE);
+			validateElementNotPresent(context, xpath, subLevel, "n:lines/n:Line[not(n:TransportSubmode)]", _1_NETEX_SERVICE_FRAME_LINE_TRANSPORTSUBMODE);
 			validateElementNotPresent(context, xpath, subLevel, "n:lines/n:Line/n:routes/n:Route", _1_NETEX_SERVICE_FRAME_ROUTE_INDIRECTION);
 			validateElementNotPresent(context, xpath, subLevel, "n:lines/n:Line[not(n:RepresentedByGroupRef)]",
 					_1_NETEX_SERVICE_FRAME_LINE_GROUPOFLINES_OR_NETWORK);
@@ -276,6 +278,8 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 
 			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney[not(n:JourneyPatternRef)]",
 					_1_NETEX_TIMETABLE_FRAME_SERVICEJOURNEY_JOURNEYPATTERN_REF);
+			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney[(n:TransportMode and not(n:TransportSubmode))  or (not(n:TransportMode) and n:TransportSubmode)]",
+					_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_TRANSPORTMODE_OVERRIDE);
 			
 			validateElementNotPresent(context, xpath, subLevel, "n:vehicleJourneys/n:ServiceJourney[not(n:OperatorRef) and not(//n:ServiceFrame/n:lines/n:Line/n:OperatorRef)]", _1_NETEX_TIMETABLE_FRAME_VEHICLEJOURNEY_OPERATORREF_OR_LINE_OPREATORREF);
 
