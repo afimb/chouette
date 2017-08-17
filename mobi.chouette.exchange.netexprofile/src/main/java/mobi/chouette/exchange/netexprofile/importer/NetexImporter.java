@@ -90,7 +90,7 @@ public class NetexImporter {
         
 		if(xpathCompiler == null) {
 			xpathCompiler = processor.newXPathCompiler();
-	        
+	        xpathCompiler.setCaching(true);
 			xpathCompiler.declareNamespace("", Constant.NETEX_NAMESPACE); // Default
 			xpathCompiler.declareNamespace("n", Constant.NETEX_NAMESPACE);
 			xpathCompiler.declareNamespace("s", Constant.SIRI_NAMESPACE);
