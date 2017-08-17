@@ -74,7 +74,7 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 		verifyUseOfVersionOnRefsToLocalElements(context, localIds, localRefs);
 		verifyExternalRefs(context, localRefs,localIds, new HashSet<IdVersion>());
 		
-		XdmValue compositeFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:CompositeFrame", xpath, commonDom);
+		XdmValue compositeFrames = selectNodeSet("/PublicationDelivery/dataObjects/CompositeFrame", xpath, commonDom);
 		if (compositeFrames.size() > 0) {
 			// Using composite frames
 			for (XdmItem compositeFrame : compositeFrames) {
@@ -93,65 +93,65 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 
 	protected void validateWithoutCompositeFrame(Context context, XPathCompiler xpath, XdmNode dom) throws XPathExpressionException, SaxonApiException {
 		// Validate that we have exactly one ResourceFrame
-		// validateElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:ResourceFrame", _1_NETEX_RESOURCE_FRAME);
-		XdmValue resourceFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:ResourceFrame", xpath, dom);
+		// validateElementPresent(context, xpath, dom, "/PublicationDelivery/dataObjects/ResourceFrame", _1_NETEX_RESOURCE_FRAME);
+		XdmValue resourceFrames = selectNodeSet("/PublicationDelivery/dataObjects/ResourceFrame", xpath, dom);
 		for (XdmItem item : resourceFrames) {
 			validateResourceFrame(context, xpath, (XdmNode) item, null);
 		}
 		// Validate at least 1 ServiceFrame is present
-		// validateAtLeastElementPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:ServiceFrame", 1, _1_NETEX_SERVICE_FRAME);
-		XdmValue serviceFrames = selectNodeSet("/n:PublicationDelivery/n:dataObjects/n:ServiceFrame", xpath, dom);
+		// validateAtLeastElementPresent(context, xpath, dom, "/PublicationDelivery/dataObjects/ServiceFrame", 1, _1_NETEX_SERVICE_FRAME);
+		XdmValue serviceFrames = selectNodeSet("/PublicationDelivery/dataObjects/ServiceFrame", xpath, dom);
 		for (XdmItem serviceFrame : serviceFrames) {
 			validateServiceFrame(context, xpath, (XdmNode) serviceFrame, null);
 		}
 
 		// Validate no TimetableFrame defines in common files
-		validateElementNotPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:TimetableFrame", _1_NETEX_COMMON_TIMETABLE_FRAME);
+		validateElementNotPresent(context, xpath, dom, "/PublicationDelivery/dataObjects/TimetableFrame", _1_NETEX_COMMON_TIMETABLE_FRAME);
 
 		// No siteframe allowed
-		validateElementNotPresent(context, xpath, dom, "/n:PublicationDelivery/n:dataObjects/n:SiteFrame", _1_NETEX_SITE_FRAME);
+		validateElementNotPresent(context, xpath, dom, "/PublicationDelivery/dataObjects/SiteFrame", _1_NETEX_SITE_FRAME);
 
 		// Validate that at least one frame has validityConditions
 		validateAtLeastElementPresent(context, xpath, dom,
-				"/n:PublicationDelivery/n:dataObjects/n:ServiceFrame[n:validityConditions] | /n:PublicationDelivery/n:dataObjects/n:TimetableFrame[n:validityConditions] | /n:PublicationDelivery/n:dataObjects/n:ServiceCalendarFrame[n:validityConditions] ",
+				"/PublicationDelivery/dataObjects/ServiceFrame[validityConditions] | /PublicationDelivery/dataObjects/TimetableFrame[validityConditions] | /PublicationDelivery/dataObjects/ServiceCalendarFrame[validityConditions] ",
 				1, _1_NETEX_NO_VALIDITYCONDITIONS_ON_FRAMES_OUTSIDE_COMPOSITEFRAME);
 
 		// If more than one of a kind, all must have validity conditions
-		validateElementNotPresent(context, xpath, dom, "//n:ServiceCalendarFrame[not(n:validityConditions) and count(//n:ServiceCalendarFrame) > 1]",
+		validateElementNotPresent(context, xpath, dom, "//ServiceCalendarFrame[not(validityConditions) and count(//ServiceCalendarFrame) > 1]",
 				_1_NETEX_MULTIPLE_FRAMES_OF_SAME_TYPE_WITHOUT_VALIDITYCONDITIONS);
-		validateElementNotPresent(context, xpath, dom, "//n:ServiceFrame[not(n:validityConditions) and count(//n:ServiceFrame) > 1]",
+		validateElementNotPresent(context, xpath, dom, "//ServiceFrame[not(validityConditions) and count(//ServiceFrame) > 1]",
 				_1_NETEX_MULTIPLE_FRAMES_OF_SAME_TYPE_WITHOUT_VALIDITYCONDITIONS);
-		validateElementNotPresent(context, xpath, dom, "//n:TimetableFrame[not(n:validityConditions) and count(//n:TimetableFrame) > 1]",
+		validateElementNotPresent(context, xpath, dom, "//TimetableFrame[not(validityConditions) and count(//TimetableFrame) > 1]",
 				_1_NETEX_MULTIPLE_FRAMES_OF_SAME_TYPE_WITHOUT_VALIDITYCONDITIONS);
 
 	}
 
 	private void validateCompositeFrame(Context context, XPathCompiler xpath, XdmNode dom) throws XPathExpressionException, SaxonApiException {
 		// Check that there are no overriding AvailabilityCondition which is identical to the one defined in the CompositeFrame
-		validateElementPresent(context, xpath, dom, "n:validityConditions", _1_NETEX_COMPOSITE_FRAME_VALIDITYCONDTITIONS);
-		validateElementNotPresent(context, xpath, dom, "n:frames//n:validityConditions", _1_NETEX_VALIDITYCONDITIONS_ON_FRAMES_INSIDE_COMPOSITEFRAME);
+		validateElementPresent(context, xpath, dom, "validityConditions", _1_NETEX_COMPOSITE_FRAME_VALIDITYCONDTITIONS);
+		validateElementNotPresent(context, xpath, dom, "frames//validityConditions", _1_NETEX_VALIDITYCONDITIONS_ON_FRAMES_INSIDE_COMPOSITEFRAME);
 
-		validateElementPresent(context, xpath, dom, "n:codespaces/n:Codespace[n:Xmlns = '" + NSR_XMLNS + "' and n:XmlnsUrl = '" + NSR_XMLNSURL + "']",
+		validateElementPresent(context, xpath, dom, "codespaces/Codespace[Xmlns = '" + NSR_XMLNS + "' and XmlnsUrl = '" + NSR_XMLNSURL + "']",
 				_1_NETEX_CODESPACE);
 
-		XdmNode resourceFrame = (XdmNode) selectNode("n:frames/n:ResourceFrame", xpath, dom);
+		XdmNode resourceFrame = (XdmNode) selectNode("frames/ResourceFrame", xpath, dom);
 		if (resourceFrame != null) {
 			validateResourceFrame(context, xpath, resourceFrame, null);
 		}
 
-		validateServiceFrame(context, xpath, dom, "n:frames/n:ServiceFrame");
+		validateServiceFrame(context, xpath, dom, "frames/ServiceFrame");
 
 		// Validate no TimetableFrame defines in common files
-		validateElementNotPresent(context, xpath, dom, "n:frames/n:TimetableFrame", _1_NETEX_COMMON_TIMETABLE_FRAME);
+		validateElementNotPresent(context, xpath, dom, "frames/TimetableFrame", _1_NETEX_COMMON_TIMETABLE_FRAME);
 
-		XdmNode serviceCalendarFrame = (XdmNode) selectNode("n:frames/n:ServiceCalendarFrame", xpath, dom);
+		XdmNode serviceCalendarFrame = (XdmNode) selectNode("frames/ServiceCalendarFrame", xpath, dom);
 		if (serviceCalendarFrame != null) {
 			validateServiceCalendarFrame(context, xpath, dom, null);
 		}
 
-		validateElementNotPresent(context, xpath, dom, "n:frames/n:SiteFrame", _1_NETEX_SITE_FRAME);
+		validateElementNotPresent(context, xpath, dom, "frames/SiteFrame", _1_NETEX_SITE_FRAME);
 
-		// validateExternalReferenceCorrect(context, xpath, dom, "//n:StopPlaceRef/@ref", stopRegisterValidator, _2_NETEX_STOPPLACE_REF);
+		// validateExternalReferenceCorrect(context, xpath, dom, "//StopPlaceRef/@ref", stopRegisterValidator, _2_NETEX_STOPPLACE_REF);
 	}
 
 	private void validateServiceFrame(Context context, XPathCompiler xpath, XdmNode dom, String subLevelPath) throws XPathExpressionException, SaxonApiException {
@@ -163,9 +163,9 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 		if (subLevel != null) {
 
 			validateServiceFrameCommonElements(context, xpath, subLevel);
-			validateElementNotPresent(context, xpath, subLevel, "n:lines/n:Line", _1_NETEX_COMMON_SERVICE_FRAME_LINE);
-			validateElementNotPresent(context, xpath, subLevel, "n:routes/n:Route", _1_NETEX_COMMON_SERVICE_FRAME_ROUTE);
-			validateElementNotPresent(context, xpath, subLevel, "n:journeyPatterns/n:JourneyPattern | n:journeyPatterns/n:ServiceJourneyPattern",
+			validateElementNotPresent(context, xpath, subLevel, "lines/Line", _1_NETEX_COMMON_SERVICE_FRAME_LINE);
+			validateElementNotPresent(context, xpath, subLevel, "routes/Route", _1_NETEX_COMMON_SERVICE_FRAME_ROUTE);
+			validateElementNotPresent(context, xpath, subLevel, "journeyPatterns/JourneyPattern | journeyPatterns/ServiceJourneyPattern",
 					_1_NETEX_COMMON_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN);
 		}
 	}

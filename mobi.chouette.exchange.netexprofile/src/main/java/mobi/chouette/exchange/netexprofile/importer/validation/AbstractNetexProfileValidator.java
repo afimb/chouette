@@ -230,7 +230,7 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 				.join(acceptedCodespaces.stream().map(codespace -> codespace.getXmlns() + "/" + codespace.getXmlnsUrl()).collect(Collectors.toList()), ' ');
 
 		boolean onlyAcceptedCodespaces = true;
-		XPathSelector selector = xpath.compile("//n:Codespace").load();
+		XPathSelector selector = xpath.compile("//Codespace").load();
 		selector.setContextItem(dom);
 
 		for (XdmItem item : selector) {
