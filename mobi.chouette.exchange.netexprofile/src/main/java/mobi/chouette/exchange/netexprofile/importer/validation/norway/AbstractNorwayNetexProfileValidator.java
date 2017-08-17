@@ -200,23 +200,23 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 		if (subLevel != null) {
 
-			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Operator[not(n:CompanyNumber) or normalize-space(n:CompanyNumber) = '']",
+			validateElementNotPresent(context, xpath, subLevel, "organisations/Operator[not(CompanyNumber) or normalize-space(CompanyNumber) = '']",
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_COMPANY_NUMBER);
-			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Operator[not(n:Name) or normalize-space(n:Name) = '']", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_NAME);
-			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Operator[not(n:LegalName) or normalize-space(n:LegalName) = '']",
+			validateElementNotPresent(context, xpath, subLevel, "organisations/Operator[not(Name) or normalize-space(Name) = '']", _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_NAME);
+			validateElementNotPresent(context, xpath, subLevel, "organisations/Operator[not(LegalName) or normalize-space(LegalName) = '']",
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_LEGAL_NAME);
-			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Operator[not(n:ContactDetails)]",
+			validateElementNotPresent(context, xpath, subLevel, "organisations/Operator[not(ContactDetails)]",
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CONTACT_DETAILS);
-			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Operator[not(n:CustomerServiceContactDetails)]",
+			validateElementNotPresent(context, xpath, subLevel, "organisations/Operator[not(CustomerServiceContactDetails)]",
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CUSTOMER_SERVICE_CONTACT_DETAILS);
 
-			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Authority[not(n:CompanyNumber) or normalize-space(n:CompanyNumber) = '']",
+			validateElementNotPresent(context, xpath, subLevel, "organisations/Authority[not(CompanyNumber) or normalize-space(CompanyNumber) = '']",
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_COMPANY_NUMBER);
-			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Authority[not(n:Name) or normalize-space(n:Name) = '']",
+			validateElementNotPresent(context, xpath, subLevel, "organisations/Authority[not(Name) or normalize-space(Name) = '']",
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_NAME);
-			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Authority[not(n:LegalName) or normalize-space(n:LegalName) = '']",
+			validateElementNotPresent(context, xpath, subLevel, "organisations/Authority[not(LegalName) or normalize-space(LegalName) = '']",
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_LEGAL_NAME);
-			validateElementNotPresent(context, xpath, subLevel, "n:organisations/n:Authority[not(n:ContactDetails)]",
+			validateElementNotPresent(context, xpath, subLevel, "organisations/Authority[not(ContactDetails)]",
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS);
 		}
 	}
@@ -228,7 +228,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		}
 
 		if (subLevel != null) {
-			validateElementNotPresent(context, xpath, subLevel, "//n:DayType[not(//n:DayTypeAssignment/n:DayTypeRef/@ref = @id)]",
+			validateElementNotPresent(context, xpath, subLevel, "//DayType[not(//DayTypeAssignment/DayTypeRef/@ref = @id)]",
 					_1_NETEXPROFILE_SERVICE_CALENDAR_FRAME_DAYTYPE_NOT_ASSIGNED);
 		
 
@@ -313,13 +313,13 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	}
 
 	protected void validateServiceFrameCommonElements(Context context, XPathCompiler xpath, XdmNode subLevel) throws XPathExpressionException, SaxonApiException {
-		validateElementNotPresent(context, xpath, subLevel, "n:Network[not(n:AuthorityRef)]", _1_NETEX_SERVICE_FRAME_NETWORK_AUTHORITY_REF);
-		validateElementNotPresent(context, xpath, subLevel, "n:Network[not(n:Name) or normalize-space(n:Name) = '']", _1_NETEX_SERVICE_FRAME_NETWORK_NAME);
-		validateElementNotPresent(context, xpath, subLevel, "n:Network/n:groupsOfLines/n:GroupOfLines[not(n:Name)  or normalize-space(n:Name) = '']", _1_NETEX_SERVICE_FRAME_NETWORK_GROUPOFLINE_NAME);
-		validateElementNotPresent(context, xpath, subLevel, "n:groupsOfLines", _1_NETEX_SERVICE_FRAME_GROUPOFLINES_OUTSIDE_NETWORK);
-		validateElementNotPresent(context, xpath, subLevel, "n:timingPoints", _1_NETEX_SERVICE_FRAME_TIMING_POINTS);
-		validateElementNotPresent(context, xpath, subLevel, "n:stopAssignments/n:PassengerStopAssignment[not(n:ScheduledStopPointRef)]", _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_SCHEDULEDSTOPPOINTREF);
-		validateElementNotPresent(context, xpath, subLevel, "n:stopAssignments/n:PassengerStopAssignment[not(n:QuayRef)]", _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_QUAYREF);
+		validateElementNotPresent(context, xpath, subLevel, "Network[not(AuthorityRef)]", _1_NETEX_SERVICE_FRAME_NETWORK_AUTHORITY_REF);
+		validateElementNotPresent(context, xpath, subLevel, "Network[not(Name) or normalize-space(Name) = '']", _1_NETEX_SERVICE_FRAME_NETWORK_NAME);
+		validateElementNotPresent(context, xpath, subLevel, "Network/groupsOfLines/GroupOfLines[not(Name)  or normalize-space(Name) = '']", _1_NETEX_SERVICE_FRAME_NETWORK_GROUPOFLINE_NAME);
+		validateElementNotPresent(context, xpath, subLevel, "groupsOfLines", _1_NETEX_SERVICE_FRAME_GROUPOFLINES_OUTSIDE_NETWORK);
+		validateElementNotPresent(context, xpath, subLevel, "timingPoints", _1_NETEX_SERVICE_FRAME_TIMING_POINTS);
+		validateElementNotPresent(context, xpath, subLevel, "stopAssignments/PassengerStopAssignment[not(ScheduledStopPointRef)]", _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_SCHEDULEDSTOPPOINTREF);
+		validateElementNotPresent(context, xpath, subLevel, "stopAssignments/PassengerStopAssignment[not(QuayRef)]", _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_QUAYREF);
 	}
 
 }
