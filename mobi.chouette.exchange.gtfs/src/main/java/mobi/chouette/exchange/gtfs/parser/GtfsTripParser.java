@@ -806,7 +806,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 	/**
 	 * create route for trip
-	 * 
+	 *
 	 * @param referential
 	 * @param configuration
 	 * @param gtfsTrip
@@ -880,10 +880,10 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 	/**
 	 * create stopPoints for Route
-	 * 
+	 *
 	 * @param referential
 	 * @param configuration
-	 * 
+	 *
 	 * @param routeId
 	 *            route objectId
 	 * @param stopTimesOfATrip

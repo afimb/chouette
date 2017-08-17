@@ -1,25 +1,23 @@
 package mobi.chouette.exchange.report;
 
-import java.io.PrintStream;
+import lombok.*;
+import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
-
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import java.io.PrintStream;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder={"code","description"})
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper=false)
+@NoArgsConstructor
+@Setter
 public class ObjectError extends AbstractReport {
 	
 	@XmlElement(name="code",required=true)

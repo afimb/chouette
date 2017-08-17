@@ -1,34 +1,28 @@
 package mobi.chouette.exchange.report;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import mobi.chouette.common.Constant;
 import mobi.chouette.exchange.report.ActionReporter.FILE_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
-
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import javax.xml.bind.annotation.*;
+import java.io.PrintStream;
+import java.util.*;
+
 @XmlRootElement(name = "action_report")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "progression", "result", "zip", "files", "lines", "stats", "failure", "objects", "collections" })
+@XmlType(propOrder = {"progression", "result", "zip_files", "files", "failure", "objects", "collections"})
 @Data
 @EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
+@Setter
 public class ActionReport extends AbstractReport implements Constant, ProgressionReport, Report {
 
 	@XmlElement(name = "progression", required = true)
@@ -46,18 +40,25 @@ public class ActionReport extends AbstractReport implements Constant, Progressio
 	@XmlElement(name = "failure")
 	private ActionError failure;
 
+	@JsonIgnore
+	private Map<OBJECT_TYPE, ObjectReport> objects = new HashMap<>();
+
 	@XmlElement(name = "objects")
-	private Map<ActionReporter.OBJECT_TYPE, ObjectReport> objects = new HashMap<ActionReporter.OBJECT_TYPE, ObjectReport>();
+	private List<ObjectReport> objectsAsList = new ArrayList<>();
+
+	@JsonIgnore
+	private Map<OBJECT_TYPE, ObjectCollectionReport> collections = new HashMap<>();
 
 	@XmlElement(name = "collections")
-	private Map<ActionReporter.OBJECT_TYPE, ObjectCollectionReport> collections = new HashMap<ActionReporter.OBJECT_TYPE, ObjectCollectionReport>();
+	private List<ObjectCollectionReport> collectionsAsList = new ArrayList<>();
+
 
 	@XmlTransient
 	private Date date = new Date(0);
-	
+
 	/**
 	 * Find file report from name
-	 * 
+	 *
 	 * @param name
 	 * @return
 	 */
@@ -71,7 +72,7 @@ public class ActionReport extends AbstractReport implements Constant, Progressio
 
 	/**
 	 * Find file report from name
-	 * 
+	 *
 	 * @param name
 	 * @return
 	 */
@@ -85,7 +86,7 @@ public class ActionReport extends AbstractReport implements Constant, Progressio
 
 	/**
 	 * Find file report from name and state
-	 * 
+	 *
 	 * @param name
 	 * @param state
 	 * @return
@@ -94,8 +95,8 @@ public class ActionReport extends AbstractReport implements Constant, Progressio
 		for (FileReport fileReport : files) {
 			if (fileReport.getName().equals(name)
 					&& (fileReport.getStatus().name().equals(state.name())
-							|| FILE_STATE.OK.equals(fileReport.getStatus().name()) || FILE_STATE.OK
-								.equals(state.name()))) {
+					|| FILE_STATE.OK.equals(fileReport.getStatus().name()) || FILE_STATE.OK
+					.equals(state.name()))) {
 				if (FILE_STATE.OK.equals(fileReport.getStatus().name()))
 					fileReport.setStatus(state);
 				return fileReport;
@@ -106,7 +107,7 @@ public class ActionReport extends AbstractReport implements Constant, Progressio
 
 	/**
 	 * set or unset error ; will set result to ERROR if error != null
-	 * 
+	 *
 	 * @param error
 	 */
 	protected void setFailure(ActionError error) {
@@ -120,7 +121,6 @@ public class ActionReport extends AbstractReport implements Constant, Progressio
 	}
 
 	/**
-	 * 
 	 * @param object
 	 */
 	protected void addObjectReport(ObjectReport object) {
@@ -129,7 +129,6 @@ public class ActionReport extends AbstractReport implements Constant, Progressio
 	}
 
 	/**
-	 * 
 	 * @param collection
 	 */
 	protected void addObjectCollectionReport(ObjectCollectionReport collection) {
@@ -138,7 +137,6 @@ public class ActionReport extends AbstractReport implements Constant, Progressio
 	}
 
 	/**
-	 * 
 	 * @param objectReport
 	 */
 	protected void addObjectReportToSpecificCollection(ObjectReport objectReport) {
@@ -153,7 +151,6 @@ public class ActionReport extends AbstractReport implements Constant, Progressio
 	}
 
 	/**
-	 * 
 	 * @param file
 	 */
 	protected void addFileReport(FileReport file) {
@@ -161,7 +158,6 @@ public class ActionReport extends AbstractReport implements Constant, Progressio
 	}
 
 	/**
-	 * 
 	 * @param file
 	 */
 	protected void addZipReport(FileReport file) {
@@ -234,7 +230,7 @@ public class ActionReport extends AbstractReport implements Constant, Progressio
 	}
 
 	@Override
-	public void print(PrintStream out, StringBuilder ret , int level, boolean first) {
+	public void print(PrintStream out, StringBuilder ret, int level, boolean first) {
 		ret.setLength(0);
 		level = 0;
 		first = true;
@@ -243,25 +239,25 @@ public class ActionReport extends AbstractReport implements Constant, Progressio
 			printObject(out, ret, level + 1, "progression", progression, first);
 			first = false;
 		}
-		out.print(toJsonString(ret, level+1, "result", result, first));
+		out.print(toJsonString(ret, level + 1, "result", result, first));
 
 		if (!zips.isEmpty())
 			printArray(out, ret, level + 1, "zip_files", zips, false);
 		if (failure != null)
-			printObject(out, ret, level + 1,"failure", failure,false);
+			printObject(out, ret, level + 1, "failure", failure, false);
 		if (!files.isEmpty())
 			printArray(out, ret, level + 1, "files", files, false);
 		if (!objects.isEmpty())
 			printArray(out, ret, level + 1, "objects", objects.values(), false);
 		if (!collections.isEmpty())
 			printArray(out, ret, level + 1, "collections", collections.values(), false);
-		
+
 		out.println("\n}}");
 	}
 
 	@Override
 	public void print(PrintStream stream) {
-		print(stream, new StringBuilder() , 1, true);
+		print(stream, new StringBuilder(), 1, true);
 
 	}
 }

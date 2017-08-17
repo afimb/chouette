@@ -1,26 +1,52 @@
 package mobi.chouette.exchange.report;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.Getter;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
 
 public interface ActionReporter {
 	
 	public enum OBJECT_TYPE {
-		NETWORK,
-		COMPANY,
-		STOP_AREA,
-		CONNECTION_LINK,
-		ACCESS_POINT,
-		TIMETABLE,
-		LINE,
-		ROUTE,
-		JOURNEY_PATTERN,
-		VEHICLE_JOURNEY
-	};
+		NETWORK("network"),
+		COMPANY("company"),
+		STOP_AREA("stop_area"),
+		CONNECTION_LINK("connection_link"),
+		ACCESS_POINT("access_point"),
+		TIMETABLE("timetable"),
+		LINE("line"),
+		ROUTE("route"),
+		JOURNEY_PATTERN("journey_pattern"),
+		VEHICLE_JOURNEY("vehicle_journey");
+
+		/**
+		 * Allows building hash map keys when deserializing object from action_report.json
+		 */
+		@Getter
+		private final String name;
+
+		OBJECT_TYPE(String value) {
+			name = value;
+		}
+
+		@JsonCreator
+		public static OBJECT_TYPE fromValue(String v) {
+			for (OBJECT_TYPE myEnum : values()) {
+				if (myEnum.name.equals(v)) {
+					return myEnum;
+				}
+			}
+			throw new IllegalArgumentException("invalid string value passed: " + v);
+		}
+
+		public String toString() {
+			return this.name;
+		}
+	}
 	
 	public enum FILE_STATE {
 		IGNORED, OK, ERROR
-	};
+	}
 	
 	public enum ERROR_CODE 
 	{
@@ -39,7 +65,7 @@ public interface ActionReporter {
 		OK,
 		WARNING,
 		ERROR
-	};
+	}
 	
 	public enum FILE_ERROR_CODE 
 	{
@@ -48,7 +74,7 @@ public interface ActionReporter {
 		WRITE_ERROR,
 		INVALID_FORMAT,
 		INTERNAL_ERROR
-	};
+	}
 	
 	/**
 	 * @param context

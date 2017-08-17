@@ -1,5 +1,17 @@
 package mobi.chouette.exchange.report;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
+import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlElement;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,65 +19,43 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.xml.bind.annotation.XmlElement;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
-import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
-import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
-
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 @ToString
+@NoArgsConstructor
+@Getter
+@Setter
 public class ObjectReport extends AbstractReport {
 
 	@XmlElement(name = "type", required = true)
-	@Getter
 	private ActionReporter.OBJECT_TYPE type;
 
 	@XmlElement(name = "description", required = true)
-	@Getter
-	@Setter
 	private String description;
 
 	@XmlElement(name = "status", required = true)
-	@Getter
 	private OBJECT_STATE status = OBJECT_STATE.OK;
 
 	@XmlElement(name = "stats", required = true)
-	@Getter
 	private Map<OBJECT_TYPE, Integer> stats = new HashMap<OBJECT_TYPE, Integer>();
 
 	@XmlElement(name = "io_type")
-	@Getter
 	private IO_TYPE ioType;
 
 	@XmlElement(name = "errors")
-	@Getter
 	private List<ObjectError> errors = new ArrayList<ObjectError>();
 
-	@XmlElement(name = "checkpoint_errors")
-	@Getter
+	@XmlElement(name = "check_point_errors")
 	private List<Integer> checkPointErrorKeys = new ArrayList<Integer>();
 	
-	@XmlElement(name = "checkpoint_warnings")
-	@Getter
+	@XmlElement(name = "check_point_warnings")
 	private List<Integer> checkPointWarningKeys = new ArrayList<Integer>();
 
-	@XmlElement(name = "checkpoint_error_count")
-	@Getter
+	@XmlElement(name = "check_point_error_count")
 	private int checkPointErrorCount = 0;
 
-	@XmlElement(name = "checkpoint_warning_count")
-	@Getter
+	@XmlElement(name = "check_point_warning_count")
 	private int checkPointWarningCount = 0;
 
 	@XmlElement(name = "objectid")
-	@Getter
 	private String objectId;
 
 	protected ObjectReport(String objectId, OBJECT_TYPE type, String description, OBJECT_STATE status, IO_TYPE ioType) {

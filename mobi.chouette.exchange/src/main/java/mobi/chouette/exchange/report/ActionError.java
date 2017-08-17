@@ -7,9 +7,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
 
 import org.codehaus.jettison.json.JSONException;
@@ -20,6 +18,8 @@ import org.codehaus.jettison.json.JSONObject;
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper=false)
+@NoArgsConstructor
+@Setter
 public class ActionError extends AbstractReport {
 	
 	@XmlElement(name="code",required=true)
