@@ -34,19 +34,14 @@ import lombok.Data;
 		"modeBus",
 		"modeCoach",
 		"modeFerry",
-		"modeLocalTrain",
-		"modeLongDistanceTrain",
+		"modeRail",
 		"modeMetro",
 		"modePrivateVehicle",
-		"modeRapidTransit",
-		"modeShuttle",
 		"modeTaxi",
-		"modeTrain",
-		"modeTramway",
-		"modeTrolleybus",
-		"modeVal",
+		"modeTram",
+		"modeTrolleyBus",
 		"modeWalk",
-		"modeWaterborne",
+		"modeWater",
 		"modeOther",
 		"checkAccessLink",
 		"accessLink",
@@ -134,8 +129,8 @@ public class ValidationParameters {
 	@XmlElement(name = "mode_air")
 	private TransportModeParameters modeAir;
 
-	@XmlElement(name = "mode_waterborne")
-	private TransportModeParameters modeWaterborne;
+	@XmlElement(name = "mode_water")
+	private TransportModeParameters modeWater;
 
 	@XmlElement(name = "mode_bus")
 	private TransportModeParameters modeBus;
@@ -149,26 +144,14 @@ public class ValidationParameters {
 	@XmlElement(name = "mode_metro")
 	private TransportModeParameters modeMetro;
 
-	@XmlElement(name = "mode_shuttle")
-	private TransportModeParameters modeShuttle;
-
-	@XmlElement(name = "mode_rapid_transit")
-	private TransportModeParameters modeRapidTransit;
-
 	@XmlElement(name = "mode_taxi")
 	private TransportModeParameters modeTaxi;
 
-	@XmlElement(name = "mode_local_train")
-	private TransportModeParameters modeLocalTrain;
-
-	@XmlElement(name = "mode_train")
-	private TransportModeParameters modeTrain;
-
-	@XmlElement(name = "mode_long_distance_train")
-	private TransportModeParameters modeLongDistanceTrain;
+	@XmlElement(name = "mode_rail")
+	private TransportModeParameters modeRail;
 
 	@XmlElement(name = "mode_trolleybus")
-	private TransportModeParameters modeTrolleybus;
+	private TransportModeParameters modeTrolleyBus;
 
 	@XmlElement(name = "mode_private_vehicle")
 	private TransportModeParameters modePrivateVehicle;
@@ -176,11 +159,8 @@ public class ValidationParameters {
 	@XmlElement(name = "mode_bicycle")
 	private TransportModeParameters modeBicycle;
 
-	@XmlElement(name = "mode_tramway")
-	private TransportModeParameters modeTramway;
-
-	@XmlElement(name = "mode_val")
-	private TransportModeParameters modeVal;
+	@XmlElement(name = "mode_tram")
+	private TransportModeParameters modeTram;
 
 	@XmlElement(name = "mode_other")
 	private TransportModeParameters modeOther;

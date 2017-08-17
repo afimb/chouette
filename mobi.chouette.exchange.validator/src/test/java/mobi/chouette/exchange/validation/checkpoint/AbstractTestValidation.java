@@ -422,19 +422,15 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
         
         ret.setModeCoach(new TransportModeParameters(1, 500, 10000, 90, 40, 20, 20));
         ret.setModeAir(new TransportModeParameters(1, 200, 10000, 800, 700, 60, 1000));
-        ret.setModeWaterborne(new TransportModeParameters(1, 200, 10000, 40, 5, 60, 20));
+        ret.setModeWater(new TransportModeParameters(1, 200, 10000, 40, 5, 60, 20));
         ret.setModeBus(new TransportModeParameters(1, 100, 40000, 1000, 5, 2000, 20));
         ret.setModeFerry(new TransportModeParameters(1, 200, 10000, 40, 5, 60, 100));
         ret.setModeWalk(new TransportModeParameters(1, 1, 10000, 6, 1, 10, 20));
         ret.setModeMetro(new TransportModeParameters(1, 300 ,20000, 500, 25, 2000, 100));
-        ret.setModeShuttle(new TransportModeParameters(1, 500, 10000, 80, 20, 10, 20));
-        ret.setModeRapidTransit(new TransportModeParameters(1, 2000, 500000, 300, 20, 60, 20));
         ret.setModeTaxi(new TransportModeParameters(1, 500, 300000, 130, 20, 60, 20));
-        ret.setModeLocalTrain(new TransportModeParameters(1, 2000, 500000, 300, 20, 60, 20));
-        ret.setModeTrain(new TransportModeParameters(1, 2000, 500000, 300, 20, 60, 100));
-        ret.setModeLongDistanceTrain(new TransportModeParameters(1, 2000, 500000, 300, 20, 60, 100));
-        ret.setModeTramway(new TransportModeParameters(1, 300,2000,50,20,30, 20));
-        ret.setModeTrolleybus(new TransportModeParameters(1,  300,2000,50,20,30, 20));
+        ret.setModeRail(new TransportModeParameters(1, 2000, 500000, 300, 20, 60, 100));
+        ret.setModeTram(new TransportModeParameters(1, 300,2000,50,20,30, 20));
+        ret.setModeTrolleyBus(new TransportModeParameters(1,  300,2000,50,20,30, 20));
         ret.setModePrivateVehicle(new TransportModeParameters(1, 500, 300000, 130, 20, 60, 20));
         ret.setModeBicycle(new TransportModeParameters(1, 300, 30000, 40, 10, 10, 20));
         ret.setModeOther(new TransportModeParameters(1, 300, 30000, 40, 10, 10, 20));
