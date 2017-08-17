@@ -46,8 +46,14 @@ public class GtfsStopProducer extends AbstractProducer
 		else
 			return false; // StopPlaces and ITL type not available
 		stop.setStopId(toGtfsId(neptuneObject.getObjectId(),prefix, keepOriginalId));
-		if (neptuneObject.getName() == null)
-		{
+		
+		// If name is empty, try to use parent name
+		String name = neptuneObject.getName();
+		if (name == null && neptuneObject.getParent() != null) {
+				name = neptuneObject.getParent().getName();
+		}
+	
+		if(name == null) {
 			//         GtfsReportItem item = new GtfsReportItem(
 			//               GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",
 			//               neptuneObject.getObjectId(), "Name");
