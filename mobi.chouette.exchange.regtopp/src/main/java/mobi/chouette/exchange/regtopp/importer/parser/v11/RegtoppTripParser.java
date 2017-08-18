@@ -67,6 +67,10 @@ public class RegtoppTripParser extends LineSpecificParser {
 
 		String chouetteLineId = ObjectIdCreator.createLineId(configuration, lineId, calendarStartDate);
 		Line line = ObjectFactory.getLine(referential, chouetteLineId);
+		if(line.getTransportModeName() == null) {
+			line.setTransportModeName(TransportModeNameEnum.Other);
+		}
+
 		List<Footnote> footnotes = line.getFootnotes();
 
 		Index<RegtoppDestinationDST> destinationIndex = importer.getDestinationById();
@@ -110,7 +114,10 @@ public class RegtoppTripParser extends LineSpecificParser {
 					}
 
 					vehicleJourney.setPublishedJourneyIdentifier(StringUtils.trimToNull(trip.getLineNumberVisible()));
-					transportModes.add(convertTypeOfService(trip.getTypeOfService()));
+					TransportModePair transportModePair = convertTypeOfService(trip.getTypeOfService());
+					transportModes.add(transportModePair);
+					vehicleJourney.setTransportMode(transportModePair.transportMode);
+					vehicleJourney.setTransportSubMode(transportModePair.subMode);
 					vehicleJourney.setJourneyPattern(journeyPattern);
 					vehicleJourney.setRoute(route);
 
@@ -282,11 +289,12 @@ public class RegtoppTripParser extends LineSpecificParser {
 			pair.subMode = TransportSubModeNameEnum.AirportLinkBus;
 			break;
 		case ExpressCoach:
-			pair.transportMode = TransportModeNameEnum.Bus;
-			pair.subMode = TransportSubModeNameEnum.ExpressBus;
+			pair.transportMode = TransportModeNameEnum.Coach;
+			pair.subMode = TransportSubModeNameEnum.RegionalBus;
 			break;
 		case FerryBoat:
 			pair.transportMode = TransportModeNameEnum.Water;
+			pair.subMode = TransportSubModeNameEnum.LocalCarFerry;
 			break;
 		case SchoolBus:
 			pair.transportMode = TransportModeNameEnum.Bus;
@@ -299,12 +307,15 @@ public class RegtoppTripParser extends LineSpecificParser {
 			break;
 		case Subway:
 			pair.transportMode = TransportModeNameEnum.Metro;
+			pair.subMode = TransportSubModeNameEnum.Metro;
 			break;
 		case Train:
 			pair.transportMode = TransportModeNameEnum.Rail;
+			pair.subMode = TransportSubModeNameEnum.Local;
 			break;
 		case Tram:
 			pair.transportMode = TransportModeNameEnum.Tram;
+			pair.subMode = TransportSubModeNameEnum.LocalTram;
 			break;
 		case Various:
 		default:

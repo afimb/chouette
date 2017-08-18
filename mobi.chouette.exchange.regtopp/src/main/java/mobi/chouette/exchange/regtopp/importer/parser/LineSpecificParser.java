@@ -1,6 +1,6 @@
 package mobi.chouette.exchange.regtopp.importer.parser;
 
-import java.util.Set;
+import java.util.List;
 
 import lombok.Setter;
 import mobi.chouette.exchange.importer.Parser;
@@ -11,5 +11,5 @@ public abstract class LineSpecificParser implements Parser{
 	protected String lineId;
 
 	@Setter
-	protected Set<TransportModePair> transportModes;
+	protected List<TransportModePair> transportModes;
 }

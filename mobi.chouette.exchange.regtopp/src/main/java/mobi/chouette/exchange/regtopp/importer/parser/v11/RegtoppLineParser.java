@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
@@ -89,7 +90,7 @@ public class RegtoppLineParser extends LineSpecificParser {
 		routeParser.parse(context);
 
 		// Parse VehicleJourney
-		HashSet<TransportModePair> transportModes = new HashSet<TransportModePair>();
+		List<TransportModePair> transportModes = new ArrayList<TransportModePair>();
 
 		LineSpecificParser tripParser = versionHandler.createTripParser();
 		tripParser.setLineId(lineId);
@@ -491,18 +492,57 @@ public class RegtoppLineParser extends LineSpecificParser {
 		}
 	}
 
-	private void updateLineTransportMode(Referential referential, Line line, HashSet<TransportModePair> transportModes) {
+	private void updateLineTransportMode(Referential referential, Line line, List<TransportModePair> transportModes) {
 
-		if (transportModes.size() == 1) {
+		if(transportModes.size() == 0) {
+			// In case no trips 
+			line.setTransportModeName(TransportModeNameEnum.Other);
+		} else if (transportModes.size() == 1) {
 			
 			TransportModePair pair = transportModes.iterator().next();
 			// Only one transport mode used for all routes/journeys
 			line.setTransportModeName(pair.transportMode);
 			line.setTransportSubModeName(pair.subMode);
+			
+			// Remove overrides from servicejourneys
+			for(VehicleJourney vj : referential.getVehicleJourneys().values()) {
+				vj.setTransportMode(null);
+				vj.setTransportSubMode(null);
+			}
+			
 		} else {
-			// TODO
-			line.setTransportModeName(TransportModeNameEnum.Other);
-			line.setComment("Multiple transport modes: " + StringUtils.join(transportModes.toArray()));
+			// Find the one used the most used
+			Map<TransportModePair,Integer> usageMap = new HashMap<>();
+			for(TransportModePair pair : transportModes) {
+				Integer count = usageMap.get(pair);
+				if(count == null) {
+					count = 0;
+				}
+				count++;
+				usageMap.put(pair, count);
+			}
+			TransportModePair mostUsed = null;
+			int usageCounter = 0;
+			for(Entry<TransportModePair, Integer> usage : usageMap.entrySet()) {
+				if(usage.getValue() > usageCounter) {
+					usageCounter = usage.getValue();
+					mostUsed = usage.getKey();
+				}
+			}
+			
+			line.setTransportModeName(mostUsed.transportMode);
+			line.setTransportSubModeName(mostUsed.subMode);
+
+			// Remove overrides on journeys
+			for(VehicleJourney vj : referential.getVehicleJourneys().values()) {
+				if(line.getTransportModeName() != null && line.getTransportModeName() == vj.getTransportMode()) {
+					vj.setTransportMode(null);
+				}
+				if(line.getTransportSubModeName() != null && line.getTransportSubModeName() == vj.getTransportSubMode()) {
+					vj.setTransportSubMode(null);
+				}
+			}
+			
 		}
 	}
 

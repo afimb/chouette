@@ -20,6 +20,7 @@ import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.index.v11.DaycodeById;
 import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.importer.parser.RouteKey;
+import mobi.chouette.exchange.regtopp.importer.parser.v11.TransportModePair;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.enums.AnnouncementType;
@@ -111,7 +112,10 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 					}
 
 					vehicleJourney.setPublishedJourneyIdentifier(StringUtils.trimToNull(trip.getLineNumberVisible()));
-					transportModes.add(convertTypeOfService(trip.getTypeOfService()));
+					TransportModePair transportModePair = convertTypeOfService(trip.getTypeOfService());
+					transportModes.add(transportModePair);
+					vehicleJourney.setTransportMode(transportModePair.transportMode);
+					vehicleJourney.setTransportSubMode(transportModePair.subMode);
 					vehicleJourney.setJourneyPattern(journeyPattern);
 					vehicleJourney.setRoute(route);
 

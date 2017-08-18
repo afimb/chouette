@@ -14,6 +14,7 @@ import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppStopParser;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
 import mobi.chouette.model.*;
+import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -44,6 +45,9 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 
 		String chouetteLineId = ObjectIdCreator.createLineId(configuration, lineId, calendarStartDate);
 		Line line = ObjectFactory.getLine(referential, chouetteLineId);
+		if(line.getTransportModeName() == null) {
+			line.setTransportModeName(TransportModeNameEnum.Other);
+		}
 		List<Footnote> footnotes = line.getFootnotes();
 
 
