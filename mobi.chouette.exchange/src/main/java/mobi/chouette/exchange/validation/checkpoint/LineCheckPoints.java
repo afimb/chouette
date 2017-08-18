@@ -155,12 +155,12 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 	private void check3Line4(Context context, Line line1) {
 		if (!isEmpty(line1.getRoutes())) {
 			for (Route route : line1.getRoutes()) {
+
 				if (!isEmpty(route.getStopPoints())) {
 					for (StopPoint stopPoint : route.getStopPoints()) {
-
 						StopArea containedInStopArea = stopPoint.getContainedInStopArea();
 
-						if (containedInStopArea != null && containedInStopArea.getTransportModeName() != null) {
+						if (containedInStopArea.getTransportModeName() != null) {
 							if (!line1.getTransportModeName().equals(containedInStopArea.getTransportModeName())) {
 								DataLocation location = buildLocation(context, containedInStopArea);
 								ValidationReporter reporter = ValidationReporter.Factory.getInstance();
@@ -171,7 +171,7 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 
 						StopArea parentStopArea = stopPoint.getContainedInStopArea().getParent();
 
-						if (parentStopArea != null && parentStopArea.getTransportModeName() != null) {
+						if (parentStopArea.getTransportModeName() != null) {
 							if (!line1.getTransportModeName().equals(parentStopArea.getTransportModeName())) {
 								DataLocation location = buildLocation(context, parentStopArea);
 								ValidationReporter reporter = ValidationReporter.Factory.getInstance();
@@ -187,10 +187,9 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 
 						if (!isEmpty(jp.getStopPoints())) {
 							for (StopPoint stopPoint : jp.getStopPoints()) {
-
 								StopArea containedInStopArea = stopPoint.getContainedInStopArea();
 
-								if (containedInStopArea != null && containedInStopArea.getTransportModeName() != null) {
+								if (containedInStopArea.getTransportModeName() != null) {
 									if (!line1.getTransportModeName().equals(containedInStopArea.getTransportModeName())) {
 										DataLocation location = buildLocation(context, containedInStopArea);
 										ValidationReporter reporter = ValidationReporter.Factory.getInstance();
@@ -201,7 +200,7 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 
 								StopArea parentStopArea = stopPoint.getContainedInStopArea().getParent();
 
-								if (parentStopArea != null && parentStopArea.getTransportModeName() != null) {
+								if (parentStopArea.getTransportModeName() != null) {
 									if (!line1.getTransportModeName().equals(parentStopArea.getTransportModeName())) {
 										DataLocation location = buildLocation(context, parentStopArea);
 										ValidationReporter reporter = ValidationReporter.Factory.getInstance();
