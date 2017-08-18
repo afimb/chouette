@@ -215,7 +215,7 @@ AbstractProducer
 
    }
 
-   private boolean checkValidDay(LocalDate checkedDate, Timetable timetable)
+   public static boolean checkValidDay(LocalDate checkedDate, Timetable timetable)
    {
       boolean valid = false;
       // to avoid timezone // TODO NRP-1935 necessary?
