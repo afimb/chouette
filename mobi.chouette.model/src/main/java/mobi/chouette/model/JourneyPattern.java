@@ -239,7 +239,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY)
+	@ManyToMany(cascade = { CascadeType.PERSIST }, fetch = FetchType.LAZY)
 	@OrderColumn(name="rank")
 	@JoinTable(name = "journey_pattern_sections", joinColumns = { @JoinColumn(name = "journey_pattern_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "route_section_id", nullable = false, updatable = false) })
 	private List<RouteSection> routeSections = new ArrayList<RouteSection>(0);

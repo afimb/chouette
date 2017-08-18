@@ -25,7 +25,9 @@ import mobi.chouette.exchange.report.ActionReporter.Factory;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.Route;
 import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
 
@@ -53,6 +55,7 @@ public class NetexprofileLineDeleteCommand implements Command {
 			Line existingLine = lineDAO.findByObjectId(newLine.getObjectId());
 			if (existingLine != null) {
 				log.info("Delete existing line before import: " + existingLine.getObjectId() + " "+existingLine.getName());
+				clearRouteSectionReferences(existingLine);
 				lineDAO.delete(existingLine);
 				lineDAO.flush();
 			}
@@ -85,6 +88,21 @@ public class NetexprofileLineDeleteCommand implements Command {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 		return result;
+	}
+
+	/**
+	 * Journey patterns may reference multiple route sections, each of which may be referenced by multiple journey patterns.
+	 * Without a back reference from route section to journey pattern there is no way of knowing whether route section is
+	 * referred to by other journey patters or whether it should be deleted.
+	 *
+	 * Only deleting join table rows for now, route sections will only be deleted by cleaning space.
+	 */
+	private void clearRouteSectionReferences(Line existingLine) {
+		for (Route route:existingLine.getRoutes()){
+			for (JourneyPattern journeyPattern:route.getJourneyPatterns()){
+				journeyPattern.getRouteSections().clear();
+			}
+		}
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {
