@@ -14,14 +14,14 @@ import lombok.Getter;
 @XmlType(propOrder = { "from", "to" })
 @Getter
 public class Period implements Comparable<Period> {
-
-	private Date from;
-	private Date to;
+	// Use sql date for reliable serialization of date only (Should have been java.time/joda LocalDate)
+	private java.sql.Date from;
+	private java.sql.Date to;
 
 	public Period(Date from, Date to) {
 		super();
-		this.from = from;
-		this.to = to;
+		this.from = from == null ? null : new java.sql.Date(from.getTime());
+		this.to = to == null ? null : new java.sql.Date(to.getTime());
 	}
 
 	public boolean isEmpty() {

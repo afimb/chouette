@@ -20,13 +20,18 @@ import mobi.chouette.model.util.DateAdapter;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "startDate", "days", "validityCategories", "publicLines" })
 @Getter
-@Setter
 public class LineStatistics {
 
+	// Use sql date for reliable serialization of date only (Should have been java.time/joda LocalDate)
 	@XmlJavaTypeAdapter(DateAdapter.class)
-	private Date startDate;
+	private java.sql.Date startDate;
 	private int days;
 	private List<ValidityCategory> validityCategories = new ArrayList<>();
 	private List<PublicLine> publicLines = new ArrayList<>();
 
+	public LineStatistics(Date startDate, int days, List<PublicLine> publicLines) {
+		this.startDate = startDate == null ? null : new java.sql.Date(startDate.getTime());
+		this.days = days;
+		this.publicLines = publicLines;
+	}
 }
