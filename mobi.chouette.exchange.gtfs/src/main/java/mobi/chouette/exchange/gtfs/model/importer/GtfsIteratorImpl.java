@@ -233,6 +233,11 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator, Consta
 			    _buffer.get();
 			    i++;
 			}
+			if (i >= _builder.limit()) {
+				ByteBuffer newBuilder = ByteBuffer.allocate(_builder.limit() * 2);
+				newBuilder.put(_builder.array());
+				_builder = newBuilder;
+			}
 			_builder.put(c);
 		}
 		result = new String(_builder.array(), 0, _builder.position(), StandardCharsets.UTF_8);
