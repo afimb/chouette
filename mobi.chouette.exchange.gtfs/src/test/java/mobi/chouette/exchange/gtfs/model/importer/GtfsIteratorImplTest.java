@@ -142,4 +142,24 @@ public class GtfsIteratorImplTest {
 			file.close();
 		}
 	}
+
+	@Test(groups = { "GtfsIteratorImpl" }, description = "test csv long field ok")
+	public void verifyLongFieldValuesAreParsedOK() throws Exception {
+		RandomAccessFile file = new RandomAccessFile("src/test/data/long_field_value_gtfs.txt", "r");
+
+		try {
+			FileChannel channel1 = file.getChannel();
+			long length = channel1.size();
+
+			MappedByteBuffer buffer = channel1.map(FileChannel.MapMode.READ_ONLY, 0, length);
+			buffer.load();
+			GtfsIteratorImpl reader = new GtfsIteratorImpl(buffer, 0);
+			Assert.assertTrue(reader.next(), "check line 1");
+			Assert.assertEquals(reader.getFieldCount(), 2, "check token count");
+			Assert.assertEquals(reader.getValue(0),"shortfield");
+			Assert.assertTrue(reader.getValue(1).length()>1024);
+		} finally {
+			file.close();
+		}
+	}
 }
