@@ -160,24 +160,20 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 					for (StopPoint stopPoint : route.getStopPoints()) {
 						StopArea containedInStopArea = stopPoint.getContainedInStopArea();
 
-						if (containedInStopArea.getTransportModeName() != null) {
-							if (!line1.getTransportModeName().equals(containedInStopArea.getTransportModeName())) {
-								DataLocation location = buildLocation(context, containedInStopArea);
-								ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-								reporter.addCheckPointReportError(context, LINE_4, location, "Transport mode of StopArea "
-										+ containedInStopArea.getName() + " does not match the transport mode for this line ");
-							}
+						if (!line1.getTransportModeName().equals(containedInStopArea.getTransportModeName())) {
+							DataLocation location = buildLocation(context, containedInStopArea);
+							ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+							reporter.addCheckPointReportError(context, LINE_4, location, "Transport mode of StopArea "
+									+ containedInStopArea.getName() + " does not match the transport mode for this line ");
 						}
 
 						StopArea parentStopArea = stopPoint.getContainedInStopArea().getParent();
 
-						if (parentStopArea.getTransportModeName() != null) {
-							if (!line1.getTransportModeName().equals(parentStopArea.getTransportModeName())) {
-								DataLocation location = buildLocation(context, parentStopArea);
-								ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-								reporter.addCheckPointReportError(context, LINE_4, location, "Transport mode of StopArea "
-										+ parentStopArea.getName() + " does not match the transport mode for this line ");
-							}
+						if (!line1.getTransportModeName().equals(parentStopArea.getTransportModeName())) {
+							DataLocation location = buildLocation(context, parentStopArea);
+							ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+							reporter.addCheckPointReportError(context, LINE_4, location, "Transport mode of StopArea "
+									+ parentStopArea.getName() + " does not match the transport mode for this line ");
 						}
 					}
 				}
@@ -189,24 +185,20 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 							for (StopPoint stopPoint : jp.getStopPoints()) {
 								StopArea containedInStopArea = stopPoint.getContainedInStopArea();
 
-								if (containedInStopArea.getTransportModeName() != null) {
-									if (!line1.getTransportModeName().equals(containedInStopArea.getTransportModeName())) {
-										DataLocation location = buildLocation(context, containedInStopArea);
-										ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-										reporter.addCheckPointReportError(context, LINE_4, location, "Transport mode of StopArea "
-												+ containedInStopArea.getName() + " does not match the transport mode for this line ");
-									}
+								if (!line1.getTransportModeName().equals(containedInStopArea.getTransportModeName())) {
+									DataLocation location = buildLocation(context, containedInStopArea);
+									ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+									reporter.addCheckPointReportError(context, LINE_4, location, "Transport mode of StopArea "
+											+ containedInStopArea.getName() + " does not match the transport mode for this line ");
 								}
 
 								StopArea parentStopArea = stopPoint.getContainedInStopArea().getParent();
 
-								if (parentStopArea.getTransportModeName() != null) {
-									if (!line1.getTransportModeName().equals(parentStopArea.getTransportModeName())) {
-										DataLocation location = buildLocation(context, parentStopArea);
-										ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-										reporter.addCheckPointReportError(context, LINE_4, location, "Transport mode of StopArea "
-												+ parentStopArea.getName() + " does not match the transport mode for this line ");
-									}
+								if (!line1.getTransportModeName().equals(parentStopArea.getTransportModeName())) {
+									DataLocation location = buildLocation(context, parentStopArea);
+									ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+									reporter.addCheckPointReportError(context, LINE_4, location, "Transport mode of StopArea "
+											+ parentStopArea.getName() + " does not match the transport mode for this line ");
 								}
 							}
 						}
