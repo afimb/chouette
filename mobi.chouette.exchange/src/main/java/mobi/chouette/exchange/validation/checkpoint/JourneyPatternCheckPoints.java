@@ -211,6 +211,13 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 				TransportModeNameEnum stopMode = sa.getTransportModeName();
 				TransportSubModeNameEnum stopSubMode = sa.getTransportSubMode();
 				
+				// Recurse to parent(s) if necessary
+				while(stopMode == null && sa.getParent() != null) {
+					sa = sa.getParent();
+					stopMode = sa.getTransportModeName();
+					stopSubMode = sa.getTransportSubMode();
+				}
+				
 				boolean valid = validCombination(lineMode,lineSubMode,stopMode,stopSubMode);
 			
 				if(!valid) {
@@ -219,7 +226,6 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 					
 					String referenceValue = stopMode + (stopSubMode != null ? "/"+stopSubMode : "");
 					String errorValue = lineMode + (lineSubMode != null ? "/"+lineSubMode : "");
-					
 					
 					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, JOURNEY_PATTERN_3, location, errorValue,
