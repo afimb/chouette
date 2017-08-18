@@ -95,14 +95,10 @@ public class TransitDataStatisticsService {
 		// Merge overlapping periods in PublicLine for readability
 		mergePeriods(publicLines);
 
-		LineStatistics lineStats = new LineStatistics();
-		lineStats.setStartDate(startDate);
-		lineStats.setDays(days);
 		List<PublicLine> pL = new ArrayList<>(publicLines.values());
 		Collections.sort(pL);
 
-		lineStats.setPublicLines(pL);
-
+		LineStatistics lineStats = new LineStatistics(startDate,days,pL);
 		// Put lineNumbers into buckets depending on validity in the future
 		categorizeValidity(lineStats, startDate, minDaysValidityCategories);
 
