@@ -128,11 +128,7 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 
 	private void validateCompositeFrame(Context context, XPathCompiler xpath, XdmNode dom) throws XPathExpressionException, SaxonApiException {
 		// Check that there are no overriding AvailabilityCondition which is identical to the one defined in the CompositeFrame
-		validateElementPresent(context, xpath, dom, "validityConditions", _1_NETEX_COMPOSITE_FRAME_VALIDITYCONDTITIONS);
-		validateElementNotPresent(context, xpath, dom, "frames//validityConditions", _1_NETEX_VALIDITYCONDITIONS_ON_FRAMES_INSIDE_COMPOSITEFRAME);
-
-		validateElementPresent(context, xpath, dom, "codespaces/Codespace[Xmlns = '" + NSR_XMLNS + "' and XmlnsUrl = '" + NSR_XMLNSURL + "']",
-				_1_NETEX_CODESPACE);
+		validateCommonFrameConcepts(context, xpath, dom);
 
 		XdmNode resourceFrame = (XdmNode) selectNode("frames/ResourceFrame", xpath, dom);
 		if (resourceFrame != null) {
@@ -153,6 +149,8 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 
 		// validateExternalReferenceCorrect(context, xpath, dom, "//StopPlaceRef/@ref", stopRegisterValidator, _2_NETEX_STOPPLACE_REF);
 	}
+
+
 
 	private void validateServiceFrame(Context context, XPathCompiler xpath, XdmNode dom, String subLevelPath) throws XPathExpressionException, SaxonApiException {
 		XdmNode subLevel = dom;

@@ -89,7 +89,7 @@
                                 </Quay>
                             </quays>
                         </StopPlace>
-                     
+
                     </stopPlaces>
                 </SiteFrame>
                 <ServiceFrame version="1" id="AVI:ServiceFrame:7722364">
@@ -137,13 +137,13 @@
                             <!--  <TransportMode>air</TransportMode>-->
                             <!-- <PublicCode>TRD-MOL</PublicCode>-->
                             <!-- <OperatorRef ref="AVI:Operator:WF" version="1"/>-->
-                            
+
                             <routes>
                                 <RouteRef ref="AVI:Route:12636280"/>
                             </routes>
                             <!--<RepresentedByGroupRef ref="AVI:Network:WF" version="1"/>-->
-                            
-                            
+
+
                         </Line>
                         <Line version="1" id="AVI:Line:WF_TRD-MOL2">
                             <!--   <Name>Trondheim-Molde</Name>-->
@@ -153,48 +153,48 @@
                             </TransportSubmode>
                             <!-- <PublicCode>TRD-MOL</PublicCode>-->
                             <!-- <OperatorRef ref="AVI:Operator:WF" version="1"/>-->
-                            
+
                             <routes>
                                 <RouteRef ref="AVI:Route:12636280"/>
                             </routes>
                             <!--<RepresentedByGroupRef ref="AVI:Network:WF" version="1"/>-->
-                            
-                            
+
+
                         </Line>
                         <Line version="1" id="AVI:Line:WF_TRD-MOL2">
                             <!--   <Name>Trondheim-Molde</Name>-->
                             <TransportMode>water</TransportMode>
-                         <!--   <TransportSubmode>
+                            <!--   <TransportSubmode>
                                 <AirSubmode>airshipService</AirSubmode>
                             </TransportSubmode>-->
                             <!-- <PublicCode>TRD-MOL</PublicCode>-->
                             <!-- <OperatorRef ref="AVI:Operator:WF" version="1"/>-->
-                            
+
                             <routes>
                                 <RouteRef ref="AVI:Route:12636280"/>
                             </routes>
                             <!--<RepresentedByGroupRef ref="AVI:Network:WF" version="1"/>-->
-                            
-                            
+
+
                         </Line>
                     </lines>
                     <destinationDisplays>
                         <DestinationDisplay version="1" id="AVI:DestinationDisplay:12636280">
                             <!--<FrontText>Molde</FrontText>-->
                         </DestinationDisplay>
-                        
+
                         <DestinationDisplay version="1" id="AVI:DestinationDisplayWrongName:12636280">
                             <!--<FrontText>Molde</FrontText>-->
                         </DestinationDisplay>
-                        
+
                         <DestinationDisplay version="1" id="XXX:DestinationDisplay:126360280">
                             <!--<FrontText>Molde</FrontText>-->
                         </DestinationDisplay>
 
                         <DestinationDisplay version="1" id="AVI:DestinationDisplay:EmptyFrontText">
-                           <FrontText></FrontText>
+                            <FrontText/>
                         </DestinationDisplay>
-                        
+
                     </destinationDisplays>
                     <scheduledStopPoints>
                         <ScheduledStopPoint version="1" id="AVI:ScheduledStopPointXXX:76522:2323">
@@ -287,9 +287,8 @@
                             </passingTimes>
                             <calls/>
                         </ServiceJourney>
-                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF536-126360080">
-                        </ServiceJourney>
-                        
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF536-126360080"> </ServiceJourney>
+
                         <ServiceJourney version="1" id="AVI:ServiceJourney:WF536-126360080-1">
                             <TransportMode>air</TransportMode>
                         </ServiceJourney>
@@ -298,15 +297,25 @@
                                 <AirSubmode>SchengenAreaFlight</AirSubmode>
                             </TransportSubmode>
                         </ServiceJourney>
-                        
+
                     </vehicleJourneys>
                 </TimetableFrame>
-                <ServiceCalendarFrame version="1" id="AVI:ServiceCalendarFrame:3865628">
+                <ServiceCalendarFrame version="1" id="AVI:ServiceCalendarFrame:NoFromDate">
                     <ServiceCalendar id="servicecalendar" version="1">
-                        <FromDate>2000-01-01</FromDate>
                         <ToDate>2000-01-01</ToDate>
                     </ServiceCalendar>
-                    
+                </ServiceCalendarFrame>
+                <ServiceCalendarFrame version="1" id="AVI:ServiceCalendarFrame:NoToDate">
+                    <ServiceCalendar id="servicecalendar" version="1">
+                        <FromDate>2000-01-01</FromDate>
+                    </ServiceCalendar>
+                </ServiceCalendarFrame>
+                <ServiceCalendarFrame version="1" id="AVI:ServiceCalendarFrame:3865628">
+                    <ServiceCalendar id="servicecalendar" version="1">
+                        <FromDate>2000-02-01</FromDate>
+                        <ToDate>2000-01-01</ToDate>
+                    </ServiceCalendar>
+
                     <dayTypes>
                         <DayType version="1" id="AVI:DayType:1484071731-Mar_Sat_25-Jul_Sun_23-MoTuWeThFr">
                             <properties>
@@ -397,7 +406,7 @@
                         </DayTypeAssignment>
                         <DayTypeAssignment order="9" version="1" id="AVI:DayTypeAssignment:1484071731-Jul_Thu_20-X">
                             <OperatingDayRef ref="AVI:OperatingDay:1484071731-Jul_Thu_20-X" version="1"/>
-                          <!--  <DayTypeRef ref="AVI:DayType:1484071731-Jul_Thu_20-X" version="1"/>-->
+                            <!--  <DayTypeRef ref="AVI:DayType:1484071731-Jul_Thu_20-X" version="1"/>-->
                             <isAvailable>false</isAvailable>
                         </DayTypeAssignment>
                     </dayTypeAssignments>
@@ -406,6 +415,25 @@
         </CompositeFrame>
 
         <CompositeFrame created="2017-03-25T00:00:00.000Z" version="1" id="AVI:CompositeFrame:WF-TRD-MOLX">
+            <validityConditions>
+                <AvailabilityCondition version="1" id="AVI:AvailabilityCondition:234">
+                    <FromDate>2017-03-25T00:00:00Z</FromDate>
+                    <ToDate>2017-01-25T00:00:00Z</ToDate>
+                </AvailabilityCondition>
+                <AvailabilityCondition version="1" id="AVI:AvailabilityCondition:45455"> </AvailabilityCondition>
+                <ValidBetween id="emptyvalidbetween" version="1"> </ValidBetween>
+                <ValidBetween id="todate_validbetween" version="1">
+                    <ToDate>2001-01-01</ToDate>
+                </ValidBetween>
+                <ValidBetween id="fromdate_validbetween" version="1">
+                    <FromDate>2001-01-01</FromDate>
+                </ValidBetween>
+                <ValidBetween id="fromdate_after_todate" version="1">
+                    <FromDate>2001-02-01</FromDate>
+                    <ToDate>2001-01-01</ToDate>
+                </ValidBetween>
+            </validityConditions>
+            
             <frames/>
 
         </CompositeFrame>
