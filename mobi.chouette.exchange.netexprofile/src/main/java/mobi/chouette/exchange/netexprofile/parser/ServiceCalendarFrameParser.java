@@ -1,10 +1,10 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
-import java.sql.Date;
 import java.text.ParseException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,7 +29,6 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.util.NetexReferential;
@@ -40,7 +39,7 @@ import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-public class ServiceCalendarParser extends NetexParser implements Parser, Constant {
+public class ServiceCalendarFrameParser extends NetexParser implements Parser, Constant {
 
 	static final String LOCAL_CONTEXT = "ServiceCalendar";
 	static final String VALID_BETWEEN = "validBetween";
@@ -190,13 +189,16 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
 		ValidBetween validBetween = getValidBetweenForFrame(context);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
-		netexReferential.getDayTypes().values();
-
 		for (DayType dayType : netexReferential.getDayTypes().values()) {
 
 			Timetable timetable = ObjectFactory.getTimetable(referential, dayType.getId());
-			timetable.setStartOfPeriod(TimeUtil.toJodaLocalDateTime(validBetween.getFromDate()).toLocalDate());
-			timetable.setEndOfPeriod(TimeUtil.toJodaLocalDateTime(validBetween.getToDate()).toLocalDate());
+			if(validBetween.getFromDate() != null) {
+				timetable.setStartOfPeriod(TimeUtil.toJodaLocalDateTime(validBetween.getFromDate()).toLocalDate());
+			}
+
+			if(validBetween.getToDate() != null) {
+				timetable.setEndOfPeriod(TimeUtil.toJodaLocalDateTime(validBetween.getToDate()).toLocalDate());
+			}
 			if (dayType.getProperties() != null) {
 				for (PropertyOfDay propertyOfDay : dayType.getProperties().getPropertyOfDay()) {
 					List<DayOfWeekEnumeration> daysOfWeeks = propertyOfDay.getDaysOfWeek();
@@ -273,11 +275,44 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
 				
 			}
 		}
+		
+		for(Timetable t : referential.getTimetables().values()) {
+			if(t.getStartOfPeriod() == null || t.getEndOfPeriod() == null) {
+				List<org.joda.time.LocalDate> effectiveDates = t.getEffectiveDates();
+				if(effectiveDates.size() > 0) {
+					Collections.sort(effectiveDates);
+					if(t.getStartOfPeriod() == null) {
+						t.setStartOfPeriod(effectiveDates.get(0));
+					}
+					if(t.getEndOfPeriod() == null) {
+						t.setEndOfPeriod(effectiveDates.get(effectiveDates.size()-1));
+					}
+				}
+			}
+		}
 
 	}
 
 	private boolean isWithinValidRange(OffsetDateTime dateOfOperation, ValidBetween validBetween) {
-		return !dateOfOperation.isBefore(validBetween.getFromDate()) && !dateOfOperation.isAfter(validBetween.getToDate());
+		if(validBetween == null) {
+			// Always valid
+			return true;
+		} else if(validBetween.getFromDate() != null && validBetween.getToDate() != null) {
+			// Limited by both from and to date
+			return !dateOfOperation.isBefore(validBetween.getFromDate()) && !dateOfOperation.isAfter(validBetween.getToDate());
+		} else if(validBetween.getFromDate() != null) {
+			// Must be after valid start date
+			return !dateOfOperation.isBefore(validBetween.getFromDate());
+		} else if(validBetween.getToDate() != null){
+			// Must be before valid start date
+			return dateOfOperation.isBefore(validBetween.getToDate());
+		} else {
+			// Both from and to empty
+			return true;
+		}
+		
+		
+		
 	}
 
 	private ValidBetween getValidBetweenForFrame(Context context) {
@@ -331,8 +366,8 @@ public class ServiceCalendarParser extends NetexParser implements Parser, Consta
 	}
 
 	static {
-		ParserFactory.register(ServiceCalendarParser.class.getName(), new ParserFactory() {
-			private ServiceCalendarParser instance = new ServiceCalendarParser();
+		ParserFactory.register(ServiceCalendarFrameParser.class.getName(), new ParserFactory() {
+			private ServiceCalendarFrameParser instance = new ServiceCalendarFrameParser();
 
 			@Override
 			protected Parser create() {
