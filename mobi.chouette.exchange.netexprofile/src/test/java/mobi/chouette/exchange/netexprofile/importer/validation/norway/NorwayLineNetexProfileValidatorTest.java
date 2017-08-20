@@ -226,7 +226,8 @@ public class NorwayLineNetexProfileValidatorTest {
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_COMPOSITE_FRAME_VALIDITYCONDTITIONS, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_VALIDITYCONDITIONS_ON_FRAMES_INSIDE_COMPOSITEFRAME, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_SERVICE_CALENDAR_FRAME_DAYTYPE_NOT_ASSIGNED, NOK);
-
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_SERVICE_CALENDAR_FRAME_EMPTY_SERVICE_CALENDAR, NOK);
+		
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS, UNCHECK);

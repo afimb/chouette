@@ -94,6 +94,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_COMMON_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN = "1-NETEXPROFILE-CommonFile-ServiceFrame-JourneyPatternNotAllowed";
 
 	public static final String _1_NETEXPROFILE_SERVICE_CALENDAR_FRAME_DAYTYPE_NOT_ASSIGNED = "1-NETEXPROFILE-ServiceCalendarFrame-DayTypeWithoutAssignment";
+	public static final String _1_NETEXPROFILE_SERVICE_CALENDAR_FRAME_EMPTY_SERVICE_CALENDAR = "1-NETEXPROFILE-ServiceCalendarFrame-EmptyServiceCalendar";
 
 	
 	protected static final String ID_STRUCTURE_REGEXP = "^([A-Z]{3}):([A-Za-z]*):([0-9A-Za-z_\\-]*)$";
@@ -176,7 +177,8 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS, "W");
 
 		addCheckpoints(context, _1_NETEXPROFILE_SERVICE_CALENDAR_FRAME_DAYTYPE_NOT_ASSIGNED, "W");
-
+		addCheckpoints(context, _1_NETEXPROFILE_SERVICE_CALENDAR_FRAME_EMPTY_SERVICE_CALENDAR, "W");
+		
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME, "E");
 
 		// Common file specific checkpoints
@@ -230,6 +232,8 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		if (subLevel != null) {
 			validateElementNotPresent(context, xpath, subLevel, "//DayType[not(//DayTypeAssignment/DayTypeRef/@ref = @id)]",
 					_1_NETEXPROFILE_SERVICE_CALENDAR_FRAME_DAYTYPE_NOT_ASSIGNED);
+			validateElementNotPresent(context, xpath, subLevel, "//ServiceCalendar[not(dayTypes) and not(dayTypeAssignments)]",
+					_1_NETEXPROFILE_SERVICE_CALENDAR_FRAME_EMPTY_SERVICE_CALENDAR);
 		
 
 		}

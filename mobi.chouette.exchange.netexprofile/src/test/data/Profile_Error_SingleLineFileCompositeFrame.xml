@@ -302,6 +302,11 @@
                     </vehicleJourneys>
                 </TimetableFrame>
                 <ServiceCalendarFrame version="1" id="AVI:ServiceCalendarFrame:3865628">
+                    <ServiceCalendar id="servicecalendar" version="1">
+                        <FromDate>2000-01-01</FromDate>
+                        <ToDate>2000-01-01</ToDate>
+                    </ServiceCalendar>
+                    
                     <dayTypes>
                         <DayType version="1" id="AVI:DayType:1484071731-Mar_Sat_25-Jul_Sun_23-MoTuWeThFr">
                             <properties>
