@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<PublicationDelivery version="1.04:NO-NeTEx-networktimetable:1.1" 
+  xmlns="http://www.netex.org.uk/netex" xmlns:gml="http://www.opengis.net/gml/3.2" 
+  xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  >
+
+  <PublicationTimestamp>2017-08-18T11:53:29.394Z</PublicationTimestamp>
+
+  <ParticipantRef>KOL</ParticipantRef>
+  <dataObjects>
+ 
+    <CompositeFrame id="KOL:CompositeFrame:WithEmptyServiceCalendarAndStartEndValidityCondition" version="1">
+      <validityConditions>
+        <AvailabilityCondition id="KOL:AvailabilityCondition:2" version="1">
+          <FromDate>2015-08-18T00:00:00Z</FromDate>
+          <ToDate>2019-11-01T00:00:00Z</ToDate>
+        </AvailabilityCondition>
+      </validityConditions>
+      <frames>
+        <ServiceCalendarFrame id="KOL:ServiceCalendarFrame:2" version="1">
+          <ServiceCalendar id="KOL:ServiceCalendar:2" version="1">
+            <FromDate>2016-10-17</FromDate>
+            <ToDate>2016-12-23</ToDate>
+            <dayTypes>
+              <DayType id="KOL:DayType:2" version="1"/>
+            </dayTypes>
+            <operatingDays>
+              <OperatingDay id="KOL:OperatingDay:20171027" version="1">
+                <CalendarDate>2017-10-27</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="KOL:OperatingDay:20171102" version="1">
+                <CalendarDate>2017-11-02</CalendarDate>
+              </OperatingDay>
+            </operatingDays>
+            <dayTypeAssignments>
+              <DayTypeAssignment id="KOL:DayTypeAssignment:1" order="1" version="1">
+                <OperatingDayRef ref="KOL:OperatingDay:20171027" version="1"/>
+                <DayTypeRef ref="KOL:DayType:2" version="1"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="KOL:DayTypeAssignment:2" order="1" version="1">
+                <OperatingDayRef ref="KOL:OperatingDay:20171102" version="1"/>
+                <DayTypeRef ref="KOL:DayType:2" version="1"/>
+              </DayTypeAssignment>
+              
+            </dayTypeAssignments>
+          </ServiceCalendar>
+        </ServiceCalendarFrame>
+      </frames>
+    </CompositeFrame>
+  </dataObjects>
+
+</PublicationDelivery>

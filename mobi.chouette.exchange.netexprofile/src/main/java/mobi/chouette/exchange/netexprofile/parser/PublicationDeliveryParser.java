@@ -291,7 +291,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 			parseValidityConditionsInFrame(context, serviceCalendarFrame);
 
 			context.put(NETEX_LINE_DATA_CONTEXT, serviceCalendarFrame);
-			Parser serviceCalendarParser = ParserFactory.create(ServiceCalendarParser.class.getName());
+			Parser serviceCalendarParser = ParserFactory.create(ServiceCalendarFrameParser.class.getName());
 			serviceCalendarParser.parse(context);
 		}
 	}
