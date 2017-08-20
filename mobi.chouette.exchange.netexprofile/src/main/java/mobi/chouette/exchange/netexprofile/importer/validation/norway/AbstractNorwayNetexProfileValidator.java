@@ -93,10 +93,18 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_COMMON_SERVICE_FRAME_ROUTE = "1-NETEXPROFILE-CommonFile-ServiceFrame-RouteNotAllowed";
 	public static final String _1_NETEX_COMMON_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN = "1-NETEXPROFILE-CommonFile-ServiceFrame-JourneyPatternNotAllowed";
 
-	public static final String _1_NETEXPROFILE_SERVICE_CALENDAR_FRAME_DAYTYPE_NOT_ASSIGNED = "1-NETEXPROFILE-ServiceCalendarFrame-DayTypeWithoutAssignment";
+	public static final String _1_NETEX_SERVICE_CALENDAR_FRAME_DAYTYPE_NOT_ASSIGNED = "1-NETEXPROFILE-ServiceCalendarFrame-DayTypeWithoutAssignment";
+	public static final String _1_NETEX_SERVICE_CALENDAR_FRAME_EMPTY_SERVICE_CALENDAR = "1-NETEXPROFILE-ServiceCalendarFrame-EmptyServiceCalendar";
+	public static final String _1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_FROMDATE = "1-NETEXPROFILE-ServiceCalendarFrame-ServiceCalendar_FromDate";
+	public static final String _1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_TODATE = "1-NETEXPROFILE-ServiceCalendarFrame-ServiceCalendar_ToDate";
+	public static final String _1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_FROMDATE_AFTER_TODATE = "1-NETEXPROFILE-ServiceCalendarFrame-ServiceCalendar_FromDateAfterToDate";
 
 	
 	protected static final String ID_STRUCTURE_REGEXP = "^([A-Z]{3}):([A-Za-z]*):([0-9A-Za-z_\\-]*)$";
+	public static final String _1_NETEX_VALIDBETWEEN_INCOMPLETE = "1-NETEXPROFILE-ValidBetween_Incomplete";
+	public static final String _1_NETEX_VALIDBETWEEN_TODATE_BEFORE_FROMDATE = "1-NETEXPROFILE-ValidBetween_FromDateAfterToDate";
+	public static final String _1_NETEX_AVAILABILITYCONDITION_TODATE_BEFORE_FROMDATE = "1-NETEXPROFILE-AvailabilityCondition_FromDateAfterToDate";
+	public static final String _1_NETEX_AVAILABILITYCONDITION_INCOMPLETE = "1-NETEXPROFILE-AvailabilityCondition_Incomplete";
 
 	@Override
 	public void addObjectReference(Context context, DataManagedObjectStructure object) {
@@ -116,6 +124,12 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_USE_OF_UNAPPROVED_CODESPACE, "E");
 		addCheckpoints(context, _1_NETEX_REFERENCE_TO_ILLEGAL_ELEMENT, "E");
 		addCheckpoints(context, _1_NETEX_UNRESOLVED_EXTERNAL_REFERENCE, "E");
+		
+		addCheckpoints(context, _1_NETEX_VALIDBETWEEN_INCOMPLETE, "E");
+		addCheckpoints(context, _1_NETEX_VALIDBETWEEN_TODATE_BEFORE_FROMDATE, "E");
+		addCheckpoints(context, _1_NETEX_AVAILABILITYCONDITION_INCOMPLETE, "E");
+		addCheckpoints(context, _1_NETEX_AVAILABILITYCONDITION_TODATE_BEFORE_FROMDATE, "E");
+		
 		
 		addCheckpoints(context, _1_NETEX_RESOURCE_FRAME, "E");
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME, "E");
@@ -175,8 +189,12 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_LEGAL_NAME, "W");
 		addCheckpoints(context, _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS, "W");
 
-		addCheckpoints(context, _1_NETEXPROFILE_SERVICE_CALENDAR_FRAME_DAYTYPE_NOT_ASSIGNED, "W");
-
+		addCheckpoints(context, _1_NETEX_SERVICE_CALENDAR_FRAME_DAYTYPE_NOT_ASSIGNED, "W");
+		addCheckpoints(context, _1_NETEX_SERVICE_CALENDAR_FRAME_EMPTY_SERVICE_CALENDAR, "W");
+		addCheckpoints(context, _1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_FROMDATE, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_TODATE, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_FROMDATE_AFTER_TODATE, "E");
+		
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME, "E");
 
 		// Common file specific checkpoints
@@ -229,9 +247,19 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 		if (subLevel != null) {
 			validateElementNotPresent(context, xpath, subLevel, "//DayType[not(//DayTypeAssignment/DayTypeRef/@ref = @id)]",
-					_1_NETEXPROFILE_SERVICE_CALENDAR_FRAME_DAYTYPE_NOT_ASSIGNED);
+					_1_NETEX_SERVICE_CALENDAR_FRAME_DAYTYPE_NOT_ASSIGNED);
+			validateElementNotPresent(context, xpath, subLevel, "//ServiceCalendar[not(dayTypes) and not(dayTypeAssignments)]",
+					_1_NETEX_SERVICE_CALENDAR_FRAME_EMPTY_SERVICE_CALENDAR);
+			validateElementNotPresent(context, xpath, subLevel, "//ServiceCalendar[not(ToDate)]",
+					_1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_TODATE);
+			validateElementNotPresent(context, xpath, subLevel, "//ServiceCalendar[not(FromDate)]",
+					_1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_FROMDATE);
+			validateElementNotPresent(context, xpath, subLevel, "//ServiceCalendar[FromDate and ToDate and ToDate < FromDate]",
+					_1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_FROMDATE_AFTER_TODATE);
 		
 
+			
+			
 		}
 
 	}
@@ -320,6 +348,17 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		validateElementNotPresent(context, xpath, subLevel, "timingPoints", _1_NETEX_SERVICE_FRAME_TIMING_POINTS);
 		validateElementNotPresent(context, xpath, subLevel, "stopAssignments/PassengerStopAssignment[not(ScheduledStopPointRef)]", _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_SCHEDULEDSTOPPOINTREF);
 		validateElementNotPresent(context, xpath, subLevel, "stopAssignments/PassengerStopAssignment[not(QuayRef)]", _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_QUAYREF);
+	}
+
+	protected void validateCommonFrameConcepts(Context context, XPathCompiler xpath, XdmNode dom) throws XPathExpressionException, SaxonApiException {
+		validateElementNotPresent(context, xpath, dom, ".[not(validityConditions)]", _1_NETEX_COMPOSITE_FRAME_VALIDITYCONDTITIONS);
+		validateElementNotPresent(context, xpath, dom, "frames//validityConditions", _1_NETEX_VALIDITYCONDITIONS_ON_FRAMES_INSIDE_COMPOSITEFRAME);
+		validateElementPresent(context, xpath, dom, "codespaces/Codespace[Xmlns = '" + NSR_XMLNS + "' and XmlnsUrl = '" + NSR_XMLNSURL + "']",
+				_1_NETEX_CODESPACE);
+		validateElementNotPresent(context, xpath, dom, "//ValidBetween[not(FromDate) and not(ToDate)]", _1_NETEX_VALIDBETWEEN_INCOMPLETE);
+		validateElementNotPresent(context, xpath, dom, "//ValidBetween[FromDate and ToDate and ToDate < FromDate]", _1_NETEX_VALIDBETWEEN_TODATE_BEFORE_FROMDATE);
+		validateElementNotPresent(context, xpath, dom, "//AvailabilityCondition[not(FromDate) and not(ToDate)]", _1_NETEX_AVAILABILITYCONDITION_INCOMPLETE);
+		validateElementNotPresent(context, xpath, dom, "//AvailabilityCondition[FromDate and ToDate and ToDate < FromDate]", _1_NETEX_AVAILABILITYCONDITION_TODATE_BEFORE_FROMDATE);
 	}
 
 }

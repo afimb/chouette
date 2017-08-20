@@ -225,8 +225,12 @@ public class NorwayLineNetexProfileValidatorTest {
 		
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_COMPOSITE_FRAME_VALIDITYCONDTITIONS, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_VALIDITYCONDITIONS_ON_FRAMES_INSIDE_COMPOSITEFRAME, NOK);
-		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_SERVICE_CALENDAR_FRAME_DAYTYPE_NOT_ASSIGNED, NOK);
-
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_CALENDAR_FRAME_DAYTYPE_NOT_ASSIGNED, NOK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_CALENDAR_FRAME_EMPTY_SERVICE_CALENDAR, NOK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_FROMDATE, NOK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_TODATE, NOK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_FROMDATE_AFTER_TODATE, NOK);
+		
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS, UNCHECK);
@@ -245,6 +249,12 @@ public class NorwayLineNetexProfileValidatorTest {
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_NO_VALIDITYCONDITIONS_ON_FRAMES_OUTSIDE_COMPOSITEFRAME, UNCHECK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_DUPLICATE_IDS_ACROSS_LINE_AND_COMMON_FILES, UNCHECK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_MULTIPLE_FRAMES_OF_SAME_TYPE_WITHOUT_VALIDITYCONDITIONS, UNCHECK);
+		
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_VALIDBETWEEN_INCOMPLETE, NOK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_VALIDBETWEEN_TODATE_BEFORE_FROMDATE, NOK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_AVAILABILITYCONDITION_INCOMPLETE, NOK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_AVAILABILITYCONDITION_TODATE_BEFORE_FROMDATE, NOK);
+
 		
 		// expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SCHEMA_VALIDATION_ERROR,UNCHECK);
 		// expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_UNKNOWN_PROFILE,UNCHECK);
