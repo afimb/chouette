@@ -231,64 +231,6 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	}
 
 	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")
-	public void verifyImportLine() throws Exception {
-		Context context = initImportContext();
-		clearCodespaceRecords();
-
-		insertCodespaceRecords(Arrays.asList(
-				createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
-				createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
-		);
-
-		NetexTestUtils.copyFile("C_NETEX_1.xml");
-
-		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
-		jobData.setInputFilename("C_NETEX_1.xml");
-
-		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(initialContext, NetexprofileImporterCommand.class.getName());
-
-		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
-		configuration.setNoSave(false);
-		configuration.setCleanRepository(true);
-
-		try {
-			command.execute(context);
-		} catch (Exception ex) {
-			log.error("test failed", ex);
-			throw ex;
-		}
-
-		ActionReport report = (ActionReport) context.get(REPORT);
-		Reporter.log("report :" + report.toString(), true);
-		dumpReports(context);
-
-		assertEquals(report.getResult(), STATUS_OK, "fileValidationResult");
-		assertEquals(report.getFiles().size(), 1, "file reported");
-		assertNotNull(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE), "line reported");
-		assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 1, "line reported");
-
-		for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
-			Reporter.log("report line :" + info.toString(), true);
-			assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "line status");
-		}
-
-		NetexTestUtils.verifyValidationReport(context);
-		NetexTestUtils.checkLine(context);
-
-		Referential referential = (Referential) context.get(REFERENTIAL);
-		assertNotEquals(referential.getTimetables(), 0, "timetables");
-		assertNotEquals(referential.getSharedTimetables(), 0, "shared timetables");
-
-		utx.begin();
-		em.joinTransaction();
-
-		Line line = lineDao.findByObjectId("AVI:Line:WF_TRD-MOL");
-		assertNotNull(line, "Line not found");
-
-		utx.rollback();
-	}
-
-	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")
 	public void verifyImportLineMergeTimetables() throws Exception {
 		Context context = initImportContext();
 		clearCodespaceRecords();
@@ -332,20 +274,20 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 		NetexTestUtils.verifyValidationReport(context);
 
-		Referential referential = (Referential) context.get(Constant.REFERENTIAL);
-		assertEquals(referential.getLines().size(), 1, "lines size");
+		utx.begin();
+		Line line = lineDao.findByObjectId("AVI:Line:WF_TRD-MOL");
+		Assert.assertNotNull(line);
 
-		Line line = referential.getLines().get("AVI:Line:WF_TRD-MOL");
-		assertNotNull(line, "line");
-
-		assertNotEquals(referential.getTimetables(), 0, "timetables");
-		assertNotEquals(referential.getSharedTimetables(), 0, "shared timetables");
-
-		for(Timetable t : referential.getTimetables().values()) {
-			System.out.println(t);
+		Set<Timetable> timetables = new HashSet<Timetable>();
+		for(Route r : line.getRoutes()) {
+			for(JourneyPattern jp : r.getJourneyPatterns()) {
+				for(VehicleJourney vj : jp.getVehicleJourneys()) {
+					timetables.addAll(vj.getTimetables());
+				}
+			}
 		}
-		assertEquals(referential.getTimetables().values().size(), 9, "num timetables");
-		assertEquals(referential.getSharedTimetables().values().size(), 9, "num timetables");
+		utx.rollback();
+		assertEquals(timetables.size(), 9, "num timetables");
 	}
 
 	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")

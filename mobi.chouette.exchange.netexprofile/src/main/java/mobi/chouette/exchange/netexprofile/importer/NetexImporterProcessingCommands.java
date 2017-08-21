@@ -88,6 +88,7 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 			Chain mainChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 			commands.add(mainChain);
 
+
 			// Report any files that are not XML files
 			List<Path> excluded = FileUtil.listFiles(path, "*", "*.xml");
 
@@ -220,7 +221,6 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 
 
 		try {
-			commands.add(CommandFactory.create(initialContext, NetexDisposeImportCommand.class.getName()));
 
 			if (level3validation) {
 				// add shared data validation
@@ -242,6 +242,13 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 	@Override
 	public List<? extends Command> getDisposeCommands(Context context, boolean withDao) {
 		List<Command> commands = new ArrayList<>();
+		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
+		try {
+			commands.add(CommandFactory.create(initialContext, NetexDisposeImportCommand.class.getName()));
+		} catch (Exception e) {
+			log.error(e, e);
+			throw new RuntimeException("unable to call factories");
+		}
 		return commands;
 	}
 
