@@ -191,8 +191,8 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 		addCheckpoints(context, _1_NETEX_SERVICE_CALENDAR_FRAME_DAYTYPE_NOT_ASSIGNED, "W");
 		addCheckpoints(context, _1_NETEX_SERVICE_CALENDAR_FRAME_EMPTY_SERVICE_CALENDAR, "W");
-		addCheckpoints(context, _1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_FROMDATE, "E");
-		addCheckpoints(context, _1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_TODATE, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_FROMDATE, "W");
+		addCheckpoints(context, _1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_TODATE, "W");
 		addCheckpoints(context, _1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_FROMDATE_AFTER_TODATE, "E");
 		
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME, "E");
