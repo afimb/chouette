@@ -7,16 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import org.apache.commons.lang.builder.ToStringBuilder;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -45,9 +41,6 @@ public class NetexInitImportCommand implements Command, Constant {
 
 	public static final String COMMAND = "NetexInitImportCommand";
 
-	@Resource
-	private SessionContext daoContext;
-
 	@EJB
 	private CodespaceDAO codespaceDAO;
 
@@ -58,14 +51,12 @@ public class NetexInitImportCommand implements Command, Constant {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		try {
-			log.info("Context on NetexInitImportCommand=" + ToStringBuilder.reflectionToString(context));
+			NetexprofileImportParameters parameters = (NetexprofileImportParameters) context.get(CONFIGURATION);
 
+			
 			NetexImporter importer = new NetexImporter();
 			context.put(IMPORTER, importer);
-
-
 			context.put(NETEX_XPATH_COMPILER, importer.getXPathCompiler());
-
 			context.put(REFERENTIAL, new Referential());
 			context.put(NETEX_REFERENTIAL, new NetexReferential());
 			context.put(VALIDATION_DATA, new ValidationData());
@@ -84,15 +75,11 @@ public class NetexInitImportCommand implements Command, Constant {
 
 			List<Codespace> referentialCodespaces = codespaceDAO.findAll();
 			if (referentialCodespaces.isEmpty()) {
-				log.error("no valid codespaces present for referential");
-				return ERROR;
+				log.error("No valid codespaces present for referential "+parameters.getReferentialName());
 			}
 
 			Set<Codespace> validCodespaces = new HashSet<>(referentialCodespaces);
 			context.put(NETEX_VALID_CODESPACES, validCodespaces);
-
-			daoContext.setRollbackOnly();
-			codespaceDAO.clear();
 
 			ActionReporter reporter = ActionReporter.Factory.getInstance();
 			reporter.addObjectReport(context, "merged", ActionReporter.OBJECT_TYPE.NETWORK, "networks", ActionReporter.OBJECT_STATE.OK, IO_TYPE.INPUT);
