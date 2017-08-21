@@ -60,7 +60,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 
 	// test keys
 	protected static final String STOP_POINT_1 = "rutebanken_3-StopPoint-1";
-	protected static final String STOP_POINT_2 = "rutebanken_3-StopPoint-1";
+	protected static final String STOP_POINT_2 = "rutebanken_3-StopPoint-2";
 	protected static final String STOP_AREA_1 = "3-StopArea-1";
 	protected static final String STOP_AREA_2 = "3-StopArea-2";
 	protected static final String STOP_AREA_3 = "3-StopArea-3";
