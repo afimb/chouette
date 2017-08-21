@@ -58,10 +58,13 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 		NetexprofileImportParameters parameters = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		List<Command> commands = new ArrayList<>();
 		try {
+			Chain initChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 			if (withDao && parameters.isCleanRepository()) {
-				commands.add(CommandFactory.create(initialContext, CleanRepositoryCommand.class.getName()));
+				initChain.add(CommandFactory.create(initialContext, CleanRepositoryCommand.class.getName()));
 			}
-			commands.add(CommandFactory.create(initialContext, UncompressCommand.class.getName()));
+			initChain.add(CommandFactory.create(initialContext, UncompressCommand.class.getName()));
+			initChain.add(CommandFactory.create(initialContext, NetexInitImportCommand.class.getName()));
+			commands.add(initChain);
 		} catch (Exception e) {
 			log.error(e, e);
 			throw new RuntimeException("unable to call factories");
@@ -82,8 +85,6 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 		Path path = Paths.get(jobData.getPathName(), INPUT);
 
 		try {
-			commands.add(CommandFactory.create(initialContext, NetexInitImportCommand.class.getName()));
-
 			Chain mainChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 			commands.add(mainChain);
 
@@ -217,9 +218,10 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 
 		List<Command> commands = new ArrayList<>();
 
-		// TODO consider adding separate command for cleaning up netex referential, or split in 2 (common & line)
 
 		try {
+			commands.add(CommandFactory.create(initialContext, NetexDisposeImportCommand.class.getName()));
+
 			if (level3validation) {
 				// add shared data validation
 				commands.add(CommandFactory.create(initialContext, SharedDataValidatorCommand.class.getName()));
