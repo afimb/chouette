@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 @NoArgsConstructor
 @ToString(callSuper=true)
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"objectIdPrefix","timeZone","keepOriginalId"})
+@XmlType(propOrder={"objectIdPrefix","timeZone","keepOriginalId","useTpegHvt"})
 
 public class GtfsExportParameters  extends AbstractExportParameter {
 		
@@ -33,6 +33,10 @@ public class GtfsExportParameters  extends AbstractExportParameter {
 	@Getter @Setter
 	@XmlElement(name = "keep_original_id",required = false)
 	private boolean keepOriginalId = false;
+	
+	@Getter @Setter
+	@XmlElement(name = "use_tpeg_hvt",required = false)
+	private boolean useTpegHvt = false;
 	
 	public boolean isValid(Logger log, String[] allowedTypes)
 	{
