@@ -29,7 +29,7 @@ public class GtfsRouteProducer extends AbstractProducer
 
    private GtfsRoute route = new GtfsRoute();
 
-   public boolean save(Line neptuneObject,  String prefix,boolean keepOriginalId)
+   public boolean save(Line neptuneObject,  String prefix,boolean keepOriginalId, boolean useTPEGRouteTypes)
    {
       route.setRouteId(toGtfsId(neptuneObject.getObjectId(), prefix,keepOriginalId));
       route.setAgencyId(toGtfsId(neptuneObject.getCompany().getObjectId(), prefix, keepOriginalId));
@@ -84,31 +84,37 @@ public class GtfsRouteProducer extends AbstractProducer
 
       if (neptuneObject.getTransportModeName() != null)
       {
-         switch (neptuneObject.getTransportModeName())
-         {
-         case Tram:
-            route.setRouteType(RouteTypeEnum.Tram);
-            break;
-         case TrolleyBus:
-         case Coach:
-         case Bus:
-            route.setRouteType(RouteTypeEnum.Bus);
-            break;
-         case Metro:
-            route.setRouteType(RouteTypeEnum.Subway);
-            break;
-         case Rail:
-            route.setRouteType(RouteTypeEnum.Rail);
-            break;
-         case Ferry:
-            route.setRouteType(RouteTypeEnum.Ferry);
-            break;
-         case Air:
-            route.setRouteType(RouteTypeEnum.AirService);
-            break;
-         default:
-            route.setRouteType(RouteTypeEnum.Bus);
+         if(useTPEGRouteTypes) {
+        	 route.setRouteType(RouteTypeEnum.from(neptuneObject.getTransportModeName(), neptuneObject.getTransportSubModeName()));
+         } else {
+    	  
+             switch (neptuneObject.getTransportModeName())
+             {
+             case Tram:
+                route.setRouteType(RouteTypeEnum.Tram);
+                break;
+             case Metro:
+                route.setRouteType(RouteTypeEnum.Subway);
+                break;
+             case Rail:
+                route.setRouteType(RouteTypeEnum.Rail);
+                break;
+             case Water:
+             case Ferry:
+                route.setRouteType(RouteTypeEnum.Ferry);
+                break;
+             case Funicular:
+            	 route.setRouteType(RouteTypeEnum.Funicular);
+             case Cableway:
+            	 route.setRouteType(RouteTypeEnum.Gondola);
+             case TrolleyBus:
+             case Coach:
+             case Bus:
+             default:
+                route.setRouteType(RouteTypeEnum.Bus);
+             }
          }
+      
       }
       else
       {
