@@ -30,7 +30,7 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 			break;
 		case CarFerry:
 			pair.transportMode = TransportModeNameEnum.Water;
-			pair.subMode = TransportSubModeNameEnum.LocalCarFerry; // TODO used for both passenger and car
+			//pair.subMode = TransportSubModeNameEnum.LocalCarFerry; // TODO used for both passenger and car
 			break;
 		case ExpressBoat:
 			pair.transportMode = TransportModeNameEnum.Water;

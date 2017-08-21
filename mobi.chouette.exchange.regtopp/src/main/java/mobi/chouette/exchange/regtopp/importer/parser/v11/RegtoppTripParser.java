@@ -319,6 +319,7 @@ public class RegtoppTripParser extends LineSpecificParser {
 			break;
 		case Various:
 		default:
+			pair.transportMode = TransportModeNameEnum.Other;
 		}
 
 		return pair;
