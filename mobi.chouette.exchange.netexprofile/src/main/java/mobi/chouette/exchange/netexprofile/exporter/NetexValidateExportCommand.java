@@ -19,6 +19,7 @@ import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.NetexImporterProcessingCommands;
+import mobi.chouette.exchange.netexprofile.importer.NetexInitImportCommand;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
 
 @Log4j
@@ -65,6 +66,7 @@ public class NetexValidateExportCommand implements Command, Constant {
             try {
 
                 ChainCommand validationChainCommand = (ChainCommand) CommandFactory.create(initialContext, ChainCommand.class.getName());
+                validationChainCommand.add(CommandFactory.create(initialContext, NetexInitImportCommand.class.getName()));
 
         		ProcessingCommands commands = ProcessingCommandsFactory.create(NetexImporterProcessingCommands.class.getName());
         		commands.getLineProcessingCommands(validateExportContext, false).stream().forEach(e -> validationChainCommand.add(e));
