@@ -293,7 +293,7 @@ public class GtfsTripProducer extends AbstractProducer {
 				allDestinationDisplays.add(vjas.getStopPoint().getDestinationDisplay());
 			}
 		}
-		DestinationDisplay startDestinationDisplay = vj.getVehicleJourneyAtStops().get(0).getStopPoint().getDestinationDisplay();
+		DestinationDisplay startDestinationDisplay = lvjas.get(0).getStopPoint().getDestinationDisplay();
 		boolean changesDestinationDisplay = allDestinationDisplays.size() > 1;
 		
 		if(startDestinationDisplay != null) {
