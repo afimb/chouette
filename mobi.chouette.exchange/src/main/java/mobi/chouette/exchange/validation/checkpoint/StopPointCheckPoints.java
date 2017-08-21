@@ -8,6 +8,7 @@ import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.type.ChouetteAreaEnum;
 
 @Log4j
 public class StopPointCheckPoints extends AbstractValidation<StopPoint> implements Validator<StopPoint> {
@@ -23,9 +24,12 @@ public class StopPointCheckPoints extends AbstractValidation<StopPoint> implemen
             return;
         }
         initCheckPoint(context, STOP_POINT_1, SEVERITY.E);
+        initCheckPoint(context, STOP_POINT_2, SEVERITY.E);
         prepareCheckPoint(context, STOP_POINT_1);
+        prepareCheckPoint(context, STOP_POINT_2);
 
         data.getStopPoints().forEach(stopPoint -> validateStopPointIsContainedInStopArea(context, stopPoint));
+        data.getStopPoints().forEach(stopPoint -> validateStopPointIsBoardingPosition(context, stopPoint));
 
 
     }
@@ -38,6 +42,16 @@ public class StopPointCheckPoints extends AbstractValidation<StopPoint> implemen
             DataLocation locationRoute = buildLocation(context, stopPoint.getRoute());
            
             reporter.addCheckPointReportError(context, STOP_POINT_1, locationStopPoint,stopPoint.getContainedInStopAreaObjectId(),null,locationRoute);
+        }
+    }
+
+    private void validateStopPointIsBoardingPosition(Context context, StopPoint stopPoint) {
+        if (stopPoint != null && stopPoint.getContainedInStopArea() != null && stopPoint.getContainedInStopArea().getAreaType() != ChouetteAreaEnum.BoardingPosition) {
+            ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+            DataLocation locationStopPoint = buildLocation(context, stopPoint);
+            DataLocation locationStopArea = buildLocation(context, stopPoint.getContainedInStopArea());
+           
+            reporter.addCheckPointReportError(context, STOP_POINT_2, locationStopPoint,stopPoint.getContainedInStopAreaObjectId(),null,locationStopArea);
         }
     }
 }

@@ -60,6 +60,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 
 	// test keys
 	protected static final String STOP_POINT_1 = "rutebanken_3-StopPoint-1";
+	protected static final String STOP_POINT_2 = "rutebanken_3-StopPoint-1";
 	protected static final String STOP_AREA_1 = "3-StopArea-1";
 	protected static final String STOP_AREA_2 = "3-StopArea-2";
 	protected static final String STOP_AREA_3 = "3-StopArea-3";
@@ -768,6 +769,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			testLevel3DatabaseList = new ArrayList<TestDescription>();
 
 			testLevel3DatabaseList.add(new TestDescription(3, STOP_POINT_1, "ERROR"));
+			testLevel3DatabaseList.add(new TestDescription(3, STOP_POINT_2, "ERROR"));
 			testLevel3DatabaseList.add(new TestDescription(3, STOP_AREA_1, "ERROR"));
 			testLevel3DatabaseList.add(new TestDescription(3, STOP_AREA_2, "WARNING"));
 			testLevel3DatabaseList.add(new TestDescription(3, STOP_AREA_3, "WARNING"));
