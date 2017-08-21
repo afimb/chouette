@@ -47,6 +47,7 @@ public class NetexValidateExportCommand implements Command, Constant {
             parameters.setNoSave(true);
             parameters.setReferentialName(configuration.getReferentialName());
             parameters.setParseSiteFrames(configuration.isExportStops());
+            parameters.setContinueOnLineErrors(true);
 
             validateExportContext.put(CONFIGURATION, parameters);
             validateExportContext.put(REPORT, context.get(REPORT));
