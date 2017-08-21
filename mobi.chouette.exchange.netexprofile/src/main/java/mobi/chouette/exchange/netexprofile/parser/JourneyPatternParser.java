@@ -8,6 +8,7 @@ import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.util.NetexReferential;
 import mobi.chouette.model.DestinationDisplay;
+import mobi.chouette.model.Line;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -72,10 +73,27 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
             StopPoint stopPoint = ObjectFactory.getStopPoint(referential, stopPointId);
             
             if(pointInPattern.getDestinationDisplayRef() != null) {
-            	DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential, pointInPattern.getDestinationDisplayRef().getRef());
-            	stopPoint.setDestinationDisplay(destinationDisplay);
+            	String destinationDisplayId = pointInPattern.getDestinationDisplayRef().getRef();
+				DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential, destinationDisplayId);
+            	
+            	// HACK TODO HACK 
+            	// Remove Line/PublicCode from DestinationDisplay if FrontText starts with it
+            	String lineNumber = referential.getLines().values().iterator().next().getNumber();
+            	if(destinationDisplay.getFrontText().startsWith(lineNumber+" ")) {
+             		String modifiedDestinationDisplayId = destinationDisplayId+"-NOLINENUMBER";
+					DestinationDisplay modifiedDestinationDisplay = referential.getSharedDestinationDisplays().get(modifiedDestinationDisplayId);
+                    if(modifiedDestinationDisplay == null) {
+                  		modifiedDestinationDisplay = ObjectFactory.getDestinationDisplay(referential, modifiedDestinationDisplayId);
+                		modifiedDestinationDisplay.setName(destinationDisplay.getName()+" (stripped number)");
+                		modifiedDestinationDisplay.setFrontText(destinationDisplay.getFrontText().substring(lineNumber.length()+1));
+                		modifiedDestinationDisplay.setSideText(destinationDisplay.getSideText());
+                		modifiedDestinationDisplay.getVias().addAll(destinationDisplay.getVias());
+                    }
+                   	stopPoint.setDestinationDisplay(modifiedDestinationDisplay);
+            	} else {
+                   	stopPoint.setDestinationDisplay(destinationDisplay);
+            	}
             }
-            
             
             chouetteJourneyPattern.addStopPoint(stopPoint);
 

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PublicationDelivery xmlns="http://www.netex.org.uk/netex" version="1.04:NO-NeTEx-networktimetable:1.0">
+    <PublicationTimestamp>2017-02-20T14:39:25.305Z</PublicationTimestamp>
+    <ParticipantRef>Avinor</ParticipantRef>
+    <Description>Line: Trondheim-Molde</Description>
+    <dataObjects>
+        <CompositeFrame created="2017-02-20T14:39:25.305Z" version="1" id="AVI:CompositeFrame:WF-TRD-MOL">
+
+            <codespaces>
+                <Codespace id="avi">
+                    <Xmlns>AVI</Xmlns>
+                    <XmlnsUrl>http://www.rutebanken.org/ns/avi</XmlnsUrl>
+                </Codespace>
+                <Codespace id="nsr">
+                    <Xmlns>NSR</Xmlns>
+                    <XmlnsUrl>http://www.rutebanken.org/ns/nsr</XmlnsUrl>
+                </Codespace>
+            </codespaces>
+
+            <frames>
+
+                <ServiceFrame version="1" id="AVI:ServiceFrame:7722364">
+                    <Network changed="2017-02-20T14:39:25.305Z" version="1" id="AVI:Network:WF">
+                        <Name>Widerøe</Name>
+                        <AuthorityRef ref="AVI:Authority:Avinor" version="1"/>
+                    </Network>
+                    <routePoints>
+                        <RoutePoint version="1" id="AVI:RoutePoint:76522">
+                            <projections>
+                                <PointProjection version="1" id="AVI:PointProjection:76522">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:76522" version="1"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                        <RoutePoint version="1" id="AVI:RoutePoint:83334">
+                            <projections>
+                                <PointProjection version="1" id="AVI:PointProjection:83334">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:83334" version="1"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                    </routePoints>
+                    <routes>
+                        <Route version="1" id="AVI:Route:12636280">
+                            <Name>Trondheim-Molde</Name>
+                            <LineRef ref="AVI:Line:WF_TRD-MOL" version="1"/>
+                            <pointsInSequence>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1263628001">
+                                    <RoutePointRef ref="AVI:RoutePoint:83334" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1263628002">
+                                    <RoutePointRef ref="AVI:RoutePoint:76522" version="1"/>
+                                </PointOnRoute>
+                            </pointsInSequence>
+                        </Route>
+                        <Route version="1" id="AVI:Route:18696881">
+                            <Name>Molde-Trondheim</Name>
+                            <LineRef ref="AVI:Line:WF_TRD-MOL" version="1"/>
+                            <pointsInSequence>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1869688101">
+                                    <RoutePointRef ref="AVI:RoutePoint:76522" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1869688102">
+                                    <RoutePointRef ref="AVI:RoutePoint:83334" version="1"/>
+                                </PointOnRoute>
+                            </pointsInSequence>
+                        </Route>
+                    </routes>
+                    <lines>
+                        <Line version="1" id="AVI:Line:WF_TRD-MOL">
+                            <Name>Trondheim-Molde</Name>
+                            <TransportMode>air</TransportMode>
+                            <PublicCode>1</PublicCode>
+
+                            <RepresentedByGroupRef ref="AVI:Network:WF" version="1"/>
+                        </Line>
+                    </lines>
+                    <destinationDisplays>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:MOLDE">
+                            <FrontText>10 Molde</FrontText>
+                            <vias>
+                                <Via>
+                                    <DestinationDisplayRef ref="AVI:DestinationDisplay:VIA"/>
+                                </Via>
+                            </vias>
+                        </DestinationDisplay>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:VIA">
+                            <FrontText>Via</FrontText>
+                        </DestinationDisplay>
+                        <DestinationDisplay version="1" id="AVI:DestinationDisplay:NONUMBER">
+                            <FrontText>1 Molde</FrontText>
+                        </DestinationDisplay>
+                    </destinationDisplays>
+                    <scheduledStopPoints>
+                        <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:76522">
+                            <Name>Molde Lufthavn</Name>
+                            <ShortName>MOL</ShortName>
+                        </ScheduledStopPoint>
+                        <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:83334">
+                            <Name>Trondheim Lufthavn</Name>
+                            <ShortName>TRD</ShortName>
+                        </ScheduledStopPoint>
+                    </scheduledStopPoints>
+                    <stopAssignments>
+                        <PassengerStopAssignment order="26" version="1" id="AVI:PassengerStopAssignment:MOL">
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:76522" version="1"/>
+                            <QuayRef ref="AVI:Quay:MOL"/>
+                        </PassengerStopAssignment>
+                        <PassengerStopAssignment order="42" version="1" id="AVI:PassengerStopAssignment:TRD">
+                            <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:83334" version="1"/>
+                            <QuayRef ref="AVI:Quay:TRD"/>
+                        </PassengerStopAssignment>
+                    </stopAssignments>
+                    <journeyPatterns>
+                        <JourneyPattern version="1" id="AVI:JourneyPattern:12636280">
+                            <RouteRef ref="AVI:Route:12636280" version="1"/>
+                            <pointsInSequence>
+                                <StopPointInJourneyPattern order="1" version="1" id="AVI:StopPointInJourneyPattern:1263628001">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:83334" version="1"/>
+                                  
+                                    <DestinationDisplayRef ref="AVI:DestinationDisplay:MOLDE" version="1"/>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:1263628002">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:76522" version="1"/>
+                                    <DestinationDisplayRef ref="AVI:DestinationDisplay:NONUMBER"/>
+                                </StopPointInJourneyPattern>
+                            </pointsInSequence>
+                        </JourneyPattern>
+                    </journeyPatterns>
+                </ServiceFrame>
+            </frames>
+        </CompositeFrame>
+    </dataObjects>
+</PublicationDelivery>

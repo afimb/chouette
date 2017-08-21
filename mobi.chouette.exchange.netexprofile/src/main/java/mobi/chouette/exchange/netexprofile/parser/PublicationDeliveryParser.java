@@ -42,14 +42,14 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 		boolean isCommonDelivery = (boolean) context.get(NETEX_WITH_COMMON_DATA);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
- 		PublicationDeliveryStructure publicationDelivery = (PublicationDeliveryStructure) context.get(NETEX_DATA_JAVA);
+		PublicationDeliveryStructure publicationDelivery = (PublicationDeliveryStructure) context.get(NETEX_DATA_JAVA);
 		List<JAXBElement<? extends Common_VersionFrameStructure>> dataObjectFrames = publicationDelivery.getDataObjects().getCompositeFrameOrCommonFrame();
 		List<CompositeFrame> compositeFrames = NetexObjectUtil.getFrames(CompositeFrame.class, dataObjectFrames);
 
-		if(compositeFrames.size() > 0) {
-			
+		if (compositeFrames.size() > 0) {
+
 			// parse composite frame elements
-			for(CompositeFrame compositeFrame : compositeFrames) {
+			for (CompositeFrame compositeFrame : compositeFrames) {
 
 				parseValidityConditionsInFrame(context, compositeFrame);
 
@@ -65,11 +65,11 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 
 				// normal processing
 				parseResourceFrames(context, resourceFrames);
-				
-				if(configuration.isParseSiteFrames()) {
+
+				if (configuration.isParseSiteFrames()) {
 					parseSiteFrames(context, siteFrames);
 				}
-				parseServiceFrames(context, serviceFrames , isCommonDelivery);
+				parseServiceFrames(context, serviceFrames, isCommonDelivery);
 				parseServiceCalendarFrame(context, serviceCalendarFrames);
 
 				if (!isCommonDelivery) {
@@ -90,7 +90,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 
 			// normal processing
 			parseResourceFrames(context, resourceFrames);
-			if(configuration.isParseSiteFrames()) {
+			if (configuration.isParseSiteFrames()) {
 				parseSiteFrames(context, siteFrames);
 			}
 			parseServiceFrames(context, serviceFrames, isCommonDelivery);
@@ -141,62 +141,62 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 					stopPlaceParser.parse(context);
 				}
 			}
-        }
+		}
 
 		if (!isCommonDelivery) {
-//			Map<String, Set<String>> journeyDayTypeIdMap = new HashMap<>();
-//
-//			for (TimetableFrame timetableFrame : timetableFrames) {
-//				for (Journey_VersionStructure journeyStruct : timetableFrame.getVehicleJourneys().getDatedServiceJourneyOrDeadRunOrServiceJourney()) {
-//					ServiceJourney serviceJourney = (ServiceJourney) journeyStruct;
-//					Set<String> dayTypeIds = new HashSet<>();
-//
-//					for (JAXBElement<? extends DayTypeRefStructure> dayTypeRefStructElement : serviceJourney.getDayTypes().getDayTypeRef()) {
-//						dayTypeIds.add(dayTypeRefStructElement.getValue().getRef());
-//					}
-//
-//					journeyDayTypeIdMap.put(serviceJourney.getId(), dayTypeIds);
-//				}
-//			}
-//
-//			Set<String> processedIds = new HashSet<>();
-//			List<Set<String>> calendarGroups = new ArrayList<>();
-//
-//			for (Map.Entry<String, Set<String>> entry1 : journeyDayTypeIdMap.entrySet()) {
-//				if (!processedIds.contains(entry1.getKey())) {
-//					Set<String> groupedJourneyIds = new HashSet<>();
-//					groupedJourneyIds.add(entry1.getKey());
-//
-//					for (Map.Entry<String, Set<String>> entry2 : journeyDayTypeIdMap.entrySet()) {
-//						if (!entry1.getKey().equals(entry2.getKey())) {
-//							if (CollectionUtils.isEqualCollection(entry1.getValue(), entry2.getValue())) {
-//								groupedJourneyIds.add(entry2.getKey());
-//								processedIds.add(entry2.getKey());
-//							}
-//						}
-//					}
-//					calendarGroups.add(groupedJourneyIds);
-//					processedIds.add(entry1.getKey());
-//				}
-//			}
-//
-//			assert line != null;
-//			String[] idParts = StringUtils.split(line.getId(), ":");
-//			String[] idSequence = NetexProducerUtils.generateIdSequence(calendarGroups.size());
-//
-//			for (int i = 0; i < calendarGroups.size(); i++) {
-//				String timetableIdSuffix = idParts[2] + "-" + StringUtils.leftPad(idSequence[i], 2, "0");
-//				String timetableId = netexId(idParts[0], ObjectIdTypes.TIMETABLE_KEY, timetableIdSuffix);
-//				Timetable timetable = ObjectFactory.getTimetable(referential, timetableId);
-//
-//				for (String journeyId : calendarGroups.get(i)) {
-//					addTimetableId(context, journeyId, timetable.getObjectId());
-//				}
-//			}
+			// Map<String, Set<String>> journeyDayTypeIdMap = new HashMap<>();
+			//
+			// for (TimetableFrame timetableFrame : timetableFrames) {
+			// for (Journey_VersionStructure journeyStruct : timetableFrame.getVehicleJourneys().getDatedServiceJourneyOrDeadRunOrServiceJourney()) {
+			// ServiceJourney serviceJourney = (ServiceJourney) journeyStruct;
+			// Set<String> dayTypeIds = new HashSet<>();
+			//
+			// for (JAXBElement<? extends DayTypeRefStructure> dayTypeRefStructElement : serviceJourney.getDayTypes().getDayTypeRef()) {
+			// dayTypeIds.add(dayTypeRefStructElement.getValue().getRef());
+			// }
+			//
+			// journeyDayTypeIdMap.put(serviceJourney.getId(), dayTypeIds);
+			// }
+			// }
+			//
+			// Set<String> processedIds = new HashSet<>();
+			// List<Set<String>> calendarGroups = new ArrayList<>();
+			//
+			// for (Map.Entry<String, Set<String>> entry1 : journeyDayTypeIdMap.entrySet()) {
+			// if (!processedIds.contains(entry1.getKey())) {
+			// Set<String> groupedJourneyIds = new HashSet<>();
+			// groupedJourneyIds.add(entry1.getKey());
+			//
+			// for (Map.Entry<String, Set<String>> entry2 : journeyDayTypeIdMap.entrySet()) {
+			// if (!entry1.getKey().equals(entry2.getKey())) {
+			// if (CollectionUtils.isEqualCollection(entry1.getValue(), entry2.getValue())) {
+			// groupedJourneyIds.add(entry2.getKey());
+			// processedIds.add(entry2.getKey());
+			// }
+			// }
+			// }
+			// calendarGroups.add(groupedJourneyIds);
+			// processedIds.add(entry1.getKey());
+			// }
+			// }
+			//
+			// assert line != null;
+			// String[] idParts = StringUtils.split(line.getId(), ":");
+			// String[] idSequence = NetexProducerUtils.generateIdSequence(calendarGroups.size());
+			//
+			// for (int i = 0; i < calendarGroups.size(); i++) {
+			// String timetableIdSuffix = idParts[2] + "-" + StringUtils.leftPad(idSequence[i], 2, "0");
+			// String timetableId = netexId(idParts[0], ObjectIdTypes.TIMETABLE_KEY, timetableIdSuffix);
+			// Timetable timetable = ObjectFactory.getTimetable(referential, timetableId);
+			//
+			// for (String journeyId : calendarGroups.get(i)) {
+			// addTimetableId(context, journeyId, timetable.getObjectId());
+			// }
+			// }
 		}
 	}
 
-    private void parseResourceFrames(Context context, List<ResourceFrame> resourceFrames) throws Exception {
+	private void parseResourceFrames(Context context, List<ResourceFrame> resourceFrames) throws Exception {
 		for (ResourceFrame resourceFrame : resourceFrames) {
 			OrganisationsInFrame_RelStructure organisationsInFrameStruct = resourceFrame.getOrganisations();
 			if (organisationsInFrameStruct != null) {
@@ -209,7 +209,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 
 	private void parseSiteFrames(Context context, List<SiteFrame> siteFrames) throws Exception {
 		for (SiteFrame siteFrame : siteFrames) {
-            StopPlacesInFrame_RelStructure stopPlacesStruct = siteFrame.getStopPlaces();
+			StopPlacesInFrame_RelStructure stopPlacesStruct = siteFrame.getStopPlaces();
 			if (stopPlacesStruct != null) {
 				context.put(NETEX_LINE_DATA_CONTEXT, stopPlacesStruct);
 				StopPlaceParser stopPlaceParser = (StopPlaceParser) ParserFactory.create(StopPlaceParser.class.getName());
@@ -227,41 +227,40 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 				NetworkParser networkParser = (NetworkParser) ParserFactory.create(NetworkParser.class.getName());
 				networkParser.parse(context);
 			}
-			
-			
-			if(serviceFrame.getDestinationDisplays() != null) {
+
+			if (serviceFrame.getDestinationDisplays() != null) {
 				DestinationDisplaysInFrame_RelStructure destinationDisplaysInFrameStruct = serviceFrame.getDestinationDisplays();
 				context.put(NETEX_LINE_DATA_CONTEXT, destinationDisplaysInFrameStruct);
 				DestinationDisplayParser destinationDisplayParser = (DestinationDisplayParser) ParserFactory.create(DestinationDisplayParser.class.getName());
 				destinationDisplayParser.parse(context);
-				
+
 			}
 
 			if (!isCommonDelivery) {
 				LinesInFrame_RelStructure linesInFrameStruct = serviceFrame.getLines();
-				context.put(NETEX_LINE_DATA_CONTEXT, linesInFrameStruct);
-				LineParser lineParser = (LineParser) ParserFactory.create(LineParser.class.getName());
-				lineParser.parse(context);
-
+				if (linesInFrameStruct != null) {
+					context.put(NETEX_LINE_DATA_CONTEXT, linesInFrameStruct);
+					LineParser lineParser = (LineParser) ParserFactory.create(LineParser.class.getName());
+					lineParser.parse(context);
+				}
 				RoutesInFrame_RelStructure routesInFrameStruct = serviceFrame.getRoutes();
-				context.put(NETEX_LINE_DATA_CONTEXT, routesInFrameStruct);
-				RouteParser routeParser = (RouteParser) ParserFactory.create(RouteParser.class.getName());
-				routeParser.parse(context);
-
+				if (routesInFrameStruct != null) {
+					context.put(NETEX_LINE_DATA_CONTEXT, routesInFrameStruct);
+					RouteParser routeParser = (RouteParser) ParserFactory.create(RouteParser.class.getName());
+					routeParser.parse(context);
+				}
 				JourneyPatternsInFrame_RelStructure journeyPatternStruct = serviceFrame.getJourneyPatterns();
-				context.put(NETEX_LINE_DATA_CONTEXT, journeyPatternStruct);
-				JourneyPatternParser journeyPatternParser = (JourneyPatternParser) ParserFactory.create(JourneyPatternParser.class.getName());
-                journeyPatternParser.parse(context);
-
-				TransfersInFrame_RelStructure connectionsStruct = serviceFrame.getConnections();
-				if (connectionsStruct != null) {
-					// TODO implement connection link parser
+				if (journeyPatternStruct != null) {
+					context.put(NETEX_LINE_DATA_CONTEXT, journeyPatternStruct);
+					JourneyPatternParser journeyPatternParser = (JourneyPatternParser) ParserFactory.create(JourneyPatternParser.class.getName());
+					journeyPatternParser.parse(context);
 				}
 
 				Map<String, String> noticeAssignmentMap = new HashMap<>();
 
 				if (serviceFrame.getNoticeAssignments() != null) {
-					for (JAXBElement<? extends DataManagedObjectStructure> noticeAssignmentElement : serviceFrame.getNoticeAssignments().getNoticeAssignment_()) {
+					for (JAXBElement<? extends DataManagedObjectStructure> noticeAssignmentElement : serviceFrame.getNoticeAssignments()
+							.getNoticeAssignment_()) {
 						NoticeAssignment noticeAssignment = (NoticeAssignment) noticeAssignmentElement.getValue();
 
 						if (noticeAssignment.getNoticeRef() != null && noticeAssignment.getNoticedObjectRef() != null) {
@@ -329,16 +328,14 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 			context.put(NETEX_LINE_DATA_CONTEXT, vehicleJourneysStruct);
 			Parser serviceJourneyParser = ParserFactory.create(ServiceJourneyParser.class.getName());
 			serviceJourneyParser.parse(context);
-			
+
 			JourneyInterchangesInFrame_RelStructure journeyInterchangesStruct = timetableFrame.getJourneyInterchanges();
-			if(journeyInterchangesStruct != null) {
+			if (journeyInterchangesStruct != null) {
 				context.put(NETEX_LINE_DATA_CONTEXT, journeyInterchangesStruct);
 				Parser serviceInterchangeParser = ParserFactory.create(ServiceJourneyInterchangeParser.class.getName());
 				serviceInterchangeParser.parse(context);
 			}
-			
-			
-			
+
 		}
 	}
 
@@ -350,12 +347,12 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 			footnote.setKey(notice.getId());
 
 			if (notice.getName() != null) {
-				//footnote.setLabel(notice.getName().getValue());
+				// footnote.setLabel(notice.getName().getValue());
 			}
 			if (notice.getText() != null) {
 				footnote.setLabel(notice.getText().getValue());
 			}
-			if (notice.getPublicCode() !=  null) {
+			if (notice.getPublicCode() != null) {
 				footnote.setCode(notice.getPublicCode());
 			}
 			if (notice.getTypeOfNoticeRef() != null) {
@@ -433,7 +430,6 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
 		objectContext.put(TIMETABLE_ID, timetableId);
 	}
-
 
 	protected void sortStopPoints(Referential referential) {
 		// Sort stopPoints on JourneyPattern
