@@ -505,9 +505,15 @@ public class RegtoppLineParser extends LineSpecificParser {
 		} else if (transportModes.size() == 1) {
 			
 			TransportModePair pair = transportModes.iterator().next();
+			if(pair.transportMode != null) {
 			// Only one transport mode used for all routes/journeys
 			line.setTransportModeName(pair.transportMode);
 			line.setTransportSubModeName(pair.subMode);
+			} else {
+				log.warn("No TransportMode on TransportModePair, using 'Other'");
+				line.setTransportModeName(TransportModeNameEnum.Other);
+			}
+			
 			
 			// Remove overrides from servicejourneys
 			for(VehicleJourney vj : referential.getVehicleJourneys().values()) {
