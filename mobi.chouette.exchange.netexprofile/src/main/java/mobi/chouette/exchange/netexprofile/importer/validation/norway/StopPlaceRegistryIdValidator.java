@@ -146,6 +146,9 @@ public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator 
 				if (split.length == 2) {
 					cache.add(split[0]);
 					cache.add(split[1]);
+				} else if (split.length == 3) {
+					cache.add(split[0]);
+					cache.add(split[2]);
 				} else {
 					log.error("NSR contains illegal mappings: " + u + " " + line);
 				}
