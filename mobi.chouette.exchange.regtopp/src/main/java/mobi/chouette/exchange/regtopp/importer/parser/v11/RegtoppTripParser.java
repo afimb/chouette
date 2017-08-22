@@ -290,7 +290,7 @@ public class RegtoppTripParser extends LineSpecificParser {
 			break;
 		case ExpressCoach:
 			pair.transportMode = TransportModeNameEnum.Coach;
-			pair.subMode = TransportSubModeNameEnum.RegionalBus;
+			pair.subMode = TransportSubModeNameEnum.NationalCoach;
 			break;
 		case FerryBoat:
 			pair.transportMode = TransportModeNameEnum.Water;
