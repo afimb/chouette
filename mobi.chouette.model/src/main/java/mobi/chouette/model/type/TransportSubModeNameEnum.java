@@ -65,7 +65,14 @@ public enum TransportSubModeNameEnum {
     /**
      * Funicular sub modes
      */
-    Funicular;
+    Funicular,
+	
+	/**
+	 * Coach sub modes
+	 */
+	InternationalCoach,
+	NationalCoach,
+	TouristCoach;
 
     public static final EnumSet<TransportSubModeNameEnum> CABELWAY_SUB_MODES = EnumSet.of(TransportSubModeNameEnum.Telecabin);
     public static final EnumSet<TransportSubModeNameEnum> FUNICULAR_SUB_MODES = EnumSet.of(TransportSubModeNameEnum.Funicular);
@@ -115,6 +122,12 @@ public enum TransportSubModeNameEnum {
             TransportSubModeNameEnum.SchoolBus,
             TransportSubModeNameEnum.ShuttleBus,
             TransportSubModeNameEnum.SightseeingBus
+    );
+
+    public static final EnumSet<TransportSubModeNameEnum> COACH_SUB_MODES = EnumSet.of(
+            TransportSubModeNameEnum.InternationalCoach,
+            TransportSubModeNameEnum.NationalCoach,
+            TransportSubModeNameEnum.TouristCoach
     );
 
 }
