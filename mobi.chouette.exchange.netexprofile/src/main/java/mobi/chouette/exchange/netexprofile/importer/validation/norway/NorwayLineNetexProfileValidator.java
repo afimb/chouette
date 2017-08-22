@@ -33,6 +33,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 	public static final String NAME = "NorwayLineNetexProfileValidator";
 	
 	private static final String[] validTransportModes = new String[] {
+			"coach",
 			"bus",
 			"tram",
 			"rail",
@@ -46,6 +47,9 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 	
 	
 	private static final String[] validTransportSubModes = new String[] {
+			"internationalCoach",
+			"nationalCoach",
+			"touristCoach",
 			"airportLinkBus",
 			"localTram",
 			"international",
