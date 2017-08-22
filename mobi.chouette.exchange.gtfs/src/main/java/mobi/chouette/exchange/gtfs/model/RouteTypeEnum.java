@@ -314,7 +314,9 @@ public enum RouteTypeEnum {
 		default:
 			// Fallthrough
 		}
-		return MiscellaneousService;
+		// TODO HACK WARN TODO TODO
+		// Using this category for anything that should be MiscellaneousService (1700) which is not supported by OTP
+		return RouteTypeEnum.Gondola;
 	}
 
 }
