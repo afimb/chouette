@@ -78,7 +78,7 @@ public class StopAreaIdCache {
         return quayIdMap.get(localId);
     }
 
-    private void ensureCacheIsValid() {
+    private synchronized void ensureCacheIsValid() {
         if (lastUpdated < System.currentTimeMillis() - timeToLiveMs) {
             refreshCache();
         }
@@ -92,8 +92,14 @@ public class StopAreaIdCache {
         while (!result && remainingUpdateRetries-- > 0) {
             // Fetch data and populate caches
             log.info("Cache is old, refreshing quay and stopplace cache");
-            boolean stopPlaceOk = populateCache(stopPlaceIdMap, stopPlaceEndpoint);
-            boolean quayOK = populateCache(quayIdMap, quayEndpoint);
+
+            Map<String, Map<StopTypeEnumeration, String>> newStopPlaceIdMap = new HashMap<>();
+            boolean stopPlaceOk = populateCache(newStopPlaceIdMap, stopPlaceEndpoint);
+            stopPlaceIdMap = newStopPlaceIdMap;
+
+            Map<String, Map<StopTypeEnumeration, String>> newQuayIdMap = new HashMap<>();
+            boolean quayOK = populateCache(newQuayIdMap, quayEndpoint);
+            quayIdMap = newQuayIdMap;
 
             if (quayOK && stopPlaceOk) {
                 lastUpdated = System.currentTimeMillis();
