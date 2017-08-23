@@ -71,6 +71,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 			"internationalPassengerFerry",
 			"railReplacementBus",
 			"nightRail",
+			"airportLinkRail",
 			"localCarFerry",
 			"regionalBus",
 			"regionalRail",
