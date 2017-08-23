@@ -59,6 +59,8 @@ public class RegtoppLineParserCommand implements Command {
 		try {
 			Referential referential = (Referential) context.get(REFERENTIAL);
 			RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
+			RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
+
 			if (referential != null) {
 				referential.clear(true);
 			}
@@ -90,7 +92,7 @@ public class RegtoppLineParserCommand implements Command {
 			}
 
 			// Populate shared connection links
-			if (referential.getSharedConnectionLinks().isEmpty()) {
+			if (parameters.isParseConnectionLinks() && referential.getSharedConnectionLinks().isEmpty()) {
 				Parser connectionLinkParser = versionHandler.createConnectionLinkParser();
 				connectionLinkParser.parse(context);
 			}
