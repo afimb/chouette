@@ -42,7 +42,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 			"water",
 			"cableway",
 			"funicular",
-			"other"
+			"unknown"
 	};
 	
 	
