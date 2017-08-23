@@ -11,7 +11,7 @@ public enum RouteTypeEnum {
 			4, TransportModeNameEnum.Ferry), Cable(5,
 					TransportModeNameEnum.Funicular), Gondola(6, TransportModeNameEnum.Cableway), Funicular(7, TransportModeNameEnum.Funicular),
 	// extension Rail
-	RailwayService(100, TransportModeNameEnum.Rail), HighSpeedRailService(101, TransportModeNameEnum.Rail), LongDistanceTrains(102, TransportModeNameEnum.Rail,
+	RailwayService(100, TransportModeNameEnum.Rail), HighSpeedRailService(101, TransportModeNameEnum.Rail, TransportSubModeNameEnum.AirportLinkRail), LongDistanceTrains(102, TransportModeNameEnum.Rail,
 			TransportSubModeNameEnum.LongDistance), InterRegionalRailService(103, TransportModeNameEnum.Rail,
 					TransportSubModeNameEnum.InterregionalRail), CarTransportRailService(104, TransportModeNameEnum.Rail), SleeperRailService(105,
 							TransportModeNameEnum.Rail, TransportSubModeNameEnum.NightRail), RegionalRailService(106, TransportModeNameEnum.Rail,
@@ -31,10 +31,10 @@ public enum RouteTypeEnum {
 																													TransportModeNameEnum.Rail), AdditionalRailService(
 																															117, TransportModeNameEnum.Rail),
 	// extension Coach
-	CoachService(200, TransportModeNameEnum.Coach), InternationalCoachService(201, TransportModeNameEnum.Coach), NationalCoachService(202,
-			TransportModeNameEnum.Coach), ShuttleCoachService(203, TransportModeNameEnum.Coach), RegionalCoachService(204,
+	CoachService(200, TransportModeNameEnum.Coach), InternationalCoachService(201, TransportModeNameEnum.Coach, TransportSubModeNameEnum.InternationalCoach), NationalCoachService(202,
+			TransportModeNameEnum.Coach,TransportSubModeNameEnum.NationalCoach), ShuttleCoachService(203, TransportModeNameEnum.Coach), RegionalCoachService(204,
 					TransportModeNameEnum.Coach), SpecialCoachService(205, TransportModeNameEnum.Coach), SightseeingCoachService(206,
-							TransportModeNameEnum.Coach), TouristCoachService(207, TransportModeNameEnum.Coach), CommuterCoachService(208,
+							TransportModeNameEnum.Coach), TouristCoachService(207, TransportModeNameEnum.Coach,TransportSubModeNameEnum.TouristCoach), CommuterCoachService(208,
 									TransportModeNameEnum.Coach), AllCoachServices(209, TransportModeNameEnum.Coach),
 	// extension
 	SuburbanRailwayService(300, TransportModeNameEnum.Rail, TransportSubModeNameEnum.Local),
@@ -237,7 +237,12 @@ public enum RouteTypeEnum {
 				return RouteTypeEnum.CoachService;
 			} else {
 				switch (subMode) {
-				// TODO
+				case InternationalCoach:
+					return RouteTypeEnum.InternationalCoachService;
+				case NationalCoach:
+					return RouteTypeEnum.NationalCoachService;
+				case TouristCoach:
+					return RouteTypeEnum.TouristCoachService;
 				default:
 					return CoachService;
 				}
@@ -266,6 +271,8 @@ public enum RouteTypeEnum {
 					return RouteTypeEnum.RegionalRailService;
 				case TouristRailway:
 					return RouteTypeEnum.TouristRailwayService;
+				case AirportLinkRail:
+					return HighSpeedRailService;
 				default:
 					return RouteTypeEnum.RailwayService;
 				}
