@@ -32,6 +32,7 @@ public class RegtoppStopParserCommand implements Command {
 
 		try {
 			Referential referential = (Referential) context.get(REFERENTIAL);
+			RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
 			if (referential != null) {
 				referential.clear(true);
 			}
@@ -44,7 +45,7 @@ public class RegtoppStopParserCommand implements Command {
 				stopParser.parse(context);
 			}
 			// Populate shared connection links
-			if (referential.getSharedConnectionLinks().isEmpty()) {
+			if (parameters.isParseConnectionLinks() && referential.getSharedConnectionLinks().isEmpty()) {
 				Parser connectionLinkParser = versionHandler.createConnectionLinkParser();
 				connectionLinkParser.parse(context);
 			}

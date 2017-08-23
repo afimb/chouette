@@ -7,6 +7,10 @@ import javax.naming.InitialContext;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.regtopp.RegtoppConstant;
+import mobi.chouette.exchange.regtopp.importer.version.Regtopp11DVersionHandler;
+import mobi.chouette.exchange.regtopp.importer.version.Regtopp13AVersionHandler;
+import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
 
 public class RegtoppFileConsistencyValidationCommand implements Command {
 
@@ -17,6 +21,8 @@ public class RegtoppFileConsistencyValidationCommand implements Command {
 
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 
+		VersionHandler versionHandler = (VersionHandler) context.get(RegtoppConstant.VERSION_HANDLER);
+		
 		if(importer.hasDSTImporter()) {
 			importer.getDestinationById();
 		}
@@ -35,10 +41,10 @@ public class RegtoppFileConsistencyValidationCommand implements Command {
 		if(importer.hasGAVImporter()) {
 			importer.getPathwayByIndexingKey();
 		}
-		if(importer.hasSTPImporter()) {
+		if(versionHandler instanceof Regtopp13AVersionHandler && importer.hasSTPImporter()) {
 			importer.getStopPointsByIndexingKey();
 		}
-		if(importer.hasTDAImporter()) {
+		if(versionHandler instanceof Regtopp11DVersionHandler && importer.hasTDAImporter()) {
 			importer.getRouteSegmentByLineNumber();
 		}
 		if(importer.hasTIXImporter()) {
