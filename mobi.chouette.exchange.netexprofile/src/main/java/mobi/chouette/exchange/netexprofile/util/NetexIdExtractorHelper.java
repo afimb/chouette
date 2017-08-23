@@ -34,7 +34,7 @@ public class NetexIdExtractorHelper {
 		filterClause.append("//n:*[");
 		if (ignorableElementNames != null) {
 			for (String elementName : ignorableElementNames) {
-				filterClause.append("not(name()='" + elementName + "') and ");
+				filterClause.append("not(local-name(.)='" + elementName + "') and ");
 			}
 		}
 		filterClause.append("@" + attributeName + "]");
