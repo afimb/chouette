@@ -36,7 +36,7 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 			break;
 		case AirportExpressTrain:
 			pair.transportMode = TransportModeNameEnum.Rail;
-			pair.subMode = TransportSubModeNameEnum.RegionalRail; // TODO 
+			pair.subMode = TransportSubModeNameEnum.AirportLinkRail;  
 			break;
 		default:
 			pair = super.convertTypeOfService(typeOfService);
