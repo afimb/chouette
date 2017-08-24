@@ -272,6 +272,19 @@ public class RegtoppRouteParser extends LineSpecificParser {
 				departureStopPoint.setDestinationDisplay(destinationDisplay);
 
 			}
+			
+			// Remove repeats
+			DestinationDisplay previousDestinationDisplay = departureStopPoint.getDestinationDisplay();
+			for(int i=1;i<stopPoints.size();i++) {
+				StopPoint sp = stopPoints.get(i);
+				if(sp.getDestinationDisplay() != null) {
+					if(sp.getDestinationDisplay().equals(previousDestinationDisplay)) {
+						sp.setDestinationDisplay(null); // Same as previous, just remove
+					} else {
+						previousDestinationDisplay = sp.getDestinationDisplay();
+					}
+				}
+			}
 		}
 
 		// Sort stopPoints on route

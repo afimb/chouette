@@ -255,48 +255,57 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 				continue;
 			}
 
-			long diffTime = diffTime(vjas0.getDepartureTime(), vjas0.getDepartureDayOffset(), vjas1.getArrivalTime(),
-					vjas1.getArrivalDayOffset());
-			/** GJT */
-			if (diffTime < 0) {
-				// chronologie inverse ou non définie
+			if(vjas0.getDepartureTime().equals(vjas1.getArrivalTime()) && vjas0.getDepartureDayOffset() == vjas1.getArrivalDayOffset()) {
 				DataLocation source = buildLocation(context, vj);
 				DataLocation target1 = buildLocation(context, vjas0.getStopPoint().getContainedInStopArea());
 				DataLocation target2 = buildLocation(context, vjas1.getStopPoint().getContainedInStopArea());
 
 				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-				reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, "1", source, null, null, target1, target2);
+				reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, "4", source,
+                        vjas0.getDepartureTime().toString("HH:mm"), null, target1, target2);
+
 			} else {
-
-				double distance = getDistance(vjas0.getStopPoint().getContainedInStopArea(), vjas1.getStopPoint()
-						.getContainedInStopArea());
-				if (distance < 1) {
-					// arrêts superposés, vitesse non calculable
+			
+				long diffTime = diffTime(vjas0.getDepartureTime(), vjas0.getDepartureDayOffset(), vjas1.getArrivalTime(),
+						vjas1.getArrivalDayOffset());
+				/** GJT */
+				if (diffTime < 0) {
+					// chronologie inverse ou non définie
+					DataLocation source = buildLocation(context, vj);
+					DataLocation target1 = buildLocation(context, vjas0.getStopPoint().getContainedInStopArea());
+					DataLocation target2 = buildLocation(context, vjas1.getStopPoint().getContainedInStopArea());
+	
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, "1", source, null, null, target1, target2);
 				} else {
-					if(diffTime == 0) {
-						diffTime = 30; // If departure is on the same minute, allow 30 seconds slack
-					}
-					double speed = distance / (double) diffTime * 36 / 10; // (km/h)
-					String calculatedSpeed = Integer.toString((int) speed );
-
-					if (speed < minSpeed) {
-						// trop lent
-						DataLocation source = buildLocation(context, vj);
-						DataLocation target1 = buildLocation(context, vjas0.getStopPoint().getContainedInStopArea());
-						DataLocation target2 = buildLocation(context, vjas1.getStopPoint().getContainedInStopArea());
-
-						ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-						reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, "2", source,
-                                calculatedSpeed, Integer.toString((int) minSpeed), target1, target2);
-					} else if (speed > maxSpeed) {
-						// trop rapide
-						DataLocation source = buildLocation(context, vj);
-						DataLocation target1 = buildLocation(context, vjas0.getStopPoint().getContainedInStopArea());
-						DataLocation target2 = buildLocation(context, vjas1.getStopPoint().getContainedInStopArea());
-
-						ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-						reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, "3", source,
-                                calculatedSpeed, Integer.toString((int) maxSpeed), target1, target2);
+					
+					double distance = getDistance(vjas0.getStopPoint().getContainedInStopArea(), vjas1.getStopPoint()
+							.getContainedInStopArea());
+					if (distance < 1) {
+						// arrêts superposés, vitesse non calculable
+					} else {
+						double speed = distance / (double) diffTime * 36 / 10; // (km/h)
+						String calculatedSpeed = Integer.toString((int) speed );
+	
+						if (speed < minSpeed) {
+							// trop lent
+							DataLocation source = buildLocation(context, vj);
+							DataLocation target1 = buildLocation(context, vjas0.getStopPoint().getContainedInStopArea());
+							DataLocation target2 = buildLocation(context, vjas1.getStopPoint().getContainedInStopArea());
+	
+							ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+							reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, "2", source,
+	                                calculatedSpeed, Integer.toString((int) minSpeed), target1, target2);
+						} else if (speed > maxSpeed) {
+							// trop rapide
+							DataLocation source = buildLocation(context, vj);
+							DataLocation target1 = buildLocation(context, vjas0.getStopPoint().getContainedInStopArea());
+							DataLocation target2 = buildLocation(context, vjas1.getStopPoint().getContainedInStopArea());
+	
+							ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+							reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, "3", source,
+	                                calculatedSpeed, Integer.toString((int) maxSpeed), target1, target2);
+						}
 					}
 				}
 			}

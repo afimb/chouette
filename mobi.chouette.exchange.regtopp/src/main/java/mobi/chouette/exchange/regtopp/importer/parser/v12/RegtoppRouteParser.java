@@ -137,9 +137,9 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 					destinationDisplay.setName(val);
 					destinationDisplay.setFrontText(val);
 					destinationDisplay.setFilled(true);
-					stopPoint.setDestinationDisplay(destinationDisplay);
 				}
 			}
+			stopPoint.setDestinationDisplay(destinationDisplay);
 		}
 	}
 

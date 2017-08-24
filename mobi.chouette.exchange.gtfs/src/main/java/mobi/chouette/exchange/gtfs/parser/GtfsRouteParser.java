@@ -216,18 +216,22 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 	protected void convert(Context context, GtfsRoute gtfsRoute, Line line) {
 
 		line.setName(AbstractConverter.getNonEmptyTrimedString(gtfsRoute.getRouteLongName()));
-		if (line.getName() == null)
-			line.setName(AbstractConverter.getNonEmptyTrimedString(gtfsRoute.getRouteShortName()));
+//		if (line.getName() == null)
+//			line.setName(AbstractConverter.getNonEmptyTrimedString(gtfsRoute.getRouteShortName()));
 
 		line.setNumber(AbstractConverter.getNonEmptyTrimedString(gtfsRoute.getRouteShortName()));
 
 		line.setPublishedName(AbstractConverter.getNonEmptyTrimedString(gtfsRoute.getRouteLongName()));
 
-		if (line.getPublishedName() != null) {
-			line.setName(line.getPublishedName());
-		} else {
+		if(line.getName() == null) {
 			line.setName(line.getNumber());
 		}
+		
+//		if (line.getPublishedName() != null) {
+//			line.setName(line.getPublishedName());
+//		} else {
+//			line.setName(line.getNumber());
+//		}
 
 		line.setTransportModeName(gtfsRoute.getRouteType().getTransportMode());
 		line.setTransportSubModeName(gtfsRoute.getRouteType().getSubMode());

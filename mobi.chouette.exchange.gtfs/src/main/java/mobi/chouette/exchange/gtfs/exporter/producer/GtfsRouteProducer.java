@@ -35,23 +35,34 @@ public class GtfsRouteProducer extends AbstractProducer
       route.setAgencyId(toGtfsId(neptuneObject.getCompany().getObjectId(), prefix, keepOriginalId));
       route.setRouteShortName(null);
       route.setRouteLongName(null);
-      if (isEmpty(neptuneObject.getNumber()))
-      {
-         route.setRouteShortName(neptuneObject.getName());
+      
+      route.setRouteShortName(neptuneObject.getNumber());
+      
+      if(!isEmpty(neptuneObject.getPublishedName())) {
+    	  route.setRouteLongName(neptuneObject.getPublishedName());
+      } else {
+    	  route.setRouteLongName(neptuneObject.getName());
       }
-      else
-      {
-         route.setRouteShortName(neptuneObject.getNumber());
-      }
-
-      if (isEmpty(neptuneObject.getPublishedName()))
-      {
-         route.setRouteLongName(neptuneObject.getName());
-      }
-      else
-      {
-         route.setRouteLongName(neptuneObject.getPublishedName());
-      }
+      
+//      if(isEmpty(neptuneObject.get))
+//      if (isEmpty(neptuneObject.getNumber()))
+//      {
+//         route.setRouteShortName(neptuneObject.getName());
+//      }
+//      else
+//      {
+//         route.setRouteShortName(neptuneObject.getNumber());
+//      }
+//
+//      if (isEmpty(neptuneObject.getPublishedName()))
+//      {
+//         route.setRouteLongName(neptuneObject.getName());
+//      }
+//      else
+//      {
+//         route.setRouteLongName(neptuneObject.getPublishedName());
+//      }
+//      
       if (isEmpty(route.getRouteShortName()) && isEmpty(route.getRouteLongName()))
       {
           log.warn("no naming data for line "+neptuneObject.getObjectId());
