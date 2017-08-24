@@ -34,10 +34,10 @@ public class AbstractImportParameter extends AbstractParameter {
 	 * Whether or not stop area ids from import files should be mapped against remote stop area registry (ie NSR).
 	 *
 	 */
-	@XmlElement(name = "stop_area_remote_id_mapping", defaultValue = "false")
+	@XmlElement(name = "stop_area_remote_id_mapping", defaultValue = "true")
 	@Getter
 	@Setter
-	private boolean stopAreaRemoteIdMapping = false;
+	private boolean stopAreaRemoteIdMapping = true;
 
 	/**
 	 * How stop areas in import file should be treated by chouette.
