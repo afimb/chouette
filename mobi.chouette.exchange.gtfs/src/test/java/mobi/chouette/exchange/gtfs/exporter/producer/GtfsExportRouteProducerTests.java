@@ -77,7 +77,7 @@ public class GtfsExportRouteProducerTests
       GtfsRoute gtfsObject = mock.getExportedRoutes().get(0);
       Reporter.log(RouteExporter.CONVERTER.to(context, gtfsObject));
 
-      Assert.assertEquals(gtfsObject.getRouteShortName(), neptuneObject.getName(), "RouteShortName must be line name");
+      Assert.assertNull(gtfsObject.getRouteShortName(), "RouteShortName must null");
       Assert.assertEquals(gtfsObject.getRouteLongName(), neptuneObject.getPublishedName(), "RouteLongName must be correctly set");
       Assert.assertNull(gtfsObject.getRouteUrl(),  "RouteUrl must not be set");
       Assert.assertNull(gtfsObject.getRouteColor(),  "RouteColor must not be set");
