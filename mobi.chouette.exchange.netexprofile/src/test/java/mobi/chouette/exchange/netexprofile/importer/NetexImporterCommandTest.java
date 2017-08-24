@@ -169,7 +169,6 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		context.put(VALIDATION_REPORT, new ValidationReport());
 		NetexprofileImportParameters configuration = new NetexprofileImportParameters();
 		context.put(CONFIGURATION, configuration);
-		configuration.setStopAreaRemoteIdMapping(false);
 		configuration.setName("name");
 		configuration.setUserName("userName");
 		configuration.setNoSave(true);

@@ -20,6 +20,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.PropertyNames;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
@@ -100,7 +101,9 @@ public class LineRegisterCommand implements Command {
 
 		if (importParameter.isKeepObsoleteLines() || isLineValidInFuture(newValue)) {
 
-			if(importParameter.isStopAreaRemoteIdMapping()) {
+			boolean shouldMapIds =
+					Boolean.parseBoolean(System.getProperty(checker.getContext() + PropertyNames.STOP_PLACE_ID_MAPPING)) && importParameter.isStopAreaRemoteIdMapping();
+			if(shouldMapIds) {
 				stopAreaIdMapper.mapStopAreaIds(referential);
 			} else {
 				log.info("Will not map ids against external stop place registry as import parameter stop_registry_map_id != true");
