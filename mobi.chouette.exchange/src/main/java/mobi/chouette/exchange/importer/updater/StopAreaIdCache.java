@@ -63,8 +63,9 @@ public class StopAreaIdCache {
             }
         }
         if (timeToLiveMs < 1) {
-            log.warn("Could not find valid property named " + stopPlaceTtlPropertyKey + " in iev.properties");
             timeToLiveMs = 1000 * 60 * 10; // 10 minutes
+            log.warn("Could not find valid property named " + stopPlaceTtlPropertyKey + " in iev.properties, using default value of ms: "+ timeToLiveMs);
+
         }
     }
 
