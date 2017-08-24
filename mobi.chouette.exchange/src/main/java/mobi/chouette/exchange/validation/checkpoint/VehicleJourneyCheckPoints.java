@@ -296,7 +296,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 
 						ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 						reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, "3", source,
-                                calculatedSpeed, Integer.toString((int) minSpeed), target1, target2);
+                                calculatedSpeed, Integer.toString((int) maxSpeed), target1, target2);
 					}
 				}
 			}
