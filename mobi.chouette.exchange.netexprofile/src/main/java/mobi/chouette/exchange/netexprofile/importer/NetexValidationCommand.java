@@ -43,6 +43,8 @@ public class NetexValidationCommand implements Command, Constant {
             log.error("Netex compliance failed");
             reporter.addFileErrorInReport(context, fileName,
                     ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, "Netex compliance failed");
+            if (!reporter.hasActionError(context))
+                reporter.setActionError(context, ActionReporter.ERROR_CODE.NO_DATA_PROCEEDED, "no data exported");
         }
 
         return result;
