@@ -243,7 +243,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 
 				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 				reporter.addCheckPointReportError(context, ROUTE_3, "2", location, Integer.toString((int) distance),
-						Integer.toString((int) distanceMin), target1, target2);
+						Integer.toString((int) distanceMax), target1, target2);
 				break; // do not check for oder stops in this route
 			}
 		}
