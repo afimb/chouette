@@ -44,7 +44,6 @@ public class StopAreaIdMapper {
         String orgId = stopArea.getObjectId();
         String newId = null;
         if (orgId != null) {
-
             if (ChouetteAreaEnum.CommercialStopPoint.equals(stopArea.getAreaType())) {
                 newId = mapId(stopAreaIdCache.getStopPlaceMapping(orgId), orgId, stopArea);
             } else if (ChouetteAreaEnum.BoardingPosition.equals(stopArea.getAreaType())) {
@@ -53,13 +52,17 @@ public class StopAreaIdMapper {
 
         }
 
-
         if (newId != null) {
             stopArea.setObjectId(newId);
             log.debug("Mapped id for " + stopArea.getAreaType() + " from: " + orgId + " to: " + newId);
+        } else {
+            log.debug("Failed to map id for " + stopArea.getAreaType() + " from: " + orgId);
         }
 
-        stopArea.getContainedStopAreas().forEach(child -> mapIdsForStopArea(child));
+        //stopArea.getContainedStopAreas().forEach(child -> mapIdsForStopArea(child));
+        if (stopArea.getParent() != null) {
+            mapIdsForStopArea(stopArea.getParent());
+        }
         return stopArea;
     }
 

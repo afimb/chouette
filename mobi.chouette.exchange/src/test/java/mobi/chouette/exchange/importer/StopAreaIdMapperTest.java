@@ -49,7 +49,8 @@ public class StopAreaIdMapperTest {
 
 
         Referential referential = new Referential();
-        referential.getStopAreas().put(stopPlace.getObjectId(), stopPlace);
+        referential.getStopAreas().put(quay1.getObjectId(), quay1);
+        referential.getStopAreas().put(quay2.getObjectId(), quay2);
 
         String stopNewId = "newIdSP";
         String quay1NewId = "newIdQ1";
@@ -61,15 +62,18 @@ public class StopAreaIdMapperTest {
 
         stopAreaIdMapper.mapStopAreaIds(referential);
 
-        Assert.assertEquals(1, referential.getStopAreas().size());
+        Assert.assertEquals(2, referential.getStopAreas().size());
 
-        StopArea mappedStopArea = referential.getStopAreas().get(stopNewId);
+        StopArea mappedQuay1 = referential.getStopAreas().get(quay1NewId);
+        StopArea mappedQuay2 = referential.getStopAreas().get(quay2NewId);
+
+        StopArea mappedStopArea= mappedQuay1.getParent();
+
         Assert.assertNotNull("Expected map to contain entry for mapped stop place id", mappedStopArea);
         Assert.assertEquals("Expected stop to have id updated by mapping", stopNewId, mappedStopArea.getObjectId());
 
-        Assert.assertEquals(mappedStopArea.getContainedStopAreas().size(), 2);
-        Assert.assertTrue("Expected quay1 to have id updated by mapping", mappedStopArea.getContainedStopAreas().stream().anyMatch(mappedQuay -> quay1NewId.equals(mappedQuay.getObjectId())));
-        Assert.assertTrue("Expected quay2 to have id updated by mapping", mappedStopArea.getContainedStopAreas().stream().anyMatch(mappedQuay -> quay2NewId.equals(mappedQuay.getObjectId())));
+        Assert.assertEquals("Expected quay1 to have id updated by mapping", quay1NewId,mappedQuay1.getObjectId());
+        Assert.assertEquals("Expected quay2 to have id updated by mapping",  quay2NewId,mappedQuay2.getObjectId());
     }
 
     @Test
@@ -92,7 +96,8 @@ public class StopAreaIdMapperTest {
 
 
         Referential referential = new Referential();
-        referential.getStopAreas().put(stopPlace.getObjectId(), stopPlace);
+        referential.getStopAreas().put(quay1.getObjectId(), quay1);
+        referential.getStopAreas().put(quay2.getObjectId(), quay2);
 
         String stopNewId = "newIdSP";
         String quay1NewId = "newIdQ1";
@@ -108,15 +113,17 @@ public class StopAreaIdMapperTest {
 
         stopAreaIdMapper.mapStopAreaIds(referential);
 
-        Assert.assertEquals(1, referential.getStopAreas().size());
+        Assert.assertEquals(2, referential.getStopAreas().size());
 
-        StopArea mappedStopArea = referential.getStopAreas().get(stopNewId);
+        StopArea mappedQuay1 = referential.getStopAreas().get(quay1NewId);
+        StopArea mappedQuay2 = referential.getStopAreas().get(quay2NewId);
+        StopArea mappedStopArea= mappedQuay1.getParent();
+
         Assert.assertNotNull("Expected map to contain entry for mapped stop place id", mappedStopArea);
         Assert.assertEquals("Expected stop to have id updated by mapping", stopNewId, mappedStopArea.getObjectId());
 
-        Assert.assertEquals(mappedStopArea.getContainedStopAreas().size(), 2);
-        Assert.assertTrue("Expected quay1 to have id updated by mapping", mappedStopArea.getContainedStopAreas().stream().anyMatch(mappedQuay -> quay1NewId.equals(mappedQuay.getObjectId())));
-        Assert.assertTrue("Expected quay2 to have id updated by mapping", mappedStopArea.getContainedStopAreas().stream().anyMatch(mappedQuay -> quay2NewId.equals(mappedQuay.getObjectId())));
+        Assert.assertEquals("Expected quay1 to have id updated by mapping", quay1NewId,mappedQuay1.getObjectId());
+        Assert.assertEquals("Expected quay2 to have id updated by mapping",  quay2NewId,mappedQuay2.getObjectId());
     }
 
 
