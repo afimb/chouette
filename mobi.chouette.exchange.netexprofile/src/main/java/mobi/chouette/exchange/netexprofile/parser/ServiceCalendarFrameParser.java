@@ -184,20 +184,22 @@ public class ServiceCalendarFrameParser extends NetexParser implements Parser, C
 
 	}
 
-	private void convertCalendarToTimetable(Context context) throws ParseException {
+	private void convertCalendarToTimetable(Context context) throws Exception {
 		NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
 		ValidBetween validBetween = getValidBetweenForFrame(context);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		for (DayType dayType : netexReferential.getDayTypes().values()) {
 
+			ValidBetween validBetweenTimetable = getValidBetween(context,dayType);
+
 			Timetable timetable = ObjectFactory.getTimetable(referential, dayType.getId());
-			if(validBetween.getFromDate() != null) {
-				timetable.setStartOfPeriod(TimeUtil.toJodaLocalDateTime(validBetween.getFromDate()).toLocalDate());
+			if(validBetweenTimetable.getFromDate() != null) {
+				timetable.setStartOfPeriod(TimeUtil.toJodaLocalDateTime(validBetweenTimetable.getFromDate()).toLocalDate());
 			}
 
-			if(validBetween.getToDate() != null) {
-				timetable.setEndOfPeriod(TimeUtil.toJodaLocalDateTime(validBetween.getToDate()).toLocalDate());
+			if(validBetweenTimetable.getToDate() != null) {
+				timetable.setEndOfPeriod(TimeUtil.toJodaLocalDateTime(validBetweenTimetable.getToDate()).toLocalDate());
 			}
 			if (dayType.getProperties() != null) {
 				for (PropertyOfDay propertyOfDay : dayType.getProperties().getPropertyOfDay()) {
@@ -287,6 +289,16 @@ public class ServiceCalendarFrameParser extends NetexParser implements Parser, C
 					if(t.getEndOfPeriod() == null) {
 						t.setEndOfPeriod(effectiveDates.get(effectiveDates.size()-1));
 					}
+				} else {
+					if(t.getStartOfPeriod() != null && t.getEndOfPeriod() == null) {
+						t.setEndOfPeriod(t.getStartOfPeriod());
+					} else if(t.getEndOfPeriod() != null && t.getStartOfPeriod() == null) {
+						t.setStartOfPeriod(t.getEndOfPeriod());
+					} else {
+						// Both empty
+						t.setStartOfPeriod(org.joda.time.LocalDate.now());
+						t.setEndOfPeriod(org.joda.time.LocalDate.now());
+					}
 				}
 			}
 		}
@@ -359,6 +371,21 @@ public class ServiceCalendarFrameParser extends NetexParser implements Parser, C
 
 		return null;
 	}
+	
+	private ValidBetween getValidBetween(Context context, DayType dayType) {
+		ValidBetween validBetween = null;
+		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, dayType.getId());
+		if(objectContext != null) {
+			validBetween = (ValidBetween) objectContext.get(VALID_BETWEEN);
+		}
+		
+		if(validBetween == null) {
+			validBetween =  getValidBetweenForFrame(objectContext);
+		}
+		
+		return validBetween;
+	}
+	
 
 	private void addValidBetween(Context context, String objectId, ValidBetween validBetween) {
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
