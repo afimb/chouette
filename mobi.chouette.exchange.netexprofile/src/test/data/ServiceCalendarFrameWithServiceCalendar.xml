@@ -1,0 +1,1164 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<PublicationDelivery version="1.04:NO-NeTEx-networktimetable:1.1" xmlns="http://www.netex.org.uk/netex" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.netex.org.uk/netex ../../../modules/eufx/data/netexschema/NeTEx_publication.xsd">
+
+  <PublicationTimestamp>2017-08-25T13:04:08.512Z</PublicationTimestamp>
+
+  <ParticipantRef>BRA</ParticipantRef>
+
+  <Description>Line: _commons</Description>
+
+  <dataObjects>
+    <CompositeFrame created="2017-08-25T13:04:08.512Z" id="BRA:CompositeFrame:Common" version="177">
+      <validityConditions>
+        <AvailabilityCondition id="BRA:AvailabilityCondition:Common" version="177">
+          <FromDate>2017-08-25T00:00:00.000Z</FromDate>
+        </AvailabilityCondition>
+      </validityConditions>
+      <codespaces>
+        <Codespace id="BRA">
+          <Xmlns>BRA</Xmlns>
+          <XmlnsUrl>http://www.rutebanken.org/ns/bra</XmlnsUrl>
+        </Codespace>
+        <Codespace id="NSR">
+          <Xmlns>NSR</Xmlns>
+          <XmlnsUrl>http://www.rutebanken.org/ns/nsr</XmlnsUrl>
+          <Description>Nasjonalt Stoppested Register</Description>
+        </Codespace>
+      </codespaces>
+      <FrameDefaults>
+        <DefaultLocale>
+          <TimeZone>CET</TimeZone>
+          <SummerTimeZone>CEST</SummerTimeZone>
+          <DefaultLanguage>no</DefaultLanguage>
+        </DefaultLocale>
+        <DefaultLocationSystem>EPSG:4326</DefaultLocationSystem>
+      </FrameDefaults>
+      <frames>
+        <ServiceFrame id="BRA:ServiceFrame:Common" version="177">
+          <Network changed="2017-08-25T13:04:08.512Z" id="BRA:Network:Brakar" version="177">
+            <Name>Brakar</Name>
+            <AuthorityRef ref="BRA:Authority:1" version="177"/>
+            <groupsOfLines>
+              <GroupOfLines id="BRA:GroupOfLines:bus" version="177">
+                <Name>Brakar</Name>
+                <TransportMode>bus</TransportMode>
+              </GroupOfLines>
+            </groupsOfLines>
+          </Network>
+          <directions>
+            <Direction id="BRA:Direction:Outbound" version="177">
+              <Name>Outbound</Name>
+              <DirectionType>outbound</DirectionType>
+            </Direction>
+            <Direction id="BRA:Direction:Inbound" version="177">
+              <Name>Inbound</Name>
+              <DirectionType>inbound</DirectionType>
+            </Direction>
+          </directions>
+        </ServiceFrame>
+        <ResourceFrame id="BRA:ResourceFrame:Common" version="177">
+          <organisations>
+            <Authority id="BRA:Authority:1" version="177">
+              <CompanyNumber>1</CompanyNumber>
+              <Name>Brakar</Name>
+              <LegalName>BRAKAR AS</LegalName>
+              <ContactDetails>
+                <Url>http://www.brakar.no</Url>
+              </ContactDetails>
+              <OrganisationType>authority</OrganisationType>
+            </Authority>
+            <Operator id="BRA:Operator: Unknown_1" version="177">
+              <CompanyNumber>-1</CompanyNumber>
+              <Name>Unknown</Name>
+              <LegalName>Unknown</LegalName>
+              <ContactDetails>
+                <Url>http://www.example.com</Url>
+              </ContactDetails>
+              <CustomerServiceContactDetails>
+                <Url>http://www.example.com</Url>
+              </CustomerServiceContactDetails>
+            </Operator>
+            <Operator id="BRA:Operator:Nettbuss Sør AS_61" version="177">
+              <CompanyNumber>2</CompanyNumber>
+              <Name>Nettbuss Sør AS</Name>
+              <LegalName>Nettbuss Sør AS</LegalName>
+              <ContactDetails>
+                <Url>http://www.example.com</Url>
+              </ContactDetails>
+              <CustomerServiceContactDetails>
+                <Url>http://www.example.com</Url>
+              </CustomerServiceContactDetails>
+            </Operator>
+            <Operator id="BRA:Operator:Ruteopplysningen_99" version="177">
+              <CompanyNumber>9</CompanyNumber>
+              <Name>Ruteopplysningen</Name>
+              <LegalName>Ruteopplysningen</LegalName>
+              <ContactDetails>
+                <Url>http://www.example.com</Url>
+              </ContactDetails>
+              <CustomerServiceContactDetails>
+                <Url>http://www.example.com</Url>
+              </CustomerServiceContactDetails>
+            </Operator>
+          </organisations>
+        </ResourceFrame>
+        <ServiceCalendarFrame id="BRA:ServiceCalendarFrame:Common" version="177">
+          <ServiceCalendar id="BRA:ServiceCalendar:60" version="177">
+            <FromDate>2016-09-19</FromDate>
+            <ToDate>2016-12-23</ToDate>
+            <dayTypes>
+              <DayType id="BRA:DayType:1" version="177"/>
+              <DayType id="BRA:DayType:2" version="177"/>
+              <DayType id="BRA:DayType:3" version="177"/>
+            </dayTypes>
+            <operatingDays>
+              <OperatingDay id="BRA:OperatingDay:20160919" version="177">
+                <CalendarDate>2016-09-19</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20160920" version="177">
+                <CalendarDate>2016-09-20</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20160921" version="177">
+                <CalendarDate>2016-09-21</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20160922" version="177">
+                <CalendarDate>2016-09-22</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20160923" version="177">
+                <CalendarDate>2016-09-23</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20160924" version="177">
+                <CalendarDate>2016-09-24</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20160925" version="177">
+                <CalendarDate>2016-09-25</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20160926" version="177">
+                <CalendarDate>2016-09-26</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20160927" version="177">
+                <CalendarDate>2016-09-27</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20160928" version="177">
+                <CalendarDate>2016-09-28</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20160929" version="177">
+                <CalendarDate>2016-09-29</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20160930" version="177">
+                <CalendarDate>2016-09-30</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161001" version="177">
+                <CalendarDate>2016-10-01</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161002" version="177">
+                <CalendarDate>2016-10-02</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161003" version="177">
+                <CalendarDate>2016-10-03</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161004" version="177">
+                <CalendarDate>2016-10-04</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161005" version="177">
+                <CalendarDate>2016-10-05</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161006" version="177">
+                <CalendarDate>2016-10-06</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161007" version="177">
+                <CalendarDate>2016-10-07</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161008" version="177">
+                <CalendarDate>2016-10-08</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161009" version="177">
+                <CalendarDate>2016-10-09</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161010" version="177">
+                <CalendarDate>2016-10-10</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161011" version="177">
+                <CalendarDate>2016-10-11</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161012" version="177">
+                <CalendarDate>2016-10-12</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161013" version="177">
+                <CalendarDate>2016-10-13</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161014" version="177">
+                <CalendarDate>2016-10-14</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161015" version="177">
+                <CalendarDate>2016-10-15</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161016" version="177">
+                <CalendarDate>2016-10-16</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161017" version="177">
+                <CalendarDate>2016-10-17</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161018" version="177">
+                <CalendarDate>2016-10-18</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161019" version="177">
+                <CalendarDate>2016-10-19</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161020" version="177">
+                <CalendarDate>2016-10-20</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161021" version="177">
+                <CalendarDate>2016-10-21</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161022" version="177">
+                <CalendarDate>2016-10-22</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161023" version="177">
+                <CalendarDate>2016-10-23</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161024" version="177">
+                <CalendarDate>2016-10-24</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161025" version="177">
+                <CalendarDate>2016-10-25</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161026" version="177">
+                <CalendarDate>2016-10-26</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161027" version="177">
+                <CalendarDate>2016-10-27</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161028" version="177">
+                <CalendarDate>2016-10-28</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161029" version="177">
+                <CalendarDate>2016-10-29</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161030" version="177">
+                <CalendarDate>2016-10-30</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161031" version="177">
+                <CalendarDate>2016-10-31</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161101" version="177">
+                <CalendarDate>2016-11-01</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161102" version="177">
+                <CalendarDate>2016-11-02</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161103" version="177">
+                <CalendarDate>2016-11-03</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161104" version="177">
+                <CalendarDate>2016-11-04</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161105" version="177">
+                <CalendarDate>2016-11-05</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161106" version="177">
+                <CalendarDate>2016-11-06</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161107" version="177">
+                <CalendarDate>2016-11-07</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161108" version="177">
+                <CalendarDate>2016-11-08</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161109" version="177">
+                <CalendarDate>2016-11-09</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161110" version="177">
+                <CalendarDate>2016-11-10</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161111" version="177">
+                <CalendarDate>2016-11-11</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161112" version="177">
+                <CalendarDate>2016-11-12</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161113" version="177">
+                <CalendarDate>2016-11-13</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161114" version="177">
+                <CalendarDate>2016-11-14</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161115" version="177">
+                <CalendarDate>2016-11-15</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161116" version="177">
+                <CalendarDate>2016-11-16</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161117" version="177">
+                <CalendarDate>2016-11-17</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161118" version="177">
+                <CalendarDate>2016-11-18</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161119" version="177">
+                <CalendarDate>2016-11-19</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161120" version="177">
+                <CalendarDate>2016-11-20</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161121" version="177">
+                <CalendarDate>2016-11-21</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161122" version="177">
+                <CalendarDate>2016-11-22</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161123" version="177">
+                <CalendarDate>2016-11-23</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161124" version="177">
+                <CalendarDate>2016-11-24</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161125" version="177">
+                <CalendarDate>2016-11-25</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161126" version="177">
+                <CalendarDate>2016-11-26</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161127" version="177">
+                <CalendarDate>2016-11-27</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161128" version="177">
+                <CalendarDate>2016-11-28</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161129" version="177">
+                <CalendarDate>2016-11-29</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161130" version="177">
+                <CalendarDate>2016-11-30</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161201" version="177">
+                <CalendarDate>2016-12-01</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161202" version="177">
+                <CalendarDate>2016-12-02</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161203" version="177">
+                <CalendarDate>2016-12-03</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161204" version="177">
+                <CalendarDate>2016-12-04</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161205" version="177">
+                <CalendarDate>2016-12-05</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161206" version="177">
+                <CalendarDate>2016-12-06</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161207" version="177">
+                <CalendarDate>2016-12-07</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161208" version="177">
+                <CalendarDate>2016-12-08</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161209" version="177">
+                <CalendarDate>2016-12-09</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161210" version="177">
+                <CalendarDate>2016-12-10</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161211" version="177">
+                <CalendarDate>2016-12-11</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161212" version="177">
+                <CalendarDate>2016-12-12</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161213" version="177">
+                <CalendarDate>2016-12-13</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161214" version="177">
+                <CalendarDate>2016-12-14</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161215" version="177">
+                <CalendarDate>2016-12-15</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161216" version="177">
+                <CalendarDate>2016-12-16</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161217" version="177">
+                <CalendarDate>2016-12-17</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161218" version="177">
+                <CalendarDate>2016-12-18</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161219" version="177">
+                <CalendarDate>2016-12-19</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161220" version="177">
+                <CalendarDate>2016-12-20</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161221" version="177">
+                <CalendarDate>2016-12-21</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161222" version="177">
+                <CalendarDate>2016-12-22</CalendarDate>
+              </OperatingDay>
+              <OperatingDay id="BRA:OperatingDay:20161223" version="177">
+                <CalendarDate>2016-12-23</CalendarDate>
+              </OperatingDay>
+            </operatingDays>
+            <dayTypeAssignments>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-09-19" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160919" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-09-20" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160920" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-09-21" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160921" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-09-22" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160922" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-09-23" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160923" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-09-24" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160924" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-09-26" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160926" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-09-27" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160927" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-09-28" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160928" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-09-29" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160929" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-09-30" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160930" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-01" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161001" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-03" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161003" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-04" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161004" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-05" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161005" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-06" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161006" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-07" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161007" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-08" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161008" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-10" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161010" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-11" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161011" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-12" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161012" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-13" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161013" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-14" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161014" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-15" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161015" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-17" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161017" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-18" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161018" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-19" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161019" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-20" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161020" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-21" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161021" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-22" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161022" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-24" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161024" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-25" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161025" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-26" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161026" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-27" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161027" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-28" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161028" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-29" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161029" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-10-31" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161031" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-01" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161101" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-02" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161102" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-03" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161103" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-04" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161104" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-05" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161105" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-07" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161107" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-08" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161108" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-09" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161109" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-10" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161110" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-11" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161111" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-12" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161112" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-14" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161114" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-15" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161115" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-16" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161116" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-17" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161117" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-18" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161118" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-19" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161119" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-21" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161121" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-22" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161122" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-23" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161123" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-24" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161124" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-25" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161125" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-26" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161126" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-28" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161128" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-29" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161129" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-11-30" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161130" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-12-01" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161201" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-12-02" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161202" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-12-03" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161203" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-12-05" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161205" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-12-06" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161206" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-12-07" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161207" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-12-08" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161208" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-12-09" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161209" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-12-10" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161210" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-12-12" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161212" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-12-13" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161213" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-12-14" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161214" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-12-15" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161215" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-12-16" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161216" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-12-17" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161217" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-12-19" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161219" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-12-20" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161220" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:12016-12-21" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161221" version="177"/>
+                <DayTypeRef ref="BRA:DayType:1" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-09-19" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160919" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-09-20" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160920" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-09-21" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160921" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-09-22" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160922" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-09-23" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160923" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-09-25" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160925" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-09-26" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160926" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-09-27" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160927" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-09-28" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160928" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-09-29" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160929" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-09-30" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160930" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-02" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161002" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-03" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161003" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-04" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161004" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-05" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161005" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-06" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161006" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-07" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161007" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-09" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161009" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-10" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161010" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-11" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161011" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-12" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161012" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-13" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161013" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-14" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161014" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-16" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161016" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-17" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161017" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-18" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161018" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-19" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161019" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-20" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161020" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-21" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161021" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-23" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161023" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-24" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161024" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-25" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161025" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-26" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161026" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-27" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161027" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-28" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161028" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-30" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161030" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-10-31" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161031" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-01" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161101" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-02" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161102" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-03" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161103" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-04" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161104" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-06" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161106" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-07" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161107" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-08" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161108" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-09" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161109" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-10" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161110" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-11" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161111" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-13" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161113" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-14" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161114" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-15" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161115" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-16" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161116" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-17" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161117" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-18" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161118" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-20" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161120" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-21" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161121" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-22" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161122" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-23" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161123" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-24" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161124" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-25" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161125" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-27" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161127" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-28" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161128" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-29" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161129" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-11-30" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161130" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-12-01" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161201" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-12-02" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161202" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-12-04" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161204" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-12-05" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161205" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-12-06" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161206" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-12-07" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161207" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-12-08" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161208" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-12-09" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161209" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-12-11" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161211" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-12-12" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161212" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-12-13" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161213" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-12-14" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161214" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-12-15" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161215" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-12-16" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161216" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-12-18" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161218" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-12-19" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161219" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-12-20" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161220" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:22016-12-21" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161221" version="177"/>
+                <DayTypeRef ref="BRA:DayType:2" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-09-24" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160924" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-09-25" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20160925" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-10-01" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161001" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-10-02" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161002" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-10-08" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161008" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-10-09" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161009" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-10-15" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161015" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-10-16" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161016" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-10-22" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161022" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-10-23" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161023" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-10-29" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161029" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-10-30" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161030" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-11-05" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161105" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-11-06" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161106" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-11-12" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161112" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-11-13" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161113" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-11-19" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161119" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-11-20" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161120" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-11-26" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161126" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-11-27" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161127" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-12-03" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161203" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-12-04" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161204" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-12-10" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161210" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-12-11" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161211" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-12-17" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161217" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+              <DayTypeAssignment id="BRA:DayTypeAssignment:32016-12-18" order="1" version="177">
+                <OperatingDayRef ref="BRA:OperatingDay:20161218" version="177"/>
+                <DayTypeRef ref="BRA:DayType:3" version="177"/>
+              </DayTypeAssignment>
+            </dayTypeAssignments>
+          </ServiceCalendar>
+        </ServiceCalendarFrame>
+      </frames>
+    </CompositeFrame>
+  </dataObjects>
+
+</PublicationDelivery>

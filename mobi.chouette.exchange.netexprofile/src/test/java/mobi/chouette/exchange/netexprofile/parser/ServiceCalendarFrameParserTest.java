@@ -79,7 +79,22 @@ public class ServiceCalendarFrameParserTest {
 		Timetable t2 = referential.getTimetables().get("KOL:DayType:2");
 		Assert.assertNotNull(t2);
 		Assert.assertEquals(t2.getStartOfPeriod(), org.joda.time.LocalDate.parse("2016-10-17")); // Start date of service calendar
-		Assert.assertEquals(t2.getEndOfPeriod(), org.joda.time.LocalDate.parse("2016-23-23")); // End date in service calendar
+		Assert.assertEquals(t2.getEndOfPeriod(), org.joda.time.LocalDate.parse("2016-12-23")); // End date in service calendar
+		Assert.assertEquals(t2.getEffectiveDates().size(), 0);
+	}
+
+	@Test
+	// TODO validity condition overrides are broken
+	public void testParseServiceCalendarWithDatesOutsideOfValditityCondition() throws Exception {
+
+		Referential referential = new Referential();
+
+		parseIntoReferential(referential, "src/test/data/ServiceCalendarFrameWithServiceCalendar.xml");
+
+		Timetable t2 = referential.getTimetables().get("BRA:DayType:2");
+		Assert.assertNotNull(t2);
+		Assert.assertEquals(t2.getStartOfPeriod(), org.joda.time.LocalDate.parse("2016-09-19")); // Start date of service calendar
+		Assert.assertEquals(t2.getEndOfPeriod(), org.joda.time.LocalDate.parse("2016-12-22")); // End date in service calendar // TODO 1 day off, must be fixed when date/time parsing is on local time
 		Assert.assertEquals(t2.getEffectiveDates().size(), 0);
 	}
 
@@ -91,7 +106,7 @@ public class ServiceCalendarFrameParserTest {
 		NetexReferential netexReferential = new NetexReferential();
 		context.put(Constant.NETEX_REFERENTIAL, netexReferential);
 
-		context.put(Constant.NETEX_WITH_COMMON_DATA, false);
+		context.put(Constant.NETEX_WITH_COMMON_DATA, true);
 		context.put(Constant.CONFIGURATION, new NetexprofileImportParameters());
 
 		PublicationDeliveryStructure pubDelivery = netexImporter.unmarshal(new File(netedFilePath), new HashSet<>());
