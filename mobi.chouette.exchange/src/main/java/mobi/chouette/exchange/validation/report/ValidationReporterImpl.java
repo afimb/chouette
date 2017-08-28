@@ -79,6 +79,8 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		Location detailLocation = null;
 		if (location != null)
 			detailLocation = new Location(location);
+		else
+			log.warn("Added check point report error with location=null for cp: " + checkPointName + ", detail: " + detail + " ,value" + value + " ,refValue: " + refValue);
 
 		CheckPointReport checkPoint = validationReport.findCheckPointReportByName(checkPointName);
 
