@@ -45,7 +45,7 @@ public class AbstractImportParameter extends AbstractParameter {
 	@XmlElement(name = "stop_area_import_mode", defaultValue = "true")
 	@Getter
 	@Setter
-	private StopAreaImportModeEnum stopAreaImportMode = StopAreaImportModeEnum.CREATE_OR_UPDATE;
+	private StopAreaImportModeEnum stopAreaImportMode = StopAreaImportModeEnum.CREATE_NEW;
 
 	@XmlElement(name = "keep_obsolete_lines", defaultValue = "false")
 	@Getter
