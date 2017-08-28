@@ -81,6 +81,10 @@ public class GtfsStop extends GtfsObject implements Serializable
    @Setter
    private String postalCode;
 
+   @Getter
+   @Setter
+   private String platformCode;
+
    // @Override
    // public String toString()
    // {
@@ -91,7 +95,7 @@ public class GtfsStop extends GtfsObject implements Serializable
 	   this(bean.getStopId(), bean.getStopCode(), bean.getStopName(), bean.getStopDesc(),
 			   bean.getStopLat(), bean.getStopLon(), bean.getZoneId(), bean.getStopUrl(), bean.getLocationType(),
 			   bean.getParentStation(), bean.getStopTimezone(), bean.getWheelchairBoarding(),
-			   bean.getAddressLine(), bean.getLocality(), bean.getPostalCode());
+			   bean.getAddressLine(), bean.getLocality(), bean.getPostalCode(),bean.getPlatformCode());
 	   this.setId(bean.getId());
    }
 

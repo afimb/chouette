@@ -169,7 +169,8 @@ public class Main {
 								stop.getStopTimezone(),
 								stop.getWheelchairBoarding(),
 								stop.getAddressLine(), stop.getLocality(),
-								stop.getPostalCode());
+								stop.getPostalCode(),
+								stop.getPlatformCode());
 						_map.put(stop.getStopId(), clone);
 					}
 				}
