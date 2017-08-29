@@ -193,6 +193,11 @@
 
                         <DestinationDisplay version="1" id="AVI:DestinationDisplay:EmptyFrontText">
                             <FrontText/>
+                            <vias>
+                                <Via>
+                                    <Name>XYZ</Name>
+                                </Via>
+                            </vias>
                         </DestinationDisplay>
 
                     </destinationDisplays>
