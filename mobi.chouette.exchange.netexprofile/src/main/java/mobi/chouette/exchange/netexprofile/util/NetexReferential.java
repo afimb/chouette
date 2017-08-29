@@ -61,11 +61,11 @@ public class NetexReferential implements Serializable {
         dayTypeAssignments.clear();
         operatingPeriods.clear();
         operatingDays.clear();
-        scheduledStopPointToQuay.clear();
     }
 
     public void dispose() {
         sharedStopPlaces.clear();
+        scheduledStopPointToQuay.clear();
     }
 
 }
