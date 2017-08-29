@@ -1,8 +1,5 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
-import static mobi.chouette.exchange.importer.ParserUtils.objectIdPrefix;
-import static mobi.chouette.exchange.importer.ParserUtils.objectIdSuffix;
-
 import java.util.Collection;
 
 import org.rutebanken.netex.model.Interchange_VersionStructure;
@@ -30,7 +27,7 @@ public class ServiceJourneyInterchangeParser implements Parser, Constant {
 	public void parse(Context context) throws Exception {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
-        JourneyInterchangesInFrame_RelStructure organisationsInFrameStruct = (JourneyInterchangesInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
+		JourneyInterchangesInFrame_RelStructure organisationsInFrameStruct = (JourneyInterchangesInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
 
 		for (Interchange_VersionStructure interchangeVersionStructure : organisationsInFrameStruct
 				.getServiceJourneyPatternInterchangeOrServiceJourneyInterchange()) {
@@ -72,24 +69,30 @@ public class ServiceJourneyInterchangeParser implements Parser, Constant {
 				}
 
 				// Parse stop points
-				interchange.setFeederVisitNumber(ConversionUtil.asInteger(netexInterchange.getFromVisitNumber()));
 
+				interchange.setFeederVisitNumber(ConversionUtil.asInteger(netexInterchange.getFromVisitNumber()));
 				String feederScheduledStopPointObjectId = netexInterchange.getFromPointRef().getRef();
-                String feederStopPointInJourneyPatternId = findStopPointInJourneyPatternForScheduledStopPoint(context, feederScheduledStopPointObjectId, interchange.getFeederVisitNumber());
-				if(feederStopPointInJourneyPatternId != null) {
-	                String feederStopPointId = NetexParserUtils.netexId(objectIdPrefix(feederStopPointInJourneyPatternId), "StopPoint", objectIdSuffix(feederStopPointInJourneyPatternId));
-					interchange.setFeederStopPointObjectid(feederStopPointId);
+				if (feederVehicleJourney != null && feederVehicleJourney.getRoute().getLine().equals(consumerVehicleJourney.getRoute().getLine())) { // Within
+																																						// same
+																																						// line
+					String feederStopPointInJourneyPatternId = findStopPointInJourneyPatternForScheduledStopPoint(context, feederScheduledStopPointObjectId,
+							interchange.getFeederVisitNumber());
+					if (feederStopPointInJourneyPatternId != null) {
+						interchange.setFeederStopPointObjectid(feederStopPointInJourneyPatternId);
+					} else {
+						interchange.setFeederStopPointObjectid(feederScheduledStopPointObjectId);
+					}
 				} else {
+					log.error("Interchange is broken across Lines as there is no concept of ScheduledStopPoint implemented yet");
 					interchange.setFeederStopPointObjectid(feederScheduledStopPointObjectId);
 				}
-				
 
 				interchange.setConsumerVisitNumber(ConversionUtil.asInteger(netexInterchange.getToVisitNumber()));
 				String consumerScheduledStopPointObjectId = netexInterchange.getToPointRef().getRef();
-                String consumerStopPointInJourneyPatternId = findStopPointInJourneyPatternForScheduledStopPoint(context, consumerScheduledStopPointObjectId, interchange.getConsumerVisitNumber());
-				if(consumerStopPointInJourneyPatternId != null) {
-	                String consumerStopPointId = NetexParserUtils.netexId(objectIdPrefix(consumerStopPointInJourneyPatternId), "StopPoint", objectIdSuffix(consumerStopPointInJourneyPatternId));
-					interchange.setConsumerStopPointObjectid(consumerStopPointId);
+				String consumerStopPointInJourneyPatternId = findStopPointInJourneyPatternForScheduledStopPoint(context, consumerScheduledStopPointObjectId,
+						interchange.getConsumerVisitNumber());
+				if (consumerStopPointInJourneyPatternId != null) {
+					interchange.setConsumerStopPointObjectid(consumerStopPointInJourneyPatternId);
 				} else {
 					interchange.setConsumerStopPointObjectid(consumerScheduledStopPointObjectId);
 				}
@@ -99,27 +102,27 @@ public class ServiceJourneyInterchangeParser implements Parser, Constant {
 	}
 
 	private String findStopPointInJourneyPatternForScheduledStopPoint(Context context, String scheduledStopPointObjectId, Integer visitNumber) {
-        NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
+		NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
 
-        // TODO need to add proper lookup for 
-        
-        int visitNo = visitNumber == null ? 1 : visitNumber;
-        int counter = 0;
-        
-        Collection<StopPointInJourneyPattern> values = netexReferential.getStopPointsInJourneyPattern().values();
-        
-        for(StopPointInJourneyPattern stp : values) {
-        	String scheduledStopPointRef = stp.getScheduledStopPointRef().getValue().getRef();
-        	if(scheduledStopPointRef.equals(scheduledStopPointObjectId)) {
-        		counter++;
-        		if(counter == visitNo) {
-        			return stp.getId();
-        		}
-        	}
-        }
-        
-        return null;
-        
+		// TODO need to add proper lookup for
+
+		int visitNo = visitNumber == null ? 1 : visitNumber;
+		int counter = 0;
+
+		Collection<StopPointInJourneyPattern> values = netexReferential.getStopPointsInJourneyPattern().values();
+
+		for (StopPointInJourneyPattern stp : values) {
+			String scheduledStopPointRef = stp.getScheduledStopPointRef().getValue().getRef();
+			if (scheduledStopPointRef.equals(scheduledStopPointObjectId)) {
+				counter++;
+				if (counter == visitNo) {
+					return stp.getId();
+				}
+			}
+		}
+
+		return null;
+
 	}
 
 	static {

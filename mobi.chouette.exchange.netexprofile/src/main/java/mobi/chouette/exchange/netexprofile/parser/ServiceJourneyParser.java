@@ -14,7 +14,6 @@ import org.rutebanken.netex.model.JourneyPatternRefStructure;
 import org.rutebanken.netex.model.Journey_VersionStructure;
 import org.rutebanken.netex.model.JourneysInFrame_RelStructure;
 import org.rutebanken.netex.model.ServiceJourney;
-import org.rutebanken.netex.model.StopPointInJourneyPattern;
 import org.rutebanken.netex.model.TimetabledPassingTime;
 
 import lombok.extern.log4j.Log4j;
@@ -23,15 +22,12 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexTimeConversionUtil;
-import mobi.chouette.exchange.netexprofile.util.NetexObjectUtil;
-import mobi.chouette.exchange.netexprofile.util.NetexReferential;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
-import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -54,15 +50,14 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 			VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, serviceJourney.getId());
 			vehicleJourney.setObjectVersion(NetexParserUtils.getVersion(serviceJourney));
 
-			// TODO check out if this gives the problem with journey names in digitransit (OSL-BGO instead of SK4887)
 			if (serviceJourney.getName() != null) {
 				vehicleJourney.setPublishedJourneyName(serviceJourney.getName().getValue());
 			}
 			vehicleJourney.setPublishedJourneyIdentifier(serviceJourney.getPublicCode());
 
 			DayTypeRefs_RelStructure dayTypes = serviceJourney.getDayTypes();
-			if(dayTypes != null) {
-				for(JAXBElement<? extends DayTypeRefStructure> dayType : dayTypes.getDayTypeRef()) {
+			if (dayTypes != null) {
+				for (JAXBElement<? extends DayTypeRefStructure> dayType : dayTypes.getDayTypeRef()) {
 					String timetableId = dayType.getValue().getRef();
 					Timetable timetable = ObjectFactory.getTimetable(referential, timetableId);
 					timetable.addVehicleJourney(vehicleJourney);
@@ -99,15 +94,14 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 				vehicleJourney.setRoute(route);
 			}
 
-			
-			if(serviceJourney.getTransportMode() != null) {
+			if (serviceJourney.getTransportMode() != null) {
 				AllVehicleModesOfTransportEnumeration transportMode = serviceJourney.getTransportMode();
 				TransportModeNameEnum transportModeName = NetexParserUtils.toTransportModeNameEnum(transportMode.value());
 				vehicleJourney.setTransportMode(transportModeName);
 			}
-			
+
 			vehicleJourney.setTransportSubMode(NetexParserUtils.toTransportSubModeNameEnum(serviceJourney.getTransportSubmode()));
-			
+
 			parseTimetabledPassingTimes(context, referential, serviceJourney, vehicleJourney);
 
 			if (journeyFootnotes.containsKey(serviceJourney.getId())) {
@@ -123,34 +117,13 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 	}
 
 	private void parseTimetabledPassingTimes(Context context, Referential referential, ServiceJourney serviceJourney, VehicleJourney vehicleJourney) {
-		NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
-		Context parsingContext = (Context) context.get(PARSING_CONTEXT);
-		Context journeyPatternContext = (Context) parsingContext.get(JourneyPatternParser.LOCAL_CONTEXT);
-
 		for (TimetabledPassingTime passingTime : serviceJourney.getPassingTimes().getTimetabledPassingTime()) {
 			VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop();
-			String pointInJourneyPatternId = passingTime.getPointInJourneyPatternRef().getValue().getRef();
-			StopPointInJourneyPattern stopPointInJourneyPattern = NetexObjectUtil.getStopPointInJourneyPattern(netexReferential, pointInJourneyPatternId);
+			vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
 
-			Context pointInPatternContext = (Context) journeyPatternContext.get(pointInJourneyPatternId);
-			String stopPointId = (String) pointInPatternContext.get(JourneyPatternParser.STOP_POINT_ID);
-
-			StopPoint stopPoint = ObjectFactory.getStopPoint(referential, stopPointId);
+			StopPoint stopPoint = ObjectFactory.getStopPoint(referential, passingTime.getPointInJourneyPatternRef().getValue().getRef());
 			vehicleJourneyAtStop.setStopPoint(stopPoint);
 
-			// Default = board and alight
-			vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.BoardAndAlight);
-
-			Boolean forBoarding = stopPointInJourneyPattern.isForBoarding();
-			Boolean forAlighting = stopPointInJourneyPattern.isForAlighting();
-
-			if (forBoarding == null && forAlighting != null && !forAlighting) {
-				vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.BoardOnly);
-			}
-			if (forAlighting == null && forBoarding != null && !forBoarding) {
-				vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.AlightOnly);
-			}
-			
 			parsePassingTimes(passingTime, vehicleJourneyAtStop);
 			vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
 		}
@@ -160,10 +133,9 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 
 	// TODO add support for other time zones and zone offsets, for now only handling UTC
 	private void parsePassingTimes(TimetabledPassingTime timetabledPassingTime, VehicleJourneyAtStop vehicleJourneyAtStop) {
-		
+
 		NetexTimeConversionUtil.parsePassingTimeUtc(timetabledPassingTime, false, vehicleJourneyAtStop);
 		NetexTimeConversionUtil.parsePassingTimeUtc(timetabledPassingTime, true, vehicleJourneyAtStop);
-		
 
 		// TODO copying missing data since Chouette pt does not properly support missing values
 		if (vehicleJourneyAtStop.getArrivalTime() == null && vehicleJourneyAtStop.getDepartureTime() != null) {

@@ -317,6 +317,14 @@ public class NetexParserUtils extends ParserUtils {
 		}
 		return version;
 	}
+	
+	public static Integer getVersion(String version) {
+		try {
+			return Integer.parseInt(version);
+		} catch (NumberFormatException e) {
+			return 0;
+		}
+	}
 
 	public static String netexId(String objectIdPrefix, String elementName, String objectIdSuffix) {
 		return objectIdPrefix + ":" + elementName + ":" + objectIdSuffix;

@@ -102,8 +102,8 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 		}
 
 		// post processing
-		sortStopPoints(referential);
-		updateBoardingAlighting(referential);
+		//sortStopPoints(referential);
+		//updateBoardingAlighting(referential);
 	}
 
 	private void preParseReferentialDependencies(Context context, Referential referential, List<ServiceFrame> serviceFrames,
@@ -114,11 +114,11 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 		for (ServiceFrame serviceFrame : serviceFrames) {
 
 			// pre parsing route points
-			if (serviceFrame.getRoutePoints() != null) {
-				context.put(NETEX_LINE_DATA_CONTEXT, serviceFrame.getRoutePoints());
-				Parser routePointParser = ParserFactory.create(RoutePointParser.class.getName());
-				routePointParser.parse(context);
-			}
+//			if (serviceFrame.getRoutePoints() != null) {
+//				context.put(NETEX_LINE_DATA_CONTEXT, serviceFrame.getRoutePoints());
+//				Parser routePointParser = ParserFactory.create(RoutePointParser.class.getName());
+//				routePointParser.parse(context);
+//			}
 
 			// stop assignments
 			if (serviceFrame.getStopAssignments() != null) {
@@ -424,90 +424,6 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 		} else {
 			localContext.put(contextKey, validBetween);
 		}
-	}
-
-	private void addTimetableId(Context context, String objectId, String timetableId) {
-		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		objectContext.put(TIMETABLE_ID, timetableId);
-	}
-
-	protected void sortStopPoints(Referential referential) {
-		// Sort stopPoints on JourneyPattern
-		Collection<JourneyPattern> journeyPatterns = referential.getJourneyPatterns().values();
-		for (JourneyPattern jp : journeyPatterns) {
-			List<StopPoint> stopPoints = jp.getStopPoints();
-			stopPoints.sort(Comparator.comparing(StopPoint::getPosition));
-			jp.setDepartureStopPoint(stopPoints.get(0));
-			jp.setArrivalStopPoint(stopPoints.get(stopPoints.size() - 1));
-		}
-
-		// Sort stopPoints on route
-		Collection<Route> routes = referential.getRoutes().values();
-		for (Route r : routes) {
-			List<StopPoint> stopPoints = r.getStopPoints();
-			stopPoints.sort(Comparator.comparing(StopPoint::getPosition));
-		}
-	}
-
-	private void updateBoardingAlighting(Referential referential) {
-
-		for (Route route : referential.getRoutes().values()) {
-			boolean invalidData = false;
-			boolean usefullData = false;
-
-			b1: for (JourneyPattern jp : route.getJourneyPatterns()) {
-				for (VehicleJourney vj : jp.getVehicleJourneys()) {
-					for (VehicleJourneyAtStop vjas : vj.getVehicleJourneyAtStops()) {
-						if (!updateStopPoint(vjas)) {
-							invalidData = true;
-							break b1;
-						}
-					}
-				}
-			}
-			if (!invalidData) {
-				// check if every stoppoints were updated, complete missing ones to
-				// normal; if all normal clean all
-				for (StopPoint sp : route.getStopPoints()) {
-					if (sp.getForAlighting() == null)
-						sp.setForAlighting(AlightingPossibilityEnum.normal);
-					if (sp.getForBoarding() == null)
-						sp.setForBoarding(BoardingPossibilityEnum.normal);
-				}
-				for (StopPoint sp : route.getStopPoints()) {
-					if (!sp.getForAlighting().equals(AlightingPossibilityEnum.normal)) {
-						usefullData = true;
-						break;
-					}
-					if (!sp.getForBoarding().equals(BoardingPossibilityEnum.normal)) {
-						usefullData = true;
-						break;
-					}
-				}
-
-			}
-			if (invalidData || !usefullData) {
-				// remove useless informations
-				for (StopPoint sp : route.getStopPoints()) {
-					sp.setForAlighting(null);
-					sp.setForBoarding(null);
-				}
-			}
-
-		}
-	}
-
-	private boolean updateStopPoint(VehicleJourneyAtStop vjas) {
-		StopPoint sp = vjas.getStopPoint();
-		BoardingPossibilityEnum forBoarding = NetexParserUtils.getForBoarding(vjas.getBoardingAlightingPossibility());
-		AlightingPossibilityEnum forAlighting = NetexParserUtils.getForAlighting(vjas.getBoardingAlightingPossibility());
-		if (sp.getForBoarding() != null && !sp.getForBoarding().equals(forBoarding))
-			return false;
-		if (sp.getForAlighting() != null && !sp.getForAlighting().equals(forAlighting))
-			return false;
-		sp.setForBoarding(forBoarding);
-		sp.setForAlighting(forAlighting);
-		return true;
 	}
 
 	static {
