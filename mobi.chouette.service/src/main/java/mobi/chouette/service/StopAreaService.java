@@ -13,6 +13,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.dao.ReferentialDAO;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.stopplace.PublicationDeliveryStopPlaceParser;
+import mobi.chouette.exchange.stopplace.StopAreaUpdateContext;
 import mobi.chouette.exchange.stopplace.StopAreaUpdateService;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.util.Referential;
@@ -34,15 +35,14 @@ public class StopAreaService {
     public void createOrUpdateStopPlacesFromNetexStopPlaces(InputStream inputStream) {
         PublicationDeliveryStopPlaceParser parser = new PublicationDeliveryStopPlaceParser(inputStream);
 
-        int changedStopCnt = parser.getActiveStopAreas().size() + parser.getInactiveStopAreaIds().size();
+        StopAreaUpdateContext updateContext=parser.getUpdateContext();
+        int changedStopCnt = updateContext.getChangedStopCount();
 
         if (changedStopCnt > 0) {
             log.info("Updating " + changedStopCnt + " stop areas");
             Context context = createContext();
             ContextHolder.clear();
-            stopAreaUpdateService.createOrUpdateStopAreas(context, parser.getActiveStopAreas(), parser.getInactiveStopAreaIds());
-
-            updateStopAreaReferencesPerReferential(parser.getMergedQuays());
+            stopAreaUpdateService.createOrUpdateStopAreas(context, updateContext);
         } else {
             log.debug("Received update without any stop areas. Doing nothing");
         }

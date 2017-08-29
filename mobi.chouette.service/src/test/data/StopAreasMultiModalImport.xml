@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PublicationDelivery xmlns="http://www.netex.org.uk/netex" xmlns:ns2="http://www.opengis.net/gml/3.2" xmlns:ns3="http://www.siri.org.uk/siri" version="any">
+    <PublicationTimestamp>2017-08-28T09:21:27.137+02:00</PublicationTimestamp>
+    <ParticipantRef>NSR</ParticipantRef>
+    <dataObjects>
+        <SiteFrame modification="new" version="1" id="NSR:SiteFrame:-1965769246">
+            <Description>Site frame with stops</Description>
+            <stopPlaces modificationSet="all">
+                <StopPlace created="2017-08-28T09:19:53.149+02:00" modification="new" version="1" id="NSR:StopPlace:4000">
+                    <ValidBetween>
+                        <FromDate>2017-08-28T09:19:53.149+02:00</FromDate>
+                    </ValidBetween>
+                    <keyList>
+                        <KeyValue>
+                            <Key>IS_PARENT_STOP_PLACE</Key>
+                            <Value>true</Value>
+                        </KeyValue>
+                    </keyList>
+                    <Name>Super stop place name</Name>
+                    <AccessModes></AccessModes>
+                    <AirSubmode>unknown</AirSubmode>
+                    <OtherTransportModes></OtherTransportModes>
+                </StopPlace>
+                <StopPlace created="2017-08-25T13:33:04.478+02:00" modification="new" version="2" id="NSR:StopPlace:2000">
+                    <keyList>
+                        <KeyValue>
+                            <Key>IS_PARENT_STOP_PLACE</Key>
+                            <Value>false</Value>
+                        </KeyValue>
+                    </keyList>
+                    <Description lang="no">d</Description>
+                    <Centroid>
+                        <Location>
+                            <Longitude>12.952881</Longitude>
+                            <Latitude>64.505915</Latitude>
+                        </Location>
+                    </Centroid>
+                    <AccessModes></AccessModes>
+                    <ParentSiteRef ref="NSR:StopPlace:4000" version="1"/>
+                    <AirSubmode>unknown</AirSubmode>
+                    <OtherTransportModes></OtherTransportModes>
+                </StopPlace>
+                <StopPlace created="2017-08-22T14:31:10.451+02:00" changed="2017-08-22T14:35:17.04+02:00" modification="new" version="3" id="NSR:StopPlace:1000">
+                    <keyList>
+                        <KeyValue>
+                            <Key>imported-id</Key>
+                            <Value></Value>
+                        </KeyValue>
+                        <KeyValue>
+                            <Key>IS_PARENT_STOP_PLACE</Key>
+                            <Value>false</Value>
+                        </KeyValue>
+                    </keyList>
+                    <Description lang="no"/>
+                    <Centroid>
+                        <Location>
+                            <Longitude>13.073730</Longitude>
+                            <Latitude>64.736641</Latitude>
+                        </Location>
+                    </Centroid>
+                    <AccessModes></AccessModes>
+                    <ParentSiteRef ref="NSR:StopPlace:4000" version="1"/>
+                    <TransportMode>water</TransportMode>
+                    <OtherTransportModes></OtherTransportModes>
+                    <StopPlaceType>harbourPort</StopPlaceType>
+                    <quays>
+                        <Quay changed="2017-08-22T14:35:17.026+02:00" modification="new" version="2" id="NSR:Quay:1000">
+                            <keyList>
+                                <KeyValue>
+                                    <Key>imported-id</Key>
+                                    <Value></Value>
+                                </KeyValue>
+                            </keyList>
+                            <Description lang="no"/>
+                            <Centroid>
+                                <Location>
+                                    <Longitude>13.069868</Longitude>
+                                    <Latitude>64.735286</Latitude>
+                                </Location>
+                            </Centroid>
+                            <AccessModes></AccessModes>
+                            <OtherTransportModes></OtherTransportModes>
+                        </Quay>
+                    </quays>
+                </StopPlace>
+            </stopPlaces>
+        </SiteFrame>
+    </dataObjects>
+</PublicationDelivery>
