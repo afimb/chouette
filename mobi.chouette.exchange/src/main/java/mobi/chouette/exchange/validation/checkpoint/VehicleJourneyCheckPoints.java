@@ -509,7 +509,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 					DataLocation location = buildLocation(context, vj);
 					DataLocation target = buildLocation(context, vjas.getStopPoint().getContainedInStopArea());
 					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-					reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_5, location, Long.toString(diffTime),
+					reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_5,"1", location, Long.toString(diffTime),
 							Long.toString(diffTime), target);
 				}
 
@@ -529,7 +529,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 					DataLocation location = buildLocation(context, vj);
 					DataLocation target = buildLocation(context, vjas.getStopPoint().getContainedInStopArea());
 					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-					reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_5, location, Long.toString(diffTime),
+					reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_5,"2", location, Long.toString(diffTime),
 							Long.toString(diffTime), target);
 				}
 
@@ -547,7 +547,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 					DataLocation location = buildLocation(context, vj);
 					DataLocation target = buildLocation(context, vjas.getStopPoint().getContainedInStopArea());
 					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-					reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_5, location, Long.toString(diffTime),
+					reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_5,"2",location, Long.toString(diffTime),
 							Long.toString(diffTime), target);
 				}
 
