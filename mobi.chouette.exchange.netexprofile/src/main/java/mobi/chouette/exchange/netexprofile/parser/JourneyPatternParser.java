@@ -23,6 +23,7 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
+import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -76,6 +77,9 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
 
 			String quayId = netexReferential.getScheduledStopPointToQuay().get(scheduledStopPointRef.getRef());
 			mobi.chouette.model.StopArea quay = ObjectFactory.getStopArea(referential, quayId);
+			if(quay.getAreaType() == null) {
+				quay.setAreaType(ChouetteAreaEnum.BoardingPosition);
+			}
 
 			stopPoint.setContainedInStopArea(quay);
 			stopPoint.setPosition(pointInPattern.getOrder().intValue());
