@@ -1,5 +1,11 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
@@ -11,14 +17,23 @@ import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import net.opengis.gml._3.DirectPositionType;
-import org.rutebanken.netex.model.*;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import net.opengis.gml._3.DirectPositionType;
+import org.rutebanken.netex.model.LocationStructure;
+import org.rutebanken.netex.model.PostalAddress;
+import org.rutebanken.netex.model.PrivateCodeStructure;
+import org.rutebanken.netex.model.Quay;
+import org.rutebanken.netex.model.Quays_RelStructure;
+import org.rutebanken.netex.model.RelationshipStructure;
+import org.rutebanken.netex.model.SimplePoint_VersionStructure;
+import org.rutebanken.netex.model.SiteRefStructure;
+import org.rutebanken.netex.model.StopPlace;
+import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
+import org.rutebanken.netex.model.TariffZone;
+import org.rutebanken.netex.model.TariffZoneRef;
+import org.rutebanken.netex.model.TariffZoneRefs_RelStructure;
+import org.rutebanken.netex.model.TariffZonesInFrame_RelStructure;
+import org.rutebanken.netex.model.ZoneRefStructure;
 
 @Log4j
 public class StopPlaceParser implements Parser, Constant {
@@ -45,30 +60,41 @@ public class StopPlaceParser implements Parser, Constant {
 			StopPlacesInFrame_RelStructure stopPlacesStruct = (StopPlacesInFrame_RelStructure) relationshipStruct;
 			List<StopPlace> stopPlaces = stopPlacesStruct.getStopPlace();
 			Map<String, String> parentZoneMap = new HashMap<>();
-
+			Map<String, String> parentSiteMap = new HashMap<>();
 			for (StopPlace stopPlace : stopPlaces) {
-				parseStopPlace(context, stopPlace, parentZoneMap);
+				parseStopPlace(context, stopPlace, parentZoneMap, parentSiteMap);
 			}
 
-			for (Map.Entry<String, String> item : parentZoneMap.entrySet()) {
-				StopArea child = ObjectFactory.getStopArea(referential, item.getKey());
-				StopArea parent = ObjectFactory.getStopArea(referential, item.getValue());
-				if (parent != null) {
-					parent.setAreaType(ChouetteAreaEnum.StopPlace);
-					child.setParent(parent);
+			updateParentAndChildRefs(referential, parentZoneMap, ChouetteAreaEnum.StopPlace);
+			updateParentAndChildRefs(referential, parentSiteMap, ChouetteAreaEnum.CommercialStopPoint);
+
+		}
+	}
+
+	private void updateParentAndChildRefs(Referential referential, Map<String, String> childMappedAgainstParent, ChouetteAreaEnum parentAreaType) {
+		for (Map.Entry<String, String> item : childMappedAgainstParent.entrySet()) {
+			StopArea child = ObjectFactory.getStopArea(referential, item.getKey());
+			StopArea parent = ObjectFactory.getStopArea(referential, item.getValue());
+			if (parent != null) {
+				parent.setAreaType(parentAreaType);
+				child.setParent(parent);
+
+				if (child.getName() == null) {
+					child.setName(parent.getName());
 				}
 			}
 		}
 	}
 
-	private void parseStopPlace(Context context, StopPlace stopPlace, Map<String, String> parentZoneMap) throws Exception {
+	private void parseStopPlace(Context context, StopPlace stopPlace, Map<String, String> parentZoneMap, Map<String, String> parentSiteMap) throws Exception {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		StopArea stopArea = ObjectFactory.getStopArea(referential, stopPlace.getId());
 		stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 		stopArea.setObjectVersion(NetexParserUtils.getVersion(stopPlace));
-		stopArea.setName(stopPlace.getName().getValue());
-
+		if (stopPlace.getName() != null) {
+			stopArea.setName(stopPlace.getName().getValue());
+		}
 		if (stopPlace.getDescription() != null) {
 			stopArea.setComment(stopPlace.getDescription().getValue());
 		}
@@ -93,6 +119,11 @@ public class StopPlaceParser implements Parser, Constant {
 		ZoneRefStructure parentZoneRefStruct = stopPlace.getParentZoneRef();
 		if (parentZoneRefStruct != null) {
 			parentZoneMap.put(stopArea.getObjectId(), parentZoneRefStruct.getRef());
+		}
+
+		SiteRefStructure siteRefStructure = stopPlace.getParentSiteRef();
+		if (siteRefStructure != null) {
+			parentSiteMap.put(stopArea.getObjectId(), siteRefStructure.getRef());
 		}
 
 		PostalAddress postalAddress = stopPlace.getPostalAddress();
@@ -125,7 +156,7 @@ public class StopPlaceParser implements Parser, Constant {
 		//boardingPosition.setAreaType(ChouetteAreaEnum.Quay);
 
 		boardingPosition.setObjectVersion(NetexParserUtils.getVersion(quay));
-		if(quay.getName() == null) {
+		if (quay.getName() == null) {
 			boardingPosition.setName(parentStopArea.getName());
 		} else {
 			boardingPosition.setName(quay.getName().getValue());
