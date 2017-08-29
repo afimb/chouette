@@ -16,6 +16,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
+import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
@@ -26,6 +27,8 @@ import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.Referential;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.rutebanken.netex.model.Common_VersionFrameStructure;
 import org.rutebanken.netex.model.PublicationDeliveryStructure;
 import org.rutebanken.netex.model.Quay;
@@ -38,114 +41,102 @@ import static mobi.chouette.exchange.netexprofile.Constant.NETEX_LINE_DATA_CONTE
 @Log4j
 public class PublicationDeliveryStopPlaceParser {
 
-    private static final String MERGED_ID_KEY = "merged-id";
-    private static final String MERGED_ID_VALUE_SEPARATOR = ",";
-    private InputStream inputStream;
-    private Instant now;
+	private static final String MERGED_ID_KEY = "merged-id";
+	private static final String MERGED_ID_VALUE_SEPARATOR = ",";
+	private InputStream inputStream;
+	private Instant now;
 
-    private Set<String> inactiveStopAreaIds = new HashSet<>();
-    private Set<StopArea> activeStopAreas;
-    private Map<String, String> mergedQuays = new HashMap<>();
+	@Getter
+	private StopAreaUpdateContext updateContext;
 
-    public PublicationDeliveryStopPlaceParser(InputStream inputStream) {
-        this.inputStream = inputStream;
-        now = Instant.now();
-        parseStopPlaces();
-    }
-
-
-    public void parseStopPlaces() {
-        try {
-            PublicationDeliveryStructure incomingPublicationDelivery = unmarshal(inputStream);
-
-            convertToStopAreas(incomingPublicationDelivery);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to unmarshall delivery publication structure: " + e.getMessage(), e);
-        }
-    }
-
-    private void convertToStopAreas(PublicationDeliveryStructure incomingPublicationDelivery) throws Exception {
-
-        Context context = new Context();
-        Referential referential = new Referential();
-        context.put(Constant.REFERENTIAL, referential);
-        StopPlaceParser stopPlaceParser = (StopPlaceParser) ParserFactory.create(StopPlaceParser.class.getName());
-
-        for (JAXBElement<? extends Common_VersionFrameStructure> frameStructureElmt : incomingPublicationDelivery.getDataObjects().getCompositeFrameOrCommonFrame()) {
-            Common_VersionFrameStructure frameStructure = frameStructureElmt.getValue();
-
-            if (frameStructure instanceof Site_VersionFrameStructure) {
-                Site_VersionFrameStructure siteFrame = (Site_VersionFrameStructure) frameStructure;
-
-                if (siteFrame.getStopPlaces() != null) {
-
-                    if (siteFrame.getTariffZones() != null) {
-                        context.put(NETEX_LINE_DATA_CONTEXT, siteFrame.getTariffZones());
-                        stopPlaceParser.parse(context);
-                    }
-
-                    context.put(NETEX_LINE_DATA_CONTEXT, siteFrame.getStopPlaces());
-                    stopPlaceParser.parse(context);
+	public PublicationDeliveryStopPlaceParser(InputStream inputStream) {
+		this.inputStream = inputStream;
+		now = Instant.now();
+		updateContext = new StopAreaUpdateContext();
+		parseStopPlaces();
+	}
 
 
-                    for (StopPlace stopPlace : siteFrame.getStopPlaces().getStopPlace()) {
+	public void parseStopPlaces() {
+		try {
+			PublicationDeliveryStructure incomingPublicationDelivery = unmarshal(inputStream);
 
-                        if (!isActive(stopPlace, now)) {
-                            inactiveStopAreaIds.add(stopPlace.getId());
-                            referential.getStopAreas().remove(stopPlace.getId());
-                        } else if (stopPlace.getQuays() != null && !CollectionUtils.isEmpty(stopPlace.getQuays().getQuayRefOrQuay())) {
-                            stopPlace.getQuays().getQuayRefOrQuay().forEach(quay -> collectMergedIdForQuay(quay));
-                        }
+			convertToStopAreas(incomingPublicationDelivery);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to unmarshall delivery publication structure: " + e.getMessage(), e);
+		}
+	}
 
-                    }
+	private void convertToStopAreas(PublicationDeliveryStructure incomingPublicationDelivery) throws Exception {
 
-                }
-            }
-        }
+		Context context = new Context();
+		Referential referential = new Referential();
+		context.put(Constant.REFERENTIAL, referential);
+		StopPlaceParser stopPlaceParser = (StopPlaceParser) ParserFactory.create(StopPlaceParser.class.getName());
 
-        activeStopAreas = referential.getStopAreas().values().stream().filter(sa -> ChouetteAreaEnum.CommercialStopPoint.equals(sa.getAreaType())).collect(Collectors.toSet());
-    }
+		for (JAXBElement<? extends Common_VersionFrameStructure> frameStructureElmt : incomingPublicationDelivery.getDataObjects().getCompositeFrameOrCommonFrame()) {
+			Common_VersionFrameStructure frameStructure = frameStructureElmt.getValue();
 
-    private void collectMergedIdForQuay(Object quayObj) {
-        if (quayObj instanceof Quay) {
-            Quay quay = (Quay) quayObj;
-            quay.getKeyList().getKeyValue().stream().filter(kv -> MERGED_ID_KEY.equals(kv.getKey())).forEach(kv -> addMergedIds(quay.getId(), kv.getValue()));
-        }
-    }
+			if (frameStructure instanceof Site_VersionFrameStructure) {
+				Site_VersionFrameStructure siteFrame = (Site_VersionFrameStructure) frameStructure;
 
-    private void addMergedIds(String mergedToId, String mergedFromIds) {
-        Arrays.asList(mergedFromIds.split(MERGED_ID_VALUE_SEPARATOR)).forEach(mergedFromId -> mergedQuays.put(mergedFromId, mergedToId));
-    }
+				if (siteFrame.getStopPlaces() != null) {
 
-    private boolean isActive(StopPlace stopPlace, Instant atTime) {
-        if (CollectionUtils.isEmpty(stopPlace.getValidBetween()) || stopPlace.getValidBetween().get(0) == null) {
-            return true;
-        }
-        OffsetDateTime validTo = stopPlace.getValidBetween().get(0).getToDate();
+					if (siteFrame.getTariffZones() != null) {
+						context.put(NETEX_LINE_DATA_CONTEXT, siteFrame.getTariffZones());
+						stopPlaceParser.parse(context);
+					}
 
-        return validTo == null || validTo.toInstant().isAfter(atTime);
-    }
+					context.put(NETEX_LINE_DATA_CONTEXT, siteFrame.getStopPlaces());
+					stopPlaceParser.parse(context);
 
-    private PublicationDeliveryStructure unmarshal(InputStream inputStream) throws JAXBException {
-        JAXBContext jaxbContext = newInstance(PublicationDeliveryStructure.class);
-        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
-        JAXBElement<PublicationDeliveryStructure> jaxbElement = jaxbUnmarshaller.unmarshal(new StreamSource(inputStream), PublicationDeliveryStructure.class);
-        PublicationDeliveryStructure publicationDeliveryStructure = jaxbElement.getValue();
+					for (StopPlace stopPlace : siteFrame.getStopPlaces().getStopPlace()) {
 
-        return publicationDeliveryStructure;
+						if (!isActive(stopPlace, now)) {
+							updateContext.getInactiveStopAreaIds().add(stopPlace.getId());
+							referential.getStopAreas().remove(stopPlace.getId());
+						} else if (stopPlace.getQuays() != null && !CollectionUtils.isEmpty(stopPlace.getQuays().getQuayRefOrQuay())) {
+							stopPlace.getQuays().getQuayRefOrQuay().forEach(quay -> collectMergedIdForQuay(quay));
+						}
+					}
 
-    }
+				}
+			}
+		}
 
-    public Set<String> getInactiveStopAreaIds() {
-        return inactiveStopAreaIds;
-    }
+		updateContext.getActiveStopAreas().addAll(referential.getStopAreas().values().stream().filter(sa -> sa.getParent() == null).collect(Collectors.toSet()));
+	}
 
-    public Set<StopArea> getActiveStopAreas() {
-        return activeStopAreas;
-    }
+	private void collectMergedIdForQuay(Object quayObj) {
+		if (quayObj instanceof Quay) {
+			Quay quay = (Quay) quayObj;
+			quay.getKeyList().getKeyValue().stream().filter(kv -> MERGED_ID_KEY.equals(kv.getKey())).forEach(kv -> addMergedIds(quay.getId(), kv.getValue()));
+		}
+	}
 
-    public Map<String, String> getMergedQuays() {
-        return mergedQuays;
-    }
+	private void addMergedIds(String mergedToId, String mergedFromIds) {
+		Arrays.asList(mergedFromIds.split(MERGED_ID_VALUE_SEPARATOR)).forEach(mergedFromId -> updateContext.getMergedQuays().put(mergedFromId, mergedToId));
+	}
+
+	private boolean isActive(StopPlace stopPlace, Instant atTime) {
+		if (CollectionUtils.isEmpty(stopPlace.getValidBetween()) || stopPlace.getValidBetween().get(0) == null) {
+			return true;
+		}
+		OffsetDateTime validTo = stopPlace.getValidBetween().get(0).getToDate();
+
+		return validTo == null || validTo.toInstant().isAfter(atTime);
+	}
+
+	private PublicationDeliveryStructure unmarshal(InputStream inputStream) throws JAXBException {
+		JAXBContext jaxbContext = newInstance(PublicationDeliveryStructure.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+
+		JAXBElement<PublicationDeliveryStructure> jaxbElement = jaxbUnmarshaller.unmarshal(new StreamSource(inputStream), PublicationDeliveryStructure.class);
+		PublicationDeliveryStructure publicationDeliveryStructure = jaxbElement.getValue();
+
+		return publicationDeliveryStructure;
+
+	}
+
 }
