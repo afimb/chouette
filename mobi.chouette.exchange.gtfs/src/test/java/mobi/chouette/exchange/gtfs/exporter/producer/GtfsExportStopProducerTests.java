@@ -55,7 +55,8 @@ public class GtfsExportStopProducerTests
       Reporter.log(StopExporter.CONVERTER.to(context, gtfsObject));
 
       Assert.assertEquals(gtfsObject.getStopId(), "4321", "StopId must be third part of objectid");
-      Assert.assertEquals(gtfsObject.getStopCode(), neptuneObject.getRegistrationNumber(), "StopCode must be correctly set");
+//    Assert.assertEquals(gtfsObject.getStopCode(), neptuneObject.getRegistrationNumber(), "StopCode must be correctly set");
+    Assert.assertEquals(gtfsObject.getPlatformCode(), neptuneObject.getRegistrationNumber(), "StopCode must be correctly set"); //TODO should have separate neptune field for platform_code
       Assert.assertEquals(gtfsObject.getStopName(), neptuneObject.getName(), "StopName must be correctly set");
       Assert.assertEquals(gtfsObject.getStopDesc(), neptuneObject.getComment(), "StopDesc must be correctly set");
       Assert.assertEquals(gtfsObject.getLocationType(), LocationType.Stop, "LocationType must be correctly set");
@@ -143,7 +144,8 @@ public class GtfsExportStopProducerTests
       Reporter.log(StopExporter.CONVERTER.to(context, gtfsObject));
 
       Assert.assertEquals(gtfsObject.getStopId(), "4321", "StopId must be third part of objectid");
-      Assert.assertEquals(gtfsObject.getStopCode(), neptuneObject.getRegistrationNumber(), "StopCode must be correctly set");
+      Assert.assertEquals(gtfsObject.getPlatformCode(), neptuneObject.getRegistrationNumber(), "StopCode must be correctly set");
+//      Assert.assertEquals(gtfsObject.getStopCode(), neptuneObject.getRegistrationNumber(), "StopCode must be correctly set");
       Assert.assertEquals(gtfsObject.getStopName(), neptuneObject.getName(), "StopName must be correctly set");
       Assert.assertEquals(gtfsObject.getStopDesc(), neptuneObject.getComment(), "StopDesc must be correctly set");
       Assert.assertEquals(gtfsObject.getLocationType(), LocationType.Station, "LocationType must be correctly set");

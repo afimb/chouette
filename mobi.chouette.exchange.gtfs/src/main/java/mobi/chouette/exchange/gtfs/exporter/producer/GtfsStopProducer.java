@@ -80,7 +80,7 @@ public class GtfsStopProducer extends AbstractProducer
 			return false;
 		}
 		stop.setStopLon(neptuneObject.getLongitude());
-		stop.setStopCode(neptuneObject.getRegistrationNumber());
+		//stop.setStopCode(neptuneObject.getRegistrationNumber());
 		
 		// name and description must be different
 		if (neptuneObject.getName().equals(neptuneObject.getComment()))
@@ -128,6 +128,8 @@ public class GtfsStopProducer extends AbstractProducer
 		{
 			stop.setWheelchairBoarding(null);
 		}
+		
+		stop.setPlatformCode(neptuneObject.getRegistrationNumber());
 
 		try
 		{

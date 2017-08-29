@@ -60,7 +60,7 @@ public class CheckPointReport extends AbstractReport{
 	protected boolean addCheckPointError(int checkPointErrorId) {
 		boolean ret = false;
 		if (maxByFile) {
-			if (checkPointErrorCount < maxErrors) 
+			if (checkPointErrorCount < MAX_ERRORS_PER_CHECKPOINT) 
 			{
 				checkPointErrorsKeys.add(new Integer(checkPointErrorId));
 				ret = true;

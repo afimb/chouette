@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 
 public abstract class AbstractReport {
-	public static final int maxErrors = 15;
+	public static final int MAX_ERRORS_PER_CHECKPOINT = 50;
 
 	public abstract void print(PrintStream out, StringBuilder ret, int level, boolean first);
 

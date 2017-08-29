@@ -93,14 +93,14 @@ public class ObjectReport extends AbstractReport {
 	protected boolean addCheckPointError(int checkPointErrorId, SEVERITY severity) {
 		boolean ret = false;
 
-		if (checkPointErrorCount + checkPointWarningCount < maxErrors) {
+		if (checkPointErrorCount + checkPointWarningCount < MAX_ERRORS_PER_CHECKPOINT) {
 			checkPointErrorKeys.add(new Integer(checkPointErrorId));
 			ret = true;
 		}
 
 		switch (severity) {
 		case WARNING:
-			if (checkPointWarningCount < maxErrors) {
+			if (checkPointWarningCount < MAX_ERRORS_PER_CHECKPOINT) {
 				checkPointWarningKeys.add(new Integer(checkPointErrorId));
 				ret = true;
 			}
@@ -108,7 +108,7 @@ public class ObjectReport extends AbstractReport {
 			break;
 
 		default: // ERROR
-			if (checkPointErrorCount < maxErrors) {
+			if (checkPointErrorCount < MAX_ERRORS_PER_CHECKPOINT) {
 				checkPointErrorKeys.add(new Integer(checkPointErrorId));
 				ret = true;
 			}
@@ -210,13 +210,13 @@ public class ObjectReport extends AbstractReport {
 		}
 		List<Integer> lstErrorKeys = new ArrayList<Integer>();
 		for(Integer numError: checkPointErrorKeys) {
-			if(lstErrorKeys.size() < maxErrors)
+			if(lstErrorKeys.size() < MAX_ERRORS_PER_CHECKPOINT)
 				lstErrorKeys.add(numError);
 			else
 				break;
 		}
 		for(Integer numWarning: checkPointWarningKeys) {
-			if(lstErrorKeys.size() < maxErrors)
+			if(lstErrorKeys.size() < MAX_ERRORS_PER_CHECKPOINT)
 				lstErrorKeys.add(numWarning);
 			else
 				break;
