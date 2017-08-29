@@ -43,6 +43,8 @@ public class StopAreaService {
             Context context = createContext();
             ContextHolder.clear();
             stopAreaUpdateService.createOrUpdateStopAreas(context, updateContext);
+
+            updateStopAreaReferencesPerReferential(updateContext.getMergedQuays());
         } else {
             log.debug("Received update without any stop areas. Doing nothing");
         }

@@ -15,7 +15,7 @@ public class StopAreaUpdateContext {
 	@Getter
 	private Set<StopArea> activeStopAreas = new HashSet<>();
 	@Getter
-	private Map<String, String> mergedQuays = new HashMap<>();
+	private Map<String, Set<String>> mergedQuays = new HashMap<>();
 
 
 	public int getChangedStopCount() {

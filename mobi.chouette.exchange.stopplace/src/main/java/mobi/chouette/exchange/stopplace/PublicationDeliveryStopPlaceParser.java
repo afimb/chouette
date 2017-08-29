@@ -16,6 +16,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
+import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
@@ -44,13 +45,13 @@ public class PublicationDeliveryStopPlaceParser {
     private InputStream inputStream;
     private Instant now;
 
-    private Set<String> inactiveStopAreaIds = new HashSet<>();
-    private Set<StopArea> activeStopAreas;
-    private Map<String, Set<String>> mergedQuays = new HashMap<>();
+    @Getter
+    private StopAreaUpdateContext updateContext;
 
     public PublicationDeliveryStopPlaceParser(InputStream inputStream) {
         this.inputStream = inputStream;
         now = Instant.now();
+        updateContext = new StopAreaUpdateContext();
         parseStopPlaces();
     }
 
@@ -92,19 +93,18 @@ public class PublicationDeliveryStopPlaceParser {
                     for (StopPlace stopPlace : siteFrame.getStopPlaces().getStopPlace()) {
 
                         if (!isActive(stopPlace, now)) {
-                            inactiveStopAreaIds.add(stopPlace.getId());
+                            updateContext.getInactiveStopAreaIds().add(stopPlace.getId());
                             referential.getStopAreas().remove(stopPlace.getId());
                         } else if (stopPlace.getQuays() != null && !CollectionUtils.isEmpty(stopPlace.getQuays().getQuayRefOrQuay())) {
                             stopPlace.getQuays().getQuayRefOrQuay().forEach(quay -> collectMergedIdForQuay(quay));
                         }
-
                     }
 
                 }
             }
         }
 
-        activeStopAreas = referential.getStopAreas().values().stream().filter(sa -> ChouetteAreaEnum.CommercialStopPoint.equals(sa.getAreaType())).collect(Collectors.toSet());
+        updateContext.getActiveStopAreas().addAll(referential.getStopAreas().values().stream().filter(sa -> sa.getParent() == null).collect(Collectors.toSet()));
     }
 
     private void collectMergedIdForQuay(Object quayObj) {
@@ -120,10 +120,10 @@ public class PublicationDeliveryStopPlaceParser {
     private void addMergedIds(String mergedToId, String mergedFromIdsAsString) {
         Set<String> mergedFromIds = Arrays.asList(mergedFromIdsAsString.split(ID_VALUE_SEPARATOR)).stream().filter(id -> !StringUtils.isEmpty(id)).collect(Collectors.toSet());
 
-        if (mergedQuays.get(mergedToId) != null) {
-            mergedQuays.get(mergedToId).addAll(mergedFromIds);
+        if (updateContext.getMergedQuays().get(mergedToId) != null) {
+            updateContext.getMergedQuays().get(mergedToId).addAll(mergedFromIds);
         } else {
-            mergedQuays.put(mergedToId, mergedFromIds);
+            updateContext.getMergedQuays().put(mergedToId, mergedFromIds);
         }
     }
 
@@ -147,15 +147,4 @@ public class PublicationDeliveryStopPlaceParser {
 
     }
 
-    public Set<String> getInactiveStopAreaIds() {
-        return inactiveStopAreaIds;
-    }
-
-    public Set<StopArea> getActiveStopAreas() {
-        return activeStopAreas;
-    }
-
-    public Map<String, Set<String>> getMergedQuays() {
-        return mergedQuays;
-    }
 }

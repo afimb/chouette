@@ -80,6 +80,7 @@ public class StopAreaUpdateTask {
 
 			} else {
 				log.debug("Updating existing contained StopArea : " + stopArea);
+				stopAreaUpdater.update(context, existingContainedStopAreaForSameParent, containedStopArea);
 				stopAreaDAO.update(existingContainedStopAreaForSameParent);
 			}
 		}

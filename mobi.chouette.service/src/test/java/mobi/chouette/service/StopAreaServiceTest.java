@@ -193,6 +193,37 @@ public class StopAreaServiceTest extends Arquillian {
     }
 
 
+
+	@Test
+	public void testStopAreaUpdateForMultiModalStop() throws Exception {
+		utx.begin();
+		em.joinTransaction();
+
+		String parentName = "Super stop place name";
+
+		stopAreaService.createOrUpdateStopPlacesFromNetexStopPlaces(new FileInputStream("src/test/data/StopAreasMultiModalImport.xml"));
+
+		StopArea stopAreaParent = assertStopPlace("NSR:StopPlace:4000");
+		Assert.assertEquals(stopAreaParent.getName(), parentName);
+
+		StopArea stopAreaChild1 = assertStopPlace("NSR:StopPlace:1000", "NSR:Quay:1000");
+		Assert.assertEquals(stopAreaChild1.getParent(), stopAreaParent, "Expected child to have parent set");
+		Assert.assertEquals(stopAreaChild1.getName(), parentName, "Expected child to get parents name");
+		StopArea stopAreaChild2 = assertStopPlace("NSR:StopPlace:2000");
+		Assert.assertEquals(stopAreaChild2.getParent(), stopAreaParent, "Expected child to have parent set");
+		Assert.assertEquals(stopAreaChild2.getName(), parentName, "Expected child to get parents name");
+
+
+		stopAreaService.createOrUpdateStopPlacesFromNetexStopPlaces(new FileInputStream("src/test/data/StopAreasMultiModalRemoval.xml"));
+
+		Assert.assertNull(stopAreaDAO.findByObjectId("NSR:StopPlace:4000"), "Did not expect to find deactivated parent stop place");
+		Assert.assertNull(stopAreaDAO.findByObjectId("NSR:StopPlace:2000"), "Did not expect to find stop with deactivated parent ");
+		Assert.assertNull(stopAreaDAO.findByObjectId("NSR:StopPlace:1000"), "Did not expect to find stop with deactivated parent");
+		Assert.assertNull(stopAreaDAO.findByObjectId("NSR:Quay:1000"), "Did not expect to find quay with deactivated stop place parent");
+
+		utx.rollback();
+	}
+
     @Test
     public void testDeleteStopAreaWithQuays() throws Exception {
         String stopAreaId = "NSR:StopPlace:1";
