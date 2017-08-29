@@ -239,11 +239,26 @@
                                     <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:76522" version="1"/>
                                     <ForAlighting>false</ForAlighting>
                                     <ForBoarding>false</ForBoarding>
-
+                                    
                                 </StopPointInJourneyPattern>
                             </pointsInSequence>
                         </JourneyPattern>
-
+                        
+                        <JourneyPattern version="1" id="AVI:JourneyPattern:DUPLICATE_DESTINATION_DISPLAYS">
+                            <!-- <RouteRef ref="AVI:Route:12636280" version="1"/>-->
+                            <pointsInSequence>
+                                <StopPointInJourneyPattern order="1" version="1" id="AVI:StopPointInJourneyPattern:1263628001">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:83334" version="1"/>
+                                    <DestinationDisplayRef ref="AVI:DestinationDisplay:12636280" version="1"/>
+                                </StopPointInJourneyPattern>
+                                <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:1263628002">
+                                    <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:76522" version="1"/>
+                                    <DestinationDisplayRef ref="AVI:DestinationDisplay:12636280" version="1"/>
+                                    
+                                </StopPointInJourneyPattern>
+                            </pointsInSequence>
+                        </JourneyPattern>
+                        
                     </journeyPatterns>
 
                 </ServiceFrame>
