@@ -86,14 +86,19 @@ public class StopPlaceParser implements Parser, Constant {
             if (parent != null) {
                 parent.setAreaType(parentAreaType);
                 child.setParent(parent);
+				copyNameIfMissingRecursively(parent);
+			}
+		}
+	}
 
-                if (child.getName() == null) {
-                    child.setName(parent.getName());
-                }
-            }
-        }
-    }
-
+	private void copyNameIfMissingRecursively(StopArea parent){
+		for(StopArea child:parent.getContainedStopAreas()){
+			if (child.getName()==null){
+				child.setName(parent.getName());
+			}
+			copyNameIfMissingRecursively(child);
+		}
+	}
 
 
     void parseStopPlace(Context context, StopPlace stopPlace, Map<String, String> parentZoneMap, Map<String, String> parentSiteMap) throws Exception {
