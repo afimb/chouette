@@ -68,6 +68,7 @@ public class StopPlaceParser implements Parser, Constant {
 			updateParentAndChildRefs(referential, parentZoneMap, ChouetteAreaEnum.StopPlace);
 			updateParentAndChildRefs(referential, parentSiteMap, ChouetteAreaEnum.CommercialStopPoint);
 
+
 		}
 	}
 
@@ -78,11 +79,17 @@ public class StopPlaceParser implements Parser, Constant {
 			if (parent != null) {
 				parent.setAreaType(parentAreaType);
 				child.setParent(parent);
-
-				if (child.getName() == null) {
-					child.setName(parent.getName());
-				}
+				copyNameIfMissingRecursively(parent);
 			}
+		}
+	}
+
+	private void copyNameIfMissingRecursively(StopArea parent){
+		for(StopArea child:parent.getContainedStopAreas()){
+			if (child.getName()==null){
+				child.setName(parent.getName());
+			}
+			copyNameIfMissingRecursively(child);
 		}
 	}
 
