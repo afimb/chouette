@@ -84,7 +84,7 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
 					DestinationDisplay modifiedDestinationDisplay = referential.getSharedDestinationDisplays().get(modifiedDestinationDisplayId);
                     if(modifiedDestinationDisplay == null) {
                   		modifiedDestinationDisplay = ObjectFactory.getDestinationDisplay(referential, modifiedDestinationDisplayId);
-                		modifiedDestinationDisplay.setName(destinationDisplay.getName()+" (stripped number)");
+                		modifiedDestinationDisplay.setName(destinationDisplay.getName() == null? "" : destinationDisplay.getName()+" (stripped number)");
                 		modifiedDestinationDisplay.setFrontText(destinationDisplay.getFrontText().substring(lineNumber.length()+1));
                 		modifiedDestinationDisplay.setSideText(destinationDisplay.getSideText());
                 		modifiedDestinationDisplay.getVias().addAll(destinationDisplay.getVias());
