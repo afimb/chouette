@@ -262,6 +262,8 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
+		configuration.setValidCodespaces("AVI,http://www.rutebanken.org/ns/avi");
+
 
 		configuration.setStopAreaImportMode(stopAreaImportMode);
 
