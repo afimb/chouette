@@ -119,7 +119,6 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 	private void parseTimetabledPassingTimes(Context context, Referential referential, ServiceJourney serviceJourney, VehicleJourney vehicleJourney) {
 		for (TimetabledPassingTime passingTime : serviceJourney.getPassingTimes().getTimetabledPassingTime()) {
 			VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop();
-			vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
 
 			StopPoint stopPoint = ObjectFactory.getStopPoint(referential, passingTime.getPointInJourneyPatternRef().getValue().getRef());
 			vehicleJourneyAtStop.setStopPoint(stopPoint);
