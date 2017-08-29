@@ -70,9 +70,12 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_SERVICE_FRAME_ROUTE_LINEREF = "1-NETEXPROFILE-ServiceFrame_Route_LineRef";
 	public static final String _1_NETEX_SERVICE_FRAME_ROUTE_POINTSINSEQUENCE = "1-NETEXPROFILE-ServiceFrame_Route_PointsInSequence";
 	public static final String _1_NETEX_SERVICE_FRAME_DESTINATION_DISPLAY_FRONTTEXT = "1-NETEXPROFILE-ServiceFrame-DestinationDisplay-FrontText";
+	public static final String _1_NETEX_SERVICE_FRAME_DESTINATION_DISPLAY_VIA_DESTINATIONDISPLAYREF = "1-NETEXPROFILE-ServiceFrame-DestinationDisplay-Via-DestinationDisplayRef";
 	public static final String _1_NETEX_SERVICE_FRAME_STOP_WITHOUT_BOARDING_OR_ALIGHTING = "1-NETEXPROFILE-ServiceFrame-StopPointInJourneyPattern-NoBoardingNoAlighting";
+	public static final String _1_NETEX_SERVICE_FRAME_STOP_WITH_REPEATING_DESTINATIONDISPLAYREF = "1-NETEXPROFILE-ServiceFrame-StopPointInJourneyPattern-Repeating-DestinationDisplayRef";
 	public static final String _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_SCHEDULEDSTOPPOINTREF = "1-NETEXPROFILE-ServiceFrame-PassengerStopAssignment-ScheduledStopPointRef";
 	public static final String _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_QUAYREF = "1-NETEXPROFILE-ServiceFrame-PassengerStopAssignment-QuayRef";
+
 	public static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY = "1-NETEXPROFILE-TimetableFrame-ServiceJourney";
 	public static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_DAYTYPEREF = "1-NETEXPROFILE-TimetableFrame-ServiceJourney-DayTypeRef";
 	public static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIMES = "1-NETEXPROFILE-TimetableFrame_ServiceJourney_TimetabledPassingTime";
@@ -84,10 +87,12 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_TIMETABLE_FRAME_SERVICEJOURNEY_JOURNEYPATTERN_REF = "1-NETEXPROFILE-TimetableFrame_ServiceJourney_JourneyPatternRef";
 	public static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_MISSING_PASSING_TIME = "1-NETEXPROFILE-TimetableFrame_ServiceJourney_MissingTimetabledPassingTime";
 	public static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_TRANSPORTMODE_OVERRIDE = "1-NETEXPROFILE-TimetableFrame_ServiceJourney_TransportModeOverride";
+	
 	public static final String _1_NETEX_COMPOSITE_FRAME_VALIDITYCONDTITIONS = "1-NETEXPROFILE-CompositeFrame_ValidityConditions";
 	public static final String _1_NETEX_VALIDITYCONDITIONS_ON_FRAMES_INSIDE_COMPOSITEFRAME = "1-NETEXPROFILE-ValidityConditionsOnFramesInsideCompositeFrame";
 	public static final String _1_NETEX_NO_VALIDITYCONDITIONS_ON_FRAMES_OUTSIDE_COMPOSITEFRAME = "1-NETEXPROFILE-NoValidityConditionsOnServiceOrServiceCalendarOrTimetableFrame";
 	public static final String _1_NETEX_MULTIPLE_FRAMES_OF_SAME_TYPE_WITHOUT_VALIDITYCONDITIONS = "1-NETEXPROFILE-NoValidityConditionsOnFrameTypeOccuringTwiceOrMore";
+	
 	public static final String _1_NETEX_COMMON_TIMETABLE_FRAME = "1-NETEXPROFILE-CommonFile-TimetableFrameNotAllowed";
 	public static final String _1_NETEX_COMMON_SERVICE_FRAME_LINE = "1-NETEXPROFILE-CommonFile-ServiceFrame-LineNotAllowed";
 	public static final String _1_NETEX_COMMON_SERVICE_FRAME_ROUTE = "1-NETEXPROFILE-CommonFile-ServiceFrame-RouteNotAllowed";
@@ -161,7 +166,10 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN_ROUTE_REF, "E");
 		addCheckpoints(context, _1_NETEX_COMMON_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN_MISSING_DESTINATIONDISPLAY, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_DESTINATION_DISPLAY_FRONTTEXT, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_DESTINATION_DISPLAY_VIA_DESTINATIONDISPLAYREF,"E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_STOP_WITHOUT_BOARDING_OR_ALIGHTING, "W");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_STOP_WITH_REPEATING_DESTINATIONDISPLAYREF, "E");
+		
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_SCHEDULEDSTOPPOINTREF, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_QUAYREF, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_INVALID_TRANSPORTMODE, "E");

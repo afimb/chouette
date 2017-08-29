@@ -85,6 +85,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 	};
 
 
+
 	@Override
 	public void validate(Context context) throws Exception {
 		XPathCompiler xpath = (XPathCompiler) context.get(NETEX_XPATH_COMPILER);
@@ -236,9 +237,17 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 
 			validateElementNotPresent(context, xpath, subLevel, "destinationDisplays/DestinationDisplay[not(FrontText) or normalize-space(FrontText) = '']",
 					_1_NETEX_SERVICE_FRAME_DESTINATION_DISPLAY_FRONTTEXT);
+			validateElementNotPresent(context, xpath, subLevel, "destinationDisplays/DestinationDisplay/vias/Via[not(DestinationDisplayRef)]",
+					_1_NETEX_SERVICE_FRAME_DESTINATION_DISPLAY_VIA_DESTINATIONDISPLAYREF);
 			validateElementNotPresent(context, xpath, subLevel, "//StopPointInJourneyPattern[ForAlighting = 'false' and ForBoarding = 'false']",
 					_1_NETEX_SERVICE_FRAME_STOP_WITHOUT_BOARDING_OR_ALIGHTING);
+			validateElementNotPresent(context, xpath, subLevel, "//StopPointInJourneyPattern[DestinationDisplayRef/@ref = preceding-sibling::StopPointInJourneyPattern/DestinationDisplayRef/@ref]",
+					_1_NETEX_SERVICE_FRAME_STOP_WITH_REPEATING_DESTINATIONDISPLAYREF);
 
+			
+			
+			
+					
 			List<String> validTransportModesWithQuotes = Arrays.asList(validTransportModes).stream().map(e -> "'"+e+"'").collect(Collectors.toList());
 			List<String> validTransportSubModesWithQuotes = Arrays.asList(validTransportSubModes).stream().map(e -> "'"+e+"'").collect(Collectors.toList());
 			
