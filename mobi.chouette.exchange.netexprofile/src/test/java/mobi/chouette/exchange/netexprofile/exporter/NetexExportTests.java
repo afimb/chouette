@@ -38,6 +38,7 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.CodespaceDAO;
 import mobi.chouette.dao.LineDAO;
+import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.exchange.netexprofile.DummyChecker;
 import mobi.chouette.exchange.netexprofile.JobDataTest;
 import mobi.chouette.exchange.netexprofile.NetexTestUtils;
@@ -52,6 +53,7 @@ import mobi.chouette.exchange.validation.report.CheckPointReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Codespace;
+import mobi.chouette.model.type.StopAreaImportModeEnum;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 @Log4j
@@ -64,6 +66,9 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
     @EJB
     private LineDAO lineDao;
+
+    @EJB
+    private StopAreaDAO stopAreaDao;
 
     @PersistenceContext(unitName = "referential")
     private EntityManager em;
@@ -238,6 +243,8 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         codespaceDao.flush();
         lineDao.deleteAll();
         lineDao.flush();
+        stopAreaDao.deleteAll();
+        stopAreaDao.flush();
         
         utx.commit();
     }

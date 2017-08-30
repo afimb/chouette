@@ -253,7 +253,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 		for (Route route : line.getRoutes()) {
 			for (StopPoint stopPoint : route.getStopPoints()) {
-				if (stopPoint.getObjectId().equals("AVI:StopPoint:1263628002")) {
+				if (stopPoint.getObjectId().equals("AVI:StopPointInJourneyPattern:1263628002")) {
 					assertEquals(stopPoint.getContainedInStopArea().getObjectId(), existingStopArea.getObjectId());
 					assertEquals(stopPoint.getContainedInStopArea().getName(), "Molde Lufthavn", "Expected name of existing stop area to be updated by import data");
 
@@ -285,7 +285,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 		for (Route route : line.getRoutes()) {
 			for (StopPoint stopPoint : route.getStopPoints()) {
-				if (stopPoint.getObjectId().equals("AVI:StopPoint:1263628002")) {
+				if (stopPoint.getObjectId().equals("AVI:StopPointInJourneyPattern:1263628002")) {
 					assertEquals(stopPoint.getContainedInStopArea().getObjectId(), existingStopArea.getObjectId());
 					assertEquals(stopPoint.getContainedInStopArea().getName(), existingStopArea.getName(), "Expected name of existing stop area to be unchanged by import");
 				} else {
@@ -312,13 +312,13 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 		for (Route route : line.getRoutes()) {
 			for (StopPoint stopPoint : route.getStopPoints()) {
-				if (stopPoint.getObjectId().equals("AVI:StopPoint:1263628002")) {
+				if (stopPoint.getObjectId().equals("AVI:StopPointInJourneyPattern:1263628002")) {
 					assertEquals(stopPoint.getContainedInStopArea().getObjectId(), existingStopArea.getObjectId(), "Expected existing stop area to be matched correctly");
 					assertEquals(stopPoint.getContainedInStopArea().getName(), existingStopArea.getName(), "Expected name of existing stop area to be unchanged by import");
-				} else if (stopPoint.getObjectId().equals("AVI:StopPoint:1869688101")) {
+				} else if (stopPoint.getObjectId().equals("AVI:StopPointInJourneyPattern:1869688101")) {
 					assertEquals(stopPoint.getContainedInStopArea().getObjectId(), existingStopArea.getObjectId(), "Expected existing stop area to be matched correctly");
 				} else {
-					assertNull(stopPoint.getContainedInStopArea(), "Did not expect stop areas to be created by import");
+					assertNull(stopPoint.getContainedInStopArea(), "Did not expect stop areas to be created by import "+stopPoint.getContainedInStopAreaObjectId());
 				}
 			}
 		}
