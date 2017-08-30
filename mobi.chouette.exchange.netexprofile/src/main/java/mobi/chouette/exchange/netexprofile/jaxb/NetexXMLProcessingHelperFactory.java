@@ -1,11 +1,17 @@
 package mobi.chouette.exchange.netexprofile.jaxb;
 
+import static java.nio.file.StandardOpenOption.APPEND;
+import static java.nio.file.StandardOpenOption.CREATE;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Set;
 
 import javax.xml.XMLConstants;
@@ -15,7 +21,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.Source;
 import javax.xml.transform.stax.StAXSource;
 import javax.xml.transform.stream.StreamSource;
@@ -24,6 +32,8 @@ import javax.xml.validation.SchemaFactory;
 
 import org.rutebanken.netex.model.PublicationDeliveryStructure;
 import org.xml.sax.SAXException;
+
+import com.sun.xml.txw2.output.IndentingXMLStreamWriter;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.netexprofile.Constant;
@@ -111,6 +121,17 @@ public class NetexXMLProcessingHelperFactory {
         marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
         
 		return marshaller;
+	}
+	
+	public static IndentingXMLStreamWriter createXMLWriter(Path filePath) throws XMLStreamException, IOException {
+		Writer bufferedWriter = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8, CREATE, APPEND);
+		XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
+		XMLStreamWriter xmlStreamWriter = outputFactory.createXMLStreamWriter(bufferedWriter);
+		xmlStreamWriter.setDefaultNamespace(Constant.NETEX_NAMESPACE);
+
+		IndentingXMLStreamWriter writer = new IndentingXMLStreamWriter(new EscapingXMLStreamWriter(xmlStreamWriter));
+
+		return writer;
 	}
 
 
