@@ -1,7 +1,5 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
-import static mobi.chouette.exchange.netexprofile.Constant.EXPORTABLE_NETEX_DATA;
-import static mobi.chouette.exchange.netexprofile.Constant.NETEX_VALID_CODESPACES;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer.DAY_TYPES_KEY;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer.DAY_TYPE_ASSIGNMENTS_KEY;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer.OPERATING_PERIODS_KEY;
@@ -24,6 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.xml.bind.Marshaller;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.Authority;
@@ -56,11 +56,11 @@ import org.rutebanken.netex.model.Via_VersionedChildStructure;
 import org.rutebanken.netex.model.Vias_RelStructure;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
+import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.JourneyPatternProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.LineProducer;
@@ -116,8 +116,11 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
                 "-" + neptuneLine.getPublishedName().replace(' ', '_').replace('/', '_') : "") + ".xml";
         Path filePath = new File(outputPath.toFile(), fileName).toPath();
 
+        
+        Marshaller marshaller = (Marshaller) context.get(MARSHALLER);
+        
         NetexFileWriter writer = new NetexFileWriter();
-        writer.writeXmlFile(context, filePath, exportableData, exportableNetexData, NetexFragmentMode.LINE);
+        writer.writeXmlFile(context, filePath, exportableData, exportableNetexData, NetexFragmentMode.LINE,marshaller);
 
         reporter.addFileReport(context, fileName, IO_TYPE.OUTPUT);
 

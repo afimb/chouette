@@ -16,8 +16,8 @@ import org.xml.sax.SAXException;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.importer.NetexImporter;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
+import mobi.chouette.exchange.netexprofile.jaxb.NetexXMLProcessingHelperFactory;
 import mobi.chouette.exchange.netexprofile.util.NetexReferential;
 import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.StopPoint;
@@ -25,7 +25,7 @@ import mobi.chouette.model.util.Referential;
 
 public class DestinationDisplayParserTest {
 
-	private NetexImporter netexImporter = new NetexImporter();
+	private NetexXMLProcessingHelperFactory netexImporter = new NetexXMLProcessingHelperFactory();
 
 	private PublicationDeliveryParser parser = new PublicationDeliveryParser();
 

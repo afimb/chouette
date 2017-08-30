@@ -28,6 +28,7 @@ import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValid
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidatorFactory;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.NorwayCommonNetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.norway.NorwayLineNetexProfileValidator;
+import mobi.chouette.exchange.netexprofile.jaxb.NetexXMLProcessingHelperFactory;
 import mobi.chouette.exchange.netexprofile.util.NetexReferential;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
@@ -54,7 +55,7 @@ public class NetexInitImportCommand implements Command, Constant {
 			NetexprofileImportParameters parameters = (NetexprofileImportParameters) context.get(CONFIGURATION);
 
 			
-			NetexImporter importer = new NetexImporter();
+			NetexXMLProcessingHelperFactory importer = new NetexXMLProcessingHelperFactory();
 			context.put(IMPORTER, importer);
 			context.put(NETEX_XPATH_COMPILER, importer.getXPathCompiler());
 			context.put(REFERENTIAL, new Referential());
