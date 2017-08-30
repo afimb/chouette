@@ -25,6 +25,7 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
+import mobi.chouette.exchange.netexprofile.jaxb.NetexXMLProcessingHelperFactory;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.report.DataLocation;
@@ -67,7 +68,7 @@ public class NetexInitReferentialCommand implements Command, Constant {
 				elementsToSkip.add(new QName(Constant.NETEX_NAMESPACE, "SiteFrame"));
 			}
 
-			NetexImporter importer = (NetexImporter) context.get(IMPORTER);
+			NetexXMLProcessingHelperFactory importer = (NetexXMLProcessingHelperFactory) context.get(IMPORTER);
 			
 
 			XdmNode netexDom = importer.parseFileToXdmNode(file, elementsToSkip);
