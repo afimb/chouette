@@ -74,8 +74,8 @@ public class NetexProducer {
         availabilityCondition.setVersion(neptuneIdentifiedObject.getObjectVersion() > 0 ? String.valueOf(neptuneIdentifiedObject.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
         availabilityCondition.setId(availabilityConditionId);
 
-        availabilityCondition.setFromDate(OffsetDateTime.now(ZoneId.systemDefault())); // TODO fix correct from date, for now using dummy dates
-        availabilityCondition.setToDate(availabilityCondition.getFromDate().plusMonths(1L)); // TODO fix correct to date, for now using dummy dates
+        availabilityCondition.setFromDate(OffsetDateTime.now(ZoneId.systemDefault()).minusYears(1)); // TODO fix correct from date, for now using dummy dates
+        availabilityCondition.setToDate(OffsetDateTime.now(ZoneId.systemDefault()).plusYears(1)); // TODO fix correct to date, for now using dummy dates
         return availabilityCondition;
     }
 
