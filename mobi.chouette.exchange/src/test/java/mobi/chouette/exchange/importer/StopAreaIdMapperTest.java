@@ -7,6 +7,7 @@ import mobi.chouette.exchange.importer.updater.StopAreaIdCache;
 import mobi.chouette.exchange.importer.updater.StopAreaIdMapper;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -129,7 +130,9 @@ public class StopAreaIdMapperTest {
 
     private void setTransportModeForQuay(StopArea quay, TransportModeNameEnum transportModeName){
         StopPoint sp=new StopPoint();
-        sp.setContainedInStopArea(quay);
+        ScheduledStopPoint scheduledStopPoint=new ScheduledStopPoint();
+        sp.setScheduledStopPoint(scheduledStopPoint);
+        scheduledStopPoint.setContainedInStopArea(quay);
         Route route=new Route();
         sp.setRoute(route);
         Line line=new Line();

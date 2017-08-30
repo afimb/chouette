@@ -48,6 +48,7 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.RouteSection;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timeband;
@@ -636,7 +637,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				// find stoppoint for this journey
 				JourneyPattern jp = vehicleJourney.getJourneyPattern();
 				for(StopPoint sp : jp.getStopPoints()) {
-					if(sp.getContainedInStopArea().getObjectId().equals(feederStopAreaId)) {
+					if(sp.getScheduledStopPoint().getContainedInStopArea().getObjectId().equals(feederStopAreaId)) {
 						interchange.setFeederStopPoint(sp);
 						// Can be multiple matches, but GTFS does not specify which visit
 						break;
@@ -667,7 +668,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				// find stoppoint for this journey
 				JourneyPattern jp = vehicleJourney.getJourneyPattern();
 				for(StopPoint sp : jp.getStopPoints()) {
-					if(sp.getContainedInStopArea().getObjectId().equals(consumerStopAreaId)) {
+					if(sp.getScheduledStopPoint().getContainedInStopArea().getObjectId().equals(consumerStopAreaId)) {
 						interchange.setConsumerStopPoint(sp);
 						// Can be multiple matches, but GTFS does not specify which visit
 						break;
@@ -808,9 +809,9 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				StopPoint firstStopPoint=route.getStopPoints().get(0);
 				StopPoint lastStopPoint=route.getStopPoints().get(route.getStopPoints().size() - 1);
 
-				if (firstStopPoint.getContainedInStopArea()!=null && lastStopPoint.getContainedInStopArea()!=null) {
-					String first = firstStopPoint.getContainedInStopArea().getName();
-					String last = lastStopPoint.getContainedInStopArea()
+				if (firstStopPoint.getScheduledStopPoint().getContainedInStopArea()!=null && lastStopPoint.getScheduledStopPoint().getContainedInStopArea()!=null) {
+					String first = firstStopPoint.getScheduledStopPoint().getContainedInStopArea().getName();
+					String last = lastStopPoint.getScheduledStopPoint().getContainedInStopArea()
 							              .getName();
 					route.setName(first + " -> " + last);
 				}
@@ -844,7 +845,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential,
 					AbstractConverter.composeObjectId(configuration,
 							DestinationDisplay.DESTINATIONDISPLAY_KEY, journeyPatternId+"-"+stopPointId,null));
-			String content = jp.getArrivalStopPoint().getContainedInStopArea().getName();
+			String content = jp.getArrivalStopPoint().getScheduledStopPoint().getContainedInStopArea().getName();
 			
 			destinationDisplay.setName("Generated: "+content);
 			destinationDisplay.setFrontText(content);
@@ -908,7 +909,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		StopArea previousLocation = null;
 		for (StopPoint stop : journeyPattern.getStopPoints()) {
 			// find nearest segment and project point on it
-			StopArea location = stop.getContainedInStopArea();
+			StopArea location = stop.getScheduledStopPoint().getContainedInStopArea();
 			Coordinate point = new Coordinate(location.getLongitude().doubleValue(), location.getLatitude()
 					.doubleValue());
 			double distance_min = Double.MAX_VALUE;
@@ -1145,11 +1146,17 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			String stopAreaId = AbstractConverter.composeObjectId(configuration,
 					"Quay", wrapper.stopId, log);
 			StopArea stopArea = ObjectFactory.getStopArea(referential, stopAreaId);
-			stopPoint.setContainedInStopArea(stopArea);
+
+			// TODO NRP 1692 Fix this , use which id? only if not already set on stopPoint?
+			ScheduledStopPoint scheduledStopPoint=ObjectFactory.getScheduledStopPoint(referential, stopKey);
+			stopPoint.setScheduledStopPoint(scheduledStopPoint);
+
+
+			scheduledStopPoint.setContainedInStopArea(stopArea);
 			stopPoint.setRoute(route);
 			stopPoint.setPosition(position++);
-			stopPoint.setForBoarding(toBoardingPossibility(wrapper.pickup));
-			stopPoint.setForAlighting(toAlightingPossibility(wrapper.dropOff));
+			scheduledStopPoint.setForBoarding(toBoardingPossibility(wrapper.pickup));
+			scheduledStopPoint.setForAlighting(toAlightingPossibility(wrapper.dropOff));
 			
 			if(wrapper.stopHeadsign != null) {
 				DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential, stopKey);

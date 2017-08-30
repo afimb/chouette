@@ -4,6 +4,7 @@ import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
@@ -131,14 +132,16 @@ public class RegtoppLineParserTest {
 
 	private StopPoint createStopPoint(Referential referential, int stopPointId, Integer position, int stopAreaId, BoardingPossibilityEnum forBoarding, AlightingPossibilityEnum forAlighting) {
 		StopPoint sp = ObjectFactory.getStopPoint(referential, ObjectIdCreator.composeGenericObjectId("XYZ", ObjectIdTypes.STOPPOINT_KEY, ""+stopPointId));
-		
 		sp.setPosition(position);
-		sp.setForAlighting(forAlighting);
-		sp.setForBoarding(forBoarding);
+		ScheduledStopPoint ssp = ObjectFactory.getScheduledStopPoint(referential, ObjectIdCreator.composeGenericObjectId("XYZ", ObjectIdTypes.SCHEDULED_STOP_POINT_KEY, ""+stopPointId));
+		ssp.setForAlighting(forAlighting);
+		ssp.setForBoarding(forBoarding);
 		
 		StopArea sa = ObjectFactory.getStopArea(referential, ObjectIdCreator.composeGenericObjectId("XYZ", ObjectIdTypes.STOPAREA_KEY, ""+stopAreaId));
-		sp.setContainedInStopArea(sa);
-		
+		ssp.setContainedInStopArea(sa);
+
+		sp.setScheduledStopPoint(ssp);
+
 		return sp;
 	}
 

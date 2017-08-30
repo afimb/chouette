@@ -21,6 +21,7 @@ import mobi.chouette.model.*;
 import mobi.chouette.model.type.PTDirectionEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Collection;
@@ -98,7 +99,10 @@ public class RegtoppRouteParser extends LineSpecificParser {
 
 							StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
 							stopPoint.setPosition(i);
-							stopPoint.setContainedInStopArea(stopArea);
+							// NRP 1692 not sure about this, which id should we use for scheduled stop point
+							ScheduledStopPoint scheduledStopPoint = ObjectFactory.getScheduledStopPoint(referential, chouetteStopPointId);
+							stopPoint.setScheduledStopPoint(scheduledStopPoint);
+							scheduledStopPoint.setContainedInStopArea(stopArea);
 
 							// Warn: Using comment field as temporary storage
 							// for line pointer. Used for lookup when parsing
@@ -239,46 +243,45 @@ public class RegtoppRouteParser extends LineSpecificParser {
 
 		// Sort stopPoints on JourneyPattern
 		Collection<JourneyPattern> journeyPatterns = referential.getJourneyPatterns().values();
-												// digits
+		// digits
 		for (JourneyPattern jp : journeyPatterns) {
 			List<StopPoint> stopPoints = jp.getStopPoints();
 			Collections.sort(stopPoints, stopPointSequenceComparator);
 			jp.setDepartureStopPoint(stopPoints.get(0));
 			jp.setArrivalStopPoint(stopPoints.get(stopPoints.size() - 1));
 
-			
-			
+
 			StopPoint departureStopPoint = jp.getDepartureStopPoint();
 			if (departureStopPoint.getDestinationDisplay() == null) {
 				// Create a forced DestinationDisplay
 				// Use JourneyPattern->PublishedName
-				
+
 				String stopPointId = ObjectIdCreator.extractOriginalId(departureStopPoint.getObjectId());
 				String journeyPatternId = ObjectIdCreator.extractOriginalId(jp.getObjectId());
-				
+
 				DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential,
 						ObjectIdCreator.composeGenericObjectId(parameters.getObjectIdPrefix(),
-								DestinationDisplay.DESTINATIONDISPLAY_KEY, journeyPatternId+"-"+stopPointId));
+								DestinationDisplay.DESTINATIONDISPLAY_KEY, journeyPatternId + "-" + stopPointId));
 				String content = jp.getPublishedName();
-				if(content == null) {
+				if (content == null) {
 					content = jp.getRoute().getPublishedName();
 				}
-				if(content == null) {
-					content = jp.getArrivalStopPoint().getContainedInStopArea().getName();
+				if (content == null) {
+					content = jp.getArrivalStopPoint().getScheduledStopPoint().getContainedInStopArea().getName();
 				}
-				
-				destinationDisplay.setName("Generated: "+content);
+
+				destinationDisplay.setName("Generated: " + content);
 				destinationDisplay.setFrontText(content);
 				departureStopPoint.setDestinationDisplay(destinationDisplay);
 
 			}
-			
+
 			// Remove repeats
 			DestinationDisplay previousDestinationDisplay = departureStopPoint.getDestinationDisplay();
-			for(int i=1;i<stopPoints.size();i++) {
+			for (int i = 1; i < stopPoints.size(); i++) {
 				StopPoint sp = stopPoints.get(i);
-				if(sp.getDestinationDisplay() != null) {
-					if(sp.getDestinationDisplay().equals(previousDestinationDisplay)) {
+				if (sp.getDestinationDisplay() != null) {
+					if (sp.getDestinationDisplay().equals(previousDestinationDisplay)) {
 						sp.setDestinationDisplay(null); // Same as previous, just remove
 					} else {
 						previousDestinationDisplay = sp.getDestinationDisplay();
@@ -335,7 +338,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 				// Set to last useful stop
 				List<StopPoint> stopPoints = route.getStopPoints();
 				if (stopPoints != null && !stopPoints.isEmpty()) {
-					StopArea lastStopArea = stopPoints.get(stopPoints.size() - 1).getContainedInStopArea();
+					StopArea lastStopArea = stopPoints.get(stopPoints.size() - 1).getScheduledStopPoint().getContainedInStopArea();
 					if (lastStopArea == null) {
 						log.warn("No route name or last stop area present on route. Trying second last etc.");
 						lastStopArea = getUsefulStopArea(stopPoints);
@@ -367,8 +370,8 @@ public class RegtoppRouteParser extends LineSpecificParser {
 
 	StopArea getUsefulStopArea(List<StopPoint> stopPoints) {
 		for (int i = stopPoints.size() - 2; i >= 0; i--) {
-			if (stopPoints.get(i).getContainedInStopArea() != null) {
-				return stopPoints.get(i).getContainedInStopArea();
+			if (stopPoints.get(i).getScheduledStopPoint().getContainedInStopArea() != null) {
+				return stopPoints.get(i).getScheduledStopPoint().getContainedInStopArea();
 			} else {
 				continue;
 			}
@@ -380,30 +383,30 @@ public class RegtoppRouteParser extends LineSpecificParser {
 		if (direction == null)
 			return PTDirectionEnum.A;
 		switch (direction) {
-		case A:
-			return PTDirectionEnum.R;
-		case R:
-			return PTDirectionEnum.A;
-		case ClockWise:
-			return PTDirectionEnum.CounterClockWise;
-		case CounterClockWise:
-			return PTDirectionEnum.ClockWise;
-		case North:
-			return PTDirectionEnum.South;
-		case South:
-			return PTDirectionEnum.North;
-		case NorthWest:
-			return PTDirectionEnum.SouthEast;
-		case SouthWest:
-			return PTDirectionEnum.NorthEast;
-		case NorthEast:
-			return PTDirectionEnum.SouthWest;
-		case SouthEast:
-			return PTDirectionEnum.NorthWest;
-		case East:
-			return PTDirectionEnum.West;
-		case West:
-			return PTDirectionEnum.East;
+			case A:
+				return PTDirectionEnum.R;
+			case R:
+				return PTDirectionEnum.A;
+			case ClockWise:
+				return PTDirectionEnum.CounterClockWise;
+			case CounterClockWise:
+				return PTDirectionEnum.ClockWise;
+			case North:
+				return PTDirectionEnum.South;
+			case South:
+				return PTDirectionEnum.North;
+			case NorthWest:
+				return PTDirectionEnum.SouthEast;
+			case SouthWest:
+				return PTDirectionEnum.NorthEast;
+			case NorthEast:
+				return PTDirectionEnum.SouthWest;
+			case SouthEast:
+				return PTDirectionEnum.NorthWest;
+			case East:
+				return PTDirectionEnum.West;
+			case West:
+				return PTDirectionEnum.East;
 		}
 		return PTDirectionEnum.A;
 

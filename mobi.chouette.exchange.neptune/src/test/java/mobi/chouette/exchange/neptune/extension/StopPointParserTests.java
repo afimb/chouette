@@ -21,8 +21,8 @@ public class StopPointParserTests {
 
 		point.setComment(xmlComment);
 		parser.parseJsonComment(point);
-		Assert.assertNull(point.getForAlighting(), "forAlighting should be null");
-		Assert.assertNull(point.getForBoarding(), "forBoarding should be null");
+		Assert.assertNull(point.getScheduledStopPoint().getForAlighting(), "forAlighting should be null");
+		Assert.assertNull(point.getScheduledStopPoint().getForBoarding(), "forBoarding should be null");
 	}
 
 	@Test(groups = { "parseComment" }, description = "check normal comment without extensions")
@@ -32,8 +32,8 @@ public class StopPointParserTests {
 
 		point.setComment(xmlComment);
 		parser.parseJsonComment(point);
-		Assert.assertNull(point.getForAlighting(), "forAlighting should be null");
-		Assert.assertNull(point.getForBoarding(), "forBoarding should be null");
+		Assert.assertNull(point.getScheduledStopPoint().getForAlighting(), "forAlighting should be null");
+		Assert.assertNull(point.getScheduledStopPoint().getForBoarding(), "forBoarding should be null");
 	}
 
 	@Test(groups = { "parseComment" }, description = "check aligthing extension")
@@ -48,8 +48,8 @@ public class StopPointParserTests {
 
 		point.setComment(xmlComment);
 		parser.parseJsonComment(point);
-		Assert.assertEquals(point.getForAlighting(), AlightingPossibilityEnum.normal, "forAlighting should be filled");
-		Assert.assertNull(point.getForBoarding(), "forBoarding should be null");
+		Assert.assertEquals(point.getScheduledStopPoint().getForAlighting(), AlightingPossibilityEnum.normal, "forAlighting should be filled");
+		Assert.assertNull(point.getScheduledStopPoint().getForBoarding(), "forBoarding should be null");
 
 		jsonComment = new JSONObject();
 		jsonRC = new JSONObject();
@@ -61,9 +61,9 @@ public class StopPointParserTests {
 
 		point.setComment(xmlComment);
 		parser.parseJsonComment(point);
-		Assert.assertEquals(point.getForAlighting(), AlightingPossibilityEnum.forbidden,
+		Assert.assertEquals(point.getScheduledStopPoint().getForAlighting(), AlightingPossibilityEnum.forbidden,
 				"forAlighting should be filled");
-		Assert.assertNull(point.getForBoarding(), "forBoarding should be null");
+		Assert.assertNull(point.getScheduledStopPoint().getForBoarding(), "forBoarding should be null");
 
 		jsonComment = new JSONObject();
 		jsonRC = new JSONObject();
@@ -75,9 +75,9 @@ public class StopPointParserTests {
 
 		point.setComment(xmlComment);
 		parser.parseJsonComment(point);
-		Assert.assertEquals(point.getForAlighting(), AlightingPossibilityEnum.request_stop,
+		Assert.assertEquals(point.getScheduledStopPoint().getForAlighting(), AlightingPossibilityEnum.request_stop,
 				"forAlighting should be filled");
-		Assert.assertNull(point.getForBoarding(), "forBoarding should be null");
+		Assert.assertNull(point.getScheduledStopPoint().getForBoarding(), "forBoarding should be null");
 
 		jsonComment = new JSONObject();
 		jsonRC = new JSONObject();
@@ -89,9 +89,9 @@ public class StopPointParserTests {
 
 		point.setComment(xmlComment);
 		parser.parseJsonComment(point);
-		Assert.assertEquals(point.getForAlighting(), AlightingPossibilityEnum.is_flexible,
+		Assert.assertEquals(point.getScheduledStopPoint().getForAlighting(), AlightingPossibilityEnum.is_flexible,
 				"forAlighting should be filled");
-		Assert.assertNull(point.getForBoarding(), "forBoarding should be null");
+		Assert.assertNull(point.getScheduledStopPoint().getForBoarding(), "forBoarding should be null");
 
 		jsonComment = new JSONObject();
 		jsonRC = new JSONObject();
@@ -103,8 +103,8 @@ public class StopPointParserTests {
 
 		point.setComment(xmlComment);
 		parser.parseJsonComment(point);
-		Assert.assertNull(point.getForAlighting(), "forAlighting should be null");
-		Assert.assertNull(point.getForBoarding(), "forBoarding should be null");
+		Assert.assertNull(point.getScheduledStopPoint().getForAlighting(), "forAlighting should be null");
+		Assert.assertNull(point.getScheduledStopPoint().getForBoarding(), "forBoarding should be null");
 
 	}
 
@@ -120,8 +120,8 @@ public class StopPointParserTests {
 
 		point.setComment(xmlComment);
 		parser.parseJsonComment(point);
-		Assert.assertNull(point.getForAlighting(), "forAlighting should be null");
-		Assert.assertEquals(point.getForBoarding(), BoardingPossibilityEnum.normal, "forBoarding should be filled");
+		Assert.assertNull(point.getScheduledStopPoint().getForAlighting(), "forAlighting should be null");
+		Assert.assertEquals(point.getScheduledStopPoint().getForBoarding(), BoardingPossibilityEnum.normal, "forBoarding should be filled");
 
 		jsonComment = new JSONObject();
 		jsonRC = new JSONObject();
@@ -133,8 +133,8 @@ public class StopPointParserTests {
 
 		point.setComment(xmlComment);
 		parser.parseJsonComment(point);
-		Assert.assertNull(point.getForAlighting(), "forAlighting should be null");
-		Assert.assertEquals(point.getForBoarding(), BoardingPossibilityEnum.forbidden, "forBoarding should be filled");
+		Assert.assertNull(point.getScheduledStopPoint().getForAlighting(), "forAlighting should be null");
+		Assert.assertEquals(point.getScheduledStopPoint().getForBoarding(), BoardingPossibilityEnum.forbidden, "forBoarding should be filled");
 
 		jsonComment = new JSONObject();
 		jsonRC = new JSONObject();
@@ -146,8 +146,8 @@ public class StopPointParserTests {
 
 		point.setComment(xmlComment);
 		parser.parseJsonComment(point);
-		Assert.assertNull(point.getForAlighting(), "forAlighting should be null");
-		Assert.assertEquals(point.getForBoarding(), BoardingPossibilityEnum.request_stop,
+		Assert.assertNull(point.getScheduledStopPoint().getForAlighting(), "forAlighting should be null");
+		Assert.assertEquals(point.getScheduledStopPoint().getForBoarding(), BoardingPossibilityEnum.request_stop,
 				"forBoarding should be filled");
 
 		jsonComment = new JSONObject();
@@ -160,8 +160,8 @@ public class StopPointParserTests {
 
 		point.setComment(xmlComment);
 		parser.parseJsonComment(point);
-		Assert.assertNull(point.getForAlighting(), "forAlighting should be null");
-		Assert.assertEquals(point.getForBoarding(), BoardingPossibilityEnum.is_flexible, "forBoarding should be filled");
+		Assert.assertNull(point.getScheduledStopPoint().getForAlighting(), "forAlighting should be null");
+		Assert.assertEquals(point.getScheduledStopPoint().getForBoarding(), BoardingPossibilityEnum.is_flexible, "forBoarding should be filled");
 
 		jsonComment = new JSONObject();
 		jsonRC = new JSONObject();
@@ -173,8 +173,8 @@ public class StopPointParserTests {
 
 		point.setComment(xmlComment);
 		parser.parseJsonComment(point);
-		Assert.assertNull(point.getForAlighting(), "forAlighting should be null");
-		Assert.assertNull(point.getForBoarding(), "forBoarding should be null");
+		Assert.assertNull(point.getScheduledStopPoint().getForAlighting(), "forAlighting should be null");
+		Assert.assertNull(point.getScheduledStopPoint().getForBoarding(), "forBoarding should be null");
 
 	}
 
@@ -191,9 +191,9 @@ public class StopPointParserTests {
 
 		point.setComment(xmlComment);
 		parser.parseJsonComment(point);
-		Assert.assertEquals(point.getForAlighting(), AlightingPossibilityEnum.forbidden,
+		Assert.assertEquals(point.getScheduledStopPoint().getForAlighting(), AlightingPossibilityEnum.forbidden,
 				"forAlighting should be filled");
-		Assert.assertEquals(point.getForBoarding(), BoardingPossibilityEnum.is_flexible, "forBoarding should be filled");
+		Assert.assertEquals(point.getScheduledStopPoint().getForBoarding(), BoardingPossibilityEnum.is_flexible, "forBoarding should be filled");
 
 	}
 }

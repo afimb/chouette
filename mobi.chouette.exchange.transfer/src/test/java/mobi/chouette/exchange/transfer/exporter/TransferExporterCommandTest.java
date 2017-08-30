@@ -190,8 +190,8 @@ public class TransferExporterCommandTest extends Arquillian implements mobi.chou
 					for (StopPoint point : jp.getStopPoints()) {
 
 						numStopPoints++;
-						Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
-						bps.add(point.getContainedInStopArea());
+						Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopArea(), "stoppoints must have StopAreas");
+						bps.add(point.getScheduledStopPoint().getContainedInStopArea());
 
 					}
 					Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0,
@@ -240,7 +240,7 @@ public class TransferExporterCommandTest extends Arquillian implements mobi.chou
 		stop1.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 
 		StopPoint stopPoint1 = ObjectFactory.getStopPoint(referential, "TST:StopPoint:1");
-		stopPoint1.setContainedInStopArea(stop1);
+		stopPoint1.getScheduledStopPoint().setContainedInStopArea(stop1);
 		stopPoint1.setRoute(r);
 		jp.addStopPoint(stopPoint1);
 		jp.setDepartureStopPoint(stopPoint1);
@@ -251,7 +251,7 @@ public class TransferExporterCommandTest extends Arquillian implements mobi.chou
 		stop2.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 
 		StopPoint stopPoint2 = ObjectFactory.getStopPoint(referential, "TST:StopPoint:2");
-		stopPoint2.setContainedInStopArea(stop2);
+		stopPoint2.getScheduledStopPoint().setContainedInStopArea(stop2);
 		stopPoint2.setRoute(r);
 		jp.addStopPoint(stopPoint2);
 		jp.setArrivalStopPoint(stopPoint2);

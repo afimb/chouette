@@ -119,7 +119,8 @@ public class RouteParser implements Parser, Constant {
 					stopPointId);
 			StopArea stopArea = ObjectFactory.getStopArea(referential,
 					stopAreaId);
-			stopPoint.setContainedInStopArea(stopArea);
+
+			//stopPoint.setContainedInStopArea(stopArea);			// TODO 1692 create scheduled stop area here?
 		}
 
 		log.debug("[DSU] " + "PassengerStopAssignment" + "\t" + id);

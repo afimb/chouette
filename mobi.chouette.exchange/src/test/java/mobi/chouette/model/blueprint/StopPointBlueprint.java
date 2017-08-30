@@ -2,6 +2,7 @@ package mobi.chouette.model.blueprint;
 
 import java.util.UUID;
 
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 
@@ -32,7 +33,7 @@ public class StopPointBlueprint
 
    @Nullable
    @Mapped
-   StopArea containedInStopArea;
+   ScheduledStopPoint scheduledStopPoint;
 
    // @Default
    // BigDecimal longitude = new BigDecimal("1.27");

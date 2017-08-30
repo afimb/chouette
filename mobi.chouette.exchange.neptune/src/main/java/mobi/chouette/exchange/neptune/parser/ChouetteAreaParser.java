@@ -104,7 +104,9 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 							for (String childId : contains) {
 								StopPoint stopPoint = ObjectFactory
 										.getStopPoint(referential, childId);
-								stopPoint.setContainedInStopArea(stopArea);
+
+
+							//	stopPoint.setContainedInStopArea(stopArea);		// TODO NRP 1692 create ScheduledStopPoint here?
 							}
 						} else if (stopArea.getAreaType() == ChouetteAreaEnum.ITL) {
 							for (String childId : contains) {

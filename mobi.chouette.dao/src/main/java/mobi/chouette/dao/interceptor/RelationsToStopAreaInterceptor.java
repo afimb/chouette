@@ -3,9 +3,9 @@ package mobi.chouette.dao.interceptor;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.RouteSection;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.type.StopAreaImportModeEnum;
 
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
@@ -31,9 +31,9 @@ public class RelationsToStopAreaInterceptor extends EmptyInterceptor {
     public boolean onLoad(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
         init();
 
-        if (entity instanceof StopPoint) {
+        if (entity instanceof ScheduledStopPoint) {
 
-            loadStopAreasForStopPoint((StopPoint) entity, state, propertyNames);
+            loadStopAreasForScheduledStopPoint((ScheduledStopPoint) entity, state, propertyNames);
 
         } else if (entity instanceof RouteSection) {
 
@@ -42,13 +42,13 @@ public class RelationsToStopAreaInterceptor extends EmptyInterceptor {
         return super.onLoad(entity, id, state, propertyNames, types);
     }
 
-    private void loadStopAreasForStopPoint(StopPoint entity, Object[] state, String[] propertyNames) {
-        StopPoint stopPoint = entity;
-        log.trace("On load StopPoint id: " + stopPoint.getId());
+    private void loadStopAreasForScheduledStopPoint(ScheduledStopPoint entity, Object[] state, String[] propertyNames) {
+        ScheduledStopPoint scheduledStopPoint = entity;
+        log.trace("On load StopPoint id: " + scheduledStopPoint.getId());
         String containedInStopAreaId = getProperty(STOP_POINT_CONTAINED_IN_STOP_AREA_ID_PROPERTY, propertyNames, state);
 
-        if (stopPoint.getContainedInStopArea() == null && containedInStopAreaId != null) {
-            stopPoint.setContainedInStopAreaORMOnly(stopAreaDAO.findByObjectId(containedInStopAreaId));
+        if (scheduledStopPoint.getContainedInStopArea() == null && containedInStopAreaId != null) {
+            scheduledStopPoint.setContainedInStopAreaORMOnly(stopAreaDAO.findByObjectId(containedInStopAreaId));
         }
     }
 
@@ -82,12 +82,12 @@ public class RelationsToStopAreaInterceptor extends EmptyInterceptor {
     private void onCreateOrUpdate(Object entity) {
         init();
 
-        if (entity instanceof StopPoint) {
-            StopPoint stopPoint = ((StopPoint) entity);
-            StopArea stopArea = stopPoint.getContainedInStopArea();
+        if (entity instanceof ScheduledStopPoint) {
+            ScheduledStopPoint scheduledStopPoint = ((ScheduledStopPoint) entity);
+            StopArea stopArea = scheduledStopPoint.getContainedInStopArea();
             if (stopArea != null) {
                 if (stopArea.getId() == null && !stopArea.isDetached() && stopArea.getImportMode().shouldCreateMissingStopAreas()) {
-                    log.debug("Cascading persist of new stop area +" + stopArea.getObjectId() + "+ for created/updated stop point: " + stopPoint.getObjectId());
+                    log.debug("Cascading persist of new stop area +" + stopArea.getObjectId() + "+ for created/updated stop point: " + scheduledStopPoint.getObjectId());
                     stopAreaDAO.create(stopArea);
                 }
             }

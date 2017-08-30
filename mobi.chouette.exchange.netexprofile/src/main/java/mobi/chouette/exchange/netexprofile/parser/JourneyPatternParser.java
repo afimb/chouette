@@ -20,6 +20,7 @@ import mobi.chouette.exchange.netexprofile.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.util.NetexReferential;
 import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
@@ -81,20 +82,24 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
 				quay.setAreaType(ChouetteAreaEnum.BoardingPosition);
 			}
 
-			stopPoint.setContainedInStopArea(quay);
+			// TODO NRP 1692 Fix this , use which id? only if not already set on stopPoint?
+			ScheduledStopPoint scheduledStopPoint=ObjectFactory.getScheduledStopPoint(referential, pointInPattern.getId());
+			stopPoint.setScheduledStopPoint(scheduledStopPoint);
+
+			scheduledStopPoint.setContainedInStopArea(quay);
 			stopPoint.setPosition(pointInPattern.getOrder().intValue());
 			stopPoint.setObjectVersion(NetexParserUtils.getVersion(pointInPattern.getVersion()));
 
 			if (pointInPattern.isForAlighting() != null && !pointInPattern.isForAlighting()) {
-				stopPoint.setForAlighting(AlightingPossibilityEnum.forbidden);
+				scheduledStopPoint.setForAlighting(AlightingPossibilityEnum.forbidden);
 			} else {
-				stopPoint.setForAlighting(AlightingPossibilityEnum.normal);
+				scheduledStopPoint.setForAlighting(AlightingPossibilityEnum.normal);
 			}
 
 			if (pointInPattern.isForBoarding() != null && !pointInPattern.isForBoarding()) {
-				stopPoint.setForBoarding(BoardingPossibilityEnum.forbidden);
+				scheduledStopPoint.setForBoarding(BoardingPossibilityEnum.forbidden);
 			} else {
-				stopPoint.setForBoarding(BoardingPossibilityEnum.normal);
+				scheduledStopPoint.setForBoarding(BoardingPossibilityEnum.normal);
 			}
 
 			chouetteJourneyPattern.addStopPoint(stopPoint);

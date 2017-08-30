@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
@@ -42,6 +43,7 @@ import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timeband;
@@ -140,7 +142,7 @@ public class ChouettePTNetworkProducer implements Constant {
 						jaxbStopArea.getContains().add(child.getObjectId());
 					}
 				}
-				for (StopPoint child : stopArea.getContainedStopPoints())
+				for (StopPoint child : stopArea.getContainedScheduledStopPoints().stream().map(ScheduledStopPoint::getStopPoints).flatMap(List::stream).collect(Collectors.toList()))
 				{
 					if (collection.getStopPoints().contains(child))
 					{

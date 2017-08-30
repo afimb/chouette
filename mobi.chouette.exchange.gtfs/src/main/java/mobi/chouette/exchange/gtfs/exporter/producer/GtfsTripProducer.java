@@ -84,8 +84,8 @@ public class GtfsTripProducer extends AbstractProducer {
 		int index = 0;
 		for (VehicleJourneyAtStop vjas : lvjas) {
 
-			if (vjas.getStopPoint().getContainedInStopArea()!=null){
-				time.setStopId(toGtfsId(vjas.getStopPoint().getContainedInStopArea().getObjectId(), sharedPrefix, keepOriginalId));
+			if (vjas.getStopPoint().getScheduledStopPoint().getContainedInStopArea()!=null){
+				time.setStopId(toGtfsId(vjas.getStopPoint().getScheduledStopPoint().getContainedInStopArea().getObjectId(), sharedPrefix, keepOriginalId));
 			}
 
 			LocalTime arrival = vjas.getArrivalTime();
@@ -187,11 +187,11 @@ public class GtfsTripProducer extends AbstractProducer {
 		}
 		// check stoppoint specifications
 		StopPoint point = vjas.getStopPoint();
-		if (point.getForBoarding() != null) {
-			time.setPickupType(toPickUpType(point.getForBoarding(), time.getPickupType()));
+		if (point.getScheduledStopPoint().getForBoarding() != null) {
+			time.setPickupType(toPickUpType(point.getScheduledStopPoint().getForBoarding(), time.getPickupType()));
 		}
-		if (point.getForAlighting() != null) {
-			time.setDropOffType(toDropOffType(point.getForAlighting(), time.getDropOffType()));
+		if (point.getScheduledStopPoint().getForAlighting() != null) {
+			time.setDropOffType(toDropOffType(point.getScheduledStopPoint().getForAlighting(), time.getDropOffType()));
 		}
 
 	}

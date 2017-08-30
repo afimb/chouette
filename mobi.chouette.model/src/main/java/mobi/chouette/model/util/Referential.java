@@ -19,6 +19,7 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.RouteSection;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timeband;
@@ -81,6 +82,10 @@ public class Referential implements java.io.Serializable {
 
 	@Getter
 	@Setter
+	private Map<String, ScheduledStopPoint> sharedScheduledStopPoints = new HashMap<>();
+
+	@Getter
+	@Setter
 	private Map<String, Route> routes = new HashMap<String, Route>();
 
 	@Getter
@@ -94,6 +99,10 @@ public class Referential implements java.io.Serializable {
 	@Getter
 	@Setter
 	private Map<String, StopPoint> stopPoints = new HashMap<String, StopPoint>();
+
+	@Getter
+	@Setter
+	private Map<String, ScheduledStopPoint> scheduledStopPoints = new HashMap<>();
 
 	@Getter
 	@Setter
@@ -188,7 +197,7 @@ public class Referential implements java.io.Serializable {
 				group.getLines().clear();
 			}
 			for (StopArea area : sharedStopAreas.values()) {
-				area.getContainedStopPoints().clear();
+				area.getContainedScheduledStopPoints().clear();
 			}
 			for (DestinationDisplay display : sharedDestinationDisplays.values()) {
 				display.getVias().clear();

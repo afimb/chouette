@@ -14,6 +14,7 @@ import javax.transaction.UserTransaction;
 
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.dao.StopPointDAO;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -142,14 +143,14 @@ public class StopAreaServiceTest extends Arquillian {
         ContextHolder.setContext("chouette_gui");
         stopPointDAO.truncate();
         // Create stop point contained in quay 5, later to be merged into quay 6.
-        StopPoint spToHaveStopAreaRefReplacedByMerger = createStopPoint("XXX:StopPoint:1", stopAreaDAO.findByObjectId("NSR:Quay:5"));
+        StopPoint spToHaveStopAreaRefReplacedByMerger = createStopPoint("1", stopAreaDAO.findByObjectId("NSR:Quay:5"));
         // Create stop point with ref to non NSR-id to be replaced by new Quay whit org id as import_id
 
         StopArea stopAreaWithImportId = new StopArea();
         stopAreaWithImportId.setAreaType(ChouetteAreaEnum.BoardingPosition);
         stopAreaWithImportId.setObjectId("SKY:Quay:777777");
         stopAreaDAO.create(stopAreaWithImportId);
-        StopPoint spToHaveStopAreaRefReplacedByAddedOriginalId = createStopPoint("XXX:StopPoint:2", stopAreaWithImportId);
+        StopPoint spToHaveStopAreaRefReplacedByAddedOriginalId = createStopPoint("2", stopAreaWithImportId);
 
         utx.commit();
         utx.begin();
@@ -166,10 +167,10 @@ public class StopAreaServiceTest extends Arquillian {
 
         ContextHolder.setContext("chouette_gui");
         StopPoint spWithReplacedStopAreaRefByMerger = stopPointDAO.findByObjectId(spToHaveStopAreaRefReplacedByMerger.getObjectId());
-        Assert.assertEquals(spWithReplacedStopAreaRefByMerger.getContainedInStopArea().getObjectId(), "NSR:Quay:6", "Expected stop point to updated when quays have been merged.");
+        Assert.assertEquals(spWithReplacedStopAreaRefByMerger.getScheduledStopPoint().getContainedInStopArea().getObjectId(), "NSR:Quay:6", "Expected stop point to updated when quays have been merged.");
 
         StopPoint spWithReplacedStopAreaRefByAddedOriginalId = stopPointDAO.findByObjectId(spToHaveStopAreaRefReplacedByAddedOriginalId.getObjectId());
-        Assert.assertEquals(spWithReplacedStopAreaRefByAddedOriginalId.getContainedInStopArea().getObjectId(), "NSR:Quay:7", "Expected stop point to updated when quay id has been added as original id to another quay.");
+        Assert.assertEquals(spWithReplacedStopAreaRefByAddedOriginalId.getScheduledStopPoint().getContainedInStopArea().getObjectId(), "NSR:Quay:7", "Expected stop point to updated when quay id has been added as original id to another quay.");
 
         utx.begin();
         em.joinTransaction();
@@ -251,7 +252,7 @@ public class StopAreaServiceTest extends Arquillian {
 
         ContextHolder.setContext("chouette_gui");
         stopPointDAO.truncate();
-        StopPoint stopPoint = createStopPoint("XXX:StopPoint:2", inUseStop.getContainedStopAreas().get(0));
+        StopPoint stopPoint = createStopPoint("2", inUseStop.getContainedStopAreas().get(0));
 
         utx.commit();
 
@@ -305,8 +306,13 @@ public class StopAreaServiceTest extends Arquillian {
 
     private StopPoint createStopPoint(String id, StopArea stopArea) {
         StopPoint sp = new StopPoint();
-        sp.setObjectId(id);
-        sp.setContainedInStopArea(stopArea);
+        sp.setObjectId("XXX:StopPoint:"+id);
+
+        ScheduledStopPoint scheduledStopPoint=new ScheduledStopPoint();
+        sp.setObjectId("XXX:ScheduledStopPoint:"+id);
+
+        scheduledStopPoint.setContainedInStopArea(stopArea);
+        sp.setScheduledStopPoint(scheduledStopPoint);
         stopPointDAO.create(sp);
         return sp;
     }

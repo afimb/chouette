@@ -59,7 +59,7 @@ public class StopPointParser implements Parser, Constant, JsonExtension {
 				String containedIn = ParserUtils.getText(xpp.nextText());
 				validator.addContainedIn(context, objectId, containedIn);
 				StopArea stopArea = ObjectFactory.getStopArea(referential, containedIn);
-				stopPoint.setContainedInStopArea(stopArea);
+			//	stopPoint.setContainedInStopArea(stopArea);	// TODO NRP 1692 create ScheduledStopPoint here?// TODO NRP 1692 create ScheduledStopPoint here?
 			} else if (xpp.getName().equals("lineIdShortcut")) {
 				String lineIdShortcut = ParserUtils.getText(xpp.nextText());
 				validator.addLineIdShortcut(context, objectId, lineIdShortcut);

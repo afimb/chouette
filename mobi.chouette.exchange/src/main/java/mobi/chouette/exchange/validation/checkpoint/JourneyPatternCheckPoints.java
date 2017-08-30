@@ -206,7 +206,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 		TransportSubModeNameEnum lineSubMode = vj.getRoute().getLine().getTransportSubModeName();
 		
 		for(StopPoint sp : vj.getStopPoints()) {
-			StopArea sa = sp.getContainedInStopArea();
+			StopArea sa = sp.getScheduledStopPoint().getContainedInStopArea();
 			if(sa != null) {
 				TransportModeNameEnum stopMode = sa.getTransportModeName();
 				TransportSubModeNameEnum stopSubMode = sa.getTransportSubMode();

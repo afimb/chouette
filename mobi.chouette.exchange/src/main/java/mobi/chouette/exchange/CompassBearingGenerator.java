@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -11,6 +12,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -63,7 +65,7 @@ public class CompassBearingGenerator {
 
 	protected Set<Integer> findCompassBearingForBoardingPosition(StopArea sa) {
 		Set<Integer> compassBearings = new TreeSet<Integer>();
-		List<StopPoint> stopPoints = sa.getContainedStopPoints();
+		List<StopPoint> stopPoints = sa.getContainedScheduledStopPoints().stream().map(ScheduledStopPoint::getStopPoints).flatMap(List::stream).collect(Collectors.toList());
 		for (StopPoint stop : stopPoints) {
 			Route route = stop.getRoute();
 			List<JourneyPattern> journeyPatterns = route.getJourneyPatterns();
@@ -73,17 +75,19 @@ public class CompassBearingGenerator {
 
 				List<StopPoint> stopPointsInJourneyPattern = jp.getStopPoints();
 
-				if (jp.getDepartureStopPoint().getContainedInStopArea().getObjectId()
-						.equals(stop.getContainedInStopArea().getObjectId())) {
+				// TODO NRP 1692 Need to null check?
+
+				if (jp.getDepartureStopPoint().getScheduledStopPoint().getContainedInStopArea().getObjectId()
+						.equals(stop.getScheduledStopPoint().getContainedInStopArea().getObjectId())) {
 					next = stopPointsInJourneyPattern.get(1);
-				} else if (jp.getArrivalStopPoint().getContainedInStopArea().getObjectId()
-						.equals(stop.getContainedInStopArea().getObjectId())) {
+				} else if (jp.getArrivalStopPoint().getScheduledStopPoint().getContainedInStopArea().getObjectId()
+						.equals(stop.getScheduledStopPoint().getContainedInStopArea().getObjectId())) {
 					previous = stopPointsInJourneyPattern.get(stopPointsInJourneyPattern.size() - 2);
 				} else {
 					// In the middle somewhere
 					for (int i = 0; i < stopPointsInJourneyPattern.size(); i++) {
-						if (stop.getContainedInStopArea().getObjectId()
-								.equals(stopPointsInJourneyPattern.get(i).getContainedInStopArea().getObjectId())) {
+						if (stop.getScheduledStopPoint().getContainedInStopArea().getObjectId()
+								.equals(stopPointsInJourneyPattern.get(i).getScheduledStopPoint().getContainedInStopArea().getObjectId())) {
 							previous = stopPointsInJourneyPattern.get(i - 1);
 							next = stopPointsInJourneyPattern.get(i + 1);
 							break;
@@ -116,8 +120,8 @@ public class CompassBearingGenerator {
 
 	private Integer bearing(StopPoint from, StopPoint to) {
 
-		StopArea fromArea = from.getContainedInStopArea();
-		StopArea toArea = to.getContainedInStopArea();
+		StopArea fromArea = from.getScheduledStopPoint().getContainedInStopArea();
+		StopArea toArea = to.getScheduledStopPoint().getContainedInStopArea();
 
 		if(fromArea != null && toArea != null && hasCoordinates(fromArea) && hasCoordinates(toArea)) {
 			

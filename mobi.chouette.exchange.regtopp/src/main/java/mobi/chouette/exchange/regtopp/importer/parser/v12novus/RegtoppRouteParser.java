@@ -11,6 +11,7 @@ import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
@@ -58,7 +59,10 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 		if (stopArea != null) {
 			stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
 			stopPoint.setPosition(Integer.parseInt(routeSegment.getSequenceNumberStop()));
-			stopPoint.setContainedInStopArea(stopArea);
+			// NRP 1692 not sure about this, which id should we use for scheduled stop point
+			ScheduledStopPoint scheduledStopPoint = ObjectFactory.getScheduledStopPoint(referential, chouetteStopPointId);
+			stopPoint.setScheduledStopPoint(scheduledStopPoint);
+			scheduledStopPoint.setContainedInStopArea(stopArea);
 			appendDestinationDisplay(referential, routeSegment, destinationById, configuration, stopPoint);
 
 		}

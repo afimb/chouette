@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -74,7 +75,7 @@ public class StopAreaBlueprint
    @MappedList(target = StopArea.class, size = 0)
    List<StopArea> containedStopAreas;
 
-   @MappedList(target = StopPoint.class, size = 0)
-   List<StopPoint> containedStopPoints;
+   @MappedList(target = ScheduledStopPoint.class, size = 0)
+   List<ScheduledStopPoint> containedScheduledStopPoints;
 
 }

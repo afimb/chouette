@@ -72,8 +72,8 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
                 stopPointInJourneyPattern.setVersion(stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
                 stopPointInJourneyPattern.setId(stopPointInJourneyPatternId);
 
-                if (isSet(stopPoint.getContainedInStopArea())) {
-                    String stopPointIdSuffix = stopPoint.getContainedInStopArea().objectIdSuffix();
+                if (isSet(stopPoint.getScheduledStopPoint().getContainedInStopArea())) {
+                    String stopPointIdSuffix = stopPoint.getScheduledStopPoint().getContainedInStopArea().objectIdSuffix();
                     String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, stopPointIdSuffix);
 
                     ScheduledStopPointRefStructure stopPointRefStruct = netexFactory.createScheduledStopPointRefStructure().withRef(stopPointIdRef);
@@ -82,8 +82,8 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
                     throw new RuntimeException("StopPoint with id : " + stopPoint.getObjectId() + " is not contained in a StopArea. Cannot produce ScheduledStopPoint reference.");
                 }
 
-                BoardingPossibilityEnum forBoarding = stopPoint.getForBoarding();
-                AlightingPossibilityEnum forAlighting = stopPoint.getForAlighting();
+                BoardingPossibilityEnum forBoarding = stopPoint.getScheduledStopPoint().getForBoarding();
+                AlightingPossibilityEnum forAlighting = stopPoint.getScheduledStopPoint().getForAlighting();
 
                 if (forBoarding != null && forAlighting != null) {
                     if (forBoarding.equals(BoardingPossibilityEnum.normal) && forAlighting.equals(AlightingPossibilityEnum.forbidden)) {

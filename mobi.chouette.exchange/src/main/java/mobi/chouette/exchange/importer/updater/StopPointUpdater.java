@@ -61,13 +61,13 @@ public class StopPointUpdater implements Updater<StopPoint> {
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 			oldValue.setCreationTime(newValue.getCreationTime());
 			oldValue.setCreatorId(newValue.getCreatorId());
-			oldValue.setForAlighting(newValue.getForAlighting());
-			oldValue.setForBoarding(newValue.getForBoarding());
+//			oldValue.setForAlighting(newValue.getForAlighting()); TODO NRP-1692 create scheduledstoppointupdater?
+//			oldValue.setForBoarding(newValue.getForBoarding());
 			oldValue.setDestinationDisplay(newValue.getDestinationDisplay());
 			oldValue.setDetached(false);
 		} else {
 			twoDatabaseStopPointTwoTest(validationReporter, context, oldValue, newValue, data);
-			twoDatabaseStopPointThreeTest(validationReporter, context, oldValue.getContainedInStopArea(), newValue.getContainedInStopArea(), data);
+	//		twoDatabaseStopPointThreeTest(validationReporter, context, oldValue.getContainedInStopArea(), newValue.getContainedInStopArea(), data);  TODO NRP-1692 create scheduledstoppointupdater?
 			if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
 				oldValue.setObjectId(newValue.getObjectId());
 			}
@@ -81,40 +81,40 @@ public class StopPointUpdater implements Updater<StopPoint> {
 				oldValue.setCreatorId(newValue.getCreatorId());
 			}
 
-			// Boarding and alighting
-			if (newValue.getForAlighting() != null && !newValue.getForAlighting().equals(oldValue.getForAlighting())) {
-				oldValue.setForAlighting(newValue.getForAlighting());
-			}
-
-			if (newValue.getForBoarding() != null && !newValue.getForBoarding().equals(oldValue.getForBoarding())) {
-				oldValue.setForBoarding(newValue.getForBoarding());
-			}
+//			// Boarding and alighting  TODO NRP-1692 create scheduledstoppointupdater?
+//			if (newValue.getForAlighting() != null && !newValue.getForAlighting().equals(oldValue.getForAlighting())) {
+//				oldValue.setForAlighting(newValue.getForAlighting());
+//			}
+//
+//			if (newValue.getForBoarding() != null && !newValue.getForBoarding().equals(oldValue.getForBoarding())) {
+//				oldValue.setForBoarding(newValue.getForBoarding());
+//			}
 		}
 
-		// StopArea
-		
-		if (newValue.getContainedInStopArea() == null) {
-			oldValue.setContainedInStopArea(null);
-		} else {
-			String objectId = newValue.getContainedInStopArea().getObjectId();
-			StopArea stopArea = cache.getStopAreas().get(objectId);
-			if (stopArea == null) {
-				stopArea = stopAreaDAO.findByObjectId(objectId);
-				if (stopArea != null) {
-					cache.getStopAreas().put(objectId, stopArea);
-				}
-			}
-
-			if (stopArea == null) {
-				stopArea = ObjectFactory.getStopArea(cache, objectId);
-			}
-			
-			oldValue.setContainedInStopArea(stopArea);
-
-			if (!context.containsKey(AREA_BLOC))
-			   stopAreaUpdater.update(context, oldValue.getContainedInStopArea(), newValue.getContainedInStopArea());
-		}
-		
+		// StopArea  TODO NRP-1692 create scheduledstoppointupdater?
+//
+//		if (newValue.getContainedInStopArea() == null) {
+//			oldValue.setContainedInStopArea(null);
+//		} else {
+//			String objectId = newValue.getContainedInStopArea().getObjectId();
+//			StopArea stopArea = cache.getStopAreas().get(objectId);
+//			if (stopArea == null) {
+//				stopArea = stopAreaDAO.findByObjectId(objectId);
+//				if (stopArea != null) {
+//					cache.getStopAreas().put(objectId, stopArea);
+//				}
+//			}
+//
+//			if (stopArea == null) {
+//				stopArea = ObjectFactory.getStopArea(cache, objectId);
+//			}
+//
+//			oldValue.setContainedInStopArea(stopArea);
+//
+//			if (!context.containsKey(AREA_BLOC))
+//			   stopAreaUpdater.update(context, oldValue.getContainedInStopArea(), newValue.getContainedInStopArea());
+//		}
+//
 		// Destination display
 		if (newValue.getDestinationDisplay() == null) {
 			oldValue.setDestinationDisplay(null);

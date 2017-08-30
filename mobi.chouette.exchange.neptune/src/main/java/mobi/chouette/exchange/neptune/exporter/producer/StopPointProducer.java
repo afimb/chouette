@@ -27,13 +27,14 @@ public class StopPointProducer extends
 		populateFromModel(jaxbStopPoint, stopPoint);
 
 		jaxbStopPoint.setComment(buildComment(stopPoint, addExtension));
-		if (stopPoint.getContainedInStopArea() != null) {
-			StopArea area = stopPoint.getContainedInStopArea();
+		// TODO NRP 1692 create ScheduledStopPoint here?
+		if (stopPoint.getScheduledStopPoint().getContainedInStopArea() != null) {
+			StopArea area = stopPoint.getScheduledStopPoint().getContainedInStopArea();
 			jaxbStopPoint.setName(area.getName());
 			// jaxbStopPoint.setLineIdShortcut(stopPoint.getLineIdShortcut());
 
 
-			jaxbStopPoint.setContainedIn(getNonEmptyObjectId(stopPoint.getContainedInStopArea()));
+			jaxbStopPoint.setContainedIn(getNonEmptyObjectId(stopPoint.getScheduledStopPoint().getContainedInStopArea()));
 			if (area.hasCoordinates())
 			{
 			jaxbStopPoint.setLatitude(area.getLatitude());
@@ -65,18 +66,18 @@ public class StopPointProducer extends
 
 		return jaxbStopPoint;
 	}
-
+// NRP 1692 move to scheduledStopPointProducer?
 	protected String buildComment(StopPoint stopPoint, boolean addExtension) {
 		if (!addExtension)
 			return null;
 		try {
 			JSONObject jsonComment = new JSONObject();
 			JSONObject jsonRC = new JSONObject();
-			if (stopPoint.getForBoarding() != null) {
-				jsonRC.put(BOARDING, stopPoint.getForBoarding().name());
+			if (stopPoint.getScheduledStopPoint().getForBoarding() != null) {
+				jsonRC.put(BOARDING, stopPoint.getScheduledStopPoint().getForBoarding().name());
 			}
-			if (stopPoint.getForAlighting() != null) {
-				jsonRC.put(ALIGHTING, stopPoint.getForAlighting().name());
+			if (stopPoint.getScheduledStopPoint().getForAlighting() != null) {
+				jsonRC.put(ALIGHTING, stopPoint.getScheduledStopPoint().getForAlighting().name());
 			}
 			if (jsonRC.length() == 0) {
 				return null;

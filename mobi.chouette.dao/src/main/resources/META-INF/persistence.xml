@@ -55,6 +55,7 @@
 		<class>mobi.chouette.model.Route</class>
       	<class>mobi.chouette.model.RouteSection</class>
 		<class>mobi.chouette.model.StopPoint</class>
+		<class>mobi.chouette.model.ScheduledStopPoint</class>
 		<class>mobi.chouette.model.Timeband</class>
 		<class>mobi.chouette.model.Timetable</class>
 		<class>mobi.chouette.model.VehicleJourneyAtStop</class>

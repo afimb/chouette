@@ -14,6 +14,7 @@ import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
@@ -113,17 +114,19 @@ public class NeptuneSetDefaultValuesCommand implements Command, Constant {
 			// check if every stoppoints were updated, complete missing ones to
 			// normal; if all normal clean all
 			for (StopPoint sp : route.getStopPoints()) {
-				if (sp.getForAlighting() == null)
-					sp.setForAlighting(AlightingPossibilityEnum.normal);
-				if (sp.getForBoarding() == null)
-					sp.setForBoarding(BoardingPossibilityEnum.normal);
+				ScheduledStopPoint scheduledStopPoint = sp.getScheduledStopPoint();
+				if (scheduledStopPoint.getForAlighting() == null)
+					scheduledStopPoint.setForAlighting(AlightingPossibilityEnum.normal);
+				if (scheduledStopPoint.getForBoarding() == null)
+					scheduledStopPoint.setForBoarding(BoardingPossibilityEnum.normal);
 			}
 			for (StopPoint sp : route.getStopPoints()) {
-				if (!sp.getForAlighting().equals(AlightingPossibilityEnum.normal)) {
+				ScheduledStopPoint scheduledStopPoint = sp.getScheduledStopPoint();
+				if (!scheduledStopPoint.getForAlighting().equals(AlightingPossibilityEnum.normal)) {
 					usefullData = true;
 					break;
 				}
-				if (!sp.getForBoarding().equals(BoardingPossibilityEnum.normal)) {
+				if (!scheduledStopPoint.getForBoarding().equals(BoardingPossibilityEnum.normal)) {
 					usefullData = true;
 					break;
 				}
@@ -133,8 +136,9 @@ public class NeptuneSetDefaultValuesCommand implements Command, Constant {
 		if (invalidData || !usefullData) {
 			// remove useless informations
 			for (StopPoint sp : route.getStopPoints()) {
-				sp.setForAlighting(null);
-				sp.setForBoarding(null);
+				ScheduledStopPoint scheduledStopPoint = sp.getScheduledStopPoint();
+				scheduledStopPoint.setForAlighting(null);
+				scheduledStopPoint.setForBoarding(null);
 			}
 		}
 
@@ -142,14 +146,15 @@ public class NeptuneSetDefaultValuesCommand implements Command, Constant {
 
 	private boolean updateStopPoint(VehicleJourneyAtStop vjas) {
 		StopPoint sp = vjas.getStopPoint();
+		ScheduledStopPoint scheduledStopPoint = sp.getScheduledStopPoint();
 		BoardingPossibilityEnum forBoarding = getForBoarding(vjas.getBoardingAlightingPossibility());
 		AlightingPossibilityEnum forAlighting = getForAlighting(vjas.getBoardingAlightingPossibility());
-		if (sp.getForBoarding() != null && !sp.getForBoarding().equals(forBoarding))
+		if (scheduledStopPoint.getForBoarding() != null && !scheduledStopPoint.getForBoarding().equals(forBoarding))
 			return false;
-		if (sp.getForAlighting() != null && !sp.getForAlighting().equals(forAlighting))
+		if (scheduledStopPoint.getForAlighting() != null && !scheduledStopPoint.getForAlighting().equals(forAlighting))
 			return false;
-		sp.setForBoarding(forBoarding);
-		sp.setForAlighting(forAlighting);
+		scheduledStopPoint.setForBoarding(forBoarding);
+		scheduledStopPoint.setForAlighting(forAlighting);
 		return true;
 	}
 

@@ -33,7 +33,7 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
         // Consumer stoppoint ref 
         StopPoint consumerStopPoint = interchange.getConsumerStopPoint();
 		if(consumerStopPoint != null) {
-            String stopPointIdSuffix = consumerStopPoint.getContainedInStopArea().objectIdSuffix();
+            String stopPointIdSuffix = consumerStopPoint.getScheduledStopPoint().getContainedInStopArea().objectIdSuffix();
             String stopPointIdRef = netexId(consumerStopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, stopPointIdSuffix);
             netex.setToPointRef(netexFactory.createScheduledStopPointRefStructure().withRef(stopPointIdRef));
         } else {
@@ -56,7 +56,7 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
        // Feeder stoppoint ref
         StopPoint feederStopPoint = interchange.getFeederStopPoint();
 		if(feederStopPoint != null) {
-            String stopPointIdSuffix = feederStopPoint.getContainedInStopArea().objectIdSuffix();
+            String stopPointIdSuffix = feederStopPoint.getScheduledStopPoint().getContainedInStopArea().objectIdSuffix();
             String stopPointIdRef = netexId(feederStopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, stopPointIdSuffix);
             netex.setFromPointRef(netexFactory.createScheduledStopPointRefStructure().withRef(stopPointIdRef));
         } else {

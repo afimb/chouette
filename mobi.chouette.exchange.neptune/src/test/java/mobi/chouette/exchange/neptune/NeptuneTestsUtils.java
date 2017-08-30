@@ -60,12 +60,12 @@ public class NeptuneTestsUtils implements Constant, ReportConstant{
 				Assert.assertNotEquals(jp.getStopPoints().size(), 0, "line journeyPattens must have stoppoints");
 				for (StopPoint point : jp.getStopPoints()) {
 
-					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
-					bps.add(point.getContainedInStopArea());
+					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopArea(), "stoppoints must have StopAreas");
+					bps.add(point.getScheduledStopPoint().getContainedInStopArea());
 
-					Assert.assertNotNull(point.getContainedInStopArea().getParent(), "StopAreas must have parent : "
-							+ point.getContainedInStopArea().getObjectId());
-					comms.add(point.getContainedInStopArea().getParent());
+					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopArea().getParent(), "StopAreas must have parent : "
+							+ point.getScheduledStopPoint().getContainedInStopArea().getObjectId());
+					comms.add(point.getScheduledStopPoint().getContainedInStopArea().getParent());
 				}
 				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0," journeyPattern should have VehicleJourneys");
                 for (VehicleJourney vj : jp.getVehicleJourneys()) {
@@ -146,10 +146,10 @@ public class NeptuneTestsUtils implements Constant, ReportConstant{
 				Assert.assertNotEquals(jp.getStopPoints().size(), 0, "line journeyPattens must have stoppoints");
 				for (StopPoint point : jp.getStopPoints()) {
 
-					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
-					bps.add(point.getContainedInStopArea());
+					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopArea(), "stoppoints must have StopAreas");
+					bps.add(point.getScheduledStopPoint().getContainedInStopArea());
 
-					comms.add(point.getContainedInStopArea().getParent());
+					comms.add(point.getScheduledStopPoint().getContainedInStopArea().getParent());
 				}
 				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0," journeyPattern should have VehicleJourneys");
                 for (VehicleJourney vj : jp.getVehicleJourneys()) {
@@ -180,7 +180,7 @@ public class NeptuneTestsUtils implements Constant, ReportConstant{
 				Assert.assertNotEquals(jp.getStopPoints().size(), 0, "line journeyPatterns must have stoppoints");
 				for (StopPoint point : jp.getStopPoints()) {
 
-				// TODO no longer relevant as stop areas are not imported this way?	Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
+				// TODO no longer relevant as stop areas are not imported this way?	Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopArea(), "stoppoints must have StopAreas");
 
 				}
 				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0," journeyPattern should have VehicleJourneys");

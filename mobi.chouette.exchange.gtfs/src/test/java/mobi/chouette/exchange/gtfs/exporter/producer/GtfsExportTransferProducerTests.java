@@ -11,9 +11,11 @@ import mobi.chouette.model.Interchange;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.util.ObjectIdTypes;
 
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.joda.time.Duration;
@@ -95,12 +97,18 @@ public class GtfsExportTransferProducerTests
       StopArea feederSA = new StopArea();
       feederSA.setObjectId("GTFS:StopArea:start");
       StopPoint feederSP = new StopPoint();
-      feederSP.setContainedInStopArea(feederSA);
+      ScheduledStopPoint feederSSP = new ScheduledStopPoint();
+      feederSSP.setObjectId("GTFS:" + ObjectIdTypes.SCHEDULED_STOP_POINT_KEY + ":start");
+      feederSSP.setContainedInStopArea(feederSA);
+      feederSP.setScheduledStopPoint(feederSSP);
 
       StopArea consumerSA = new StopArea();
       consumerSA.setObjectId("GTFS:StopArea:end");
       StopPoint consumerSP = new StopPoint();
-      consumerSP.setContainedInStopArea(consumerSA);
+      ScheduledStopPoint consumerSSP = new ScheduledStopPoint();
+      consumerSSP.setObjectId("GTFS:" + ObjectIdTypes.SCHEDULED_STOP_POINT_KEY + ":end");
+      consumerSSP.setContainedInStopArea(consumerSA);
+      consumerSP.setScheduledStopPoint(consumerSSP);
 
 
       JourneyPattern feederJP = createLineStructure("GTFS:Line:feederLine");

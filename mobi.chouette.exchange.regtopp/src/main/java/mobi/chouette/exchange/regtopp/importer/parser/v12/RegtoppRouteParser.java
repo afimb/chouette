@@ -116,8 +116,11 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 			stopPoint.setPosition(Integer.parseInt(routeSegment.getSequenceNumberStop()));
 			
 			appendDestinationDisplay(referential, routeSegment, destinationById, configuration, stopPoint);
-	
-			stopPoint.setContainedInStopArea(stopArea);
+
+			// NRP 1692 not sure about this, which id should we use for scheduled stop point
+			ScheduledStopPoint scheduledStopPoint = ObjectFactory.getScheduledStopPoint(referential, chouetteStopPointId);
+			stopPoint.setScheduledStopPoint(scheduledStopPoint);
+			scheduledStopPoint.setContainedInStopArea(stopArea);
 			return stopPoint;
 		} else {
 			log.warn("StopPoint "+chouetteStopPointId+" refers to unknown StopArea "+chouetteStopAreaId+" - skipping");
