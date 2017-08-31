@@ -77,6 +77,7 @@ public class ServiceJourneyInterchangeParser implements Parser, Constant {
 																																						// line
 					String feederStopPointInJourneyPatternId = findStopPointInJourneyPatternForScheduledStopPoint(context, feederScheduledStopPointObjectId,
 							interchange.getFeederVisitNumber());
+
 					if (feederStopPointInJourneyPatternId != null) {
 						interchange.setFeederStopPointObjectid(feederStopPointInJourneyPatternId);
 					} else {
@@ -100,7 +101,7 @@ public class ServiceJourneyInterchangeParser implements Parser, Constant {
 			}
 		}
 	}
-
+	// TODO 1692 This probably has to change to reflect ScheduledStopPoint objectid
 	private String findStopPointInJourneyPatternForScheduledStopPoint(Context context, String scheduledStopPointObjectId, Integer visitNumber) {
 		NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
 

@@ -637,8 +637,9 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				// find stoppoint for this journey
 				JourneyPattern jp = vehicleJourney.getJourneyPattern();
 				for(StopPoint sp : jp.getStopPoints()) {
-					if(sp.getScheduledStopPoint().getContainedInStopArea().getObjectId().equals(feederStopAreaId)) {
-						interchange.setFeederStopPoint(sp);
+					ScheduledStopPoint ssp = sp.getScheduledStopPoint();
+					if(ssp.getContainedInStopArea().getObjectId().equals(feederStopAreaId)) {
+						interchange.setFeederStopPoint(ssp);
 						// Can be multiple matches, but GTFS does not specify which visit
 						break;
 					}
@@ -668,8 +669,9 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				// find stoppoint for this journey
 				JourneyPattern jp = vehicleJourney.getJourneyPattern();
 				for(StopPoint sp : jp.getStopPoints()) {
-					if(sp.getScheduledStopPoint().getContainedInStopArea().getObjectId().equals(consumerStopAreaId)) {
-						interchange.setConsumerStopPoint(sp);
+					ScheduledStopPoint ssp = sp.getScheduledStopPoint();
+					if(ssp.getContainedInStopArea().getObjectId().equals(consumerStopAreaId)) {
+						interchange.setConsumerStopPoint(ssp);
 						// Can be multiple matches, but GTFS does not specify which visit
 						break;
 					}

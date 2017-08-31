@@ -53,10 +53,10 @@ public class GtfsTransferProducer extends AbstractProducer {
 
 	public boolean save(Interchange neptuneObject, String prefix, boolean keepOriginalId) {
 		transfer.clear();
-		transfer.setFromStopId(toGtfsId(neptuneObject.getFeederStopPoint().getScheduledStopPoint().getContainedInStopArea()
+		transfer.setFromStopId(toGtfsId(neptuneObject.getFeederStopPoint().getContainedInStopArea()
 				.getObjectId(), prefix, keepOriginalId));
 		transfer
-				.setToStopId(toGtfsId(neptuneObject.getConsumerStopPoint().getScheduledStopPoint().getContainedInStopArea().getObjectId(), prefix, keepOriginalId));
+				.setToStopId(toGtfsId(neptuneObject.getConsumerStopPoint().getContainedInStopArea().getObjectId(), prefix, keepOriginalId));
 
 		if (Boolean.TRUE.equals(neptuneObject.getGuaranteed())) {
 			transfer.setTransferType(GtfsTransfer.TransferType.Timed);

@@ -14,8 +14,10 @@ import javax.transaction.UserTransaction;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.Interchange;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -78,12 +80,12 @@ public class InterchangeDAOTest extends Arquillian {
 			interchange.setPriority(1);
 
 			interchange.setConsumerVehicleJourneyObjectid("TST:" + Interchange.VEHICLEJOURNEY_KEY + ":1");
-			interchange.setConsumerStopPointObjectid("TST:" + StopPoint.STOPPOINT_KEY + ":1");
+			interchange.setConsumerStopPointObjectid("TST:" + ObjectIdTypes.SCHEDULED_STOP_POINT_KEY + ":1");
 			interchange.setConsumerVisitNumber(2);
 
 
 			interchange.setFeederVehicleJourneyObjectid("TST:" + Interchange.VEHICLEJOURNEY_KEY + ":2");
-			interchange.setFeederStopPointObjectid("TST:" + StopPoint.STOPPOINT_KEY + ":2");
+			interchange.setFeederStopPointObjectid("TST:" + ObjectIdTypes.SCHEDULED_STOP_POINT_KEY + ":2");
 			interchange.setFeederVisitNumber(3);
 
 			interchangeDao.create(interchange);
@@ -133,13 +135,21 @@ public class InterchangeDAOTest extends Arquillian {
 
 			Interchange interchange = new Interchange();
 			interchange.setObjectId("TST:" + Interchange.INTERCHANGE_KEY + ":1");
-			
+
+			ScheduledStopPoint ssp1=new ScheduledStopPoint();
+			ssp1.setObjectId("TST:"+ObjectIdTypes.SCHEDULED_STOP_POINT_KEY+":1");
+
 			StopPoint stp1 = new StopPoint();
 			stp1.setObjectId("TST:"+StopPoint.STOPPOINT_KEY+":1");
+			stp1.setScheduledStopPoint(ssp1);
 			stopPointDao.create(stp1);
-			
+
+			ScheduledStopPoint ssp2=new ScheduledStopPoint();
+			ssp2.setObjectId("TST:"+ObjectIdTypes.SCHEDULED_STOP_POINT_KEY+":2");
+
 			StopPoint stp2 = new StopPoint();
 			stp2.setObjectId("TST:"+StopPoint.STOPPOINT_KEY+":2");
+			stp2.setScheduledStopPoint(ssp2);
 			stopPointDao.create(stp2);
 			
 			
@@ -153,10 +163,10 @@ public class InterchangeDAOTest extends Arquillian {
 			
 			
 			interchange.setConsumerVehicleJourney(j1);
-			interchange.setConsumerStopPoint(stp1);
+			interchange.setConsumerStopPoint(ssp1);
 			
 			interchange.setFeederVehicleJourney(j2);
-			interchange.setFeederStopPoint(stp2);
+			interchange.setFeederStopPoint(ssp2);
 
 			interchangeDao.create(interchange);
 			
@@ -186,10 +196,10 @@ public class InterchangeDAOTest extends Arquillian {
 			Assert.assertEquals(findJ2.getFeederInterchanges().size(), 1);
 			
 			StopPoint findStp1 = stopPointDao.find(stp1.getId());
-			Assert.assertEquals(findStp1.getConsumerInterchanges().size(), 1);
+			Assert.assertEquals(findStp1.getScheduledStopPoint().getConsumerInterchanges().size(), 1);
 
 			StopPoint findStp2 = stopPointDao.find(stp2.getId());
-			Assert.assertEquals(findStp2.getFeederInterchanges().size(), 1);
+			Assert.assertEquals(findStp2.getScheduledStopPoint().getFeederInterchanges().size(), 1);
 
 		} catch (RuntimeException ex) {
 			Throwable cause = ex.getCause();

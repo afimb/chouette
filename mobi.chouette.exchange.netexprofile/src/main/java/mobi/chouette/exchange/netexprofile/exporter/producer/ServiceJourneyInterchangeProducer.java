@@ -8,6 +8,7 @@ import org.rutebanken.netex.model.ServiceJourneyInterchange;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.model.Interchange;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 
@@ -31,9 +32,9 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
 
         
         // Consumer stoppoint ref 
-        StopPoint consumerStopPoint = interchange.getConsumerStopPoint();
+        ScheduledStopPoint consumerStopPoint = interchange.getConsumerStopPoint();
 		if(consumerStopPoint != null) {
-            String stopPointIdSuffix = consumerStopPoint.getScheduledStopPoint().getContainedInStopArea().objectIdSuffix();
+            String stopPointIdSuffix = consumerStopPoint.getContainedInStopArea().objectIdSuffix();
             String stopPointIdRef = netexId(consumerStopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, stopPointIdSuffix);
             netex.setToPointRef(netexFactory.createScheduledStopPointRefStructure().withRef(stopPointIdRef));
         } else {
@@ -54,9 +55,9 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
 
         
        // Feeder stoppoint ref
-        StopPoint feederStopPoint = interchange.getFeederStopPoint();
+		ScheduledStopPoint feederStopPoint = interchange.getFeederStopPoint();
 		if(feederStopPoint != null) {
-            String stopPointIdSuffix = feederStopPoint.getScheduledStopPoint().getContainedInStopArea().objectIdSuffix();
+            String stopPointIdSuffix = feederStopPoint.getContainedInStopArea().objectIdSuffix();
             String stopPointIdRef = netexId(feederStopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, stopPointIdSuffix);
             netex.setFromPointRef(netexFactory.createScheduledStopPointRefStructure().withRef(stopPointIdRef));
         } else {

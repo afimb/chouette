@@ -125,23 +125,6 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	@Transient
 	private String comment;
 
-	/**
-	 * list of interchanges where this stop point participates as the feeder
-	 */
-	@Getter
-	@Setter
-	@OneToMany(mappedBy = "feederStopPoint", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-	private List<Interchange> feederInterchanges = new ArrayList<>(0);
-
-
-	/**
-	 * list of interchanges where this stop point participates as the consumer
-	 */
-	@Getter
-	@Setter
-	@OneToMany(mappedBy = "consumerStopPoint", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-	private List<Interchange> consumerInterchanges = new ArrayList<>(0);
-
 
 	/**
 	 * current destination display for this stop point

@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -97,6 +98,23 @@ public class ScheduledStopPoint extends NeptuneIdentifiedObject {
 	@Transient
 	private StopArea containedInStopArea;
 
+
+	/**
+	 * list of interchanges where this stop point participates as the feeder
+	 */
+	@Getter
+	@Setter
+	@OneToMany(mappedBy = "feederStopPoint", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+	private List<Interchange> feederInterchanges = new ArrayList<>(0);
+
+
+	/**
+	 * list of interchanges where this stop point participates as the consumer
+	 */
+	@Getter
+	@Setter
+	@OneToMany(mappedBy = "consumerStopPoint", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+	private List<Interchange> consumerInterchanges = new ArrayList<>(0);
 
 	/**
 	 * set stop area
