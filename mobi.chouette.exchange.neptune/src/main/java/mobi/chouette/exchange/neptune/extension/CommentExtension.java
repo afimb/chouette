@@ -148,7 +148,7 @@ public class CommentExtension implements JsonExtension {
 						try {
 							BoardingPossibilityEnum forBoarding = BoardingPossibilityEnum.valueOf(rc
 									.getString(BOARDING));
-							point.getScheduledStopPoint().setForBoarding(forBoarding);
+							point.setForBoarding(forBoarding);
 						} catch (IllegalArgumentException e) {
 							log.error("StopPoint extension : unknown value " + rc.getString(BOARDING) + " for boarding");
 						}
@@ -157,7 +157,7 @@ public class CommentExtension implements JsonExtension {
 						try {
 							AlightingPossibilityEnum forAlighting = AlightingPossibilityEnum.valueOf(rc
 									.getString(ALIGHTING));
-							point.getScheduledStopPoint().setForAlighting(forAlighting);
+							point.setForAlighting(forAlighting);
 						} catch (IllegalArgumentException e) {
 							log.error("StopPoint extension : unknown value " + rc.getString(ALIGHTING)
 									+ " for alighting");

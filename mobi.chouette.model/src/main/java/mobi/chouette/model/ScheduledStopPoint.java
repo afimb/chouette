@@ -56,35 +56,6 @@ public class ScheduledStopPoint extends NeptuneIdentifiedObject {
 	@OneToMany(mappedBy = "scheduledStopPoint")
 	private List<StopPoint> stopPoints = new ArrayList<>(0);
 
-	/**
-	 * boarding possibility
-	 *
-	 * @param forBoarding
-	 * New value
-	 * @return The actual value
-	 * @since 2.5.2
-	 */
-	@Getter
-	@Setter
-	@Enumerated(EnumType.STRING)
-	@Column(name = "for_boarding")
-	private BoardingPossibilityEnum forBoarding;
-
-	/**
-	 * alighting possibility
-	 *
-	 * @param forAlighting
-	 * New value
-	 * @return The actual value
-	 * @since 2.5.2
-	 */
-	@Getter
-	@Setter
-	@Enumerated(EnumType.STRING)
-	@Column(name = "for_alighting")
-	private AlightingPossibilityEnum forAlighting;
-
-
 	@Getter
 	@Column(name = "stop_area_objectid_key")
 	private String containedInStopAreaObjectId;

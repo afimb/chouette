@@ -641,8 +641,8 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 					
 					assertNotNull(point.getScheduledStopPoint().getContainedInStopArea(), "stoppoints must have StopAreas");
 					bps.add(point.getScheduledStopPoint().getContainedInStopArea());
-					assertNotNull(point.getScheduledStopPoint().getForAlighting(), "no alighting info StopPoint=" + point);
-					assertNotNull(point.getScheduledStopPoint().getForBoarding(), "no boarding info StopPoint=" + point);
+					assertNotNull(point.getForAlighting(), "no alighting info StopPoint=" + point);
+					assertNotNull(point.getForBoarding(), "no boarding info StopPoint=" + point);
 				}
 
 				assertNotEquals(jp.getVehicleJourneys().size(), 0, " journeyPattern should have VehicleJourneys");
@@ -753,8 +753,8 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 						numStopPoints++;
 						assertNotNull(point.getScheduledStopPoint().getContainedInStopArea(), "stoppoints must have StopAreas");
 						bps.add(point.getScheduledStopPoint().getContainedInStopArea());
-						assertNotNull(point.getScheduledStopPoint().getForAlighting(), "no alighting info StopPoint=" + point);
-						assertNotNull(point.getScheduledStopPoint().getForBoarding(), "no boarding info StopPoint=" + point);
+						assertNotNull(point.getForAlighting(), "no alighting info StopPoint=" + point);
+						assertNotNull(point.getForBoarding(), "no boarding info StopPoint=" + point);
 					}
 
 					assertNotEquals(jp.getVehicleJourneys().size(), 0, " journeyPattern should have VehicleJourneys");

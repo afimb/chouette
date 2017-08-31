@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -19,6 +21,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import mobi.chouette.model.type.AlightingPossibilityEnum;
+import mobi.chouette.model.type.BoardingPossibilityEnum;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -60,7 +65,35 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	@Setter
 	@Column(name = "position")
 	private Integer position;
+	/**
+	 * boarding possibility
+	 *
+	 * @param forBoarding
+	 *           New value
+	 * @return The actual value
+	 *
+	 * @since 2.5.2
+	 */
+	@Getter
+	@Setter
+	@Enumerated(EnumType.STRING)
+	@Column(name = "for_boarding")
+	private BoardingPossibilityEnum forBoarding;
 
+	/**
+	 * alighting possibility
+	 *
+	 * @param forAlighting
+	 *           New value
+	 * @return The actual value
+	 *
+	 * @since 2.5.2
+	 */
+	@Getter
+	@Setter
+	@Enumerated(EnumType.STRING)
+	@Column(name = "for_alighting")
+	private AlightingPossibilityEnum forAlighting;
 	/**
 	 * route
 	 *
@@ -78,7 +111,7 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "scheduled_stop_point_id")
 	private ScheduledStopPoint scheduledStopPoint;
 
@@ -90,7 +123,7 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	 */
 	public void setScheduledStopPoint(ScheduledStopPoint scheduledStopPoint) {
 		if (this.scheduledStopPoint != null) {
-			this.scheduledStopPoint.getStopPoints().remove(this);
+			this.scheduledStopPoint.getStopPoints().remove(this); pu
 		}
 		this.scheduledStopPoint = scheduledStopPoint;
 		if (scheduledStopPoint != null) {

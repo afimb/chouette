@@ -82,8 +82,8 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
                     throw new RuntimeException("StopPoint with id : " + stopPoint.getObjectId() + " is not contained in a StopArea. Cannot produce ScheduledStopPoint reference.");
                 }
 
-                BoardingPossibilityEnum forBoarding = stopPoint.getScheduledStopPoint().getForBoarding();
-                AlightingPossibilityEnum forAlighting = stopPoint.getScheduledStopPoint().getForAlighting();
+                BoardingPossibilityEnum forBoarding = stopPoint.getForBoarding();
+                AlightingPossibilityEnum forAlighting = stopPoint.getForAlighting();
 
                 if (forBoarding != null && forAlighting != null) {
                     if (forBoarding.equals(BoardingPossibilityEnum.normal) && forAlighting.equals(AlightingPossibilityEnum.forbidden)) {

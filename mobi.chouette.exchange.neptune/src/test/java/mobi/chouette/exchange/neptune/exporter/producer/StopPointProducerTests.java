@@ -31,7 +31,7 @@ public class StopPointProducerTests
       StopPoint point = new StopPoint();
       ScheduledStopPoint scheduledStopPoint=new ScheduledStopPoint();
       point.setScheduledStopPoint(scheduledStopPoint);
-      scheduledStopPoint.setForAlighting(AlightingPossibilityEnum.forbidden);
+      point.setForAlighting(AlightingPossibilityEnum.forbidden);
       String xmlComment = producer.buildComment(point,true);
       Reporter.log("comment = "+xmlComment);
       Assert.assertEquals(xmlComment,"{\"routing_constraints\":{\"alighting\":\"forbidden\"}}","comment should be correctly built");
@@ -43,7 +43,7 @@ public class StopPointProducerTests
       StopPoint point = new StopPoint();
       ScheduledStopPoint scheduledStopPoint=new ScheduledStopPoint();
       point.setScheduledStopPoint(scheduledStopPoint);
-      scheduledStopPoint.setForBoarding(BoardingPossibilityEnum.forbidden);
+      point.setForBoarding(BoardingPossibilityEnum.forbidden);
       String xmlComment = producer.buildComment(point,true);
       Reporter.log("comment = "+xmlComment);
       Assert.assertEquals(xmlComment,"{\"routing_constraints\":{\"boarding\":\"forbidden\"}}","comment should be correctly built");
@@ -56,8 +56,8 @@ public class StopPointProducerTests
       StopPoint point = new StopPoint();
       ScheduledStopPoint scheduledStopPoint=new ScheduledStopPoint();
       point.setScheduledStopPoint(scheduledStopPoint);
-      scheduledStopPoint.setForBoarding(BoardingPossibilityEnum.forbidden);
-      scheduledStopPoint.setForAlighting(AlightingPossibilityEnum.is_flexible);
+      point.setForBoarding(BoardingPossibilityEnum.forbidden);
+      point.setForAlighting(AlightingPossibilityEnum.is_flexible);
       
       String xmlComment = producer.buildComment(point,true);
       Reporter.log("comment = "+xmlComment);
@@ -77,8 +77,8 @@ public class StopPointProducerTests
       StopPoint point = new StopPoint();
       ScheduledStopPoint scheduledStopPoint=new ScheduledStopPoint();
       point.setScheduledStopPoint(scheduledStopPoint);
-      scheduledStopPoint.setForBoarding(BoardingPossibilityEnum.forbidden);
-      scheduledStopPoint.setForAlighting(AlightingPossibilityEnum.is_flexible);
+      point.setForBoarding(BoardingPossibilityEnum.forbidden);
+      point.setForAlighting(AlightingPossibilityEnum.is_flexible);
 
       String xmlComment = producer.buildComment(point,false);
       Assert.assertNull(xmlComment,"comment should be null");

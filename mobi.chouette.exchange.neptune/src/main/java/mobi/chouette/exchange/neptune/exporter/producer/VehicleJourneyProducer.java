@@ -140,12 +140,12 @@ public class VehicleJourneyProducer extends AbstractJaxbNeptuneProducer<VehicleJ
 	}
 
 	protected BoardingAlightingPossibilityType buildBoardingAndAlightingPossibility(StopPoint point) {
-		if (point.getScheduledStopPoint().getForAlighting() == null && point.getScheduledStopPoint().getForBoarding() == null)
+		if (point.getForAlighting() == null && point.getForBoarding() == null)
 			return null;
-		AlightingPossibilityEnum forAlighting = point.getScheduledStopPoint().getForAlighting() == null ? AlightingPossibilityEnum.normal
-				: point.getScheduledStopPoint().getForAlighting();
-		BoardingPossibilityEnum forBoarding = point.getScheduledStopPoint().getForBoarding() == null ? BoardingPossibilityEnum.normal : point
-				.getScheduledStopPoint().getForBoarding();
+		AlightingPossibilityEnum forAlighting = point.getForAlighting() == null ? AlightingPossibilityEnum.normal
+				: point.getForAlighting();
+		BoardingPossibilityEnum forBoarding = point.getForBoarding() == null ? BoardingPossibilityEnum.normal : point
+				.getForBoarding();
 
 		switch (forAlighting) {
 		case normal:

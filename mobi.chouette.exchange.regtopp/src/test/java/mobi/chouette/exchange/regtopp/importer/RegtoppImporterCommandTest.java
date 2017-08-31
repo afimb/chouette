@@ -206,8 +206,8 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopArea(), "stoppoints must have StopAreas");
 					bps.add(point.getScheduledStopPoint().getContainedInStopArea());
 
-					Assert.assertNotNull(point.getScheduledStopPoint().getForAlighting(), "no alighting info StopPoint=" + point);
-					Assert.assertNotNull(point.getScheduledStopPoint().getForBoarding(), "no boarding info StopPoint=" + point);
+					Assert.assertNotNull(point.getForAlighting(), "no alighting info StopPoint=" + point);
+					Assert.assertNotNull(point.getForBoarding(), "no boarding info StopPoint=" + point);
 
 				}
 				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0, " journeyPattern should have VehicleJourneys");

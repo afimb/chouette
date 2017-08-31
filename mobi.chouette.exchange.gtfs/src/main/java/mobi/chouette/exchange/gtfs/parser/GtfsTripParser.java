@@ -1157,8 +1157,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			scheduledStopPoint.setContainedInStopArea(stopArea);
 			stopPoint.setRoute(route);
 			stopPoint.setPosition(position++);
-			scheduledStopPoint.setForBoarding(toBoardingPossibility(wrapper.pickup));
-			scheduledStopPoint.setForAlighting(toAlightingPossibility(wrapper.dropOff));
+			stopPoint.setForBoarding(toBoardingPossibility(wrapper.pickup));
+			stopPoint.setForAlighting(toAlightingPossibility(wrapper.dropOff));
 			
 			if(wrapper.stopHeadsign != null) {
 				DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential, stopKey);

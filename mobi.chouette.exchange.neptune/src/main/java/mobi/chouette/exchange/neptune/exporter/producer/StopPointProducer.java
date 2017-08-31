@@ -73,11 +73,11 @@ public class StopPointProducer extends
 		try {
 			JSONObject jsonComment = new JSONObject();
 			JSONObject jsonRC = new JSONObject();
-			if (stopPoint.getScheduledStopPoint().getForBoarding() != null) {
-				jsonRC.put(BOARDING, stopPoint.getScheduledStopPoint().getForBoarding().name());
+			if (stopPoint.getForBoarding() != null) {
+				jsonRC.put(BOARDING, stopPoint.getForBoarding().name());
 			}
-			if (stopPoint.getScheduledStopPoint().getForAlighting() != null) {
-				jsonRC.put(ALIGHTING, stopPoint.getScheduledStopPoint().getForAlighting().name());
+			if (stopPoint.getForAlighting() != null) {
+				jsonRC.put(ALIGHTING, stopPoint.getForAlighting().name());
 			}
 			if (jsonRC.length() == 0) {
 				return null;

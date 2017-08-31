@@ -63,7 +63,7 @@ public class StopPointCheckPoints extends AbstractValidation<StopPoint> implemen
 
     // TODO NRP-1692 move to scheduledstoppointcheckPoints?
     private void validateStopPointBoardingAlighting(Context context, StopPoint stopPoint) {
-        if (stopPoint != null && stopPoint.getScheduledStopPoint() != null && stopPoint.getScheduledStopPoint().getContainedInStopArea() != null && BoardingPossibilityEnum.forbidden.equals(stopPoint.getScheduledStopPoint().getForBoarding()) && AlightingPossibilityEnum.forbidden.equals(stopPoint.getScheduledStopPoint().getForAlighting())) {
+        if (stopPoint != null && stopPoint.getScheduledStopPoint() != null && stopPoint.getScheduledStopPoint().getContainedInStopArea() != null && BoardingPossibilityEnum.forbidden.equals(stopPoint.getForBoarding()) && AlightingPossibilityEnum.forbidden.equals(stopPoint.getForAlighting())) {
             ValidationReporter reporter = ValidationReporter.Factory.getInstance();
             DataLocation locationStopPoint = buildLocation(context, stopPoint);
             DataLocation locationRoute = buildLocation(context, stopPoint.getRoute());

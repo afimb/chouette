@@ -1141,9 +1141,7 @@ CREATE TABLE scheduled_stop_points (
     objectid character varying(255) NOT NULL,
     object_version integer,
     creation_time timestamp without time zone,
-    creator_id character varying(255),
-    for_boarding character varying(255),
-    for_alighting character varying(255)
+    creator_id character varying(255)
 );
 
 
@@ -1173,6 +1171,8 @@ CREATE TABLE stop_points (
     creation_time timestamp without time zone,
     creator_id character varying(255),
     "position" integer,
+    for_boarding character varying(255),
+    for_alighting character varying(255),
     scheduled_stop_point_id bigint
 );
 

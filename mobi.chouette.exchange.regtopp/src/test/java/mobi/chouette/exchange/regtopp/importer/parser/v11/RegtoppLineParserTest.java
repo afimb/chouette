@@ -134,8 +134,8 @@ public class RegtoppLineParserTest {
 		StopPoint sp = ObjectFactory.getStopPoint(referential, ObjectIdCreator.composeGenericObjectId("XYZ", ObjectIdTypes.STOPPOINT_KEY, ""+stopPointId));
 		sp.setPosition(position);
 		ScheduledStopPoint ssp = ObjectFactory.getScheduledStopPoint(referential, ObjectIdCreator.composeGenericObjectId("XYZ", ObjectIdTypes.SCHEDULED_STOP_POINT_KEY, ""+stopPointId));
-		ssp.setForAlighting(forAlighting);
-		ssp.setForBoarding(forBoarding);
+		sp.setForAlighting(forAlighting);
+		sp.setForBoarding(forBoarding);
 		
 		StopArea sa = ObjectFactory.getStopArea(referential, ObjectIdCreator.composeGenericObjectId("XYZ", ObjectIdTypes.STOPAREA_KEY, ""+stopAreaId));
 		ssp.setContainedInStopArea(sa);

@@ -412,7 +412,7 @@ public class RegtoppLineParser extends LineSpecificParser {
 		boolean identical = false;
 
 		if (left.getScheduledStopPoint().getContainedInStopArea().getObjectId().equals(right.getScheduledStopPoint().getContainedInStopArea().getObjectId())
-				&& left.getScheduledStopPoint().getForAlighting() == right.getScheduledStopPoint().getForAlighting() && left.getScheduledStopPoint().getForBoarding() == right.getScheduledStopPoint().getForBoarding()
+				&& left.getForAlighting() == right.getForAlighting() && left.getForBoarding() == right.getForBoarding()
 				&& left.getPosition() == right.getPosition()) {
 			identical = true;
 		}
@@ -572,17 +572,17 @@ public class RegtoppLineParser extends LineSpecificParser {
 				// check if every stoppoints were updated, complete missing ones to
 				// normal; if all normal clean all
 				for (StopPoint sp : route.getStopPoints()) {
-					if (sp.getScheduledStopPoint().getForAlighting() == null)
-						sp.getScheduledStopPoint().setForAlighting(AlightingPossibilityEnum.normal);
-					if (sp.getScheduledStopPoint().getForBoarding() == null)
-						sp.getScheduledStopPoint().setForBoarding(BoardingPossibilityEnum.normal);
+					if (sp.getForAlighting() == null)
+						sp.setForAlighting(AlightingPossibilityEnum.normal);
+					if (sp.getForBoarding() == null)
+						sp.setForBoarding(BoardingPossibilityEnum.normal);
 				}
 				for (StopPoint sp : route.getStopPoints()) {
-					if (!sp.getScheduledStopPoint().getForAlighting().equals(AlightingPossibilityEnum.normal)) {
+					if (!sp.getForAlighting().equals(AlightingPossibilityEnum.normal)) {
 						usefullData = true;
 						break;
 					}
-					if (!sp.getScheduledStopPoint().getForBoarding().equals(BoardingPossibilityEnum.normal)) {
+					if (!sp.getForBoarding().equals(BoardingPossibilityEnum.normal)) {
 						usefullData = true;
 						break;
 					}
@@ -592,8 +592,8 @@ public class RegtoppLineParser extends LineSpecificParser {
 			if (invalidData || !usefullData) {
 				// remove useless informations
 				for (StopPoint sp : route.getStopPoints()) {
-					sp.getScheduledStopPoint().setForAlighting(null);
-					sp.getScheduledStopPoint().setForBoarding(null);
+					sp.setForAlighting(null);
+					sp.setForBoarding(null);
 				}
 			}
 
@@ -604,12 +604,12 @@ public class RegtoppLineParser extends LineSpecificParser {
 		StopPoint sp = vjas.getStopPoint();
 		BoardingPossibilityEnum forBoarding = getForBoarding(vjas.getBoardingAlightingPossibility());
 		AlightingPossibilityEnum forAlighting = getForAlighting(vjas.getBoardingAlightingPossibility());
-		if (sp.getScheduledStopPoint().getForBoarding() != null && !sp.getScheduledStopPoint().getForBoarding().equals(forBoarding))
+		if (sp.getForBoarding() != null && !sp.getForBoarding().equals(forBoarding))
 			return false;
-		if (sp.getScheduledStopPoint().getForAlighting() != null && !sp.getScheduledStopPoint().getForAlighting().equals(forAlighting))
+		if (sp.getForAlighting() != null && !sp.getForAlighting().equals(forAlighting))
 			return false;
-		sp.getScheduledStopPoint().setForBoarding(forBoarding);
-		sp.getScheduledStopPoint().setForAlighting(forAlighting);
+		sp.setForBoarding(forBoarding);
+		sp.setForAlighting(forAlighting);
 		return true;
 	}
 
