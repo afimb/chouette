@@ -5,6 +5,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.type.OrganisationTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
@@ -18,65 +19,69 @@ import javax.xml.bind.JAXBElement;
 @Log4j
 public class OrganisationParser implements Parser, Constant {
 
-    @Override
-    public void parse(Context context) throws Exception {
-        Referential referential = (Referential) context.get(REFERENTIAL);
-        OrganisationsInFrame_RelStructure organisationsInFrameStruct = (OrganisationsInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
+	@Override
+	public void parse(Context context) throws Exception {
+		Referential referential = (Referential) context.get(REFERENTIAL);
+		OrganisationsInFrame_RelStructure organisationsInFrameStruct = (OrganisationsInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
 
-        for (JAXBElement<? extends DataManagedObjectStructure> organisationElement : organisationsInFrameStruct.getOrganisation_()) {
-            DataManagedObjectStructure organisation = organisationElement.getValue();
-            Organisation_VersionStructure organisationStruct = (Organisation_VersionStructure) organisation;
+		for (JAXBElement<? extends DataManagedObjectStructure> organisationElement : organisationsInFrameStruct.getOrganisation_()) {
+			DataManagedObjectStructure organisation = organisationElement.getValue();
+			Organisation_VersionStructure organisationStruct = (Organisation_VersionStructure) organisation;
 
-            Company company = ObjectFactory.getCompany(referential, organisation.getId());
-            company.setObjectVersion(NetexParserUtils.getVersion(organisation));
-            company.setName(organisationStruct.getName().getValue());
+			Company company = ObjectFactory.getCompany(referential, organisation.getId());
+			company.setObjectVersion(NetexParserUtils.getVersion(organisation));
+			company.setName(ConversionUtil.getValue(organisationStruct.getName()));
+			company.setLegalName(ConversionUtil.getValue(organisationStruct.getLegalName()));
+			company.setRegistrationNumber(StringUtils.trimToNull(organisationStruct.getCompanyNumber()));
 
-            OrganisationTypeEnumeration organisationTypeEnumeration = null;
-            if (CollectionUtils.isNotEmpty(organisationStruct.getOrganisationType())) {
-                organisationTypeEnumeration = organisationStruct.getOrganisationType().get(0);
-                OrganisationTypeEnum organisationType = NetexParserUtils.getOrganisationType(organisationTypeEnumeration);
-                if (organisationType != null) {
-                    company.setOrganisationType(organisationType);
-                }
-            }
+			// Find type of organisation
+			OrganisationTypeEnumeration organisationTypeEnumeration = null;
+			if (CollectionUtils.isNotEmpty(organisationStruct.getOrganisationType())) {
+				organisationTypeEnumeration = organisationStruct.getOrganisationType().get(0);
+				OrganisationTypeEnum organisationType = NetexParserUtils.getOrganisationType(organisationTypeEnumeration);
+				if (organisationType != null) {
+					company.setOrganisationType(organisationType);
+				}
+			} else {
+				if (organisationStruct instanceof Operator) {
+					company.setOrganisationType(OrganisationTypeEnum.Operator);
+				} else if (organisationStruct instanceof Authority) {
+					company.setOrganisationType(OrganisationTypeEnum.Authority);
+				}
+			}
 
-            if (organisationStruct.getLegalName() != null) {
-                company.setLegalName(organisationStruct.getLegalName().getValue());
-            }
+			// Contact details
+			if (organisationStruct.getContactDetails() != null) {
+				company.setPhone(StringUtils.trimToNull(organisationStruct.getContactDetails().getPhone()));
+				company.setUrl(StringUtils.trimToNull(organisationStruct.getContactDetails().getUrl()));
+				company.setEmail(StringUtils.trimToNull(organisationStruct.getContactDetails().getEmail()));
+			}
 
-            company.setRegistrationNumber(StringUtils.remove(organisationStruct.getCompanyNumber()," "));
+			// Customer service contact details
+			if (organisationStruct instanceof Operator) {
+				Operator operator = (Operator) organisationStruct;
 
-            if (organisationStruct.getContactDetails() != null) {
-                company.setPhone(organisationStruct.getContactDetails().getPhone());
-                company.setUrl(organisationStruct.getContactDetails().getUrl());
-                company.setEmail(organisationStruct.getContactDetails().getEmail());
-            }
+				if (operator.getCustomerServiceContactDetails() != null) {
+					ContactStructure customerServiceContactDetails = operator.getCustomerServiceContactDetails();
+					company.setPublicPhone(StringUtils.trimToNull(customerServiceContactDetails.getPhone()));
+					company.setPublicEmail(StringUtils.trimToNull(customerServiceContactDetails.getEmail()));
+					company.setPublicUrl(StringUtils.trimToNull(customerServiceContactDetails.getUrl()));
+				}
+			}
 
-            if ((organisationStruct instanceof Operator && organisationTypeEnumeration != null &&
-                    organisationTypeEnumeration.equals(OrganisationTypeEnumeration.OPERATOR))) {
-                Operator operator = (Operator) organisationStruct;
+			company.setFilled(true);
+		}
+	}
 
-                if (operator.getCustomerServiceContactDetails() != null) {
-                    ContactStructure customerServiceContactDetails = operator.getCustomerServiceContactDetails();
-                    company.setPublicPhone(customerServiceContactDetails.getPhone());
-                    company.setPublicEmail(customerServiceContactDetails.getEmail());
-                    company.setPublicUrl(customerServiceContactDetails.getUrl());
-                }
-            }
+	static {
+		ParserFactory.register(OrganisationParser.class.getName(), new ParserFactory() {
+			private OrganisationParser instance = new OrganisationParser();
 
-            company.setFilled(true);
-        }
-    }
-
-    static {
-        ParserFactory.register(OrganisationParser.class.getName(), new ParserFactory() {
-            private OrganisationParser instance = new OrganisationParser();
-
-            @Override
-            protected Parser create() {
-                return instance;
-            }
-        });
-    }
+			@Override
+			protected Parser create() {
+				return instance;
+			}
+		});
+	}
 
 }
