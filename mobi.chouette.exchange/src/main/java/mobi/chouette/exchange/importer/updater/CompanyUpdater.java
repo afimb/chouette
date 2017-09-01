@@ -48,6 +48,10 @@ public class CompanyUpdater implements Updater<Company> {
 				&& !newValue.getShortName().equals(oldValue.getShortName())) {
 			oldValue.setShortName(newValue.getShortName());
 		}
+		if (newValue.getLegalName() != null
+				&& !newValue.getLegalName().equals(oldValue.getLegalName())) {
+			oldValue.setLegalName(newValue.getLegalName());
+		}
 		if (newValue.getOrganisationalUnit() != null
 				&& !newValue.getOrganisationalUnit().equals(
 						oldValue.getOrganisationalUnit())) {
