@@ -317,7 +317,12 @@
                                 <AirSubmode>SchengenAreaFlight</AirSubmode>
                             </TransportSubmode>
                         </ServiceJourney>
-
+                        <ServiceJourney version="2" id="AVI:ServiceJourney:WF536-126360080-1">
+                            <TransportSubmode>
+                                <AirSubmode>SchengenAreaFlight</AirSubmode>
+                            </TransportSubmode>
+                        </ServiceJourney>
+                        
                     </vehicleJourneys>
                 </TimetableFrame>
                 <ServiceCalendarFrame version="1" id="AVI:ServiceCalendarFrame:NoFromDate">
