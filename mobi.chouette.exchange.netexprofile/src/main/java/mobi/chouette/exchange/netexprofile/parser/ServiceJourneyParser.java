@@ -49,6 +49,14 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 
 			VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, serviceJourney.getId());
 
+			if (vehicleJourney.isFilled()) {
+				VehicleJourney vehicleJourneyWithVersion = ObjectFactory.getVehicleJourney(referential,
+						serviceJourney.getId() + "_" + serviceJourney.getVersion());
+				log.warn("Already parsed " + vehicleJourney.getObjectId() + ", will use version field as part of id to separate them: "
+						+ vehicleJourneyWithVersion.getObjectId());
+				vehicleJourney = vehicleJourneyWithVersion;
+			}
+
 			DayTypeRefs_RelStructure dayTypes = serviceJourney.getDayTypes();
 			if (dayTypes != null) {
 				for (JAXBElement<? extends DayTypeRefStructure> dayType : dayTypes.getDayTypeRef()) {
@@ -58,66 +66,63 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 				}
 			}
 
-			if (!vehicleJourney.isFilled()) {
-				vehicleJourney.setObjectVersion(NetexParserUtils.getVersion(serviceJourney));
+			vehicleJourney.setObjectVersion(NetexParserUtils.getVersion(serviceJourney));
 
-				if (serviceJourney.getName() != null) {
-					vehicleJourney.setPublishedJourneyName(serviceJourney.getName().getValue());
-				}
-				vehicleJourney.setPublishedJourneyIdentifier(serviceJourney.getPublicCode());
-
-				String journeyPatternIdRef = null;
-				if (serviceJourney.getJourneyPatternRef() != null) {
-					JourneyPatternRefStructure patternRefStruct = serviceJourney.getJourneyPatternRef().getValue();
-					journeyPatternIdRef = patternRefStruct.getRef();
-				}
-
-				mobi.chouette.model.JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, journeyPatternIdRef);
-				vehicleJourney.setJourneyPattern(journeyPattern);
-
-				if (serviceJourney.getOperatorRef() != null) {
-					String operatorIdRef = serviceJourney.getOperatorRef().getRef();
-					Company company = ObjectFactory.getCompany(referential, operatorIdRef);
-					vehicleJourney.setCompany(company);
-				} else if (serviceJourney.getLineRef() != null) {
-					String lineIdRef = serviceJourney.getLineRef().getValue().getRef();
-					Company company = ObjectFactory.getLine(referential, lineIdRef).getCompany();
-					vehicleJourney.setCompany(company);
-				} else {
-					Company company = journeyPattern.getRoute().getLine().getCompany();
-					vehicleJourney.setCompany(company);
-				}
-
-				if (serviceJourney.getRouteRef() != null) {
-					mobi.chouette.model.Route route = ObjectFactory.getRoute(referential, serviceJourney.getRouteRef().getRef());
-					vehicleJourney.setRoute(route);
-				} else {
-					mobi.chouette.model.Route route = journeyPattern.getRoute();
-					vehicleJourney.setRoute(route);
-				}
-
-				if (serviceJourney.getTransportMode() != null) {
-					AllVehicleModesOfTransportEnumeration transportMode = serviceJourney.getTransportMode();
-					TransportModeNameEnum transportModeName = NetexParserUtils.toTransportModeNameEnum(transportMode.value());
-					vehicleJourney.setTransportMode(transportModeName);
-				}
-
-				vehicleJourney.setTransportSubMode(NetexParserUtils.toTransportSubModeNameEnum(serviceJourney.getTransportSubmode()));
-
-				parseTimetabledPassingTimes(context, referential, serviceJourney, vehicleJourney);
-
-				if (journeyFootnotes.containsKey(serviceJourney.getId())) {
-					List<Footnote> footnotes = journeyFootnotes.get(serviceJourney.getId());
-
-					if (CollectionUtils.isNotEmpty(footnotes)) {
-						vehicleJourney.setFootnotes(footnotes);
-					}
-				}
-
-				vehicleJourney.setFilled(true);
-			} else {
-				log.warn("Already parsed "+vehicleJourney.getObjectId()+", only adding new dayType definitions");
+			if (serviceJourney.getName() != null) {
+				vehicleJourney.setPublishedJourneyName(serviceJourney.getName().getValue());
 			}
+			vehicleJourney.setPublishedJourneyIdentifier(serviceJourney.getPublicCode());
+
+			String journeyPatternIdRef = null;
+			if (serviceJourney.getJourneyPatternRef() != null) {
+				JourneyPatternRefStructure patternRefStruct = serviceJourney.getJourneyPatternRef().getValue();
+				journeyPatternIdRef = patternRefStruct.getRef();
+			}
+
+			mobi.chouette.model.JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, journeyPatternIdRef);
+			vehicleJourney.setJourneyPattern(journeyPattern);
+
+			if (serviceJourney.getOperatorRef() != null) {
+				String operatorIdRef = serviceJourney.getOperatorRef().getRef();
+				Company company = ObjectFactory.getCompany(referential, operatorIdRef);
+				vehicleJourney.setCompany(company);
+			} else if (serviceJourney.getLineRef() != null) {
+				String lineIdRef = serviceJourney.getLineRef().getValue().getRef();
+				Company company = ObjectFactory.getLine(referential, lineIdRef).getCompany();
+				vehicleJourney.setCompany(company);
+			} else {
+				Company company = journeyPattern.getRoute().getLine().getCompany();
+				vehicleJourney.setCompany(company);
+			}
+
+			if (serviceJourney.getRouteRef() != null) {
+				mobi.chouette.model.Route route = ObjectFactory.getRoute(referential, serviceJourney.getRouteRef().getRef());
+				vehicleJourney.setRoute(route);
+			} else {
+				mobi.chouette.model.Route route = journeyPattern.getRoute();
+				vehicleJourney.setRoute(route);
+			}
+
+			if (serviceJourney.getTransportMode() != null) {
+				AllVehicleModesOfTransportEnumeration transportMode = serviceJourney.getTransportMode();
+				TransportModeNameEnum transportModeName = NetexParserUtils.toTransportModeNameEnum(transportMode.value());
+				vehicleJourney.setTransportMode(transportModeName);
+			}
+
+			vehicleJourney.setTransportSubMode(NetexParserUtils.toTransportSubModeNameEnum(serviceJourney.getTransportSubmode()));
+
+			parseTimetabledPassingTimes(context, referential, serviceJourney, vehicleJourney);
+
+			if (journeyFootnotes.containsKey(serviceJourney.getId())) {
+				List<Footnote> footnotes = journeyFootnotes.get(serviceJourney.getId());
+
+				if (CollectionUtils.isNotEmpty(footnotes)) {
+					vehicleJourney.setFootnotes(footnotes);
+				}
+			}
+
+			vehicleJourney.setFilled(true);
+
 		}
 	}
 
