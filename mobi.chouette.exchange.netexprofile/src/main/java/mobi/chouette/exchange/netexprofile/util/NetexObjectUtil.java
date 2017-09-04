@@ -8,22 +8,6 @@ import java.util.List;
 
 public class NetexObjectUtil {
 
-    public static void addStopPointInJourneyPatternRef(NetexReferential referential, String objectId, StopPointInJourneyPattern stopPointInJourneyPattern) {
-        if (stopPointInJourneyPattern == null) {
-            throw new NullPointerException("Unknown stop point in journey pattern : " + objectId);
-        }
-        if (!referential.getStopPointsInJourneyPattern().containsKey(objectId)) {
-            referential.getStopPointsInJourneyPattern().put(objectId, stopPointInJourneyPattern);
-        }
-    }
-
-    public static StopPointInJourneyPattern getStopPointInJourneyPattern(NetexReferential referential, String objectId) {
-        StopPointInJourneyPattern stopPointInJourneyPattern = referential.getStopPointsInJourneyPattern().get(objectId);
-        if (stopPointInJourneyPattern == null) {
-            throw new NullPointerException("Unknown stop point in journey pattern : " + objectId);
-        }
-        return stopPointInJourneyPattern;
-    }
 
     public static void addDayTypeRef(NetexReferential referential, String objectId, DayType dayType) {
         if (dayType == null) {

@@ -13,7 +13,10 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.util.NetexReferential;
+import mobi.chouette.model.ScheduledStopPoint;
+import mobi.chouette.model.type.ChouetteAreaEnum;
+import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
 
 @Log4j
 public class StopAssignmentParser extends NetexParser implements Parser, Constant {
@@ -23,15 +26,22 @@ public class StopAssignmentParser extends NetexParser implements Parser, Constan
 		StopAssignmentsInFrame_RelStructure assignmentStruct = (StopAssignmentsInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
 
 		if (assignmentStruct != null) {
-
-			NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
+			Referential referential = (Referential) context.get(REFERENTIAL);
 
 			for (JAXBElement<? extends StopAssignment_VersionStructure> stopAssignmentElement : assignmentStruct.getStopAssignment()) {
 				PassengerStopAssignment stopAssignment = (PassengerStopAssignment) stopAssignmentElement.getValue();
 				ScheduledStopPointRefStructure scheduledStopPointRef = stopAssignment.getScheduledStopPointRef();
 				QuayRefStructure quayRef = stopAssignment.getQuayRef();
 
-				netexReferential.getScheduledStopPointToQuay().put(scheduledStopPointRef.getRef(), quayRef.getRef());
+				mobi.chouette.model.StopArea quay = ObjectFactory.getStopArea(referential, quayRef.getRef());
+				if(quay.getAreaType() == null) {
+					quay.setAreaType(ChouetteAreaEnum.BoardingPosition);
+				}
+
+				ScheduledStopPoint scheduledStopPoint = ObjectFactory.getScheduledStopPoint(referential, scheduledStopPointRef.getRef());
+				scheduledStopPoint.setContainedInStopArea(quay);
+
+				
 			}
 		}
 	}

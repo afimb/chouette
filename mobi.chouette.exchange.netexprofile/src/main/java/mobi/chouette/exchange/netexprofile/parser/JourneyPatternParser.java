@@ -16,15 +16,12 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.util.NetexObjectUtil;
-import mobi.chouette.exchange.netexprofile.util.NetexReferential;
 import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
-import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -64,8 +61,6 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
 	private void parseStopPointsInJourneyPattern(Context context, Referential referential, org.rutebanken.netex.model.JourneyPattern netexJourneyPattern,
 			mobi.chouette.model.JourneyPattern chouetteJourneyPattern, List<StopPoint> routeStopPoints) throws Exception {
 
-		NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
-
 		List<PointInLinkSequence_VersionedChildStructure> pointsInLinkSequence = netexJourneyPattern.getPointsInSequence()
 				.getPointInJourneyPatternOrStopPointInJourneyPatternOrTimingPointInJourneyPattern();
 
@@ -73,36 +68,28 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
 			PointInLinkSequence_VersionedChildStructure pointInSequence = pointsInLinkSequence.get(i);
 			StopPointInJourneyPattern pointInPattern = (StopPointInJourneyPattern) pointInSequence;
 
-			StopPoint stopPoint = ObjectFactory.getStopPoint(referential, pointInPattern.getId());
+			StopPoint stopPointInJourneyPattern = ObjectFactory.getStopPoint(referential, pointInPattern.getId());
 			ScheduledStopPointRefStructure scheduledStopPointRef = pointInPattern.getScheduledStopPointRef().getValue();
 
-			String quayId = netexReferential.getScheduledStopPointToQuay().get(scheduledStopPointRef.getRef());
-			mobi.chouette.model.StopArea quay = ObjectFactory.getStopArea(referential, quayId);
-			if(quay.getAreaType() == null) {
-				quay.setAreaType(ChouetteAreaEnum.BoardingPosition);
-			}
-
 			ScheduledStopPoint scheduledStopPoint=ObjectFactory.getScheduledStopPoint(referential, scheduledStopPointRef.getRef());
-			stopPoint.setScheduledStopPoint(scheduledStopPoint);
-
-			scheduledStopPoint.setContainedInStopArea(quay);
-			stopPoint.setPosition(pointInPattern.getOrder().intValue());
-			stopPoint.setObjectVersion(NetexParserUtils.getVersion(pointInPattern.getVersion()));
+			stopPointInJourneyPattern.setScheduledStopPoint(scheduledStopPoint);
+			stopPointInJourneyPattern.setPosition(pointInPattern.getOrder().intValue());
+			stopPointInJourneyPattern.setObjectVersion(NetexParserUtils.getVersion(pointInPattern.getVersion()));
 
 			if (pointInPattern.isForAlighting() != null && !pointInPattern.isForAlighting()) {
-				stopPoint.setForAlighting(AlightingPossibilityEnum.forbidden);
+				stopPointInJourneyPattern.setForAlighting(AlightingPossibilityEnum.forbidden);
 			} else {
-				stopPoint.setForAlighting(AlightingPossibilityEnum.normal);
+				stopPointInJourneyPattern.setForAlighting(AlightingPossibilityEnum.normal);
 			}
 
 			if (pointInPattern.isForBoarding() != null && !pointInPattern.isForBoarding()) {
-				stopPoint.setForBoarding(BoardingPossibilityEnum.forbidden);
+				stopPointInJourneyPattern.setForBoarding(BoardingPossibilityEnum.forbidden);
 			} else {
-				stopPoint.setForBoarding(BoardingPossibilityEnum.normal);
+				stopPointInJourneyPattern.setForBoarding(BoardingPossibilityEnum.normal);
 			}
 
-			chouetteJourneyPattern.addStopPoint(stopPoint);
-			stopPoint.setRoute(chouetteJourneyPattern.getRoute());
+			chouetteJourneyPattern.addStopPoint(stopPointInJourneyPattern);
+			stopPointInJourneyPattern.setRoute(chouetteJourneyPattern.getRoute());
 
 			if (pointInPattern.getDestinationDisplayRef() != null) {
 				String destinationDisplayId = pointInPattern.getDestinationDisplayRef().getRef();
@@ -121,16 +108,13 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
 						modifiedDestinationDisplay.setSideText(destinationDisplay.getSideText());
 						modifiedDestinationDisplay.getVias().addAll(destinationDisplay.getVias());
 					}
-					stopPoint.setDestinationDisplay(modifiedDestinationDisplay);
+					stopPointInJourneyPattern.setDestinationDisplay(modifiedDestinationDisplay);
 				} else {
-					stopPoint.setDestinationDisplay(destinationDisplay);
+					stopPointInJourneyPattern.setDestinationDisplay(destinationDisplay);
 				}
 			}
 
-			chouetteJourneyPattern.addStopPoint(stopPoint);
-
-			// TODO RESOLVE THIS AFTER ADDING SCHEDULED STOP POINT
-			NetexObjectUtil.addStopPointInJourneyPatternRef(netexReferential, pointInPattern.getId(), pointInPattern);
+			chouetteJourneyPattern.addStopPoint(stopPointInJourneyPattern);
 		}
 
 		List<StopPoint> patternStopPoints = chouetteJourneyPattern.getStopPoints();

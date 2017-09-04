@@ -1,12 +1,8 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
-import java.util.Collection;
-
 import org.rutebanken.netex.model.Interchange_VersionStructure;
 import org.rutebanken.netex.model.JourneyInterchangesInFrame_RelStructure;
 import org.rutebanken.netex.model.ServiceJourneyInterchange;
-import org.rutebanken.netex.model.StopPointInJourneyPattern;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.TimeUtil;
@@ -14,8 +10,8 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
-import mobi.chouette.exchange.netexprofile.util.NetexReferential;
 import mobi.chouette.model.Interchange;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -51,40 +47,24 @@ public class ServiceJourneyInterchangeParser implements Parser, Constant {
 
 				// Parse journeys
 				String feederVehicleJourneyObjectId = netexInterchange.getFromJourneyRef().getRef();
-				VehicleJourney feederVehicleJourney = referential.getVehicleJourneys().get(feederVehicleJourneyObjectId);
-				if (feederVehicleJourney != null) {
-					interchange.setFeederVehicleJourney(feederVehicleJourney);
-					feederVehicleJourney.getFeederInterchanges().add(interchange);
-				} else {
-					interchange.setFeederVehicleJourneyObjectid(feederVehicleJourneyObjectId);
-				}
+				VehicleJourney feederVehicleJourney = ObjectFactory.getVehicleJourney(referential,feederVehicleJourneyObjectId);
+				interchange.setFeederVehicleJourney(feederVehicleJourney);
+				feederVehicleJourney.getFeederInterchanges().add(interchange);
 
 				String consumerVehicleJourneyObjectId = netexInterchange.getToJourneyRef().getRef();
-				VehicleJourney consumerVehicleJourney = referential.getVehicleJourneys().get(consumerVehicleJourneyObjectId);
-				if (consumerVehicleJourney != null) {
-					interchange.setConsumerVehicleJourney(consumerVehicleJourney);
-					consumerVehicleJourney.getConsumerInterchanges().add(interchange);
-				} else {
-					interchange.setConsumerVehicleJourneyObjectid(consumerVehicleJourneyObjectId);
-				}
+				VehicleJourney consumerVehicleJourney = ObjectFactory.getVehicleJourney(referential,consumerVehicleJourneyObjectId);
+				interchange.setConsumerVehicleJourney(consumerVehicleJourney);
+				consumerVehicleJourney.getConsumerInterchanges().add(interchange);
 
 				// Parse stop points
-
+				ScheduledStopPoint feederScheduledStopPoint = ObjectFactory.getScheduledStopPoint(referential, netexInterchange.getFromPointRef().getRef());
+				interchange.setFeederStopPoint(feederScheduledStopPoint);
 				interchange.setFeederVisitNumber(ConversionUtil.asInteger(netexInterchange.getFromVisitNumber()));
-				String feederScheduledStopPointObjectId = netexInterchange.getFromPointRef().getRef();
-				if (feederVehicleJourney != null && feederVehicleJourney.getRoute().getLine().equals(consumerVehicleJourney.getRoute().getLine())) { // Within
-					// same
-					// line
-					interchange.setFeederStopPointObjectid(feederScheduledStopPointObjectId);
-
-				} else {
-					log.error("Interchange is broken across Lines as there is no concept of ScheduledStopPoint implemented yet");
-					interchange.setFeederStopPointObjectid(feederScheduledStopPointObjectId);
-				}
-
+				
+				ScheduledStopPoint consumerScheduledStopPoint = ObjectFactory.getScheduledStopPoint(referential, netexInterchange.getToPointRef().getRef());
+				interchange.setConsumerStopPoint(consumerScheduledStopPoint);
 				interchange.setConsumerVisitNumber(ConversionUtil.asInteger(netexInterchange.getToVisitNumber()));
-				String consumerScheduledStopPointObjectId = netexInterchange.getToPointRef().getRef();
-				interchange.setConsumerStopPointObjectid(consumerScheduledStopPointObjectId);
+
 
 			}
 		}
