@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -16,6 +17,7 @@ import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.NeptuneIdentifiedObject;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -201,7 +203,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 				prepareCheckPoint(context,STOP_AREA_4);
 				// 2-NEPTUNE-StopArea-4 : if stoparea is quay or
 				// boardingPosition : check if it refers only StopPoints
-				for (StopPoint child : stopArea.getContainedStopPoints()) 
+				for (StopPoint child : stopArea.getContainedScheduledStopPoints().stream().map(ScheduledStopPoint::getStopPoints).flatMap(List::stream).collect(Collectors.toList()))
 				{
 					if (localContext.containsKey(child.getObjectId()))
 					{

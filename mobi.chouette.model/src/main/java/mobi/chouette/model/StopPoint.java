@@ -17,15 +17,16 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 /**
  * Chouette StopPoint : a StopPoint on a route
@@ -37,7 +38,7 @@ import mobi.chouette.model.type.BoardingPossibilityEnum;
 @Entity
 @Table(name = "stop_points")
 @NoArgsConstructor
-@ToString(callSuper=true, exclude = { "route" })
+@ToString(callSuper = true, exclude = {"route"})
 public class StopPoint extends NeptuneIdentifiedObject {
 
 	private static final long serialVersionUID = -4913573673645997423L;
@@ -64,86 +65,35 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	@Setter
 	@Column(name = "position")
 	private Integer position;
-
-	   /**
-	    * boarding possibility
-	    *
-	    * @param forBoarding
-	    *           New value
-	    * @return The actual value
-	    *
-	    * @since 2.5.2
-	    */
-	   @Getter
-	   @Setter
-	   @Enumerated(EnumType.STRING)
-	   @Column(name = "for_boarding")
-	   private BoardingPossibilityEnum forBoarding;
-
-	   /**
-	    * alighting possibility
-	    *
-	    * @param forAlighting
-	    *           New value
-	    * @return The actual value
-	    *
-	    * @since 2.5.2
-	    */
-	   @Getter
-	   @Setter
-	   @Enumerated(EnumType.STRING)
-	   @Column(name = "for_alighting")
-	   private AlightingPossibilityEnum forAlighting;
-
-
-	@Getter
-	@Column(name = "stop_area_objectid_key")
-	private String containedInStopAreaObjectId;
-
 	/**
-	 * stop area container
+	 * boarding possibility
 	 *
+	 * @param forBoarding
+	 *           New value
 	 * @return The actual value
+	 *
+	 * @since 2.5.2
 	 */
 	@Getter
-	@Transient
-	private StopArea containedInStopArea;
-
-
-	/**
-	 * set stop area
-	 *
-	 * @param stopArea
-	 */
-	public void setContainedInStopArea(StopArea stopArea) {
-		if (this.containedInStopArea != null) {
-			this.containedInStopArea.getContainedStopPoints().remove(this);
-		}
-		this.containedInStopArea = stopArea;
-		if (stopArea != null) {
-            stopArea.getContainedStopPoints().add(this);
-            containedInStopAreaObjectId = stopArea.getObjectId();
-        }
-	}
+	@Setter
+	@Enumerated(EnumType.STRING)
+	@Column(name = "for_boarding")
+	private BoardingPossibilityEnum forBoarding;
 
 	/**
-	 * ORM only setter for establishing stop area relation without loading lazy collections.
+	 * alighting possibility
 	 *
-	 * NB! Do not use except when loading objects.
+	 * @param forAlighting
+	 *           New value
+	 * @return The actual value
+	 *
+	 * @since 2.5.2
 	 */
-	@Transient
-	public void setContainedInStopAreaORMOnly(StopArea stopArea){
-		this.containedInStopArea = stopArea;
-		if (stopArea != null) {
-			containedInStopAreaObjectId = stopArea.getObjectId();
-		}
-	}
-
-	public StopArea getContainedInStopAreaORMOnly(){
-		return this.containedInStopArea;
-	}
-
-
+	@Getter
+	@Setter
+	@Enumerated(EnumType.STRING)
+	@Column(name = "for_alighting")
+	private AlightingPossibilityEnum forAlighting;
 	/**
 	 * route
 	 *
@@ -153,6 +103,34 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "route_id")
 	private Route route;
+
+	/**
+	 * scheduled stop point
+	 *
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "scheduled_stop_point_id")
+	private ScheduledStopPoint scheduledStopPoint;
+
+
+	/**
+	 * set ScheduledStopPoint
+	 *
+	 * @param scheduledStopPoint
+	 */
+	public void setScheduledStopPoint(ScheduledStopPoint scheduledStopPoint) {
+		if (this.scheduledStopPoint != null) {
+			this.scheduledStopPoint.getStopPoints().remove(this);
+		}
+		this.scheduledStopPoint = scheduledStopPoint;
+		if (scheduledStopPoint != null) {
+			scheduledStopPoint.getStopPoints().add(this);
+		}
+	}
+
 
 	/**
 	 * set route
@@ -179,33 +157,13 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	@Setter
 	@Transient
 	private String comment;
-	
-	/**
-	 * list of interchanges where this stop point participates as the feeder
-	 * 
-	 */
-	@Getter
-	@Setter
-	@OneToMany(mappedBy = "feederStopPoint", cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch = FetchType.LAZY)
-	private List<Interchange> feederInterchanges = new ArrayList<>(0);
-
-
-	/**
-	 * list of interchanges where this stop point participates as the consumer
-	 * 
-	 */
-	@Getter
-	@Setter
-	@OneToMany(mappedBy = "consumerStopPoint", cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch = FetchType.LAZY)
-	private List<Interchange> consumerInterchanges = new ArrayList<>(0);
-
 
 
 	/**
 	 * current destination display for this stop point
 	 *
 	 * @param destinationDisplay
-	 *            New value
+	 * New value
 	 * @return The actual value
 	 */
 	@Getter

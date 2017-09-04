@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.ejb.EJB;
+import javax.ejb.Schedule;
 import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -29,6 +30,7 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
@@ -190,8 +192,8 @@ public class TransferExporterCommandTest extends Arquillian implements mobi.chou
 					for (StopPoint point : jp.getStopPoints()) {
 
 						numStopPoints++;
-						Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
-						bps.add(point.getContainedInStopArea());
+						Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopArea(), "stoppoints must have StopAreas");
+						bps.add(point.getScheduledStopPoint().getContainedInStopArea());
 
 					}
 					Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0,
@@ -240,7 +242,9 @@ public class TransferExporterCommandTest extends Arquillian implements mobi.chou
 		stop1.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 
 		StopPoint stopPoint1 = ObjectFactory.getStopPoint(referential, "TST:StopPoint:1");
-		stopPoint1.setContainedInStopArea(stop1);
+		ScheduledStopPoint scheduledStopPoint1 = ObjectFactory.getScheduledStopPoint(referential, "TST:ScheduledStopPoint:1");
+		stopPoint1.setScheduledStopPoint(scheduledStopPoint1);
+		stopPoint1.getScheduledStopPoint().setContainedInStopArea(stop1);
 		stopPoint1.setRoute(r);
 		jp.addStopPoint(stopPoint1);
 		jp.setDepartureStopPoint(stopPoint1);
@@ -251,7 +255,9 @@ public class TransferExporterCommandTest extends Arquillian implements mobi.chou
 		stop2.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 
 		StopPoint stopPoint2 = ObjectFactory.getStopPoint(referential, "TST:StopPoint:2");
-		stopPoint2.setContainedInStopArea(stop2);
+		ScheduledStopPoint scheduledStopPoint2= ObjectFactory.getScheduledStopPoint(referential, "TST:ScheduledStopPoint:2");
+		stopPoint2.setScheduledStopPoint(scheduledStopPoint2);
+		stopPoint2.getScheduledStopPoint().setContainedInStopArea(stop2);
 		stopPoint2.setRoute(r);
 		jp.addStopPoint(stopPoint2);
 		jp.setArrivalStopPoint(stopPoint2);

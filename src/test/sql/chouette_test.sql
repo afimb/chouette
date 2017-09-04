@@ -1133,6 +1133,31 @@ CREATE TABLE public.stop_areas_stop_areas (
 
 ALTER TABLE public.stop_areas_stop_areas OWNER TO chouette;
 
+
+
+CREATE TABLE scheduled_stop_points (
+    id bigint NOT NULL,
+    name character varying(255),
+    stop_area_objectid_key CHARACTER VARYING(256),
+    objectid character varying(255) NOT NULL,
+    object_version integer,
+    creation_time timestamp without time zone,
+    creator_id character varying(255)
+);
+
+
+ALTER TABLE chouette_gui.scheduled_stop_points OWNER TO chouette;
+
+CREATE SEQUENCE scheduled_stop_points_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE chouette_gui.scheduled_stop_points_id_seq OWNER TO chouette;
+
 --
 -- TOC entry 219 (class 1259 OID 939028)
 -- Name: stop_points; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
@@ -1141,7 +1166,6 @@ ALTER TABLE public.stop_areas_stop_areas OWNER TO chouette;
 CREATE TABLE stop_points (
     id bigint NOT NULL,
     route_id bigint,
-    stop_area_objectid_key CHARACTER VARYING(256),
     destination_display_id bigint,
     objectid character varying(255) NOT NULL,
     object_version integer,
@@ -1149,7 +1173,8 @@ CREATE TABLE stop_points (
     creator_id character varying(255),
     "position" integer,
     for_boarding character varying(255),
-    for_alighting character varying(255)
+    for_alighting character varying(255),
+    scheduled_stop_point_id bigint
 );
 
 
@@ -1806,6 +1831,8 @@ ALTER TABLE ONLY public.stop_areas
 ALTER TABLE ONLY stop_points
     ADD CONSTRAINT stop_points_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY scheduled_stop_points
+    ADD CONSTRAINT scheduled_stop_points_pkey PRIMARY KEY (id);
 
 
 --
@@ -2104,6 +2131,7 @@ CREATE UNIQUE INDEX stop_areas_objectid_key ON public.stop_areas USING btree (ob
 
 CREATE UNIQUE INDEX stop_points_objectid_key ON stop_points USING btree (objectid);
 
+CREATE UNIQUE INDEX scheduled_stop_points_objectid_key ON scheduled_stop_points USING btree (objectid);
 
 --
 -- TOC entry 4067 (class 1259 OID 939896)
@@ -2329,6 +2357,8 @@ ALTER TABLE ONLY public.stop_areas_stop_areas
 ALTER TABLE ONLY stop_points
     ADD CONSTRAINT stoppoint_route_fkey FOREIGN KEY (route_id) REFERENCES routes(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY stop_points
+    ADD CONSTRAINT stoppoint_scheduled_stop_fkey FOREIGN KEY (scheduled_stop_point_id) REFERENCES scheduled_stop_points(id);
 
 --
 -- TOC entry 4121 (class 2606 OID 940086)

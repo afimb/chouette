@@ -12,6 +12,7 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.RouteSection;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timeband;
@@ -197,6 +198,21 @@ public class ObjectFactory {
 			result.setObjectId(objectId);
 			result.setDetached(true);
 			referential.getStopPoints().put(objectId, result);
+		}
+		return result;
+	}
+
+	public static ScheduledStopPoint getScheduledStopPoint(Referential referential,
+														   String objectId) {
+		ScheduledStopPoint result = referential.getSharedScheduledStopPoints().get(objectId);
+		if (result == null) {
+			result = new ScheduledStopPoint();
+			result.setObjectId(objectId);
+			result.setDetached(true);
+			referential.getSharedScheduledStopPoints().put(objectId, result);
+		}
+		if (!referential.getScheduledStopPoints().containsKey(objectId)) {
+			referential.getScheduledStopPoints().put(objectId, result);
 		}
 		return result;
 	}

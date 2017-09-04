@@ -203,8 +203,8 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 				for (StopPoint point : jp.getStopPoints()) {
 
 					numStopPoints++;
-					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
-					bps.add(point.getContainedInStopArea());
+					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopArea(), "stoppoints must have StopAreas");
+					bps.add(point.getScheduledStopPoint().getContainedInStopArea());
 
 					Assert.assertNotNull(point.getForAlighting(), "no alighting info StopPoint=" + point);
 					Assert.assertNotNull(point.getForBoarding(), "no boarding info StopPoint=" + point);
@@ -411,8 +411,8 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 				for (StopPoint point : jp.getStopPoints()) {
 
 					numStopPoints++;
-					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
-					bps.add(point.getContainedInStopArea());
+					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopArea(), "stoppoints must have StopAreas");
+					bps.add(point.getScheduledStopPoint().getContainedInStopArea());
 
 				}
 				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0, " journeyPattern should have VehicleJourneys");
@@ -423,8 +423,8 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 					numVehicleJourneys++;
 				}
 				for (StopPoint point : route.getStopPoints()) {
-					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
-					bps.add(point.getContainedInStopArea());
+					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopArea(), "stoppoints must have StopAreas");
+					bps.add(point.getScheduledStopPoint().getContainedInStopArea());
 				}
 				numJourneyPatterns++;
 			}
@@ -493,7 +493,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 
 		StopPoint departureStopPoint = journeyPattern.getDepartureStopPoint();
 
-		StopArea containedInStopArea = departureStopPoint.getContainedInStopArea();
+		StopArea containedInStopArea = departureStopPoint.getScheduledStopPoint().getContainedInStopArea();
 		Assert.assertNotNull(containedInStopArea, "No stop area on stop point");
 		assertEquals(containedInStopArea.getAreaType(), ChouetteAreaEnum.BoardingPosition);
 		StopArea parent = containedInStopArea.getParent();
@@ -612,7 +612,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 				numVehicleJourneys += jp.getVehicleJourneys().size();
 
 				for (StopPoint p : jp.getStopPoints()) {
-					StopArea stopArea = p.getContainedInStopArea();
+					StopArea stopArea = p.getScheduledStopPoint().getContainedInStopArea();
 
 					Assert.assertEquals(stopArea.getAreaType(), ChouetteAreaEnum.BoardingPosition, "stoppoint does not refer to boarding position");
 					boardingPositions.add(stopArea);

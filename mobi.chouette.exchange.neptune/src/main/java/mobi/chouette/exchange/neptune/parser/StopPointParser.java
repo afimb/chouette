@@ -12,10 +12,12 @@ import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.exchange.neptune.validation.StopPointValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -59,7 +61,10 @@ public class StopPointParser implements Parser, Constant, JsonExtension {
 				String containedIn = ParserUtils.getText(xpp.nextText());
 				validator.addContainedIn(context, objectId, containedIn);
 				StopArea stopArea = ObjectFactory.getStopArea(referential, containedIn);
-				stopPoint.setContainedInStopArea(stopArea);
+				String scheduledStopPointId = stopPoint.getObjectId().replace(ObjectIdTypes.STOPPOINT_KEY, ObjectIdTypes.SCHEDULED_STOP_POINT_KEY);
+				ScheduledStopPoint scheduledStopPoint = ObjectFactory.getScheduledStopPoint(referential, scheduledStopPointId);
+				stopPoint.setScheduledStopPoint(scheduledStopPoint);
+				scheduledStopPoint.setContainedInStopArea(stopArea);
 			} else if (xpp.getName().equals("lineIdShortcut")) {
 				String lineIdShortcut = ParserUtils.getText(xpp.nextText());
 				validator.addLineIdShortcut(context, objectId, lineIdShortcut);

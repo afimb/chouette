@@ -10,9 +10,10 @@ import java.util.List;
 import javax.enterprise.inject.spi.CDI;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.dao.ScheduledStopPointDAO;
 import mobi.chouette.dao.StopPointDAO;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
-import mobi.chouette.model.StopPoint;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.hibernate.EmptyInterceptor;
@@ -25,7 +26,7 @@ import org.hibernate.type.Type;
 public class StopAreaRelationInterceptor extends EmptyInterceptor {
 
 
-    private StopPointDAO stopPointDAO;
+    private ScheduledStopPointDAO scheduledStopPointDAO;
 
     private static final String STOP_AREA_OBJECT_ID_PROPERTY = "objectId";
 
@@ -41,9 +42,9 @@ public class StopAreaRelationInterceptor extends EmptyInterceptor {
 
             String stopAreaObjectId = getProperty(STOP_AREA_OBJECT_ID_PROPERTY, propertyNames, state);
 
-            List<StopPoint> containedStopPointsProxy = (List<StopPoint>) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{List.class}, new LazyLoadContainedStopPointsInvocationHandler(stopAreaObjectId));
+            List<ScheduledStopPoint> containedScheduledStopPointsProxy = (List<ScheduledStopPoint>) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{List.class}, new LazyLoadContainedScheduledStopPointsInvocationHandler(stopAreaObjectId));
 
-            stopArea.setContainedStopPoints(containedStopPointsProxy);
+            stopArea.setContainedScheduledStopPoints(containedScheduledStopPointsProxy);
         }
 
         return super.onLoad(entity, id, state, propertyNames, types);
@@ -65,18 +66,18 @@ public class StopAreaRelationInterceptor extends EmptyInterceptor {
 
 
     private void init() {
-        if (stopPointDAO == null) {
-            stopPointDAO = CDI.current().select(StopPointDAO.class).get();
+        if (scheduledStopPointDAO == null) {
+            scheduledStopPointDAO = CDI.current().select(ScheduledStopPointDAO.class).get();
         }
     }
 
-    private class LazyLoadContainedStopPointsInvocationHandler implements InvocationHandler {
+    private class LazyLoadContainedScheduledStopPointsInvocationHandler implements InvocationHandler {
 
         private String stopAreaObjectId;
 
-        private List<StopPoint> target;
+        private List<ScheduledStopPoint> target;
 
-        public LazyLoadContainedStopPointsInvocationHandler(String stopAreaObjectId) {
+        public LazyLoadContainedScheduledStopPointsInvocationHandler(String stopAreaObjectId) {
             this.stopAreaObjectId = stopAreaObjectId;
         }
 
@@ -95,10 +96,10 @@ public class StopAreaRelationInterceptor extends EmptyInterceptor {
         private synchronized void setTarget() {
             if (target == null) {
                 if (ContextHolder.getContext() != null) {
-                    log.debug("Lazy loading stop points for stop area: " + stopAreaObjectId);
-                    target = stopPointDAO.getStopPointsContainedInStopArea(stopAreaObjectId);
+                    log.debug("Lazy loading scheduled stop points for stop area: " + stopAreaObjectId);
+                    target = scheduledStopPointDAO.getScheduledStopPointsContainedInStopArea(stopAreaObjectId);
                 } else {
-                    log.debug("Initialize empty stop point list for stop area outside context: " + stopAreaObjectId);
+                    log.debug("Initialize empty scheduled stop point list for stop area outside context: " + stopAreaObjectId);
                     target = new ArrayList<>();
                 }
             }

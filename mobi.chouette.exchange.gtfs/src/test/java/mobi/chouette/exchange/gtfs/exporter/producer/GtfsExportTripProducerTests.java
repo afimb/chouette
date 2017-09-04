@@ -12,10 +12,12 @@ import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
+import mobi.chouette.model.util.ObjectIdTypes;
 
 import org.joda.time.LocalTime;
 import org.testng.Assert;
@@ -329,7 +331,11 @@ private VehicleJourney buildNeptuneObject(boolean full)
          StopArea sa = new StopArea();
          sp.setObjectId("GTFS:StopPoint:SP"+i);
          sa.setObjectId("GTFS:StopPoint:SA"+i);
-         sp.setContainedInStopArea(sa);
+
+         ScheduledStopPoint scheduledStopPoint = new ScheduledStopPoint();
+         scheduledStopPoint.setObjectId("GTFS:" + ObjectIdTypes.SCHEDULED_STOP_POINT_KEY + ":SSP" + i);
+         scheduledStopPoint.setContainedInStopArea(sa);
+         sp.setScheduledStopPoint(scheduledStopPoint);
          VehicleJourneyAtStop vjas = new VehicleJourneyAtStop();
          vjas.setStopPoint(sp);
          vjas.setArrivalDayOffset(current_arrival_offset);

@@ -24,6 +24,7 @@ import mobi.chouette.exchange.validator.DummyChecker;
 import mobi.chouette.exchange.validator.JobDataTest;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.TransportModeNameEnum;
@@ -232,7 +233,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Line line1 = beans.get(0);
 
 		Route route1 = line1.getRoutes().get(0);
-		route1.getStopPoints().get(1).setContainedInStopArea(route1.getStopPoints().get(0).getContainedInStopArea());
+		route1.getStopPoints().get(1).getScheduledStopPoint().setContainedInStopArea(route1.getStopPoints().get(0).getScheduledStopPoint().getContainedInStopArea());
 
 		ValidationData data = new ValidationData();
 		context.put(VALIDATION_DATA, data);
@@ -293,8 +294,8 @@ public class ValidationRoutes extends AbstractTestValidation {
 			route2.setOppositeRoute(route1);
 		}
 
-		StopArea area1 = route1.getStopPoints().get(1).getContainedInStopArea().getParent();
-		StopArea area0 = route1.getStopPoints().get(0).getContainedInStopArea();
+		StopArea area1 = route1.getStopPoints().get(1).getScheduledStopPoint().getContainedInStopArea().getParent();
+		StopArea area0 = route1.getStopPoints().get(0).getScheduledStopPoint().getContainedInStopArea();
 		area0.setParent(area1);
 
 		ValidationData data = new ValidationData();
@@ -360,11 +361,11 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Route route1 = line1.getRoutes().get(0);
 		Route route2 = line1.getRoutes().get(1);
 
-		StopArea area0 = route1.getStopPoints().get(0).getContainedInStopArea();
+		StopArea area0 = route1.getStopPoints().get(0).getScheduledStopPoint().getContainedInStopArea();
 		double distanceMin = 10000000;
 		double distanceMax = 0;
 		for (int i = 1; i < route1.getStopPoints().size(); i++) {
-			StopArea area1 = route1.getStopPoints().get(i).getContainedInStopArea();
+			StopArea area1 = route1.getStopPoints().get(i).getScheduledStopPoint().getContainedInStopArea();
 			double distance = distance(area0, area1);
 			if (distance > distanceMax)
 				distanceMax = distance;
@@ -372,9 +373,9 @@ public class ValidationRoutes extends AbstractTestValidation {
 				distanceMin = distance;
 			area0 = area1;
 		}
-		area0 = route2.getStopPoints().get(0).getContainedInStopArea();
+		area0 = route2.getStopPoints().get(0).getScheduledStopPoint().getContainedInStopArea();
 		for (int i = 1; i < route2.getStopPoints().size(); i++) {
-			StopArea area1 = route2.getStopPoints().get(i).getContainedInStopArea();
+			StopArea area1 = route2.getStopPoints().get(i).getScheduledStopPoint().getContainedInStopArea();
 			double distance = distance(area0, area1);
 			if (distance > distanceMax)
 				distanceMax = distance;
@@ -456,7 +457,11 @@ public class ValidationRoutes extends AbstractTestValidation {
 			StopPoint pointCopy = new StopPoint();
 			pointCopy.setPosition(point.getPosition());
 			pointCopy.setObjectId("NINOXE:StopPoint:copy" + point.getPosition());
-			pointCopy.setContainedInStopArea(point.getContainedInStopArea());
+
+			ScheduledStopPoint printScheduledStopPoint=new ScheduledStopPoint();
+			printScheduledStopPoint.setObjectId("NINOXE:ScheduledStopPoint:copy" + point.getPosition());
+			printScheduledStopPoint.setContainedInStopArea(point.getScheduledStopPoint().getContainedInStopArea());
+			pointCopy.setScheduledStopPoint(printScheduledStopPoint);
 			pointCopy.setRoute(route2);
 		}
 

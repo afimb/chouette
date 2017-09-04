@@ -6,11 +6,13 @@ import javax.ejb.Stateless;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.DestinationDisplayDAO;
+import mobi.chouette.dao.ScheduledStopPointDAO;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.DestinationDisplay;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.NeptuneUtil;
@@ -24,14 +26,14 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	public static final String BEAN_NAME = "StopPointUpdater";
 
 	@EJB
-	private StopAreaDAO stopAreaDAO;
+	private ScheduledStopPointDAO scheduledStopPointDAO;
 
 	@EJB
 	private DestinationDisplayDAO destinationDisplayDAO;
 
-	@EJB(beanName = StopAreaUpdater.BEAN_NAME)
-	private Updater<StopArea> stopAreaUpdater;
-	
+	@EJB(beanName = ScheduledStopPointUpdater.BEAN_NAME)
+	private Updater<ScheduledStopPoint> scheduledStopPointUpdater;
+
 	@EJB(beanName = DestinationDisplayUpdater.BEAN_NAME)
 	private Updater<DestinationDisplay> destinationDisplayUpdater;
 	
@@ -52,7 +54,6 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		// Database test init
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		validationReporter.addItemToValidationReport(context, DATABASE_STOP_POINT_2, "E");
-		validationReporter.addItemToValidationReport(context, DATABASE_STOP_POINT_3, "W");
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		
 		if (oldValue.isDetached()) {
@@ -67,7 +68,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 			oldValue.setDetached(false);
 		} else {
 			twoDatabaseStopPointTwoTest(validationReporter, context, oldValue, newValue, data);
-			twoDatabaseStopPointThreeTest(validationReporter, context, oldValue.getContainedInStopArea(), newValue.getContainedInStopArea(), data);
+
 			if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
 				oldValue.setObjectId(newValue.getObjectId());
 			}
@@ -91,30 +92,21 @@ public class StopPointUpdater implements Updater<StopPoint> {
 			}
 		}
 
-		// StopArea
-		
-		if (newValue.getContainedInStopArea() == null) {
-			oldValue.setContainedInStopArea(null);
-		} else {
-			String objectId = newValue.getContainedInStopArea().getObjectId();
-			StopArea stopArea = cache.getStopAreas().get(objectId);
-			if (stopArea == null) {
-				stopArea = stopAreaDAO.findByObjectId(objectId);
-				if (stopArea != null) {
-					cache.getStopAreas().put(objectId, stopArea);
-				}
+		String scheduledStopPointId = newValue.getScheduledStopPoint().getObjectId();
+		ScheduledStopPoint scheduledStopPoint = cache.getScheduledStopPoints().get(scheduledStopPointId);
+		if (scheduledStopPoint==null) {
+			scheduledStopPoint = scheduledStopPointDAO.findByObjectId(scheduledStopPointId);
+			if (scheduledStopPoint != null) {
+				cache.getScheduledStopPoints().put(scheduledStopPointId, scheduledStopPoint);
 			}
-
-			if (stopArea == null) {
-				stopArea = ObjectFactory.getStopArea(cache, objectId);
-			}
-			
-			oldValue.setContainedInStopArea(stopArea);
-
-			if (!context.containsKey(AREA_BLOC))
-			   stopAreaUpdater.update(context, oldValue.getContainedInStopArea(), newValue.getContainedInStopArea());
 		}
-		
+		if (scheduledStopPoint == null) {
+			scheduledStopPoint = ObjectFactory.getScheduledStopPoint(cache, scheduledStopPointId);
+		}
+		oldValue.setScheduledStopPoint(scheduledStopPoint);
+
+		scheduledStopPointUpdater.update(context, oldValue.getScheduledStopPoint(), newValue.getScheduledStopPoint());
+
 		// Destination display
 		if (newValue.getDestinationDisplay() == null) {
 			oldValue.setDestinationDisplay(null);
@@ -160,36 +152,5 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		}
 	}
 	
-	
-	/**
-	 * Test 2-DATABASE-StopPoint-3
-	 * @param validationReporter
-	 * @param context
-	 * @param oldSp
-	 * @param newSp
-	 */
-	private void twoDatabaseStopPointThreeTest(ValidationReporter validationReporter, Context context, StopArea oldSA, StopArea newSA, ValidationData data) {
-		if(!NeptuneUtil.sameValue(oldSA, newSA)) {
-			if(validationReporter == null) {
-				log.error("ValidationReporter (validationReporter) is null");
-			}
-			if(oldSA == null) {
-				log.warn("StopArea (oldSA) is null");
-			}
-			if(newSA == null) {
-				log.warn("StopArea (newSA) is null");
-			}
-			if(data == null) {
-				log.error("ValidationData (data) is null");
-			} else if(data.getDataLocations() == null) {
-				log.error("ValidationData.getDataLocations() is null");
-			}
 
-			if(validationReporter != null && newSA != null && data != null && data.getDataLocations() != null) {
-				validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_3, data.getDataLocations().get(newSA.getObjectId()));
-			}
-		}
-		else
-			validationReporter.reportSuccess(context, DATABASE_STOP_POINT_3);
-	}
 }

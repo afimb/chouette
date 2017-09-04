@@ -46,7 +46,7 @@ import java.util.List;
 @NoArgsConstructor
 @ToString(callSuper = true, exclude = { "accessLinks", "accessPoints",
 		"connectionEndLinks", "connectionStartLinks", "containedStopAreas",
-		"containedStopPoints", "routingConstraintAreas", "routingConstraintLines" })
+		"containedScheduledStopPoints", "routingConstraintAreas", "routingConstraintLines" })
 public class StopArea extends NeptuneLocalizedObject {
 	private static final long serialVersionUID = 4548672479038099240L;
 
@@ -449,14 +449,14 @@ public class StopArea extends NeptuneLocalizedObject {
 	 * stop points children<br/>
 	 * only for areaType = BoardingPosition and Quay
 	 * 
-	 * @param containedStopPoints
+	 * @param containedScheduledStopPoints
 	 *            New value
 	 * @return The actual value
 	 */
 	@Getter
 	@Setter
 	@Transient
-	private List<StopPoint> containedStopPoints = new ArrayList<StopPoint>(0);
+	private List<ScheduledStopPoint> containedScheduledStopPoints = new ArrayList<>(0);
 
 	/**
 	 * access links<br/>
@@ -596,18 +596,18 @@ public class StopArea extends NeptuneLocalizedObject {
 	// * @param containedStopPoint
 	// */
 	// public void addContainedStopPoint(StopPoint containedStopPoint) {
-	// if (containedStopPoints == null)
-	// containedStopPoints = new ArrayList<StopPoint>();
+	// if (containedScheduledStopPoints == null)
+	// containedScheduledStopPoints = new ArrayList<StopPoint>();
 	// if (!areaType.equals(ChouetteAreaEnum.BoardingPosition)
 	// && !areaType.equals(ChouetteAreaEnum.Quay)) {
 	// // only boarding positions and quays can contains stop points
 	// throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-	// areaType.toString(), STOPPOINT_KEY, "containedStopPoints");
+	// areaType.toString(), STOPPOINT_KEY, "containedScheduledStopPoints");
 	// }
 	// if (containedStopPoint == null
-	// || containedStopPoints.contains(containedStopPoint))
+	// || containedScheduledStopPoints.contains(containedStopPoint))
 	// return;
-	// containedStopPoints.add(containedStopPoint);
+	// containedScheduledStopPoints.add(containedStopPoint);
 	// containedStopPoint.setContainedInStopArea(this);
 	// }
 
@@ -617,10 +617,10 @@ public class StopArea extends NeptuneLocalizedObject {
 	// * @param containedStopPoint
 	// */
 	// public void removeContainedStopPoint(StopPoint containedStopPoint) {
-	// if (containedStopPoints == null)
-	// containedStopPoints = new ArrayList<StopPoint>();
-	// if (containedStopPoints.contains(containedStopPoint))
-	// containedStopPoints.remove(containedStopPoint);
+	// if (containedScheduledStopPoints == null)
+	// containedScheduledStopPoints = new ArrayList<StopPoint>();
+	// if (containedScheduledStopPoints.contains(containedStopPoint))
+	// containedScheduledStopPoints.remove(containedStopPoint);
 	// }
 
 	// /**

@@ -10,6 +10,7 @@ import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import static mobi.chouette.model.type.TransportModeNameEnum.*;
@@ -58,7 +59,9 @@ public class JourneyPatternCheckPointsTest {
 
 		JourneyPattern jp = new JourneyPattern();
 		StopPoint sp = new StopPoint();
-		sp.setContainedInStopArea(sa);
+		ScheduledStopPoint ssp=new ScheduledStopPoint();
+		sp.setScheduledStopPoint(ssp);
+		ssp.setContainedInStopArea(sa);
 		jp.getStopPoints().add(sp);
 		
 		Route r = new Route();

@@ -13,6 +13,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
@@ -119,7 +120,10 @@ public class RouteParser implements Parser, Constant {
 					stopPointId);
 			StopArea stopArea = ObjectFactory.getStopArea(referential,
 					stopAreaId);
-			stopPoint.setContainedInStopArea(stopArea);
+			ScheduledStopPoint scheduledStopPoint= ObjectFactory.getScheduledStopPoint(referential, stopPointId);
+
+			stopPoint.setScheduledStopPoint(scheduledStopPoint);
+			scheduledStopPoint.setContainedInStopArea(stopArea);
 		}
 
 		log.debug("[DSU] " + "PassengerStopAssignment" + "\t" + id);

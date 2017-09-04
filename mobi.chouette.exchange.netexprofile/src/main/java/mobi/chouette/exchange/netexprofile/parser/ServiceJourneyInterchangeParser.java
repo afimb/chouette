@@ -73,15 +73,10 @@ public class ServiceJourneyInterchangeParser implements Parser, Constant {
 				interchange.setFeederVisitNumber(ConversionUtil.asInteger(netexInterchange.getFromVisitNumber()));
 				String feederScheduledStopPointObjectId = netexInterchange.getFromPointRef().getRef();
 				if (feederVehicleJourney != null && feederVehicleJourney.getRoute().getLine().equals(consumerVehicleJourney.getRoute().getLine())) { // Within
-																																						// same
-																																						// line
-					String feederStopPointInJourneyPatternId = findStopPointInJourneyPatternForScheduledStopPoint(context, feederScheduledStopPointObjectId,
-							interchange.getFeederVisitNumber());
-					if (feederStopPointInJourneyPatternId != null) {
-						interchange.setFeederStopPointObjectid(feederStopPointInJourneyPatternId);
-					} else {
-						interchange.setFeederStopPointObjectid(feederScheduledStopPointObjectId);
-					}
+					// same
+					// line
+					interchange.setFeederStopPointObjectid(feederScheduledStopPointObjectId);
+
 				} else {
 					log.error("Interchange is broken across Lines as there is no concept of ScheduledStopPoint implemented yet");
 					interchange.setFeederStopPointObjectid(feederScheduledStopPointObjectId);
@@ -89,41 +84,12 @@ public class ServiceJourneyInterchangeParser implements Parser, Constant {
 
 				interchange.setConsumerVisitNumber(ConversionUtil.asInteger(netexInterchange.getToVisitNumber()));
 				String consumerScheduledStopPointObjectId = netexInterchange.getToPointRef().getRef();
-				String consumerStopPointInJourneyPatternId = findStopPointInJourneyPatternForScheduledStopPoint(context, consumerScheduledStopPointObjectId,
-						interchange.getConsumerVisitNumber());
-				if (consumerStopPointInJourneyPatternId != null) {
-					interchange.setConsumerStopPointObjectid(consumerStopPointInJourneyPatternId);
-				} else {
-					interchange.setConsumerStopPointObjectid(consumerScheduledStopPointObjectId);
-				}
+				interchange.setConsumerStopPointObjectid(consumerScheduledStopPointObjectId);
 
 			}
 		}
 	}
 
-	private String findStopPointInJourneyPatternForScheduledStopPoint(Context context, String scheduledStopPointObjectId, Integer visitNumber) {
-		NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
-
-		// TODO need to add proper lookup for
-
-		int visitNo = visitNumber == null ? 1 : visitNumber;
-		int counter = 0;
-
-		Collection<StopPointInJourneyPattern> values = netexReferential.getStopPointsInJourneyPattern().values();
-
-		for (StopPointInJourneyPattern stp : values) {
-			String scheduledStopPointRef = stp.getScheduledStopPointRef().getValue().getRef();
-			if (scheduledStopPointRef.equals(scheduledStopPointObjectId)) {
-				counter++;
-				if (counter == visitNo) {
-					return stp.getId();
-				}
-			}
-		}
-
-		return null;
-
-	}
 
 	static {
 		ParserFactory.register(ServiceJourneyInterchangeParser.class.getName(), new ParserFactory() {

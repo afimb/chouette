@@ -200,7 +200,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 				StopArea previousLocation = null;
 				for(StopPoint stop: jp.getStopPoints()) {
 					// find nearest segment and project point on it
-					StopArea location = stop.getContainedInStopArea();
+					StopArea location = stop.getScheduledStopPoint().getContainedInStopArea();
 					if( previousLocation != null) {
 						cpt ++;
 						RouteSection section = new RouteSection();

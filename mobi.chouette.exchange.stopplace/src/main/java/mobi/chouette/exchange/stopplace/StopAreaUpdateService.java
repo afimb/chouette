@@ -17,8 +17,8 @@ import javax.ejb.TransactionAttributeType;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.ReferentialDAO;
+import mobi.chouette.dao.ScheduledStopPointDAO;
 import mobi.chouette.dao.StopAreaDAO;
-import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.exchange.importer.updater.StopAreaUpdater;
 import mobi.chouette.exchange.importer.updater.Updater;
 import mobi.chouette.model.StopArea;
@@ -44,7 +44,7 @@ public class StopAreaUpdateService {
 	private ReferentialDAO referentialDAO;
 
 	@EJB
-	private StopPointDAO stopPointDAO;
+	private ScheduledStopPointDAO scheduledStopPointDAO;
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void createOrUpdateStopAreas(Context context, StopAreaUpdateContext updateContext) {
@@ -70,7 +70,7 @@ public class StopAreaUpdateService {
 
 		for (String referential : referentials) {
 			ContextHolder.setContext(referential);
-			List<String> inUseBoardingPositionsForReferential = stopPointDAO.getAllStopAreaObjectIds();
+			List<String> inUseBoardingPositionsForReferential = scheduledStopPointDAO.getAllStopAreaObjectIds();
 			boardingPositionObjectIds.removeAll(inUseBoardingPositionsForReferential);
 			log.debug("Removed: " + inUseBoardingPositionsForReferential.size() + " in use boarding positions for referential: " +
 					referential + ". Potentially not used boarding positions left: " + boardingPositionObjectIds.size());
@@ -96,7 +96,7 @@ public class StopAreaUpdateService {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public int updateStopAreaReferences(Map<String, Set<String>> replacementMap) {
 		final AtomicInteger updatedStopPoints = new AtomicInteger();
-		replacementMap.forEach((newStopAreaId, oldStopAreaIds) -> updatedStopPoints.addAndGet(stopPointDAO.replaceContainedInStopAreaReferences(oldStopAreaIds, newStopAreaId)));
+		replacementMap.forEach((newStopAreaId, oldStopAreaIds) -> updatedStopPoints.addAndGet(scheduledStopPointDAO.replaceContainedInStopAreaReferences(oldStopAreaIds, newStopAreaId)));
 		return updatedStopPoints.get();
 	}
 

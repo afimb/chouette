@@ -148,9 +148,9 @@ public class Interchange extends NeptuneIdentifiedObject {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Access(AccessType.FIELD)
 	@JoinColumn(name = "to_point", referencedColumnName = "objectid", insertable = false, updatable = false)
-	private StopPoint consumerStopPoint;
+	private ScheduledStopPoint consumerStopPoint;
 
-	public void setConsumerStopPoint(StopPoint vj) {
+	public void setConsumerStopPoint(ScheduledStopPoint vj) {
 
 		if (vj != null) {
 			this.consumerStopPointObjectid = vj.getObjectId();
@@ -181,9 +181,9 @@ public class Interchange extends NeptuneIdentifiedObject {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "from_point", referencedColumnName = "objectid", insertable = false, updatable = false)
 	@Access(AccessType.FIELD)
-	private StopPoint feederStopPoint;
+	private ScheduledStopPoint feederStopPoint;
 
-	public void setFeederStopPoint(StopPoint vj) {
+	public void setFeederStopPoint(ScheduledStopPoint vj) {
 		if (vj != null) {
 			this.feederStopPointObjectid = vj.getObjectId();
 		} else {

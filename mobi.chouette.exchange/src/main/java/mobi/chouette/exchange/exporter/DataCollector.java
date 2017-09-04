@@ -120,8 +120,8 @@ public class DataCollector {
 					if (stopPoint == null)
 						continue; // protection from missing stopPoint ranks
 					collection.getStopPoints().add(stopPoint);
-					if (stopPoint.getContainedInStopArea()!=null)
-						collectStopAreas(collection, stopPoint.getContainedInStopArea(), skipNoCoordinate, followLinks);
+					if (stopPoint.getScheduledStopPoint().getContainedInStopArea()!=null)
+						collectStopAreas(collection, stopPoint.getScheduledStopPoint().getContainedInStopArea(), skipNoCoordinate, followLinks);
 				}
 			}
 		}// end route loop

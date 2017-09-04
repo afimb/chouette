@@ -228,8 +228,8 @@ public class RegtoppLineParser extends LineSpecificParser {
 
 		for(StopPoint lSp : left.getStopPoints()) {
 			for(StopPoint rSp : right.getStopPoints()) {
-				String lStopAreaId = lSp.getContainedInStopArea().getObjectId();
-				String rStopAreaId = rSp.getContainedInStopArea().getObjectId();
+				String lStopAreaId = lSp.getScheduledStopPoint().getContainedInStopArea().getObjectId();
+				String rStopAreaId = rSp.getScheduledStopPoint().getContainedInStopArea().getObjectId();
 				
 				if(lStopAreaId.equals(rStopAreaId)) {
 					rightToLeftStopPointMap.put(rSp.getObjectId(), lSp.getObjectId());
@@ -314,17 +314,17 @@ public class RegtoppLineParser extends LineSpecificParser {
 					Set<String> rightStopAreas = new HashSet<String>();
 
 					for (JourneyPattern jp : left.getJourneyPatterns()) {
-						departureStopAreas.add(jp.getDepartureStopPoint().getContainedInStopArea().getObjectId());
-						arrivalStopAreas.add(jp.getArrivalStopPoint().getContainedInStopArea().getObjectId());
+						departureStopAreas.add(jp.getDepartureStopPoint().getScheduledStopPoint().getContainedInStopArea().getObjectId());
+						arrivalStopAreas.add(jp.getArrivalStopPoint().getScheduledStopPoint().getContainedInStopArea().getObjectId());
 						for (StopPoint sp : jp.getStopPoints()) {
-							leftStopAreas.add(sp.getContainedInStopArea().getObjectId());
+							leftStopAreas.add(sp.getScheduledStopPoint().getContainedInStopArea().getObjectId());
 						}
 					}
 					for (JourneyPattern jp : right.getJourneyPatterns()) {
-						departureStopAreas.add(jp.getDepartureStopPoint().getContainedInStopArea().getObjectId());
-						arrivalStopAreas.add(jp.getArrivalStopPoint().getContainedInStopArea().getObjectId());
+						departureStopAreas.add(jp.getDepartureStopPoint().getScheduledStopPoint().getContainedInStopArea().getObjectId());
+						arrivalStopAreas.add(jp.getArrivalStopPoint().getScheduledStopPoint().getContainedInStopArea().getObjectId());
 						for (StopPoint sp : jp.getStopPoints()) {
-							rightStopAreas.add(sp.getContainedInStopArea().getObjectId());
+							rightStopAreas.add(sp.getScheduledStopPoint().getContainedInStopArea().getObjectId());
 						}
 					}
 
@@ -411,7 +411,7 @@ public class RegtoppLineParser extends LineSpecificParser {
 	private boolean isStopPointIdentical(StopPoint left, StopPoint right) {
 		boolean identical = false;
 
-		if (left.getContainedInStopArea().getObjectId().equals(right.getContainedInStopArea().getObjectId())
+		if (left.getScheduledStopPoint().getContainedInStopArea().getObjectId().equals(right.getScheduledStopPoint().getContainedInStopArea().getObjectId())
 				&& left.getForAlighting() == right.getForAlighting() && left.getForBoarding() == right.getForBoarding()
 				&& left.getPosition() == right.getPosition()) {
 			identical = true;

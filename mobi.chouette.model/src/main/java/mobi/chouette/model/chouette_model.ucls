@@ -771,7 +771,7 @@
     <bendpoint x="1555" y="699"/>    
     <bendpoint x="1555" y="1069"/>    
     <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="163" name="containedStopPoints">        
+      <attribute id="163" name="containedScheduledStopPoints">
         <position height="0" width="0" x="85" y="7"/>      
       </attribute>      
       <multiplicity id="164" minimum="0" maximum="2147483647">        

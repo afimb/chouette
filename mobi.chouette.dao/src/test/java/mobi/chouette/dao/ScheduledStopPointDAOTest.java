@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.ejb.EJB;
 
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.StopAreaImportModeEnum;
@@ -23,9 +24,9 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 
-public class StopPointDAOTest extends Arquillian {
+public class ScheduledStopPointDAOTest extends Arquillian {
     @EJB
-    StopPointDAO stopPointDAO;
+    ScheduledStopPointDAO scheduledStopPointDAO;
 
 
     @Deployment
@@ -50,6 +51,7 @@ public class StopPointDAOTest extends Arquillian {
     @Test
     public void testReplaceStopAreaReference() {
         ContextHolder.setContext("chouette_gui"); // set tenant schema
+        scheduledStopPointDAO.truncate();
 
         String oldStopAreaRef1 = "sa-old";
         StopArea stopAreaOld1 = new StopArea();
@@ -64,30 +66,31 @@ public class StopPointDAOTest extends Arquillian {
 
         String newStopAreaRef = "sa-new";
 
-        StopPoint sp1 = createStopPoint("sp1", stopAreaOld1);
-        StopPoint sp2 = createStopPoint("sp2", stopAreaOld1);
-        StopPoint sp3 = createStopPoint("sp3", stopAreaOld2);
-        StopPoint sp4 = createStopPoint("sp4", null);
+        ScheduledStopPoint sp1 = createScheduledStopPoint("sp1", stopAreaOld1);
+        ScheduledStopPoint sp2 = createScheduledStopPoint("sp2", stopAreaOld1);
+        ScheduledStopPoint sp3 = createScheduledStopPoint("sp3", stopAreaOld2);
+        ScheduledStopPoint sp4 = createScheduledStopPoint("sp4", null);
 
-        Assert.assertTrue(stopPointDAO.getStopPointsContainedInStopArea(oldStopAreaRef1).containsAll(Arrays.asList(sp1, sp2)));
-        Assert.assertTrue(stopPointDAO.getStopPointsContainedInStopArea(oldStopAreaRef2).containsAll(Arrays.asList(sp3)));
+        Assert.assertTrue(scheduledStopPointDAO.getScheduledStopPointsContainedInStopArea(oldStopAreaRef1).containsAll(Arrays.asList(sp1, sp2)));
+        Assert.assertTrue(scheduledStopPointDAO.getScheduledStopPointsContainedInStopArea(oldStopAreaRef2).containsAll(Arrays.asList(sp3)));
 
-        stopPointDAO.replaceContainedInStopAreaReferences(Sets.newHashSet(oldStopAreaRef1, oldStopAreaRef2), newStopAreaRef);
-        Assert.assertTrue(stopPointDAO.getStopPointsContainedInStopArea(oldStopAreaRef1).isEmpty());
-        Assert.assertTrue(stopPointDAO.getStopPointsContainedInStopArea(oldStopAreaRef2).isEmpty());
+        scheduledStopPointDAO.replaceContainedInStopAreaReferences(Sets.newHashSet(oldStopAreaRef1, oldStopAreaRef2), newStopAreaRef);
+        Assert.assertTrue(scheduledStopPointDAO.getScheduledStopPointsContainedInStopArea(oldStopAreaRef1).isEmpty());
+        Assert.assertTrue(scheduledStopPointDAO.getScheduledStopPointsContainedInStopArea(oldStopAreaRef2).isEmpty());
 
-        List<StopPoint> stopPointsForNewStopAreaRef = stopPointDAO.getStopPointsContainedInStopArea(newStopAreaRef);
-        Assert.assertEquals(stopPointsForNewStopAreaRef.size(), 3);
-        Assert.assertTrue(stopPointsForNewStopAreaRef.containsAll(Arrays.asList(sp1, sp2, sp3)));
+        List<ScheduledStopPoint> ScheduledStopPointsForNewStopAreaRef = scheduledStopPointDAO.getScheduledStopPointsContainedInStopArea(newStopAreaRef);
+        Assert.assertEquals(ScheduledStopPointsForNewStopAreaRef.size(), 3);
+        Assert.assertTrue(ScheduledStopPointsForNewStopAreaRef.containsAll(Arrays.asList(sp1, sp2, sp3)));
 
 
-        stopPointDAO.replaceContainedInStopAreaReferences(new HashSet<>(), "shouldNotFail");
-        stopPointDAO.replaceContainedInStopAreaReferences(null, "shouldNotFail");
+        scheduledStopPointDAO.replaceContainedInStopAreaReferences(new HashSet<>(), "shouldNotFail");
+        scheduledStopPointDAO.replaceContainedInStopAreaReferences(null, "shouldNotFail");
     }
 
     @Test
     public void testGetAllStopAreaObjectIds() {
         ContextHolder.setContext("chouette_gui"); // set tenant schema
+        scheduledStopPointDAO.truncate();
 
         String stopAreaRef1 = "sa";
         StopArea stopArea1 = new StopArea();
@@ -100,23 +103,23 @@ public class StopPointDAOTest extends Arquillian {
         stopArea2.setImportMode(StopAreaImportModeEnum.READ_ONLY);
         stopArea2.setObjectId(stopAreaRef2);
 
-        StopPoint sp1 = createStopPoint("sp1AllStopAreas", stopArea1);
-        StopPoint sp2 = createStopPoint("sp2AllStopAreas", stopArea1);
-        StopPoint sp3 = createStopPoint("sp3AllStopAreas", stopArea2);
-        StopPoint sp4 = createStopPoint("sp4AllStopAreas", null);
+        ScheduledStopPoint sp1 = createScheduledStopPoint("sp1AllStopAreas", stopArea1);
+        ScheduledStopPoint sp2 = createScheduledStopPoint("sp2AllStopAreas", stopArea1);
+        ScheduledStopPoint sp3 = createScheduledStopPoint("sp3AllStopAreas", stopArea2);
+        ScheduledStopPoint sp4 = createScheduledStopPoint("sp4AllStopAreas", null);
 
 
-        List<String> allStopAreaObjectIds = stopPointDAO.getAllStopAreaObjectIds();
+        List<String> allStopAreaObjectIds = scheduledStopPointDAO.getAllStopAreaObjectIds();
 
         Assert.assertEquals(new HashSet<>(allStopAreaObjectIds), Sets.newHashSet(stopAreaRef1, stopAreaRef2));
     }
 
 
-    private StopPoint createStopPoint(String id, StopArea stopArea) {
-        StopPoint sp = new StopPoint();
+    private ScheduledStopPoint createScheduledStopPoint(String id, StopArea stopArea) {
+        ScheduledStopPoint sp = new ScheduledStopPoint();
         sp.setObjectId(id);
         sp.setContainedInStopArea(stopArea);
-        stopPointDAO.create(sp);
+        scheduledStopPointDAO.create(sp);
         return sp;
     }
 

@@ -17,12 +17,14 @@ import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.validation.AreaCentroidValidator;
 import mobi.chouette.exchange.neptune.validation.StopAreaValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
 
 import com.google.common.collect.BiMap;
@@ -104,7 +106,10 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 							for (String childId : contains) {
 								StopPoint stopPoint = ObjectFactory
 										.getStopPoint(referential, childId);
-								stopPoint.setContainedInStopArea(stopArea);
+								String scheduledStopPointId = childId.replace(ObjectIdTypes.STOPPOINT_KEY, ObjectIdTypes.SCHEDULED_STOP_POINT_KEY);
+								ScheduledStopPoint scheduledStopPoint = ObjectFactory.getScheduledStopPoint(referential, scheduledStopPointId);
+								stopPoint.setScheduledStopPoint(scheduledStopPoint);
+								scheduledStopPoint.setContainedInStopArea(stopArea);
 							}
 						} else if (stopArea.getAreaType() == ChouetteAreaEnum.ITL) {
 							for (String childId : contains) {

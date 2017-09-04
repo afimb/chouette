@@ -186,7 +186,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		long maxDiffTime = parameters.getInterStopDurationMax();
 		List<VehicleJourneyAtStop> vjasList = vj.getVehicleJourneyAtStops();
 		for (VehicleJourneyAtStop vjas : vjasList) {
-			if (vjas.getStopPoint().getContainedInStopArea() == null)
+			if (vjas.getStopPoint().getScheduledStopPoint().getContainedInStopArea() == null)
 				continue;
 
 			long diffTime = Math.abs(diffTime(vjas.getArrivalTime(), vjas.getArrivalDayOffset(),
@@ -194,7 +194,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 			/** GJT */
 			if (diffTime > maxDiffTime) {
 				DataLocation location = buildLocation(context, vj);
-				DataLocation target = buildLocation(context, vjas.getStopPoint().getContainedInStopArea());
+				DataLocation target = buildLocation(context, vjas.getStopPoint().getScheduledStopPoint().getContainedInStopArea());
 				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 				reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_1, location, Long.toString(diffTime),
 						Long.toString(maxDiffTime), target);
@@ -206,7 +206,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 			 * spécifique à différence négative DataLocation location =
 			 * buildLocation(context,vj); DataLocation target =
 			 * buildLocation(context
-			 * ,vjas.getStopPoint().getContainedInStopArea());
+			 * ,vjas.getStopPoint().getScheduledStopPoint().getContainedInStopArea());
 			 * reporter.addCheckPointReportError(context,VEHICLE_JOURNEY_1,
 			 * location, Long.toString(diffTime), Long.toString(maxDiffTime),
 			 * target); }
@@ -251,14 +251,14 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 			VehicleJourneyAtStop vjas0 = vjasList.get(i - 1);
 			VehicleJourneyAtStop vjas1 = vjasList.get(i);
 
-			if (vjas0.getStopPoint().getContainedInStopArea() == null || vjas1.getStopPoint().getContainedInStopArea() == null) {
+			if (vjas0.getStopPoint().getScheduledStopPoint().getContainedInStopArea() == null || vjas1.getStopPoint().getScheduledStopPoint().getContainedInStopArea() == null) {
 				continue;
 			}
 
 			if(vjas0.getDepartureTime().equals(vjas1.getArrivalTime()) && vjas0.getDepartureDayOffset() == vjas1.getArrivalDayOffset()) {
 				DataLocation source = buildLocation(context, vj);
-				DataLocation target1 = buildLocation(context, vjas0.getStopPoint().getContainedInStopArea());
-				DataLocation target2 = buildLocation(context, vjas1.getStopPoint().getContainedInStopArea());
+				DataLocation target1 = buildLocation(context, vjas0.getStopPoint().getScheduledStopPoint().getContainedInStopArea());
+				DataLocation target2 = buildLocation(context, vjas1.getStopPoint().getScheduledStopPoint().getContainedInStopArea());
 
 				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 				reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, "4", source,
@@ -272,14 +272,14 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 				if (diffTime < 0) {
 					// chronologie inverse ou non définie
 					DataLocation source = buildLocation(context, vj);
-					DataLocation target1 = buildLocation(context, vjas0.getStopPoint().getContainedInStopArea());
-					DataLocation target2 = buildLocation(context, vjas1.getStopPoint().getContainedInStopArea());
+					DataLocation target1 = buildLocation(context, vjas0.getStopPoint().getScheduledStopPoint().getContainedInStopArea());
+					DataLocation target2 = buildLocation(context, vjas1.getStopPoint().getScheduledStopPoint().getContainedInStopArea());
 	
 					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, "1", source, null, null, target1, target2);
 				} else {
 					
-					double distance = getDistance(vjas0.getStopPoint().getContainedInStopArea(), vjas1.getStopPoint()
+					double distance = getDistance(vjas0.getStopPoint().getScheduledStopPoint().getContainedInStopArea(), vjas1.getStopPoint().getScheduledStopPoint()
 							.getContainedInStopArea());
 					if (distance < 1) {
 						// arrêts superposés, vitesse non calculable
@@ -290,8 +290,8 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 						if (speed < minSpeed) {
 							// trop lent
 							DataLocation source = buildLocation(context, vj);
-							DataLocation target1 = buildLocation(context, vjas0.getStopPoint().getContainedInStopArea());
-							DataLocation target2 = buildLocation(context, vjas1.getStopPoint().getContainedInStopArea());
+							DataLocation target1 = buildLocation(context, vjas0.getStopPoint().getScheduledStopPoint().getContainedInStopArea());
+							DataLocation target2 = buildLocation(context, vjas1.getStopPoint().getScheduledStopPoint().getContainedInStopArea());
 	
 							ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 							reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, "2", source,
@@ -299,8 +299,8 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 						} else if (speed > maxSpeed) {
 							// trop rapide
 							DataLocation source = buildLocation(context, vj);
-							DataLocation target1 = buildLocation(context, vjas0.getStopPoint().getContainedInStopArea());
-							DataLocation target2 = buildLocation(context, vjas1.getStopPoint().getContainedInStopArea());
+							DataLocation target1 = buildLocation(context, vjas0.getStopPoint().getScheduledStopPoint().getContainedInStopArea());
+							DataLocation target2 = buildLocation(context, vjas1.getStopPoint().getScheduledStopPoint().getContainedInStopArea());
 	
 							ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 							reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, "3", source,
@@ -385,8 +385,8 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 				if (Math.abs(duration - diffTimes.get(j-1)) > maxDuration) {
 
 					DataLocation source = buildLocation(context, vehicleJourney);
-					StopArea stopArea1 = vjas.get(j - 1).getStopPoint().getContainedInStopArea();
-					StopArea stopArea2 = vjas.get(j).getStopPoint().getContainedInStopArea();
+					StopArea stopArea1 = vjas.get(j - 1).getStopPoint().getScheduledStopPoint().getContainedInStopArea();
+					StopArea stopArea2 = vjas.get(j).getStopPoint().getScheduledStopPoint().getContainedInStopArea();
 
 					if (stopArea1 == null || stopArea2 == null) {
 						continue;
@@ -485,7 +485,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		List<VehicleJourneyAtStop> vjasList = vj.getVehicleJourneyAtStops();
 		for (VehicleJourneyAtStop vjas : vjasList) {
 
-			if (vjas.getStopPoint().getContainedInStopArea() == null) {
+			if (vjas.getStopPoint().getScheduledStopPoint().getContainedInStopArea() == null) {
 				continue;
 			}
 
@@ -507,7 +507,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 					// TODO Créer un message de rapport spécifique à différence
 					// négative
 					DataLocation location = buildLocation(context, vj);
-					DataLocation target = buildLocation(context, vjas.getStopPoint().getContainedInStopArea());
+					DataLocation target = buildLocation(context, vjas.getStopPoint().getScheduledStopPoint().getContainedInStopArea());
 					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_5,"1", location, Long.toString(diffTime),
 							Long.toString(diffTime), target);
@@ -527,7 +527,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 					// TODO Créer un message de rapport spécifique à différence
 					// négative
 					DataLocation location = buildLocation(context, vj);
-					DataLocation target = buildLocation(context, vjas.getStopPoint().getContainedInStopArea());
+					DataLocation target = buildLocation(context, vjas.getStopPoint().getScheduledStopPoint().getContainedInStopArea());
 					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_5,"2", location, Long.toString(diffTime),
 							Long.toString(diffTime), target);
@@ -545,7 +545,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 					// TODO Créer un message de rapport spécifique à différence
 					// négative
 					DataLocation location = buildLocation(context, vj);
-					DataLocation target = buildLocation(context, vjas.getStopPoint().getContainedInStopArea());
+					DataLocation target = buildLocation(context, vjas.getStopPoint().getScheduledStopPoint().getContainedInStopArea());
 					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 					reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_5,"2",location, Long.toString(diffTime),
 							Long.toString(diffTime), target);

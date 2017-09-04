@@ -48,6 +48,7 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.RouteSection;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timeband;
@@ -60,6 +61,7 @@ import mobi.chouette.model.type.JourneyCategoryEnum;
 import mobi.chouette.model.type.SectionStatusEnum;
 import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -636,8 +638,9 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				// find stoppoint for this journey
 				JourneyPattern jp = vehicleJourney.getJourneyPattern();
 				for(StopPoint sp : jp.getStopPoints()) {
-					if(sp.getContainedInStopArea().getObjectId().equals(feederStopAreaId)) {
-						interchange.setFeederStopPoint(sp);
+					ScheduledStopPoint ssp = sp.getScheduledStopPoint();
+					if(ssp.getContainedInStopArea().getObjectId().equals(feederStopAreaId)) {
+						interchange.setFeederStopPoint(ssp);
 						// Can be multiple matches, but GTFS does not specify which visit
 						break;
 					}
@@ -667,8 +670,9 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				// find stoppoint for this journey
 				JourneyPattern jp = vehicleJourney.getJourneyPattern();
 				for(StopPoint sp : jp.getStopPoints()) {
-					if(sp.getContainedInStopArea().getObjectId().equals(consumerStopAreaId)) {
-						interchange.setConsumerStopPoint(sp);
+					ScheduledStopPoint ssp = sp.getScheduledStopPoint();
+					if(ssp.getContainedInStopArea().getObjectId().equals(consumerStopAreaId)) {
+						interchange.setConsumerStopPoint(ssp);
 						// Can be multiple matches, but GTFS does not specify which visit
 						break;
 					}
@@ -808,9 +812,9 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				StopPoint firstStopPoint=route.getStopPoints().get(0);
 				StopPoint lastStopPoint=route.getStopPoints().get(route.getStopPoints().size() - 1);
 
-				if (firstStopPoint.getContainedInStopArea()!=null && lastStopPoint.getContainedInStopArea()!=null) {
-					String first = firstStopPoint.getContainedInStopArea().getName();
-					String last = lastStopPoint.getContainedInStopArea()
+				if (firstStopPoint.getScheduledStopPoint().getContainedInStopArea()!=null && lastStopPoint.getScheduledStopPoint().getContainedInStopArea()!=null) {
+					String first = firstStopPoint.getScheduledStopPoint().getContainedInStopArea().getName();
+					String last = lastStopPoint.getScheduledStopPoint().getContainedInStopArea()
 							              .getName();
 					route.setName(first + " -> " + last);
 				}
@@ -844,7 +848,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential,
 					AbstractConverter.composeObjectId(configuration,
 							DestinationDisplay.DESTINATIONDISPLAY_KEY, journeyPatternId+"-"+stopPointId,null));
-			String content = jp.getArrivalStopPoint().getContainedInStopArea().getName();
+			String content = jp.getArrivalStopPoint().getScheduledStopPoint().getContainedInStopArea().getName();
 			
 			destinationDisplay.setName("Generated: "+content);
 			destinationDisplay.setFrontText(content);
@@ -908,7 +912,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		StopArea previousLocation = null;
 		for (StopPoint stop : journeyPattern.getStopPoints()) {
 			// find nearest segment and project point on it
-			StopArea location = stop.getContainedInStopArea();
+			StopArea location = stop.getScheduledStopPoint().getContainedInStopArea();
 			Coordinate point = new Coordinate(location.getLongitude().doubleValue(), location.getLatitude()
 					.doubleValue());
 			double distance_min = Double.MAX_VALUE;
@@ -1145,7 +1149,13 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			String stopAreaId = AbstractConverter.composeObjectId(configuration,
 					"Quay", wrapper.stopId, log);
 			StopArea stopArea = ObjectFactory.getStopArea(referential, stopAreaId);
-			stopPoint.setContainedInStopArea(stopArea);
+
+			String scheduledStopPointKey = stopKey.replace(StopPoint.STOPPOINT_KEY, ObjectIdTypes.SCHEDULED_STOP_POINT_KEY);
+			ScheduledStopPoint scheduledStopPoint = ObjectFactory.getScheduledStopPoint(referential, scheduledStopPointKey);
+			stopPoint.setScheduledStopPoint(scheduledStopPoint);
+
+
+			scheduledStopPoint.setContainedInStopArea(stopArea);
 			stopPoint.setRoute(route);
 			stopPoint.setPosition(position++);
 			stopPoint.setForBoarding(toBoardingPossibility(wrapper.pickup));

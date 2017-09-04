@@ -1,7 +1,7 @@
 package mobi.chouette.dao;
 
 import mobi.chouette.model.StopArea;
-import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -16,10 +16,10 @@ import org.testng.annotations.Test;
 import javax.ejb.EJB;
 import java.io.File;
 
-public class StopPointStopAreaInterceptorsTest extends Arquillian {
+public class RelationsToStopAreaInterceptorTest extends Arquillian {
 
     @EJB
-    StopPointDAO stopPointDAO;
+    ScheduledStopPointDAO scheduledStopPointDAO;
 
     @EJB
     StopAreaDAO stopAreaDAO;
@@ -43,27 +43,27 @@ public class StopPointStopAreaInterceptorsTest extends Arquillian {
     }
 
     @Test
-    public void stopAreasArePersistedWhenStopPointsArePersistedAndPopulatedUponFetching() {
-        StopPoint stopPoint = new StopPoint();
-        stopPoint.setObjectId("StopPoint:ID");
+    public void stopAreasArePersistedWhenScheduledStopPointsArePersistedAndPopulatedUponFetching() {
+        ScheduledStopPoint scheduledStopPoint = new ScheduledStopPoint();
+        scheduledStopPoint.setObjectId("ScheduledStopPoint:ID");
 
         StopArea stopArea = new StopArea();
         stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
         stopArea.setObjectId("StopArea:ID");
 
-        stopPoint.setContainedInStopArea(stopArea);
+        scheduledStopPoint.setContainedInStopArea(stopArea);
 
         ContextHolder.setContext("chouette_gui"); // set tenant schema
-        stopPointDAO.create(stopPoint);
+        scheduledStopPointDAO.create(scheduledStopPoint);
 
-        StopPoint dbStopPoint = stopPointDAO.findByObjectId(stopPoint.getObjectId());
+        ScheduledStopPoint dbScheduledStopPoint = scheduledStopPointDAO.findByObjectId(scheduledStopPoint.getObjectId());
 
-        Assert.assertEquals(dbStopPoint.getContainedInStopArea().getObjectId(), stopArea.getObjectId());
+        Assert.assertEquals(dbScheduledStopPoint.getContainedInStopArea().getObjectId(), stopArea.getObjectId());
 
         StopArea dbStopArea = stopAreaDAO.findByObjectId(stopArea.getObjectId());
 
-        Assert.assertEquals(dbStopArea.getContainedStopPoints().size(), 1);
-        Assert.assertEquals(dbStopArea.getContainedStopPoints().get(0).getObjectId(), stopPoint.getObjectId());
+        Assert.assertEquals(dbStopArea.getContainedScheduledStopPoints().size(), 1);
+        Assert.assertEquals(dbStopArea.getContainedScheduledStopPoints().get(0).getObjectId(), scheduledStopPoint.getObjectId());
     }
 
 }

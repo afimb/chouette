@@ -2,7 +2,9 @@ package mobi.chouette.exchange.importer.updater;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.TransportModeNameEnum;
@@ -44,7 +46,7 @@ public class NeTExStopPlaceUtil {
 	public static Set<TransportModeNameEnum> findTransportModeForStopArea(Set<TransportModeNameEnum> transportModes,
 			StopArea sa) {
 		TransportModeNameEnum transportModeName = null;
-		List<StopPoint> stopPoints = sa.getContainedStopPoints();
+		List<StopPoint> stopPoints = sa.getContainedScheduledStopPoints().stream().map(ScheduledStopPoint::getStopPoints).flatMap(List::stream).collect(Collectors.toList());
 		for (StopPoint stop : stopPoints) {
 			if (stop.getRoute() != null && stop.getRoute().getLine() != null) {
 				transportModeName = stop.getRoute().getLine().getTransportModeName();

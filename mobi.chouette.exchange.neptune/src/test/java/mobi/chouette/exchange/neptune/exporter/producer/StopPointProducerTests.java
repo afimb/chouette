@@ -2,6 +2,7 @@ package mobi.chouette.exchange.neptune.exporter.producer;
 
 import mobi.chouette.core.ChouetteException;
 import mobi.chouette.exchange.neptune.JsonExtension;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
@@ -28,6 +29,8 @@ public class StopPointProducerTests
    public void verifyBuildAlightingComment() throws ChouetteException
    {
       StopPoint point = new StopPoint();
+      ScheduledStopPoint scheduledStopPoint=new ScheduledStopPoint();
+      point.setScheduledStopPoint(scheduledStopPoint);
       point.setForAlighting(AlightingPossibilityEnum.forbidden);
       String xmlComment = producer.buildComment(point,true);
       Reporter.log("comment = "+xmlComment);
@@ -38,6 +41,8 @@ public class StopPointProducerTests
    public void verifyBuildBoardingComment() throws ChouetteException
    {
       StopPoint point = new StopPoint();
+      ScheduledStopPoint scheduledStopPoint=new ScheduledStopPoint();
+      point.setScheduledStopPoint(scheduledStopPoint);
       point.setForBoarding(BoardingPossibilityEnum.forbidden);
       String xmlComment = producer.buildComment(point,true);
       Reporter.log("comment = "+xmlComment);
@@ -49,6 +54,8 @@ public class StopPointProducerTests
    public void verifyBuildCompleteComment() throws ChouetteException
    {
       StopPoint point = new StopPoint();
+      ScheduledStopPoint scheduledStopPoint=new ScheduledStopPoint();
+      point.setScheduledStopPoint(scheduledStopPoint);
       point.setForBoarding(BoardingPossibilityEnum.forbidden);
       point.setForAlighting(AlightingPossibilityEnum.is_flexible);
       
@@ -68,6 +75,8 @@ public class StopPointProducerTests
    public void verifyBuildNoExtension() throws ChouetteException
    {
       StopPoint point = new StopPoint();
+      ScheduledStopPoint scheduledStopPoint=new ScheduledStopPoint();
+      point.setScheduledStopPoint(scheduledStopPoint);
       point.setForBoarding(BoardingPossibilityEnum.forbidden);
       point.setForAlighting(AlightingPossibilityEnum.is_flexible);
 

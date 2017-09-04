@@ -60,8 +60,8 @@ public class NetexTestUtils  {
 				Assert.assertNotEquals(jp.getStopPoints().size(), 0, "line journeyPattens must have stoppoints");
 
 				for (StopPoint point : jp.getStopPoints()) {
-					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
-					bps.add(point.getContainedInStopArea());
+					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopArea(), "stoppoints must have StopAreas");
+					bps.add(point.getScheduledStopPoint().getContainedInStopArea());
 				}
 
 				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0, " journeyPattern should have VehicleJourneys");
@@ -97,8 +97,8 @@ public class NetexTestUtils  {
 				Assert.assertNotEquals(jp.getStopPoints().size(), 0, "line journeyPattens must have stoppoints");
 
 				for (StopPoint point : jp.getStopPoints()) {
-					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
-					bps.add(point.getContainedInStopArea());
+					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopArea(), "stoppoints must have StopAreas");
+					bps.add(point.getScheduledStopPoint().getContainedInStopArea());
 				}
 
 				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0, " journeyPattern should have VehicleJourneys");

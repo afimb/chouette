@@ -30,6 +30,7 @@ import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.NetworkDAO;
 import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.dao.RouteSectionDAO;
+import mobi.chouette.dao.ScheduledStopPointDAO;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.dao.TimebandDAO;
@@ -71,6 +72,9 @@ public class CleanRepositoryCommand implements Command {
 	private StopPointDAO stopPointDAO;
 
 	@EJB
+	private ScheduledStopPointDAO scheduledStopPointDAO;
+
+	@EJB
 	private TimetableDAO timetableDAO;
 
 	@EJB
@@ -108,6 +112,7 @@ public class CleanRepositoryCommand implements Command {
 			routeSectionDAO.truncate();
 
 			stopPointDAO.truncate();
+			scheduledStopPointDAO.truncate();
 			timetableDAO.truncate();
 			timebandDAO.truncate();
 			vehicleJourneyDAO.truncate();
