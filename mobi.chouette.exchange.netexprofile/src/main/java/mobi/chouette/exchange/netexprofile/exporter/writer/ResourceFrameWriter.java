@@ -6,6 +6,7 @@ import org.rutebanken.netex.model.Authority;
 import org.rutebanken.netex.model.Network;
 import org.rutebanken.netex.model.Operator;
 
+import javax.xml.bind.Marshaller;
 import javax.xml.stream.XMLStreamWriter;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DATA_OJBECT_VERSION;
@@ -17,7 +18,7 @@ import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.RESOUR
 
 public class ResourceFrameWriter extends AbstractNetexWriter {
 
-    public static void write(XMLStreamWriter writer, ExportableNetexData exportableNetexData) {
+    public static void write(XMLStreamWriter writer, ExportableNetexData exportableNetexData, Marshaller marshaller) {
 
         // TODO temporary generating random id suffix, find a better way to create object id suffixes
         Network network = exportableNetexData.getSharedNetworks().values().iterator().next();
@@ -27,14 +28,14 @@ public class ResourceFrameWriter extends AbstractNetexWriter {
             writer.writeStartElement(RESOURCE_FRAME);
             writer.writeAttribute(VERSION, NETEX_DATA_OJBECT_VERSION);
             writer.writeAttribute(ID, resourceFrameId);
-            writeOrganisationsElement(writer, exportableNetexData);
+            writeOrganisationsElement(writer, exportableNetexData,marshaller);
             writer.writeEndElement();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static void writeOrganisationsElement(XMLStreamWriter writer, ExportableNetexData exportableNetexData) {
+    private static void writeOrganisationsElement(XMLStreamWriter writer, ExportableNetexData exportableNetexData, Marshaller marshaller) {
         try {
             writer.writeStartElement(ORGANISATIONS);
             for (Authority authority : exportableNetexData.getSharedAuthorities().values()) {

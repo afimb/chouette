@@ -36,6 +36,7 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.validation.AbstractNetexProfileValidator;
+import mobi.chouette.exchange.netexprofile.jaxb.NetexXMLProcessingHelperFactory;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
@@ -53,7 +54,7 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-		NetexImporter importer = (NetexImporter) context.get(IMPORTER);
+		NetexXMLProcessingHelperFactory importer = (NetexXMLProcessingHelperFactory) context.get(IMPORTER);
 		List<Path> allFiles = (List<Path>) context.get(NETEX_FILE_PATHS);
 
 		validationReporter.addItemToValidationReport(context, AbstractNetexProfileValidator._1_NETEX_SCHEMA_VALIDATION_ERROR, "E");
@@ -120,7 +121,7 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 
 		public static final int MAX_ERROR_COUNT = 100;
 
-		public SchemaValidationTask(Context context, ActionReporter actionReporter, ValidationReporter validationReporter, NetexImporter importer, File file) {
+		public SchemaValidationTask(Context context, ActionReporter actionReporter, ValidationReporter validationReporter, NetexXMLProcessingHelperFactory importer, File file) {
 			super();
 			this.context = context;
 			this.actionReporter = actionReporter;
@@ -135,7 +136,7 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 
 		private ValidationReporter validationReporter;
 
-		private NetexImporter importer;
+		private NetexXMLProcessingHelperFactory importer;
 
 		@Getter
 		private File file;

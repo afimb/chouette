@@ -15,6 +15,7 @@ import org.testng.annotations.Test;
 import org.xml.sax.SAXException;
 
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.jaxb.NetexXMLProcessingHelperFactory;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathCompiler;
 import net.sf.saxon.s9api.XPathSelector;
@@ -23,7 +24,7 @@ import net.sf.saxon.s9api.XdmValue;
 
 public class NetexImporterTest {
 
-	private NetexImporter importer = new NetexImporter();
+	private NetexXMLProcessingHelperFactory importer = new NetexXMLProcessingHelperFactory();
 	
 	private File file = new File("src/test/data/minimal_publicationdelivery.xml");
 	

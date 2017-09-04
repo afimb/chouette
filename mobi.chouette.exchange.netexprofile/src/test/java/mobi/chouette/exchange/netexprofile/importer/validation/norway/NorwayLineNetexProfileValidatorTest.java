@@ -21,9 +21,9 @@ import org.testng.annotations.Test;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.DuplicateIdCheckerCommand;
-import mobi.chouette.exchange.netexprofile.importer.NetexImporter;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.netexprofile.importer.validation.NetexProfileValidator;
+import mobi.chouette.exchange.netexprofile.jaxb.NetexXMLProcessingHelperFactory;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
@@ -40,7 +40,7 @@ public class NorwayLineNetexProfileValidatorTest {
 
 	@Test
 	public void testValidateSimpleFile() throws Exception {
-		NetexImporter importer = new NetexImporter();
+		NetexXMLProcessingHelperFactory importer = new NetexXMLProcessingHelperFactory();
 
 		Context context = createContext(importer);
 
@@ -77,7 +77,7 @@ public class NorwayLineNetexProfileValidatorTest {
 
 	@Test
 	public void testValidateWithCommonFile() throws Exception {
-		NetexImporter importer = new NetexImporter();
+		NetexXMLProcessingHelperFactory importer = new NetexXMLProcessingHelperFactory();
 		Context context = createContext(importer);
 
 		ValidationReport vr = new ValidationReport();
@@ -145,7 +145,7 @@ public class NorwayLineNetexProfileValidatorTest {
 
 	@Test
 	public void testValidateSingleLineFileWithCompositeFrame() throws Exception {
-		NetexImporter importer = new NetexImporter();
+		NetexXMLProcessingHelperFactory importer = new NetexXMLProcessingHelperFactory();
 
 		Context context = createContext(importer);
 
@@ -307,7 +307,7 @@ public class NorwayLineNetexProfileValidatorTest {
 
 	}
 
-	protected Context createContext(NetexImporter importer) throws XPathFactoryConfigurationException {
+	protected Context createContext(NetexXMLProcessingHelperFactory importer) throws XPathFactoryConfigurationException {
 		Context context = new Context();
 		context.put(Constant.IMPORTER, importer);
 

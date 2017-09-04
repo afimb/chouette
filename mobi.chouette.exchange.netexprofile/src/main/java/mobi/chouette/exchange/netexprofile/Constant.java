@@ -23,6 +23,7 @@ public interface Constant extends mobi.chouette.common.Constant {
 	String NETEX_PROFILE_VALIDATORS = "netex_profile_validators";
 	String EXPORTABLE_NETEX_DATA = "exportable_netex_data";
 	String NEPTUNE_FOOTNOTES = "neptune_footnotes";
+	String MARSHALLER = "marshaller";
 	
 	
 	String NETEX_NAMESPACE = "http://www.netex.org.uk/netex";

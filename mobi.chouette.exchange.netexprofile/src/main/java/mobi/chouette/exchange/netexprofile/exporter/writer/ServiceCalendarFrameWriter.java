@@ -8,6 +8,7 @@ import org.rutebanken.netex.model.DayTypeAssignment;
 import org.rutebanken.netex.model.Network;
 import org.rutebanken.netex.model.OperatingPeriod;
 
+import javax.xml.bind.Marshaller;
 import javax.xml.stream.XMLStreamWriter;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DATA_OJBECT_VERSION;
@@ -18,7 +19,7 @@ import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 public class ServiceCalendarFrameWriter extends AbstractNetexWriter {
 
-    public static void write(XMLStreamWriter writer, ExportableNetexData exportableNetexData) {
+    public static void write(XMLStreamWriter writer, ExportableNetexData exportableNetexData, Marshaller marshaller) {
 
         // TODO temporary generating random id suffix, find a better way to create object id suffixes
         Network network = exportableNetexData.getSharedNetworks().values().iterator().next();
@@ -28,20 +29,20 @@ public class ServiceCalendarFrameWriter extends AbstractNetexWriter {
             writer.writeStartElement(SERVICE_CALENDAR_FRAME);
             writer.writeAttribute(VERSION, NETEX_DATA_OJBECT_VERSION);
             writer.writeAttribute(ID, serviceCalendarFrameId);
-            writeDayTypesElement(writer, exportableNetexData);
+            writeDayTypesElement(writer, exportableNetexData,marshaller);
 
             if (CollectionUtils.isNotEmpty(exportableNetexData.getOperatingPeriods())) {
-                writeOperatingPeriodsElement(writer, exportableNetexData);
+                writeOperatingPeriodsElement(writer, exportableNetexData,marshaller);
             }
 
-            writeDayTypeAssignmentsElement(writer, exportableNetexData);
+            writeDayTypeAssignmentsElement(writer, exportableNetexData,marshaller);
             writer.writeEndElement();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static void writeDayTypesElement(XMLStreamWriter writer, ExportableNetexData exportableData) {
+    private static void writeDayTypesElement(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
         try {
             writer.writeStartElement(DAY_TYPES);
             for (DayType dayType : exportableData.getDayTypes()) {
@@ -53,7 +54,7 @@ public class ServiceCalendarFrameWriter extends AbstractNetexWriter {
         }
     }
 
-    private static void writeDayTypeAssignmentsElement(XMLStreamWriter writer, ExportableNetexData exportableData) {
+    private static void writeDayTypeAssignmentsElement(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
         try {
             writer.writeStartElement(DAY_TYPE_ASSIGNMENTS);
             for (DayTypeAssignment dayTypeAssignment : exportableData.getDayTypeAssignments()) {
@@ -65,7 +66,7 @@ public class ServiceCalendarFrameWriter extends AbstractNetexWriter {
         }
     }
 
-    private static void writeOperatingPeriodsElement(XMLStreamWriter writer, ExportableNetexData exportableData) {
+    private static void writeOperatingPeriodsElement(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
         try {
             writer.writeStartElement(OPERATING_PERIODS);
             for (OperatingPeriod operatingPeriod : exportableData.getOperatingPeriods()) {
