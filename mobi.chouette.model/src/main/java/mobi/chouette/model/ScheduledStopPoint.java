@@ -43,6 +43,16 @@ public class ScheduledStopPoint extends NeptuneIdentifiedObject {
 	@Column(name = "id", nullable = false)
 	protected Long id;
 
+	/**
+	 * name
+	 *
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@Column(name = "name")
+	private String name;
+
 
 	/**
 	 * stopPoints

@@ -123,7 +123,7 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	 */
 	public void setScheduledStopPoint(ScheduledStopPoint scheduledStopPoint) {
 		if (this.scheduledStopPoint != null) {
-			this.scheduledStopPoint.getStopPoints().remove(this); pu
+			this.scheduledStopPoint.getStopPoints().remove(this);
 		}
 		this.scheduledStopPoint = scheduledStopPoint;
 		if (scheduledStopPoint != null) {

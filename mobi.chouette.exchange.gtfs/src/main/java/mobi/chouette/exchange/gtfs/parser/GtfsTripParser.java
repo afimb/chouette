@@ -61,6 +61,7 @@ import mobi.chouette.model.type.JourneyCategoryEnum;
 import mobi.chouette.model.type.SectionStatusEnum;
 import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -1149,8 +1150,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					"Quay", wrapper.stopId, log);
 			StopArea stopArea = ObjectFactory.getStopArea(referential, stopAreaId);
 
-			// TODO NRP 1692 Fix this , use which id? only if not already set on stopPoint?
-			ScheduledStopPoint scheduledStopPoint=ObjectFactory.getScheduledStopPoint(referential, stopKey);
+			String scheduledStopPointKey = stopKey.replace(StopPoint.STOPPOINT_KEY, ObjectIdTypes.SCHEDULED_STOP_POINT_KEY);
+			ScheduledStopPoint scheduledStopPoint = ObjectFactory.getScheduledStopPoint(referential, scheduledStopPointKey);
 			stopPoint.setScheduledStopPoint(scheduledStopPoint);
 
 

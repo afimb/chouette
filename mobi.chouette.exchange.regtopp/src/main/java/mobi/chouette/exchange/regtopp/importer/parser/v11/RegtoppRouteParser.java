@@ -20,6 +20,7 @@ import mobi.chouette.exchange.regtopp.model.v11.RegtoppTripIndexTIX;
 import mobi.chouette.model.*;
 import mobi.chouette.model.type.PTDirectionEnum;
 import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
 
 import org.apache.commons.lang.StringUtils;
@@ -99,8 +100,8 @@ public class RegtoppRouteParser extends LineSpecificParser {
 
 							StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
 							stopPoint.setPosition(i);
-							// NRP 1692 not sure about this, which id should we use for scheduled stop point
-							ScheduledStopPoint scheduledStopPoint = ObjectFactory.getScheduledStopPoint(referential, chouetteStopPointId);
+							String scheduledStopPointId = chouetteStopPointId.replace(ObjectIdTypes.STOPPOINT_KEY, ObjectIdTypes.SCHEDULED_STOP_POINT_KEY);
+							ScheduledStopPoint scheduledStopPoint = ObjectFactory.getScheduledStopPoint(referential, scheduledStopPointId);
 							stopPoint.setScheduledStopPoint(scheduledStopPoint);
 							scheduledStopPoint.setContainedInStopArea(stopArea);
 

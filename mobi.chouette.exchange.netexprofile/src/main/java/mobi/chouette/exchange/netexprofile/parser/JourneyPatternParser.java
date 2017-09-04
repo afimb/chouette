@@ -82,8 +82,7 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
 				quay.setAreaType(ChouetteAreaEnum.BoardingPosition);
 			}
 
-			// TODO NRP 1692 Fix this , use which id? only if not already set on stopPoint?
-			ScheduledStopPoint scheduledStopPoint=ObjectFactory.getScheduledStopPoint(referential, pointInPattern.getId());
+			ScheduledStopPoint scheduledStopPoint=ObjectFactory.getScheduledStopPoint(referential, scheduledStopPointRef.getRef());
 			stopPoint.setScheduledStopPoint(scheduledStopPoint);
 
 			scheduledStopPoint.setContainedInStopArea(quay);

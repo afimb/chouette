@@ -27,7 +27,6 @@ public class StopPointProducer extends
 		populateFromModel(jaxbStopPoint, stopPoint);
 
 		jaxbStopPoint.setComment(buildComment(stopPoint, addExtension));
-		// TODO NRP 1692 create ScheduledStopPoint here?
 		if (stopPoint.getScheduledStopPoint().getContainedInStopArea() != null) {
 			StopArea area = stopPoint.getScheduledStopPoint().getContainedInStopArea();
 			jaxbStopPoint.setName(area.getName());
@@ -66,7 +65,7 @@ public class StopPointProducer extends
 
 		return jaxbStopPoint;
 	}
-// NRP 1692 move to scheduledStopPointProducer?
+
 	protected String buildComment(StopPoint stopPoint, boolean addExtension) {
 		if (!addExtension)
 			return null;

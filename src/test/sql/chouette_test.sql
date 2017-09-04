@@ -1137,6 +1137,7 @@ ALTER TABLE public.stop_areas_stop_areas OWNER TO chouette;
 
 CREATE TABLE scheduled_stop_points (
     id bigint NOT NULL,
+    name character varying(255),
     stop_area_objectid_key CHARACTER VARYING(256),
     objectid character varying(255) NOT NULL,
     object_version integer,

@@ -75,8 +75,6 @@ public class CompassBearingGenerator {
 
 				List<StopPoint> stopPointsInJourneyPattern = jp.getStopPoints();
 
-				// TODO NRP 1692 Need to null check?
-
 				if (jp.getDepartureStopPoint().getScheduledStopPoint().getContainedInStopArea().getObjectId()
 						.equals(stop.getScheduledStopPoint().getContainedInStopArea().getObjectId())) {
 					next = stopPointsInJourneyPattern.get(1);

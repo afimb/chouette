@@ -236,6 +236,16 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 
 			}
 
+			if (serviceFrame.getScheduledStopPoints() != null) {
+				ScheduledStopPointsInFrame_RelStructure scheduledStopPointsInFrameStruct = serviceFrame.getScheduledStopPoints();
+				context.put(NETEX_LINE_DATA_CONTEXT, scheduledStopPointsInFrameStruct);
+				ScheduledStopPointParser scheduledStopPointParser = (ScheduledStopPointParser) ParserFactory.create(ScheduledStopPointParser.class.getName());
+				scheduledStopPointParser.parse(context);
+
+			}
+
+
+
 			if (!isCommonDelivery) {
 				LinesInFrame_RelStructure linesInFrameStruct = serviceFrame.getLines();
 				if (linesInFrameStruct != null) {

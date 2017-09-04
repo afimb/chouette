@@ -127,9 +127,9 @@ public class GtfsExportTransferProducerTests
       Interchange interchange = new Interchange();
 
       // Set via reflection due to StopPoint and VehicleJourney is unset after set, but available after reload from database (cannot be transient)
-      FieldUtils.writeField(interchange, "feederStopPoint",feederSP, true);
+      FieldUtils.writeField(interchange, "feederStopPoint",feederSSP, true);
       FieldUtils.writeField(interchange, "feederVehicleJourney",feederVJ, true);
-      FieldUtils.writeField(interchange, "consumerStopPoint",consumerSP, true);
+      FieldUtils.writeField(interchange, "consumerStopPoint",consumerSSP, true);
       FieldUtils.writeField(interchange, "consumerVehicleJourney",consumerVJ, true);
       interchange.setGuaranteed(Boolean.TRUE);
 
