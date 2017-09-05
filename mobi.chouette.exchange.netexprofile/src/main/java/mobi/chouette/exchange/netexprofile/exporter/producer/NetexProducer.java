@@ -30,8 +30,13 @@ public class NetexProducer {
     }
 
     protected MultilingualString getMultilingualString(String value) {
-        return netexFactory.createMultilingualString()
-                .withValue(value);
+        if(value != null) {
+        	return netexFactory.createMultilingualString()
+                    .withValue(value);
+        } else {
+        	return null;
+        }
+    	
     }
 
     public static void resetContext(Context context) {

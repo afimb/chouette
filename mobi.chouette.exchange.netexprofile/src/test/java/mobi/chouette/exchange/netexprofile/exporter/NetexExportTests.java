@@ -41,6 +41,7 @@ import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.netexprofile.DummyChecker;
 import mobi.chouette.exchange.netexprofile.JobDataTest;
 import mobi.chouette.exchange.netexprofile.NetexTestUtils;
+import mobi.chouette.exchange.netexprofile.importer.NetexImporterCommandTest;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImporterCommand;
 import mobi.chouette.exchange.report.ActionReport;
@@ -278,6 +279,9 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
             throw ex;
         }
 
+		NetexTestUtils.verifyValidationReport(context);
+
+        
         ActionReport report = (ActionReport) context.get(REPORT);
         Assert.assertEquals(report.getResult(), STATUS_OK, "result");
         Assert.assertEquals(report.getFiles().size(), 2, "file reported");
@@ -657,6 +661,9 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
             throw ex;
         }
 
+		NetexTestUtils.verifyValidationReport(context);
+
+        
         ActionReport report = (ActionReport) context.get(REPORT);
         Reporter.log(report.toString(), true);
         ValidationReport valReport = (ValidationReport) context.get(VALIDATION_REPORT);

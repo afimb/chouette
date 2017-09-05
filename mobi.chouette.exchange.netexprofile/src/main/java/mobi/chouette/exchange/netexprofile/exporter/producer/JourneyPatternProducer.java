@@ -20,10 +20,8 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
     @Override
     public org.rutebanken.netex.model.JourneyPattern produce(Context context, mobi.chouette.model.JourneyPattern neptuneJourneyPattern) {
         org.rutebanken.netex.model.JourneyPattern netexJourneyPattern = netexFactory.createJourneyPattern();
-        netexJourneyPattern.setVersion(neptuneJourneyPattern.getObjectVersion() > 0 ? String.valueOf(neptuneJourneyPattern.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
 
-        String journeyPatternId = netexId(neptuneJourneyPattern.objectIdPrefix(), JOURNEY_PATTERN, neptuneJourneyPattern.objectIdSuffix());
-        netexJourneyPattern.setId(journeyPatternId);
+        NetexProducerUtils.populateId(neptuneJourneyPattern, netexJourneyPattern);
 
         if (isSet(neptuneJourneyPattern.getComment())) {
             KeyValueStructure keyValueStruct = netexFactory.createKeyValueStructure()
@@ -48,10 +46,7 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 
         Route route = neptuneJourneyPattern.getRoute();
         RouteRefStructure routeRefStruct = netexFactory.createRouteRefStructure();
-        routeRefStruct.setVersion(route.getObjectVersion() != null ? String.valueOf(route.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-
-        String routeIdRef = netexId(route.objectIdPrefix(), ROUTE, route.objectIdSuffix());
-        routeRefStruct.setRef(routeIdRef);
+        NetexProducerUtils.populateReference(route, routeRefStruct, true);
 
         netexJourneyPattern.setRouteRef(routeRefStruct);
 
@@ -65,15 +60,11 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
             StopPoint stopPoint = stopPoints.get(i);
 
             if (stopPoint != null) {
-                String pointInPatternIdSuffix = stopPoint.objectIdSuffix() + "-" + stopPoint.getPosition();
-                String stopPointInJourneyPatternId = netexId(stopPoint.objectIdPrefix(), STOP_POINT_IN_JOURNEY_PATTERN, pointInPatternIdSuffix);
-
                 StopPointInJourneyPattern stopPointInJourneyPattern = netexFactory.createStopPointInJourneyPattern();
-                stopPointInJourneyPattern.setVersion(stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-                stopPointInJourneyPattern.setId(stopPointInJourneyPatternId);
-
+                NetexProducerUtils.populateId(stopPoint, stopPointInJourneyPattern);
+     
                 if (isSet(stopPoint.getContainedInStopArea())) {
-                    String stopPointIdSuffix = stopPoint.getContainedInStopArea().objectIdSuffix();
+                	String stopPointIdSuffix = stopPoint.getContainedInStopArea().objectIdSuffix();
                     String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, stopPointIdSuffix);
 
                     ScheduledStopPointRefStructure stopPointRefStruct = netexFactory.createScheduledStopPointRefStructure().withRef(stopPointIdRef);

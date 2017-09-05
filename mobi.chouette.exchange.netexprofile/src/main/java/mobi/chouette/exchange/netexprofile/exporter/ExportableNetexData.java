@@ -90,7 +90,7 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private Set<DayType> dayTypes = new HashSet<>();
+    private Map<String,DayType> dayTypes = new HashMap<>();
 
     @Getter
     @Setter

@@ -45,7 +45,7 @@ public class ServiceCalendarFrameWriter extends AbstractNetexWriter {
     private static void writeDayTypesElement(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
         try {
             writer.writeStartElement(DAY_TYPES);
-            for (DayType dayType : exportableData.getDayTypes()) {
+            for (DayType dayType : exportableData.getDayTypes().values()) {
                 marshaller.marshal(netexFactory.createDayType(dayType), writer);
             }
             writer.writeEndElement();

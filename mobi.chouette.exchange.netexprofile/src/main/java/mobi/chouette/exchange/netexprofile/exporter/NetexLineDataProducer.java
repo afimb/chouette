@@ -147,17 +147,11 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 				exportableNetexData.getJourneyPatterns().add(netexJourneyPattern);
 			}
 		}
+		
+		
 
-		Map<String, List<? extends DataManagedObjectStructure>> calendarData = calendarProducer.produce(context, exportableData);
+		calendarProducer.produce(context, exportableData,exportableNetexData);
 
-		List<DayType> dayTypes = (List<DayType>) calendarData.get(DAY_TYPES_KEY);
-		exportableNetexData.getDayTypes().addAll(dayTypes);
-
-		List<DayTypeAssignment> dayTypeAssignments = (List<DayTypeAssignment>) calendarData.get(DAY_TYPE_ASSIGNMENTS_KEY);
-		exportableNetexData.getDayTypeAssignments().addAll(dayTypeAssignments);
-
-		List<OperatingPeriod> operatingPeriods = (List<OperatingPeriod>) calendarData.get(OPERATING_PERIODS_KEY);
-		exportableNetexData.getOperatingPeriods().addAll(operatingPeriods);
 
 		for (mobi.chouette.model.VehicleJourney vehicleJourney : exportableData.getVehicleJourneys()) {
 			ServiceJourney serviceJourney = serviceJourneyProducer.produce(context, vehicleJourney, exportableData.getLine());

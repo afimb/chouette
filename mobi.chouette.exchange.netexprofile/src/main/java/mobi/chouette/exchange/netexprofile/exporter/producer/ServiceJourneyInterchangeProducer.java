@@ -17,11 +17,7 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
     public ServiceJourneyInterchange produce(Context context, Interchange interchange) {
         ServiceJourneyInterchange netex = netexFactory.createServiceJourneyInterchange();
 
-        netex.setVersion(interchange.getObjectVersion() > 0 ? String.valueOf(interchange.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-
-        netex.setId(interchange.getObjectId());
-
-        
+        NetexProducerUtils.populateId(interchange, netex);
         netex.setName(ConversionUtil.getMLString(interchange.getName()));
         netex.setPriority(ConversionUtil.asBigInteger(interchange.getPriority()));
         netex.setStaySeated(interchange.getStaySeated());

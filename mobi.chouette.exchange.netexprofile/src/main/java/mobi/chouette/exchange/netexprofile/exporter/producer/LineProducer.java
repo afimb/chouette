@@ -18,10 +18,7 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
     public org.rutebanken.netex.model.Line produce(Context context, mobi.chouette.model.Line neptuneLine) {
         org.rutebanken.netex.model.Line netexLine = netexFactory.createLine();
 
-        netexLine.setVersion(neptuneLine.getObjectVersion() > 0 ? String.valueOf(neptuneLine.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-
-        String lineId = netexId(neptuneLine.objectIdPrefix(), LINE, neptuneLine.objectIdSuffix());
-        netexLine.setId(lineId);
+        NetexProducerUtils.populateId(neptuneLine, netexLine);
 
         if (isSet(neptuneLine.getName())) {
             netexLine.setName(getMultilingualString(neptuneLine.getName()));
@@ -61,19 +58,8 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
         }
 
         OperatorRefStructure operatorRefStruct = netexFactory.createOperatorRefStructure();
-        String operatorId = netexId(neptuneLine.getCompany().objectIdPrefix(), NetexObjectIdTypes.OPERATOR, neptuneLine.getCompany().objectIdSuffix());
-        operatorRefStruct.setRef(operatorId);
+        NetexProducerUtils.populateReference(neptuneLine.getCompany(), operatorRefStruct, false);
         netexLine.setOperatorRef(operatorRefStruct);
-
-        RouteRefs_RelStructure routeRefsStruct = netexFactory.createRouteRefs_RelStructure();
-        for (Route route : neptuneLine.getRoutes()) {
-            RouteRefStructure routeRefStruct = netexFactory.createRouteRefStructure();
-            routeRefStruct.setVersion(route.getObjectVersion() != null ? String.valueOf(route.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-            String routeIdRef = netexId(route.objectIdPrefix(), ROUTE, route.objectIdSuffix());
-            routeRefStruct.setRef(routeIdRef);
-            routeRefsStruct.getRouteRef().add(routeRefStruct);
-        }
-        netexLine.setRoutes(routeRefsStruct);
 
         if (CollectionUtils.isNotEmpty(neptuneLine.getGroupOfLines())) {
             GroupOfLine groupOfLine = neptuneLine.getGroupOfLines().get(0);
@@ -82,8 +68,8 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
             netexLine.setRepresentedByGroupRef(groupOfLinesRefStruct);
         } else {
             mobi.chouette.model.Network neptuneNetwork = neptuneLine.getNetwork();
-            String networkId = netexId(neptuneNetwork.objectIdPrefix(), NETWORK, neptuneNetwork.objectIdSuffix());
-            GroupOfLinesRefStructure groupOfLinesRefStruct = netexFactory.createGroupOfLinesRefStructure().withRef(networkId);
+            GroupOfLinesRefStructure groupOfLinesRefStruct = netexFactory.createGroupOfLinesRefStructure();
+            NetexProducerUtils.populateReference(neptuneNetwork, groupOfLinesRefStruct, false);
             netexLine.setRepresentedByGroupRef(groupOfLinesRefStruct);
         }
 

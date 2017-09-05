@@ -1,29 +1,23 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
-import mobi.chouette.common.Context;
-import mobi.chouette.common.TimeUtil;
-import mobi.chouette.exchange.netexprofile.ConversionUtil;
-import mobi.chouette.model.Company;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
+
+import java.time.OffsetDateTime;
+
 import org.rutebanken.netex.model.AuthorityRefStructure;
 import org.rutebanken.netex.model.KeyValueStructure;
 import org.rutebanken.netex.model.PrivateCodeStructure;
 
-import java.time.OffsetDateTime;
-
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.AUTHORITY;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NETWORK;
+import mobi.chouette.common.Context;
+import mobi.chouette.common.TimeUtil;
 
 public class NetworkProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Network, mobi.chouette.model.Network> {
 
     @Override
     public org.rutebanken.netex.model.Network produce(Context context, mobi.chouette.model.Network neptuneNetwork) {
         org.rutebanken.netex.model.Network netexNetwork = netexFactory.createNetwork();
-        netexNetwork.setVersion(neptuneNetwork.getObjectVersion() > 0 ? String.valueOf(neptuneNetwork.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-
-        String networkId = netexId(neptuneNetwork.objectIdPrefix(), NETWORK, neptuneNetwork.objectIdSuffix());
-        netexNetwork.setId(networkId);
+        
+        NetexProducerUtils.populateId(neptuneNetwork, netexNetwork);
 
         if (isSet(neptuneNetwork.getVersionDate())) {
             OffsetDateTime changedDateTime = TimeUtil.toOffsetDateTime(neptuneNetwork.getVersionDate());
@@ -37,24 +31,13 @@ public class NetworkProducer extends NetexProducer implements NetexEntityProduce
             netexNetwork.setKeyList(netexFactory.createKeyListStructure().withKeyValue(keyValueStruct));
         }
 
-        if (isSet(neptuneNetwork.getName())) {
-            netexNetwork.setName(getMultilingualString(neptuneNetwork.getName()));
-        }
+        netexNetwork.setName(getMultilingualString(neptuneNetwork.getName()));
+        netexNetwork.setDescription(getMultilingualString(neptuneNetwork.getDescription()));
 
-        AuthorityRefStructure authorityRefStruct = netexFactory.createAuthorityRefStructure();
-        authorityRefStruct.setVersion(neptuneNetwork.getObjectVersion() > 0 ? String.valueOf(neptuneNetwork.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-
-        if (isSet(neptuneNetwork.getCompany())) {
-            authorityRefStruct.setRef(neptuneNetwork.getCompany().getObjectId());
-        } else {
-            String authorityIdRef = netexId(neptuneNetwork.objectIdPrefix(), AUTHORITY, neptuneNetwork.objectIdSuffix());
-            authorityRefStruct.setRef(authorityIdRef);
-        }
-
-        netexNetwork.setTransportOrganisationRef(netexFactory.createAuthorityRef(authorityRefStruct));
-
-        if (isSet(neptuneNetwork.getDescription())) {
-            netexNetwork.setDescription(getMultilingualString(neptuneNetwork.getDescription()));
+        if(neptuneNetwork.getCompany() != null) {
+            AuthorityRefStructure authorityRefStruct = netexFactory.createAuthorityRefStructure();
+        	NetexProducerUtils.populateReference(neptuneNetwork.getCompany(), authorityRefStruct, true);
+            netexNetwork.setTransportOrganisationRef(netexFactory.createAuthorityRef(authorityRefStruct));
         }
 
         if (isSet(neptuneNetwork.getRegistrationNumber())) {
