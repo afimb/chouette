@@ -3,8 +3,6 @@ package mobi.chouette.exchange.netexprofile.exporter.writer;
 import static mobi.chouette.common.Constant.CONFIGURATION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DEFAULT_OBJECT_VERSION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.objectIdPrefix;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.CODESPACE;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.CODESPACES;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.COMPOSITE_FRAME;
@@ -84,8 +82,7 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
 			ExportableNetexData exportableNetexData, String timestamp, NetexFragmentMode fragmentMode, Marshaller marshaller) {
 		mobi.chouette.model.Line line = exportableData.getLine();
 
-		Network network = exportableNetexData.getSharedNetworks().values().iterator().next();
-		String compositeFrameId = netexId(objectIdPrefix(network.getId()), COMPOSITE_FRAME, String.valueOf(NetexProducerUtils.generateSequentialId()));
+		String compositeFrameId = NetexProducerUtils.createUniqueId(context, COMPOSITE_FRAME);
 
 		try {
 			writer.writeStartElement(COMPOSITE_FRAME);
@@ -182,27 +179,26 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
 	private static void writeFramesElement(Context context, XMLStreamWriter writer, ExportableNetexData exportableNetexData, NetexFragmentMode fragmentMode,
 			Marshaller marshaller) {
 		NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
-		String defaultCodespacePrefix = configuration.getDefaultCodespacePrefix();
 
 		try {
 			writer.writeStartElement(FRAMES);
 
 			if (fragmentMode.equals(NetexFragmentMode.LINE)) {
-				ServiceFrameWriter.write(writer, defaultCodespacePrefix, exportableNetexData, NetexFragmentMode.LINE, marshaller);
-				ServiceCalendarFrameWriter.write(writer, defaultCodespacePrefix, exportableNetexData, marshaller);
-				TimetableFrameWriter.write(writer, defaultCodespacePrefix, exportableNetexData, marshaller);
+				ServiceFrameWriter.write(writer, context, exportableNetexData, NetexFragmentMode.LINE, marshaller);
+				ServiceCalendarFrameWriter.write(writer, context, exportableNetexData, marshaller);
+				TimetableFrameWriter.write(writer, context, exportableNetexData, marshaller);
 			} else { // shared data
-				ResourceFrameWriter.write(writer, defaultCodespacePrefix, exportableNetexData, marshaller);
+				ResourceFrameWriter.write(writer, context, exportableNetexData, marshaller);
 
 				if (configuration.isExportStops()) {
-					SiteFrameWriter.write(writer, defaultCodespacePrefix, exportableNetexData, marshaller);
+					SiteFrameWriter.write(writer, context, exportableNetexData, marshaller);
 				}
 
 				for (Network network : exportableNetexData.getSharedNetworks().values()) {
-					ServiceFrameWriter.write(writer, defaultCodespacePrefix, network, marshaller);
+					ServiceFrameWriter.write(writer, context, network, marshaller);
 				}
 
-				ServiceFrameWriter.write(writer, defaultCodespacePrefix, exportableNetexData, NetexFragmentMode.SHARED, marshaller);
+				ServiceFrameWriter.write(writer, context, exportableNetexData, NetexFragmentMode.SHARED, marshaller);
 			}
 
 			writer.writeEndElement();

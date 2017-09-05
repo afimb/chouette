@@ -1,16 +1,18 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
-import mobi.chouette.common.Context;
-import mobi.chouette.exchange.netexprofile.ConversionUtil;
-import mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes;
-import mobi.chouette.model.GroupOfLine;
-import mobi.chouette.model.Route;
-import org.apache.commons.collections.CollectionUtils;
-import org.rutebanken.netex.model.*;
-
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.GROUP_OF_LINES;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
+import org.rutebanken.netex.model.GroupOfLinesRefStructure;
+import org.rutebanken.netex.model.OperatorRefStructure;
+import org.rutebanken.netex.model.PrivateCodeStructure;
+
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
+import mobi.chouette.model.GroupOfLine;
 
 public class LineProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Line, mobi.chouette.model.Line> {
 

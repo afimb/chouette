@@ -2,7 +2,6 @@ package mobi.chouette.exchange.netexprofile.exporter.writer;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DEFAULT_OBJECT_VERSION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.ORGANISATIONS;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.RESOURCE_FRAME;
 
@@ -13,14 +12,15 @@ import org.rutebanken.netex.model.Authority;
 import org.rutebanken.netex.model.Operator;
 import org.rutebanken.netex.model.Organisation_VersionStructure;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 
 public class ResourceFrameWriter extends AbstractNetexWriter {
 
-	public static void write(XMLStreamWriter writer, String defaultCodespacePrefix, ExportableNetexData exportableNetexData, Marshaller marshaller) {
+	public static void write(XMLStreamWriter writer, Context context, ExportableNetexData exportableNetexData, Marshaller marshaller) {
 
-		String resourceFrameId = netexId(defaultCodespacePrefix, RESOURCE_FRAME, String.valueOf(NetexProducerUtils.generateSequentialId()));
+		String resourceFrameId = NetexProducerUtils.createUniqueId(context, RESOURCE_FRAME);
 
 		try {
 			writer.writeStartElement(RESOURCE_FRAME);

@@ -12,7 +12,7 @@ import java.time.ZoneOffset;
 import org.rutebanken.netex.model.TimetabledPassingTime;
 
 import mobi.chouette.common.TimeUtil;
-import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.parser.NetexParserUtils;
 import mobi.chouette.model.VehicleJourneyAtStop;
 
@@ -29,7 +29,7 @@ public class NetexTimeConversionUtil {
 		int dayOffset = arrival ? vj.getArrivalDayOffset() : vj.getDepartureDayOffset();
 		LocalTime localTime = TimeUtil.toLocalTimeFromJoda(arrival ? vj.getArrivalTime() : vj.getDepartureTime());
 
-		OffsetTime zuluTime = localTime.atOffset(NetexProducerUtils.getZoneOffset(LOCAL_ZONE_ID)).withOffsetSameInstant(ZoneOffset.UTC);
+		OffsetTime zuluTime = localTime.atOffset(ConversionUtil.getZoneOffset(LOCAL_ZONE_ID)).withOffsetSameInstant(ZoneOffset.UTC);
 		if (zuluTime.getHour() > localTime.getHour()) {
 			// Shifted before midnight. Note only works for east of GMT?
 			dayOffset--;

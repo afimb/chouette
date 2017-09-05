@@ -2,7 +2,6 @@ package mobi.chouette.exchange.netexprofile.exporter.writer;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DEFAULT_OBJECT_VERSION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SITE_FRAME;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.STOP_PLACES;
 
@@ -11,14 +10,15 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.rutebanken.netex.model.StopPlace;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 
 public class SiteFrameWriter extends AbstractNetexWriter {
 
-	public static void write(XMLStreamWriter writer, String defaultCodespacePrefix, ExportableNetexData exportableNetexData, Marshaller marshaller) {
+	public static void write(XMLStreamWriter writer, Context context, ExportableNetexData exportableNetexData, Marshaller marshaller) {
 
-		String siteFrameId = netexId(defaultCodespacePrefix, SITE_FRAME, String.valueOf(NetexProducerUtils.generateSequentialId()));
+		String siteFrameId = NetexProducerUtils.createUniqueId(context, SITE_FRAME);
 
 		try {
 			writer.writeStartElement(SITE_FRAME);

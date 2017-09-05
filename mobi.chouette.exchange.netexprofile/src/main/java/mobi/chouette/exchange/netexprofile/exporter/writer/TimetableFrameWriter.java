@@ -2,7 +2,6 @@ package mobi.chouette.exchange.netexprofile.exporter.writer;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DEFAULT_OBJECT_VERSION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.JOURNEY_INTERCHANGES;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NOTICES;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NOTICE_ASSIGNMENTS;
@@ -18,14 +17,15 @@ import org.rutebanken.netex.model.NoticeAssignment;
 import org.rutebanken.netex.model.ServiceJourney;
 import org.rutebanken.netex.model.ServiceJourneyInterchange;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 
 public class TimetableFrameWriter extends AbstractNetexWriter {
 
-	public static void write(XMLStreamWriter writer, String defaultCodespacePrefix, ExportableNetexData exportableNetexData, Marshaller marshaller) {
+	public static void write(XMLStreamWriter writer, Context context, ExportableNetexData exportableNetexData, Marshaller marshaller) {
 
-		String timetableFrameId = netexId(defaultCodespacePrefix, TIMETABLE_FRAME, String.valueOf(NetexProducerUtils.generateSequentialId()));
+		String timetableFrameId = NetexProducerUtils.createUniqueId(context, TIMETABLE_FRAME);
 
 		try {
 			writer.writeStartElement(TIMETABLE_FRAME);

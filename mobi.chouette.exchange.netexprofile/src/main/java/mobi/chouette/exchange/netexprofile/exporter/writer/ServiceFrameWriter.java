@@ -2,7 +2,6 @@ package mobi.chouette.exchange.netexprofile.exporter.writer;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DEFAULT_OBJECT_VERSION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.DESTINATION_DISPLAYS;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.JOURNEY_PATTERNS;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.LINES;
@@ -22,14 +21,15 @@ import org.rutebanken.netex.model.PassengerStopAssignment;
 import org.rutebanken.netex.model.RoutePoint;
 import org.rutebanken.netex.model.ScheduledStopPoint;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
 import mobi.chouette.exchange.netexprofile.exporter.NetexFragmentMode;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 
 public class ServiceFrameWriter extends AbstractNetexWriter {
 
-	public static void write(XMLStreamWriter writer, String defaultCodespacePrefix, Network network, Marshaller marshaller) {
-		String serviceFrameId = netexId(defaultCodespacePrefix, SERVICE_FRAME, String.valueOf(NetexProducerUtils.generateSequentialId()));
+	public static void write(XMLStreamWriter writer, Context context, Network network, Marshaller marshaller) {
+		String serviceFrameId = NetexProducerUtils.createUniqueId(context, SERVICE_FRAME);
 
 		try {
 			writer.writeStartElement(SERVICE_FRAME);
@@ -42,9 +42,9 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 		}
 	}
 
-	public static void write(XMLStreamWriter writer, String defaultCodespacePrefix, ExportableNetexData exportableNetexData, NetexFragmentMode fragmentMode, Marshaller marshaller) {
+	public static void write(XMLStreamWriter writer, Context context, ExportableNetexData exportableNetexData, NetexFragmentMode fragmentMode, Marshaller marshaller) {
 
-		String serviceFrameId = netexId(defaultCodespacePrefix, SERVICE_FRAME, String.valueOf(NetexProducerUtils.generateSequentialId()));
+		String serviceFrameId = NetexProducerUtils.createUniqueId(context, SERVICE_FRAME);
 
 		try {
 			writer.writeStartElement(SERVICE_FRAME);

@@ -1,44 +1,26 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
-import com.google.common.base.Joiner;
+import java.math.BigInteger;
+import java.util.List;
+
+import org.rutebanken.netex.model.DayOfWeekEnumeration;
+import org.rutebanken.netex.model.DayType;
+import org.rutebanken.netex.model.DayTypeAssignment;
+import org.rutebanken.netex.model.DayTypeRefStructure;
+import org.rutebanken.netex.model.OperatingPeriod;
+import org.rutebanken.netex.model.OperatingPeriodRefStructure;
+import org.rutebanken.netex.model.PropertiesOfDay_RelStructure;
+import org.rutebanken.netex.model.PropertyOfDay;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.common.TimeUtil;
-import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
 import mobi.chouette.model.CalendarDay;
-import mobi.chouette.model.Line;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
-import mobi.chouette.model.VehicleJourney;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.rutebanken.netex.model.*;
-
-import java.math.BigInteger;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
-import javax.xml.bind.JAXBElement;
-
-import static mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer.DAY_TYPES_KEY;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer.DAY_TYPE_ASSIGNMENTS_KEY;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer.OPERATING_PERIODS_KEY;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.*;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 public class CalendarProducer extends NetexProducer {
-
-	public static final String DAY_TYPES_KEY = "DayTypes";
-	public static final String DAY_TYPE_ASSIGNMENTS_KEY = "DayTypeAssignments";
-	public static final String OPERATING_PERIODS_KEY = "OperatingPeriods";
-
-	static final String LOCAL_CONTEXT = "ServiceCalendar";
-	static final String DAY_TYPE_IDS = "dayTypeIds";
-
-	private static final String DAY_TYPE_PATTERN = "MMM_EEE_dd";
 
 	public void produce(Context context, ExportableData exportableData, ExportableNetexData exportableNetexData) {
 

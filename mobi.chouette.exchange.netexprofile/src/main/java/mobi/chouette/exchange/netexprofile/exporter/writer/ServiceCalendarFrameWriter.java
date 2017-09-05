@@ -2,7 +2,6 @@ package mobi.chouette.exchange.netexprofile.exporter.writer;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DEFAULT_OBJECT_VERSION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.DAY_TYPES;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.DAY_TYPE_ASSIGNMENTS;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.OPERATING_PERIODS;
@@ -16,14 +15,15 @@ import org.rutebanken.netex.model.DayType;
 import org.rutebanken.netex.model.DayTypeAssignment;
 import org.rutebanken.netex.model.OperatingPeriod;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 
 public class ServiceCalendarFrameWriter extends AbstractNetexWriter {
 
-    public static void write(XMLStreamWriter writer, String defaultCodespacePrefix, ExportableNetexData exportableNetexData, Marshaller marshaller) {
+    public static void write(XMLStreamWriter writer, Context context, ExportableNetexData exportableNetexData, Marshaller marshaller) {
 
-        String serviceCalendarFrameId = netexId(defaultCodespacePrefix, SERVICE_CALENDAR_FRAME, String.valueOf(NetexProducerUtils.generateSequentialId()));
+		String serviceCalendarFrameId = NetexProducerUtils.createUniqueId(context, SERVICE_CALENDAR_FRAME);
 
         try {
             writer.writeStartElement(SERVICE_CALENDAR_FRAME);

@@ -1,44 +1,37 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.rutebanken.netex.model.Authority;
 import org.rutebanken.netex.model.DayOfWeekEnumeration;
-import org.rutebanken.netex.model.DayType;
 import org.rutebanken.netex.model.EntityInVersionStructure;
 import org.rutebanken.netex.model.OrganisationTypeEnumeration;
 import org.rutebanken.netex.model.VersionOfObjectRefStructure;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.exporter.NetexprofileExportParameters;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.NeptuneObject;
-import mobi.chouette.model.Period;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.type.OrganisationTypeEnum;
-import mobi.chouette.model.type.StopAreaTypeEnum;
-import mobi.chouette.model.util.ObjectFactory;
 
 @Log4j
 public class NetexProducerUtils {
 
 	private static final String OBJECT_ID_SPLIT_CHAR = ":";
-	public static final ZoneId LOCAL_ZONE_ID = ZoneId.of("Europe/Oslo");
-
+	
 	public static boolean isSet(Object... objects) {
 		for (Object val : objects) {
 			if (val != null) {
@@ -51,21 +44,6 @@ public class NetexProducerUtils {
 			}
 		}
 		return false;
-	}
-
-	public static String[] generateIdSequence(int totalInSequence) {
-		String[] idSequence = new String[totalInSequence];
-		AtomicInteger incrementor = new AtomicInteger(1);
-
-		for (int i = 0; i < totalInSequence; i++) {
-			idSequence[i] = String.valueOf(incrementor.getAndAdd(1));
-		}
-
-		return idSequence;
-	}
-
-	public static ZoneOffset getZoneOffset(ZoneId zoneId) {
-		return zoneId == null ? null : zoneId.getRules().getOffset(Instant.now(Clock.system(zoneId)));
 	}
 
 	public static OrganisationTypeEnumeration getOrganisationTypeEnumeration(OrganisationTypeEnum organisationTypeEnum) {
@@ -132,11 +110,7 @@ public class NetexProducerUtils {
 		return dayOfWeekEnumerations;
 	}
 
-	private static AtomicInteger idCounter = new AtomicInteger(1);
-
-	public static int generateSequentialId() {
-		return idCounter.getAndIncrement();
-	}
+	private static AtomicInteger idCounter = new AtomicInteger(0);
 
 	public static String netexId(String objectIdPrefix, String elementName, String objectIdSuffix) {
 		return objectIdPrefix + OBJECT_ID_SPLIT_CHAR + elementName + OBJECT_ID_SPLIT_CHAR + objectIdSuffix;
@@ -150,6 +124,11 @@ public class NetexProducerUtils {
 			log.warn("Could not transform identifier "+original+" to type "+newType+" as it does not conform to id standard (XXX:Type:YYY)");
 			return original;
 		}
+	}
+	
+	public static String createUniqueId(Context context, String type) {
+		NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(Constant.CONFIGURATION);
+		return configuration.getDefaultCodespacePrefix()+OBJECT_ID_SPLIT_CHAR+type+OBJECT_ID_SPLIT_CHAR+idCounter.incrementAndGet();
 	}
 
 	public static String translateType(NeptuneObject v) {
@@ -238,13 +217,4 @@ public class NetexProducerUtils {
 		}
 
 	}
-
-	public static String objectIdPrefix(String objectId) {
-		return objectId.split(OBJECT_ID_SPLIT_CHAR).length > 2 ? objectId.split(OBJECT_ID_SPLIT_CHAR)[0].trim() : "";
-	}
-
-	public static String objectIdSuffix(String objectId) {
-		return objectId.split(OBJECT_ID_SPLIT_CHAR).length > 2 ? objectId.split(OBJECT_ID_SPLIT_CHAR)[2].trim() : "";
-	}
-
 }

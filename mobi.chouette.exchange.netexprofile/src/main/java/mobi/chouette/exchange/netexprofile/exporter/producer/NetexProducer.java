@@ -1,6 +1,5 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.AVAILABILITY_CONDITION;
 
 import java.time.Instant;
@@ -32,11 +31,10 @@ public class NetexProducer {
 
 		NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(Constant.CONFIGURATION);
 
-		String availabilityConditionId = netexId(configuration.getDefaultCodespacePrefix(), AVAILABILITY_CONDITION,
-				String.valueOf(NetexProducerUtils.generateSequentialId()));
+		String netexId = NetexProducerUtils.createUniqueId(context, AVAILABILITY_CONDITION);
 		AvailabilityCondition availabilityCondition = netexFactory.createAvailabilityCondition();
-		availabilityCondition.setVersion("1");
-		availabilityCondition.setId(availabilityConditionId);
+		availabilityCondition.setVersion(NETEX_DEFAULT_OBJECT_VERSION);
+		availabilityCondition.setId(netexId);
 
 		if (configuration.getStartDate() != null) {
 			availabilityCondition.setFromDate(OffsetDateTime.from(configuration.getStartDate().toInstant()));
