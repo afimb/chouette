@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
@@ -31,11 +32,11 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
         }
 
         if (isSet(neptuneJourneyPattern.getName())) {
-            netexJourneyPattern.setName(getMultilingualString(neptuneJourneyPattern.getName()));
+            netexJourneyPattern.setName(ConversionUtil.getMultiLingualString(neptuneJourneyPattern.getName()));
         }
 
         if (isSet(neptuneJourneyPattern.getPublishedName())) {
-            netexJourneyPattern.setShortName(getMultilingualString(neptuneJourneyPattern.getPublishedName()));
+            netexJourneyPattern.setShortName(ConversionUtil.getMultiLingualString(neptuneJourneyPattern.getPublishedName()));
         }
 
         if (isSet(neptuneJourneyPattern.getRegistrationNumber())) {

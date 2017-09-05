@@ -32,9 +32,9 @@ public class ServiceJourneyProducer extends NetexProducer {
     	ServiceJourney serviceJourney = netexFactory.createServiceJourney();
         NetexProducerUtils.populateId(vehicleJourney, serviceJourney);
 
-        serviceJourney.setName(getMultilingualString(vehicleJourney.getPublishedJourneyName()));
+        serviceJourney.setName(ConversionUtil.getMultiLingualString(vehicleJourney.getPublishedJourneyName()));
         serviceJourney.setPublicCode(vehicleJourney.getPublishedJourneyIdentifier());
-        serviceJourney.setDescription(getMultilingualString(vehicleJourney.getComment()));
+        serviceJourney.setDescription(ConversionUtil.getMultiLingualString(vehicleJourney.getComment()));
         serviceJourney.setTransportMode(ConversionUtil.toVehicleModeOfTransportEnum(vehicleJourney.getTransportMode()));
         serviceJourney.setTransportSubmode(ConversionUtil.toTransportSubmodeStructure(vehicleJourney.getTransportSubMode()));
  

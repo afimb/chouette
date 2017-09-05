@@ -13,6 +13,7 @@ import org.rutebanken.netex.model.StopPlace;
 import org.rutebanken.netex.model.ZoneRefStructure;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.util.NetexReferential;
 import mobi.chouette.model.StopArea;
@@ -28,8 +29,8 @@ public class StopPlaceProducer extends NetexProducer implements NetexEntityProdu
 		StopPlace stopPlace = netexFactory.createStopPlace();
 
 		NetexProducerUtils.populateId(stopArea, stopPlace);
-		stopPlace.setName(getMultilingualString(stopArea.getName()));
-		stopPlace.setDescription(getMultilingualString(stopArea.getComment()));
+		stopPlace.setName(ConversionUtil.getMultiLingualString(stopArea.getName()));
+		stopPlace.setDescription(ConversionUtil.getMultiLingualString(stopArea.getComment()));
 
 		if (isSet(stopArea.getRegistrationNumber())) {
 			PrivateCodeStructure privateCodeStruct = netexFactory.createPrivateCodeStructure();
@@ -63,8 +64,8 @@ public class StopPlaceProducer extends NetexProducer implements NetexEntityProdu
 				Quay quay = netexFactory.createQuay();
 				NetexProducerUtils.populateId(containedStopArea, quay);
 
-				quay.setName(getMultilingualString(containedStopArea.getName()));
-				quay.setDescription(getMultilingualString(containedStopArea.getComment()));
+				quay.setName(ConversionUtil.getMultiLingualString(containedStopArea.getName()));
+				quay.setDescription(ConversionUtil.getMultiLingualString(containedStopArea.getComment()));
 
 				if (isSet(containedStopArea.getRegistrationNumber())) {
 					PrivateCodeStructure privateCodeStruct = netexFactory.createPrivateCodeStructure();

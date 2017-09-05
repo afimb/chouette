@@ -16,7 +16,6 @@ import org.rutebanken.netex.model.AirSubmodeEnumeration;
 import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
 import org.rutebanken.netex.model.BusSubmodeEnumeration;
 import org.rutebanken.netex.model.DayOfWeekEnumeration;
-import org.rutebanken.netex.model.FunicularSubmodeEnumeration;
 import org.rutebanken.netex.model.MetroSubmodeEnumeration;
 import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.RailSubmodeEnumeration;
@@ -29,7 +28,7 @@ import static mobi.chouette.common.TimeUtil.toLocalTimeFromJoda;
 
 public class ConversionUtil {
 
-	public static MultilingualString getMLString(String v) {
+	public static MultilingualString getMultiLingualString(String v) {
 		if (v == null) {
 			return null;
 		} else {

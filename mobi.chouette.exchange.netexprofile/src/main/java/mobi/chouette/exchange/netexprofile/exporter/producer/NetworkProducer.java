@@ -10,6 +10,7 @@ import org.rutebanken.netex.model.PrivateCodeStructure;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.common.TimeUtil;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
 
 public class NetworkProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Network, mobi.chouette.model.Network> {
 
@@ -31,8 +32,8 @@ public class NetworkProducer extends NetexProducer implements NetexEntityProduce
             netexNetwork.setKeyList(netexFactory.createKeyListStructure().withKeyValue(keyValueStruct));
         }
 
-        netexNetwork.setName(getMultilingualString(neptuneNetwork.getName()));
-        netexNetwork.setDescription(getMultilingualString(neptuneNetwork.getDescription()));
+        netexNetwork.setName(ConversionUtil.getMultiLingualString(neptuneNetwork.getName()));
+        netexNetwork.setDescription(ConversionUtil.getMultiLingualString(neptuneNetwork.getDescription()));
 
         if(neptuneNetwork.getCompany() != null) {
             AuthorityRefStructure authorityRefStruct = netexFactory.createAuthorityRefStructure();

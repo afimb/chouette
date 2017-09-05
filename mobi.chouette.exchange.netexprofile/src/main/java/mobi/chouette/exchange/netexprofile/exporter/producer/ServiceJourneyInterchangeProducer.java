@@ -18,7 +18,7 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
         ServiceJourneyInterchange netex = netexFactory.createServiceJourneyInterchange();
 
         NetexProducerUtils.populateId(interchange, netex);
-        netex.setName(ConversionUtil.getMLString(interchange.getName()));
+        netex.setName(ConversionUtil.getMultiLingualString(interchange.getName()));
         netex.setPriority(ConversionUtil.asBigInteger(interchange.getPriority()));
         netex.setStaySeated(interchange.getStaySeated());
         netex.setAdvertised(interchange.getAdvertised());

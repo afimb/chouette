@@ -19,6 +19,7 @@ import org.rutebanken.netex.model.VersionOfObjectRefStructure;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.Company;
+import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.NeptuneObject;
@@ -151,7 +152,7 @@ public class NetexProducerUtils {
 		}
 	}
 
-	public static String translateType(NeptuneIdentifiedObject v) {
+	public static String translateType(NeptuneObject v) {
 		if (v instanceof Timetable) {
 			return "DayType";
 		} else if (v instanceof Company) {
@@ -172,6 +173,8 @@ public class NetexProducerUtils {
 			} else if (ChouetteAreaEnum.CommercialStopPoint.equals(sa.getAreaType())) {
 				return "StopPlace";
 			}
+		} else if(v instanceof Footnote) {
+			return "Notice";
 		}
 
 		return null;

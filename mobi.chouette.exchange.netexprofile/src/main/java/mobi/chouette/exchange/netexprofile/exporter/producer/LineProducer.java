@@ -21,23 +21,23 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
         NetexProducerUtils.populateId(neptuneLine, netexLine);
 
         if (isSet(neptuneLine.getName())) {
-            netexLine.setName(getMultilingualString(neptuneLine.getName()));
+            netexLine.setName(ConversionUtil.getMultiLingualString(neptuneLine.getName()));
         } else {
             if (isSet(neptuneLine.getPublishedName())) {
-                netexLine.setName(getMultilingualString(neptuneLine.getPublishedName()));
+                netexLine.setName(ConversionUtil.getMultiLingualString(neptuneLine.getPublishedName()));
             } else if (isSet(neptuneLine.getNumber())) {
-                netexLine.setName(getMultilingualString(neptuneLine.getNumber()));
+                netexLine.setName(ConversionUtil.getMultiLingualString(neptuneLine.getNumber()));
             } else {
-                netexLine.setName(getMultilingualString(neptuneLine.objectIdSuffix()));
+                netexLine.setName(ConversionUtil.getMultiLingualString(neptuneLine.objectIdSuffix()));
             }
         }
 
         if (isSet(neptuneLine.getPublishedName())) {
-            netexLine.setShortName(getMultilingualString(neptuneLine.getPublishedName()));
+            netexLine.setShortName(ConversionUtil.getMultiLingualString(neptuneLine.getPublishedName()));
         }
 
         if (isSet(neptuneLine.getComment())) {
-            netexLine.setDescription(getMultilingualString(neptuneLine.getComment()));
+            netexLine.setDescription(ConversionUtil.getMultiLingualString(neptuneLine.getComment()));
         }
 
         if (isSet(neptuneLine.getTransportModeName())) {

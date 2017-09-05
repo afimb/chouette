@@ -48,6 +48,7 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.JourneyPatternProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.LineProducer;
@@ -139,19 +140,15 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 			for (int i = 0; i < vehicleJourney.getFootnotes().size(); i++) {
 				Footnote footnote = vehicleJourney.getFootnotes().get(i);
 
+				// TODO Must be refactored when Footnote is turned into a NeptuneIdentifiedObject
 				String version = vehicleJourney.getObjectVersion() > 0 ? String.valueOf(vehicleJourney.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
 				String objectIdSuffix = vehicleJourney.objectIdSuffix() + "-" + i + 1;
 				String noticeId = netexId(vehicleJourney.objectIdPrefix(), NOTICE, objectIdSuffix);
 				String noticeAssignmentId = netexId(vehicleJourney.objectIdPrefix(), NOTICE_ASSIGNMENT, objectIdSuffix);
 
 				Notice notice = netexFactory.createNotice().withVersion(version).withId(noticeId);
-
-				if (isSet(footnote.getLabel())) {
-					notice.setText(getMultilingualString(footnote.getLabel()));
-				}
-				if (isSet(footnote.getCode())) {
-					notice.setPublicCode(footnote.getCode());
-				}
+				notice.setText(ConversionUtil.getMultiLingualString(footnote.getLabel()));
+				notice.setPublicCode(footnote.getCode());
 
 				exportableNetexData.getNotices().add(notice);
 
@@ -246,7 +243,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 	private GroupOfLines createGroupOfLines(GroupOfLine groupOfLine) {
 		GroupOfLines groupOfLines = netexFactory.createGroupOfLines();
 		NetexProducerUtils.populateId(groupOfLine, groupOfLines);
-		groupOfLines.setName(getMultilingualString(groupOfLine.getName()));
+		groupOfLines.setName(ConversionUtil.getMultiLingualString(groupOfLine.getName()));
 
 		return groupOfLines;
 	}
@@ -332,20 +329,12 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
 		if (!exportableNetexData.getSharedDestinationDisplays().containsKey(dd.getObjectId())) {
 
-			Integer objectVersion = dd.getObjectVersion();
 			DestinationDisplay netexDestinationDisplay = netexFactory.createDestinationDisplay();
-			netexDestinationDisplay.setId(dd.getObjectId());
-			netexDestinationDisplay.setVersion(objectVersion > 0 ? String.valueOf(objectVersion) : NETEX_DATA_OJBECT_VERSION);
-
-			if (isSet(dd.getName())) {
-				netexDestinationDisplay.setName(getMultilingualString(dd.getName()));
-			}
-			if (isSet(dd.getFrontText())) {
-				netexDestinationDisplay.setFrontText(getMultilingualString(dd.getFrontText()));
-			}
-			if (isSet(dd.getSideText())) {
-				netexDestinationDisplay.setSideText(getMultilingualString(dd.getSideText()));
-			}
+			NetexProducerUtils.populateId(dd, netexDestinationDisplay);
+			
+			netexDestinationDisplay.setName(ConversionUtil.getMultiLingualString(dd.getName()));
+			netexDestinationDisplay.setFrontText(ConversionUtil.getMultiLingualString(dd.getFrontText()));
+			netexDestinationDisplay.setSideText(ConversionUtil.getMultiLingualString(dd.getSideText()));
 
 			exportableNetexData.getSharedDestinationDisplays().put(dd.getObjectId(), netexDestinationDisplay);
 
@@ -357,9 +346,11 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 					// Recurse into vias, create if missing
 					addDestinationDisplay(via, exportableNetexData);
 
-					DestinationDisplayRefStructure ref = netexFactory.createDestinationDisplayRefStructure().withRef(via.getObjectId())
-							.withVersion(via.getObjectVersion() > 0 ? String.valueOf(via.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+					
+					DestinationDisplayRefStructure ref = netexFactory.createDestinationDisplayRefStructure();
+					NetexProducerUtils.populateReference(via, ref, true);;
 					Via_VersionedChildStructure e = netexFactory.createVia_VersionedChildStructure().withDestinationDisplayRef(ref);
+					
 					netexDestinationDisplay.getVias().getVia().add(e);
 				}
 			}
@@ -375,7 +366,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 		scheduledStopPoint.setId(stopPointId);
 
 		if (isSet(stopPoint.getContainedInStopArea().getName())) {
-			scheduledStopPoint.setName(getMultilingualString(stopPoint.getContainedInStopArea().getName()));
+			scheduledStopPoint.setName(ConversionUtil.getMultiLingualString(stopPoint.getContainedInStopArea().getName()));
 		}
 
 		return scheduledStopPoint;

@@ -1,24 +1,25 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
+import javax.xml.bind.JAXBElement;
+
+import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
+import org.rutebanken.netex.model.DataManagedObjectStructure;
+import org.rutebanken.netex.model.GroupOfLinesRefStructure;
+import org.rutebanken.netex.model.LinesInFrame_RelStructure;
+import org.rutebanken.netex.model.PrivateCodeStructure;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.type.TransportModeNameEnum;
-import mobi.chouette.model.type.UserNeedEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-import org.apache.commons.lang.StringUtils;
-import org.rutebanken.netex.model.*;
-
-import javax.xml.bind.JAXBElement;
-import java.util.ArrayList;
-import java.util.List;
 
 @Log4j
 public class LineParser implements Parser, Constant {
@@ -78,29 +79,15 @@ public class LineParser implements Parser, Constant {
 			// TODO find out how to handle in chouette? can be: new, delete, revise or delta
 			// ModificationEnumeration modification = netexLine.getModification();
 
-			String lineName = netexLine.getName().getValue();
-			chouetteLine.setName(lineName);
-
-			if (netexLine.getShortName() != null) {
-				chouetteLine.setPublishedName(netexLine.getShortName().getValue());
-			}
-
-			if (netexLine.getDescription() != null) {
-				chouetteLine.setComment(netexLine.getDescription().getValue());
-			}
+			chouetteLine.setName(ConversionUtil.getValue(netexLine.getName()));
+			chouetteLine.setPublishedName(ConversionUtil.getValue(netexLine.getShortName()));
+			chouetteLine.setComment(ConversionUtil.getValue(netexLine.getDescription()));
 
 			AllVehicleModesOfTransportEnumeration transportMode = netexLine.getTransportMode();
 			TransportModeNameEnum transportModeName = NetexParserUtils.toTransportModeNameEnum(transportMode.value());
 			chouetteLine.setTransportModeName(transportModeName);
-
 			chouetteLine.setTransportSubModeName(NetexParserUtils.toTransportSubModeNameEnum(netexLine.getTransportSubmode()));
-
-
-			String url = netexLine.getUrl();
-			if (StringUtils.isNotEmpty(url)) {
-				chouetteLine.setUrl(url);
-			}
-
+			chouetteLine.setUrl(netexLine.getUrl());
 			chouetteLine.setNumber(netexLine.getPublicCode());
 
 			PrivateCodeStructure privateCode = netexLine.getPrivateCode();
@@ -116,25 +103,25 @@ public class LineParser implements Parser, Constant {
 			// TODO find out how to handle in chouette
 			// Boolean monitored = netexLine.isMonitored();
 
-			AccessibilityAssessment accessibilityAssessment = netexLine.getAccessibilityAssessment();
-			if (accessibilityAssessment != null) {
-				LimitationStatusEnumeration mobilityImpairedAccess = accessibilityAssessment.getMobilityImpairedAccess();
-				chouetteLine.setMobilityRestrictedSuitable(ParserUtils.getBoolean(mobilityImpairedAccess.value()));
-				Suitabilities_RelStructure suitabilitiesStruct = accessibilityAssessment.getSuitabilities();
-
-				if (suitabilitiesStruct != null) {
-					List<Suitability> suitabilities = suitabilitiesStruct.getSuitability();
-					List<UserNeedEnum> userNeeds = new ArrayList<>();
-
-					for (Suitability suitability : suitabilities) {
-						// TODO: implement
-						// UserNeedEnum userNeed = ParserUtils.getEnum(UserNeedEnum.class, need...);
-						// See: https://rutebanken.atlassian.net/wiki/display/PUBLIC/framework#framework-Suitability and
-						// https://rutebanken.atlassian.net/wiki/display/PUBLIC/framework#framework-AccessibilityLimitation
-					}
-					chouetteLine.setUserNeeds(userNeeds);
-				}
-			}
+//			AccessibilityAssessment accessibilityAssessment = netexLine.getAccessibilityAssessment();
+//			if (accessibilityAssessment != null) {
+//				LimitationStatusEnumeration mobilityImpairedAccess = accessibilityAssessment.getMobilityImpairedAccess();
+//				chouetteLine.setMobilityRestrictedSuitable(ParserUtils.getBoolean(mobilityImpairedAccess.value()));
+//				Suitabilities_RelStructure suitabilitiesStruct = accessibilityAssessment.getSuitabilities();
+//
+//				if (suitabilitiesStruct != null) {
+//					List<Suitability> suitabilities = suitabilitiesStruct.getSuitability();
+//					List<UserNeedEnum> userNeeds = new ArrayList<>();
+//
+//					for (Suitability suitability : suitabilities) {
+//						// TODO: implement
+//						// UserNeedEnum userNeed = ParserUtils.getEnum(UserNeedEnum.class, need...);
+//						// See: https://rutebanken.atlassian.net/wiki/display/PUBLIC/framework#framework-Suitability and
+//						// https://rutebanken.atlassian.net/wiki/display/PUBLIC/framework#framework-AccessibilityLimitation
+//					}
+//					chouetteLine.setUserNeeds(userNeeds);
+//				}
+//			}
 
 			// TODO: add remaining, optional fields here... see: https://rutebanken.atlassian.net/wiki/display/PUBLIC/network#network-Line
 

@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.model.StopPoint;
 import org.rutebanken.netex.model.*;
 
@@ -15,8 +16,8 @@ public class RouteProducer extends NetexProducer implements NetexEntityProducer<
 		org.rutebanken.netex.model.Route netexRoute = netexFactory.createRoute();
 		NetexProducerUtils.populateId(neptuneRoute, netexRoute);
 
-		netexRoute.setName(getMultilingualString(neptuneRoute.getName()));
-		netexRoute.setShortName(getMultilingualString(neptuneRoute.getPublishedName()));
+		netexRoute.setName(ConversionUtil.getMultiLingualString(neptuneRoute.getName()));
+		netexRoute.setShortName(ConversionUtil.getMultiLingualString(neptuneRoute.getPublishedName()));
 
 		if (isSet(neptuneRoute.getComment(), neptuneRoute.getNumber())) {
 			KeyListStructure keyListStructure = netexFactory.createKeyListStructure();
@@ -45,6 +46,7 @@ public class RouteProducer extends NetexProducer implements NetexEntityProducer<
 		for (StopPoint stopPoint : neptuneRoute.getStopPoints()) {
 			if (stopPoint != null) {
 
+				// TODO refactor
 				String pointVersion = neptuneRoute.getObjectVersion() > 0 ? String.valueOf(neptuneRoute.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
 				String pointOnRouteIdSuffix = stopPoint.objectIdSuffix() + "-" + stopPoint.getPosition();
 				String pointOnRouteId = netexId(stopPoint.objectIdPrefix(), POINT_ON_ROUTE, pointOnRouteIdSuffix);
