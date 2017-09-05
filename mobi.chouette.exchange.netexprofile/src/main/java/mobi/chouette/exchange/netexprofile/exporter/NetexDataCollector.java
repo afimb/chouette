@@ -12,6 +12,8 @@ public class NetexDataCollector extends DataCollector {
     public boolean collect(ExportableData collection, Line line, LocalDate startDate, LocalDate endDate) {
         boolean res =  collect(collection, line, startDate, endDate, false, false);
 
+        
+        
         if (line.getNetwork() == null) {
             log.error("line " + line.getObjectId() + " : missing network");
             return false;
@@ -22,6 +24,11 @@ public class NetexDataCollector extends DataCollector {
             return false;
         }
 
+        
+        if(line.getNetwork().getCompany() != null) {
+        	collection.getCompanies().add(line.getNetwork().getCompany());
+        }
+        
         return res;
     }
 

@@ -1,11 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
-import static mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer.DAY_TYPES_KEY;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer.DAY_TYPE_ASSIGNMENTS_KEY;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer.OPERATING_PERIODS_KEY;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.AUTHORITY;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NOTICE;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NOTICE_ASSIGNMENT;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.PASSENGER_STOP_ASSIGNMENT;
@@ -20,27 +16,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.xml.bind.Marshaller;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.rutebanken.netex.model.Authority;
 import org.rutebanken.netex.model.AvailabilityCondition;
-import org.rutebanken.netex.model.ContactStructure;
-import org.rutebanken.netex.model.DataManagedObjectStructure;
-import org.rutebanken.netex.model.DayType;
-import org.rutebanken.netex.model.DayTypeAssignment;
 import org.rutebanken.netex.model.DestinationDisplay;
 import org.rutebanken.netex.model.DestinationDisplayRefStructure;
 import org.rutebanken.netex.model.GroupOfLines;
 import org.rutebanken.netex.model.Notice;
 import org.rutebanken.netex.model.NoticeAssignment;
 import org.rutebanken.netex.model.NoticeRefStructure;
-import org.rutebanken.netex.model.OperatingPeriod;
-import org.rutebanken.netex.model.Operator;
-import org.rutebanken.netex.model.OrganisationTypeEnumeration;
+import org.rutebanken.netex.model.Organisation_VersionStructure;
 import org.rutebanken.netex.model.PassengerStopAssignment;
 import org.rutebanken.netex.model.PointProjection;
 import org.rutebanken.netex.model.PointRefStructure;
@@ -64,8 +52,9 @@ import mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.JourneyPatternProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.LineProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer;
+import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetworkProducer;
-import mobi.chouette.exchange.netexprofile.exporter.producer.OperatorProducer;
+import mobi.chouette.exchange.netexprofile.exporter.producer.OrganisationProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.RouteProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.ServiceJourneyInterchangeProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.ServiceJourneyProducer;
@@ -81,13 +70,7 @@ import mobi.chouette.model.StopPoint;
 
 public class NetexLineDataProducer extends NetexProducer implements Constant {
 
-	private static final String NSR_OBJECT_ID = "NSR:Authority:NSR";
-	private static final String NSR_COMPANY_NUMBER = "917422575";
-	private static final String NSR_NAME = "Nasjonal Stoppestedsregister";
-	private static final String NSR_LEGAL_NAME = "NASJONAL STOPPESTEDSREGISTER";
-	private static final String NSR_PHONE = "0047 236 20 000";
-
-	private static OperatorProducer operatorProducer = new OperatorProducer();
+	private static OrganisationProducer organisationProducer = new OrganisationProducer();
 	private static StopPlaceProducer stopPlaceProducer = new StopPlaceProducer();
 	private static NetworkProducer networkProducer = new NetworkProducer();
 	private static LineProducer lineProducer = new LineProducer();
@@ -146,11 +129,8 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 				exportableNetexData.getJourneyPatterns().add(netexJourneyPattern);
 			}
 		}
-		
-		
 
-		calendarProducer.produce(context, exportableData,exportableNetexData);
-
+		calendarProducer.produce(context, exportableData, exportableNetexData);
 
 		for (mobi.chouette.model.VehicleJourney vehicleJourney : exportableData.getVehicleJourneys()) {
 			ServiceJourney serviceJourney = serviceJourneyProducer.produce(context, vehicleJourney, exportableData.getLine());
@@ -223,30 +203,11 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 		AvailabilityCondition availabilityCondition = createAvailabilityCondition(context);
 		exportableNetexData.setCommonCondition(availabilityCondition);
 
-		if (isSet(neptuneNetwork.getCompany())) {
-			if (!exportableNetexData.getSharedAuthorities().containsKey(neptuneNetwork.getCompany().getObjectId())) {
-				Authority networkAuthority = createNetworkAuthority(neptuneNetwork);
-				exportableNetexData.getSharedAuthorities().put(neptuneNetwork.getCompany().getObjectId(), networkAuthority);
+		for (Company company : exportableData.getCompanies()) {
+			if (!exportableNetexData.getSharedOrganisations().containsKey(company.getObjectId())) {
+				Organisation_VersionStructure organisation = organisationProducer.produce(context, company);
+				exportableNetexData.getSharedOrganisations().put(company.getObjectId(), organisation);
 			}
-		} else {
-			String version = neptuneNetwork.getObjectVersion() > 0 ? String.valueOf(neptuneNetwork.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
-			String objectId = netexId(neptuneNetwork.objectIdPrefix(), AUTHORITY, neptuneNetwork.objectIdSuffix());
-
-			if (!exportableNetexData.getSharedAuthorities().containsKey(objectId)) {
-				Authority networkAuthority = createNetworkAuthority(version, objectId);
-				exportableNetexData.getSharedAuthorities().put(objectId, networkAuthority);
-			}
-		}
-		if (!exportableNetexData.getSharedAuthorities().containsKey(NSR_OBJECT_ID)) {
-			Authority nsrAuthority = createNsrAuthority(neptuneNetwork);
-			exportableNetexData.getSharedAuthorities().put(NSR_OBJECT_ID, nsrAuthority);
-		}
-
-		Company company = exportableData.getLine().getCompany();
-
-		if (!exportableNetexData.getSharedOperators().containsKey(company.getObjectId())) {
-			Operator operator = operatorProducer.produce(context, company);
-			exportableNetexData.getSharedOperators().put(company.getObjectId(), operator);
 		}
 
 		if (configuration.isExportStops()) {
@@ -284,12 +245,8 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
 	private GroupOfLines createGroupOfLines(GroupOfLine groupOfLine) {
 		GroupOfLines groupOfLines = netexFactory.createGroupOfLines();
-		groupOfLines.setVersion(groupOfLine.getObjectVersion() > 0 ? String.valueOf(groupOfLine.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-		groupOfLines.setId(groupOfLine.getObjectId());
-
-		if (isSet(groupOfLine.getName())) {
-			groupOfLines.setName(getMultilingualString(groupOfLine.getName()));
-		}
+		NetexProducerUtils.populateId(groupOfLine, groupOfLines);
+		groupOfLines.setName(getMultilingualString(groupOfLine.getName()));
 
 		return groupOfLines;
 	}
@@ -462,18 +419,6 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 		stopAssignment.setScheduledStopPointRef(scheduledStopPointRefStruct);
 
 		if (isSet(stopPoint.getContainedInStopArea())) {
-			// if (isSet(stopPoint.getContainedInStopArea().getParent())) {
-			// mobi.chouette.model.StopArea parentStopArea = stopPoint.getContainedInStopArea().getParent();
-			// String stopPlaceIdRef = netexId(parentStopArea.objectIdPrefix(), STOP_PLACE, parentStopArea.objectIdSuffix());
-			//
-			// StopPlaceRefStructure stopPlaceRefStruct = netexFactory.createStopPlaceRefStructure().withRef(stopPlaceIdRef);
-			// if(parameters.isExportStops()) {
-			// stopPlaceRefStruct.withVersion(parentStopArea.getObjectVersion() > 0 ? String.valueOf(parentStopArea.getObjectVersion()) :
-			// NETEX_DATA_OJBECT_VERSION);
-			// }
-			// stopAssignment.setStopPlaceRef(stopPlaceRefStruct);
-			// }
-
 			mobi.chouette.model.StopArea containedInStopArea = stopPoint.getContainedInStopArea();
 			String quayIdRef = netexId(containedInStopArea.objectIdPrefix(), QUAY, containedInStopArea.objectIdSuffix());
 
@@ -486,29 +431,6 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 		}
 
 		return stopAssignment;
-	}
-
-	private Authority createNetworkAuthority(mobi.chouette.model.Network network) {
-		return createNetworkAuthority(network.getObjectVersion() > 0 ? String.valueOf(network.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION,
-				network.getCompany().getObjectId());
-	}
-
-	private Authority createNetworkAuthority(String version, String objectId) {
-		return netexFactory.createAuthority().withVersion(version).withId(objectId).withCompanyNumber("999999999")
-				.withName(getMultilingualString("Dummy Authority")).withLegalName(getMultilingualString("DUMMY AUTHORITY"))
-				.withContactDetails(createContactStructure("0047 999 99 999", "http://www.dummy-authority.org/"))
-				.withOrganisationType(OrganisationTypeEnumeration.AUTHORITY);
-	}
-
-	private Authority createNsrAuthority(mobi.chouette.model.Network network) {
-		return netexFactory.createAuthority()
-				.withVersion(network.getObjectVersion() > 0 ? String.valueOf(network.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION).withId(NSR_OBJECT_ID)
-				.withCompanyNumber(NSR_COMPANY_NUMBER).withName(getMultilingualString(NSR_NAME)).withLegalName(getMultilingualString(NSR_LEGAL_NAME))
-				.withContactDetails(createContactStructure(NSR_PHONE, NSR_XMLNSURL)).withOrganisationType(OrganisationTypeEnumeration.AUTHORITY);
-	}
-
-	private ContactStructure createContactStructure(String phone, String url) {
-		return netexFactory.createContactStructure().withPhone(phone).withUrl(url);
 	}
 
 }

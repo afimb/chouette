@@ -1,21 +1,20 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
-import mobi.chouette.common.Context;
-import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.exporter.NetexprofileExportParameters;
+import static mobi.chouette.exchange.netexprofile.Constant.PRODUCING_CONTEXT;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.AVAILABILITY_CONDITION;
+
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 
 import org.rutebanken.netex.model.AvailabilityCondition;
 import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.ObjectFactory;
 
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.util.regex.Pattern;
-
-import static mobi.chouette.exchange.netexprofile.Constant.PRODUCING_CONTEXT;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.AVAILABILITY_CONDITION;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.exporter.NetexprofileExportParameters;
 
 public class NetexProducer {
 
