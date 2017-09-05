@@ -1,6 +1,5 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
-import java.text.ParseException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;

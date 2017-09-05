@@ -53,6 +53,9 @@ public class NetexReferential implements Serializable {
     @Setter
     private Map<String, String> scheduledStopPointToQuay = new HashMap<>();
     
+    @Getter
+    public Map<String, String> groupOfLinesToNetwork = new HashMap<>();
+    
     
 
     public void clear() {
@@ -66,6 +69,7 @@ public class NetexReferential implements Serializable {
     public void dispose() {
         sharedStopPlaces.clear();
         scheduledStopPointToQuay.clear();
+        groupOfLinesToNetwork.clear();
     }
 
 }
