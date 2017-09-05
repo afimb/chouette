@@ -16,6 +16,9 @@ public class AbstractNetexWriter {
     static final String DEFAULT_ZONE_ID = "UTC";
     static final String DEFAULT_LANGUAGE_CODE = "no";
     static final String NSR_XMLNS = "NSR";
+	static final String PARTICIPANT_REF_CONTENT = "Entur AS";
+
+
 
     static final String VERSION = "version";
     static final String ID = "id";

@@ -16,7 +16,7 @@ import mobi.chouette.exchange.netexprofile.exporter.NetexprofileExportParameters
 
 public class NetexProducer {
 
-	public static final String NETEX_DATA_OJBECT_VERSION = "1";
+	public static final String NETEX_DEFAULT_OBJECT_VERSION = "1";
 
 	public static ObjectFactory netexFactory = null;
 

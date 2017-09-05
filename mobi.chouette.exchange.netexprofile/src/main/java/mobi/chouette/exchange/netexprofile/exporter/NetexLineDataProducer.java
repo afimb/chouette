@@ -141,7 +141,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 				Footnote footnote = vehicleJourney.getFootnotes().get(i);
 
 				// TODO Must be refactored when Footnote is turned into a NeptuneIdentifiedObject
-				String version = vehicleJourney.getObjectVersion() > 0 ? String.valueOf(vehicleJourney.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
+				String version = vehicleJourney.getObjectVersion() > 0 ? String.valueOf(vehicleJourney.getObjectVersion()) : NETEX_DEFAULT_OBJECT_VERSION;
 				String objectIdSuffix = vehicleJourney.objectIdSuffix() + "-" + i + 1;
 				String noticeId = netexId(vehicleJourney.objectIdPrefix(), NOTICE, objectIdSuffix);
 				String noticeAssignmentId = netexId(vehicleJourney.objectIdPrefix(), NOTICE_ASSIGNMENT, objectIdSuffix);
@@ -270,7 +270,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 	}
 
 	private RoutePoint createRoutePoint(String routePointId, StopPoint stopPoint) {
-		String pointVersion = stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
+		String pointVersion = stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DEFAULT_OBJECT_VERSION;
 
 		RoutePoint routePoint = netexFactory.createRoutePoint().withVersion(pointVersion).withId(routePointId);
 
@@ -362,7 +362,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 	private ScheduledStopPoint createScheduledStopPoint(StopPoint stopPoint, String stopPointId) {
 		Integer objectVersion = stopPoint.getObjectVersion();
 		ScheduledStopPoint scheduledStopPoint = netexFactory.createScheduledStopPoint();
-		scheduledStopPoint.setVersion(objectVersion > 0 ? String.valueOf(objectVersion) : NETEX_DATA_OJBECT_VERSION);
+		scheduledStopPoint.setVersion(objectVersion > 0 ? String.valueOf(objectVersion) : NETEX_DEFAULT_OBJECT_VERSION);
 		scheduledStopPoint.setId(stopPointId);
 
 		if (isSet(stopPoint.getContainedInStopArea().getName())) {
@@ -398,7 +398,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 	}
 
 	private PassengerStopAssignment createStopAssignment(StopPoint stopPoint, String stopAssignmentId, int order, NetexprofileExportParameters parameters) {
-		String pointVersion = stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
+		String pointVersion = stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DEFAULT_OBJECT_VERSION;
 
 		PassengerStopAssignment stopAssignment = netexFactory.createPassengerStopAssignment().withVersion(pointVersion).withId(stopAssignmentId)
 				.withOrder(new BigInteger(Integer.toString(order)));
@@ -416,7 +416,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 			QuayRefStructure quayRefStruct = netexFactory.createQuayRefStructure().withRef(quayIdRef);
 			if (parameters.isExportStops()) {
 				quayRefStruct.withVersion(
-						containedInStopArea.getObjectVersion() > 0 ? String.valueOf(containedInStopArea.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+						containedInStopArea.getObjectVersion() > 0 ? String.valueOf(containedInStopArea.getObjectVersion()) : NETEX_DEFAULT_OBJECT_VERSION);
 			}
 			stopAssignment.setQuayRef(quayRefStruct);
 		}

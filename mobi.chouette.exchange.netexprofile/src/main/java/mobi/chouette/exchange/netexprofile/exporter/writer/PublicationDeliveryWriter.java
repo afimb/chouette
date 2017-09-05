@@ -1,7 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
 import static mobi.chouette.common.Constant.CONFIGURATION;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DATA_OJBECT_VERSION;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DEFAULT_OBJECT_VERSION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.objectIdPrefix;
@@ -54,7 +54,7 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
 			writer.writeAttribute(VERSION, NETEX_PROFILE_VERSION);
 
 			writeElement(writer, PUBLICATION_TIMESTAMP, timestampFormatted);
-			writeElement(writer, PARTICIPANT_REF, NSR_XMLNS);
+			writeElement(writer, PARTICIPANT_REF, PARTICIPANT_REF_CONTENT);
 
 			if (fragmentMode.equals(NetexFragmentMode.LINE)) {
 				writeElement(writer, DESCRIPTION, exportableData.getLine().getName());
@@ -101,7 +101,7 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
 				writer.writeAttribute(CREATED, timestamp);
 			}
 
-			writer.writeAttribute(VERSION, NETEX_DATA_OJBECT_VERSION);
+			writer.writeAttribute(VERSION, NETEX_DEFAULT_OBJECT_VERSION);
 			writer.writeAttribute(ID, compositeFrameId);
 
 			writeValidityConditionsElement(writer, exportableNetexData, fragmentMode, marshaller);

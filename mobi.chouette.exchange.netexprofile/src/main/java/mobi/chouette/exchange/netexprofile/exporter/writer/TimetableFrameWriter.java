@@ -1,6 +1,6 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DATA_OJBECT_VERSION;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DEFAULT_OBJECT_VERSION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.JOURNEY_INTERCHANGES;
@@ -29,7 +29,7 @@ public class TimetableFrameWriter extends AbstractNetexWriter {
 
 		try {
 			writer.writeStartElement(TIMETABLE_FRAME);
-			writer.writeAttribute(VERSION, NETEX_DATA_OJBECT_VERSION);
+			writer.writeAttribute(VERSION, NETEX_DEFAULT_OBJECT_VERSION);
 			writer.writeAttribute(ID, timetableFrameId);
 			writeVehicleJourneysElement(writer, exportableNetexData, marshaller);
 

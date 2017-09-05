@@ -41,7 +41,7 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
         // Consumer vehicle journey ref
         VehicleJourney consumerVehicleJourney = interchange.getConsumerVehicleJourney();
 		if(consumerVehicleJourney != null) {
-            String consumerVehicleJourneyVersion = consumerVehicleJourney.getObjectVersion() > 0 ? String.valueOf(consumerVehicleJourney.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
+            String consumerVehicleJourneyVersion = consumerVehicleJourney.getObjectVersion() > 0 ? String.valueOf(consumerVehicleJourney.getObjectVersion()) : NETEX_DEFAULT_OBJECT_VERSION;
             netex.setToJourneyRef(netexFactory.createVehicleJourneyRefStructure().withRef(consumerVehicleJourney.getObjectId()).withVersion(consumerVehicleJourneyVersion));
         } else {
             netex.setToJourneyRef(netexFactory.createVehicleJourneyRefStructure().withRef(interchange.getConsumerVehicleJourneyObjectid()));
@@ -67,7 +67,7 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
 			if(consumerVehicleJourney != null) {
 				// Check if same line - if so they will both exist in the same file
 				if(consumerVehicleJourney.getRoute().getLine() == feederVehicleJourney.getRoute().getLine()) {
-					feederVehicleJourneyVersion = feederVehicleJourney.getObjectVersion() > 0 ? String.valueOf(feederVehicleJourney.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
+					feederVehicleJourneyVersion = feederVehicleJourney.getObjectVersion() > 0 ? String.valueOf(feederVehicleJourney.getObjectVersion()) : NETEX_DEFAULT_OBJECT_VERSION;
 				}
 			}
             netex.setFromJourneyRef(netexFactory.createVehicleJourneyRefStructure().withRef(feederVehicleJourney.getObjectId()).withVersion(feederVehicleJourneyVersion));

@@ -67,13 +67,6 @@ public class LineParser implements Parser, Constant {
 					log.error("Invalid id reference, could not retrieve correct instance");
 					throw new RuntimeException("Invalid id reference, could not retrieve correct instance");
 				}
-			} else {
-				for (mobi.chouette.model.Network network : referential.getPtNetworks().values()) {
-					if (network.isFilled()) {
-						chouetteLine.setNetwork(network);
-						break;
-					}
-				}
 			}
 
 			// TODO find out how to handle in chouette? can be: new, delete, revise or delta
