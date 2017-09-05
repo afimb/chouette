@@ -41,167 +41,174 @@ import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 
 public class PublicationDeliveryWriter extends AbstractNetexWriter {
 
-    public static void write(Context context, XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData, NetexFragmentMode fragmentMode, Marshaller marshaller) {
-        OffsetDateTime timestamp = OffsetDateTime.now();
-        String timestampFormatted = formatter.format(timestamp);
+	public static void write(Context context, XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData,
+			NetexFragmentMode fragmentMode, Marshaller marshaller) {
+		OffsetDateTime timestamp = OffsetDateTime.now();
+		String timestampFormatted = formatter.format(timestamp);
 
-        try {
-            writer.writeStartElement(PUBLICATION_DELIVERY);
-            writer.writeDefaultNamespace(Constant.NETEX_NAMESPACE);
-            writer.writeNamespace("gis", Constant.OPENGIS_NAMESPACE);
-            writer.writeNamespace("siri", Constant.SIRI_NAMESPACE);
-            writer.writeAttribute(VERSION, NETEX_PROFILE_VERSION);
+		try {
+			writer.writeStartElement(PUBLICATION_DELIVERY);
+			writer.writeDefaultNamespace(Constant.NETEX_NAMESPACE);
+			writer.writeNamespace("gis", Constant.OPENGIS_NAMESPACE);
+			writer.writeNamespace("siri", Constant.SIRI_NAMESPACE);
+			writer.writeAttribute(VERSION, NETEX_PROFILE_VERSION);
 
-            writeElement(writer, PUBLICATION_TIMESTAMP, timestampFormatted);
-            writeElement(writer, PARTICIPANT_REF, NSR_XMLNS);
+			writeElement(writer, PUBLICATION_TIMESTAMP, timestampFormatted);
+			writeElement(writer, PARTICIPANT_REF, NSR_XMLNS);
 
-            if (fragmentMode.equals(NetexFragmentMode.LINE)) {
-                writeElement(writer, DESCRIPTION, exportableData.getLine().getName());
-            } else {
-                writeElement(writer, DESCRIPTION, "Shared data used across line files");
-            }
+			if (fragmentMode.equals(NetexFragmentMode.LINE)) {
+				writeElement(writer, DESCRIPTION, exportableData.getLine().getName());
+			} else {
+				writeElement(writer, DESCRIPTION, "Shared data used across line files");
+			}
 
-            writeDataObjectsElement(context, writer, exportableData, exportableNetexData, timestampFormatted, fragmentMode,marshaller);
-            writer.writeEndElement();
-        } catch (XMLStreamException e) {
-            throw new RuntimeException(e);
-        }
-    }
+			writeDataObjectsElement(context, writer, exportableData, exportableNetexData, timestampFormatted, fragmentMode, marshaller);
+			writer.writeEndElement();
+		} catch (XMLStreamException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    private static void writeDataObjectsElement(Context context, XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData, String timestamp, NetexFragmentMode fragmentMode, Marshaller marshaller) {
-        try {
-            writer.writeStartElement(DATA_OBJECTS);
-            writeCompositeFrameElement(context, writer, exportableData, exportableNetexData, timestamp, fragmentMode,marshaller);
-            writer.writeEndElement();
-        } catch (XMLStreamException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	private static void writeDataObjectsElement(Context context, XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData,
+			String timestamp, NetexFragmentMode fragmentMode, Marshaller marshaller) {
+		try {
+			writer.writeStartElement(DATA_OBJECTS);
+			writeCompositeFrameElement(context, writer, exportableData, exportableNetexData, timestamp, fragmentMode, marshaller);
+			writer.writeEndElement();
+		} catch (XMLStreamException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    private static void writeCompositeFrameElement(Context context, XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData, String timestamp, NetexFragmentMode fragmentMode, Marshaller marshaller) {
-        mobi.chouette.model.Line line = exportableData.getLine();
+	private static void writeCompositeFrameElement(Context context, XMLStreamWriter writer, ExportableData exportableData,
+			ExportableNetexData exportableNetexData, String timestamp, NetexFragmentMode fragmentMode, Marshaller marshaller) {
+		mobi.chouette.model.Line line = exportableData.getLine();
 
-        Network network = exportableNetexData.getSharedNetworks().values().iterator().next();
-        String compositeFrameId = netexId(objectIdPrefix(network.getId()), COMPOSITE_FRAME, String.valueOf(NetexProducerUtils.generateSequentialId()));
+		Network network = exportableNetexData.getSharedNetworks().values().iterator().next();
+		String compositeFrameId = netexId(objectIdPrefix(network.getId()), COMPOSITE_FRAME, String.valueOf(NetexProducerUtils.generateSequentialId()));
 
-        try {
-            writer.writeStartElement(COMPOSITE_FRAME);
+		try {
+			writer.writeStartElement(COMPOSITE_FRAME);
 
-            if (fragmentMode.equals(NetexFragmentMode.LINE)) {
-                if (line.getNetwork().getVersionDate() != null) {
-                    OffsetDateTime createdDateTime = TimeUtil.toOffsetDateTime(line.getNetwork().getVersionDate());
-                    writer.writeAttribute(CREATED, formatter.format(createdDateTime));
-                } else {
-                    writer.writeAttribute(CREATED, timestamp);
-                }
-            } else {
-                writer.writeAttribute(CREATED, timestamp);
-            }
+			if (fragmentMode.equals(NetexFragmentMode.LINE)) {
+				if (line.getNetwork().getVersionDate() != null) {
+					OffsetDateTime createdDateTime = TimeUtil.toOffsetDateTime(line.getNetwork().getVersionDate());
+					writer.writeAttribute(CREATED, formatter.format(createdDateTime));
+				} else {
+					writer.writeAttribute(CREATED, timestamp);
+				}
+			} else {
+				writer.writeAttribute(CREATED, timestamp);
+			}
 
-            writer.writeAttribute(VERSION, NETEX_DATA_OJBECT_VERSION);
-            writer.writeAttribute(ID, compositeFrameId);
+			writer.writeAttribute(VERSION, NETEX_DATA_OJBECT_VERSION);
+			writer.writeAttribute(ID, compositeFrameId);
 
-            writeValidityConditionsElement(writer, exportableNetexData, fragmentMode,marshaller);
-            writeCodespacesElement(writer, exportableData, exportableNetexData, fragmentMode,marshaller);
-            writeFrameDefaultsElement(writer);
-            writeFramesElement(context, writer, exportableNetexData, fragmentMode,marshaller);
+			writeValidityConditionsElement(writer, exportableNetexData, fragmentMode, marshaller);
+			writeCodespacesElement(writer, exportableData, exportableNetexData, fragmentMode, marshaller);
+			writeFrameDefaultsElement(writer);
+			writeFramesElement(context, writer, exportableNetexData, fragmentMode, marshaller);
 
-            writer.writeEndElement();
-        } catch (XMLStreamException e) {
-            throw new RuntimeException(e);
-        }
-    }
+			writer.writeEndElement();
+		} catch (XMLStreamException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    private static void writeValidityConditionsElement(XMLStreamWriter writer, ExportableNetexData exportableData, NetexFragmentMode fragmentMode, Marshaller marshaller) {
-        try {
-            writer.writeStartElement(VALIDITY_CONDITIONS);
+	private static void writeValidityConditionsElement(XMLStreamWriter writer, ExportableNetexData exportableData, NetexFragmentMode fragmentMode,
+			Marshaller marshaller) {
+		try {
+			writer.writeStartElement(VALIDITY_CONDITIONS);
 
-            AvailabilityCondition availabilityCondition;
-            if (fragmentMode.equals(NetexFragmentMode.LINE)) {
-                availabilityCondition = exportableData.getLineCondition();
-            } else { // shared data
-                availabilityCondition = exportableData.getCommonCondition();
-            }
+			AvailabilityCondition availabilityCondition;
+			if (fragmentMode.equals(NetexFragmentMode.LINE)) {
+				availabilityCondition = exportableData.getLineCondition();
+			} else { // shared data
+				availabilityCondition = exportableData.getCommonCondition();
+			}
 
-            marshaller.marshal(netexFactory.createAvailabilityCondition(availabilityCondition), writer);
-            writer.writeEndElement();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+			marshaller.marshal(netexFactory.createAvailabilityCondition(availabilityCondition), writer);
+			writer.writeEndElement();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    private static void writeCodespacesElement(XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData, NetexFragmentMode fragmentMode, Marshaller marshaller) {
-        try {
-            writer.writeStartElement(CODESPACES);
+	private static void writeCodespacesElement(XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData,
+			NetexFragmentMode fragmentMode, Marshaller marshaller) {
+		try {
+			writer.writeStartElement(CODESPACES);
 
-            if (fragmentMode.equals(NetexFragmentMode.LINE)) {
-                writeCodespaceElement(writer, exportableNetexData.getSharedCodespaces().get(NSR_XMLNS));
+			if (fragmentMode.equals(NetexFragmentMode.LINE)) {
+				writeCodespaceElement(writer, exportableNetexData.getSharedCodespaces().get(NSR_XMLNS));
 
-                String lineObjectPrefix = exportableData.getLine().objectIdPrefix().toUpperCase();
-                writeCodespaceElement(writer, exportableNetexData.getSharedCodespaces().get(lineObjectPrefix));
-            } else { // shared data
-                writeCodespaceElement(writer, exportableNetexData.getSharedCodespaces().get(NSR_XMLNS));
-            }
+				String lineObjectPrefix = exportableData.getLine().objectIdPrefix().toUpperCase();
+				writeCodespaceElement(writer, exportableNetexData.getSharedCodespaces().get(lineObjectPrefix));
+			} else { // shared data
+				writeCodespaceElement(writer, exportableNetexData.getSharedCodespaces().get(NSR_XMLNS));
+			}
 
-            writer.writeEndElement();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+			writer.writeEndElement();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    private static void writeCodespaceElement(XMLStreamWriter writer, Codespace codespace) {
-        try {
-            writer.writeStartElement(CODESPACE);
-            writer.writeAttribute(ID, codespace.getId());
-            writeElement(writer, XMLNS, codespace.getXmlns());
-            writeElement(writer, XMLNSURL, codespace.getXmlnsUrl());
-            writer.writeEndElement();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+	private static void writeCodespaceElement(XMLStreamWriter writer, Codespace codespace) {
+		try {
+			writer.writeStartElement(CODESPACE);
+			writer.writeAttribute(ID, codespace.getId());
+			writeElement(writer, XMLNS, codespace.getXmlns());
+			writeElement(writer, XMLNSURL, codespace.getXmlnsUrl());
+			writer.writeEndElement();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    private static void writeFrameDefaultsElement(XMLStreamWriter writer) {
-        try {
-            writer.writeStartElement(FRAME_DEFAULTS);
-            writer.writeStartElement(DEFAULT_LOCALE);
-            writeElement(writer, TIME_ZONE, DEFAULT_ZONE_ID);
-            writeElement(writer, DEFAULT_LANGUAGE, DEFAULT_LANGUAGE_CODE);
-            writer.writeEndElement();
-            writer.writeEndElement();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+	private static void writeFrameDefaultsElement(XMLStreamWriter writer) {
+		try {
+			writer.writeStartElement(FRAME_DEFAULTS);
+			writer.writeStartElement(DEFAULT_LOCALE);
+			writeElement(writer, TIME_ZONE, DEFAULT_ZONE_ID);
+			writeElement(writer, DEFAULT_LANGUAGE, DEFAULT_LANGUAGE_CODE);
+			writer.writeEndElement();
+			writer.writeEndElement();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    private static void writeFramesElement(Context context, XMLStreamWriter writer, ExportableNetexData exportableNetexData, NetexFragmentMode fragmentMode, Marshaller marshaller) {
-        NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
+	private static void writeFramesElement(Context context, XMLStreamWriter writer, ExportableNetexData exportableNetexData, NetexFragmentMode fragmentMode,
+			Marshaller marshaller) {
+		NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
+		String defaultCodespacePrefix = configuration.getDefaultCodespacePrefix();
 
-        try {
-            writer.writeStartElement(FRAMES);
+		try {
+			writer.writeStartElement(FRAMES);
 
-            if (fragmentMode.equals(NetexFragmentMode.LINE)) {
-                ServiceFrameWriter.write(writer, exportableNetexData, NetexFragmentMode.LINE,marshaller);
-                ServiceCalendarFrameWriter.write(writer, exportableNetexData,marshaller);
-                TimetableFrameWriter.write(writer, exportableNetexData,marshaller);
-            } else { // shared data
-                ResourceFrameWriter.write(writer, exportableNetexData,marshaller);
+			if (fragmentMode.equals(NetexFragmentMode.LINE)) {
+				ServiceFrameWriter.write(writer, defaultCodespacePrefix, exportableNetexData, NetexFragmentMode.LINE, marshaller);
+				ServiceCalendarFrameWriter.write(writer, defaultCodespacePrefix, exportableNetexData, marshaller);
+				TimetableFrameWriter.write(writer, defaultCodespacePrefix, exportableNetexData, marshaller);
+			} else { // shared data
+				ResourceFrameWriter.write(writer, defaultCodespacePrefix, exportableNetexData, marshaller);
 
-                if (configuration.isExportStops()) {
-                    SiteFrameWriter.write(writer, exportableNetexData,marshaller);
-                }
+				if (configuration.isExportStops()) {
+					SiteFrameWriter.write(writer, defaultCodespacePrefix, exportableNetexData, marshaller);
+				}
 
-                for (Network network : exportableNetexData.getSharedNetworks().values()) {
-                    ServiceFrameWriter.write(writer, network,marshaller);
-                }
+				for (Network network : exportableNetexData.getSharedNetworks().values()) {
+					ServiceFrameWriter.write(writer, defaultCodespacePrefix, network, marshaller);
+				}
 
-                ServiceFrameWriter.write(writer, exportableNetexData, NetexFragmentMode.SHARED,marshaller);
-            }
+				ServiceFrameWriter.write(writer, defaultCodespacePrefix, exportableNetexData, NetexFragmentMode.SHARED, marshaller);
+			}
 
-            writer.writeEndElement();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+			writer.writeEndElement();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 }

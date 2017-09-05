@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 @Log4j
 public class NetexprofileExporterInputValidator extends AbstractInputValidator {
 
@@ -64,6 +66,11 @@ public class NetexprofileExporterInputValidator extends AbstractInputValidator {
 				log.error("invalid type " + type);
 				return false;
 			}
+		}
+		
+		if(StringUtils.trimToNull(parameters.getDefaultCodespacePrefix()) == null) {
+			log.error("Default codepsace prefix is empty");
+			return false;
 		}
 
 		return true;

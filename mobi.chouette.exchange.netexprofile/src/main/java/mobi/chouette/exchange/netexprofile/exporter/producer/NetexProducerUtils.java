@@ -181,6 +181,10 @@ public class NetexProducerUtils {
 	
 	
 	public static String generateNetexId(NeptuneIdentifiedObject source) {
+		if(source == null) {
+			log.error("Cannot generate netexid as source is null");
+			return null;
+		}
 		String newType = translateType(source);
 		if(newType != null) {
 			return translateObjectId(source.getObjectId(), newType);
@@ -190,6 +194,10 @@ public class NetexProducerUtils {
 	}
 
 	public static void populateId(NeptuneIdentifiedObject source, EntityInVersionStructure destination) {
+		if(source == null || destination == null) {
+			log.error("Cannot set id since either source or destination is null");
+			return;
+		}
 		String newType = translateType(source);
 		if (newType != null) {
 			destination.setId(translateObjectId(source.getObjectId(), newType));
@@ -200,6 +208,10 @@ public class NetexProducerUtils {
 	}
 
 	public static void populateReference(NeptuneIdentifiedObject source, VersionOfObjectRefStructure destination, boolean withVersion) {
+		if(source == null || destination == null) {
+			log.error("Cannot set reference since either source or destination is null");
+			return;
+		}
 		String newType = translateType(source);
 		if (newType != null) {
 			destination.setRef(translateObjectId(source.getObjectId(), newType));
@@ -213,6 +225,10 @@ public class NetexProducerUtils {
 	}
 
 	public static void populateReference(EntityInVersionStructure source, VersionOfObjectRefStructure destination, boolean withVersion) {
+		if(source == null || destination == null) {
+			log.error("Cannot set reference since either source or destination is null");
+			return;
+		}
 		destination.setRef(source.getId());
 		if (withVersion) {
 			destination.setVersion(source.getVersion());

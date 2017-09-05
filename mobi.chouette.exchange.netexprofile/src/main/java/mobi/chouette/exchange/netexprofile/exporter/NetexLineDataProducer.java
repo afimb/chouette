@@ -126,11 +126,10 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void produceAndCollectLineData(Context context, ExportableData exportableData, ExportableNetexData exportableNetexData) {
 		mobi.chouette.model.Line neptuneLine = exportableData.getLine();
 
-		AvailabilityCondition availabilityCondition = createAvailabilityCondition(neptuneLine);
+		AvailabilityCondition availabilityCondition = createAvailabilityCondition(context);
 		exportableNetexData.setLineCondition(availabilityCondition);
 
 		org.rutebanken.netex.model.Line netexLine = lineProducer.produce(context, neptuneLine);
@@ -221,7 +220,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 			}
 		}
 
-		AvailabilityCondition availabilityCondition = createAvailabilityCondition(neptuneNetwork);
+		AvailabilityCondition availabilityCondition = createAvailabilityCondition(context);
 		exportableNetexData.setCommonCondition(availabilityCondition);
 
 		if (isSet(neptuneNetwork.getCompany())) {

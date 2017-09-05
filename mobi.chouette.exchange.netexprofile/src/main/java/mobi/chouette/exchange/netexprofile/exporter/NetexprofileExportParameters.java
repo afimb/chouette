@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.*;
 @NoArgsConstructor
 @ToString(callSuper = true)
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"projectionType","addExtension", "exportStops"})
+@XmlType(propOrder={"projectionType","addExtension", "exportStops", "defaultCodespacePrefix"})
 public class NetexprofileExportParameters extends AbstractExportParameter {
 
     @Getter
@@ -28,5 +28,10 @@ public class NetexprofileExportParameters extends AbstractExportParameter {
     @Setter
     @XmlElement(name = "export_stops", defaultValue = "false")
     private boolean exportStops;
+
+    @Getter
+    @Setter
+    @XmlElement(name = "default_codespace_prefix", required = true)
+    private String defaultCodespacePrefix;
 
 }

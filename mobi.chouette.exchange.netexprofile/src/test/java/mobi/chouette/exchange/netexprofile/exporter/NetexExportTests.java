@@ -269,6 +269,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
         configuration.setExportStops(true);
+        configuration.setDefaultCodespacePrefix("AVI");
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -313,6 +314,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
         configuration.setExportStops(true);
+        configuration.setDefaultCodespacePrefix("AVI");
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -353,6 +355,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
         configuration.setExportStops(true);
+        configuration.setDefaultCodespacePrefix("AVI");
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -393,6 +396,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
         configuration.setExportStops(true);
+        configuration.setDefaultCodespacePrefix("AVI");
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -434,6 +438,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
         configuration.setExportStops(true);
+        configuration.setDefaultCodespacePrefix("AVI");
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -474,6 +479,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
         configuration.setExportStops(true);
+        configuration.setDefaultCodespacePrefix("AVI");
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -517,6 +523,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
         configuration.setExportStops(true);
+        configuration.setDefaultCodespacePrefix("AVI");
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -560,6 +567,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
         configuration.setExportStops(true);
+        configuration.setDefaultCodespacePrefix("AVI");
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 
@@ -609,6 +617,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         configuration.setAddMetadata(true);
         configuration.setReferencesType("line");
         configuration.setExportStops(true);
+        configuration.setDefaultCodespacePrefix("AVI");
 
         Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
 

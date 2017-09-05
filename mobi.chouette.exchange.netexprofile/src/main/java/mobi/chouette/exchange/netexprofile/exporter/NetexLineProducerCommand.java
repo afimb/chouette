@@ -1,7 +1,16 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
+import java.io.IOException;
+
+import javax.naming.InitialContext;
+import javax.xml.bind.MarshalException;
+
+import org.joda.time.LocalDate;
+import org.xml.sax.SAXParseException;
+
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
@@ -13,14 +22,6 @@ import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.NamingUtil;
-
-import org.joda.time.LocalDate;
-import org.xml.sax.SAXParseException;
-
-import javax.naming.InitialContext;
-import javax.xml.bind.MarshalException;
-import java.io.IOException;
-import java.sql.Date;
 
 @Log4j
 public class NetexLineProducerCommand implements Command, Constant {
@@ -38,7 +39,8 @@ public class NetexLineProducerCommand implements Command, Constant {
             Line line = (Line) context.get(LINE);
             log.info("procesing line " + NamingUtil.getName(line));
             NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
-
+            
+            
             ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
             if (collection == null) {
                 collection = new ExportableData();
@@ -55,6 +57,7 @@ public class NetexLineProducerCommand implements Command, Constant {
                 exportableNetexData.clear();
             }
 
+            // TODO This is currently only used to count number of elements exported
             SharedDataKeys sharedData = (SharedDataKeys) context.get(SHARED_DATA_KEYS);
             if (sharedData == null) {
                 sharedData = new SharedDataKeys();

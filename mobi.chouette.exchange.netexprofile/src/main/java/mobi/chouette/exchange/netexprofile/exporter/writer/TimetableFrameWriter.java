@@ -3,7 +3,6 @@ package mobi.chouette.exchange.netexprofile.exporter.writer;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DATA_OJBECT_VERSION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.objectIdPrefix;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.JOURNEY_INTERCHANGES;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NOTICES;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NOTICE_ASSIGNMENTS;
@@ -14,7 +13,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.rutebanken.netex.model.Network;
 import org.rutebanken.netex.model.Notice;
 import org.rutebanken.netex.model.NoticeAssignment;
 import org.rutebanken.netex.model.ServiceJourney;
@@ -25,11 +23,9 @@ import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 
 public class TimetableFrameWriter extends AbstractNetexWriter {
 
-	public static void write(XMLStreamWriter writer, ExportableNetexData exportableNetexData, Marshaller marshaller) {
+	public static void write(XMLStreamWriter writer, String defaultCodespacePrefix, ExportableNetexData exportableNetexData, Marshaller marshaller) {
 
-		// TODO temporary generating random id suffix, find a better way to create object id suffixes
-		Network network = exportableNetexData.getSharedNetworks().values().iterator().next();
-		String timetableFrameId = netexId(objectIdPrefix(network.getId()), TIMETABLE_FRAME, String.valueOf(NetexProducerUtils.generateSequentialId()));
+		String timetableFrameId = netexId(defaultCodespacePrefix, TIMETABLE_FRAME, String.valueOf(NetexProducerUtils.generateSequentialId()));
 
 		try {
 			writer.writeStartElement(TIMETABLE_FRAME);

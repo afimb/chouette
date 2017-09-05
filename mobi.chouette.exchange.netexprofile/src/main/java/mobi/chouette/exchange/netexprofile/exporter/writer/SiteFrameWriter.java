@@ -1,27 +1,24 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
-import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
-import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
-import org.rutebanken.netex.model.Network;
-import org.rutebanken.netex.model.StopPlace;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DATA_OJBECT_VERSION;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SITE_FRAME;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.STOP_PLACES;
 
 import javax.xml.bind.Marshaller;
 import javax.xml.stream.XMLStreamWriter;
 
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DATA_OJBECT_VERSION;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.objectIdPrefix;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SITE_FRAME;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.STOP_PLACES;
+import org.rutebanken.netex.model.StopPlace;
+
+import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
+import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 
 public class SiteFrameWriter extends AbstractNetexWriter {
 
-	public static void write(XMLStreamWriter writer, ExportableNetexData exportableNetexData, Marshaller marshaller) {
+	public static void write(XMLStreamWriter writer, String defaultCodespacePrefix, ExportableNetexData exportableNetexData, Marshaller marshaller) {
 
-		// TODO temporary generating random id suffix, find a better way to create object id suffixes
-		Network network = exportableNetexData.getSharedNetworks().values().iterator().next();
-		String siteFrameId = netexId(objectIdPrefix(network.getId()), SITE_FRAME, String.valueOf(NetexProducerUtils.generateSequentialId()));
+		String siteFrameId = netexId(defaultCodespacePrefix, SITE_FRAME, String.valueOf(NetexProducerUtils.generateSequentialId()));
 
 		try {
 			writer.writeStartElement(SITE_FRAME);

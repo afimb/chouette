@@ -257,17 +257,24 @@ public class ServiceCalendarFrameParser extends NetexParser implements Parser, C
 				}
 
 				// Cut of operating period to validity condition
-				org.joda.time.LocalDate validFrom = new org.joda.time.LocalDate(validBetween.getFromDate().toInstant().toEpochMilli());
-				org.joda.time.LocalDate validTo = new org.joda.time.LocalDate(validBetween.getToDate().toInstant().toEpochMilli());
+				org.joda.time.LocalDate validFrom = null;
+				if(validBetween.getFromDate() != null) {
+					validFrom = new org.joda.time.LocalDate(validBetween.getFromDate().toInstant().toEpochMilli());
+			
+				}
+				org.joda.time.LocalDate validTo = null;
+				if(validBetween.getToDate() != null) {
+					validTo = new org.joda.time.LocalDate(validBetween.getToDate().toInstant().toEpochMilli());
+				}
 				
-				if(endDate.isBefore(validFrom) || startDate.isAfter(validTo)) {
+				if((validFrom != null && endDate.isBefore(validFrom)) || (validTo != null && startDate.isAfter(validTo))) {
 					// Outside of validFrom/to envelope
 				} else {
 					// At least partially inside envelope
-					if(startDate.isBefore(validFrom)) {
+					if(validFrom != null && startDate.isBefore(validFrom)) {
 						startDate = validFrom;
 					}
-					if(endDate.isAfter(validTo)) {
+					if(validTo != null && endDate.isAfter(validTo)) {
 						endDate = validTo;
 					}
 					
