@@ -185,7 +185,6 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
 
 			if (fragmentMode.equals(NetexFragmentMode.LINE)) {
 				ServiceFrameWriter.write(writer, context, exportableNetexData, NetexFragmentMode.LINE, marshaller);
-				ServiceCalendarFrameWriter.write(writer, context, exportableNetexData, marshaller);
 				TimetableFrameWriter.write(writer, context, exportableNetexData, marshaller);
 			} else { // shared data
 				ResourceFrameWriter.write(writer, context, exportableNetexData, marshaller);
@@ -199,6 +198,7 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
 				}
 
 				ServiceFrameWriter.write(writer, context, exportableNetexData, NetexFragmentMode.SHARED, marshaller);
+				ServiceCalendarFrameWriter.write(writer, context, exportableNetexData, marshaller);
 			}
 
 			writer.writeEndElement();
