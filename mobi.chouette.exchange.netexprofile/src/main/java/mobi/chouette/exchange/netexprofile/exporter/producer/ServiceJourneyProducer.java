@@ -16,7 +16,9 @@ import org.rutebanken.netex.model.TimetabledPassingTime;
 import org.rutebanken.netex.model.TimetabledPassingTimes_RelStructure;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
+import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexTimeConversionUtil;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -27,85 +29,85 @@ import mobi.chouette.model.VehicleJourneyAtStop;
 
 public class ServiceJourneyProducer extends NetexProducer {
 
-    public ServiceJourney produce(Context context, VehicleJourney vehicleJourney, Line line) {
+	public ServiceJourney produce(Context context, VehicleJourney vehicleJourney, Line line) {
+        ExportableData exportableData = (ExportableData) context.get(Constant.EXPORTABLE_DATA);
 
-    	ServiceJourney serviceJourney = netexFactory.createServiceJourney();
-        NetexProducerUtils.populateId(vehicleJourney, serviceJourney);
+		ServiceJourney serviceJourney = netexFactory.createServiceJourney();
+		NetexProducerUtils.populateId(vehicleJourney, serviceJourney);
 
-        serviceJourney.setName(ConversionUtil.getMultiLingualString(vehicleJourney.getPublishedJourneyName()));
-        serviceJourney.setPublicCode(vehicleJourney.getPublishedJourneyIdentifier());
-        serviceJourney.setDescription(ConversionUtil.getMultiLingualString(vehicleJourney.getComment()));
-        serviceJourney.setTransportMode(ConversionUtil.toVehicleModeOfTransportEnum(vehicleJourney.getTransportMode()));
-        serviceJourney.setTransportSubmode(ConversionUtil.toTransportSubmodeStructure(vehicleJourney.getTransportSubMode()));
- 
-        JourneyPattern journeyPattern = vehicleJourney.getJourneyPattern();
-        JourneyPatternRefStructure journeyPatternRefStruct = netexFactory.createJourneyPatternRefStructure();
-        NetexProducerUtils.populateReference(journeyPattern, journeyPatternRefStruct, true);
-        serviceJourney.setJourneyPatternRef(netexFactory.createJourneyPatternRef(journeyPatternRefStruct));
+		serviceJourney.setName(ConversionUtil.getMultiLingualString(vehicleJourney.getPublishedJourneyName()));
+		serviceJourney.setPublicCode(vehicleJourney.getPublishedJourneyIdentifier());
+		serviceJourney.setDescription(ConversionUtil.getMultiLingualString(vehicleJourney.getComment()));
+		serviceJourney.setTransportMode(ConversionUtil.toVehicleModeOfTransportEnum(vehicleJourney.getTransportMode()));
+		serviceJourney.setTransportSubmode(ConversionUtil.toTransportSubmodeStructure(vehicleJourney.getTransportSubMode()));
 
-        LineRefStructure lineRefStruct = netexFactory.createLineRefStructure();
-        NetexProducerUtils.populateReference(line, lineRefStruct, true);
-        serviceJourney.setLineRef(netexFactory.createLineRef(lineRefStruct));
+		JourneyPattern journeyPattern = vehicleJourney.getJourneyPattern();
+		JourneyPatternRefStructure journeyPatternRefStruct = netexFactory.createJourneyPatternRefStructure();
+		NetexProducerUtils.populateReference(journeyPattern, journeyPatternRefStruct, true);
+		serviceJourney.setJourneyPatternRef(netexFactory.createJourneyPatternRef(journeyPatternRefStruct));
 
-        if(vehicleJourney.getTimetables().size() > 0) {
-            DayTypeRefs_RelStructure dayTypeStruct = netexFactory.createDayTypeRefs_RelStructure();
-            serviceJourney.setDayTypes(dayTypeStruct);
+		LineRefStructure lineRefStruct = netexFactory.createLineRefStructure();
+		NetexProducerUtils.populateReference(line, lineRefStruct, true);
+		serviceJourney.setLineRef(netexFactory.createLineRef(lineRefStruct));
 
-        	for(Timetable t : vehicleJourney.getTimetables()) {
-                DayTypeRefStructure dayTypeRefStruct = netexFactory.createDayTypeRefStructure();
-                NetexProducerUtils.populateReference(t, dayTypeRefStruct, true);
-                dayTypeStruct.getDayTypeRef().add(netexFactory.createDayTypeRef(dayTypeRefStruct));
-            }
-        }
-        
-        
-        if (CollectionUtils.isNotEmpty(vehicleJourney.getVehicleJourneyAtStops())) {
-            List<VehicleJourneyAtStop> vehicleJourneyAtStops = vehicleJourney.getVehicleJourneyAtStops();
-            vehicleJourneyAtStops.sort(Comparator.comparingInt(o -> o.getStopPoint().getPosition()));
+		if (vehicleJourney.getTimetables().size() > 0) {
+			DayTypeRefs_RelStructure dayTypeStruct = netexFactory.createDayTypeRefs_RelStructure();
+			serviceJourney.setDayTypes(dayTypeStruct);
 
-            TimetabledPassingTimes_RelStructure passingTimesStruct = netexFactory.createTimetabledPassingTimes_RelStructure();
+			for (Timetable t : vehicleJourney.getTimetables()) {
+				if (exportableData.getTimetables().contains(t)) {
+					DayTypeRefStructure dayTypeRefStruct = netexFactory.createDayTypeRefStructure();
+					NetexProducerUtils.populateReference(t, dayTypeRefStruct, false);
+					dayTypeStruct.getDayTypeRef().add(netexFactory.createDayTypeRef(dayTypeRefStruct));
+				}
+			}
+		}
 
-            for (int i = 0; i < vehicleJourneyAtStops.size(); i++) {
-                VehicleJourneyAtStop vehicleJourneyAtStop = vehicleJourneyAtStops.get(i);
+		if (CollectionUtils.isNotEmpty(vehicleJourney.getVehicleJourneyAtStops())) {
+			List<VehicleJourneyAtStop> vehicleJourneyAtStops = vehicleJourney.getVehicleJourneyAtStops();
+			vehicleJourneyAtStops.sort(Comparator.comparingInt(o -> o.getStopPoint().getPosition()));
 
-                TimetabledPassingTime timetabledPassingTime = netexFactory.createTimetabledPassingTime();
-                
-                StopPoint stopPoint = vehicleJourneyAtStop.getStopPoint();
-                StopPointInJourneyPatternRefStructure pointInPatternRefStruct = netexFactory.createStopPointInJourneyPatternRefStructure();
-                NetexProducerUtils.populateReference(stopPoint, pointInPatternRefStruct, true);
-                timetabledPassingTime.setPointInJourneyPatternRef(netexFactory.createStopPointInJourneyPatternRef(pointInPatternRefStruct));
+			TimetabledPassingTimes_RelStructure passingTimesStruct = netexFactory.createTimetabledPassingTimes_RelStructure();
 
-                LocalTime departureTime = vehicleJourneyAtStop.getDepartureTime();
-                LocalTime arrivalTime = vehicleJourneyAtStop.getArrivalTime();
+			for (int i = 0; i < vehicleJourneyAtStops.size(); i++) {
+				VehicleJourneyAtStop vehicleJourneyAtStop = vehicleJourneyAtStops.get(i);
 
-                if (arrivalTime != null) {
-                    if (arrivalTime.equals(departureTime)) {
-                        if (!(i + 1 < vehicleJourneyAtStops.size())) {
-                        	NetexTimeConversionUtil.populatePassingTimeUtc(timetabledPassingTime, true, vehicleJourneyAtStop);
-                        }
-                    } else {
-                    	NetexTimeConversionUtil.populatePassingTimeUtc(timetabledPassingTime, true, vehicleJourneyAtStop);
-                    }
-                }
-                if (departureTime != null) {
-                    if ((i + 1 < vehicleJourneyAtStops.size())) {
-                    	NetexTimeConversionUtil.populatePassingTimeUtc(timetabledPassingTime, false, vehicleJourneyAtStop);
-                        timetabledPassingTime.setDepartureTime(ConversionUtil.toOffsetTimeUtc(departureTime));
-                        if(vehicleJourneyAtStop.getDepartureDayOffset() > 0) {
-                        	timetabledPassingTime.setDepartureDayOffset(BigInteger.valueOf(vehicleJourneyAtStop.getDepartureDayOffset()));
-                        }
+				TimetabledPassingTime timetabledPassingTime = netexFactory.createTimetabledPassingTime();
 
-                    }
-                }
+				StopPoint stopPoint = vehicleJourneyAtStop.getStopPoint();
+				StopPointInJourneyPatternRefStructure pointInPatternRefStruct = netexFactory.createStopPointInJourneyPatternRefStructure();
+				NetexProducerUtils.populateReference(stopPoint, pointInPatternRefStruct, true);
+				timetabledPassingTime.setPointInJourneyPatternRef(netexFactory.createStopPointInJourneyPatternRef(pointInPatternRefStruct));
 
-                passingTimesStruct.getTimetabledPassingTime().add(timetabledPassingTime);
-            }
+				LocalTime departureTime = vehicleJourneyAtStop.getDepartureTime();
+				LocalTime arrivalTime = vehicleJourneyAtStop.getArrivalTime();
 
-            serviceJourney.setPassingTimes(passingTimesStruct);
-        }
+				if (arrivalTime != null) {
+					if (arrivalTime.equals(departureTime)) {
+						if (!(i + 1 < vehicleJourneyAtStops.size())) {
+							NetexTimeConversionUtil.populatePassingTimeUtc(timetabledPassingTime, true, vehicleJourneyAtStop);
+						}
+					} else {
+						NetexTimeConversionUtil.populatePassingTimeUtc(timetabledPassingTime, true, vehicleJourneyAtStop);
+					}
+				}
+				if (departureTime != null) {
+					if ((i + 1 < vehicleJourneyAtStops.size())) {
+						NetexTimeConversionUtil.populatePassingTimeUtc(timetabledPassingTime, false, vehicleJourneyAtStop);
+						timetabledPassingTime.setDepartureTime(ConversionUtil.toOffsetTimeUtc(departureTime));
+						if (vehicleJourneyAtStop.getDepartureDayOffset() > 0) {
+							timetabledPassingTime.setDepartureDayOffset(BigInteger.valueOf(vehicleJourneyAtStop.getDepartureDayOffset()));
+						}
 
-        return serviceJourney;
-    }
-    
+					}
+				}
 
+				passingTimesStruct.getTimetabledPassingTime().add(timetabledPassingTime);
+			}
+
+			serviceJourney.setPassingTimes(passingTimesStruct);
+		}
+
+		return serviceJourney;
+	}
 }

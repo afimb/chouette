@@ -86,15 +86,15 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private Map<String,DayType> dayTypes = new HashMap<>();
+    private Map<String,DayType> sharedDayTypes = new HashMap<>();
 
     @Getter
     @Setter
-    private Set<DayTypeAssignment> dayTypeAssignments = new HashSet<>();
+    private Set<DayTypeAssignment> sharedDayTypeAssignments = new HashSet<>();
 
     @Getter
     @Setter
-    private Set<OperatingPeriod> operatingPeriods = new HashSet<>();
+    private Set<OperatingPeriod> sharedOperatingPeriods = new HashSet<>();
 
     @Getter
     @Setter
@@ -111,14 +111,14 @@ public class ExportableNetexData {
         serviceJourneys. clear();
         notices.clear();
         noticeAssignments.clear();
-        dayTypes.clear();
-        dayTypeAssignments.clear();
-        operatingPeriods.clear();
         serviceJourneyInterchanges.clear();
     }
 
     public void dispose() {
         clear();
+        sharedDayTypes.clear();
+        sharedDayTypeAssignments.clear();
+        sharedOperatingPeriods.clear();
         commonCondition = null;
         sharedCodespaces.clear();
         sharedNetworks.clear();

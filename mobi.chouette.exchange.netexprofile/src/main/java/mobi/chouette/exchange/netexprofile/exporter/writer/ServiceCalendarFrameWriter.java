@@ -31,7 +31,7 @@ public class ServiceCalendarFrameWriter extends AbstractNetexWriter {
             writer.writeAttribute(ID, serviceCalendarFrameId);
             writeDayTypesElement(writer, exportableNetexData,marshaller);
 
-            if (CollectionUtils.isNotEmpty(exportableNetexData.getOperatingPeriods())) {
+            if (CollectionUtils.isNotEmpty(exportableNetexData.getSharedOperatingPeriods())) {
                 writeOperatingPeriodsElement(writer, exportableNetexData,marshaller);
             }
 
@@ -45,7 +45,7 @@ public class ServiceCalendarFrameWriter extends AbstractNetexWriter {
     private static void writeDayTypesElement(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
         try {
             writer.writeStartElement(DAY_TYPES);
-            for (DayType dayType : exportableData.getDayTypes().values()) {
+            for (DayType dayType : exportableData.getSharedDayTypes().values()) {
                 marshaller.marshal(netexFactory.createDayType(dayType), writer);
             }
             writer.writeEndElement();
@@ -57,7 +57,7 @@ public class ServiceCalendarFrameWriter extends AbstractNetexWriter {
     private static void writeDayTypeAssignmentsElement(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
         try {
             writer.writeStartElement(DAY_TYPE_ASSIGNMENTS);
-            for (DayTypeAssignment dayTypeAssignment : exportableData.getDayTypeAssignments()) {
+            for (DayTypeAssignment dayTypeAssignment : exportableData.getSharedDayTypeAssignments()) {
                 marshaller.marshal(netexFactory.createDayTypeAssignment(dayTypeAssignment), writer);
             }
             writer.writeEndElement();
@@ -69,7 +69,7 @@ public class ServiceCalendarFrameWriter extends AbstractNetexWriter {
     private static void writeOperatingPeriodsElement(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
         try {
             writer.writeStartElement(OPERATING_PERIODS);
-            for (OperatingPeriod operatingPeriod : exportableData.getOperatingPeriods()) {
+            for (OperatingPeriod operatingPeriod : exportableData.getSharedOperatingPeriods()) {
                 marshaller.marshal(netexFactory.createOperatingPeriod(operatingPeriod), writer);
             }
             writer.writeEndElement();
