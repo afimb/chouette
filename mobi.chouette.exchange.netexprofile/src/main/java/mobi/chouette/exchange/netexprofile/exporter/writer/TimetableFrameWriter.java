@@ -1,9 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DATA_OJBECT_VERSION;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DEFAULT_OBJECT_VERSION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.objectIdPrefix;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.JOURNEY_INTERCHANGES;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NOTICES;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NOTICE_ASSIGNMENTS;
@@ -14,26 +12,24 @@ import javax.xml.bind.Marshaller;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.rutebanken.netex.model.Network;
 import org.rutebanken.netex.model.Notice;
 import org.rutebanken.netex.model.NoticeAssignment;
 import org.rutebanken.netex.model.ServiceJourney;
 import org.rutebanken.netex.model.ServiceJourneyInterchange;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 
 public class TimetableFrameWriter extends AbstractNetexWriter {
 
-	public static void write(XMLStreamWriter writer, ExportableNetexData exportableNetexData, Marshaller marshaller) {
+	public static void write(XMLStreamWriter writer, Context context, ExportableNetexData exportableNetexData, Marshaller marshaller) {
 
-		// TODO temporary generating random id suffix, find a better way to create object id suffixes
-		Network network = exportableNetexData.getSharedNetworks().values().iterator().next();
-		String timetableFrameId = netexId(objectIdPrefix(network.getId()), TIMETABLE_FRAME, String.valueOf(NetexProducerUtils.generateSequentialId()));
+		String timetableFrameId = NetexProducerUtils.createUniqueId(context, TIMETABLE_FRAME);
 
 		try {
 			writer.writeStartElement(TIMETABLE_FRAME);
-			writer.writeAttribute(VERSION, NETEX_DATA_OJBECT_VERSION);
+			writer.writeAttribute(VERSION, NETEX_DEFAULT_OBJECT_VERSION);
 			writer.writeAttribute(ID, timetableFrameId);
 			writeVehicleJourneysElement(writer, exportableNetexData, marshaller);
 

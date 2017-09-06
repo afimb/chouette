@@ -3,7 +3,9 @@ package mobi.chouette.exchange.netexprofile.exporter.producer;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SCHEDULED_STOP_POINT;
 
+import org.rutebanken.netex.model.ScheduledStopPointRefStructure;
 import org.rutebanken.netex.model.ServiceJourneyInterchange;
+import org.rutebanken.netex.model.VehicleJourneyRefStructure;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
@@ -18,12 +20,8 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
     public ServiceJourneyInterchange produce(Context context, Interchange interchange) {
         ServiceJourneyInterchange netex = netexFactory.createServiceJourneyInterchange();
 
-        netex.setVersion(interchange.getObjectVersion() > 0 ? String.valueOf(interchange.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-
-        netex.setId(interchange.getObjectId());
-
-        
-        netex.setName(ConversionUtil.getMLString(interchange.getName()));
+        NetexProducerUtils.populateId(interchange, netex);
+        netex.setName(ConversionUtil.getMultiLingualString(interchange.getName()));
         netex.setPriority(ConversionUtil.asBigInteger(interchange.getPriority()));
         netex.setStaySeated(interchange.getStaySeated());
         netex.setAdvertised(interchange.getAdvertised());
@@ -33,52 +31,49 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
         
         // Consumer stoppoint ref 
         ScheduledStopPoint consumerStopPoint = interchange.getConsumerStopPoint();
-		if(consumerStopPoint != null) {
-            String stopPointIdSuffix = consumerStopPoint.getContainedInStopArea().objectIdSuffix();
-            String stopPointIdRef = netexId(consumerStopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, stopPointIdSuffix);
-            netex.setToPointRef(netexFactory.createScheduledStopPointRefStructure().withRef(stopPointIdRef));
-        } else {
-            netex.setToPointRef(netexFactory.createScheduledStopPointRefStructure().withRef(interchange.getConsumerStopPointObjectid()));
-        }
-
+        ScheduledStopPointRefStructure consumerSSPRef = netexFactory.createScheduledStopPointRefStructure();
+        NetexProducerUtils.populateReference(consumerStopPoint, consumerSSPRef, true);
         netex.setToVisitNumber(ConversionUtil.asBigInteger(interchange.getConsumerVisitNumber()));
+        netex.setToPointRef(consumerSSPRef);
 
         // Consumer vehicle journey ref
         VehicleJourney consumerVehicleJourney = interchange.getConsumerVehicleJourney();
-		if(consumerVehicleJourney != null) {
-            String consumerVehicleJourneyVersion = consumerVehicleJourney.getObjectVersion() > 0 ? String.valueOf(consumerVehicleJourney.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
-            netex.setToJourneyRef(netexFactory.createVehicleJourneyRefStructure().withRef(consumerVehicleJourney.getObjectId()).withVersion(consumerVehicleJourneyVersion));
-        } else {
-            netex.setToJourneyRef(netexFactory.createVehicleJourneyRefStructure().withRef(interchange.getConsumerVehicleJourneyObjectid()));
-        }
+        VehicleJourneyRefStructure consumerVehicleRef = netexFactory.createVehicleJourneyRefStructure();
+        NetexProducerUtils.populateReference(consumerVehicleJourney, consumerVehicleRef, true);
+        netex.setToJourneyRef(consumerVehicleRef);
 
-
-        
-       // Feeder stoppoint ref
-		ScheduledStopPoint feederStopPoint = interchange.getFeederStopPoint();
-		if(feederStopPoint != null) {
-            String stopPointIdSuffix = feederStopPoint.getContainedInStopArea().objectIdSuffix();
-            String stopPointIdRef = netexId(feederStopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, stopPointIdSuffix);
-            netex.setFromPointRef(netexFactory.createScheduledStopPointRefStructure().withRef(stopPointIdRef));
-        } else {
-            netex.setFromPointRef(netexFactory.createScheduledStopPointRefStructure().withRef(interchange.getFeederStopPointObjectid()));
-        }
-        netex.setFromVisitNumber(ConversionUtil.asBigInteger(interchange.getFeederVisitNumber()));
-
-        // Feeder vehicle journey ref
-		String feederVehicleJourneyVersion = null;
+        // Find if interchange is within same line - if so use version reference
+        boolean interchangeWithinSameLine = false;
         VehicleJourney feederVehicleJourney = interchange.getFeederVehicleJourney();
 		if(feederVehicleJourney != null) {
 			if(consumerVehicleJourney != null) {
 				// Check if same line - if so they will both exist in the same file
 				if(consumerVehicleJourney.getRoute().getLine() == feederVehicleJourney.getRoute().getLine()) {
-					feederVehicleJourneyVersion = feederVehicleJourney.getObjectVersion() > 0 ? String.valueOf(feederVehicleJourney.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION;
-				}
+					interchangeWithinSameLine = true;
+				}        
 			}
-            netex.setFromJourneyRef(netexFactory.createVehicleJourneyRefStructure().withRef(feederVehicleJourney.getObjectId()).withVersion(feederVehicleJourneyVersion));
+		}
+		
+       // Feeder stoppoint ref
+		ScheduledStopPoint feederStopPoint = interchange.getFeederStopPoint();
+		ScheduledStopPointRefStructure feederSSPRef = netexFactory.createScheduledStopPointRefStructure();
+		
+		if(feederStopPoint != null) {
+            NetexProducerUtils.populateReference(feederStopPoint, feederSSPRef, interchangeWithinSameLine);
         } else {
-            netex.setFromJourneyRef(netexFactory.createVehicleJourneyRefStructure().withRef(interchange.getFeederVehicleJourneyObjectid()));
+        	feederSSPRef.setRef(interchange.getFeederStopPointObjectid());
         }
+        netex.setFromVisitNumber(ConversionUtil.asBigInteger(interchange.getFeederVisitNumber()));
+        netex.setFromPointRef(feederSSPRef);
+
+        // Feeder vehicle journey ref
+        VehicleJourneyRefStructure feederVehicleRef = netexFactory.createVehicleJourneyRefStructure();
+		if(feederVehicleJourney != null) {
+			NetexProducerUtils.populateReference(feederVehicleJourney, feederVehicleRef, interchangeWithinSameLine);
+        } else {
+            feederVehicleRef.setRef(interchange.getFeederVehicleJourneyObjectid());
+        }
+        netex.setFromJourneyRef(feederVehicleRef);
         
         
         return netex;

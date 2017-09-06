@@ -10,8 +10,6 @@ import org.rutebanken.netex.model.DayType;
 import org.rutebanken.netex.model.DayTypeAssignment;
 import org.rutebanken.netex.model.OperatingDay;
 import org.rutebanken.netex.model.OperatingPeriod;
-import org.rutebanken.netex.model.StopPlace;
-import org.rutebanken.netex.model.StopPointInJourneyPattern;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,10 +39,10 @@ public class NetexReferential implements Serializable {
     private Map<String, OperatingDay> operatingDays = new HashMap<>();
 
     @Getter
-    @Setter
-    private Map<String, StopPlace> sharedStopPlaces = new HashMap<>();
+    public Map<String, String> groupOfLinesToNetwork = new HashMap<>();
     
     
+
     public void clear() {
         dayTypes.clear();
         dayTypeAssignments.clear();
@@ -53,7 +51,7 @@ public class NetexReferential implements Serializable {
     }
 
     public void dispose() {
-        sharedStopPlaces.clear();
+        groupOfLinesToNetwork.clear();
     }
 
 }

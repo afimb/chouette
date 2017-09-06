@@ -1,16 +1,18 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
-import mobi.chouette.common.Context;
-import mobi.chouette.exchange.netexprofile.ConversionUtil;
-import mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes;
-import mobi.chouette.model.GroupOfLine;
-import mobi.chouette.model.Route;
-import org.apache.commons.collections.CollectionUtils;
-import org.rutebanken.netex.model.*;
-
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.GROUP_OF_LINES;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
+import org.rutebanken.netex.model.GroupOfLinesRefStructure;
+import org.rutebanken.netex.model.OperatorRefStructure;
+import org.rutebanken.netex.model.PrivateCodeStructure;
+
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
+import mobi.chouette.model.GroupOfLine;
 
 public class LineProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Line, mobi.chouette.model.Line> {
 
@@ -18,29 +20,26 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
     public org.rutebanken.netex.model.Line produce(Context context, mobi.chouette.model.Line neptuneLine) {
         org.rutebanken.netex.model.Line netexLine = netexFactory.createLine();
 
-        netexLine.setVersion(neptuneLine.getObjectVersion() > 0 ? String.valueOf(neptuneLine.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-
-        String lineId = netexId(neptuneLine.objectIdPrefix(), LINE, neptuneLine.objectIdSuffix());
-        netexLine.setId(lineId);
+        NetexProducerUtils.populateId(neptuneLine, netexLine);
 
         if (isSet(neptuneLine.getName())) {
-            netexLine.setName(getMultilingualString(neptuneLine.getName()));
+            netexLine.setName(ConversionUtil.getMultiLingualString(neptuneLine.getName()));
         } else {
             if (isSet(neptuneLine.getPublishedName())) {
-                netexLine.setName(getMultilingualString(neptuneLine.getPublishedName()));
+                netexLine.setName(ConversionUtil.getMultiLingualString(neptuneLine.getPublishedName()));
             } else if (isSet(neptuneLine.getNumber())) {
-                netexLine.setName(getMultilingualString(neptuneLine.getNumber()));
+                netexLine.setName(ConversionUtil.getMultiLingualString(neptuneLine.getNumber()));
             } else {
-                netexLine.setName(getMultilingualString(neptuneLine.objectIdSuffix()));
+                netexLine.setName(ConversionUtil.getMultiLingualString(neptuneLine.objectIdSuffix()));
             }
         }
 
         if (isSet(neptuneLine.getPublishedName())) {
-            netexLine.setShortName(getMultilingualString(neptuneLine.getPublishedName()));
+            netexLine.setShortName(ConversionUtil.getMultiLingualString(neptuneLine.getPublishedName()));
         }
 
         if (isSet(neptuneLine.getComment())) {
-            netexLine.setDescription(getMultilingualString(neptuneLine.getComment()));
+            netexLine.setDescription(ConversionUtil.getMultiLingualString(neptuneLine.getComment()));
         }
 
         if (isSet(neptuneLine.getTransportModeName())) {
@@ -61,19 +60,8 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
         }
 
         OperatorRefStructure operatorRefStruct = netexFactory.createOperatorRefStructure();
-        String operatorId = netexId(neptuneLine.getCompany().objectIdPrefix(), NetexObjectIdTypes.OPERATOR, neptuneLine.getCompany().objectIdSuffix());
-        operatorRefStruct.setRef(operatorId);
+        NetexProducerUtils.populateReference(neptuneLine.getCompany(), operatorRefStruct, false);
         netexLine.setOperatorRef(operatorRefStruct);
-
-        RouteRefs_RelStructure routeRefsStruct = netexFactory.createRouteRefs_RelStructure();
-        for (Route route : neptuneLine.getRoutes()) {
-            RouteRefStructure routeRefStruct = netexFactory.createRouteRefStructure();
-            routeRefStruct.setVersion(route.getObjectVersion() != null ? String.valueOf(route.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-            String routeIdRef = netexId(route.objectIdPrefix(), ROUTE, route.objectIdSuffix());
-            routeRefStruct.setRef(routeIdRef);
-            routeRefsStruct.getRouteRef().add(routeRefStruct);
-        }
-        netexLine.setRoutes(routeRefsStruct);
 
         if (CollectionUtils.isNotEmpty(neptuneLine.getGroupOfLines())) {
             GroupOfLine groupOfLine = neptuneLine.getGroupOfLines().get(0);
@@ -82,8 +70,8 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
             netexLine.setRepresentedByGroupRef(groupOfLinesRefStruct);
         } else {
             mobi.chouette.model.Network neptuneNetwork = neptuneLine.getNetwork();
-            String networkId = netexId(neptuneNetwork.objectIdPrefix(), NETWORK, neptuneNetwork.objectIdSuffix());
-            GroupOfLinesRefStructure groupOfLinesRefStruct = netexFactory.createGroupOfLinesRefStructure().withRef(networkId);
+            GroupOfLinesRefStructure groupOfLinesRefStruct = netexFactory.createGroupOfLinesRefStructure();
+            NetexProducerUtils.populateReference(neptuneNetwork, groupOfLinesRefStruct, false);
             netexLine.setRepresentedByGroupRef(groupOfLinesRefStruct);
         }
 

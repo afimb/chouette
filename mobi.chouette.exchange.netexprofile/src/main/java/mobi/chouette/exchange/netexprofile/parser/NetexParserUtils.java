@@ -304,6 +304,8 @@ public class NetexParserUtils extends ParserUtils {
 			return OrganisationTypeEnum.Authority;
 		case OPERATOR:
 			return OrganisationTypeEnum.Operator;
+		default:
+			// Passthrough
 		}
 		return null;
 	}

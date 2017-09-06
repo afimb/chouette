@@ -4,6 +4,17 @@ import java.math.BigInteger;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.joda.time.LocalTime;
+import org.rutebanken.netex.model.DayTypeRefStructure;
+import org.rutebanken.netex.model.DayTypeRefs_RelStructure;
+import org.rutebanken.netex.model.JourneyPatternRefStructure;
+import org.rutebanken.netex.model.LineRefStructure;
+import org.rutebanken.netex.model.ServiceJourney;
+import org.rutebanken.netex.model.StopPointInJourneyPatternRefStructure;
+import org.rutebanken.netex.model.TimetabledPassingTime;
+import org.rutebanken.netex.model.TimetabledPassingTimes_RelStructure;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexTimeConversionUtil;
@@ -14,83 +25,40 @@ import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.joda.time.LocalTime;
-import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
-import org.rutebanken.netex.model.DayTypeRefStructure;
-import org.rutebanken.netex.model.DayTypeRefs_RelStructure;
-import org.rutebanken.netex.model.JourneyPatternRefStructure;
-import org.rutebanken.netex.model.LineRefStructure;
-import org.rutebanken.netex.model.ServiceJourney;
-import org.rutebanken.netex.model.StopPointInJourneyPatternRefStructure;
-import org.rutebanken.netex.model.TimetabledPassingTime;
-import org.rutebanken.netex.model.TimetabledPassingTimes_RelStructure;
-import org.rutebanken.netex.model.TransportSubmodeStructure;
-
-import static mobi.chouette.exchange.netexprofile.Constant.PRODUCING_CONTEXT;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SERVICE_JOURNEY;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.STOP_POINT_IN_JOURNEY_PATTERN;
-
 public class ServiceJourneyProducer extends NetexProducer {
 
-    @SuppressWarnings("unchecked")
     public ServiceJourney produce(Context context, VehicleJourney vehicleJourney, Line line) {
-        Context producingContext = (Context) context.get(PRODUCING_CONTEXT);
-        Context calendarContext = (Context) producingContext.get(CalendarProducer.LOCAL_CONTEXT);
 
-        ServiceJourney serviceJourney = netexFactory.createServiceJourney();
-        serviceJourney.setVersion(vehicleJourney.getObjectVersion() > 0 ? String.valueOf(vehicleJourney.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+    	ServiceJourney serviceJourney = netexFactory.createServiceJourney();
+        NetexProducerUtils.populateId(vehicleJourney, serviceJourney);
 
-        String serviceJourneyId = netexId(vehicleJourney.objectIdPrefix(), SERVICE_JOURNEY, vehicleJourney.objectIdSuffix());
-        serviceJourney.setId(serviceJourneyId);
-
-        if (isSet(vehicleJourney.getPublishedJourneyName())) {
-            serviceJourney.setName(getMultilingualString(vehicleJourney.getPublishedJourneyName()));
-        }
-        if (isSet(vehicleJourney.getPublishedJourneyIdentifier())) {
-            serviceJourney.setShortName(getMultilingualString(vehicleJourney.getPublishedJourneyIdentifier()));
-            serviceJourney.setPublicCode(vehicleJourney.getPublishedJourneyIdentifier());
-        } else {
-            serviceJourney.setShortName(getMultilingualString(vehicleJourney.objectIdSuffix()));
-            serviceJourney.setPublicCode(vehicleJourney.objectIdSuffix());
-        }
-        if (isSet(vehicleJourney.getComment())) {
-            serviceJourney.setDescription(getMultilingualString(vehicleJourney.getComment()));
-        }
-        if (isSet(vehicleJourney.getTransportMode())) {
-            AllVehicleModesOfTransportEnumeration vehicleModeOfTransport = ConversionUtil.toVehicleModeOfTransportEnum(vehicleJourney.getTransportMode());
-            serviceJourney.setTransportMode(vehicleModeOfTransport);
-        }
+        serviceJourney.setName(ConversionUtil.getMultiLingualString(vehicleJourney.getPublishedJourneyName()));
+        serviceJourney.setPublicCode(vehicleJourney.getPublishedJourneyIdentifier());
+        serviceJourney.setDescription(ConversionUtil.getMultiLingualString(vehicleJourney.getComment()));
+        serviceJourney.setTransportMode(ConversionUtil.toVehicleModeOfTransportEnum(vehicleJourney.getTransportMode()));
         serviceJourney.setTransportSubmode(ConversionUtil.toTransportSubmodeStructure(vehicleJourney.getTransportSubMode()));
  
         JourneyPattern journeyPattern = vehicleJourney.getJourneyPattern();
         JourneyPatternRefStructure journeyPatternRefStruct = netexFactory.createJourneyPatternRefStructure();
-        journeyPatternRefStruct.setVersion(journeyPattern.getObjectVersion() != null ? String.valueOf(journeyPattern.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-        journeyPatternRefStruct.setRef(journeyPattern.getObjectId());
+        NetexProducerUtils.populateReference(journeyPattern, journeyPatternRefStruct, true);
         serviceJourney.setJourneyPatternRef(netexFactory.createJourneyPatternRef(journeyPatternRefStruct));
 
         LineRefStructure lineRefStruct = netexFactory.createLineRefStructure();
-        lineRefStruct.setVersion(line.getObjectVersion() != null ? String.valueOf(line.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-        lineRefStruct.setRef(line.getObjectId());
+        NetexProducerUtils.populateReference(line, lineRefStruct, true);
         serviceJourney.setLineRef(netexFactory.createLineRef(lineRefStruct));
 
-        Context objectContext = (Context) calendarContext.get(vehicleJourney.getObjectId());
-        List<String> dayTypeIds = (List<String>) objectContext.get(CalendarProducer.DAY_TYPE_IDS);
+        if(vehicleJourney.getTimetables().size() > 0) {
+            DayTypeRefs_RelStructure dayTypeStruct = netexFactory.createDayTypeRefs_RelStructure();
+            serviceJourney.setDayTypes(dayTypeStruct);
 
-        List<Timetable> timetables = vehicleJourney.getTimetables();
-        DayTypeRefs_RelStructure dayTypeStruct = netexFactory.createDayTypeRefs_RelStructure();
-
-        for (String dayTypeId : dayTypeIds) {
-            DayTypeRefStructure dayTypeRefStruct = netexFactory.createDayTypeRefStructure();
-            dayTypeRefStruct.setVersion(timetables.get(0).getObjectVersion() > 0 ? String.valueOf(timetables.get(0).getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-            dayTypeRefStruct.setRef(dayTypeId);
-            dayTypeStruct.getDayTypeRef().add(netexFactory.createDayTypeRef(dayTypeRefStruct));
+        	for(Timetable t : vehicleJourney.getTimetables()) {
+                DayTypeRefStructure dayTypeRefStruct = netexFactory.createDayTypeRefStructure();
+                NetexProducerUtils.populateReference(t, dayTypeRefStruct, true);
+                dayTypeStruct.getDayTypeRef().add(netexFactory.createDayTypeRef(dayTypeRefStruct));
+            }
         }
-
-        serviceJourney.setDayTypes(dayTypeStruct);
-
+        
+        
         if (CollectionUtils.isNotEmpty(vehicleJourney.getVehicleJourneyAtStops())) {
             List<VehicleJourneyAtStop> vehicleJourneyAtStops = vehicleJourney.getVehicleJourneyAtStops();
             vehicleJourneyAtStops.sort(Comparator.comparingInt(o -> o.getStopPoint().getPosition()));
@@ -101,14 +69,10 @@ public class ServiceJourneyProducer extends NetexProducer {
                 VehicleJourneyAtStop vehicleJourneyAtStop = vehicleJourneyAtStops.get(i);
 
                 TimetabledPassingTime timetabledPassingTime = netexFactory.createTimetabledPassingTime();
-
+                
                 StopPoint stopPoint = vehicleJourneyAtStop.getStopPoint();
                 StopPointInJourneyPatternRefStructure pointInPatternRefStruct = netexFactory.createStopPointInJourneyPatternRefStructure();
-                pointInPatternRefStruct.setVersion(stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-
-                String pointInPatternIdSuffix = stopPoint.objectIdSuffix() + "-" + stopPoint.getPosition();
-                String pointInPatternIdRef = netexId(stopPoint.objectIdPrefix(), STOP_POINT_IN_JOURNEY_PATTERN, pointInPatternIdSuffix);
-                pointInPatternRefStruct.setRef(pointInPatternIdRef);
+                NetexProducerUtils.populateReference(stopPoint, pointInPatternRefStruct, true);
                 timetabledPassingTime.setPointInJourneyPatternRef(netexFactory.createStopPointInJourneyPatternRef(pointInPatternRefStruct));
 
                 LocalTime departureTime = vehicleJourneyAtStop.getDepartureTime();

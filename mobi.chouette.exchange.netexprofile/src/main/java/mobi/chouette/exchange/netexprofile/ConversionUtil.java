@@ -1,12 +1,14 @@
 package mobi.chouette.exchange.netexprofile;
 
 import java.math.BigInteger;
+import java.time.Clock;
+import java.time.Instant;
 import java.time.OffsetTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
-import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.TransportSubModeNameEnum;
@@ -16,7 +18,6 @@ import org.rutebanken.netex.model.AirSubmodeEnumeration;
 import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
 import org.rutebanken.netex.model.BusSubmodeEnumeration;
 import org.rutebanken.netex.model.DayOfWeekEnumeration;
-import org.rutebanken.netex.model.FunicularSubmodeEnumeration;
 import org.rutebanken.netex.model.MetroSubmodeEnumeration;
 import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.RailSubmodeEnumeration;
@@ -29,7 +30,7 @@ import static mobi.chouette.common.TimeUtil.toLocalTimeFromJoda;
 
 public class ConversionUtil {
 
-	public static MultilingualString getMLString(String v) {
+	public static MultilingualString getMultiLingualString(String v) {
 		if (v == null) {
 			return null;
 		} else {
@@ -263,7 +264,13 @@ public class ConversionUtil {
 
 	public static OffsetTime toOffsetTimeUtc(org.joda.time.LocalTime time) {
 		return time == null ? null
-				: toLocalTimeFromJoda(time).atOffset(NetexProducerUtils.getZoneOffset(NetexProducerUtils.LOCAL_ZONE_ID)).withOffsetSameInstant(ZoneOffset.UTC);
+				: toLocalTimeFromJoda(time).atOffset(ConversionUtil.getZoneOffset(ConversionUtil.LOCAL_ZONE_ID)).withOffsetSameInstant(ZoneOffset.UTC);
+	}
+
+	public static final ZoneId LOCAL_ZONE_ID = ZoneId.of("Europe/Oslo");
+
+	public static ZoneOffset getZoneOffset(ZoneId zoneId) {
+		return zoneId == null ? null : zoneId.getRules().getOffset(Instant.now(Clock.system(zoneId)));
 	}
 
 }

@@ -133,7 +133,7 @@ public class NetexTestUtils  {
 			Location sourceLocation = checkPointError.getSource();
 			FileLocation fileLocation = sourceLocation.getFile();
 
-			String logMessage = "Validation checkpoint : " + checkPointError.getTestId() + " failed for objectId : " + sourceLocation.getObjectId()
+			String logMessage = "Validation checkpoint : " + checkPointError.getTestId() + " failed for objectId : " + sourceLocation.getObjectId()+". Error value: "+checkPointError.getValue()+ " ReferenceValue: "+checkPointError.getReferenceValue()
 					+ " at file location : " + fileLocation.getFilename() + ", Line " + fileLocation.getLineNumber() + ", Column " + fileLocation.getColumnNumber();
 
 			if (checkPoint.getSeverity().equals(CheckPointReport.SEVERITY.ERROR)) {

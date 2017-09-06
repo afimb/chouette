@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
@@ -15,99 +16,83 @@ import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProduce
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
-public class JourneyPatternProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.JourneyPattern, mobi.chouette.model.JourneyPattern> {
+public class JourneyPatternProducer extends NetexProducer
+		implements NetexEntityProducer<org.rutebanken.netex.model.JourneyPattern, mobi.chouette.model.JourneyPattern> {
 
-    @Override
-    public org.rutebanken.netex.model.JourneyPattern produce(Context context, mobi.chouette.model.JourneyPattern neptuneJourneyPattern) {
-        org.rutebanken.netex.model.JourneyPattern netexJourneyPattern = netexFactory.createJourneyPattern();
-        netexJourneyPattern.setVersion(neptuneJourneyPattern.getObjectVersion() > 0 ? String.valueOf(neptuneJourneyPattern.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+	@Override
+	public org.rutebanken.netex.model.JourneyPattern produce(Context context, mobi.chouette.model.JourneyPattern neptuneJourneyPattern) {
+		org.rutebanken.netex.model.JourneyPattern netexJourneyPattern = netexFactory.createJourneyPattern();
 
-        String journeyPatternId = netexId(neptuneJourneyPattern.objectIdPrefix(), JOURNEY_PATTERN, neptuneJourneyPattern.objectIdSuffix());
-        netexJourneyPattern.setId(journeyPatternId);
+		NetexProducerUtils.populateId(neptuneJourneyPattern, netexJourneyPattern);
 
-        if (isSet(neptuneJourneyPattern.getComment())) {
-            KeyValueStructure keyValueStruct = netexFactory.createKeyValueStructure()
-                    .withKey("Comment")
-                    .withValue(neptuneJourneyPattern.getComment());
-            netexJourneyPattern.setKeyList(netexFactory.createKeyListStructure().withKeyValue(keyValueStruct));
-        }
+		if (isSet(neptuneJourneyPattern.getComment())) {
+			KeyValueStructure keyValueStruct = netexFactory.createKeyValueStructure().withKey("Comment").withValue(neptuneJourneyPattern.getComment());
+			netexJourneyPattern.setKeyList(netexFactory.createKeyListStructure().withKeyValue(keyValueStruct));
+		}
 
-        if (isSet(neptuneJourneyPattern.getName())) {
-            netexJourneyPattern.setName(getMultilingualString(neptuneJourneyPattern.getName()));
-        }
+		if (isSet(neptuneJourneyPattern.getName())) {
+			netexJourneyPattern.setName(ConversionUtil.getMultiLingualString(neptuneJourneyPattern.getName()));
+		}
 
-        if (isSet(neptuneJourneyPattern.getPublishedName())) {
-            netexJourneyPattern.setShortName(getMultilingualString(neptuneJourneyPattern.getPublishedName()));
-        }
+		if (isSet(neptuneJourneyPattern.getPublishedName())) {
+			netexJourneyPattern.setShortName(ConversionUtil.getMultiLingualString(neptuneJourneyPattern.getPublishedName()));
+		}
 
-        if (isSet(neptuneJourneyPattern.getRegistrationNumber())) {
-            PrivateCodeStructure privateCodeStruct = netexFactory.createPrivateCodeStructure();
-            privateCodeStruct.setValue(neptuneJourneyPattern.getRegistrationNumber());
-            netexJourneyPattern.setPrivateCode(privateCodeStruct);
-        }
+		if (isSet(neptuneJourneyPattern.getRegistrationNumber())) {
+			PrivateCodeStructure privateCodeStruct = netexFactory.createPrivateCodeStructure();
+			privateCodeStruct.setValue(neptuneJourneyPattern.getRegistrationNumber());
+			netexJourneyPattern.setPrivateCode(privateCodeStruct);
+		}
 
-        Route route = neptuneJourneyPattern.getRoute();
-        RouteRefStructure routeRefStruct = netexFactory.createRouteRefStructure();
-        routeRefStruct.setVersion(route.getObjectVersion() != null ? String.valueOf(route.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+		Route route = neptuneJourneyPattern.getRoute();
+		RouteRefStructure routeRefStruct = netexFactory.createRouteRefStructure();
+		NetexProducerUtils.populateReference(route, routeRefStruct, true);
 
-        String routeIdRef = netexId(route.objectIdPrefix(), ROUTE, route.objectIdSuffix());
-        routeRefStruct.setRef(routeIdRef);
+		netexJourneyPattern.setRouteRef(routeRefStruct);
 
-        netexJourneyPattern.setRouteRef(routeRefStruct);
+		PointsInJourneyPattern_RelStructure pointsInJourneyPattern = netexFactory.createPointsInJourneyPattern_RelStructure();
+		List<StopPoint> stopPoints = neptuneJourneyPattern.getStopPoints();
+		stopPoints.sort(Comparator.comparingInt(StopPoint::getPosition));
 
-        PointsInJourneyPattern_RelStructure pointsInJourneyPattern = netexFactory.createPointsInJourneyPattern_RelStructure();
-        List<StopPoint> stopPoints = neptuneJourneyPattern.getStopPoints();
-        stopPoints.sort(Comparator.comparingInt(StopPoint::getPosition));
-        
-       
+		for (int i = 0; i < stopPoints.size(); i++) {
+			StopPoint stopPoint = stopPoints.get(i);
 
-        for (int i = 0; i < stopPoints.size(); i++) {
-            StopPoint stopPoint = stopPoints.get(i);
+			if (stopPoint != null) {
+				StopPointInJourneyPattern stopPointInJourneyPattern = netexFactory.createStopPointInJourneyPattern();
+				NetexProducerUtils.populateId(stopPoint, stopPointInJourneyPattern);
 
-            if (stopPoint != null) {
-                String pointInPatternIdSuffix = stopPoint.objectIdSuffix() + "-" + stopPoint.getPosition();
-                String stopPointInJourneyPatternId = netexId(stopPoint.objectIdPrefix(), STOP_POINT_IN_JOURNEY_PATTERN, pointInPatternIdSuffix);
+				if (stopPoint.getScheduledStopPoint() != null) {
+					ScheduledStopPointRefStructure stopPointRefStruct = netexFactory.createScheduledStopPointRefStructure();
+					NetexProducerUtils.populateReference(stopPoint.getScheduledStopPoint(), stopPointRefStruct, false);
+					stopPointInJourneyPattern.setScheduledStopPointRef(netexFactory.createScheduledStopPointRef(stopPointRefStruct));
+				}
 
-                StopPointInJourneyPattern stopPointInJourneyPattern = netexFactory.createStopPointInJourneyPattern();
-                stopPointInJourneyPattern.setVersion(stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
-                stopPointInJourneyPattern.setId(stopPointInJourneyPatternId);
+				BoardingPossibilityEnum forBoarding = stopPoint.getForBoarding();
+				AlightingPossibilityEnum forAlighting = stopPoint.getForAlighting();
 
-                if (isSet(stopPoint.getScheduledStopPoint().getContainedInStopArea())) {
-                    String stopPointIdSuffix = stopPoint.getScheduledStopPoint().getContainedInStopArea().objectIdSuffix();
-                    String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, stopPointIdSuffix);
+				if (forBoarding != null && forAlighting != null) {
+					if (forBoarding.equals(BoardingPossibilityEnum.normal) && forAlighting.equals(AlightingPossibilityEnum.forbidden)) {
+						stopPointInJourneyPattern.setForAlighting(false);
+					}
+					if (forAlighting.equals(AlightingPossibilityEnum.normal) && forBoarding.equals(BoardingPossibilityEnum.forbidden)) {
+						stopPointInJourneyPattern.setForBoarding(false);
+					}
+				}
 
-                    ScheduledStopPointRefStructure stopPointRefStruct = netexFactory.createScheduledStopPointRefStructure().withRef(stopPointIdRef);
-                    stopPointInJourneyPattern.setScheduledStopPointRef(netexFactory.createScheduledStopPointRef(stopPointRefStruct));
-                } else {
-                    throw new RuntimeException("StopPoint with id : " + stopPoint.getObjectId() + " is not contained in a StopArea. Cannot produce ScheduledStopPoint reference.");
-                }
+				stopPointInJourneyPattern.setOrder(BigInteger.valueOf(i + 1));
 
-                BoardingPossibilityEnum forBoarding = stopPoint.getForBoarding();
-                AlightingPossibilityEnum forAlighting = stopPoint.getForAlighting();
+				if (stopPoint.getDestinationDisplay() != null) {
+					DestinationDisplayRefStructure destinationDisplayRef = netexFactory.createDestinationDisplayRefStructure();
+					destinationDisplayRef.setRef(stopPoint.getDestinationDisplay().getObjectId());
+					stopPointInJourneyPattern.setDestinationDisplayRef(destinationDisplayRef);
+				}
 
-                if (forBoarding != null && forAlighting != null) {
-                    if (forBoarding.equals(BoardingPossibilityEnum.normal) && forAlighting.equals(AlightingPossibilityEnum.forbidden)) {
-                        stopPointInJourneyPattern.setForAlighting(false);
-                    }
-                    if (forAlighting.equals(AlightingPossibilityEnum.normal) && forBoarding.equals(BoardingPossibilityEnum.forbidden)) {
-                        stopPointInJourneyPattern.setForBoarding(false);
-                    }
-                }
+				pointsInJourneyPattern.getPointInJourneyPatternOrStopPointInJourneyPatternOrTimingPointInJourneyPattern().add(stopPointInJourneyPattern);
+			}
+		}
 
-                stopPointInJourneyPattern.setOrder(BigInteger.valueOf(i + 1));
-                
-                if(stopPoint.getDestinationDisplay() != null) {
-                	DestinationDisplayRefStructure destinationDisplayRef = netexFactory.createDestinationDisplayRefStructure();
-                	destinationDisplayRef.setRef(stopPoint.getDestinationDisplay().getObjectId());
-                	stopPointInJourneyPattern.setDestinationDisplayRef(destinationDisplayRef);
-                }
-                
-                pointsInJourneyPattern.getPointInJourneyPatternOrStopPointInJourneyPatternOrTimingPointInJourneyPattern().add(stopPointInJourneyPattern);
-            }
-        }
-
-        netexJourneyPattern.setPointsInSequence(pointsInJourneyPattern);
-        return netexJourneyPattern;
-    }
+		netexJourneyPattern.setPointsInSequence(pointsInJourneyPattern);
+		return netexJourneyPattern;
+	}
 
 }

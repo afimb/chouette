@@ -1,19 +1,20 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
+import java.io.IOException;
+
+import javax.naming.InitialContext;
+
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer;
 import mobi.chouette.exchange.netexprofile.util.NetexReferential;
 import mobi.chouette.model.util.Referential;
-
-import javax.naming.InitialContext;
-import java.io.IOException;
 
 @Log4j
 public class NetexDisposeExportCommand implements Command, Constant {
@@ -40,7 +41,6 @@ public class NetexDisposeExportCommand implements Command, Constant {
                 exportableNetexData.dispose();
             }
 
-            NetexProducer.resetContext(context);
             result = SUCCESS;
         } catch (Exception e) {
             log.error(e, e);

@@ -1,147 +1,99 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import static mobi.chouette.exchange.netexprofile.Constant.NETEX_REFERENTIAL;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.rutebanken.netex.model.LocationStructure;
+import org.rutebanken.netex.model.PrivateCodeStructure;
+import org.rutebanken.netex.model.Quay;
+import org.rutebanken.netex.model.Quays_RelStructure;
+import org.rutebanken.netex.model.SimplePoint_VersionStructure;
+import org.rutebanken.netex.model.StopPlace;
+import org.rutebanken.netex.model.ZoneRefStructure;
+
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.util.NetexObjectUtil;
 import mobi.chouette.exchange.netexprofile.util.NetexReferential;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
-import org.apache.commons.collections.CollectionUtils;
-import org.rutebanken.netex.model.*;
-
-import static mobi.chouette.exchange.netexprofile.Constant.NETEX_REFERENTIAL;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 public class StopPlaceProducer extends NetexProducer implements NetexEntityProducer<StopPlace, StopArea> {
 
-    private static final String DEFAULT_COORDINATE_SYSTEM = "WGS84";
+	private static final String DEFAULT_COORDINATE_SYSTEM = "WGS84";
 
-    @Override
-    public StopPlace produce(Context context, StopArea stopArea) {
-        NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
-        StopPlace stopPlace = netexFactory.createStopPlace();
-        stopPlace.setVersion(stopArea.getObjectVersion() > 0 ? String.valueOf(stopArea.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+	@Override
+	public StopPlace produce(Context context, StopArea stopArea) {
+		NetexReferential netexReferential = (NetexReferential) context.get(NETEX_REFERENTIAL);
+		StopPlace stopPlace = netexFactory.createStopPlace();
 
-        String stopPlaceId = netexId(stopArea.objectIdPrefix(), STOP_PLACE, stopArea.objectIdSuffix());
-        stopPlace.setId(stopPlaceId);
+		NetexProducerUtils.populateId(stopArea, stopPlace);
+		stopPlace.setName(ConversionUtil.getMultiLingualString(stopArea.getName()));
+		stopPlace.setDescription(ConversionUtil.getMultiLingualString(stopArea.getComment()));
 
-        if (isSet(stopArea.getName())) {
-            stopPlace.setName(getMultilingualString(stopArea.getName()));
-        }
+		if (isSet(stopArea.getRegistrationNumber())) {
+			PrivateCodeStructure privateCodeStruct = netexFactory.createPrivateCodeStructure();
+			privateCodeStruct.setValue(stopArea.getRegistrationNumber());
+			stopPlace.setPrivateCode(privateCodeStruct);
+		}
 
-        if (isSet(stopArea.getComment())) {
-            stopPlace.setDescription(getMultilingualString(stopArea.getComment()));
-        }
+		if (stopArea.hasCoordinates()) {
+			SimplePoint_VersionStructure pointStruct = netexFactory.createSimplePoint_VersionStructure();
+			LocationStructure locationStruct = netexFactory.createLocationStructure().withSrsName(DEFAULT_COORDINATE_SYSTEM);
 
-        if (isSet(stopArea.getRegistrationNumber())) {
-            PrivateCodeStructure privateCodeStruct = netexFactory.createPrivateCodeStructure();
-            privateCodeStruct.setValue(stopArea.getRegistrationNumber());
-            stopPlace.setPrivateCode(privateCodeStruct);
-        }
+			if (stopArea.hasCoordinates()) {
+				locationStruct.setLatitude(stopArea.getLatitude());
+				locationStruct.setLongitude(stopArea.getLongitude());
+			}
 
-        if (stopArea.hasCoordinates()) {
-            SimplePoint_VersionStructure pointStruct = netexFactory.createSimplePoint_VersionStructure();
-            LocationStructure locationStruct = netexFactory.createLocationStructure().withSrsName(DEFAULT_COORDINATE_SYSTEM);
+			pointStruct.setLocation(locationStruct);
+			stopPlace.setCentroid(pointStruct);
+		}
 
-            if (stopArea.hasCoordinates()) {
-                locationStruct.setLatitude(stopArea.getLatitude());
-                locationStruct.setLongitude(stopArea.getLongitude());
-            }
+		if (isSet(stopArea.getParent())) {
+			ZoneRefStructure zoneRefStruct = netexFactory.createZoneRefStructure();
+			NetexProducerUtils.populateReference(stopArea.getParent(), zoneRefStruct, true);
+			stopPlace.setParentZoneRef(zoneRefStruct);
+		}
 
-            pointStruct.setLocation(locationStruct);
-            stopPlace.setCentroid(pointStruct);
-        }
+		if (stopArea.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint) && CollectionUtils.isNotEmpty(stopArea.getContainedStopAreas())) {
+			Quays_RelStructure quayStruct = netexFactory.createQuays_RelStructure();
 
-        if (isSet(stopArea.getParent())) {
-            ZoneRefStructure zoneRefStruct = netexFactory.createZoneRefStructure();
-            zoneRefStruct.setVersion(String.valueOf(stopArea.getParent().getObjectVersion()));
-            String parentStopPlaceId = netexId(stopArea.getParent().objectIdPrefix(), STOP_PLACE, stopArea.getParent().objectIdSuffix());
-            zoneRefStruct.setRef(parentStopPlaceId);
-            stopPlace.setParentZoneRef(zoneRefStruct);
-        }
+			for (StopArea containedStopArea : stopArea.getContainedStopAreas()) {
+				Quay quay = netexFactory.createQuay();
+				NetexProducerUtils.populateId(containedStopArea, quay);
 
-        if (isSet(stopArea.getNearestTopicName())) {
-            // TODO set Landmark?
-        }
+				quay.setName(ConversionUtil.getMultiLingualString(containedStopArea.getName()));
+				quay.setDescription(ConversionUtil.getMultiLingualString(containedStopArea.getComment()));
 
-        if (stopArea.hasAddress()) {
-            // TODO set PostalAddress
-        }
+				if (isSet(containedStopArea.getRegistrationNumber())) {
+					PrivateCodeStructure privateCodeStruct = netexFactory.createPrivateCodeStructure();
+					privateCodeStruct.setValue(containedStopArea.getRegistrationNumber());
+					quay.setPrivateCode(privateCodeStruct);
+				}
 
-        if (CollectionUtils.isNotEmpty(stopArea.getAccessPoints())) {
-            // TODO set StopPlaceEntrance's
-        }
+				if (containedStopArea.hasCoordinates()) {
+					SimplePoint_VersionStructure pointStruct = netexFactory.createSimplePoint_VersionStructure();
+					LocationStructure locationStruct = netexFactory.createLocationStructure().withSrsName(DEFAULT_COORDINATE_SYSTEM);
 
-        if (isSet(stopArea.getFareCode())) {
-            TariffZoneRefs_RelStructure tariffZoneRefsStruct = netexFactory.createTariffZoneRefs_RelStructure();
-            String tariffZoneIdRef = netexId(stopArea.objectIdPrefix(), TARIFF_ZONE_REF, String.valueOf(stopArea.getFareCode()));
-            TariffZoneRef tariffZoneRef = netexFactory.createTariffZoneRef().withRef(tariffZoneIdRef);
-            tariffZoneRefsStruct.withTariffZoneRef(tariffZoneRef);
-            stopPlace.setTariffZones(tariffZoneRefsStruct);
-        }
+					if (containedStopArea.hasCoordinates()) {
+						locationStruct.setLatitude(containedStopArea.getLatitude());
+						locationStruct.setLongitude(containedStopArea.getLongitude());
+					}
 
-        if (stopArea.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint) && CollectionUtils.isNotEmpty(stopArea.getContainedStopAreas())) {
-            Quays_RelStructure quayStruct = netexFactory.createQuays_RelStructure();
+					pointStruct.setLocation(locationStruct);
+					quay.setCentroid(pointStruct);
+				}
 
-            for (StopArea containedStopArea : stopArea.getContainedStopAreas()) {
-                Quay quay = netexFactory.createQuay();
-                quay.setVersion(containedStopArea.getObjectVersion() > 0 ? String.valueOf(containedStopArea.getObjectVersion()) : NETEX_DATA_OJBECT_VERSION);
+				quayStruct.getQuayRefOrQuay().add(quay);
+			}
 
-                String quayId = netexId(containedStopArea.objectIdPrefix(), QUAY, containedStopArea.objectIdSuffix());
-                quay.setId(quayId);
+			stopPlace.setQuays(quayStruct);
+		}
 
-                if (isSet(quay.getName())) {
-                    quay.setName(getMultilingualString(containedStopArea.getName()));
-                }
-
-                if (isSet(containedStopArea.getComment())) {
-                    quay.setDescription(getMultilingualString(containedStopArea.getComment()));
-                }
-
-                if (isSet(containedStopArea.getRegistrationNumber())) {
-                    PrivateCodeStructure privateCodeStruct = netexFactory.createPrivateCodeStructure();
-                    privateCodeStruct.setValue(containedStopArea.getRegistrationNumber());
-                    quay.setPrivateCode(privateCodeStruct);
-                }
-
-                if (containedStopArea.hasCoordinates()) {
-                    SimplePoint_VersionStructure pointStruct = netexFactory.createSimplePoint_VersionStructure();
-                    LocationStructure locationStruct = netexFactory.createLocationStructure().withSrsName(DEFAULT_COORDINATE_SYSTEM);
-
-                    if (containedStopArea.hasCoordinates()) {
-                        locationStruct.setLatitude(containedStopArea.getLatitude());
-                        locationStruct.setLongitude(containedStopArea.getLongitude());
-                    }
-
-                    pointStruct.setLocation(locationStruct);
-                    quay.setCentroid(pointStruct);
-                }
-
-                if (isSet(containedStopArea.getNearestTopicName())) {
-                    // TODO set Landmark?
-                }
-
-                if (containedStopArea.hasAddress()) {
-                    // TODO set PostalAddress
-                }
-
-                if (isSet(containedStopArea.getFareCode())) {
-                    TariffZoneRefs_RelStructure tariffZoneRefsStruct = netexFactory.createTariffZoneRefs_RelStructure();
-                    String tariffZoneIdRef = netexId(containedStopArea.objectIdPrefix(), TARIFF_ZONE_REF, String.valueOf(containedStopArea.getFareCode()));
-                    TariffZoneRef tariffZoneRef = netexFactory.createTariffZoneRef().withRef(tariffZoneIdRef);
-                    tariffZoneRefsStruct.withTariffZoneRef(tariffZoneRef);
-                    quay.setTariffZones(tariffZoneRefsStruct);
-                }
-
-                quayStruct.getQuayRefOrQuay().add(quay);
-            }
-
-            stopPlace.setQuays(quayStruct);
-        }
-
-        NetexObjectUtil.addSharedStopPlace(netexReferential, stopPlaceId, stopPlace);
-        return stopPlace;
-    }
+	
+		return stopPlace;
+	}
 
 }

@@ -19,7 +19,6 @@ public interface Constant extends mobi.chouette.common.Constant {
 	String NETEX_EXISTING_LINE_IDS = "netex_existing_line_ids";
 	String PARSING_CONTEXT = "parsing_context";
 	String PARSING_CONTEXT_LINE_ID = "parsing_context_line_id";
-	String PRODUCING_CONTEXT = "producing_context";
 	String NETEX_PROFILE_VALIDATORS = "netex_profile_validators";
 	String EXPORTABLE_NETEX_DATA = "exportable_netex_data";
 	String NEPTUNE_FOOTNOTES = "neptune_footnotes";
