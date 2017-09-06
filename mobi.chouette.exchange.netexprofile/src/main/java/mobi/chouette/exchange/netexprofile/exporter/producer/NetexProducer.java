@@ -37,10 +37,10 @@ public class NetexProducer {
 		availabilityCondition.setId(netexId);
 
 		if (configuration.getStartDate() != null) {
-			availabilityCondition.setFromDate(OffsetDateTime.from(configuration.getStartDate().toInstant()));
+			availabilityCondition.setFromDate(OffsetDateTime.ofInstant(configuration.getStartDate().toInstant(),ZoneId.systemDefault())); // TODO should have LocalDate
 		}
 		if (configuration.getEndDate() != null) {
-			availabilityCondition.setToDate(OffsetDateTime.from(configuration.getEndDate().toInstant()));
+			availabilityCondition.setToDate(OffsetDateTime.ofInstant(configuration.getEndDate().toInstant(),ZoneId.systemDefault())); // TODO should have LocalDate
 		}
 		
 		if(configuration.getStartDate() == null && configuration.getEndDate() == null) {
