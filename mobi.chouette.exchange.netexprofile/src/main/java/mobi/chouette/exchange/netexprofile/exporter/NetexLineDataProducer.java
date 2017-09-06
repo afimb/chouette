@@ -297,8 +297,8 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
 				if (stopPoint != null) {
 					if (isSet(stopPoint.getScheduledStopPoint().getContainedInStopArea())) {
-						String scheduledStopPointIdSuffix = stopPoint.getScheduledStopPoint().getContainedInStopArea().objectIdSuffix();
-						String scheduledStopPointId = netexId(stopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, scheduledStopPointIdSuffix);
+						
+						String scheduledStopPointId = stopPoint.getScheduledStopPoint().getObjectId();
 
 						if (!exportableNetexData.getSharedStopPoints().containsKey(scheduledStopPointId)) {
 							ScheduledStopPoint scheduledStopPoint = netexFactory.createScheduledStopPoint();
