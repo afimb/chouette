@@ -12,7 +12,10 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.RouteTypeEnum;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
+import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.Network;
+import mobi.chouette.model.type.OrganisationTypeEnum;
 
 /**
  * convert Timetable to Gtfs Calendar and CalendarDate
@@ -32,7 +35,14 @@ public class GtfsRouteProducer extends AbstractProducer
    public boolean save(Line neptuneObject,  String prefix,boolean keepOriginalId, boolean useTPEGRouteTypes)
    {
       route.setRouteId(toGtfsId(neptuneObject.getObjectId(), prefix,keepOriginalId));
-      route.setAgencyId(toGtfsId(neptuneObject.getCompany().getObjectId(), prefix, keepOriginalId));
+      Company c = neptuneObject.getCompany();
+      if(!OrganisationTypeEnum.Authority.equals(c.getOrganisationType())) {
+    	  Network network = neptuneObject.getNetwork();
+    	  if(network.getCompany() != null) {
+    		  c = network.getCompany();
+    	  }
+      }
+      route.setAgencyId(toGtfsId(c.getObjectId(), prefix, keepOriginalId));
       route.setRouteShortName(null);
       route.setRouteLongName(null);
       
