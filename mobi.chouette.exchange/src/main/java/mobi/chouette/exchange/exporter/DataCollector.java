@@ -128,7 +128,10 @@ public class DataCollector {
 		if (validLine) {
 			collection.setLine(line);
 			collection.getNetworks().add(line.getNetwork());
-			if (line.getCompany() != null) {
+			if(line.getNetwork().getCompany() != null) { // Authority
+				collection.getCompanies().add(line.getNetwork().getCompany()); 
+			} 
+			if (line.getCompany() != null) { // Operator
 				collection.getCompanies().add(line.getCompany());
 			}
 			if (line.getGroupOfLines() != null) {
