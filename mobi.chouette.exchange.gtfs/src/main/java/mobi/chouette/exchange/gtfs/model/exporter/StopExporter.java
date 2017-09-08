@@ -14,7 +14,7 @@ import mobi.chouette.exchange.gtfs.model.importer.GtfsConverter;
 public class StopExporter extends ExporterImpl<GtfsStop> implements
 		GtfsConverter {
 	public static enum FIELDS {
-		stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, wheelchair_boarding, stop_timezone, platform_code;
+		stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, wheelchair_boarding, stop_timezone, platform_code, vehicle_type;
 	};
 
 	public static final String FILENAME = "stops.txt";
@@ -69,6 +69,8 @@ public class StopExporter extends ExporterImpl<GtfsStop> implements
 			 FIELDS.stop_timezone, values.get(i++), false));
 			bean.setPlatformCode(STRING_CONVERTER.from(context, FIELDS.platform_code,
 					values.get(i++), false));
+			bean.setVehicleType(ROUTETYPE_CONVERTER.from(context, FIELDS.vehicle_type,
+					values.get(i++), false));
 
 			return bean;
 		}
@@ -104,6 +106,8 @@ public class StopExporter extends ExporterImpl<GtfsStop> implements
 					input.getStopTimezone(), false));
 			values.add(STRING_CONVERTER.to(context, FIELDS.platform_code,
 					input.getPlatformCode(), false));
+			values.add(ROUTETYPE_CONVERTER.to(context, FIELDS.vehicle_type,
+					input.getVehicleType(), false));
 			
 
 			result = Tokenizer.untokenize(values);

@@ -167,6 +167,12 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 		stopArea.setStreetName(gtfsStop.getAddressLine());
 		stopArea.setCityName(gtfsStop.getLocality());
 		stopArea.setZipCode(gtfsStop.getPostalCode());
+		
+		if(gtfsStop.getVehicleType() != null) {
+			stopArea.setTransportModeName(gtfsStop.getVehicleType().getTransportMode());
+			stopArea.setTransportSubMode(gtfsStop.getVehicleType().getSubMode());
+		}
+		
 		stopArea.setFilled(true);
 //		AbstractConverter.addLocation(context, "stops.txt", stopArea.getObjectId(), gtfsStop.getId());
 	}

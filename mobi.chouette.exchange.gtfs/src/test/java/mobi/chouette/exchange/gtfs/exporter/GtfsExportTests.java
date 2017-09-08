@@ -26,13 +26,17 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.testng.Assert;
 import org.testng.Reporter;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.dao.InterchangeDAO;
 import mobi.chouette.dao.LineDAO;
+import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.DummyChecker;
 import mobi.chouette.exchange.gtfs.GtfsTestsUtils;
@@ -58,6 +62,19 @@ import mobi.chouette.persistence.hibernate.ContextHolder;
 @Log4j
 public class GtfsExportTests extends Arquillian implements Constant, ReportConstant
 {
+	
+	
+	public void cleanDatabase() {
+		stopAreaDAO.truncate();
+		interchangeDAO.truncate();
+	}
+	
+	@EJB
+	private InterchangeDAO interchangeDAO;
+	
+	@EJB
+	private StopAreaDAO stopAreaDAO;
+	
 	@Deployment
 	public static EnterpriseArchive createDeployment() {
 
@@ -147,6 +164,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 	protected Context initImportContext(String fileFormat, AbstractImportParameter configuration) {
 		init();
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
+		cleanDatabase();
 
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
@@ -369,7 +387,9 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
     @Test(groups = { "export" }, description = "test export GTFS Line")
     public void verifyImportExportLinesWithTransfers() throws Exception
     {
- 		// save data
+ 		
+    	
+    	// save data
  		importGTFSLines("simple_line_with_transfers_gtfs.zip",9,2);
 
  		// export data
@@ -382,6 +402,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
  		Command command = (Command) CommandFactory.create(initialContext,
  				GtfsExporterCommand.class.getName());
 
+ 		
  		try {
  			command.execute(context);
  		} catch (Exception ex) {

@@ -14,7 +14,7 @@ import mobi.chouette.exchange.gtfs.model.GtfsStop.WheelchairBoardingType;
 public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 
 	public static enum FIELDS {
-		stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, address_line, locality, postal_code, platform_code;
+		stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, address_line, locality, postal_code, platform_code, vehicle_type;
 	};
 
 	public static final String FILENAME = "stops.txt";
@@ -251,6 +251,11 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 			bean.setPlatformCode(STRING_CONVERTER.from(context, FIELDS.platform_code, value, false));
 		}
 		
+		value = array[i++]; testExtraSpace(FIELDS.vehicle_type.name(), value, bean);
+		if (value != null && !value.trim().isEmpty()) {
+			bean.setVehicleType(ROUTETYPE_CONVERTER.from(context, FIELDS.vehicle_type, value, false));
+		}
+		
 
 		
 		return bean;
@@ -359,6 +364,7 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 		bean.setStopUrl(null);
 		bean.setWheelchairBoarding(null);
 		bean.setZoneId(null);
+		bean.setVehicleType(null);
 	}
 
 	public static class DefaultImporterFactory extends IndexFactory {

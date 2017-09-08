@@ -170,7 +170,8 @@ public class Main {
 								stop.getWheelchairBoarding(),
 								stop.getAddressLine(), stop.getLocality(),
 								stop.getPostalCode(),
-								stop.getPlatformCode());
+								stop.getPlatformCode(),
+								stop.getVehicleType());
 						_map.put(stop.getStopId(), clone);
 					}
 				}

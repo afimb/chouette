@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.TimeZone;
 
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
+import mobi.chouette.exchange.gtfs.model.RouteTypeEnum;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.WheelchairBoardingType;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
 import mobi.chouette.model.StopArea;
@@ -32,7 +33,7 @@ public class GtfsStopProducer extends AbstractProducer
 		super(exporter);
 	}
 
-	public boolean save(StopArea neptuneObject, String prefix, Collection<StopArea> validParents, boolean keepOriginalId)
+	public boolean save(StopArea neptuneObject, String prefix, Collection<StopArea> validParents, boolean keepOriginalId, boolean useTPEGRouteTypes)
 	{
 		ChouetteAreaEnum chouetteAreaType = neptuneObject.getAreaType();
 		if (chouetteAreaType.compareTo(ChouetteAreaEnum.BoardingPosition) == 0)
@@ -131,6 +132,49 @@ public class GtfsStopProducer extends AbstractProducer
 		
 		stop.setPlatformCode(neptuneObject.getRegistrationNumber());
 
+		
+	      if (neptuneObject.getTransportModeName() != null)
+	      {
+	         if(useTPEGRouteTypes) {
+	        	 stop.setVehicleType(RouteTypeEnum.from(neptuneObject.getTransportModeName(), null));
+	         } else {
+	    	  
+	             switch (neptuneObject.getTransportModeName())
+	             {
+	             case Tram:
+	                stop.setVehicleType(RouteTypeEnum.Tram);
+	                break;
+	             case Metro:
+	                stop.setVehicleType(RouteTypeEnum.Subway);
+	                break;
+	             case Rail:
+	                stop.setVehicleType(RouteTypeEnum.Rail);
+	                break;
+	             case Water:
+	             case Ferry:
+	                stop.setVehicleType(RouteTypeEnum.Ferry);
+	                break;
+	             case Funicular:
+	            	 stop.setVehicleType(RouteTypeEnum.Funicular);
+	            	 break;
+	             case Cableway:
+	            	 stop.setVehicleType(RouteTypeEnum.Gondola);
+	            	 break;
+	             case TrolleyBus:
+	             case Coach:
+	             case Bus:
+	             default:
+	                stop.setVehicleType(RouteTypeEnum.Bus);
+	             }
+	         }
+	      
+	      }
+	      else
+	      {
+	         stop.setVehicleType(null);
+	      }
+
+		
 		try
 		{
 			getExporter().getStopExporter().export(stop);

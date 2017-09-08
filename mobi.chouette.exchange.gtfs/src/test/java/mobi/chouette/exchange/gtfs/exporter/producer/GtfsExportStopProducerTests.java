@@ -9,11 +9,13 @@ import mobi.chouette.exchange.gtfs.exporter.producer.mock.GtfsExporterMock;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.LocationType;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.WheelchairBoardingType;
+import mobi.chouette.exchange.gtfs.model.RouteTypeEnum;
 import mobi.chouette.exchange.gtfs.model.exporter.StopExporter;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
 
 import org.testng.Assert;
 import org.testng.Reporter;
@@ -42,6 +44,7 @@ public class GtfsExportStopProducerTests
       neptuneObject.setLongLatType(LongLatTypeEnum.WGS84);
       neptuneObject.setUrl("http://mystop.com");
       neptuneObject.setMobilityRestrictedSuitable(true);
+      neptuneObject.setTransportModeName(TransportModeNameEnum.Funicular);
 
       StopArea parent = new StopArea();
       parent.setObjectId("GTFS:StopArea:5678");
@@ -49,7 +52,7 @@ public class GtfsExportStopProducerTests
       parents.add(parent);
       neptuneObject.setParent(parent);
 
-      producer.save(neptuneObject,  "GTFS", parents,false);
+      producer.save(neptuneObject,  "GTFS", parents,false,false);
       GtfsStop gtfsObject = mock.getExportedStops().get(0);
       Reporter.log("verifyStopProducerStopWithFullData");
       Reporter.log(StopExporter.CONVERTER.to(context, gtfsObject));
@@ -71,7 +74,7 @@ public class GtfsExportStopProducerTests
       Assert.assertNull(gtfsObject.getPostalCode(), "PostalCode must not be set");
       Assert.assertNull(gtfsObject.getZoneId(), "ZoneId must not be set");
       Assert.assertNull(gtfsObject.getStopTimezone(), "StopTimezone must not be set");
-
+      Assert.assertEquals(gtfsObject.getVehicleType(), RouteTypeEnum.Funicular);
    }
    @Test(groups = { "Producers" }, description = "test stop with less data")
    public void verifyStopProducerStopWithLessData() throws ChouetteException
@@ -92,7 +95,7 @@ public class GtfsExportStopProducerTests
       List<StopArea> parents = new ArrayList<>();
       parents.add(parent);
 
-      producer.save(neptuneObject,  "GTFS", parents,false);
+      producer.save(neptuneObject,  "GTFS", parents,false,false);
       GtfsStop gtfsObject = mock.getExportedStops().get(0);
       Reporter.log("verifyStopProducerStopWithLessData");
       Reporter.log(StopExporter.CONVERTER.to(context, gtfsObject));
@@ -138,7 +141,7 @@ public class GtfsExportStopProducerTests
       parents.add(parent);
       neptuneObject.setParent(parent);
 
-      producer.save(neptuneObject, "GTFS", parents,false);
+      producer.save(neptuneObject, "GTFS", parents,false,false);
       GtfsStop gtfsObject = mock.getExportedStops().get(0);
       Reporter.log("verifyStopProducerStationWithFullData");
       Reporter.log(StopExporter.CONVERTER.to(context, gtfsObject));
@@ -183,7 +186,7 @@ public class GtfsExportStopProducerTests
 
       List<StopArea> parents = new ArrayList<>();
 
-      Assert.assertFalse(producer.save(neptuneObject, "GTFS", parents,false));
+      Assert.assertFalse(producer.save(neptuneObject, "GTFS", parents,false,false));
 
    }
 

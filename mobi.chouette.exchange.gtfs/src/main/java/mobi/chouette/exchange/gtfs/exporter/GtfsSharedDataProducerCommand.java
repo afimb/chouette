@@ -117,7 +117,7 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 
 		for (Iterator<StopArea> iterator = commercialStops.iterator(); iterator.hasNext();) {
 			StopArea stop = iterator.next();
-			if (!stopProducer.save(stop, sharedPrefix, null, configuration.isKeepOriginalId())) {
+			if (!stopProducer.save(stop, sharedPrefix, null, configuration.isKeepOriginalId(),configuration.isUseTpegHvt())) {
 				iterator.remove();
 			} else {
 				if (metadata != null && stop.hasCoordinates())
@@ -126,7 +126,7 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 			}
 		}
 		for (StopArea stop : physicalStops) {
-			stopProducer.save(stop, sharedPrefix, commercialStops, configuration.isKeepOriginalId());
+			stopProducer.save(stop, sharedPrefix, commercialStops, configuration.isKeepOriginalId(),configuration.isUseTpegHvt());
 			if (metadata != null && stop.hasCoordinates())
 				metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(),
 						stop.getLatitude().doubleValue());
