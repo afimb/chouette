@@ -417,22 +417,27 @@ ALTER SEQUENCE facilities_id_seq OWNED BY facilities.id;
 -- TOC entry 191 (class 1259 OID 938920)
 -- Name: footnotes; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
-
 CREATE TABLE footnotes (
     id bigint NOT NULL,
-    line_id bigint,
     code character varying(255),
     label character varying(255),
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
-);
+    creation_time timestamp without time zone,
+    objectid character varying COLLATE pg_catalog."default" NOT NULL,
+    object_version integer,
+    creator_id character varying COLLATE pg_catalog."default"
+    );
 
 
-ALTER TABLE :SCH.footnotes OWNER TO chouette;
+ALTER TABLE chouette_gui.footnotes OWNER TO chouette;
+
+CREATE UNIQUE INDEX footnotes_objectid_idx
+    ON chouette_gui.footnotes USING btree
+    (objectid COLLATE pg_catalog."default")
+    TABLESPACE pg_default;
 
 --
 -- TOC entry 192 (class 1259 OID 938926)
--- Name: footnotes_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
+-- Name: footnotes_id_seq; Type: SEQUENCE; Schema: chouette_gui; Owner: chouette
 --
 
 CREATE SEQUENCE footnotes_id_seq
@@ -443,20 +448,24 @@ CREATE SEQUENCE footnotes_id_seq
     CACHE 1;
 
 
-ALTER TABLE :SCH.footnotes_id_seq OWNER TO chouette;
+ALTER TABLE chouette_gui.footnotes_id_seq OWNER TO chouette;
 
 --
 -- TOC entry 4260 (class 0 OID 0)
 -- Dependencies: 192
--- Name: footnotes_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
+-- Name: footnotes_id_seq; Type: SEQUENCE OWNED BY; Schema: chouette_gui; Owner: chouette
 --
 
 ALTER SEQUENCE footnotes_id_seq OWNED BY footnotes.id;
 
 
+
+
+
+
 --
 -- TOC entry 193 (class 1259 OID 938928)
--- Name: footnotes_vehicle_journeys; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
+-- Name: footnotes_vehicle_journeys; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
 --
 
 CREATE TABLE footnotes_vehicle_journeys (
@@ -465,7 +474,41 @@ CREATE TABLE footnotes_vehicle_journeys (
 );
 
 
-ALTER TABLE :SCH.footnotes_vehicle_journeys OWNER TO chouette;
+ALTER TABLE chouette_gui.footnotes_vehicle_journeys OWNER TO chouette;
+
+
+CREATE TABLE footnotes_lines (
+    line_id bigint,
+    footnote_id bigint
+);
+
+
+ALTER TABLE chouette_gui.footnotes_lines OWNER TO chouette;
+
+CREATE TABLE footnotes_journey_patterns (
+    journey_pattern_id bigint,
+    footnote_id bigint
+);
+
+
+ALTER TABLE chouette_gui.footnotes_journey_patterns OWNER TO chouette;
+
+CREATE TABLE footnotes_stop_points (
+    stop_point_id bigint,
+    footnote_id bigint
+);
+
+
+ALTER TABLE chouette_gui.footnotes_stop_points OWNER TO chouette;
+
+CREATE TABLE footnotes_vehicle_journey_at_stops (
+    vehicle_journey_at_stop_id bigint,
+    footnote_id bigint
+);
+
+
+ALTER TABLE chouette_gui.footnotes_vehicle_journey_at_stops OWNER TO chouette;
+
 
 --
 -- TOC entry 194 (class 1259 OID 938931)

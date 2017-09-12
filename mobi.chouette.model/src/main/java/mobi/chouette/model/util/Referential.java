@@ -12,6 +12,7 @@ import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.DestinationDisplay;
+import mobi.chouette.model.Footnote;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Interchange;
 import mobi.chouette.model.JourneyPattern;
@@ -24,6 +25,7 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timeband;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.VehicleJourneyAtStop;
 
 @NoArgsConstructor
 @ToString()
@@ -78,6 +80,10 @@ public class Referential implements java.io.Serializable {
 	@Getter
 	@Setter
 	private Map<String, Interchange> sharedInterchanges = new HashMap<String, Interchange>();
+
+	@Getter
+	@Setter
+	private Map<String, Footnote> sharedFootnotes = new HashMap<String, Footnote>();
 
 	@Getter
 	@Setter
@@ -149,6 +155,10 @@ public class Referential implements java.io.Serializable {
 	@Setter
 	private Map<String, Interchange> interchanges = new HashMap<String, Interchange>();
 
+	@Getter
+	@Setter
+	private Map<String, Footnote> footnotes = new HashMap<String, Footnote>();
+
 	public void clear(boolean cascade) {
 		if (cascade) {
 			for (Line line : lines.values()) {
@@ -162,11 +172,18 @@ public class Referential implements java.io.Serializable {
 				route.getJourneyPatterns().clear();
 			}
 			for (JourneyPattern jp : journeyPatterns.values()) {
+				for(StopPoint sp : jp.getStopPoints()) {
+					sp.getFootnotes().clear();
+				}
 				jp.getStopPoints().clear();
 				jp.getVehicleJourneys().clear();
 				jp.getRouteSections().clear();
+				jp.getFootnotes().clear();
 			}
 			for (VehicleJourney vj : vehicleJourneys.values()) {
+				for(VehicleJourneyAtStop vjas : vj.getVehicleJourneyAtStops()) {
+					vjas.getFootnotes().clear();
+				}
 				vj.getVehicleJourneyAtStops().clear();
 				vj.getTimetables().clear();
 				vj.getJourneyFrequencies().clear();
@@ -211,6 +228,7 @@ public class Referential implements java.io.Serializable {
 		routeSections.clear();
 		destinationDisplays.clear();
 		interchanges.clear();
+		footnotes.clear();
 	}
 
 	public void dispose() {
@@ -227,6 +245,7 @@ public class Referential implements java.io.Serializable {
 		sharedTimetables.clear();
 		sharedDestinationDisplays.clear();
 		sharedInterchanges.clear();
+		sharedFootnotes.clear();
 	}
 
 }

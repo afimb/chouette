@@ -5,6 +5,7 @@ import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.DestinationDisplay;
+import mobi.chouette.model.Footnote;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Interchange;
 import mobi.chouette.model.JourneyPattern;
@@ -184,6 +185,22 @@ public class ObjectFactory {
 		}
 		if (!referential.getGroupOfLines().containsKey(objectId)) {
 			referential.getGroupOfLines().put(objectId, result);
+		}
+
+		return result;
+	}
+
+	public static Footnote getFootnote(Referential referential,
+			String objectId) {
+		Footnote result = referential.getSharedFootnotes().get(objectId);
+		if (result == null) {
+			result = new Footnote();
+			result.setObjectId(objectId);
+			result.setDetached(true);
+			referential.getSharedFootnotes().put(objectId, result);
+		}
+		if (!referential.getFootnotes().containsKey(objectId)) {
+			referential.getFootnotes().put(objectId, result);
 		}
 
 		return result;

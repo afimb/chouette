@@ -15,6 +15,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.CompanyDAO;
 import mobi.chouette.dao.InterchangeDAO;
+import mobi.chouette.dao.FootnoteDAO;
 import mobi.chouette.dao.JourneyFrequencyDAO;
 import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.dao.StopPointDAO;
@@ -27,7 +28,6 @@ import mobi.chouette.model.Company;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.Interchange;
 import mobi.chouette.model.JourneyFrequency;
-import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timeband;
@@ -106,6 +106,9 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 
 	@EJB(beanName = JourneyFrequencyUpdater.BEAN_NAME)
 	private Updater<JourneyFrequency> journeyFrequencyUpdater;
+
+	@EJB
+	private FootnoteDAO footnoteDAO;
 
 	@EJB(beanName = FootnoteUpdater.BEAN_NAME)
 	private Updater<Footnote> footnoteUpdater;
@@ -370,48 +373,47 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 				journeyFrequencyDAO.delete(journeyFrequency);
 			}
 		}
-		// Footnotes
-		// This is the new list of footnotes
-		List<Footnote> footnotes = new ArrayList<Footnote>();
 		
-		// Compare at 'code' attribute
-		Comparator<Footnote> footnoteCodeCompatator = new Comparator<Footnote>() {
-			@Override
-			public int compare(Footnote o1, Footnote o2) {
-				return o2.getCode().compareTo(o1.getCode());
-			}
-		};
-		
-		// Find added footnotes
-		Collection<Footnote> addedFootnotes = CollectionUtil.substract(
-				newValue.getFootnotes(), oldValue.getFootnotes(),
-				footnoteCodeCompatator);
-		
-		// add all new footnotes
-		footnotes.addAll(addedFootnotes);
-		
-		// Find modified footnotes
-		Collection<Pair<Footnote, Footnote>> modifiedFootnotes = CollectionUtil
-				.intersection(oldValue.getFootnotes(),
-						newValue.getFootnotes(),
-						footnoteCodeCompatator);
-		for (Pair<Footnote, Footnote> pair : modifiedFootnotes) {
-			footnoteUpdater.update(context, pair.getLeft(), pair.getRight());
-			footnotes.add(pair.getLeft());
-		}
-		
-		for(Footnote f : footnotes) {
-			Line line = cache.getLines().get(f.getLine().getObjectId());
-			f.setLine(line);
-		}
-		
-		oldValue.setFootnotes(footnotes);
-
+		updateFootnotes(context,oldValue,newValue,cache);
 		updateInterchanges(context, oldValue, newValue);
-		//		monitor.stop();
+//		monitor.stop();
 	}
 	
-	
+	private void updateFootnotes(Context context, VehicleJourney oldValue, VehicleJourney newValue, Referential cache) throws Exception {
+		Collection<Footnote> addedFootnote = CollectionUtil.substract(newValue.getFootnotes(),
+				oldValue.getFootnotes(), NeptuneIdentifiedObjectComparator.INSTANCE);
+		List<Footnote> footnotes = null;
+		for (Footnote item : addedFootnote) {
+			Footnote footnote = cache.getFootnotes().get(item.getObjectId());
+			if (footnote == null) {
+				if (footnotes == null) {
+					footnotes = footnoteDAO.findByObjectId(UpdaterUtils.getObjectIds(addedFootnote));
+					for (Footnote object : footnotes) {
+						cache.getFootnotes().put(object.getObjectId(), object);
+					}
+				}
+				footnote = cache.getFootnotes().get(item.getObjectId());
+			}
+			if (footnote == null) {
+				footnote = ObjectFactory.getFootnote(cache, item.getObjectId());
+			}
+			oldValue.getFootnotes().add(footnote);
+		}
+
+		Collection<Pair<Footnote, Footnote>> modifiedFootnote = CollectionUtil.intersection(
+				oldValue.getFootnotes(), newValue.getFootnotes(),
+				NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (Pair<Footnote, Footnote> pair : modifiedFootnote) {
+			footnoteUpdater.update(context, pair.getLeft(), pair.getRight());
+		}
+
+		Collection<Footnote> removedFootnote = CollectionUtil.substract(oldValue.getFootnotes(),
+				newValue.getFootnotes(), NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (Footnote Footnote : removedFootnote) {
+			oldValue.getFootnotes().remove(Footnote);
+		}
+	}
+
 	
 	public void updateInterchanges(Context context, VehicleJourney oldValue, VehicleJourney newValue) throws Exception {
 		updateInterchanges(context, oldValue, newValue, oldValue.getConsumerInterchanges(), newValue.getConsumerInterchanges(), "consumerVehicleJourney");

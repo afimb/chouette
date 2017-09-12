@@ -42,8 +42,6 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 		JourneysInFrame_RelStructure journeyStructs = (JourneysInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
 		List<Journey_VersionStructure> serviceJourneys = journeyStructs.getDatedServiceJourneyOrDeadRunOrServiceJourney();
 
-		Map<String, List<Footnote>> journeyFootnotes = (Map<String, List<Footnote>>) context.get(NEPTUNE_FOOTNOTES);
-
 		for (Journey_VersionStructure journeyStruct : serviceJourneys) {
 			ServiceJourney serviceJourney = (ServiceJourney) journeyStruct;
 
@@ -112,14 +110,6 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 			vehicleJourney.setTransportSubMode(NetexParserUtils.toTransportSubModeNameEnum(serviceJourney.getTransportSubmode()));
 
 			parseTimetabledPassingTimes(context, referential, serviceJourney, vehicleJourney);
-
-			if (journeyFootnotes.containsKey(serviceJourney.getId())) {
-				List<Footnote> footnotes = journeyFootnotes.get(serviceJourney.getId());
-
-				if (CollectionUtils.isNotEmpty(footnotes)) {
-					vehicleJourney.setFootnotes(footnotes);
-				}
-			}
 
 			vehicleJourney.setFilled(true);
 

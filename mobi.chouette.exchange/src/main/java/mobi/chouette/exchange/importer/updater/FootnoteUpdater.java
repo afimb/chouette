@@ -5,8 +5,6 @@ import javax.ejb.Stateless;
 import mobi.chouette.common.Context;
 import mobi.chouette.model.Footnote;
 
-import org.joda.time.LocalDateTime;
-
 @Stateless(name = FootnoteUpdater.BEAN_NAME)
 public class FootnoteUpdater implements Updater<Footnote> {
 
@@ -15,6 +13,24 @@ public class FootnoteUpdater implements Updater<Footnote> {
 	@Override
 	public void update(Context context, Footnote oldValue, Footnote newValue) {
 
+		if (newValue.getObjectId() != null
+				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
+			oldValue.setObjectId(newValue.getObjectId());
+		}
+		if (newValue.getObjectVersion() != null
+				&& !newValue.getObjectVersion().equals(
+						oldValue.getObjectVersion())) {
+			oldValue.setObjectVersion(newValue.getObjectVersion());
+		}
+		if (newValue.getCreationTime() != null
+				&& !newValue.getCreationTime().equals(
+						oldValue.getCreationTime())) {
+			oldValue.setCreationTime(newValue.getCreationTime());
+		}
+		if (newValue.getCreatorId() != null
+				&& !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
+			oldValue.setCreatorId(newValue.getCreatorId());
+		}
 		if (newValue.getCode() != null
 				&& !newValue.getCode().equals(oldValue.getCode())) {
 			oldValue.setCode(newValue.getCode());
@@ -30,9 +46,6 @@ public class FootnoteUpdater implements Updater<Footnote> {
 			oldValue.setLabel(newValue.getLabel());
 		}
 
-		// Updated now anyhow
-		oldValue.setUpdatedAt(LocalDateTime.now());
-		
 	}
 
 }
