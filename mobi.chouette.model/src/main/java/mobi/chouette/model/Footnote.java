@@ -1,21 +1,17 @@
 package mobi.chouette.model;
 
-import java.util.Date;
-import java.util.GregorianCalendar;
-
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
@@ -31,10 +27,12 @@ import org.hibernate.annotations.Parameter;
  * @since 2.5.3
  */
 
+@ToString(callSuper=true)
 @Entity
 @Table(name = "footnotes")
 @NoArgsConstructor
-public class Footnote extends NeptuneObject {
+@Cacheable
+public class Footnote extends NeptuneIdentifiedObject {
 	/**
     * 
     */
@@ -49,19 +47,6 @@ public class Footnote extends NeptuneObject {
 	@Id
 	@Column(name = "id", nullable = false)
 	protected Long id;
-
-	/**
-	 * referenced line
-	 * 
-	 * @param line
-	 *            new line
-	 * @return The actual line
-	 */
-	@Getter
-	@Setter
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "line_id")
-	private Line line;
 
 	/**
 	 * label
@@ -102,30 +87,6 @@ public class Footnote extends NeptuneObject {
 	public void setCode(String value) {
 		code = StringUtils.abbreviate(value, 255);
 	}
-
-	/**
-	 * creation time
-	 * 
-	 * @param createdAt
-	 *            new creation time
-	 * @return The actual creation time
-	 */
-	@Getter
-	@Setter
-	@Column(name = "created_at")
-	private Date createdAt = GregorianCalendar.getInstance().getTime();
-
-	/**
-	 * last update time
-	 * 
-	 * @param updatedAt
-	 *            new last update time
-	 * @return The actual last update time
-	 */
-	@Getter
-	@Setter
-	@Column(name = "updated_at")
-	private Date updatedAt = new Date(createdAt.getTime());
 
 	/**
 	 * relative key for import/export

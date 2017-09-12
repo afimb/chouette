@@ -23,7 +23,7 @@ public class VehicleJourneyProducerTests
       note.setKey(key);
       note.setCode("code"+key);
       note.setLabel("label"+key);
-      note.setLine(line);
+      
       return note;
    }
    private Line getLine()

@@ -387,17 +387,16 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	private List<Route> routes = new ArrayList<Route>(0);
 
 	/**
-	 * list of footnotes
+	 * footnotes refs
 	 * 
 	 * @param footnotes
 	 *            New value
 	 * @return The actual value
-	 * 
-	 * @since 2.5.3
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "line", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToMany( cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinTable(name = "footnotes_lines", joinColumns = { @JoinColumn(name = "line_id") }, inverseJoinColumns = { @JoinColumn(name = "footnote_id") })
 	private List<Footnote> footnotes = new ArrayList<>(0);
 
 	/**
