@@ -379,6 +379,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		}
 		updateInterchanges(context, oldValue, newValue);
 		updateFootnotes(context,oldValue,newValue,cache);
+		updateInterchanges(context, oldValue, newValue);
 //		monitor.stop();
 	}
 	
@@ -415,7 +416,6 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		for (Footnote Footnote : removedFootnote) {
 			oldValue.getFootnotes().remove(Footnote);
 		}
-
 	}
 	
 	

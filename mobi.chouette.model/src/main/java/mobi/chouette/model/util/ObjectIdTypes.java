@@ -84,11 +84,11 @@ public interface ObjectIdTypes {
 	   public static final String VEHICLEJOURNEY_KEY = "VehicleJourney";
 
 	   /**
-	    * default objectId type for vehicle journeys
+	    * default objectId type for vehicle journeys 
 	    */
 	   public static final String DESTINATIONDISPLAY_KEY = "DestinationDisplay";
-	  /**
-	   * default objectId type for interchanges
+	   /**
+	    * default objectId type for interchanges
 	    */
 	   public static final String INTERCHANGE_KEY = "ServiceInterchange";
 	   /**

@@ -1,32 +1,49 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
+import java.util.List;
+
+import javax.xml.bind.JAXBElement;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.rutebanken.netex.model.Common_VersionFrameStructure;
+import org.rutebanken.netex.model.CompositeFrame;
+import org.rutebanken.netex.model.DataManagedObjectStructure;
+import org.rutebanken.netex.model.DestinationDisplaysInFrame_RelStructure;
+import org.rutebanken.netex.model.JourneyInterchangesInFrame_RelStructure;
+import org.rutebanken.netex.model.JourneyPatternsInFrame_RelStructure;
+import org.rutebanken.netex.model.JourneysInFrame_RelStructure;
+import org.rutebanken.netex.model.LinesInFrame_RelStructure;
+import org.rutebanken.netex.model.Network;
+import org.rutebanken.netex.model.Notice;
+import org.rutebanken.netex.model.NoticeAssignment;
+import org.rutebanken.netex.model.OrganisationsInFrame_RelStructure;
+import org.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.rutebanken.netex.model.ResourceFrame;
+import org.rutebanken.netex.model.RoutesInFrame_RelStructure;
+import org.rutebanken.netex.model.ScheduledStopPointsInFrame_RelStructure;
+import org.rutebanken.netex.model.ServiceCalendarFrame;
+import org.rutebanken.netex.model.ServiceFrame;
+import org.rutebanken.netex.model.SiteFrame;
+import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
+import org.rutebanken.netex.model.TariffZonesInFrame_RelStructure;
+import org.rutebanken.netex.model.TimetableFrame;
+import org.rutebanken.netex.model.ValidBetween;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
 import mobi.chouette.exchange.netexprofile.util.NetexObjectUtil;
-import mobi.chouette.model.*;
+import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
-import mobi.chouette.model.Route;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
-import mobi.chouette.model.type.AlightingPossibilityEnum;
-import mobi.chouette.model.type.BoardingPossibilityEnum;
 import mobi.chouette.model.util.ObjectFactory;
-import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.LocalDateTime;
-import org.rutebanken.netex.model.*;
-import org.rutebanken.netex.model.Network;
-
-import javax.xml.bind.JAXBElement;
-import java.util.*;
-
-import static mobi.chouette.exchange.netexprofile.parser.NetexParserUtils.netexId;
 
 @Log4j
 public class PublicationDeliveryParser extends NetexParser implements Parser, Constant {
@@ -102,8 +119,8 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 		}
 
 		// post processing
-		//sortStopPoints(referential);
-		//updateBoardingAlighting(referential);
+		// sortStopPoints(referential);
+		// updateBoardingAlighting(referential);
 	}
 
 	private void preParseReferentialDependencies(Context context, Referential referential, List<ServiceFrame> serviceFrames,
@@ -114,11 +131,11 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 		for (ServiceFrame serviceFrame : serviceFrames) {
 
 			// pre parsing route points
-//			if (serviceFrame.getRoutePoints() != null) {
-//				context.put(NETEX_LINE_DATA_CONTEXT, serviceFrame.getRoutePoints());
-//				Parser routePointParser = ParserFactory.create(RoutePointParser.class.getName());
-//				routePointParser.parse(context);
-//			}
+			// if (serviceFrame.getRoutePoints() != null) {
+			// context.put(NETEX_LINE_DATA_CONTEXT, serviceFrame.getRoutePoints());
+			// Parser routePointParser = ParserFactory.create(RoutePointParser.class.getName());
+			// routePointParser.parse(context);
+			// }
 
 			// stop assignments
 			if (serviceFrame.getStopAssignments() != null) {
@@ -235,6 +252,18 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 				destinationDisplayParser.parse(context);
 
 			}
+			if (serviceFrame.getNotices() != null) {
+				for (Notice notice : serviceFrame.getNotices().getNotice()) {
+					parseNotice(context, notice);
+				}
+			}
+
+			if(serviceFrame.getNoticeAssignments() != null) {
+				for(JAXBElement<? extends DataManagedObjectStructure> assingment : serviceFrame.getNoticeAssignments().getNoticeAssignment_()) {
+					NoticeAssignment a = (NoticeAssignment) assingment.getValue();
+					parseNoticeAssignment(context, a);
+				}
+			}
 
 			if (serviceFrame.getScheduledStopPoints() != null) {
 				ScheduledStopPointsInFrame_RelStructure scheduledStopPointsInFrameStruct = serviceFrame.getScheduledStopPoints();
@@ -265,31 +294,6 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 					JourneyPatternParser journeyPatternParser = (JourneyPatternParser) ParserFactory.create(JourneyPatternParser.class.getName());
 					journeyPatternParser.parse(context);
 				}
-
-				Map<String, String> noticeAssignmentMap = new HashMap<>();
-
-				if (serviceFrame.getNoticeAssignments() != null) {
-					for (JAXBElement<? extends DataManagedObjectStructure> noticeAssignmentElement : serviceFrame.getNoticeAssignments()
-							.getNoticeAssignment_()) {
-						NoticeAssignment noticeAssignment = (NoticeAssignment) noticeAssignmentElement.getValue();
-
-						if (noticeAssignment.getNoticeRef() != null && noticeAssignment.getNoticedObjectRef() != null) {
-							String noticeRef = noticeAssignment.getNoticeRef().getRef();
-							String objectRef = noticeAssignment.getNoticedObjectRef().getRef();
-							noticeAssignmentMap.put(noticeRef, objectRef);
-						}
-					}
-				}
-
-				Map<String, List<Footnote>> objectFootnotes = new HashMap<>();
-
-				if (serviceFrame.getNotices() != null) {
-					for (Notice notice : serviceFrame.getNotices().getNotice()) {
-						parseNotice(context, notice, noticeAssignmentMap, objectFootnotes);
-					}
-				}
-
-				context.put(NEPTUNE_FOOTNOTES, objectFootnotes);
 			}
 		}
 	}
@@ -310,29 +314,18 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 
 			parseValidityConditionsInFrame(context, timetableFrame);
 
-			Map<String, String> noticeAssignmentMap = new HashMap<>();
-
-			if (timetableFrame.getNoticeAssignments() != null) {
-				for (JAXBElement<? extends DataManagedObjectStructure> noticeAssignmentElement : timetableFrame.getNoticeAssignments().getNoticeAssignment_()) {
-					NoticeAssignment noticeAssignment = (NoticeAssignment) noticeAssignmentElement.getValue();
-
-					if (noticeAssignment.getNoticeRef() != null && noticeAssignment.getNoticedObjectRef() != null) {
-						String noticeRef = noticeAssignment.getNoticeRef().getRef();
-						String objectRef = noticeAssignment.getNoticedObjectRef().getRef();
-						noticeAssignmentMap.put(noticeRef, objectRef);
-					}
-				}
-			}
-
-			Map<String, List<Footnote>> objectFootnotes = new HashMap<>();
-
 			if (timetableFrame.getNotices() != null) {
 				for (Notice notice : timetableFrame.getNotices().getNotice()) {
-					parseNotice(context, notice, noticeAssignmentMap, objectFootnotes);
+					parseNotice(context, notice);
 				}
 			}
 
-			context.put(NEPTUNE_FOOTNOTES, objectFootnotes);
+			if (timetableFrame.getNoticeAssignments() != null) {
+				for (JAXBElement<? extends DataManagedObjectStructure> assingment : timetableFrame.getNoticeAssignments().getNoticeAssignment_()) {
+					NoticeAssignment a = (NoticeAssignment) assingment.getValue();
+					parseNoticeAssignment(context, a);
+				}
+			}
 
 			JourneysInFrame_RelStructure vehicleJourneysStruct = timetableFrame.getVehicleJourneys();
 			context.put(NETEX_LINE_DATA_CONTEXT, vehicleJourneysStruct);
@@ -349,52 +342,37 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 		}
 	}
 
-	private void parseNotice(Context context, Notice notice, Map<String, String> noticeAssignmentMap, Map<String, List<Footnote>> objectFootnotes) {
+	private void parseNoticeAssignment(Context context, NoticeAssignment assignment) {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
-		if (noticeAssignmentMap.containsKey(notice.getId())) {
-			Footnote footnote = new Footnote();
-			footnote.setKey(notice.getId());
+		Footnote footnote = ObjectFactory.getFootnote(referential, assignment.getNoticeRef().getRef());
+		String noticedObject = assignment.getNoticedObjectRef().getRef();
 
-			if (notice.getName() != null) {
-				// footnote.setLabel(notice.getName().getValue());
-			}
-			if (notice.getText() != null) {
-				footnote.setLabel(notice.getText().getValue());
-			}
-			if (notice.getPublicCode() != null) {
-				footnote.setCode(notice.getPublicCode());
-			}
-			if (notice.getTypeOfNoticeRef() != null) {
-				String typeOfNoticeRef = notice.getTypeOfNoticeRef().getRef();
-				// TODO find out if this reference should be preserved in neptune model
-			}
-			if (notice.getVariants() != null) {
-				for (DeliveryVariant deliveryVariant : notice.getVariants().getDeliveryVariant()) {
-					DeliveryVariantTypeEnumeration deliveryVariantMediaType = deliveryVariant.getDeliveryVariantMediaType();
-					MultilingualString variantText = deliveryVariant.getVariantText();
-					// TODO find out if these properties should be preserved in neptune model
-				}
-			}
-
-			String lineId = (String) context.get(PARSING_CONTEXT_LINE_ID);
-			mobi.chouette.model.Line line = ObjectFactory.getLine(referential, lineId);
+		if (noticedObject.contains(":Line:")) {
+			Line line = ObjectFactory.getLine(referential, noticedObject);
 			line.getFootnotes().add(footnote);
-
-//			footnote.setLine(line);
-//			footnote.setCreatedAt(LocalDateTime.now());
-			footnote.setDetached(true);
-
-			String objectRef = noticeAssignmentMap.get(notice.getId());
-
-			if (!objectFootnotes.containsKey(objectRef)) {
-				List<Footnote> footnotes = new ArrayList<>();
-				footnotes.add(footnote);
-				objectFootnotes.put(objectRef, footnotes);
-			} else {
-				objectFootnotes.get(objectRef).add(footnote);
-			}
+		} else if (noticedObject.contains(":VehicleJourney:") || noticedObject.contains(":ServiceJourney:")) {
+			VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, noticedObject);
+			vehicleJourney.getFootnotes().add(footnote);
+		} else if (noticedObject.contains(":JourneyPattern:") || noticedObject.contains(":ServicePattern:")) {
+			JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, noticedObject);
+			journeyPattern.getFootnotes().add(footnote);
+		} else if (noticedObject.contains(":StopPointInJourneyPattern:")) {
+			StopPoint stopPointInJourneyPattern = ObjectFactory.getStopPoint(referential, noticedObject);
+			stopPointInJourneyPattern.getFootnotes().add(footnote);
+		} else if (noticedObject.contains(":TimetabledPassingTime:")) {
+			log.error("NoticedObjectRef for TimetabledPassingTime (VehicleJourneyAtStop) not implemented");
+		} else {
+			log.warn("Unsupported NoticedObjectRef type: " + noticedObject);
 		}
+	}
+
+	private void parseNotice(Context context, Notice notice) {
+		Referential referential = (Referential) context.get(REFERENTIAL);
+
+		Footnote footnote = ObjectFactory.getFootnote(referential, notice.getId());
+		footnote.setLabel(ConversionUtil.getValue(notice.getText()));
+		footnote.setCode(notice.getPublicCode());
 	}
 
 	private void parseValidityConditionsInFrame(Context context, Common_VersionFrameStructure frameStruct) throws Exception {
