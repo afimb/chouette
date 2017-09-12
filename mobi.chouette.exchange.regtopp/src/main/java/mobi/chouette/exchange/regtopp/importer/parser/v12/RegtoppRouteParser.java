@@ -49,8 +49,6 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 		if(line.getTransportModeName() == null) {
 			line.setTransportModeName(TransportModeNameEnum.Other);
 		}
-		List<Footnote> footnotes = line.getFootnotes();
-
 
 		// Add routes and journey patterns
 		Index<AbstractRegtoppRouteTMS> routeIndex = importer.getRouteIndex();
@@ -67,8 +65,6 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 				Company company = addAuthority(referential, configuration, routeSegment.getAdminCode());
 				line.setCompany(company);
 
-				// TODO Add footnote to line
-				addFootnote(routeSegment.getRemarkId(), null, footnotes, importer);
 
 				// Create route
 				RouteKey routeKey = new RouteKey(routeSegment.getLineId(), routeSegment.getDirection(), routeSegment.getRouteId(),calendarStartDate);
@@ -92,6 +88,7 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 					// Add stop point to journey pattern AND route (for now)
 					journeyPattern.addStopPoint(stopPoint);
 					stopPoint.setRoute(route);
+					addFootnote(referential,routeSegment.getRemarkId(),stopPoint, importer);
 				}
 			}
 		}

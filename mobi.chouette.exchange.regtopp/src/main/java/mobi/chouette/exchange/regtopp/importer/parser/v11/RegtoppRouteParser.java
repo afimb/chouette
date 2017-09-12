@@ -201,37 +201,24 @@ public class RegtoppRouteParser extends LineSpecificParser {
 		return company;
 	}
 
-	protected void addFootnote(String footnoteId, VehicleJourney vehicleJourney, List<Footnote> footnotes, RegtoppImporter importer) throws Exception {
-		if (!"000".equals(footnoteId) && StringUtils.trimToNull(footnoteId) != null) {
-			if (!footnoteAlreadyAdded(footnotes, footnoteId)) {
+	public void addFootnote(Referential referential, String footnoteId, StopPoint stopPoint, RegtoppImporter importer) throws Exception {
+		if (!"000".equals(footnoteId)) {
+			Footnote f = ObjectFactory.getFootnote(referential, footnoteId);
+			if(!f.isFilled()) {
 				Index<RegtoppFootnoteMRK> index = importer.getFootnoteById();
-				RegtoppFootnoteMRK footnote = index.getValue(footnoteId);
-
-				Footnote f = new Footnote();
-
-				f.setLabel(footnote.getDescription());
-				f.setKey(footnote.getFootnoteId());
-				f.setCode(footnote.getFootnoteId());
-
-				footnotes.add(f);
-			}
-			if (vehicleJourney != null) {
-				for (Footnote existing : footnotes) {
-					if (existing.getCode().equals(footnoteId)) {
-						vehicleJourney.getFootnotes().add(existing);
-					}
+				RegtoppFootnoteMRK remark = index.getValue(footnoteId);
+				// May not exist in index
+				if(remark == null) {
+					return;
 				}
+				f.setLabel(remark.getDescription());
+				f.setKey(remark.getFootnoteId());
+				f.setCode(remark.getFootnoteId());
+				f.setFilled(true);
 			}
-		}
-	}
 
-	protected boolean footnoteAlreadyAdded(List<Footnote> addedFootnotes, String footnoteId) {
-		for (Footnote existing : addedFootnotes) {
-			if (existing.getCode().equals(footnoteId)) {
-				return true;
-			}
-		}
-		return false;
+			stopPoint.getFootnotes().add(f);
+		}			
 	}
 
 	protected void sortStopPointsAndAddDepartureDestinationDisplay(Referential referential, RegtoppImportParameters parameters) {

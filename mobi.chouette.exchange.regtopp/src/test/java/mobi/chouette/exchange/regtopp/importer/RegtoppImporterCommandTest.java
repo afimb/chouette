@@ -281,10 +281,6 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 
 		Assert.assertNotNull(line, "Line not found");
 
-		// Check footnotes
-		Assert.assertNotNull(line.getFootnotes(), "No footnote lists");
-		assertEquals(line.getFootnotes().size(), 3, "number of line footnotes");
-
 		utx.rollback();
 
 	}
@@ -326,10 +322,6 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		Line line = lineDao.findByObjectId("TST:Line:0076-2016-01-18");
 
 		Assert.assertNotNull(line, "Line not found");
-
-		// Check footnotes
-		Assert.assertNotNull(line.getFootnotes(), "No footnote lists");
-		assertEquals(line.getFootnotes().size(), 1, "number of line footnotes");
 
 		// Find vehicle journey
 		VehicleJourney vehicleJourney = vjDao.findByObjectId("TST:VehicleJourney:00760015-2016-01-18");

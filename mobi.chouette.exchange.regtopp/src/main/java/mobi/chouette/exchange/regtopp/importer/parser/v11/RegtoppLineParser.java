@@ -78,11 +78,7 @@ public class RegtoppLineParser extends LineSpecificParser {
 			}
 		}
 
-		List<Footnote> footnotes = line.getFootnotes();
-
 		VersionHandler versionHandler = (VersionHandler) context.get(RegtoppConstant.VERSION_HANDLER);
-
-		
 		
 		// Parse Route and JourneyPattern
 		LineSpecificParser routeParser = versionHandler.createRouteParser();
@@ -99,11 +95,6 @@ public class RegtoppLineParser extends LineSpecificParser {
 
 		// Update transport mode for line
 		updateLineTransportMode(referential, line,transportModes);
-
-		// Link line to footnotes
-		for (Footnote f : footnotes) {
-			f.setLine(line);
-		}
 
 		// NOT DETERMINISTIC: deduplicateIdenticalRoutes(referential, configuration);
 		// NOT WORKING: deduplicateSimilarRoutes(referential, configuration);

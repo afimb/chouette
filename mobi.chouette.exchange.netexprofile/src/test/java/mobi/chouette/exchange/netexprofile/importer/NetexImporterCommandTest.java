@@ -958,8 +958,6 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 		Line line = lineDao.findByObjectId("AVI:Line:WF_TRD-MOL");
 		assertNotNull(line, "Line not found");
-		assertNotNull(line.getFootnotes(), "line must have footnotes");
-		assertEquals(line.getFootnotes().size(), 3, "number of footnotes");
 
 		for (Route route : line.getRoutes()) {
 			for (JourneyPattern journeyPattern : route.getJourneyPatterns()) {
@@ -971,13 +969,10 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 					if (vehicleJourney.getObjectId().equals("AVI:ServiceJourney:3273336")) {
 						assertEquals(footnote.getLabel(), "Sample notice text...1111", "Notice label is not correct");
-						assertEquals(footnote.getLine(), line, "Line is not correct");
 					} else if (vehicleJourney.getObjectId().equals("AVI:ServiceJourney:4598614")) {
 						assertEquals(footnote.getLabel(), "Sample notice text...2222", "Notice label is not correct");
-						assertEquals(footnote.getLine(), line, "Line is not correct");
 					} else if (vehicleJourney.getObjectId().equals("AVI:ServiceJourney:3774199")) {
 						assertEquals(footnote.getLabel(), "Sample notice text...3333", "Notice label is not correct");
-						assertEquals(footnote.getLine(), line, "Line is not correct");
 					}
 				}
 			}

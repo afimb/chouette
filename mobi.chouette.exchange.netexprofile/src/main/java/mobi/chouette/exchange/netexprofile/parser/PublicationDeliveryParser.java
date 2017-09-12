@@ -381,8 +381,8 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 			mobi.chouette.model.Line line = ObjectFactory.getLine(referential, lineId);
 			line.getFootnotes().add(footnote);
 
-			footnote.setLine(line);
-			footnote.setCreatedAt(LocalDateTime.now());
+//			footnote.setLine(line);
+//			footnote.setCreatedAt(LocalDateTime.now());
 			footnote.setDetached(true);
 
 			String objectRef = noticeAssignmentMap.get(notice.getId());
