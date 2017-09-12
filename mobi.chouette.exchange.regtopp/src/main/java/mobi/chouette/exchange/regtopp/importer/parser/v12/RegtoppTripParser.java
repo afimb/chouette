@@ -4,11 +4,7 @@ import static mobi.chouette.common.Constant.CONFIGURATION;
 import static mobi.chouette.common.Constant.PARSER;
 import static mobi.chouette.common.Constant.REFERENTIAL;
 
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.Duration;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
@@ -29,7 +25,6 @@ import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.model.Company;
-import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -59,7 +54,6 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 
 		String chouetteLineId = ObjectIdCreator.createLineId(configuration, lineId, calendarStartDate);
 		Line line = ObjectFactory.getLine(referential, chouetteLineId);
-		List<Footnote> footnotes = line.getFootnotes();
 
 		Index<RegtoppDestinationDST> destinationIndex = importer.getDestinationById();
 
@@ -92,8 +86,8 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 					Company operator = createOperator(referential, configuration, trip.getOperatorCode());
 					vehicleJourney.setCompany(operator);
 
-					addFootnote(trip.getFootnoteId1Ref(), vehicleJourney, footnotes, importer);
-					addFootnote(trip.getFootnoteId2Ref(), vehicleJourney, footnotes, importer);
+					addFootnote(referential,trip.getFootnoteId1Ref(), vehicleJourney, importer);
+					addFootnote(referential,trip.getFootnoteId2Ref(), vehicleJourney, importer);
 
 					RegtoppDestinationDST departureText = destinationIndex.getValue(trip.getDestinationIdDepartureRef()); // Turens bestemmelsessted
 					RegtoppDestinationDST arrivalText = destinationIndex.getValue(trip.getDestinationIdArrivalRef()); // Turens startsted

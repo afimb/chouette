@@ -9,11 +9,13 @@ import javax.ejb.Stateless;
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
+import mobi.chouette.dao.FootnoteDAO;
 import mobi.chouette.dao.RouteSectionDAO;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopPoint;
@@ -41,6 +43,12 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 
 	@EJB(beanName = RouteSectionUpdater.BEAN_NAME)
 	private Updater<RouteSection> routeSectionUpdater;
+
+	@EJB
+	private FootnoteDAO footnoteDAO;
+
+	@EJB(beanName = FootnoteUpdater.BEAN_NAME)
+	private Updater<Footnote> footnoteUpdater;
 
 	@Override
 	public void update(Context context, JourneyPattern oldValue, JourneyPattern newValue) throws Exception {
@@ -229,7 +237,44 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		}
 
 
+		updateFootnotes(context,oldValue,newValue,cache);
 //		monitor.stop();
+	}
+	
+	private void updateFootnotes(Context context, JourneyPattern oldValue, JourneyPattern newValue, Referential cache) throws Exception {
+		Collection<Footnote> addedFootnote = CollectionUtil.substract(newValue.getFootnotes(),
+				oldValue.getFootnotes(), NeptuneIdentifiedObjectComparator.INSTANCE);
+		List<Footnote> footnotes = null;
+		for (Footnote item : addedFootnote) {
+			Footnote footnote = cache.getFootnotes().get(item.getObjectId());
+			if (footnote == null) {
+				if (footnotes == null) {
+					footnotes = footnoteDAO.findByObjectId(UpdaterUtils.getObjectIds(addedFootnote));
+					for (Footnote object : footnotes) {
+						cache.getFootnotes().put(object.getObjectId(), object);
+					}
+				}
+				footnote = cache.getFootnotes().get(item.getObjectId());
+			}
+			if (footnote == null) {
+				footnote = ObjectFactory.getFootnote(cache, item.getObjectId());
+			}
+			oldValue.getFootnotes().add(footnote);
+		}
+
+		Collection<Pair<Footnote, Footnote>> modifiedFootnote = CollectionUtil.intersection(
+				oldValue.getFootnotes(), newValue.getFootnotes(),
+				NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (Pair<Footnote, Footnote> pair : modifiedFootnote) {
+			footnoteUpdater.update(context, pair.getLeft(), pair.getRight());
+		}
+
+		Collection<Footnote> removedFootnote = CollectionUtil.substract(oldValue.getFootnotes(),
+				newValue.getFootnotes(), NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (Footnote Footnote : removedFootnote) {
+			oldValue.getFootnotes().remove(Footnote);
+		}
+
 	}
 	
 	

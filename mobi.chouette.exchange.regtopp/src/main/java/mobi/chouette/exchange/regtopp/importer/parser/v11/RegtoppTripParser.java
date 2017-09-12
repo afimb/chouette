@@ -72,8 +72,6 @@ public class RegtoppTripParser extends LineSpecificParser {
 			line.setTransportModeName(TransportModeNameEnum.Other);
 		}
 
-		List<Footnote> footnotes = line.getFootnotes();
-
 		Index<RegtoppDestinationDST> destinationIndex = importer.getDestinationById();
 		Index<RegtoppRouteTDA> routeIndex = importer.getRouteSegmentByLineNumber();
 
@@ -104,8 +102,8 @@ public class RegtoppTripParser extends LineSpecificParser {
 					Company operator = createOperator(referential, configuration, trip.getOperatorCode());
 					vehicleJourney.setCompany(operator);
 
-					addFootnote(trip.getFootnoteId1Ref(), vehicleJourney, footnotes, importer);
-					addFootnote(trip.getFootnoteId2Ref(), vehicleJourney, footnotes, importer);
+					addFootnote(referential,trip.getFootnoteId1Ref(), vehicleJourney,  importer);
+					addFootnote(referential,trip.getFootnoteId2Ref(), vehicleJourney,  importer);
 
 					RegtoppDestinationDST departureText = destinationIndex.getValue(trip.getDestinationIdDepartureRef()); // Turens bestemmelsessted
 
@@ -328,39 +326,27 @@ public class RegtoppTripParser extends LineSpecificParser {
 		
 	}
 
-	public void addFootnote(String footnoteId, VehicleJourney vehicleJourney, List<Footnote> footnotes, RegtoppImporter importer) throws Exception {
+	public void addFootnote(Referential referential, String footnoteId, VehicleJourney vehicleJourney, RegtoppImporter importer) throws Exception {
 		if (!"000".equals(footnoteId)) {
-			if (!footnoteAlreadyAdded(footnotes, footnoteId)) {
+			Footnote f = ObjectFactory.getFootnote(referential, footnoteId);
+			if(!f.isFilled()) {
 				Index<RegtoppFootnoteMRK> index = importer.getFootnoteById();
-				RegtoppFootnoteMRK footnote = index.getValue(footnoteId);
-
-				Footnote f = new Footnote();
-
-				f.setLabel(footnote.getDescription());
-				f.setKey(footnote.getFootnoteId());
-				f.setCode(footnote.getFootnoteId());
-
-				footnotes.add(f);
-			}
-			if (vehicleJourney != null) {
-				for (Footnote existing : footnotes) {
-					if (existing.getCode().equals(footnoteId)) {
-						vehicleJourney.getFootnotes().add(existing);
-					}
+				RegtoppFootnoteMRK remark = index.getValue(footnoteId);
+				// May not exist in index
+				if(remark == null) {
+					return;
 				}
-			}
-		}
-	}
 
-	public static boolean footnoteAlreadyAdded(List<Footnote> addedFootnotes, String footnoteId) {
-		for (Footnote existing : addedFootnotes) {
-			if (existing.getCode().equals(footnoteId)) {
-				return true;
+				f.setLabel(remark.getDescription());
+				f.setKey(remark.getFootnoteId());
+				f.setCode(remark.getFootnoteId());
+				f.setFilled(true);
 			}
-		}
-		return false;
-	}
 
+			vehicleJourney.getFootnotes().add(f);
+		}			
+	}
+	
 	static {
 		ParserFactory.register(RegtoppTripParser.class.getName(), new ParserFactory() {
 			@Override

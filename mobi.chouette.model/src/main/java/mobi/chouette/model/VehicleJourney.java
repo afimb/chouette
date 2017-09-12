@@ -295,8 +295,8 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@ManyToMany
-	@JoinTable(name = "footnotes_vehicle_journeys", joinColumns = { @JoinColumn(name = "vehicle_journey_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "footnote_id", nullable = false, updatable = false) })
+	@ManyToMany( cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinTable(name = "footnotes_vehicle_journeys", joinColumns = { @JoinColumn(name = "vehicle_journey_id") }, inverseJoinColumns = { @JoinColumn(name = "footnote_id") })
 	private List<Footnote> footnotes = new ArrayList<>(0);
 
 	/**

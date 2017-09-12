@@ -36,8 +36,9 @@ public class CommentExtension implements JsonExtension {
 						String code = footNote.optString(CODE, null);
 						String label = footNote.optString(LABEL, null);
 						if (key != null && code != null && label != null) {
+							log.warn("Footnote added to Line, but not belonging to a line per se");
 							Footnote note = new Footnote();
-							note.setLine(line);
+							//note.setLine(line);
 							note.setLabel(label);
 							note.setCode(code);
 							note.setKey(key);

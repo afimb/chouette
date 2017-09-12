@@ -104,5 +104,9 @@ public abstract class ObjectIdCreator {
 		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.CONNECTIONLINK_KEY, stopAreaFrom + "-" + stopAreaTo);
 	}
 
+	public static String createFootnoteId(RegtoppImportParameters configuration, String footnoteId) {
+		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.FOOTNOTE_KEY, footnoteId);
+	}
+
 
 }

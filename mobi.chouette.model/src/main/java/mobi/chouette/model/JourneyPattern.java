@@ -265,5 +265,19 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 			stopPoints.remove(stopPoint);
 		}
 	}
+	
+	/**
+	 * footnotes refs
+	 * 
+	 * @param footnotes
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@ManyToMany( cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinTable(name = "footnotes_journey_patterns", joinColumns = { @JoinColumn(name = "journey_pattern_id") }, inverseJoinColumns = { @JoinColumn(name = "footnote_id") })
+	private List<Footnote> footnotes = new ArrayList<>(0);
+
 
 }
