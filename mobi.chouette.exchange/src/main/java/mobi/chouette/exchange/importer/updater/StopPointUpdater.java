@@ -1,21 +1,24 @@
 package mobi.chouette.exchange.importer.updater;
 
+import java.util.Collection;
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.Pair;
 import mobi.chouette.dao.DestinationDisplayDAO;
 import mobi.chouette.dao.ScheduledStopPointDAO;
-import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.dao.FootnoteDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
-import mobi.chouette.model.Company;
 import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.ScheduledStopPoint;
-import mobi.chouette.model.StopArea;
+import mobi.chouette.model.Footnote;
 import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -37,8 +40,12 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	@EJB(beanName = DestinationDisplayUpdater.BEAN_NAME)
 	private Updater<DestinationDisplay> destinationDisplayUpdater;
 	
-	
+	@EJB
+	private FootnoteDAO footnoteDAO;
 
+	@EJB(beanName = FootnoteUpdater.BEAN_NAME)
+	private Updater<Footnote> footnoteUpdater;
+	
 	@Override
 	public void update(Context context, StopPoint oldValue, StopPoint newValue) throws Exception {
 
@@ -129,9 +136,46 @@ public class StopPointUpdater implements Updater<StopPoint> {
 
 	
 		
+		updateFootnotes(context,oldValue,newValue,cache);
 //		monitor.stop();
+	}
+	
+	private void updateFootnotes(Context context, StopPoint oldValue, StopPoint newValue, Referential cache) throws Exception {
+		Collection<Footnote> addedFootnote = CollectionUtil.substract(newValue.getFootnotes(),
+				oldValue.getFootnotes(), NeptuneIdentifiedObjectComparator.INSTANCE);
+		List<Footnote> footnotes = null;
+		for (Footnote item : addedFootnote) {
+			Footnote footnote = cache.getFootnotes().get(item.getObjectId());
+			if (footnote == null) {
+				if (footnotes == null) {
+					footnotes = footnoteDAO.findByObjectId(UpdaterUtils.getObjectIds(addedFootnote));
+					for (Footnote object : footnotes) {
+						cache.getFootnotes().put(object.getObjectId(), object);
+					}
+				}
+				footnote = cache.getFootnotes().get(item.getObjectId());
+			}
+			if (footnote == null) {
+				footnote = ObjectFactory.getFootnote(cache, item.getObjectId());
+			}
+			oldValue.getFootnotes().add(footnote);
+		}
+
+		Collection<Pair<Footnote, Footnote>> modifiedFootnote = CollectionUtil.intersection(
+				oldValue.getFootnotes(), newValue.getFootnotes(),
+				NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (Pair<Footnote, Footnote> pair : modifiedFootnote) {
+			footnoteUpdater.update(context, pair.getLeft(), pair.getRight());
+		}
+
+		Collection<Footnote> removedFootnote = CollectionUtil.substract(oldValue.getFootnotes(),
+				newValue.getFootnotes(), NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (Footnote Footnote : removedFootnote) {
+			oldValue.getFootnotes().remove(Footnote);
+		}
 
 	}
+	
 	
 	
 	/**
