@@ -13,6 +13,7 @@ import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
+import mobi.chouette.model.Footnote;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -89,6 +90,9 @@ public class ExportableData {
 	@Getter
 	@Setter
 	private List<StopPoint> stopPoints = new ArrayList<>();
+	@Getter
+	@Setter
+	private Set<Footnote> footnotes = new HashSet<>();
 
 	// prevent lazy loading for non complete connectionlinks
 	@Getter
@@ -127,5 +131,6 @@ public class ExportableData {
 		routes.clear();
 		stopPoints.clear();
 		sharedStops.clear();
+		footnotes.clear();
 	}
 }

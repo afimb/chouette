@@ -8,7 +8,6 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ConnectionLink;
-import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -16,6 +15,7 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.util.NeptuneUtil;
 
 @Log4j
@@ -29,8 +29,8 @@ public class DataCollector {
 		collection.getJourneyPatterns().clear();
 		collection.getStopPoints().clear();
 		collection.getVehicleJourneys().clear();
-		List<Footnote> notes = line.getFootnotes();
-		
+		collection.getFootnotes().clear();
+
 		for (Route route : line.getRoutes()) {
 			boolean validRoute = false;
 			if (route.getStopPoints().size() < 2)
@@ -62,6 +62,11 @@ public class DataCollector {
 						if (isValid) {
 							collection.getTimetables().addAll(vehicleJourney.getTimetables());
 							collection.getVehicleJourneys().add(vehicleJourney);
+							for(VehicleJourneyAtStop vjas : vehicleJourney.getVehicleJourneyAtStops()) {
+								collection.getFootnotes().addAll(vjas.getFootnotes());
+							}
+							collection.getFootnotes().addAll(vehicleJourney.getFootnotes());
+
 							validJourneyPattern = true;
 							validRoute = true;
 							validLine = true;
@@ -89,23 +94,23 @@ public class DataCollector {
 						}
 						if (isValid) {
 							collection.getVehicleJourneys().add(vehicleJourney);
+							collection.getFootnotes().addAll(vehicleJourney.getFootnotes());
+							for(VehicleJourneyAtStop vjas : vehicleJourney.getVehicleJourneyAtStops()) {
+								collection.getFootnotes().addAll(vjas.getFootnotes());
+							}
 							if (vehicleJourney.getCompany() != null) {
 								collection.getCompanies().add(vehicleJourney.getCompany());
 							}
 							validJourneyPattern = true;
 							validRoute = true;
 							validLine = true;
-							boolean validNotes = true;
-							for (Footnote note : vehicleJourney.getFootnotes()) {
-								if (!notes.contains(note)) validNotes = false;
-							}
-							if (!validNotes)
-							   log.warn("vehicle journey  has invalid foot notes");
 						}
 					}
 				} // end vehiclejourney loop
-				if (validJourneyPattern)
+				if (validJourneyPattern) {
 					collection.getJourneyPatterns().add(jp);
+					collection.getFootnotes().addAll(jp.getFootnotes());
+				}
 			}// end journeyPattern loop
 			if (validRoute) {
 				collection.getRoutes().add(route);
@@ -114,6 +119,7 @@ public class DataCollector {
 					if (stopPoint == null)
 						continue; // protection from missing stopPoint ranks
 					collection.getStopPoints().add(stopPoint);
+					collection.getFootnotes().addAll(stopPoint.getFootnotes());
 					collectStopAreas(collection, stopPoint.getContainedInStopArea(), skipNoCoordinate, followLinks);
 				}
 			}
@@ -130,6 +136,7 @@ public class DataCollector {
 			if (!line.getRoutingConstraints().isEmpty()) {
 				collection.getStopAreas().addAll(line.getRoutingConstraints());
 			}
+			collection.getFootnotes().addAll(line.getFootnotes());
 		}
 		completeSharedData(collection);
 		return validLine;
