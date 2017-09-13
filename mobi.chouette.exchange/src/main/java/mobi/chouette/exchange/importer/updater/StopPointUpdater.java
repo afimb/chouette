@@ -45,7 +45,6 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	@EJB(beanName = FootnoteUpdater.BEAN_NAME)
 	private Updater<Footnote> footnoteUpdater;
 	
-
 	@Override
 	public void update(Context context, StopPoint oldValue, StopPoint newValue) throws Exception {
 
