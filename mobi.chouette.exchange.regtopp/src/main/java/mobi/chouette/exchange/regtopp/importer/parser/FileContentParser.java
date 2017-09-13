@@ -66,8 +66,9 @@ public class FileContentParser<T> {
 		FileInputStream is = new FileInputStream(parseableFile.getFile());
 		InputStreamReader isr = new InputStreamReader(is, (String) context.get(RegtoppConstant.CHARSET));
 		BufferedReader buffReader = new BufferedReader(isr);
-
-		BeanReader in = factory.createReader(streamName, buffReader);
+		ControlCharacterFilteringReader filteringReader = new ControlCharacterFilteringReader(buffReader);
+		
+		BeanReader in = factory.createReader(streamName, filteringReader);
 
 		final Set<RegtoppException> errors = new HashSet<RegtoppException>();
 		final String fileName = parseableFile.getFile().getName().toUpperCase();
