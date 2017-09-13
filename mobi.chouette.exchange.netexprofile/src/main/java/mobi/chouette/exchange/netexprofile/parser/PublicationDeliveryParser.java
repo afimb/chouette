@@ -329,7 +329,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 		} else if (noticedObject.contains(":VehicleJourney:") || noticedObject.contains(":ServiceJourney:")) {
 			VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, noticedObject);
 			vehicleJourney.getFootnotes().add(footnote);
-		} else if (noticedObject.contains(":JourneyPattern:") || noticedObject.contains(":ServicePattern:")) {
+		} else if (noticedObject.contains(":JourneyPattern:") || noticedObject.contains(":ServiceJourneyPattern:")) {
 			JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, noticedObject);
 			journeyPattern.getFootnotes().add(footnote);
 		} else if (noticedObject.contains(":StopPointInJourneyPattern:")) {

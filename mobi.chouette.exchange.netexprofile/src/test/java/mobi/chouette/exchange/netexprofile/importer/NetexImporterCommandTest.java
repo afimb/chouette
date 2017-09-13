@@ -49,6 +49,7 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.TransportSubModeNameEnum;
 import mobi.chouette.model.util.Referential;
@@ -852,21 +853,27 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		Line line = lineDao.findByObjectId("AVI:Line:WF_TRD-MOL");
 		assertNotNull(line, "Line not found");
 
+		Assert.assertEquals(line.getFootnotes().size(), 1,"Missing notice on Line");
+		Assert.assertEquals(line.getFootnotes().get(0).getLabel(), "LineNotice");
+		
+		
 		for (Route route : line.getRoutes()) {
 			for (JourneyPattern journeyPattern : route.getJourneyPatterns()) {
+				Assert.assertEquals(journeyPattern.getFootnotes().size(), 1,"Missing notice on journeyPattern");
+				Assert.assertEquals(journeyPattern.getFootnotes().get(0).getLabel(), "JourneyPatternNotice");
+				
+				StopPoint departureStopPoint = journeyPattern.getStopPoints().get(0);
+				Assert.assertEquals(departureStopPoint.getFootnotes().size(), 1,"Missing notice on departureStopPoint");
+				Assert.assertEquals(departureStopPoint.getFootnotes().get(0).getLabel(), "StopPointInJourneyPatternNotice");
+				
 				for (VehicleJourney vehicleJourney : journeyPattern.getVehicleJourneys()) {
-					assertNotEquals(vehicleJourney.getFootnotes().size(), 0, " vehicleJourney should have footnotes");
-					assertEquals(vehicleJourney.getFootnotes().size(), 1, "number of footnotes");
-
-					Footnote footnote = vehicleJourney.getFootnotes().get(0);
-
-					if (vehicleJourney.getObjectId().equals("AVI:ServiceJourney:3273336")) {
-						assertEquals(footnote.getLabel(), "Sample notice text...1111", "Notice label is not correct");
-					} else if (vehicleJourney.getObjectId().equals("AVI:ServiceJourney:4598614")) {
-						assertEquals(footnote.getLabel(), "Sample notice text...2222", "Notice label is not correct");
-					} else if (vehicleJourney.getObjectId().equals("AVI:ServiceJourney:3774199")) {
-						assertEquals(footnote.getLabel(), "Sample notice text...3333", "Notice label is not correct");
-					}
+					Assert.assertEquals(vehicleJourney.getFootnotes().size(), 1,"Missing notice on vehicleJourney");
+					Assert.assertEquals(vehicleJourney.getFootnotes().get(0).getLabel(), "ServiceJourneyNotice");
+					
+//					VehicleJourneyAtStop vehicleJourneyAtStop = vehicleJourney.getVehicleJourneyAtStops().get(0);
+//					Assert.assertEquals(vehicleJourneyAtStop.getFootnotes().size(), 1,"Missing notice on vehicleJourneyAtStop");
+//					Assert.assertEquals(vehicleJourneyAtStop.getFootnotes().get(0).getLabel(), "TimetabledPassingTimeNotice");
+					
 				}
 			}
 		}
