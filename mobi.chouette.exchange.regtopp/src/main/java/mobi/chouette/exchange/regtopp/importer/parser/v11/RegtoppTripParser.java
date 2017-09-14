@@ -101,8 +101,8 @@ public class RegtoppTripParser extends LineSpecificParser {
 					Company operator = createOperator(referential, configuration, trip.getOperatorCode());
 					vehicleJourney.setCompany(operator);
 
-					addFootnote(referential,trip.getFootnoteId1Ref(), vehicleJourney,  importer);
-					addFootnote(referential,trip.getFootnoteId2Ref(), vehicleJourney,  importer);
+					addFootnote(referential,trip.getFootnoteId1Ref(), vehicleJourney,  importer, configuration);
+					addFootnote(referential,trip.getFootnoteId2Ref(), vehicleJourney,  importer, configuration);
 
 					RegtoppDestinationDST departureText = destinationIndex.getValue(trip.getDestinationIdDepartureRef()); // Turens bestemmelsessted
 
@@ -324,9 +324,10 @@ public class RegtoppTripParser extends LineSpecificParser {
 		
 	}
 
-	public void addFootnote(Referential referential, String footnoteId, VehicleJourney vehicleJourney, RegtoppImporter importer) throws Exception {
+	public void addFootnote(Referential referential, String footnoteId, VehicleJourney vehicleJourney, RegtoppImporter importer, RegtoppImportParameters configuration) throws Exception {
 		if (!"000".equals(footnoteId)) {
-			Footnote f = ObjectFactory.getFootnote(referential, footnoteId);
+			String chouetteFootnoteId = ObjectIdCreator.createFootnoteId(configuration, footnoteId);
+			Footnote f = ObjectFactory.getFootnote(referential, chouetteFootnoteId);
 			if(!f.isFilled()) {
 				Index<RegtoppFootnoteMRK> index = importer.getFootnoteById();
 				RegtoppFootnoteMRK remark = index.getValue(footnoteId);

@@ -86,8 +86,8 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 					Company operator = createOperator(referential, configuration, trip.getOperatorCode());
 					vehicleJourney.setCompany(operator);
 
-					addFootnote(referential,trip.getFootnoteId1Ref(), vehicleJourney, importer);
-					addFootnote(referential,trip.getFootnoteId2Ref(), vehicleJourney, importer);
+					addFootnote(referential,trip.getFootnoteId1Ref(), vehicleJourney, importer,configuration);
+					addFootnote(referential,trip.getFootnoteId2Ref(), vehicleJourney, importer,configuration);
 
 					RegtoppDestinationDST departureText = destinationIndex.getValue(trip.getDestinationIdDepartureRef()); // Turens bestemmelsessted
 					RegtoppDestinationDST arrivalText = destinationIndex.getValue(trip.getDestinationIdArrivalRef()); // Turens startsted
