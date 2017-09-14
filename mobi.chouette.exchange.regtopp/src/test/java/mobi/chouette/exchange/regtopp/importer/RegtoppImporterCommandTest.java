@@ -319,6 +319,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		Assert.assertNotNull(footnotes, "footnotes list null");
 		assertEquals(footnotes.size(), 1, "Expected 1 footnote");
 		assertEquals(footnotes.get(0).getCode(), "027");
+		assertEquals(footnotes.get(0).getObjectId(), "TST:Notice:027");
 
 		utx.rollback();
 
