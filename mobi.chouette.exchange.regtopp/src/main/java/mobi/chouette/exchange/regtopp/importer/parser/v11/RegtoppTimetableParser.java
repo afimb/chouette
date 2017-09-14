@@ -254,7 +254,9 @@ public class RegtoppTimetableParser implements Parser {
 				}
 			}
 		} else {
-			log.debug("Too few days to extract pattern, expected at least " + MIN_DAYS_FOR_PATTERN + " but only got " + totalDaysIncluded);
+			if(log.isDebugEnabled()) {
+				log.debug("Too few days to extract pattern, expected at least " + MIN_DAYS_FOR_PATTERN + " but only got " + totalDaysIncluded);
+			}
 		}
 
 		return significantDays;

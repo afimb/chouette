@@ -135,11 +135,12 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
             // Set parent stop area name
             boardingPosition.setName(stopArea.getName());
         }
-        log.debug("Parent stop area name: '" + stopArea.getName()
-                + "', boarding position name: '" + boardingPosition.getName()
-                + "', boarding position comment: '" + boardingPosition.getComment() + "'");
+		if(log.isDebugEnabled()) {
+	        log.debug("Parent stop area name: '" + stopArea.getName()
+	                + "', boarding position name: '" + boardingPosition.getName()
+	                + "', boarding position comment: '" + boardingPosition.getComment() + "'");
+		}
     }
-
     private void extractCommentFromParentheses(String description, StopArea stopArea, StopArea boardingPosition, boolean setStopAreaName) {
         Matcher matcher = PATTERN.matcher(description);
 
