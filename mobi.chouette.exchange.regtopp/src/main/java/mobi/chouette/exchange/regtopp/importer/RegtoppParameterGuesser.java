@@ -91,7 +91,9 @@ public class RegtoppParameterGuesser {
 			boolean identified = identify(content, decoder);
 
 			if (identified) {
-				log.debug("Detected charset " + charset + " for file " + f.getName());
+				if(log.isDebugEnabled()) {
+					log.debug("Detected charset " + charset + " for file " + f.getName());
+				}
 				String checkNorwegianCharacters = new String(content, charset);
 				if (containsNorwegianCharacers(checkNorwegianCharacters)) {
 					return charset;
