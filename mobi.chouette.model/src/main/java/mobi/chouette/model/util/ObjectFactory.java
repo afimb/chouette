@@ -71,9 +71,16 @@ public class ObjectFactory {
 		return result;
 	}
 
-	public static VehicleJourneyAtStop getVehicleJourneyAtStop() {
-		// TODO [DSU] object pool
-		VehicleJourneyAtStop result = new VehicleJourneyAtStop();
+	public static VehicleJourneyAtStop getVehicleJourneyAtStop(Referential referential,
+			String objectId) {
+		VehicleJourneyAtStop result = referential.getVehicleJourneyAtStops().get(objectId);
+		if (result == null) {
+			result = new VehicleJourneyAtStop();
+			result.setObjectId(objectId);
+			result.setDetached(true);
+			referential.getVehicleJourneyAtStops().put(objectId, result);
+		}
+		
 		return result;
 	}
 

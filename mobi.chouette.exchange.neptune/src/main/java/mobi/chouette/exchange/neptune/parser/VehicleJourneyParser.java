@@ -3,6 +3,7 @@ package mobi.chouette.exchange.neptune.parser;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -26,7 +27,9 @@ import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.type.JourneyCategoryEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
 
 import org.joda.time.Duration;
@@ -67,6 +70,8 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		int columnNumber = xpp.getColumnNumber();
 		int lineNumber = xpp.getLineNumber();
+		
+		AtomicInteger vehicleJourneyAtStopCounter = new AtomicInteger(0);
 
 		VehicleJourneyValidator validator = (VehicleJourneyValidator) ValidatorFactory.create(
 				VehicleJourneyValidator.class.getName(), context);
@@ -137,7 +142,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 			} else if (xpp.getName().equals("vehicleTypeIdentifier")) {
 				vehicleJourney.setVehicleTypeIdentifier(xpp.nextText());
 			} else if (xpp.getName().equals("vehicleJourneyAtStop")) {
-				parseVehicleJourneyAtStop(context, vehicleJourney, journeyFrequency);
+				parseVehicleJourneyAtStop(context, vehicleJourney, journeyFrequency,vehicleJourneyAtStopCounter);
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
 			}
@@ -149,7 +154,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 		validator.addLocation(context, vehicleJourney, lineNumber, columnNumber);
 	}
 
-	private void parseVehicleJourneyAtStop(Context context, VehicleJourney vehicleJourney, JourneyFrequency journeyFrequency) throws Exception {
+	private void parseVehicleJourneyAtStop(Context context, VehicleJourney vehicleJourney, JourneyFrequency journeyFrequency, AtomicInteger vehicleJourneyAtStopCounter) throws Exception {
 
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
@@ -158,7 +163,9 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
-		VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop();
+		String objectId = NeptuneUtil.convertIdType(vehicleJourney, ObjectIdTypes.VEHICLE_JOURNEY_AT_STOP_KEY)+"-"+vehicleJourneyAtStopCounter.incrementAndGet();
+		
+		VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop(referential,objectId);
 
 		VehicleJourneyValidator validator = (VehicleJourneyValidator) ValidatorFactory.create(
 				VehicleJourneyValidator.class.getName(), context);

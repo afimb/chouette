@@ -261,7 +261,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			}
 			List<StopPoint> stopPoints = null;
 			for (VehicleJourneyAtStop item : addedVehicleJourneyAtStop) {
-				VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop();
+				VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop(cache,item.getObjectId());
 
 				StopPoint stopPoint = cache.getStopPoints().get(item.getStopPoint().getObjectId());
 				if (stopPoint == null) {

@@ -91,4 +91,9 @@ public interface ObjectIdTypes {
 	    * default objectId type for notices/footnotes
 	    */
 	   public static final String FOOTNOTE_KEY = "Notice";
+
+	   /**
+	    * default objectId type for timetabled passing times / vehicle journey at stop
+	    */
+	   public static final String VEHICLE_JOURNEY_AT_STOP_KEY = "TimetabledPassingTime";
 }

@@ -39,7 +39,7 @@ import org.joda.time.LocalTime;
 		"vehicle_journey_id", "stop_point_id" }, name = "index_vehicle_journey_at_stops_on_stop_point_id"))
 @NoArgsConstructor
 @ToString(callSuper=true, exclude = { "vehicleJourney" })
-public class VehicleJourneyAtStop extends NeptuneObject {
+public class VehicleJourneyAtStop extends NeptuneIdentifiedObject {
 
 	private static final long serialVersionUID = 194243517715939830L;
 
