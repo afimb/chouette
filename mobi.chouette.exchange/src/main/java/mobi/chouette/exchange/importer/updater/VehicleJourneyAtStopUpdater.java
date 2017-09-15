@@ -43,6 +43,25 @@ public class VehicleJourneyAtStopUpdater implements
 		// The list of fields to sunchronize with LineRegisterCommand.write(StringWriter buffer, VehicleJourney vehicleJourney, StopPoint stopPoint,
 		//    VehicleJourneyAtStop vehicleJourneyAtStop)
 
+		if (newValue.getObjectId() != null
+				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
+			oldValue.setObjectId(newValue.getObjectId());
+		}
+		if (newValue.getObjectVersion() != null
+				&& !newValue.getObjectVersion().equals(
+						oldValue.getObjectVersion())) {
+			oldValue.setObjectVersion(newValue.getObjectVersion());
+		}
+		if (newValue.getCreationTime() != null
+				&& !newValue.getCreationTime().equals(
+						oldValue.getCreationTime())) {
+			oldValue.setCreationTime(newValue.getCreationTime());
+		}
+		if (newValue.getCreatorId() != null
+				&& !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
+			oldValue.setCreatorId(newValue.getCreatorId());
+		}
+	
 		if (newValue.getArrivalTime() != null
 				&& !newValue.getArrivalTime().equals(oldValue.getArrivalTime())) {
 			oldValue.setArrivalTime(newValue.getArrivalTime());

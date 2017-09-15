@@ -1208,6 +1208,10 @@ ALTER SEQUENCE timebands_id_seq OWNED BY timebands.id;
 
 CREATE TABLE vehicle_journey_at_stops (
     id bigint NOT NULL,
+    objectid character varying(255) NOT NULL,
+    object_version integer,
+    creation_time timestamp without time zone,
+    creator_id character varying(255),
     vehicle_journey_id bigint,
     stop_point_id bigint,
     connecting_service_id character varying(255),
