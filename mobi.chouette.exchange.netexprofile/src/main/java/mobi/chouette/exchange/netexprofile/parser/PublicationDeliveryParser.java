@@ -336,7 +336,8 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 			StopPoint stopPointInJourneyPattern = ObjectFactory.getStopPoint(referential, noticedObject);
 			stopPointInJourneyPattern.getFootnotes().add(footnote);
 		} else if (noticedObject.contains(":TimetabledPassingTime:")) {
-			log.error("NoticedObjectRef for TimetabledPassingTime (VehicleJourneyAtStop) not implemented");
+			VehicleJourneyAtStop vjas = ObjectFactory.getVehicleJourneyAtStop(referential, noticedObject);
+			vjas.getFootnotes().add(footnote);
 		} else {
 			log.warn("Unsupported NoticedObjectRef type: " + noticedObject);
 		}

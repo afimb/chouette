@@ -534,6 +534,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
             log.error("test failed", ex);
             throw ex;
         }
+        NetexTestUtils.verifyValidationReport(context);
 
         ActionReport report = (ActionReport) context.get(REPORT);
         Assert.assertEquals(report.getResult(), STATUS_OK, "result");
@@ -550,7 +551,6 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
             Reporter.log(info.toString(), true);
         }
 
-        NetexTestUtils.verifyValidationReport(context);
     }
 
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
