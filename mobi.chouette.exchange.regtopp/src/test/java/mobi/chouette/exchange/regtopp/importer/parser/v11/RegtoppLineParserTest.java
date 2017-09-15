@@ -146,8 +146,12 @@ public class RegtoppLineParserTest {
 	
 		vj.setRoute(route);
 		vj.setJourneyPattern(jp);
+		
+		RegtoppImportParameters configuration = new RegtoppImportParameters();
+		configuration.setObjectIdPrefix("XYZ");
+		
 		for(StopPoint sp : route.getStopPoints()) {
-			VehicleJourneyAtStop vjS =  ObjectFactory.getVehicleJourneyAtStop();
+			VehicleJourneyAtStop vjS =  ObjectFactory.getVehicleJourneyAtStop(referential, ObjectIdCreator.createVehicleJourneyAtStopId(configuration, vj, sp));
 			vjS.setStopPoint(sp);
 			vjS.setVehicleJourney(vj);
 		}

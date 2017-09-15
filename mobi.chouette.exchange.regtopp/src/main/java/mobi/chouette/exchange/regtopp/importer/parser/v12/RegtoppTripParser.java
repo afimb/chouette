@@ -133,7 +133,7 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 
 									StopPoint stopPoint = referential.getStopPoints().get(chouetteStopPointId);
 									if (stopPoint != null) {
-										addVehicleJourneyAtStop(vehicleJourney, trip.getDepartureTime(), stopPoint, vehicleStop.getDriverTimeArrival(),
+										addVehicleJourneyAtStop(configuration,referential, vehicleJourney, trip.getDepartureTime(), stopPoint, vehicleStop.getDriverTimeArrival(),
 												vehicleStop.getDriverTimeDeparture(), byRequestOnly);
 									} else {
 										log.warn("Not adding VehicleJourneyAtStop since StopPoint with id " + chouetteStopPointId + " is missing");
