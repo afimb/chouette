@@ -132,7 +132,7 @@ public class RegtoppTripParser extends LineSpecificParser {
 						// Warn: Hack. Using comment as temporary holder
 						RegtoppRouteTDA vehicleStop = routeIndex.getValue(p.getComment());
 						try {
-							addVehicleJourneyAtStop(vehicleJourney, trip.getDepartureTime(), p, vehicleStop.getDriverTimeArrival(),
+							addVehicleJourneyAtStop(configuration,referential,vehicleJourney, trip.getDepartureTime(), p, vehicleStop.getDriverTimeArrival(),
 									vehicleStop.getDriverTimeDeparture(), byRequestOnly);
 
 						} catch (Exception e) {
@@ -227,9 +227,11 @@ public class RegtoppTripParser extends LineSpecificParser {
 		return operator;
 	}
 
-	protected VehicleJourneyAtStop addVehicleJourneyAtStop(VehicleJourney vehicleJourney, Duration tripDepartureTime, StopPoint p, Duration driverTimeArrival,
+	protected VehicleJourneyAtStop addVehicleJourneyAtStop(RegtoppImportParameters configuration, Referential referential, VehicleJourney vehicleJourney, Duration tripDepartureTime, StopPoint p, Duration driverTimeArrival,
 			Duration driverTimeDeparture, boolean byRequestOnly) {
-		VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop();
+		
+		String vehicleJourneyAtStopId = ObjectIdCreator.createVehicleJourneyAtStopId(configuration, vehicleJourney, p);
+		VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop(referential, vehicleJourneyAtStopId);
 		vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
 
 		// Default = board and alight

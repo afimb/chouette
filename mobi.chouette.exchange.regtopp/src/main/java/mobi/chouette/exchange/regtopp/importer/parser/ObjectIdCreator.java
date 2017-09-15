@@ -4,7 +4,9 @@ import org.apache.commons.lang.StringUtils;
 
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
+import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
+import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.ObjectIdTypes;
 
 public abstract class ObjectIdCreator {
@@ -106,6 +108,10 @@ public abstract class ObjectIdCreator {
 
 	public static String createFootnoteId(RegtoppImportParameters configuration, String footnoteId) {
 		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.FOOTNOTE_KEY, footnoteId);
+	}
+
+	public static String createVehicleJourneyAtStopId(RegtoppImportParameters configuration, VehicleJourney vehicleJourney, StopPoint sp) {
+		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.VEHICLE_JOURNEY_AT_STOP_KEY, extractOriginalId(vehicleJourney.getObjectId())+"-"+extractOriginalId(sp.getObjectId()));
 	}
 
 
