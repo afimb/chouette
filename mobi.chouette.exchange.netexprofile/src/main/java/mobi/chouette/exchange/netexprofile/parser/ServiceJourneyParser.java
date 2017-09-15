@@ -3,6 +3,7 @@ package mobi.chouette.exchange.netexprofile.parser;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.xml.bind.JAXBElement;
 
@@ -21,6 +22,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexTimeConversionUtil;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Footnote;
@@ -30,6 +32,7 @@ import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
@@ -117,8 +120,20 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 	}
 
 	private void parseTimetabledPassingTimes(Context context, Referential referential, ServiceJourney serviceJourney, VehicleJourney vehicleJourney) {
-		for (TimetabledPassingTime passingTime : serviceJourney.getPassingTimes().getTimetabledPassingTime()) {
-			VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop();
+		
+		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
+
+		
+		for (int i=0; i<serviceJourney.getPassingTimes().getTimetabledPassingTime().size();i++) {
+			TimetabledPassingTime passingTime = serviceJourney.getPassingTimes().getTimetabledPassingTime().get(i);
+			String passingTimeId = passingTime.getId();
+			
+			if(passingTimeId == null) {
+				// TODO profile should prevent this from happening, creating bogus
+				passingTimeId = NetexParserUtils.netexId(configuration.getObjectIdPrefix(), ObjectIdTypes.VEHICLE_JOURNEY_AT_STOP_KEY, UUID.randomUUID().toString());
+				
+			}
+			VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop(referential,passingTimeId );
 
 			StopPoint stopPoint = ObjectFactory.getStopPoint(referential, passingTime.getPointInJourneyPatternRef().getValue().getRef());
 			vehicleJourneyAtStop.setStopPoint(stopPoint);

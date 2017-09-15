@@ -202,6 +202,11 @@ public abstract class NeptuneUtil {
 		if (obj1 == null) return obj2 == null;
 		return obj1.equals(obj2);
 	}
+	
+	public static String convertIdType(NeptuneIdentifiedObject neptune, String newType) {
+		String[] tokens =neptune.getObjectId().split(":");
+		return tokens[0]+":"+newType+":"+tokens[2];
+	}
 
 
 }

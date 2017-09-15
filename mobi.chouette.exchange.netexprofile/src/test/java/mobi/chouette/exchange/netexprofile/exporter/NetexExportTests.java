@@ -543,6 +543,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
             log.error("test failed", ex);
             throw ex;
         }
+        NetexTestUtils.verifyValidationReport(context);
 
         NetexTestUtils.verifyValidationReport(context);
         ActionReport report = (ActionReport) context.get(REPORT);

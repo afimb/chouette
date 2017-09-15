@@ -532,7 +532,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			for (GtfsStopTime gtfsStopTime : importer.getStopTimeByTrip().values(gtfsTrip.getTripId())) {
 				VehicleJourneyAtStopWrapper vehicleJourneyAtStop = new VehicleJourneyAtStopWrapper(
 						gtfsStopTime.getStopId(), gtfsStopTime.getStopSequence(), gtfsStopTime.getShapeDistTraveled(), gtfsStopTime.getDropOffType(), gtfsStopTime.getPickupType(),gtfsStopTime.getStopHeadsign());
-				convert(context, gtfsStopTime, vehicleJourneyAtStop);
+				convert(context, gtfsStopTime, gtfsTrip, vehicleJourneyAtStop);
 
 				if (afterMidnight) {
 					if (!gtfsStopTime.getArrivalTime().moreOneDay())
@@ -1019,12 +1019,16 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		return route;
 	}
 
-	protected void convert(Context context, GtfsStopTime gtfsStopTime, VehicleJourneyAtStop vehicleJourneyAtStop) {
+	protected void convert(Context context, GtfsStopTime gtfsStopTime, GtfsTrip gtfsTrip, VehicleJourneyAtStop vehicleJourneyAtStop) {
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
+		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
-		vehicleJourneyAtStop.setId(Long.valueOf(gtfsStopTime.getId().longValue()));
-		
+		String vjasObjectId = AbstractConverter.composeObjectId(configuration,
+				ObjectIdTypes.VEHICLE_JOURNEY_AT_STOP_KEY, gtfsTrip.getTripId()+"-"+gtfsStopTime.getStopId(), log);
+
+		vehicleJourneyAtStop.setObjectId(vjasObjectId);
+
 		String objectId = gtfsStopTime.getStopId();
 		StopPoint stopPoint = ObjectFactory.getStopPoint(referential, objectId);
 		vehicleJourneyAtStop.setStopPoint(stopPoint);
