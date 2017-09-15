@@ -140,6 +140,10 @@ public class Referential implements java.io.Serializable {
 	@Setter
 	private Map<String, Footnote> footnotes = new HashMap<String, Footnote>();
 
+	@Getter
+	@Setter
+	private Map<String, VehicleJourneyAtStop> vehicleJourneyAtStops = new HashMap<String, VehicleJourneyAtStop>();
+
 	public void clear(boolean cascade) {
 		if (cascade) {
 			for (Line line : lines.values()) {
@@ -205,6 +209,7 @@ public class Referential implements java.io.Serializable {
 		vehicleJourneys.clear();
 		routeSections.clear();
 		footnotes.clear();
+		vehicleJourneyAtStops.clear();
 	}
 
 	public void dispose() {
