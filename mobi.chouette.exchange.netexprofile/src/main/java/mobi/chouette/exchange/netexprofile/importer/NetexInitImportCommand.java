@@ -61,6 +61,7 @@ public class NetexInitImportCommand implements Command, Constant {
 			context.put(REFERENTIAL, new Referential());
 			context.put(NETEX_REFERENTIAL, new NetexReferential());
 			context.put(VALIDATION_DATA, new ValidationData());
+			context.put(OPTIMIZED, false);
 
 			Map<String, NetexProfileValidator> availableProfileValidators = new HashMap<>();
 
