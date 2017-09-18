@@ -21,6 +21,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Validator;
 
+import org.rutebanken.netex.validation.NeTExValidator.NetexVersion;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -151,9 +152,12 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 		public SchemaValidationTask call() throws Exception {
 			String fileName = file.getName();
 			Source xmlSource = new StreamSource(file);
+			
+			
+			
 			try {
 				// validate xml file
-				Validator validator = importer.getNetexSchema().newValidator();
+				Validator validator = importer.getNetexSchema(NetexVersion.V1_0_4beta).newValidator();
 				validator.setErrorHandler(new ErrorHandler() {
 
 					int errorCount = 0;

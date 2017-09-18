@@ -28,7 +28,7 @@ public class StopAssignmentParser extends NetexParser implements Parser, Constan
 
 			for (JAXBElement<? extends StopAssignment_VersionStructure> stopAssignmentElement : assignmentStruct.getStopAssignment()) {
 				PassengerStopAssignment stopAssignment = (PassengerStopAssignment) stopAssignmentElement.getValue();
-				ScheduledStopPointRefStructure scheduledStopPointRef = stopAssignment.getScheduledStopPointRef();
+				ScheduledStopPointRefStructure scheduledStopPointRef = stopAssignment.getScheduledStopPointRef().getValue();
 				QuayRefStructure quayRef = stopAssignment.getQuayRef();
 
 				netexReferential.getScheduledStopPointToQuay().put(scheduledStopPointRef.getRef(), quayRef.getRef());

@@ -117,10 +117,10 @@
                             <Name>Bergen-Oslo</Name>
                             <LineRef ref="AVI:Line:SK264" version="1"/>
                             <pointsInSequence>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:26779581">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:26779581" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:BGO" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:26779582">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:26779582" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:OSL" version="1"/>
                                 </PointOnRoute>
                             </pointsInSequence>

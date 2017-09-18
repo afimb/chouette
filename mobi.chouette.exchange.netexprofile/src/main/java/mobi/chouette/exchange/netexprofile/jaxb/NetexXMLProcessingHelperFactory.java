@@ -31,6 +31,8 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.rutebanken.netex.validation.NeTExValidator;
+import org.rutebanken.netex.validation.NeTExValidator.NetexVersion;
 import org.xml.sax.SAXException;
 
 import com.sun.xml.txw2.output.IndentingXMLStreamWriter;
@@ -56,20 +58,16 @@ public class NetexXMLProcessingHelperFactory {
 	
 	private static XPathCompiler xpathCompiler;
 
-	public synchronized Schema getNetexSchema() throws SAXException, IOException {
+	public synchronized Schema getNetexSchema(NetexVersion version) throws SAXException, IOException {
 
 		if (netexSchema == null) {
 			log.info("Initializing Netex schema, this may take a few seconds");
-			SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			factory.setResourceResolver(new PredefinedSchemaListClasspathResourceResolver("/netex_schema_list.txt"));
-
-			Source schemaFile = new StreamSource(getClass().getResourceAsStream("/NeTEx-XML-1.04beta/schema/xsd/NeTEx_publication.xsd"));
-			netexSchema = factory.newSchema(schemaFile);
+			netexSchema = new NeTExValidator(version).getSchema();
 		}
 
 		return netexSchema;
 	}
-
+	
 	public synchronized JAXBContext getNetexJaxBContext() throws JAXBException {
 		if (netexJaxBContext == null) {
 			log.info("Initializing JAXBContext, this may take a few seconds");

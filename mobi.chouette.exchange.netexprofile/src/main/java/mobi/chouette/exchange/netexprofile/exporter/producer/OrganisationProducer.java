@@ -6,6 +6,7 @@ import org.rutebanken.netex.model.ContactStructure;
 import org.rutebanken.netex.model.Operator;
 import org.rutebanken.netex.model.OrganisationTypeEnumeration;
 import org.rutebanken.netex.model.Organisation_VersionStructure;
+import org.rutebanken.netex.model.PrivateCodeStructure;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
@@ -38,7 +39,10 @@ public class OrganisationProducer extends NetexProducer implements NetexEntityPr
 
 		NetexProducerUtils.populateId(company, organisation);
 
-		organisation.setPublicCode(company.getCode());
+		if(company.getCode() != null) {
+			PrivateCodeStructure privateCodeStructure = netexFactory.createPrivateCodeStructure().withValue(company.getCode());
+			organisation.setPublicCode(privateCodeStructure);
+		}
 		organisation.setCompanyNumber(company.getRegistrationNumber());
 		organisation.setName(ConversionUtil.getMultiLingualString(company.getName()));
 		organisation.setLegalName(ConversionUtil.getMultiLingualString(company.getLegalName()));

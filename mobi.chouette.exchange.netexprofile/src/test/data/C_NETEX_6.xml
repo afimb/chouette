@@ -139,10 +139,10 @@
                             <Name>Trondheim-Molde</Name>
                             <LineRef ref="AVI:Line:WF_TRD-MOL" version="1"/>
                             <pointsInSequence>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:1263628001">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1263628001" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:83334" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:1263628002">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1263628002" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:76522" version="1"/>
                                 </PointOnRoute>
                             </pointsInSequence>
@@ -151,10 +151,10 @@
                             <Name>Molde-Trondheim</Name>
                             <LineRef ref="AVI:Line:WF_TRD-MOL" version="1"/>
                             <pointsInSequence>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:1869688101">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1869688101" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:76522" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:1869688102">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1869688102" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:83334" version="1"/>
                                 </PointOnRoute>
                             </pointsInSequence>
