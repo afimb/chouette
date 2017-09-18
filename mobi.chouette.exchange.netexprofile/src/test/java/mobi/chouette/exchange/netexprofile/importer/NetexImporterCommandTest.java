@@ -176,7 +176,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		configuration.setCleanRepository(true);
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
-
+		configuration.setObjectIdPrefix("TST");
 		JobDataTest jobData = new JobDataTest();
 		context.put(JOB_DATA, jobData);
 		jobData.setPathName("target/referential/test");
@@ -192,7 +192,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		jobData.setAction(IMPORTER);
 		jobData.setType("netexprofile");
 		context.put("testng", "true");
-		context.put(OPTIMIZED, Boolean.FALSE);
+		context.put(OPTIMIZED, Boolean.TRUE);
 		return context;
 	}
 

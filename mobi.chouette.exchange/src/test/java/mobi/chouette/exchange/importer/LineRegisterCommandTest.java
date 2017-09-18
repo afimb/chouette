@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.importer;
 
 import java.io.StringWriter;
-
 import javax.naming.InitialContext;
 
 import mobi.chouette.common.Constant;
@@ -19,8 +18,6 @@ public class LineRegisterCommandTest implements Constant {
 	
 	
 	private LineRegisterCommand lineRegister = null;
-	
-	
 	
 	@Test (groups = { "write" }, description = "write command")
 	public void testLineRegisterWrite() throws Exception 
