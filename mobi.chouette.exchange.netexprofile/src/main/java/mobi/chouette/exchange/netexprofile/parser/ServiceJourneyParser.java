@@ -22,6 +22,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexTimeConversionUtil;
 import mobi.chouette.model.Company;
@@ -131,10 +132,10 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 			if(passingTimeId == null) {
 				// TODO profile should prevent this from happening, creating bogus
 				passingTimeId = NetexParserUtils.netexId(configuration.getObjectIdPrefix(), ObjectIdTypes.VEHICLE_JOURNEY_AT_STOP_KEY, UUID.randomUUID().toString());
-				
 			}
 			VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop(referential,passingTimeId );
-
+			vehicleJourneyAtStop.setObjectVersion(NetexParserUtils.getVersion(passingTime));
+			
 			StopPoint stopPoint = ObjectFactory.getStopPoint(referential, passingTime.getPointInJourneyPatternRef().getValue().getRef());
 			vehicleJourneyAtStop.setStopPoint(stopPoint);
 
