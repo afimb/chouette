@@ -2,6 +2,7 @@ package mobi.chouette.exchange.importer;
 
 import java.io.StringWriter;
 import java.sql.Time;
+import java.util.Date;
 
 import javax.naming.InitialContext;
 
@@ -36,6 +37,10 @@ public class LineRegisterCommandTest implements Constant {
 	    sp.setId(1001L);
 	    
 	    VehicleJourneyAtStop vjas = new VehicleJourneyAtStop();
+	    vjas.setObjectId("ObjectID");
+	    vjas.setObjectVersion(1);
+	    vjas.setCreationTime(new Date(100,1,1));
+	    vjas.setCreatorId("creatorId");
         vjas.setStopPoint(sp);
 	    
         vjas.setArrivalTime(new Time(23,59,0));
@@ -50,7 +55,7 @@ public class LineRegisterCommandTest implements Constant {
 		lineRegister.write(buffer, neptuneObject, sp, vjas);
 		
 		
-		Assert.assertEquals(buffer.toString(), "4321|1001|23:59:00|00:05:00|0|1\n", "Invalid data entry for buffer");
+		Assert.assertEquals(buffer.toString(), "'ObjectID'|1|2000-02-01T00:00:00|'creatorId'|4321|1001|23:59:00|00:05:00|0|1\n", "Invalid data entry for buffer");
 	
 		
 	}

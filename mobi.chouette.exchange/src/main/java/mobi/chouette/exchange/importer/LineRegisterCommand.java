@@ -216,8 +216,31 @@ public class LineRegisterCommand implements Command {
 		// VehicleJourneyAtStopUpdater.update(Context context,
 		// VehicleJourneyAtStop oldValue,
 		// VehicleJourneyAtStop newValue)
+		
 
 		DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+		DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		
+		buffer.append(QUOTE);
+		buffer.write(vehicleJourneyAtStop.getObjectId());
+		buffer.append(QUOTE);
+		buffer.append(SEP);
+		buffer.write(vehicleJourneyAtStop.getObjectVersion().toString());
+		buffer.append(SEP);
+		if(vehicleJourneyAtStop.getCreationTime() != null) {
+			buffer.write(dateTimeFormat.format(vehicleJourneyAtStop.getCreationTime()));
+		} else {
+			buffer.write(NULL);
+		}
+		buffer.append(SEP);
+		if(vehicleJourneyAtStop.getCreatorId() != null) {
+			buffer.append(QUOTE);
+			buffer.write(vehicleJourneyAtStop.getCreatorId());
+			buffer.append(QUOTE);
+		} else {
+			buffer.write(NULL);
+		}
+		buffer.append(SEP);
 		buffer.write(vehicleJourney.getId().toString());
 		buffer.append(SEP);
 		buffer.write(stopPoint.getId().toString());
