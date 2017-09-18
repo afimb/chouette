@@ -106,8 +106,8 @@ public abstract class ObjectIdCreator {
 		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.CONNECTIONLINK_KEY, stopAreaFrom + "-" + stopAreaTo);
 	}
 
-	public static String createFootnoteId(RegtoppImportParameters configuration, String footnoteId) {
-		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.FOOTNOTE_KEY, footnoteId);
+	public static String createFootnoteId(RegtoppImportParameters configuration, String footnoteId, String calendarStartDate) {
+		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.FOOTNOTE_KEY, footnoteId+"-"+ calendarStartDate);
 	}
 
 	public static String createVehicleJourneyAtStopId(RegtoppImportParameters configuration, VehicleJourney vehicleJourney, StopPoint sp) {

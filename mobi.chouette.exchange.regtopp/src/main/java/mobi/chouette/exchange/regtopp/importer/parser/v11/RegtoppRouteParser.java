@@ -201,9 +201,9 @@ public class RegtoppRouteParser extends LineSpecificParser {
 		return company;
 	}
 
-	public void addFootnote(Referential referential, String footnoteId, StopPoint stopPoint, RegtoppImporter importer, RegtoppImportParameters configuration) throws Exception {
+	public void addFootnote(Referential referential, String footnoteId, StopPoint stopPoint, RegtoppImporter importer, RegtoppImportParameters configuration, String calendarStartDate) throws Exception {
 		if (!"000".equals(footnoteId)) {
-			String chouetteFootnoteId = ObjectIdCreator.createFootnoteId(configuration, footnoteId);
+			String chouetteFootnoteId = ObjectIdCreator.createFootnoteId(configuration, footnoteId, calendarStartDate);
 			Footnote f = ObjectFactory.getFootnote(referential, chouetteFootnoteId);
 			if(!f.isFilled()) {
 				Index<RegtoppFootnoteMRK> index = importer.getFootnoteById();
