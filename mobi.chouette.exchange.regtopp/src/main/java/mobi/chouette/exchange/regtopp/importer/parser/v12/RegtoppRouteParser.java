@@ -82,7 +82,7 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 					// Add stop point to journey pattern AND route (for now)
 					journeyPattern.addStopPoint(stopPoint);
 					stopPoint.setRoute(route);
-					addFootnote(referential,routeSegment.getRemarkId(),stopPoint, importer, configuration);
+					addFootnote(referential,routeSegment.getRemarkId(),stopPoint, importer, configuration, calendarStartDate);
 				}
 			}
 		}
