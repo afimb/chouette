@@ -138,7 +138,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 			}
 		}
 
-		sortStopPointsAndAddDepartureDestinationDisplay(referential, configuration);
+		sortStopPointsAndAddDepartureDestinationDisplay(referential, configuration, calendarStartDate);
 		updateRouteNames(referential, configuration);
 		linkOppositeRoutes(referential, configuration);
 
@@ -222,7 +222,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 		}			
 	}
 
-	protected void sortStopPointsAndAddDepartureDestinationDisplay(Referential referential, RegtoppImportParameters parameters) {
+	protected void sortStopPointsAndAddDepartureDestinationDisplay(Referential referential, RegtoppImportParameters parameters, String calendarStartDate) {
 		Comparator<StopPoint> stopPointSequenceComparator = new Comparator<StopPoint>() {
 			@Override
 			public int compare(StopPoint arg0, StopPoint arg1) {
@@ -247,10 +247,9 @@ public class RegtoppRouteParser extends LineSpecificParser {
 
 				String stopPointId = ObjectIdCreator.extractOriginalId(departureStopPoint.getObjectId());
 				String journeyPatternId = ObjectIdCreator.extractOriginalId(jp.getObjectId());
-
-				DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential,
-						ObjectIdCreator.composeGenericObjectId(parameters.getObjectIdPrefix(),
-								DestinationDisplay.DESTINATIONDISPLAY_KEY, journeyPatternId + "-" + stopPointId));
+				String destinationDisplayId = ObjectIdCreator.createDestinationDisplayId(parameters, journeyPatternId, stopPointId, calendarStartDate);
+				
+				DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential, destinationDisplayId);
 				String content = jp.getPublishedName();
 				if (content == null) {
 					content = jp.getRoute().getPublishedName();

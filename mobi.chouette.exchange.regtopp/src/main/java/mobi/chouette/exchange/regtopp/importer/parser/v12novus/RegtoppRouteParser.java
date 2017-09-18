@@ -23,7 +23,7 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 
 	// Only change here from super class is that the stoppoint here uses both stopId and stopIdDeparture ("stoppunktsnummer");
 	@Override
-	protected StopPoint createStopPoint(Referential referential, Context context, AbstractRegtoppRouteTMS routeSegment, String chouetteStopPointId, Index<RegtoppDestinationDST> destinationById)
+	protected StopPoint createStopPoint(Referential referential, Context context, AbstractRegtoppRouteTMS routeSegment, String chouetteStopPointId, Index<RegtoppDestinationDST> destinationById, String calendarStartDate)
 			throws Exception {
 
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
@@ -64,7 +64,7 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 			ScheduledStopPoint scheduledStopPoint = ObjectFactory.getScheduledStopPoint(referential, scheduledStopPointId);
 			stopPoint.setScheduledStopPoint(scheduledStopPoint);
 			scheduledStopPoint.setContainedInStopArea(stopArea);
-			appendDestinationDisplay(referential, routeSegment, destinationById, configuration, stopPoint);
+			appendDestinationDisplay(referential, routeSegment, destinationById, configuration, stopPoint, calendarStartDate);
 
 		}
 

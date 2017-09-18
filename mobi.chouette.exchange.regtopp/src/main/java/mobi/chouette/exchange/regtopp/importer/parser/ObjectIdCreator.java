@@ -114,5 +114,13 @@ public abstract class ObjectIdCreator {
 		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.VEHICLE_JOURNEY_AT_STOP_KEY, extractOriginalId(vehicleJourney.getObjectId())+"-"+extractOriginalId(sp.getObjectId()));
 	}
 
+	public static String createDestinationDisplayId(RegtoppImportParameters configuration, String journeyPatternId, String stopPointId, String calendarStartDate) {
+		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.DESTINATIONDISPLAY_KEY, journeyPatternId+"-"+stopPointId+"-"+ calendarStartDate);
+	}
+
+	public static String createDestinationDisplayId(RegtoppImportParameters configuration, String destinationId, String calendarStartDate) {
+		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.DESTINATIONDISPLAY_KEY, destinationId+"-"+ calendarStartDate);
+	}
+
 
 }
