@@ -10,6 +10,7 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 
+import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -21,7 +22,6 @@ public class LineRegisterCommandTest implements Constant {
 	
 	
 	
-	@SuppressWarnings("deprecation")
 	@Test (groups = { "write" }, description = "write command")
 	public void testLineRegisterWrite() throws Exception 
 	{
@@ -36,6 +36,10 @@ public class LineRegisterCommandTest implements Constant {
 	    sp.setId(1001L);
 	    
 	    VehicleJourneyAtStop vjas = new VehicleJourneyAtStop();
+	    vjas.setObjectId("ObjectID");
+	    vjas.setObjectVersion(1);
+	    vjas.setCreationTime(new LocalDateTime(2000,2,1,0,0));
+	    vjas.setCreatorId("creatorId");
         vjas.setStopPoint(sp);
 	    
         vjas.setArrivalTime(new LocalTime(23,59,0));
@@ -50,7 +54,7 @@ public class LineRegisterCommandTest implements Constant {
 		lineRegister.write(buffer, neptuneObject, sp, vjas);
 		
 		
-		Assert.assertEquals(buffer.toString(), "4321|1001|23:59:00|00:05:00|0|1\n", "Invalid data entry for buffer");
+		Assert.assertEquals(buffer.toString(), "'ObjectID'|1|2000-02-01T00:00:00|'creatorId'|4321|1001|23:59:00|00:05:00|0|1\n", "Invalid data entry for buffer");
 	
 		
 	}

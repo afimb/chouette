@@ -3,10 +3,7 @@ package mobi.chouette.exchange.importer;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -239,8 +236,31 @@ public class LineRegisterCommand implements Command {
 		// VehicleJourneyAtStopUpdater.update(Context context,
 		// VehicleJourneyAtStop oldValue,
 		// VehicleJourneyAtStop newValue)
+		
 
 		DateTimeFormatter timeFormat = DateTimeFormat.forPattern("HH:mm:ss");
+		DateTimeFormatter dateTimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
+		
+		buffer.append(QUOTE);
+		buffer.write(vehicleJourneyAtStop.getObjectId());
+		buffer.append(QUOTE);
+		buffer.append(SEP);
+		buffer.write(vehicleJourneyAtStop.getObjectVersion().toString());
+		buffer.append(SEP);
+		if(vehicleJourneyAtStop.getCreationTime() != null) {
+			buffer.write(dateTimeFormat.print(vehicleJourneyAtStop.getCreationTime()));
+		} else {
+			buffer.write(NULL);
+		}
+		buffer.append(SEP);
+		if(vehicleJourneyAtStop.getCreatorId() != null) {
+			buffer.append(QUOTE);
+			buffer.write(vehicleJourneyAtStop.getCreatorId());
+			buffer.append(QUOTE);
+		} else {
+			buffer.write(NULL);
+		}
+		buffer.append(SEP);
 		buffer.write(vehicleJourney.getId().toString());
 		buffer.append(SEP);
 		buffer.write(stopPoint.getId().toString());
