@@ -275,12 +275,12 @@ public class TransferExporterCommandTest extends Arquillian implements mobi.chou
 
 		t.addVehicleJourney(vj);
 
-		VehicleJourneyAtStop vjStop1 = ObjectFactory.getVehicleJourneyAtStop();
+		VehicleJourneyAtStop vjStop1 = ObjectFactory.getVehicleJourneyAtStop(referential,"TST:TimetabledPassingTime:1");
 		vjStop1.setDepartureTime(LocalTime.now());
 		vjStop1.setStopPoint(stopPoint1);
 		vjStop1.setVehicleJourney(vj);
 
-		VehicleJourneyAtStop vjStop2 = ObjectFactory.getVehicleJourneyAtStop();
+		VehicleJourneyAtStop vjStop2 = ObjectFactory.getVehicleJourneyAtStop(referential,"TST:TimetabledPassingTime:2");
 		vjStop2.setDepartureTime(LocalTime.now());
 		vjStop2.setStopPoint(stopPoint2);
 		vjStop2.setVehicleJourney(vj);
