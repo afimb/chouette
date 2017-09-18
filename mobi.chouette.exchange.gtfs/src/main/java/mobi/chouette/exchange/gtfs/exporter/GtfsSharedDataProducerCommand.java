@@ -9,6 +9,7 @@
 package mobi.chouette.exchange.gtfs.exporter;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -115,7 +116,15 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 			calendarProducer = new GtfsServiceProducer(exporter);
 		}
 
-		for (Iterator<StopArea> iterator = commercialStops.iterator(); iterator.hasNext();) {
+		// GTFS only support 2 levels; stops and stations. Need to flatten hierarchy of parent stops before proceeding
+		Set<StopArea> flattendedlStopAreas = new HashSet<>();
+		for(StopArea sa : commercialStops) {
+			StopArea parent = StopAreaUtil.getTopLevelStopArea(sa);
+			flattendedlStopAreas.add(parent);
+		}
+		
+		
+		for (Iterator<StopArea> iterator = flattendedlStopAreas.iterator(); iterator.hasNext();) {
 			StopArea stop = iterator.next();
 			if (!stopProducer.save(stop, sharedPrefix, null, configuration.isKeepOriginalId(),configuration.isUseTpegHvt())) {
 				iterator.remove();
@@ -126,18 +135,36 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 			}
 		}
 		for (StopArea stop : physicalStops) {
-			stopProducer.save(stop, sharedPrefix, commercialStops, configuration.isKeepOriginalId(),configuration.isUseTpegHvt());
+			stopProducer.save(stop, sharedPrefix, flattendedlStopAreas, configuration.isKeepOriginalId(),configuration.isUseTpegHvt());
 			if (metadata != null && stop.hasCoordinates())
 				metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(),
 						stop.getLatitude().doubleValue());
 		}
 		// remove incomplete connectionlinks
 		for (ConnectionLink link : connectionLinks) {
-			if (!physicalStops.contains(link.getStartOfLink()) && !commercialStops.contains(link.getStartOfLink())) {
-				continue;
-			} else if (!physicalStops.contains(link.getEndOfLink()) && !commercialStops.contains(link.getEndOfLink())) {
-				continue;
+			
+			StopArea startOfLink = link.getStartOfLink();
+			if (!physicalStops.contains(startOfLink) && !flattendedlStopAreas.contains(startOfLink)) {
+				// Try to change parent to next level parent
+				StopArea topLevelParent = StopAreaUtil.getTopLevelStopArea(startOfLink);
+				if(flattendedlStopAreas.contains(topLevelParent)) {
+					link.setStartOfLink(topLevelParent);
+				} else {
+					continue;
+				}
 			}
+						
+			StopArea endOfLink = link.getEndOfLink();
+			if (!physicalStops.contains(endOfLink) && !flattendedlStopAreas.contains(endOfLink)) {
+				// Try to change parent to next level parent
+				StopArea topLevelParent = StopAreaUtil.getTopLevelStopArea(endOfLink);
+				if(flattendedlStopAreas.contains(topLevelParent)) {
+					link.setEndOfLink(topLevelParent);
+				} else {
+					continue;
+				}
+			}
+
 			transferProducer.save(link, sharedPrefix, configuration.isKeepOriginalId());
 		}
 		

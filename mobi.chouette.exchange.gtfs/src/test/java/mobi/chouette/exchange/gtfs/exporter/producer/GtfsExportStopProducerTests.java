@@ -189,5 +189,40 @@ public class GtfsExportStopProducerTests
       Assert.assertFalse(producer.save(neptuneObject, "GTFS", parents,false,false));
 
    }
+   
+   @Test(groups = { "Producers" }, description = "test stop with nested parents")
+   public void verifyStopProducerStopNestedParents() throws Exception
+   {
+      mock.reset();
+
+      StopArea neptuneObject = new StopArea();
+      neptuneObject.setObjectId("GTFS:StopArea:4321");
+      neptuneObject.setName("physical point");
+      neptuneObject.setAreaType(ChouetteAreaEnum.BoardingPosition);
+      neptuneObject.setLatitude(BigDecimal.valueOf(45));
+      neptuneObject.setLongitude(BigDecimal.valueOf(3));
+      neptuneObject.setLongLatType(LongLatTypeEnum.WGS84);
+
+      StopArea monomodalParent = new StopArea();
+      monomodalParent.setObjectId("GTFS:StopArea:5678");
+
+      StopArea multimodalParent = new StopArea();
+      multimodalParent.setObjectId("GTFS:StopArea:6666");
+
+      monomodalParent.setParent(multimodalParent);
+      
+      List<StopArea> multimodalParents = new ArrayList<>();
+      multimodalParents.add(multimodalParent);
+      neptuneObject.setParent(monomodalParent);
+
+      producer.save(neptuneObject,  "GTFS", multimodalParents,false,false);
+      GtfsStop gtfsObject = mock.getExportedStops().get(0);
+      Reporter.log("verifyStopProducerStopWithFullData");
+      Reporter.log(StopExporter.CONVERTER.to(context, gtfsObject));
+
+      Assert.assertEquals(gtfsObject.getStopId(), "4321", "StopId must be third part of objectid");
+      Assert.assertEquals(gtfsObject.getParentStation(), "6666", "ParentStation must be correctly set");
+   }
+
 
 }
