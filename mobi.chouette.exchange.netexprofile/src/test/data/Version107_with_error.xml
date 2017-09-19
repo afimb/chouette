@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PublicationDelivery xmlns="http://www.netex.org.uk/netex" version="1.07:NO-NeTEx-networktimetable:1.0">
+    <PublicationTimestamp>2016-12-19T14:06:25.103Z</PublicationTimestamp>
+    <ParticipantRef>Avinor</ParticipantRef>
+    <Description>Flight SK264 : Bergen-Oslo</Description>
+    <dataObjects>
+        <CompositeFrame created="2016-12-19T14:06:25.103Z" version="1" id="AVI:CompositeFrame:SK264">
+            <frames>
+                <ServiceFrame version="1" id="AVI:ServiceFrame:SK264">
+                  
+                    <routePoints>
+                        <RoutePoint version="1" id="AVI:RoutePoint:BGO">
+                            <projections>
+                                <PointProjection version="1" id="AVI:PointProjection:BGO">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:BGO" version="1"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                        <RoutePoint version="1" id="AVI:RoutePoint:OSL">
+                            <projections>
+                                <PointProjection version="1" id="AVI:PointProjection:OSL">
+                                    <ProjectedPointRef ref="AVI:ScheduledStopPoint:OSL" version="1"/>
+                                </PointProjection>
+                            </projections>
+                        </RoutePoint>
+                    </routePoints>
+                    <routes>
+                        <Route version="1" id="AVI:Route:SK264">
+                            <Name>Bergen-Oslo</Name>
+                           
+                            <pointsInSequence>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:26779581">
+                                    <RoutePointRef ref="AVI:RoutePoint:BGO" version="1"/>
+                                </PointOnRoute>
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:26779582">
+                                    <RoutePointRef ref="AVI:RoutePoint:OSL" version="1"/>
+                                </PointOnRoute>
+                            </pointsInSequence>
+                        </Route>
+                    </routes>
+
+                    <scheduledStopPoints>
+                        <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:BGO">
+                            <Name>Bergen Lufthavn</Name>
+                            <ShortName>BGO</ShortName>
+                        </ScheduledStopPoint>
+                        <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:OSL">
+                            <Name>Oslo Lufthavn</Name>
+                            <ShortName>OSL</ShortName>
+                        </ScheduledStopPoint>
+                    </scheduledStopPoints>
+
+
+                </ServiceFrame>
+
+            </frames>
+        </CompositeFrame>
+    </dataObjects>
+</PublicationDelivery>

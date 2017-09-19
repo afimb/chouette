@@ -30,6 +30,7 @@ import org.testng.annotations.Test;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -43,11 +44,7 @@ public class NetexSchemaValidatorCommandTest extends Arquillian implements Const
 	public static EnterpriseArchive createDeployment() {
 		EnterpriseArchive result;
 
-		File[] files = Maven.resolver()
-				.loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.exchange.netexprofile")
-				.withTransitivity()
-				.asFile();
+		File[] files = Maven.resolver().loadPomFromFile("pom.xml").resolve("mobi.chouette:mobi.chouette.exchange.netexprofile").withTransitivity().asFile();
 
 		List<File> jars = new ArrayList<>();
 		List<JavaArchive> modules = new ArrayList<>();
@@ -55,21 +52,14 @@ public class NetexSchemaValidatorCommandTest extends Arquillian implements Const
 		for (File file : files) {
 			if (file.getName().startsWith("mobi.chouette.exchange")) {
 				String name = file.getName().split("\\-")[0] + ".jar";
-				JavaArchive archive = ShrinkWrap
-						.create(ZipImporter.class, name)
-						.importFrom(file)
-						.as(JavaArchive.class);
+				JavaArchive archive = ShrinkWrap.create(ZipImporter.class, name).importFrom(file).as(JavaArchive.class);
 				modules.add(archive);
 			} else {
 				jars.add(file);
 			}
 		}
 
-		File[] filesDao = Maven.resolver()
-				.loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.dao")
-				.withTransitivity()
-				.asFile();
+		File[] filesDao = Maven.resolver().loadPomFromFile("pom.xml").resolve("mobi.chouette:mobi.chouette.dao").withTransitivity().asFile();
 
 		if (filesDao.length == 0) {
 			throw new NullPointerException("no dao");
@@ -78,10 +68,7 @@ public class NetexSchemaValidatorCommandTest extends Arquillian implements Const
 		for (File file : filesDao) {
 			if (file.getName().startsWith("mobi.chouette.dao")) {
 				String name = file.getName().split("\\-")[0] + ".jar";
-				JavaArchive archive = ShrinkWrap
-						.create(ZipImporter.class, name)
-						.importFrom(file)
-						.as(JavaArchive.class);
+				JavaArchive archive = ShrinkWrap.create(ZipImporter.class, name).importFrom(file).as(JavaArchive.class);
 				modules.add(archive);
 
 				if (!modules.contains(archive)) {
@@ -94,16 +81,11 @@ public class NetexSchemaValidatorCommandTest extends Arquillian implements Const
 		}
 
 		final WebArchive testWar = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
-				.addClass(NetexSchemaValidatorCommandTest.class)
-				.addClass(NetexInitImportCommand.class)
-				.addClass(NetexTestUtils.class)
+				.addClass(NetexSchemaValidatorCommandTest.class).addClass(NetexInitImportCommand.class).addClass(NetexTestUtils.class)
 				.addClass(DummyChecker.class);
 
-		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-				.addAsLibraries(jars.toArray(new File[0]))
-				.addAsModules(modules.toArray(new JavaArchive[0]))
-				.addAsModule(testWar)
-				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
+		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear").addAsLibraries(jars.toArray(new File[0]))
+				.addAsModules(modules.toArray(new JavaArchive[0])).addAsModule(testWar).addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 
 		return result;
 	}
@@ -129,35 +111,33 @@ public class NetexSchemaValidatorCommandTest extends Arquillian implements Const
 		context.put(Constant.REPORT, new ActionReport());
 
 		Referential referential = new Referential();
-		context.put(Constant.REFERENTIAL,referential);
+		context.put(Constant.REFERENTIAL, referential);
 
 		return context;
 	}
 
 	@Test
-	public void testValidateDocument() throws Exception {
-		Context context = initContext();
-
-		List<Path> allFilePaths = Collections.singletonList(new File("src/test/data/SK264.xml").toPath());
-		context.put(NETEX_FILE_PATHS, allFilePaths);
-
-		Command initImportCmd = CommandFactory.create(initialContext, NetexInitImportCommand.class.getName());
-		initImportCmd.execute(context);
-
-		NetexSchemaValidationCommand schemaValidationCmd = new NetexSchemaValidationCommand();
-		boolean result = schemaValidationCmd.execute(context);
-
-		Assert.assertTrue(result);
+	public void testValidateDocument104() throws Exception {
+		validateDocument(new File("src/test/data/Version104.xml"), false);
 	}
 
-	@Test(enabled = false)
-	public void testInvalidDocument() throws Exception {
+	@Test
+	public void testValidateDocument107() throws Exception {
+		validateDocument(new File("src/test/data/Version107.xml"), false);
+	}
+
+	@Test
+	public void testValidateDocument107WithError() throws Exception {
+		validateDocument(new File("src/test/data/Version107_with_error.xml"), true);
+	}
+
+	private void validateDocument(File f, boolean shouldFail) throws Exception {
 		Context context = initContext();
 
 		ActionReporter reporter = ActionReporter.Factory.getInstance();
-		reporter.setFileState(context, "SK264-invalid.xml", IO_TYPE.INPUT, FILE_STATE.IGNORED);
+		reporter.setFileState(context, f.getName(), IO_TYPE.INPUT, FILE_STATE.IGNORED);
 
-		List<Path> allFilePaths = Collections.singletonList(new File("src/test/data/SK264-invalid.xml").toPath());
+		List<Path> allFilePaths = Collections.singletonList(f.toPath());
 		context.put(NETEX_FILE_PATHS, allFilePaths);
 
 		Command initImportCmd = CommandFactory.create(initialContext, NetexInitImportCommand.class.getName());
@@ -166,9 +146,20 @@ public class NetexSchemaValidatorCommandTest extends Arquillian implements Const
 		NetexSchemaValidationCommand schemaValidationCmd = new NetexSchemaValidationCommand();
 		boolean result = schemaValidationCmd.execute(context);
 
-		Assert.assertFalse(result);
+		if (shouldFail) {
+			if(result) {
+				NetexTestUtils.verifyValidationReport(context);
+			}
+			Assert.assertFalse(result);
+			ActionReport actionReport = (ActionReport) context.get(Constant.REPORT);
+			Assert.assertEquals(actionReport.getFiles().get(0).getErrors().get(0).getCode(), FILE_ERROR_CODE.INVALID_FORMAT);
+		} else {
+			if(!result) {
+				NetexTestUtils.verifyValidationReport(context);
+			}
+			Assert.assertTrue(result);
 
-		ActionReport actionReport = (ActionReport) context.get(Constant.REPORT);
-		Assert.assertEquals(actionReport.getFiles().get(0).getErrors().get(0).getCode(), FILE_ERROR_CODE.INVALID_FORMAT);
+		}
 	}
+
 }
