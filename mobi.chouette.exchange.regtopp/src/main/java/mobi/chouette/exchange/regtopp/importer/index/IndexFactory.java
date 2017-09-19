@@ -26,9 +26,10 @@ public abstract class IndexFactory {
 			if (!factories.containsKey(clazz))
 				throw new ClassNotFoundException(clazz);
 		}
-		
-		log.info("Creating index with parser "+parser);
-		
+
+		if (log.isDebugEnabled())
+			log.debug("Creating index with parser " + parser);
+
 		return ((IndexFactory) factories.get(clazz)).create(context, validationReporter, parser);
 	}
 }
