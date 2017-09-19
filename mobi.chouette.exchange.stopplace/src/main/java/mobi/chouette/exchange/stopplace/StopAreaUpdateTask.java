@@ -100,7 +100,7 @@ public class StopAreaUpdateTask {
 			existing.setDetached(true);
 			updateExistingStopArea(stopArea, existing);
 		} else {
-			log.info("Creating new contained StopArea: " + stopArea);
+			log.debug("Creating new contained StopArea: " + stopArea);
 			stopArea.setParent(parent);
 			createNewStopArea(stopArea);
 		}
