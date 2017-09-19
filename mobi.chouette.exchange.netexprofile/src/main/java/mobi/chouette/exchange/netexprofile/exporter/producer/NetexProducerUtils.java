@@ -144,7 +144,7 @@ public class NetexProducerUtils {
 		} else if (v instanceof VehicleJourney) {
 			return "ServiceJourney";
 		} else if (v instanceof JourneyPattern) {
-			return "ServicePattern";
+			return "ServiceJourneyPattern";
 		} else if (v instanceof StopArea) {
 			StopArea sa = (StopArea) v;
 			if (ChouetteAreaEnum.BoardingPosition.equals(sa.getAreaType())) {
@@ -183,9 +183,9 @@ public class NetexProducerUtils {
 		String newType = translateType(source);
 		if (newType != null) {
 			destination.setId(translateObjectId(source.getObjectId(), newType));
+		} else {
+			destination.setId(source.getObjectId());
 		}
-
-		destination.setId(source.getObjectId());
 		destination.setVersion(source.getObjectVersion() == null ? "1" : source.getObjectVersion().toString());
 	}
 
@@ -197,9 +197,9 @@ public class NetexProducerUtils {
 		String newType = translateType(source);
 		if (newType != null) {
 			destination.setRef(translateObjectId(source.getObjectId(), newType));
+		} else {
+			destination.setRef(source.getObjectId());
 		}
-
-		destination.setRef(source.getObjectId());
 		if (withVersion) {
 			destination.setVersion(source.getObjectVersion() == null ? "1" : source.getObjectVersion().toString());
 		}

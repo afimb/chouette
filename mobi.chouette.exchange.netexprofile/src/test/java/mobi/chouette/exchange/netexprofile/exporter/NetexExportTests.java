@@ -674,6 +674,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         configuration.setNoSave(false);
         configuration.setCleanRepository(true);
         configuration.setParseSiteFrames(true);
+        configuration.setObjectIdPrefix("AVI");
 
         try {
             command.execute(context);
