@@ -278,13 +278,13 @@
                             <Name>Oslo-Førde-Bergen</Name>
                             <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
                             <pointsInSequence>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:8267944401">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:8267944401" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:78568" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:8267944402">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:8267944402" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:69447" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:8267944403">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:8267944403" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:65706" version="1"/>
                                 </PointOnRoute>
                             </pointsInSequence>
@@ -293,16 +293,16 @@
                             <Name>Oslo-Sandane-Florø-Bergen</Name>
                             <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
                             <pointsInSequence>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:1347227201">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1347227201" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:78568" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:1347227202">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1347227202" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:81949" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:1347227203">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1347227203" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:69891" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:1347227204">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1347227204" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:65706" version="1"/>
                                 </PointOnRoute>
                             </pointsInSequence>
@@ -311,16 +311,16 @@
                             <Name>Oslo-Ørsta/Volda-Sogndal-Bergen</Name>
                             <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
                             <pointsInSequence>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:1243189001">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1243189001" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:78568" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:1243189002">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1243189002" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:71727" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:1243189003">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1243189003" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:82283" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:1243189004">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1243189004" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:65706" version="1"/>
                                 </PointOnRoute>
                             </pointsInSequence>
@@ -329,13 +329,13 @@
                             <Name>Oslo-Sogndal-Bergen</Name>
                             <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
                             <pointsInSequence>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:2037918801">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:2037918801" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:78568" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:2037918802">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:2037918802" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:82283" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:2037918803">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:2037918803" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:65706" version="1"/>
                                 </PointOnRoute>
                             </pointsInSequence>
@@ -344,13 +344,13 @@
                             <Name>Bergen-Sogndal-Oslo</Name>
                             <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
                             <pointsInSequence>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:1382449101">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1382449101" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:65706" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:1382449102">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1382449102" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:82283" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:1382449103">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1382449103" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:78568" version="1"/>
                                 </PointOnRoute>
                             </pointsInSequence>
@@ -359,16 +359,16 @@
                             <Name>Bergen-Sogndal-Ørsta/Volda-Oslo</Name>
                             <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
                             <pointsInSequence>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:8783217001">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:8783217001" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:65706" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:8783217002">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:8783217002" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:82283" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:8783217003">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:8783217003" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:71727" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:8783217004">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:8783217004" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:78568" version="1"/>
                                 </PointOnRoute>
                             </pointsInSequence>
@@ -377,13 +377,13 @@
                             <Name>Bergen-Førde-Oslo</Name>
                             <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
                             <pointsInSequence>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:3518628301">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:3518628301" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:65706" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:3518628302">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:3518628302" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:69447" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:3518628303">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:3518628303" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:78568" version="1"/>
                                 </PointOnRoute>
                             </pointsInSequence>
@@ -392,13 +392,13 @@
                             <Name>Bergen-Ørsta/Volda-Oslo</Name>
                             <LineRef ref="AVI:Line:WF_OSL-BGO" version="1"/>
                             <pointsInSequence>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:1753765001">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1753765001" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:65706" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:1753765002">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1753765002" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:71727" version="1"/>
                                 </PointOnRoute>
-                                <PointOnRoute version="1" id="AVI:PointOnRoute:1753765003">
+                                <PointOnRoute version="1" id="AVI:PointOnRoute:1753765003" order="1">
                                     <RoutePointRef ref="AVI:RoutePoint:78568" version="1"/>
                                 </PointOnRoute>
                             </pointsInSequence>

@@ -196,10 +196,10 @@ public class StopPlaceParser implements Parser, Constant {
             return mapTransportSubMode(netexStop.getBusSubmode().value());
         } else if (netexStop.getAirSubmode() != null) {
             return mapTransportSubMode(netexStop.getAirSubmode().value());
-        } else if (netexStop.getTaxiSubmode() != null) {
-            return mapTransportSubMode(netexStop.getTaxiSubmode().value());
-        } else if (netexStop.getSelfDriveSubmode() != null) {
-            return mapTransportSubMode(netexStop.getSelfDriveSubmode().value());
+//        } else if (netexStop.getTaxiSubmode() != null) {
+//            return mapTransportSubMode(netexStop.getTaxiSubmode().value());
+//        } else if (netexStop.getSelfDriveSubmode() != null) {
+//            return mapTransportSubMode(netexStop.getSelfDriveSubmode().value());
         } else if (netexStop.getCoachSubmode() != null) {
             return mapTransportSubMode(netexStop.getCoachSubmode().value());
         } else if (netexStop.getFunicularSubmode() != null) {
@@ -233,8 +233,8 @@ public class StopPlaceParser implements Parser, Constant {
                 return TransportModeNameEnum.Bus;
             case RAIL:
                 return TransportModeNameEnum.Rail;
-            case TAXI:
-                return TransportModeNameEnum.Taxi;
+//            case TAXI:
+//                return TransportModeNameEnum.Taxi;
             case TRAM:
                 return TransportModeNameEnum.Tram;
             case COACH:

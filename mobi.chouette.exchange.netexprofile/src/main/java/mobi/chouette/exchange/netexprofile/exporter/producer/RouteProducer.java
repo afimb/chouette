@@ -17,6 +17,8 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.model.StopPoint;
 
+import java.math.BigInteger;
+
 public class RouteProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Route, mobi.chouette.model.Route> {
 
 	@Override
@@ -58,7 +60,7 @@ public class RouteProducer extends NetexProducer implements NetexEntityProducer<
 				String pointOnRouteIdSuffix = stopPoint.objectIdSuffix() + "-" + stopPoint.getPosition();
 				String pointOnRouteId = netexId(stopPoint.objectIdPrefix(), POINT_ON_ROUTE, pointOnRouteIdSuffix);
 
-				PointOnRoute pointOnRoute = netexFactory.createPointOnRoute().withVersion(pointVersion).withId(pointOnRouteId);
+				PointOnRoute pointOnRoute = netexFactory.createPointOnRoute().withVersion(pointVersion).withId(pointOnRouteId).withOrder(BigInteger.ONE);
 				pointsOnRoute.getPointOnRoute().add(pointOnRoute);
 
 				if (stopPoint.getScheduledStopPoint().getContainedInStopArea() != null) {
