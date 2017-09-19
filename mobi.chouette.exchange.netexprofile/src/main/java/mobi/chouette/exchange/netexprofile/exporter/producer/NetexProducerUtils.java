@@ -21,8 +21,10 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.NeptuneObject;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.type.OrganisationTypeEnum;
@@ -154,6 +156,10 @@ public class NetexProducerUtils {
 			}
 		} else if(v instanceof Footnote) {
 			return "Notice";
+		} else if(v instanceof StopPoint) {
+			return "StopPointInJourneyPattern";
+		} else if(v instanceof VehicleJourneyAtStop) {
+			return "TimetabledPassingTime";
 		}
 
 		return null;
