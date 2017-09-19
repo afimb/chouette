@@ -18,6 +18,7 @@ import mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppRouteTDA;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppTripIndexTIX;
 import mobi.chouette.model.*;
+import mobi.chouette.model.type.OrganisationTypeEnum;
 import mobi.chouette.model.type.PTDirectionEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -173,6 +174,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 			company.setRegistrationNumber(adminCode);
 			company.setName(configuration.getOrganisationName());
 			company.setCode(adminCode);
+			company.setOrganisationType(OrganisationTypeEnum.Authority);
 			company.setFilled(true);
 		}
 		return company;

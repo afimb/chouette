@@ -42,6 +42,7 @@ import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
+import mobi.chouette.model.type.OrganisationTypeEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.TransportSubModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
@@ -224,6 +225,7 @@ public class RegtoppTripParser extends LineSpecificParser {
 			operator.setRegistrationNumber(operatorCode);
 			operator.setName("Operator " + operatorCode);
 			operator.setCode(operatorCode);
+			operator.setOrganisationType(OrganisationTypeEnum.Operator);
 			operator.setFilled(true);
 		}
 		return operator;
