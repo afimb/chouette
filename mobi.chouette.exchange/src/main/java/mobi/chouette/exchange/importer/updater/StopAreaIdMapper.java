@@ -36,7 +36,12 @@ public class StopAreaIdMapper {
 
 
     public void mapStopAreaIds(Referential referential) {
-        referential.setStopAreas(referential.getStopAreas().entrySet().stream().map(entry -> mapIdsForStopArea(entry.getValue())).distinct().collect(Collectors.toMap(StopArea::getObjectId, Function.identity())));
+        referential.setStopAreas(mapStopAreas(referential.getStopAreas()));
+        referential.setSharedStopAreas(mapStopAreas(referential.getSharedStopAreas()));
+    }
+
+    private Map<String, StopArea> mapStopAreas(Map<String,StopArea> stopAreaMap) {
+        return stopAreaMap.entrySet().stream().map(entry -> mapIdsForStopArea(entry.getValue())).distinct().collect(Collectors.toMap(StopArea::getObjectId, Function.identity()));
     }
 
 
