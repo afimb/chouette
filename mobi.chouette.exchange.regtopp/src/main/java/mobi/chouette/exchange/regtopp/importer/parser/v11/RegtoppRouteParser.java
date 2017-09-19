@@ -59,13 +59,13 @@ public class RegtoppRouteParser extends LineSpecificParser {
 				// Cast to 1.1D
 				RegtoppTripIndexTIX trip = (RegtoppTripIndexTIX) abstractTrip;
 
-				// Add network
-				Network ptNetwork = addNetwork(referential, configuration, trip.getAdminCode());
-				line.setNetwork(ptNetwork);
-
 				// Add authority company
-				Company company = addAuthority(referential, configuration, trip.getAdminCode());
-				line.setCompany(company);
+				Company authority = addAuthority(referential, configuration, trip.getAdminCode());
+
+				// Add network
+				Network ptNetwork = addNetwork(referential, configuration, trip.getAdminCode(), authority);
+				line.setNetwork(ptNetwork);
+				
 
 				// Create route
 				RouteKey routeKey = new RouteKey(trip.getLineId(), trip.getDirection(), trip.getRouteIdRef(), calendarStartDate);
@@ -156,12 +156,13 @@ public class RegtoppRouteParser extends LineSpecificParser {
 		return route;
 	}
 
-	protected Network addNetwork(Referential referential, RegtoppImportParameters configuration, String adminCode) {
+	protected Network addNetwork(Referential referential, RegtoppImportParameters configuration, String adminCode, Company company) {
 		String chouetteNetworkId = ObjectIdCreator.createNetworkId(configuration, adminCode);
 		Network ptNetwork = ObjectFactory.getPTNetwork(referential, chouetteNetworkId);
 		if (!ptNetwork.isFilled()) {
 			ptNetwork.setName(adminCode);
 			ptNetwork.setRegistrationNumber(adminCode);
+			ptNetwork.setCompany(company);
 			ptNetwork.setFilled(true);
 		}
 		return ptNetwork;

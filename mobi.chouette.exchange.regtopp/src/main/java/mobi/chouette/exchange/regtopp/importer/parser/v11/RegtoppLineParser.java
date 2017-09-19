@@ -33,6 +33,7 @@ import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
 import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
+import mobi.chouette.model.Company;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -109,7 +110,23 @@ public class RegtoppLineParser extends LineSpecificParser {
 		updateLineName(referential, line, configuration);
 		removeLineNumberFromRouteAndJourneyPatternsAndVehicleJourneys(referential, line, configuration);
 		updateNetworkDate(importer, referential, line, configuration);
+		updateOperator(referential,line);
 
+	}
+
+	private void updateOperator(Referential referential, Line line) {
+		Set<Company> operatorsOnLine = new HashSet<>();
+		for(VehicleJourney vj : referential.getVehicleJourneys().values()) {
+			operatorsOnLine.add(vj.getCompany());
+		}
+		
+		if(operatorsOnLine.size() == 1) {
+			// Same on all vehicle journeys
+			line.setCompany(operatorsOnLine.iterator().next());
+			for(VehicleJourney vj : referential.getVehicleJourneys().values()) {
+				vj.setCompany(null);
+			}
+		}
 	}
 
 	/**
