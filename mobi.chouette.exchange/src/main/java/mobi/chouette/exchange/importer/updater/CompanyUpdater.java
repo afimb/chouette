@@ -48,6 +48,10 @@ public class CompanyUpdater implements Updater<Company> {
 				&& !newValue.getShortName().equals(oldValue.getShortName())) {
 			oldValue.setShortName(newValue.getShortName());
 		}
+		if (newValue.getLegalName() != null
+				&& !newValue.getLegalName().equals(oldValue.getLegalName())) {
+			oldValue.setLegalName(newValue.getLegalName());
+		}
 		if (newValue.getOrganisationalUnit() != null
 				&& !newValue.getOrganisationalUnit().equals(
 						oldValue.getOrganisationalUnit())) {
@@ -88,6 +92,24 @@ public class CompanyUpdater implements Updater<Company> {
 				&& !newValue.getTimeZone().equals(oldValue.getTimeZone())) {
 			oldValue.setTimeZone(newValue.getTimeZone());
 		}
+
+		if (newValue.getPublicPhone() != null
+				&& !newValue.getPublicPhone().equals(oldValue.getPublicPhone())) {
+			oldValue.setPublicPhone(newValue.getPublicPhone());
+		}
+		if (newValue.getPublicEmail() != null
+				&& !newValue.getPublicEmail().equals(oldValue.getPublicEmail())) {
+			oldValue.setPublicEmail(newValue.getPublicEmail());
+		}
+		if (newValue.getPublicUrl() != null
+				&& !newValue.getPublicUrl().equals(oldValue.getPublicUrl())) {
+			oldValue.setPublicUrl(newValue.getPublicUrl());
+		}
+		if (newValue.getOrganisationType() != null
+				&& !newValue.getOrganisationType().equals(oldValue.getOrganisationType())) {
+			oldValue.setOrganisationType(newValue.getOrganisationType());
+		}
+		
 		monitor.stop();
 	}
 
