@@ -50,7 +50,7 @@ import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer;
-import mobi.chouette.exchange.netexprofile.exporter.producer.JourneyPatternProducer;
+import mobi.chouette.exchange.netexprofile.exporter.producer.ServiceJourneyPatternProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.LineProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
@@ -76,7 +76,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 	private static NetworkProducer networkProducer = new NetworkProducer();
 	private static LineProducer lineProducer = new LineProducer();
 	private static RouteProducer routeProducer = new RouteProducer();
-	private static JourneyPatternProducer journeyPatternProducer = new JourneyPatternProducer();
+	private static ServiceJourneyPatternProducer journeyPatternProducer = new ServiceJourneyPatternProducer();
 	private static CalendarProducer calendarProducer = new CalendarProducer();
 	private static ServiceJourneyProducer serviceJourneyProducer = new ServiceJourneyProducer();
 	private static ServiceJourneyInterchangeProducer serviceJourneyInterchangeProducer = new ServiceJourneyInterchangeProducer();
@@ -126,7 +126,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
 		for (mobi.chouette.model.Route route : neptuneLine.getRoutes()) {
 			for (mobi.chouette.model.JourneyPattern neptuneJourneyPattern : route.getJourneyPatterns()) {
-				org.rutebanken.netex.model.JourneyPattern netexJourneyPattern = journeyPatternProducer.produce(context, neptuneJourneyPattern);
+				org.rutebanken.netex.model.ServiceJourneyPattern netexJourneyPattern = journeyPatternProducer.produce(context, neptuneJourneyPattern);
 				exportableNetexData.getJourneyPatterns().add(netexJourneyPattern);
 			}
 		}

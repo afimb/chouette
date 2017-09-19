@@ -73,6 +73,7 @@ public class ServiceJourneyProducer extends NetexProducer {
 				VehicleJourneyAtStop vehicleJourneyAtStop = vehicleJourneyAtStops.get(i);
 
 				TimetabledPassingTime timetabledPassingTime = netexFactory.createTimetabledPassingTime();
+				NetexProducerUtils.populateId(vehicleJourneyAtStop, timetabledPassingTime);
 
 				StopPoint stopPoint = vehicleJourneyAtStop.getStopPoint();
 				StopPointInJourneyPatternRefStructure pointInPatternRefStruct = netexFactory.createStopPointInJourneyPatternRefStructure();

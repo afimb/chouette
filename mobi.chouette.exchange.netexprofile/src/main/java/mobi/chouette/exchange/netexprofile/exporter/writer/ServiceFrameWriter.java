@@ -20,6 +20,7 @@ import org.rutebanken.netex.model.Network;
 import org.rutebanken.netex.model.PassengerStopAssignment;
 import org.rutebanken.netex.model.RoutePoint;
 import org.rutebanken.netex.model.ScheduledStopPoint;
+import org.rutebanken.netex.model.ServiceJourneyPattern;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
@@ -151,8 +152,8 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 	private static void writeJourneyPatternsElement(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
 		try {
 			writer.writeStartElement(JOURNEY_PATTERNS);
-			for (JourneyPattern journeyPattern : exportableData.getJourneyPatterns()) {
-				marshaller.marshal(netexFactory.createJourneyPattern(journeyPattern), writer);
+			for (ServiceJourneyPattern journeyPattern : exportableData.getJourneyPatterns()) {
+				marshaller.marshal(netexFactory.createServiceJourneyPattern(journeyPattern), writer);
 			}
 			writer.writeEndElement();
 		} catch (Exception e) {

@@ -16,11 +16,11 @@ import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProduce
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
-public class JourneyPatternProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.JourneyPattern, mobi.chouette.model.JourneyPattern> {
+public class ServiceJourneyPatternProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.ServiceJourneyPattern, mobi.chouette.model.JourneyPattern> {
 
     @Override
-    public org.rutebanken.netex.model.JourneyPattern produce(Context context, mobi.chouette.model.JourneyPattern neptuneJourneyPattern) {
-        org.rutebanken.netex.model.JourneyPattern netexJourneyPattern = netexFactory.createJourneyPattern();
+    public org.rutebanken.netex.model.ServiceJourneyPattern produce(Context context, mobi.chouette.model.JourneyPattern neptuneJourneyPattern) {
+        org.rutebanken.netex.model.ServiceJourneyPattern netexJourneyPattern = netexFactory.createServiceJourneyPattern();
 
         NetexProducerUtils.populateId(neptuneJourneyPattern, netexJourneyPattern);
 

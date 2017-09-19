@@ -70,7 +70,7 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private List<JourneyPattern> journeyPatterns = new ArrayList<>();
+    private List<ServiceJourneyPattern> journeyPatterns = new ArrayList<>();
 
     @Getter
     @Setter
