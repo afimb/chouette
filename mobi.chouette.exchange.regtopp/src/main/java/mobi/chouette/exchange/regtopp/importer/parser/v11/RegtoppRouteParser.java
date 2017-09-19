@@ -171,7 +171,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 		Company company = ObjectFactory.getCompany(referential, chouetteCompanyId);
 		if (!company.isFilled()) {
 			company.setRegistrationNumber(adminCode);
-			company.setName("Authority " + adminCode);
+			company.setName(configuration.getOrganisationName());
 			company.setCode(adminCode);
 			company.setFilled(true);
 		}
