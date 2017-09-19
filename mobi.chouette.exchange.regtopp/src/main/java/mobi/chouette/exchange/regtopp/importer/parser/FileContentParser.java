@@ -43,7 +43,8 @@ public class FileContentParser<T> {
 	}
 
 	public void parse(final Context context, final RegtoppValidationReporter validationReporter) throws Exception {
-		log.info("Starting to parse "+parseableFile);
+		if (log.isDebugEnabled())
+			log.debug("Starting to parse " + parseableFile);
 		StreamFactory factory = StreamFactory.newInstance();
 
 		String streamName = "regtopp";
@@ -67,7 +68,7 @@ public class FileContentParser<T> {
 		InputStreamReader isr = new InputStreamReader(is, (String) context.get(RegtoppConstant.CHARSET));
 		BufferedReader buffReader = new BufferedReader(isr);
 		ControlCharacterFilteringReader filteringReader = new ControlCharacterFilteringReader(buffReader);
-		
+
 		BeanReader in = factory.createReader(streamName, filteringReader);
 
 		final Set<RegtoppException> errors = new HashSet<RegtoppException>();
@@ -94,7 +95,14 @@ public class FileContentParser<T> {
 									rContext.getRecordText(), parseableFile.getInvalidFieldValue(), error);
 							RegtoppException e = new RegtoppException(ctx, ex);
 							errors.add(e);
-							log.warn(this.hashCode()+ " Field error parsing record " + recordNameLabel + " in file " + fileName + " at line " + rContext.getLineNumber() + ":"
+							log.warn(this.hashCode()
+									+ " Field error parsing record "
+									+ recordNameLabel
+									+ " in file "
+									+ fileName
+									+ " at line "
+									+ rContext.getLineNumber()
+									+ ":"
 									+ error);
 						}
 					}
@@ -113,7 +121,13 @@ public class FileContentParser<T> {
 										rContext.getFieldText(field), parseableFile.getInvalidFieldValue(), error);
 								RegtoppException e = new RegtoppException(ctx, ex);
 								errors.add(e);
-								log.warn("Field error parsing field '" + fieldLabel + "' in file " + fileName + " at line " + rContext.getLineNumber() + ":"
+								log.warn("Field error parsing field '"
+										+ fieldLabel
+										+ "' in file "
+										+ fileName
+										+ " at line "
+										+ rContext.getLineNumber()
+										+ ":"
 										+ error);
 							}
 						}
@@ -150,7 +164,8 @@ public class FileContentParser<T> {
 				((RegtoppObject) record).setRecordLineNumber(in.getLineNumber());
 				rawContent.add(record);
 			}
-			log.info("Parsed file OK: " + parseableFile);
+			if (log.isDebugEnabled())
+				log.debug("Parsed file OK: " + parseableFile);
 			ActionReporter actionReporter = ActionReporter.Factory.getInstance();
 			actionReporter.setFileState(context, fileName, IO_TYPE.INPUT, OK);
 		} catch (RuntimeException ex) {
@@ -161,7 +176,8 @@ public class FileContentParser<T> {
 		if (errors.size() > 0) {
 			validationReporter.reportErrors(context, errors, fileName);
 		}
-		log.info("Finished parsing "+parseableFile);
+		if (log.isDebugEnabled())
+			log.debug("Finished parsing " + parseableFile);
 
 	}
 
