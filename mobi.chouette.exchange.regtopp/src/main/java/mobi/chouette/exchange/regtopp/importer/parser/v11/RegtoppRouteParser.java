@@ -18,6 +18,7 @@ import mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppRouteTDA;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppTripIndexTIX;
 import mobi.chouette.model.*;
+import mobi.chouette.model.type.OrganisationTypeEnum;
 import mobi.chouette.model.type.PTDirectionEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.ObjectIdTypes;
@@ -60,13 +61,13 @@ public class RegtoppRouteParser extends LineSpecificParser {
 				// Cast to 1.1D
 				RegtoppTripIndexTIX trip = (RegtoppTripIndexTIX) abstractTrip;
 
-				// Add network
-				Network ptNetwork = addNetwork(referential, configuration, trip.getAdminCode());
-				line.setNetwork(ptNetwork);
-
 				// Add authority company
-				Company company = addAuthority(referential, configuration, trip.getAdminCode());
-				line.setCompany(company);
+				Company authority = addAuthority(referential, configuration, trip.getAdminCode());
+
+				// Add network
+				Network ptNetwork = addNetwork(referential, configuration, trip.getAdminCode(), authority);
+				line.setNetwork(ptNetwork);
+				
 
 				// Create route
 				RouteKey routeKey = new RouteKey(trip.getLineId(), trip.getDirection(), trip.getRouteIdRef(), calendarStartDate);
@@ -178,12 +179,13 @@ public class RegtoppRouteParser extends LineSpecificParser {
 		return route;
 	}
 
-	protected Network addNetwork(Referential referential, RegtoppImportParameters configuration, String adminCode) {
+	protected Network addNetwork(Referential referential, RegtoppImportParameters configuration, String adminCode, Company company) {
 		String chouetteNetworkId = ObjectIdCreator.createNetworkId(configuration, adminCode);
 		Network ptNetwork = ObjectFactory.getPTNetwork(referential, chouetteNetworkId);
 		if (!ptNetwork.isFilled()) {
 			ptNetwork.setName(adminCode);
 			ptNetwork.setRegistrationNumber(adminCode);
+			ptNetwork.setCompany(company);
 			ptNetwork.setFilled(true);
 		}
 		return ptNetwork;
@@ -196,6 +198,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 			company.setRegistrationNumber(adminCode);
 			company.setName(configuration.getOrganisationName());
 			company.setCode(adminCode);
+			company.setOrganisationType(OrganisationTypeEnum.Authority);
 			company.setFilled(true);
 		}
 		return company;

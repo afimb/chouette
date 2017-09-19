@@ -57,13 +57,13 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 		for (AbstractRegtoppRouteTMS routeSegment : routeIndex) {
 			if (lineId.equals(routeSegment.getLineId())) {
 
+				// Add authority company
+				Company authority = addAuthority(referential, configuration, routeSegment.getAdminCode());
+
 				// Add network
-				Network ptNetwork = addNetwork(referential, configuration, routeSegment.getAdminCode());
+				Network ptNetwork = addNetwork(referential, configuration, routeSegment.getAdminCode(),authority);
 				line.setNetwork(ptNetwork);
 
-				// Add authority company
-				Company company = addAuthority(referential, configuration, routeSegment.getAdminCode());
-				line.setCompany(company);
 
 
 				// Create route
