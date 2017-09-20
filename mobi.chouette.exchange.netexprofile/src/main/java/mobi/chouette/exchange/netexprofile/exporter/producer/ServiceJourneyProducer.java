@@ -10,6 +10,7 @@ import org.rutebanken.netex.model.DayTypeRefStructure;
 import org.rutebanken.netex.model.DayTypeRefs_RelStructure;
 import org.rutebanken.netex.model.JourneyPatternRefStructure;
 import org.rutebanken.netex.model.LineRefStructure;
+import org.rutebanken.netex.model.OperatorRefStructure;
 import org.rutebanken.netex.model.ServiceJourney;
 import org.rutebanken.netex.model.StopPointInJourneyPatternRefStructure;
 import org.rutebanken.netex.model.TimetabledPassingTime;
@@ -49,6 +50,13 @@ public class ServiceJourneyProducer extends NetexProducer {
 		LineRefStructure lineRefStruct = netexFactory.createLineRefStructure();
 		NetexProducerUtils.populateReference(line, lineRefStruct, true);
 		serviceJourney.setLineRef(netexFactory.createLineRef(lineRefStruct));
+		
+		if (vehicleJourney.getCompany() != null) {
+			OperatorRefStructure operatorRefStruct = netexFactory.createOperatorRefStructure();
+			NetexProducerUtils.populateReference(vehicleJourney.getCompany(), operatorRefStruct, false);
+			serviceJourney.setOperatorRef(operatorRefStruct);
+		}
+
 
 		if (vehicleJourney.getTimetables().size() > 0) {
 			DayTypeRefs_RelStructure dayTypeStruct = netexFactory.createDayTypeRefs_RelStructure();
