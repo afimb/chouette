@@ -96,8 +96,6 @@ public class VehicleJourneyDAOImpl extends GenericDAOImpl<VehicleJourney> implem
 							// + "elapse_duration, headway_frequency)"
 							+ " FROM STDIN WITH DELIMITER '|'";
 
-					log.info(copyStatement+" "+data);
-
 					manager.copyIn(
 							copyStatement, from);
 

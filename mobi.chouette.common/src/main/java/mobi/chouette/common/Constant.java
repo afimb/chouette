@@ -57,7 +57,6 @@ public interface Constant {
 	public static final String LINE_ID = "line_id";
 
 	public static final char SEP = '|';
-	public static final String QUOTE = "'";
 	public static final String NULL = "\\N";
 	
 	public static final String BUFFER = "buffer";
