@@ -333,6 +333,8 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
             throw ex;
         }
 
+        NetexTestUtils.verifyValidationReport(context);
+
         ActionReport report = (ActionReport) context.get(REPORT);
         Assert.assertEquals(report.getResult(), STATUS_OK, "result");
         Assert.assertEquals(report.getFiles().size(), 4, "files reported");
@@ -348,7 +350,6 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
             Reporter.log(info.toString(), true);
         }
 
-        NetexTestUtils.verifyValidationReport(context);
     }
 
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
@@ -591,6 +592,8 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         }
         NetexTestUtils.verifyValidationReport(context);
 
+        NetexTestUtils.verifyValidationReport(context);
+        
         ActionReport report = (ActionReport) context.get(REPORT);
         Assert.assertEquals(report.getResult(), STATUS_OK, "result");
         Assert.assertEquals(report.getFiles().size(), 2, "file reported");

@@ -1,26 +1,20 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
-
-import java.math.BigInteger;
-import java.util.Comparator;
-import java.util.List;
-
-import org.rutebanken.netex.model.DestinationDisplayRefStructure;
-import org.rutebanken.netex.model.KeyValueStructure;
-import org.rutebanken.netex.model.PointsInJourneyPattern_RelStructure;
-import org.rutebanken.netex.model.PrivateCodeStructure;
-import org.rutebanken.netex.model.RouteRefStructure;
-import org.rutebanken.netex.model.ScheduledStopPointRefStructure;
-import org.rutebanken.netex.model.StopPointInJourneyPattern;
-
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
+import org.rutebanken.netex.model.*;
 
+import java.math.BigInteger;
+import java.util.Comparator;
+import java.util.List;
+
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 public class ServiceJourneyPatternProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.ServiceJourneyPattern, mobi.chouette.model.JourneyPattern> {
 
@@ -72,7 +66,7 @@ public class ServiceJourneyPatternProducer extends NetexProducer implements Nete
 
 				if (stopPoint.getScheduledStopPoint() != null) {
 					ScheduledStopPointRefStructure stopPointRefStruct = netexFactory.createScheduledStopPointRefStructure();
-					NetexProducerUtils.populateReference(stopPoint.getScheduledStopPoint(), stopPointRefStruct, false);
+					NetexProducerUtils.populateReference(stopPoint.getScheduledStopPoint(), stopPointRefStruct, true);
 					stopPointInJourneyPattern.setScheduledStopPointRef(netexFactory.createScheduledStopPointRef(stopPointRefStruct));
 				}
 

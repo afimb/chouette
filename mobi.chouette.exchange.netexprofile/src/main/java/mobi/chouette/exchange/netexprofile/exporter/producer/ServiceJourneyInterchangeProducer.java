@@ -1,8 +1,5 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SCHEDULED_STOP_POINT;
-
 import org.rutebanken.netex.model.ScheduledStopPointRefStructure;
 import org.rutebanken.netex.model.ServiceJourneyInterchange;
 import org.rutebanken.netex.model.VehicleJourneyRefStructure;
@@ -11,7 +8,6 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.model.Interchange;
 import mobi.chouette.model.ScheduledStopPoint;
-import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 
 public class ServiceJourneyInterchangeProducer extends NetexProducer implements NetexEntityProducer<ServiceJourneyInterchange, Interchange> {
