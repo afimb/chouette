@@ -70,7 +70,7 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private Set<Notice> sharedNotices = new HashSet<>();
+    private Map<String,Notice> sharedNotices = new HashMap<>();
 
     @Getter
     @Setter

@@ -21,31 +21,32 @@ public class NoticeProducer extends NetexProducer {
 
 	public static void addNoticeAndNoticeAssignments(Context context, ExportableNetexData exportableNetexData, Set<NoticeAssignment> destination,
 			Collection<Footnote> footnotes, NeptuneIdentifiedObject noticedObject) {
-	
+
 		int i = 0;
 		for (Footnote footnote : footnotes) {
 			i++;
 			Notice notice = netexFactory.createNotice();
 			NetexProducerUtils.populateId(footnote, notice);
-	
-			notice.setText(ConversionUtil.getMultiLingualString(footnote.getLabel()));
-			notice.setPublicCode(footnote.getCode());
-	
-			exportableNetexData.getSharedNotices().add(notice);
-	
+
+			if (!exportableNetexData.getSharedNotices().containsKey(notice.getId())) {
+				notice.setText(ConversionUtil.getMultiLingualString(footnote.getLabel()));
+				notice.setPublicCode(footnote.getCode());
+
+				exportableNetexData.getSharedNotices().put(notice.getId(), notice);
+			}
 			NoticeRefStructure noticeRefStruct = netexFactory.createNoticeRefStructure();
 			NetexProducerUtils.populateReference(notice, noticeRefStruct, false);
-	
+
 			VersionOfObjectRefStructure noticedObjectRef = netexFactory.createVersionOfObjectRefStructure();
 			NetexProducerUtils.populateReference(noticedObject, noticedObjectRef, true);
-	
+
 			String noticeAssignmentId = NetexProducerUtils.createUniqueId(context, NOTICE_ASSIGNMENT);
 			NoticeAssignment noticeAssignment = netexFactory.createNoticeAssignment().withVersion("1").withId(noticeAssignmentId)
 					.withOrder(BigInteger.valueOf(i + 1)).withNoticeRef(noticeRefStruct).withNoticedObjectRef(noticedObjectRef);
-	
+
 			destination.add(noticeAssignment);
 		}
-	
+
 	}
 
 }
