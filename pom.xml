@@ -608,7 +608,7 @@
 			</dependency>
 
       <dependency>
-  			<groupId>org.rutebanken</groupId>
+  			<groupId>org.org</groupId>
   			<artifactId>netex-java-model</artifactId>
   			<version>${netex-java-model.version}</version>
   		</dependency>
