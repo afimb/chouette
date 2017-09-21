@@ -11,13 +11,18 @@ import org.rutebanken.netex.model.OperatorRefStructure;
 import org.rutebanken.netex.model.PrivateCodeStructure;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
+import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
 import mobi.chouette.model.GroupOfLine;
 
 public class LineProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Line, mobi.chouette.model.Line> {
 
 	@Override
 	public org.rutebanken.netex.model.Line produce(Context context, mobi.chouette.model.Line neptuneLine) {
+		
+        ExportableNetexData exportableNetexData = (ExportableNetexData) context.get(Constant.EXPORTABLE_NETEX_DATA);
+		
 		org.rutebanken.netex.model.Line netexLine = netexFactory.createLine();
 
 		NetexProducerUtils.populateId(neptuneLine, netexLine);
@@ -68,6 +73,8 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
 			NetexProducerUtils.populateReference(neptuneNetwork, groupOfLinesRefStruct, false);
 			netexLine.setRepresentedByGroupRef(groupOfLinesRefStruct);
 		}
+		
+		NoticeProducer.addNoticeAndNoticeAssignments(context, exportableNetexData, exportableNetexData.getNoticeAssignmentsTimetableFrame(), neptuneLine.getFootnotes(), neptuneLine);
 
 		return netexLine;
 	}

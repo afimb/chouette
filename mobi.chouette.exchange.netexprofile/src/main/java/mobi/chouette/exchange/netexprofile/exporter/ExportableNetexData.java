@@ -70,11 +70,15 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private List<Notice> sharedNotices = new ArrayList<>();
+    private Set<Notice> sharedNotices = new HashSet<>();
 
     @Getter
     @Setter
-    private Set<NoticeAssignment> noticeAssignments = new HashSet<>();
+    private Set<NoticeAssignment> noticeAssignmentsTimetableFrame = new HashSet<>();
+
+    @Getter
+    @Setter
+    private Set<NoticeAssignment> noticeAssignmentsServiceFrame = new HashSet<>();
 
     @Getter
     @Setter
@@ -100,7 +104,8 @@ public class ExportableNetexData {
         journeyPatterns.clear();
         serviceJourneys. clear();
         sharedNotices.clear();
-        noticeAssignments.clear();
+        noticeAssignmentsServiceFrame.clear();
+        noticeAssignmentsTimetableFrame.clear();
         serviceJourneyInterchanges.clear();
         
         routePoints.clear();

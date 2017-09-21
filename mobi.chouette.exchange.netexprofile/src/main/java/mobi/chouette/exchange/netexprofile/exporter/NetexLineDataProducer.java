@@ -3,7 +3,6 @@ package mobi.chouette.exchange.netexprofile.exporter;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NOTICE;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NOTICE_ASSIGNMENT;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.PASSENGER_STOP_ASSIGNMENT;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.POINT_PROJECTION;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.ROUTE_POINT;
@@ -24,9 +23,6 @@ import org.rutebanken.netex.model.AvailabilityCondition;
 import org.rutebanken.netex.model.DestinationDisplay;
 import org.rutebanken.netex.model.DestinationDisplayRefStructure;
 import org.rutebanken.netex.model.GroupOfLines;
-import org.rutebanken.netex.model.Notice;
-import org.rutebanken.netex.model.NoticeAssignment;
-import org.rutebanken.netex.model.NoticeRefStructure;
 import org.rutebanken.netex.model.Organisation_VersionStructure;
 import org.rutebanken.netex.model.PassengerStopAssignment;
 import org.rutebanken.netex.model.PointProjection;
@@ -38,7 +34,6 @@ import org.rutebanken.netex.model.ScheduledStopPoint;
 import org.rutebanken.netex.model.ScheduledStopPointRefStructure;
 import org.rutebanken.netex.model.ServiceJourney;
 import org.rutebanken.netex.model.StopPlace;
-import org.rutebanken.netex.model.VersionOfObjectRefStructure;
 import org.rutebanken.netex.model.Via_VersionedChildStructure;
 import org.rutebanken.netex.model.Vias_RelStructure;
 
@@ -62,7 +57,6 @@ import mobi.chouette.exchange.netexprofile.exporter.producer.StopPlaceProducer;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Company;
-import mobi.chouette.model.Footnote;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Interchange;
 import mobi.chouette.model.StopArea;
@@ -133,43 +127,16 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 				exportableNetexData.getJourneyPatterns().add(netexJourneyPattern);
 			}
 		}
-		
+
 		produceAndCollectRoutePoints(exportableData.getLine().getRoutes(), exportableNetexData);
 		produceAndCollectScheduledStopPoints(exportableData.getLine().getRoutes(), exportableNetexData);
-		produceAndCollectStopAssignments(context,exportableData.getLine().getRoutes(), exportableNetexData, configuration);
-
+		produceAndCollectStopAssignments(context, exportableData.getLine().getRoutes(), exportableNetexData, configuration);
 
 		calendarProducer.produce(context, exportableData, exportableNetexData);
 
 		for (mobi.chouette.model.VehicleJourney vehicleJourney : exportableData.getVehicleJourneys()) {
 			ServiceJourney serviceJourney = serviceJourneyProducer.produce(context, vehicleJourney, exportableData.getLine());
 			exportableNetexData.getServiceJourneys().add(serviceJourney);
-
-			for (int i = 0; i < vehicleJourney.getFootnotes().size(); i++) {
-				Footnote footnote = vehicleJourney.getFootnotes().get(i);
-
-				// TODO Must be refactored when Footnote is turned into a NeptuneIdentifiedObject
-				String version = vehicleJourney.getObjectVersion() > 0 ? String.valueOf(vehicleJourney.getObjectVersion()) : NETEX_DEFAULT_OBJECT_VERSION;
-				String objectIdSuffix = vehicleJourney.objectIdSuffix() + "-" + i + 1;
-				String noticeId = netexId(vehicleJourney.objectIdPrefix(), NOTICE, objectIdSuffix);
-				String noticeAssignmentId = netexId(vehicleJourney.objectIdPrefix(), NOTICE_ASSIGNMENT, objectIdSuffix);
-
-				Notice notice = netexFactory.createNotice().withVersion(version).withId(noticeId);
-				notice.setText(ConversionUtil.getMultiLingualString(footnote.getLabel()));
-				notice.setPublicCode(footnote.getCode());
-
-				exportableNetexData.getSharedNotices().add(notice);
-
-				NoticeRefStructure noticeRefStruct = netexFactory.createNoticeRefStructure().withVersion(version).withRef(noticeId);
-
-				VersionOfObjectRefStructure versionOfObjectRefStruct = netexFactory.createVersionOfObjectRefStructure().withVersion(version)
-						.withRef(serviceJourney.getId());
-
-				NoticeAssignment noticeAssignment = netexFactory.createNoticeAssignment().withVersion(version).withId(noticeAssignmentId)
-						.withOrder(BigInteger.valueOf(i + 1)).withNoticeRef(noticeRefStruct).withNoticedObjectRef(versionOfObjectRefStruct);
-
-				exportableNetexData.getNoticeAssignments().add(noticeAssignment);
-			}
 
 			for (Interchange interchange : vehicleJourney.getConsumerInterchanges()) {
 				exportableNetexData.getServiceJourneyInterchanges().add(serviceJourneyInterchangeProducer.produce(context, interchange));
@@ -353,7 +320,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
 					DestinationDisplayRefStructure ref = netexFactory.createDestinationDisplayRefStructure();
 					NetexProducerUtils.populateReference(via, ref, true);
-					
+
 					Via_VersionedChildStructure e = netexFactory.createVia_VersionedChildStructure().withDestinationDisplayRef(ref);
 
 					netexDestinationDisplay.getVias().getVia().add(e);
@@ -399,7 +366,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 		}
 	}
 
-	private PassengerStopAssignment createStopAssignment(StopPoint stopPoint, String stopAssignmentId,  NetexprofileExportParameters parameters) {
+	private PassengerStopAssignment createStopAssignment(StopPoint stopPoint, String stopAssignmentId, NetexprofileExportParameters parameters) {
 		String pointVersion = stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DEFAULT_OBJECT_VERSION;
 
 		PassengerStopAssignment stopAssignment = netexFactory.createPassengerStopAssignment().withVersion(pointVersion).withId(stopAssignmentId)

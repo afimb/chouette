@@ -1,7 +1,10 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
+import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
+import mobi.chouette.model.Footnote;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
@@ -21,6 +24,8 @@ public class ServiceJourneyPatternProducer extends NetexProducer implements Nete
     @Override
     public org.rutebanken.netex.model.ServiceJourneyPattern produce(Context context, mobi.chouette.model.JourneyPattern neptuneJourneyPattern) {
         org.rutebanken.netex.model.ServiceJourneyPattern netexJourneyPattern = netexFactory.createServiceJourneyPattern();
+
+        ExportableNetexData exportableNetexData = (ExportableNetexData) context.get(Constant.EXPORTABLE_NETEX_DATA);
 
         NetexProducerUtils.populateId(neptuneJourneyPattern, netexJourneyPattern);
 
@@ -44,6 +49,8 @@ public class ServiceJourneyPatternProducer extends NetexProducer implements Nete
             privateCodeStruct.setValue(neptuneJourneyPattern.getRegistrationNumber());
             netexJourneyPattern.setPrivateCode(privateCodeStruct);
         }
+        
+		NoticeProducer.addNoticeAndNoticeAssignments(context, exportableNetexData, exportableNetexData.getNoticeAssignmentsServiceFrame(), neptuneJourneyPattern.getFootnotes(), neptuneJourneyPattern);
 
         Route route = neptuneJourneyPattern.getRoute();
         RouteRefStructure routeRefStruct = netexFactory.createRouteRefStructure();
@@ -93,6 +100,8 @@ public class ServiceJourneyPatternProducer extends NetexProducer implements Nete
                 	destinationDisplayRef.setRef(stopPoint.getDestinationDisplay().getObjectId());
                 	stopPointInJourneyPattern.setDestinationDisplayRef(destinationDisplayRef);
                 }
+                
+        		NoticeProducer.addNoticeAndNoticeAssignments(context, exportableNetexData, exportableNetexData.getNoticeAssignmentsServiceFrame(), stopPoint.getFootnotes(), stopPoint);
                 
                 pointsInJourneyPattern.getPointInJourneyPatternOrStopPointInJourneyPatternOrTimingPointInJourneyPattern().add(stopPointInJourneyPattern);
             }
