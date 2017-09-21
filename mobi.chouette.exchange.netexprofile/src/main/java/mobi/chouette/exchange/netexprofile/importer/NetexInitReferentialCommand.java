@@ -2,7 +2,7 @@ package mobi.chouette.exchange.netexprofile.importer;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -38,8 +38,12 @@ public class NetexInitReferentialCommand implements Command, Constant {
 	public static final String COMMAND = "NetexInitReferentialCommand";
 
 	@Getter
-	@Setter
-	private String fileURL;
+	//@Setter
+	private Path path;
+	
+	public void setPath(Path p) {
+		this.path = p;
+	}
 
 	@Getter
 	@Setter
@@ -49,15 +53,15 @@ public class NetexInitReferentialCommand implements Command, Constant {
 	public boolean execute(Context context) throws Exception {
 		boolean result = SUCCESS;
 		Monitor monitor = MonitorFactory.start(COMMAND);
-		context.put(FILE_URL, fileURL);
 		NetexprofileImportParameters parameters = (NetexprofileImportParameters) context.get(CONFIGURATION);
 
+		String fileName = path.getFileName().toString();
+		
 		ActionReporter reporter = ActionReporter.Factory.getInstance();
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		validationReporter.addItemToValidationReport(context, AbstractNetexProfileValidator._1_NETEX_UNKNOWN_PROFILE, "E");
 
-		File file = new File(new URL(fileURL).toURI());
-		String fileName = file.getName();
+		File file = path.toFile();
 		reporter.addFileReport(context, fileName, IO_TYPE.INPUT);
 		context.put(FILE_NAME, fileName);
 

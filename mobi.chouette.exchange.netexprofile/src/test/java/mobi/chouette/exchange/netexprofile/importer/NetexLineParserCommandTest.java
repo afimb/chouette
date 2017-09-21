@@ -1,18 +1,14 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
-import mobi.chouette.common.Constant;
-import mobi.chouette.common.Context;
-import mobi.chouette.common.chain.Command;
-import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.netexprofile.DummyChecker;
-import mobi.chouette.exchange.netexprofile.NetexTestUtils;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.ActionReporter;
-import mobi.chouette.exchange.report.IO_TYPE;
-import mobi.chouette.exchange.report.ReportConstant;
-import mobi.chouette.exchange.validation.report.ValidationReport;
-import mobi.chouette.model.util.Referential;
-import mobi.chouette.persistence.hibernate.ContextHolder;
+import java.io.File;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.testng.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -25,16 +21,20 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import java.io.File;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
+import mobi.chouette.common.chain.Command;
+import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.netexprofile.DummyChecker;
+import mobi.chouette.exchange.netexprofile.JobDataTest;
+import mobi.chouette.exchange.netexprofile.NetexTestUtils;
+import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.exchange.report.ReportConstant;
+import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.model.util.Referential;
+import mobi.chouette.persistence.hibernate.ContextHolder;
 
 public class NetexLineParserCommandTest extends Arquillian implements Constant, ReportConstant {
 
@@ -131,98 +131,50 @@ public class NetexLineParserCommandTest extends Arquillian implements Constant, 
 
 		Referential referential = new Referential();
 		context.put(Constant.REFERENTIAL,referential);
-
+		
 		return context;
 	}
 
 	@Test
 	public void testParseDocument() throws Exception {
-		Context context = initContext();
-
-		Path filePath = Paths.get("src/test/data/C_NETEX_1.xml");
-		String url = filePath.toUri().toURL().toExternalForm();
-		Assert.assertTrue(Files.exists(filePath));
-
-		Command initImportCmd = CommandFactory.create(initialContext, NetexInitImportCommand.class.getName());
-		initImportCmd.execute(context);
-		
-		NetexInitReferentialCommand initRefCmd = new NetexInitReferentialCommand();
-		initRefCmd.setLineFile(true);
-		initRefCmd.setFileURL(url);
-		initRefCmd.execute(context);
-		
-		NetexLineParserCommand lineParserCmd = new NetexLineParserCommand();
-		lineParserCmd.setFileURL(url);
-
-		File file = new File(new URL(url).toURI());
-		context.put(Constant.FILE_NAME, file.getName());
-		
-		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
-		actionReporter.setFileState(context, file.getName(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.ERROR);
-
-		boolean result = lineParserCmd.execute(context );
-		Assert.assertTrue(result);
+		testSingleFile("C_NETEX_1.xml");
 	}
 
 	@Test
 	public void testParseServiceCalendarWithRealDayTypes() throws Exception {
-		Context context = initContext();
-
-		Path filePath = Paths.get("src/test/data/C_NETEX_2.xml");
-		String url = filePath.toUri().toURL().toExternalForm();
-		Assert.assertTrue(Files.exists(filePath));
-
-		Command initImportCmd = CommandFactory.create(initialContext, NetexInitImportCommand.class.getName());
-		initImportCmd.execute(context);
-
-		NetexInitReferentialCommand initRefCmd = new NetexInitReferentialCommand();
-		initRefCmd.setLineFile(true);
-		initRefCmd.setFileURL(url);
-		initRefCmd.execute(context);
-
-		NetexLineParserCommand lineParserCmd = new NetexLineParserCommand();
-
-		lineParserCmd.setFileURL(url);
-		File file = new File(new URL(url).toURI());
-		context.put(Constant.FILE_NAME, file.getName());
-
-		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
-		actionReporter.setFileState(context, file.getName(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.ERROR);
-
-		boolean result = lineParserCmd.execute(context );
-		Assert.assertTrue(result);
+		testSingleFile("C_NETEX_2.xml");
 	}
 
 	@Test
 	public void testParseServiceCalendarWithOperatingDays() throws Exception {
+		testSingleFile("C_NETEX_4.xml");
+	}
+
+	private void testSingleFile(String filename) throws Exception {
+		Path p = new File("src/test/data/"+filename).toPath();
+		
 		Context context = initContext();
-
-		Path filePath = Paths.get("src/test/data/C_NETEX_4.xml");
-		String url = filePath.toUri().toURL().toExternalForm();
-		Assert.assertTrue(Files.exists(filePath));
-
-		Referential referential = new Referential();
-		context.put(Constant.REFERENTIAL,referential);
 
 		Command initImportCmd = CommandFactory.create(initialContext, NetexInitImportCommand.class.getName());
 		initImportCmd.execute(context);
-
+		
 		NetexInitReferentialCommand initRefCmd = new NetexInitReferentialCommand();
 		initRefCmd.setLineFile(true);
-		initRefCmd.setFileURL(url);
+		initRefCmd.setPath(p);
 		initRefCmd.execute(context);
-
+		
 		NetexLineParserCommand lineParserCmd = new NetexLineParserCommand();
+		lineParserCmd.setPath(p);
 
-		lineParserCmd.setFileURL(url);
-		File file = new File(new URL(url).toURI());
-		context.put(Constant.FILE_NAME, file.getName());
-
+		context.put(Constant.FILE_NAME, filename);
+		
 		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
-		actionReporter.setFileState(context, file.getName(), IO_TYPE.INPUT, ActionReporter.FILE_STATE.ERROR);
+		actionReporter.setFileState(context, filename, IO_TYPE.INPUT, ActionReporter.FILE_STATE.ERROR);
 
 		boolean result = lineParserCmd.execute(context );
 		Assert.assertTrue(result);
-	}
 
+	}
+	
+	
 }
