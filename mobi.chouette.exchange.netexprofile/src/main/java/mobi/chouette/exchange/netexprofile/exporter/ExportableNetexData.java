@@ -103,11 +103,9 @@ public class ExportableNetexData {
         routes.clear();
         journeyPatterns.clear();
         serviceJourneys. clear();
-        sharedNotices.clear();
         noticeAssignmentsServiceFrame.clear();
         noticeAssignmentsTimetableFrame.clear();
         serviceJourneyInterchanges.clear();
-        
         routePoints.clear();
         stopAssignments.clear();
         scheduledStopPoints.clear();
@@ -124,7 +122,7 @@ public class ExportableNetexData {
         sharedGroupsOfLines.clear();
         sharedOrganisations.clear();
         sharedStopPlaces.clear();
-        scheduledStopPoints.clear();
+        sharedNotices.clear();
     }
 
 }
