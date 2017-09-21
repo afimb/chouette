@@ -34,7 +34,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.rutebanken</groupId>
+            <groupId>org.entur</groupId>
             <artifactId>netex-java-model</artifactId>
         </dependency>
 
