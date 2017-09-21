@@ -31,7 +31,7 @@
 		<project.rootDir>${project.basedir}</project.rootDir>
     <!-- NB: Concious choice of using snapshot version. This is to keep in
         sync, and fail fast if incompatibilities -->
-	    <netex-java-model.version>1.0.8-SNAPSHOT</netex-java-model.version>
+	    <netex-java-model.version>1.0.7-SNAPSHOT</netex-java-model.version>
 		<rutebanken.helpers.version>0.0.3-SNAPSHOT</rutebanken.helpers.version>
 	</properties>
 	<distributionManagement>
@@ -529,7 +529,7 @@
 				<groupId>${project.groupId}</groupId>
 				<artifactId>mobi.chouette.exchange.neptune</artifactId>
 				<version>${project.version}</version>
-			</dependency>
+			</dependency> 
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>mobi.chouette.exchange.gtfs</artifactId>
@@ -539,7 +539,7 @@
 				<groupId>${project.groupId}</groupId>
 				<artifactId>mobi.chouette.exchange.netex</artifactId>
 				<version>${project.version}</version>
-			</dependency>
+			</dependency> 
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>mobi.chouette.exchange.netexprofile</artifactId>
@@ -891,7 +891,7 @@
 		<module>mobi.chouette.dao.iev</module>
 		<module>mobi.chouette.exchange</module>
  		<module>mobi.chouette.exchange.neptune</module>
- 		<module>mobi.chouette.exchange.netex</module>
+ 		<module>mobi.chouette.exchange.netex</module> 
 		<module>mobi.chouette.exchange.netexprofile</module>
 <!-- 		<module>mobi.chouette.exchange.kml</module> -->
 <!-- 		<module>mobi.chouette.exchange.hub</module> -->
