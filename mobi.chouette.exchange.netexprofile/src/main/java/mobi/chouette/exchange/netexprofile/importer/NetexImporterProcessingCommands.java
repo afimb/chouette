@@ -128,14 +128,13 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 			context.put(mobi.chouette.exchange.netexprofile.Constant.NETEX_COMMON_FILE_IDENTIFICATORS, new HashMap<IdVersion, List<String>>());
 
 			for (Path file : commonFilePaths) {
-				String url = file.toUri().toURL().toExternalForm();
 				Chain commonFileChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 				commonFileChains.add(commonFileChain);
 
 				// init referentials
 				NetexInitReferentialCommand initializer = (NetexInitReferentialCommand) CommandFactory.create(initialContext,
 						NetexInitReferentialCommand.class.getName());
-				initializer.setFileURL(url);
+				initializer.setPath(file);
 				initializer.setLineFile(false);
 				commonFileChain.add(initializer);
 
@@ -165,14 +164,13 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 			mainChain.add(lineChains);
 
 			for (Path file : lineFilePaths) {
-				String url = file.toUri().toURL().toExternalForm();
 				Chain lineChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 				lineChains.add(lineChain);
 
 				// init referentials
 				NetexInitReferentialCommand initializer = (NetexInitReferentialCommand) CommandFactory.create(initialContext,
 						NetexInitReferentialCommand.class.getName());
-				initializer.setFileURL(url);
+				initializer.setPath(file);
 				initializer.setLineFile(true);
 				lineChain.add(initializer);
 
@@ -183,7 +181,7 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 				}
 				// parsing
 				NetexLineParserCommand parser = (NetexLineParserCommand) CommandFactory.create(initialContext, NetexLineParserCommand.class.getName());
-				parser.setFileURL(url);
+				parser.setPath(file);
 				lineChain.add(parser);
 
 				if (withDao && !parameters.isNoSave()) {

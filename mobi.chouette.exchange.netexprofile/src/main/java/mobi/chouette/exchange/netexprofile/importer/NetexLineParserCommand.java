@@ -1,7 +1,13 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
+import java.io.IOException;
+import java.nio.file.Path;
+
+import javax.naming.InitialContext;
+
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -13,17 +19,11 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.parser.PublicationDeliveryParser;
 import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.FILE_ERROR_CODE;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
-
-import javax.naming.InitialContext;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-
-import static mobi.chouette.exchange.report.ActionReporter.FILE_ERROR_CODE;
 
 @Log4j
 public class NetexLineParserCommand implements Command, Constant {
@@ -32,24 +32,20 @@ public class NetexLineParserCommand implements Command, Constant {
 
     @Getter
     @Setter
-    private String fileURL;
+    private Path path;
 
     @Override
     public boolean execute(Context context) throws Exception {
         boolean result = ERROR;
         Monitor monitor = MonitorFactory.start(COMMAND);
-        context.put(FILE_URL, fileURL);
-
+ 
+        String fileName = path.getFileName().toString();
+        
         ActionReporter reporter = ActionReporter.Factory.getInstance();
-        File file = new File(new URL(fileURL).toURI());
-        String fileName = file.getName();
         reporter.addFileReport(context, fileName, IO_TYPE.INPUT);
         context.put(FILE_NAME, fileName);
 
         try {
-            URL url = new URL(fileURL);
-            log.info("Parsing file : " + url);
-
             Referential referential = (Referential) context.get(REFERENTIAL);
             if (referential != null) {
                 referential.clear(true);

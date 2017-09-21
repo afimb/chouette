@@ -49,7 +49,6 @@ import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer;
-import mobi.chouette.exchange.netexprofile.exporter.producer.ServiceJourneyPatternProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.LineProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
@@ -57,6 +56,7 @@ import mobi.chouette.exchange.netexprofile.exporter.producer.NetworkProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.OrganisationProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.RouteProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.ServiceJourneyInterchangeProducer;
+import mobi.chouette.exchange.netexprofile.exporter.producer.ServiceJourneyPatternProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.ServiceJourneyProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.StopPlaceProducer;
 import mobi.chouette.exchange.report.ActionReporter;
@@ -81,9 +81,11 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 	private static ServiceJourneyInterchangeProducer serviceJourneyInterchangeProducer = new ServiceJourneyInterchangeProducer();
 
 	public void produce(Context context) throws Exception {
+
+		NetexprofileExportParameters parameters = (NetexprofileExportParameters) context.get(Constant.CONFIGURATION);
+
 		ActionReporter reporter = ActionReporter.Factory.getInstance();
 		JobData jobData = (JobData) context.get(JOB_DATA);
-		Metadata metadata = (Metadata) context.get(METADATA);
 		Path outputPath = Paths.get(jobData.getPathName(), OUTPUT);
 		ExportableData exportableData = (ExportableData) context.get(EXPORTABLE_DATA);
 		ExportableNetexData exportableNetexData = (ExportableNetexData) context.get(EXPORTABLE_NETEX_DATA);
@@ -92,20 +94,20 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 		produceAndCollectLineData(context, exportableData, exportableNetexData);
 		produceAndCollectSharedData(context, exportableData, exportableNetexData);
 
-		String fileName = neptuneLine.getObjectId().replaceAll(":", "-") + (neptuneLine.getNumber() != null ? neptuneLine.getNumber() + "-" : "")
-				+ (neptuneLine.getPublishedName() != null ? "-" + neptuneLine.getPublishedName().replace(' ', '_').replace('/', '_') : "") + ".xml";
+		String fileName = ExportedFilenamer.createLineFilename(context, neptuneLine);
+		reporter.addFileReport(context, fileName, IO_TYPE.OUTPUT);
 		Path filePath = new File(outputPath.toFile(), fileName).toPath();
 
 		Marshaller marshaller = (Marshaller) context.get(MARSHALLER);
-
 		NetexFileWriter writer = new NetexFileWriter();
 		writer.writeXmlFile(context, filePath, exportableData, exportableNetexData, NetexFragmentMode.LINE, marshaller);
 
-		reporter.addFileReport(context, fileName, IO_TYPE.OUTPUT);
-
-		if (metadata != null) {
-			metadata.getResources().add(
-					metadata.new Resource(fileName, NeptuneObjectPresenter.getName(neptuneLine.getNetwork()), NeptuneObjectPresenter.getName(neptuneLine)));
+		if (parameters.isAddMetadata()) {
+			Metadata metadata = (Metadata) context.get(METADATA);
+			if (metadata != null) {
+				metadata.getResources().add(
+						metadata.new Resource(fileName, NeptuneObjectPresenter.getName(neptuneLine.getNetwork()), NeptuneObjectPresenter.getName(neptuneLine)));
+			}
 		}
 	}
 
@@ -334,7 +336,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
 			DestinationDisplay netexDestinationDisplay = netexFactory.createDestinationDisplay();
 			NetexProducerUtils.populateId(dd, netexDestinationDisplay);
-			
+
 			netexDestinationDisplay.setName(ConversionUtil.getMultiLingualString(dd.getName()));
 			netexDestinationDisplay.setFrontText(ConversionUtil.getMultiLingualString(dd.getFrontText()));
 			netexDestinationDisplay.setSideText(ConversionUtil.getMultiLingualString(dd.getSideText()));
@@ -349,11 +351,11 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 					// Recurse into vias, create if missing
 					addDestinationDisplay(via, exportableNetexData);
 
-					
 					DestinationDisplayRefStructure ref = netexFactory.createDestinationDisplayRefStructure();
-					NetexProducerUtils.populateReference(via, ref, true);;
-					Via_VersionedChildStructure e = netexFactory.createVia_VersionedChildStructure().withDestinationDisplayRef(ref);
+					NetexProducerUtils.populateReference(via, ref, true);
 					
+					Via_VersionedChildStructure e = netexFactory.createVia_VersionedChildStructure().withDestinationDisplayRef(ref);
+
 					netexDestinationDisplay.getVias().getVia().add(e);
 				}
 			}
