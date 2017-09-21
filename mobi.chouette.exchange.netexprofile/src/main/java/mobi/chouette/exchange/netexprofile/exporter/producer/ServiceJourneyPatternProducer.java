@@ -68,7 +68,7 @@ public class ServiceJourneyPatternProducer extends NetexProducer implements Nete
                 	String stopPointIdSuffix = stopPoint.getContainedInStopArea().objectIdSuffix();
                     String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, stopPointIdSuffix);
 
-                    ScheduledStopPointRefStructure stopPointRefStruct = netexFactory.createScheduledStopPointRefStructure().withRef(stopPointIdRef);
+                    ScheduledStopPointRefStructure stopPointRefStruct = netexFactory.createScheduledStopPointRefStructure().withRef(stopPointIdRef).withVersion(stopPoint.getObjectVersion().toString());
                     stopPointInJourneyPattern.setScheduledStopPointRef(netexFactory.createScheduledStopPointRef(stopPointRefStruct));
                 } else {
                     throw new RuntimeException("StopPoint with id : " + stopPoint.getObjectId() + " is not contained in a StopArea. Cannot produce ScheduledStopPoint reference.");

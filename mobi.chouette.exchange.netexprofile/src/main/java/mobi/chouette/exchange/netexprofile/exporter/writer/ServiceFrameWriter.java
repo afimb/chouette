@@ -53,14 +53,14 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 			writer.writeAttribute(ID, serviceFrameId);
 
 			if (fragmentMode.equals(NetexFragmentMode.LINE)) {
+				writeRoutePointsElement(writer, exportableNetexData,marshaller);
 				writeRoutesElement(writer, exportableNetexData,marshaller);
 				writeLinesElement(writer, exportableNetexData,marshaller);
-				writeJourneyPatternsElement(writer, exportableNetexData,marshaller);
-			} else { // shared data
-				writeRoutePointsElement(writer, exportableNetexData,marshaller);
-				writeDestinationDisplaysElement(writer, exportableNetexData,marshaller);
 				writeScheduledStopPointsElement(writer, exportableNetexData,marshaller);
 				writeStopAssignmentsElement(writer, exportableNetexData,marshaller);
+				writeJourneyPatternsElement(writer, exportableNetexData,marshaller);
+			} else { // shared data
+				writeDestinationDisplaysElement(writer, exportableNetexData,marshaller);
 			}
 
 			writer.writeEndElement();
@@ -94,7 +94,7 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 	private static void writeRoutePointsElement(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
 		try {
 			writer.writeStartElement(ROUTE_POINTS);
-			for (RoutePoint routePoint : exportableData.getSharedRoutePoints().values()) {
+			for (RoutePoint routePoint : exportableData.getRoutePoints().values()) {
 				marshaller.marshal(netexFactory.createRoutePoint(routePoint), writer);
 			}
 			writer.writeEndElement();
@@ -128,7 +128,7 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 	private static void writeScheduledStopPointsElement(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
 		try {
 			writer.writeStartElement(SCHEDULED_STOP_POINTS);
-			for (ScheduledStopPoint scheduledStopPoint : exportableData.getSharedStopPoints().values()) {
+			for (ScheduledStopPoint scheduledStopPoint : exportableData.getScheduledStopPoints().values()) {
 				marshaller.marshal(netexFactory.createScheduledStopPoint(scheduledStopPoint), writer);
 			}
 			writer.writeEndElement();
@@ -140,7 +140,7 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 	private static void writeStopAssignmentsElement(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
 		try {
 			writer.writeStartElement(STOP_ASSIGNMENTS);
-			for (PassengerStopAssignment stopAssignment : exportableData.getSharedStopAssignments().values()) {
+			for (PassengerStopAssignment stopAssignment : exportableData.getStopAssignments().values()) {
 				marshaller.marshal(netexFactory.createPassengerStopAssignment(stopAssignment), writer);
 			}
 			writer.writeEndElement();

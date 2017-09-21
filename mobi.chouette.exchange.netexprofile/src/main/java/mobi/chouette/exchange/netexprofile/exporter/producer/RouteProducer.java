@@ -60,7 +60,7 @@ public class RouteProducer extends NetexProducer implements NetexEntityProducer<
 					String routePointIdSuffix = stopPoint.getContainedInStopArea().objectIdSuffix();
 					String routePointId = netexId(stopPoint.objectIdPrefix(), ROUTE_POINT, routePointIdSuffix);
 
-					RoutePointRefStructure routePointRefStruct = netexFactory.createRoutePointRefStructure().withRef(routePointId);
+					RoutePointRefStructure routePointRefStruct = netexFactory.createRoutePointRefStructure().withRef(routePointId).withVersion(pointVersion);
 					pointOnRoute.setPointRef(netexFactory.createRoutePointRef(routePointRefStruct));
 				} else {
 					throw new RuntimeException(

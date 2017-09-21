@@ -33,7 +33,7 @@ public class TimetableFrameWriter extends AbstractNetexWriter {
 			writer.writeAttribute(ID, timetableFrameId);
 			writeVehicleJourneysElement(writer, exportableNetexData, marshaller);
 
-			if (CollectionUtils.isNotEmpty(exportableNetexData.getNotices()) && CollectionUtils.isNotEmpty(exportableNetexData.getNoticeAssignments())) {
+			if (CollectionUtils.isNotEmpty(exportableNetexData.getSharedNotices()) && CollectionUtils.isNotEmpty(exportableNetexData.getNoticeAssignments())) {
 				writeNoticesElement(writer, exportableNetexData, marshaller);
 				writeNoticeAssignmentsElement(writer, exportableNetexData, marshaller);
 			}
@@ -63,7 +63,7 @@ public class TimetableFrameWriter extends AbstractNetexWriter {
 	private static void writeNoticesElement(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
 		try {
 			writer.writeStartElement(NOTICES);
-			for (Notice notice : exportableData.getNotices()) {
+			for (Notice notice : exportableData.getSharedNotices()) {
 				marshaller.marshal(netexFactory.createNotice(notice), writer);
 			}
 			writer.writeEndElement();
