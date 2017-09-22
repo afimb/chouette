@@ -243,6 +243,8 @@ public class GtfsTripProducer extends AbstractProducer {
 	 */
 	public boolean save(VehicleJourney vj, String serviceId,  String prefix, String sharedPrefix, boolean keepOriginalId) {
 
+		time.setStopHeadsign(null); // Clear between each journey
+		
 		String tripId = toGtfsId(vj.getObjectId(), prefix, keepOriginalId);
 
 		trip.setTripId(tripId);
