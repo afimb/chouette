@@ -9,6 +9,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.rutebanken.netex.model.Authority;
+import org.rutebanken.netex.model.GeneralOrganisation;
 import org.rutebanken.netex.model.Operator;
 import org.rutebanken.netex.model.Organisation_VersionStructure;
 
@@ -35,15 +36,19 @@ public class ResourceFrameWriter extends AbstractNetexWriter {
 
 	private static void writeOrganisationsElement(XMLStreamWriter writer, ExportableNetexData exportableNetexData, Marshaller marshaller) {
 		try {
-			writer.writeStartElement(ORGANISATIONS);
-			for (Organisation_VersionStructure operator : exportableNetexData.getSharedOrganisations().values()) {
-				if (operator instanceof Operator) {
-					marshaller.marshal(netexFactory.createOperator((Operator) operator), writer);
-				} else if (operator instanceof Authority) {
-					marshaller.marshal(netexFactory.createAuthority((Authority) operator), writer);
+			if (!exportableNetexData.getSharedOrganisations().isEmpty()) {
+				writer.writeStartElement(ORGANISATIONS);
+				for (Organisation_VersionStructure organisation : exportableNetexData.getSharedOrganisations().values()) {
+					if (organisation instanceof Operator) {
+						marshaller.marshal(netexFactory.createOperator((Operator) organisation), writer);
+					} else if (organisation instanceof Authority) {
+						marshaller.marshal(netexFactory.createAuthority((Authority) organisation), writer);
+					} else {
+						marshaller.marshal(netexFactory.createGeneralOrganisation((GeneralOrganisation) organisation), writer);
+					}
 				}
+				writer.writeEndElement();
 			}
-			writer.writeEndElement();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
