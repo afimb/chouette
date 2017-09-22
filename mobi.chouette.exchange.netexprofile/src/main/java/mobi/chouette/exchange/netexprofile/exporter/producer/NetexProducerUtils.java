@@ -20,6 +20,7 @@ import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.NeptuneObject;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
@@ -142,6 +143,8 @@ public class NetexProducerUtils {
 				return "Authority";
 			} else if (OrganisationTypeEnum.Operator.equals(c.getOrganisationType())) {
 				return "Operator";
+			} else {
+				return "GeneralOrganisation";
 			}
 		} else if (v instanceof VehicleJourney) {
 			return "ServiceJourney";
@@ -160,6 +163,8 @@ public class NetexProducerUtils {
 			return "StopPointInJourneyPattern";
 		} else if(v instanceof VehicleJourneyAtStop) {
 			return "TimetabledPassingTime";
+		} else if(v instanceof Network) {
+			return "Network";
 		}
 
 		return null;
