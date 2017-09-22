@@ -269,26 +269,44 @@ public class GtfsExportTripProducerTests
    {
       mock.reset();
 
-      VehicleJourney neptuneObject = buildNeptuneObject(true);
-      DestinationDisplay firstDisplay = new DestinationDisplay();
-      firstDisplay.setFrontText("MainDestination");
       
-      DestinationDisplay secondDisplay = new DestinationDisplay();
-      secondDisplay.setFrontText("UpdatedDestination");
+      VehicleJourney journey1 = buildNeptuneObject(true);
+      DestinationDisplay journey1FirstDisplay = new DestinationDisplay();
+      journey1FirstDisplay.setFrontText("MainDestination1");
       
-      neptuneObject.getVehicleJourneyAtStops().get(0).getStopPoint().setDestinationDisplay(firstDisplay );
-      neptuneObject.getVehicleJourneyAtStops().get(2).getStopPoint().setDestinationDisplay(secondDisplay );
-      producer.save(neptuneObject, "tm_01", "GTFS", "GTFS",false);
+      DestinationDisplay journey1SecondDisplay = new DestinationDisplay();
+      journey1SecondDisplay.setFrontText("UpdatedDestination1");
+      
+      journey1.getVehicleJourneyAtStops().get(0).getStopPoint().setDestinationDisplay(journey1FirstDisplay );
+      journey1.getVehicleJourneyAtStops().get(2).getStopPoint().setDestinationDisplay(journey1SecondDisplay );
+      producer.save(journey1, "tm_01", "GTFS", "GTFS",false);
 
-      Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
-      GtfsTrip gtfsObject = mock.getExportedTrips().get(0);
+      
+      VehicleJourney journey2 = buildNeptuneObject(true);
+      DestinationDisplay journey2FirstDisplay = new DestinationDisplay();
+      journey2FirstDisplay.setFrontText("MainDestination");
+      
+      DestinationDisplay journey2SecondDisplay = new DestinationDisplay();
+      journey2SecondDisplay.setFrontText("UpdatedDestination");
+      
+      journey2.getVehicleJourneyAtStops().get(0).getStopPoint().setDestinationDisplay(journey2FirstDisplay );
+      journey2.getVehicleJourneyAtStops().get(2).getStopPoint().setDestinationDisplay(journey2SecondDisplay );
+      producer.save(journey2, "tm_01", "GTFS", "GTFS",false);
+
+      
+      Assert.assertEquals(mock.getExportedTrips().size(), 2, "Trip should be returned");
+      GtfsTrip gtfsObject = mock.getExportedTrips().get(1);
       Assert.assertEquals(gtfsObject.getTripHeadSign(),"MainDestination" , "Trip headsign must be set based on first destination display");
       
-      Assert.assertEquals(mock.getExportedStopTimes().size(), 4);
+      Assert.assertEquals(mock.getExportedStopTimes().size(), 8);
       Assert.assertEquals(mock.getExportedStopTimes().get(0).getStopHeadsign(), null);
       Assert.assertEquals(mock.getExportedStopTimes().get(1).getStopHeadsign(), null);
-      Assert.assertEquals(mock.getExportedStopTimes().get(2).getStopHeadsign(), "UpdatedDestination");
-      Assert.assertEquals(mock.getExportedStopTimes().get(3).getStopHeadsign(), "UpdatedDestination");
+      Assert.assertEquals(mock.getExportedStopTimes().get(2).getStopHeadsign(), "UpdatedDestination1");
+      Assert.assertEquals(mock.getExportedStopTimes().get(3).getStopHeadsign(), "UpdatedDestination1");
+      Assert.assertEquals(mock.getExportedStopTimes().get(4).getStopHeadsign(), null);
+      Assert.assertEquals(mock.getExportedStopTimes().get(5).getStopHeadsign(), null);
+      Assert.assertEquals(mock.getExportedStopTimes().get(6).getStopHeadsign(), "UpdatedDestination");
+      Assert.assertEquals(mock.getExportedStopTimes().get(7).getStopHeadsign(), "UpdatedDestination");
       
    }
 
