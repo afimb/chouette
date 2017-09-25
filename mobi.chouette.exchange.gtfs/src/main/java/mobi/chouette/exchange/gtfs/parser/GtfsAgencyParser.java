@@ -13,6 +13,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
 import mobi.chouette.model.Company;
+import mobi.chouette.model.type.OrganisationTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -116,6 +117,7 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 		String[] token = company.getObjectId().split(":");
 		company.setRegistrationNumber(token[2]);
 		company.setTimeZone(AbstractConverter.toString(gtfsAgency.getAgencyTimezone()));
+		company.setOrganisationType(OrganisationTypeEnum.Authority);
 		company.setFilled(true);
 // 		AbstractConverter.addLocation(context, "agency.txt", company.getObjectId(), gtfsAgency.getId());
 	}
