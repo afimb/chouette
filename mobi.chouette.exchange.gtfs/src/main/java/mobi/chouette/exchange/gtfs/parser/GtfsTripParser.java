@@ -844,16 +844,24 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 			String stopPointId = AbstractConverter.extractOriginalId(departureStopPoint.getObjectId());
 			String journeyPatternId = AbstractConverter.extractOriginalId(jp.getObjectId());
-			
+
 			DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential,
 					AbstractConverter.composeObjectId(configuration,
-							DestinationDisplay.DESTINATIONDISPLAY_KEY, journeyPatternId+"-"+stopPointId,null));
-			String content = jp.getArrivalStopPoint().getScheduledStopPoint().getContainedInStopArea().getName();
-			
-			destinationDisplay.setName("Generated: "+content);
-			destinationDisplay.setFrontText(content);
-			departureStopPoint.setDestinationDisplay(destinationDisplay);
+							DestinationDisplay.DESTINATIONDISPLAY_KEY, journeyPatternId + "-" + stopPointId, null));
 
+			if (jp.getArrivalStopPoint().getScheduledStopPoint().getContainedInStopArea() != null) {
+				String content = jp.getArrivalStopPoint().getScheduledStopPoint().getContainedInStopArea().getName();
+
+				if (content != null) {
+					destinationDisplay.setName("Generated: " + content);
+					destinationDisplay.setFrontText(content);
+					departureStopPoint.setDestinationDisplay(destinationDisplay);
+				} else {
+					log.warn("Cannot create synthetic DestinationDisplay for StopPoint " + departureStopPoint + " as StopArea name is null");
+				}
+			} else {
+				log.warn("Cannot create synthetic DestinationDisplay for StopPoint " + departureStopPoint + " as StopArea is null");
+			}
 		}
 
 	}
