@@ -103,21 +103,27 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
 		for (GtfsAgency gtfsAgency : importer.getAgencyById()) {
-			String objectId = AbstractConverter.composeObjectId(configuration, Company.COMPANY_KEY,
+			// Create both as operator and as authority
+			String objectIdOperator = AbstractConverter.composeObjectId(configuration, Company.OPERATOR_KEY,
+					gtfsAgency.getAgencyId()+"o", log);
+			Company operator = ObjectFactory.getCompany(referential, objectIdOperator);
+			convert(context, gtfsAgency, operator, OrganisationTypeEnum.Operator );
+
+			String objectIdAuthority = AbstractConverter.composeObjectId(configuration, Company.AUTHORITY_KEY,
 					gtfsAgency.getAgencyId(), log);
-			Company company = ObjectFactory.getCompany(referential, objectId);
-			convert(context, gtfsAgency, company);
-		}
+			Company authority = ObjectFactory.getCompany(referential, objectIdAuthority);
+			convert(context, gtfsAgency, authority, OrganisationTypeEnum.Authority );
+}
 	}
 	
-	private void convert(Context context, GtfsAgency gtfsAgency, Company company) {
+	private void convert(Context context, GtfsAgency gtfsAgency, Company company, OrganisationTypeEnum organisationType) {
 		company.setName(AbstractConverter.getNonEmptyTrimedString(gtfsAgency.getAgencyName()));
 		company.setUrl(AbstractConverter.toString(gtfsAgency.getAgencyUrl()));
 		company.setPhone(AbstractConverter.getNonEmptyTrimedString(gtfsAgency.getAgencyPhone()));
 		String[] token = company.getObjectId().split(":");
 		company.setRegistrationNumber(token[2]);
 		company.setTimeZone(AbstractConverter.toString(gtfsAgency.getAgencyTimezone()));
-		company.setOrganisationType(OrganisationTypeEnum.Authority);
+		company.setOrganisationType(organisationType);
 		company.setFilled(true);
 // 		AbstractConverter.addLocation(context, "agency.txt", company.getObjectId(), gtfsAgency.getId());
 	}
