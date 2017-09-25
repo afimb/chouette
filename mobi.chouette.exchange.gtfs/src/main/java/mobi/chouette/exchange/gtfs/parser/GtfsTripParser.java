@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -837,7 +838,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
 		String vjasObjectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
-				ObjectIdTypes.VEHICLE_JOURNEY_AT_STOP_KEY, gtfsTrip.getTripId()+"-"+gtfsStopTime.getStopId(), log);
+				ObjectIdTypes.VEHICLE_JOURNEY_AT_STOP_KEY, UUID.randomUUID().toString(), log);
 
 		vehicleJourneyAtStop.setObjectId(vjasObjectId);
 
