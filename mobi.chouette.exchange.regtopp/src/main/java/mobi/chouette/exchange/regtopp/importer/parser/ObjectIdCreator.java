@@ -19,32 +19,32 @@ public abstract class ObjectIdCreator {
 		return chouetteObjectId.split(":")[2];
 	}
 
-	public static String createTimetableId(RegtoppImportParameters configuration, String adminCode,String counter, String dayCodeId, RegtoppDayCodeHeaderDKO header) {
+	public static String createTimetableId(RegtoppImportParameters configuration, String adminCode, String dayCodeId, RegtoppDayCodeHeaderDKO header) {
 
 		String localId;
 
 		switch (configuration.getCalendarStrategy()) {
 
 		case ADD:
-			localId = adminCode +counter + dayCodeId + "-" + header.getDate().toString();
+			localId = adminCode + dayCodeId + "-" + header.getDate().toString();
 			break;
 		case UPDATE:
 		default:
-			localId = adminCode +counter + dayCodeId;
+			localId = adminCode + dayCodeId;
 		}
 
 		return composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY, localId);
 
 	}
 
-	public static String recomputeTimetableId(RegtoppImportParameters configuration, String adminCode, String counter,
+	public static String recomputeTimetableId(RegtoppImportParameters configuration, String adminCode,
 			Timetable timetableToModify,RegtoppDayCodeHeaderDKO header) {
 
 		
 		String[] split = StringUtils.split(timetableToModify.getObjectId(),":");
 		String dayCodeId = split[2].substring(3, 7);
 
-		return createTimetableId(configuration, adminCode, counter, dayCodeId, header);
+		return createTimetableId(configuration, adminCode, dayCodeId, header);
 	}
 
 	public static String createOperatorId(RegtoppImportParameters configuration, String operatorCode) {

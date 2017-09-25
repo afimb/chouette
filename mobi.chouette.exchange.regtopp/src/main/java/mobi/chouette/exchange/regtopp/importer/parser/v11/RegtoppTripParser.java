@@ -195,14 +195,14 @@ public class RegtoppTripParser extends LineSpecificParser {
 	protected void linkVehicleJourneyToTimetable(Referential referential, RegtoppImportParameters configuration, AbstractRegtoppTripIndexTIX trip,
 			VehicleJourney vehicleJourney, RegtoppDayCodeHeaderDKO header) {
 
-		String chouetteTimetableId = ObjectIdCreator.createTimetableId(configuration, trip.getAdminCode(), trip.getCounter(), trip.getDayCodeRef(), header);
+		String chouetteTimetableId = ObjectIdCreator.createTimetableId(configuration, trip.getAdminCode(), trip.getDayCodeRef(), header);
 
 		Timetable timetable = referential.getSharedTimetables().get(chouetteTimetableId);
 		if(timetable == null) {
 			log.warn("Invalid timetable reference "+chouetteTimetableId);
 			Map<String,Timetable> timetablesToAdd = new HashMap<>();
 			for(Timetable timetableToModify : referential.getSharedTimetables().values()) {
-				String modifiedChouetteTimetableId = ObjectIdCreator.recomputeTimetableId(configuration, trip.getAdminCode(),trip.getCounter(),timetableToModify,header);
+				String modifiedChouetteTimetableId = ObjectIdCreator.recomputeTimetableId(configuration, trip.getAdminCode(),timetableToModify,header);
 				log.warn("Adding timetable "+timetableToModify.getObjectId()+" with new identifier "+modifiedChouetteTimetableId);
 				timetablesToAdd.put(modifiedChouetteTimetableId, timetableToModify);
 			}
