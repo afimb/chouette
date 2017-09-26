@@ -22,7 +22,7 @@ public class GtfsDataCollector extends DataCollector{
 	}
 
 	public boolean collect(ExportableData collection, Collection<StopArea> stopAreas) {
-		return collect(collection, stopAreas,false,true);
+		return collect(collection, stopAreas,false,false);
 
 	}
 

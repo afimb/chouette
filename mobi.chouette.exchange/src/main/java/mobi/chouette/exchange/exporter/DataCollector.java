@@ -163,8 +163,8 @@ public class DataCollector {
 	protected void completeSharedData(ExportableData collection) {
 		// force lazy dependencies to be loaded
 		for (ConnectionLink link : collection.getConnectionLinks()) {
-			collection.getSharedStops().add(link.getEndOfLink());
-			collection.getSharedStops().add(link.getStartOfLink());
+			collectStopAreas(collection, link.getStartOfLink(), false, false);
+			collectStopAreas(collection, link.getEndOfLink(), false, false);
 		}
 	}
 
