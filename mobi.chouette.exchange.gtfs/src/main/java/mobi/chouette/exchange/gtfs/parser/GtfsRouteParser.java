@@ -189,23 +189,35 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		Line line = ObjectFactory.getLine(referential, lineId);
 		convert(context, gtfsRoute, line);
 
-		// PTNetwork
-		String ptNetworkId = configuration.getObjectIdPrefix() + ":" + Network.PTNETWORK_KEY + ":"
-				+ configuration.getObjectIdPrefix();
-		Network ptNetwork = ObjectFactory.getPTNetwork(referential, ptNetworkId);
-		line.setNetwork(ptNetwork);
 
 		// Company
 		if (gtfsRoute.getAgencyId() != null) {
-			String companyId = AbstractConverter.composeObjectId(configuration,
-					Company.COMPANY_KEY, gtfsRoute.getAgencyId(), log);
-			Company company = ObjectFactory.getCompany(referential, companyId);
-			line.setCompany(company);
+			String operatorId = AbstractConverter.composeObjectId(configuration,
+					Company.OPERATOR_KEY, gtfsRoute.getAgencyId()+"o", log);
+			Company operator = ObjectFactory.getCompany(referential, operatorId);
+			line.setCompany(operator);
+		
+			// PTNetwork
+			String ptNetworkId = configuration.getObjectIdPrefix() + ":" + Network.PTNETWORK_KEY + ":"
+					+gtfsRoute.getAgencyId();
+			Network ptNetwork = ObjectFactory.getPTNetwork(referential, ptNetworkId);
+			if(ptNetwork.getCompany() == null) {
+				String authorityId = AbstractConverter.composeObjectId(configuration,
+						Company.AUTHORITY_KEY, gtfsRoute.getAgencyId(), log);
+				Company authority = ObjectFactory.getCompany(referential, authorityId);
+				ptNetwork.setCompany(authority);
+				ptNetwork.setName(authority.getName());
+			}
+			
+			line.setNetwork(ptNetwork);
+			
+			
+			
 		} else if (!referential.getSharedCompanies().isEmpty()) {
 			Company company = referential.getSharedCompanies().values().iterator().next();
 			line.setCompany(company);
 		}
-
+		
 		// Route VehicleJourney VehicleJourneyAtStop , JourneyPattern ,StopPoint
 		GtfsTripParser gtfsTripParser = (GtfsTripParser) ParserFactory.create(GtfsTripParser.class.getName());
 		gtfsTripParser.setGtfsRouteId(gtfsRouteId);
