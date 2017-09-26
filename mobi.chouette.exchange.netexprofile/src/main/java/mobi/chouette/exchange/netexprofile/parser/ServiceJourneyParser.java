@@ -26,7 +26,9 @@ import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexTimeConversionUtil;
 import mobi.chouette.model.Company;
+import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.Footnote;
+import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
@@ -70,19 +72,25 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 
 			vehicleJourney.setObjectVersion(NetexParserUtils.getVersion(serviceJourney));
 
-			if (serviceJourney.getName() != null) {
-				vehicleJourney.setPublishedJourneyName(serviceJourney.getName().getValue());
-			}
 			vehicleJourney.setPublishedJourneyIdentifier(serviceJourney.getPublicCode());
 
-			String journeyPatternIdRef = null;
 			if (serviceJourney.getJourneyPatternRef() != null) {
 				JourneyPatternRefStructure patternRefStruct = serviceJourney.getJourneyPatternRef().getValue();
-				journeyPatternIdRef = patternRefStruct.getRef();
+				mobi.chouette.model.JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, patternRefStruct.getRef());
+				vehicleJourney.setJourneyPattern(journeyPattern);
 			}
 
-			mobi.chouette.model.JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, journeyPatternIdRef);
-			vehicleJourney.setJourneyPattern(journeyPattern);
+			if (serviceJourney.getName() != null) {
+				vehicleJourney.setPublishedJourneyName(serviceJourney.getName().getValue());
+			} else {
+				JourneyPattern journeyPattern = vehicleJourney.getJourneyPattern();
+				if(journeyPattern.getDepartureStopPoint() != null) {
+					DestinationDisplay dd = journeyPattern.getDepartureStopPoint().getDestinationDisplay();
+					if(dd != null) {
+						vehicleJourney.setPublishedJourneyName(dd.getFrontText());
+					}
+				}
+			}
 
 			if (serviceJourney.getOperatorRef() != null) {
 				String operatorIdRef = serviceJourney.getOperatorRef().getRef();
@@ -93,7 +101,7 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 				Company company = ObjectFactory.getLine(referential, lineIdRef).getCompany();
 				vehicleJourney.setCompany(company);
 			} else {
-				Company company = journeyPattern.getRoute().getLine().getCompany();
+				Company company = vehicleJourney.getJourneyPattern().getRoute().getLine().getCompany();
 				vehicleJourney.setCompany(company);
 			}
 
@@ -101,7 +109,7 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 				mobi.chouette.model.Route route = ObjectFactory.getRoute(referential, serviceJourney.getRouteRef().getRef());
 				vehicleJourney.setRoute(route);
 			} else {
-				mobi.chouette.model.Route route = journeyPattern.getRoute();
+				mobi.chouette.model.Route route = vehicleJourney.getJourneyPattern().getRoute();
 				vehicleJourney.setRoute(route);
 			}
 
