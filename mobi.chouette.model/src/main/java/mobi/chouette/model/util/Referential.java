@@ -63,6 +63,11 @@ public class Referential implements java.io.Serializable {
 
 	@Getter
 	@Setter
+	private Map<String, String> stopAreaMapping = new HashMap<>();
+
+
+	@Getter
+	@Setter
 	private Map<String, GroupOfLine> sharedGroupOfLines = new HashMap<String, GroupOfLine>();
 
 
@@ -85,7 +90,7 @@ public class Referential implements java.io.Serializable {
 	@Getter
 	@Setter
 	private Map<String, ScheduledStopPoint> sharedScheduledStopPoints = new HashMap<>();
-	
+
 	@Getter
 	@Setter
 	private Map<String, Footnote> sharedFootnotes = new HashMap<String, Footnote>();
@@ -153,7 +158,7 @@ public class Referential implements java.io.Serializable {
 	@Getter
 	@Setter
 	private Map<String, RouteSection> routeSections = new HashMap<String, RouteSection>();
-	
+
 	@Getter
 	@Setter
 	private Map<String, DestinationDisplay> destinationDisplays = new HashMap<String, DestinationDisplay>();
@@ -255,6 +260,7 @@ public class Referential implements java.io.Serializable {
 		sharedLines.clear();
 		sharedPTNetworks.clear();
 		sharedStopAreas.clear();
+		stopAreaMapping.clear();
 		sharedTimebands.clear();
 		sharedTimetables.clear();
 		sharedDestinationDisplays.clear();
