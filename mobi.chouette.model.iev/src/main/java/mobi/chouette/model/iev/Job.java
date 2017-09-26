@@ -2,7 +2,9 @@ package mobi.chouette.model.iev;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -98,6 +100,10 @@ public class Job implements Serializable {
 	@XmlType
 	@XmlEnum(String.class)
 	public enum STATUS implements java.io.Serializable {
-		CREATED, RESCHEDULED, SCHEDULED, STARTED, TERMINATED, CANCELED, ABORTED, DELETED
+		CREATED, RESCHEDULED, SCHEDULED, STARTED, TERMINATED, CANCELED, ABORTED, DELETED;
+
+		public static List<STATUS> getCompletedStatuses() {
+			return Arrays.stream(STATUS.values()).filter(status -> status.ordinal() > STARTED.ordinal()).collect(Collectors.toList());
+		}
 	}
 }

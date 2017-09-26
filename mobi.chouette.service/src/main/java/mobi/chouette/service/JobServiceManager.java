@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -48,6 +49,7 @@ import mobi.chouette.scheduler.Scheduler;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.ObjectUtils;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
@@ -351,6 +353,29 @@ public class JobServiceManager {
 			log.error("fail to delete directory " + jobService.getPath(), e);
 		}
 		jobDAO.delete(jobService.getJob());
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void removeOldJobs(final int keepDays, final int keepJobs) throws ServiceException {
+
+		List<Job> completedJobs = new ArrayList<>();
+		Job.STATUS.getCompletedStatuses().stream().forEach(status -> completedJobs.addAll(jobDAO.findByStatus(status)));
+		Collections.sort(completedJobs, (job1, job2) -> ObjectUtils.compare(job1.getUpdated(), job2.getUpdated()));
+
+		int jobsDeleted = 0;
+		if (completedJobs.size() > keepJobs) {
+			LocalDateTime ageLimit = LocalDateTime.now().minusDays(keepDays);
+			List<Job> deleteJobs = completedJobs.subList(0, completedJobs.size() - keepJobs).stream().filter(job -> job.getUpdated() != null && job.getUpdated().isBefore(ageLimit)).collect(Collectors.toList());
+
+			for (Job deleteJob : deleteJobs) {
+				log.debug("Removing old, completed job: " + deleteJob);
+				remove(deleteJob.getReferential(), deleteJob.getId());
+			}
+
+			jobsDeleted = deleteJobs.size();
+		}
+
+		log.info("Removed old jobs. Cnt: " + jobsDeleted);
 	}
 
 	public void drop(String referential) throws ServiceException {
