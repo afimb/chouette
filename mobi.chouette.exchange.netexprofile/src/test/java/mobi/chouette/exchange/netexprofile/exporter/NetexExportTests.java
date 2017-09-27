@@ -42,7 +42,6 @@ import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.exchange.netexprofile.DummyChecker;
 import mobi.chouette.exchange.netexprofile.JobDataTest;
 import mobi.chouette.exchange.netexprofile.NetexTestUtils;
-import mobi.chouette.exchange.netexprofile.importer.NetexImporterCommandTest;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImporterCommand;
 import mobi.chouette.exchange.report.ActionReport;
@@ -171,7 +170,8 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         context.put(CONFIGURATION, configuration);
         configuration.setName("name");
         configuration.setUserName("userName");
-        configuration.setNoSave(true);
+        configuration.setNoSave(false);
+        configuration.setCleanRepository(true);
         configuration.setOrganisationName("organisation");
         configuration.setReferentialName("test");
 
@@ -273,7 +273,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
         Context context = initExportContext();
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
-        configuration.setAddMetadata(true);
+        configuration.setAddMetadata(false);
         configuration.setReferencesType("line");
         configuration.setExportStops(true);
         configuration.setDefaultCodespacePrefix("AVI");
@@ -319,7 +319,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         Context context = initExportContext();
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setValidateAfterExport(true);
-        configuration.setAddMetadata(true);
+        configuration.setAddMetadata(false);
         configuration.setReferencesType("line");
         configuration.setExportStops(true);
         configuration.setDefaultCodespacePrefix("AVI");
@@ -332,6 +332,8 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
             log.error("test failed", ex);
             throw ex;
         }
+
+        NetexTestUtils.verifyValidationReport(context);
 
         ActionReport report = (ActionReport) context.get(REPORT);
         Assert.assertEquals(report.getResult(), STATUS_OK, "result");
@@ -348,7 +350,6 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
             Reporter.log(info.toString(), true);
         }
 
-        NetexTestUtils.verifyValidationReport(context);
     }
 
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
@@ -360,7 +361,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
         Context context = initExportContext();
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
-        configuration.setAddMetadata(true);
+        configuration.setAddMetadata(false);
         configuration.setReferencesType("line");
         configuration.setExportStops(true);
         configuration.setDefaultCodespacePrefix("AVI");
@@ -401,7 +402,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
         Context context = initExportContext();
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
-        configuration.setAddMetadata(true);
+        configuration.setAddMetadata(false);
         configuration.setReferencesType("line");
         configuration.setExportStops(true);
         configuration.setDefaultCodespacePrefix("AVI");
@@ -444,7 +445,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         Context context = initExportContext();
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setValidateAfterExport(true);
-        configuration.setAddMetadata(true);
+        configuration.setAddMetadata(false);
         configuration.setReferencesType("line");
         configuration.setExportStops(true);
         configuration.setDefaultCodespacePrefix("AVI");
@@ -458,6 +459,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
             throw ex;
         }
 
+        NetexTestUtils.verifyActionReport(context);
         NetexTestUtils.verifyValidationReport(context);
 
         ActionReport report = (ActionReport) context.get(REPORT);
@@ -486,7 +488,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
         Context context = initExportContext();
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
-        configuration.setAddMetadata(true);
+        configuration.setAddMetadata(false);
         configuration.setReferencesType("line");
         configuration.setExportStops(true);
         configuration.setDefaultCodespacePrefix("AVI");
@@ -530,7 +532,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         Context context = initExportContext();
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setValidateAfterExport(true);
-        configuration.setAddMetadata(true);
+        configuration.setAddMetadata(false);
         configuration.setReferencesType("line");
         configuration.setExportStops(true);
         configuration.setDefaultCodespacePrefix("AVI");
@@ -575,7 +577,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         Context context = initExportContext();
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setValidateAfterExport(true);
-        configuration.setAddMetadata(true);
+        configuration.setAddMetadata(false);
         configuration.setReferencesType("line");
         configuration.setExportStops(true);
         configuration.setDefaultCodespacePrefix("AVI");
@@ -590,6 +592,8 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         }
         NetexTestUtils.verifyValidationReport(context);
 
+        NetexTestUtils.verifyValidationReport(context);
+        
         ActionReport report = (ActionReport) context.get(REPORT);
         Assert.assertEquals(report.getResult(), STATUS_OK, "result");
         Assert.assertEquals(report.getFiles().size(), 2, "file reported");
@@ -625,7 +629,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         Context context = initExportContext();
         NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
         configuration.setValidateAfterExport(true);
-        configuration.setAddMetadata(true);
+        configuration.setAddMetadata(false);
         configuration.setReferencesType("line");
         configuration.setExportStops(true);
         configuration.setDefaultCodespacePrefix("AVI");

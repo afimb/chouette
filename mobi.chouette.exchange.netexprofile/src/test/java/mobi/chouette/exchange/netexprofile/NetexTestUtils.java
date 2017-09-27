@@ -2,6 +2,9 @@ package mobi.chouette.exchange.netexprofile;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.FileReport;
+import mobi.chouette.exchange.report.ActionReporter.FILE_STATE;
 import mobi.chouette.exchange.validation.report.*;
 import mobi.chouette.model.*;
 import mobi.chouette.model.util.Referential;
@@ -16,6 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static mobi.chouette.common.Constant.VALIDATION_REPORT;
+import static mobi.chouette.common.Constant.REPORT;
 
 @Log4j
 public class NetexTestUtils  {
@@ -112,6 +116,22 @@ public class NetexTestUtils  {
 
 		Assert.assertEquals(bps.size(), numOfStopAreas, "line must have " + numOfStopAreas + " stop areas");
 	}
+	
+	public static void verifyActionReport(Context context) {
+        ActionReport report = (ActionReport) context.get(REPORT);
+        Set<String> uniqueFilenames = new HashSet<>();
+        for(FileReport fileReport : report.getFiles()) {
+        	if(fileReport.getStatus() != FILE_STATE.OK) {
+        		log.error("File "+fileReport.getName()+ " status "+fileReport.getStatus());
+        	}
+    		boolean unique = uniqueFilenames.add(fileReport.getName());
+    		if(!unique) {
+    			log.error("Already have file report for "+fileReport.getName());
+    		}
+        }
+		
+	
+	}	
 
 	public static void verifyValidationReport(Context context) {
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);

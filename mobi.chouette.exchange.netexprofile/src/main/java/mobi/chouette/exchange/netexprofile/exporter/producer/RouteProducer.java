@@ -1,21 +1,13 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.POINT_ON_ROUTE;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.ROUTE_POINT;
-
-import org.rutebanken.netex.model.KeyListStructure;
-import org.rutebanken.netex.model.KeyValueStructure;
-import org.rutebanken.netex.model.LineRefStructure;
-import org.rutebanken.netex.model.PointOnRoute;
-import org.rutebanken.netex.model.PointsOnRoute_RelStructure;
-import org.rutebanken.netex.model.RoutePointRefStructure;
-import org.rutebanken.netex.model.RouteRefStructure;
-
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.model.StopPoint;
+import org.rutebanken.netex.model.*;
+
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 import java.math.BigInteger;
 
@@ -45,16 +37,17 @@ public class RouteProducer extends NetexProducer implements NetexEntityProducer<
 			netexRoute.setKeyList(keyListStructure);
 		}
 
+
 		LineRefStructure lineRefStruct = netexFactory.createLineRefStructure();
 		NetexProducerUtils.populateReference(neptuneRoute.getLine(), lineRefStruct, true);
 		netexRoute.setLineRef(netexFactory.createLineRef(lineRefStruct));
 
+		
 		PointsOnRoute_RelStructure pointsOnRoute = netexFactory.createPointsOnRoute_RelStructure();
 
 		for (StopPoint stopPoint : neptuneRoute.getStopPoints()) {
 			if (stopPoint != null) {
-				
-				
+
 				// TODO refactor
 				String pointVersion = neptuneRoute.getObjectVersion() > 0 ? String.valueOf(neptuneRoute.getObjectVersion()) : NETEX_DEFAULT_OBJECT_VERSION;
 				String pointOnRouteIdSuffix = stopPoint.objectIdSuffix() + "-" + stopPoint.getPosition();
@@ -65,7 +58,7 @@ public class RouteProducer extends NetexProducer implements NetexEntityProducer<
 
 				if (stopPoint.getScheduledStopPoint().getContainedInStopArea() != null) {
 					String routePointId = NetexProducerUtils.translateObjectId(stopPoint.getScheduledStopPoint().getObjectId(), ROUTE_POINT);
-					RoutePointRefStructure routePointRefStruct = netexFactory.createRoutePointRefStructure().withRef(routePointId);
+					RoutePointRefStructure routePointRefStruct = netexFactory.createRoutePointRefStructure().withRef(routePointId).withVersion(pointVersion);
 					pointOnRoute.setPointRef(netexFactory.createRoutePointRef(routePointRefStruct));
 				} else {
 					throw new RuntimeException(

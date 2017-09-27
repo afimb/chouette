@@ -170,6 +170,9 @@ public class ObjectFactory {
 	public static StopArea getStopArea(Referential referential, String objectId) {
 		StopArea result = referential.getSharedStopAreas().get(objectId);
 		if (result == null) {
+			result = referential.getSharedStopAreas().get(referential.getStopAreaMapping().get(objectId));
+		}
+		if (result == null) {
 			result = new StopArea();
 			result.setObjectId(objectId);
 			result.setDetached(true);

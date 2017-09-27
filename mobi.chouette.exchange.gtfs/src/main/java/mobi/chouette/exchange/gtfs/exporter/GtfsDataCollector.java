@@ -30,24 +30,27 @@ public class GtfsDataCollector extends DataCollector{
 	protected void collectStopAreas(mobi.chouette.exchange.exporter.ExportableData collection, StopArea stopArea,boolean skipNoCoordinates,boolean followLinks) {
 		if (stopArea.getAreaType().equals(ChouetteAreaEnum.BoardingPosition)
 				|| stopArea.getAreaType().equals(ChouetteAreaEnum.Quay)) {
-			if (collection.getPhysicalStops().contains(stopArea))
-				return;
-			collection.getPhysicalStops().add(stopArea);
-			collection.getConnectionLinks().addAll(stopArea.getConnectionStartLinks());
-			collection.getConnectionLinks().addAll(stopArea.getConnectionEndLinks());
-			if (stopArea.getParent() != null)
+			if (stopArea.getParent() != null) {
 				collectStopAreas(collection, stopArea.getParent(),skipNoCoordinates,followLinks);
-		} else if (stopArea.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint)) {
-			if (collection.getCommercialStops().contains(stopArea))
-				return;
-			collection.getCommercialStops().add(stopArea);
-			collection.getConnectionLinks().addAll(stopArea.getConnectionStartLinks());
-			collection.getConnectionLinks().addAll(stopArea.getConnectionEndLinks());
-			for(StopArea sa : stopArea.getContainedStopAreas()) {
-				collectStopAreas(collection, sa, skipNoCoordinates, followLinks);
 			}
+			if (collection.getPhysicalStops().contains(stopArea)) {
+				return;
+			}
+			collection.getPhysicalStops().add(stopArea);
+			addConnectionLinks(collection, stopArea.getConnectionStartLinks(), skipNoCoordinates, followLinks);
+			addConnectionLinks(collection, stopArea.getConnectionEndLinks(), skipNoCoordinates, followLinks);
+		} else if (stopArea.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint)) {
 			if(stopArea.getParent() != null) {
 				collectStopAreas(collection, stopArea.getParent(), skipNoCoordinates, followLinks);
+			}
+			if (collection.getCommercialStops().contains(stopArea)) {
+				return;
+			}
+			collection.getCommercialStops().add(stopArea);
+			addConnectionLinks(collection, stopArea.getConnectionStartLinks(), skipNoCoordinates, followLinks);
+			addConnectionLinks(collection, stopArea.getConnectionEndLinks(), skipNoCoordinates, followLinks);
+			for(StopArea sa : stopArea.getContainedStopAreas()) {
+				collectStopAreas(collection, sa, skipNoCoordinates, followLinks);
 			}
 		}
 	}

@@ -10,6 +10,7 @@ import org.rutebanken.netex.model.DayTypeRefStructure;
 import org.rutebanken.netex.model.DayTypeRefs_RelStructure;
 import org.rutebanken.netex.model.JourneyPatternRefStructure;
 import org.rutebanken.netex.model.LineRefStructure;
+import org.rutebanken.netex.model.OperatorRefStructure;
 import org.rutebanken.netex.model.ServiceJourney;
 import org.rutebanken.netex.model.StopPointInJourneyPatternRefStructure;
 import org.rutebanken.netex.model.TimetabledPassingTime;
@@ -19,7 +20,9 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
+import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexTimeConversionUtil;
+import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopPoint;
@@ -31,6 +34,7 @@ public class ServiceJourneyProducer extends NetexProducer {
 
 	public ServiceJourney produce(Context context, VehicleJourney vehicleJourney, Line line) {
         ExportableData exportableData = (ExportableData) context.get(Constant.EXPORTABLE_DATA);
+        ExportableNetexData exportableNetexData = (ExportableNetexData) context.get(Constant.EXPORTABLE_NETEX_DATA);
 
 		ServiceJourney serviceJourney = netexFactory.createServiceJourney();
 		NetexProducerUtils.populateId(vehicleJourney, serviceJourney);
@@ -49,6 +53,15 @@ public class ServiceJourneyProducer extends NetexProducer {
 		LineRefStructure lineRefStruct = netexFactory.createLineRefStructure();
 		NetexProducerUtils.populateReference(line, lineRefStruct, true);
 		serviceJourney.setLineRef(netexFactory.createLineRef(lineRefStruct));
+		
+		NoticeProducer.addNoticeAndNoticeAssignments(context, exportableNetexData, exportableNetexData.getNoticeAssignmentsTimetableFrame(), vehicleJourney.getFootnotes(), vehicleJourney);
+		
+		if (vehicleJourney.getCompany() != null) {
+			OperatorRefStructure operatorRefStruct = netexFactory.createOperatorRefStructure();
+			NetexProducerUtils.populateReference(vehicleJourney.getCompany(), operatorRefStruct, false);
+			serviceJourney.setOperatorRef(operatorRefStruct);
+		}
+
 
 		if (vehicleJourney.getTimetables().size() > 0) {
 			DayTypeRefs_RelStructure dayTypeStruct = netexFactory.createDayTypeRefs_RelStructure();
@@ -104,6 +117,8 @@ public class ServiceJourneyProducer extends NetexProducer {
 				}
 
 				passingTimesStruct.getTimetabledPassingTime().add(timetabledPassingTime);
+				
+				NoticeProducer.addNoticeAndNoticeAssignments(context, exportableNetexData, exportableNetexData.getNoticeAssignmentsTimetableFrame(), vehicleJourneyAtStop.getFootnotes(), vehicleJourneyAtStop);
 			}
 
 			serviceJourney.setPassingTimes(passingTimesStruct);

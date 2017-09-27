@@ -42,93 +42,96 @@ import mobi.chouette.model.util.Referential;
 @Stateless(name = NetexInitExportCommand.COMMAND)
 public class NetexInitExportCommand implements Command, Constant {
 
-    public static final String COMMAND = "NetexInitExportCommand";
+	public static final String COMMAND = "NetexInitExportCommand";
 
-    @Resource
-    private SessionContext daoContext;
+	@Resource
+	private SessionContext daoContext;
 
-    @EJB
-    private CodespaceDAO codespaceDAO;
+	@EJB
+	private CodespaceDAO codespaceDAO;
 
-    @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public boolean execute(Context context) throws Exception {
-        boolean result = ERROR;
+	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public boolean execute(Context context) throws Exception {
+		boolean result = ERROR;
 
-        Monitor monitor = MonitorFactory.start(COMMAND);
+		Monitor monitor = MonitorFactory.start(COMMAND);
 
-        try {
-            JobData jobData = (JobData) context.get(JOB_DATA);
-            jobData.setOutputFilename("export_" + jobData.getType() + "_" + jobData.getId() + ".zip");
-            context.put(REFERENTIAL, new Referential());
-            context.put(NETEX_REFERENTIAL, new NetexReferential());
+		try {
+			JobData jobData = (JobData) context.get(JOB_DATA);
+			jobData.setOutputFilename("export_" + jobData.getType() + "_" + jobData.getId() + ".zip");
+			context.put(REFERENTIAL, new Referential());
+			context.put(NETEX_REFERENTIAL, new NetexReferential());
 
-            Metadata metadata = new Metadata();
-            metadata.setDate(LocalDateTime.now());
-            metadata.setFormat("application/xml");
-            metadata.setTitle("Export NeTEx ");
+			NetexprofileExportParameters parameters = (NetexprofileExportParameters) context.get(Constant.CONFIGURATION);
 
-            try {
-                metadata.setRelation(new URL("http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/netex/"));
-            } catch (MalformedURLException e1) {
-                log.error("problem with http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/netex/ url", e1);
-            }
+			if (parameters.isAddMetadata()) {
+				Metadata metadata = new Metadata();
+				metadata.setDate(LocalDateTime.now());
+				metadata.setFormat("application/xml");
+				metadata.setTitle("Export NeTEx ");
+				try {
+					metadata.setRelation(new URL("http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/netex/"));
+				} catch (MalformedURLException e1) {
+					log.error("problem with http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/netex/ url", e1);
+				}
 
-            context.put(METADATA, metadata);
+				context.put(METADATA, metadata);
+			}
 
-            Path path = Paths.get(jobData.getPathName(), OUTPUT);
-            if (!Files.exists(path)) {
-                Files.createDirectories(path);
-            }
+			Path path = Paths.get(jobData.getPathName(), OUTPUT);
+			if (!Files.exists(path)) {
+				Files.createDirectories(path);
+			}
 
-            List<Codespace> referentialCodespaces = codespaceDAO.findAll();
-            if (referentialCodespaces.isEmpty()) {
-                log.error("no valid codespaces present for referential");
-                return ERROR;
-            }
+			List<Codespace> referentialCodespaces = codespaceDAO.findAll();
+			if (referentialCodespaces.isEmpty()) {
+				log.error("no valid codespaces present for referential");
+				return ERROR;
+			}
 
-            Set<Codespace> validCodespaces = new HashSet<>(referentialCodespaces);
-            context.put(NETEX_VALID_CODESPACES, validCodespaces);
+			Set<Codespace> validCodespaces = new HashSet<>(referentialCodespaces);
+			context.put(NETEX_VALID_CODESPACES, validCodespaces);
 
-            NetexXMLProcessingHelperFactory netexXMLFactory = new NetexXMLProcessingHelperFactory();
-            context.put(MARSHALLER,netexXMLFactory.createFragmentMarshaller());
-            
-            daoContext.setRollbackOnly();
-            codespaceDAO.clear();
+			NetexXMLProcessingHelperFactory netexXMLFactory = new NetexXMLProcessingHelperFactory();
+			context.put(MARSHALLER, netexXMLFactory.createFragmentMarshaller());
 
-            result = SUCCESS;
-        } catch (Exception e) {
-            log.error(e, e);
-            throw e;
-        } finally {
-            log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
-        }
+			daoContext.setRollbackOnly();
+			codespaceDAO.clear();
 
-        return result;
-    }
+			result = SUCCESS;
+		} catch (Exception e) {
+			log.error(e, e);
+			throw e;
+		} finally {
+			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+		}
 
-    public static class DefaultCommandFactory extends CommandFactory {
+		return result;
+	}
 
-        @Override
-        protected Command create(InitialContext context) throws IOException {
-            Command result = null;
-            try {
-                String name = "java:app/mobi.chouette.exchange.netexprofile/" + COMMAND;
-                result = (Command) context.lookup(name);
-            } catch (NamingException e) {
-                String name = "java:module/" + COMMAND;
-                try {
-                    result = (Command) context.lookup(name);
-                } catch (NamingException e1) {
-                    log.error(e);
-                }
-            }
-            return result;
-        }
-    }
+	public static class DefaultCommandFactory extends CommandFactory {
 
-    static {
-        CommandFactory.factories.put(NetexInitExportCommand.class.getName(), new NetexInitExportCommand.DefaultCommandFactory());
-    }
+		@Override
+		protected Command create(InitialContext context) throws IOException {
+			Command result = null;
+			try {
+				String name = "java:app/mobi.chouette.exchange.netexprofile/" + COMMAND;
+				result = (Command) context.lookup(name);
+			} catch (NamingException e) {
+				String name = "java:module/" + COMMAND;
+				try {
+					result = (Command) context.lookup(name);
+				} catch (NamingException e1) {
+					log.error(e);
+				}
+			}
+			return result;
+		}
+	}
+
+	static {
+		CommandFactory.factories.put(NetexInitExportCommand.class.getName(), new NetexInitExportCommand.DefaultCommandFactory());
+	}
 
 }

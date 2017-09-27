@@ -8,6 +8,7 @@ import java.util.Map;
 import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
+import mobi.chouette.exchange.gtfs.model.importer.AgencyById.FIELDS;
 
 public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 
@@ -110,9 +111,7 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 
 		value = array[i++];
 		testExtraSpace(FIELDS.agency_id.name(), value, bean);
-		if (value != null && !value.trim().isEmpty()) {
-			bean.setAgencyId(STRING_CONVERTER.from(context, FIELDS.agency_id, value, false));
-		}
+		bean.setAgencyId(STRING_CONVERTER.from(context, FIELDS.agency_id, value, GtfsAgency.DEFAULT_ID, false));
 
 		boolean noShortName = false;
 		value = array[i++];

@@ -7,6 +7,8 @@ import java.util.Map.Entry;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -130,6 +132,19 @@ public class RestAdmin implements Constant {
 			return builder.build();
 		} catch (Exception ex) {
 			log.error(ex.getMessage(), ex);
+			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@DELETE
+	@Path("/completed_jobs")
+	public void removeOldJobs(@QueryParam("keepDays") @DefaultValue("100")  final int keepDays, @QueryParam("keepJobs") @DefaultValue("100") final int keepJobs) {
+		log.info(Color.BLUE + "Call Admin removeOldJobs, keepDays=" + keepDays + ", keepJobs=" + keepJobs + Color.NORMAL);
+		try {
+			jobServiceManager.removeOldJobs(keepDays, keepJobs);
+			log.info(Color.BLUE + "Finished removeOldJobs, keepDays=" + keepDays + ", keepJobs=" + keepJobs + Color.NORMAL);
+		} catch (Exception ex) {
+			log.error("removeOldJobs failed with exception:" + ex.getMessage(), ex);
 			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
 		}
 	}

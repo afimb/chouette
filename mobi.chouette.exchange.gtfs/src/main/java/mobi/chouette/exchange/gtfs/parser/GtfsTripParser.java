@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
+import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -844,16 +846,24 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 			String stopPointId = AbstractConverter.extractOriginalId(departureStopPoint.getObjectId());
 			String journeyPatternId = AbstractConverter.extractOriginalId(jp.getObjectId());
-			
+
 			DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential,
 					AbstractConverter.composeObjectId(configuration,
-							DestinationDisplay.DESTINATIONDISPLAY_KEY, journeyPatternId+"-"+stopPointId,null));
-			String content = jp.getArrivalStopPoint().getScheduledStopPoint().getContainedInStopArea().getName();
-			
-			destinationDisplay.setName("Generated: "+content);
-			destinationDisplay.setFrontText(content);
-			departureStopPoint.setDestinationDisplay(destinationDisplay);
+							DestinationDisplay.DESTINATIONDISPLAY_KEY, journeyPatternId + "-" + stopPointId, null));
 
+			if (jp.getArrivalStopPoint().getScheduledStopPoint().getContainedInStopArea() != null) {
+				String content = jp.getArrivalStopPoint().getScheduledStopPoint().getContainedInStopArea().getName();
+
+				if (content != null) {
+					destinationDisplay.setName("Generated: " + content);
+					destinationDisplay.setFrontText(content);
+					departureStopPoint.setDestinationDisplay(destinationDisplay);
+				} else {
+					log.warn("Cannot create synthetic DestinationDisplay for StopPoint " + departureStopPoint + " as StopArea name is null");
+				}
+			} else {
+				log.warn("Cannot create synthetic DestinationDisplay for StopPoint " + departureStopPoint + " as StopArea is null");
+			}
 		}
 
 	}
@@ -1025,7 +1035,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
 		String vjasObjectId = AbstractConverter.composeObjectId(configuration,
-				ObjectIdTypes.VEHICLE_JOURNEY_AT_STOP_KEY, gtfsTrip.getTripId()+"-"+gtfsStopTime.getStopId(), log);
+				ObjectIdTypes.VEHICLE_JOURNEY_AT_STOP_KEY, UUID.randomUUID().toString(), log);
 
 		vehicleJourneyAtStop.setObjectId(vjasObjectId);
 

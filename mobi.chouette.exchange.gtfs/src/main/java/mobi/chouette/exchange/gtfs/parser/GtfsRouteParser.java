@@ -189,23 +189,30 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		Line line = ObjectFactory.getLine(referential, lineId);
 		convert(context, gtfsRoute, line);
 
-		// PTNetwork
-		String ptNetworkId = configuration.getObjectIdPrefix() + ":" + Network.PTNETWORK_KEY + ":"
-				+ configuration.getObjectIdPrefix();
-		Network ptNetwork = ObjectFactory.getPTNetwork(referential, ptNetworkId);
-		line.setNetwork(ptNetwork);
-
-		// Company
-		if (gtfsRoute.getAgencyId() != null) {
-			String companyId = AbstractConverter.composeObjectId(configuration,
-					Company.COMPANY_KEY, gtfsRoute.getAgencyId(), log);
-			Company company = ObjectFactory.getCompany(referential, companyId);
-			line.setCompany(company);
-		} else if (!referential.getSharedCompanies().isEmpty()) {
-			Company company = referential.getSharedCompanies().values().iterator().next();
-			line.setCompany(company);
+		String agencyId = gtfsRoute.getAgencyId();
+		if(agencyId == null) {
+			agencyId = GtfsAgency.DEFAULT_ID;
 		}
 
+		String operatorId = AbstractConverter.composeObjectId(configuration,
+					Company.OPERATOR_KEY, agencyId+"o", log);
+		Company operator = ObjectFactory.getCompany(referential, operatorId);
+		line.setCompany(operator);
+	
+		// PTNetwork
+		String ptNetworkId = configuration.getObjectIdPrefix() + ":" + Network.PTNETWORK_KEY + ":"
+				+agencyId;
+		Network ptNetwork = ObjectFactory.getPTNetwork(referential, ptNetworkId);
+		if(ptNetwork.getCompany() == null) {
+			String authorityId = AbstractConverter.composeObjectId(configuration,
+					Company.AUTHORITY_KEY, agencyId, log);
+			Company authority = ObjectFactory.getCompany(referential, authorityId);
+			ptNetwork.setCompany(authority);
+			ptNetwork.setName(authority.getName()); // Set same name on network as on agency
+		}
+		
+		line.setNetwork(ptNetwork);
+		
 		// Route VehicleJourney VehicleJourneyAtStop , JourneyPattern ,StopPoint
 		GtfsTripParser gtfsTripParser = (GtfsTripParser) ParserFactory.create(GtfsTripParser.class.getName());
 		gtfsTripParser.setGtfsRouteId(gtfsRouteId);

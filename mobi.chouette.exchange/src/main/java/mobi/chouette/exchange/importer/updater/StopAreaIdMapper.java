@@ -36,16 +36,16 @@ public class StopAreaIdMapper {
 
 
     public void mapStopAreaIds(Referential referential) {
-        referential.setStopAreas(mapStopAreas(referential.getStopAreas()));
-        referential.setSharedStopAreas(mapStopAreas(referential.getSharedStopAreas()));
+        referential.setStopAreas(mapStopAreas(referential.getStopAreas(),referential));
+        referential.setSharedStopAreas(mapStopAreas(referential.getSharedStopAreas(),referential));
     }
 
-    private Map<String, StopArea> mapStopAreas(Map<String,StopArea> stopAreaMap) {
-        return stopAreaMap.entrySet().stream().map(entry -> mapIdsForStopArea(entry.getValue())).distinct().collect(Collectors.toMap(StopArea::getObjectId, Function.identity()));
+    private Map<String, StopArea> mapStopAreas(Map<String,StopArea> stopAreaMap, Referential referential) {
+        return stopAreaMap.entrySet().stream().map(entry -> mapIdsForStopArea(entry.getValue(),referential)).distinct().collect(Collectors.toMap(StopArea::getObjectId, Function.identity()));
     }
 
 
-    private StopArea mapIdsForStopArea(StopArea stopArea) {
+    private StopArea mapIdsForStopArea(StopArea stopArea, Referential referential) {
         String orgId = stopArea.getObjectId();
         String newId = null;
         if (orgId != null) {
@@ -60,13 +60,16 @@ public class StopAreaIdMapper {
         if (newId != null) {
             stopArea.setObjectId(newId);
             log.debug("Mapped id for " + stopArea.getAreaType() + " from: " + orgId + " to: " + newId);
+
+            referential.getStopAreaMapping().put(orgId,newId);
+
         } else {
             log.debug("Failed to map id for " + stopArea.getAreaType() + " from: " + orgId);
         }
 
         //stopArea.getContainedStopAreas().forEach(child -> mapIdsForStopArea(child));
         if (stopArea.getParent() != null) {
-            mapIdsForStopArea(stopArea.getParent());
+            mapIdsForStopArea(stopArea.getParent(),referential);
         }
         return stopArea;
     }

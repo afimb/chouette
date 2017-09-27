@@ -42,7 +42,7 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private Map<String, ScheduledStopPoint> sharedStopPoints = new HashMap<>();
+    private Map<String, ScheduledStopPoint> scheduledStopPoints = new HashMap<>();
 
     @Getter
     @Setter
@@ -50,19 +50,11 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private Set<ScheduledStopPoint> stopPoints = new HashSet<>();
+    private Map<String, PassengerStopAssignment> stopAssignments = new HashMap<>();
 
     @Getter
     @Setter
-    private Map<String, PassengerStopAssignment> sharedStopAssignments = new HashMap<>();
-
-    @Getter
-    @Setter
-    private Set<PassengerStopAssignment> stopAssignments = new HashSet<>();
-
-    @Getter
-    @Setter
-    private Map<String, RoutePoint> sharedRoutePoints = new HashMap<>();
+    private Map<String, RoutePoint> routePoints = new HashMap<>();
 
     @Getter
     @Setter
@@ -78,11 +70,15 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private List<Notice> notices = new ArrayList<>();
+    private Map<String,Notice> sharedNotices = new HashMap<>();
 
     @Getter
     @Setter
-    private Set<NoticeAssignment> noticeAssignments = new HashSet<>();
+    private Set<NoticeAssignment> noticeAssignmentsTimetableFrame = new HashSet<>();
+
+    @Getter
+    @Setter
+    private Set<NoticeAssignment> noticeAssignmentsServiceFrame = new HashSet<>();
 
     @Getter
     @Setter
@@ -104,14 +100,15 @@ public class ExportableNetexData {
     public void clear() {
         lineCondition = null;
         line = null;
-        stopPoints.clear();
-        stopAssignments.clear();
         routes.clear();
         journeyPatterns.clear();
         serviceJourneys. clear();
-        notices.clear();
-        noticeAssignments.clear();
+        noticeAssignmentsServiceFrame.clear();
+        noticeAssignmentsTimetableFrame.clear();
         serviceJourneyInterchanges.clear();
+        routePoints.clear();
+        stopAssignments.clear();
+        scheduledStopPoints.clear();
     }
 
     public void dispose() {
@@ -125,9 +122,7 @@ public class ExportableNetexData {
         sharedGroupsOfLines.clear();
         sharedOrganisations.clear();
         sharedStopPlaces.clear();
-        sharedStopAssignments.clear();
-        sharedStopPoints.clear();
-        sharedRoutePoints.clear();
+        sharedNotices.clear();
     }
 
 }

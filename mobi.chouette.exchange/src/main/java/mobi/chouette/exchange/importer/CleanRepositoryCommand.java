@@ -22,6 +22,7 @@ import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.dao.CompanyDAO;
 import mobi.chouette.dao.ConnectionLinkDAO;
 import mobi.chouette.dao.DestinationDisplayDAO;
+import mobi.chouette.dao.FootnoteDAO;
 import mobi.chouette.dao.GroupOfLineDAO;
 import mobi.chouette.dao.InterchangeDAO;
 import mobi.chouette.dao.JourneyFrequencyDAO;
@@ -90,6 +91,9 @@ public class CleanRepositoryCommand implements Command {
 	private DestinationDisplayDAO destinationDisplayDAO;
 
 	@EJB
+	private FootnoteDAO footnoteDAO;
+
+	@EJB
 	private InterchangeDAO interchangeDAO;
 
 	@Override
@@ -110,6 +114,7 @@ public class CleanRepositoryCommand implements Command {
 			networkDAO.truncate();
 			routeDAO.truncate();
 			routeSectionDAO.truncate();
+			footnoteDAO.truncate();
 
 			stopPointDAO.truncate();
 			scheduledStopPointDAO.truncate();

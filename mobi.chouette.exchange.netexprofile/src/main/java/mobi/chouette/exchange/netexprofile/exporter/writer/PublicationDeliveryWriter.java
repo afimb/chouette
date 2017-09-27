@@ -136,13 +136,8 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
 		try {
 			writer.writeStartElement(CODESPACES);
 
-			if (fragmentMode.equals(NetexFragmentMode.LINE)) {
-				writeCodespaceElement(writer, exportableNetexData.getSharedCodespaces().get(NSR_XMLNS));
-
-				String lineObjectPrefix = exportableData.getLine().objectIdPrefix().toUpperCase();
-				writeCodespaceElement(writer, exportableNetexData.getSharedCodespaces().get(lineObjectPrefix));
-			} else { // shared data
-				writeCodespaceElement(writer, exportableNetexData.getSharedCodespaces().get(NSR_XMLNS));
+			for(Codespace cs : exportableNetexData.getSharedCodespaces().values()) {
+				writeCodespaceElement(writer, cs);
 			}
 
 			writer.writeEndElement();
