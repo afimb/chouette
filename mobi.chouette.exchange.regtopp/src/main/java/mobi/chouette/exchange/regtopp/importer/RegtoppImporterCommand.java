@@ -12,6 +12,7 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.CommandCancelledException;
 import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.ProgressionCommand;
@@ -19,6 +20,7 @@ import mobi.chouette.exchange.importer.AbstractImporterCommand;
 import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
 
 @Log4j
 public class RegtoppImporterCommand extends AbstractImporterCommand implements Command {
@@ -48,6 +50,9 @@ public class RegtoppImporterCommand extends AbstractImporterCommand implements C
 			ProcessingCommands commands = ProcessingCommandsFactory.create(RegtoppImporterProcessingCommands.class.getName());
 			result = process(context, commands, progression, true, (all ? Mode.line : Mode.stopareas));
 
+		} catch (CommandCancelledException e) {
+			actionReporter.setActionError(context, ERROR_CODE.INTERNAL_ERROR, "Command cancelled");
+			log.error(e.getMessage());
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			actionReporter.setActionError(context, ActionReporter.ERROR_CODE.INTERNAL_ERROR, "Fatal :" + e);
