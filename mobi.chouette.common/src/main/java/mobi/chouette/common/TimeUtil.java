@@ -75,6 +75,20 @@ public class TimeUtil {
         return OffsetDateTime.ofInstant(date.toDate().toInstant(), ZoneOffset.systemDefault());
     }
 
+    /**
+     * Convert OffsetDateTime to joda LocalDate, ignoring offset.
+     *
+     * This is a bit shady, but necessary as long as incoming data is represented with offset based on import time(?) and not actual offset for local timezone at
+     * the given time.
+     */
+    public static org.joda.time.LocalDate toJodaLocalDateIgnoreOffset(OffsetDateTime offsetDateTime) {
+        if (offsetDateTime == null) {
+            return null;
+        }
+
+        return new org.joda.time.LocalDate(offsetDateTime.getYear(),offsetDateTime.getMonthValue(),offsetDateTime.getDayOfMonth());
+    }
+
     public static LocalDate toLocalTimeFromJoda(org.joda.time.LocalDate date) {
         if (date == null) {
             return null;

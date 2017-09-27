@@ -194,11 +194,11 @@ public class ServiceCalendarFrameParser extends NetexParser implements Parser, C
 
 			Timetable timetable = ObjectFactory.getTimetable(referential, dayType.getId());
 			if(validBetweenTimetable.getFromDate() != null) {
-				timetable.setStartOfPeriod(TimeUtil.toJodaLocalDateTime(validBetweenTimetable.getFromDate()).toLocalDate());
+				timetable.setStartOfPeriod(TimeUtil.toJodaLocalDateIgnoreOffset(validBetweenTimetable.getFromDate()));
 			}
 
 			if(validBetweenTimetable.getToDate() != null) {
-				timetable.setEndOfPeriod(TimeUtil.toJodaLocalDateTime(validBetweenTimetable.getToDate()).toLocalDate());
+				timetable.setEndOfPeriod(TimeUtil.toJodaLocalDateIgnoreOffset(validBetweenTimetable.getToDate()));
 			}
 			if (dayType.getProperties() != null) {
 				for (PropertyOfDay propertyOfDay : dayType.getProperties().getPropertyOfDay()) {
@@ -244,15 +244,15 @@ public class ServiceCalendarFrameParser extends NetexParser implements Parser, C
 
 				if (operatingPeriod.getFromOperatingDayRef() != null) {
 					OperatingDay operatingDay = NetexObjectUtil.getOperatingDay(netexReferential, operatingPeriod.getFromOperatingDayRef().getRef());
-					startDate = TimeUtil.toJodaLocalDateTime(operatingDay.getCalendarDate()).toLocalDate();
+					startDate = TimeUtil.toJodaLocalDateIgnoreOffset(operatingDay.getCalendarDate());
 				} else {
-					startDate = TimeUtil.toJodaLocalDateTime(operatingPeriod.getFromDate()).toLocalDate();
+					startDate = TimeUtil.toJodaLocalDateIgnoreOffset(operatingPeriod.getFromDate());
 				}
 				if (operatingPeriod.getToOperatingDayRef() != null) {
 					OperatingDay operatingDay = NetexObjectUtil.getOperatingDay(netexReferential, operatingPeriod.getToOperatingDayRef().getRef());
-					endDate = TimeUtil.toJodaLocalDateTime(operatingDay.getCalendarDate()).toLocalDate();
+					endDate = TimeUtil.toJodaLocalDateIgnoreOffset(operatingDay.getCalendarDate());
 				} else {
-					endDate = TimeUtil.toJodaLocalDateTime(operatingPeriod.getToDate()).toLocalDate();
+					endDate = TimeUtil.toJodaLocalDateIgnoreOffset(operatingPeriod.getToDate());
 				}
 
 				// Cut of operating period to validity condition
