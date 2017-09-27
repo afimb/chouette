@@ -356,16 +356,20 @@ public class JobServiceManager {
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void removeOldJobs(final int keepDays, final int keepJobs) throws ServiceException {
+	public void removeOldJobs(final int keepDays, final int keepJobsPerReferential) throws ServiceException {
 
 		List<Job> completedJobs = new ArrayList<>();
 		Job.STATUS.getCompletedStatuses().stream().forEach(status -> completedJobs.addAll(jobDAO.findByStatus(status)));
 		Collections.sort(completedJobs, (job1, job2) -> ObjectUtils.compare(job1.getUpdated(), job2.getUpdated()));
-
 		int jobsDeleted = 0;
-		if (completedJobs.size() > keepJobs) {
+
+		List<List<Job>> referentialsWithCompletedJobs = completedJobs.stream().collect(Collectors.groupingBy(Job::getReferential))
+				.values().stream().filter(completedJobsForRef -> completedJobsForRef.size() > keepJobsPerReferential).collect(Collectors.toList());
+
+		for (List<Job> referentialWithCompletedJobs : referentialsWithCompletedJobs) {
 			LocalDateTime ageLimit = LocalDateTime.now().minusDays(keepDays);
-			List<Job> deleteJobs = completedJobs.subList(0, completedJobs.size() - keepJobs).stream().filter(job -> job.getUpdated() != null && job.getUpdated().isBefore(ageLimit)).collect(Collectors.toList());
+			List<Job> deleteJobs = referentialWithCompletedJobs.subList(0, referentialWithCompletedJobs.size() - keepJobsPerReferential)
+					.stream().filter(job -> job.getUpdated() != null && job.getUpdated().isBefore(ageLimit)).collect(Collectors.toList());
 
 			for (Job deleteJob : deleteJobs) {
 				log.debug("Removing old, completed job: " + deleteJob);
@@ -373,6 +377,7 @@ public class JobServiceManager {
 			}
 
 			jobsDeleted = deleteJobs.size();
+
 		}
 
 		log.info("Removed old jobs. Cnt: " + jobsDeleted);
