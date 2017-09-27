@@ -26,7 +26,7 @@ public class GtfsRoute extends GtfsObject implements Serializable
 
    @Getter
    @Setter
-   private String agencyId = GtfsAgency.DEFAULT_ID;
+   private String agencyId;
 
    @Getter
    @Setter

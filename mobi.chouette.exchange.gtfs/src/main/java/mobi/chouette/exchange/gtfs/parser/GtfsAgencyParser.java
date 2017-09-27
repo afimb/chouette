@@ -113,7 +113,7 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 					gtfsAgency.getAgencyId(), log);
 			Company authority = ObjectFactory.getCompany(referential, objectIdAuthority);
 			convert(context, gtfsAgency, authority, OrganisationTypeEnum.Authority );
-}
+		}
 	}
 	
 	private void convert(Context context, GtfsAgency gtfsAgency, Company company, OrganisationTypeEnum organisationType) {
