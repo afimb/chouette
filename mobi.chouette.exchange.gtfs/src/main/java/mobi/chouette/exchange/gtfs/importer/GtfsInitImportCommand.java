@@ -45,8 +45,7 @@ public class GtfsInitImportCommand implements Command, Constant {
 			if (parameters.getReferencesType() == null || parameters.getReferencesType().isEmpty()) {
 				parameters.setReferencesType("line");
 			}
-			if (context.get(VALIDATION) != null)
-				context.put(VALIDATION_DATA, new ValidationData());
+			context.put(VALIDATION_DATA, new ValidationData());
 			result = SUCCESS;
 
 		} catch (Exception e) {
