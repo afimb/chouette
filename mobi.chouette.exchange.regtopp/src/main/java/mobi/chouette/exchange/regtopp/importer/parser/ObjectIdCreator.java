@@ -48,12 +48,11 @@ public abstract class ObjectIdCreator {
 	}
 
 	public static String createOperatorId(RegtoppImportParameters configuration, String operatorCode) {
-		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.COMPANY_KEY, operatorCode);
+		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), "Operator", operatorCode);
 	}
 
 	public static String createAuthorityId(RegtoppImportParameters configuration, String adminCode) {
-		// Same as operator for now
-		return createOperatorId(configuration, adminCode);
+		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), "Authority", adminCode);
 	}
 
 	public static String createNetworkId(RegtoppImportParameters configuration, String adminCode) {
