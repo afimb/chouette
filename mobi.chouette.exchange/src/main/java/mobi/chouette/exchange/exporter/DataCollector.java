@@ -9,6 +9,7 @@ import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
@@ -131,10 +132,13 @@ public class DataCollector {
 		}// end route loop
 		if (validLine) {
 			collection.setLine(line);
-			collection.getNetworks().add(line.getNetwork());
-			if(line.getNetwork().getCompany() != null) { // Authority
-				collection.getCompanies().add(line.getNetwork().getCompany()); 
-			} 
+			Network network = line.getNetwork();
+			if(network != null) {
+				collection.getNetworks().add(network);
+				if(network.getCompany() != null) { // Authority
+					collection.getCompanies().add(network.getCompany()); 
+				} 
+			}
 			if (line.getCompany() != null) { // Operator
 				collection.getCompanies().add(line.getCompany());
 			}
