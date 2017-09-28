@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,6 +30,9 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.PropertyNames;
+import mobi.chouette.common.file.FileServiceException;
+import mobi.chouette.common.file.FileStore;
+import mobi.chouette.common.file.FileStoreFactory;
 import mobi.chouette.dao.iev.JobDAO;
 import mobi.chouette.dao.iev.StatDAO;
 import mobi.chouette.exchange.InputValidator;
@@ -42,8 +43,6 @@ import mobi.chouette.model.iev.Link;
 import mobi.chouette.model.iev.Stat;
 import mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator;
 import mobi.chouette.scheduler.Scheduler;
-
-import org.apache.commons.io.FileUtils;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -163,12 +162,10 @@ public class JobServiceManager {
 			jobDAO.create(jobService.getJob());
 			log.info("job " + jobService.getJob().getId() + " created");
 			// mkdir
-			if (Files.exists(jobService.getPath())) {
-				// réutilisation anormale d'un id de job (réinitialisation de la
-				// séquence à l'extérieur de l'appli?)
-				FileUtils.deleteDirectory(jobService.getPath().toFile());
-			}
-			Files.createDirectories(jobService.getPath());
+
+			FileStore fileStore = FileStoreFactory.getFileStore();
+			fileStore.deleteFolder(jobService.getPath());
+			fileStore.createFolder(jobService.getPath());
 
 			// Enregistrer des paramètres à conserver sur fichier
 			jobService.saveInputStreams(inputStreamsByName);
@@ -197,9 +194,8 @@ public class JobServiceManager {
 			return;
 		try {
 			// remove path if exists
-			if (jobService.getPath() != null && Files.exists(jobService.getPath()))
-				FileUtils.deleteDirectory(jobService.getPath().toFile());
-		} catch (IOException ex1) {
+			if (jobService.getPath() != null) FileStoreFactory.getFileStore().deleteFolder(jobService.getPath());
+		} catch (RuntimeException ex1) {
 			log.error("fail to delete directory " + jobService.getPath(), ex1);
 		}
 		Job job = jobService.getJob();
@@ -220,7 +216,7 @@ public class JobServiceManager {
 			throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, ex);
 		}
 	}
-	
+
 	private void validateReferential(final String referential) throws ServiceException {
 
 		if (referentials.contains(referential))
@@ -234,14 +230,8 @@ public class JobServiceManager {
 		referentials.add(referential);
 	}
 
-	public JobService download(String referential, Long id, String filename) throws ServiceException {
-		JobService jobService = getJobService(referential, id);
-
-		java.nio.file.Path path = Paths.get(jobService.getPathName(), filename);
-		if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
-			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_FILE, "");
-		}
-		return jobService;
+	public JobService download(String referential, Long id) throws ServiceException {
+		return getJobService(referential, id);
 	}
 
 	/**
@@ -298,8 +288,8 @@ public class JobServiceManager {
 					+ " ,id = " + id);
 		}
 		try {
-			FileUtils.deleteDirectory(jobService.getPath().toFile());
-		} catch (IOException e) {
+			FileStoreFactory.getFileStore().deleteFolder(jobService.getPath());
+		} catch (FileServiceException e) {
 			log.error("fail to delete directory " + jobService.getPath(), e);
 		}
 		jobDAO.delete(jobService.getJob());
@@ -320,9 +310,8 @@ public class JobServiceManager {
 
 		// clean directories
 		try {
-
-			FileUtils.deleteDirectory(new File(JobService.getRootPathName(rootDirectory, referential)));
-		} catch (IOException e) {
+			FileStoreFactory.getFileStore().deleteFolder(Paths.get(JobService.getRootPathName(rootDirectory, referential)));
+		} catch (FileServiceException e) {
 			log.error("fail to delete directory for" + referential, e);
 		}
 
@@ -341,36 +330,39 @@ public class JobServiceManager {
 		jobService.removeLink(Link.CANCEL_REL);
 		// set delete link
 		jobService.addLink(MediaType.APPLICATION_JSON, Link.DELETE_REL);
+
+		FileStore fileStore = FileStoreFactory.getFileStore();
+
 		// add data link if necessary
 		if (!jobService.linkExists(Link.OUTPUT_REL)) {
 			if (jobService.getOutputFilename() != null
-					&& Files.exists(Paths.get(jobService.getPathName(), jobService.getOutputFilename()))) {
+					&& fileStore.exists(Paths.get(jobService.getPathName(), jobService.getOutputFilename()))) {
 				jobService.addLink(MediaType.APPLICATION_OCTET_STREAM, Link.DATA_REL);
 				jobService.addLink(MediaType.APPLICATION_OCTET_STREAM, Link.OUTPUT_REL);
 			}
 		}
 		// add validation report link
 		if (!jobService.linkExists(Link.VALIDATION_REL)) {
-			if (Files.exists(Paths.get(jobService.getPathName(), Constant.VALIDATION_FILE)))
+			if (fileStore.exists(Paths.get(jobService.getPathName(), Constant.VALIDATION_FILE)))
 				jobService.addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_REL);
 		}
 		jobService.setUpdated(new Date());
 		jobDAO.update(jobService.getJob());
-		
+
 		// update statistics
 		// Ajout des statistiques d'import, export ou validation en base de données
 		{
 			// log.info("BEGIN ADDING STAT referential : " + jobService.getReferential() + " action : " + jobService.getAction() + " type :" + jobService.getType());
 			java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-			
+
 			// Suppression des lignes de statistiques pour n'avoir que 12 mois glissants
 			statDAO.removeObsoleteStatFromDatabase(now);
-			
+
 			// log.info("END DELETING OBSOLETE STATS FROM DATABASE");
-			
+
 			//Ajout d'une nouvelle statistique en base
 			statDAO.addStatToDatabase(now, jobService.getReferential(), jobService.getAction(), jobService.getType());
-			
+
 			// log.info("END ADDING STAT referential : " + jobService.getReferential() + " action : " + jobService.getAction() + " type :" + jobService.getType());
 		}
 	}
@@ -384,11 +376,11 @@ public class JobServiceManager {
 		// set delete link
 		jobService.addLink(MediaType.APPLICATION_JSON, Link.DELETE_REL);
 
-		// add validation report link
-		if (!jobService.linkExists(Link.VALIDATION_REL)) {
-			if (Files.exists(Paths.get(jobService.getPathName(), Constant.VALIDATION_FILE)))
-				jobService.addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_REL);
-		}
+			// add validation report link
+			if (!jobService.linkExists(Link.VALIDATION_REL)) {
+				if (FileStoreFactory.getFileStore().exists(Paths.get(jobService.getPathName(), Constant.VALIDATION_FILE)))
+					jobService.addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_REL);
+			}
 
 		jobService.setUpdated(new Date());
 		jobDAO.update(jobService.getJob());
@@ -490,6 +482,13 @@ public class JobServiceManager {
 			jobServices.add(new JobService(rootDirectory, job));
 		}
 		return jobServices;
+	}
+
+	/**
+	 * Return all jobs in a completed state that has last updated time not before given datetime.
+	 */
+	public List<Job> completedJobsSince(Date since) {
+		return jobDAO.findByStatusesAndUpdatedSince(STATUS.getCompletedStatuses(),since);
 	}
 
 }

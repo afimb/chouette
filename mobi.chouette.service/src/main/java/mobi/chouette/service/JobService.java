@@ -1,10 +1,9 @@
 package mobi.chouette.service;
 
-import java.io.FileWriter;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Map;
@@ -18,6 +17,8 @@ import lombok.ToString;
 import lombok.experimental.Delegate;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.JobData;
+import mobi.chouette.common.file.FileStore;
+import mobi.chouette.common.file.FileStoreFactory;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
 import mobi.chouette.exchange.parameters.AbstractParameter;
@@ -41,7 +42,7 @@ public class JobService implements JobData, ServiceConstants {
 
 	/**
 	 * create a jobService on existing job
-	 * 
+	 *
 	 * @param job
 	 */
 	public JobService(String rootDirectory, Job job) {
@@ -52,7 +53,7 @@ public class JobService implements JobData, ServiceConstants {
 
 	/**
 	 * create a new jobService
-	 * 
+	 *
 	 * @param referential
 	 *            : referential
 	 * @param action
@@ -72,7 +73,7 @@ public class JobService implements JobData, ServiceConstants {
 
 	/**
 	 * Read and save inputStreams as File
-	 * 
+	 *
 	 * @param inputStreamsByName
 	 * @throws ServiceException
 	 *             : if inputStream not valid with job
@@ -91,16 +92,15 @@ public class JobService implements JobData, ServiceConstants {
 			writer.close();
 			Parameters parameters = new Parameters(getParametersAsString(), validator);
 
-			FileWriter fwriter = new FileWriter(filePath(PARAMETERS_FILE).toFile());
-			fwriter.write(getParametersAsString());
-			fwriter.write("\n");
-			fwriter.close();
+			FileStore fileStore = FileStoreFactory.getFileStore();
+			fileStore.writeFile(filePath(PARAMETERS_FILE), IOUtils.toInputStream(getParametersAsString() + "+n", "UTF-8"));
+
 			addLink(MediaType.APPLICATION_JSON, Link.PARAMETERS_REL);
 
 
 			String inputStreamName = selectDataInputStreamName(inputStreamsByName);
 			if (inputStreamName != null) {
-				Files.copy(inputStreamsByName.get(inputStreamName), filePath(inputStreamName));
+				fileStore.writeFile(filePath(inputStreamName),inputStreamsByName.get(inputStreamName));
 				addLink(MediaType.APPLICATION_OCTET_STREAM, Link.DATA_REL);
 				addLink(MediaType.APPLICATION_OCTET_STREAM, Link.INPUT_REL);
 				job.setInputFilename(inputStreamName);
@@ -111,20 +111,20 @@ public class JobService implements JobData, ServiceConstants {
 				throw new RequestServiceException(RequestExceptionCode.INVALID_PARAMETERS, "");
 			if (!validator.checkFilename(job.getInputFilename()))
 				throw new RequestServiceException(RequestExceptionCode.INVALID_FILE_FORMAT, "");
-			
+
 			if (inputStreamName != null) {
 				if (!validator.checkFile(job.getInputFilename(), filePath(inputStreamName), parameters.getConfiguration()))
 					throw new RequestServiceException(RequestExceptionCode.INVALID_FORMAT, "");
 			}
-			
-			JSONUtil.toJSON(filePath(ACTION_PARAMETERS_FILE), parameters.getConfiguration());
+
+			fileStore.writeFile(filePath(ACTION_PARAMETERS_FILE), new ByteArrayInputStream(JSONUtil.toJSON(parameters.getConfiguration()).getBytes()));
 			addLink(MediaType.APPLICATION_JSON, Link.ACTION_PARAMETERS_REL);
 
 			if (parameters.getValidation() != null) {
-				JSONUtil.toJSON(filePath(VALIDATION_PARAMETERS_FILE), parameters.getValidation());
+				fileStore.writeFile(filePath(VALIDATION_PARAMETERS_FILE), new ByteArrayInputStream(JSONUtil.toJSON(parameters.getValidation()).getBytes()));
 				addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_PARAMETERS_REL);
 			}
-			
+
 			validator.initReport(this);
 			setStatus(Job.STATUS.SCHEDULED); // job is ready
 
@@ -191,7 +191,7 @@ public class JobService implements JobData, ServiceConstants {
 	/**
 	 * return job file path <br/>
 	 * build it if not set and job saved
-	 * 
+	 *
 	 * @return path or null if job not saved
 	 */
 	public String getPathName() {
@@ -216,7 +216,7 @@ public class JobService implements JobData, ServiceConstants {
 
 	/**
 	 * add a link or replace
-	 * 
+	 *
 	 * @param mediaType
 	 *            : mime type
 	 * @param rel
@@ -231,7 +231,7 @@ public class JobService implements JobData, ServiceConstants {
 
 	/**
 	 * check link existence
-	 * 
+	 *
 	 * @param rel
 	 *            link key
 	 * @return
@@ -247,7 +247,7 @@ public class JobService implements JobData, ServiceConstants {
 
 	/**
 	 * check link existence
-	 * 
+	 *
 	 * @param rel
 	 *            link key
 	 * @return
@@ -266,7 +266,7 @@ public class JobService implements JobData, ServiceConstants {
 	/**
 	 * remove a link if exists <br/>
 	 * does nothing if not
-	 * 
+	 *
 	 * @param rel
 	 *            link key
 	 */
@@ -304,7 +304,7 @@ public class JobService implements JobData, ServiceConstants {
 //		}
 //		return inputValidator;
 //	}
-	
+
 
 	public static InputValidator getCommandInputValidator(String actionParam, String typeParam) throws ClassNotFoundException, IOException {
 			String type = typeParam == null ? "" : typeParam;

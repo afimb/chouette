@@ -12,8 +12,11 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.JobData;
+import mobi.chouette.common.file.FileStoreFactory;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
+
+import org.apache.commons.io.FileUtils;
 
 @Log4j
 public abstract class AbstractInputValidator implements InputValidator, Constant {
@@ -42,13 +45,15 @@ public abstract class AbstractInputValidator implements InputValidator, Constant
 	
 	protected boolean checkFileExistenceInZip(String fileName, Path filePath, String format) {
 		boolean isZipFileValid = true;
-		
+
 		if (fileName.endsWith(".zip")) {
 			isZipFileValid = false;
 			ZipFile zipFile = null;
 			File file = null;
 			try {
-				file = new File(filePath.toString());
+				file = File.createTempFile("archive", ".zip");
+				FileUtils.copyInputStreamToFile(FileStoreFactory.getFileStore().getFileContent(filePath), file);
+
 				zipFile = new ZipFile(file);
 				for (Enumeration<? extends ZipEntry> e = zipFile.entries();
 						e.hasMoreElements();) {
@@ -61,7 +66,11 @@ public abstract class AbstractInputValidator implements InputValidator, Constant
 				}
 			}catch (IOException e) {
 				log.error("Erreur ouverture fichier zip " + fileName);
-			} 
+			} finally {
+				if (file != null) {
+					file.delete();
+				}
+			}
 		}
 		
 		return isZipFileValid;

@@ -1,6 +1,5 @@
 package mobi.chouette.ws;
 
-import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Paths;
@@ -37,6 +36,7 @@ import javax.ws.rs.core.UriInfo;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
+import mobi.chouette.common.file.FileStoreFactory;
 import mobi.chouette.model.iev.Job;
 import mobi.chouette.model.iev.Job.STATUS;
 import mobi.chouette.model.iev.Link;
@@ -64,7 +64,7 @@ public class RestService implements Constant {
 
 	@Inject
 	JobServiceManager jobServiceManager;
-	
+
 	@Context
 	UriInfo uriInfo;
 
@@ -79,20 +79,20 @@ public class RestService implements Constant {
 		try {
 			log.info(Color.CYAN + "Call upload referential = " + referential + ", action = " + action
 					+ (type == null ? "" : ", type = " + type) + Color.NORMAL);
-			
-			
-			
+
+
+
 			// Convertir les parametres fournis
 			type = parseType(type);
 			inputStreamByName = readParts(input);
-			
 
-					
-					
+
+
+
 			// Relayer le service au JobServiceManager
 			ResponseBuilder builder = Response.accepted();
 			{
-				
+
 				JobService jobService = jobServiceManager.create(referential, action, type, inputStreamByName);
 
 				// Produire la vue
@@ -125,10 +125,10 @@ public class RestService implements Constant {
 			log.info(Color.CYAN + "upload returns" + Color.NORMAL);
 		}
 	}
-	
-	
-	
-			
+
+
+
+
 	private WebApplicationException toWebApplicationException(ServiceException exception) {
 		return new WebApplicationException(exception.getMessage(), toWebApplicationCode(exception.getExceptionCode()));
 	}
@@ -219,11 +219,14 @@ public class RestService implements Constant {
 			ResponseBuilder builder = null;
 			MediaType type = null;
 			{
-				JobService jobService = jobServiceManager.download(referential, id, filename);
+				JobService jobService = jobServiceManager.download(referential, id);
 
 				// Build response
-				File file = new File(Paths.get(jobService.getPathName(), filename).toString());
-				builder = Response.ok(file);
+				InputStream content = FileStoreFactory.getFileStore().getFileContent(Paths.get(jobService.getPathName(), filename));
+				if (content == null){
+					throw new RequestServiceException(RequestExceptionCode.UNKNOWN_FILE, "");
+				}
+				builder = Response.ok(content);
 				builder.header(HttpHeaders.CONTENT_DISPOSITION,
 						MessageFormat.format("attachment; filename=\"{0}\"", filename));
 
@@ -368,7 +371,7 @@ public class RestService implements Constant {
 					URI uri = URI.create(uriInfo.getBaseUri() + link.getHref());
 					builder.link(URI.create(uri.toASCIIString()), link.getRel());
 				}
-			
+
 			builder.header(api_version_key, api_version);
 
 			return result;

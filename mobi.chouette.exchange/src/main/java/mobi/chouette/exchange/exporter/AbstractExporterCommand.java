@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.exporter;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -8,6 +10,7 @@ import javax.ejb.EJB;
 
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.exchange.DaoReader;
 import mobi.chouette.exchange.ProcessingCommands;
@@ -30,6 +33,12 @@ public class AbstractExporterCommand implements Constant {
 		ActionReporter reporter = ActionReporter.Factory.getInstance();
 
 		// initialisation
+		JobData jobData = (JobData) context.get(JOB_DATA);
+		String path = jobData.getPathName();
+		File output = new File(path, OUTPUT);
+		if (!output.exists())
+			Files.createDirectories(output.toPath());
+
 		List<? extends Command> preProcessingCommands = commands.getPreProcessingCommands(context, true);
 		progression.initialize(context, preProcessingCommands.size() + (mode.equals(Mode.line) ? 1 : 0));
 		for (Command exportCommand : preProcessingCommands) {

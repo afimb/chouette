@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.importer;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,24 +15,24 @@ import mobi.chouette.common.FileUtil;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.common.file.FileStore;
+import mobi.chouette.common.file.FileStoreFactory;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.report.ReportConstant;
 
-import org.apache.commons.io.FilenameUtils;
-
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+import org.apache.commons.io.FilenameUtils;
 
 /**
- * execute use in context : 
+ * execute use in context :
  * <ul>
  * <li>REPORT</li>
  * <li>JOB_DATA</li>
  * </ul>
- * 
- * @author michel
  *
+ * @author michel
  */
 @Log4j
 public class UncompressCommand implements Command, ReportConstant {
@@ -47,10 +48,9 @@ public class UncompressCommand implements Command, ReportConstant {
 		JobData jobData = (JobData) context.get(JOB_DATA);
 
 		String path = jobData.getPathName();
-		String file = jobData.getInputFilename(); 
-		if (file == null)
-		{
-			reporter.setActionError(context, ActionReporter.ERROR_CODE.INVALID_PARAMETERS,"Missing input file");
+		String file = jobData.getInputFilename();
+		if (file == null) {
+			reporter.setActionError(context, ActionReporter.ERROR_CODE.INVALID_PARAMETERS, "Missing input file");
 			return result;
 		}
 		Path filename = Paths.get(path, file);
@@ -58,21 +58,28 @@ public class UncompressCommand implements Command, ReportConstant {
 		if (!Files.exists(target)) {
 			Files.createDirectories(target);
 		}
-		if (FilenameUtils.getExtension(filename.toString()).equalsIgnoreCase("zip"))
-		{
-            reporter.addZipReport(context, file,IO_TYPE.INPUT);
+
+		FileStore fileStore = FileStoreFactory.getFileStore();
+		if (FilenameUtils.getExtension(filename.toString()).equalsIgnoreCase("zip")) {
+			reporter.addZipReport(context, file, IO_TYPE.INPUT);
+			File tmpZip = null;
 			try {
-				FileUtil.uncompress(filename.toString(), target.toString());
+				tmpZip = File.createTempFile("archive", ".zip");
+				org.apache.commons.io.FileUtils.copyInputStreamToFile(fileStore.getFileContent(filename), tmpZip);
+				FileUtil.uncompress(tmpZip.getAbsolutePath(), target.toString());
 				result = SUCCESS;
 			} catch (Exception e) {
 				log.error(e.getMessage());
 				reporter.addZipErrorInReport(context, file, ActionReporter.FILE_ERROR_CODE.READ_ERROR, e.getMessage());
-				reporter.setActionError(context, ActionReporter.ERROR_CODE.INVALID_PARAMETERS,"invalid_zip");
+				reporter.setActionError(context, ActionReporter.ERROR_CODE.INVALID_PARAMETERS, "invalid_zip");
+			} finally {
+				if (tmpZip != null) {
+					tmpZip.delete();
+				}
 			}
-		}
-		else
-		{
-			org.apache.commons.io.FileUtils.copyFileToDirectory(filename.toFile(), target.toFile());
+		} else {
+			Path targetFile = Paths.get(target.toString(), filename.toString());
+			org.apache.commons.io.FileUtils.copyInputStreamToFile(fileStore.getFileContent(filename), targetFile.toFile());
 			result = SUCCESS;
 		}
 
