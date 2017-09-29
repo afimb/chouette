@@ -15,11 +15,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.commons.beanutils.BeanUtils;
-
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
@@ -40,6 +35,10 @@ import mobi.chouette.model.Line;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
+
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+import org.apache.commons.beanutils.BeanUtils;
 
 @Log4j
 @Stateless(name = TransferExporterCommand.COMMAND)
@@ -66,7 +65,7 @@ public class TransferExporterCommand extends AbstractExporterCommand implements 
 		// initialize reporting and progression
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
 				ProgressionCommand.class.getName());
-	
+
 		progression.initialize(context, 4);  //  Must do recount
 		context.put(PROGRESSION, progression);
 
@@ -86,7 +85,7 @@ public class TransferExporterCommand extends AbstractExporterCommand implements 
 			Command dataLoader = CommandFactory.create(initialContext, TransferExportDataLoader.class.getName());
 			dataLoader.execute(context);
 			progression.execute(context);
-			int numLines = ((List<Line>)context.get(LINES)).size();
+			int numLines = ((List<Line>) context.get(LINES)).size();
 
 			// Cancel existing jobs since this one is deleting all data
 			for (JobService job : jobServiceManager.activeJobs()) {
@@ -98,13 +97,13 @@ public class TransferExporterCommand extends AbstractExporterCommand implements 
 			// Release lock
 			lock.lock();
 
-			
+
 			// Create corresponding "import" job in destination referential to ensure we have locked the referential against other jobs
 			TransferImportParameters importParameters = new TransferImportParameters();
 			BeanUtils.copyProperties(importParameters, parameters);
-			
+
 			Map<String, InputStream> inputStreamsByName = new HashMap<>();
-			
+
 			inputStreamsByName.put("parameters.json",
 					new ByteArrayInputStream(JSONUtil.toJSON(new JobParametersWrapper(importParameters)).getBytes()));
 			JobService importJob = jobServiceManager.create(parameters.getDestReferentialName(), "importer", "transfer",
@@ -115,7 +114,7 @@ public class TransferExporterCommand extends AbstractExporterCommand implements 
 			long pollDelay = 200;
 
 			while (!lock.hasQueuedThreads() && currWaitTime < maxWaitTime) {
-				log.info("Waiting for write job to obtain lock. Waitded for "+currWaitTime+"ms, will abort after "+maxWaitTime+"ms");
+				log.info("Waiting for write job to obtain lock. Waitded for " + currWaitTime + "ms, will abort after " + maxWaitTime + "ms");
 				Thread.sleep(pollDelay);
 				currWaitTime += pollDelay;
 			}
@@ -123,8 +122,8 @@ public class TransferExporterCommand extends AbstractExporterCommand implements 
 				log.info("Write job has obtained lock");
 				ContextHolder.setContext(parameters.getDestReferentialName());
 
-				progression.start(context, numLines+3); // separate saving of stopareas, connectionlinks and accesslinks
-				
+				progression.start(context, numLines + 3); // separate saving of stopareas, connectionlinks and accesslinks
+
 				Command dataWriter = CommandFactory.create(initialContext, TransferExportDataWriter.class.getName());
 				dataWriter.execute(context);
 				progression.execute(context);
@@ -148,7 +147,7 @@ public class TransferExporterCommand extends AbstractExporterCommand implements 
 			ContextHolder.setContext(currentTentant);
 			// Release lock
 			if (lock != null) {
-				if(lock.isHeldByCurrentThread()) {
+				if (lock.isHeldByCurrentThread()) {
 					lock.unlock();
 				}
 			}

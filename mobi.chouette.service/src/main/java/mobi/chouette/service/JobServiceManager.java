@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.EJB;
@@ -28,7 +27,6 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.ws.rs.core.MediaType;
 
 import lombok.extern.log4j.Log4j;
@@ -75,16 +73,10 @@ public class JobServiceManager {
 	@EJB
 	Scheduler scheduler;
 
-	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
-	ManagedExecutorService executor;
 
 	private Set<Object> referentials = Collections.synchronizedSet(new HashSet<>());
 
-	private int maxJobs = 5;
-
 	private String rootDirectory;
-
-	private String lock = "lock";
 
 	@PostConstruct
 	public synchronized void init() {
@@ -111,7 +103,7 @@ public class JobServiceManager {
 		} catch (Exception e) {
 			log.error("cannot process properties", e);
 		}
-		maxJobs = Integer.parseInt(System.getProperty(checker.getContext() + PropertyNames.MAX_STARTED_JOBS));
+
 		rootDirectory = System.getProperty(checker.getContext() + PropertyNames.ROOT_DIRECTORY);
 
 		// migrate jobs
@@ -153,14 +145,6 @@ public class JobServiceManager {
 		// Valider les parametres
 		validateReferential(referential);
 
-		synchronized (lock) {
-			int numActiveJobs = scheduler.getActivejobsCount();
-			log.info("Inside lock, numActiveJobs="+numActiveJobs);
-			if (numActiveJobs >= maxJobs) {
-				throw new RequestServiceException(RequestExceptionCode.TOO_MANY_ACTIVE_JOBS, "" + maxJobs
-						+ " active jobs");
-			}
-		}
 		JobService jobService = createJob(referential, action, type, inputStreamsByName);
 		scheduler.schedule(referential);
 		return jobService;
@@ -269,14 +253,16 @@ public class JobServiceManager {
 	}
 
 	/**
-	 * find next waiting job on referential <br/>
+	 * find next waiting job.
+	 *
+	 * If waiting job for preferredReferential exists it will be returned, else first waiting job regardless of referential <br/>
 	 * return null if a job is STARTED or if no job is SCHEDULED
 	 * 
-	 * @param referential
+	 * @param preferredReferential
 	 * @return
 	 */
-	public JobService getNextJob(String referential) {
-		Job job = jobDAO.getNextJob(referential);
+	public JobService getNextJob(String preferredReferential) {
+		Job job = jobDAO.getNextJob(preferredReferential);
 		if (job == null) {
 			return null;
 		}

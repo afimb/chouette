@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.parameters;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -51,6 +52,13 @@ public class AbstractExportParameter extends AbstractParameter {
 	@Setter
 	@XmlElement(name = "validate_after_export", defaultValue = "false")
 	private boolean validateAfterExport = true;
+
+	/**
+	 * Return a list with all additional referentials that must be locked for this job to execute. Defaults to empty.
+	 */
+	public List<String> getAdditionalRequiredReferentialLocks(){
+		return new ArrayList<>();
+	}
 
 	public boolean isValid(Logger log, String[] allowedTypes) {
 		if (!super.isValid(log)) return false;

@@ -26,7 +26,7 @@ public class JobDAO extends GenericDAOImpl<Job> {
 	public JobDAO() {
 		super(Job.class);
 	}
-	
+
 	private static boolean migrated = false;
 	private static final String LOCK="";
 
@@ -68,7 +68,7 @@ public class JobDAO extends GenericDAOImpl<Job> {
 	public List<Job> findByReferentialAndAction(String referential, String action[]) {
 		return findByReferentialAndAction(referential, action, new Job.STATUS[0]);
 	}
-	
+
 	public List<Job> findByReferentialAndAction(String referential, String action[], Job.STATUS[] status) {
 		List<Job> result;
 		CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -116,20 +116,16 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		return result;
 	}
 
-
-	@SuppressWarnings("unchecked")
-	public Job getNextJob(String referential) {
-
+	public Job getNextJob(String preferredReferential){
 		Job result = null;
 		Query query = em
-				.createQuery("from Job j where j.referential = ?1 and j.status in ( ?2 ) order by id");
-		query.setParameter(1, referential);
-		query.setParameter(2, Arrays.asList(Job.STATUS.STARTED, Job.STATUS.SCHEDULED, Job.STATUS.RESCHEDULED));
+				.createQuery("from Job j where j.status in ( ?1 ) and j.referential not in (SELECT a.referential from Job a where a.status=?2) order by id");
+
+		query.setParameter(1, Arrays.asList(Job.STATUS.SCHEDULED, Job.STATUS.RESCHEDULED));
+		query.setParameter(2, Job.STATUS.STARTED);
 		List<Job> list = query.getResultList();
 		if (list != null && !list.isEmpty()) {
-			if (list.get(0).getStatus().equals(Job.STATUS.SCHEDULED) || list.get(0).getStatus().equals(Job.STATUS.RESCHEDULED)) {
-				result = list.get(0);
-			}
+			result = list.stream().filter(job -> preferredReferential.equals(job.getReferential())).findFirst().orElse(list.get(0));
 		}
 		return result;
 	}
@@ -147,7 +143,7 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		// migrate data from previous versions
 		if (migrated) return;
 		synchronized (LOCK) {
-			
+
 		migrated = true;
 		log.info("migrating data");
 		List<Job> jobs = findAll();
@@ -170,13 +166,13 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		}
 		}
 
-		
+
 	}
 
 	@Override
 	public void clear() {
 		em.clear();
-		
+
 	}
 
 	public void deleteById(Long id){
