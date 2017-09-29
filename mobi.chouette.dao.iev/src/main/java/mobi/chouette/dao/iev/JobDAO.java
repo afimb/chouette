@@ -47,7 +47,7 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		if(status.length != 0) {
 			 statusPredicate = root.get(Job_.status).in(Arrays.asList(status));
 		}
-		
+
 		Predicate referentialPredicate = builder.equal(root.get(Job_.referential),
 				referential);
 		criteria.where(builder.and( referentialPredicate, statusPredicate));
@@ -75,7 +75,7 @@ public class JobDAO extends GenericDAOImpl<Job> {
 				referential);
 
 		if(action.length != 0) {
-			Predicate actionPredicate = root.get(Job_.action).in(Arrays.asList(action)); 
+			Predicate actionPredicate = root.get(Job_.action).in(Arrays.asList(action));
 			criteria.where( builder.and(referentialPredicate, actionPredicate,statusPredicate ));
 		} else {
 			criteria.where( builder.and(referentialPredicate, statusPredicate ));
@@ -102,18 +102,16 @@ public class JobDAO extends GenericDAOImpl<Job> {
 
 
 	@SuppressWarnings("unchecked")
-	public Job getNextJob(String referential) {
-
+	public Job getNextJob(String preferredReferential){
 		Job result = null;
 		Query query = em
-				.createQuery("from Job j where j.referential = ?1 and j.status in ( ?2 ) order by id");
-		query.setParameter(1, referential);
-		query.setParameter(2, Arrays.asList(Job.STATUS.STARTED, Job.STATUS.SCHEDULED));
+				.createQuery("from Job j where j.status in ( ?1 ) and j.referential not in (SELECT a.referential from Job a where a.status=?2) order by id");
+
+		query.setParameter(1, Arrays.asList(Job.STATUS.SCHEDULED));
+		query.setParameter(2, Job.STATUS.STARTED);
 		List<Job> list = query.getResultList();
 		if (list != null && !list.isEmpty()) {
-			if (list.get(0).getStatus().equals(Job.STATUS.SCHEDULED)) {
-				result = list.get(0);
-			}
+			result = list.stream().filter(job -> preferredReferential.equals(job.getReferential())).findFirst().orElse(list.get(0));
 		}
 		return result;
 	}
@@ -160,6 +158,6 @@ public class JobDAO extends GenericDAOImpl<Job> {
 	@Override
 	public void clear() {
 		em.clear();
-		
+
 	}
 }

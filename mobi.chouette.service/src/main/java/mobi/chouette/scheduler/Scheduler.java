@@ -10,6 +10,8 @@ import java.util.concurrent.Future;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.TransactionAttribute;
@@ -20,7 +22,8 @@ import javax.naming.InitialContext;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
-import mobi.chouette.dao.iev.JobDAO;
+import mobi.chouette.common.ContenerChecker;
+import mobi.chouette.common.PropertyNames;
 import mobi.chouette.model.iev.Job.STATUS;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 import mobi.chouette.service.JobService;
@@ -40,11 +43,16 @@ public class Scheduler {
 
 	public static final String BEAN_NAME = "Scheduler";
 
-	@EJB
-	JobDAO jobDAO;
+	private static final int MAX_JOBS_DEFAULT = 5;
+
+	@EJB(beanName = ContenerChecker.NAME)
+	ContenerChecker checker;
 
 	@EJB
 	JobServiceManager jobManager;
+
+	@EJB
+	ReferentialLockManager lockManager;
 
   	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
 	ManagedExecutorService executor;
@@ -52,30 +60,51 @@ public class Scheduler {
 	Map<Long,Future<STATUS>> startedFutures = new ConcurrentHashMap<>();
 	// Map<Long,Task> startedTasks = new ConcurrentHashMap<>();
 
-	public int getActivejobsCount()
+	private Integer maxJobs;
+
+	private String lock = "lock";
+
+	@Lock(LockType.READ)
+	public int getActiveJobsCount()
 	{
 		return startedFutures.size();
 	}
 
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public void schedule(String referential) {
-		
-		log.info("schedule referential "+referential);
-		JobService jobService =  jobManager.getNextJob(referential);
-		if (jobService != null) {
-			log.info("start a new job "+jobService.getId());
-			jobManager.start(jobService);
+	public boolean schedule(String preferredReferential) {
 
-			Map<String, String> properties = new HashMap<String, String>();
-			Task task = new Task(jobService, properties, new TaskListener());
-			// startedTasks.put(jobService.getId(),  task);
-			Future<STATUS> future = executor.submit(task);
-			startedFutures.put(jobService.getId(), future);
+		log.info("schedule, preferred referential " + preferredReferential);
+		JobService jobService = jobManager.getNextJob(preferredReferential);
+		if (jobService != null) {
+			synchronized (lock) {
+				int numActiveJobs = getActiveJobsCount();
+				log.info("Inside lock, numActiveJobs=" + numActiveJobs);
+				if (numActiveJobs >= getMaxJobs()) {
+					log.info("Too many active jobs, delay start up of job: " + jobService.getId());
+				} else {
+					if (lockManager.attemptAcquireLocks(jobService.getRequiredReferentialLocks())) {
+						startJob(jobService);
+					} else {
+						log.info("Could not acquire necessary locks (" + jobService.getRequiredReferentialLocks() + "), delay start up of job: " + jobService.getJob());
+					}
+				}
+			}
+		} else {
+			log.info("nothing to schedule");
 		}
-		else
-		{
-			log.info("nothing to schedule ");
-		}
+		return jobService != null;
+	}
+
+
+	private void startJob(JobService jobService) {
+		log.info("start a new job "+jobService.getId() + " for referential: "+ jobService.getReferential());
+		jobManager.start(jobService);
+
+		Map<String, String> properties = new HashMap<String, String>();
+		Task task = new Task(jobService, properties, new TaskListener());
+		// startedTasks.put(jobService.getId(),  task);
+		Future<STATUS> future = executor.submit(task);
+		startedFutures.put(jobService.getId(), future);
 	}
 	
 
@@ -93,7 +122,7 @@ public class Scheduler {
 		});
 		for (JobService jobService : scheduled) {
 			jobManager.abort(jobService);
-			
+
 		}
 
 		// schedule created job
@@ -108,7 +137,20 @@ public class Scheduler {
 		}
 	}
 
-	
+
+	private int getMaxJobs() {
+		if (maxJobs == null) {
+			String maxJobsKey = checker.getContext() + PropertyNames.MAX_STARTED_JOBS;
+			if (System.getProperty(maxJobsKey) != null) {
+				maxJobs = Integer.parseInt(System.getProperty(checker.getContext() + PropertyNames.MAX_STARTED_JOBS));
+			} else {
+				log.warn("No value set for property: " + maxJobsKey + ", using default value: " + maxJobsKey);
+				return MAX_JOBS_DEFAULT;
+			}
+		}
+		return maxJobs;
+	}
+
 	/**
 	 * cancel task 
 	 * 
@@ -168,9 +210,12 @@ public class Scheduler {
 		 * @param task
 		 */
 		private void schedule(final Task task) {
+			lockManager.releaseLocks(task.getJob().getRequiredReferentialLocks());
+
 			// remove task from stated map
 			// startedTasks.remove(task.getJob().getId());
 			startedFutures.remove(task.getJob().getId());
+
 			// launch next task
 			executor.execute(new Runnable() {
 

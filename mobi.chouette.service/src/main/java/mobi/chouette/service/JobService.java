@@ -6,8 +6,12 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +24,7 @@ import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
+import mobi.chouette.exchange.parameters.AbstractExportParameter;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.model.iev.Job;
@@ -29,10 +34,10 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 @Data
-@ToString(exclude = { "inputValidator" })
+@ToString(exclude = {"inputValidator"})
 public class JobService implements JobData, ServiceConstants {
 
-	@Delegate(types = { Job.class }, excludes = { ExcludedJobMethods.class })
+	@Delegate(types = {Job.class}, excludes = {ExcludedJobMethods.class})
 	private Job job;
 
 	private String rootDirectory;
@@ -41,7 +46,7 @@ public class JobService implements JobData, ServiceConstants {
 
 	/**
 	 * create a jobService on existing job
-	 * 
+	 *
 	 * @param job
 	 */
 	public JobService(String rootDirectory, Job job) {
@@ -52,13 +57,10 @@ public class JobService implements JobData, ServiceConstants {
 
 	/**
 	 * create a new jobService
-	 * 
-	 * @param referential
-	 *            : referential
-	 * @param action
-	 *            : action
-	 * @param type
-	 *            : type (may be null)
+	 *
+	 * @param referential : referential
+	 * @param action      : action
+	 * @param type        : type (may be null)
 	 * @throws mobi.chouette.service.ServiceException
 	 */
 	public JobService(String rootDirectory, String referential, String action, String type) throws ServiceException {
@@ -72,10 +74,9 @@ public class JobService implements JobData, ServiceConstants {
 
 	/**
 	 * Read and save inputStreams as File
-	 * 
+	 *
 	 * @param inputStreamsByName
-	 * @throws ServiceException
-	 *             : if inputStream not valid with job
+	 * @throws ServiceException : if inputStream not valid with job
 	 */
 	public void saveInputStreams(final Map<String, InputStream> inputStreamsByName) throws ServiceException {
 		try {
@@ -111,12 +112,12 @@ public class JobService implements JobData, ServiceConstants {
 				throw new RequestServiceException(RequestExceptionCode.INVALID_PARAMETERS, "");
 			if (!validator.checkFilename(job.getInputFilename()))
 				throw new RequestServiceException(RequestExceptionCode.INVALID_FILE_FORMAT, "");
-			
+
 			if (inputStreamName != null) {
 				if (!validator.checkFile(job.getInputFilename(), filePath(inputStreamName), parameters.getConfiguration()))
 					throw new RequestServiceException(RequestExceptionCode.INVALID_FORMAT, "");
 			}
-			
+
 			JSONUtil.toJSON(filePath(ACTION_PARAMETERS_FILE), parameters.getConfiguration());
 			addLink(MediaType.APPLICATION_JSON, Link.ACTION_PARAMETERS_REL);
 
@@ -124,7 +125,7 @@ public class JobService implements JobData, ServiceConstants {
 				JSONUtil.toJSON(filePath(VALIDATION_PARAMETERS_FILE), parameters.getValidation());
 				addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_PARAMETERS_REL);
 			}
-			
+
 			validator.initReport(this);
 			setStatus(Job.STATUS.SCHEDULED); // job is ready
 
@@ -191,7 +192,7 @@ public class JobService implements JobData, ServiceConstants {
 	/**
 	 * return job file path <br/>
 	 * build it if not set and job saved
-	 * 
+	 *
 	 * @return path or null if job not saved
 	 */
 	public String getPathName() {
@@ -216,11 +217,9 @@ public class JobService implements JobData, ServiceConstants {
 
 	/**
 	 * add a link or replace
-	 * 
-	 * @param mediaType
-	 *            : mime type
-	 * @param rel
-	 *            : link key
+	 *
+	 * @param mediaType : mime type
+	 * @param rel       : link key
 	 */
 	public void addLink(String mediaType, String rel) {
 		linkRemove(rel);
@@ -231,9 +230,8 @@ public class JobService implements JobData, ServiceConstants {
 
 	/**
 	 * check link existence
-	 * 
-	 * @param rel
-	 *            link key
+	 *
+	 * @param rel link key
 	 * @return
 	 */
 	public boolean linkExists(String rel) {
@@ -247,13 +245,12 @@ public class JobService implements JobData, ServiceConstants {
 
 	/**
 	 * check link existence
-	 * 
-	 * @param rel
-	 *            link key
+	 *
+	 * @param rel link key
 	 * @return
 	 */
 	public Link linkRemove(String rel) {
-		for (Iterator<Link> iterator = job.getLinks().iterator(); iterator.hasNext();) {
+		for (Iterator<Link> iterator = job.getLinks().iterator(); iterator.hasNext(); ) {
 			Link link = iterator.next();
 			if (link.getRel().equals(rel)) {
 				iterator.remove();
@@ -266,12 +263,11 @@ public class JobService implements JobData, ServiceConstants {
 	/**
 	 * remove a link if exists <br/>
 	 * does nothing if not
-	 * 
-	 * @param rel
-	 *            link key
+	 *
+	 * @param rel link key
 	 */
 	public void removeLink(String rel) {
-		for (Iterator<Link> iterator = job.getLinks().iterator(); iterator.hasNext();) {
+		for (Iterator<Link> iterator = job.getLinks().iterator(); iterator.hasNext(); ) {
 			Link link = iterator.next();
 			if (link.getRel().equals(rel)) {
 				iterator.remove();
@@ -304,13 +300,29 @@ public class JobService implements JobData, ServiceConstants {
 //		}
 //		return inputValidator;
 //	}
-	
+
 
 	public static InputValidator getCommandInputValidator(String actionParam, String typeParam) throws ClassNotFoundException, IOException {
-			String type = typeParam == null ? "" : typeParam;
-			final InputValidator inputValidator = InputValidatorFactory.create("mobi.chouette.exchange."
-					+ (type.isEmpty() ? "" : type + ".") + actionParam + "." + StringUtils.capitalize(type)
-					+ StringUtils.capitalize(actionParam) + "InputValidator");
+		String type = typeParam == null ? "" : typeParam;
+		final InputValidator inputValidator = InputValidatorFactory.create("mobi.chouette.exchange."
+				+ (type.isEmpty() ? "" : type + ".") + actionParam + "." + StringUtils.capitalize(type)
+				+ StringUtils.capitalize(actionParam) + "InputValidator");
 		return inputValidator;
+	}
+
+
+	public Set<String> getRequiredReferentialLocks() {
+		Set<String> requiredLocks = new HashSet<>();
+		requiredLocks.add(getReferential());
+
+		try {
+			if (IMPORTER.equals(getAction()) && "transfer".equals(getType()) && getActionParameter() instanceof AbstractExportParameter) {
+				requiredLocks.addAll(((AbstractExportParameter) getActionParameter()).getAdditionalRequiredReferentialLocks());
+			}
+		} catch (ServiceException serviceException) {
+			throw new RuntimeException("Failed to access action parameters for transfer job: " + serviceException.getMessage(), serviceException);
+		}
+
+		return requiredLocks;
 	}
 }

@@ -19,7 +19,8 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
+import javax.ejb.ConcurrencyManagement;
+import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.EJB;
 import javax.ejb.Startup;
 import javax.ejb.Stateless;
@@ -70,14 +71,8 @@ public class JobServiceManager {
 	@EJB
 	Scheduler scheduler;
 
-	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
-	ManagedExecutorService executor;
 
 	private static Set<Object> referentials = Collections.synchronizedSet(new HashSet<>());
-
-	private static int maxJobs = 5;
-
-	private static String lock = "lock";
 
 	private String rootDirectory;
 
@@ -119,7 +114,6 @@ public class JobServiceManager {
 		} catch (Exception e) {
 			log.error("cannot process properties", e);
 		}
-		maxJobs = Integer.parseInt(System.getProperty(checker.getContext() + PropertyNames.MAX_STARTED_JOBS));
 		rootDirectory = System.getProperty(checker.getContext() + PropertyNames.ROOT_DIRECTORY);
 
 		// migrate jobs
@@ -131,15 +125,10 @@ public class JobServiceManager {
 			throws ServiceException {
 		// Valider les parametres
 		validateReferential(referential);
-		synchronized (lock) {
-			if (scheduler.getActivejobsCount() >= maxJobs) {
-				throw new RequestServiceException(RequestExceptionCode.TOO_MANY_ACTIVE_JOBS, "" + maxJobs
-						+ " active jobs");
-			}
-			JobService jobService = jobServiceManager.createJob(referential, action, type, inputStreamsByName);
-			scheduler.schedule(referential);
-			return jobService;
-		}
+
+		JobService jobService = createJob(referential, action, type, inputStreamsByName);
+		scheduler.schedule(referential);
+		return jobService;
 	}
 
 	public List<Stat> getMontlyStats() throws ServiceException {
@@ -220,7 +209,7 @@ public class JobServiceManager {
 			throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, ex);
 		}
 	}
-	
+
 	private void validateReferential(final String referential) throws ServiceException {
 
 		if (referentials.contains(referential))
@@ -245,14 +234,16 @@ public class JobServiceManager {
 	}
 
 	/**
-	 * find next waiting job on referential <br/>
+	 * find next waiting job.
+	 *
+	 * If waiting job for preferredReferential exists it will be returned, else first waiting job regardless of referential <br/>
 	 * return null if a job is STARTED or if no job is SCHEDULED
 	 * 
-	 * @param referential
+	 * @param preferredReferential
 	 * @return
 	 */
-	public JobService getNextJob(String referential) {
-		Job job = jobDAO.getNextJob(referential);
+	public JobService getNextJob(String preferredReferential) {
+		Job job = jobDAO.getNextJob(preferredReferential);
 		if (job == null) {
 			return null;
 		}
@@ -356,21 +347,21 @@ public class JobServiceManager {
 		}
 		jobService.setUpdated(new Date());
 		jobDAO.update(jobService.getJob());
-		
+
 		// update statistics
 		// Ajout des statistiques d'import, export ou validation en base de données
 		{
 			// log.info("BEGIN ADDING STAT referential : " + jobService.getReferential() + " action : " + jobService.getAction() + " type :" + jobService.getType());
 			java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-			
+
 			// Suppression des lignes de statistiques pour n'avoir que 12 mois glissants
 			statDAO.removeObsoleteStatFromDatabase(now);
-			
+
 			// log.info("END DELETING OBSOLETE STATS FROM DATABASE");
-			
+
 			//Ajout d'une nouvelle statistique en base
 			statDAO.addStatToDatabase(now, jobService.getReferential(), jobService.getAction(), jobService.getType());
-			
+
 			// log.info("END ADDING STAT referential : " + jobService.getReferential() + " action : " + jobService.getAction() + " type :" + jobService.getType());
 		}
 	}
