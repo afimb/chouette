@@ -253,20 +253,13 @@ public class JobServiceManager {
 	}
 
 	/**
-	 * find next waiting job.
+	 * find order list of next waiting jobs.
 	 *
-	 * If waiting job for preferredReferential exists it will be returned, else first waiting job regardless of referential <br/>
-	 * return null if a job is STARTED or if no job is SCHEDULED
-	 * 
-	 * @param preferredReferential
+	 *
 	 * @return
 	 */
-	public JobService getNextJob(String preferredReferential) {
-		Job job = jobDAO.getNextJob(preferredReferential);
-		if (job == null) {
-			return null;
-		}
-		return new JobService(rootDirectory, job);
+	public List<JobService> getNextJobs() {
+		return jobDAO.getNextJobs().stream().map(job -> new JobService(rootDirectory, job)).collect(Collectors.toList());
 	}
 
 	public void start(JobService jobService) {

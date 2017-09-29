@@ -116,19 +116,16 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		return result;
 	}
 
-	public Job getNextJob(String preferredReferential){
-		Job result = null;
+	public List<Job> getNextJobs(){
 		Query query = em
 				.createQuery("from Job j where j.status in ( ?1 ) and j.referential not in (SELECT a.referential from Job a where a.status=?2) order by id");
 
 		query.setParameter(1, Arrays.asList(Job.STATUS.SCHEDULED, Job.STATUS.RESCHEDULED));
 		query.setParameter(2, Job.STATUS.STARTED);
-		List<Job> list = query.getResultList();
-		if (list != null && !list.isEmpty()) {
-			result = list.stream().filter(job -> preferredReferential.equals(job.getReferential())).findFirst().orElse(list.get(0));
-		}
-		return result;
+		return query.getResultList();
 	}
+
+
 
 	public int deleteAll(String referential) {
 		List<Job> list = findByReferential(referential,new Job.STATUS[0]);

@@ -22,6 +22,7 @@ import javax.naming.InitialContext;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import org.apache.commons.collections.CollectionUtils;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
@@ -71,28 +72,38 @@ public class Scheduler {
 	}
 
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public boolean schedule(String preferredReferential) {
+	public void schedule(String preferredReferential) {
 
 		log.info("schedule, preferred referential " + preferredReferential);
-		JobService jobService = jobManager.getNextJob(preferredReferential);
-		if (jobService != null) {
-			synchronized (lock) {
-				int numActiveJobs = getActiveJobsCount();
-				log.info("Inside lock, numActiveJobs=" + numActiveJobs);
-				if (numActiveJobs >= getMaxJobs()) {
+		List<JobService> waitingJobs = jobManager.getNextJobs();
+		if (!CollectionUtils.isEmpty(waitingJobs)) {
+
+			for (JobService jobService: waitingJobs) {
+				if (!schedule(jobService)) {
 					log.info("Too many active jobs, delay start up of job: " + jobService.getId());
-				} else {
-					if (lockManager.attemptAcquireLocks(jobService.getRequiredReferentialsLocks())) {
-						startJob(jobService);
-					} else {
-						log.info("Could not acquire necessary locks (" + jobService.getRequiredReferentialsLocks() + "), delay start up of job: " + jobService.getJob());
-					}
+					break;
 				}
 			}
 		} else {
 			log.info("nothing to schedule");
 		}
-		return jobService != null;
+	}
+
+	private boolean schedule(JobService jobService) {
+		synchronized (lock) {
+			int numActiveJobs = getActiveJobsCount();
+			log.info("Inside lock, numActiveJobs=" + numActiveJobs);
+			if (numActiveJobs >= getMaxJobs()) {
+				return false;
+			}
+			if (lockManager.attemptAcquireLocks(jobService.getRequiredReferentialsLocks())) {
+				startJob(jobService);
+			} else {
+				log.info("Could not acquire necessary locks (" + jobService.getRequiredReferentialsLocks() + "), delay start up of job: " + jobService.getJob());
+			}
+
+		}
+		return true;
 	}
 
 
