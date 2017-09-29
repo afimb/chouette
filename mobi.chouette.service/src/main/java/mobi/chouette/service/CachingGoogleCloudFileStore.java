@@ -96,7 +96,7 @@ public class CachingGoogleCloudFileStore implements FileStore {
 	@Override
 	public void writeFile(Path filePath, InputStream content) {
 		localFileStore.writeFile(filePath, content);
-		cloudFileStore.writeFile(filePath, content);
+		cloudFileStore.writeFile(filePath, localFileStore.getFileContent(filePath));
 	}
 
 	@Override
