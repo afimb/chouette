@@ -33,7 +33,7 @@ public class ReferentialLockManager {
 		if (referentials.stream().allMatch(referential -> registry.remove(referential) != null)) {
 			log.info("Released locks: " + referentials);
 		} else{
-			log.warn("Attempted to release already free locks: " + referentials);
+			log.warn("Attempted to release already free locks (probably cancelled job): " + referentials);
 		}
 
 	}
