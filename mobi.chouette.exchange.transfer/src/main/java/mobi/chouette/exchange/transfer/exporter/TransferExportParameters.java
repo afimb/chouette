@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.transfer.exporter;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -24,4 +26,10 @@ public class TransferExportParameters extends AbstractExportParameter{
 	@XmlElement(name = "dest_referential_name", required = true)
 	private String destReferentialName;
 
+	@Override
+	public List<String> getAdditionalRequiredReferentialLocks() {
+		List<String> requiredLocks= super.getAdditionalRequiredReferentialLocks();
+		requiredLocks.add(destReferentialName);
+		return requiredLocks;
+	}
 }
