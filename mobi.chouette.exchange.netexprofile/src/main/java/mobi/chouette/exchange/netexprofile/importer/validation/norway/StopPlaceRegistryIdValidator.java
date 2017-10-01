@@ -40,14 +40,14 @@ public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator 
 		quayEndpoint = System.getProperty(quayEndpointPropertyKey);
 		if (quayEndpoint == null) {
 			log.warn("Could not find property named " + quayEndpointPropertyKey + " in iev.properties");
-			quayEndpoint = "https://api-test.rutebanken.org/tiamat/1.0/quay/id_mapping?recordsPerRoundTrip=220000";
+			quayEndpoint = "https://api-test.rutebanken.org/stop_places/1.0/mapping/quay?recordsPerRoundTrip=220000";
 		}
 
 		String stopPlaceEndpointPropertyKey = "iev.stop.place.register.mapping.stopplace";
 		stopPlaceEndpoint = System.getProperty(stopPlaceEndpointPropertyKey);
 		if (stopPlaceEndpoint == null) {
 			log.warn("Could not find property named " + stopPlaceEndpointPropertyKey + " in iev.properties");
-			stopPlaceEndpoint = "https://api-test.rutebanken.org/tiamat/1.0/stop_place/id_mapping?recordsPerRoundTrip=220000";
+			stopPlaceEndpoint = "https://api-test.rutebanken.org/stop_places/1.0/mapping/stop_place?recordsPerRoundTrip=220000";
 		}
 	}
 
