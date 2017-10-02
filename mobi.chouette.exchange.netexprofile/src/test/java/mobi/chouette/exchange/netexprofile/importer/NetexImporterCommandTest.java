@@ -255,15 +255,15 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		for (Route route : line.getRoutes()) {
 			for (StopPoint stopPoint : route.getStopPoints()) {
 				if (stopPoint.getObjectId().equals("AVI:StopPointInJourneyPattern:1263628002")) {
-					assertEquals(stopPoint.getScheduledStopPoint().getContainedInStopArea().getObjectId(), existingStopArea.getObjectId());
-					assertEquals(stopPoint.getScheduledStopPoint().getContainedInStopArea().getName(), "Molde Lufthavn", "Expected name of existing stop area to be updated by import data");
+					assertEquals(stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObjectId(), existingStopArea.getObjectId());
+					assertEquals(stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject().getName(), "Molde Lufthavn", "Expected name of existing stop area to be updated by import data");
 
-					StopArea stopAreaParent = stopPoint.getScheduledStopPoint().getContainedInStopArea().getParent();
+					StopArea stopAreaParent = stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject().getParent();
 					Assert.assertEquals(stopAreaParent.getStopAreaType(), StopAreaTypeEnum.Airport);
 					Assert.assertEquals(stopAreaParent.getTransportModeName(), TransportModeNameEnum.Air);
 					Assert.assertEquals(stopAreaParent.getTransportSubMode(), TransportSubModeNameEnum.InternationalFlight);
 				} else {
-					assertNotNull(stopPoint.getScheduledStopPoint().getContainedInStopArea(), "Expected not existing stop area to have been created by import");
+					assertNotNull(stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject(), "Expected not existing stop area to have been created by import");
 				}
 			}
 		}
@@ -287,10 +287,10 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		for (Route route : line.getRoutes()) {
 			for (StopPoint stopPoint : route.getStopPoints()) {
 				if (stopPoint.getObjectId().equals("AVI:StopPointInJourneyPattern:1263628002")) {
-					assertEquals(stopPoint.getScheduledStopPoint().getContainedInStopArea().getObjectId(), existingStopArea.getObjectId());
-					assertEquals(stopPoint.getScheduledStopPoint().getContainedInStopArea().getName(), existingStopArea.getName(), "Expected name of existing stop area to be unchanged by import");
+					assertEquals(stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObjectId(), existingStopArea.getObjectId());
+					assertEquals(stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject().getName(), existingStopArea.getName(), "Expected name of existing stop area to be unchanged by import");
 				} else {
-					assertNotNull(stopPoint.getScheduledStopPoint().getContainedInStopArea(), "Expected not existing stop area to have been created by import");
+					assertNotNull(stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject(), "Expected not existing stop area to have been created by import");
 				}
 			}
 		}
@@ -314,12 +314,12 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		for (Route route : line.getRoutes()) {
 			for (StopPoint stopPoint : route.getStopPoints()) {
 				if (stopPoint.getObjectId().equals("AVI:StopPointInJourneyPattern:1263628002")) {
-					assertEquals(stopPoint.getScheduledStopPoint().getContainedInStopArea().getObjectId(), existingStopArea.getObjectId(), "Expected existing stop area to be matched correctly");
-					assertEquals(stopPoint.getScheduledStopPoint().getContainedInStopArea().getName(), existingStopArea.getName(), "Expected name of existing stop area to be unchanged by import");
+					assertEquals(stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObjectId(), existingStopArea.getObjectId(), "Expected existing stop area to be matched correctly");
+					assertEquals(stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject().getName(), existingStopArea.getName(), "Expected name of existing stop area to be unchanged by import");
 				} else if (stopPoint.getObjectId().equals("AVI:StopPointInJourneyPattern:1869688101")) {
-					assertEquals(stopPoint.getScheduledStopPoint().getContainedInStopArea().getObjectId(), existingStopArea.getObjectId(), "Expected existing stop area to be matched correctly");
+					assertEquals(stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObjectId(), existingStopArea.getObjectId(), "Expected existing stop area to be matched correctly");
 				} else {
-					assertNull(stopPoint.getScheduledStopPoint().getContainedInStopArea(), "Did not expect stop areas to be created by import");
+					assertNull(stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject(), "Did not expect stop areas to be created by import");
 				}
 			}
 		}
@@ -640,8 +640,8 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 						
 					}
 					
-					assertNotNull(point.getScheduledStopPoint().getContainedInStopArea(), "stoppoints must have StopAreas");
-					bps.add(point.getScheduledStopPoint().getContainedInStopArea());
+					assertNotNull(point.getScheduledStopPoint().getContainedInStopAreaRef().getObject(), "stoppoints must have StopAreas");
+					bps.add(point.getScheduledStopPoint().getContainedInStopAreaRef().getObject());
 					assertNotNull(point.getForAlighting(), "no alighting info StopPoint=" + point);
 					assertNotNull(point.getForBoarding(), "no boarding info StopPoint=" + point);
 				}
@@ -752,8 +752,8 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 					for (StopPoint point : jp.getStopPoints()) {
 						numStopPoints++;
-						assertNotNull(point.getScheduledStopPoint().getContainedInStopArea(), "stoppoints must have StopAreas");
-						bps.add(point.getScheduledStopPoint().getContainedInStopArea());
+						assertNotNull(point.getScheduledStopPoint().getContainedInStopAreaRef().getObject(), "stoppoints must have StopAreas");
+						bps.add(point.getScheduledStopPoint().getContainedInStopAreaRef().getObject());
 						assertNotNull(point.getForAlighting(), "no alighting info StopPoint=" + point);
 						assertNotNull(point.getForBoarding(), "no boarding info StopPoint=" + point);
 					}

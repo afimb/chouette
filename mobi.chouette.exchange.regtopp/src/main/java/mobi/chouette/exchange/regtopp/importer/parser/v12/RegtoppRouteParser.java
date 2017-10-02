@@ -115,7 +115,7 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 			String scheduledStopPointId = chouetteStopPointId.replace(ObjectIdTypes.STOPPOINT_KEY, ObjectIdTypes.SCHEDULED_STOP_POINT_KEY);
 			ScheduledStopPoint scheduledStopPoint = ObjectFactory.getScheduledStopPoint(referential, scheduledStopPointId);
 			stopPoint.setScheduledStopPoint(scheduledStopPoint);
-			scheduledStopPoint.setContainedInStopArea(stopArea);
+			scheduledStopPoint.setContainedInStopAreaRef(new SimpleObjectReference(stopArea));
 			return stopPoint;
 		} else {
 			log.warn("StopPoint "+chouetteStopPointId+" refers to unknown StopArea "+chouetteStopAreaId+" - skipping");

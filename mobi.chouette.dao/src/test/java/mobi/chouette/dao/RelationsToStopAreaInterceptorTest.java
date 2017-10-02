@@ -1,5 +1,6 @@
 package mobi.chouette.dao;
 
+import mobi.chouette.model.SimpleObjectReference;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -51,14 +52,14 @@ public class RelationsToStopAreaInterceptorTest extends Arquillian {
         stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
         stopArea.setObjectId("StopArea:ID");
 
-        scheduledStopPoint.setContainedInStopArea(stopArea);
+        scheduledStopPoint.setContainedInStopAreaRef(new SimpleObjectReference(stopArea));
 
         ContextHolder.setContext("chouette_gui"); // set tenant schema
         scheduledStopPointDAO.create(scheduledStopPoint);
 
         ScheduledStopPoint dbScheduledStopPoint = scheduledStopPointDAO.findByObjectId(scheduledStopPoint.getObjectId());
 
-        Assert.assertEquals(dbScheduledStopPoint.getContainedInStopArea().getObjectId(), stopArea.getObjectId());
+        Assert.assertEquals(dbScheduledStopPoint.getContainedInStopAreaRef().getObjectId(), stopArea.getObjectId());
 
         StopArea dbStopArea = stopAreaDAO.findByObjectId(stopArea.getObjectId());
 

@@ -511,12 +511,12 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 					StopPoint start = referential.getStopPoints().get(pointIds.get(0));
 					StopPoint end = referential.getStopPoints().get(wbPointIds.get(wbPointIds
 							.size() - 1));
-					if (start.getScheduledStopPoint().getContainedInStopArea() == null || end.getScheduledStopPoint().getContainedInStopArea() == null)
+					if (start.getScheduledStopPoint().getContainedInStopAreaRef().getObject() == null || end.getScheduledStopPoint().getContainedInStopAreaRef().getObject() == null)
 						continue;
-					if (end.getScheduledStopPoint().getContainedInStopArea().equals(start.getScheduledStopPoint().getContainedInStopArea()))
+					if (end.getScheduledStopPoint().getContainedInStopAreaRef().getObject().equals(start.getScheduledStopPoint().getContainedInStopAreaRef().getObject()))
 						continue;
-					StopArea startParentCommercial = start.getScheduledStopPoint().getContainedInStopArea().getParent();
-					StopArea endParentCommercial = end.getScheduledStopPoint().getContainedInStopArea().getParent();
+					StopArea startParentCommercial = start.getScheduledStopPoint().getContainedInStopAreaRef().getObject().getParent();
+					StopArea endParentCommercial = end.getScheduledStopPoint().getContainedInStopAreaRef().getObject().getParent();
 					if (startParentCommercial == null
 							|| endParentCommercial == null)
 						continue;

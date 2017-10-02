@@ -14,6 +14,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.ScheduledStopPoint;
+import mobi.chouette.model.SimpleObjectReference;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -39,7 +40,7 @@ public class StopAssignmentParser extends NetexParser implements Parser, Constan
 				}
 
 				ScheduledStopPoint scheduledStopPoint = ObjectFactory.getScheduledStopPoint(referential, scheduledStopPointRef.getRef());
-				scheduledStopPoint.setContainedInStopArea(quay);
+				scheduledStopPoint.setContainedInStopAreaRef(new SimpleObjectReference<>(quay));
 
 				
 			}

@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -51,6 +50,7 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.ScheduledStopPoint;
+import mobi.chouette.model.SimpleObjectReference;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timeband;
@@ -641,7 +641,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				JourneyPattern jp = vehicleJourney.getJourneyPattern();
 				for(StopPoint sp : jp.getStopPoints()) {
 					ScheduledStopPoint ssp = sp.getScheduledStopPoint();
-					if(ssp.getContainedInStopArea().getObjectId().equals(feederStopAreaId)) {
+					if(ssp.getContainedInStopAreaRef().getObjectId().equals(feederStopAreaId)) {
 						interchange.setFeederStopPoint(ssp);
 						// Can be multiple matches, but GTFS does not specify which visit
 						break;
@@ -673,7 +673,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				JourneyPattern jp = vehicleJourney.getJourneyPattern();
 				for(StopPoint sp : jp.getStopPoints()) {
 					ScheduledStopPoint ssp = sp.getScheduledStopPoint();
-					if(ssp.getContainedInStopArea().getObjectId().equals(consumerStopAreaId)) {
+					if(ssp.getContainedInStopAreaRef().getObjectId().equals(consumerStopAreaId)) {
 						interchange.setConsumerStopPoint(ssp);
 						// Can be multiple matches, but GTFS does not specify which visit
 						break;
@@ -814,10 +814,10 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				StopPoint firstStopPoint=route.getStopPoints().get(0);
 				StopPoint lastStopPoint=route.getStopPoints().get(route.getStopPoints().size() - 1);
 
-				if (firstStopPoint.getScheduledStopPoint().getContainedInStopArea()!=null && lastStopPoint.getScheduledStopPoint().getContainedInStopArea()!=null) {
-					String first = firstStopPoint.getScheduledStopPoint().getContainedInStopArea().getName();
-					String last = lastStopPoint.getScheduledStopPoint().getContainedInStopArea()
-							              .getName();
+				if (firstStopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject() != null && lastStopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject() != null) {
+					String first = firstStopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject().getName();
+					String last = lastStopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject()
+							.getName();
 					route.setName(first + " -> " + last);
 				}
 			}
@@ -851,8 +851,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					AbstractConverter.composeObjectId(configuration,
 							DestinationDisplay.DESTINATIONDISPLAY_KEY, journeyPatternId + "-" + stopPointId, null));
 
-			if (jp.getArrivalStopPoint().getScheduledStopPoint().getContainedInStopArea() != null) {
-				String content = jp.getArrivalStopPoint().getScheduledStopPoint().getContainedInStopArea().getName();
+			if (jp.getArrivalStopPoint().getScheduledStopPoint().getContainedInStopAreaRef().getObject() != null) {
+				String content = jp.getArrivalStopPoint().getScheduledStopPoint().getContainedInStopAreaRef().getObject().getName();
 
 				if (content != null) {
 					destinationDisplay.setName("Generated: " + content);
@@ -922,7 +922,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		StopArea previousLocation = null;
 		for (StopPoint stop : journeyPattern.getStopPoints()) {
 			// find nearest segment and project point on it
-			StopArea location = stop.getScheduledStopPoint().getContainedInStopArea();
+			StopArea location = stop.getScheduledStopPoint().getContainedInStopAreaRef().getObject();
 			Coordinate point = new Coordinate(location.getLongitude().doubleValue(), location.getLatitude()
 					.doubleValue());
 			double distance_min = Double.MAX_VALUE;
@@ -966,10 +966,10 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				RouteSection section = ObjectFactory.getRouteSection(referential, routeSectionId);
 				if (!section.isFilled()) {
 					Coordinate[] inputCoords = new Coordinate[2];
-					section.setDeparture(previousLocation);
+					section.setDepartureRef(new SimpleObjectReference<>(previousLocation));
 					inputCoords[0] = new Coordinate(previousLocation.getLongitude().doubleValue(), previousLocation
 							.getLatitude().doubleValue());
-					section.setArrival(location);
+					section.setArrivalRef(new SimpleObjectReference<>(location));
 					inputCoords[1] = new Coordinate(location.getLongitude().doubleValue(), location.getLatitude()
 							.doubleValue());
 					section.setProcessedGeometry(factory.createLineString(coords.toArray(new Coordinate[coords.size()])));
@@ -1169,7 +1169,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			stopPoint.setScheduledStopPoint(scheduledStopPoint);
 
 
-			scheduledStopPoint.setContainedInStopArea(stopArea);
+			scheduledStopPoint.setContainedInStopAreaRef(new SimpleObjectReference(stopArea));
 			stopPoint.setRoute(route);
 			stopPoint.setPosition(position++);
 			stopPoint.setForBoarding(toBoardingPossibility(wrapper.pickup));

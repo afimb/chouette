@@ -12,6 +12,7 @@ import mobi.chouette.exchange.regtopp.importer.parser.ObjectIdCreator;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
 import mobi.chouette.model.ScheduledStopPoint;
+import mobi.chouette.model.SimpleObjectReference;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
@@ -63,7 +64,7 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 			String scheduledStopPointId = chouetteStopPointId.replace(ObjectIdTypes.STOPPOINT_KEY, ObjectIdTypes.SCHEDULED_STOP_POINT_KEY);
 			ScheduledStopPoint scheduledStopPoint = ObjectFactory.getScheduledStopPoint(referential, scheduledStopPointId);
 			stopPoint.setScheduledStopPoint(scheduledStopPoint);
-			scheduledStopPoint.setContainedInStopArea(stopArea);
+			scheduledStopPoint.setContainedInStopAreaRef(new SimpleObjectReference(stopArea));
 			appendDestinationDisplay(referential, routeSegment, destinationById, configuration, stopPoint, calendarStartDate);
 
 		}

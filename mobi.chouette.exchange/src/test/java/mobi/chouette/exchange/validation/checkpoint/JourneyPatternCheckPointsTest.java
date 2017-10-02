@@ -11,6 +11,7 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.ScheduledStopPoint;
+import mobi.chouette.model.SimpleObjectReference;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import static mobi.chouette.model.type.TransportModeNameEnum.*;
@@ -61,7 +62,7 @@ public class JourneyPatternCheckPointsTest {
 		StopPoint sp = new StopPoint();
 		ScheduledStopPoint ssp=new ScheduledStopPoint();
 		sp.setScheduledStopPoint(ssp);
-		ssp.setContainedInStopArea(sa);
+		ssp.setContainedInStopAreaRef(new SimpleObjectReference<>(sa));
 		jp.getStopPoints().add(sp);
 		
 		Route r = new Route();

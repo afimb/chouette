@@ -13,6 +13,7 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.ScheduledStopPoint;
+import mobi.chouette.model.SimpleObjectReference;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
@@ -352,7 +353,7 @@ private VehicleJourney buildNeptuneObject(boolean full)
 
          ScheduledStopPoint scheduledStopPoint = new ScheduledStopPoint();
          scheduledStopPoint.setObjectId("GTFS:" + ObjectIdTypes.SCHEDULED_STOP_POINT_KEY + ":SSP" + i);
-         scheduledStopPoint.setContainedInStopArea(sa);
+         scheduledStopPoint.setContainedInStopAreaRef(new SimpleObjectReference<>(sa));
          sp.setScheduledStopPoint(scheduledStopPoint);
          VehicleJourneyAtStop vjas = new VehicleJourneyAtStop();
          vjas.setStopPoint(sp);

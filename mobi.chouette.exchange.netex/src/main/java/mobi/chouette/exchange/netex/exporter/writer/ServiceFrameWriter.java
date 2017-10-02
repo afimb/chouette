@@ -97,7 +97,7 @@ public class ServiceFrameWriter extends AbstractWriter{
 		writer.write("    <RoutePoint version=\""+stopPoint.getObjectVersion()+"\" id=\""+stopPoint.objectIdPrefix()+":RoutePoint:"+routePointId+"\">\n");
 		writer.write("      <projections>\n");
 		writer.write("        <PointProjection version=\"any\" id=\""+stopPoint.objectIdPrefix()+":PointProjection:"+routePointId+"\">\n");
-		writer.write("          <ProjectedPointRef version=\""+stopPoint.getScheduledStopPoint().getContainedInStopArea().getObjectVersion()+"\" ref=\""+modelTranslator.netexId(stopPoint)+"\"/>\n");
+		writer.write("          <ProjectedPointRef version=\""+stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject().getObjectVersion()+"\" ref=\""+modelTranslator.netexId(stopPoint)+"\"/>\n");
 		writer.write("        </PointProjection>\n");
 		writer.write("      </projections>\n");
 		writer.write("    </RoutePoint>\n");
@@ -234,8 +234,8 @@ public class ServiceFrameWriter extends AbstractWriter{
 			if (stopPoint == null) continue;
 		writer.write("    <ScheduledStopPoint version=\""+stopPoint.getObjectVersion()+"\" id=\""+modelTranslator.netexId(stopPoint)+"\">\n");
 		//      #if ( $stopPoint.name )
-		if (isSet(stopPoint.getScheduledStopPoint().getContainedInStopArea().getName()))
-		writer.write("      <Name>"+toXml(stopPoint.getScheduledStopPoint().getContainedInStopArea().getName())+"</Name>\n");
+		if (isSet(stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject().getName()))
+		writer.write("      <Name>"+toXml(stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject().getName())+"</Name>\n");
 		//      #end
 		writer.write("      <TimingPointStatus>timingPoint</TimingPointStatus>\n");
 		writer.write("    </ScheduledStopPoint>\n");
@@ -397,12 +397,12 @@ public class ServiceFrameWriter extends AbstractWriter{
 		writer.write("    <PassengerStopAssignment version=\"any\" id=\""+modelTranslator.netexMockId(stopPoint,"PassengerStopAssignment")+"\">\n");
 		writer.write("      <ScheduledStopPointRef version=\"1\" ref=\""+modelTranslator.netexId(stopPoint)+"\"/>\n");
 		//      #if ($stopPoint.containedInStopArea && $stopPoint.containedInStopArea.parent) 
-		if (isSet(stopPoint.getScheduledStopPoint().getContainedInStopArea())) {
-		if (isSet(stopPoint.getScheduledStopPoint().getContainedInStopArea().getParent()))
-		writer.write("      <StopPlaceRef version=\""+stopPoint.getScheduledStopPoint().getContainedInStopArea().getParent().getObjectVersion()+"\" ref=\""+modelTranslator.netexId(stopPoint.getScheduledStopPoint().getContainedInStopArea().getParent())+"\"/> \n");
+		if (isSet(stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject())) {
+		if (isSet(stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject().getParent()))
+		writer.write("      <StopPlaceRef version=\""+stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject().getParent().getObjectVersion()+"\" ref=\""+modelTranslator.netexId(stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject().getParent())+"\"/> \n");
 		//      #end 
 		//      #if ($stopPoint.containedInStopArea) 
-		writer.write("      <QuayRef version=\""+stopPoint.getScheduledStopPoint().getContainedInStopArea().getObjectVersion()+"\" ref=\""+modelTranslator.netexId(stopPoint.getScheduledStopPoint().getContainedInStopArea())+"\"/>\n");
+		writer.write("      <QuayRef version=\""+stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject().getObjectVersion()+"\" ref=\""+modelTranslator.netexId(stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject())+"\"/>\n");
 		}
 		//      #end 
 		writer.write("    </PassengerStopAssignment> \n");  

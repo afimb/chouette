@@ -58,12 +58,12 @@ public class GtfsTestsUtils implements Constant, ReportConstant{
 				Assert.assertNotNull(jp.getStopPoints(), "line journeyPattens must have stoppoints");
 				for (StopPoint point : jp.getStopPoints()) {
 
-					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopArea(), "stoppoints must have StopAreas");
-					bps.add(point.getScheduledStopPoint().getContainedInStopArea());
+					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopAreaRef().getObject(), "stoppoints must have StopAreas");
+					bps.add(point.getScheduledStopPoint().getContainedInStopAreaRef().getObject());
 
-					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopArea().getParent(), "StopAreas must have parent : "
-							+ point.getScheduledStopPoint().getContainedInStopArea().getObjectId());
-					comms.add(point.getScheduledStopPoint().getContainedInStopArea().getParent());
+					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopAreaRef().getObject().getParent(), "StopAreas must have parent : "
+							+ point.getScheduledStopPoint().getContainedInStopAreaRef().getObjectId());
+					comms.add(point.getScheduledStopPoint().getContainedInStopAreaRef().getObject().getParent());
 				}
 			}
 		}

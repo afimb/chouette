@@ -16,6 +16,7 @@ import mobi.chouette.dao.ScheduledStopPointDAO;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.model.ScheduledStopPoint;
+import mobi.chouette.model.SimpleObjectReference;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -172,10 +173,10 @@ public class StopAreaServiceTest extends Arquillian {
         em.joinTransaction();
         ContextHolder.setContext("chouette_gui");
         StopPoint spWithReplacedStopAreaRefByMerger = stopPointDAO.findByObjectId(spToHaveStopAreaRefReplacedByMerger.getObjectId());
-        Assert.assertEquals(spWithReplacedStopAreaRefByMerger.getScheduledStopPoint().getContainedInStopArea().getObjectId(), "NSR:Quay:6", "Expected stop point to updated when quays have been merged.");
+        Assert.assertEquals(spWithReplacedStopAreaRefByMerger.getScheduledStopPoint().getContainedInStopAreaRef().getObjectId(), "NSR:Quay:6", "Expected stop point to updated when quays have been merged.");
 
         StopPoint spWithReplacedStopAreaRefByAddedOriginalId = stopPointDAO.findByObjectId(spToHaveStopAreaRefReplacedByAddedOriginalId.getObjectId());
-        Assert.assertEquals(spWithReplacedStopAreaRefByAddedOriginalId.getScheduledStopPoint().getContainedInStopArea().getObjectId(), "NSR:Quay:7", "Expected stop point to updated when quay id has been added as original id to another quay.");
+        Assert.assertEquals(spWithReplacedStopAreaRefByAddedOriginalId.getScheduledStopPoint().getContainedInStopAreaRef().getObjectId(), "NSR:Quay:7", "Expected stop point to updated when quay id has been added as original id to another quay.");
 
 
         stopAreaService.createOrUpdateStopPlacesFromNetexStopPlaces(new FileInputStream("src/test/data/StopAreasMovedQuay.xml"));
@@ -321,7 +322,7 @@ public class StopAreaServiceTest extends Arquillian {
         ScheduledStopPoint scheduledStopPoint=new ScheduledStopPoint();
         scheduledStopPoint.setObjectId("XXX:ScheduledStopPoint:"+id);
 
-        scheduledStopPoint.setContainedInStopArea(stopArea);
+        scheduledStopPoint.setContainedInStopAreaRef(new SimpleObjectReference(stopArea));
         sp.setScheduledStopPoint(scheduledStopPoint);
         stopPointDAO.create(sp);
         return sp;

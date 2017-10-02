@@ -23,6 +23,7 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.ScheduledStopPoint;
+import mobi.chouette.model.SimpleObjectReference;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
@@ -274,7 +275,7 @@ public class ComplexModelFactory
             stopPoint.setScheduledStopPoint(scheduledStopPoint);
             scheduledStopPoint.setObjectId("T:ScheduledStopPoint:" + route.objectIdSuffix() + "-"
                     + i);
-            scheduledStopPoint.setContainedInStopArea(quays.get(i % quayCount));
+            scheduledStopPoint.setContainedInStopAreaRef(new SimpleObjectReference<>(quays.get(i % quayCount)));
 
             stopPoints.add(stopPoint);
          }
@@ -365,7 +366,7 @@ public class ComplexModelFactory
       int index = (new Random()).nextInt(line.getRoutes().size());
 
       stop_areas.add(line.getRoutes().get(index).getStopPoints().get(0).getScheduledStopPoint()
-            .getContainedInStopArea());
+            .getContainedInStopAreaRef().getObject());
       try
       {
          stop_areas.add(modelFactory.createModel(StopArea.class));

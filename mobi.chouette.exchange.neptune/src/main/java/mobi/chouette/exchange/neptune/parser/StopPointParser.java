@@ -13,6 +13,7 @@ import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.exchange.neptune.validation.StopPointValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.ScheduledStopPoint;
+import mobi.chouette.model.SimpleObjectReference;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.LongLatTypeEnum;
@@ -64,7 +65,7 @@ public class StopPointParser implements Parser, Constant, JsonExtension {
 				String scheduledStopPointId = stopPoint.getObjectId().replace(ObjectIdTypes.STOPPOINT_KEY, ObjectIdTypes.SCHEDULED_STOP_POINT_KEY);
 				ScheduledStopPoint scheduledStopPoint = ObjectFactory.getScheduledStopPoint(referential, scheduledStopPointId);
 				stopPoint.setScheduledStopPoint(scheduledStopPoint);
-				scheduledStopPoint.setContainedInStopArea(stopArea);
+				scheduledStopPoint.setContainedInStopAreaRef(new SimpleObjectReference(stopArea));
 			} else if (xpp.getName().equals("lineIdShortcut")) {
 				String lineIdShortcut = ParserUtils.getText(xpp.nextText());
 				validator.addLineIdShortcut(context, objectId, lineIdShortcut);

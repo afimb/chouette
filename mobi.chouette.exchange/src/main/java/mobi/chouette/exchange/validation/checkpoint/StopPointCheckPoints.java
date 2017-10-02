@@ -40,34 +40,34 @@ public class StopPointCheckPoints extends AbstractValidation<StopPoint> implemen
     }
 
     private void validateStopPointIsContainedInStopArea(Context context, StopPoint stopPoint) {
-        if (stopPoint != null && stopPoint.getScheduledStopPoint() != null && stopPoint.getScheduledStopPoint().getContainedInStopArea() == null) {
+        if (stopPoint != null && stopPoint.getScheduledStopPoint() != null && stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject() == null) {
             log.info("Registering error for : " + stopPoint);
             ValidationReporter reporter = ValidationReporter.Factory.getInstance();
             DataLocation locationStopPoint = buildLocation(context, stopPoint);
             DataLocation locationRoute = buildLocation(context, stopPoint.getRoute());
            
-            reporter.addCheckPointReportError(context, STOP_POINT_1, locationStopPoint,stopPoint.getScheduledStopPoint().getContainedInStopAreaObjectId(),null,locationRoute);
+            reporter.addCheckPointReportError(context, STOP_POINT_1, locationStopPoint,stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObjectId(),null,locationRoute);
         }
     }
 
     private void validateStopPointIsBoardingPosition(Context context, StopPoint stopPoint) {
-        if (stopPoint != null && stopPoint.getScheduledStopPoint() != null && stopPoint.getScheduledStopPoint().getContainedInStopArea() != null && stopPoint.getScheduledStopPoint().getContainedInStopArea() .getAreaType() != ChouetteAreaEnum.BoardingPosition) {
+        if (stopPoint != null && stopPoint.getScheduledStopPoint() != null && stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject() != null && stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject() .getAreaType() != ChouetteAreaEnum.BoardingPosition) {
             ValidationReporter reporter = ValidationReporter.Factory.getInstance();
             DataLocation locationStopPoint = buildLocation(context, stopPoint);
-            DataLocation locationStopArea = buildLocation(context, stopPoint.getScheduledStopPoint().getContainedInStopArea() );
+            DataLocation locationStopArea = buildLocation(context, stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject() );
            
-            reporter.addCheckPointReportError(context, STOP_POINT_2, locationStopPoint,stopPoint.getScheduledStopPoint().getContainedInStopAreaObjectId(),null,locationStopArea);
+            reporter.addCheckPointReportError(context, STOP_POINT_2, locationStopPoint,stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObjectId(),null,locationStopArea);
         }
     }
 
 
     private void validateStopPointBoardingAlighting(Context context, StopPoint stopPoint) {
-        if (stopPoint != null && stopPoint.getScheduledStopPoint() != null && stopPoint.getScheduledStopPoint().getContainedInStopArea() != null && BoardingPossibilityEnum.forbidden.equals(stopPoint.getForBoarding()) && AlightingPossibilityEnum.forbidden.equals(stopPoint.getForAlighting())) {
+        if (stopPoint != null && stopPoint.getScheduledStopPoint() != null && stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject() != null && BoardingPossibilityEnum.forbidden.equals(stopPoint.getForBoarding()) && AlightingPossibilityEnum.forbidden.equals(stopPoint.getForAlighting())) {
             ValidationReporter reporter = ValidationReporter.Factory.getInstance();
             DataLocation locationStopPoint = buildLocation(context, stopPoint);
             DataLocation locationRoute = buildLocation(context, stopPoint.getRoute());
             
-            DataLocation locationStopArea = buildLocation(context, stopPoint.getScheduledStopPoint().getContainedInStopArea() );
+            DataLocation locationStopArea = buildLocation(context, stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject() );
             reporter.addCheckPointReportError(context, STOP_POINT_3, locationStopPoint,null,null,locationStopArea,locationRoute);
         }
     }

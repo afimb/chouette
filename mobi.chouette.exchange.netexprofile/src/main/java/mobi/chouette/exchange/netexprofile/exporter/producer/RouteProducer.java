@@ -56,7 +56,7 @@ public class RouteProducer extends NetexProducer implements NetexEntityProducer<
 				PointOnRoute pointOnRoute = netexFactory.createPointOnRoute().withVersion(pointVersion).withId(pointOnRouteId).withOrder(BigInteger.ONE);
 				pointsOnRoute.getPointOnRoute().add(pointOnRoute);
 
-				if (stopPoint.getScheduledStopPoint().getContainedInStopArea() != null) {
+				if (stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject() != null) {
 					String routePointId = NetexProducerUtils.translateObjectId(stopPoint.getScheduledStopPoint().getObjectId(), ROUTE_POINT);
 					RoutePointRefStructure routePointRefStruct = netexFactory.createRoutePointRefStructure().withRef(routePointId).withVersion(pointVersion);
 					pointOnRoute.setPointRef(netexFactory.createRoutePointRef(routePointRefStruct));

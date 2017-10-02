@@ -161,7 +161,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 								// log.info("[DSU] processing  : "
 								// + routeSection.getObjectId());
 
-								StopArea departure = routeSection.getDeparture();
+								StopArea departure = routeSection.getDeparture().getObject();
 
 								if (departure != null && departure.hasCoordinates()) {
 									createPhysicaStop(shared, keys, departure);
@@ -169,7 +169,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 											departure.getLatitude().doubleValue());
 								}
 
-								StopArea arrival = routeSection.getArrival();
+								StopArea arrival = routeSection.getArrival().getObject();
 								if (arrival != null && arrival.hasCoordinates()) {
 									createPhysicaStop(shared, keys, arrival);
 									MetaData.updateBoundingBox(context, arrival.getLongitude().doubleValue(), arrival

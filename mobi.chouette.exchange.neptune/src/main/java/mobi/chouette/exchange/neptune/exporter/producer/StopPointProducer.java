@@ -27,13 +27,13 @@ public class StopPointProducer extends
 		populateFromModel(jaxbStopPoint, stopPoint);
 
 		jaxbStopPoint.setComment(buildComment(stopPoint, addExtension));
-		if (stopPoint.getScheduledStopPoint().getContainedInStopArea() != null) {
-			StopArea area = stopPoint.getScheduledStopPoint().getContainedInStopArea();
+		if (stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject() != null) {
+			StopArea area = stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject();
 			jaxbStopPoint.setName(area.getName());
 			// jaxbStopPoint.setLineIdShortcut(stopPoint.getLineIdShortcut());
 
 
-			jaxbStopPoint.setContainedIn(getNonEmptyObjectId(stopPoint.getScheduledStopPoint().getContainedInStopArea()));
+			jaxbStopPoint.setContainedIn(getNonEmptyObjectId(stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject()));
 			if (area.hasCoordinates())
 			{
 			jaxbStopPoint.setLatitude(area.getLatitude());

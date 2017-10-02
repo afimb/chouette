@@ -365,7 +365,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		List<StopPoint> points = new ArrayList<StopPoint>(route.getStopPoints());
 		for (Iterator<StopPoint> iterator = points.iterator(); iterator.hasNext();) {
 			StopPoint stopPoint = iterator.next();
-			if (stopPoint == null || stopPoint.getScheduledStopPoint()==null || stopPoint.getScheduledStopPoint().getContainedInStopArea() == null)
+			if (stopPoint == null || stopPoint.getScheduledStopPoint()==null || stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject() == null)
 				iterator.remove();
 		}
 		for (JourneyPattern jp : route.getJourneyPatterns()) {
@@ -379,7 +379,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 
 			int i = 0;
 			for (StopPoint stopPoint : points) {
-				targets[i++] = buildLocation(context, stopPoint.getScheduledStopPoint().getContainedInStopArea());
+				targets[i++] = buildLocation(context, stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject());
 			}
 			DataLocation location = buildLocation(context, route);
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();

@@ -8,6 +8,7 @@ import java.util.List;
 import javax.ejb.EJB;
 
 import mobi.chouette.model.ScheduledStopPoint;
+import mobi.chouette.model.SimpleObjectReference;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.StopAreaImportModeEnum;
@@ -118,7 +119,7 @@ public class ScheduledStopPointDAOTest extends Arquillian {
     private ScheduledStopPoint createScheduledStopPoint(String id, StopArea stopArea) {
         ScheduledStopPoint sp = new ScheduledStopPoint();
         sp.setObjectId(id);
-        sp.setContainedInStopArea(stopArea);
+        sp.setContainedInStopAreaRef(new SimpleObjectReference(stopArea));
         scheduledStopPointDAO.create(sp);
         return sp;
     }

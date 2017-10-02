@@ -158,7 +158,7 @@ public abstract class NeptuneUtil {
 			}
 		});
 		for (StopPoint point : points) {
-			areas.add(point.getScheduledStopPoint().getContainedInStopArea());
+			areas.add(point.getScheduledStopPoint().getContainedInStopAreaRef().getObject());
 		}
 		return areas;
 	}

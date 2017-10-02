@@ -14,6 +14,7 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.ScheduledStopPoint;
+import mobi.chouette.model.SimpleObjectReference;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
@@ -123,7 +124,7 @@ public class RouteParser implements Parser, Constant {
 			ScheduledStopPoint scheduledStopPoint= ObjectFactory.getScheduledStopPoint(referential, stopPointId);
 
 			stopPoint.setScheduledStopPoint(scheduledStopPoint);
-			scheduledStopPoint.setContainedInStopArea(stopArea);
+			scheduledStopPoint.setContainedInStopAreaRef(new SimpleObjectReference(stopArea));
 		}
 
 		log.debug("[DSU] " + "PassengerStopAssignment" + "\t" + id);

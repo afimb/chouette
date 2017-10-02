@@ -383,17 +383,17 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		data.getJourneyPatterns().add(jp);
 		context.put(VALIDATION_DATA, data);
 		
-		double plotFirstLat = rs.getDeparture().getLatitude().doubleValue();
-		double plotLastLat = rs.getArrival().getLatitude().doubleValue();
-		double plotFirstLong = rs.getDeparture().getLongitude().doubleValue();
-		double plotLastLong = rs.getArrival().getLongitude().doubleValue();
+		double plotFirstLat = rs.getDepartureRef().getObject().getLatitude().doubleValue();
+		double plotLastLat = rs.getArrivalRef().getObject().getLatitude().doubleValue();
+		double plotFirstLong = rs.getDepartureRef().getObject().getLongitude().doubleValue();
+		double plotLastLong = rs.getArrivalRef().getObject().getLongitude().doubleValue();
 		double distance = 0, distance2 = 0;
 		String modeKey = jp.getRoute().getLine().getTransportModeName().toString();
 		
 		TransportModeParameters parameters = AbstractValidation.getModeParameters(fullparameters, modeKey, log);
-		rs.getDeparture().setLatitude(BigDecimal.valueOf(plotFirstLat + 0.0002));
+		rs.getDepartureRef().getObject().setLatitude(BigDecimal.valueOf(plotFirstLat + 0.0002));
 		// Departure
-		distance = AbstractValidation.quickDistanceFromCoordinates(rs.getDeparture().getLatitude().doubleValue(), plotFirstLat, rs.getDeparture().getLongitude().doubleValue(), plotFirstLong);
+		distance = AbstractValidation.quickDistanceFromCoordinates(rs.getDepartureRef().getObject().getLatitude().doubleValue(), plotFirstLat, rs.getDepartureRef().getObject().getLongitude().doubleValue(), plotFirstLong);
 		parameters.setRouteSectionStopAreaDistanceMax(distance * 2);
 		checkPoint.validate(context, null);
 		
@@ -407,11 +407,11 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.OK, " checkPointReport must be ok");
 		
 		
-		rs.getDeparture().setLatitude(BigDecimal.valueOf(plotFirstLat));
-		rs.getArrival().setLatitude(BigDecimal.valueOf(plotLastLat + 0.0003));
+		rs.getDepartureRef().getObject().setLatitude(BigDecimal.valueOf(plotFirstLat));
+		rs.getArrivalRef().getObject().setLatitude(BigDecimal.valueOf(plotLastLat + 0.0003));
 		
 		//Arrival
-		distance2 = AbstractValidation.quickDistanceFromCoordinates(rs.getArrival().getLatitude().doubleValue(), plotLastLat, rs.getArrival().getLongitude().doubleValue(), plotLastLong);
+		distance2 = AbstractValidation.quickDistanceFromCoordinates(rs.getArrivalRef().getObject().getLatitude().doubleValue(), plotLastLat, rs.getArrivalRef().getObject().getLongitude().doubleValue(), plotLastLong);
 		// If route section distance doesn't exceed gap    as parameter
 		parameters.setRouteSectionStopAreaDistanceMax(distance2 / 2);
 		context.put(VALIDATION_REPORT, new ValidationReport());

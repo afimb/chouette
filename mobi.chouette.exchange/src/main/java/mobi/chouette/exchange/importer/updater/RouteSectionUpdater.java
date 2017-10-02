@@ -9,6 +9,7 @@ import com.jamonapi.MonitorFactory;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.RouteSection;
+import mobi.chouette.model.SimpleObjectReference;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.Referential;
 
@@ -52,9 +53,9 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
 				&& !newValue.getDistance().equals(oldValue.getDistance())) {
 			oldValue.setDistance(newValue.getDistance());
 		}
-		if (newValue.getDeparture() != null
-				&& !newValue.getDeparture().equals(oldValue.getDeparture())) {
-			String objectId = newValue.getDeparture().getObjectId();
+		if (newValue.getDepartureRef().getObject() != null
+				&& !newValue.getDepartureRef().getObject().equals(oldValue.getDepartureRef().getObject())) {
+			String objectId = newValue.getDepartureRef().getObject().getObjectId();
 			StopArea departure = cache.getStopAreas().get(objectId);
 			if (departure == null) {
 				departure = stopAreaDAO.findByObjectId(objectId);
@@ -64,12 +65,12 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
 			}
 
 			if (departure != null) {
-				oldValue.setDeparture(departure);
+				oldValue.setDepartureRef(new SimpleObjectReference<>(departure));
 			}
 		}
-		if (newValue.getArrival() != null
-				&& !newValue.getArrival().equals(oldValue.getArrival())) {
-			String objectId = newValue.getArrival().getObjectId();
+		if (newValue.getArrivalRef().getObject() != null
+				&& !newValue.getArrivalRef().getObject().equals(oldValue.getArrivalRef().getObject())) {
+			String objectId = newValue.getArrivalRef().getObject().getObjectId();
 			StopArea arrival = cache.getStopAreas().get(objectId);
 			if (arrival == null) {
 				arrival = stopAreaDAO.findByObjectId(objectId);
@@ -79,7 +80,7 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
 			}
 
 			if (arrival != null) {
-				oldValue.setArrival(arrival);
+				oldValue.setArrivalRef(new SimpleObjectReference<>(arrival));
 			}
 		}
 		if (newValue.getNoProcessing() != null

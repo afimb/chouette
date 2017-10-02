@@ -66,7 +66,6 @@ public class ScheduledStopPoint extends NeptuneIdentifiedObject {
 	@OneToMany(mappedBy = "scheduledStopPoint")
 	private List<StopPoint> stopPoints = new ArrayList<>(0);
 
-	@Getter
 	@Column(name = "stop_area_objectid_key")
 	private String containedInStopAreaObjectId;
 
@@ -75,9 +74,8 @@ public class ScheduledStopPoint extends NeptuneIdentifiedObject {
 	 *
 	 * @return The actual value
 	 */
-	@Getter
 	@Transient
-	private StopArea containedInStopArea;
+	private ObjectReference<StopArea> containedInStopAreaRef;
 
 
 	/**
@@ -97,38 +95,31 @@ public class ScheduledStopPoint extends NeptuneIdentifiedObject {
 	@OneToMany(mappedBy = "consumerStopPoint", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
 	private List<Interchange> consumerInterchanges = new ArrayList<>(0);
 
-	/**
-	 * set stop area
-	 *
-	 * @param stopArea
-	 */
-	public void setContainedInStopArea(StopArea stopArea) {
-		if (this.containedInStopArea != null) {
-			this.containedInStopArea.getContainedScheduledStopPoints().remove(this);
-		}
-		this.containedInStopArea = stopArea;
-		if (stopArea != null) {
-			stopArea.getContainedScheduledStopPoints().add(this);
-			containedInStopAreaObjectId = stopArea.getObjectId();
-		}
-	}
-
-	/**
-	 * ORM only setter for establishing stop area relation without loading lazy collections.
-	 * <p>
-	 * NB! Do not use except when loading objects.
-	 */
 	@Transient
-	public void setContainedInStopAreaORMOnly(StopArea stopArea) {
-		this.containedInStopArea = stopArea;
-		if (stopArea != null) {
-			containedInStopAreaObjectId = stopArea.getObjectId();
+	public ObjectReference<StopArea> getContainedInStopAreaRef() {
+		if (this.containedInStopAreaRef == null) {
+			this.containedInStopAreaRef = new SimpleObjectReference<>(null);
+		}
+		return this.containedInStopAreaRef;
+	}
+
+	@Transient
+	public void setContainedInStopAreaRef(ObjectReference<StopArea> containedInStopAreaRef) {
+		if (this.containedInStopAreaRef != null && this.containedInStopAreaRef.isLoaded() && this.containedInStopAreaRef.getObject() != null) {
+			this.containedInStopAreaRef.getObject().getContainedScheduledStopPoints().remove(this);
+		}
+
+
+		this.containedInStopAreaRef = containedInStopAreaRef;
+		if (containedInStopAreaRef != null) {
+			this.containedInStopAreaObjectId = containedInStopAreaRef.getObjectId();
+
+			if (containedInStopAreaRef.isLoaded() && containedInStopAreaRef.getObject() != null) {
+				containedInStopAreaRef.getObject().getContainedScheduledStopPoints().add(this);
+			}
+
+		} else {
+			this.containedInStopAreaObjectId = null;
 		}
 	}
-
-	public StopArea getContainedInStopAreaORMOnly() {
-		return this.containedInStopArea;
-	}
-
-
 }

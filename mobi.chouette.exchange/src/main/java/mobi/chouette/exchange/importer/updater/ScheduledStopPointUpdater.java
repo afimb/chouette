@@ -10,6 +10,7 @@ import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.ScheduledStopPoint;
+import mobi.chouette.model.SimpleObjectReference;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
@@ -53,7 +54,7 @@ public class ScheduledStopPointUpdater implements Updater<ScheduledStopPoint> {
 
 			oldValue.setDetached(false);
 		} else {
-			twoDatabaseStopPointThreeTest(validationReporter, context, oldValue.getContainedInStopArea(), newValue.getContainedInStopArea(), data);
+			twoDatabaseStopPointThreeTest(validationReporter, context, oldValue.getContainedInStopAreaRef().getObject(), newValue.getContainedInStopAreaRef().getObject(), data);
 
 			if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
 				oldValue.setObjectId(newValue.getObjectId());
@@ -76,11 +77,20 @@ public class ScheduledStopPointUpdater implements Updater<ScheduledStopPoint> {
 
 		// StopArea
 
-		if (newValue.getContainedInStopArea() == null) {
-			oldValue.setContainedInStopArea(null);
+		if (newValue.getContainedInStopAreaRef().getObject() == null) {
+			oldValue.setContainedInStopAreaRef(null);
 		} else {
-			String objectId = newValue.getContainedInStopArea().getObjectId();
+			String objectId = newValue.getContainedInStopAreaRef().getObjectId();
 			StopArea stopArea = cache.getStopAreas().get(objectId);
+
+			if (stopArea==null) {
+				// If stop area is not cache, check whether referential contains mapping for id
+				String mappedId = ((Referential) context.get(REFERENTIAL)).getStopAreaMapping().get(objectId);
+				if (mappedId != null) {
+					stopArea = cache.getStopAreas().get(mappedId);
+				}
+			}
+
 			if (stopArea == null) {
 				stopArea = stopAreaDAO.findByObjectId(objectId);
 				if (stopArea != null) {
@@ -90,12 +100,13 @@ public class ScheduledStopPointUpdater implements Updater<ScheduledStopPoint> {
 
 			if (stopArea == null) {
 				stopArea = ObjectFactory.getStopArea(cache, objectId);
+				log.warn("Created new stop area for objectId: " + objectId);
 			}
 
-			oldValue.setContainedInStopArea(stopArea);
+			oldValue.setContainedInStopAreaRef(new SimpleObjectReference(stopArea));
 
 			if (!context.containsKey(AREA_BLOC))
-			   stopAreaUpdater.update(context, oldValue.getContainedInStopArea(), newValue.getContainedInStopArea());
+			   stopAreaUpdater.update(context, oldValue.getContainedInStopAreaRef().getObject(), newValue.getContainedInStopAreaRef().getObject());
 		}
 
 	}

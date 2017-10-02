@@ -69,11 +69,11 @@ public class RouteSectionCheckPoints extends AbstractValidation<RouteSection> im
 			for(int j = 0; j < lstRouteSection.size(); j++) {
 					RouteSection rs2 = lstRouteSection.get(j);
 				if (rs.equals(rs2)) {
-					double distance = distance(rs.getDeparture(), rs.getArrival());
+					double distance = distance(rs.getDepartureRef().getObject(), rs.getArrivalRef().getObject());
 					// If route section distance doesn't exceed gap    as parameter
 					if(distance > distanceMax) {
 						DataLocation location = buildLocation(context, rs2);
-						DataLocation targetLocation = buildLocation(context, rs.getDeparture());
+						DataLocation targetLocation = buildLocation(context, rs.getDepartureRef().getObject());
 
 						ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 						reporter.addCheckPointReportError(context,ROUTE_SECTION_1, location, null,null,targetLocation);

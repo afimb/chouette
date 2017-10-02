@@ -8,6 +8,7 @@ import mobi.chouette.exchange.importer.updater.StopAreaIdMapper;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.ScheduledStopPoint;
+import mobi.chouette.model.SimpleObjectReference;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -132,7 +133,7 @@ public class StopAreaIdMapperTest {
         StopPoint sp=new StopPoint();
         ScheduledStopPoint scheduledStopPoint=new ScheduledStopPoint();
         sp.setScheduledStopPoint(scheduledStopPoint);
-        scheduledStopPoint.setContainedInStopArea(quay);
+        scheduledStopPoint.setContainedInStopAreaRef(new SimpleObjectReference<>(quay));
         Route route=new Route();
         sp.setRoute(route);
         Line line=new Line();

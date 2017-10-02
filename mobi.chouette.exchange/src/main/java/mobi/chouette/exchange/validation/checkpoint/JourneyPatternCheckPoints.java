@@ -16,8 +16,6 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.VehicleJourney;
-import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.TransportSubModeNameEnum;
 
@@ -156,7 +154,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 			double plotFirstLong = 0;
 			double plotLastLong = 0;
 
-			if (rs.getDeparture() == null || rs.getArrival() == null) {
+			if (rs.getDepartureRef().getObject() == null || rs.getArrivalRef().getObject() == null) {
 				continue;
 			}
 
@@ -172,12 +170,12 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 				plotLastLat = rs.getProcessedGeometry().getEndPoint().getY();
 			}
 			// Departuredepart
-			distance = quickDistanceFromCoordinates(rs.getDeparture().getLatitude().doubleValue(), plotFirstLat, rs
-					.getDeparture().getLongitude().doubleValue(), plotFirstLong);
+			distance = quickDistanceFromCoordinates(rs.getDepartureRef().getObject().getLatitude().doubleValue(), plotFirstLat, rs
+					.getDepartureRef().getObject().getLongitude().doubleValue(), plotFirstLong);
 			// If route section distance doesn't exceed gap as parameter
 			if (distance > distanceMax) {
 				DataLocation location = buildLocation(context, rs);
-				DataLocation targetLocation = buildLocation(context, rs.getDeparture());
+				DataLocation targetLocation = buildLocation(context, rs.getDepartureRef().getObject());
 
 				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 				reporter.addCheckPointReportError(context, ROUTE_SECTION_1, location, String.valueOf(distance),
@@ -185,12 +183,12 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 			}
 
 			// Arrival
-			distance = quickDistanceFromCoordinates(rs.getArrival().getLatitude().doubleValue(), plotLastLat, rs
-					.getArrival().getLongitude().doubleValue(), plotLastLong);
+			distance = quickDistanceFromCoordinates(rs.getArrivalRef().getObject().getLatitude().doubleValue(), plotLastLat, rs
+					.getArrivalRef().getObject().getLongitude().doubleValue(), plotLastLong);
 			// If route section distance doesn't exceed gap as parameter
 			if (distance > distanceMax) {
 				DataLocation location = buildLocation(context, rs);
-				DataLocation targetLocation = buildLocation(context, rs.getDeparture());
+				DataLocation targetLocation = buildLocation(context, rs.getDepartureRef().getObject());
 
 				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 				reporter.addCheckPointReportError(context, ROUTE_SECTION_1, location, String.valueOf(distance),
@@ -206,8 +204,9 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 		TransportSubModeNameEnum lineSubMode = vj.getRoute().getLine().getTransportSubModeName();
 		
 		for(StopPoint sp : vj.getStopPoints()) {
-			StopArea sa = sp.getScheduledStopPoint().getContainedInStopArea();
-			if(sa != null) {
+
+			if (sp.getScheduledStopPoint().getContainedInStopAreaRef().getObject() != null) {
+				StopArea sa = sp.getScheduledStopPoint().getContainedInStopAreaRef().getObject();
 				TransportModeNameEnum stopMode = sa.getTransportModeName();
 				TransportSubModeNameEnum stopSubMode = sa.getTransportSubMode();
 				

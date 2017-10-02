@@ -124,8 +124,8 @@ public class DataCollector {
 					if (stopPoint == null)
 						continue; // protection from missing stopPoint ranks
 					collection.getStopPoints().add(stopPoint);
-					if (stopPoint.getScheduledStopPoint().getContainedInStopArea()!=null)
-						collectStopAreas(collection, stopPoint.getScheduledStopPoint().getContainedInStopArea(), skipNoCoordinate, followLinks);
+					if (stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject()!=null)
+						collectStopAreas(collection, stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject(), skipNoCoordinate, followLinks);
 					collection.getFootnotes().addAll(stopPoint.getFootnotes());
 				}
 			}

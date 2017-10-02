@@ -75,17 +75,17 @@ public class CompassBearingGenerator {
 
 				List<StopPoint> stopPointsInJourneyPattern = jp.getStopPoints();
 
-				if (jp.getDepartureStopPoint().getScheduledStopPoint().getContainedInStopArea().getObjectId()
-						.equals(stop.getScheduledStopPoint().getContainedInStopArea().getObjectId())) {
+				if (jp.getDepartureStopPoint().getScheduledStopPoint().getContainedInStopAreaRef().getObjectId()
+						.equals(stop.getScheduledStopPoint().getContainedInStopAreaRef().getObjectId())) {
 					next = stopPointsInJourneyPattern.get(1);
-				} else if (jp.getArrivalStopPoint().getScheduledStopPoint().getContainedInStopArea().getObjectId()
-						.equals(stop.getScheduledStopPoint().getContainedInStopArea().getObjectId())) {
+				} else if (jp.getArrivalStopPoint().getScheduledStopPoint().getContainedInStopAreaRef().getObjectId()
+						.equals(stop.getScheduledStopPoint().getContainedInStopAreaRef().getObjectId())) {
 					previous = stopPointsInJourneyPattern.get(stopPointsInJourneyPattern.size() - 2);
 				} else {
 					// In the middle somewhere
 					for (int i = 0; i < stopPointsInJourneyPattern.size(); i++) {
-						if (stop.getScheduledStopPoint().getContainedInStopArea().getObjectId()
-								.equals(stopPointsInJourneyPattern.get(i).getScheduledStopPoint().getContainedInStopArea().getObjectId())) {
+						if (stop.getScheduledStopPoint().getContainedInStopAreaRef().getObjectId()
+								.equals(stopPointsInJourneyPattern.get(i).getScheduledStopPoint().getContainedInStopAreaRef().getObjectId())) {
 							previous = stopPointsInJourneyPattern.get(i - 1);
 							next = stopPointsInJourneyPattern.get(i + 1);
 							break;
@@ -118,8 +118,8 @@ public class CompassBearingGenerator {
 
 	private Integer bearing(StopPoint from, StopPoint to) {
 
-		StopArea fromArea = from.getScheduledStopPoint().getContainedInStopArea();
-		StopArea toArea = to.getScheduledStopPoint().getContainedInStopArea();
+		StopArea fromArea = from.getScheduledStopPoint().getContainedInStopAreaRef().getObject();
+		StopArea toArea = to.getScheduledStopPoint().getContainedInStopAreaRef().getObject();
 
 		if(fromArea != null && toArea != null && hasCoordinates(fromArea) && hasCoordinates(toArea)) {
 			

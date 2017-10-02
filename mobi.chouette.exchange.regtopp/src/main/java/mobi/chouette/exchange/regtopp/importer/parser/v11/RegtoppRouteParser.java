@@ -104,7 +104,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 							String scheduledStopPointId = chouetteStopPointId.replace(ObjectIdTypes.STOPPOINT_KEY, ObjectIdTypes.SCHEDULED_STOP_POINT_KEY);
 							ScheduledStopPoint scheduledStopPoint = ObjectFactory.getScheduledStopPoint(referential, scheduledStopPointId);
 							stopPoint.setScheduledStopPoint(scheduledStopPoint);
-							scheduledStopPoint.setContainedInStopArea(stopArea);
+							scheduledStopPoint.setContainedInStopAreaRef(new SimpleObjectReference(stopArea));
 
 							// Warn: Using comment field as temporary storage
 							// for line pointer. Used for lookup when parsing
@@ -258,7 +258,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 					content = jp.getRoute().getPublishedName();
 				}
 				if (content == null) {
-					content = jp.getArrivalStopPoint().getScheduledStopPoint().getContainedInStopArea().getName();
+					content = jp.getArrivalStopPoint().getScheduledStopPoint().getContainedInStopAreaRef().getObject().getName();
 				}
 
 				destinationDisplay.setName("Generated: " + content);
@@ -329,7 +329,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 				// Set to last useful stop
 				List<StopPoint> stopPoints = route.getStopPoints();
 				if (stopPoints != null && !stopPoints.isEmpty()) {
-					StopArea lastStopArea = stopPoints.get(stopPoints.size() - 1).getScheduledStopPoint().getContainedInStopArea();
+					StopArea lastStopArea = stopPoints.get(stopPoints.size() - 1).getScheduledStopPoint().getContainedInStopAreaRef().getObject();
 					if (lastStopArea == null) {
 						log.warn("No route name or last stop area present on route. Trying second last etc.");
 						lastStopArea = getUsefulStopArea(stopPoints);
@@ -361,8 +361,8 @@ public class RegtoppRouteParser extends LineSpecificParser {
 
 	StopArea getUsefulStopArea(List<StopPoint> stopPoints) {
 		for (int i = stopPoints.size() - 2; i >= 0; i--) {
-			if (stopPoints.get(i).getScheduledStopPoint().getContainedInStopArea() != null) {
-				return stopPoints.get(i).getScheduledStopPoint().getContainedInStopArea();
+			if (stopPoints.get(i).getScheduledStopPoint().getContainedInStopAreaRef().getObject() != null) {
+				return stopPoints.get(i).getScheduledStopPoint().getContainedInStopAreaRef().getObject();
 			} else {
 				continue;
 			}

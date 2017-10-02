@@ -87,7 +87,6 @@ public class RouteSection extends NeptuneIdentifiedObject {
 	@Type(type = "org.hibernate.spatial.GeometryType")
 	private LineString processedGeometry;
 
-	@Getter
 	@Column(name = "departure_stop_area_objectid_key")
 	private String departureStopAreaObjectId;
 
@@ -97,25 +96,29 @@ public class RouteSection extends NeptuneIdentifiedObject {
 	 * 
 	 * @return The actual value
 	 */
-	@Getter
 	@Transient
-	private StopArea departure;
+	private ObjectReference<StopArea> departureRef;
+
+	public ObjectReference<StopArea> getDepartureRef() {
+		if (departureRef == null) {
+			departureRef = new SimpleObjectReference<>(null);
+		}
+		return departureRef;
+	}
 
 	/**
-	 * set departure
+	 * set departureRef
 	 * 
 	 * @param stopArea
 	 */
-	public void setDeparture(StopArea stopArea) {
+	public void setDepartureRef(ObjectReference<StopArea> stopArea) {
 		if (stopArea != null) {
 			this.departureStopAreaObjectId = stopArea.getObjectId();
 		}
 
-		this.departure = stopArea;
+		this.departureRef = stopArea;
 	}
 
-
-	@Getter
 	@Column(name = "arrival_stop_area_objectid_key")
 	private String arrivalStopAreaObjectId;
 
@@ -124,21 +127,27 @@ public class RouteSection extends NeptuneIdentifiedObject {
 	 * 
 	 * @return The actual value
 	 */
-	@Getter
 	@Transient
-	private StopArea arrival;
+	private ObjectReference<StopArea> arrivalRef;
+
+	public ObjectReference<StopArea> getArrivalRef() {
+		if (arrivalRef == null) {
+			arrivalRef = new SimpleObjectReference<>(null);
+		}
+		return arrivalRef;
+	}
 
 	/**
 	 * set stopArea
 	 * 
 	 * @param stopArea
 	 */
-	public void setArrival(StopArea stopArea) {
+	public void setArrivalRef(ObjectReference<StopArea> stopArea) {
 		if (stopArea != null) {
 			this.arrivalStopAreaObjectId = stopArea.getObjectId();
 		}
 
-		this.arrival = stopArea;
+		this.arrivalRef = stopArea;
 	}
 
 }

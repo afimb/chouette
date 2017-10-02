@@ -61,12 +61,12 @@ public class RegtoppTestUtils implements RegtoppConstant, ReportConstant{
 				Assert.assertNotEquals(jp.getStopPoints().size(), 0, "line journeyPattens must have stoppoints");
 				for (StopPoint point : jp.getStopPoints()) {
 
-					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopArea(), "stoppoints must have StopAreas");
-					bps.add(point.getScheduledStopPoint().getContainedInStopArea());
+					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopAreaRef().getObject(), "stoppoints must have StopAreas");
+					bps.add(point.getScheduledStopPoint().getContainedInStopAreaRef().getObject());
 
-					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopArea().getParent(), "StopAreas must have parent : "
-							+ point.getScheduledStopPoint().getContainedInStopArea().getObjectId());
-					comms.add(point.getScheduledStopPoint().getContainedInStopArea().getParent());
+					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopAreaRef().getObject().getParent(), "StopAreas must have parent : "
+							+ point.getScheduledStopPoint().getContainedInStopAreaRef().getObjectId());
+					comms.add(point.getScheduledStopPoint().getContainedInStopAreaRef().getObject().getParent());
 				}
 				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0," journeyPattern should have VehicleJourneys");
                 for (VehicleJourney vj : jp.getVehicleJourneys()) {
@@ -143,10 +143,10 @@ public class RegtoppTestUtils implements RegtoppConstant, ReportConstant{
 				Assert.assertNotEquals(jp.getStopPoints().size(), 0, "line journeyPattens must have stoppoints");
 				for (StopPoint point : jp.getStopPoints()) {
 
-					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopArea(), "stoppoints must have StopAreas");
-					bps.add(point.getScheduledStopPoint().getContainedInStopArea());
+					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopAreaRef().getObject(), "stoppoints must have StopAreas");
+					bps.add(point.getScheduledStopPoint().getContainedInStopAreaRef().getObject());
 
-					comms.add(point.getScheduledStopPoint().getContainedInStopArea().getParent());
+					comms.add(point.getScheduledStopPoint().getContainedInStopAreaRef().getObject().getParent());
 				}
 				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0," journeyPattern should have VehicleJourneys");
                 for (VehicleJourney vj : jp.getVehicleJourneys()) {
@@ -177,7 +177,7 @@ public class RegtoppTestUtils implements RegtoppConstant, ReportConstant{
 				Assert.assertNotEquals(jp.getStopPoints().size(), 0, "line journeyPatterns must have stoppoints");
 				for (StopPoint point : jp.getStopPoints()) {
 
-					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopArea(), "stoppoints must have StopAreas");
+					Assert.assertNotNull(point.getScheduledStopPoint().getContainedInStopAreaRef().getObject(), "stoppoints must have StopAreas");
 
 				}
 				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0," journeyPattern should have VehicleJourneys");

@@ -12,6 +12,7 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.ScheduledStopPoint;
+import mobi.chouette.model.SimpleObjectReference;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
@@ -99,7 +100,7 @@ public class GtfsExportTransferProducerTests
       StopPoint feederSP = new StopPoint();
       ScheduledStopPoint feederSSP = new ScheduledStopPoint();
       feederSSP.setObjectId("GTFS:" + ObjectIdTypes.SCHEDULED_STOP_POINT_KEY + ":start");
-      feederSSP.setContainedInStopArea(feederSA);
+      feederSSP.setContainedInStopAreaRef(new SimpleObjectReference<>(feederSA));
       feederSP.setScheduledStopPoint(feederSSP);
 
       StopArea consumerSA = new StopArea();
@@ -107,7 +108,7 @@ public class GtfsExportTransferProducerTests
       StopPoint consumerSP = new StopPoint();
       ScheduledStopPoint consumerSSP = new ScheduledStopPoint();
       consumerSSP.setObjectId("GTFS:" + ObjectIdTypes.SCHEDULED_STOP_POINT_KEY + ":end");
-      consumerSSP.setContainedInStopArea(consumerSA);
+      consumerSSP.setContainedInStopAreaRef(new SimpleObjectReference<>(consumerSA));
       consumerSP.setScheduledStopPoint(consumerSSP);
 
 

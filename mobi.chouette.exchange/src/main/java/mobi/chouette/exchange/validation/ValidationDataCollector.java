@@ -52,8 +52,8 @@ public class ValidationDataCollector {
 			addAllStopPoints(collection, route, cache);
 			for (StopPoint stopPoint : route.getStopPoints()) {
 				collection.getStopPoints().add(stopPoint);
-				if (stopPoint != null && stopPoint.getScheduledStopPoint()!=null && stopPoint.getScheduledStopPoint().getContainedInStopArea()!=null) // protection from missing stopPoint ranks
-					collectStopAreas(collection, stopPoint.getScheduledStopPoint().getContainedInStopArea(), cache);
+				if (stopPoint != null && stopPoint.getScheduledStopPoint()!=null && stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject() != null) // protection from missing stopPoint ranks
+					collectStopAreas(collection, stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject(), cache);
 			}
 		}// end route loop
 		updateId(line, cache.getLines());
