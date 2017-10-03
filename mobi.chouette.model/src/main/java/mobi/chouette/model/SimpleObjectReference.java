@@ -7,20 +7,18 @@ package mobi.chouette.model;
  */
 public class SimpleObjectReference<T extends NeptuneIdentifiedObject> implements ObjectReference<T> {
 
-	private String objectId;
-
 	private T object;
 
 	public SimpleObjectReference(T object) {
 		this.object = object;
-		if (object != null) {
-			objectId = object.getObjectId();
-		}
 	}
 
 	@Override
 	public String getObjectId() {
-		return objectId;
+		if (object != null) {
+			return object.getObjectId();
+		}
+		return null;
 	}
 
 	@Override
