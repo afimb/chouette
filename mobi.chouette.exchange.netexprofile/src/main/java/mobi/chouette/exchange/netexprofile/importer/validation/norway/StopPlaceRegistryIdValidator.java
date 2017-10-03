@@ -26,9 +26,17 @@ public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator 
 
 	private Set<String> quayCache = new HashSet<>();
 
-	private String quayEndpoint;
+	// Endpoint for fetching all known external quay ids and their official stop place registry mapping
+	private String quayMappingEndpoint;
 
-	private String stopPlaceEndpoint;
+	// Endpoint for fetching all known external stop place ids and their official stop place registry mapping
+	private String stopPlaceMappingEndpoint;
+
+	// Endpoint for fetching all official stop place registry quay ids
+	private String quayIdsEndpoint;
+
+	// Endpoint for fetching all official stop place registry stop place ids
+	private String stopPlaceIdEndpoint;
 
 	private long lastUpdated = 0;
 
@@ -36,19 +44,34 @@ public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator 
 
 	public StopPlaceRegistryIdValidator() {
 
-		String quayEndpointPropertyKey = "iev.stop.place.register.mapping.quay";
-		quayEndpoint = System.getProperty(quayEndpointPropertyKey);
-		if (quayEndpoint == null) {
-			log.warn("Could not find property named " + quayEndpointPropertyKey + " in iev.properties");
-			quayEndpoint = "https://api-test.rutebanken.org/stop_places/1.0/mapping/quay?recordsPerRoundTrip=220000";
+		String quayMappingEndpointPropertyKey = "iev.stop.place.register.mapping.quay";
+		quayMappingEndpoint = System.getProperty(quayMappingEndpointPropertyKey);
+		if (quayMappingEndpoint == null) {
+			log.warn("Could not find property named " + quayMappingEndpointPropertyKey + " in iev.properties");
+			quayMappingEndpoint = "https://api-test.rutebanken.org/stop_places/1.0/mapping/quay?recordsPerRoundTrip=220000";
 		}
 
-		String stopPlaceEndpointPropertyKey = "iev.stop.place.register.mapping.stopplace";
-		stopPlaceEndpoint = System.getProperty(stopPlaceEndpointPropertyKey);
-		if (stopPlaceEndpoint == null) {
-			log.warn("Could not find property named " + stopPlaceEndpointPropertyKey + " in iev.properties");
-			stopPlaceEndpoint = "https://api-test.rutebanken.org/stop_places/1.0/mapping/stop_place?recordsPerRoundTrip=220000";
+		String stopPlaceMappingEndpointPropertyKey = "iev.stop.place.register.mapping.stopplace";
+		stopPlaceMappingEndpoint = System.getProperty(stopPlaceMappingEndpointPropertyKey);
+		if (stopPlaceMappingEndpoint == null) {
+			log.warn("Could not find property named " + stopPlaceMappingEndpointPropertyKey + " in iev.properties");
+			stopPlaceMappingEndpoint = "https://api-test.rutebanken.org/stop_places/1.0/mapping/stop_place?recordsPerRoundTrip=220000";
 		}
+
+		String quayIdEndpointPropertyKey = "iev.stop.place.register.id.quay";
+		quayIdsEndpoint = System.getProperty(quayIdEndpointPropertyKey);
+		if (quayIdsEndpoint == null) {
+			log.warn("Could not find property named " + quayIdEndpointPropertyKey + " in iev.properties");
+			quayIdsEndpoint = "https://api-test.rutebanken.org/stop_places/1.0/id/quay";
+		}
+
+		String stopPlaceIdEndpointPropertyKey = "iev.stop.place.register.id.stopplace";
+		stopPlaceIdEndpoint = System.getProperty(stopPlaceIdEndpointPropertyKey);
+		if (stopPlaceIdEndpoint == null) {
+			log.warn("Could not find property named " + stopPlaceIdEndpointPropertyKey + " in iev.properties");
+			stopPlaceIdEndpoint = "https://api-test.rutebanken.org/stop_places/1.0/id/stop_place";
+		}
+
 	}
 
 	@Override
@@ -62,8 +85,8 @@ public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator 
 			while (!result && remainingUpdateRetries-- > 0) {
 				// Fetch data and populate caches
 				log.info("Cache is old, refreshing quay and stopplace cache");
-				boolean stopPlaceOk = populateCache(stopPlaceCache, stopPlaceEndpoint);
-				boolean quayOK = populateCache(quayCache, quayEndpoint);
+				boolean stopPlaceOk = populateCache(stopPlaceCache, stopPlaceMappingEndpoint, stopPlaceIdEndpoint);
+				boolean quayOK = populateCache(quayCache, quayMappingEndpoint, quayIdsEndpoint);
 
 				if (quayOK && stopPlaceOk) {
 					lastUpdated = System.currentTimeMillis();
@@ -125,12 +148,44 @@ public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator 
 				new StopPlaceRegistryIdValidator.DefaultExternalReferenceValidatorFactory());
 	}
 
-	private boolean populateCache(Set<String> cache, String u) {
+	private boolean populateCache(Set<String> cache, String mappingEndpoint, String idEndpoint) {
 		cache.clear();
+		return addIdsFromMapping(cache, mappingEndpoint) && addIds(cache,idEndpoint);
+	}
+
+	private boolean addIds(Set<String> cache, String idEndpoint) {
 		HttpURLConnection connection = null;
 
 		try {
-			URL url = new URL(u);
+			URL url = new URL(idEndpoint);
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+			connection.setUseCaches(false);
+			connection.setDoOutput(true);
+			connection.connect();
+
+			// Get Response
+			InputStream is = connection.getInputStream();
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+			String line;
+			while ((line = rd.readLine()) != null) {
+				cache.add(line);
+			}
+			rd.close();
+			return true;
+		} catch (Exception e) {
+			log.error("Error getting NSR cache for url " + idEndpoint, e);
+		} finally {
+			connection.disconnect();
+		}
+		return false;
+	}
+
+	private boolean addIdsFromMapping(Set<String> cache, String mappingEndpoint) {
+		HttpURLConnection connection = null;
+
+		try {
+			URL url = new URL(mappingEndpoint);
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setUseCaches(false);
@@ -146,23 +201,18 @@ public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator 
 				if (split.length == 2) {
 					cache.add(split[0]);
 					cache.add(split[1]);
-				} else if (split.length == 3) {
-					cache.add(split[0]);
-					cache.add(split[2]);
 				} else {
-					log.error("NSR contains illegal mappings: " + u + " " + line);
+					log.error("NSR contains illegal mappings: " + mappingEndpoint + " " + line);
 				}
 			}
 			rd.close();
 			return true;
 		} catch (Exception e) {
-			log.error("Error getting NSR cache for url " + u, e);
+			log.error("Error getting NSR cache for url " + mappingEndpoint, e);
 		} finally {
 			connection.disconnect();
 		}
-
 		return false;
-
 	}
 
 	@Override
