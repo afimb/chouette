@@ -1,14 +1,14 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
-import org.rutebanken.netex.model.ScheduledStopPointRefStructure;
-import org.rutebanken.netex.model.ServiceJourneyInterchange;
-import org.rutebanken.netex.model.VehicleJourneyRefStructure;
-
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.model.Interchange;
 import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.VehicleJourney;
+
+import org.rutebanken.netex.model.ScheduledStopPointRefStructure;
+import org.rutebanken.netex.model.ServiceJourneyInterchange;
+import org.rutebanken.netex.model.VehicleJourneyRefStructure;
 
 public class ServiceJourneyInterchangeProducer extends NetexProducer implements NetexEntityProducer<ServiceJourneyInterchange, Interchange> {
 
@@ -39,23 +39,31 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
         netex.setToJourneyRef(consumerVehicleRef);
 
         // Find if interchange is within same line - if so use version reference
-        boolean interchangeWithinSameLine = false;
+        boolean feederJourneyWithinSameLine = false;
         VehicleJourney feederVehicleJourney = interchange.getFeederVehicleJourney();
 		if(feederVehicleJourney != null) {
 			if(consumerVehicleJourney != null) {
 				// Check if same line - if so they will both exist in the same file
 				if(consumerVehicleJourney.getRoute().getLine() == feederVehicleJourney.getRoute().getLine()) {
-					interchangeWithinSameLine = true;
+					feederJourneyWithinSameLine = true;
 				}        
 			}
 		}
-		
+
        // Feeder stoppoint ref
 		ScheduledStopPoint feederStopPoint = interchange.getFeederStopPoint();
 		ScheduledStopPointRefStructure feederSSPRef = netexFactory.createScheduledStopPointRefStructure();
-		
+
+		boolean feederPointWithinSameLine = false;
+		if (feederJourneyWithinSameLine) {
+			feederPointWithinSameLine = true;
+		} else if (feederStopPoint != null && consumerVehicleJourney != null) {
+			feederPointWithinSameLine = consumerVehicleJourney.getRoute().getLine().getRoutes().stream()
+					.map(route -> route.getStopPoints()).flatMap(i -> i.stream()).anyMatch(stopPoint -> feederStopPoint.equals(stopPoint.getScheduledStopPoint()));
+		}
+
 		if(feederStopPoint != null) {
-            NetexProducerUtils.populateReference(feederStopPoint, feederSSPRef, interchangeWithinSameLine);
+            NetexProducerUtils.populateReference(feederStopPoint, feederSSPRef, feederPointWithinSameLine);
         } else {
         	feederSSPRef.setRef(interchange.getFeederStopPointObjectid());
         }
@@ -65,7 +73,7 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
         // Feeder vehicle journey ref
         VehicleJourneyRefStructure feederVehicleRef = netexFactory.createVehicleJourneyRefStructure();
 		if(feederVehicleJourney != null) {
-			NetexProducerUtils.populateReference(feederVehicleJourney, feederVehicleRef, interchangeWithinSameLine);
+			NetexProducerUtils.populateReference(feederVehicleJourney, feederVehicleRef, feederJourneyWithinSameLine);
         } else {
             feederVehicleRef.setRef(interchange.getFeederVehicleJourneyObjectid());
         }

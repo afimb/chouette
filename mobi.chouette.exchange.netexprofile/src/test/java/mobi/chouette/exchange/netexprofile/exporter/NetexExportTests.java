@@ -611,13 +611,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
     }
 
-    /**
-     * 
-     * TEST DISABLED UNTIL SCHEDULED STOP POINT IS IMPLEMENTED
-     * 
-     * @throws Exception
-     */
-    @Test(groups = {"ExportLine"}, description = "Export Plugin should export file", enabled = false)
+    @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void exportLinesWithInterchanges() throws Exception {
         importLines("avinor_multiple_line_with_interchanges.zip", 3, 2, Arrays.asList(
                 createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
