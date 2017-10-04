@@ -1,13 +1,5 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NOTICE;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.PASSENGER_STOP_ASSIGNMENT;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.POINT_PROJECTION;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.ROUTE_POINT;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SCHEDULED_STOP_POINT;
-
 import java.io.File;
 import java.math.BigInteger;
 import java.nio.file.Path;
@@ -17,25 +9,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.Marshaller;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.rutebanken.netex.model.AvailabilityCondition;
-import org.rutebanken.netex.model.DestinationDisplay;
-import org.rutebanken.netex.model.DestinationDisplayRefStructure;
-import org.rutebanken.netex.model.GroupOfLines;
-import org.rutebanken.netex.model.Organisation_VersionStructure;
-import org.rutebanken.netex.model.PassengerStopAssignment;
-import org.rutebanken.netex.model.PointProjection;
-import org.rutebanken.netex.model.PointRefStructure;
-import org.rutebanken.netex.model.Projections_RelStructure;
-import org.rutebanken.netex.model.QuayRefStructure;
-import org.rutebanken.netex.model.RoutePoint;
-import org.rutebanken.netex.model.ScheduledStopPoint;
-import org.rutebanken.netex.model.ScheduledStopPointRefStructure;
-import org.rutebanken.netex.model.ServiceJourney;
-import org.rutebanken.netex.model.StopPlace;
-import org.rutebanken.netex.model.Via_VersionedChildStructure;
-import org.rutebanken.netex.model.Vias_RelStructure;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
@@ -59,8 +32,32 @@ import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Interchange;
+import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.rutebanken.netex.model.AvailabilityCondition;
+import org.rutebanken.netex.model.DestinationDisplay;
+import org.rutebanken.netex.model.DestinationDisplayRefStructure;
+import org.rutebanken.netex.model.GroupOfLines;
+import org.rutebanken.netex.model.Organisation_VersionStructure;
+import org.rutebanken.netex.model.PassengerStopAssignment;
+import org.rutebanken.netex.model.PointProjection;
+import org.rutebanken.netex.model.PointRefStructure;
+import org.rutebanken.netex.model.Projections_RelStructure;
+import org.rutebanken.netex.model.QuayRefStructure;
+import org.rutebanken.netex.model.RoutePoint;
+import org.rutebanken.netex.model.ScheduledStopPoint;
+import org.rutebanken.netex.model.ScheduledStopPointRefStructure;
+import org.rutebanken.netex.model.ServiceJourney;
+import org.rutebanken.netex.model.StopPlace;
+import org.rutebanken.netex.model.Via_VersionedChildStructure;
+import org.rutebanken.netex.model.Vias_RelStructure;
+
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 public class NetexLineDataProducer extends NetexProducer implements Constant {
 
@@ -121,12 +118,6 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 			exportableNetexData.getRoutes().add(netexRoute);
 		}
 
-		for (mobi.chouette.model.Route route : neptuneLine.getRoutes()) {
-			for (mobi.chouette.model.JourneyPattern neptuneJourneyPattern : route.getJourneyPatterns()) {
-				org.rutebanken.netex.model.ServiceJourneyPattern netexJourneyPattern = journeyPatternProducer.produce(context, neptuneJourneyPattern);
-				exportableNetexData.getJourneyPatterns().add(netexJourneyPattern);
-			}
-		}
 
 		produceAndCollectRoutePoints(exportableData.getLine().getRoutes(), exportableNetexData);
 		produceAndCollectScheduledStopPoints(exportableData.getLine().getRoutes(), exportableNetexData);
@@ -140,6 +131,15 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
 			for (Interchange interchange : vehicleJourney.getConsumerInterchanges()) {
 				exportableNetexData.getServiceJourneyInterchanges().add(serviceJourneyInterchangeProducer.produce(context, interchange));
+			}
+
+
+			JourneyPattern neptuneJourneyPattern = vehicleJourney.getJourneyPattern();
+			if (neptuneJourneyPattern != null) {
+				if (!exportableNetexData.getJourneyPatterns().containsKey(vehicleJourney.getJourneyPattern().getObjectId())) {
+					org.rutebanken.netex.model.ServiceJourneyPattern netexJourneyPattern = journeyPatternProducer.produce(context, neptuneJourneyPattern);
+					exportableNetexData.getJourneyPatterns().put(netexJourneyPattern.getId(), netexJourneyPattern);
+				}
 			}
 		}
 	}
