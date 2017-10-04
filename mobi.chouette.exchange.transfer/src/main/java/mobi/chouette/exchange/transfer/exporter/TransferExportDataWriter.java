@@ -22,6 +22,7 @@ import mobi.chouette.dao.RouteSectionDAO;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.importer.CleanRepositoryCommand;
 import mobi.chouette.exchange.transfer.Constant;
+import mobi.chouette.model.Interchange;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -71,8 +72,7 @@ public class TransferExportDataWriter implements Command, Constant {
 		
 		// Persist
 		log.info("Starting to persist lines, count=" + lineToTransfer.size());
-
-		// TODO collect StopArea, ConnectionLink, AccessLink and RouteSections into separate Sets
+		
 		Referential referential = new Referential();
 		try {
 			for (Line l : lineToTransfer) {
@@ -81,6 +81,19 @@ public class TransferExportDataWriter implements Command, Constant {
 						for(RouteSection rs : jp.getRouteSections()) {
 							referential.getRouteSections().putIfAbsent(rs.getObjectId(), rs);
 						}
+
+						// Make sure interchanges do not point to vehicle journeys or stops in other lines (reset id to wipe object ref)
+						for (VehicleJourney vj : jp.getVehicleJourneys()) {
+							for (Interchange fi : vj.getFeederInterchanges()) {
+								fi.setConsumerStopPointObjectid(fi.getConsumerStopPointObjectid());
+								fi.setConsumerVehicleJourneyObjectid(fi.getConsumerVehicleJourneyObjectid());
+							}
+							for (Interchange ci : vj.getConsumerInterchanges()) {
+								ci.setFeederStopPointObjectid(ci.getFeederStopPointObjectid());
+								ci.setFeederVehicleJourneyObjectid(ci.getFeederVehicleJourneyObjectid());
+							}
+						}
+
 					}
 
 				}
