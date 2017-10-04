@@ -132,6 +132,10 @@ public class GtfsExportTransferProducerTests
       FieldUtils.writeField(interchange, "feederVehicleJourney",feederVJ, true);
       FieldUtils.writeField(interchange, "consumerStopPoint",consumerSSP, true);
       FieldUtils.writeField(interchange, "consumerVehicleJourney",consumerVJ, true);
+
+      interchange.setFeederVehicleJourneyObjectid(feederVJ.getObjectId());
+      interchange.setConsumerVehicleJourneyObjectid(consumerVJ.getObjectId());
+
       interchange.setGuaranteed(Boolean.TRUE);
 
       producer.save(interchange, "GTFS",false);
