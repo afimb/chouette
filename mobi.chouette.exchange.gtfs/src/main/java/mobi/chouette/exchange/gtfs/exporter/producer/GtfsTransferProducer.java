@@ -65,11 +65,11 @@ public class GtfsTransferProducer extends AbstractProducer {
          transfer.setMinTransferTime(Integer.valueOf((int) (neptuneObject.getMinimumTransferTime().getStandardSeconds())));
       }
 
-     transfer.setFromTripId(toGtfsId(neptuneObject.getFeederVehicleJourney().getObjectId(), prefix, keepOriginalId));
+     	transfer.setFromTripId(toGtfsId(neptuneObject.getFeederVehicleJourneyObjectid(), prefix, keepOriginalId));
 //		transfer.setFromRouteId(
 //				toGtfsId(neptuneObject.getFeederVehicleJourney().getRoute().getLine().getObjectId(), prefix, keepOriginalId));
 
-		transfer.setToTripId(toGtfsId(neptuneObject.getConsumerVehicleJourney().getObjectId(), prefix, keepOriginalId));
+		transfer.setToTripId(toGtfsId(neptuneObject.getConsumerVehicleJourneyObjectid(), prefix, keepOriginalId));
 //		transfer.setToRouteId(
 //				toGtfsId(neptuneObject.getConsumerVehicleJourney().getRoute().getLine().getObjectId(), prefix, keepOriginalId));
 
