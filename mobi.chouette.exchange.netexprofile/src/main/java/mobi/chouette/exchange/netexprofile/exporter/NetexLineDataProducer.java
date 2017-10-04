@@ -150,13 +150,6 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 			exportableNetexData.getRoutes().add(netexRoute);
 		}
 
-		for (mobi.chouette.model.Route route : neptuneLine.getRoutes()) {
-			for (mobi.chouette.model.JourneyPattern neptuneJourneyPattern : route.getJourneyPatterns()) {
-				org.rutebanken.netex.model.ServiceJourneyPattern netexJourneyPattern = journeyPatternProducer.produce(context, neptuneJourneyPattern);
-				exportableNetexData.getJourneyPatterns().add(netexJourneyPattern);
-			}
-		}
-
 		produceAndCollectRoutePoints(exportableData.getLine().getRoutes(), exportableNetexData);
 		produceAndCollectScheduledStopPoints(exportableData.getLine().getRoutes(), exportableNetexData);
 		produceAndCollectStopAssignments(exportableData.getLine().getRoutes(), exportableNetexData, configuration);
@@ -381,36 +374,38 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 			for (StopPoint stopPoint : route.getStopPoints()) {
 
 				if (stopPoint != null) {
-					if (isSet(stopPoint.getScheduledStopPoint())) {
-						String stopAssignmentIdSuffix = stopPoint.getScheduledStopPoint().objectIdSuffix();
-						String stopAssignmentId = netexId(stopPoint.objectIdPrefix(), PASSENGER_STOP_ASSIGNMENT, stopAssignmentIdSuffix);
+					mobi.chouette.model.ScheduledStopPoint scheduledStopPoint = stopPoint.getScheduledStopPoint();
+					if (isSet(scheduledStopPoint)) {
+
+						String stopAssignmentIdSuffix = scheduledStopPoint.objectIdSuffix();
+						String stopAssignmentId = netexId(scheduledStopPoint.objectIdPrefix(), PASSENGER_STOP_ASSIGNMENT, stopAssignmentIdSuffix);
 
 						if (!exportableNetexData.getStopAssignments().containsKey(stopAssignmentId)) {
-							PassengerStopAssignment stopAssignment = createStopAssignment(stopPoint, stopAssignmentId, index, parameters);
+							PassengerStopAssignment stopAssignment = createStopAssignment(scheduledStopPoint, stopAssignmentId, index, parameters);
 							exportableNetexData.getStopAssignments().put(stopAssignmentId, stopAssignment);
 						}
 						index++;
 					} else {
 						throw new RuntimeException(
-								"StopPoint with id : " + stopPoint.getObjectId() + " is not contained in a StopArea. Cannot produce StopAssignment.");
+								"ScheduledStopPoint with id : " + scheduledStopPoint.getObjectId() + " is not contained in a StopArea. Cannot produce StopAssignment.");
 					}
 				}
 			}
 		}
 	}
 
-	private PassengerStopAssignment createStopAssignment(StopPoint stopPoint, String stopAssignmentId, int order, NetexprofileExportParameters parameters) {
-		String pointVersion = stopPoint.getObjectVersion() > 0 ? String.valueOf(stopPoint.getObjectVersion()) : NETEX_DEFAULT_OBJECT_VERSION;
+	private PassengerStopAssignment createStopAssignment(mobi.chouette.model.ScheduledStopPoint scheduledStopPoint, String stopAssignmentId, int order, NetexprofileExportParameters parameters) {
+		String pointVersion = scheduledStopPoint.getObjectVersion() > 0 ? String.valueOf(scheduledStopPoint.getObjectVersion()) : NETEX_DEFAULT_OBJECT_VERSION;
 
 		PassengerStopAssignment stopAssignment = netexFactory.createPassengerStopAssignment().withVersion(pointVersion).withId(stopAssignmentId)
 				.withOrder(BigInteger.valueOf(order));
 
 		ScheduledStopPointRefStructure scheduledStopPointRef = netexFactory.createScheduledStopPointRefStructure();
-		NetexProducerUtils.populateReference(stopPoint.getScheduledStopPoint(), scheduledStopPointRef, true);
+		NetexProducerUtils.populateReference(scheduledStopPoint, scheduledStopPointRef, true);
 		stopAssignment.setScheduledStopPointRef(netexFactory.createScheduledStopPointRef(scheduledStopPointRef));
 
-		if (isSet(stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject())) {
-			mobi.chouette.model.StopArea containedInStopArea = stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject();
+		if (isSet(scheduledStopPoint.getContainedInStopAreaRef().getObject())) {
+			mobi.chouette.model.StopArea containedInStopArea = scheduledStopPoint.getContainedInStopAreaRef().getObject();
 			QuayRefStructure quayRefStruct = netexFactory.createQuayRefStructure();
 			NetexProducerUtils.populateReference(containedInStopArea, quayRefStruct, false);
 			stopAssignment.setQuayRef(quayRefStruct);
