@@ -62,7 +62,7 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private List<ServiceJourneyPattern> journeyPatterns = new ArrayList<>();
+    private Map<String,ServiceJourneyPattern> journeyPatterns = new HashMap<>();
 
     @Getter
     @Setter

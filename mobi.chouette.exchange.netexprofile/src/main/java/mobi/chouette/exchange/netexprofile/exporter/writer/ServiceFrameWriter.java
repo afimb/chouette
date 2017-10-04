@@ -172,7 +172,7 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 	private static void writeJourneyPatternsElement(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
 		try {
 			writer.writeStartElement(JOURNEY_PATTERNS);
-			for (ServiceJourneyPattern journeyPattern : exportableData.getJourneyPatterns()) {
+			for (ServiceJourneyPattern journeyPattern : exportableData.getJourneyPatterns().values()) {
 				marshaller.marshal(netexFactory.createServiceJourneyPattern(journeyPattern), writer);
 			}
 			writer.writeEndElement();
