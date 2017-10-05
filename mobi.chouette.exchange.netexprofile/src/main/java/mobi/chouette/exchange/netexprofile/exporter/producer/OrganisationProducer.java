@@ -26,7 +26,7 @@ public class OrganisationProducer extends NetexProducer implements NetexEntityPr
 			if (isSet(company.getPublicPhone(), company.getPublicEmail(), company.getPublicUrl())) {
 				ContactStructure contactStructure = netexFactory.createContactStructure();
 				contactStructure.setPhone(company.getPublicPhone());
-				contactStructure.setPhone(company.getPublicEmail());
+				contactStructure.setEmail(company.getPublicEmail());
 				contactStructure.setUrl(company.getPublicUrl());
 				operator.setCustomerServiceContactDetails(contactStructure);
 			}
