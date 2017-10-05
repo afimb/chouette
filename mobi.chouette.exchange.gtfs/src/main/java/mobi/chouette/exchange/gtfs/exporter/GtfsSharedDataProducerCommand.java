@@ -170,9 +170,7 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 		
 		// produce interchanges
 		for(Interchange interchange : interchanges) {
-			if (isInterchangeValid(interchange)) {
-				transferProducer.save(interchange, sharedPrefix, configuration.isKeepOriginalId());
-			}
+			transferProducer.save(interchange, sharedPrefix, configuration.isKeepOriginalId());
 		}
 
 		for (Company company : companies) {
@@ -189,15 +187,6 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 		}
 
 	}
-
-	/**
-	 * Interchange relations are not enforced in db. Make sure they are valid before exporting.
-	 */
-	private boolean isInterchangeValid(Interchange interchange) {
-		return interchange.getConsumerVehicleJourney() != null && interchange.getFeederVehicleJourney() != null
-				&& interchange.getConsumerStopPoint() != null && interchange.getFeederStopPoint() != null;
-	}
-
 
 	public static class DefaultCommandFactory extends CommandFactory {
 

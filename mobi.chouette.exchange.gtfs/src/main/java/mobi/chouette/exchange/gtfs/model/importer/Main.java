@@ -13,7 +13,6 @@ import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -140,12 +139,9 @@ public class Main {
 			// System.out.println(route);
 			routes.validate(route, dao);
 
-			if (!StringUtils.isEmpty(route.getAgencyId())) {
-				Index<GtfsAgency> agencies = dao.getAgencyById();
-				GtfsAgency agency = agencies.getValue(route.getAgencyId());
-				agencies.validate(agency, dao);
-			}
-
+			Index<GtfsAgency> agencies = dao.getAgencyById();
+			GtfsAgency agency = agencies.getValue(route.getAgencyId());
+			agencies.validate(agency, dao);
 			// System.out.println(agency);
 
 			Index<GtfsTrip> trips = dao.getTripByRoute();

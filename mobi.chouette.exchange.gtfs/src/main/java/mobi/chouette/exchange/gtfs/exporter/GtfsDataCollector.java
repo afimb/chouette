@@ -13,7 +13,12 @@ import org.joda.time.LocalDate;
 @Log4j
 public class GtfsDataCollector extends DataCollector{
 	public boolean collect(ExportableData collection, Line line, LocalDate startDate, LocalDate endDate) {
-       return collect(collection,line,startDate,endDate,false,false);
+       boolean res =  collect(collection,line,startDate,endDate,false,false);
+		if (line.getCompany() == null) {
+			log.error("line " + line.getObjectId() + " : missing company");
+			return false;
+		}
+		return res;
 	}
 
 	public boolean collect(ExportableData collection, Collection<StopArea> stopAreas) {
