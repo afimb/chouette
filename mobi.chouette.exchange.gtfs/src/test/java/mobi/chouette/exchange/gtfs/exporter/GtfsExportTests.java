@@ -332,57 +332,52 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 
     @Inject
     UserTransaction utx;
-
-    @Test(groups = { "export" }, description = "test not export GTFS Line than has no Company")
-    public void verifyNotExportLineWithNoCompany() throws Exception
-    {
-	// save data
-	importNeptuneLines("test_neptune.zip",6,6);
-	// export data
-	Context context = initExportContext();
+	@Test(groups = {"export"}, description = "test should export GTFS Line than has no Company")
+	public void verifyShouldExportLineWithNoCompany() throws Exception {
+		// save data
+		importNeptuneLines("test_neptune.zip", 6, 6);
+		// export data
+		Context context = initExportContext();
 
 
-	utx.begin();
-	em.joinTransaction();
-	Line myLine = lineDAO.findByObjectId("CITURA:Line:01");
-	myLine.setCompany(null);
-	String myLineName = myLine.getName();
-	utx.commit();
+		utx.begin();
+		em.joinTransaction();
+		Line myLine = lineDAO.findByObjectId("CITURA:Line:01");
+		myLine.setCompany(null);
+		String myLineName = myLine.getName();
+		utx.commit();
 
-	GtfsExportParameters configuration = (GtfsExportParameters) context.get(CONFIGURATION);
-	configuration.setAddMetadata(true);
-	configuration.setReferencesType("line");
-	configuration.setObjectIdPrefix("CITURA");
-	configuration.setTimeZone("Europe/Paris");
-	Command command = (Command) CommandFactory.create(initialContext,
-							  GtfsExporterCommand.class.getName());
+		GtfsExportParameters configuration = (GtfsExportParameters) context.get(CONFIGURATION);
+		configuration.setAddMetadata(true);
+		configuration.setReferencesType("line");
+		configuration.setObjectIdPrefix("CITURA");
+		configuration.setTimeZone("Europe/Paris");
+		Command command = (Command) CommandFactory.create(initialContext,
+				GtfsExporterCommand.class.getName());
 
-	try {
-	    command.execute(context);
-	} catch (Exception ex) {
-	    log.error("test failed", ex);
-	    throw ex;
+		try {
+			command.execute(context);
+		} catch (Exception ex) {
+			log.error("test failed", ex);
+			throw ex;
+		}
+
+		ActionReport report = (ActionReport) context.get(REPORT);
+
+		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+		for (FileReport info : report.getFiles()) {
+			Reporter.log(info.toString(), true);
+		}
+		Assert.assertEquals(report.getFiles().size(), 9, "file reported");
+		for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+			Reporter.log(info.toString(), true);
+		}
+		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 6, "line reported");
+		for (int i = 0; i < 6; i++) {
+			Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i).getStatus(), OBJECT_STATE.OK, "line status");
+		}
+
 	}
-
-	ActionReport report = (ActionReport) context.get(REPORT);
-
-	Assert.assertEquals(report.getResult(), STATUS_OK, "result");
-	for (FileReport info : report.getFiles()) {
-	    Reporter.log(info.toString(),true);
-	}
-	Assert.assertEquals(report.getFiles().size(), 9, "file reported");
-	for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
-	    Reporter.log(info.toString(),true);
-	}
-	Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 6, "line reported");
-	for (int i = 0; i < 6; i++) {
-	    if (myLineName.equals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i).getDescription()))
-		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i).getStatus(), OBJECT_STATE.ERROR, "no company for this line");
-	    else
-		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i).getStatus(), OBJECT_STATE.OK, "line status");
-	}
-
-    }
 
     @Test(groups = { "export" }, description = "test export GTFS Line")
     public void verifyImportExportLinesWithTransfers() throws Exception

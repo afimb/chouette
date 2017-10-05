@@ -69,7 +69,8 @@ public class GtfsLineProducerCommand implements Command, Constant {
 			}
 			reporter.addObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
 					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
-			if (line.getCompany() == null) {
+			if (line.getCompany() == null && line.getNetwork() == null) {
+				log.info("Ignoring line without company or network: " + line.getObjectId());
 				reporter.addErrorToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE,
 						ActionReporter.ERROR_CODE.INVALID_FORMAT, "no company for this line");
 				return SUCCESS;

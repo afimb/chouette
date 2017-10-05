@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.exporter.DataCollector;
+import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -14,9 +15,12 @@ import org.joda.time.LocalDate;
 public class GtfsDataCollector extends DataCollector{
 	public boolean collect(ExportableData collection, Line line, LocalDate startDate, LocalDate endDate) {
        boolean res =  collect(collection,line,startDate,endDate,false,false);
-		if (line.getCompany() == null) {
-			log.error("line " + line.getObjectId() + " : missing company");
-			return false;
+		if (res && line.getCompany() == null) {
+			log.info("line " + line.getObjectId() + " : missing company, using network instead");
+			Company networkAsCompany = new Company();
+			networkAsCompany.setObjectId(line.getNetwork().getObjectId());
+			networkAsCompany.setName(line.getNetwork().getName());
+			collection.getCompanies().add(networkAsCompany);
 		}
 		return res;
 	}
