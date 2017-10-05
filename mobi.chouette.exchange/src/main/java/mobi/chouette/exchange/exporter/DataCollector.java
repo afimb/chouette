@@ -63,6 +63,7 @@ public class DataCollector {
 						}
 						if (isValid) {
 							collection.getTimetables().addAll(vehicleJourney.getTimetables());
+							collection.getVehicleJourneys().add(vehicleJourney);
 							collectInterchanges(collection, vehicleJourney, skipNoCoordinate, followLinks);
 							for(VehicleJourneyAtStop vjas : vehicleJourney.getVehicleJourneyAtStops()) {
 								collection.getFootnotes().addAll(vjas.getFootnotes());
@@ -152,7 +153,6 @@ public class DataCollector {
 	}
 
 	private void collectInterchanges(ExportableData collection, VehicleJourney vehicleJourney, boolean skipNoCoordinate, boolean followLinks) {
-		collection.getVehicleJourneys().add(vehicleJourney);
 		collection.getInterchanges().addAll(vehicleJourney.getFeederInterchanges());
 		vehicleJourney.getFeederInterchanges().stream()
 				.filter(ci -> ci.getConsumerStopPoint()!=null && ci.getConsumerStopPoint().getContainedInStopAreaRef().getObject()!=null )
