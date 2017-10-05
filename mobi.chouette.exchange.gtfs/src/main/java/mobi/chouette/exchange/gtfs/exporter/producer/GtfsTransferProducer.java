@@ -53,23 +53,30 @@ public class GtfsTransferProducer extends AbstractProducer {
 
 	public boolean save(Interchange neptuneObject, String prefix, boolean keepOriginalId) {
 		transfer.clear();
-		transfer.setFromStopId(toGtfsId(neptuneObject.getFeederStopPoint().getContainedInStopAreaRef()
-				.getObjectId(), prefix, keepOriginalId));
-		transfer
-				.setToStopId(toGtfsId(neptuneObject.getConsumerStopPoint().getContainedInStopAreaRef().getObjectId(), prefix, keepOriginalId));
-
+		if (neptuneObject.getFeederStopPoint()!=null) {
+			transfer.setFromStopId(toGtfsId(neptuneObject.getFeederStopPoint().getContainedInStopAreaRef()
+					.getObjectId(), prefix, keepOriginalId));
+		}
+		if (neptuneObject.getConsumerStopPoint()!=null) {
+			transfer
+					.setToStopId(toGtfsId(neptuneObject.getConsumerStopPoint().getContainedInStopAreaRef().getObjectId(), prefix, keepOriginalId));
+		}
 		if (Boolean.TRUE.equals(neptuneObject.getGuaranteed())) {
 			transfer.setTransferType(GtfsTransfer.TransferType.Timed);
 		} else if (neptuneObject.getMinimumTransferTime() !=null){
          transfer.setTransferType(GtfsTransfer.TransferType.Minimal);
          transfer.setMinTransferTime(Integer.valueOf((int) (neptuneObject.getMinimumTransferTime().getStandardSeconds())));
-      }
+		}
 
-     	transfer.setFromTripId(toGtfsId(neptuneObject.getFeederVehicleJourneyObjectid(), prefix, keepOriginalId));
+		if (neptuneObject.getFeederVehicleJourney()!=null) {
+			transfer.setFromTripId(toGtfsId(neptuneObject.getFeederVehicleJourney().getObjectId(), prefix, keepOriginalId));
+		}
 //		transfer.setFromRouteId(
 //				toGtfsId(neptuneObject.getFeederVehicleJourney().getRoute().getLine().getObjectId(), prefix, keepOriginalId));
 
-		transfer.setToTripId(toGtfsId(neptuneObject.getConsumerVehicleJourneyObjectid(), prefix, keepOriginalId));
+		if (neptuneObject.getConsumerVehicleJourney()!=null) {
+			transfer.setToTripId(toGtfsId(neptuneObject.getConsumerVehicleJourney().getObjectId(), prefix, keepOriginalId));
+		}
 //		transfer.setToRouteId(
 //				toGtfsId(neptuneObject.getConsumerVehicleJourney().getRoute().getLine().getObjectId(), prefix, keepOriginalId));
 
