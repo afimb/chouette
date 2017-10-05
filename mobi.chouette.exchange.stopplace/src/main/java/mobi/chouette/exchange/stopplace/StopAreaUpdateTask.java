@@ -66,7 +66,7 @@ public class StopAreaUpdateTask {
 		Map<String, StopArea> existingContainedStopAreas = existing.getContainedStopAreas().stream().collect(Collectors.toMap(StopArea::getObjectId,
 				Function.identity()));
 
-		stopAreaUpdater.update(context, existing, stopArea);
+
 		existing.getContainedStopAreas().clear();
 		for (StopArea containedStopArea : new ArrayList<>(stopArea.getContainedStopAreas())) {
 
@@ -80,15 +80,14 @@ public class StopAreaUpdateTask {
 
 			} else {
 				log.debug("Updating existing contained StopArea : " + stopArea);
-				stopAreaUpdater.update(context, existingContainedStopAreaForSameParent, containedStopArea);
-				stopAreaDAO.update(existingContainedStopAreaForSameParent);
+				updateExistingStopArea(containedStopArea, existingContainedStopAreaForSameParent);
 			}
 		}
 
 		for (StopArea obsoleteStopArea : existingContainedStopAreas.values()) {
 			registerRemovedContainedStopArea(obsoleteStopArea);
 		}
-
+		stopAreaUpdater.update(context, existing, stopArea);
 		stopAreaDAO.update(existing);
 	}
 
