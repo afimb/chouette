@@ -333,8 +333,8 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
     @Inject
     UserTransaction utx;
 
-    @Test(groups = { "export" }, description = "test not export GTFS Line than has no Company")
-    public void verifyNotExportLineWithNoCompany() throws Exception
+    @Test(groups = { "export" }, description = "test should export GTFS Line than has no Company")
+    public void verifyShouldExportLineWithNoCompany() throws Exception
     {
 	// save data
 	importNeptuneLines("test_neptune.zip",6,6);
@@ -376,9 +376,6 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 	}
 	Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 6, "line reported");
 	for (int i = 0; i < 6; i++) {
-	    if (myLineName.equals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i).getDescription()))
-		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i).getStatus(), OBJECT_STATE.ERROR, "no company for this line");
-	    else
 		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i).getStatus(), OBJECT_STATE.OK, "line status");
 	}
 

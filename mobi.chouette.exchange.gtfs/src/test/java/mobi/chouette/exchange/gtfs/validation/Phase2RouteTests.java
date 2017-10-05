@@ -38,37 +38,22 @@ public class Phase2RouteTests extends AbstractPhase2Tests {
 		}
 	}
 	
-	@Test(groups = { "Phase 2 Route" }, description = "missing value agency_id" ,priority=321 )
+	@Test(groups = { "Phase 2 Route" }, description = "missing value agency_id is ok" ,priority=321 )
 	public void verifyTest_2_2_1() throws Exception {
 		log.info(Color.GREEN + "Route_2_1 : missing value agency_id" + Color.NORMAL);
 		Context context = new Context();
-		CheckPointReport result = verifyValidation( log, context, "route_2_1", GTFS_2_GTFS_Common_1,SEVERITY.ERROR, RESULT.NOK,true);
+		CheckPointReport result = verifyValidation( log, context, "route_2_1", GTFS_2_GTFS_Common_1,SEVERITY.ERROR, RESULT.OK,true);
 
-		Assert.assertEquals(result.getCheckPointErrorCount(), 1, "detail count");
-		for (CheckPointErrorReport detail : getDetails(context, result)) 
-		{
-			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
-			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
-			Assert.assertEquals(detail.getSource().getFile().getFilename(), "routes.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
-		}
+		Assert.assertEquals(result.getCheckPointErrorCount(), 0, "detail count");
 	}
 	
-	@Test(groups = { "Phase 2 Route" }, description = "missing column agency_id" ,priority=322 )
+	@Test(groups = { "Phase 2 Route" }, description = "missing column agency_id is ok" ,priority=322 )
 	public void verifyTest_2_2_2() throws Exception {
 		log.info(Color.GREEN + "Route_2_2 : missing column agency_id" + Color.NORMAL);
 		Context context = new Context();
-		CheckPointReport result = verifyValidation( log, context, "route_2_2", GTFS_2_GTFS_Common_1,SEVERITY.ERROR, RESULT.NOK,true);
+		CheckPointReport result = verifyValidation( log, context, "route_2_2", GTFS_2_GTFS_Common_1,SEVERITY.ERROR, RESULT.OK,true);
 
-		Assert.assertEquals(result.getCheckPointErrorCount(), 7, "detail count");
-		int count = 2;
-		for (CheckPointErrorReport detail : getDetails(context, result)) 
-		{
-			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
-			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
-			Assert.assertEquals(detail.getSource().getFile().getFilename(), "routes.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(count++), "detail must refer bad line");
-		}
+		Assert.assertEquals(result.getCheckPointErrorCount(), 0, "detail count");
 	}
 
 	@Test(groups = { "Phase 2 Route" }, description = "unknown agency_id" ,priority=323 )

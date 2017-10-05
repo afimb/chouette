@@ -10,6 +10,8 @@ import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.importer.AgencyById.FIELDS;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 
 	public static enum FIELDS {
@@ -111,7 +113,7 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 
 		value = array[i++];
 		testExtraSpace(FIELDS.agency_id.name(), value, bean);
-		bean.setAgencyId(STRING_CONVERTER.from(context, FIELDS.agency_id, value, GtfsAgency.DEFAULT_ID, false));
+		bean.setAgencyId(STRING_CONVERTER.from(context, FIELDS.agency_id, value, "", false));
 
 		boolean noShortName = false;
 		value = array[i++];
@@ -304,15 +306,7 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 		GtfsRoute copy_bean = new GtfsRoute(bean);
 		// Verify the agency_id
 		String agencyId = copy_bean.getAgencyId();
-		if (agencyId == null || GtfsAgency.DEFAULT_ID.equals(agencyId)) {
-			if (dao.getAgencyById().getLength() == 1) {
-				agencyId = dao.getAgencyById().iterator().next().getAgencyId();
-			} else {
-				agencyId = GtfsAgency.DEFAULT_ID;
-			}
-			copy_bean.setAgencyId(agencyId);
-		}
-		if (dao.getAgencyById().getValue(agencyId) == null) {
+		if (!StringUtils.isEmpty(agencyId) && dao.getAgencyById().getValue(agencyId) == null) {
 			// this bean has no agency
 			if (getIndex(FIELDS.agency_id.name()) == null)
 				bean.getErrors().add(
