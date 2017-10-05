@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PublicationDelivery xmlns="http://www.netex.org.uk/netex" xmlns:ns2="http://www.opengis.net/gml/3.2" xmlns:ns3="http://www.siri.org.uk/siri" version="any">
+    <PublicationTimestamp>2017-10-05T14:00:34.445+02:00</PublicationTimestamp>
+    <ParticipantRef>NSR</ParticipantRef>
+    <dataObjects>
+        <SiteFrame modification="new" version="1" id="NSR:SiteFrame:2115099013">
+            <Description>Site frame with stops</Description>
+            <stopPlaces modificationSet="all">
+                <StopPlace created="2017-10-02T10:51:24.876+02:00" changed="2017-10-04T11:10:33.427+02:00" modification="new" version="5" id="NSR:StopPlace:58291">
+                    <ValidBetween>
+                        <FromDate>2017-10-04T11:11:23+02:00</FromDate>
+                    </ValidBetween>
+                    <keyList>
+                        <KeyValue>
+                            <Key>imported-id</Key>
+                            <Value></Value>
+                        </KeyValue>
+                        <KeyValue>
+                            <Key>CHANGED_BY</Key>
+                            <Value>torbjorn.barslett</Value>
+                        </KeyValue>
+                        <KeyValue>
+                            <Key>VERSION_COMMENT</Key>
+                            <Value>Flyttet midtpunkt</Value>
+                        </KeyValue>
+                        <KeyValue>
+                            <Key>IS_PARENT_STOP_PLACE</Key>
+                            <Value>true</Value>
+                        </KeyValue>
+                    </keyList>
+                    <Name lang="no">Homansbyen</Name>
+                    <Description lang="no"/>
+                    <Centroid>
+                        <Location>
+                            <Longitude>10.726366</Longitude>
+                            <Latitude>59.923035</Latitude>
+                        </Location>
+                    </Centroid>
+                    <AccessModes></AccessModes>
+                    <TopographicPlaceRef ref="KVE:TopographicPlace:0301" created="2017-10-05T14:00:34.285+02:00"/>
+                    <AirSubmode>unknown</AirSubmode>
+                    <OtherTransportModes></OtherTransportModes>
+                </StopPlace>
+                <StopPlace created="2017-06-28T12:54:05.484+02:00" changed="2017-10-04T11:10:33.427+02:00" modification="new" version="7" id="NSR:StopPlace:62034">
+                    <keyList>
+                        <KeyValue>
+                            <Key>merged-id</Key>
+                            <Value>NSR:StopPlace:4500</Value>
+                        </KeyValue>
+                        <KeyValue>
+                            <Key>imported-id</Key>
+                            <Value>RUT:StopPlace:03010213-2,RUT:StopPlace:03010213,RUT:StopPlace:3010213-2,NRI:StopPlace:761012043</Value>
+                        </KeyValue>
+                        <KeyValue>
+                            <Key>IS_PARENT_STOP_PLACE</Key>
+                            <Value>false</Value>
+                        </KeyValue>
+                    </keyList>
+                    <Description lang="no"></Description>
+                    <Centroid>
+                        <Location>
+                            <Longitude>10.726280</Longitude>
+                            <Latitude>59.923094</Latitude>
+                        </Location>
+                    </Centroid>
+                    <AccessibilityAssessment modification="new" version="12" id="NSR:AccessibilityAssessment:62033">
+                        <MobilityImpairedAccess>unknown</MobilityImpairedAccess>
+                        <limitations>
+                            <AccessibilityLimitation modification="new" version="11" id="72959">
+                                <WheelchairAccess>unknown</WheelchairAccess>
+                                <StepFreeAccess>unknown</StepFreeAccess>
+                                <EscalatorFreeAccess>unknown</EscalatorFreeAccess>
+                                <LiftFreeAccess>unknown</LiftFreeAccess>
+                                <AudibleSignalsAvailable>unknown</AudibleSignalsAvailable>
+                            </AccessibilityLimitation>
+                        </limitations>
+                    </AccessibilityAssessment>
+                    <AccessModes></AccessModes>
+                    <ParentSiteRef ref="NSR:StopPlace:58291" version="5"/>
+                    <TransportMode>bus</TransportMode>
+                    <OtherTransportModes></OtherTransportModes>
+                    <StopPlaceType>onstreetBus</StopPlaceType>
+                    <Weighting>interchangeAllowed</Weighting>
+                    <quays>
+                        <Quay changed="2017-10-04T11:07:56.575+02:00" modification="new" version="5" id="NSR:Quay:8129">
+                            <keyList>
+                                <KeyValue>
+                                    <Key>imported-id</Key>
+                                    <Value>RUT:Quay:0301021321,RUT:Quay:301021321,NRI:Quay:762012046</Value>
+                                </KeyValue>
+                            </keyList>
+                            <Description lang="no"></Description>
+                            <PrivateCode>21</PrivateCode>
+                            <Centroid>
+                                <Location>
+                                    <Longitude>10.727315</Longitude>
+                                    <Latitude>59.923524</Latitude>
+                                </Location>
+                            </Centroid>
+                            <AccessibilityAssessment modification="new" version="3" id="NSR:AccessibilityAssessment:58481">
+                                <MobilityImpairedAccess>unknown</MobilityImpairedAccess>
+                                <limitations>
+                                    <AccessibilityLimitation modification="new" version="3" id="72960">
+                                        <WheelchairAccess>unknown</WheelchairAccess>
+                                        <StepFreeAccess>unknown</StepFreeAccess>
+                                        <EscalatorFreeAccess>unknown</EscalatorFreeAccess>
+                                        <LiftFreeAccess>unknown</LiftFreeAccess>
+                                        <AudibleSignalsAvailable>unknown</AudibleSignalsAvailable>
+                                    </AccessibilityLimitation>
+                                </limitations>
+                            </AccessibilityAssessment>
+                            <AccessModes></AccessModes>
+                            <OtherTransportModes></OtherTransportModes>
+                            <PublicCode></PublicCode>
+                            <CompassBearing>46.0</CompassBearing>
+                        </Quay>
+                        <Quay changed="2017-10-04T11:07:56.576+02:00" modification="new" version="7" id="NSR:Quay:104060">
+                            <keyList>
+                                <KeyValue>
+                                    <Key>imported-id</Key>
+                                    <Value>RUT:Quay:301021204</Value>
+                                </KeyValue>
+                            </keyList>
+                            <Description lang="no"/>
+                            <PrivateCode>4</PrivateCode>
+                            <Centroid>
+                                <Location>
+                                    <Longitude>10.726540</Longitude>
+                                    <Latitude>59.922618</Latitude>
+                                </Location>
+                            </Centroid>
+                            <AccessibilityAssessment modification="new" version="3" id="NSR:AccessibilityAssessment:58482">
+                                <MobilityImpairedAccess>unknown</MobilityImpairedAccess>
+                                <limitations>
+                                    <AccessibilityLimitation modification="new" version="3" id="72961">
+                                        <WheelchairAccess>unknown</WheelchairAccess>
+                                        <StepFreeAccess>unknown</StepFreeAccess>
+                                        <EscalatorFreeAccess>unknown</EscalatorFreeAccess>
+                                        <LiftFreeAccess>unknown</LiftFreeAccess>
+                                        <AudibleSignalsAvailable>unknown</AudibleSignalsAvailable>
+                                    </AccessibilityLimitation>
+                                </limitations>
+                            </AccessibilityAssessment>
+                            <AccessModes></AccessModes>
+                            <OtherTransportModes></OtherTransportModes>
+                        </Quay>
+                        <Quay changed="2017-10-04T11:07:56.576+02:00" modification="new" version="7" id="NSR:Quay:104061">
+                            <keyList>
+                                <KeyValue>
+                                    <Key>imported-id</Key>
+                                    <Value>RUT:Quay:301021203</Value>
+                                </KeyValue>
+                            </keyList>
+                            <Description lang="no"/>
+                            <PrivateCode>3</PrivateCode>
+                            <Centroid>
+                                <Location>
+                                    <Longitude>10.726524</Longitude>
+                                    <Latitude>59.922439</Latitude>
+                                </Location>
+                            </Centroid>
+                            <AccessibilityAssessment modification="new" version="3" id="NSR:AccessibilityAssessment:58483">
+                                <MobilityImpairedAccess>unknown</MobilityImpairedAccess>
+                                <limitations>
+                                    <AccessibilityLimitation modification="new" version="3" id="72962">
+                                        <WheelchairAccess>unknown</WheelchairAccess>
+                                        <StepFreeAccess>unknown</StepFreeAccess>
+                                        <EscalatorFreeAccess>unknown</EscalatorFreeAccess>
+                                        <LiftFreeAccess>unknown</LiftFreeAccess>
+                                        <AudibleSignalsAvailable>unknown</AudibleSignalsAvailable>
+                                    </AccessibilityLimitation>
+                                </limitations>
+                            </AccessibilityAssessment>
+                            <AccessModes></AccessModes>
+                            <OtherTransportModes></OtherTransportModes>
+                        </Quay>
+                        <Quay changed="2017-10-04T11:07:56.577+02:00" modification="new" version="5" id="NSR:Quay:8128">
+                            <keyList>
+                                <KeyValue>
+                                    <Key>imported-id</Key>
+                                    <Value>RUT:Quay:0301021322,RUT:Quay:301021322,NRI:Quay:762012047</Value>
+                                </KeyValue>
+                            </keyList>
+                            <Description lang="no"></Description>
+                            <PrivateCode>22</PrivateCode>
+                            <Centroid>
+                                <Location>
+                                    <Longitude>10.727130</Longitude>
+                                    <Latitude>59.923558</Latitude>
+                                </Location>
+                            </Centroid>
+                            <AccessibilityAssessment modification="new" version="3" id="NSR:AccessibilityAssessment:58484">
+                                <MobilityImpairedAccess>unknown</MobilityImpairedAccess>
+                                <limitations>
+                                    <AccessibilityLimitation modification="new" version="3" id="72963">
+                                        <WheelchairAccess>unknown</WheelchairAccess>
+                                        <StepFreeAccess>unknown</StepFreeAccess>
+                                        <EscalatorFreeAccess>unknown</EscalatorFreeAccess>
+                                        <LiftFreeAccess>unknown</LiftFreeAccess>
+                                        <AudibleSignalsAvailable>unknown</AudibleSignalsAvailable>
+                                    </AccessibilityLimitation>
+                                </limitations>
+                            </AccessibilityAssessment>
+                            <AccessModes></AccessModes>
+                            <OtherTransportModes></OtherTransportModes>
+                            <PublicCode></PublicCode>
+                            <CompassBearing>226.0</CompassBearing>
+                        </Quay>
+                    </quays>
+                </StopPlace>
+            </stopPlaces>
+        </SiteFrame>
+    </dataObjects>
+</PublicationDelivery>
