@@ -21,6 +21,7 @@ import mobi.chouette.dao.ScheduledStopPointDAO;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.exchange.importer.updater.StopAreaUpdater;
 import mobi.chouette.exchange.importer.updater.Updater;
+import mobi.chouette.exchange.netexprofile.importer.util.StopPlaceRegistryIdFetcher;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
@@ -46,6 +47,9 @@ public class StopAreaUpdateService {
 	@EJB
 	private ScheduledStopPointDAO scheduledStopPointDAO;
 
+	@EJB
+	private StopPlaceRegistryIdFetcher stopPlaceRegistryIdFetcher;
+
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void createOrUpdateStopAreas(Context context, StopAreaUpdateContext updateContext) {
 		new StopAreaUpdateTask(stopAreaDAO, stopAreaUpdater, context, updateContext).update();
@@ -67,6 +71,10 @@ public class StopAreaUpdateService {
 		Set<String> boardingPositionObjectIds = new HashSet<>(stopAreaDAO.getBoardingPositionObjectIds());
 
 		log.debug("Total no of boarding positions: " + boardingPositionObjectIds.size());
+
+		boardingPositionObjectIds.removeAll(stopPlaceRegistryIdFetcher.getQuayIds());
+
+		log.debug("No of boarding positions not in Stop Place Registry: " + boardingPositionObjectIds.size());
 
 		for (String referential : referentials) {
 			ContextHolder.setContext(referential);

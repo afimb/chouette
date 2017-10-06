@@ -52,7 +52,7 @@ public class RestNetexStopPlaceService {
             if (existsActiveJobs()) {
                 return Response.status(423).entity("Cannot delete unused stop areas with active jobs").build();
             }
-            log.info(Color.CYAN + "Deleting unused stop areas");
+            log.info(Color.CYAN + "Deleting unused stop areas not in stop place registry");
             stopAreaService.deleteUnusedStopAreas();
             Response.ResponseBuilder builder = Response.ok();
             builder.header(api_version_key, api_version);
