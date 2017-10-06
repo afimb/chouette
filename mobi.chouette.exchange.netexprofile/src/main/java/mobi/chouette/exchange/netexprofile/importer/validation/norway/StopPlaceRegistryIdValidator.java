@@ -10,10 +10,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
+import org.rutebanken.netex.model.StopPlace;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
+import mobi.chouette.exchange.netexprofile.importer.util.StopPlaceRegistryIdFetcher;
 import mobi.chouette.exchange.netexprofile.importer.validation.ExternalReferenceValidator;
 import mobi.chouette.exchange.netexprofile.importer.validation.ExternalReferenceValidatorFactory;
 
@@ -32,11 +34,8 @@ public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator 
 	// Endpoint for fetching all known external stop place ids and their official stop place registry mapping
 	private String stopPlaceMappingEndpoint;
 
-	// Endpoint for fetching all official stop place registry quay ids
-	private String quayIdsEndpoint;
+	private StopPlaceRegistryIdFetcher stopPlaceRegistryIdFetcher;
 
-	// Endpoint for fetching all official stop place registry stop place ids
-	private String stopPlaceIdEndpoint;
 
 	private long lastUpdated = 0;
 
@@ -58,20 +57,7 @@ public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator 
 			stopPlaceMappingEndpoint = "https://api-test.rutebanken.org/stop_places/1.0/mapping/stop_place?recordsPerRoundTrip=220000";
 		}
 
-		String quayIdEndpointPropertyKey = "iev.stop.place.register.id.quay";
-		quayIdsEndpoint = System.getProperty(quayIdEndpointPropertyKey);
-		if (quayIdsEndpoint == null) {
-			log.warn("Could not find property named " + quayIdEndpointPropertyKey + " in iev.properties");
-			quayIdsEndpoint = "https://api-test.rutebanken.org/stop_places/1.0/id/quay";
-		}
-
-		String stopPlaceIdEndpointPropertyKey = "iev.stop.place.register.id.stopplace";
-		stopPlaceIdEndpoint = System.getProperty(stopPlaceIdEndpointPropertyKey);
-		if (stopPlaceIdEndpoint == null) {
-			log.warn("Could not find property named " + stopPlaceIdEndpointPropertyKey + " in iev.properties");
-			stopPlaceIdEndpoint = "https://api-test.rutebanken.org/stop_places/1.0/id/stop_place";
-		}
-
+		stopPlaceRegistryIdFetcher = new StopPlaceRegistryIdFetcher();
 	}
 
 	@Override
@@ -85,8 +71,8 @@ public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator 
 			while (!result && remainingUpdateRetries-- > 0) {
 				// Fetch data and populate caches
 				log.info("Cache is old, refreshing quay and stopplace cache");
-				boolean stopPlaceOk = populateCache(stopPlaceCache, stopPlaceMappingEndpoint, stopPlaceIdEndpoint);
-				boolean quayOK = populateCache(quayCache, quayMappingEndpoint, quayIdsEndpoint);
+				boolean stopPlaceOk = populateStopPlaceCache();
+				boolean quayOK = populateQuayCache();
 
 				if (quayOK && stopPlaceOk) {
 					lastUpdated = System.currentTimeMillis();
@@ -148,35 +134,32 @@ public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator 
 				new StopPlaceRegistryIdValidator.DefaultExternalReferenceValidatorFactory());
 	}
 
-	private boolean populateCache(Set<String> cache, String mappingEndpoint, String idEndpoint) {
-		cache.clear();
-		return addIdsFromMapping(cache, mappingEndpoint) && addIds(cache,idEndpoint);
+	private boolean populateQuayCache() {
+		quayCache.clear();
+		return addIdsFromMapping(quayCache, quayMappingEndpoint) && addQuayIds();
 	}
 
-	private boolean addIds(Set<String> cache, String idEndpoint) {
-		HttpURLConnection connection = null;
-
+	private boolean addQuayIds() {
 		try {
-			URL url = new URL(idEndpoint);
-			connection = (HttpURLConnection) url.openConnection();
-			connection.setRequestMethod("GET");
-			connection.setUseCaches(false);
-			connection.setDoOutput(true);
-			connection.connect();
-
-			// Get Response
-			InputStream is = connection.getInputStream();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-			String line;
-			while ((line = rd.readLine()) != null) {
-				cache.add(line);
-			}
-			rd.close();
+			quayCache.addAll(stopPlaceRegistryIdFetcher.getQuayIds());
 			return true;
 		} catch (Exception e) {
-			log.error("Error getting NSR cache for url " + idEndpoint, e);
-		} finally {
-			connection.disconnect();
+			log.error("Error getting NSR cache for quay ids " , e);
+		}
+		return false;
+	}
+
+	private boolean populateStopPlaceCache() {
+		stopPlaceCache.clear();
+		return addIdsFromMapping(stopPlaceCache, stopPlaceMappingEndpoint) && addStopPlaceIds();
+	}
+
+	private boolean addStopPlaceIds() {
+		try {
+			stopPlaceCache.addAll(stopPlaceRegistryIdFetcher.getStopPlaceIds());
+			return true;
+		} catch (Exception e) {
+			log.error("Error getting NSR cache for quay ids " , e);
 		}
 		return false;
 	}
