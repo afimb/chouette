@@ -67,27 +67,26 @@ public class GtfsAgencyProducer extends AbstractProducer
       String url = getValue(neptuneObject.getUrl());
       if (url == null)
       {
-         if (neptuneObject.getOrganisationalUnit() != null
-               && neptuneObject.getOrganisationalUnit().startsWith("http"))
-         {
-            // urlData = "OrganisationalUnit";
-            url = neptuneObject.getOrganisationalUnit();
-         } else
-         {
-            url = "http://www." + neptuneObject.getShortName() + ".com";
-         }
+         url = createURLFromOrganisationalUnit(neptuneObject);
       }
       try
       {
          agency.setAgencyUrl(new URL(url));
       } catch (MalformedURLException e)
       {
-         log.error("malformed URL " + url);
+         log.error("malformed URL " + url + " creating url from organisation unit as replacement");
+         String replacementUrl=createURLFromOrganisationalUnit(neptuneObject);
+         try {
+            agency.setAgencyUrl(new URL(replacementUrl));
+         } catch (MalformedURLException e2) {
+            log.error("malformed replacementUrl " + replacementUrl + " ignoring agency");
+            return false;
+         }
+
 //         GtfsReportItem item = new GtfsReportItem(
 //               GtfsReportItem.KEY.INVALID_DATA, STATE.ERROR, "Company",
 //               neptuneObject.getName(), urlData, url);
 //         report.addItem(item);
-         return false;
       }
 
       if (neptuneObject.getPhone() != null)
@@ -107,6 +106,20 @@ public class GtfsAgencyProducer extends AbstractProducer
          return false;
       }
       return true;
+   }
+
+   private String createURLFromOrganisationalUnit(Company neptuneObject) {
+      String url;
+      if (neptuneObject.getOrganisationalUnit() != null
+			&& neptuneObject.getOrganisationalUnit().startsWith("http"))
+	  {
+		 // urlData = "OrganisationalUnit";
+		 url = neptuneObject.getOrganisationalUnit();
+	  } else
+	  {
+		 url = "http://www." + neptuneObject.getShortName() + ".com";
+	  }
+      return url;
    }
 
 }
