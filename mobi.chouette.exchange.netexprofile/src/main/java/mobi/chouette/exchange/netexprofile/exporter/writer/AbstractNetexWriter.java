@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -30,7 +31,7 @@ public class AbstractNetexWriter {
             .optionalStart().appendFraction(ChronoField.MILLI_OF_SECOND, 0, 3, true).optionalEnd()
             .optionalStart().appendPattern("XXXXX")
             .optionalEnd()
-            .parseDefaulting(ChronoField.OFFSET_SECONDS, OffsetDateTime.now().getLong(ChronoField.OFFSET_SECONDS) ).toFormatter();
+            .parseDefaulting(ChronoField.OFFSET_SECONDS, LocalDateTime.now().getLong(ChronoField.OFFSET_SECONDS) ).toFormatter();
 
     static void writeElement(XMLStreamWriter writer, String element, String value) {
         try {

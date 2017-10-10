@@ -30,7 +30,7 @@
 		<project.rootDir>${project.basedir}</project.rootDir>
     <!-- NB: Concious choice of using snapshot version. This is to keep in
         sync, and fail fast if incompatibilities -->
-    <netex-java-model.version>1.0.7-SNAPSHOT</netex-java-model.version>
+    <netex-java-model.version>1.0.8-SNAPSHOT</netex-java-model.version>
 	</properties>
 	<distributionManagement>
 		<snapshotRepository>
@@ -588,7 +588,7 @@
 			</dependency>
 
       <dependency>
-  			<groupId>org.rutebanken</groupId>
+  			<groupId>org.entur</groupId>
   			<artifactId>netex-java-model</artifactId>
   			<version>${netex-java-model.version}</version>
   		</dependency>

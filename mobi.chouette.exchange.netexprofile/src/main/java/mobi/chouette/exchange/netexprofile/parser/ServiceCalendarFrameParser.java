@@ -2,6 +2,7 @@ package mobi.chouette.exchange.netexprofile.parser;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashSet;
@@ -194,11 +195,11 @@ public class ServiceCalendarFrameParser extends NetexParser implements Parser, C
 
 			Timetable timetable = ObjectFactory.getTimetable(referential, dayType.getId());
 			if(validBetweenTimetable.getFromDate() != null) {
-				timetable.setStartOfPeriod(TimeUtil.toJodaLocalDateTime(validBetweenTimetable.getFromDate()).toLocalDate());
+				timetable.setStartOfPeriod(TimeUtil.toJodaLocalDateIgnoreTime(validBetweenTimetable.getFromDate()));
 			}
 
 			if(validBetweenTimetable.getToDate() != null) {
-				timetable.setEndOfPeriod(TimeUtil.toJodaLocalDateTime(validBetweenTimetable.getToDate()).toLocalDate());
+				timetable.setEndOfPeriod(TimeUtil.toJodaLocalDateIgnoreTime(validBetweenTimetable.getToDate()));
 			}
 			if (dayType.getProperties() != null) {
 				for (PropertyOfDay propertyOfDay : dayType.getProperties().getPropertyOfDay()) {
@@ -220,7 +221,7 @@ public class ServiceCalendarFrameParser extends NetexParser implements Parser, C
 			Timetable timetable = ObjectFactory.getTimetable(referential, dayTypeIdRef);
 
 			if (dayTypeAssignment.getDate() != null) {
-				OffsetDateTime date = dayTypeAssignment.getDate();
+				LocalDateTime date = dayTypeAssignment.getDate();
 
 				if (isWithinValidRange(date, validBetween)) {
 					boolean included = dayTypeAssignment.isIsAvailable() != null ? dayTypeAssignment.isIsAvailable() : Boolean.TRUE;
@@ -244,26 +245,26 @@ public class ServiceCalendarFrameParser extends NetexParser implements Parser, C
 
 				if (operatingPeriod.getFromOperatingDayRef() != null) {
 					OperatingDay operatingDay = NetexObjectUtil.getOperatingDay(netexReferential, operatingPeriod.getFromOperatingDayRef().getRef());
-					startDate = TimeUtil.toJodaLocalDateTime(operatingDay.getCalendarDate()).toLocalDate();
+					startDate = TimeUtil.toJodaLocalDateIgnoreTime(operatingDay.getCalendarDate());
 				} else {
-					startDate = TimeUtil.toJodaLocalDateTime(operatingPeriod.getFromDate()).toLocalDate();
+					startDate = TimeUtil.toJodaLocalDateIgnoreTime(operatingPeriod.getFromDate());
 				}
 				if (operatingPeriod.getToOperatingDayRef() != null) {
 					OperatingDay operatingDay = NetexObjectUtil.getOperatingDay(netexReferential, operatingPeriod.getToOperatingDayRef().getRef());
-					endDate = TimeUtil.toJodaLocalDateTime(operatingDay.getCalendarDate()).toLocalDate();
+					endDate = TimeUtil.toJodaLocalDateIgnoreTime(operatingDay.getCalendarDate());
 				} else {
-					endDate = TimeUtil.toJodaLocalDateTime(operatingPeriod.getToDate()).toLocalDate();
+					endDate = TimeUtil.toJodaLocalDateIgnoreTime(operatingPeriod.getToDate());
 				}
 
 				// Cut of operating period to validity condition
 				org.joda.time.LocalDate validFrom = null;
 				if(validBetween.getFromDate() != null) {
-					validFrom = new org.joda.time.LocalDate(validBetween.getFromDate().toInstant().toEpochMilli());
+					validFrom = TimeUtil.toJodaLocalDateIgnoreTime(validBetween.getFromDate());
 			
 				}
 				org.joda.time.LocalDate validTo = null;
-				if(validBetween.getToDate() != null) {
-					validTo = new org.joda.time.LocalDate(validBetween.getToDate().toInstant().toEpochMilli());
+				if (validBetween.getToDate() != null) {
+					validTo = TimeUtil.toJodaLocalDateIgnoreTime(validBetween.getToDate());
 				}
 				
 				if((validFrom != null && endDate.isBefore(validFrom)) || (validTo != null && startDate.isAfter(validTo))) {
@@ -311,7 +312,7 @@ public class ServiceCalendarFrameParser extends NetexParser implements Parser, C
 
 	}
 
-	private boolean isWithinValidRange(OffsetDateTime dateOfOperation, ValidBetween validBetween) {
+	private boolean isWithinValidRange(LocalDateTime dateOfOperation, ValidBetween validBetween) {
 		if(validBetween == null) {
 			// Always valid
 			return true;
@@ -355,8 +356,8 @@ public class ServiceCalendarFrameParser extends NetexParser implements Parser, C
 		Context publicationDeliveryContext = (Context) parsingContext.get(PublicationDeliveryParser.LOCAL_CONTEXT);
 
 		if (serviceCalendar.getFromDate() != null && serviceCalendar.getToDate() != null) {
-			OffsetDateTime fromDateTime = serviceCalendar.getFromDate();
-			OffsetDateTime toDateTime = serviceCalendar.getToDate();
+			LocalDateTime fromDateTime = serviceCalendar.getFromDate();
+			LocalDateTime toDateTime = serviceCalendar.getToDate();
 			return new ValidBetween().withFromDate(fromDateTime).withToDate(toDateTime);
 		} else {
 			ValidBetween entityValidity = getValidBetween(serviceCalendar);

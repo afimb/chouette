@@ -39,7 +39,7 @@ public class TimeUtilTest {
 
     @Test
     public void jodaLocalDateToJavaLocalDateTest() {
-        LocalDate converted = TimeUtil.toLocalTimeFromJoda(new org.joda.time.LocalDate(2017, 5, 10));
+        LocalDate converted = TimeUtil.toLocalDateFromJoda(new org.joda.time.LocalDate(2017, 5, 10));
         Assert.assertEquals(converted.getYear(), 2017);
         Assert.assertEquals(converted.getMonthValue(), 5);
         Assert.assertEquals(converted.getDayOfMonth(), 10);

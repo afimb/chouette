@@ -50,7 +50,7 @@ public class CalendarProducer extends NetexProducer {
 					// Create Operating period
 					OperatingPeriod operatingPeriod = new OperatingPeriod().withVersion(dayType.getVersion())
 							.withId(NetexProducerUtils.translateObjectId(netexDaytypeId, "OperatingPeriod"))
-							.withFromDate(TimeUtil.toOffsetDateTime(p.getStartDate())).withToDate(TimeUtil.toOffsetDateTime(p.getEndDate()));
+							.withFromDate(TimeUtil.toLocalDateFromJoda(p.getStartDate()).atStartOfDay()).withToDate(TimeUtil.toLocalDateFromJoda(p.getEndDate()).atStartOfDay());
 					exportableNetexData.getSharedOperatingPeriods().add(operatingPeriod);
 
 					OperatingPeriodRefStructure operatingPeriodRef = netexFactory.createOperatingPeriodRefStructure();
@@ -70,7 +70,7 @@ public class CalendarProducer extends NetexProducer {
 					DayTypeAssignment dayTypeAssignment = netexFactory.createDayTypeAssignment()
 							.withId(NetexProducerUtils.translateObjectId(netexDaytypeId, "DayTypeAssignment") + "-" + counter).withVersion(NETEX_DEFAULT_OBJECT_VERSION)
 							.withOrder(BigInteger.ONE).withDayTypeRef(netexFactory.createDayTypeRef(dayTypeRef))
-							.withDate(TimeUtil.toOffsetDateTime(day.getDate()));
+							.withDate(TimeUtil.toLocalDateFromJoda(day.getDate()).atStartOfDay());
 
 					if (day.getIncluded() != null && !day.getIncluded()) {
 						dayTypeAssignment.setIsAvailable(day.getIncluded());

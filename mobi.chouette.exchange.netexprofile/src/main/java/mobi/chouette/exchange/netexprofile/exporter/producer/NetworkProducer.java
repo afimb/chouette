@@ -2,7 +2,7 @@ package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import org.rutebanken.netex.model.AuthorityRefStructure;
 import org.rutebanken.netex.model.KeyValueStructure;
@@ -21,7 +21,7 @@ public class NetworkProducer extends NetexProducer implements NetexEntityProduce
         NetexProducerUtils.populateId(neptuneNetwork, netexNetwork);
 
         if (isSet(neptuneNetwork.getVersionDate())) {
-            OffsetDateTime changedDateTime = TimeUtil.toOffsetDateTime(neptuneNetwork.getVersionDate());
+            LocalDateTime changedDateTime = TimeUtil.toLocalDateFromJoda(neptuneNetwork.getVersionDate()).atStartOfDay();
             netexNetwork.setChanged(changedDateTime);
         }
 
