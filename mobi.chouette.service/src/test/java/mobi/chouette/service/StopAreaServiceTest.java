@@ -114,15 +114,15 @@ public class StopAreaServiceTest extends Arquillian {
 		utx.begin();
 		em.joinTransaction();
 
-		StopArea alreadyExistingParent= new StopArea();
+		StopArea alreadyExistingParent = new StopArea();
 		alreadyExistingParent.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
-		alreadyExistingParent.setObjectId( "NSR:StopPlace:58291");
+		alreadyExistingParent.setObjectId("NSR:StopPlace:58291");
 		stopAreaDAO.create(alreadyExistingParent);
 
 
 		StopArea alreadyExistingChild = new StopArea();
 		alreadyExistingChild.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
-		alreadyExistingChild.setObjectId( "NSR:StopPlace:62034");
+		alreadyExistingChild.setObjectId("NSR:StopPlace:62034");
 
 		alreadyExistingChild.setParent(alreadyExistingParent);
 		stopAreaDAO.create(alreadyExistingChild);
@@ -260,6 +260,38 @@ public class StopAreaServiceTest extends Arquillian {
 		Assert.assertNull(stopAreaDAO.findByObjectId("NSR:StopPlace:2000"), "Did not expect to find stop with deactivated parent ");
 		Assert.assertNull(stopAreaDAO.findByObjectId("NSR:StopPlace:1000"), "Did not expect to find stop with deactivated parent");
 		Assert.assertNull(stopAreaDAO.findByObjectId("NSR:Quay:1000"), "Did not expect to find quay with deactivated stop place parent");
+
+		utx.rollback();
+	}
+
+	@Test
+	public void deleteExistingBoardingPositionsNoLongerValidForStopOnlyIfInSameCodeSpaceAsStop() throws Exception {
+
+		StopArea bpInStopCodeSpace = new StopArea();
+		bpInStopCodeSpace.setAreaType(ChouetteAreaEnum.BoardingPosition);
+		bpInStopCodeSpace.setObjectId("NSR:Quay:1");
+
+		StopArea bpInAnotherCodeSpace = new StopArea();
+		bpInAnotherCodeSpace.setAreaType(ChouetteAreaEnum.BoardingPosition);
+		bpInAnotherCodeSpace.setObjectId("SKY:Quay:2");
+
+		StopArea commercialStop = new StopArea();
+		commercialStop.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
+		commercialStop.setObjectId("NSR:StopPlace:1");
+
+		bpInAnotherCodeSpace.setParent(commercialStop);
+		bpInStopCodeSpace.setParent(commercialStop);
+
+		stopAreaDAO.create(commercialStop);
+
+
+		utx.begin();
+		em.joinTransaction();
+
+		stopAreaService.createOrUpdateStopPlacesFromNetexStopPlaces(new FileInputStream("src/test/data/StopAreasDeleteExistingBoardingPositionsNoLongerValidForStopOnlyIfInSameCodeSpaceAsStop.xml"));
+
+		Assert.assertNull(stopAreaDAO.findByObjectId(bpInStopCodeSpace.getObjectId()), "Did not expect to find NSR quay no longer in latest version of stop");
+		Assert.assertNotNull(stopAreaDAO.findByObjectId(bpInAnotherCodeSpace.getObjectId()), "Expected to still find non-NSR quay even when no longer in latest version of stop");
 
 		utx.rollback();
 	}

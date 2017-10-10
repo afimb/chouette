@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PublicationDelivery xmlns="http://www.netex.org.uk/netex" xmlns:ns2="http://www.opengis.net/gml/3.2" xmlns:ns3="http://www.siri.org.uk/siri" version="any">
+    <PublicationTimestamp>2017-05-03T11:13:15.276+02:00</PublicationTimestamp>
+    <ParticipantRef>NSR</ParticipantRef>
+    <dataObjects>
+        <SiteFrame created="2017-05-03T11:13:14.98+02:00" modification="new" version="1" id="NSR:SiteFrame:843072316">
+            <stopPlaces modificationSet="all">
+                <StopPlace created="2017-05-02T13:07:03.764+02:00" modification="new" version="2" id="NSR:StopPlace:1">
+                    <ValidBetween>
+                        <FromDate>2017-05-02T13:07:03.764+02:00</FromDate>
+                    </ValidBetween>
+                    <keyList>
+                        <KeyValue>
+                            <Key>imported-id</Key>
+                            <Value>TRO:StopPlace:19035306</Value>
+                        </KeyValue>
+                    </keyList>
+                    <Name lang="nb">Nøkkelland</Name>
+                    <Centroid>
+                        <Location>
+                            <Longitude>16.420000</Longitude>
+                            <Latitude>68.823500</Latitude>
+                        </Location>
+                    </Centroid>
+                    <AccessModes></AccessModes>
+                    <OtherTransportModes></OtherTransportModes>
+                    <StopPlaceType>onstreetBus</StopPlaceType>
+                </StopPlace>
+            </stopPlaces>
+        </SiteFrame>
+    </dataObjects>
+</PublicationDelivery>

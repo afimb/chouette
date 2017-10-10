@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -85,7 +86,12 @@ public class StopAreaUpdateTask {
 		}
 
 		for (StopArea obsoleteStopArea : existingContainedStopAreas.values()) {
-			registerRemovedContainedStopArea(obsoleteStopArea);
+			if (Objects.equals(obsoleteStopArea.objectIdPrefix(), stopArea.objectIdPrefix())) {
+				registerRemovedContainedStopArea(obsoleteStopArea);
+			} else {
+				log.info("Keep unknown StopArea : " + obsoleteStopArea.getObjectId() + " as id belongs to different code space than parent stop: " + stopArea.getObjectId());
+			}
+
 		}
 		stopAreaUpdater.update(context, existing, stopArea);
 		stopAreaDAO.update(existing);
