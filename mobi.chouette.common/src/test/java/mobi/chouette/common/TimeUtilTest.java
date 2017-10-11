@@ -1,6 +1,7 @@
 package mobi.chouette.common;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
@@ -61,10 +62,8 @@ public class TimeUtilTest {
     }
 
     @Test
-    public void offsetDateTimeToLocalDateIgnoresOffset() {
-        // 20.03.2018 has offset = 1 in CET wintertime. 00:00+2 is thus eq 23:00 19.03 in CET, but mapping should still return 20.03 as offset is ignored
-        org.joda.time.LocalDate converted = TimeUtil.toJodaLocalDateIgnoreOffset(OffsetDateTime.of(LocalDate.of(2018, 3, 20),
-                java.time.LocalTime.of(0, 0), ZoneOffset.ofHours(2)));
+    public void localDateTimeToLocalDateIgnoresTime() {
+        org.joda.time.LocalDate converted = TimeUtil.toJodaLocalDateIgnoreTime(LocalDateTime.of(2018, 3, 20,6,23));
 
         Assert.assertEquals(converted.getYear(), 2018);
         Assert.assertEquals(converted.getMonthOfYear(), 3);

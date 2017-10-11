@@ -2,7 +2,9 @@ package mobi.chouette.exchange.stopplace;
 
 import java.io.InputStream;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -131,9 +133,9 @@ public class PublicationDeliveryStopPlaceParser {
         if (CollectionUtils.isEmpty(stopPlace.getValidBetween()) || stopPlace.getValidBetween().get(0) == null) {
             return true;
         }
-        OffsetDateTime validTo = stopPlace.getValidBetween().get(0).getToDate();
+        LocalDateTime validTo = stopPlace.getValidBetween().get(0).getToDate();
 
-        return validTo == null || validTo.toInstant().isAfter(atTime);
+        return validTo == null || validTo.atZone(ZoneId.systemDefault()).toInstant().isAfter(atTime);
     }
 
     private PublicationDeliveryStructure unmarshal(InputStream inputStream) throws JAXBException {
