@@ -3,6 +3,7 @@ package mobi.chouette.exchange.netexprofile.exporter.producer;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.AVAILABILITY_CONDITION;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 
@@ -37,14 +38,14 @@ public class NetexProducer {
 		availabilityCondition.setId(netexId);
 
 		if (configuration.getStartDate() != null) {
-			availabilityCondition.setFromDate(OffsetDateTime.ofInstant(configuration.getStartDate().toInstant(),ZoneId.systemDefault())); // TODO should have LocalDate
+			availabilityCondition.setFromDate(LocalDateTime.ofInstant(configuration.getStartDate().toInstant(),ZoneId.systemDefault())); // TODO should have LocalDate
 		}
 		if (configuration.getEndDate() != null) {
-			availabilityCondition.setToDate(OffsetDateTime.ofInstant(configuration.getEndDate().toInstant(),ZoneId.systemDefault())); // TODO should have LocalDate
+			availabilityCondition.setToDate(LocalDateTime.ofInstant(configuration.getEndDate().toInstant(),ZoneId.systemDefault())); // TODO should have LocalDate
 		}
 		
 		if(configuration.getStartDate() == null && configuration.getEndDate() == null) {
-			availabilityCondition.setFromDate(OffsetDateTime.ofInstant(Instant.EPOCH, ZoneId.systemDefault()));
+			availabilityCondition.setFromDate(LocalDateTime.ofInstant(Instant.EPOCH, ZoneId.systemDefault()));
 		}
 		
 		return availabilityCondition;

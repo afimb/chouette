@@ -1,7 +1,7 @@
 package mobi.chouette.exchange.netexprofile.importer.util;
 
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
+import java.math.BigInteger;
+import java.time.LocalTime;
 
 import org.rutebanken.netex.model.TimetabledPassingTime;
 import org.testng.Assert;
@@ -18,42 +18,36 @@ public class NetexTimeConverisonUtilTest {
 		VehicleJourneyAtStop vj = new VehicleJourneyAtStop();
 		
 		// Convert to local time, should be past midnight with day offset 1
-		OffsetTime zulu1801 = OffsetTime.of(18, 1, 0, 0, ZoneOffset.UTC);
-		tpt.setDepartureTime(zulu1801);
+		LocalTime localTime1801 = LocalTime.of(18, 1, 0, 0);
+		tpt.setDepartureTime(localTime1801);
 		
-		NetexTimeConversionUtil.parsePassingTimeUtc(tpt, false, vj);
+		NetexTimeConversionUtil.parsePassingTime(tpt, false, vj);
 		
-		Assert.assertEquals(vj.getDepartureTime().getHourOfDay(), 20);
+		Assert.assertEquals(vj.getDepartureTime().getHourOfDay(), 18);
 		Assert.assertEquals(vj.getDepartureDayOffset(), 0);
 		
 		NetexTimeConversionUtil.populatePassingTimeUtc(tpt, false, vj);
 		
-		Assert.assertEquals(tpt.getDepartureTime(), zulu1801);
-		Assert.assertNull(tpt.getDepartureDayOffset());
-		
-		
+		Assert.assertEquals(tpt.getDepartureTime(), localTime1801);
 	}
 
 	@Test
-	public void testConversionMidnight() {
+	public void testConversionWithDayOffset() {
 		
 		TimetabledPassingTime tpt = new TimetabledPassingTime();
 		VehicleJourneyAtStop vj = new VehicleJourneyAtStop();
+
+		LocalTime localTime2301 = LocalTime.of(1, 1, 0, 0);
+		tpt.setDepartureTime(localTime2301);
+		tpt.setDepartureDayOffset(BigInteger.ONE);
 		
-		// Convert to local time, should be past midnight with day offset 1
-		OffsetTime zulu2301 = OffsetTime.of(23, 1, 0, 0, ZoneOffset.UTC);
-		tpt.setDepartureTime(zulu2301);
-		
-		NetexTimeConversionUtil.parsePassingTimeUtc(tpt, false, vj);
+		NetexTimeConversionUtil.parsePassingTime(tpt, false, vj);
 		
 		Assert.assertEquals(vj.getDepartureTime().getHourOfDay(), 1);
 		Assert.assertEquals(vj.getDepartureDayOffset(), 1);
 		
 		NetexTimeConversionUtil.populatePassingTimeUtc(tpt, false, vj);
 		
-		Assert.assertEquals(tpt.getDepartureTime(), zulu2301);
-		Assert.assertNull(tpt.getDepartureDayOffset());
-		
-		
+		Assert.assertEquals(tpt.getDepartureTime(), localTime2301);
 	}
 }

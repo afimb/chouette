@@ -2,32 +2,19 @@ package mobi.chouette.exchange.netexprofile.parser;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.xml.bind.JAXBElement;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
-import org.rutebanken.netex.model.DayTypeRefStructure;
-import org.rutebanken.netex.model.DayTypeRefs_RelStructure;
-import org.rutebanken.netex.model.JourneyPatternRefStructure;
-import org.rutebanken.netex.model.Journey_VersionStructure;
-import org.rutebanken.netex.model.JourneysInFrame_RelStructure;
-import org.rutebanken.netex.model.ServiceJourney;
-import org.rutebanken.netex.model.TimetabledPassingTime;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexTimeConversionUtil;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.DestinationDisplay;
-import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
@@ -37,6 +24,15 @@ import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
+
+import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
+import org.rutebanken.netex.model.DayTypeRefStructure;
+import org.rutebanken.netex.model.DayTypeRefs_RelStructure;
+import org.rutebanken.netex.model.JourneyPatternRefStructure;
+import org.rutebanken.netex.model.Journey_VersionStructure;
+import org.rutebanken.netex.model.JourneysInFrame_RelStructure;
+import org.rutebanken.netex.model.ServiceJourney;
+import org.rutebanken.netex.model.TimetabledPassingTime;
 
 @Log4j
 public class ServiceJourneyParser extends NetexParser implements Parser, Constant {
@@ -157,8 +153,8 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 	// TODO add support for other time zones and zone offsets, for now only handling UTC
 	private void parsePassingTimes(TimetabledPassingTime timetabledPassingTime, VehicleJourneyAtStop vehicleJourneyAtStop) {
 
-		NetexTimeConversionUtil.parsePassingTimeUtc(timetabledPassingTime, false, vehicleJourneyAtStop);
-		NetexTimeConversionUtil.parsePassingTimeUtc(timetabledPassingTime, true, vehicleJourneyAtStop);
+		NetexTimeConversionUtil.parsePassingTime(timetabledPassingTime, false, vehicleJourneyAtStop);
+		NetexTimeConversionUtil.parsePassingTime(timetabledPassingTime, true, vehicleJourneyAtStop);
 
 		// TODO copying missing data since Chouette pt does not properly support missing values
 		if (vehicleJourneyAtStop.getArrivalTime() == null && vehicleJourneyAtStop.getDepartureTime() != null) {

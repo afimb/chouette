@@ -2,13 +2,10 @@ package mobi.chouette.common;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Duration;
-import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.Seconds;
 
@@ -61,39 +58,23 @@ public class TimeUtil {
         return LocalDate.of(jodaDate.getYear(), jodaDate.getMonthOfYear(), jodaDate.getDayOfMonth());
     }
 
-    public static org.joda.time.LocalDateTime toJodaLocalDateTime(OffsetDateTime offsetDateTime) {
-        if (offsetDateTime == null) {
+    public static org.joda.time.LocalDateTime toJodaLocalDateTime(java.time.LocalDateTime localDateTime) {
+        if (localDateTime == null) {
             return null;
         }
-        return new LocalDateTime(offsetDateTime.toInstant().toEpochMilli());
+        return new org.joda.time.LocalDateTime(localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
     }
-
-    public static OffsetDateTime toOffsetDateTime(org.joda.time.LocalDate date) {
-        if (date == null) {
-            return null;
-        }
-        return OffsetDateTime.ofInstant(date.toDate().toInstant(), ZoneOffset.systemDefault());
-    }
-
     /**
-     * Convert OffsetDateTime to joda LocalDate, ignoring offset.
+     * Convert localDateTime to joda LocalDate, ignoring time.
      *
-     * This is a bit shady, but necessary as long as incoming data is represented with offset based on import time(?) and not actual offset for local timezone at
-     * the given time.
+     * This is a bit shady, but necessary as long as incoming data, while semantically a LocalDate, is represented as xs:dateTime.
      */
-    public static org.joda.time.LocalDate toJodaLocalDateIgnoreOffset(OffsetDateTime offsetDateTime) {
-        if (offsetDateTime == null) {
+    public static org.joda.time.LocalDate toJodaLocalDateIgnoreTime(java.time.LocalDateTime localDateTime) {
+        if (localDateTime == null) {
             return null;
         }
 
-        return new org.joda.time.LocalDate(offsetDateTime.getYear(),offsetDateTime.getMonthValue(),offsetDateTime.getDayOfMonth());
-    }
-
-    public static LocalDate toLocalTimeFromJoda(org.joda.time.LocalDate date) {
-        if (date == null) {
-            return null;
-        }
-        return Instant.ofEpochMilli(date.toDate().getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+        return new org.joda.time.LocalDate(localDateTime.getYear(),localDateTime.getMonthValue(),localDateTime.getDayOfMonth());
     }
 
 }

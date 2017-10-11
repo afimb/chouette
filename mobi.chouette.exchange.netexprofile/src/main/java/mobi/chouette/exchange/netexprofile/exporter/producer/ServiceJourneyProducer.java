@@ -17,6 +17,7 @@ import org.rutebanken.netex.model.TimetabledPassingTime;
 import org.rutebanken.netex.model.TimetabledPassingTimes_RelStructure;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
@@ -108,7 +109,7 @@ public class ServiceJourneyProducer extends NetexProducer {
 				if (departureTime != null) {
 					if ((i + 1 < vehicleJourneyAtStops.size())) {
 						NetexTimeConversionUtil.populatePassingTimeUtc(timetabledPassingTime, false, vehicleJourneyAtStop);
-						timetabledPassingTime.setDepartureTime(ConversionUtil.toOffsetTimeUtc(departureTime));
+						timetabledPassingTime.setDepartureTime(TimeUtil.toLocalTimeFromJoda(departureTime));
 						if (vehicleJourneyAtStop.getDepartureDayOffset() > 0) {
 							timetabledPassingTime.setDepartureDayOffset(BigInteger.valueOf(vehicleJourneyAtStop.getDepartureDayOffset()));
 						}
