@@ -45,7 +45,7 @@ public class HazelcastReferentialsLockManager implements ReferentialLockManager 
 			locks = hazelcastService.getLocksMap();
 			log.info("Initialized hazelcast: " + hazelcastService.information());
 		} else {
-			log.info("Not initializing hazeclast as other referential lock manager impl is configured");
+			log.info("Not initializing hazelcast as other referential lock manager impl is configured");
 		}
 	}
 
