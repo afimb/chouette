@@ -32,9 +32,12 @@ public class GoogleCloudFileStore implements FileStore {
 
 	private String containerName;
 
+	private String baseFolder;
+
 
 	@PostConstruct
 	public void init() {
+		baseFolder =  System.getProperty(checker.getContext() + ".directory");
 		containerName = System.getProperty(checker.getContext() + ".blobstore.gcs.container.name");
 		String credentialPath = System.getProperty(checker.getContext() + ".blobstore.gcs.credential.path");
 		String projectId = System.getProperty(checker.getContext() + ".blobstore.gcs.project.id");
@@ -47,17 +50,17 @@ public class GoogleCloudFileStore implements FileStore {
 
 	@Override
 	public InputStream getFileContent(Path filePath) {
-		return BlobStoreHelper.getBlob(storage, containerName, filePath.toString());
+		return BlobStoreHelper.getBlob(storage, containerName, toGCSPath(filePath));
 	}
 
 	@Override
 	public void writeFile(Path filePath, InputStream content) {
-		BlobStoreHelper.uploadBlob(storage, containerName, filePath.toString(), content, false);
+		BlobStoreHelper.uploadBlob(storage, containerName, toGCSPath(filePath), content, false);
 	}
 
 	@Override
 	public void deleteFolder(Path folder) {
-		BlobStoreHelper.deleteBlobsByPrefix(storage, containerName, folder.toString());
+		BlobStoreHelper.deleteBlobsByPrefix(storage, containerName, toGCSPath(folder));
 	}
 
 
@@ -74,7 +77,15 @@ public class GoogleCloudFileStore implements FileStore {
 
 	@Override
 	public boolean delete(Path filePath) {
-		return BlobStoreHelper.deleteBlobsByPrefix(storage, containerName, filePath.toString());
+		return BlobStoreHelper.deleteBlobsByPrefix(storage, containerName, toGCSPath(filePath));
+	}
+
+	private String toGCSPath(Path path) {
+		String withoutBaseFolder = path.toString().replaceFirst(baseFolder, "");
+		if (withoutBaseFolder.startsWith("/")) {
+			return withoutBaseFolder.replaceFirst("/", "");
+		}
+		return withoutBaseFolder;
 	}
 
 }
