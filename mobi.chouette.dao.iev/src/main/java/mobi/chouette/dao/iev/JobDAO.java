@@ -127,7 +127,7 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		Root<Job> root = criteria.from(type);
 		Predicate statusPredicate = root.get(Job_.status).in(statuses);
 		// Created jobs are only in initialization phase, should not be sent
-		Predicate updatedSincePredicate = builder.greaterThanOrEqualTo(root.get(Job_.updated), since);
+		Predicate updatedSincePredicate = builder.greaterThan(root.get(Job_.updated), since);
 		criteria.where(builder.and(statusPredicate, updatedSincePredicate));
 		criteria.orderBy(builder.asc(root.get(Job_.created)));
 		TypedQuery<Job> query = em.createQuery(criteria);
