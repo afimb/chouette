@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.ConcurrencyManagement;
@@ -249,6 +250,17 @@ public class JobServiceManager {
 		}
 		return new JobService(rootDirectory, job);
 	}
+
+	/**
+	 * find ordered list of next waiting jobs.
+	 *
+	 *
+	 * @return
+	 */
+	public List<JobService> getNextJobs() {
+		return jobDAO.getNextJobs().stream().map(job -> new JobService(rootDirectory, job)).collect(Collectors.toList());
+	}
+
 
 	public void start(JobService jobService) {
 		jobService.setStatus(STATUS.STARTED);

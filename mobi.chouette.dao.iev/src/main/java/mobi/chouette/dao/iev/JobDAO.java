@@ -116,6 +116,15 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		return result;
 	}
 
+	public List<Job> getNextJobs(){
+		Query query = em
+				.createQuery("from Job j where j.status in ( ?1 ) and j.referential not in (SELECT a.referential from Job a where a.status=?2) order by id");
+
+		query.setParameter(1, Arrays.asList(Job.STATUS.SCHEDULED));
+		query.setParameter(2, Job.STATUS.STARTED);
+		return query.getResultList();
+	}
+
 	public int deleteAll(String referential) {
 		List<Job> list = findByReferential(referential,new Job.STATUS[0]);
 		for (Job entity : list) {

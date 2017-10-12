@@ -31,6 +31,7 @@ import mobi.chouette.service.JobServiceManager;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * @author michel
@@ -51,12 +52,9 @@ public class Scheduler {
 	@EJB
 	JobServiceManager jobManager;
 
-	@EJB
-	ReferentialLockManager lockManager;
-
   	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
 	ManagedExecutorService executor;
-	
+
 	Map<Long,Future<STATUS>> startedFutures = new ConcurrentHashMap<>();
 	// Map<Long,Task> startedTasks = new ConcurrentHashMap<>();
 
@@ -71,28 +69,38 @@ public class Scheduler {
 	}
 
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public boolean schedule(String preferredReferential) {
+	public void schedule(String preferredReferential) {
 
 		log.info("schedule, preferred referential " + preferredReferential);
-		JobService jobService = jobManager.getNextJob(preferredReferential);
-		if (jobService != null) {
-			synchronized (lock) {
-				int numActiveJobs = getActiveJobsCount();
-				log.info("Inside lock, numActiveJobs=" + numActiveJobs);
-				if (numActiveJobs >= getMaxJobs()) {
+		List<JobService> waitingJobs = jobManager.getNextJobs();
+		if (!CollectionUtils.isEmpty(waitingJobs)) {
+
+			for (JobService jobService: waitingJobs) {
+				if (!schedule(jobService)) {
 					log.info("Too many active jobs, delay start up of job: " + jobService.getId());
-				} else {
-					if (lockManager.attemptAcquireLocks(jobService.getRequiredReferentialLocks())) {
-						startJob(jobService);
-					} else {
-						log.info("Could not acquire necessary locks (" + jobService.getRequiredReferentialLocks() + "), delay start up of job: " + jobService.getJob());
-					}
+					break;
 				}
 			}
 		} else {
 			log.info("nothing to schedule");
 		}
-		return jobService != null;
+	}
+
+	private boolean schedule(JobService jobService) {
+		synchronized (lock) {
+			int numActiveJobs = getActiveJobsCount();
+			log.info("Inside lock, numActiveJobs=" + numActiveJobs);
+			if (numActiveJobs >= getMaxJobs()) {
+				return false;
+			}
+			if (ReferentialLockManagerFactory.getLockManager().attemptAcquireLocks(jobService.getRequiredReferentialsLocks())) {
+				startJob(jobService);
+			} else {
+				log.info("Could not acquire necessary locks (" + jobService.getRequiredReferentialsLocks() + "), delay start up of job: " + jobService.getJob());
+			}
+
+		}
+		return true;
 	}
 
 
@@ -106,7 +114,7 @@ public class Scheduler {
 		Future<STATUS> future = executor.submit(task);
 		startedFutures.put(jobService.getId(), future);
 	}
-	
+
 
 	@PostConstruct
 	private void initialize() {
@@ -129,7 +137,7 @@ public class Scheduler {
 		Collection<JobService> created = Collections2.filter(list, new Predicate<JobService>() {
 			@Override
 			public boolean apply(JobService job) {
-				return job.getStatus() == STATUS.SCHEDULED;
+				return job.getStatus() == STATUS.SCHEDULED ;
 			}
 		});
 		for (JobService jobService : created) {
@@ -152,22 +160,22 @@ public class Scheduler {
 	}
 
 	/**
-	 * cancel task 
-	 * 
+	 * cancel task
+	 *
 	 * @param job
 	 * @return
 	 */
 	public boolean cancel(JobService jobService) {
-	
+
 		// remove prevents for multiple calls
 		log.info("try to cancel "+jobService.getId());
 		Future<STATUS> future = startedFutures.remove(jobService.getId());
-	    if (future != null) 
+	    if (future != null)
 	    {
 	    	log.info("cancel future");
 	    	future.cancel(false);
 	    }
-		
+
 		return true;
 	}
 
@@ -206,15 +214,15 @@ public class Scheduler {
 
 		/**
 		 * launch next task if exists
-		 * 
+		 *
 		 * @param task
 		 */
 		private void schedule(final Task task) {
-			lockManager.releaseLocks(task.getJob().getRequiredReferentialLocks());
-
 			// remove task from stated map
 			// startedTasks.remove(task.getJob().getId());
 			startedFutures.remove(task.getJob().getId());
+
+			ReferentialLockManagerFactory.getLockManager().releaseLocks(task.getJob().getRequiredReferentialsLocks());
 
 			// launch next task
 			executor.execute(new Runnable() {

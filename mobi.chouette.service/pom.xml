@@ -88,8 +88,10 @@
          <artifactId>jettison</artifactId>
          <scope>provided</scope>
       </dependency>
-
-
+       <dependency>
+           <groupId>org.rutebanken.helpers</groupId>
+           <artifactId>hazelcast-helper</artifactId>
+       </dependency>
       <!-- Modules -->
       <dependency>
          <groupId>${project.groupId}</groupId>
