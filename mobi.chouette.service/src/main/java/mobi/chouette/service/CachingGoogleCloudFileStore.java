@@ -3,10 +3,12 @@ package mobi.chouette.service;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.ConcurrencyManagement;
@@ -138,7 +140,9 @@ public class CachingGoogleCloudFileStore implements FileStore {
 		public void run() {
 			log.info("Start pre-fetching job files from cloud storage. Caching all completed jobs since: " + syncedUntil);
 
-			List<Job> completedJobsSinceLastSync = jobServiceManager.completedJobsSince(syncedUntil);
+			List<Job> completedJobsSinceLastSync = jobServiceManager.completedJobsSince(syncedUntil).stream()
+					.sorted(Comparator.comparing(Job::getUpdated).reversed()).collect(Collectors.toList());
+
 			completedJobsSinceLastSync.stream().forEach(job -> prefetchFilesForJob(job));
 			syncedUntil = completedJobsSinceLastSync.stream().map(job -> job.getUpdated()).max(Date::compareTo).orElse(syncedUntil);
 
