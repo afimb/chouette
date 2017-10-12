@@ -63,7 +63,8 @@ public class CachingGoogleCloudFileStore implements FileStore {
 
 	@PostConstruct
 	public void init() {
-		if (BEAN_NAME.equals(System.getProperty(contenerChecker.getContext() + FILE_STORE_IMPLEMENTATION))) {
+		String implProp=System.getProperty(contenerChecker.getContext() + FILE_STORE_IMPLEMENTATION);
+		if (BEAN_NAME.equals(implProp)) {
 			log.info("Starting CachingGoogleCloudFileStore pre-fetch process");
 			syncedUntil = LocalDateTime.fromDateFields(new Date(0));
 
@@ -77,7 +78,8 @@ public class CachingGoogleCloudFileStore implements FileStore {
 			}
 
 			scheduler.scheduleAtFixedRate(new PrefetchToLocalCacheTask(), 0, updateFrequencySeconds, SECONDS);
-
+		} else {
+			log.info("Not initializing CachingGoogleCloudFileStore as other FileStore impl is configured: " + implProp);
 		}
 	}
 
