@@ -253,16 +253,6 @@ public class JobServiceManager {
 	}
 
 	/**
-	 * find order list of next waiting jobs.
-	 *
-	 *
-	 * @return
-	 */
-	public List<JobService> getNextJobs() {
-		return jobDAO.getNextJobs().stream().map(job -> new JobService(rootDirectory, job)).collect(Collectors.toList());
-	}
-
-	/**
 	 * find ordered list of next waiting jobs.
 	 *
 	 *
