@@ -32,19 +32,24 @@ public class AbstractExporterCommand implements Constant {
 		AbstractExportParameter parameters = (AbstractExportParameter) context.get(CONFIGURATION);
 		ActionReporter reporter = ActionReporter.Factory.getInstance();
 
-		try {
-			// initialisation
-			List<? extends Command> preProcessingCommands = commands.getPreProcessingCommands(context, true);
-			progression.initialize(context, preProcessingCommands.size() + (mode.equals(Mode.line) ? 1 : 0));
-			for (Command exportCommand : preProcessingCommands) {
-                result = exportCommand.execute(context);
-                if (!result) {
-                    reporter.setActionError(context, ActionReporter.ERROR_CODE.NO_DATA_FOUND, "no data selected");
-                    progression.execute(context);
-                    return ERROR;
-                }
-                progression.execute(context);
-            }
+		// initialisation
+		JobData jobData = (JobData) context.get(JOB_DATA);
+		String path = jobData.getPathName();
+		File output = new File(path, OUTPUT);
+		if (!output.exists())
+			Files.createDirectories(output.toPath());
+
+		List<? extends Command> preProcessingCommands = commands.getPreProcessingCommands(context, true);
+		progression.initialize(context, preProcessingCommands.size() + (mode.equals(Mode.line) ? 1 : 0));
+		for (Command exportCommand : preProcessingCommands) {
+			result = exportCommand.execute(context);
+			if (!result) {
+				reporter.setActionError(context, ActionReporter.ERROR_CODE.NO_DATA_FOUND, "no data selected");
+				progression.execute(context);
+				return ERROR;
+			}
+			progression.execute(context);
+		}
 
 			if (mode.equals(Mode.line)) {
                 String type = parameters.getReferencesType();

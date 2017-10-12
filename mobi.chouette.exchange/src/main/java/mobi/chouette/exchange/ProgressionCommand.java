@@ -1,5 +1,7 @@
 package mobi.chouette.exchange;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Path;
@@ -15,6 +17,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.common.file.FileStoreFactory;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.report.ProgressionReport;
 import mobi.chouette.exchange.report.Report;
@@ -81,9 +84,11 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 			Path path = Paths.get(jobData.getPathName(), REPORT_FILE);
 			// pseudo pretty print
 			try {
-				PrintStream stream = new PrintStream(path.toFile(), "UTF-8");
+				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+				PrintStream stream = new PrintStream(outputStream, false, "UTF-8");
 				report.print(stream);
 				stream.close();
+				FileStoreFactory.getFileStore().writeFile(path, new ByteArrayInputStream(outputStream.toByteArray()));
 			} catch (Exception e) {
 				log.error("failed to save report", e);
 			}
@@ -91,6 +96,8 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		}
 
 	}
+
+
 
 	/**
 	 * @param context
@@ -110,10 +117,13 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 			JobData jobData = (JobData) context.get(JOB_DATA);
 			Path path = Paths.get(jobData.getPathName(), VALIDATION_FILE);
 
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			try {
-				PrintStream stream = new PrintStream(path.toFile(), "UTF-8");
+				PrintStream stream = new PrintStream(outputStream, false, "UTF-8");
 				report.print(stream);
 				stream.close();
+				FileStoreFactory.getFileStore().writeFile(path, new ByteArrayInputStream(outputStream.toByteArray()));
+
 			} catch (Exception e) {
 				log.error("failed to save validation report", e);
 			}

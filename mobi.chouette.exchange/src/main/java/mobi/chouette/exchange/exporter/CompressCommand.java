@@ -15,11 +15,11 @@ import mobi.chouette.common.FileUtil;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-
-import org.apache.commons.io.FileUtils;
+import mobi.chouette.common.file.FileStoreFactory;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+import org.apache.commons.io.FileUtils;
 
 @Log4j
 public class CompressCommand implements Command, Constant {
@@ -42,6 +42,9 @@ public class CompressCommand implements Command, Constant {
 			File outputFile = filename.toFile();
 			if (outputFile.exists()) outputFile.delete();
 			FileUtil.compress(target.toString(), filename.toString());
+			// Store file in permanent storage
+			FileStoreFactory.getFileStore().writeFile(filename, FileUtils.openInputStream(filename.toFile()));
+
 			result = SUCCESS;
 			try {
 				FileUtils.deleteDirectory(target.toFile());

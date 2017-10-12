@@ -36,6 +36,7 @@ public class JobServiceManagerTest extends Arquillian {
 		List<JavaArchive> modules = new ArrayList<>();
 		for (File file : files) {
 			if (file.getName().startsWith("mobi.chouette.exchange")
+					|| file.getName().startsWith("mobi.chouette.common")
 					|| file.getName().startsWith("mobi.chouette.service")
 					|| file.getName().startsWith("mobi.chouette.dao")) {
 				String name = file.getName().split("\\-")[0] + ".jar";

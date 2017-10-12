@@ -23,6 +23,8 @@ import lombok.experimental.Delegate;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.JobData;
+import mobi.chouette.common.file.FileStore;
+import mobi.chouette.common.file.FileStoreFactory;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
 import mobi.chouette.exchange.parameters.AbstractExportParameter;
@@ -94,16 +96,15 @@ public class JobService implements JobData, ServiceConstants {
 			writer.close();
 			Parameters parameters = new Parameters(getParametersAsString(), validator);
 
-			FileWriter fwriter = new FileWriter(filePath(PARAMETERS_FILE).toFile());
-			fwriter.write(getParametersAsString());
-			fwriter.write("\n");
-			fwriter.close();
+			FileStore fileStore = FileStoreFactory.getFileStore();
+			fileStore.writeFile(filePath(PARAMETERS_FILE), IOUtils.toInputStream(getParametersAsString() + "+n", "UTF-8"));
+
 			addLink(MediaType.APPLICATION_JSON, Link.PARAMETERS_REL);
 
 
 			String inputStreamName = selectDataInputStreamName(inputStreamsByName);
 			if (inputStreamName != null) {
-				Files.copy(inputStreamsByName.get(inputStreamName), filePath(inputStreamName));
+				fileStore.writeFile(filePath(inputStreamName),inputStreamsByName.get(inputStreamName));
 				addLink(MediaType.APPLICATION_OCTET_STREAM, Link.DATA_REL);
 				addLink(MediaType.APPLICATION_OCTET_STREAM, Link.INPUT_REL);
 				job.setInputFilename(inputStreamName);
@@ -119,12 +120,12 @@ public class JobService implements JobData, ServiceConstants {
 				if (!validator.checkFile(job.getInputFilename(), filePath(inputStreamName), parameters.getConfiguration()))
 					throw new RequestServiceException(RequestExceptionCode.INVALID_FORMAT, "");
 			}
-
+			
 			JSONUtil.toJSON(filePath(ACTION_PARAMETERS_FILE), parameters.getConfiguration());
 			addLink(MediaType.APPLICATION_JSON, Link.ACTION_PARAMETERS_REL);
 
 			if (parameters.getValidation() != null) {
-				JSONUtil.toJSON(filePath(VALIDATION_PARAMETERS_FILE), parameters.getValidation());
+				fileStore.writeFile(filePath(VALIDATION_PARAMETERS_FILE), new ByteArrayInputStream(JSONUtil.toJSON(parameters.getValidation()).getBytes()));
 				addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_PARAMETERS_REL);
 			}
 

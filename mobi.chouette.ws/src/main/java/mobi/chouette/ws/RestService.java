@@ -1,29 +1,5 @@
 package mobi.chouette.ws;
 
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
-import mobi.chouette.common.Constant;
-import mobi.chouette.common.chain.Command;
-import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.importer.CleanRepositoryCommand;
-import mobi.chouette.exchange.importer.CleanStopAreaRepositoryCommand;
-import mobi.chouette.model.iev.Job;
-import mobi.chouette.model.iev.Job.STATUS;
-import mobi.chouette.model.iev.Link;
-import mobi.chouette.persistence.hibernate.ContextHolder;
-import mobi.chouette.service.*;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.naming.InitialContext;
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
@@ -35,6 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.ws.rs.Path;
+
+import lombok.extern.log4j.Log4j;
 
 @Path("/referentials")
 @Log4j
@@ -241,11 +221,14 @@ public class RestService implements Constant {
 			ResponseBuilder builder = null;
 			MediaType type = null;
 			{
-				JobService jobService = jobServiceManager.download(referential, id, filename);
+				JobService jobService = jobServiceManager.download(referential, id);
 
 				// Build response
-				File file = new File(Paths.get(jobService.getPathName(), filename).toString());
-				builder = Response.ok(file);
+				InputStream content = FileStoreFactory.getFileStore().getFileContent(Paths.get(jobService.getPathName(), filename));
+				if (content == null){
+					throw new RequestServiceException(RequestExceptionCode.UNKNOWN_FILE, "");
+				}
+				builder = Response.ok(content);
 				builder.header(HttpHeaders.CONTENT_DISPOSITION,
 						MessageFormat.format("attachment; filename=\"{0}\"", filename));
 
