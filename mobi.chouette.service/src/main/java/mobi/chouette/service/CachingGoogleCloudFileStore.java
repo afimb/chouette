@@ -54,7 +54,7 @@ public class CachingGoogleCloudFileStore implements FileStore {
 	@EJB
 	ContenerChecker contenerChecker;
 
-	private Date syncedUntil;
+	private LocalDateTime syncedUntil;
 
 	private final ScheduledExecutorService scheduler =
 			Executors.newScheduledThreadPool(1);
@@ -65,7 +65,7 @@ public class CachingGoogleCloudFileStore implements FileStore {
 	public void init() {
 		if (BEAN_NAME.equals(System.getProperty(contenerChecker.getContext() + FILE_STORE_IMPLEMENTATION))) {
 			log.info("Starting CachingGoogleCloudFileStore pre-fetch process");
-			syncedUntil = new java.sql.Date(0);
+			syncedUntil = LocalDateTime.fromDateFields(new Date(0));
 
 			String updateFrequencyKey = "iev.file.store.cache.update.seconds";
 			if (System.getProperty(updateFrequencyKey) != null) {
@@ -134,7 +134,7 @@ public class CachingGoogleCloudFileStore implements FileStore {
 
 			List<Job> completedJobsSinceLastSync = jobServiceManager.completedJobsSince(syncedUntil);
 			completedJobsSinceLastSync.stream().forEach(job -> prefetchFilesForJob(job));
-			syncedUntil = completedJobsSinceLastSync.stream().map(job -> job.getUpdated()).max(Date::compareTo).orElse(syncedUntil);
+			syncedUntil = completedJobsSinceLastSync.stream().map(job -> job.getUpdated()).max(LocalDateTime::compareTo).orElse(syncedUntil);
 
 			log.info("Finished pre-fetching job files from cloud storage");
 

@@ -1,6 +1,5 @@
 package mobi.chouette.ws;
 
-import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Paths;
@@ -12,9 +11,52 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.chain.Command;
+import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.common.file.FileStoreFactory;
+import mobi.chouette.exchange.importer.CleanRepositoryCommand;
+import mobi.chouette.exchange.importer.CleanStopAreaRepositoryCommand;
+import mobi.chouette.model.iev.Job;
+import mobi.chouette.model.iev.Job.STATUS;
+import mobi.chouette.model.iev.Link;
+import mobi.chouette.persistence.hibernate.ContextHolder;
+import mobi.chouette.service.JobService;
+import mobi.chouette.service.JobServiceManager;
+import mobi.chouette.service.RequestExceptionCode;
+import mobi.chouette.service.RequestServiceException;
+import mobi.chouette.service.ServiceException;
+import mobi.chouette.service.ServiceExceptionCode;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 @Path("/referentials")
 @Log4j
@@ -38,7 +80,7 @@ public class RestService implements Constant {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response upload(@PathParam("ref") String referential, @PathParam("action") String action,
-			@PathParam("type") String type, MultipartFormDataInput input) {
+						   @PathParam("type") String type, MultipartFormDataInput input) {
 		Map<String, InputStream> inputStreamByName = null;
 		try {
 			log.info(Color.CYAN + "Call upload referential = " + referential + ", action = " + action

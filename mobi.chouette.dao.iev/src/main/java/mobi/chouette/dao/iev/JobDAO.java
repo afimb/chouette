@@ -1,5 +1,8 @@
 package mobi.chouette.dao.iev;
 
+import java.sql.Date;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,6 +20,8 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.iev.Job;
 import mobi.chouette.model.iev.Job_;
 import mobi.chouette.model.iev.Link;
+
+import org.joda.time.LocalDateTime;
 
 @Stateless
 @Log4j
@@ -115,7 +120,7 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		return result;
 	}
 
-	public List<Job> findByStatusesAndUpdatedSince(List<Job.STATUS> statuses, Date since) {
+	public List<Job> findByStatusesAndUpdatedSince(List<Job.STATUS> statuses, LocalDateTime since) {
 		List<Job> result;
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Job> criteria = builder.createQuery(type);

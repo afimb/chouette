@@ -9,6 +9,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -552,7 +553,7 @@ public class JobServiceManager {
 	/**
 	 * Return all jobs in a completed state that has last updated time not before given datetime.
 	 */
-	public List<Job> completedJobsSince(Date since) {
+	public List<Job> completedJobsSince(LocalDateTime since) {
 		return jobDAO.findByStatusesAndUpdatedSince(STATUS.getCompletedStatuses(),since);
 	}
 

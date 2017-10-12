@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.exporter;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -9,6 +11,7 @@ import javax.ejb.EJB;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.exchange.DaoReader;
 import mobi.chouette.exchange.ProcessingCommands;
@@ -31,25 +34,26 @@ public class AbstractExporterCommand implements Constant {
 		boolean disposeResult = SUCCESS;
 		AbstractExportParameter parameters = (AbstractExportParameter) context.get(CONFIGURATION);
 		ActionReporter reporter = ActionReporter.Factory.getInstance();
+		try {
 
-		// initialisation
-		JobData jobData = (JobData) context.get(JOB_DATA);
-		String path = jobData.getPathName();
-		File output = new File(path, OUTPUT);
-		if (!output.exists())
-			Files.createDirectories(output.toPath());
+			// initialisation
+			JobData jobData = (JobData) context.get(JOB_DATA);
+			String path = jobData.getPathName();
+			File output = new File(path, OUTPUT);
+			if (!output.exists())
+				Files.createDirectories(output.toPath());
 
-		List<? extends Command> preProcessingCommands = commands.getPreProcessingCommands(context, true);
-		progression.initialize(context, preProcessingCommands.size() + (mode.equals(Mode.line) ? 1 : 0));
-		for (Command exportCommand : preProcessingCommands) {
-			result = exportCommand.execute(context);
-			if (!result) {
-				reporter.setActionError(context, ActionReporter.ERROR_CODE.NO_DATA_FOUND, "no data selected");
+			List<? extends Command> preProcessingCommands = commands.getPreProcessingCommands(context, true);
+			progression.initialize(context, preProcessingCommands.size() + (mode.equals(Mode.line) ? 1 : 0));
+			for (Command exportCommand : preProcessingCommands) {
+				result = exportCommand.execute(context);
+				if (!result) {
+					reporter.setActionError(context, ActionReporter.ERROR_CODE.NO_DATA_FOUND, "no data selected");
+					progression.execute(context);
+					return ERROR;
+				}
 				progression.execute(context);
-				return ERROR;
 			}
-			progression.execute(context);
-		}
 
 			if (mode.equals(Mode.line)) {
                 String type = parameters.getReferencesType();
