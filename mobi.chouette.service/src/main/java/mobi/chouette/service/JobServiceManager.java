@@ -75,7 +75,6 @@ public class JobServiceManager {
 
 
 	private Set<Object> referentials = Collections.synchronizedSet(new HashSet<>());
-
 	private String rootDirectory;
 
 	@PostConstruct
@@ -229,6 +228,7 @@ public class JobServiceManager {
 			throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, ex);
 		}
 	}
+	
 	public void validateReferential(final String referential) throws ServiceException {
 
 		if (referentials.contains(referential))
@@ -261,6 +261,17 @@ public class JobServiceManager {
 	public List<JobService> getNextJobs() {
 		return jobDAO.getNextJobs().stream().map(job -> new JobService(rootDirectory, job)).collect(Collectors.toList());
 	}
+
+	/**
+	 * find ordered list of next waiting jobs.
+	 *
+	 *
+	 * @return
+	 */
+	public List<JobService> getNextJobs() {
+		return jobDAO.getNextJobs().stream().map(job -> new JobService(rootDirectory, job)).collect(Collectors.toList());
+	}
+
 
 	public void start(JobService jobService) {
 		jobService.setStatus(STATUS.STARTED);
@@ -419,6 +430,7 @@ public class JobServiceManager {
 		{
 			// log.info("BEGIN ADDING STAT referential : " + jobService.getReferential() + " action : " + jobService.getAction() + " type :" + jobService.getType());
 			LocalDate now = LocalDate.now();
+			
 			// Suppression des lignes de statistiques pour n'avoir que 12 mois glissants
 			statDAO.removeObsoleteStatFromDatabase(now);
 

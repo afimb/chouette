@@ -33,6 +33,9 @@ import mobi.chouette.persistence.hibernate.ContextHolder;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+
 /**
  * @author michel
  *
@@ -51,9 +54,6 @@ public class Scheduler {
 
 	@EJB
 	JobServiceManager jobManager;
-
-	@EJB
-	ReferentialLockManager lockManager;
 
   	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
 	ManagedExecutorService executor;
@@ -96,7 +96,7 @@ public class Scheduler {
 			if (numActiveJobs >= getMaxJobs()) {
 				return false;
 			}
-			if (lockManager.attemptAcquireLocks(jobService.getRequiredReferentialsLocks())) {
+			if (ReferentialLockManagerFactory.getLockManager().attemptAcquireLocks(jobService.getRequiredReferentialsLocks())) {
 				startJob(jobService);
 			} else {
 				log.info("Could not acquire necessary locks (" + jobService.getRequiredReferentialsLocks() + "), delay start up of job: " + jobService.getJob());
@@ -224,7 +224,7 @@ public class Scheduler {
 			// startedTasks.remove(task.getJob().getId());
 			startedFutures.remove(task.getJob().getId());
 
-			lockManager.releaseLocks(task.getJob().getRequiredReferentialsLocks());
+			ReferentialLockManagerFactory.getLockManager().releaseLocks(task.getJob().getRequiredReferentialsLocks());
 
 			// launch next task
 			executor.execute(new Runnable() {

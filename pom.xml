@@ -29,6 +29,7 @@
 		<lombok-version>1.16.8</lombok-version>
 		<lombok-maven-plugin-version>1.16.8.0</lombok-maven-plugin-version>
 		<project.rootDir>${project.basedir}</project.rootDir>
+
     <!-- NB: Concious choice of using snapshot version. This is to keep in
         sync, and fail fast if incompatibilities -->
 	  <netex-java-model.version>1.0.8-SNAPSHOT</netex-java-model.version>
@@ -619,6 +620,11 @@
 				<version>${rutebanken.helpers.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>org.rutebanken.helpers</groupId>
+				<artifactId>hazelcast-helper</artifactId>
+				<version>${rutebanken.helpers.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.jboss.resteasy</groupId>
 				<artifactId>resteasy-cache-core</artifactId>

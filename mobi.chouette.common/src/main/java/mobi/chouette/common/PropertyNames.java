@@ -11,4 +11,7 @@ public interface PropertyNames {
     /** Whether ids are mapped using external stop place registry during import.
      * Disabling this will cause no ids to be mapped, regardless of input param. */
     public static final String STOP_PLACE_ID_MAPPING = ".stop.place.id.mapping";
+
+    String REFERENTIAL_LOCK_MANAGER_IMPLEMENTATION = ".referential.lock.manager.impl";
+    String KUBERNETES_ENABLED = ".kubernetes.enabled";
 }
