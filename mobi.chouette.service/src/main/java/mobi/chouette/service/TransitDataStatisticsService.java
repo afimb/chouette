@@ -72,7 +72,7 @@ public class TransitDataStatisticsService {
 
 		ContextHolder.setContext(referential);
 
-		log.info("Gettings statistics for "
+		log.debug("Gettings statistics for "
 				+ referential
 				+ " using startDate="
 				+ startDate
@@ -209,7 +209,7 @@ public class TransitDataStatisticsService {
 		// Load list of lineIds with corresponding Timetables
 		long now = System.currentTimeMillis();
 		Collection<LineAndTimetable> allTimetableForAllLines = timetableDAO.getAllTimetableForAllLines();
-		log.info("Timetables took " + (System.currentTimeMillis() - now) + "ms");
+		log.debug("Timetables took " + (System.currentTimeMillis() - now) + "ms");
 
 		// Find all ids and load all Chouette Lines
 		Set<Long> lineIds = new HashSet<>();
@@ -218,7 +218,7 @@ public class TransitDataStatisticsService {
 		}
 		now = System.currentTimeMillis();
 		List<mobi.chouette.model.Line> lines = lineDAO.findAll(lineIds);
-		log.info("Lines took " + (System.currentTimeMillis() - now) + "ms");
+		log.debug("Lines took " + (System.currentTimeMillis() - now) + "ms");
 
 		Map<Long, mobi.chouette.model.Line> lineIdToLine = new HashMap<>();
 		for (mobi.chouette.model.Line l : lines) {
