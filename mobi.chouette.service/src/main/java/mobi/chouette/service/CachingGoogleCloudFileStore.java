@@ -11,6 +11,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import javax.annotation.PostConstruct;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
+import javax.ejb.DependsOn;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -37,6 +38,7 @@ import static mobi.chouette.service.CachingGoogleCloudFileStore.BEAN_NAME;
 @Named
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 @Startup
+@DependsOn(JobServiceManager.BEAN_NAME)
 @Log4j
 public class CachingGoogleCloudFileStore implements FileStore {
 
@@ -63,8 +65,8 @@ public class CachingGoogleCloudFileStore implements FileStore {
 
 	@PostConstruct
 	public void init() {
-		String implPropKey=(contenerChecker.getContext() + FILE_STORE_IMPLEMENTATION;
-		String implProp=System.getProperty(implPropKey);
+		String implPropKey = contenerChecker.getContext() + FILE_STORE_IMPLEMENTATION;
+		String implProp = System.getProperty(implPropKey);
 		if (BEAN_NAME.equals(implProp)) {
 			log.info("Starting CachingGoogleCloudFileStore pre-fetch process");
 			syncedUntil = new java.sql.Date(0);
