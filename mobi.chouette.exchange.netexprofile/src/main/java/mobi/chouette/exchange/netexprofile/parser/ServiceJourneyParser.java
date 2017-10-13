@@ -70,6 +70,14 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 
 			vehicleJourney.setPublishedJourneyIdentifier(serviceJourney.getPublicCode());
 
+			if (serviceJourney.getPrivateCode()!=null) {
+				try {
+				vehicleJourney.setNumber(Long.valueOf(serviceJourney.getPrivateCode().getValue()));
+				} catch (NumberFormatException nfe) {
+					log.info("Ignored non-numeric private code for serviceJourney: "+ serviceJourney.getPrivateCode());
+				}
+			}
+
 			if (serviceJourney.getJourneyPatternRef() != null) {
 				JourneyPatternRefStructure patternRefStruct = serviceJourney.getJourneyPatternRef().getValue();
 				mobi.chouette.model.JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, patternRefStruct.getRef());

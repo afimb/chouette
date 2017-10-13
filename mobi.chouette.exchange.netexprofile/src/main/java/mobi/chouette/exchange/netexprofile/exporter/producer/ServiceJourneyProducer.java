@@ -11,6 +11,7 @@ import org.rutebanken.netex.model.DayTypeRefs_RelStructure;
 import org.rutebanken.netex.model.JourneyPatternRefStructure;
 import org.rutebanken.netex.model.LineRefStructure;
 import org.rutebanken.netex.model.OperatorRefStructure;
+import org.rutebanken.netex.model.PrivateCodeStructure;
 import org.rutebanken.netex.model.ServiceJourney;
 import org.rutebanken.netex.model.StopPointInJourneyPatternRefStructure;
 import org.rutebanken.netex.model.TimetabledPassingTime;
@@ -42,6 +43,11 @@ public class ServiceJourneyProducer extends NetexProducer {
 
 		serviceJourney.setName(ConversionUtil.getMultiLingualString(vehicleJourney.getPublishedJourneyName()));
 		serviceJourney.setPublicCode(vehicleJourney.getPublishedJourneyIdentifier());
+
+		if (vehicleJourney.getNumber()!=null){
+			serviceJourney.setPrivateCode(new PrivateCodeStructure().withValue(vehicleJourney.getNumber().toString()));
+		}
+
 		serviceJourney.setDescription(ConversionUtil.getMultiLingualString(vehicleJourney.getComment()));
 		serviceJourney.setTransportMode(ConversionUtil.toVehicleModeOfTransportEnum(vehicleJourney.getTransportMode()));
 		serviceJourney.setTransportSubmode(ConversionUtil.toTransportSubmodeStructure(vehicleJourney.getTransportSubMode()));
