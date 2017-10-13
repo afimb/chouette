@@ -38,12 +38,18 @@ public class CompressCommand implements Command, Constant {
 			String path = jobData.getPathName();
 			String file = jobData.getOutputFilename();
 			Path target = Paths.get(path, OUTPUT);
-			Path filename = Paths.get(path, file);
-			File outputFile = filename.toFile();
-			if (outputFile.exists()) outputFile.delete();
-			FileUtil.compress(target.toString(), filename.toString());
+
+			Path tmpFilename= Paths.get(target.toString(),file);
+			File tmpFile= tmpFilename.toFile();
+			if (tmpFile.exists()) tmpFile.delete();
+
+			FileUtil.compress(target.toString(), tmpFile.toString());
+
 			// Store file in permanent storage
-			FileStoreFactory.getFileStore().writeFile(filename, FileUtils.openInputStream(filename.toFile()));
+			Path filename = Paths.get(path, file);
+			FileStoreFactory.getFileStore().writeFile(filename, FileUtils.openInputStream(tmpFile));
+
+			tmpFile.delete();
 
 			result = SUCCESS;
 			try {
