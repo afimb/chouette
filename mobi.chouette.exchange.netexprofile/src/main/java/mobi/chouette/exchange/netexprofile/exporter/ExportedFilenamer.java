@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
+import java.text.Normalizer;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.Line;
@@ -37,7 +39,8 @@ public class ExportedFilenamer {
         } else if (line.getPublishedName() != null) {
         	b.append(line.getPublishedName());
         }
-       
-        return b.toString().replaceAll("/", DASH).replace(SPACE, DASH).replaceAll("\\.",DASH) + ".xml";
+		String normalized= Normalizer.normalize(b.toString(),Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+","");
+
+		return normalized.replaceAll("/", DASH).replace(SPACE, DASH).replaceAll("\\.",DASH) + ".xml";
 	}
 }
