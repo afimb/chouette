@@ -132,9 +132,12 @@ public class ScheduledStopPointUpdater implements Updater<ScheduledStopPoint> {
 			}
 			if(data == null) {
 				log.error("ValidationData (data) is null");
-			} else if(data.getDataLocations() == null) {
+			} else if (data.getDataLocations() == null) {
 				log.error("ValidationData.getDataLocations() is null");
+			} else if (newSA!=null && data.getDataLocations().get(newSA.getObjectId()) == null) {
+				log.error("No data location for new stop area: " + newSA.getObjectId() + " unlike old stop area: " + oldSA.getObjectId());
 			}
+
 
 			if(validationReporter != null && newSA != null && data != null && data.getDataLocations() != null) {
 				validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_3, data.getDataLocations().get(newSA.getObjectId()));
