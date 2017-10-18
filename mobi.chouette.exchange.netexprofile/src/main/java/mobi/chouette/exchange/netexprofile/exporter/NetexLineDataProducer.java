@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.Marshaller;
 
@@ -33,6 +34,7 @@ import mobi.chouette.model.Company;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Interchange;
 import mobi.chouette.model.JourneyPattern;
+import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 
@@ -113,15 +115,22 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 		org.rutebanken.netex.model.Line netexLine = lineProducer.produce(context, neptuneLine);
 		exportableNetexData.setLine(netexLine);
 
-		for (mobi.chouette.model.Route neptuneRoute : neptuneLine.getRoutes()) {
+		List<Route> activeRoutes=exportableData.getVehicleJourneys().stream().map(vj -> vj.getRoute()).distinct().collect(Collectors.toList());
+		for (mobi.chouette.model.Route neptuneRoute : activeRoutes) {
 			org.rutebanken.netex.model.Route netexRoute = routeProducer.produce(context, neptuneRoute);
 			exportableNetexData.getRoutes().add(netexRoute);
 		}
 
+		List<JourneyPattern> activeJourneyPatterns = exportableData.getVehicleJourneys().stream().map(vj -> vj.getJourneyPattern()).filter(jp -> jp != null).distinct().collect(Collectors.toList());
+		for (JourneyPattern neptuneJourneyPattern : activeJourneyPatterns) {
+			org.rutebanken.netex.model.ServiceJourneyPattern netexJourneyPattern = journeyPatternProducer.produce(context, neptuneJourneyPattern);
+			exportableNetexData.getJourneyPatterns().put(netexJourneyPattern.getId(), netexJourneyPattern);
+		}
 
-		produceAndCollectRoutePoints(exportableData.getLine().getRoutes(), exportableNetexData);
-		produceAndCollectScheduledStopPoints(exportableData.getLine().getRoutes(), exportableNetexData);
-		produceAndCollectStopAssignments(context, exportableData.getLine().getRoutes(), exportableNetexData, configuration);
+		produceAndCollectRoutePoints(activeRoutes, exportableNetexData);
+		produceAndCollectScheduledStopPoints(activeRoutes, exportableNetexData);
+		produceAndCollectStopAssignments(context, activeRoutes, exportableNetexData, configuration);
+
 
 		calendarProducer.produce(context, exportableData, exportableNetexData);
 
@@ -133,14 +142,6 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 				exportableNetexData.getServiceJourneyInterchanges().add(serviceJourneyInterchangeProducer.produce(context, interchange));
 			}
 
-
-			JourneyPattern neptuneJourneyPattern = vehicleJourney.getJourneyPattern();
-			if (neptuneJourneyPattern != null) {
-				if (!exportableNetexData.getJourneyPatterns().containsKey(vehicleJourney.getJourneyPattern().getObjectId())) {
-					org.rutebanken.netex.model.ServiceJourneyPattern netexJourneyPattern = journeyPatternProducer.produce(context, neptuneJourneyPattern);
-					exportableNetexData.getJourneyPatterns().put(netexJourneyPattern.getId(), netexJourneyPattern);
-				}
-			}
 		}
 	}
 
@@ -194,8 +195,8 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 				}
 			}
 		}
-
-		produceAndCollectDestinationDisplays(exportableData.getLine().getRoutes(), exportableNetexData);
+		List<Route> activeRoutes=exportableData.getVehicleJourneys().stream().map(vj -> vj.getRoute()).distinct().collect(Collectors.toList());
+		produceAndCollectDestinationDisplays(activeRoutes, exportableNetexData);
 	}
 
 	@SuppressWarnings("unchecked")
