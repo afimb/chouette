@@ -162,7 +162,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
 		produceAndCollectRoutePoints(activeRoutes, exportableNetexData);
 		produceAndCollectScheduledStopPoints(activeRoutes, exportableNetexData);
-		produceAndCollectStopAssignments(context, activeRoutes, exportableNetexData, configuration);
+		produceAndCollectStopAssignments(activeRoutes, exportableNetexData, configuration);
 
 
 		calendarProducer.produce(context, exportableData, exportableNetexData);
