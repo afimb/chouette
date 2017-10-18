@@ -20,11 +20,9 @@ import mobi.chouette.model.NeptuneIdentifiedObject;
 public class NoticeProducer extends NetexProducer {
 
 	public static void addNoticeAndNoticeAssignments(Context context, ExportableNetexData exportableNetexData, Set<NoticeAssignment> destination,
-			Collection<Footnote> footnotes, NeptuneIdentifiedObject noticedObject) {
+													 Collection<Footnote> footnotes, NeptuneIdentifiedObject noticedObject) {
 
-		int i = 0;
 		for (Footnote footnote : footnotes) {
-			i++;
 			Notice notice = netexFactory.createNotice();
 			NetexProducerUtils.populateId(footnote, notice);
 
@@ -42,7 +40,7 @@ public class NoticeProducer extends NetexProducer {
 
 			String noticeAssignmentId = NetexProducerUtils.createUniqueId(context, NOTICE_ASSIGNMENT);
 			NoticeAssignment noticeAssignment = netexFactory.createNoticeAssignment().withVersion("1").withId(noticeAssignmentId)
-					.withOrder(BigInteger.valueOf(i + 1)).withNoticeRef(noticeRefStruct).withNoticedObjectRef(noticedObjectRef);
+					.withOrder(BigInteger.valueOf(destination.size() + 1)).withNoticeRef(noticeRefStruct).withNoticedObjectRef(noticedObjectRef);
 
 			destination.add(noticeAssignment);
 		}
