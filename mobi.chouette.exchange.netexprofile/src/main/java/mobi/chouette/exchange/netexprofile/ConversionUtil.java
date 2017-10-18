@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.rutebanken.netex.model.AirSubmodeEnumeration;
 import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
 import org.rutebanken.netex.model.BusSubmodeEnumeration;
+import org.rutebanken.netex.model.CoachSubmodeEnumeration;
 import org.rutebanken.netex.model.DayOfWeekEnumeration;
 import org.rutebanken.netex.model.MetroSubmodeEnumeration;
 import org.rutebanken.netex.model.MultilingualString;
@@ -170,11 +171,21 @@ public class ConversionUtil {
 			case ShuttleBus:
 				return new TransportSubmodeStructure().withBusSubmode(BusSubmodeEnumeration.SHUTTLE_BUS);
 			case SightseeingBus:
-				return new TransportSubmodeStructure().withBusSubmode(BusSubmodeEnumeration.SIGHTSEEING_BUS);
+			return new TransportSubmodeStructure().withBusSubmode(BusSubmodeEnumeration.SIGHTSEEING_BUS);
 
-				/**
-				 * Tram sub modes
-				 */
+
+			/**
+			 * Coach sub modes
+			 */
+			case InternationalCoach:
+				return new TransportSubmodeStructure().withCoachSubmode(CoachSubmodeEnumeration.INTERNATIONAL_COACH);
+			case NationalCoach:
+				return new TransportSubmodeStructure().withCoachSubmode(CoachSubmodeEnumeration.NATIONAL_COACH);
+			case TouristCoach:
+				return new TransportSubmodeStructure().withCoachSubmode(CoachSubmodeEnumeration.TOURIST_COACH);
+			/**
+			 * Tram sub modes
+			 */
 			case LocalTram:
 				return new TransportSubmodeStructure().withTramSubmode(TramSubmodeEnumeration.LOCAL_TRAM);
 

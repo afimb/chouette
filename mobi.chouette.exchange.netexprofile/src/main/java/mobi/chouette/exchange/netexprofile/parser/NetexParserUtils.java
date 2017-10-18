@@ -111,7 +111,16 @@ public class NetexParserUtils extends ParserUtils {
 				}
 			} else if (subModeStructure.getCoachSubmode() != null) {
 				CoachSubmodeEnumeration mode = subModeStructure.getCoachSubmode();
-				log.error("Unsupported coach sub mode " + mode);
+				switch (mode) {
+					case TOURIST_COACH:
+						return TransportSubModeNameEnum.TouristCoach;
+					case INTERNATIONAL_COACH:
+						return TransportSubModeNameEnum.InternationalCoach;
+					case NATIONAL_COACH:
+						return TransportSubModeNameEnum.NationalCoach;
+					default:
+						log.error("Unsupported coach sub mode " + mode);
+				}
 			} else if (subModeStructure.getFunicularSubmode() != null) {
 				FunicularSubmodeEnumeration mode = subModeStructure.getFunicularSubmode();
 				switch (mode) {
