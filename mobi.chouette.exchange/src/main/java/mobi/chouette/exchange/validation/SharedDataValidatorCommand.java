@@ -26,7 +26,7 @@ import mobi.chouette.exchange.validation.checkpoint.AccessPointCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.CompanyCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.ConnectionLinkCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.GroupOfLineCheckPoints;
-import mobi.chouette.exchange.validation.checkpoint.InterchangeCheckpoints;
+import mobi.chouette.exchange.validation.checkpoint.InterchangeCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.NetworkCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.SharedLineCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.StopAreaCheckPoints;
@@ -49,7 +49,7 @@ public class SharedDataValidatorCommand implements Command, Constant {
 	private ConnectionLinkCheckPoints connectionLinkCheckPoints = new ConnectionLinkCheckPoints();
 	private AccessPointCheckPoints accessPointCheckPoints = new AccessPointCheckPoints();
 	private AccessLinkCheckPoints accessLinkCheckPoints = new AccessLinkCheckPoints();
-	private InterchangeCheckpoints interchangeCheckPoints = new InterchangeCheckpoints();
+	private InterchangeCheckPoints interchangeCheckPoints = new InterchangeCheckPoints();
 
 	@Override
 	public boolean execute(Context context) throws Exception {
