@@ -66,7 +66,7 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 			initCheckPoint(context, L4_STOP_AREA_1, SEVERITY.E);
 			prepareCheckPoint(context, L4_STOP_AREA_1);
 		}
-		boolean test4_2 = parameters.getCheckStopParent() == 1;
+		boolean test4_2 = parameters.getCheckStopParent() == 1 && !sourceFile;
 		if (test4_2) {
 			initCheckPoint(context, L4_STOP_AREA_2, SEVERITY.E);
 			prepareCheckPoint(context, L4_STOP_AREA_2);
