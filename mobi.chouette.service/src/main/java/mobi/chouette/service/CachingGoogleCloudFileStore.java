@@ -26,10 +26,12 @@ import mobi.chouette.common.Pair;
 import mobi.chouette.common.file.FileStore;
 import mobi.chouette.common.file.LocalFileStore;
 import mobi.chouette.model.iev.Job;
+import mobi.chouette.model.iev.Link;
 
 import org.joda.time.LocalDateTime;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static mobi.chouette.common.Constant.*;
 import static mobi.chouette.common.PropertyNames.FILE_STORE_IMPLEMENTATION;
 import static mobi.chouette.service.CachingGoogleCloudFileStore.BEAN_NAME;
 
@@ -85,7 +87,7 @@ public class CachingGoogleCloudFileStore implements FileStore {
 			scheduler.scheduleAtFixedRate(new PrefetchToLocalCacheTask(), 0, updateFrequencySeconds, SECONDS);
 
 		} else {
-			log.info("Not initializing CachingGoogleCloudFileStore as other FileStore impl is configured. " + implPropKey +":" + implProp);
+			log.info("Not initializing CachingGoogleCloudFileStore as other FileStore impl is configured. " + implPropKey + ":" + implProp);
 		}
 	}
 
@@ -153,13 +155,28 @@ public class CachingGoogleCloudFileStore implements FileStore {
 		private void prefetchFilesForJob(Job job) {
 			try {
 				JobService jobService = jobServiceManager.getJobService(job.getId());
-
-				job.getLinks().stream().filter(link -> MediaType.APPLICATION_JSON.equals(link.getType())).map(link -> Paths.get(jobService.getPathName(), link.getRel() + ".json")).map(path -> Pair.of(path, cloudFileStore.getFileContent(path))).filter(file -> file.getRight() != null)
+				job.getLinks().stream().map(link -> toFileName(link.getRel())).filter(fileName -> fileName != null).map(fileName -> Paths.get(jobService.getPathName(), fileName)).map(path -> Pair.of(path, cloudFileStore.getFileContent(path))).filter(file -> file.getRight() != null)
 						.forEach(file -> localFileStore.writeFile(file.getLeft(), file.getRight()));
 
 			} catch (Exception exception) {
 				log.warn("Unable to pre fetch files for job: " + job + " :" + exception.getMessage());
 			}
 		}
+
+		private String toFileName(String rel) {
+			if (rel.equals(Link.PARAMETERS_REL)) {
+				return PARAMETERS_FILE;
+			} else if (rel.equals(Link.ACTION_PARAMETERS_REL)) {
+				return ACTION_PARAMETERS_FILE;
+			} else if (rel.equals(Link.VALIDATION_PARAMETERS_REL)) {
+				return VALIDATION_PARAMETERS_FILE;
+			} else if (rel.equals(Link.VALIDATION_REL)) {
+				return VALIDATION_FILE;
+			} else if (rel.equals(Link.REPORT_REL)) {
+				return REPORT_FILE;
+			}
+			return null;
+		}
+
 	}
 }
