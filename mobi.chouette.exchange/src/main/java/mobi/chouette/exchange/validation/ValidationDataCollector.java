@@ -43,6 +43,11 @@ public class ValidationDataCollector {
 						updateId(vehicleJourney.getCompany(), cache.getCompanies());
 						collection.getCompanyIds().add(vehicleJourney.getCompany().getObjectId());
 					}
+
+					if (vehicleJourney.getConsumerInterchanges() != null) {
+						collection.getInterchanges().addAll(vehicleJourney.getConsumerInterchanges());
+					}
+
 				} // end vehicleJourney loop
 				updateId(jp, cache.getJourneyPatterns());
 				collection.getJourneyPatterns().add(jp);

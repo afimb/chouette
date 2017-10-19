@@ -26,11 +26,10 @@ import mobi.chouette.exchange.validation.checkpoint.AccessPointCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.CompanyCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.ConnectionLinkCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.GroupOfLineCheckPoints;
-import mobi.chouette.exchange.validation.checkpoint.InterchangeCheckpoints;
+import mobi.chouette.exchange.validation.checkpoint.InterchangeCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.NetworkCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.SharedLineCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.StopAreaCheckPoints;
-import mobi.chouette.exchange.validation.checkpoint.StopPointCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.TimetableCheckPoints;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 
@@ -50,6 +49,7 @@ public class SharedDataValidatorCommand implements Command, Constant {
 	private ConnectionLinkCheckPoints connectionLinkCheckPoints = new ConnectionLinkCheckPoints();
 	private AccessPointCheckPoints accessPointCheckPoints = new AccessPointCheckPoints();
 	private AccessLinkCheckPoints accessLinkCheckPoints = new AccessLinkCheckPoints();
+	private InterchangeCheckPoints interchangeCheckPoints = new InterchangeCheckPoints();
 	private StopPointCheckPoints stopPointCheckPoints = new StopPointCheckPoints();
 	private InterchangeCheckpoints interchangeCheckPoints = new InterchangeCheckpoints();
 
