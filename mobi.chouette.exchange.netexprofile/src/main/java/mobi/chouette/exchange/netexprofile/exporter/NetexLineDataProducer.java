@@ -115,22 +115,19 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 		org.rutebanken.netex.model.Line netexLine = lineProducer.produce(context, neptuneLine);
 		exportableNetexData.setLine(netexLine);
 
-		List<Route> activeRoutes=exportableData.getVehicleJourneys().stream().map(vj -> vj.getRoute()).distinct().collect(Collectors.toList());
-		for (mobi.chouette.model.Route neptuneRoute : activeRoutes) {
+		for (mobi.chouette.model.Route neptuneRoute : exportableData.getRoutes()) {
 			org.rutebanken.netex.model.Route netexRoute = routeProducer.produce(context, neptuneRoute);
 			exportableNetexData.getRoutes().add(netexRoute);
 		}
 
-		List<JourneyPattern> activeJourneyPatterns = exportableData.getVehicleJourneys().stream().map(vj -> vj.getJourneyPattern()).filter(jp -> jp != null).distinct().collect(Collectors.toList());
-		for (JourneyPattern neptuneJourneyPattern : activeJourneyPatterns) {
+		for (JourneyPattern neptuneJourneyPattern : exportableData.getJourneyPatterns()) {
 			org.rutebanken.netex.model.ServiceJourneyPattern netexJourneyPattern = journeyPatternProducer.produce(context, neptuneJourneyPattern);
 			exportableNetexData.getJourneyPatterns().put(netexJourneyPattern.getId(), netexJourneyPattern);
 		}
 
-		produceAndCollectRoutePoints(activeRoutes, exportableNetexData);
-		produceAndCollectScheduledStopPoints(activeRoutes, exportableNetexData);
-		produceAndCollectStopAssignments(context, activeRoutes, exportableNetexData, configuration);
-
+		produceAndCollectRoutePoints(exportableData.getRoutes(), exportableNetexData);
+		produceAndCollectScheduledStopPoints(exportableData.getRoutes(), exportableNetexData);
+		produceAndCollectStopAssignments(context, exportableData.getRoutes(), exportableNetexData, configuration);
 
 		calendarProducer.produce(context, exportableData, exportableNetexData);
 
