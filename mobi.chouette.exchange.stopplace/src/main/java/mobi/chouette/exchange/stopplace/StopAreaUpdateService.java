@@ -122,7 +122,7 @@ public class StopAreaUpdateService {
 		unusedBoardingPositions.forEach(boardingPosition -> stopAreaDAO.delete(boardingPosition));
 		unusedStopAreas.forEach(stop -> stopAreaDAO.delete(stop));
 
-		return unusedStopAreas.size();
+		return unusedStopAreas.size() + unusedBoardingPositions.size();
 	}
 
 
