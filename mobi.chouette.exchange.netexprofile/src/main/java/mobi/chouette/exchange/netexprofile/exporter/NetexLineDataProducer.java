@@ -1,14 +1,5 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NOTICE;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NOTICE_ASSIGNMENT;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.PASSENGER_STOP_ASSIGNMENT;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.POINT_PROJECTION;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.ROUTE_POINT;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SCHEDULED_STOP_POINT;
-
 import java.io.File;
 import java.math.BigInteger;
 import java.nio.file.Path;
@@ -19,29 +10,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.xml.bind.Marshaller;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.rutebanken.netex.model.AvailabilityCondition;
-import org.rutebanken.netex.model.DestinationDisplay;
-import org.rutebanken.netex.model.DestinationDisplayRefStructure;
-import org.rutebanken.netex.model.GroupOfLines;
-import org.rutebanken.netex.model.Notice;
-import org.rutebanken.netex.model.NoticeAssignment;
-import org.rutebanken.netex.model.NoticeRefStructure;
-import org.rutebanken.netex.model.Organisation_VersionStructure;
-import org.rutebanken.netex.model.PassengerStopAssignment;
-import org.rutebanken.netex.model.PointProjection;
-import org.rutebanken.netex.model.PointRefStructure;
-import org.rutebanken.netex.model.Projections_RelStructure;
-import org.rutebanken.netex.model.QuayRefStructure;
-import org.rutebanken.netex.model.RoutePoint;
-import org.rutebanken.netex.model.ScheduledStopPoint;
-import org.rutebanken.netex.model.ScheduledStopPointRefStructure;
-import org.rutebanken.netex.model.ServiceJourney;
-import org.rutebanken.netex.model.StopPlace;
-import org.rutebanken.netex.model.VersionOfObjectRefStructure;
-import org.rutebanken.netex.model.Via_VersionedChildStructure;
-import org.rutebanken.netex.model.Vias_RelStructure;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
@@ -63,7 +31,6 @@ import mobi.chouette.exchange.netexprofile.exporter.producer.StopPlaceProducer;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Company;
-import mobi.chouette.model.Footnote;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Interchange;
 import mobi.chouette.model.JourneyPattern;
@@ -148,22 +115,19 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 		org.rutebanken.netex.model.Line netexLine = lineProducer.produce(context, neptuneLine);
 		exportableNetexData.setLine(netexLine);
 
-		List<Route> activeRoutes=exportableData.getVehicleJourneys().stream().map(vj -> vj.getRoute()).distinct().collect(Collectors.toList());
-		for (mobi.chouette.model.Route neptuneRoute : activeRoutes) {
+		for (mobi.chouette.model.Route neptuneRoute : exportableData.getRoutes()) {
 			org.rutebanken.netex.model.Route netexRoute = routeProducer.produce(context, neptuneRoute);
 			exportableNetexData.getRoutes().add(netexRoute);
 		}
 
-		List<JourneyPattern> activeJourneyPatterns = exportableData.getVehicleJourneys().stream().map(vj -> vj.getJourneyPattern()).filter(jp -> jp != null).distinct().collect(Collectors.toList());
-		for (JourneyPattern neptuneJourneyPattern : activeJourneyPatterns) {
+		for (JourneyPattern neptuneJourneyPattern : exportableData.getJourneyPatterns()) {
 			org.rutebanken.netex.model.ServiceJourneyPattern netexJourneyPattern = journeyPatternProducer.produce(context, neptuneJourneyPattern);
 			exportableNetexData.getJourneyPatterns().put(netexJourneyPattern.getId(), netexJourneyPattern);
 		}
 
-		produceAndCollectRoutePoints(activeRoutes, exportableNetexData);
-		produceAndCollectScheduledStopPoints(activeRoutes, exportableNetexData);
-		produceAndCollectStopAssignments(activeRoutes, exportableNetexData, configuration);
-
+		produceAndCollectRoutePoints(exportableData.getRoutes(), exportableNetexData);
+		produceAndCollectScheduledStopPoints(exportableData.getRoutes(), exportableNetexData);
+		produceAndCollectStopAssignments(exportableData.getRoutes(), exportableNetexData, configuration);
 
 		calendarProducer.produce(context, exportableData, exportableNetexData);
 
