@@ -89,9 +89,9 @@ public class StopAreaUpdateService {
 		if (boardingPositionObjectIds.size() > 0) {
 			log.info("Found " + boardingPositionObjectIds.size() + " unused boarding positions. Deleting boarding positions and commercial stops where all boarding positions are unused");
 			if (boardingPositionObjectIds.size() > DELETE_UNUSED_BATCH_SIZE) {
-				Lists.partition(new ArrayList<>(boardingPositionObjectIds), DELETE_UNUSED_BATCH_SIZE).forEach(batch -> deletedStopAreasCnt.addAndGet(deleteBatchOfUnusedStopAreas(batch)));
+				Lists.partition(new ArrayList<>(boardingPositionObjectIds), DELETE_UNUSED_BATCH_SIZE).forEach(batch -> deletedStopAreasCnt.addAndGet(deleteBatchOfUnusedStopAreas(batch, boardingPositionObjectIds)));
 			} else {
-				deletedStopAreasCnt.addAndGet(deleteBatchOfUnusedStopAreas(boardingPositionObjectIds));
+				deletedStopAreasCnt.addAndGet(deleteBatchOfUnusedStopAreas(boardingPositionObjectIds, boardingPositionObjectIds));
 			}
 
 		}
@@ -109,14 +109,14 @@ public class StopAreaUpdateService {
 	}
 
 
-	private int deleteBatchOfUnusedStopAreas(Collection<String> unusedBoardingPositionObjectIds) {
-		Set<StopArea> unusedBoardingPositions = new HashSet<>(stopAreaDAO.findByObjectId(unusedBoardingPositionObjectIds));
+	private int deleteBatchOfUnusedStopAreas(Collection<String> unusedBoardingPositionObjectIdBatch, Set<String> allUnusedBoardingPositionObjectIds) {
+		Set<StopArea> unusedBoardingPositions = new HashSet<>(stopAreaDAO.findByObjectId(unusedBoardingPositionObjectIdBatch));
 
 		List<StopArea> unusedStopAreas = unusedBoardingPositions.stream()
 				.map(boardingPosition -> boardingPosition.getParent())
 				.distinct()
 				.filter(stop -> stop != null)
-				.filter(stop -> stop.getContainedStopAreas().stream().allMatch(boardingPosition -> unusedBoardingPositionObjectIds.contains(boardingPosition.getObjectId())))
+				.filter(stop -> stop.getContainedStopAreas().stream().allMatch(boardingPosition -> allUnusedBoardingPositionObjectIds.contains(boardingPosition.getObjectId())))
 				.peek(stop -> log.debug("Deleting unused stop area: " + stop)).collect(Collectors.toList());
 
 		unusedBoardingPositions.forEach(boardingPosition -> stopAreaDAO.delete(boardingPosition));
