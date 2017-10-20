@@ -129,6 +129,7 @@ public class ValidationNominal extends AbstractTestValidation {
 		
 		List<String> expectedErrors = new ArrayList<>();
 		expectedErrors.add("rutebanken_3-StopPoint-2");
+		expectedErrors.add("3-JourneyPattern-4");
 		
 		for (CheckPointReport checkPoint : report.getCheckPoints()) {
 			if (checkPoint.getName().equals("3-StopArea-1"))

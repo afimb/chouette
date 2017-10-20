@@ -16,6 +16,7 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.type.BoardingPossibilityEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.TransportSubModeNameEnum;
 
@@ -42,6 +43,9 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 		initCheckPoint(context, ROUTE_SECTION_1, SEVERITY.W);
 		prepareCheckPoint(context, JOURNEY_PATTERN_3);
 		initCheckPoint(context, JOURNEY_PATTERN_3, SEVERITY.W);
+		prepareCheckPoint(context, JOURNEY_PATTERN_4);
+		initCheckPoint(context, JOURNEY_PATTERN_4, SEVERITY.W);
+
 		// 3-JourneyPattern-1 : check if two journey patterns use same stops
 		// 3-JourneyPattern-2 : Check if journey section routes count equals to
 		// journey stops count minus 1 (only from database)
@@ -76,6 +80,8 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 			// 4-JourneyPattern-1 : check columns constraints
 			if (test4_1)
 				check4Generic1(context, jp, L4_JOURNEY_PATTERN_1, parameters, log);
+
+			check3JourneyPattern4(context, jp);
 
 		}
 		return;
@@ -125,6 +131,19 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 						targetLocation);
 			}
 
+		}
+	}
+
+
+	// 3-JourneyPattern-4 : Check that last stop on journey pattern does not allow boarding
+	private void check3JourneyPattern4(Context context, JourneyPattern jp) {
+		if (jp.getArrivalStopPoint() == null) {
+			return;
+		}
+		if (!BoardingPossibilityEnum.forbidden.equals(jp.getArrivalStopPoint().getForBoarding())) {
+			DataLocation location = buildLocation(context, jp);
+			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+			reporter.addCheckPointReportError(context, JOURNEY_PATTERN_4, location);
 		}
 	}
 
