@@ -1,7 +1,9 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
+import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.model.StopPoint;
 import org.rutebanken.netex.model.*;
 
@@ -69,7 +71,8 @@ public class RouteProducer extends NetexProducer implements NetexEntityProducer<
 
 		netexRoute.setPointsInSequence(pointsOnRoute);
 
-		if (isSet(neptuneRoute.getOppositeRoute())) {
+		ExportableData exportableData = (ExportableData) context.get(Constant.EXPORTABLE_DATA);
+		if (isSet(neptuneRoute.getOppositeRoute()) && exportableData.getRoutes().contains(neptuneRoute.getOppositeRoute())) {
 			RouteRefStructure routeRefStruct = netexFactory.createRouteRefStructure();
 			NetexProducerUtils.populateReference(neptuneRoute.getOppositeRoute(), routeRefStruct, true);
 			netexRoute.setInverseRouteRef(routeRefStruct);
