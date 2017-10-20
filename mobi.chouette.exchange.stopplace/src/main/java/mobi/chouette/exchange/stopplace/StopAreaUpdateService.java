@@ -119,7 +119,7 @@ public class StopAreaUpdateService {
 				.filter(stop -> stop.getContainedStopAreas().stream().allMatch(boardingPosition -> allUnusedBoardingPositionObjectIds.contains(boardingPosition.getObjectId())))
 				.peek(stop -> log.debug("Deleting unused stop area: " + stop)).collect(Collectors.toList());
 
-		unusedBoardingPositions.forEach(boardingPosition -> stopAreaDAO.delete(boardingPosition));
+		unusedBoardingPositions.stream().peek(boardingPosition -> boardingPosition.setParent(null)).forEach(boardingPosition -> stopAreaDAO.delete(boardingPosition));
 		unusedStopAreas.forEach(stop -> stopAreaDAO.delete(stop));
 
 		return unusedStopAreas.size() + unusedBoardingPositions.size();
