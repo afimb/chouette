@@ -55,7 +55,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	}
 
 	public enum SEVERITY {
-		W, E
+		I,W, E
 	}
 
 	// test keys

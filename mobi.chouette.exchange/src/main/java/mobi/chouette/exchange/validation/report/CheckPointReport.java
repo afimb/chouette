@@ -17,7 +17,7 @@ import mobi.chouette.exchange.validation.report.ValidationReporter.RESULT;
 public class CheckPointReport extends AbstractReport{
 
 	public enum SEVERITY {
-		WARNING, ERROR, IMPROVMENT
+		WARNING, ERROR, IMPROVMENT, INFO
 	};
 
 	private String name;
