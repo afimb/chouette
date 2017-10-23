@@ -17,7 +17,10 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		CheckPointReport checkPoint = validationReport.findCheckPointReportByName(key);
 		if (checkPoint == null) {
-			if (severity.equals("W")) {
+			if (severity.equals("I")) {
+				validationReport.addCheckPointReport(new CheckPointReport(key, RESULT.UNCHECK,
+						SEVERITY.INFO));
+			} else if (severity.equals("W")) {
 				validationReport.addCheckPointReport(new CheckPointReport(key, RESULT.UNCHECK,
 						CheckPointReport.SEVERITY.WARNING));
 			} else {
@@ -33,7 +36,10 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		for (int i = 1; i <= count; i++) {
 			String key = prefix + name + "-" + i;
 			if (validationReport.findCheckPointReportByName(key) == null) {
-				if (severities[i - 1].equals("W")) {
+				if (severities[i - 1].equals("I")) {
+					validationReport.addCheckPointReport(new CheckPointReport(key, RESULT.UNCHECK,
+							CheckPointReport.SEVERITY.INFO));
+				} else if (severities[i - 1].equals("W")) {
 					validationReport.addCheckPointReport(new CheckPointReport(key, RESULT.UNCHECK,
 							CheckPointReport.SEVERITY.WARNING));
 				} else {

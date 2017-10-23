@@ -69,7 +69,7 @@ public class ValidationReport extends AbstractReport implements Report {
 			if (checkPoint.getSeverity().equals(SEVERITY.WARNING)) {
 				if (result.ordinal() < VALIDATION_RESULT.WARNING.ordinal())
 					result = VALIDATION_RESULT.WARNING;
-			} else {
+			} else if (checkPoint.getSeverity().equals(SEVERITY.ERROR)) {
 				result = VALIDATION_RESULT.ERROR;
 			}
 		}

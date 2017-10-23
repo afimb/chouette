@@ -56,6 +56,10 @@ public class ObjectReport extends AbstractReport {
 	@Getter
 	private List<Integer> checkPointWarningKeys = new ArrayList<Integer>();
 
+	@XmlElement(name = "checkpoint_infos")
+	@Getter
+	private List<Integer> checkPointInfoKeys = new ArrayList<Integer>();
+
 	@XmlElement(name = "checkpoint_error_count")
 	@Getter
 	private int checkPointErrorCount = 0;
@@ -63,6 +67,10 @@ public class ObjectReport extends AbstractReport {
 	@XmlElement(name = "checkpoint_warning_count")
 	@Getter
 	private int checkPointWarningCount = 0;
+
+	@XmlElement(name = "checkpoint_info_count")
+	@Getter
+	private int checkPointInfoCount = 0;
 
 	@XmlElement(name = "objectid")
 	@Getter
@@ -99,6 +107,14 @@ public class ObjectReport extends AbstractReport {
 		}
 
 		switch (severity) {
+			case INFO:
+				if (checkPointInfoCount < MAX_ERRORS_PER_CHECKPOINT) {
+					checkPointInfoKeys.add(new Integer(checkPointErrorId));
+					ret = true;
+				}
+				checkPointInfoCount++;
+				break;
+
 		case WARNING:
 			if (checkPointWarningCount < MAX_ERRORS_PER_CHECKPOINT) {
 				checkPointWarningKeys.add(new Integer(checkPointErrorId));
@@ -221,12 +237,18 @@ public class ObjectReport extends AbstractReport {
 			else
 				break;
 		}
+		for(Integer numInfo: checkPointInfoKeys) {
+			if(lstErrorKeys.size() < MAX_ERRORS_PER_CHECKPOINT)
+				lstErrorKeys.add(numInfo);
+			else
+				break;
+		}
 		if (!lstErrorKeys.isEmpty())
 			printIntArray(out, ret, level + 1, "check_point_errors", lstErrorKeys, false);
 
 		out.print(toJsonString(ret, level + 1, "check_point_error_count", checkPointErrorCount, false));
 		out.print(toJsonString(ret, level + 1, "check_point_warning_count", checkPointWarningCount, false));
-
+		out.print(toJsonString(ret, level + 1, "check_point_info_count", checkPointWarningCount, false));
 		ret.setLength(0);
 		out.print(addLevel(ret.append('\n'), level).append('}'));
 

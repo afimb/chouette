@@ -20,8 +20,8 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "name", "status", "ioType", "errors", "checkPointErrorKeys", "checkPointWarningKeys", "checkPointErrorCount",
-		"checkPointWarningCount" })
+@XmlType(propOrder = { "name", "status", "ioType", "errors", "checkPointErrorKeys", "checkPointWarningKeys", "checkPointInfoKeys", "checkPointErrorCount",
+		"checkPointWarningCount","checkPointInfoCount" })
 @Data
 @EqualsAndHashCode(exclude = { "status", "errors" }, callSuper=false)
 @NoArgsConstructor
@@ -46,11 +46,17 @@ public class FileReport extends AbstractReport{
 	@XmlElement(name = "checkpoint_warnings")
 	private List<Integer> checkPointWarningKeys = new ArrayList<Integer>();
 
+	@XmlElement(name = "checkpoint_infos")
+	private List<Integer> checkPointInfoKeys = new ArrayList<Integer>();
+
 	@XmlElement(name = "checkpoint_error_count")
 	private int checkPointErrorCount = 0;
 
 	@XmlElement(name = "checkpoint_warning_count")
 	private int checkPointWarningCount = 0;
+
+	@XmlElement(name = "checkpoint_info_count")
+	private int checkPointInfoCount = 0;
 
 	protected void addError(FileError fileError2) {
 		status = FILE_STATE.ERROR;
@@ -82,6 +88,13 @@ public class FileReport extends AbstractReport{
 		boolean ret = false;
 
 		switch (severity) {
+			case INFO:
+				if (checkPointInfoCount < maxErrors) {
+					checkPointInfoKeys.add(new Integer(checkPointErrorId));
+					ret = true;
+				}
+				checkPointInfoCount++;
+				break;
 		case WARNING:
 			if (checkPointWarningCount < MAX_ERRORS_PER_CHECKPOINT) {
 				checkPointWarningKeys.add(new Integer(checkPointErrorId));
@@ -152,10 +165,17 @@ public class FileReport extends AbstractReport{
 			else
 				break;
 		}
+		for(Integer numInfo: checkPointInfoKeys) {
+			if(lstErrorKeys.size() < maxErrors)
+				lstErrorKeys.add(numInfo);
+			else
+				break;
+		}
 		if (!lstErrorKeys.isEmpty())
 			printIntArray(out,ret, level+1,"check_point_errors",lstErrorKeys, false);
 		out.print(toJsonString(ret,level+1,"check_point_error_count", checkPointErrorCount, false));
 		out.print(toJsonString(ret,level+1,"check_point_warning_count", checkPointWarningCount, false));
+		out.print(toJsonString(ret,level+1,"check_point_info_count", checkPointInfoCount, false));
 		ret.setLength(0);
 		out.print(addLevel(ret.append('\n'),level).append('}'));
 	}
