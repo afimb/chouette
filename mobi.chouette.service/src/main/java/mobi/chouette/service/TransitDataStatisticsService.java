@@ -112,7 +112,11 @@ public class TransitDataStatisticsService {
 		for (PublicLine pl : lineStats.getPublicLines()) {
 			Set<String> names = new TreeSet<String>();
 			for (Line l : pl.getLines()) {
-				names.add(l.getName());
+				if (l.getName() != null) {
+					names.add(l.getName());
+				} else {
+					log.warn("Ignored line with null name: " + l.getObjectId());
+				}
 			}
 
 			pl.getLineNames().addAll(names);
