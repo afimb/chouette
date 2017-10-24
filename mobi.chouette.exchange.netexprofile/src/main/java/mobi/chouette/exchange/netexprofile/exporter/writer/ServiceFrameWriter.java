@@ -56,9 +56,9 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 				ReusedConstructsWriter.writeNoticeAssignmentsElement(writer, exportableNetexData.getNoticeAssignmentsServiceFrame(), marshaller);
 			} else { // shared data
 				writeDestinationDisplaysElement(writer, exportableNetexData, marshaller);
-				writeNoticesElement(writer, exportableNetexData.getSharedNotices().values(), marshaller);
 				writeScheduledStopPointsElement(writer, exportableNetexData, marshaller);
 				writeStopAssignmentsElement(writer, exportableNetexData, marshaller);
+				writeNoticesElement(writer, exportableNetexData.getSharedNotices().values(), marshaller);
 			}
 
 			writer.writeEndElement();
