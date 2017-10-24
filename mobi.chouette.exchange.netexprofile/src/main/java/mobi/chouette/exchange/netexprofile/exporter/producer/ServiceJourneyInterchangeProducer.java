@@ -48,7 +48,7 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
         }
 
 
-        
+
        // Feeder stoppoint ref
         StopPoint feederStopPoint = interchange.getFeederStopPoint();
 		if(feederStopPoint != null) {

@@ -248,7 +248,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 		String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, containedInSuffix);
 		String pointProjectionId = netexId(stopPoint.objectIdPrefix(), POINT_PROJECTION, containedInSuffix);
 
-		PointRefStructure pointRefStruct = netexFactory.createPointRefStructure().withRef(stopPointIdRef).withVersion(pointVersion);
+		PointRefStructure pointRefStruct = netexFactory.createPointRefStructure().withRef(stopPointIdRef);
 
 		PointProjection pointProjection = netexFactory.createPointProjection().withVersion(pointVersion).withId(pointProjectionId)
 				.withProjectedPointRef(pointRefStruct);
@@ -269,9 +269,9 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 						String scheduledStopPointIdSuffix = stopPoint.getContainedInStopArea().objectIdSuffix();
 						String scheduledStopPointId = netexId(stopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, scheduledStopPointIdSuffix);
 
-						if (!exportableNetexData.getScheduledStopPoints().containsKey(scheduledStopPointId)) {
+						if (!exportableNetexData.getSharedScheduledStopPoints().containsKey(scheduledStopPointId)) {
 							ScheduledStopPoint scheduledStopPoint = createScheduledStopPoint(stopPoint, scheduledStopPointId);
-							exportableNetexData.getScheduledStopPoints().put(scheduledStopPointId, scheduledStopPoint);
+							exportableNetexData.getSharedScheduledStopPoints().put(scheduledStopPointId, scheduledStopPoint);
 						}
 					} else {
 						throw new RuntimeException(
@@ -352,9 +352,9 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 					if (isSet(stopPoint.getContainedInStopArea())) {
 						String stopAssignmentId = NetexProducerUtils.createUniqueId(context, PASSENGER_STOP_ASSIGNMENT);
 
-						if (!exportableNetexData.getStopAssignments().containsKey(stopAssignmentId)) {
+						if (!exportableNetexData.getSharedStopAssignments().containsKey(stopAssignmentId)) {
 							PassengerStopAssignment stopAssignment = createStopAssignment(stopPoint, stopAssignmentId, index, parameters);
-							exportableNetexData.getStopAssignments().put(stopAssignmentId, stopAssignment);
+							exportableNetexData.getSharedStopAssignments().put(stopAssignmentId, stopAssignment);
 						}
 						index++;
 					} else {

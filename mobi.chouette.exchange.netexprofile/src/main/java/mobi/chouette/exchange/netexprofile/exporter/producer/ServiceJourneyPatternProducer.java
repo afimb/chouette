@@ -70,12 +70,12 @@ public class ServiceJourneyPatternProducer extends NetexProducer implements Nete
             if (stopPoint != null) {
                 StopPointInJourneyPattern stopPointInJourneyPattern = netexFactory.createStopPointInJourneyPattern();
                 NetexProducerUtils.populateId(stopPoint, stopPointInJourneyPattern);
-     
+
                 if (isSet(stopPoint.getContainedInStopArea())) {
                 	String stopPointIdSuffix = stopPoint.getContainedInStopArea().objectIdSuffix();
                     String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, stopPointIdSuffix);
 
-                    ScheduledStopPointRefStructure stopPointRefStruct = netexFactory.createScheduledStopPointRefStructure().withRef(stopPointIdRef).withVersion(stopPoint.getObjectVersion().toString());
+                    ScheduledStopPointRefStructure stopPointRefStruct = netexFactory.createScheduledStopPointRefStructure().withRef(stopPointIdRef);
                     stopPointInJourneyPattern.setScheduledStopPointRef(netexFactory.createScheduledStopPointRef(stopPointRefStruct));
                 } else {
                     throw new RuntimeException("StopPoint with id : " + stopPoint.getObjectId() + " is not contained in a StopArea. Cannot produce ScheduledStopPoint reference.");
@@ -94,15 +94,15 @@ public class ServiceJourneyPatternProducer extends NetexProducer implements Nete
                 }
 
                 stopPointInJourneyPattern.setOrder(BigInteger.valueOf(i + 1));
-                
+
                 if(stopPoint.getDestinationDisplay() != null) {
                 	DestinationDisplayRefStructure destinationDisplayRef = netexFactory.createDestinationDisplayRefStructure();
                 	destinationDisplayRef.setRef(stopPoint.getDestinationDisplay().getObjectId());
                 	stopPointInJourneyPattern.setDestinationDisplayRef(destinationDisplayRef);
                 }
-                
+
         		NoticeProducer.addNoticeAndNoticeAssignments(context, exportableNetexData, exportableNetexData.getNoticeAssignmentsServiceFrame(), stopPoint.getFootnotes(), stopPoint);
-                
+
                 pointsInJourneyPattern.getPointInJourneyPatternOrStopPointInJourneyPatternOrTimingPointInJourneyPattern().add(stopPointInJourneyPattern);
             }
         }

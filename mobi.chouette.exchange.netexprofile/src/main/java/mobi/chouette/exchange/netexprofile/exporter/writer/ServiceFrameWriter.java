@@ -60,13 +60,13 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 				writeRoutePointsElement(writer, exportableNetexData, marshaller);
 				writeRoutesElement(writer, exportableNetexData, marshaller);
 				writeLinesElement(writer, exportableNetexData, marshaller);
-				writeScheduledStopPointsElement(writer, exportableNetexData, marshaller);
-				writeStopAssignmentsElement(writer, exportableNetexData, marshaller);
 				writeJourneyPatternsElement(writer, exportableNetexData, marshaller);
 				ReusedConstructsWriter.writeNoticeAssignmentsElement(writer, exportableNetexData.getNoticeAssignmentsServiceFrame(), marshaller);
 			} else { // shared data
 				writeDestinationDisplaysElement(writer, exportableNetexData, marshaller);
 				writeNoticesElement(writer, exportableNetexData.getSharedNotices().values(), marshaller);
+				writeScheduledStopPointsElement(writer, exportableNetexData, marshaller);
+				writeStopAssignmentsElement(writer, exportableNetexData, marshaller);
 			}
 
 			writer.writeEndElement();
@@ -148,7 +148,7 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 	private static void writeScheduledStopPointsElement(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
 		try {
 			writer.writeStartElement(SCHEDULED_STOP_POINTS);
-			for (ScheduledStopPoint scheduledStopPoint : exportableData.getScheduledStopPoints().values()) {
+			for (ScheduledStopPoint scheduledStopPoint : exportableData.getSharedScheduledStopPoints().values()) {
 				marshaller.marshal(netexFactory.createScheduledStopPoint(scheduledStopPoint), writer);
 			}
 			writer.writeEndElement();
@@ -160,7 +160,7 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 	private static void writeStopAssignmentsElement(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
 		try {
 			writer.writeStartElement(STOP_ASSIGNMENTS);
-			for (PassengerStopAssignment stopAssignment : exportableData.getStopAssignments().values()) {
+			for (PassengerStopAssignment stopAssignment : exportableData.getSharedStopAssignments().values()) {
 				marshaller.marshal(netexFactory.createPassengerStopAssignment(stopAssignment), writer);
 			}
 			writer.writeEndElement();
