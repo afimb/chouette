@@ -27,7 +27,7 @@ public class ServiceJourneyInterchangeIgnorer implements ExternalReferenceValida
 		Set<IdVersion> supportedTypes =new HashSet<>();
 		
 		for(IdVersion ref : references) {
-			if("ToJourneyRef".equals(ref.getElementName()) && ref.getId().contains("ServiceJourney")) {
+			if("FromPointRef".equals(ref.getElementName()) && ref.getId().contains("ScheduledStopPoint")) {
 				supportedTypes.add(ref);
 			}
 			else if("FromJourneyRef".equals(ref.getElementName()) && ref.getId().contains("ServiceJourney")) {
