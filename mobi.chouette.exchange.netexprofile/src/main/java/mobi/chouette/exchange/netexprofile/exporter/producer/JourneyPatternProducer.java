@@ -1,5 +1,9 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import java.math.BigInteger;
+import java.util.Comparator;
+import java.util.List;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
@@ -8,19 +12,24 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
-import org.rutebanken.netex.model.*;
 
-import java.math.BigInteger;
-import java.util.Comparator;
-import java.util.List;
+import org.rutebanken.netex.model.DestinationDisplayRefStructure;
+import org.rutebanken.netex.model.KeyValueStructure;
+import org.rutebanken.netex.model.PointsInJourneyPattern_RelStructure;
+import org.rutebanken.netex.model.PrivateCodeStructure;
+import org.rutebanken.netex.model.RouteRefStructure;
+import org.rutebanken.netex.model.ScheduledStopPointRefStructure;
+import org.rutebanken.netex.model.StopPointInJourneyPattern;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SCHEDULED_STOP_POINT;
 
-public class ServiceJourneyPatternProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.ServiceJourneyPattern, mobi.chouette.model.JourneyPattern> {
+public class JourneyPatternProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.JourneyPattern, mobi.chouette.model.JourneyPattern> {
 
     @Override
-    public org.rutebanken.netex.model.ServiceJourneyPattern produce(Context context, mobi.chouette.model.JourneyPattern neptuneJourneyPattern) {
-        org.rutebanken.netex.model.ServiceJourneyPattern netexJourneyPattern = netexFactory.createServiceJourneyPattern();
+    public org.rutebanken.netex.model.JourneyPattern produce(Context context, mobi.chouette.model.JourneyPattern neptuneJourneyPattern) {
+        org.rutebanken.netex.model.JourneyPattern netexJourneyPattern = netexFactory.createJourneyPattern();
 
         ExportableNetexData exportableNetexData = (ExportableNetexData) context.get(Constant.EXPORTABLE_NETEX_DATA);
 

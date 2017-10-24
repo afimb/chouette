@@ -1,10 +1,35 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import lombok.Getter;
 import lombok.Setter;
-import org.rutebanken.netex.model.*;
 
-import java.util.*;
+import org.rutebanken.netex.model.AvailabilityCondition;
+import org.rutebanken.netex.model.Codespace;
+import org.rutebanken.netex.model.DayType;
+import org.rutebanken.netex.model.DayTypeAssignment;
+import org.rutebanken.netex.model.DestinationDisplay;
+import org.rutebanken.netex.model.GroupOfLines;
+import org.rutebanken.netex.model.JourneyPattern;
+import org.rutebanken.netex.model.Line;
+import org.rutebanken.netex.model.Network;
+import org.rutebanken.netex.model.Notice;
+import org.rutebanken.netex.model.NoticeAssignment;
+import org.rutebanken.netex.model.OperatingPeriod;
+import org.rutebanken.netex.model.Organisation_VersionStructure;
+import org.rutebanken.netex.model.PassengerStopAssignment;
+import org.rutebanken.netex.model.Route;
+import org.rutebanken.netex.model.RoutePoint;
+import org.rutebanken.netex.model.ScheduledStopPoint;
+import org.rutebanken.netex.model.ServiceJourney;
+import org.rutebanken.netex.model.ServiceJourneyInterchange;
+import org.rutebanken.netex.model.StopPlace;
 
 public class ExportableNetexData {
 
@@ -42,7 +67,7 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private Map<String, ScheduledStopPoint> scheduledStopPoints = new HashMap<>();
+    private Map<String, ScheduledStopPoint> sharedScheduledStopPoints = new HashMap<>();
 
     @Getter
     @Setter
@@ -50,7 +75,7 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private Map<String, PassengerStopAssignment> stopAssignments = new HashMap<>();
+    private Map<String, PassengerStopAssignment> sharedStopAssignments = new HashMap<>();
 
     @Getter
     @Setter
@@ -62,7 +87,7 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private Map<String,ServiceJourneyPattern> journeyPatterns = new HashMap<>();
+    private List<JourneyPattern> journeyPatterns = new ArrayList<>();
 
     @Getter
     @Setter
@@ -107,8 +132,6 @@ public class ExportableNetexData {
         noticeAssignmentsTimetableFrame.clear();
         serviceJourneyInterchanges.clear();
         routePoints.clear();
-        stopAssignments.clear();
-        scheduledStopPoints.clear();
     }
 
     public void dispose() {
@@ -123,6 +146,8 @@ public class ExportableNetexData {
         sharedOrganisations.clear();
         sharedStopPlaces.clear();
         sharedNotices.clear();
+        sharedStopAssignments.clear();
+        sharedScheduledStopPoints.clear();
     }
 
 }

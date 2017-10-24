@@ -46,7 +46,7 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
 				// Check if same line - if so they will both exist in the same file
 				if(consumerVehicleJourney.getRoute().getLine() == feederVehicleJourney.getRoute().getLine()) {
 					feederJourneyWithinSameLine = true;
-				}        
+				}
 			}
 		}
 
@@ -78,7 +78,7 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
             feederVehicleRef.setRef(interchange.getFeederVehicleJourneyObjectid());
         }
         netex.setFromJourneyRef(feederVehicleRef);
-        
+
         
         return netex;
     }
