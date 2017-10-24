@@ -18,6 +18,7 @@ import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer;
+import mobi.chouette.exchange.netexprofile.exporter.producer.JourneyPatternProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.LineProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
@@ -25,7 +26,6 @@ import mobi.chouette.exchange.netexprofile.exporter.producer.NetworkProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.OrganisationProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.RouteProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.ServiceJourneyInterchangeProducer;
-import mobi.chouette.exchange.netexprofile.exporter.producer.ServiceJourneyPatternProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.ServiceJourneyProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.StopPlaceProducer;
 import mobi.chouette.exchange.report.ActionReporter;
@@ -68,7 +68,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 	private static NetworkProducer networkProducer = new NetworkProducer();
 	private static LineProducer lineProducer = new LineProducer();
 	private static RouteProducer routeProducer = new RouteProducer();
-	private static ServiceJourneyPatternProducer journeyPatternProducer = new ServiceJourneyPatternProducer();
+	private static JourneyPatternProducer journeyPatternProducer = new JourneyPatternProducer();
 	private static CalendarProducer calendarProducer = new CalendarProducer();
 	private static ServiceJourneyProducer serviceJourneyProducer = new ServiceJourneyProducer();
 	private static ServiceJourneyInterchangeProducer serviceJourneyInterchangeProducer = new ServiceJourneyInterchangeProducer();
@@ -121,8 +121,8 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 		}
 
 		for (JourneyPattern neptuneJourneyPattern : exportableData.getJourneyPatterns()) {
-			org.rutebanken.netex.model.ServiceJourneyPattern netexJourneyPattern = journeyPatternProducer.produce(context, neptuneJourneyPattern);
-			exportableNetexData.getJourneyPatterns().put(netexJourneyPattern.getId(), netexJourneyPattern);
+			org.rutebanken.netex.model.JourneyPattern netexJourneyPattern = journeyPatternProducer.produce(context, neptuneJourneyPattern);
+			exportableNetexData.getJourneyPatterns().add(netexJourneyPattern);
 		}
 
 		produceAndCollectRoutePoints(exportableData.getRoutes(), exportableNetexData);

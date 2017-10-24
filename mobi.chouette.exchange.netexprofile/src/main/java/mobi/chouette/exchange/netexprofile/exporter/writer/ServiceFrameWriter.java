@@ -1,34 +1,26 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DEFAULT_OBJECT_VERSION;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.DESTINATION_DISPLAYS;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.JOURNEY_PATTERNS;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.LINES;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.NOTICES;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.ROUTES;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.ROUTE_POINTS;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SCHEDULED_STOP_POINTS;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SERVICE_FRAME;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.STOP_ASSIGNMENTS;
-
 import java.util.Collection;
 
 import javax.xml.bind.Marshaller;
 import javax.xml.stream.XMLStreamWriter;
 
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
+import mobi.chouette.exchange.netexprofile.exporter.NetexFragmentMode;
+import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
+
 import org.rutebanken.netex.model.DestinationDisplay;
+import org.rutebanken.netex.model.JourneyPattern;
 import org.rutebanken.netex.model.Network;
 import org.rutebanken.netex.model.Notice;
 import org.rutebanken.netex.model.PassengerStopAssignment;
 import org.rutebanken.netex.model.RoutePoint;
 import org.rutebanken.netex.model.ScheduledStopPoint;
-import org.rutebanken.netex.model.ServiceJourneyPattern;
 
-import mobi.chouette.common.Context;
-import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
-import mobi.chouette.exchange.netexprofile.exporter.NetexFragmentMode;
-import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DEFAULT_OBJECT_VERSION;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 public class ServiceFrameWriter extends AbstractNetexWriter {
 
@@ -172,8 +164,8 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 	private static void writeJourneyPatternsElement(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
 		try {
 			writer.writeStartElement(JOURNEY_PATTERNS);
-			for (ServiceJourneyPattern journeyPattern : exportableData.getJourneyPatterns().values()) {
-				marshaller.marshal(netexFactory.createServiceJourneyPattern(journeyPattern), writer);
+			for (JourneyPattern journeyPattern : exportableData.getJourneyPatterns()) {
+				marshaller.marshal(netexFactory.createJourneyPattern(journeyPattern), writer);
 			}
 			writer.writeEndElement();
 		} catch (Exception e) {

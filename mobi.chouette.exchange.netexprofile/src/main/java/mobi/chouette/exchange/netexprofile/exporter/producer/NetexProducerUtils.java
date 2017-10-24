@@ -149,7 +149,7 @@ public class NetexProducerUtils {
 		} else if (v instanceof VehicleJourney) {
 			return "ServiceJourney";
 		} else if (v instanceof JourneyPattern) {
-			return "ServiceJourneyPattern";
+			return "JourneyPattern";
 		} else if (v instanceof StopArea) {
 			StopArea sa = (StopArea) v;
 			if (ChouetteAreaEnum.BoardingPosition.equals(sa.getAreaType())) {
