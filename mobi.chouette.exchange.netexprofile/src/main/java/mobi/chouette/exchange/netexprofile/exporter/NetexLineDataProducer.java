@@ -373,7 +373,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 		if (isSet(scheduledStopPoint.getContainedInStopAreaRef().getObject())) {
 			mobi.chouette.model.StopArea containedInStopArea = scheduledStopPoint.getContainedInStopAreaRef().getObject();
 			QuayRefStructure quayRefStruct = netexFactory.createQuayRefStructure();
-			NetexProducerUtils.populateReference(containedInStopArea, quayRefStruct, false);
+			NetexProducerUtils.populateReference(containedInStopArea, quayRefStruct, parameters.isExportStops());
 			stopAssignment.setQuayRef(quayRefStruct);
 		}
 
