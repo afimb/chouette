@@ -245,10 +245,10 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 		RoutePoint routePoint = netexFactory.createRoutePoint().withVersion(pointVersion).withId(routePointId);
 
 
-
-		String containedInSuffix = stopPoint.getScheduledStopPoint().objectIdSuffix();
-		String stopPointIdRef = netexId(stopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, containedInSuffix);
-		String pointProjectionId = netexId(stopPoint.objectIdPrefix(), POINT_PROJECTION, containedInSuffix);
+		mobi.chouette.model.ScheduledStopPoint scheduledStopPoint = stopPoint.getScheduledStopPoint();
+		String containedInSuffix = scheduledStopPoint.objectIdSuffix();
+		String stopPointIdRef = netexId(scheduledStopPoint.objectIdPrefix(), SCHEDULED_STOP_POINT, containedInSuffix);
+		String pointProjectionId = netexId(scheduledStopPoint.objectIdPrefix(), POINT_PROJECTION, containedInSuffix);
 
 		PointRefStructure pointRefStruct = netexFactory.createPointRefStructure().withRef(stopPointIdRef);
 
@@ -271,11 +271,11 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 
 						String scheduledStopPointId = stopPoint.getScheduledStopPoint().getObjectId();
 
-						if (!exportableNetexData.getScheduledStopPoints().containsKey(scheduledStopPointId)) {
+						if (!exportableNetexData.getSharedScheduledStopPoints().containsKey(scheduledStopPointId)) {
 							ScheduledStopPoint scheduledStopPoint = netexFactory.createScheduledStopPoint();
 							NetexProducerUtils.populateId(stopPoint.getScheduledStopPoint(), scheduledStopPoint);
 							scheduledStopPoint.setName(ConversionUtil.getMultiLingualString(stopPoint.getScheduledStopPoint().getName()));
-							exportableNetexData.getScheduledStopPoints().put(scheduledStopPointId, scheduledStopPoint);
+							exportableNetexData.getSharedScheduledStopPoints().put(scheduledStopPointId, scheduledStopPoint);
 						}
 					} else {
 						throw new RuntimeException(
@@ -346,9 +346,9 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 						String stopAssignmentIdSuffix = scheduledStopPoint.objectIdSuffix();
 						String stopAssignmentId = netexId(scheduledStopPoint.objectIdPrefix(), PASSENGER_STOP_ASSIGNMENT, stopAssignmentIdSuffix);
 
-						if (!exportableNetexData.getStopAssignments().containsKey(stopAssignmentId)) {
+						if (!exportableNetexData.getSharedStopAssignments().containsKey(stopAssignmentId)) {
 							PassengerStopAssignment stopAssignment = createStopAssignment(scheduledStopPoint, stopAssignmentId, index, parameters);
-							exportableNetexData.getStopAssignments().put(stopAssignmentId, stopAssignment);
+							exportableNetexData.getSharedStopAssignments().put(stopAssignmentId, stopAssignment);
 						}
 						index++;
 					} else {

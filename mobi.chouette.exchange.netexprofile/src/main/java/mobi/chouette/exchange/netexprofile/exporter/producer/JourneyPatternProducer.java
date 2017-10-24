@@ -22,8 +22,6 @@ import org.rutebanken.netex.model.ScheduledStopPointRefStructure;
 import org.rutebanken.netex.model.StopPointInJourneyPattern;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SCHEDULED_STOP_POINT;
 
 public class JourneyPatternProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.JourneyPattern, mobi.chouette.model.JourneyPattern> {
 
@@ -79,7 +77,7 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 
 				if (stopPoint.getScheduledStopPoint() != null) {
 					ScheduledStopPointRefStructure stopPointRefStruct = netexFactory.createScheduledStopPointRefStructure();
-					NetexProducerUtils.populateReference(stopPoint.getScheduledStopPoint(), stopPointRefStruct, true);
+					NetexProducerUtils.populateReference(stopPoint.getScheduledStopPoint(), stopPointRefStruct, false);
 					stopPointInJourneyPattern.setScheduledStopPointRef(netexFactory.createScheduledStopPointRef(stopPointRefStruct));
 				}
 

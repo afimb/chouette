@@ -28,7 +28,7 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
         // Consumer stoppoint ref 
         ScheduledStopPoint consumerStopPoint = interchange.getConsumerStopPoint();
         ScheduledStopPointRefStructure consumerSSPRef = netexFactory.createScheduledStopPointRefStructure();
-        NetexProducerUtils.populateReference(consumerStopPoint, consumerSSPRef, true);
+        NetexProducerUtils.populateReference(consumerStopPoint, consumerSSPRef, false);
         netex.setToVisitNumber(ConversionUtil.asBigInteger(interchange.getConsumerVisitNumber()));
         netex.setToPointRef(consumerSSPRef);
 
@@ -54,16 +54,8 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
 		ScheduledStopPoint feederStopPoint = interchange.getFeederStopPoint();
 		ScheduledStopPointRefStructure feederSSPRef = netexFactory.createScheduledStopPointRefStructure();
 
-		boolean feederPointWithinSameLine = false;
-		if (feederJourneyWithinSameLine) {
-			feederPointWithinSameLine = true;
-		} else if (feederStopPoint != null && consumerVehicleJourney != null) {
-			feederPointWithinSameLine = consumerVehicleJourney.getRoute().getLine().getRoutes().stream()
-					.map(route -> route.getStopPoints()).flatMap(i -> i.stream()).anyMatch(stopPoint -> feederStopPoint.equals(stopPoint.getScheduledStopPoint()));
-		}
-
 		if(feederStopPoint != null) {
-            NetexProducerUtils.populateReference(feederStopPoint, feederSSPRef, feederPointWithinSameLine);
+            NetexProducerUtils.populateReference(feederStopPoint, feederSSPRef, false);
         } else {
         	feederSSPRef.setRef(interchange.getFeederStopPointObjectid());
         }
