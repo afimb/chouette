@@ -43,7 +43,7 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
 			writeElement(writer, PARTICIPANT_REF, PARTICIPANT_REF_CONTENT);
 
 			if (fragmentMode.equals(NetexFragmentMode.LINE)) {
-				writeElement(writer, DESCRIPTION,  NamingUtil.getName(exportableData.getLine());
+				writeElement(writer, DESCRIPTION,  NamingUtil.getName(exportableData.getLine()));
 			} else {
 				writeElement(writer, DESCRIPTION, "Shared data used across line files");
 			}
