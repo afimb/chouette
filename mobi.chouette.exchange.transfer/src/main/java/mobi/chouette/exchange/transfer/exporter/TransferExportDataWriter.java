@@ -85,12 +85,10 @@ public class TransferExportDataWriter implements Command, Constant {
 						// Make sure interchanges do not point to vehicle journeys or stops in other lines (reset id to wipe object ref)
 						for (VehicleJourney vj : jp.getVehicleJourneys()) {
 							for (Interchange fi : vj.getFeederInterchanges()) {
-								fi.setConsumerStopPointObjectid(fi.getConsumerStopPointObjectid());
-								fi.setConsumerVehicleJourneyObjectid(fi.getConsumerVehicleJourneyObjectid());
+								clearInterchangeOjbectReferences(fi);
 							}
 							for (Interchange ci : vj.getConsumerInterchanges()) {
-								ci.setFeederStopPointObjectid(ci.getFeederStopPointObjectid());
-								ci.setFeederVehicleJourneyObjectid(ci.getFeederVehicleJourneyObjectid());
+								clearInterchangeOjbectReferences(ci);
 							}
 						}
 
@@ -135,6 +133,13 @@ public class TransferExportDataWriter implements Command, Constant {
 			referential.clear(true);
 			lineToTransfer.clear();
 		}
+	}
+
+	private void clearInterchangeOjbectReferences(Interchange fi) {
+		fi.setConsumerStopPointObjectid(fi.getConsumerStopPointObjectid());
+		fi.setConsumerVehicleJourneyObjectid(fi.getConsumerVehicleJourneyObjectid());
+		fi.setFeederStopPointObjectid(fi.getFeederStopPointObjectid());
+		fi.setFeederVehicleJourneyObjectid(fi.getFeederVehicleJourneyObjectid());
 	}
 
 	private void detachLineFromPersistenceContext(List<Line> lineToTransfer, int i, int flushSize) {
