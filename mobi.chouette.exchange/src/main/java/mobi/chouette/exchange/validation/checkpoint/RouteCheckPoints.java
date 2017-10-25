@@ -45,11 +45,11 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		// 3-Route-8 : check if all stopPoints are used by journeyPatterns
 		// 3-Route-9 : check if one journeyPattern uses all stopPoints
 
-		initCheckPoint(context, ROUTE_1, SEVERITY.W);
+		initCheckPoint(context, ROUTE_1, SEVERITY.I);
 		initCheckPoint(context, ROUTE_2, SEVERITY.W);
-		initCheckPoint(context, ROUTE_3, SEVERITY.W);
+		initCheckPoint(context, ROUTE_3, SEVERITY.I);
 		initCheckPoint(context, ROUTE_4, SEVERITY.W);
-		initCheckPoint(context, ROUTE_5, SEVERITY.W);
+		initCheckPoint(context, ROUTE_5, SEVERITY.I);
 		if (!sourceFile) {
 			initCheckPoint(context, ROUTE_6, SEVERITY.E);
 			initCheckPoint(context, ROUTE_7, SEVERITY.E);
@@ -58,7 +58,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 			prepareCheckPoint(context, ROUTE_7);
 		}
 		initCheckPoint(context, ROUTE_8, SEVERITY.W);
-		initCheckPoint(context, ROUTE_9, SEVERITY.W);
+		initCheckPoint(context, ROUTE_9, SEVERITY.I);
 
 		boolean test4_1 = (parameters.getCheckRoute() != 0);
 		if (test4_1) {

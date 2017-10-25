@@ -77,7 +77,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		boolean test4_2 = parameters.getCheckAllowedTransportModes() == 1;
 
 		initCheckPoint(context, VEHICLE_JOURNEY_1, SEVERITY.W);
-		initCheckPoint(context, VEHICLE_JOURNEY_2, SEVERITY.W);
+		initCheckPoint(context, VEHICLE_JOURNEY_2, SEVERITY.I);
 		initCheckPoint(context, VEHICLE_JOURNEY_2,"1", SEVERITY.E);
 		initCheckPoint(context, VEHICLE_JOURNEY_3, SEVERITY.W);
 		initCheckPoint(context, VEHICLE_JOURNEY_4, SEVERITY.W);

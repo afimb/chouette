@@ -50,8 +50,8 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 			prepareCheckPoint(context, STOP_AREA_1);
 		}
 		initCheckPoint(context, STOP_AREA_2, SEVERITY.W);
-		initCheckPoint(context, STOP_AREA_3, SEVERITY.W);
-		initCheckPoint(context, STOP_AREA_4, SEVERITY.W);
+		initCheckPoint(context, STOP_AREA_3, SEVERITY.I);
+		initCheckPoint(context, STOP_AREA_4, SEVERITY.I);
 		initCheckPoint(context, STOP_AREA_5, SEVERITY.W);
 		initCheckPoint(context, STOP_AREA_6, SEVERITY.W);
 		initCheckPoint(context, STOP_AREA_7, SEVERITY.W);

@@ -367,7 +367,7 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-StopArea-3 checkPoint");
 
 		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.INFO,
 				" checkPointReport must be on severity error");
 		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 		String detailKey = "3-StopArea-3".replaceAll("-", "_").toLowerCase();
@@ -437,7 +437,7 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-StopArea-4 checkPoint");
 
 		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.INFO,
 				" checkPointReport must be on severity error");
 		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 17, " checkPointReport must have 17 item");
 		String detailKey = "3-StopArea-4".replaceAll("-", "_").toLowerCase();

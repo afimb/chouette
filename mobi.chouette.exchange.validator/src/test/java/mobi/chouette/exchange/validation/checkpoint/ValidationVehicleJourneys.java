@@ -344,7 +344,7 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-VehicleJourney-2 checkPoint");
 
 		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.INFO,
 				" checkPointReport must be on level warning");
 		
 		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 81, " checkPointReport must have 81 item");
