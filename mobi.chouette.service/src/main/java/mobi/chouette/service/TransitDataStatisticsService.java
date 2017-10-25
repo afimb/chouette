@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import javax.ejb.ConcurrencyManagement;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
@@ -39,6 +40,9 @@ import org.joda.time.LocalDate;
 import org.rutebanken.helper.calendar.CalendarPattern;
 import org.rutebanken.helper.calendar.CalendarPatternAnalyzer;
 
+import static javax.ejb.ConcurrencyManagementType.BEAN;
+
+@ConcurrencyManagement(BEAN)
 @Singleton(name = TransitDataStatisticsService.BEAN_NAME)
 @Log4j
 public class TransitDataStatisticsService {
