@@ -14,6 +14,7 @@ import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
 import mobi.chouette.exchange.netexprofile.exporter.NetexFragmentMode;
 import mobi.chouette.exchange.netexprofile.exporter.NetexprofileExportParameters;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
+import mobi.chouette.model.util.NamingUtil;
 
 import org.rutebanken.netex.model.AvailabilityCondition;
 import org.rutebanken.netex.model.Codespace;
@@ -42,7 +43,7 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
 			writeElement(writer, PARTICIPANT_REF, PARTICIPANT_REF_CONTENT);
 
 			if (fragmentMode.equals(NetexFragmentMode.LINE)) {
-				writeElement(writer, DESCRIPTION, exportableData.getLine().getName());
+				writeElement(writer, DESCRIPTION,  NamingUtil.getName(exportableData.getLine());
 			} else {
 				writeElement(writer, DESCRIPTION, "Shared data used across line files");
 			}
