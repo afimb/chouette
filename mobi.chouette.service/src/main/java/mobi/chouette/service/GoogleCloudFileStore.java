@@ -4,6 +4,8 @@ import java.io.InputStream;
 import java.nio.file.Path;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.ConcurrencyManagement;
+import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 
@@ -20,6 +22,7 @@ import static mobi.chouette.service.GoogleCloudFileStore.BEAN_NAME;
  * Store permanent files in Google Cloud Storage.
  */
 @Singleton(name = BEAN_NAME)
+@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 @Log4j
 public class GoogleCloudFileStore implements FileStore {
 
