@@ -70,7 +70,7 @@
       </dependency>
 
        <dependency>
-           <groupId>org.rutebanken.helpers</groupId>
+           <groupId>org.entur.helpers</groupId>
            <artifactId>gcp-storage</artifactId>
            <version>0.0.3-SNAPSHOT</version>
            <exclusions>
@@ -127,11 +127,11 @@
 		<artifactId>joda-time</artifactId>
 		</dependency>
        <dependency>
-           <groupId>org.rutebanken.helpers</groupId>
+           <groupId>org.entur.helpers</groupId>
            <artifactId>calendar-helper</artifactId>
        </dependency>
        <dependency>
-           <groupId>org.rutebanken.helpers</groupId>
+           <groupId>org.entur.helpers</groupId>
            <artifactId>hazelcast-helper</artifactId>
        </dependency>
       <!-- Modules -->
