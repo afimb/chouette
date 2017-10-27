@@ -43,7 +43,7 @@ import org.jboss.ejb3.annotation.TransactionTimeout;
 @Stateless(name = TransferExportDataWriter.COMMAND)
 public class TransferExportDataWriter implements Command, Constant {
 
-	private static final int FLUSH_SIZE = 100;
+	private static final int FLUSH_SIZE = 50;
 
 	public static final String COMMAND = "TransferExporterDataWriter";
 
