@@ -31,7 +31,7 @@
 			<artifactId>netex-java-model</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.rutebanken.helpers</groupId>
+			<groupId>org.entur.helpers</groupId>
 			<artifactId>calendar-helper</artifactId>
 			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
