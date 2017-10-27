@@ -357,7 +357,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "feederVehicleJourney", cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "feederVehicleJourney", fetch = FetchType.LAZY)
 	private List<Interchange> feederInterchanges = new ArrayList<>(0);
 
 

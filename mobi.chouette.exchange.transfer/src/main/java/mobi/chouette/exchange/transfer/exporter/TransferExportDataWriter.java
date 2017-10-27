@@ -1,8 +1,12 @@
 package mobi.chouette.exchange.transfer.exporter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -17,6 +21,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.dao.InterchangeDAO;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.RouteSectionDAO;
 import mobi.chouette.exchange.ProgressionCommand;
@@ -48,6 +53,9 @@ public class TransferExportDataWriter implements Command, Constant {
 	@EJB
 	private RouteSectionDAO routeSectionDAO;
 
+	@EJB
+	private InterchangeDAO interchangeDAO;
+
 	@PersistenceContext(unitName = "referential")
 	private EntityManager em;
 
@@ -72,7 +80,10 @@ public class TransferExportDataWriter implements Command, Constant {
 		
 		// Persist
 		log.info("Starting to persist lines, count=" + lineToTransfer.size());
-		
+
+		List<Interchange> interchanges=new ArrayList<>();
+		Set<String> vehicleJourneyIds=new HashSet<>();
+
 		Referential referential = new Referential();
 		try {
 			for (Line l : lineToTransfer) {
@@ -84,18 +95,22 @@ public class TransferExportDataWriter implements Command, Constant {
 
 						// Make sure interchanges do not point to vehicle journeys or stops in other lines (reset id to wipe object ref)
 						for (VehicleJourney vj : jp.getVehicleJourneys()) {
-							for (Interchange fi : vj.getFeederInterchanges()) {
-								clearInterchangeOjbectReferences(fi);
-							}
 							for (Interchange ci : vj.getConsumerInterchanges()) {
 								clearInterchangeOjbectReferences(ci);
+								interchanges.add(ci);
 							}
+							vj.getConsumerInterchanges().clear();
+							vehicleJourneyIds.add(vj.getObjectId());
 						}
 
 					}
 
 				}
 			}
+			
+			List<Interchange> validInterchanges = interchanges.stream().filter(interchange -> isInterchangeValid(interchange, vehicleJourneyIds)).collect(Collectors.toList());
+			log.info("Inserting " + validInterchanges.size() + " interchanges. Discarded " + (interchanges.size() - validInterchanges.size()) + " interchanges where consumer is invalid");
+			validInterchanges.forEach(interchange -> interchangeDAO.create(interchange));
 
 			log.info("Inserting " + referential.getRouteSections().size() + " route sections");
 			for (RouteSection sa : referential.getRouteSections().values()) {
@@ -133,6 +148,15 @@ public class TransferExportDataWriter implements Command, Constant {
 			referential.clear(true);
 			lineToTransfer.clear();
 		}
+	}
+
+	// If interchange consumer is within referential the journey must be among the journeys to be transferred for the interchange to be valid.
+	// Unable to verify validity of inter-referential interchanges. To must be done in Level 2 validation.
+	private boolean isInterchangeValid(Interchange i, Set<String> vehicleJourneyIds){
+		if (i.getFeederVehicleJourneyObjectid().startsWith(i.objectIdPrefix())){
+			return vehicleJourneyIds.contains(i.getFeederVehicleJourneyObjectid());
+		}
+		return true;
 	}
 
 	private void clearInterchangeOjbectReferences(Interchange fi) {

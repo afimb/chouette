@@ -83,7 +83,7 @@ public class ScheduledStopPoint extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "feederStopPoint", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "feederStopPoint", fetch = FetchType.LAZY)
 	private List<Interchange> feederInterchanges = new ArrayList<>(0);
 
 
@@ -92,7 +92,7 @@ public class ScheduledStopPoint extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "consumerStopPoint", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "consumerStopPoint", fetch = FetchType.LAZY)
 	private List<Interchange> consumerInterchanges = new ArrayList<>(0);
 
 	@Transient
