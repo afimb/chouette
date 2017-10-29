@@ -50,6 +50,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_SITE_FRAME = "1-NETEXPROFILE-SiteFrame";
 	public static final String _1_NETEX_SERVICE_FRAME_GROUPOFLINES_OUTSIDE_NETWORK = "1-NETEXPROFILE-ServiceFrame-GroupOfLinesOutsideNetwork";
 	public static final String _1_NETEX_SERVICE_FRAME_LINE = "1-NETEXPROFILE-ServiceFrame-Line";
+	public static final String _1_NETEX_SERVICE_FRAME_LINE_NAME = "1-NETEXPROFILE-ServiceFrame-Line-Name";
 	public static final String _1_NETEX_SERVICE_FRAME_NETWORK_AUTHORITY_REF = "1-NETEXPROFILE-ServiceFrame-Network-AutorityRef";
 	public static final String _1_NETEX_SERVICE_FRAME_NETWORK_NAME = "1-NETEXPROFILE-ServiceFrame-Network-Name";
 	public static final String _1_NETEX_SERVICE_FRAME_NETWORK_GROUPOFLINE_NAME = "1-NETEXPROFILE-ServiceFrame-Network-GroupOfLine-Name";
@@ -150,6 +151,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_NAME, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_GROUPOFLINES_OUTSIDE_NETWORK, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK_AUTHORITY_REF, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK_GROUPOFLINE_NAME, "E");
