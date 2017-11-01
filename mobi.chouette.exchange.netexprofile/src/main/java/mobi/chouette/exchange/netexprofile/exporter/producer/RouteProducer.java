@@ -47,25 +47,16 @@ public class RouteProducer extends NetexProducer implements NetexEntityProducer<
 		
 		PointsOnRoute_RelStructure pointsOnRoute = netexFactory.createPointsOnRoute_RelStructure();
 
-		for (StopPoint stopPoint : neptuneRoute.getStopPoints()) {
-			if (stopPoint != null) {
+		int order = 1;
+		for (mobi.chouette.model.RoutePoint neptuneRoutePoint : neptuneRoute.getRoutePoints()) {
+			if (neptuneRoutePoint != null) {
+				String pointVersion = neptuneRoutePoint.getObjectVersion() > 0 ? String.valueOf(neptuneRoutePoint.getObjectVersion()) : NETEX_DEFAULT_OBJECT_VERSION;
+				String pointOnRouteId = NetexProducerUtils.createUniqueId(context, POINT_ON_ROUTE);
 
-				// TODO refactor
-				String pointVersion = neptuneRoute.getObjectVersion() > 0 ? String.valueOf(neptuneRoute.getObjectVersion()) : NETEX_DEFAULT_OBJECT_VERSION;
-				String pointOnRouteIdSuffix = stopPoint.objectIdSuffix() + "-" + stopPoint.getPosition();
-				String pointOnRouteId = netexId(stopPoint.objectIdPrefix(), POINT_ON_ROUTE, pointOnRouteIdSuffix);
-
-				PointOnRoute pointOnRoute = netexFactory.createPointOnRoute().withVersion(pointVersion).withId(pointOnRouteId).withOrder(BigInteger.ONE);
+				PointOnRoute pointOnRoute = netexFactory.createPointOnRoute().withVersion(pointVersion).withId(pointOnRouteId).withOrder(BigInteger.valueOf(order++));
 				pointsOnRoute.getPointOnRoute().add(pointOnRoute);
-
-				if (stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject() != null) {
-					String routePointId = NetexProducerUtils.translateObjectId(stopPoint.getScheduledStopPoint().getObjectId(), ROUTE_POINT);
-					RoutePointRefStructure routePointRefStruct = netexFactory.createRoutePointRefStructure().withRef(routePointId).withVersion(pointVersion);
-					pointOnRoute.setPointRef(netexFactory.createRoutePointRef(routePointRefStruct));
-				} else {
-					throw new RuntimeException(
-							"StopPoint with id : " + stopPoint.getObjectId() + " is not contained in a StopArea. Cannot produce RoutePoint reference.");
-				}
+				RoutePointRefStructure routePointRefStruct = netexFactory.createRoutePointRefStructure().withRef(neptuneRoutePoint.getObjectId());
+				pointOnRoute.setPointRef(netexFactory.createRoutePointRef(routePointRefStruct));
 			}
 		}
 

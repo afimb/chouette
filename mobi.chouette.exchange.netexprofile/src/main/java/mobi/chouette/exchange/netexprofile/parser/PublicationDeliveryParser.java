@@ -132,11 +132,11 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 		for (ServiceFrame serviceFrame : serviceFrames) {
 
 			// pre parsing route points
-			// if (serviceFrame.getRoutePoints() != null) {
-			// context.put(NETEX_LINE_DATA_CONTEXT, serviceFrame.getRoutePoints());
-			// Parser routePointParser = ParserFactory.create(RoutePointParser.class.getName());
-			// routePointParser.parse(context);
-			// }
+			if (serviceFrame.getRoutePoints() != null) {
+				context.put(NETEX_LINE_DATA_CONTEXT, serviceFrame.getRoutePoints());
+				Parser routePointParser = ParserFactory.create(RoutePointParser.class.getName());
+				routePointParser.parse(context);
+			}
 
 			// stop assignments
 			if (serviceFrame.getStopAssignments() != null) {

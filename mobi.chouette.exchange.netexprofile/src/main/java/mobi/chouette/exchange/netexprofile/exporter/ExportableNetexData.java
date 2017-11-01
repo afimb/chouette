@@ -79,7 +79,7 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private Map<String, RoutePoint> routePoints = new HashMap<>();
+    private Map<String, RoutePoint> sharedRoutePoints = new HashMap<>();
 
     @Getter
     @Setter
@@ -131,7 +131,6 @@ public class ExportableNetexData {
         noticeAssignmentsServiceFrame.clear();
         noticeAssignmentsTimetableFrame.clear();
         serviceJourneyInterchanges.clear();
-        routePoints.clear();
     }
 
     public void dispose() {
@@ -148,6 +147,7 @@ public class ExportableNetexData {
         sharedNotices.clear();
         sharedStopAssignments.clear();
         sharedScheduledStopPoints.clear();
+        sharedRoutePoints.clear();
     }
 
 }

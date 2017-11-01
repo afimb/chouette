@@ -1271,6 +1271,10 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 
 		for (Line line : lines) {
 			assertNotNull(line, "Line not found");
+			Assert.assertFalse(line.getRoutes().isEmpty());
+			for (Route route: line.getRoutes()){
+				Assert.assertFalse(route.getRoutePoints().isEmpty());
+			}
 		}
 
 		utx.rollback();

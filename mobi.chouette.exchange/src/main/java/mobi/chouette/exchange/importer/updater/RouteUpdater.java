@@ -11,11 +11,13 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.JourneyPatternDAO;
 import mobi.chouette.dao.RouteDAO;
+import mobi.chouette.dao.RoutePointDAO;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RoutePoint;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
@@ -28,6 +30,12 @@ public class RouteUpdater implements Updater<Route> {
 
 	@EJB
 	private RouteDAO routeDAO;
+
+	@EJB
+	private RoutePointDAO routePointDAO;
+
+	@EJB(beanName = RoutePointUpdater.BEAN_NAME)
+	private Updater<RoutePoint> routePointUpdater;
 
 	@EJB
 	private StopPointDAO stopPointDAO;
@@ -164,6 +172,44 @@ public class RouteUpdater implements Updater<Route> {
 			stopPointDAO.delete(stopPoint);
 		}
 
+		// RoutePoint
+		Collection<RoutePoint> addedRoutePoint = CollectionUtil.substract(newValue.getRoutePoints(),
+				oldValue.getRoutePoints(), NeptuneIdentifiedObjectComparator.INSTANCE);
+
+		List<RoutePoint> routePoints = null;
+		for (RoutePoint item : addedRoutePoint) {
+
+			RoutePoint routePoint = cache.getRoutePoints().get(item.getObjectId());
+			if (routePoint == null) {
+				if (routePoints == null) {
+					routePoints = routePointDAO.findByObjectId(UpdaterUtils.getObjectIds(addedRoutePoint));
+					for (RoutePoint object : routePoints) {
+						cache.getRoutePoints().put(object.getObjectId(), object);
+					}
+				}
+				routePoint = cache.getRoutePoints().get(item.getObjectId());
+			}
+
+
+			if (routePoint == null) {
+				routePoint = ObjectFactory.getRoutePoint(cache, item.getObjectId());
+			}
+
+			oldValue.getRoutePoints().add(routePoint);
+		}
+
+		Collection<Pair<RoutePoint, RoutePoint>> modifiedRoutePoint = CollectionUtil.intersection(
+				oldValue.getRoutePoints(), newValue.getRoutePoints(), NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (Pair<RoutePoint, RoutePoint> pair : modifiedRoutePoint) {
+			routePointUpdater.update(context, pair.getLeft(), pair.getRight());
+		}
+
+		Collection<RoutePoint> removedStopRoutePoint = CollectionUtil.substract(oldValue.getRoutePoints(),
+				newValue.getRoutePoints(), NeptuneIdentifiedObjectComparator.INSTANCE);
+		oldValue.getRoutePoints().removeAll(removedStopRoutePoint);
+
+		// TODO routePoint preserve sequence from newValue?
+
 		// JourneyPattern
 		Collection<JourneyPattern> addedJourneyPattern = CollectionUtil.substract(newValue.getJourneyPatterns(),
 				oldValue.getJourneyPatterns(), NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -206,8 +252,8 @@ public class RouteUpdater implements Updater<Route> {
 	 * Test 2-DATABASE-JourneyPattern-1 : // If new journey pattern doesn't belong to route, we add temporarly it to the route and check if old journey pattern has same route as new journey pattern
 	 * @param validationReporter
 	 * @param context
-	 * @param oldRouteSection
-	 * @param newRouteSection
+	 * @param oldValue
+	 * @param newValue
 	 */
 	private void twoDatabaseJourneyPatternOneTest(ValidationReporter validationReporter, Context context, JourneyPattern oldValue, JourneyPattern newValue, ValidationData data) {
 		if(!NeptuneUtil.sameValue(oldValue.getRoute(), newValue.getRoute()))
@@ -229,4 +275,5 @@ public class RouteUpdater implements Updater<Route> {
 		else
 			validationReporter.reportSuccess(context, DATABASE_STOP_POINT_1);
 	}
+
 }

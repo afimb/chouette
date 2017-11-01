@@ -53,6 +53,7 @@
 		<class>mobi.chouette.model.Period</class>
 		<class>mobi.chouette.model.Network</class>
 		<class>mobi.chouette.model.Route</class>
+		<class>mobi.chouette.model.RoutePoint</class>
       	<class>mobi.chouette.model.RouteSection</class>
 		<class>mobi.chouette.model.StopPoint</class>
 		<class>mobi.chouette.model.ScheduledStopPoint</class>

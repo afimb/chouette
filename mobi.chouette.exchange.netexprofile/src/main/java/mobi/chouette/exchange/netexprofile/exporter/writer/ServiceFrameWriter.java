@@ -10,6 +10,7 @@ import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
 import mobi.chouette.exchange.netexprofile.exporter.NetexFragmentMode;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 
+import org.apache.commons.collections.MapUtils;
 import org.rutebanken.netex.model.DestinationDisplay;
 import org.rutebanken.netex.model.JourneyPattern;
 import org.rutebanken.netex.model.Network;
@@ -49,12 +50,12 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 			writer.writeAttribute(ID, serviceFrameId);
 
 			if (fragmentMode.equals(NetexFragmentMode.LINE)) {
-				writeRoutePointsElement(writer, exportableNetexData, marshaller);
 				writeRoutesElement(writer, exportableNetexData, marshaller);
 				writeLinesElement(writer, exportableNetexData, marshaller);
 				writeJourneyPatternsElement(writer, exportableNetexData, marshaller);
 				ReusedConstructsWriter.writeNoticeAssignmentsElement(writer, exportableNetexData.getNoticeAssignmentsServiceFrame(), marshaller);
 			} else { // shared data
+				writeRoutePointsElement(writer, exportableNetexData, marshaller);
 				writeDestinationDisplaysElement(writer, exportableNetexData, marshaller);
 				writeScheduledStopPointsElement(writer, exportableNetexData, marshaller);
 				writeStopAssignmentsElement(writer, exportableNetexData, marshaller);
@@ -105,11 +106,13 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 
 	private static void writeRoutePointsElement(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
 		try {
-			writer.writeStartElement(ROUTE_POINTS);
-			for (RoutePoint routePoint : exportableData.getRoutePoints().values()) {
-				marshaller.marshal(netexFactory.createRoutePoint(routePoint), writer);
+			if (!MapUtils.isEmpty(exportableData.getSharedRoutePoints())) {
+				writer.writeStartElement(ROUTE_POINTS);
+				for (RoutePoint routePoint : exportableData.getSharedRoutePoints().values()) {
+					marshaller.marshal(netexFactory.createRoutePoint(routePoint), writer);
+				}
+				writer.writeEndElement();
 			}
-			writer.writeEndElement();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

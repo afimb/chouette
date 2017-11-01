@@ -1246,6 +1246,43 @@ ALTER TABLE chouette_gui.stop_points_id_seq OWNER TO chouette;
 
 ALTER SEQUENCE stop_points_id_seq OWNED BY stop_points.id;
 
+-- Route points
+
+CREATE TABLE route_points (
+    id bigint NOT NULL,
+    objectid character varying(255) NOT NULL,
+    object_version integer,
+    creation_time timestamp without time zone,
+    creator_id character varying(255),
+    scheduled_stop_point_id bigint,
+    "name" character varying(255),
+    "boarder_crossing" boolean
+);
+
+
+ALTER TABLE chouette_gui.route_points OWNER TO chouette;
+
+CREATE SEQUENCE route_points_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE chouette_gui.route_points_id_seq OWNER TO chouette;
+
+ALTER SEQUENCE route_points_id_seq OWNED BY route_points.id;
+
+CREATE TABLE routes_route_points (
+    route_id bigint,
+    route_point_id bigint,
+    POSITION integer NOT NULL
+);
+
+
+ALTER TABLE chouette_gui.routes_route_points OWNER TO chouette;
+
 
 --
 -- TOC entry 225 (class 1259 OID 939058)
@@ -1674,6 +1711,8 @@ ALTER TABLE ONLY public.stop_areas ALTER COLUMN id SET DEFAULT nextval('public.s
 ALTER TABLE ONLY stop_points ALTER COLUMN id SET DEFAULT nextval('stop_points_id_seq'::regclass);
 
 
+ALTER TABLE ONLY route_points ALTER COLUMN id SET DEFAULT nextval('route_points_id_seq'::regclass);
+
 
 --
 -- TOC entry 3975 (class 2604 OID 939630)
@@ -1878,6 +1917,10 @@ ALTER TABLE ONLY public.stop_areas
 ALTER TABLE ONLY stop_points
     ADD CONSTRAINT stop_points_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY route_points
+    ADD CONSTRAINT route_points_pkey PRIMARY KEY (id);
+
+
 ALTER TABLE ONLY scheduled_stop_points
     ADD CONSTRAINT scheduled_stop_points_pkey PRIMARY KEY (id);
 
@@ -2017,6 +2060,7 @@ CREATE INDEX index_journey_frequencies_on_vehicle_journey_id ON journey_frequenc
 
 CREATE INDEX index_journey_pattern_id_on_journey_patterns_stop_points ON journey_patterns_stop_points USING btree (journey_pattern_id);
 
+CREATE INDEX index_route_id_on_routes_route_points ON routes_route_points USING btree (route_id);
 
 --
 -- TOC entry 4093 (class 1259 OID 942384)
@@ -2178,6 +2222,8 @@ CREATE UNIQUE INDEX stop_areas_objectid_key ON public.stop_areas USING btree (ob
 
 CREATE UNIQUE INDEX stop_points_objectid_key ON stop_points USING btree (objectid);
 
+CREATE UNIQUE INDEX route_points_objectid_key ON route_points USING btree (objectid);
+
 CREATE UNIQUE INDEX scheduled_stop_points_objectid_key ON scheduled_stop_points USING btree (objectid);
 
 --
@@ -2332,6 +2378,13 @@ ALTER TABLE ONLY journey_patterns_stop_points
     ADD CONSTRAINT jpsp_stoppoint_fkey FOREIGN KEY (stop_point_id) REFERENCES stop_points(id) ON DELETE CASCADE;
 
 
+ALTER TABLE ONLY routes_route_points
+    ADD CONSTRAINT rrp_routepoint_fkey FOREIGN KEY (route_point_id) REFERENCES route_points(id) ON DELETE CASCADE;
+
+
+ALTER TABLE ONLY routes_route_points
+    ADD CONSTRAINT rrp_route_fkey FOREIGN KEY (route_id) REFERENCES routes(id) ON DELETE CASCADE;
+
 --
 -- TOC entry 4111 (class 2606 OID 940036)
 -- Name: line_company_fkey; Type: FK CONSTRAINT; Schema: chouette_gui; Owner: chouette
@@ -2406,6 +2459,10 @@ ALTER TABLE ONLY stop_points
 
 ALTER TABLE ONLY stop_points
     ADD CONSTRAINT stoppoint_scheduled_stop_fkey FOREIGN KEY (scheduled_stop_point_id) REFERENCES scheduled_stop_points(id);
+
+ALTER TABLE ONLY route_points
+    ADD CONSTRAINT routepoint_scheduled_stop_fkey FOREIGN KEY (scheduled_stop_point_id) REFERENCES scheduled_stop_points(id);
+
 
 --
 -- TOC entry 4121 (class 2606 OID 940086)
