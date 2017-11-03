@@ -81,21 +81,24 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static final String LINE_1 = "3-Line-1";
 	protected static final String LINE_2 = "3-Line-2";
 	protected static final String LINE_3 = "3-Line-3";
-	protected static final String ROUTE_1 = "3-Route-1";
 	protected static final String ROUTE_2 = "3-Route-2";
-	protected static final String ROUTE_3 = "3-Route-3";
 	protected static final String ROUTE_4 = "3-Route-4";
 	protected static final String ROUTE_5 = "3-Route-5";
 	protected static final String ROUTE_6 = "3-Route-6";
 	protected static final String ROUTE_7 = "3-Route-7";
 	protected static final String ROUTE_8 = "3-Route-8";
-	protected static final String ROUTE_9 = "3-Route-9";
-	protected static final String ROUTE_10 = "3-Route-10";
+	protected static final String ROUTE_RB_2 = "3-Route-rutebanken-2";
+	protected static final String ROUTE_RB_3 = "3-Route-rutebanken-3";
+	protected static final String ROUTE_RB_4 = "3-Route-rutebanken-4";
 	protected static final String ROUTE_SECTION_1 = "3-RouteSection-1";
 	protected static final String JOURNEY_PATTERN_1 = "3-JourneyPattern-1";
 	protected static final String JOURNEY_PATTERN_2 = "3-JourneyPattern-2";
 	protected static final String JOURNEY_PATTERN_3 = "3-JourneyPattern-3";
 	protected static final String JOURNEY_PATTERN_4 = "3-JourneyPattern-4";
+	protected static final String JOURNEY_PATTERN_RB_1 = "3-JourneyPattern-rutebanken-1";
+	protected static final String JOURNEY_PATTERN_RB_2 = "3-JourneyPattern-rutebanken-2";
+	protected static final String JOURNEY_PATTERN_RB_3 = "3-JourneyPattern-rutebanken-3";
+	protected static final String JOURNEY_PATTERN_RB_4 = "3-JourneyPattern-rutebanken-4";
 	protected static final String VEHICLE_JOURNEY_1 = "3-VehicleJourney-1";
 	protected static final String VEHICLE_JOURNEY_2 = "3-VehicleJourney-2";
 	protected static final String VEHICLE_JOURNEY_3 = "3-VehicleJourney-3";
@@ -728,16 +731,23 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			
 			testLevel3FileList.add(new TestDescription(3, LINE_1, "WARNING"));
 			
-			testLevel3FileList.add(new TestDescription(3, ROUTE_1, "INFO"));
+	//		testLevel3FileList.add(new TestDescription(3, ROUTE_1, "INFO"));
 			testLevel3FileList.add(new TestDescription(3, ROUTE_2, "WARNING"));
-			testLevel3FileList.add(new TestDescription(3, ROUTE_3, "INFO"));
+	//		testLevel3FileList.add(new TestDescription(3, ROUTE_3, "INFO"));
 			testLevel3FileList.add(new TestDescription(3, ROUTE_4, "WARNING"));
 			testLevel3FileList.add(new TestDescription(3, ROUTE_5, "INFO"));
 			testLevel3FileList.add(new TestDescription(3, ROUTE_8, "WARNING"));
-			testLevel3FileList.add(new TestDescription(3, ROUTE_9, "INFO"));
+
+			testLevel3FileList.add(new TestDescription(3, ROUTE_RB_2, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, ROUTE_RB_3, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, ROUTE_RB_4, "WARNING"));
 			
 			testLevel3FileList.add(new TestDescription(3, JOURNEY_PATTERN_1, "WARNING"));
-			
+			testLevel3FileList.add(new TestDescription(3, JOURNEY_PATTERN_RB_1, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, JOURNEY_PATTERN_RB_2, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, JOURNEY_PATTERN_RB_3, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, JOURNEY_PATTERN_RB_4, "ERROR"));
+
 			testLevel3FileList.add(new TestDescription(3, VEHICLE_JOURNEY_1, "WARNING"));
 			testLevel3FileList.add(new TestDescription(3, VEHICLE_JOURNEY_2, "INFO"));
 			testLevel3FileList.add(new TestDescription(3, VEHICLE_JOURNEY_3, "WARNING"));
@@ -799,19 +809,24 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			testLevel3DatabaseList.add(new TestDescription(3, LINE_1, "WARNING"));
 			testLevel3DatabaseList.add(new TestDescription(3, LINE_2, "ERROR"));
 			
-			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_1, "INFO"));
+		//	testLevel3DatabaseList.add(new TestDescription(3, ROUTE_1, "INFO"));
 			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_2, "WARNING"));
-			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_3, "INFO"));
+		//	testLevel3DatabaseList.add(new TestDescription(3, ROUTE_3, "INFO"));
 			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_4, "WARNING"));
 			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_5, "INFO"));
-			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_6, "ERROR"));
 			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_7, "ERROR"));
 			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_8, "WARNING"));
-			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_9, "INFO"));
+
+			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_RB_2, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_RB_3, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_RB_4, "WARNING"));
 			
 			testLevel3DatabaseList.add(new TestDescription(3, JOURNEY_PATTERN_1, "WARNING"));
 			testLevel3DatabaseList.add(new TestDescription(3, JOURNEY_PATTERN_2, "ERROR"));
-			
+			testLevel3DatabaseList.add(new TestDescription(3, JOURNEY_PATTERN_RB_1, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, JOURNEY_PATTERN_RB_2, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, JOURNEY_PATTERN_RB_3, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, JOURNEY_PATTERN_RB_4, "ERROR"));
 			
 			testLevel3DatabaseList.add(new TestDescription(3, VEHICLE_JOURNEY_1, "WARNING"));
 			testLevel3DatabaseList.add(new TestDescription(3, VEHICLE_JOURNEY_2, "WARNING"));

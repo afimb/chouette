@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
-import mobi.chouette.exchange.validation.parameters.TransportModeParameters;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
@@ -35,30 +35,27 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		boolean sourceFile = context.get(SOURCE).equals(SOURCE_FILE);
 		// init checkPoints : add here all defined check points for this kind of
 		// object
-		// 3-Route-1 : check if two successive stops are in same area
+		// 3-Route-RB-2 : check if two successive route points are in same area
 		// 3-Route-2 : check if two wayback routes are actually waybacks
-		// 3-Route-3 : check distance between stops
-		// 3-Route-4 : check identical routes
+
+		// 3-Route-RB-3 : check identical routes
 		// 3-Route-5 : check for potentially waybacks
-		// 3-Route-6 : check if route has minimum 2 StopPoints
+		// 3-Route-RB-4 : check if route has minimum 2 RoutePoints
 		// 3-Route-7 : check if route has minimum 1 JourneyPattern
 		// 3-Route-8 : check if all stopPoints are used by journeyPatterns
 		// 3-Route-9 : check if one journeyPattern uses all stopPoints
 
-		initCheckPoint(context, ROUTE_1, SEVERITY.I);
 		initCheckPoint(context, ROUTE_2, SEVERITY.W);
-		initCheckPoint(context, ROUTE_3, SEVERITY.I);
-		initCheckPoint(context, ROUTE_4, SEVERITY.W);
 		initCheckPoint(context, ROUTE_5, SEVERITY.I);
+		initCheckPoint(context, ROUTE_RB_2, SEVERITY.W);
+		initCheckPoint(context, ROUTE_RB_3, SEVERITY.W);
 		if (!sourceFile) {
-			initCheckPoint(context, ROUTE_6, SEVERITY.E);
 			initCheckPoint(context, ROUTE_7, SEVERITY.E);
+			initCheckPoint(context, ROUTE_RB_4, SEVERITY.W);
 			// checkPoint is applicable
-			prepareCheckPoint(context, ROUTE_6);
 			prepareCheckPoint(context, ROUTE_7);
 		}
 		initCheckPoint(context, ROUTE_8, SEVERITY.W);
-		initCheckPoint(context, ROUTE_9, SEVERITY.I);
 
 		boolean test4_1 = (parameters.getCheckRoute() != 0);
 		if (test4_1) {
@@ -70,36 +67,32 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		for (int i = 0; i < beans.size(); i++) {
 			Route route = beans.get(i);
 
-			// 3-Route-1 : check if two successive stops are in same area
-			check3Route1(context, route);
+			// 3-Route-1 : check if two successive route points are in same area
+			check3RouteRb2(context, route);
 
 			// 3-Route-2 : check if two wayback routes are actually waybacks
 			check3Route2(context, route);
 
-			// 3-Route-3 : check distance between stops
-			check3Route3(context, route, parameters);
-
 			if (!sourceFile) {
-				// 3-Route-6 : check if route has minimum 2 StopPoints
-				check3Route6(context, route);
 
 				// 3-Route-7 : check if route has minimum 1 JourneyPattern
 				check3Route7(context, route);
+
+				// 3-Route-6 : check if route has minimum 2 RoutePoints
+				check3RouteRb4(context, route);
 			}
 
 			// 3-Route-8 : check if all stopPoints are used by journeyPatterns
 			check3Route8(context, route);
-
-			// 3-Route-9 : check if one journeyPattern uses all stopPoints
-			check3Route9(context, route);
 
 			// 4-Route-1 : check columns constraints
 			if (test4_1)
 				check4Generic1(context, route, L4_ROUTE_1, parameters, log);
 
 			for (int j = i + 1; j < beans.size(); j++) {
-				// 3-Route-4 : check identical routes
-				check3Route4(context, i, route, j, beans.get(j));
+
+				// 3-Route-RB-4 : check identical routes
+				check3RouteRb3(context, i, route, j, beans.get(j));
 
 				// 3-Route-5 : check for potentially waybacks
 				check3Route5(context, i, route, j, beans.get(j));
@@ -108,37 +101,6 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		}
 		// log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
 		return;
-	}
-
-	/**
-	 * @param report
-	 * @param route
-	 * @param areas
-	 */
-	private void check3Route1(Context context, Route route) {
-		// 3-Route-1 : check if two successive stops are in same area
-		prepareCheckPoint(context, ROUTE_1);
-
-		List<StopArea> areas = NeptuneUtil.getStopAreaOfRoute(route);
-		for (int j = 1; j < areas.size(); j++) {
-			if (isSame(areas.get(j - 1), areas.get(j))) {
-				// failure encountered, add route 1
-				DataLocation location = buildLocation(context, route);
-				DataLocation targetLocation = buildLocation(context, areas.get(j));
-
-				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-				reporter.addCheckPointReportError(context, ROUTE_1, location, null, null, targetLocation);
-				break;
-			}
-		}
-
-	}
-
-	private boolean isSame(StopArea area1, StopArea area2) {
-		if (area1 == null || area2 == null) {
-			return false;
-		}
-		return area1.equals(area2);
 	}
 
 	/**
@@ -199,82 +161,6 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		}
 	}
 
-	private void check3Route3(Context context, Route route, ValidationParameters parameters) {
-		List<StopArea> areas = NeptuneUtil.getStopAreaOfRoute(route);
-		if (isEmpty(areas))
-			return;
-		// 3-Route-3 : check distance between stops
-		prepareCheckPoint(context, ROUTE_3);
-		// find transportMode :
-		String modeKey = route.getLine().getTransportModeName().toString();
-
-		TransportModeParameters mode = getModeParameters(parameters, modeKey, log);
-		if (mode == null) {
-			log.error("no parameters for mode " + modeKey);
-			mode = getModeParameters(parameters, MODE_OTHER, log);
-			if (mode == null) {
-				log.error("no parameters for mode " + MODE_OTHER);
-				mode = modeDefault;
-			}
-		}
-		double distanceMin = mode.getInterStopAreaDistanceMin();
-		double distanceMax = mode.getInterStopAreaDistanceMax();
-
-		for (int i = 1; i < areas.size(); i++) {
-			StopArea firstArea = areas.get(i - 1);
-			StopArea nextArea = areas.get(i);
-			if (firstArea == null || nextArea == null || !firstArea.hasCoordinates() || !nextArea.hasCoordinates())
-				continue;
-			double distance = distance(firstArea, nextArea);
-			if (distance < distanceMin) {
-				DataLocation location = buildLocation(context, route);
-				DataLocation target1 = buildLocation(context, firstArea);
-				DataLocation target2 = buildLocation(context, nextArea);
-
-				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-				reporter.addCheckPointReportError(context, ROUTE_3, "1", location, Integer.toString((int) distance),
-						Integer.toString((int) distanceMin), target1, target2);
-				break; // do not check for oder stops in this route
-			}
-			if (distance > distanceMax) {
-				DataLocation location = buildLocation(context, route);
-				DataLocation target1 = buildLocation(context, firstArea);
-				DataLocation target2 = buildLocation(context, nextArea);
-
-				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-				reporter.addCheckPointReportError(context, ROUTE_3, "2", location, Integer.toString((int) distance),
-						Integer.toString((int) distanceMax), target1, target2);
-				break; // do not check for oder stops in this route
-			}
-		}
-
-	}
-
-	private void check3Route4(Context context, int rank, Route route, int rank2, Route route2) {
-		// 3-Route-4 : check identical routes
-		if (isEmpty(route.getStopPoints()))
-			return;
-		prepareCheckPoint(context, ROUTE_4);
-		List<StopArea> areas = NeptuneUtil.getStopAreaOfRoute(route);
-		if (isEmpty(route2.getStopPoints()))
-			return;
-
-		List<StopArea> areas2 = NeptuneUtil.getStopAreaOfRoute(route2);
-		// test can be passed if alternate route areas exist
-		if (!areas2.isEmpty()) {
-			if (areas.equals(areas2)) {
-				// Improvement encountered, add route 1
-				DataLocation location = buildLocation(context, route);
-				DataLocation target = buildLocation(context, route2);
-				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("routeId", route2.getObjectId());
-				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-				reporter.addCheckPointReportError(context, ROUTE_4, location, null, null, target);
-			}
-		}
-
-	}
-
 	/**
 	 * @param report
 	 * @param beans
@@ -325,19 +211,6 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		}
 	}
 
-	/**
-	 * @param report
-	 * @param route
-	 */
-	private void check3Route6(Context context, Route route) {
-		// 3-Route-6 : check if route has minimum 2 StopPoints
-		if (isEmpty(route.getStopPoints()) || route.getStopPoints().size() < 2) {
-			// failure encountered, add route 1
-			DataLocation location = buildLocation(context, route);
-			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-			reporter.addCheckPointReportError(context, ROUTE_6, location);
-		}
-	}
 
 	/**
 	 * @param report
@@ -388,29 +261,72 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		}
 	}
 
-	/**
-	 * @param report
-	 * @param route
-	 */
-	private void check3Route9(Context context, Route route) {
-		// 3-Route-9 : check if one journeyPattern uses all stopPoints
-		if (isEmpty(route.getJourneyPatterns()))
-			return;
-		prepareCheckPoint(context, ROUTE_9);
-		boolean found = false;
-		int count = route.getStopPoints().size();
-		for (JourneyPattern jp : route.getJourneyPatterns()) {
-			if (jp.getStopPoints().size() == count) {
-				found = true;
+
+	private void check3RouteRb2(Context context, Route route) {
+		// 3-Route-rutebanken-2 : check if two successive stops are in same area
+		prepareCheckPoint(context, ROUTE_RB_2);
+
+		List<StopArea> areas = getStopAreaOfRouteFromRoutePoints(route);
+		for (int j = 1; j < areas.size(); j++) {
+			if (isSame(areas.get(j - 1), areas.get(j))) {
+				// failure encountered, add journey pattern 1
+				DataLocation location = buildLocation(context, route);
+				DataLocation targetLocation = buildLocation(context, areas.get(j));
+
+				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+				reporter.addCheckPointReportError(context, ROUTE_RB_2, location, null, null, targetLocation);
 				break;
 			}
 		}
-		if (!found) {
+
+	}
+
+
+	private void check3RouteRb3(Context context, int rank, Route route, int rank2, Route route2) {
+		// 3-Route-rutebanken-3 : check identical route points
+		if (isEmpty(route.getRoutePoints()))
+			return;
+		prepareCheckPoint(context, ROUTE_RB_3);
+		List<StopArea> areas = getStopAreaOfRouteFromRoutePoints(route);
+		if (isEmpty(route.getRoutePoints()))
+			return;
+
+		List<StopArea> areas2 = getStopAreaOfRouteFromRoutePoints(route2);
+		// test can be passed if alternate journey pattern areas exist
+		if (!areas2.isEmpty()) {
+			if (areas.equals(areas2)) {
+				// Improvement encountered, add route 1
+				DataLocation location = buildLocation(context, route);
+				DataLocation target = buildLocation(context, route2);
+				Map<String, Object> map = new HashMap<>();
+				map.put("RouteId", route.getObjectId());
+				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+				reporter.addCheckPointReportError(context, ROUTE_RB_3, location, null, null, target);
+			}
+		}
+
+	}
+
+
+	private void check3RouteRb4(Context context, Route route) {
+		// 3-Route-rutebanken-4 : check if Route has minimum 2 RoutePoints
+		if (isEmpty(route.getRoutePoints()) || route.getRoutePoints().size() < 2) {
 			// failure encountered, add route 1
 			DataLocation location = buildLocation(context, route);
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-			reporter.addCheckPointReportError(context, ROUTE_9, location);
+			reporter.addCheckPointReportError(context, ROUTE_RB_4, location);
 		}
 	}
 
+	private List<StopArea> getStopAreaOfRouteFromRoutePoints(Route route) {
+		return route.getRoutePoints().stream().filter(rp -> rp!=null).map(rp -> rp.getScheduledStopPoint().getContainedInStopAreaRef().getObject()).filter(sa -> sa!=null).collect(Collectors.toList());
+	}
+
+
+	private boolean isSame(StopArea area1, StopArea area2) {
+		if (area1 == null || area2 == null) {
+			return false;
+		}
+		return area1.equals(area2);
+	}
 }

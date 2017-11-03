@@ -3,6 +3,7 @@ package mobi.chouette.exchange.validation.checkpoint;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -28,6 +29,9 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.RouteSection;
+import mobi.chouette.model.SimpleObjectReference;
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.type.TransportModeNameEnum;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -427,6 +431,195 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		
 		
 		utx.rollback();
+	}
+
+
+	@Test(groups = { "journeyPattern" }, description = "3-JourneyPattern-RB-1", priority = 6)
+	public void verifyTest3_rb_1() throws Exception {
+		// 3-JourneyPatter-RB-1 : check distance between stops
+		log.info(Color.BLUE + "3-JourneyPattern-RB-1" + Color.NORMAL);
+		Context context = initValidatorContext();
+		context.put(VALIDATION_REPORT, new ValidationReport());
+
+		Assert.assertNotNull(fullparameters, "no parameters for test");
+
+		importLines("Ligne_OK.xml", 1, 1, true);
+
+		utx.begin();
+		em.joinTransaction();
+
+		List<Line> beans = lineDao.findAll();
+		Assert.assertFalse(beans.isEmpty(), "No data for test");
+		Line line1 = beans.get(0);
+
+		line1.setTransportModeName(TransportModeNameEnum.Bus);
+		JourneyPattern jp1 = line1.getRoutes().get(0).getJourneyPatterns().get(0);
+
+		StopArea area0 = jp1.getStopPoints().get(0).getScheduledStopPoint().getContainedInStopAreaRef().getObject();
+		double distanceMin = 10000000;
+		double distanceMax = 0;
+		for (int i = 1; i < jp1.getStopPoints().size(); i++) {
+			StopArea area1 = jp1.getStopPoints().get(i).getScheduledStopPoint().getContainedInStopAreaRef().getObject();
+			double distance = distance(area0, area1);
+			if (distance > distanceMax)
+				distanceMax = distance;
+			if (distance < distanceMin)
+				distanceMin = distance;
+			area0 = area1;
+		}
+
+		fullparameters.getModeBus().setInterStopAreaDistanceMin((int) distanceMin + 10);
+		fullparameters.getModeBus().setInterStopAreaDistanceMax((int) distanceMax - 10);
+		context.put(VALIDATION, fullparameters);
+
+		ValidationData data = new ValidationData();
+		context.put(VALIDATION_DATA, data);
+
+		data.getJourneyPatterns().add(jp1);
+
+		checkPoint.validate(context, null);
+
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
+
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-JourneyPattern-rutebanken-1");
+		Assert.assertNotNull(checkPointReport, "report must contain a 3-JourneyPattern-rutebanken-1 checkPoint");
+
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
+				" checkPointReport must be on level warning");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 2 item");
+
+		String detailKey = "3-JourneyPattern-rutebanken-1".replaceAll("-", "_").toLowerCase();
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-JourneyPattern-rutebanken-1",-1);
+		for (CheckPointErrorReport detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
+		// check detail keys
+		boolean jp1objectIdFound = false;
+		for (CheckPointErrorReport detailReport : details) {
+
+			if (detailReport.getSource().getObjectId().equals(jp1.getObjectId()))
+				jp1objectIdFound = true;
+		}
+		Assert.assertTrue(jp1objectIdFound, "detail report must refer journey pattern 1");
+		utx.rollback();
+
+	}
+
+	@Test(groups = { "journeyPattern" }, description = "3-JourneyPattern-rb-2", priority = 7)
+	public void verifyTest3_rb_2() throws Exception {
+		// 3-JourneyPattern-rutebanken-2 : check if two successive stops are in same area
+		log.info(Color.BLUE + "3-JourneyPattern-rb-2" + Color.NORMAL);
+		Context context = initValidatorContext();
+		context.put(VALIDATION, fullparameters);
+		context.put(VALIDATION_REPORT, new ValidationReport());
+
+		Assert.assertNotNull(fullparameters, "no parameters for test");
+
+		importLines("Ligne_OK.xml", 1, 1, true);
+
+		utx.begin();
+		em.joinTransaction();
+
+		List<Line> beans = lineDao.findAll();
+		Assert.assertFalse(beans.isEmpty(), "No data for test");
+		Line line1 = beans.get(0);
+
+		JourneyPattern jp1 = line1.getRoutes().get(0).getJourneyPatterns().get(0);
+		jp1.getStopPoints().get(1).getScheduledStopPoint().setContainedInStopAreaRef(new SimpleObjectReference<>(jp1.getStopPoints().get(0).getScheduledStopPoint().getContainedInStopAreaRef().getObject()));
+
+		ValidationData data = new ValidationData();
+		context.put(VALIDATION_DATA, data);
+
+		data.getJourneyPatterns().add(jp1);
+
+		checkPoint.validate(context, null);
+
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		Assert.assertNotEquals(report.getCheckPoints().size(), 1, " report must have items");
+
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-JourneyPattern-rutebanken-2");
+		Assert.assertNotNull(checkPointReport, "report must contain a 3-JourneyPattern-rutebanken-2 checkPoint");
+
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
+				" checkPointReport must be on level warning");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
+
+		String detailKey = "3-JourneyPattern-rutebanken-2".replaceAll("-", "_").toLowerCase();
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-JourneyPattern-rutebanken-2",-1);
+		for (CheckPointErrorReport detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
+		// check detail keys
+		for (CheckPointErrorReport detail : details) {
+			Assert.assertEquals(detail.getSource().getObjectId(), jp1.getObjectId(),
+					"journey pattern 1 must be source of error");
+		}
+		utx.rollback();
+	}
+
+
+	@Test(groups = { "journeyPattern" }, description = "3-JourneyPattern-rutebanken-4", priority = 8)
+	public void verifyTest3_rb_4() throws Exception {
+		// 3-JourneyPattern-rutebanken-4 : check if journey pattern has minimum 2 StopPoints
+		log.info(Color.BLUE + "3-JourneyPattern-rutebanken-4" + Color.NORMAL);
+		Context context = initValidatorContext();
+		context.put(VALIDATION_REPORT, new ValidationReport());
+
+		Assert.assertNotNull(fullparameters, "no parameters for test");
+
+		importLines("Ligne_OK.xml", 1, 1, true);
+
+		utx.begin();
+		em.joinTransaction();
+
+		List<Line> beans = lineDao.findAll();
+		Assert.assertFalse(beans.isEmpty(), "No data for test");
+		Line line1 = beans.get(0);
+
+		JourneyPattern jp1 = line1.getRoutes().get(0).getJourneyPatterns().get(0);
+		jp1.getStopPoints().forEach(stopPoint -> toString()); // Force load collection (clear was not working)
+		jp1.getStopPoints().clear();
+
+		jp1.setObjectId("NINOXE:JourneyPattern:first");
+
+		context.put(VALIDATION, fullparameters);
+		ValidationData data = new ValidationData();
+		context.put(VALIDATION_DATA, data);
+		data.getJourneyPatterns().add(jp1);
+
+		checkPoint.validate(context, null);
+
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
+
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-JourneyPattern-rutebanken-4");
+		Assert.assertNotNull(checkPointReport, "report must contain a 3-JourneyPattern-rutebanken-4 checkPoint");
+
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.ERROR,
+				" checkPointReport must be on level warning");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
+
+		String detailKey = "3-JourneyPattern-rutebanken-4".replaceAll("-", "_").toLowerCase();
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-JourneyPattern-rutebanken-4",-1);
+		for (CheckPointErrorReport detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
+		boolean route1objectIdFound = false;
+		for (CheckPointErrorReport detailReport : details) {
+
+			if (detailReport.getSource().getObjectId().equals(jp1.getObjectId()))
+				route1objectIdFound = true;
+		}
+		Assert.assertTrue(route1objectIdFound, "detail report must refer journey pattern 1");
+		utx.rollback();
+
 	}
 
 }

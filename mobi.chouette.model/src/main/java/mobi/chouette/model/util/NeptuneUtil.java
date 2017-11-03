@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.JourneyPattern;
@@ -15,6 +16,7 @@ import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.NeptuneLocalizedObject;
 import mobi.chouette.model.NeptuneObject;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RoutePoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 
@@ -149,6 +151,27 @@ public abstract class NeptuneUtil {
 			StopPoint stopPoint =  iterator.next();
 			if (stopPoint == null) iterator.remove();
 			
+		}
+		Collections.sort(points, new Comparator<StopPoint>() {
+
+			@Override
+			public int compare(StopPoint arg0, StopPoint arg1) {
+				return arg0.getPosition().intValue() - arg1.getPosition().intValue();
+			}
+		});
+		for (StopPoint point : points) {
+			areas.add(point.getScheduledStopPoint().getContainedInStopAreaRef().getObject());
+		}
+		return areas;
+	}
+
+	public static List<StopArea> getStopAreaOfJourneyPattern(JourneyPattern journeyPattern) {
+		ArrayList<StopArea> areas = new ArrayList<>();
+		ArrayList<StopPoint> points = new ArrayList<>(journeyPattern.getStopPoints());
+		for (Iterator<StopPoint> iterator = points.iterator(); iterator.hasNext();) {
+			StopPoint stopPoint =  iterator.next();
+			if (stopPoint == null) iterator.remove();
+
 		}
 		Collections.sort(points, new Comparator<StopPoint>() {
 
