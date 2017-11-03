@@ -1,5 +1,9 @@
 package mobi.chouette.service;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,11 +27,13 @@ import javax.ws.rs.core.MediaType;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.Pair;
+import mobi.chouette.common.file.FileServiceException;
 import mobi.chouette.common.file.FileStore;
 import mobi.chouette.common.file.LocalFileStore;
 import mobi.chouette.model.iev.Job;
 import mobi.chouette.model.iev.Link;
 
+import org.apache.commons.io.IOUtils;
 import org.joda.time.LocalDateTime;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -105,8 +111,21 @@ public class CachingGoogleCloudFileStore implements FileStore {
 
 	@Override
 	public void writeFile(Path filePath, InputStream content) {
-		localFileStore.writeFile(filePath, content);
-		cloudFileStore.writeFile(filePath, localFileStore.getFileContent(filePath));
+
+		try {
+			ByteArrayInputStream bis;
+			if (content instanceof ByteArrayInputStream) {
+				bis = (ByteArrayInputStream) content;
+			} else {
+				bis = new ByteArrayInputStream(IOUtils.toByteArray(content));
+			}
+			cloudFileStore.writeFile(filePath, bis);
+			bis.reset();
+			localFileStore.writeFile(filePath, bis);
+		} catch (IOException ioE) {
+			throw new FileServiceException("Failed to write file to permanent storage: " + ioE.getMessage(), ioE);
+		}
+
 	}
 
 	@Override
