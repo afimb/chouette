@@ -1,7 +1,5 @@
 package mobi.chouette.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,14 +22,12 @@ import javax.inject.Named;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.Pair;
-import mobi.chouette.common.file.FileServiceException;
 import mobi.chouette.common.file.FileStore;
 import mobi.chouette.common.file.LocalFileStore;
 import mobi.chouette.model.iev.Job;
 import mobi.chouette.model.iev.Link;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.time.DateUtils;
+import org.joda.time.LocalDateTime;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static mobi.chouette.common.Constant.*;
@@ -63,7 +59,7 @@ public class CachingGoogleCloudFileStore implements FileStore {
 	@EJB
 	ContenerChecker contenerChecker;
 
-	private Date syncedUntil;
+	private LocalDateTime syncedUntil;
 
 	private final ScheduledExecutorService scheduler =
 			Executors.newScheduledThreadPool(1);
@@ -88,9 +84,9 @@ public class CachingGoogleCloudFileStore implements FileStore {
 			}
 
 			if (cacheHistoryDays == null) {
-				syncedUntil = new java.sql.Date(0);
+				syncedUntil = LocalDateTime.fromDateFields(new Date(0));
 			} else {
-				syncedUntil = DateUtils.addDays(new Date(), -cacheHistoryDays);
+				syncedUntil = LocalDateTime.now().minusDays(cacheHistoryDays);
 			}
 
 			String updateFrequencyKey = "iev.file.store.cache.update.seconds";
@@ -123,21 +119,8 @@ public class CachingGoogleCloudFileStore implements FileStore {
 
 	@Override
 	public void writeFile(Path filePath, InputStream content) {
-
-		try {
-			ByteArrayInputStream bis;
-			if (content instanceof ByteArrayInputStream) {
-				bis = (ByteArrayInputStream) content;
-			} else {
-				bis = new ByteArrayInputStream(IOUtils.toByteArray(content));
-			}
-			cloudFileStore.writeFile(filePath, bis);
-			bis.reset();
-			localFileStore.writeFile(filePath, bis);
-		} catch (IOException ioE) {
-			throw new FileServiceException("Failed to write file to permanent storage: " + ioE.getMessage(), ioE);
-		}
-
+		localFileStore.writeFile(filePath, content);
+		cloudFileStore.writeFile(filePath, localFileStore.getFileContent(filePath));
 	}
 
 	@Override
@@ -177,7 +160,7 @@ public class CachingGoogleCloudFileStore implements FileStore {
 					.sorted(Comparator.comparing(Job::getUpdated).reversed()).collect(Collectors.toList());
 
 			completedJobsSinceLastSync.stream().forEach(job -> prefetchFilesForJob(job));
-			syncedUntil = completedJobsSinceLastSync.stream().map(job -> job.getUpdated()).max(Date::compareTo).orElse(syncedUntil);
+			syncedUntil = completedJobsSinceLastSync.stream().map(job -> job.getUpdated()).max(LocalDateTime::compareTo).orElse(syncedUntil);
 
 			log.info("Finished pre-fetching job files from cloud storage");
 
