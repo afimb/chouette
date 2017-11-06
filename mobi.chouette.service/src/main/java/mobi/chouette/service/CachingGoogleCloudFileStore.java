@@ -1,8 +1,6 @@
 package mobi.chouette.service;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -22,7 +20,6 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Named;
-import javax.ws.rs.core.MediaType;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.ContenerChecker;
@@ -34,7 +31,7 @@ import mobi.chouette.model.iev.Job;
 import mobi.chouette.model.iev.Link;
 
 import org.apache.commons.io.IOUtils;
-import org.joda.time.LocalDateTime;
+import org.apache.commons.lang3.time.DateUtils;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static mobi.chouette.common.Constant.*;
@@ -79,7 +76,22 @@ public class CachingGoogleCloudFileStore implements FileStore {
 		String implProp = System.getProperty(implPropKey);
 		if (BEAN_NAME.equals(implProp)) {
 			log.info("Starting CachingGoogleCloudFileStore pre-fetch process");
-			syncedUntil = new java.sql.Date(0);
+
+			Integer cacheHistoryDays = null;
+			String cacheHistoryDaysKey = "iev.file.store.cache.history.days";
+			if (System.getProperty(cacheHistoryDaysKey) != null) {
+				try {
+					cacheHistoryDays = Integer.valueOf(System.getProperty(cacheHistoryDaysKey));
+				} catch (NumberFormatException nfe) {
+					log.warn("Illegal value for property named " + cacheHistoryDaysKey + " in iev.properties. Should be no of days to fetch history for (int)");
+				}
+			}
+
+			if (cacheHistoryDays == null) {
+				syncedUntil = new java.sql.Date(0);
+			} else {
+				syncedUntil = DateUtils.addDays(new Date(), -cacheHistoryDays);
+			}
 
 			String updateFrequencyKey = "iev.file.store.cache.update.seconds";
 			if (System.getProperty(updateFrequencyKey) != null) {
