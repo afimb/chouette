@@ -1160,8 +1160,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 			StopPoint stopPoint = ObjectFactory.getStopPoint(referential, stopKey);
 
-			String stopAreaId = AbstractConverter.composeObjectId(configuration,
-					"Quay", wrapper.stopId, log);
+			String stopAreaId = AbstractConverter.toStopAreaId(configuration,
+					"Quay", wrapper.stopId);
 			StopArea stopArea = ObjectFactory.getStopArea(referential, stopAreaId);
 
 			String scheduledStopPointKey = stopKey.replace(StopPoint.STOPPOINT_KEY, ObjectIdTypes.SCHEDULED_STOP_POINT_KEY);

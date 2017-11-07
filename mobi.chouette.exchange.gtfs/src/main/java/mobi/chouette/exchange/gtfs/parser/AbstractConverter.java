@@ -39,6 +39,18 @@ public abstract class AbstractConverter implements Constant{
 		return time;
 	}
 
+	/**
+	 * Convert GTFS stop id to StopArea id with correct type (StopPlace / Quay).
+	 *
+	 * If gtfs id is structured like a full ID (containing : type :) it used as is. If not a new Id is composed.
+	 */
+	public static String toStopAreaId(GtfsImportParameters configuration, String type, String id) {
+		if (id != null && id.contains(":" + type + ":")) {
+			return id;
+		}
+		return composeObjectId(configuration, type, id, null);
+	}
+
 	public static String composeObjectId(GtfsImportParameters configuration, String type, String id, Logger logger) {
 
 		if (id == null || id.isEmpty() ) return "";

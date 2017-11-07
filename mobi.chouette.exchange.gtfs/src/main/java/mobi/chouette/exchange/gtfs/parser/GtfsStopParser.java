@@ -115,8 +115,8 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 
 				
 				// Since we do not parse Access, only Station and Stop remains.
-				String objectId = AbstractConverter.composeObjectId(configuration,
-						gtfsStop.getLocationType() == LocationType.Station ? "StopPlace" : "Quay", gtfsStop.getStopId(), log);
+				String objectId = AbstractConverter.toStopAreaId(configuration,
+						gtfsStop.getLocationType() == LocationType.Station ? "StopPlace" : "Quay", gtfsStop.getStopId());
 
 				StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
 				convert(context, gtfsStop, stopArea);
@@ -151,9 +151,9 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 			}
 			stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
 			if (gtfsStop.getParentStation() != null) {
-				String parenId = AbstractConverter.composeObjectId(configuration,
-						"StopPlace", gtfsStop.getParentStation(), log);
-				StopArea parent = ObjectFactory.getStopArea(referential, parenId);
+				String parentId = AbstractConverter.toStopAreaId(configuration,
+						"StopPlace", gtfsStop.getParentStation());
+				StopArea parent = ObjectFactory.getStopArea(referential, parentId);
 				stopArea.setParent(parent);
 			}
 		}
