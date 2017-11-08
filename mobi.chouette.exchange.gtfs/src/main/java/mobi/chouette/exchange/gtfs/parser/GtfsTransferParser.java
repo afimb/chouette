@@ -127,14 +127,14 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 		StopArea startOfLink = referential.getSharedStopAreas().get(AbstractConverter.composeObjectId(configuration, "StopPlace", gtfsTransfer.getFromStopId(), log));
 		if(startOfLink == null) {
 			// Create between quays by default
-			startOfLink = ObjectFactory.getStopArea(referential, AbstractConverter.composeObjectId(
-						configuration, "Quay", gtfsTransfer.getFromStopId(), log));
+			startOfLink = ObjectFactory.getStopArea(referential, AbstractConverter.toStopAreaId(
+						configuration, "Quay", gtfsTransfer.getFromStopId()));
 		}
 		
 		StopArea endOfLink = referential.getSharedStopAreas().get(AbstractConverter.composeObjectId(configuration, "StopPlace", gtfsTransfer.getToStopId(), log));
 		if(endOfLink == null) {
-			endOfLink = ObjectFactory.getStopArea(referential, AbstractConverter.composeObjectId(
-					configuration, "Quay", gtfsTransfer.getToStopId(), log));
+			endOfLink = ObjectFactory.getStopArea(referential, AbstractConverter.toStopAreaId(
+					configuration, "Quay", gtfsTransfer.getToStopId()));
 		}
 
 		

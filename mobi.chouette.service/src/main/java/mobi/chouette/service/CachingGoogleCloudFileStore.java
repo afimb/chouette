@@ -1,5 +1,7 @@
 package mobi.chouette.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,16 +20,17 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Named;
-import javax.ws.rs.core.MediaType;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.Pair;
+import mobi.chouette.common.file.FileServiceException;
 import mobi.chouette.common.file.FileStore;
 import mobi.chouette.common.file.LocalFileStore;
 import mobi.chouette.model.iev.Job;
 import mobi.chouette.model.iev.Link;
 
+import org.apache.commons.io.IOUtils;
 import org.joda.time.LocalDateTime;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -73,7 +76,22 @@ public class CachingGoogleCloudFileStore implements FileStore {
 		String implProp = System.getProperty(implPropKey);
 		if (BEAN_NAME.equals(implProp)) {
 			log.info("Starting CachingGoogleCloudFileStore pre-fetch process");
-			syncedUntil = LocalDateTime.fromDateFields(new Date(0));
+
+			Integer cacheHistoryDays = null;
+			String cacheHistoryDaysKey = "iev.file.store.cache.history.days";
+			if (System.getProperty(cacheHistoryDaysKey) != null) {
+				try {
+					cacheHistoryDays = Integer.valueOf(System.getProperty(cacheHistoryDaysKey));
+				} catch (NumberFormatException nfe) {
+					log.warn("Illegal value for property named " + cacheHistoryDaysKey + " in iev.properties. Should be no of days to fetch history for (int)");
+				}
+			}
+
+			if (cacheHistoryDays == null) {
+				syncedUntil = LocalDateTime.fromDateFields(new Date(0));
+			} else {
+				syncedUntil = LocalDateTime.now().minusDays(cacheHistoryDays);
+			}
 
 			String updateFrequencyKey = "iev.file.store.cache.update.seconds";
 			if (System.getProperty(updateFrequencyKey) != null) {
@@ -105,8 +123,21 @@ public class CachingGoogleCloudFileStore implements FileStore {
 
 	@Override
 	public void writeFile(Path filePath, InputStream content) {
-		localFileStore.writeFile(filePath, content);
-		cloudFileStore.writeFile(filePath, localFileStore.getFileContent(filePath));
+
+		try {
+			ByteArrayInputStream bis;
+			if (content instanceof ByteArrayInputStream) {
+				bis = (ByteArrayInputStream) content;
+			} else {
+				bis = new ByteArrayInputStream(IOUtils.toByteArray(content));
+			}
+			cloudFileStore.writeFile(filePath, bis);
+			bis.reset();
+			localFileStore.writeFile(filePath, bis);
+		} catch (IOException ioE) {
+			throw new FileServiceException("Failed to write file to permanent storage: " + ioE.getMessage(), ioE);
+		}
+
 	}
 
 	@Override

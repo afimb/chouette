@@ -248,7 +248,7 @@ public class ObjectReport extends AbstractReport {
 
 		out.print(toJsonString(ret, level + 1, "check_point_error_count", checkPointErrorCount, false));
 		out.print(toJsonString(ret, level + 1, "check_point_warning_count", checkPointWarningCount, false));
-		out.print(toJsonString(ret, level + 1, "check_point_info_count", checkPointWarningCount, false));
+		out.print(toJsonString(ret, level + 1, "check_point_info_count", checkPointInfoCount, false));
 		ret.setLength(0);
 		out.print(addLevel(ret.append('\n'), level).append('}'));
 
