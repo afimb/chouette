@@ -67,7 +67,7 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 			reporter.addObjectReport(context, "merged", OBJECT_TYPE.COMPANY, "companies", OBJECT_STATE.OK,
 					IO_TYPE.OUTPUT);
 			reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.COMPANY, OBJECT_TYPE.COMPANY, collection
-					.getCompanies().size());
+					.getAgencyCompanies().size());
 			reporter.addObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, "connection links",
 					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
 			reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, OBJECT_TYPE.CONNECTION_LINK,
@@ -107,7 +107,8 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 		Set<StopArea> commercialStops = collection.getCommercialStops();
 		Set<StopArea> physicalStops = collection.getPhysicalStops();
 		Set<ConnectionLink> connectionLinks = collection.getConnectionLinks();
-		Set<Company> companies = collection.getCompanies();
+		// Only export companies (agencies) actually referred to by routes.
+		Set<Company> companies = collection.getAgencyCompanies();
 		Set<Interchange> interchanges = collection.getInterchanges();
 		if (!companies.isEmpty()) {
 			agencyProducer = new GtfsAgencyProducer(exporter);
@@ -122,7 +123,7 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 			StopArea parent = StopAreaUtil.getTopLevelStopArea(sa);
 			flattendedlStopAreas.add(parent);
 		}
-		
+
 		
 		for (Iterator<StopArea> iterator = flattendedlStopAreas.iterator(); iterator.hasNext();) {
 			StopArea stop = iterator.next();
