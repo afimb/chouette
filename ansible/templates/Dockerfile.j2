@@ -50,6 +50,15 @@ RUN rm -rf /opt/jboss/wildfly/standalone/configuration/standalone_xml_history \
 # The argument comes from chouette doc: https://github.com/afimb/chouette/blob/master/doc/install/wildfly.md
 #CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-c", "standalone-full.xml"]
 
+# Agent-bond setup largely copied from:
+# https://hub.docker.com/r/fabric8/java-jboss-openjdk8-jdk/~/dockerfile/
+RUN mkdir -p /opt/jboss/wildfly/agent-bond \
+ && curl http://central.maven.org/maven2/io/fabric8/agent-bond-agent/1.0.2/agent-bond-agent-1.0.2.jar \
+          -o /opt/jboss/wildfly/agent-bond/agent-bond.jar \
+ && chmod 444 /opt/jboss/wildfly/agent-bond/agent-bond.jar
+ADD jmx_exporter_config.yml /opt/jboss/wildfly/agent-bond/
+EXPOSE 8778 9779
+
 # Running as root, in order to get mounted volume writable:
 USER root
 

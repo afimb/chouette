@@ -16,6 +16,9 @@
 - name: Upload disk usage notifier
   copy: src=disk_usage_notifier.sh dest=/usr/src/chouette/disk_usage_notifier.sh
 
+- name: Upload jxm exporter config
+  copy: src=jmx_exporter_config.yml dest=/usr/src/chouette/jmx_exporter_config.yml
+
 - name: Copy the chouette sources to staging directory
   command: rsync -ar {{ build_home }}/chouette_iev/target/chouette.ear {{chouette_root}}/chouette.ear
 
