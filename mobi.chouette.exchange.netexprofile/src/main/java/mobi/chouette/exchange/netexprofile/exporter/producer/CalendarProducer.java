@@ -48,10 +48,13 @@ public class CalendarProducer extends NetexProducer {
 
 					Period p = timetable.getPeriods().get(i);
 					// Create Operating period
+					String operatingPeriodId=NetexProducerUtils.translateObjectId(netexDaytypeId, "OperatingPeriod");
 					OperatingPeriod operatingPeriod = new OperatingPeriod().withVersion(dayType.getVersion())
-							.withId(NetexProducerUtils.translateObjectId(netexDaytypeId, "OperatingPeriod"))
+							.withId(operatingPeriodId)
 							.withFromDate(TimeUtil.toLocalDateFromJoda(p.getStartDate()).atStartOfDay()).withToDate(TimeUtil.toLocalDateFromJoda(p.getEndDate()).atStartOfDay());
-					exportableNetexData.getSharedOperatingPeriods().add(operatingPeriod);
+					if (!exportableNetexData.getSharedOperatingPeriods().containsKey(operatingPeriodId)) {
+						exportableNetexData.getSharedOperatingPeriods().put(operatingPeriodId, operatingPeriod);
+					}
 
 					OperatingPeriodRefStructure operatingPeriodRef = netexFactory.createOperatingPeriodRefStructure();
 					NetexProducerUtils.populateReference(operatingPeriod, operatingPeriodRef, true);

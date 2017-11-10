@@ -11,6 +11,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.rutebanken.netex.model.DayType;
 import org.rutebanken.netex.model.DayTypeAssignment;
 import org.rutebanken.netex.model.OperatingPeriod;
@@ -31,7 +32,7 @@ public class ServiceCalendarFrameWriter extends AbstractNetexWriter {
             writer.writeAttribute(ID, serviceCalendarFrameId);
             writeDayTypesElement(writer, exportableNetexData,marshaller);
 
-            if (CollectionUtils.isNotEmpty(exportableNetexData.getSharedOperatingPeriods())) {
+            if (MapUtils.isNotEmpty(exportableNetexData.getSharedOperatingPeriods())) {
                 writeOperatingPeriodsElement(writer, exportableNetexData,marshaller);
             }
 
@@ -69,7 +70,7 @@ public class ServiceCalendarFrameWriter extends AbstractNetexWriter {
     private static void writeOperatingPeriodsElement(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
         try {
             writer.writeStartElement(OPERATING_PERIODS);
-            for (OperatingPeriod operatingPeriod : exportableData.getSharedOperatingPeriods()) {
+            for (OperatingPeriod operatingPeriod : exportableData.getSharedOperatingPeriods().values()) {
                 marshaller.marshal(netexFactory.createOperatingPeriod(operatingPeriod), writer);
             }
             writer.writeEndElement();

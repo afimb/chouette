@@ -115,7 +115,7 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private Set<OperatingPeriod> sharedOperatingPeriods = new HashSet<>();
+    private Map<String,OperatingPeriod> sharedOperatingPeriods = new HashMap<>();
 
     @Getter
     @Setter
