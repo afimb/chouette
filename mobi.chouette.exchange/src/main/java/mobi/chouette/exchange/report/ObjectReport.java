@@ -101,11 +101,6 @@ public class ObjectReport extends AbstractReport {
 	protected boolean addCheckPointError(int checkPointErrorId, SEVERITY severity) {
 		boolean ret = false;
 
-		if (checkPointErrorCount + checkPointWarningCount < MAX_ERRORS_PER_CHECKPOINT) {
-			checkPointErrorKeys.add(new Integer(checkPointErrorId));
-			ret = true;
-		}
-
 		switch (severity) {
 			case INFO:
 				if (checkPointInfoCount < MAX_ERRORS_PER_CHECKPOINT) {
