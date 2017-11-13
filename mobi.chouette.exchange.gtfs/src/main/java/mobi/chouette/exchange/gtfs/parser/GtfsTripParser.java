@@ -48,6 +48,7 @@ import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RoutePoint;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.SimpleObjectReference;
@@ -823,6 +824,18 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 		}
 
+		// Create route point from first an last stop point on route
+		if (route.getRoutePoints().isEmpty()) {
+			if (!route.getStopPoints().isEmpty()) {
+				StopPoint firstStopPoint = route.getStopPoints().get(0);
+				route.getRoutePoints().add(createRoutePointFromStopPoint(referential, firstStopPoint));
+
+				StopPoint lastStopPoint = route.getStopPoints().get(route.getStopPoints().size() - 1);
+				route.getRoutePoints().add(createRoutePointFromStopPoint(referential, lastStopPoint));
+			}
+		}
+
+
 		// Shape -> routeSections
 		if (gtfsShapes != null) {
 			List<RouteSection> sections = createRouteSections(context, referential, configuration, journeyPattern,
@@ -837,7 +850,14 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		
 		return journeyPattern;
 	}
-	
+
+	private RoutePoint createRoutePointFromStopPoint(Referential referential, StopPoint firstStopPoint) {
+		RoutePoint firstRoutePoint = ObjectFactory.getRoutePoint(referential, firstStopPoint.objectIdPrefix() + ":RoutePoint:" + firstStopPoint.objectIdSuffix());
+		firstRoutePoint.setScheduledStopPoint(firstStopPoint.getScheduledStopPoint());
+		firstRoutePoint.setFilled(true);
+		return firstRoutePoint;
+	}
+
 	private void addSyntheticDestinationDisplayIfMissingOnFirstStopPoint(GtfsImportParameters configuration, Referential referential, JourneyPattern jp) {
 		StopPoint departureStopPoint = jp.getDepartureStopPoint();
 		if (departureStopPoint.getDestinationDisplay() == null) {
