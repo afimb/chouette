@@ -345,6 +345,18 @@ public class RegtoppRouteParser extends LineSpecificParser {
 						route.setName(lastStopArea.getParent().getName());
 					}
 				}
+
+			}
+
+			// Create route point from first an last stop point on route
+			if (route.getRoutePoints().isEmpty()) {
+				if (!route.getStopPoints().isEmpty()) {
+					StopPoint firstStopPoint = route.getStopPoints().get(0);
+					route.getRoutePoints().add(createRoutePointFromStopPoint(referential, firstStopPoint));
+
+					StopPoint lastStopPoint = route.getStopPoints().get(route.getStopPoints().size() - 1);
+					route.getRoutePoints().add(createRoutePointFromStopPoint(referential, lastStopPoint));
+				}
 			}
 
 			route.setPublishedName(route.getName());
@@ -358,6 +370,13 @@ public class RegtoppRouteParser extends LineSpecificParser {
 
 			// default direction and wayback = R if opposite Route = A, else A
 		}
+	}
+
+	private RoutePoint createRoutePointFromStopPoint(Referential referential, StopPoint firstStopPoint) {
+		RoutePoint firstRoutePoint = ObjectFactory.getRoutePoint(referential, firstStopPoint.objectIdPrefix() + ":RoutePoint:" + firstStopPoint.objectIdSuffix());
+		firstRoutePoint.setScheduledStopPoint(firstStopPoint.getScheduledStopPoint());
+		firstRoutePoint.setFilled(true);
+		return firstRoutePoint;
 	}
 
 	StopArea getUsefulStopArea(List<StopPoint> stopPoints) {
