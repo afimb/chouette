@@ -1,17 +1,23 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import java.math.BigInteger;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
-import mobi.chouette.model.StopPoint;
-import org.rutebanken.netex.model.*;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.rutebanken.netex.model.KeyListStructure;
+import org.rutebanken.netex.model.KeyValueStructure;
+import org.rutebanken.netex.model.LineRefStructure;
+import org.rutebanken.netex.model.PointOnRoute;
+import org.rutebanken.netex.model.PointsOnRoute_RelStructure;
+import org.rutebanken.netex.model.RoutePointRefStructure;
+import org.rutebanken.netex.model.RouteRefStructure;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
-
-import java.math.BigInteger;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.POINT_ON_ROUTE;
 
 public class RouteProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Route, mobi.chouette.model.Route> {
 
@@ -60,7 +66,9 @@ public class RouteProducer extends NetexProducer implements NetexEntityProducer<
 			}
 		}
 
-		netexRoute.setPointsInSequence(pointsOnRoute);
+		if (!CollectionUtils.isEmpty(pointsOnRoute.getPointOnRoute())) {
+			netexRoute.setPointsInSequence(pointsOnRoute);
+		}
 
 		ExportableData exportableData = (ExportableData) context.get(Constant.EXPORTABLE_DATA);
 		if (isSet(neptuneRoute.getOppositeRoute()) && exportableData.getRoutes().contains(neptuneRoute.getOppositeRoute())) {
