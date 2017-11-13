@@ -34,6 +34,7 @@ import lombok.Data;
 		"modeBus",
 		"modeCoach",
 		"modeFerry",
+		"modeFunicular",
 		"modeRail",
 		"modeMetro",
 		"modePrivateVehicle",
@@ -161,6 +162,15 @@ public class ValidationParameters {
 
 	@XmlElement(name = "mode_tram")
 	private TransportModeParameters modeTram;
+	
+	@XmlElement(name = "mode_funicular")
+	private TransportModeParameters modeFunicular;
+
+	@XmlElement(name = "mode_rail")
+	private TransportModeParameters modeRail;
+
+	@XmlElement(name = "mode_funicular")
+	private TransportModeParameters modeFunicular;
 
 	@XmlElement(name = "mode_other")
 	private TransportModeParameters modeOther;
