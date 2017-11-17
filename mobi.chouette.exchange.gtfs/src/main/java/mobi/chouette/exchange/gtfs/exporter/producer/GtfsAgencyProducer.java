@@ -64,7 +64,7 @@ public class GtfsAgencyProducer extends AbstractProducer
 
       // manage agency_url mandatory
       // String urlData = "Url";
-      String url = getValue(neptuneObject.getUrl());
+      String url = sanitizeUrl(getValue(neptuneObject.getUrl()));
       if (url == null)
       {
          url = createURLFromOrganisationalUnit(neptuneObject);
@@ -107,6 +107,13 @@ public class GtfsAgencyProducer extends AbstractProducer
       }
       return true;
    }
+
+	private String sanitizeUrl(String url) {
+		if (url != null && !url.toLowerCase().startsWith("http")) {
+			return "http://" + url;
+		}
+		return url;
+	}
 
    private String createURLFromOrganisationalUnit(Company neptuneObject) {
       String url;
