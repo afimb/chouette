@@ -135,9 +135,13 @@ public class Scheduler {
 			}
 		});
 		for (JobService jobService : scheduled) {
-			if (jobService.getJob().getStarted()==null || jobService.getStarted().isBefore(LocalDateTime.now().minusHours(3))) {
+			// Lock job to make sure no other nodes are executing it.
+			if (lockManager.attemptAcquireJobLock(jobService.getId())) {
 				log.info("Processing interrupted job " + jobService.getId());
 				jobManager.processInterrupted(jobService);
+				lockManager.releaseJobLock(jobService.getId());
+			} else {
+				log.info("Failed to acquire lock for started job, assuming job is executing on other node. JobId: " + jobService.getId());
 			}
 		}
 
