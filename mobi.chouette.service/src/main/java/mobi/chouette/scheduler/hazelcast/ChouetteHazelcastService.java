@@ -18,6 +18,7 @@ public class ChouetteHazelcastService extends HazelCastService {
 
 	public ChouetteHazelcastService(KubernetesService kubernetesService) {
 		super(kubernetesService);
+		kubernetesService.init();
 		init();
 	}
 
