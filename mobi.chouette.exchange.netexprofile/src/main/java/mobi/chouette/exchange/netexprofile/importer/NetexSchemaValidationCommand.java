@@ -72,8 +72,9 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 				return t;
 			}
 		};
-		int processors = Runtime.getRuntime().availableProcessors();
-		ExecutorService executor = Executors.newFixedThreadPool(processors,threadFactory);
+		int nThreads = Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
+		log.info("Starting executorService for validation with threads: " + nThreads);
+		ExecutorService executor = Executors.newFixedThreadPool(nThreads,threadFactory);
 
 		try {
 			List<Future<SchemaValidationTask>> schemaValidationResults = new ArrayList<>();
