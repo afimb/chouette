@@ -14,16 +14,25 @@ public class ChouetteHazelcastService extends HazelCastService {
 
 	private static final String MAP_CONFIG_NAME_REFERENTIAL_LOCKS = "ReferentialLocks";
 
+	private static final String MAP_CONFIG_NAME_JOB_LOCKS = "JobLocks";
+
+
 	private static final int TTL_SECONDS = 7200;
 
 	public ChouetteHazelcastService(KubernetesService kubernetesService) {
 		super(kubernetesService);
+		kubernetesService.init();
 		init();
 	}
 
 	public IMap<String, String> getLocksMap() {
 		return hazelcast.getMap(MAP_CONFIG_NAME_REFERENTIAL_LOCKS);
 	}
+
+	public IMap<Long, String> getJobLocksMap() {
+		return hazelcast.getMap(MAP_CONFIG_NAME_JOB_LOCKS);
+	}
+
 
 	@Override
 	public List<MapConfig> getAdditionalMapConfigurations() {
@@ -32,6 +41,13 @@ public class ChouetteHazelcastService extends HazelCastService {
 		mapConfigs.add(
 				new MapConfig()
 						.setName(MAP_CONFIG_NAME_REFERENTIAL_LOCKS)
+						.setBackupCount(1)
+						.setAsyncBackupCount(2)
+						.setTimeToLiveSeconds(TTL_SECONDS));
+
+		mapConfigs.add(
+				new MapConfig()
+						.setName(MAP_CONFIG_NAME_JOB_LOCKS)
 						.setBackupCount(1)
 						.setAsyncBackupCount(2)
 						.setTimeToLiveSeconds(TTL_SECONDS));

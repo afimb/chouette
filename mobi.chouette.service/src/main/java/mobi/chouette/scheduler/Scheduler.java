@@ -63,19 +63,17 @@ public class Scheduler {
 	private String lock = "lock";
 
 	@Lock(LockType.READ)
-	public int getActiveJobsCount()
-	{
+	public int getActiveJobsCount() {
 		return startedFutures.size();
 	}
 
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public void schedule(String preferredReferential) {
+	public void schedule() {
 
-		log.info("schedule, preferred referential " + preferredReferential);
 		List<JobService> waitingJobs = jobManager.getNextJobs();
 		if (!CollectionUtils.isEmpty(waitingJobs)) {
 
-			for (JobService jobService: waitingJobs) {
+			for (JobService jobService : waitingJobs) {
 				if (!schedule(jobService)) {
 					log.info("Too many active jobs, delay start up of job: " + jobService.getId());
 					break;
@@ -93,8 +91,14 @@ public class Scheduler {
 			if (numActiveJobs >= getMaxJobs()) {
 				return false;
 			}
-			if (ReferentialLockManagerFactory.getLockManager().attemptAcquireLocks(jobService.getRequiredReferentialsLocks())) {
-				startJob(jobService);
+			ReferentialLockManager referentialLockManager = ReferentialLockManagerFactory.getLockManager();
+			if (referentialLockManager.attemptAcquireLocks(jobService.getRequiredReferentialsLocks())) {
+				if (referentialLockManager.attemptAcquireJobLock(jobService.getId())) {
+					startJob(jobService);
+				} else {
+					log.warn("Failed to acquire job lock after acquiring referential lock. JobId: " + jobService.getId());
+					referentialLockManager.releaseLocks(jobService.getRequiredReferentialsLocks());
+				}
 			} else {
 				log.info("Could not acquire necessary locks (" + jobService.getRequiredReferentialsLocks() + "), delay start up of job: " + jobService.getJob());
 			}
@@ -105,7 +109,7 @@ public class Scheduler {
 
 
 	private void startJob(JobService jobService) {
-		log.info("start a new job "+jobService.getId() + " for referential: "+ jobService.getReferential());
+		log.info("start a new job " + jobService.getId() + " for referential: " + jobService.getReferential());
 		jobManager.start(jobService);
 
 		Map<String, String> properties = new HashMap<String, String>();
@@ -118,6 +122,8 @@ public class Scheduler {
 
 	@PostConstruct
 	private void initialize() {
+		log.info("Initializing job scheduler");
+		ReferentialLockManager lockManager = ReferentialLockManagerFactory.getLockManager();
 
 		List<JobService> list = jobManager.findAll();
 
@@ -125,13 +131,14 @@ public class Scheduler {
 		Collection<JobService> scheduled = Collections2.filter(list, new Predicate<JobService>() {
 			@Override
 			public boolean apply(JobService jobService) {
-				return jobService.getStatus() == STATUS.STARTED ;
+				return jobService.getStatus() == STATUS.STARTED;
 			}
 		});
 		for (JobService jobService : scheduled) {
 			jobManager.abort(jobService);
 
 		}
+
 
 		// schedule created job
 		Collection<JobService> created = Collections2.filter(list, new Predicate<JobService>() {
@@ -141,7 +148,7 @@ public class Scheduler {
 			}
 		});
 		for (JobService jobService : created) {
-			schedule(jobService.getReferential());
+			schedule();
 		}
 	}
 
@@ -223,7 +230,7 @@ public class Scheduler {
 			startedFutures.remove(task.getJob().getId());
 
 			ReferentialLockManagerFactory.getLockManager().releaseLocks(task.getJob().getRequiredReferentialsLocks());
-
+			ReferentialLockManagerFactory.getLockManager().releaseJobLock(task.getJob().getId());
 			// launch next task
 			executor.execute(new Runnable() {
 
@@ -231,12 +238,11 @@ public class Scheduler {
 				public void run() {
 					ContextHolder.setContext(null);
 					try {
-						String referential = task.getJob().getReferential();
 						InitialContext initialContext = new InitialContext();
 						Scheduler scheduler = (Scheduler) initialContext.lookup("java:app/mobi.chouette.service/"
 								+ BEAN_NAME);
 
-						scheduler.schedule(referential);
+						scheduler.schedule();
 					} catch (Exception e) {
 						log.error(e.getMessage(),e);
 					}

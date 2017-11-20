@@ -128,7 +128,7 @@ public class JobServiceManager {
 		validateReferential(referential);
 
 		JobService jobService = createJob(referential, action, type, inputStreamsByName);
-		scheduler.schedule(referential);
+		scheduler.schedule();
 		return jobService;
 	}
 
