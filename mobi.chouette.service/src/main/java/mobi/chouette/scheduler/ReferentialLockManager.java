@@ -8,6 +8,10 @@ public interface ReferentialLockManager {
 
 	void releaseLocks(Set<String> referentials);
 
+	boolean attemptAcquireJobLock(Long jobId);
+
+	void releaseJobLock(Long jobId);
+
 	String lockStatus();
 }
 

@@ -33,6 +33,8 @@ public class HazelcastReferentialsLockManager implements ReferentialLockManager 
 
 	private IMap<String, String> locks;
 
+	private IMap<Long, String> jobsLocks;
+
 	@EJB
 	private ContenerChecker contenerChecker;
 
@@ -43,6 +45,7 @@ public class HazelcastReferentialsLockManager implements ReferentialLockManager 
 		if (BEAN_NAME.equals(System.getProperty(contenerChecker.getContext() + PropertyNames.REFERENTIAL_LOCK_MANAGER_IMPLEMENTATION))) {
 			hazelcastService = new ChouetteHazelcastService(new KubernetesService("default", isKubernetesEnabled()));
 			locks = hazelcastService.getLocksMap();
+			jobsLocks = hazelcastService.getJobLocksMap();
 			log.info("Initialized hazelcast: " + hazelcastService.information());
 		} else {
 			log.info("Not initializing hazelcast as other referential lock manager impl is configured");
@@ -54,6 +57,30 @@ public class HazelcastReferentialsLockManager implements ReferentialLockManager 
 		if (hazelcastService != null) {
 			hazelcastService.shutdown();
 		}
+	}
+
+	@Override
+	public boolean attemptAcquireJobLock(Long jobId) {
+		boolean acquired = false;
+		if (!jobsLocks.containsKey(jobId) && jobsLocks.tryLock(jobId)) {
+			if (!jobsLocks.containsKey(jobId)) {
+				jobsLocks.put(jobId, MAP_LOCK_VALUE);
+				acquired = true;
+			}
+		}
+		return acquired;
+	}
+
+	@Override
+	public void releaseJobLock(Long jobId) {
+		try {
+			if (jobsLocks.containsKey(jobId)) {
+				jobsLocks.tryRemove(jobId, 0, TimeUnit.SECONDS);
+			}
+		} catch (Throwable t) {
+			log.warn("Exception when trying to release job lock: " + jobId + " : " + t.getMessage(), t);
+		}
+
 	}
 
 	public final boolean isKubernetesEnabled() {
