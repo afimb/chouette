@@ -123,9 +123,10 @@ public class Scheduler {
 	@PostConstruct
 	private void initialize() {
 		log.info("Initializing job scheduler");
+		List<JobService> list = jobManager.findAll();
+
 		ReferentialLockManager lockManager = ReferentialLockManagerFactory.getLockManager();
 
-		List<JobService> list = jobManager.findAll();
 
 		// abort started job
 		Collection<JobService> scheduled = Collections2.filter(list, new Predicate<JobService>() {
@@ -235,8 +236,9 @@ public class Scheduler {
 			// startedTasks.remove(task.getJob().getId());
 			startedFutures.remove(task.getJob().getId());
 
-			ReferentialLockManagerFactory.getLockManager().releaseLocks(task.getJob().getRequiredReferentialsLocks());
-			ReferentialLockManagerFactory.getLockManager().releaseJobLock(task.getJob().getId());
+			ReferentialLockManager lockManager = ReferentialLockManagerFactory.getLockManager();
+			lockManager.releaseLocks(task.getJob().getRequiredReferentialsLocks());
+			lockManager.releaseJobLock(task.getJob().getId());
 			// launch next task
 			executor.execute(new Runnable() {
 
