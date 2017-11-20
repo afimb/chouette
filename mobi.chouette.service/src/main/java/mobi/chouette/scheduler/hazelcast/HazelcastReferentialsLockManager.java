@@ -122,5 +122,8 @@ public class HazelcastReferentialsLockManager implements ReferentialLockManager 
 		return false;
 	}
 
-
+	@Override
+	public String lockStatus() {
+		return "Hazelcast lock manager: Locks: " + locks.keySet() + ". Cluster info: " + hazelcastService.information();
+	}
 }

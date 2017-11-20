@@ -7,6 +7,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.scheduler.ReferentialLockManagerFactory;
 import mobi.chouette.service.HealthService;
 
 import org.springframework.stereotype.Component;
@@ -40,6 +41,13 @@ public class HealthResource {
 		} else {
 			return Response.serverError().build();
 		}
+	}
+
+	@GET
+	@Path("/lock")
+	@Produces("text/plain")
+	public Response getLockStatus(){
+		return Response.ok().entity(ReferentialLockManagerFactory.getLockManager().lockStatus()).build();
 	}
 
 }

@@ -45,5 +45,9 @@ public class LocalReferentialLockManager implements ReferentialLockManager {
 
 	}
 
+	@Override
+	public String lockStatus() {
+		return "Local lock manager. Locks: " + registry.keySet();
+	}
 }
 
