@@ -20,10 +20,6 @@ import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedTaskListener;
 import javax.naming.InitialContext;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import org.apache.commons.collections.CollectionUtils;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.ContenerChecker;
@@ -35,6 +31,8 @@ import mobi.chouette.service.JobServiceManager;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import org.apache.commons.collections.CollectionUtils;
+import org.joda.time.LocalDateTime;
 
 /**
  * @author michel
@@ -131,8 +129,10 @@ public class Scheduler {
 			}
 		});
 		for (JobService jobService : scheduled) {
-            log.info("Processing interrupted job " + jobService.getId());
-			jobManager.processInterrupted(jobService);
+			if (jobService.getJob().getStarted()==null || jobService.getStarted().isBefore(LocalDateTime.now().minusHours(3))) {
+				log.info("Processing interrupted job " + jobService.getId());
+				jobManager.processInterrupted(jobService);
+			}
 		}
 
 		// schedule created job
