@@ -41,7 +41,7 @@ public class HazelcastReferentialsLockManager implements ReferentialLockManager 
 	@PostConstruct
 	public void init() {
 		if (BEAN_NAME.equals(System.getProperty(contenerChecker.getContext() + PropertyNames.REFERENTIAL_LOCK_MANAGER_IMPLEMENTATION))) {
-			hazelcastService = new ChouetteHazelcastService(new KubernetesService("chouette", isKubernetesEnabled()));
+			hazelcastService = new ChouetteHazelcastService(new KubernetesService("default", isKubernetesEnabled()));
 			locks = hazelcastService.getLocksMap();
 			log.info("Initialized hazelcast: " + hazelcastService.information());
 		} else {
