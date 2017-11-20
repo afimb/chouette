@@ -542,6 +542,7 @@ public class JobServiceManager {
 
 		List<Job> jobs = jobDAO.findByStatus(Job.STATUS.STARTED);
 		jobs.addAll(jobDAO.findByStatus(Job.STATUS.SCHEDULED));
+		jobs.addAll(jobDAO.findByStatus(Job.STATUS.RESCHEDULED));
 
 		List<JobService> jobServices = new ArrayList<>(jobs.size());
 		for (Job job : jobs) {
