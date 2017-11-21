@@ -17,6 +17,8 @@ import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
 import mobi.chouette.model.Company;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * convert Timetable to Gtfs Calendar and CalendarDate
  * <p>
@@ -115,17 +117,23 @@ public class GtfsAgencyProducer extends AbstractProducer
 		return url;
 	}
 
-   private String createURLFromOrganisationalUnit(Company neptuneObject) {
+   String createURLFromOrganisationalUnit(Company neptuneObject) {
       String url;
       if (neptuneObject.getOrganisationalUnit() != null
 			&& neptuneObject.getOrganisationalUnit().startsWith("http"))
 	  {
 		 // urlData = "OrganisationalUnit";
-		 url = neptuneObject.getOrganisationalUnit();
-	  } else
-	  {
-		 url = "http://www." + neptuneObject.getShortName() + ".com";
-	  }
+         url = neptuneObject.getOrganisationalUnit();
+      } else {
+         String hostName = "unknown";
+         if (!StringUtils.isEmpty(neptuneObject.getShortName())) {
+            hostName = neptuneObject.getShortName();
+         } else if (!StringUtils.isEmpty(neptuneObject.getName())) {
+            hostName = neptuneObject.getName();
+         }
+
+         url = "http://www." + hostName.replaceAll("[^A-Za-z0-9]", "") + ".no";
+      }
       return url;
    }
 
