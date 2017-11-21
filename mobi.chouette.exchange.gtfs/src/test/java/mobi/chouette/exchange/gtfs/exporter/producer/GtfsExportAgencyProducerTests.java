@@ -73,7 +73,7 @@ public class GtfsExportAgencyProducerTests
       Assert.assertEquals(gtfsObject.getAgencyName(), "name",
             "agency name must be correcty set");
       Assert.assertEquals(gtfsObject.getAgencyUrl().toString(),
-            "http://www.short.no", "agency url must be correcty set");
+            "http://www.short.com", "agency url must be correcty set");
       Assert.assertEquals(gtfsObject.getAgencyPhone(), "01 02 03 04 05",
             "agency phone must be correcty set");
       Assert.assertEquals(gtfsObject.getAgencyTimezone(), TimeZone.getDefault(), "agency timezone must be correctly set");
@@ -102,7 +102,7 @@ public class GtfsExportAgencyProducerTests
       Assert.assertEquals(gtfsObject.getAgencyName(), "name",
             "agency name must be correcty set");
       Assert.assertEquals(gtfsObject.getAgencyUrl().toString(),
-            "http://www.name.no", "agency url must be correcty set");
+            "http://www.name.com", "agency url must be correcty set");
       Assert.assertEquals(gtfsObject.getAgencyPhone(), "01 02 03 04 05",
             "agency phone must be correcty set");
 

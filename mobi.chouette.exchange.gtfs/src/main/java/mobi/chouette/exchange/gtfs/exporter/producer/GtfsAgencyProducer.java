@@ -10,7 +10,10 @@ package mobi.chouette.exchange.gtfs.exporter.producer;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
@@ -18,6 +21,8 @@ import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
 import mobi.chouette.model.Company;
 
 import org.apache.commons.lang3.StringUtils;
+
+import static mobi.chouette.common.PropertyNames.GTFS_AGENCY_URL_DEFAULTS;
 
 /**
  * convert Timetable to Gtfs Calendar and CalendarDate
@@ -69,7 +74,7 @@ public class GtfsAgencyProducer extends AbstractProducer
       String url = sanitizeUrl(getValue(neptuneObject.getUrl()));
       if (url == null)
       {
-         url = createURLFromOrganisationalUnit(neptuneObject);
+         url = createURLFromProviderDefaults(neptuneObject);
       }
       try
       {
@@ -77,8 +82,8 @@ public class GtfsAgencyProducer extends AbstractProducer
       } catch (MalformedURLException e)
       {
          log.error("malformed URL " + url + " creating url from organisation unit as replacement");
-         String replacementUrl=createURLFromOrganisationalUnit(neptuneObject);
-         try {
+		  String replacementUrl = createURLFromProviderDefaults(neptuneObject);
+		  try {
             agency.setAgencyUrl(new URL(replacementUrl));
          } catch (MalformedURLException e2) {
             log.error("malformed replacementUrl " + replacementUrl + " ignoring agency");
@@ -111,10 +116,30 @@ public class GtfsAgencyProducer extends AbstractProducer
    }
 
 	private String sanitizeUrl(String url) {
-		if (url != null && !url.toLowerCase().startsWith("http")) {
-			return "http://" + url;
+		String sanitized = url;
+		if (sanitized != null) {
+
+			sanitized = sanitized.trim();
+			if (!sanitized.toLowerCase().startsWith("http")) {
+				sanitized = "http://" + sanitized;
+			}
 		}
-		return url;
+		return sanitized;
+	}
+
+	String createURLFromProviderDefaults(Company neptuneObject) {
+		String urlDefaults = System.getProperty(GTFS_AGENCY_URL_DEFAULTS);
+
+		if (urlDefaults != null) {
+			Map<String, String> urlsPerCodeSpace = Arrays.stream(urlDefaults.split(",")).filter(codeSpaceEqualsUrl -> codeSpaceEqualsUrl != null && codeSpaceEqualsUrl.contains("=")).map(codeSpaceEqualsUrl -> codeSpaceEqualsUrl.split("=")).collect(Collectors.toMap(codeSpaceEqualsUrl -> codeSpaceEqualsUrl[0],
+					codeSpaceEqualsUrl -> codeSpaceEqualsUrl[1]));
+			String defaultUrl = urlsPerCodeSpace.get(neptuneObject.objectIdPrefix());
+			if (defaultUrl != null) {
+				return sanitizeUrl(defaultUrl);
+			}
+		}
+
+		return createURLFromOrganisationalUnit(neptuneObject);
 	}
 
    String createURLFromOrganisationalUnit(Company neptuneObject) {
@@ -132,7 +157,7 @@ public class GtfsAgencyProducer extends AbstractProducer
             hostName = neptuneObject.getName();
          }
 
-         url = "http://www." + hostName.replaceAll("[^A-Za-z0-9]", "") + ".no";
+         url = "http://www." + hostName.replaceAll("[^A-Za-z0-9]", "") + ".com";
       }
       return url;
    }
