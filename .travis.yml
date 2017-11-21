@@ -12,4 +12,3 @@ before_script:
   - sudo apt-get install postgresql-9.4-postgis-2.3 postgis-2.3 -y -q
   - psql -c "create user chouette with login createdb superuser encrypted  password 'chouette';" -U postgres
   - psql -c 'create database chouette_test with owner = chouette;' -U postgres
-  - psql -c "create extension postgis" -d chouette_test -U postgres 
