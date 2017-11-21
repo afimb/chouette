@@ -2,7 +2,9 @@ language: java
 jdk:
   - openjdk7
 addons:
-  postgresql: "9.3"
+  postgresql: "9.4"
+services:
+  - postgresql
 install:
   - mvn install -DskipTests -DskipWildfly
 before_script:
