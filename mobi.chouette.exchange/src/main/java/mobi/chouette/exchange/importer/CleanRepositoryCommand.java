@@ -101,23 +101,23 @@ public class CleanRepositoryCommand implements Command {
 
 		try {
 
-			accessLinkDAO.truncate();
-			accessPointDAO.truncate();
+			// accessLinkDAO.truncate();
+			// accessPointDAO.truncate();
 			companyDAO.truncate();
 			connectionLinkDAO.truncate();
 			groupOfLineDAO.truncate();
-			journeyFrequencyDAO.truncate();
-			journeyPatternDAO.truncate();
-			lineDAO.truncate();
+			// journeyFrequencyDAO.truncate();
+			// journeyPatternDAO.truncate();
+			// lineDAO.truncate();
 			networkDAO.truncate();
-			routeDAO.truncate();
+			// routeDAO.truncate();
 			routeSectionDAO.truncate();
 			stopAreaDAO.truncate();
-			stopPointDAO.truncate();
+			// stopPointDAO.truncate();
 			timetableDAO.truncate();
 			timebandDAO.truncate();
-			vehicleJourneyDAO.truncate();
-			vehicleJourneyAtStopDAO.truncate();
+			// vehicleJourneyDAO.truncate();
+			// vehicleJourneyAtStopDAO.truncate();
 
 			result = SUCCESS;
 		} catch (Exception e) {

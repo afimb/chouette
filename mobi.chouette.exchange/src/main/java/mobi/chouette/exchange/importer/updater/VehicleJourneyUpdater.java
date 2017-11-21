@@ -309,11 +309,11 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			timetableUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
-		Collection<Timetable> removedTimetable = CollectionUtil.substract(oldValue.getTimetables(),
-				newValue.getTimetables(), NeptuneIdentifiedObjectComparator.INSTANCE);
-		for (Timetable timetable : removedTimetable) {
-			timetable.removeVehicleJourney(oldValue);
-		}
+//		Collection<Timetable> removedTimetable = CollectionUtil.substract(oldValue.getTimetables(),
+//				newValue.getTimetables(), NeptuneIdentifiedObjectComparator.INSTANCE);
+//		for (Timetable timetable : removedTimetable) {
+//			timetable.removeVehicleJourney(oldValue);
+//		}
 
 		// journey frequency
 		/* if (!optimized) */{
@@ -349,12 +349,12 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 				journeyFrequencyUpdater.update(context, pair.getLeft(), pair.getRight());
 			}
 
-			Collection<JourneyFrequency> removedJourneyFrequency = CollectionUtil.substract(
-					oldValue.getJourneyFrequencies(), newValue.getJourneyFrequencies(), JOURNEY_FREQUENCY_COMPARATOR);
-			for (JourneyFrequency journeyFrequency : removedJourneyFrequency) {
-				journeyFrequency.setVehicleJourney(null);
-				journeyFrequencyDAO.delete(journeyFrequency);
-			}
+//			Collection<JourneyFrequency> removedJourneyFrequency = CollectionUtil.substract(
+//					oldValue.getJourneyFrequencies(), newValue.getJourneyFrequencies(), JOURNEY_FREQUENCY_COMPARATOR);
+//			for (JourneyFrequency journeyFrequency : removedJourneyFrequency) {
+//				journeyFrequency.setVehicleJourney(null);
+//				journeyFrequencyDAO.delete(journeyFrequency);
+//			}
 		}
 		// Footnotes
 		// This is the new list of footnotes
@@ -405,6 +405,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	 * @param newCompany
 	 */
 	private void twoDatabaseVehicleJourneyTwoTest(ValidationReporter validationReporter, Context context, Company oldCompany,  Company newCompany, ValidationData data) {
+		if (data == null) return; // cannot test
 		if(!NeptuneUtil.sameValue(oldCompany, newCompany))
 			validationReporter.addCheckPointReportError(context, DATABASE_VEHICLE_JOURNEY_2, data.getDataLocations().get(newCompany.getObjectId()));
 		else

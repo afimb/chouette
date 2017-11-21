@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "noSave", "cleanRepository" ,"keepObsoleteLines"}, name = "actionImportParameter")
-public class AbstractImportParameter extends AbstractParameter {
+public abstract class AbstractImportParameter extends AbstractParameter {
 
 	@XmlElement(name = "no_save", defaultValue = "false")
 	@Getter
@@ -36,5 +36,7 @@ public class AbstractImportParameter extends AbstractParameter {
 	public boolean isValid(Logger log) {
 		return super.isValid(log);
 	}
+	
+	public abstract boolean isRouteMergeable();
 
 }

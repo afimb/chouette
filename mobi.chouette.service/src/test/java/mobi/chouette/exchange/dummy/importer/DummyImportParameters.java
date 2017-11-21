@@ -13,5 +13,9 @@ import mobi.chouette.exchange.parameters.AbstractImportParameter;
 @ToString(callSuper = true)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DummyImportParameters extends AbstractImportParameter {
+	@Override
+	public boolean isRouteMergeable() {
+		return false;
+	}
 
 }

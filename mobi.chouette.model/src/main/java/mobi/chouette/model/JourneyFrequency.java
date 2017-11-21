@@ -137,4 +137,5 @@ public class JourneyFrequency extends NeptuneObject {
 	@Setter
 	@Column(name = "exact_time")
 	private Boolean exactTime = false;
+	
 }

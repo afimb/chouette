@@ -288,5 +288,19 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject {
 			longitude = coordinate.y;
 		}
 	}
+	
+	protected void copyAttributes(NeptuneLocalizedObject source) {
+		super.copyAttributes(source);
+		setCityName(source.getCityName());
+		setCountryCode(source.getCountryCode());
+		setLatitude(source.getLatitude());
+		setLongitude(source.getLongitude());
+		setLongLatType(source.getLongLatType());
+		setProjectionType(source.getProjectionType());
+		setStreetName(source.getStreetName());
+		setX(source.getX());
+		setY(source.getY());
+		setZipCode(source.getZipCode());
+	}
 
 }

@@ -266,4 +266,15 @@ public class Route extends NeptuneIdentifiedObject {
 	@OrderColumn(name = "position", nullable = false)
 	private List<StopPoint> stopPoints = new ArrayList<StopPoint>(0);
 
+	public void copyAttributes(Route source)
+	{
+		super.copyAttributes(source);
+		setComment(source.getComment());
+		setDirection(source.getDirection());
+		setName(source.getName());
+		setNumber(source.getNumber());
+		setPublishedName(source.getPublishedName());
+		setWayBack(source.getWayBack());
+	}
+	
 }

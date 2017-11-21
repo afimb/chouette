@@ -32,12 +32,12 @@
 		<snapshotRepository>
 			<id>chouette-snapshot-repository</id>
 			<name>Chouette Snapshot Repository</name>
-			<url>scp://chouette.marseille.cityway.fr/var/lib/tomcat6/webapps/maven-snapshot</url>
+			<url>scp://chouette.prod.cityway.net/var/lib/tomcat6/webapps/maven-snapshot</url>
 		</snapshotRepository>
 		<repository>
 			<id>chouette-repository</id>
 			<name>Chouette Repository</name>
-			<url>scp://chouette.marseille.cityway.fr/var/lib/tomcat6/webapps/maven</url>
+			<url>scp://chouette.prod.cityway.net/var/lib/tomcat6/webapps/maven</url>
 		</repository>
 		<downloadUrl>http://maven.chouette.mobi</downloadUrl>
 	</distributionManagement>

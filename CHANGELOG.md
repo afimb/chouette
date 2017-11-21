@@ -1,3 +1,10 @@
+# Version 3.4.3 (21/11/2017)
+ Nouvelles fonctionnalités :
+  * Import/Export GTFS : prise en compte des indicateurs TAD
+  * Import/Export GTFS : fusion des missions et itinéraires à l'import
+  * Import/Export GTFS : pérénisation des identifiants de mission et d'itinéraires pour l'import incrémental
+  * Adaptation postgresql/postgis : mise en compatibilité avec postgresql 9.4 et postgis 2.3
+
 # Version 3.4.2 (01/12/2016)
 * Correction
   * PullRequest #34 : When querying for jobs, expose job action and status as parameters

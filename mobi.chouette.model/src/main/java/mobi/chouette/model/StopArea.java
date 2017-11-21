@@ -689,4 +689,21 @@ public class StopArea extends NeptuneLocalizedObject {
 			routingConstraintAreas.remove(area);
 	}
 
+	public void copyAttributes(StopArea source) {
+		super.copyAttributes(source);
+		setAreaType(source.getAreaType());
+		setComment(source.getComment());
+		setFareCode(source.getFareCode());
+		setIntUserNeeds(source.getIntUserNeeds());
+		setLiftAvailable(source.getLiftAvailable());
+		setMobilityRestrictedSuitable(source.getMobilityRestrictedSuitable());
+		setName(source.getName());
+		setNearestTopicName(source.getNearestTopicName());
+		setRegistrationNumber(source.getRegistrationNumber());
+		setStairsAvailable(source.getStairsAvailable());
+		setTimeZone(source.getTimeZone());
+		setUrl(source.getUrl());
+	}
+
+	
 }

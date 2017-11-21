@@ -50,6 +50,8 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			return;
 		}
 		newValue.setSaved(true);
+		log.info("update journeyPattern  "+newValue.getObjectId());
+
 
 //		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
@@ -242,6 +244,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 	 * @param newVj
 	 */
 	private void twoDatabaseVehicleJourneyOneTest(ValidationReporter validationReporter, Context context, VehicleJourney oldVj, VehicleJourney newVj, ValidationData data) {
+		if (data == null) return; // cannot test
 		if(!NeptuneUtil.sameValue(oldVj.getJourneyPattern(), newVj.getJourneyPattern()))
 			validationReporter.addCheckPointReportError(context, DATABASE_VEHICLE_JOURNEY_1, data.getDataLocations().get(newVj.getObjectId()));
 		else

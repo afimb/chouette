@@ -153,4 +153,11 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject implements
 		else
 			return "";
 	}
+
+	protected void copyAttributes(NeptuneIdentifiedObject source) 
+	{
+		setObjectId(source.getObjectId());
+		setObjectVersion(source.getObjectVersion());
+		setCreationTime(source.getCreationTime());
+	}
 }

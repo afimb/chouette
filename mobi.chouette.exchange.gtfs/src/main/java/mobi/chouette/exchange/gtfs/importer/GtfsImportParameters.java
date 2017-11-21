@@ -71,4 +71,10 @@ public class GtfsImportParameters extends AbstractImportParameter {
 		return true;
 
 	}
+
+
+	@Override
+	public boolean isRouteMergeable() {
+		return true;
+	}
 }

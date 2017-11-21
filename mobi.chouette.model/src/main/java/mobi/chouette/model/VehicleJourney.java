@@ -339,4 +339,17 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "vehicle_journey_id", updatable = false)
 	private List<JourneyFrequency> journeyFrequencies = new ArrayList<JourneyFrequency>(0);
+
+	public void copyAttributes(VehicleJourney source) {
+		super.copyAttributes(source);
+		setComment(source.getComment());
+		setFlexibleService(source.getFlexibleService());
+		setJourneyCategory(source.getJourneyCategory());
+		setMobilityRestrictedSuitability(source.getMobilityRestrictedSuitability());
+		setNumber(source.getNumber());
+		setPublishedJourneyIdentifier(source.getPublishedJourneyIdentifier());
+		setPublishedJourneyName(source.getPublishedJourneyName());
+		setTransportMode(source.getTransportMode());
+		setVehicleTypeIdentifier(source.getVehicleTypeIdentifier());
+	}
 }

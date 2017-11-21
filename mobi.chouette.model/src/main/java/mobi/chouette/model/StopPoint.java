@@ -152,4 +152,14 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	@Transient
 	private String comment;
 
+	public void copyAttributes(StopPoint source) {
+		super.copyAttributes(source);
+		setComment(source.getComment());
+		setForAlighting(source.getForAlighting());
+		setForBoarding(source.getForBoarding());
+		setPosition(source.getPosition());
+	}
+
+	
+	
 }
