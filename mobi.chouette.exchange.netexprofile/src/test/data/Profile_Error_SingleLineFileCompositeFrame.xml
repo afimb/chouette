@@ -50,6 +50,14 @@
                             </ContactDetails>-->
                             <OrganisationType>authority</OrganisationType>
                         </Authority>
+                        <Authority version="1" id="AVI:Authority:WithoutContactDetailsPhoneEmailOrUrl">
+                            <ContactDetails>
+                                <Email/>
+                                <Phone/>
+                                <Url/>
+                            </ContactDetails>
+                            <OrganisationType>authority</OrganisationType>
+                        </Authority>
                         <Operator version="1" id="AVI:Operator:WF">
                             <!--                          <CompanyNumber>917330557</CompanyNumber>
                             <Name>Widerøe</Name>
@@ -63,6 +71,24 @@
                                 <Phone>0047 755 13 500</Phone>
                                 <Url>http://www.wideroe.no</Url>
                             </CustomerServiceContactDetails>-->
+                        </Operator>
+                        <Operator version="1" id="AVI:Operator:WithoutContactDetailsPhoneEmailOrUrl">
+                            <ContactDetails>
+                                <Email/>
+                                <Phone/>
+                                <Fax>0047 755 13 500</Fax>
+                                <Url/>
+                            </ContactDetails>
+                            <OrganisationType>operator</OrganisationType>
+                        </Operator>
+                        <Operator version="1" id="AVI:Operator:WithoutCustomerServiceContactDetailsUrl">
+                            <CustomerServiceContactDetails>
+                                <Email>franktore.olsen@gmail.com</Email>
+                                <Phone>888</Phone>
+                                <Fax>0047 755 13 500</Fax>
+                                <Url/>
+                            </CustomerServiceContactDetails>
+                            <OrganisationType>operator</OrganisationType>
                         </Operator>
                     </organisations>
                 </ResourceFrame>

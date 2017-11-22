@@ -2,6 +2,7 @@ package mobi.chouette.exchange.netexprofile.importer.validation.norway;
 
 import static mobi.chouette.exchange.netexprofile.NetexTestUtils.createCodespace;
 import static mobi.chouette.exchange.validation.report.ValidationReporter.RESULT.NOK;
+import static mobi.chouette.exchange.validation.report.ValidationReporter.RESULT.OK;
 import static mobi.chouette.exchange.validation.report.ValidationReporter.RESULT.UNCHECK;
 
 import java.io.File;
@@ -34,6 +35,7 @@ import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.exchange.validation.report.ValidationReporter.RESULT;
 import mobi.chouette.model.Codespace;
 import mobi.chouette.model.util.Referential;
+
 import net.sf.saxon.s9api.XdmNode;
 
 public class NorwayLineNetexProfileValidatorTest {
@@ -120,7 +122,7 @@ public class NorwayLineNetexProfileValidatorTest {
 
 		DuplicateIdCheckerCommand duplicateChecker = new DuplicateIdCheckerCommand();
 		duplicateChecker.execute(context);
-		
+
 		File lineFile = new File("src/test/data/norway_line_commonfile/Norwegian-DY121-Stavanger-Bergen.xml");
 		XdmNode lineDom = importer.parseFileToXdmNode(lineFile, new HashSet<>());
 		PublicationDeliveryStructure lineStructure = importer.unmarshal(lineFile, new HashSet<>());
@@ -157,7 +159,7 @@ public class NorwayLineNetexProfileValidatorTest {
 		validCodespaces.add(validCodespace);
 		context.put(Constant.NETEX_VALID_CODESPACES, validCodespaces);
 
-	    File lineFile = new File("src/test/data/Profile_Error_SingleLineFileCompositeFrame.xml");
+		File lineFile = new File("src/test/data/Profile_Error_SingleLineFileCompositeFrame.xml");
 		XdmNode dom = importer.parseFileToXdmNode(lineFile, new HashSet<>());
 		PublicationDeliveryStructure lineDeliveryStructure = importer.unmarshal(lineFile, new HashSet<>());
 
@@ -172,11 +174,14 @@ public class NorwayLineNetexProfileValidatorTest {
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_REFERENCE_TO_ILLEGAL_ELEMENT, NOK);
 
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CUSTOMER_SERVICE_CONTACT_DETAILS, NOK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CUSTOMER_SERVICE_CONTACT_DETAILS_URL, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CONTACT_DETAILS, NOK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CONTACT_DETAILS_URL_OR_PHONE_OR_EMAIL, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_LEGAL_NAME, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_NAME, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_COMPANY_NUMBER, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS, NOK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS_URL_OR_PHONE_OR_EMAIL, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_LEGAL_NAME, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_NAME, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_COMPANY_NUMBER, NOK);
@@ -210,7 +215,7 @@ public class NorwayLineNetexProfileValidatorTest {
 
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_STOP_WITHOUT_BOARDING_OR_ALIGHTING, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_STOP_WITH_REPEATING_DESTINATIONDISPLAYREF, NOK);
-		
+
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_SCHEDULEDSTOPPOINTREF, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_QUAYREF, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_INVALID_TRANSPORTMODE, NOK);
@@ -228,7 +233,7 @@ public class NorwayLineNetexProfileValidatorTest {
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_MISSING_PASSING_TIME, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_TRANSPORTMODE_OVERRIDE, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_DUPLICATE_WITH_DIFFERENT_VERSION, NOK);
-		
+
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_COMPOSITE_FRAME_VALIDITYCONDTITIONS, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_VALIDITYCONDITIONS_ON_FRAMES_INSIDE_COMPOSITEFRAME, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_CALENDAR_FRAME_DAYTYPE_NOT_ASSIGNED, NOK);
@@ -236,7 +241,7 @@ public class NorwayLineNetexProfileValidatorTest {
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_FROMDATE, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_TODATE, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_FROMDATE_AFTER_TODATE, NOK);
-		
+
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_MISSING_VERSION_ON_LOCAL_ELEMENTS, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_MISSING_REFERENCE_VERSION_TO_LOCAL_ELEMENTS, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_UNRESOLVED_REFERENCE_TO_COMMON_ELEMENTS, UNCHECK);
@@ -247,7 +252,7 @@ public class NorwayLineNetexProfileValidatorTest {
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_UNRESOLVED_EXTERNAL_REFERENCE, NOK);
 
 		// Common file specific checkpoints (NOT CHECKED HERE)
-		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_DUPLICATE_IDS_ACROSS_LINE_FILES, ValidationReporter.RESULT.OK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_DUPLICATE_IDS_ACROSS_LINE_FILES, OK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_COMMON_TIMETABLE_FRAME, UNCHECK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_COMMON_SERVICE_FRAME_LINE, UNCHECK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_COMMON_SERVICE_FRAME_ROUTE, UNCHECK);
@@ -255,16 +260,16 @@ public class NorwayLineNetexProfileValidatorTest {
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_NO_VALIDITYCONDITIONS_ON_FRAMES_OUTSIDE_COMPOSITEFRAME, UNCHECK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_DUPLICATE_IDS_ACROSS_LINE_AND_COMMON_FILES, UNCHECK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_MULTIPLE_FRAMES_OF_SAME_TYPE_WITHOUT_VALIDITYCONDITIONS, UNCHECK);
-		
+
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_VALIDBETWEEN_INCOMPLETE, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_VALIDBETWEEN_TODATE_BEFORE_FROMDATE, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_AVAILABILITYCONDITION_INCOMPLETE, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_AVAILABILITYCONDITION_TODATE_BEFORE_FROMDATE, NOK);
 
-		
+
 		// expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SCHEMA_VALIDATION_ERROR,UNCHECK);
 		// expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_UNKNOWN_PROFILE,UNCHECK);
-		
+
 		//expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_DUPLICATE_IDS_ACROSS_COMMON_FILES,UNCHECK);
 
 		verifyAllCheckpointsCovered(vr, expectedResults);
