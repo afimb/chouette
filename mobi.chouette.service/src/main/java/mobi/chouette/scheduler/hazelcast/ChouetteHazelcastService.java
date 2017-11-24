@@ -6,6 +6,9 @@ import lombok.extern.log4j.Log4j;
 
 import com.hazelcast.config.MapConfig;
 import com.hazelcast.core.IMap;
+import com.hazelcast.core.MemberAttributeEvent;
+import com.hazelcast.core.MembershipEvent;
+import com.hazelcast.core.MembershipListener;
 import org.rutebanken.hazelcasthelper.service.HazelCastService;
 import org.rutebanken.hazelcasthelper.service.KubernetesService;
 
@@ -19,10 +22,11 @@ public class ChouetteHazelcastService extends HazelCastService {
 
 	private static final int TTL_SECONDS = 7200;
 
-	public ChouetteHazelcastService(KubernetesService kubernetesService) {
+	public ChouetteHazelcastService(KubernetesService kubernetesService, List<MembershipListener> listeners) {
 		super(kubernetesService);
 		kubernetesService.init();
 		init();
+		addMembershipListeners(listeners);
 	}
 
 	public IMap<String, String> getLocksMap() {
@@ -55,4 +59,15 @@ public class ChouetteHazelcastService extends HazelCastService {
 		log.info("Configured map for referential locks:  " + mapConfigs.get(0));
 		return mapConfigs;
 	}
+
+	public String getLocalMemberId() {
+		return hazelcast.getCluster().getLocalMember().getUuid();
+	}
+
+
+	private void addMembershipListeners(List<MembershipListener> listeners) {
+		listeners.forEach(listener -> hazelcast.getCluster().addMembershipListener(listener));
+	}
+
+
 }
