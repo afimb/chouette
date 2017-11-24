@@ -1,6 +1,8 @@
 package mobi.chouette.scheduler.hazelcast;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -16,6 +18,9 @@ import mobi.chouette.common.PropertyNames;
 import mobi.chouette.scheduler.ReferentialLockManager;
 
 import com.hazelcast.core.IMap;
+import com.hazelcast.core.MemberAttributeEvent;
+import com.hazelcast.core.MembershipEvent;
+import com.hazelcast.core.MembershipListener;
 import org.rutebanken.hazelcasthelper.service.KubernetesService;
 
 import static mobi.chouette.scheduler.hazelcast.HazelcastReferentialsLockManager.BEAN_NAME;
@@ -26,9 +31,6 @@ import static mobi.chouette.scheduler.hazelcast.HazelcastReferentialsLockManager
 public class HazelcastReferentialsLockManager implements ReferentialLockManager {
 
 	public static final String BEAN_NAME = "hazelcastReferentialsLockManager";
-
-
-	private static final String MAP_LOCK_VALUE = "Locked";
 
 
 	private IMap<String, String> locks;
@@ -43,7 +45,7 @@ public class HazelcastReferentialsLockManager implements ReferentialLockManager 
 	@PostConstruct
 	public void init() {
 		if (BEAN_NAME.equals(System.getProperty(contenerChecker.getContext() + PropertyNames.REFERENTIAL_LOCK_MANAGER_IMPLEMENTATION))) {
-			hazelcastService = new ChouetteHazelcastService(new KubernetesService("default", isKubernetesEnabled()));
+			hazelcastService = new ChouetteHazelcastService(new KubernetesService("default", isKubernetesEnabled()), Arrays.asList(new CleanUpAfterRemovedMembersListener()));
 			locks = hazelcastService.getLocksMap();
 			jobsLocks = hazelcastService.getJobLocksMap();
 			log.info("Initialized hazelcast: " + hazelcastService.information());
@@ -64,9 +66,16 @@ public class HazelcastReferentialsLockManager implements ReferentialLockManager 
 		boolean acquired = false;
 		if (!jobsLocks.containsKey(jobId) && jobsLocks.tryLock(jobId)) {
 			if (!jobsLocks.containsKey(jobId)) {
-				jobsLocks.put(jobId, MAP_LOCK_VALUE);
+				jobsLocks.put(jobId, hazelcastService.getLocalMemberId());
 				acquired = true;
 			}
+		}
+
+		if (acquired) {
+			log.info("Acquired job lock: " + jobId);
+		} else {
+			log.info("Failed to acquire job lock: " + jobId);
+
 		}
 		return acquired;
 	}
@@ -76,6 +85,7 @@ public class HazelcastReferentialsLockManager implements ReferentialLockManager 
 		try {
 			if (jobsLocks.containsKey(jobId)) {
 				jobsLocks.tryRemove(jobId, 0, TimeUnit.SECONDS);
+				log.info("Released job lock: " + jobId);
 			}
 		} catch (Throwable t) {
 			log.warn("Exception when trying to release job lock: " + jobId + " : " + t.getMessage(), t);
@@ -98,7 +108,7 @@ public class HazelcastReferentialsLockManager implements ReferentialLockManager 
 				boolean locked = false;
 				if (!locks.containsKey(referential) && locks.tryLock(referential)) {
 					if (!locks.containsKey(referential)) {
-						locks.put(referential, MAP_LOCK_VALUE);
+						locks.put(referential, hazelcastService.getLocalMemberId());
 						acquiredLocks.add(referential);
 						locked = true;
 					}
@@ -152,5 +162,31 @@ public class HazelcastReferentialsLockManager implements ReferentialLockManager 
 	@Override
 	public String lockStatus() {
 		return "Hazelcast lock manager: Locks: " + locks.keySet() + ". Cluster info: " + hazelcastService.information();
+	}
+
+	private class CleanUpAfterRemovedMembersListener implements MembershipListener {
+
+		@Override
+		public void memberAdded(MembershipEvent membershipEvent) {
+
+		}
+
+		@Override
+		public void memberRemoved(MembershipEvent membershipEvent) {
+			String memberUUID = membershipEvent.getMember().getUuid();
+			cleanUpLocksForMember(locks, memberUUID);
+			cleanUpLocksForMember(jobsLocks, memberUUID);
+			log.info("Cleaned up all locks for removed member: " + memberUUID);
+		}
+
+		private <T> void cleanUpLocksForMember(Map<T, String> lockMap, String memberUUID) {
+			lockMap.entrySet().stream().filter(lock -> lock.getValue() != null && lock.getValue().equals(memberUUID)).forEach(lock -> lockMap.remove(lock.getKey()));
+
+		}
+
+		@Override
+		public void memberAttributeChanged(MemberAttributeEvent memberAttributeEvent) {
+
+		}
 	}
 }
