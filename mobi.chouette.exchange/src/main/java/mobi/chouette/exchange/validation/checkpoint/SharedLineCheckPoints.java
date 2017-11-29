@@ -10,7 +10,6 @@ import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Line;
 
-
 public class SharedLineCheckPoints extends AbstractValidation<Line> implements Validator<Line> {
 
 	@Override
@@ -62,9 +61,10 @@ public class SharedLineCheckPoints extends AbstractValidation<Line> implements V
 			if (line2.getNetwork().equals(line1.getNetwork())) {
 				if (checkEquals(line1.getName(),line2.getName()) && checkEquals(line1.getNumber(),line2.getNumber())) {
 					// failure ! add only line2 location
-					DataLocation location = buildLocation(context,line2);
-					DataLocation networkLocation = buildLocation(context,line2.getNetwork());
-					reporter.addCheckPointReportError(context,LINE_1, location,null,null, networkLocation);
+
+					DataLocation line1Loc = buildLocation(context,line1);
+					DataLocation line2Loc = buildLocation(context,line2);
+					reporter.addCheckPointReportError(context,LINE_1, line1Loc,null,null, line2Loc);
 
 					error_1 = true; // to add detail for line1
 				}
