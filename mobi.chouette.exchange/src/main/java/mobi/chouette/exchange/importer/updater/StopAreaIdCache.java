@@ -25,6 +25,11 @@ import org.rutebanken.netex.model.StopTypeEnumeration;
 public class StopAreaIdCache {
     public static final String BEAN_NAME = "StopAreaIdCache";
 
+    public static final String ET_CLIENT_NAME_HEADER = "ET-Client-Name";
+    public static final String ET_CLIENT_ID_HEADER = "ET-Client-ID";
+    public static final String ET_CLIENT_ID = System.getenv("HOSTNAME");
+    public static final String ET_CLIENT_NAME = "chouette";
+
 
     private Map<String, Map<StopTypeEnumeration, String>> stopPlaceIdMap = new HashMap<>();
 
@@ -134,6 +139,8 @@ public class StopAreaIdCache {
             URL url = new URL(u);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
+            connection.setRequestProperty(ET_CLIENT_NAME_HEADER, ET_CLIENT_NAME);
+            connection.setRequestProperty(ET_CLIENT_ID_HEADER, ET_CLIENT_ID);
             connection.setUseCaches(false);
             connection.setDoOutput(true);
             connection.connect();
