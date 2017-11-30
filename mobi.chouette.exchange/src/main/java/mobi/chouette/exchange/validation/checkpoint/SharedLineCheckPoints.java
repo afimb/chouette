@@ -64,7 +64,7 @@ public class SharedLineCheckPoints extends AbstractValidation<Line> implements V
 
 					DataLocation line1Loc = buildLocation(context,line1);
 					DataLocation line2Loc = buildLocation(context,line2);
-					reporter.addCheckPointReportError(context,LINE_1, line1Loc,null,null, line2Loc);
+					reporter.addCheckPointReportError(context,LINE_1, line2Loc,null,null, line1Loc);
 
 					error_1 = true; // to add detail for line1
 				}
