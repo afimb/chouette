@@ -161,7 +161,13 @@ public class HazelcastReferentialsLockManager implements ReferentialLockManager 
 
 	@Override
 	public String lockStatus() {
-		return "Hazelcast lock manager: ReferentialLocks: " + locks + ", JobLocks: " + jobsLocks + ". Cluster info: " + hazelcastService.information();
+		return "Hazelcast lock manager: ReferentialLocks: " + printMap(locks) + ", JobLocks: " + printMap(jobsLocks) + ". Cluster info: " + hazelcastService.information();
+	}
+
+	private String printMap(IMap<?, ?> map) {
+		StringBuilder sb = new StringBuilder("{");
+		map.forEach((k, v) -> sb.append("[").append(k).append(":").append(v).append("]"));
+		return sb.append("}").toString();
 	}
 
 	private class CleanUpAfterRemovedMembersListener implements MembershipListener {
