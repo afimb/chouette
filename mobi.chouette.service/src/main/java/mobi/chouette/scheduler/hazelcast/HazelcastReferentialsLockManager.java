@@ -84,7 +84,7 @@ public class HazelcastReferentialsLockManager implements ReferentialLockManager 
 	public void releaseJobLock(Long jobId) {
 		try {
 			if (jobsLocks.containsKey(jobId)) {
-				jobsLocks.tryRemove(jobId, 0, TimeUnit.SECONDS);
+				jobsLocks.remove(jobId);
 				log.info("Released job lock: " + jobId);
 			}
 		} catch (Throwable t) {
@@ -150,7 +150,7 @@ public class HazelcastReferentialsLockManager implements ReferentialLockManager 
 	private boolean releaseLock(String referential) {
 		try {
 			if (locks.containsKey(referential)) {
-				return locks.tryRemove(referential, 0, TimeUnit.SECONDS);
+				return locks.remove(referential) != null;
 			}
 		} catch (Throwable t) {
 			log.warn("Exception when trying to release lock: " + referential + " : " + t.getMessage(), t);
