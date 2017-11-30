@@ -2,8 +2,10 @@ package mobi.chouette.scheduler;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
@@ -22,6 +24,7 @@ import javax.naming.InitialContext;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
+import mobi.chouette.common.Constant;
 import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.PropertyNames;
 import mobi.chouette.model.iev.Job.STATUS;
@@ -32,7 +35,6 @@ import mobi.chouette.service.JobServiceManager;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import org.apache.commons.collections.CollectionUtils;
-import org.joda.time.LocalDateTime;
 
 /**
  * @author michel
@@ -61,12 +63,16 @@ public class Scheduler {
 
 	private Integer maxJobs;
 
+	private Integer maxTransfers;
+
 	private String lock = "lock";
 
 	@Lock(LockType.READ)
 	public int getActiveJobsCount() {
 		return startedFutures.size();
 	}
+
+	private Set<Long> activeTransferJobIds = new HashSet<>();
 
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void schedule() {
@@ -76,7 +82,6 @@ public class Scheduler {
 
 			for (JobService jobService : waitingJobs) {
 				if (!schedule(jobService)) {
-					log.info("Too many active jobs, delay start up of job: " + jobService.getId());
 					break;
 				}
 			}
@@ -88,9 +93,15 @@ public class Scheduler {
 	private boolean schedule(JobService jobService) {
 		synchronized (lock) {
 			int numActiveJobs = getActiveJobsCount();
-			log.info("Inside lock, numActiveJobs=" + numActiveJobs);
+			int activeTransfersCount = activeTransferJobIds.size();
+			log.info("Inside lock, numActiveJobs=" + numActiveJobs + ", numActiveTransfers: " + activeTransfersCount);
 			if (numActiveJobs >= getMaxJobs()) {
+				log.info("Too many active jobs, delay start up of job: " + jobService.getId());
 				return false;
+			}
+			if (isTransferJob(jobService) && activeTransfersCount >= getMaxTransferJobs()) {
+				log.info("Too many active transfer jobs, delay start up of job: " + jobService.getId());
+				return true;
 			}
 			ReferentialLockManager referentialLockManager = ReferentialLockManagerFactory.getLockManager();
 			if (referentialLockManager.attemptAcquireLocks(jobService.getRequiredReferentialsLocks())) {
@@ -108,6 +119,10 @@ public class Scheduler {
 		return true;
 	}
 
+	private boolean isTransferJob(JobService jobService) {
+		return Constant.EXPORTER.equals(jobService.getAction()) && "transfer".equals(jobService.getType());
+	}
+
 
 	private void startJob(JobService jobService) {
 		log.info("start a new job " + jobService.getId() + " for referential: " + jobService.getReferential());
@@ -118,6 +133,10 @@ public class Scheduler {
 		// startedTasks.put(jobService.getId(),  task);
 		Future<STATUS> future = executor.submit(task);
 		startedFutures.put(jobService.getId(), future);
+
+		if (isTransferJob(jobService)) {
+			activeTransferJobIds.add(jobService.getId());
+		}
 	}
 
 	@PostConstruct
@@ -164,13 +183,26 @@ public class Scheduler {
 		if (maxJobs == null) {
 			String maxJobsKey = checker.getContext() + PropertyNames.MAX_STARTED_JOBS;
 			if (System.getProperty(maxJobsKey) != null) {
-				maxJobs = Integer.parseInt(System.getProperty(checker.getContext() + PropertyNames.MAX_STARTED_JOBS));
+				maxJobs = Integer.parseInt(System.getProperty(maxJobsKey));
 			} else {
-				log.warn("No value set for property: " + maxJobsKey + ", using default value: " + maxJobsKey);
+				log.warn("No value set for property: " + maxJobsKey + ", using default value: " + MAX_JOBS_DEFAULT);
 				return MAX_JOBS_DEFAULT;
 			}
 		}
 		return maxJobs;
+	}
+
+	private int getMaxTransferJobs() {
+		if (maxTransfers == null) {
+			String maxTransfersKey = checker.getContext() + PropertyNames.MAX_STARTED_TRANSFER_JOBS;
+			if (System.getProperty(maxTransfersKey) != null) {
+				maxTransfers = Integer.parseInt(System.getProperty(maxTransfersKey));
+			} else {
+				log.warn("No value set for property: " + maxTransfersKey + ", using default value: " + MAX_JOBS_DEFAULT);
+				return MAX_JOBS_DEFAULT;
+			}
+		}
+		return maxTransfers;
 	}
 
 	/**
@@ -188,7 +220,11 @@ public class Scheduler {
 	    {
 	    	log.info("cancel future");
 	    	future.cancel(false);
-	    }
+		}
+
+		if (isTransferJob(jobService)) {
+			activeTransferJobIds.remove(jobService.getId());
+		}
 
 		return true;
 	}
@@ -235,6 +271,9 @@ public class Scheduler {
 			// remove task from stated map
 			// startedTasks.remove(task.getJob().getId());
 			startedFutures.remove(task.getJob().getId());
+			if (isTransferJob(task.getJob())) {
+				activeTransferJobIds.remove(task.getJob().getId());
+			}
 
 			ReferentialLockManager lockManager = ReferentialLockManagerFactory.getLockManager();
 			lockManager.releaseLocks(task.getJob().getRequiredReferentialsLocks());
