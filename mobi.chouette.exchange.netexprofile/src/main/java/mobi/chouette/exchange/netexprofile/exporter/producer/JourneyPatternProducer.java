@@ -84,13 +84,11 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 				BoardingPossibilityEnum forBoarding = stopPoint.getForBoarding();
 				AlightingPossibilityEnum forAlighting = stopPoint.getForAlighting();
 
-				if (forBoarding != null && forAlighting != null) {
-					if (forBoarding.equals(BoardingPossibilityEnum.normal) && forAlighting.equals(AlightingPossibilityEnum.forbidden)) {
-						stopPointInJourneyPattern.setForAlighting(false);
-					}
-					if (forAlighting.equals(AlightingPossibilityEnum.normal) && forBoarding.equals(BoardingPossibilityEnum.forbidden)) {
-						stopPointInJourneyPattern.setForBoarding(false);
-					}
+				if (AlightingPossibilityEnum.forbidden.equals(forAlighting)){
+					stopPointInJourneyPattern.setForAlighting(false);
+				}
+				if (BoardingPossibilityEnum.forbidden.equals(forBoarding)) {
+					stopPointInJourneyPattern.setForBoarding(false);
 				}
 
 				stopPointInJourneyPattern.setOrder(BigInteger.valueOf(i + 1));
