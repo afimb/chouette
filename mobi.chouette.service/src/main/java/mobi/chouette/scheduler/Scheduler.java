@@ -6,6 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
@@ -49,6 +52,8 @@ public class Scheduler {
 
 	private static final int MAX_JOBS_DEFAULT = 5;
 
+	private static final long JOB_SCHEDULE_INTERVAL_MS_DEFAULT = 120000;
+
 	@EJB(beanName = ContenerChecker.NAME)
 	ContenerChecker checker;
 
@@ -76,6 +81,11 @@ public class Scheduler {
 
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void schedule() {
+		int numActiveJobs = getActiveJobsCount();
+		if (numActiveJobs >= getMaxJobs()) {
+			log.info("Too many active jobs (" + numActiveJobs + "). Ignoring scheduling request");
+			return;
+		}
 
 		List<JobService> waitingJobs = jobManager.getNextJobs();
 		if (!CollectionUtils.isEmpty(waitingJobs)) {
@@ -165,19 +175,31 @@ public class Scheduler {
 			}
 		}
 
-
-		// schedule created job
-		Collection<JobService> created = Collections2.filter(list, new Predicate<JobService>() {
+		Timer timer = new Timer(true);
+		timer.schedule(new TimerTask() {
 			@Override
-			public boolean apply(JobService job) {
-				return job.getStatus() == STATUS.SCHEDULED || job.getStatus() == STATUS.RESCHEDULED ;
+			public void run() {
+				try {
+					schedule();
+				} catch (Exception e) {
+					log.warn("Scheduled request for starting waiting jobs failed with exception: " + e.getMessage(), e);
+				}
 			}
-		});
-		for (JobService jobService : created) {
-			schedule();
-		}
+		}, 0, getScheduleIntervalMs());
+
 	}
 
+	private long getScheduleIntervalMs() {
+		long scheduleFrequencyMs = JOB_SCHEDULE_INTERVAL_MS_DEFAULT;
+		String key = checker.getContext() + PropertyNames.JOB_SHCEDULE_INTERVAL_MS;
+		if (System.getProperty(key) != null) {
+			scheduleFrequencyMs = Long.parseLong(System.getProperty(key));
+		} else {
+			log.warn("No value set for property: " + key + ", using default value: " + scheduleFrequencyMs);
+		}
+
+		return scheduleFrequencyMs;
+	}
 
 	private int getMaxJobs() {
 		if (maxJobs == null) {
