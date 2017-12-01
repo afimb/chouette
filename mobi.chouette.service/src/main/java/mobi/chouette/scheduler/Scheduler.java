@@ -80,7 +80,7 @@ public class Scheduler {
 	private Set<Long> activeTransferJobIds = new HashSet<>();
 
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public void schedule() {
+	public synchronized void schedule() {
 		int numActiveJobs = getActiveJobsCount();
 		if (numActiveJobs >= getMaxJobs()) {
 			log.info("Too many active jobs (" + numActiveJobs + "). Ignoring scheduling request");
