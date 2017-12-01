@@ -185,7 +185,7 @@ public class Scheduler {
 					log.warn("Scheduled request for starting waiting jobs failed with exception: " + e.getMessage(), e);
 				}
 			}
-		}, 0, getScheduleIntervalMs());
+		}, 10000, getScheduleIntervalMs());
 
 	}
 
