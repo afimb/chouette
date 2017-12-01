@@ -150,7 +150,11 @@ public class JobServiceManager {
 		validateReferential(referential);
 
 		JobService jobService = createJob(referential, action, type, inputStreamsByName);
-		scheduler.schedule();
+		try {
+			scheduler.schedule();
+		} catch (Exception e) {
+			log.warn("Failed to schedule job, leaving it to timed scheduler");
+		}
 		return jobService;
 	}
 
