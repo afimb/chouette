@@ -6,9 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
@@ -19,6 +16,8 @@ import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.ejb.Timeout;
+import javax.ejb.TimerService;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.concurrent.ManagedExecutorService;
@@ -72,6 +71,9 @@ public class Scheduler {
 
 	private String lock = "lock";
 
+	@Resource
+	private TimerService timerService;
+
 	@Lock(LockType.READ)
 	public int getActiveJobsCount() {
 		return startedFutures.size();
@@ -80,6 +82,7 @@ public class Scheduler {
 	private Set<Long> activeTransferJobIds = new HashSet<>();
 
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	@Timeout
 	public synchronized void schedule() {
 		int numActiveJobs = getActiveJobsCount();
 		if (numActiveJobs >= getMaxJobs()) {
@@ -175,19 +178,10 @@ public class Scheduler {
 			}
 		}
 
-		Timer timer = new Timer(true);
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				try {
-					schedule();
-				} catch (Exception e) {
-					log.warn("Scheduled request for starting waiting jobs failed with exception: " + e.getMessage(), e);
-				}
-			}
-		}, 10000, getScheduleIntervalMs());
+		 timerService.createTimer(10000 , getScheduleIntervalMs(), "Timed scheduler");
 
 	}
+
 
 	private long getScheduleIntervalMs() {
 		long scheduleFrequencyMs = JOB_SCHEDULE_INTERVAL_MS_DEFAULT;
