@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.ejb.ConcurrencyManagement;
+import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.inject.Named;
@@ -26,6 +28,7 @@ import org.rutebanken.hazelcasthelper.service.KubernetesService;
 import static mobi.chouette.scheduler.hazelcast.HazelcastReferentialsLockManager.BEAN_NAME;
 
 @Singleton(name = BEAN_NAME)
+@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 @Named
 @Log4j
 public class HazelcastReferentialsLockManager implements ReferentialLockManager {
