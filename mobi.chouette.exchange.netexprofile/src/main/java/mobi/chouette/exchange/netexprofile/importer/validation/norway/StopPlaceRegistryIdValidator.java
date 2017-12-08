@@ -47,14 +47,14 @@ public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator 
 		quayMappingEndpoint = System.getProperty(quayMappingEndpointPropertyKey);
 		if (quayMappingEndpoint == null) {
 			log.warn("Could not find property named " + quayMappingEndpointPropertyKey + " in iev.properties");
-			quayMappingEndpoint = "https://api-test.rutebanken.org/stop_places/1.0/mapping/quay?recordsPerRoundTrip=220000";
+			quayMappingEndpoint = "https://api.rutebanken.org/stop_places/1.0/mapping/quay?recordsPerRoundTrip=220000&includeFuture=true&includeStopType=true";
 		}
 
 		String stopPlaceMappingEndpointPropertyKey = "iev.stop.place.register.mapping.stopplace";
 		stopPlaceMappingEndpoint = System.getProperty(stopPlaceMappingEndpointPropertyKey);
 		if (stopPlaceMappingEndpoint == null) {
 			log.warn("Could not find property named " + stopPlaceMappingEndpointPropertyKey + " in iev.properties");
-			stopPlaceMappingEndpoint = "https://api-test.rutebanken.org/stop_places/1.0/mapping/stop_place?recordsPerRoundTrip=220000";
+			stopPlaceMappingEndpoint = "https://api.rutebanken.org/stop_places/1.0/mapping/stop_place?recordsPerRoundTrip=220000&includeFuture=true&includeStopType=true";
 		}
 
 		stopPlaceRegistryIdFetcher = new StopPlaceRegistryIdFetcher();
@@ -184,6 +184,9 @@ public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator 
 				if (split.length == 2) {
 					cache.add(split[0]);
 					cache.add(split[1]);
+				} else if (split.length == 3) {
+					cache.add(split[0]);
+					cache.add(split[2]);
 				} else {
 					log.error("NSR contains illegal mappings: " + mappingEndpoint + " " + line);
 				}

@@ -49,14 +49,14 @@ public class StopAreaIdCache {
         quayEndpoint = System.getProperty(quayEndpointPropertyKey);
         if (quayEndpoint == null) {
             log.warn("Could not find property named " + quayEndpointPropertyKey + " in iev.properties");
-            quayEndpoint = "https://api-test.rutebanken.org/stop_places/1.0/mapping/quay?recordsPerRoundTrip=220000&includeStopType=true";
+            quayEndpoint = "https://api.entur.org/stop_places/1.0/mapping/quay?recordsPerRoundTrip=220000&includeStopType=true&includeFuture=true";
         }
 
         String stopPlaceEndpointPropertyKey = "iev.stop.place.register.mapping.stopplace";
         stopPlaceEndpoint = System.getProperty(stopPlaceEndpointPropertyKey);
         if (stopPlaceEndpoint == null) {
             log.warn("Could not find property named " + stopPlaceEndpointPropertyKey + " in iev.properties");
-            stopPlaceEndpoint = "https://api-test.rutebanken.org/stop_places/1.0/mapping/stop_place?recordsPerRoundTrip=220000&includeStopType=true";
+            stopPlaceEndpoint = "https://api.entur.org/stop_places/1.0/mapping/stop_place?recordsPerRoundTrip=220000&includeStopType=true&includeFuture=true";
         }
 
         String stopPlaceTtlPropertyKey = "iev.stop.place.register.mapping.ttl.ms";
@@ -149,28 +149,49 @@ public class StopAreaIdCache {
             InputStream is = connection.getInputStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(is));
             String line;
+            // Map containing validFrom date for current mappings.
+            Map<String, Map<StopTypeEnumeration, String>> mostRecentValidFromPerIdPerType = new HashMap<>();
+
+            boolean includeStopType = u.contains("includeStopType=true");
+            boolean includeFuture = u.contains("includeFuture=true");
+
             while ((line = rd.readLine()) != null) {
                 String[] split = StringUtils.split(line, ",");
-                String localId = null;
+                String localId = split[0];
                 StopTypeEnumeration stopPlaceType = null;
                 String nsrId = null;
-                if (split.length == 2) {
-                    localId = split[0];
-                    nsrId = split[1];
-                } else if (split.length == 3) {
-                    localId = split[0];
+                String validFrom = null;
+
+                if (includeStopType) {
                     stopPlaceType = parseStopPlaceType(split[1]);
                     nsrId = split[2];
-                } else {
-                    log.error("NSR contains illegal mappings: " + u + " " + line);
-                }
-
-                if (localId != null) {
-                    cache.putIfAbsent(localId, new HashMap<>());
-                    String prevVal = cache.get(localId).put(stopPlaceType, nsrId);
-                    if (prevVal != null && !prevVal.equals(nsrId)) {
-                        log.debug("NSR contained Multiple mappings for localId:" + localId + " and stopPlaceType: " + stopPlaceType + ", discarding: " + prevVal + " in favor of: " + nsrId);
+                    if (includeFuture){
+                        validFrom = split[3];
                     }
+                } else {
+                    nsrId = split[1];
+                    if (includeFuture) {
+                        validFrom = split[2];
+                    } else {
+                        log.error("NSR contains illegal mappings: " + u + " " + line);
+                    }
+                }
+                if (localId != null) {
+
+                    // Use mapping unless there existing a current mapping with an earlier validFrom timestamp
+                    mostRecentValidFromPerIdPerType.putIfAbsent(localId, new HashMap<>());
+
+                    String prevValidFrom = mostRecentValidFromPerIdPerType.get(localId).get(stopPlaceType);
+                    if (prevValidFrom==null || sortsBefore(validFrom, prevValidFrom)) {
+                        mostRecentValidFromPerIdPerType.get(localId).put(stopPlaceType, validFrom);
+                        cache.putIfAbsent(localId, new HashMap<>());
+                        String prevVal = cache.get(localId).put(stopPlaceType, nsrId);
+                        if (prevVal != null && !prevVal.equals(nsrId)) {
+                            log.debug("NSR contained Multiple mappings for localId:" + localId + " and stopPlaceType: " + stopPlaceType + ", discarding: " + prevVal + "(from: " + prevValidFrom + ") in favor of: " + nsrId + "(from: " + validFrom + ")");
+                        }
+                    }
+
+
                 }
             }
             rd.close();
@@ -189,6 +210,20 @@ public class StopAreaIdCache {
             return null;
         }
         return StopTypeEnumeration.fromValue(value);
+    }
+
+    /**
+     * Compare lexigraphical sorting of the strings.
+     *
+     * @return true if timestamp  is less than otherTimestamp.
+     */
+    private boolean sortsBefore(String string, String otherString) {
+        if (string == null) {
+            return true;
+        } else if (otherString == null) {
+            return false;
+        }
+        return string.compareTo(otherString) <= 0;
     }
 
 
