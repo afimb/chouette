@@ -6,16 +6,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 import org.rutebanken.netex.model.DayType;
 import org.rutebanken.netex.model.DayTypeAssignment;
 import org.rutebanken.netex.model.DirectionTypeEnumeration;
 import org.rutebanken.netex.model.OperatingDay;
 import org.rutebanken.netex.model.OperatingPeriod;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 @NoArgsConstructor
 @ToString()

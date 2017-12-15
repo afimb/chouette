@@ -4,11 +4,29 @@ import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.importer.Parser;
+import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
+import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
+import mobi.chouette.exchange.netexprofile.util.NetexObjectUtil;
+import mobi.chouette.model.Footnote;
+import mobi.chouette.model.JourneyPattern;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.VehicleJourneyAtStop;
+import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.Common_VersionFrameStructure;
 import org.rutebanken.netex.model.CompositeFrame;
 import org.rutebanken.netex.model.DataManagedObjectStructure;
 import org.rutebanken.netex.model.DestinationDisplaysInFrame_RelStructure;
+import org.rutebanken.netex.model.DirectionsInFrame_RelStructure;
 import org.rutebanken.netex.model.JourneyInterchangesInFrame_RelStructure;
 import org.rutebanken.netex.model.JourneyPatternsInFrame_RelStructure;
 import org.rutebanken.netex.model.JourneysInFrame_RelStructure;
@@ -28,23 +46,6 @@ import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
 import org.rutebanken.netex.model.TariffZonesInFrame_RelStructure;
 import org.rutebanken.netex.model.TimetableFrame;
 import org.rutebanken.netex.model.ValidBetween;
-
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Context;
-import mobi.chouette.exchange.importer.Parser;
-import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.ConversionUtil;
-import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
-import mobi.chouette.exchange.netexprofile.util.NetexObjectUtil;
-import mobi.chouette.model.Footnote;
-import mobi.chouette.model.JourneyPattern;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.VehicleJourney;
-import mobi.chouette.model.VehicleJourneyAtStop;
-import mobi.chouette.model.util.ObjectFactory;
-import mobi.chouette.model.util.Referential;
 
 @Log4j
 public class PublicationDeliveryParser extends NetexParser implements Parser, Constant {
