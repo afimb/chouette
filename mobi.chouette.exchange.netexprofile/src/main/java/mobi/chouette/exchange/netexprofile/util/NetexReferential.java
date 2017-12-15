@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.rutebanken.netex.model.DayType;
 import org.rutebanken.netex.model.DayTypeAssignment;
+import org.rutebanken.netex.model.DirectionTypeEnumeration;
 import org.rutebanken.netex.model.OperatingDay;
 import org.rutebanken.netex.model.OperatingPeriod;
 import org.rutebanken.netex.model.StopPlace;
@@ -47,19 +48,22 @@ public class NetexReferential implements Serializable {
     @Getter
     @Setter
     private Map<String, StopPlace> sharedStopPlaces = new HashMap<>();
-    
-    
+
+
     @Getter
     @Setter
     private Map<String, String> scheduledStopPointToQuay = new HashMap<>();
-    
+
     @Getter
     public Map<String, String> groupOfLinesToNetwork = new HashMap<>();
-    
-    
+
+    @Getter
+    public Map<String, DirectionTypeEnumeration> directionTypes = new HashMap<>();
+
 
     public void clear() {
         stopPointsInJourneyPattern.clear();
+		directionTypes.clear();
         dayTypes.clear();
         dayTypeAssignments.clear();
         operatingPeriods.clear();

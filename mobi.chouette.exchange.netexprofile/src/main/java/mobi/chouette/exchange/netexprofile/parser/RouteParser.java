@@ -14,6 +14,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.util.NetexReferential;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.type.PTDirectionEnum;
 import mobi.chouette.model.util.ObjectFactory;
@@ -44,8 +45,7 @@ public class RouteParser implements Parser, Constant {
                 chouetteRoute.setPublishedName(routeName);
             }
 
-            DirectionTypeEnumeration directionType = netexRoute.getDirectionType();
-            chouetteRoute.setDirection(directionType == null || directionType.equals(DirectionTypeEnumeration.OUTBOUND) ? PTDirectionEnum.A : PTDirectionEnum.R);
+			chouetteRoute.setDirection(getNeptuneDirection(netexRoute, context));
 
             String lineIdRef = netexRoute.getLineRef().getValue().getRef();
             Line chouetteLine = ObjectFactory.getLine(referential, lineIdRef);
@@ -65,6 +65,34 @@ public class RouteParser implements Parser, Constant {
             }
         }
     }
+
+	private PTDirectionEnum getNeptuneDirection(org.rutebanken.netex.model.Route netexRoute, Context context) {
+		DirectionTypeEnumeration directionType = netexRoute.getDirectionType();
+		if (directionType == null && netexRoute.getDirectionRef() != null) {
+			NetexReferential netexReferential = (NetexReferential) context.get(Constant.NETEX_REFERENTIAL);
+			directionType = netexReferential.getDirectionTypes().get(netexRoute.getDirectionRef().getRef());
+		}
+		return mapDirectionType(directionType);
+	}
+
+	private PTDirectionEnum mapDirectionType(DirectionTypeEnumeration netexDirection) {
+		if (netexDirection == null) {
+			return null;
+		}
+		switch (netexDirection) {
+			case OUTBOUND:
+				return PTDirectionEnum.A;
+			case INBOUND:
+				return PTDirectionEnum.R;
+			case CLOCKWISE:
+				return PTDirectionEnum.ClockWise;
+			case ANTICLOCKWISE:
+				return PTDirectionEnum.CounterClockWise;
+		}
+
+		log.debug("Unable to map NeTEx direction to neptune: " + netexDirection);
+		return null;
+	}
 
     static {
         ParserFactory.register(RouteParser.class.getName(), new ParserFactory() {

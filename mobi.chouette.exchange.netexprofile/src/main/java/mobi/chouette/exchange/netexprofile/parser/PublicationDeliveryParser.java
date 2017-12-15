@@ -1,5 +1,35 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
+import java.util.List;
+
+import javax.xml.bind.JAXBElement;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.rutebanken.netex.model.Common_VersionFrameStructure;
+import org.rutebanken.netex.model.CompositeFrame;
+import org.rutebanken.netex.model.DataManagedObjectStructure;
+import org.rutebanken.netex.model.DestinationDisplaysInFrame_RelStructure;
+import org.rutebanken.netex.model.DirectionsInFrame_RelStructure;
+import org.rutebanken.netex.model.JourneyInterchangesInFrame_RelStructure;
+import org.rutebanken.netex.model.JourneyPatternsInFrame_RelStructure;
+import org.rutebanken.netex.model.JourneysInFrame_RelStructure;
+import org.rutebanken.netex.model.LinesInFrame_RelStructure;
+import org.rutebanken.netex.model.Network;
+import org.rutebanken.netex.model.Notice;
+import org.rutebanken.netex.model.NoticeAssignment;
+import org.rutebanken.netex.model.OrganisationsInFrame_RelStructure;
+import org.rutebanken.netex.model.PublicationDeliveryStructure;
+import org.rutebanken.netex.model.ResourceFrame;
+import org.rutebanken.netex.model.RoutesInFrame_RelStructure;
+import org.rutebanken.netex.model.ScheduledStopPointsInFrame_RelStructure;
+import org.rutebanken.netex.model.ServiceCalendarFrame;
+import org.rutebanken.netex.model.ServiceFrame;
+import org.rutebanken.netex.model.SiteFrame;
+import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
+import org.rutebanken.netex.model.TariffZonesInFrame_RelStructure;
+import org.rutebanken.netex.model.TimetableFrame;
+import org.rutebanken.netex.model.ValidBetween;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
@@ -236,6 +266,12 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 				DestinationDisplayParser destinationDisplayParser = (DestinationDisplayParser) ParserFactory.create(DestinationDisplayParser.class.getName());
 				destinationDisplayParser.parse(context);
 
+			}
+			if (serviceFrame.getDirections() != null) {
+				DirectionsInFrame_RelStructure directionsInFrame_RelStructure = serviceFrame.getDirections();
+				context.put(NETEX_LINE_DATA_CONTEXT, directionsInFrame_RelStructure);
+				DirectionParser directionParser = (DirectionParser) ParserFactory.create(DirectionParser.class.getName());
+				directionParser.parse(context);
 			}
 			if (serviceFrame.getNotices() != null) {
 				for (Notice notice : serviceFrame.getNotices().getNotice()) {

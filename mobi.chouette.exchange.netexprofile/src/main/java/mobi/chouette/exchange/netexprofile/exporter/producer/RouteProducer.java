@@ -1,18 +1,23 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import java.math.BigInteger;
+
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.type.PTDirectionEnum;
+
 import org.rutebanken.netex.model.*;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
-import java.math.BigInteger;
 
+@Log4j
 public class RouteProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Route, mobi.chouette.model.Route> {
 
 	@Override
@@ -80,7 +85,28 @@ public class RouteProducer extends NetexProducer implements NetexEntityProducer<
 			netexRoute.setInverseRouteRef(routeRefStruct);
 		}
 
+		netexRoute.setDirectionType(mapDirectionType(neptuneRoute.getDirection()));
 		return netexRoute;
+	}
+
+
+	private DirectionTypeEnumeration mapDirectionType(PTDirectionEnum neptuneDirection) {
+		if (neptuneDirection == null) {
+			return null;
+		}
+		switch (neptuneDirection) {
+			case A:
+				return DirectionTypeEnumeration.OUTBOUND;
+			case R:
+				return DirectionTypeEnumeration.INBOUND;
+			case ClockWise:
+				return DirectionTypeEnumeration.CLOCKWISE;
+			case CounterClockWise:
+				return DirectionTypeEnumeration.ANTICLOCKWISE;
+		}
+
+		log.debug("Unable to map neptune direction to NeTEx: " + neptuneDirection);
+		return null;
 	}
 
 }
