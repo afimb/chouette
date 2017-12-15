@@ -253,6 +253,12 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 				destinationDisplayParser.parse(context);
 
 			}
+			if (serviceFrame.getDirections() != null) {
+				DirectionsInFrame_RelStructure directionsInFrame_RelStructure = serviceFrame.getDirections();
+				context.put(NETEX_LINE_DATA_CONTEXT, directionsInFrame_RelStructure);
+				DirectionParser directionParser = (DirectionParser) ParserFactory.create(DirectionParser.class.getName());
+				directionParser.parse(context);
+			}
 			if (serviceFrame.getNotices() != null) {
 				for (Notice notice : serviceFrame.getNotices().getNotice()) {
 					parseNotice(context, notice);

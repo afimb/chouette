@@ -19,6 +19,7 @@ import org.rutebanken.netex.model.RouteRefStructure;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.POINT_ON_ROUTE;
 
+@Log4j
 public class RouteProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Route, mobi.chouette.model.Route> {
 
 	@Override
@@ -59,10 +60,24 @@ public class RouteProducer extends NetexProducer implements NetexEntityProducer<
 				String pointVersion = neptuneRoutePoint.getObjectVersion() > 0 ? String.valueOf(neptuneRoutePoint.getObjectVersion()) : NETEX_DEFAULT_OBJECT_VERSION;
 				String pointOnRouteId = NetexProducerUtils.createUniqueId(context, POINT_ON_ROUTE);
 
-				PointOnRoute pointOnRoute = netexFactory.createPointOnRoute().withVersion(pointVersion).withId(pointOnRouteId).withOrder(BigInteger.valueOf(order++));
+				// TODO refactor
+				String pointVersion = neptuneRoute.getObjectVersion() > 0 ? String.valueOf(neptuneRoute.getObjectVersion()) : NETEX_DEFAULT_OBJECT_VERSION;
+				String pointOnRouteIdSuffix = stopPoint.objectIdSuffix() + "-" + stopPoint.getPosition();
+				String pointOnRouteId = netexId(stopPoint.objectIdPrefix(), POINT_ON_ROUTE, pointOnRouteIdSuffix);
+
+				PointOnRoute pointOnRoute = netexFactory.createPointOnRoute().withVersion(pointVersion).withId(pointOnRouteId).withOrder(BigInteger.ONE);
 				pointsOnRoute.getPointOnRoute().add(pointOnRoute);
-				RoutePointRefStructure routePointRefStruct = netexFactory.createRoutePointRefStructure().withRef(neptuneRoutePoint.getObjectId());
-				pointOnRoute.setPointRef(netexFactory.createRoutePointRef(routePointRefStruct));
+
+				if (stopPoint.getContainedInStopArea() != null) {
+					String routePointIdSuffix = stopPoint.getContainedInStopArea().objectIdSuffix();
+					String routePointId = netexId(stopPoint.objectIdPrefix(), ROUTE_POINT, routePointIdSuffix);
+
+					RoutePointRefStructure routePointRefStruct = netexFactory.createRoutePointRefStructure().withRef(routePointId).withVersion(pointVersion);
+					pointOnRoute.setPointRef(netexFactory.createRoutePointRef(routePointRefStruct));
+				} else {
+					throw new RuntimeException(
+							"StopPoint with id : " + stopPoint.getObjectId() + " is not contained in a StopArea. Cannot produce RoutePoint reference.");
+				}
 			}
 		}
 
@@ -77,7 +92,28 @@ public class RouteProducer extends NetexProducer implements NetexEntityProducer<
 			netexRoute.setInverseRouteRef(routeRefStruct);
 		}
 
+		netexRoute.setDirectionType(mapDirectionType(neptuneRoute.getDirection()));
 		return netexRoute;
+	}
+
+
+	private DirectionTypeEnumeration mapDirectionType(PTDirectionEnum neptuneDirection) {
+		if (neptuneDirection == null) {
+			return null;
+		}
+		switch (neptuneDirection) {
+			case A:
+				return DirectionTypeEnumeration.OUTBOUND;
+			case R:
+				return DirectionTypeEnumeration.INBOUND;
+			case ClockWise:
+				return DirectionTypeEnumeration.CLOCKWISE;
+			case CounterClockWise:
+				return DirectionTypeEnumeration.ANTICLOCKWISE;
+		}
+
+		log.debug("Unable to map neptune direction to NeTEx: " + neptuneDirection);
+		return null;
 	}
 
 }

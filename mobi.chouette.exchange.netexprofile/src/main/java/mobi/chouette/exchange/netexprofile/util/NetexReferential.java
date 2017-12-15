@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.rutebanken.netex.model.DayType;
 import org.rutebanken.netex.model.DayTypeAssignment;
+import org.rutebanken.netex.model.DirectionTypeEnumeration;
 import org.rutebanken.netex.model.OperatingDay;
 import org.rutebanken.netex.model.OperatingPeriod;
 
@@ -40,10 +41,13 @@ public class NetexReferential implements Serializable {
 
     @Getter
     public Map<String, String> groupOfLinesToNetwork = new HashMap<>();
-    
-    
+
+    @Getter
+    public Map<String, DirectionTypeEnumeration> directionTypes = new HashMap<>();
+
 
     public void clear() {
+        directionTypes.clear();
         dayTypes.clear();
         dayTypeAssignments.clear();
         operatingPeriods.clear();
