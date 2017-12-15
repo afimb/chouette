@@ -179,12 +179,14 @@ public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator 
 			InputStream is = connection.getInputStream();
 			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
 			String line;
+			boolean includeStopType = mappingEndpoint.contains("includeStopType=true");
+
 			while ((line = rd.readLine()) != null) {
 				String[] split = StringUtils.split(line, ",");
-				if (split.length == 2) {
+				if (!includeStopType && split.length >= 2) {
 					cache.add(split[0]);
 					cache.add(split[1]);
-				} else if (split.length == 3) {
+				} else if (includeStopType && split.length >= 3) {
 					cache.add(split[0]);
 					cache.add(split[2]);
 				} else {
