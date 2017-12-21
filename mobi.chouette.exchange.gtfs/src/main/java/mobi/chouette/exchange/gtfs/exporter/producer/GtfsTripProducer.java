@@ -35,6 +35,7 @@ import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
 import mobi.chouette.model.type.JourneyCategoryEnum;
+import mobi.chouette.model.type.PTDirectionEnum;
 import mobi.chouette.model.type.SectionStatusEnum;
 
 import org.joda.time.LocalTime;
@@ -268,7 +269,7 @@ public class GtfsTripProducer extends AbstractProducer {
 		Route route = vj.getRoute();
 		Line line = route.getLine();
 		trip.setRouteId(toGtfsId(line.getObjectId(), prefix, keepOriginalId));
-		if ("R".equals(route.getWayBack())) {
+		if ("R".equals(route.getWayBack()) || PTDirectionEnum.R.equals(route.getDirection())) {
 			trip.setDirectionId(GtfsTrip.DirectionType.Inbound);
 		} else {
 			trip.setDirectionId(GtfsTrip.DirectionType.Outbound);
