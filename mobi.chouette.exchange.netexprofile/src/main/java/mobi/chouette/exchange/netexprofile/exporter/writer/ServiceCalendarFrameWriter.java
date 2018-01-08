@@ -1,24 +1,23 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DEFAULT_OBJECT_VERSION;
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.DAY_TYPES;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.DAY_TYPE_ASSIGNMENTS;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.OPERATING_PERIODS;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SERVICE_CALENDAR_FRAME;
+import java.math.BigInteger;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.Marshaller;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.collections.CollectionUtils;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
+import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
+
 import org.apache.commons.collections.MapUtils;
 import org.rutebanken.netex.model.DayType;
 import org.rutebanken.netex.model.DayTypeAssignment;
 import org.rutebanken.netex.model.OperatingPeriod;
 
-import mobi.chouette.common.Context;
-import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
-import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DEFAULT_OBJECT_VERSION;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 public class ServiceCalendarFrameWriter extends AbstractNetexWriter {
 
@@ -57,8 +56,10 @@ public class ServiceCalendarFrameWriter extends AbstractNetexWriter {
 
     private static void writeDayTypeAssignmentsElement(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
         try {
+            int order=1;
             writer.writeStartElement(DAY_TYPE_ASSIGNMENTS);
-            for (DayTypeAssignment dayTypeAssignment : exportableData.getSharedDayTypeAssignments()) {
+            for (DayTypeAssignment dayTypeAssignment : exportableData.getSharedDayTypeAssignments().stream().sorted(new DayTypeAssignmentExportComparator()).collect(Collectors.toList())) {
+                dayTypeAssignment.setOrder(BigInteger.valueOf(order++));
                 marshaller.marshal(netexFactory.createDayTypeAssignment(dayTypeAssignment), writer);
             }
             writer.writeEndElement();
