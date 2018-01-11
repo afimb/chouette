@@ -32,8 +32,10 @@ RUN /opt/jboss/wildfly/bin/add-user.sh admin pingu123 --silent
 
 
 # Overriding previously installed java version:
-RUN curl -L http://jump.rutebanken.org/jdk-8u144-linux-x64.tar.gz > jdk.tgz
-RUN tar xzf jdk.tgz
+# RUN curl -L http://jump.rutebanken.org/jdk-8u144-linux-x64.tar.gz > jdk.tgz
+# RUN tar xzf jdk.tgz
+# Command over stopped working - investigating. Using CMD instead
+CMD curl -L http://jump.rutebanken.org/jdk-8u144-linux-x64.tar.gz > jdk.tgz && tar xzf jdk.tgz
 ENV JAVA_HOME /opt/jboss/jdk1.8.0_144/
 
 # Deploying by copying to deployment directory
