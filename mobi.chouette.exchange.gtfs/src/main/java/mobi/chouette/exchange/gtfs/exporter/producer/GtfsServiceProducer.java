@@ -25,6 +25,7 @@ import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.util.CopyUtil;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -43,6 +44,9 @@ AbstractProducer
    {
       super(exporter);
    }
+
+   // No restrictions in GTFS spec, but restricted to suit clients
+   private static final int MAX_SERVICE_ID_CHARS = 256;
 
    GtfsCalendar calendar = new GtfsCalendar();
    GtfsCalendarDate calendarDate = new GtfsCalendarDate();
@@ -149,7 +153,7 @@ AbstractProducer
       }
 
       // one valid period => nothing to reduce
-      if (reduced.getPeriods().size() == 1 && ! isEmpty(reduced.getDayTypes())) 
+      if (reduced.getPeriods().size() == 1 && ! isEmpty(reduced.getDayTypes()))
       {
     	  return reduced;
       }
@@ -262,7 +266,7 @@ AbstractProducer
             for (CalendarDay day : reduced.getCalendarDays()) {
             	merged.addCalendarDay(day);
 			}
-            
+
          }
          if(keepOriginalId) {
              merged.setObjectId(key(timetables,prefix,true));
@@ -284,7 +288,7 @@ AbstractProducer
    public String key(List<Timetable> timetables,String prefix, boolean keepOriginalId)
    {
       if (isEmpty(timetables)) return null;
-      // remove invalid timetables (no date set) 
+      // remove invalid timetables (no date set)
       for (Iterator<Timetable> iterator = timetables.iterator(); iterator.hasNext();)
       {
          Timetable timetable = iterator.next();
@@ -294,7 +298,7 @@ AbstractProducer
 
       Collections.sort(timetables, new TimetableSorter());
       String key = "";
-      
+
       if(keepOriginalId) {
           for(int i = 0;i<timetables.size();i++) {
         	  if(i ==0) {
@@ -305,7 +309,13 @@ AbstractProducer
                   key += "-"+toGtfsId(timetables.get(i).getObjectId(), prefix, false);
         	  }
           }
-    	  
+
+          // Avoid to long strings. Replace truncated part by its hash to preserve a (best effort) semi uniqueness
+		  if (key.length() > MAX_SERVICE_ID_CHARS) {
+			  String tooLongPart = key.substring(MAX_SERVICE_ID_CHARS - 10, key.length());
+			  key = key.replace(tooLongPart, StringUtils.truncate("" + tooLongPart.hashCode(),10));
+		  }
+
       } else {
           for (Timetable timetable : timetables)
           {
@@ -314,7 +324,7 @@ AbstractProducer
           // Trim leading dash
           key = key.substring(1);
       }
-      
+
       return key;
    }
 
