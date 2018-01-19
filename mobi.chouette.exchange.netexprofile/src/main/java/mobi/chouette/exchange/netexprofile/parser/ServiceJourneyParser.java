@@ -71,11 +71,7 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 			vehicleJourney.setPublishedJourneyIdentifier(serviceJourney.getPublicCode());
 
 			if (serviceJourney.getPrivateCode()!=null) {
-				try {
-				vehicleJourney.setNumber(Long.valueOf(serviceJourney.getPrivateCode().getValue()));
-				} catch (NumberFormatException nfe) {
-					log.info("Ignored non-numeric private code for serviceJourney: "+ serviceJourney.getPrivateCode());
-				}
+				vehicleJourney.setPrivateCode(serviceJourney.getPrivateCode().getValue());
 			}
 
 			if (serviceJourney.getJourneyPatternRef() != null) {

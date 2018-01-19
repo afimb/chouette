@@ -199,6 +199,30 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	private Long number;
 
 	/**
+	 * Identification of journey, not intended for the public.
+	 *
+	 * @param privateCode
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@Column(name = "private_code")
+	private String privateCode;
+
+	/**
+	 * set private code <br/>
+	 * truncated to 255 characters if too long
+	 *
+	 * @param value
+	 *            New value
+	 */
+	public void setPrivateCode(String value) {
+		privateCode = StringUtils.abbreviate(value, 255);
+
+	}
+
+	/**
 	 * mobility restriction indicator (such as wheel chairs) <br/>
 	 * 
 	 * <ul>

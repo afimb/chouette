@@ -1473,7 +1473,8 @@ CREATE TABLE vehicle_journeys (
     number bigint,
     mobility_restricted_suitability boolean,
     flexible_service boolean,
-    journey_category integer DEFAULT 0 NOT NULL
+    journey_category integer DEFAULT 0 NOT NULL,
+    private_code character varying(255)
 );
 
 
