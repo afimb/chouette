@@ -150,6 +150,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			oldValue.setComment(newValue.getComment());
 			oldValue.setTransportMode(newValue.getTransportMode());
 			oldValue.setTransportSubMode(newValue.getTransportSubMode());
+			oldValue.setPrivateCode(newValue.getPrivateCode());
 			oldValue.setPublishedJourneyName(newValue.getPublishedJourneyName());
 			oldValue.setPublishedJourneyIdentifier(newValue.getPublishedJourneyIdentifier());
 			oldValue.setFacility(newValue.getFacility());
@@ -181,6 +182,9 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			}
 			if (newValue.getTransportSubMode() != null && !newValue.getTransportSubMode().equals(oldValue.getTransportMode())) {
 				oldValue.setTransportSubMode(newValue.getTransportSubMode());
+			}
+			if (newValue.getPrivateCode() != null && !newValue.getPrivateCode().equals(oldValue.getPrivateCode())) {
+				oldValue.setPrivateCode(newValue.getPrivateCode());
 			}
 			if (newValue.getPublishedJourneyName() != null
 					&& !newValue.getPublishedJourneyName().equals(oldValue.getPublishedJourneyName())) {
