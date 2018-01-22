@@ -1118,12 +1118,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	protected void convert(Context context, GtfsTrip gtfsTrip, VehicleJourney vehicleJourney) {
 
 		if (gtfsTrip.getTripShortName() != null) {
-			try {
-				vehicleJourney.setNumber(Long.parseLong(gtfsTrip.getTripShortName()));
-			} catch (NumberFormatException e) {
-				vehicleJourney.setNumber(Long.valueOf(0));
-				vehicleJourney.setPublishedJourneyName(gtfsTrip.getTripShortName());
-			}
+			vehicleJourney.setPrivateCode(gtfsTrip.getTripShortName());
 		}
 		
 		if(StringUtils.trimToNull(gtfsTrip.getTripHeadSign()) != null) {
