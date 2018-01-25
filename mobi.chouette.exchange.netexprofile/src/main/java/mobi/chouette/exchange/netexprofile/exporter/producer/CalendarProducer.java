@@ -48,7 +48,7 @@ public class CalendarProducer extends NetexProducer {
 
 					Period p = timetable.getPeriods().get(i);
 					// Create Operating period
-					String operatingPeriodId=NetexProducerUtils.translateObjectId(netexDaytypeId, "OperatingPeriod");
+					String operatingPeriodId=NetexProducerUtils.translateObjectId(netexDaytypeId, "OperatingPeriod")+ "-" + counter;
 					OperatingPeriod operatingPeriod = new OperatingPeriod().withVersion(dayType.getVersion())
 							.withId(operatingPeriodId)
 							.withFromDate(TimeUtil.toLocalDateFromJoda(p.getStartDate()).atStartOfDay()).withToDate(TimeUtil.toLocalDateFromJoda(p.getEndDate()).atStartOfDay());
