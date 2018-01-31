@@ -99,7 +99,7 @@ public class Scheduler {
 				}
 			}
 		} else {
-			log.info("nothing to schedule");
+			log.debug("nothing to schedule");
 		}
 	}
 
