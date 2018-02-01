@@ -21,6 +21,7 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.NeptuneObject;
 import mobi.chouette.model.Network;
+import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
@@ -165,6 +166,8 @@ public class NetexProducerUtils {
 			return "TimetabledPassingTime";
 		} else if(v instanceof Network) {
 			return "Network";
+		} else if (v instanceof RouteSection) {
+			return "ServiceLink";
 		}
 
 		return null;
