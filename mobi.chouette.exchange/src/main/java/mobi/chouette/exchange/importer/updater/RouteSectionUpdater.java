@@ -3,15 +3,14 @@ package mobi.chouette.exchange.importer.updater;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import mobi.chouette.common.Context;
+import mobi.chouette.dao.ScheduledStopPointDAO;
+import mobi.chouette.model.RouteSection;
+import mobi.chouette.model.ScheduledStopPoint;
+import mobi.chouette.model.util.Referential;
+
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
-
-import mobi.chouette.common.Context;
-import mobi.chouette.dao.StopAreaDAO;
-import mobi.chouette.model.RouteSection;
-import mobi.chouette.model.SimpleObjectReference;
-import mobi.chouette.model.StopArea;
-import mobi.chouette.model.util.Referential;
 
 @Stateless(name = RouteSectionUpdater.BEAN_NAME)
 public class RouteSectionUpdater implements Updater<RouteSection> {
@@ -19,7 +18,7 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
 	public static final String BEAN_NAME = "RouteSectionUpdater";
 
 	@EJB 
-	private StopAreaDAO stopAreaDAO;
+	private ScheduledStopPointDAO scheduledStopPointDAO;
 
 	@Override
 	public void update(Context context, RouteSection oldValue, RouteSection newValue) throws Exception {
@@ -53,34 +52,34 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
 				&& !newValue.getDistance().equals(oldValue.getDistance())) {
 			oldValue.setDistance(newValue.getDistance());
 		}
-		if (newValue.getDepartureRef().getObject() != null
-				&& !newValue.getDepartureRef().getObject().equals(oldValue.getDepartureRef().getObject())) {
-			String objectId = newValue.getDepartureRef().getObject().getObjectId();
-			StopArea departure = cache.getStopAreas().get(objectId);
+		if (newValue.getFromScheduledStopPoint() != null
+				&& !newValue.getFromScheduledStopPoint().equals(oldValue.getFromScheduledStopPoint())) {
+			String objectId = newValue.getFromScheduledStopPoint().getObjectId();
+			ScheduledStopPoint departure = cache.getSharedScheduledStopPoints().get(objectId);
 			if (departure == null) {
-				departure = stopAreaDAO.findByObjectId(objectId);
+				departure = scheduledStopPointDAO.findByObjectId(objectId);
 				if (departure != null) {
-					cache.getStopAreas().put(objectId, departure);
+					cache.getSharedScheduledStopPoints().put(objectId, departure);
 				}
 			}
 
 			if (departure != null) {
-				oldValue.setDepartureRef(new SimpleObjectReference<>(departure));
+				oldValue.setFromScheduledStopPoint(departure);
 			}
 		}
-		if (newValue.getArrivalRef().getObject() != null
-				&& !newValue.getArrivalRef().getObject().equals(oldValue.getArrivalRef().getObject())) {
-			String objectId = newValue.getArrivalRef().getObject().getObjectId();
-			StopArea arrival = cache.getStopAreas().get(objectId);
+		if (newValue.getToScheduledStopPoint() != null
+				&& !newValue.getToScheduledStopPoint().equals(oldValue.getToScheduledStopPoint())) {
+			String objectId = newValue.getToScheduledStopPoint().getObjectId();
+			ScheduledStopPoint arrival = cache.getSharedScheduledStopPoints().get(objectId);
 			if (arrival == null) {
-				arrival = stopAreaDAO.findByObjectId(objectId);
+				arrival = scheduledStopPointDAO.findByObjectId(objectId);
 				if (arrival != null) {
-					cache.getStopAreas().put(objectId, arrival);
+					cache.getSharedScheduledStopPoints().put(objectId, arrival);
 				}
 			}
 
 			if (arrival != null) {
-				oldValue.setArrivalRef(new SimpleObjectReference<>(arrival));
+				oldValue.setToScheduledStopPoint(arrival);
 			}
 		}
 		if (newValue.getNoProcessing() != null

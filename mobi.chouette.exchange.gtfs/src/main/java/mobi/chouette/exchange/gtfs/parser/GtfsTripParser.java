@@ -940,6 +940,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		previous = null;
 		String prefix = journeyPattern.objectIdPrefix();
 		StopArea previousLocation = null;
+		ScheduledStopPoint previousScheduledStopPoint = null;
 		for (StopPoint stop : journeyPattern.getStopPoints()) {
 			// find nearest segment and project point on it
 			StopArea location = stop.getScheduledStopPoint().getContainedInStopAreaRef().getObject();
@@ -986,10 +987,10 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				RouteSection section = ObjectFactory.getRouteSection(referential, routeSectionId);
 				if (!section.isFilled()) {
 					Coordinate[] inputCoords = new Coordinate[2];
-					section.setDepartureRef(new SimpleObjectReference<>(previousLocation));
+					section.setFromScheduledStopPoint(previousScheduledStopPoint);
 					inputCoords[0] = new Coordinate(previousLocation.getLongitude().doubleValue(), previousLocation
 							.getLatitude().doubleValue());
-					section.setArrivalRef(new SimpleObjectReference<>(location));
+					section.setToScheduledStopPoint(stop.getScheduledStopPoint());
 					inputCoords[1] = new Coordinate(location.getLongitude().doubleValue(), location.getLatitude()
 							.doubleValue());
 					section.setProcessedGeometry(factory.createLineString(coords.toArray(new Coordinate[coords.size()])));
@@ -1016,6 +1017,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 			previous = projection;
 			previousLocation = location;
+			previousScheduledStopPoint = stop.getScheduledStopPoint();
 			segmentRank = rank;
 
 		}

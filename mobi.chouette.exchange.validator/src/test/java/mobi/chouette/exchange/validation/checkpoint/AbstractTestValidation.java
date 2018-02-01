@@ -48,6 +48,7 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneLocalizedObject;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.RouteSection;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.SimpleObjectReference;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
@@ -199,6 +200,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 			for(JourneyPattern jp: r.getJourneyPatterns()) {
 				List<RouteSection> sections = jp.getRouteSections();
 				StopArea previousLocation = null;
+				ScheduledStopPoint previousScheduledStopPoint = null;
 				for(StopPoint stop: jp.getStopPoints()) {
 					// find nearest segment and project point on it
 					StopArea location = stop.getScheduledStopPoint().getContainedInStopAreaRef().getObject();
@@ -210,10 +212,10 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 						if (!section.isFilled()) {
 						
 							Coordinate[] inputCoords = new Coordinate[2];
-							section.setDepartureRef(new SimpleObjectReference<>(previousLocation));
+							section.setFromScheduledStopPoint(previousScheduledStopPoint);
 							inputCoords[0] = new Coordinate(previousLocation.getLongitude().doubleValue(), previousLocation
 									.getLatitude().doubleValue());
-							section.setArrivalRef(new SimpleObjectReference<>(location));
+							section.setToScheduledStopPoint(stop.getScheduledStopPoint());
 							inputCoords[1] = new Coordinate(location.getLongitude().doubleValue(), location.getLatitude()
 									.doubleValue());
 							section.setProcessedGeometry(factory.createLineString(inputCoords));
@@ -236,6 +238,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 						sections.add(section);
 					}
 					previousLocation = location;
+					previousScheduledStopPoint = stop.getScheduledStopPoint();
 				}
 			}
 			

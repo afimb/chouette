@@ -15,6 +15,7 @@ import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.RouteSection;
+import mobi.chouette.model.StopArea;
 
 @Log4j
 public class RouteSectionCheckPoints extends AbstractValidation<RouteSection> implements Validator<RouteSection>{
@@ -25,13 +26,13 @@ public class RouteSectionCheckPoints extends AbstractValidation<RouteSection> im
 		List<JourneyPattern> beans = new ArrayList<>(data.getJourneyPatterns());
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-		
+
 		if (isEmpty(beans))
 			return ;
-		
+
 		initCheckPoint(context, ROUTE_SECTION_1, SEVERITY.W);
 		// 3-RouteSection-1 : Check if route section distance doesn't exceed gap as parameter
-		
+
 		// checkPoint is applicable
 		for (int i = 0; i < beans.size(); i++) {
 			List<RouteSection> lstRouteSection = beans.get(i).getRouteSections();
@@ -40,7 +41,7 @@ public class RouteSectionCheckPoints extends AbstractValidation<RouteSection> im
 				// 3-RouteSection-1 : Check if route section distance doesn't exceed gap as parameter
 				check3RouteSection1(context,report, beans, i, rs, parameters);
 			}
-		}	
+		}
 	}
 
 
@@ -51,7 +52,7 @@ public class RouteSectionCheckPoints extends AbstractValidation<RouteSection> im
 		if (beans.size() <= 1)
 			return;
 		prepareCheckPoint(context, ROUTE_SECTION_1);
-		
+
 		for (int i = jpRank + 1; i < beans.size(); i++) {
 			JourneyPattern jp2 = beans.get(i);
 			String modeKey = jp2.getRoute().getLine().getTransportModeName().toString();
@@ -65,20 +66,29 @@ public class RouteSectionCheckPoints extends AbstractValidation<RouteSection> im
 				}
 			}
 			double distanceMax = mode.getInterStopAreaDistanceMax();
+			if (distanceMax <=0 ){
+				// No use unless max distance has been specified
+				return;
+			}
 			List<RouteSection> lstRouteSection = jp2.getRouteSections();
 			for(int j = 0; j < lstRouteSection.size(); j++) {
 					RouteSection rs2 = lstRouteSection.get(j);
 				if (rs.equals(rs2)) {
-					double distance = distance(rs.getDepartureRef().getObject(), rs.getArrivalRef().getObject());
+					StopArea fromStopArea = rs.getFromScheduledStopPoint().getContainedInStopAreaRef().getObject();
+					StopArea toStopArea = rs.getToScheduledStopPoint().getContainedInStopAreaRef().getObject();
+					if (fromStopArea == null || toStopArea == null) {
+						continue;
+					}
+					double distance = distance(fromStopArea, toStopArea);
 					// If route section distance doesn't exceed gap    as parameter
 					if(distance > distanceMax) {
 						DataLocation location = buildLocation(context, rs2);
-						DataLocation targetLocation = buildLocation(context, rs.getDepartureRef().getObject());
+						DataLocation targetLocation = buildLocation(context, fromStopArea);
 
 						ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 						reporter.addCheckPointReportError(context,ROUTE_SECTION_1, location, null,null,targetLocation);
 					}
-				}	
+				}
 			}
 		}
 	}

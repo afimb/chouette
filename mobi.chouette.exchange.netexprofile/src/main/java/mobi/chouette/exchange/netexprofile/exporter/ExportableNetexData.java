@@ -10,6 +10,8 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
+import mobi.chouette.model.RouteSection;
+
 import org.rutebanken.netex.model.AvailabilityCondition;
 import org.rutebanken.netex.model.Codespace;
 import org.rutebanken.netex.model.DayType;
@@ -29,6 +31,7 @@ import org.rutebanken.netex.model.RoutePoint;
 import org.rutebanken.netex.model.ScheduledStopPoint;
 import org.rutebanken.netex.model.ServiceJourney;
 import org.rutebanken.netex.model.ServiceJourneyInterchange;
+import org.rutebanken.netex.model.ServiceLink;
 import org.rutebanken.netex.model.StopPlace;
 
 public class ExportableNetexData {
@@ -80,6 +83,10 @@ public class ExportableNetexData {
     @Getter
     @Setter
     private Map<String, RoutePoint> sharedRoutePoints = new HashMap<>();
+
+    @Getter
+    @Setter
+    private Map<String, ServiceLink> sharedServiceLinks = new HashMap<>();
 
     @Getter
     @Setter

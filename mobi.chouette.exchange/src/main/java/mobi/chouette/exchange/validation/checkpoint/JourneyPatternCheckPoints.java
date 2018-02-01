@@ -185,6 +185,11 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 			}
 		}
 		double distanceMax = mode.getRouteSectionStopAreaDistanceMax();
+		if (distanceMax <=0 ){
+			// No use unless max distance has been specified
+			return;
+		}
+
 		List<RouteSection> lstRouteSection = jp.getRouteSections();
 		double distance = 0;
 		for (RouteSection rs : lstRouteSection) {
@@ -193,7 +198,9 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 			double plotFirstLong = 0;
 			double plotLastLong = 0;
 
-			if (rs.getDepartureRef().getObject() == null || rs.getArrivalRef().getObject() == null) {
+			StopArea fromStopArea = rs.getFromScheduledStopPoint().getContainedInStopAreaRef().getObject();
+			StopArea toStopArea = rs.getToScheduledStopPoint().getContainedInStopAreaRef().getObject();
+			if (fromStopArea == null) {
 				continue;
 			}
 
@@ -208,26 +215,31 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 				plotLastLong = rs.getProcessedGeometry().getEndPoint().getX();
 				plotLastLat = rs.getProcessedGeometry().getEndPoint().getY();
 			}
+
 			// Departuredepart
-			distance = quickDistanceFromCoordinates(rs.getDepartureRef().getObject().getLatitude().doubleValue(), plotFirstLat, rs
-					.getDepartureRef().getObject().getLongitude().doubleValue(), plotFirstLong);
+			distance = quickDistanceFromCoordinates(fromStopArea.getLatitude().doubleValue(), plotFirstLat,
+					fromStopArea.getLongitude().doubleValue(), plotFirstLong);
 			// If route section distance doesn't exceed gap as parameter
 			if (distance > distanceMax) {
 				DataLocation location = buildLocation(context, rs);
-				DataLocation targetLocation = buildLocation(context, rs.getDepartureRef().getObject());
+				DataLocation targetLocation = buildLocation(context, fromStopArea);
 
 				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 				reporter.addCheckPointReportError(context, ROUTE_SECTION_1, location, String.valueOf(distance),
 						String.valueOf(distanceMax), targetLocation);
 			}
 
+
+			if (toStopArea == null) {
+				continue;
+			}
 			// Arrival
-			distance = quickDistanceFromCoordinates(rs.getArrivalRef().getObject().getLatitude().doubleValue(), plotLastLat, rs
-					.getArrivalRef().getObject().getLongitude().doubleValue(), plotLastLong);
+			distance = quickDistanceFromCoordinates(toStopArea.getLatitude().doubleValue(), plotLastLat,
+					toStopArea.getLongitude().doubleValue(), plotLastLong);
 			// If route section distance doesn't exceed gap as parameter
 			if (distance > distanceMax) {
 				DataLocation location = buildLocation(context, rs);
-				DataLocation targetLocation = buildLocation(context, rs.getDepartureRef().getObject());
+				DataLocation targetLocation = buildLocation(context, fromStopArea);
 
 				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 				reporter.addCheckPointReportError(context, ROUTE_SECTION_1, location, String.valueOf(distance),

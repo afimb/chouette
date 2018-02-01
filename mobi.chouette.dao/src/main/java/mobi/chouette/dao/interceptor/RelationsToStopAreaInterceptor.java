@@ -7,7 +7,6 @@ import javax.enterprise.inject.spi.CDI;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.ObjectReference;
-import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 
@@ -23,21 +22,13 @@ public class RelationsToStopAreaInterceptor extends EmptyInterceptor {
 	private StopAreaDAO stopAreaDAO;
 
 	private static final String STOP_POINT_CONTAINED_IN_STOP_AREA_ID_PROPERTY = "containedInStopAreaObjectId";
-	private static final String DEPARTURE_STOP_AREA_ID_PROPERTY = "departureStopAreaObjectId";
-
-	private static final String ARRIVAL_STOP_AREA_ID_PROPERTY = "arrivalStopAreaObjectId";
 
 	@Override
 	public boolean onLoad(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
 		init();
 
 		if (entity instanceof ScheduledStopPoint) {
-
 			loadStopAreasForScheduledStopPoint((ScheduledStopPoint) entity, state, propertyNames);
-
-		} else if (entity instanceof RouteSection) {
-
-			loadStopAreasForRouteSections((RouteSection) entity, state, propertyNames);
 		}
 		return super.onLoad(entity, id, state, propertyNames, types);
 	}
@@ -51,22 +42,6 @@ public class RelationsToStopAreaInterceptor extends EmptyInterceptor {
 			scheduledStopPoint.setContainedInStopAreaRef(new LazyLoadingStopAreaReference(containedInStopAreaId));
 		}
 	}
-
-	private void loadStopAreasForRouteSections(RouteSection entity, Object[] state, String[] propertyNames) {
-		RouteSection routeSection = entity;
-		log.trace("On load RouteSection id: " + routeSection.getId());
-
-		String arrivalStopAreaId = getProperty(ARRIVAL_STOP_AREA_ID_PROPERTY, propertyNames, state);
-		if (!(entity.getArrivalRef() instanceof LazyLoadingStopAreaReference)) {
-			routeSection.setArrivalRef(new LazyLoadingStopAreaReference(arrivalStopAreaId));
-		}
-
-		String departureStopAreaId = getProperty(DEPARTURE_STOP_AREA_ID_PROPERTY, propertyNames, state);
-		if (!(entity.getDepartureRef() instanceof LazyLoadingStopAreaReference)) {
-			routeSection.setDepartureRef(new LazyLoadingStopAreaReference(departureStopAreaId));
-		}
-	}
-
 
 	@Override
 	public boolean onSave(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
@@ -132,7 +107,7 @@ public class RelationsToStopAreaInterceptor extends EmptyInterceptor {
 
 		@Override
 		public StopArea getObject() {
-			if (!loaded){
+			if (!loaded) {
 				setTarget();
 			}
 			return target;

@@ -18,6 +18,7 @@ import org.rutebanken.netex.model.Notice;
 import org.rutebanken.netex.model.PassengerStopAssignment;
 import org.rutebanken.netex.model.RoutePoint;
 import org.rutebanken.netex.model.ScheduledStopPoint;
+import org.rutebanken.netex.model.ServiceLink;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DEFAULT_OBJECT_VERSION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
@@ -58,6 +59,7 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 				writeRoutePointsElement(writer, exportableNetexData, marshaller);
 				writeDestinationDisplaysElement(writer, exportableNetexData, marshaller);
 				writeScheduledStopPointsElement(writer, exportableNetexData, marshaller);
+				writeServiceLinkElements(writer, exportableNetexData, marshaller);
 				writeStopAssignmentsElement(writer, exportableNetexData, marshaller);
 				writeNoticesElement(writer, exportableNetexData.getSharedNotices().values(), marshaller);
 			}
@@ -147,6 +149,20 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 				marshaller.marshal(netexFactory.createScheduledStopPoint(scheduledStopPoint), writer);
 			}
 			writer.writeEndElement();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static void writeServiceLinkElements(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
+		try {
+			if (!MapUtils.isEmpty(exportableData.getSharedServiceLinks())) {
+				writer.writeStartElement(SERVICE_LINKS);
+				for (ServiceLink serviceLink : exportableData.getSharedServiceLinks().values()) {
+					marshaller.marshal(netexFactory.createServiceLink(serviceLink), writer);
+				}
+				writer.writeEndElement();
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

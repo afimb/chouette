@@ -2,12 +2,15 @@ package mobi.chouette.model;
 
 import java.math.BigDecimal;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -87,67 +90,27 @@ public class RouteSection extends NeptuneIdentifiedObject {
 	@Type(type = "org.hibernate.spatial.GeometryType")
 	private LineString processedGeometry;
 
-	@Column(name = "departure_stop_area_objectid_key")
-	private String departureStopAreaObjectId;
-
-
 	/**
-	 * first stop area connected to route section
-	 * 
+	 * Scheduled stop point at start of section.
+	 *
 	 * @return The actual value
 	 */
-	@Transient
-	private ObjectReference<StopArea> departureRef;
+	@Getter
+	@Setter
+	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "from_scheduled_stop_point_id")
+	private ScheduledStopPoint fromScheduledStopPoint;
 
-	public ObjectReference<StopArea> getDepartureRef() {
-		if (departureRef == null) {
-			departureRef = new SimpleObjectReference<>(null);
-		}
-		return departureRef;
-	}
 
 	/**
-	 * set departureRef
-	 * 
-	 * @param stopArea
-	 */
-	public void setDepartureRef(ObjectReference<StopArea> stopArea) {
-		if (stopArea != null) {
-			this.departureStopAreaObjectId = stopArea.getObjectId();
-		}
-
-		this.departureRef = stopArea;
-	}
-
-	@Column(name = "arrival_stop_area_objectid_key")
-	private String arrivalStopAreaObjectId;
-
-	/**
-	 * last stop area connected to link
-	 * 
+	 * Scheduled stop point at end of section
+	 *
 	 * @return The actual value
 	 */
-	@Transient
-	private ObjectReference<StopArea> arrivalRef;
-
-	public ObjectReference<StopArea> getArrivalRef() {
-		if (arrivalRef == null) {
-			arrivalRef = new SimpleObjectReference<>(null);
-		}
-		return arrivalRef;
-	}
-
-	/**
-	 * set stopArea
-	 * 
-	 * @param stopArea
-	 */
-	public void setArrivalRef(ObjectReference<StopArea> stopArea) {
-		if (stopArea != null) {
-			this.arrivalStopAreaObjectId = stopArea.getObjectId();
-		}
-
-		this.arrivalRef = stopArea;
-	}
+	@Getter
+	@Setter
+	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "to_scheduled_stop_point_id")
+	private ScheduledStopPoint toScheduledStopPoint;
 
 }

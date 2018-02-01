@@ -33,7 +33,7 @@ public final class NetexObjectIdTypes {
     public static final String OPERATING_PERIODS = "operatingPeriods";
     public static final String DESTINATION_DISPLAYS = "destinationDisplays";
     public static final String JOURNEY_INTERCHANGES = "journeyInterchanges";
-    
+    public static final String SERVICE_LINKS = "serviceLinks";
 
     // frame id keys
     public static final String COMPOSITE_FRAME = "CompositeFrame";
@@ -65,6 +65,8 @@ public final class NetexObjectIdTypes {
     public static final String AVAILABILITY_CONDITION = "AvailabilityCondition";
     public static final String SERVICE_JOURNEY = "ServiceJourney";
     public static final String PASSENGER_STOP_ASSIGNMENT = "PassengerStopAssignment";
+    public static final String SERVICE_LINK_IN_JOURNEY_PATTERN = "ServiceLinkInJourneyPattern";
+    public static final String LINK_SEQUENCE_PROJECTION = "LinkSequenceProjection";
 
     public static final String NOTICE = "Notice";
     public static final String NOTICE_ASSIGNMENT = "NoticeAssignment";

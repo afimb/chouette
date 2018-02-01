@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.List;
 
@@ -8,20 +9,33 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
+import mobi.chouette.exchange.netexprofile.util.JtsGmlConverter;
+import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RouteSection;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
 
+import net.opengis.gml._3.LineStringType;
+import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.DestinationDisplayRefStructure;
 import org.rutebanken.netex.model.KeyValueStructure;
+import org.rutebanken.netex.model.LinkSequenceProjection;
 import org.rutebanken.netex.model.PointsInJourneyPattern_RelStructure;
 import org.rutebanken.netex.model.PrivateCodeStructure;
 import org.rutebanken.netex.model.RouteRefStructure;
 import org.rutebanken.netex.model.ScheduledStopPointRefStructure;
+import org.rutebanken.netex.model.ServiceLink;
+import org.rutebanken.netex.model.ServiceLinkInJourneyPattern_VersionedChildStructure;
+import org.rutebanken.netex.model.ServiceLinkRefStructure;
 import org.rutebanken.netex.model.StopPointInJourneyPattern;
 
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.createUniqueId;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.LINK_SEQUENCE_PROJECTION;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SERVICE_LINK_IN_JOURNEY_PATTERN;
 
 public class JourneyPatternProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.JourneyPattern, mobi.chouette.model.JourneyPattern> {
 
@@ -105,9 +119,68 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 			}
 		}
 
-
+		addLinksInSequence(neptuneJourneyPattern, netexJourneyPattern, context);
         netexJourneyPattern.setPointsInSequence(pointsInJourneyPattern);
         return netexJourneyPattern;
     }
 
+	private void addLinksInSequence(JourneyPattern neptuneJourneyPattern, org.rutebanken.netex.model.JourneyPattern netexJourneyPattern, Context context) {
+
+		if (!CollectionUtils.isEmpty(neptuneJourneyPattern.getRouteSections())) {
+
+			int i = 1;
+			netexJourneyPattern.withLinksInSequence(netexFactory.createLinksInJourneyPattern_RelStructure());
+			for (RouteSection routeSection : neptuneJourneyPattern.getRouteSections()) {
+
+				String routeSectionVersion = routeSection.getObjectVersion() > 0 ? String.valueOf(routeSection.getObjectVersion()) : NETEX_DEFAULT_OBJECT_VERSION;
+				ServiceLinkInJourneyPattern_VersionedChildStructure serviceLinkInJourneyPattern = netexFactory.createServiceLinkInJourneyPattern_VersionedChildStructure()
+						.withId(createUniqueId(context, SERVICE_LINK_IN_JOURNEY_PATTERN)).withOrder(BigInteger.valueOf(i++)).withVersion(routeSectionVersion);
+
+				ServiceLinkRefStructure serviceLinkRefStructure = netexFactory.createServiceLinkRefStructure().withRef(routeSection.getObjectId());
+				serviceLinkInJourneyPattern.setServiceLinkRef(serviceLinkRefStructure);
+
+				netexJourneyPattern.getLinksInSequence().getServiceLinkInJourneyPatternOrTimingLinkInJourneyPattern().add(serviceLinkInJourneyPattern);
+
+				addServiceLink(routeSection, context);
+			}
+		}
+	}
+
+	protected void addServiceLink(RouteSection routeSection, Context context) {
+		ExportableNetexData exportableNetexData = (ExportableNetexData) context.get(Constant.EXPORTABLE_NETEX_DATA);
+		if (!exportableNetexData.getSharedServiceLinks().containsKey(routeSection.getObjectId())) {
+
+			ServiceLink serviceLink = netexFactory.createServiceLink();
+			NetexProducerUtils.populateId(routeSection, serviceLink);
+
+			String routeSectionVersion = routeSection.getObjectVersion() > 0 ? String.valueOf(routeSection.getObjectVersion()) : NETEX_DEFAULT_OBJECT_VERSION;
+			// Gml id must be unique, start with letter and not contain certain special characters.
+			String gmlId="LS_" + routeSection.getId();
+			LineStringType gmlLineString = JtsGmlConverter.fromJtsToGml(routeSection.getInputGeometry(), gmlId);
+			LinkSequenceProjection linkSequenceProjection = netexFactory.createLinkSequenceProjection().withLineString(gmlLineString);
+			linkSequenceProjection.withId(createUniqueId(context, LINK_SEQUENCE_PROJECTION)).withVersion(routeSectionVersion);
+			serviceLink.setProjections(netexFactory.createProjections_RelStructure()
+					.withProjectionRefOrProjection(netexFactory.createLinkSequenceProjection(linkSequenceProjection)));
+
+			if (routeSection.getDistance() != null) {
+				serviceLink.setDistance(routeSection.getDistance().setScale(6, RoundingMode.HALF_UP));
+			}
+			ScheduledStopPoint fromSSP = routeSection.getFromScheduledStopPoint();
+			if (fromSSP != null) {
+				ScheduledStopPointRefStructure fromPointRef = netexFactory.createScheduledStopPointRefStructure();
+				NetexProducerUtils.populateReference(fromSSP, fromPointRef, true);
+				serviceLink.setFromPointRef(fromPointRef);
+			}
+
+			ScheduledStopPoint toSSP = routeSection.getToScheduledStopPoint();
+			if (toSSP != null) {
+				ScheduledStopPointRefStructure topPointRef = netexFactory.createScheduledStopPointRefStructure();
+				NetexProducerUtils.populateReference(toSSP, topPointRef, true);
+				serviceLink.setToPointRef(topPointRef);
+			}
+
+			exportableNetexData.getSharedServiceLinks().put(serviceLink.getId(), serviceLink);
+		}
+
+	}
 }

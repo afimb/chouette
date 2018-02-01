@@ -41,6 +41,7 @@ import org.rutebanken.netex.model.RoutesInFrame_RelStructure;
 import org.rutebanken.netex.model.ScheduledStopPointsInFrame_RelStructure;
 import org.rutebanken.netex.model.ServiceCalendarFrame;
 import org.rutebanken.netex.model.ServiceFrame;
+import org.rutebanken.netex.model.ServiceLinksInFrame_RelStructure;
 import org.rutebanken.netex.model.SiteFrame;
 import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
 import org.rutebanken.netex.model.TariffZonesInFrame_RelStructure;
@@ -281,6 +282,12 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 
 			}
 
+			if (serviceFrame.getServiceLinks() !=null) {
+				ServiceLinksInFrame_RelStructure serviceLinksInFrameStruct= serviceFrame.getServiceLinks();
+				context.put(NETEX_LINE_DATA_CONTEXT, serviceLinksInFrameStruct);
+				ServiceLinkParser serviceLinkParser = (ServiceLinkParser) ParserFactory.create(ServiceLinkParser.class.getName());
+				serviceLinkParser.parse(context);
+			}
 
 
 			if (!isCommonDelivery) {

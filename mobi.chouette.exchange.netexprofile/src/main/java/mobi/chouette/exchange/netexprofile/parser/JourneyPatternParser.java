@@ -8,8 +8,10 @@ import javax.xml.bind.JAXBElement;
 import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.JourneyPattern_VersionStructure;
 import org.rutebanken.netex.model.JourneyPatternsInFrame_RelStructure;
+import org.rutebanken.netex.model.LinkInLinkSequence_VersionedChildStructure;
 import org.rutebanken.netex.model.PointInLinkSequence_VersionedChildStructure;
 import org.rutebanken.netex.model.ScheduledStopPointRefStructure;
+import org.rutebanken.netex.model.ServiceLinkInJourneyPattern_VersionedChildStructure;
 import org.rutebanken.netex.model.StopPointInJourneyPattern;
 
 import lombok.extern.log4j.Log4j;
@@ -36,7 +38,7 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
 
 		for (JAXBElement<?> journeyPatternElement : journeyPatternStruct.getJourneyPattern_OrJourneyPatternView()) {
 			JourneyPattern_VersionStructure netexJourneyPattern = (org.rutebanken.netex.model.JourneyPattern_VersionStructure) journeyPatternElement.getValue();
-			
+
 			mobi.chouette.model.JourneyPattern chouetteJourneyPattern = ObjectFactory.getJourneyPattern(referential, netexJourneyPattern.getId());
 
 			chouetteJourneyPattern.setObjectVersion(NetexParserUtils.getVersion(netexJourneyPattern));
@@ -56,8 +58,35 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
 			}
 
 			parseStopPointsInJourneyPattern(context, referential, netexJourneyPattern, chouetteJourneyPattern, route.getStopPoints());
+			parseServiceLinksInJourneyPattern(referential, netexJourneyPattern, chouetteJourneyPattern);
 			chouetteJourneyPattern.setFilled(true);
 		}
+	}
+
+	private void parseServiceLinksInJourneyPattern(Referential referential, org.rutebanken.netex.model.JourneyPattern_VersionStructure netexJourneyPattern,
+												   mobi.chouette.model.JourneyPattern chouetteJourneyPattern) {
+
+		if (netexJourneyPattern.getLinksInSequence()==null || netexJourneyPattern.getLinksInSequence().getServiceLinkInJourneyPatternOrTimingLinkInJourneyPattern()==null) {
+			return;
+		}
+		List<LinkInLinkSequence_VersionedChildStructure> linksInLinkSequence = netexJourneyPattern.getLinksInSequence()
+				.getServiceLinkInJourneyPatternOrTimingLinkInJourneyPattern();
+
+		for (LinkInLinkSequence_VersionedChildStructure linkInLinkSequence : linksInLinkSequence){
+			if (linkInLinkSequence instanceof ServiceLinkInJourneyPattern_VersionedChildStructure) {
+
+				ServiceLinkInJourneyPattern_VersionedChildStructure serviceLinkInJourneyPattern= (ServiceLinkInJourneyPattern_VersionedChildStructure) linkInLinkSequence;
+
+				if (serviceLinkInJourneyPattern.getServiceLinkRef()!=null && serviceLinkInJourneyPattern.getServiceLinkRef().getRef()!=null){
+					chouetteJourneyPattern.getRouteSections().add(ObjectFactory.getRouteSection(referential, serviceLinkInJourneyPattern.getServiceLinkRef().getRef()));
+				}
+			} else {
+				log.warn("Got unexpected linkInLinkSequence element: " + linkInLinkSequence);
+			}
+
+		}
+
+
 	}
 
 	private void parseStopPointsInJourneyPattern(Context context, Referential referential, org.rutebanken.netex.model.JourneyPattern_VersionStructure netexJourneyPattern,

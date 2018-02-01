@@ -998,8 +998,8 @@ insert into public.referentials (id,name,slug) values (1,'Test referential','cho
 
 CREATE TABLE route_sections (
     id bigint NOT NULL,
-    departure_stop_area_objectid_key character varying(255),
-    arrival_stop_area_objectid_key character varying(255),
+    from_scheduled_stop_point_id integer,
+    to_scheduled_stop_point_id integer,
     objectid character varying(255) NOT NULL,
     object_version integer,
     creation_time timestamp without time zone,
