@@ -62,7 +62,7 @@ public class JtsGmlConverter {
 		DirectPositionListType directPositionListType = new DirectPositionListType();
 
 		if (jts.getCoordinates() != null) {
-			logger.debug("Converting coordinates {}", jts.getCoordinates());
+			logger.trace("Converting coordinates {}", jts.getCoordinates());
 			List<Double> positions = directPositionListType.getValue();
 			for (Coordinate coordinate : jts.getCoordinates()) {
 				positions.add(coordinate.y);
