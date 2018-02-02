@@ -11,7 +11,6 @@ package mobi.chouette.exchange.gtfs.exporter.producer;
 import java.util.Collection;
 import java.util.TimeZone;
 
-import mobi.chouette.exchange.gtfs.exporter.StopAreaUtil;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.RouteTypeEnum;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.WheelchairBoardingType;
@@ -108,11 +107,9 @@ public class GtfsStopProducer extends AbstractProducer
 		stop.setParentStation(null);
 		if (stop.getLocationType().equals(GtfsStop.LocationType.Stop))
 		{
-			StopArea topLevelParent = StopAreaUtil.getTopLevelStopArea(neptuneObject);
-			
-			if (neptuneObject != topLevelParent && validParents.contains(topLevelParent))
+			if (neptuneObject.getParent() != null && validParents.contains(neptuneObject.getParent()))
 			{
-				stop.setParentStation(toGtfsId(topLevelParent
+				stop.setParentStation(toGtfsId(neptuneObject.getParent()
 						.getObjectId(),prefix, keepOriginalId));
 			}
 		}
