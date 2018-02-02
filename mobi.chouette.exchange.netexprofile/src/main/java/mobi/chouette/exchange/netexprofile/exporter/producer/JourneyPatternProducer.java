@@ -18,6 +18,7 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
 
+import com.vividsolutions.jts.geom.LineString;
 import net.opengis.gml._3.LineStringType;
 import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.DestinationDisplayRefStructure;
@@ -157,7 +158,15 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 			String routeSectionVersion = routeSection.getObjectVersion() > 0 ? String.valueOf(routeSection.getObjectVersion()) : NETEX_DEFAULT_OBJECT_VERSION;
 			// Gml id must be unique, start with letter and not contain certain special characters.
 			String gmlId="LS_" + routeSection.getId();
-			LineStringType gmlLineString = JtsGmlConverter.fromJtsToGml(routeSection.getInputGeometry(), gmlId);
+
+			LineString geometry;
+			if (routeSection.getNoProcessing()) {
+				geometry = routeSection.getInputGeometry();
+			} else {
+				geometry = routeSection.getProcessedGeometry();
+			}
+
+			LineStringType gmlLineString = JtsGmlConverter.fromJtsToGml(geometry, gmlId);
 			LinkSequenceProjection linkSequenceProjection = netexFactory.createLinkSequenceProjection().withLineString(gmlLineString);
 			linkSequenceProjection.withId(createUniqueId(context, LINK_SEQUENCE_PROJECTION)).withVersion(routeSectionVersion);
 			serviceLink.setProjections(netexFactory.createProjections_RelStructure()
