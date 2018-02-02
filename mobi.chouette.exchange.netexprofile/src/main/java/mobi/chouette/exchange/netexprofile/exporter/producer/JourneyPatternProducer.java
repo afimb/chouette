@@ -136,7 +136,8 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 				ServiceLinkInJourneyPattern_VersionedChildStructure serviceLinkInJourneyPattern = netexFactory.createServiceLinkInJourneyPattern_VersionedChildStructure()
 						.withId(createUniqueId(context, SERVICE_LINK_IN_JOURNEY_PATTERN)).withOrder(BigInteger.valueOf(i++)).withVersion(routeSectionVersion);
 
-				ServiceLinkRefStructure serviceLinkRefStructure = netexFactory.createServiceLinkRefStructure().withRef(routeSection.getObjectId());
+				ServiceLinkRefStructure serviceLinkRefStructure = netexFactory.createServiceLinkRefStructure();
+				NetexProducerUtils.populateReference(routeSection, serviceLinkRefStructure, false);
 				serviceLinkInJourneyPattern.setServiceLinkRef(serviceLinkRefStructure);
 
 				netexJourneyPattern.getLinksInSequence().getServiceLinkInJourneyPatternOrTimingLinkInJourneyPattern().add(serviceLinkInJourneyPattern);
