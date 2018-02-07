@@ -40,7 +40,7 @@ public class GtfsShapeProducer extends AbstractProducer
    public boolean save(JourneyPattern neptuneObject,  String prefix, boolean keepOriginalId)
    {
 	   boolean result = true;
-	   if (neptuneObject.getSectionStatus() != SectionStatusEnum.Completed)
+	   if (neptuneObject.getRouteSections().isEmpty() || neptuneObject.getSectionStatus() != SectionStatusEnum.Completed)
 		   return false;
 	   int shapePtSequence = 0;
 	   int startIndex = 0;

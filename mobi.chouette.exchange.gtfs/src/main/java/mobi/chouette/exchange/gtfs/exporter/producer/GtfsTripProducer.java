@@ -240,7 +240,7 @@ public class GtfsTripProducer extends AbstractProducer {
 		trip.setTripId(tripId);
 
 		JourneyPattern jp = vj.getJourneyPattern();
-		if (jp.getSectionStatus() == SectionStatusEnum.Completed) {
+		if (!jp.getRouteSections().isEmpty() && jp.getSectionStatus() == SectionStatusEnum.Completed) {
 			String shapeId = toGtfsId(jp.getObjectId(), prefix, keepOriginalId);
 			trip.setShapeId(shapeId);
 		}
