@@ -296,12 +296,13 @@ AbstractProducer
       
       if(keepOriginalId) {
           for(int i = 0;i<timetables.size();i++) {
+        	  key += "-";
         	  if(i ==0) {
         		  // Keep full id
                   key += toGtfsId(timetables.get(i).getObjectId(), prefix, true);
         	  } else {
         		  // Only keep remaining parts
-                  key += "-"+toGtfsId(timetables.get(i).getObjectId(), prefix, false);
+                  key += toGtfsId(timetables.get(i).getObjectId(), prefix, false);
         	  }
           }
     	  
