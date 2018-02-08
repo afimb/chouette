@@ -16,6 +16,9 @@ import java.util.TimeZone;
 import java.util.zip.Adler32;
 import java.util.zip.Checksum;
 
+import org.apache.commons.lang.StringUtils;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -1256,6 +1259,10 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				vehicleJourney.setNumber(Long.valueOf(0));
 				vehicleJourney.setPublishedJourneyName(gtfsTrip.getTripShortName());
 			}
+		}
+		
+		if(StringUtils.trimToNull(gtfsTrip.getTripHeadSign()) != null) {
+			vehicleJourney.setPublishedJourneyName(gtfsTrip.getTripHeadSign());
 		}
 
 		if (gtfsTrip.getWheelchairAccessible() != null) {
