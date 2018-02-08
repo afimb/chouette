@@ -1,5 +1,9 @@
+# Version 3.4.4 (08/02/2018)
+* Correction
+  * Mantis 58049: Export GTFS : shape_id renseigné sur mission sans tracé
+
 # Version 3.4.3 (21/11/2017)
- Nouvelles fonctionnalités :
+* Nouvelles fonctionnalités :
   * Import/Export GTFS : prise en compte des indicateurs TAD
   * Import/Export GTFS : fusion des missions et itinéraires à l'import
   * Import/Export GTFS : pérénisation des identifiants de mission et d'itinéraires pour l'import incrémental
