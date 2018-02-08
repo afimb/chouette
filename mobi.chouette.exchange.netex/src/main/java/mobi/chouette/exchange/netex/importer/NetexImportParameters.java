@@ -14,5 +14,9 @@ import mobi.chouette.exchange.parameters.AbstractImportParameter;
 @XmlAccessorType(XmlAccessType.FIELD)
 //@XmlType(propOrder={})
 public class NetexImportParameters extends AbstractImportParameter {
+	@Override
+	public boolean isRouteMergeable() {
+		return false;
+	}
 
 }

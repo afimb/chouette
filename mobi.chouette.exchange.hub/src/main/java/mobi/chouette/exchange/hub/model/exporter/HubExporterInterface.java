@@ -2,17 +2,18 @@ package mobi.chouette.exchange.hub.model.exporter;
 
 import mobi.chouette.exchange.hub.model.HubArret;
 import mobi.chouette.exchange.hub.model.HubChemin;
+import mobi.chouette.exchange.hub.model.HubCheminOperation;
 import mobi.chouette.exchange.hub.model.HubCommune;
 import mobi.chouette.exchange.hub.model.HubCorrespondance;
 import mobi.chouette.exchange.hub.model.HubCourse;
-import mobi.chouette.exchange.hub.model.HubMission;
 import mobi.chouette.exchange.hub.model.HubCourseOperation;
-import mobi.chouette.exchange.hub.model.HubMissionOperation;
 import mobi.chouette.exchange.hub.model.HubDirection;
 import mobi.chouette.exchange.hub.model.HubGroupeDeLigne;
 import mobi.chouette.exchange.hub.model.HubHoraire;
 import mobi.chouette.exchange.hub.model.HubItl;
 import mobi.chouette.exchange.hub.model.HubLigne;
+import mobi.chouette.exchange.hub.model.HubMission;
+import mobi.chouette.exchange.hub.model.HubMissionOperation;
 import mobi.chouette.exchange.hub.model.HubModeTransport;
 import mobi.chouette.exchange.hub.model.HubPeriode;
 import mobi.chouette.exchange.hub.model.HubRenvoi;
@@ -26,6 +27,8 @@ public interface HubExporterInterface {
 
 	Exporter<HubChemin> getCheminExporter();
 
+	Exporter<HubCheminOperation> getCheminOperationExporter();
+	
 	Exporter<HubCommune> getCommuneExporter();
 
 	Exporter<HubCorrespondance> getCorrespondanceExporter();
@@ -59,4 +62,5 @@ public interface HubExporterInterface {
 	Exporter<HubSchema> getSchemaExporter();
 
 	Exporter<HubTransporteur> getTransporteurExporter();
+
 }

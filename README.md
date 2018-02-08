@@ -64,17 +64,17 @@ This code has been run and tested on [Travis](http://travis-ci.org/afimb/chouett
 * oraclejdk8
 * openjdk7
 * openjdk8
-* postgres 9.3 + postgis 2.1
-* wildfly 8.2.0
+* postgres 9.4 + postgis 2.3
+* wildfly 9.0.2
 
 ## Chouette External Dependencies
 
-Chouette V3.x requires Postgresql V9.3 or above
+Chouette V3.x requires Postgresql V9.4 or above
 
 On Debian/Ubuntu/Kubuntu OS : 
 ```sh
-sudo apt-get install postgresql-9.3
-sudo apt-get install postgresql-9.3-postgis-2.1
+sudo apt-get install postgresql-9.4
+sudo apt-get install postgresql-9.4-postgis-2.3
 sudo apt-get install openjdk-7-jdk 
 ```
 

@@ -8,6 +8,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
@@ -35,6 +36,7 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Stateless(name = VehicleJourneyUpdater.BEAN_NAME)
+@Log4j
 public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 
 	public static final String BEAN_NAME = "VehicleJourneyUpdater";
@@ -105,7 +107,6 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 
 	@Override
 	public void update(Context context, VehicleJourney oldValue, VehicleJourney newValue) throws Exception {
-
 		if (newValue.isSaved()) {
 			return;
 		}
@@ -308,11 +309,11 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			timetableUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
-		Collection<Timetable> removedTimetable = CollectionUtil.substract(oldValue.getTimetables(),
-				newValue.getTimetables(), NeptuneIdentifiedObjectComparator.INSTANCE);
-		for (Timetable timetable : removedTimetable) {
-			timetable.removeVehicleJourney(oldValue);
-		}
+//		Collection<Timetable> removedTimetable = CollectionUtil.substract(oldValue.getTimetables(),
+//				newValue.getTimetables(), NeptuneIdentifiedObjectComparator.INSTANCE);
+//		for (Timetable timetable : removedTimetable) {
+//			timetable.removeVehicleJourney(oldValue);
+//		}
 
 		// journey frequency
 		/* if (!optimized) */{
@@ -348,12 +349,12 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 				journeyFrequencyUpdater.update(context, pair.getLeft(), pair.getRight());
 			}
 
-			Collection<JourneyFrequency> removedJourneyFrequency = CollectionUtil.substract(
-					oldValue.getJourneyFrequencies(), newValue.getJourneyFrequencies(), JOURNEY_FREQUENCY_COMPARATOR);
-			for (JourneyFrequency journeyFrequency : removedJourneyFrequency) {
-				journeyFrequency.setVehicleJourney(null);
-				journeyFrequencyDAO.delete(journeyFrequency);
-			}
+//			Collection<JourneyFrequency> removedJourneyFrequency = CollectionUtil.substract(
+//					oldValue.getJourneyFrequencies(), newValue.getJourneyFrequencies(), JOURNEY_FREQUENCY_COMPARATOR);
+//			for (JourneyFrequency journeyFrequency : removedJourneyFrequency) {
+//				journeyFrequency.setVehicleJourney(null);
+//				journeyFrequencyDAO.delete(journeyFrequency);
+//			}
 		}
 		// Footnotes
 		// This is the new list of footnotes
@@ -404,6 +405,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	 * @param newCompany
 	 */
 	private void twoDatabaseVehicleJourneyTwoTest(ValidationReporter validationReporter, Context context, Company oldCompany,  Company newCompany, ValidationData data) {
+		if (data == null) return; // cannot test
 		if(!NeptuneUtil.sameValue(oldCompany, newCompany))
 			validationReporter.addCheckPointReportError(context, DATABASE_VEHICLE_JOURNEY_2, data.getDataLocations().get(newCompany.getObjectId()));
 		else

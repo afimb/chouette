@@ -29,12 +29,10 @@ public class HubArretProducer extends AbstractProducer {
 		super(exporter);
 	}
 
-
-	private static final String TYPE_GENERIQUE = "ONNNNNNNNNNNNNNNNN"; 
-	private static final String TYPE_GENERIQUE_PMR = "ONNNNNNNNNNNNONNNN"; 
-	private static final String TYPE_PHYSIQUE = "NNNNNNNNNNNNNNNNNN"; 
-	private static final String TYPE_PHYSIQUE_PMR = "NNNNNNNNNNNNNONNNN"; 
-
+	private static final String TYPE_GENERIQUE = "ONNNNNNNNNNNNNNNNN";
+	private static final String TYPE_GENERIQUE_PMR = "ONNNNNNNNNNNNONNNN";
+	private static final String TYPE_PHYSIQUE = "NNNNNNNNNNNNNNNNNN";
+	private static final String TYPE_PHYSIQUE_PMR = "NNNNNNNNNNNNNONNNN";
 
 	private HubArret hubObject = new HubArret();
 
@@ -75,23 +73,21 @@ public class HubArretProducer extends AbstractProducer {
 		// parent id
 		if (neptuneObject.getAreaType().equals(ChouetteAreaEnum.BoardingPosition)
 				|| neptuneObject.getAreaType().equals(ChouetteAreaEnum.Quay)) {
-			hubObject.setNomReduit(toHubId(neptuneObject.getParent()));
+			if (neptuneObject.getParent() != null) {
+				hubObject.setNomReduit(toHubId(neptuneObject.getParent()));
+			}
 		}
 
 		// X et Y sur arrêt physique uniquement
-		if (neptuneObject.getAreaType().equals(ChouetteAreaEnum.BoardingPosition) 
-				|| neptuneObject.getAreaType().equals(ChouetteAreaEnum.Quay))
-		{
-			if (neptuneObject.hasCoordinates())
-			{
+		if (neptuneObject.getAreaType().equals(ChouetteAreaEnum.BoardingPosition)
+				|| neptuneObject.getAreaType().equals(ChouetteAreaEnum.Quay)) {
+			if (neptuneObject.hasCoordinates()) {
 				neptuneObject.toProjection(Coordinate.LAMBERT);
 				if (neptuneObject.hasProjection()) {
 					hubObject.setX(neptuneObject.getX().intValue());
 					hubObject.setY(neptuneObject.getY().intValue());
 				}
-			}
-			else
-			{
+			} else {
 				hubObject.setX(-1);
 				hubObject.setY(-1);
 			}
@@ -111,7 +107,7 @@ public class HubArretProducer extends AbstractProducer {
 		try {
 			getExporter().getArretExporter().export(hubObject);
 		} catch (IOException e) {
-			log.error("fail to save arret",e);
+			log.error("fail to save arret", e);
 			return false;
 		}
 		return true;

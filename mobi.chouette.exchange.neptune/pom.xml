@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>mobi.chouette</groupId>
 		<artifactId>mobi.chouette</artifactId>
-		<version>3.4.2</version>
+		<version>3.4.4</version>
 	</parent>
 	<artifactId>mobi.chouette.exchange.neptune</artifactId>
 	<packaging>ejb</packaging>
@@ -213,8 +213,8 @@
 				  </sources> -->
 					<arguments>
 						<argument>-extension</argument>
-						<argument>-Xlocator</argument>
-						<!-- <argument>-b</argument>
+						<!-- <argument>-Xlocator</argument>
+						<argument>-b</argument>
 						<argument>src/main/xsd/bindings.xml</argument> -->
 					</arguments>
 				</configuration>

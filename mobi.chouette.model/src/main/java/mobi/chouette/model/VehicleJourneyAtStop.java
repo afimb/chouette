@@ -50,20 +50,6 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 	protected Long id;
 	
 	/**
-	 * connecting Service Id
-	 * 
-	 * @param connectingServiceId
-	 *            New value
-	 * @return The actual value
-	 */
-	@Deprecated
-	@Getter
-	@Setter
-	@Transient
-	// @Column(name = "connecting_service_id")
-	private String connectingServiceId;
-
-	/**
 	 * not saved, boarding alighting possibility
 	 * 
 	 * @param boardingAlightingPossibility
@@ -127,51 +113,6 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 	@Column(name = "arrival_day_offset")
 	private int arrivalDayOffset;
 	
-	/*
-	 * waiting time
-	 * 
-	 * @param waitingTime
-	 *            New value
-	 * @return The actual value
-	 */
-	//@Deprecated
-	//@Getter
-	//@Setter
-	//@Transient
-	// @Column(name = "waiting_time")
-	//private Time waitingTime;
-
-	/*
-	 * elapse duration <br/>
-	 * for vehicle journey with time slots<br/>
-	 * definition should change in next release
-	 * 
-	 * @param elapseDuration
-	 *            New value
-	 * @return The actual value
-	 */
-	//@Deprecated
-	//@Getter
-	//@Setter
-	// @Column(name = "elapse_duration")
-	//@Transient
-	//private Time elapseDuration;
-
-	/*
-	 * headway frequnecy <br/>
-	 * for vehicle journey with time slots<br/>
-	 * field should move to vehicleJourney in next release
-	 * 
-	 * @param headwayFrequency
-	 *            New value
-	 * @return The actual value
-	 */
-	//@Deprecated
-	//@Getter
-	//@Setter
-	//@Column(name = "headway_frequency")
-	//@Transient
-	//private Time headwayFrequency;
 
 	/**
 	 * vehicle journey reference <br/>
@@ -211,4 +152,12 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 	@JoinColumn(name = "stop_point_id")
 	private StopPoint stopPoint;
 
+	public void copyAttributes(VehicleJourneyAtStop source) {
+		setArrivalDayOffset(source.getArrivalDayOffset());
+		setArrivalTime(source.getArrivalTime());
+		// setBoardingAlightingPossibility(source.getBoardingAlightingPossibility());
+		setDepartureDayOffset(source.getDepartureDayOffset());
+		setDepartureTime(source.getDepartureTime());
+	}
+	
 }

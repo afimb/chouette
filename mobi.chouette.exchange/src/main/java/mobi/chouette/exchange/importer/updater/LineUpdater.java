@@ -96,6 +96,7 @@ public class LineUpdater implements Updater<Line> {
 			oldValue.setRegistrationNumber(newValue.getRegistrationNumber());
 			oldValue.setTransportModeName(newValue.getTransportModeName());
 			oldValue.setMobilityRestrictedSuitable(newValue.getMobilityRestrictedSuitable());
+			oldValue.setFlexibleService(newValue.getFlexibleService());
 			oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
 			oldValue.setUrl(newValue.getUrl());
 			oldValue.setColor(newValue.getColor());
@@ -140,6 +141,10 @@ public class LineUpdater implements Updater<Line> {
 			if (newValue.getMobilityRestrictedSuitable() != null
 					&& !newValue.getMobilityRestrictedSuitable().equals(oldValue.getMobilityRestrictedSuitable())) {
 				oldValue.setMobilityRestrictedSuitable(newValue.getMobilityRestrictedSuitable());
+			}
+			if (newValue.getFlexibleService() != null
+					&& !newValue.getFlexibleService().equals(oldValue.getFlexibleService())) {
+				oldValue.setFlexibleService(newValue.getFlexibleService());
 			}
 			if (newValue.getIntUserNeeds() != null && !newValue.getIntUserNeeds().equals(oldValue.getIntUserNeeds())) {
 				oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
@@ -223,13 +228,19 @@ public class LineUpdater implements Updater<Line> {
 			groupOfLineUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
-		Collection<GroupOfLine> removedGroupOfLine = CollectionUtil.substract(oldValue.getGroupOfLines(),
-				newValue.getGroupOfLines(), NeptuneIdentifiedObjectComparator.INSTANCE);
-		for (GroupOfLine groupOfLine : removedGroupOfLine) {
-			groupOfLine.removeLine(oldValue);
-		}
+		// dont remove old groupOfLine definition
+//		Collection<GroupOfLine> removedGroupOfLine = CollectionUtil.substract(oldValue.getGroupOfLines(),
+//				newValue.getGroupOfLines(), NeptuneIdentifiedObjectComparator.INSTANCE);
+//		for (GroupOfLine groupOfLine : removedGroupOfLine) {
+//			groupOfLine.removeLine(oldValue);
+//		}
 
 		// Route
+		// TODO : regarder si les routes sont générées et non importées
+		// dans ce cas, tenter de merger les routes avec des routes préexistantes 
+		// pour ce faire, le plus simple est de regarder les JP et si celles-ci sont déjà dans une route, comparer laquelle peut contenir l'autre
+		// voila
+		
 		Collection<Route> addedRoute = CollectionUtil.substract(newValue.getRoutes(), oldValue.getRoutes(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 		List<Route> routes = null;
@@ -342,6 +353,7 @@ public class LineUpdater implements Updater<Line> {
 	 * @param newLine
 	 */
 	private void twoDatabaseLineOneTest(ValidationReporter validationReporter, Context context, Line oldLine, Line newLine, ValidationData data) {
+		if (data == null) return; // cannot test
 		if(!NeptuneUtil.sameValue(oldLine.getNetwork(), newLine.getNetwork()))
 			validationReporter.addCheckPointReportError(context, DATABASE_LINE_1, data.getDataLocations().get(newLine.getObjectId()));
 		else
@@ -356,6 +368,7 @@ public class LineUpdater implements Updater<Line> {
 	 * @param newLine
 	 */
 	private void twoDatabaseLineTwoTest(ValidationReporter validationReporter, Context context, Line oldLine, Line newLine, ValidationData data) {
+		if (data == null) return; // cannot test
 		if(!NeptuneUtil.sameValue(oldLine.getCompany(), newLine.getCompany()))
 			validationReporter.addCheckPointReportError(context, DATABASE_LINE_2, data.getDataLocations().get(newLine.getObjectId()));
 		else
@@ -370,6 +383,7 @@ public class LineUpdater implements Updater<Line> {
 	 * @param newRoute
 	 */
 	private void twoDatabaseRouteOneTest(ValidationReporter validationReporter, Context context, Route oldRoute, Route newRoute, ValidationData data) {
+		if (data == null) return; // cannot test
 		if(!NeptuneUtil.sameValue(oldRoute.getLine(), newRoute.getLine()))
 			validationReporter.addCheckPointReportError(context, DATABASE_ROUTE_1, data.getDataLocations().get(newRoute.getObjectId()));
 		else

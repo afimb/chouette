@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.importer.updater;
 
+import java.math.BigDecimal;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -34,7 +36,7 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 		}
 		newValue.setSaved(true);
 
-		Monitor monitor = MonitorFactory.start(BEAN_NAME);
+		// Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
 		// Database test init
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
@@ -176,7 +178,23 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 				}
 			}
 		}
-		monitor.stop();
+		
+		// set default value to link distance if empty
+		if (oldValue.getLinkDistance() == null)
+		{
+			if (oldValue.getStartOfLink() != null && oldValue.getEndOfLink() != null && 
+					oldValue.getStartOfLink().hasCoordinates() && oldValue.getEndOfLink().hasCoordinates())
+			{
+				Double lat1 = oldValue.getStartOfLink().getLatitude().doubleValue();
+				Double lat2 = oldValue.getEndOfLink().getLatitude().doubleValue();
+				Double long1 = oldValue.getStartOfLink().getLongitude().doubleValue();
+				Double long2 = oldValue.getEndOfLink().getLongitude().doubleValue();
+				double dist = mobi.chouette.exchange.validation.checkpoint.AbstractValidation.quickDistanceFromCoordinates(lat1, lat2, long1, long2);
+				dist = (double) ((int) dist); // rounded
+                oldValue.setLinkDistance(BigDecimal.valueOf(dist));
+			}
+		}
+		// monitor.stop();
 	}
 
 }

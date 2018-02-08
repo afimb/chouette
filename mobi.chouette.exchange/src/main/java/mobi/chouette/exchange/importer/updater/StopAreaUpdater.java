@@ -384,6 +384,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	 */
 	private void twoDatabaseStopAreaOneTest(ValidationReporter validationReporter, Context context, StopArea oldValue,
 			StopArea newValue, ValidationData data) {
+		if (data == null) return; // cannot test
 		if (!NeptuneUtil.sameValue(oldValue.getParent(), newValue.getParent()))
 			validationReporter.addCheckPointReportError(context, DATABASE_STOP_AREA_1,
 					data.getDataLocations().get(newValue.getObjectId()));
@@ -401,6 +402,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	 */
 	private void twoDatabaseStopAreaTwoTest(ValidationReporter validationReporter, Context context, StopArea oldSA,
 			StopArea newSA, ValidationData data) {
+		if (data == null) return; // cannot test
 		if (oldSA != null && newSA != null) {
 			if (!NeptuneUtil.sameValue(oldSA.getAreaType(), newSA.getAreaType()))
 				validationReporter.addCheckPointReportError(context, DATABASE_STOP_AREA_2,
@@ -421,6 +423,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	 */
 	private void twoDatabaseAccessPointOneTest(ValidationReporter validationReporter, Context context,
 			AccessPoint oldAP, AccessPoint newAP, ValidationData data) {
+		if (data == null) return; // cannot test
 		if (!NeptuneUtil.sameValue(oldAP.getContainedIn(), newAP.getContainedIn()))
 			validationReporter.addCheckPointReportError(context, DATABASE_ACCESS_POINT_1,
 					data.getDataLocations().get(newAP.getObjectId()));

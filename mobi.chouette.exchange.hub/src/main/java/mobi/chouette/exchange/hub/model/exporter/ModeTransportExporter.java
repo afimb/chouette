@@ -2,6 +2,7 @@ package mobi.chouette.exchange.hub.model.exporter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import mobi.chouette.exchange.hub.model.HubModeTransport;
@@ -41,6 +42,7 @@ public class ModeTransportExporter extends ExporterImpl<HubModeTransport> implem
 			values.add(STRING_CONVERTER.to(hubContext, FIELDS.commentaire,
 					input.getCommentaire(), false));
 			StringBuffer list = new StringBuffer();
+			Collections.sort(input.getCodesLigne());
 			for (String code : input.getCodesLigne()) {
 				list.append("|");
 				list.append(STRING_CONVERTER.to(hubContext, FIELDS.code_ligne,

@@ -113,6 +113,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	 * @param newSp
 	 */
 	private void twoDatabaseStopPointTwoTest(ValidationReporter validationReporter, Context context, StopPoint oldSp, StopPoint newSp, ValidationData data) {
+		if (data == null) return; // cannot test
 		if(oldSp !=null && newSp != null) {
 			if(oldSp.getPosition() != null && newSp.getPosition() != null) {
 				if(!oldSp.getPosition().equals(newSp.getPosition()))
@@ -132,6 +133,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	 * @param newSp
 	 */
 	private void twoDatabaseStopPointThreeTest(ValidationReporter validationReporter, Context context, StopArea oldSA, StopArea newSA, ValidationData data) {
+		if (data == null) return; // cannot test
 		if(!NeptuneUtil.sameValue(oldSA, newSA))
 			validationReporter.addCheckPointReportError(context, DATABASE_STOP_POINT_3, data.getDataLocations().get(newSA.getObjectId()));
 		else

@@ -90,6 +90,11 @@ public class ConverterInputValidatorTests
 	private class BadImportParameters extends AbstractImportParameter
 	{
 
+		@Override
+		public boolean isRouteMergeable() {
+			return false;
+		}
+
 	}
 
 }

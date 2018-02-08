@@ -3,6 +3,7 @@ package mobi.chouette.model;
 import java.math.BigDecimal;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -15,10 +16,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.model.converter.LineStringToStringConverter;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Type;
 
 import com.vividsolutions.jts.geom.LineString;
 
@@ -81,13 +82,15 @@ public class RouteSection extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@Column(name = "input_geometry")
-	@Type(type = "org.hibernate.spatial.GeometryType")
+	@Convert(converter = LineStringToStringConverter.class)
+//	@Type(type = "org.hibernate.spatial.GeometryType")
 	private LineString inputGeometry;
 
 	@Getter
 	@Setter
 	@Column(name = "processed_geometry")
-	@Type(type = "org.hibernate.spatial.GeometryType")
+	@Convert(converter = LineStringToStringConverter.class)
+//	@Type(type = "org.hibernate.spatial.GeometryType")
 	private LineString processedGeometry;
 
 	/**

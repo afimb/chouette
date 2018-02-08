@@ -13,6 +13,9 @@ import mobi.chouette.exchange.parameters.AbstractImportParameter;
 @ToString(callSuper = true)
 @XmlAccessorType(XmlAccessType.FIELD)
 //@XmlType(propOrder={})
-public class NeptuneImportParameters extends AbstractImportParameter {
+public class NeptuneImportParameters extends AbstractImportParameter {@Override
+	public boolean isRouteMergeable() {
+		return false;
+	}
 
 }

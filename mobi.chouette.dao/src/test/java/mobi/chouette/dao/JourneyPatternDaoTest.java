@@ -52,7 +52,7 @@ public class JourneyPatternDaoTest extends Arquillian {
 			ContextHolder.setContext("chouette_gui"); // set tenant schema
 			RouteSection section = new RouteSection();
 			section.setObjectId("Test:" + RouteSection.ROUTE_SECTION_KEY + ":1");
-			GeometryFactory factory = new GeometryFactory(new PrecisionModel(10), 4326);
+			GeometryFactory factory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326);
 			Coordinate[] coordinates = new Coordinate[2];
 			coordinates[0] = new Coordinate(2.338767,48.8612525);
 			coordinates[1] = new Coordinate(2.343579,48.866239);

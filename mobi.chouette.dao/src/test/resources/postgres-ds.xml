@@ -10,6 +10,7 @@
       <connection-url>jdbc:postgresql_postGIS://localhost:5432/chouette_test</connection-url>
          <driver-class>org.postgis.DriverWrapper</driver-class>
         <driver>postgresql</driver>
+         <connection-property name="stringtype">unspecified</connection-property>
       <security>
          <user-name>chouette</user-name>
          <password>chouette</password>         

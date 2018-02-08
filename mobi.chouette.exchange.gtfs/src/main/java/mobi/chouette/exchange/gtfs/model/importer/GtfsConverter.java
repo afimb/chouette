@@ -13,6 +13,7 @@ import mobi.chouette.exchange.gtfs.model.GtfsStop.LocationType;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.WheelchairBoardingType;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.DropOffType;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.PickupType;
+import mobi.chouette.exchange.gtfs.model.GtfsStopTime.TimepointType;
 import mobi.chouette.exchange.gtfs.model.GtfsTime;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer.TransferType;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip.BikesAllowedType;
@@ -302,7 +303,22 @@ public interface GtfsConverter {
 			return String.valueOf(input.ordinal());
 		}
 	};
+	
+	public static DefaultFieldConverter<TimepointType> TIMEPOINTTYPE_CONVERTER = new DefaultFieldConverter<TimepointType>() {
 
+		@Override
+		protected TimepointType convertFrom(String input) throws Exception {
+			int ordinal = Integer.parseInt(input, 10);
+			return TimepointType.values()[ordinal];
+		}
+
+		@Override
+		protected String convertTo(TimepointType input) throws Exception {
+			return String.valueOf(input.ordinal());
+		}
+	};
+
+	
 	public static DefaultFieldConverter<ExceptionType> EXCEPTIONTYPE_CONVERTER = new DefaultFieldConverter<ExceptionType>() {
 
 		@Override
