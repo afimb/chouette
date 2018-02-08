@@ -16,9 +16,6 @@ import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.Referential;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 @Stateless(name = ConnectionLinkUpdater.BEAN_NAME)
 @Log4j
 public class ConnectionLinkUpdater implements Updater<ConnectionLink> {

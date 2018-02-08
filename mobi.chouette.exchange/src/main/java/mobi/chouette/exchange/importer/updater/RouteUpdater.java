@@ -49,7 +49,6 @@ public class RouteUpdater implements Updater<Route> {
 			return;
 		}
 		newValue.setSaved(true);
-		log.info("update route "+newValue.getObjectId());
 
 		// Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);

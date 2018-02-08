@@ -50,8 +50,6 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			return;
 		}
 		newValue.setSaved(true);
-		log.info("update journeyPattern  "+newValue.getObjectId());
-
 
 //		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
