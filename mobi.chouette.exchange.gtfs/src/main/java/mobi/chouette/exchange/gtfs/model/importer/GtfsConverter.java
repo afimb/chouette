@@ -23,8 +23,6 @@ import mobi.chouette.exchange.gtfs.model.RouteTypeEnum;
 
 public interface GtfsConverter {
 
-	public static SimpleDateFormat BASIC_ISO_DATE = new SimpleDateFormat(
-			"yyyyMMdd");
 
 	public static DefaultFieldConverter<String> STRING_CONVERTER = new DefaultFieldConverter<String>() {
 
@@ -141,11 +139,15 @@ public interface GtfsConverter {
 
 		@Override
 		protected Date convertFrom(String input) throws Exception {
+			SimpleDateFormat BASIC_ISO_DATE = new SimpleDateFormat(
+					"yyyyMMdd");
 			return new Date(BASIC_ISO_DATE.parse(input).getTime());
 		}
 
 		@Override
 		protected String convertTo(Date input) throws Exception {
+			SimpleDateFormat BASIC_ISO_DATE = new SimpleDateFormat(
+					"yyyyMMdd");
 			return (input != null) ? BASIC_ISO_DATE.format(input) : "";
 		}
 
