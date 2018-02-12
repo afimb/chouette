@@ -4,11 +4,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -19,37 +14,25 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "name", "status", "ioType", "errors", "checkPointErrorKeys", "checkPointWarningKeys", "checkPointErrorCount",
-		"checkPointWarningCount" })
 @Data
 @EqualsAndHashCode(exclude = { "status", "errors" }, callSuper=false)
 @NoArgsConstructor
 public class FileReport extends AbstractReport{
 
-	@XmlElement(name = "name", required = true)
 	private String name;
 
-	@XmlElement(name = "status", required = true)
 	private FILE_STATE status;
 
-	@XmlElement(name = "io_type", required = true)
 	private IO_TYPE ioType;
 
-	@XmlElement(name = "errors")
 	private List<FileError> errors = new ArrayList<>();
 	
-	
-	@XmlElement(name = "checkpoint_errors")
 	private List<Integer> checkPointErrorKeys = new ArrayList<Integer>();
 	
-	@XmlElement(name = "checkpoint_warnings")
 	private List<Integer> checkPointWarningKeys = new ArrayList<Integer>();
 
-	@XmlElement(name = "checkpoint_error_count")
 	private int checkPointErrorCount = 0;
 
-	@XmlElement(name = "checkpoint_warning_count")
 	private int checkPointWarningCount = 0;
 
 	protected void addError(FileError fileError2) {

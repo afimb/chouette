@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.xml.bind.annotation.XmlElement;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -23,48 +21,37 @@ import org.codehaus.jettison.json.JSONObject;
 @ToString
 public class ObjectReport extends AbstractReport {
 
-	@XmlElement(name = "type", required = true)
 	@Getter
 	private ActionReporter.OBJECT_TYPE type;
 
-	@XmlElement(name = "description", required = true)
 	@Getter
 	@Setter
 	private String description;
 
-	@XmlElement(name = "status", required = true)
 	@Getter
 	private OBJECT_STATE status = OBJECT_STATE.OK;
 
-	@XmlElement(name = "stats", required = true)
 	@Getter
 	private Map<OBJECT_TYPE, Integer> stats = new HashMap<OBJECT_TYPE, Integer>();
 
-	@XmlElement(name = "io_type")
 	@Getter
 	private IO_TYPE ioType;
 
-	@XmlElement(name = "errors")
 	@Getter
 	private List<ObjectError> errors = new ArrayList<ObjectError>();
 
-	@XmlElement(name = "checkpoint_errors")
 	@Getter
 	private List<Integer> checkPointErrorKeys = new ArrayList<Integer>();
 	
-	@XmlElement(name = "checkpoint_warnings")
 	@Getter
 	private List<Integer> checkPointWarningKeys = new ArrayList<Integer>();
 
-	@XmlElement(name = "checkpoint_error_count")
 	@Getter
 	private int checkPointErrorCount = 0;
 
-	@XmlElement(name = "checkpoint_warning_count")
 	@Getter
 	private int checkPointWarningCount = 0;
 
-	@XmlElement(name = "objectid")
 	@Getter
 	private String objectId;
 

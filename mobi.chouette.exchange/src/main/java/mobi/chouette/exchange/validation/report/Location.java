@@ -4,11 +4,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -32,23 +27,14 @@ import mobi.chouette.model.util.NamingUtil;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ToString
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "file", "line", "objectId", "name", "objectRefs" })
 public class Location extends AbstractReport {
 
-	@XmlElement(name = "file")
 	private FileLocation file;
 
-	// @XmlElement(name = "line")
-	// private LineLocation line;
-	//
-	@XmlElement(name = "objectid")
 	private String objectId = "";
 
-	@XmlElement(name = "label")
 	private String name = "";
 
-	@XmlElement(name = "object_path")
 	private List<ObjectReference> objectRefs = new ArrayList<>();
 
 	public Location(DataLocation dl) {

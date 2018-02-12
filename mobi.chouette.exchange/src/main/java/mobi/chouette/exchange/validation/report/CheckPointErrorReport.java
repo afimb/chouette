@@ -5,11 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -18,26 +13,18 @@ import mobi.chouette.exchange.report.AbstractReport;
 @Data
 @EqualsAndHashCode(callSuper=false)
 @ToString
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "key", "testId", "source", "targets", "value", "referenceValue" })
 public class CheckPointErrorReport extends AbstractReport {
 
-	@XmlElement(name = "test_id")
 	private String testId;
 
-	@XmlElement(name = "source")
 	private Location source;
 
-	@XmlElement(name = "target")
 	private List<Location> targets = new ArrayList<>();
 
-	@XmlElement(name = "error_id", required = true)
 	private String key;
 
-	@XmlElement(name = "error_value")
 	private String value = "";
 
-	@XmlElement(name = "reference_value")
 	private String referenceValue = "";
 
 	protected CheckPointErrorReport(String testId, String key, Location source) {

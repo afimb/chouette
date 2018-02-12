@@ -7,15 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import mobi.chouette.common.Constant;
 import mobi.chouette.exchange.report.ActionReporter.FILE_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
@@ -24,37 +18,27 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-@XmlRootElement(name = "action_report")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "progression", "result", "zip", "files", "lines", "stats", "failure", "objects", "collections" })
 @Data
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class ActionReport extends AbstractReport implements Constant, ProgressionReport, Report {
 
-	@XmlElement(name = "progression", required = true)
 	private Progression progression = new Progression();
 
-	@XmlElement(name = "result", required = true)
 	private String result = ReportConstant.STATUS_OK;
 
-	@XmlElement(name = "zip_files")
 	private List<FileReport> zips = new ArrayList<>();
 
-	@XmlElement(name = "files")
 	private List<FileReport> files = new ArrayList<>();
 
-	@XmlElement(name = "failure")
 	private ActionError failure;
 
-	@XmlElement(name = "objects")
 	private Map<ActionReporter.OBJECT_TYPE, ObjectReport> objects = new HashMap<ActionReporter.OBJECT_TYPE, ObjectReport>();
 
-	@XmlElement(name = "collections")
 	private Map<ActionReporter.OBJECT_TYPE, ObjectCollectionReport> collections = new HashMap<ActionReporter.OBJECT_TYPE, ObjectCollectionReport>();
 
-	@XmlTransient
 	private Date date = new Date(0);
-	
+
 	/**
 	 * Find file report from name
 	 * 
@@ -234,7 +218,7 @@ public class ActionReport extends AbstractReport implements Constant, Progressio
 	}
 
 	@Override
-	public void print(PrintStream out, StringBuilder ret , int level, boolean first) {
+	public void print(PrintStream out, StringBuilder ret, int level, boolean first) {
 		ret.setLength(0);
 		level = 0;
 		first = true;
@@ -243,25 +227,25 @@ public class ActionReport extends AbstractReport implements Constant, Progressio
 			printObject(out, ret, level + 1, "progression", progression, first);
 			first = false;
 		}
-		out.print(toJsonString(ret, level+1, "result", result, first));
+		out.print(toJsonString(ret, level + 1, "result", result, first));
 
 		if (!zips.isEmpty())
 			printArray(out, ret, level + 1, "zip_files", zips, false);
 		if (failure != null)
-			printObject(out, ret, level + 1,"failure", failure,false);
+			printObject(out, ret, level + 1, "failure", failure, false);
 		if (!files.isEmpty())
 			printArray(out, ret, level + 1, "files", files, false);
 		if (!objects.isEmpty())
 			printArray(out, ret, level + 1, "objects", objects.values(), false);
 		if (!collections.isEmpty())
 			printArray(out, ret, level + 1, "collections", collections.values(), false);
-		
+
 		out.println("\n}}");
 	}
 
 	@Override
 	public void print(PrintStream stream) {
-		print(stream, new StringBuilder() , 1, true);
+		print(stream, new StringBuilder(), 1, true);
 
 	}
 }

@@ -7,11 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -24,16 +19,11 @@ import org.codehaus.jettison.json.JSONObject;
 @Data
 @EqualsAndHashCode(callSuper=false)
 @ToString
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "objectType", "objectReports", "stats", "ioType" })
 public class ObjectCollectionReport  extends AbstractReport {
-	@XmlElement(name = "type", required = true)
 	private ActionReporter.OBJECT_TYPE objectType;
 
-	@XmlElement(name = "object_reports")
 	private List<ObjectReport> objectReports = new ArrayList<ObjectReport>();
 
-	@XmlElement(name = "stats")
 	private Map<ActionReporter.OBJECT_TYPE, Integer> stats = new HashMap<ActionReporter.OBJECT_TYPE, Integer>();
 
 	/**

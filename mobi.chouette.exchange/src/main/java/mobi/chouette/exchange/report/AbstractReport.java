@@ -36,19 +36,15 @@ public abstract class AbstractReport {
 		if (value == null)
 			return ret.append("\"\"");
 		ret.append('"');
-		
+
 		for (char car : value.toCharArray()) {
-			if (car == '\\' || car == '/' || car == '"' )
+			if (car == '\\' || car == '/' || car == '"')
 				ret.append('\\');
 			ret.append(car);
 		}
-		
+
 		return ret.append('"');
-//		return ret
-//				.append(value.replaceAll("[\\\\]", "\\\\\\\\").replaceAll("[\\/]", "\\\\/")
-//						.replaceAll("[\"]", "\\\\\"")).append('"');
 	}
-	
 
 	public void printIntArray(PrintStream out, StringBuilder ret, int level, String name,
 			Collection<? extends Number> values, boolean first) {
@@ -56,9 +52,9 @@ public abstract class AbstractReport {
 		if (!first)
 			ret.append(',');
 		addLevel(ret.append('\n'), level).append('"').append(name).append("\": [");
-		if (values.isEmpty() ) {
+		if (values.isEmpty()) {
 			out.print(ret.append(']'));
-		} else if (values.size() == 1 ) {
+		} else if (values.size() == 1) {
 			Number value = values.iterator().next();
 			out.print(ret.append(value).append(']'));
 		} else {
@@ -75,7 +71,6 @@ public abstract class AbstractReport {
 			out.print(addLevel(ret.append('\n'), level).append(']'));
 		}
 		ret.setLength(0);
-
 	}
 
 	public void printArray(PrintStream out, StringBuilder ret, int level, String name,
@@ -90,13 +85,13 @@ public abstract class AbstractReport {
 			if (!first)
 				ret.append(',');
 			out.print(ret.append('\n'));
-			abstractReport.print(out, ret,  level + 1, first);
+			abstractReport.print(out, ret, level + 1, first);
 			first = false;
 		}
 		ret.setLength(0);
 		out.print(addLevel(ret.append('\n'), level).append(']'));
 		ret.setLength(0);
-	} 
+	}
 
 	public void printObject(PrintStream out, StringBuilder ret, int level, String name, AbstractReport object,
 			boolean first) {
@@ -108,7 +103,24 @@ public abstract class AbstractReport {
 		ret.setLength(0);
 	}
 
-	public void printMap(PrintStream out, StringBuilder ret, int level, String name, Map<? extends Object, ? extends Object> mappedValues, boolean first) {
+	/**
+	 * Prints a key / primitive value map to the out stream provided.
+	 * 
+	 * @param out
+	 *            Out stream
+	 * @param ret
+	 *            String builder to reuse.
+	 * @param level
+	 *            Recursivity.
+	 * @param name
+	 *            object name
+	 * @param mappedValues
+	 *            values to print.
+	 * @param first
+	 *            Recursivity.
+	 */
+	public void printMap(PrintStream out, StringBuilder ret, int level, String name,
+			Map<? extends Object, ? extends Object> mappedValues, boolean first) {
 		ret.setLength(0); // clear buffer
 		if (!first)
 			ret.append(',');
@@ -117,11 +129,11 @@ public abstract class AbstractReport {
 		out.print(addLevel(ret, level).append('{'));
 		first = true;
 		for (Object key : mappedValues.keySet()) {
-			out.print(toJsonString(ret, level+1, key.toString().toLowerCase(), mappedValues.get(key), first));
-            first = false;
+			out.print(toJsonString(ret, level + 1, key.toString().toLowerCase(), mappedValues.get(key), first));
+			first = false;
 		}
 		ret.setLength(0);
-		out.print(addLevel(ret.append('\n'), level).append('}'));		
+		out.print(addLevel(ret.append('\n'), level).append('}'));
 		ret.setLength(0);
 	}
 
