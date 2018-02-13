@@ -22,6 +22,7 @@ import mobi.chouette.model.Company;
 
 import org.apache.commons.lang3.StringUtils;
 
+import static mobi.chouette.common.PropertyNames.GTFS_AGENCY_PHONE_DEFAULTS;
 import static mobi.chouette.common.PropertyNames.GTFS_AGENCY_URL_DEFAULTS;
 
 /**
@@ -96,8 +97,11 @@ public class GtfsAgencyProducer extends AbstractProducer
 //         report.addItem(item);
       }
 
-      if (neptuneObject.getPhone() != null)
-         agency.setAgencyPhone(neptuneObject.getPhone());
+      if (neptuneObject.getPhone() != null) {
+		  agency.setAgencyPhone(neptuneObject.getPhone());
+	  } else {
+		  agency.setAgencyPhone(createPhoneFromProviderDefaults(neptuneObject));
+	  }
 
       // unmanaged attributes
       agency.setAgencyLang(null);
@@ -130,16 +134,25 @@ public class GtfsAgencyProducer extends AbstractProducer
 	String createURLFromProviderDefaults(Company neptuneObject) {
 		String urlDefaults = System.getProperty(GTFS_AGENCY_URL_DEFAULTS);
 
-		if (urlDefaults != null) {
-			Map<String, String> urlsPerCodeSpace = Arrays.stream(urlDefaults.split(",")).filter(codeSpaceEqualsUrl -> codeSpaceEqualsUrl != null && codeSpaceEqualsUrl.contains("=")).map(codeSpaceEqualsUrl -> codeSpaceEqualsUrl.split("=")).collect(Collectors.toMap(codeSpaceEqualsUrl -> codeSpaceEqualsUrl[0],
-					codeSpaceEqualsUrl -> codeSpaceEqualsUrl[1]));
-			String defaultUrl = urlsPerCodeSpace.get(neptuneObject.objectIdPrefix());
-			if (defaultUrl != null) {
-				return sanitizeUrl(defaultUrl);
-			}
-		}
+		String defaultUrl = getDefaultValueForProvider(neptuneObject, urlDefaults);
+		if (defaultUrl != null) return sanitizeUrl(defaultUrl);
 
 		return createURLFromOrganisationalUnit(neptuneObject);
+	}
+
+	private String getDefaultValueForProvider(Company neptuneObject, String defaultValues) {
+		if (defaultValues != null) {
+			Map<String, String> urlsPerCodeSpace = Arrays.stream(defaultValues.split(",")).filter(codeSpaceEqualsUrl -> codeSpaceEqualsUrl != null && codeSpaceEqualsUrl.contains("=")).map(codeSpaceEqualsUrl -> codeSpaceEqualsUrl.split("=")).collect(Collectors.toMap(codeSpaceEqualsUrl -> codeSpaceEqualsUrl[0],
+					codeSpaceEqualsUrl -> codeSpaceEqualsUrl[1]));
+			return urlsPerCodeSpace.get(neptuneObject.objectIdPrefix());
+
+		}
+		return null;
+	}
+
+	String createPhoneFromProviderDefaults(Company neptuneObject) {
+		String urlDefaults = System.getProperty(GTFS_AGENCY_PHONE_DEFAULTS);
+		return getDefaultValueForProvider(neptuneObject, urlDefaults);
 	}
 
    String createURLFromOrganisationalUnit(Company neptuneObject) {
