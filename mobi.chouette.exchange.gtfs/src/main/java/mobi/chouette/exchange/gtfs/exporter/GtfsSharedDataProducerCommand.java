@@ -144,7 +144,7 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 		
 		// produce interchanges
 		for(Interchange interchange : interchanges) {
-			if (isInterchangeValid(interchange, collection)) {
+			if (isInterchangeValid(interchange)) {
 				transferProducer.save(interchange, sharedPrefix, configuration.isKeepOriginalId());
 			}
 		}
@@ -167,22 +167,9 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 	/**
 	 * Interchange relations are not enforced in db. Make sure they are valid before exporting.
 	 */
-	private boolean isInterchangeValid(Interchange interchange, ExportableData collection) {
-
-		if (interchange.getConsumerVehicleJourney() != null && interchange.getFeederVehicleJourney() != null
-				&& interchange.getConsumerStopPoint() != null && interchange.getFeederStopPoint() != null) {
-
-			if (!collection.getVehicleJourneys().stream().anyMatch(vj -> interchange.getConsumerVehicleJourney().equals(vj))) {
-				log.warn("Discarding interchange because consumerVehicleJourney is not eligible for export: " + interchange);
-				return false;
-			}
-			if (!collection.getVehicleJourneys().stream().anyMatch(vj -> interchange.getFeederVehicleJourney().equals(vj))) {
-				log.warn("Discarding interchange because feederVehicleJourney is not eligible for export: " + interchange);
-				return false;
-			}
-			return true;
-		}
-		return false;
+	private boolean isInterchangeValid(Interchange interchange) {
+		return interchange.getConsumerVehicleJourney() != null && interchange.getFeederVehicleJourney() != null
+				&& interchange.getConsumerStopPoint() != null && interchange.getFeederStopPoint() != null;
 	}
 
 
