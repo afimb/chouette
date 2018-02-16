@@ -5,6 +5,7 @@ import mobi.chouette.model.Company;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import static mobi.chouette.common.PropertyNames.GTFS_AGENCY_PHONE_DEFAULTS;
 import static mobi.chouette.common.PropertyNames.GTFS_AGENCY_URL_DEFAULTS;
 
 public class GtfsAgencyProducerTest {
@@ -54,5 +55,15 @@ public class GtfsAgencyProducerTest {
 		System.setProperty(GTFS_AGENCY_URL_DEFAULTS,"KOK=www.kok.se,TST=http://www.testcomp.com");
 		String url=gtfsAgencyProducer.createURLFromProviderDefaults(company);
 		Assert.assertEquals(url, "http://www.unknowncomp.com");
+	}
+
+
+	@Test
+	public void createPhoneFromProviderDefaults(){
+		Company company = new Company();
+		company.setObjectId("UNK:Authority:432423");
+		System.setProperty(GTFS_AGENCY_PHONE_DEFAULTS,"KOK=www.kok.se,UNK=+477777");
+		String phone=gtfsAgencyProducer.createPhoneFromProviderDefaults(company);
+		Assert.assertEquals(phone, "+477777");
 	}
 }
