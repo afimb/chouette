@@ -328,7 +328,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 		Period result = new Period();
 
 		result.setStartDate(source.getStartDate().plusDays(1));
-		result.setEndDate(source.getStartDate().plusDays(1));
+		result.setEndDate(source.getEndDate().plusDays(1));
 
 		return result;
 	}
