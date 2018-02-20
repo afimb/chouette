@@ -60,7 +60,7 @@ public class NetexXMLProcessingHelperFactory {
 	public synchronized Schema getNetexSchema(NetexVersion version) throws SAXException, IOException {
 
 		Schema schema = netexSchema.get(version);
-		
+
 		if (schema == null) {
 			log.info("Initializing Netex schema version "+version+", this may take a few seconds");
 			schema = new NeTExValidator(version).getSchema();
@@ -80,6 +80,8 @@ public class NetexXMLProcessingHelperFactory {
 				return NetexVersion.V1_0_4beta;
 			case "1.07":
 				return NetexVersion.V1_0_7;
+			case "1.08":
+				return NetexVersion.v1_0_8;
 			default:
 
 			}
