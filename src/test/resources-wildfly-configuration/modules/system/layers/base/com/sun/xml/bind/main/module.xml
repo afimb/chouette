@@ -31,7 +31,6 @@
         <resource-root path="jaxb-impl-2.2.11.jar"/>
         <resource-root path="jaxb-core-2.2.11.jar"/>
         <resource-root path="jaxb-xjc-2.2.11.jar"/>
-        <resource-root path="xercesImpl-2.11.0.SP6-RB.jar"/>
     </resources>
 
     <dependencies>
@@ -43,7 +42,6 @@
         <module name="javax.api" />
         <module name="javax.xml.bind.api" />
         <module name="javax.xml.stream.api" />
-        <module name="org.apache.xerces" />
         <module name="org.kohsuke.rngom" export="true" />
     </dependencies>
 </module>
