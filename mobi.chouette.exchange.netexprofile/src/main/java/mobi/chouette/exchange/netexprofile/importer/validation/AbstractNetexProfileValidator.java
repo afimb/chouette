@@ -311,7 +311,7 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 
 		List<IdVersion> nonVersionedLocalRefs = localRefs.stream().filter(e -> e.getVersion() == null).collect(Collectors.toList());
-		List<String> localIdsWithoutVersion = localIds.stream().map(e -> e.getId()).collect(Collectors.toList());
+		Set<String> localIdsWithoutVersion = localIds.stream().map(e -> e.getId()).collect(Collectors.toSet());
 
 		boolean foundErrors = false;
 
@@ -435,7 +435,7 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		if (possibleExternalReferences.size() > 0) {
 			for (IdVersion id : possibleExternalReferences) {
 				if (log.isDebugEnabled()) {
-					log.info("Unable to validate external reference " + id);
+					log.debug("Unable to validate external reference " + id);
 				}
 				validationReporter.addCheckPointReportError(context, _1_NETEX_UNRESOLVED_EXTERNAL_REFERENCE, null, DataLocationHelper.findDataLocation(id),
 						id.getId());
