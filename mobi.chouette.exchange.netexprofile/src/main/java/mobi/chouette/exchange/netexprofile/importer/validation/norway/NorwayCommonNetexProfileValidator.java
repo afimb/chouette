@@ -7,12 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
@@ -24,6 +19,7 @@ import mobi.chouette.exchange.netexprofile.importer.validation.norway.StopPlaceR
 import mobi.chouette.exchange.netexprofile.util.NetexIdExtractorHelper;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.model.Codespace;
+
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathCompiler;
 import net.sf.saxon.s9api.XdmItem;
@@ -43,7 +39,7 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
         Map<IdVersion, List<String>> commonIds = (Map<IdVersion, List<String>>) context.get(mobi.chouette.exchange.netexprofile.Constant.NETEX_COMMON_FILE_IDENTIFICATORS);
         String fileName = (String) context.get(FILE_NAME);
 
-		
+
         // Find id-fields and to check for duplicates later
 		Set<IdVersion> localIdsInCommonFile = new HashSet<>(NetexIdExtractorHelper.collectEntityIdentificators(context, xpath, commonDom, new HashSet<>(Arrays.asList("Codespace"))));
         ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
@@ -51,29 +47,27 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
             data.getDataLocations().put(id.getId(), DataLocationHelper.findDataLocation(id));
             List<String> list = commonIds.get(id);
             if (list == null) {
-                list = new ArrayList<String>();
+                list = new ArrayList<>();
                 commonIds.put(id, list);
             }
             list.add(fileName);
 		}
 
-		
+
 		@SuppressWarnings("unchecked")
 		Set<Codespace> validCodespaces = (Set<Codespace>) context.get(NETEX_VALID_CODESPACES);
 
 		// Validate elements in common files
 		verifyAcceptedCodespaces(context, xpath, commonDom, validCodespaces);
-		
-		// Verify that local ids er ok
-		Set<IdVersion> localIds = new HashSet<>(NetexIdExtractorHelper.collectEntityIdentificators(context, xpath, commonDom, new HashSet<>(Arrays.asList("Codespace"))));
-		List<IdVersion> localRefs = NetexIdExtractorHelper.collectEntityReferences(context, xpath, commonDom, null);
-		verifyIdStructure(context, localIds, ID_STRUCTURE_REGEXP, validCodespaces);
 
+		// Verify that local ids are ok
+		List<IdVersion> localRefs = NetexIdExtractorHelper.collectEntityReferences(context, xpath, commonDom, null);
 		verifyReferencesToCorrectEntityTypes(context,localRefs);
-		verifyUseOfVersionOnLocalElements(context, localIds);
-		verifyUseOfVersionOnRefsToLocalElements(context, localIds, localRefs);
-		verifyExternalRefs(context, localRefs,localIds, new HashSet<IdVersion>());
-		
+
+		verifyUseOfVersionOnLocalElements(context, localIdsInCommonFile);
+		verifyUseOfVersionOnRefsToLocalElements(context, localIdsInCommonFile, localRefs);
+		verifyExternalRefs(context, localRefs,localIdsInCommonFile, new HashSet<>());
+
 		XdmValue compositeFrames = selectNodeSet("/PublicationDelivery/dataObjects/CompositeFrame", xpath, commonDom);
 		if (compositeFrames.size() > 0) {
 			// Using composite frames
@@ -89,7 +83,7 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 		return;
 	}
 
-	
+
 
 	protected void validateWithoutCompositeFrame(Context context, XPathCompiler xpath, XdmNode dom) throws XPathExpressionException, SaxonApiException {
 		// Validate that we have exactly one ResourceFrame
