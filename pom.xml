@@ -226,6 +226,14 @@
 										${project.rootDir}/target/wildfly-${wildfly.version}/modules/system/layers/base/com/sun/xml/bind/main
 									</outputDirectory>
 								</artifactItem>
+								<artifactItem>
+									<groupId>xerces</groupId>
+									<artifactId>xercesImpl</artifactId>
+									<version>2.11.0.SP6-RB</version>
+									<outputDirectory>
+										${project.rootDir}/target/wildfly-${wildfly.version}/modules/system/layers/base/org/apache/xerces/main
+									</outputDirectory>
+								</artifactItem>
 							</artifactItems>
 						</configuration>
 					</execution>

@@ -38,6 +38,7 @@
     - { path: "com/sun/xml/bind/jaxb-impl/2.2.11", filename: "jaxb-impl-2.2.11.jar" }
     - { path: "com/sun/xml/bind/jaxb-core/2.2.11", filename: "jaxb-core-2.2.11.jar" }
     - { path: "com/sun/xml/bind/jaxb-xjc/2.2.11", filename: "jaxb-xjc-2.2.11.jar" }
+    - { path: "xerces/xercesImpl/2.11.0.SP6-RB/xercesImpl-2.11.0.SP6-RB.jar", filename: "xercesImpl-2.11.0.SP6-RB.jar" }
 
 - name: Build the chouette docker image
   shell: docker build --tag={{ chouette_docker_image|quote }} --force-rm=true {{chouette_root}} > {{logfile}} 2>&1
