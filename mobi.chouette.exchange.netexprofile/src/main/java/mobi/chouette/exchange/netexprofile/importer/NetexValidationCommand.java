@@ -37,7 +37,7 @@ public class NetexValidationCommand implements Command, Constant {
             throw e;
         } finally {
             AbstractNetexProfileValidator.resetContext(context);
-            log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+            log.info(Color.MAGENTA + "Profile validation finished " + fileName + " " + monitor.stop() + Color.NORMAL);
         }
         if (result == ERROR) {
             log.error("Netex compliance failed");
