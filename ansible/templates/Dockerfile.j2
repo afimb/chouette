@@ -16,8 +16,8 @@ COPY jaxb-core-2.2.11.jar /opt/jboss/wildfly/modules/system/layers/base/com/sun/
 COPY jaxb-xjc-2.2.11.jar /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/jaxb-xjc-2.2.11.jar
 COPY wildfly/jaxb_module.xml /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/module.xml
 
-COPY xercesImpl-2.11.0.SP6-RB.jar /opt/jboss/wildfly/modules/system/layers/base/org/apache/xerces/xercesImpl-2.11.0.SP6-RB.jar
-COPY wildfly/xerces_module.xml /opt/jboss/wildfly/modules/system/layers/base/org/apache/xerces/module.xml
+COPY xercesImpl-2.11.0.SP6-RB.jar /opt/jboss/wildfly/modules/system/layers/base/org/apache/xerces/main/xercesImpl-2.11.0.SP6-RB.jar
+COPY wildfly/xerces_module.xml /opt/jboss/wildfly/modules/system/layers/base/org/apache/xerces/main/module.xml
 
 #Copy iev.properties
 COPY wildfly/iev.properties /etc/chouette/iev/
