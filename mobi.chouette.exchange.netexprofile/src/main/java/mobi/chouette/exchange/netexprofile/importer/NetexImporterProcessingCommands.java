@@ -1,7 +1,5 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
-import static mobi.chouette.exchange.netexprofile.Constant.NETEX_FILE_PATHS;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,6 +21,7 @@ import mobi.chouette.common.chain.Chain;
 import mobi.chouette.common.chain.ChainCommand;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.common.parallel.ParallelExecutionCommand;
 import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.importer.CleanRepositoryCommand;
@@ -34,6 +33,8 @@ import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.ImportedLineValidatorCommand;
 import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
+
+import static mobi.chouette.exchange.netexprofile.Constant.NETEX_FILE_PATHS;
 
 @Data
 @Log4j
@@ -127,6 +128,7 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 
 			context.put(mobi.chouette.exchange.netexprofile.Constant.NETEX_COMMON_FILE_IDENTIFICATORS, new HashMap<IdVersion, List<String>>());
 
+
 			for (Path file : commonFilePaths) {
 				Chain commonFileChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 				commonFileChains.add(commonFileChain);
@@ -158,48 +160,73 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 					filePath -> filePath.getFileName() != null && !filePath.getFileSystem().getPathMatcher("glob:_*.xml").matches(filePath.getFileName()))
 					.collect(Collectors.toList());
 
-			ChainCommand lineChains = (ChainCommand) CommandFactory.create(initialContext, ChainCommand.class.getName());
-			lineChains.setIgnored(parameters.isContinueOnLineErrors());
-			
-			mainChain.add(lineChains);
 
-			for (Path file : lineFilePaths) {
-				Chain lineChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
-				lineChains.add(lineChain);
+			// profile validation
+			if (parameters.isValidateAgainstProfile()) {
 
-				// init referentials
-				NetexInitReferentialCommand initializer = (NetexInitReferentialCommand) CommandFactory.create(initialContext,
-						NetexInitReferentialCommand.class.getName());
-				initializer.setPath(file);
-				initializer.setLineFile(true);
-				lineChain.add(initializer);
+				ParallelExecutionCommand lineValidationCommands = (ParallelExecutionCommand) CommandFactory.create(initialContext, ParallelExecutionCommand.class.getName());
+				lineValidationCommands.setIgnored(parameters.isContinueOnLineErrors());
+				mainChain.add(lineValidationCommands);
 
-				// profile validation
-				if(parameters.isValidateAgainstProfile()) {
+				// Compare by file size, largest first
+				List<Path> allPathsSortedLargestFirst = new ArrayList<>(lineFilePaths);
+				Collections.sort(allPathsSortedLargestFirst, (o1, o2) -> (int) (o2.toFile().length() - o1.toFile().length()));
+				for (Path file : allPathsSortedLargestFirst) {
+					Chain lineChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
+
+					lineValidationCommands.add(lineChain, c -> new Context(context));
+
+					// init referentials
+					NetexInitReferentialCommand initializer = (NetexInitReferentialCommand) CommandFactory.create(initialContext,
+							NetexInitReferentialCommand.class.getName());
+					initializer.setPath(file);
+					initializer.setLineFile(true);
+					lineChain.add(initializer);
+
 					Command validator = CommandFactory.create(initialContext, NetexValidationCommand.class.getName());
 					lineChain.add(validator);
+
 				}
-				// parsing
-				NetexLineParserCommand parser = (NetexLineParserCommand) CommandFactory.create(initialContext, NetexLineParserCommand.class.getName());
-				parser.setPath(file);
-				lineChain.add(parser);
+			}
 
-				if (withDao && !parameters.isNoSave()) {
+			if (withDao && !parameters.isNoSave()) {
+				ChainCommand lineChains = (ChainCommand) CommandFactory.create(initialContext, ChainCommand.class.getName());
+				lineChains.setIgnored(parameters.isContinueOnLineErrors());
 
-					Command clean = CommandFactory.create(initialContext, NetexprofileLineDeleteCommand.class.getName());
-					lineChain.add(clean);
+				mainChain.add(lineChains);
+				for (Path file : lineFilePaths) {
+					Chain lineChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
+					lineChains.add(lineChain);
 
-					// register
-					Command register = CommandFactory.create(initialContext, LineRegisterCommand.class.getName());
-					lineChain.add(register);
+					// init referentials
+					NetexInitReferentialCommand initializer = (NetexInitReferentialCommand) CommandFactory.create(initialContext,
+							NetexInitReferentialCommand.class.getName());
+					initializer.setPath(file);
+					initializer.setLineFile(true);
+					lineChain.add(initializer);
 
-					Command copy = CommandFactory.create(initialContext, CopyCommand.class.getName());
-					lineChain.add(copy);
-				}
-				if (level3validation) {
-					// add validation
-					Command validate = CommandFactory.create(initialContext, ImportedLineValidatorCommand.class.getName());
-					lineChain.add(validate);
+					// parsing
+					NetexLineParserCommand parser = (NetexLineParserCommand) CommandFactory.create(initialContext, NetexLineParserCommand.class.getName());
+					parser.setPath(file);
+					lineChain.add(parser);
+
+					if (withDao && !parameters.isNoSave()) {
+
+						Command clean = CommandFactory.create(initialContext, NetexprofileLineDeleteCommand.class.getName());
+						lineChain.add(clean);
+
+						// register
+						Command register = CommandFactory.create(initialContext, LineRegisterCommand.class.getName());
+						lineChain.add(register);
+
+						Command copy = CommandFactory.create(initialContext, CopyCommand.class.getName());
+						lineChain.add(copy);
+					}
+					if (level3validation) {
+						// add validation
+						Command validate = CommandFactory.create(initialContext, ImportedLineValidatorCommand.class.getName());
+						lineChain.add(validate);
+					}
 				}
 			}
 
