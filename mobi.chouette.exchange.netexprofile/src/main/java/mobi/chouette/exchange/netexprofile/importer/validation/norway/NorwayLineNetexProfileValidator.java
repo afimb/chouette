@@ -85,7 +85,16 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 	};
 
 
+	private String validTransportModeString;
+	private String validTransportSubModeString;
 
+	public NorwayLineNetexProfileValidator() {
+		List<String> validTransportModesWithQuotes = Arrays.asList(validTransportModes).stream().map(e -> "'" + e + "'").collect(Collectors.toList());
+		List<String> validTransportSubModesWithQuotes = Arrays.asList(validTransportSubModes).stream().map(e -> "'" + e + "'").collect(Collectors.toList());
+
+		validTransportModeString = StringUtils.join(validTransportModesWithQuotes, ",");
+		validTransportSubModeString = StringUtils.join(validTransportSubModesWithQuotes, ",");
+	}
 
 	@Override
 	public void validate(Context context) throws Exception {
@@ -112,7 +121,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 		verifyAcceptedCodespaces(context, xpath, dom, validCodespaces);
 		verifyIdStructure(context, localIds, ID_STRUCTURE_REGEXP, validCodespaces);
 		verifyNoDuplicatesWithCommonElements(context, localIds, commonIds);
-		
+
 		verifyNoDuplicatesAcrossLineFiles(context, localIds,
 				new HashSet<>(Arrays.asList("ResourceFrame", "SiteFrame", "CompsiteFrame", "TimetableFrame", "ServiceFrame", "ServiceCalendarFrame","RoutePoint","PointProjection","ScheduledStopPoint","PassengerStopAssignment","NoticeAssignment")));
 
@@ -246,16 +255,9 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 			validateElementNotPresent(context, xpath, subLevel, "//StopPointInJourneyPattern[DestinationDisplayRef/@ref = preceding-sibling::StopPointInJourneyPattern[1]/DestinationDisplayRef/@ref and number(@order) >  number(preceding-sibling::StopPointInJourneyPattern[1]/@order)]",
 					_1_NETEX_SERVICE_FRAME_STOP_WITH_REPEATING_DESTINATIONDISPLAYREF);
 
-			
-			
-			
-					
-			List<String> validTransportModesWithQuotes = Arrays.asList(validTransportModes).stream().map(e -> "'"+e+"'").collect(Collectors.toList());
-			List<String> validTransportSubModesWithQuotes = Arrays.asList(validTransportSubModes).stream().map(e -> "'"+e+"'").collect(Collectors.toList());
-			
-			validateElementNotPresent(context, xpath, subLevel, "lines/Line/TransportMode[not(. = ("+StringUtils.join(validTransportModesWithQuotes,",")+"))]",
+			validateElementNotPresent(context, xpath, subLevel, "lines/Line/TransportMode[not(. = ("+ validTransportModeString +"))]",
 					_1_NETEX_SERVICE_FRAME_INVALID_TRANSPORTMODE);
-			validateElementNotPresent(context, xpath, subLevel, "lines/Line/TransportSubmode/*[not(. = ("+StringUtils.join(validTransportSubModesWithQuotes,",")+"))]",
+			validateElementNotPresent(context, xpath, subLevel, "lines/Line/TransportSubmode/*[not(. = ("+ validTransportSubModeString +"))]",
 					_1_NETEX_SERVICE_FRAME_INVALID_TRANSPORTSUBMODE);
 			
 			
