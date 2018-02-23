@@ -11,6 +11,8 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBElement;
 
+import lombok.extern.log4j.Log4j;
+
 import org.rutebanken.helper.calendar.CalendarPattern;
 import org.rutebanken.helper.calendar.CalendarPatternAnalyzer;
 import org.rutebanken.netex.model.DataManagedObjectStructure;
@@ -38,7 +40,7 @@ import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-
+@Log4j
 public class ServiceCalendarFrameParser extends NetexParser implements Parser, Constant {
 
 	static final String LOCAL_CONTEXT = "ServiceCalendar";
@@ -387,7 +389,8 @@ public class ServiceCalendarFrameParser extends NetexParser implements Parser, C
 		}
 		
 		if(validBetween == null) {
-			validBetween =  getValidBetweenForFrame(objectContext);
+			log.info("About to invoke getValidBetweenForFrame");
+			validBetween =  getValidBetweenForFrame(objectContext); // TODO could this be correct? Or should it be context as input param?
 		}
 		
 		return validBetween;
