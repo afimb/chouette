@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.netexprofile.importer;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -19,9 +18,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.ejb.Stateless;
 import javax.naming.InitialContext;
 import javax.xml.transform.Source;
-import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Validator;
+
+import org.rutebanken.netex.validation.NeTExValidator;
+import org.rutebanken.netex.validation.NeTExValidator.NetexVersion;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
@@ -35,15 +42,6 @@ import mobi.chouette.exchange.netexprofile.jaxb.NetexXMLProcessingHelperFactory;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
-
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-import org.rutebanken.netex.validation.NeTExValidator;
-import org.rutebanken.netex.validation.NeTExValidator.NetexVersion;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 @Log4j
 @Stateless(name = NetexSchemaValidationCommand.COMMAND)
@@ -207,7 +205,7 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 				
 				Monitor monitor = MonitorFactory.start("SchemaValidation");
 				log.info("Schema validating "+fileName);
-				validator.validate(new SAXSource(new InputSource(new FileInputStream(file))));
+				validator.validate(xmlSource);
 				log.info("Schema validation finished "+fileName+ " "+monitor.stop());
 
 			} catch (SAXException e) {
