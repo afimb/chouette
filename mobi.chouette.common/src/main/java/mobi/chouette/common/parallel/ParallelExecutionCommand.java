@@ -3,6 +3,7 @@ package mobi.chouette.common.parallel;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -32,6 +33,10 @@ public class ParallelExecutionCommand implements Command {
 
 	private List<Pair<Command, Function<Context, Context>>> commands = new ArrayList<>();
 
+	private static final int DEFAULT_TIMEOUT_SECONDS = 3600;
+	@Getter
+	@Setter
+	private int timeoutSeconds = DEFAULT_TIMEOUT_SECONDS;
 	@Getter
 	@Setter
 	private boolean ignored = false;
@@ -56,8 +61,8 @@ public class ParallelExecutionCommand implements Command {
 			t.setPriority(Thread.MIN_PRIORITY);
 			return t;
 		};
-		int processors = Runtime.getRuntime().availableProcessors();
-		ExecutorService executor = Executors.newFixedThreadPool(processors,threadFactory);
+		int processors = Math.min(commands.size(), Runtime.getRuntime().availableProcessors());
+		ExecutorService executor = Executors.newFixedThreadPool(processors, threadFactory);
 
 		try {
 			List<Future<Boolean>> commandExecutionResults = new ArrayList<>();
@@ -66,16 +71,22 @@ public class ParallelExecutionCommand implements Command {
 				Command command = commandWithContext.getLeft();
 				Function<Context, Context> contextInitializer = commandWithContext.getRight();
 				Context commandContext = contextInitializer.apply(context);
-				commandExecutionResults.add(executor.submit(() -> command.execute(commandContext)));
+				commandExecutionResults.add(executor.submit(new CommandTask(command, commandContext)));
 			}
 
 			executor.shutdown();
-			executor.awaitTermination(60, TimeUnit.MINUTES);
 
-			for (Future<Boolean> commandResult : commandExecutionResults) {
-				if (!ignored && commandResult.get() == ERROR) {
-					result = ERROR;
+			boolean completed = executor.awaitTermination(timeoutSeconds, TimeUnit.SECONDS);
+
+			if (completed) {
+				for (Future<Boolean> commandResult : commandExecutionResults) {
+					if (!ignored && commandResult.get() == ERROR) {
+						result = ERROR;
+					}
 				}
+			} else {
+				log.warn(COMMAND + " failed to complete within " + timeoutSeconds + " seconds");
+				result = ERROR;
 			}
 		} catch (Exception e) {
 			log.error("Parallel command execution failed ", e);
@@ -87,6 +98,28 @@ public class ParallelExecutionCommand implements Command {
 
 
 		return result;
+	}
+
+	private class CommandTask implements Callable<Boolean> {
+
+		private Command command;
+
+		private Context context;
+
+		public CommandTask(Command command, Context context) {
+			this.command = command;
+			this.context = context;
+		}
+
+		@Override
+		public Boolean call() throws Exception {
+			try {
+				return command.execute(context);
+			} catch (Exception e) {
+				log.warn("Command executed as a part of ParallelExecutionCommand failed: " + e.getMessage(), e);
+				return false;
+			}
+		}
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {
