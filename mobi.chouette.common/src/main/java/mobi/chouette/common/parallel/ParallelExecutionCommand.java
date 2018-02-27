@@ -37,9 +37,6 @@ public class ParallelExecutionCommand implements Command {
 	@Getter
 	@Setter
 	private int timeoutSeconds = DEFAULT_TIMEOUT_SECONDS;
-	@Getter
-	@Setter
-	private boolean ignored = false;
 
 	public void add(Command command, Function<Context, Context> contextIntializer) {
 		commands.add(Pair.of(command, contextIntializer));
@@ -80,7 +77,7 @@ public class ParallelExecutionCommand implements Command {
 
 			if (completed) {
 				for (Future<Boolean> commandResult : commandExecutionResults) {
-					if (!ignored && commandResult.get() == ERROR) {
+					if (commandResult.get() == ERROR) {
 						result = ERROR;
 					}
 				}
