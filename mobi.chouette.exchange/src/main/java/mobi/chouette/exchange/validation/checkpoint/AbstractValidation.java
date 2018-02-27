@@ -107,6 +107,8 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static final String VEHICLE_JOURNEY_6 = "3-VehicleJourney-6";
 	protected static final String VEHICLE_JOURNEY_7 = "3-VehicleJourney-7";
 	protected static final String VEHICLE_JOURNEY_8 = "3-VehicleJourney-8";
+	protected static final String VEHICLE_JOURNEY_RB_1 = "3-VehicleJourney-rutebanken-1";
+	protected static final String VEHICLE_JOURNEY_RB_2 = "3-VehicleJourney-rutebanken-2";
 	protected static final String FACILITY_1 = "3-Facility-1";
 	protected static final String FACILITY_2 = "3-Facility-2";
 	protected static final String INTERCHANGE_1 = "3-Interchange-1";
