@@ -119,9 +119,10 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 
 			check3StopArea2(context, stopArea, parameters);
 
-			for (int j = i + 1; j < beans.size(); j++) {
-				check3StopArea3(context, i, stopArea, j, beans.get(j));
-			}
+			// Unable to see relevance for this. Make skipping configurable?
+//			for (int j = i + 1; j < beans.size(); j++) {
+//				check3StopArea3(context, i, stopArea, j, beans.get(j));
+//			}
 
 		}
 		return;

@@ -314,7 +314,7 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		utx.rollback();
 	}
 
-	@Test(groups = { "stopArea" }, description = "3-StopArea-3", priority = 4)
+	@Test(groups = {"stopArea"}, description = "3-StopArea-3", priority = 4, enabled = false)
 	public void verifyTest3_3() throws Exception {
 
 		// 3-StopArea-3 : check multiple occurrence of a stopArea
