@@ -79,6 +79,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		initCheckPoint(context, VEHICLE_JOURNEY_1, SEVERITY.W);
 		initCheckPoint(context, VEHICLE_JOURNEY_2, SEVERITY.I);
 		initCheckPoint(context, VEHICLE_JOURNEY_2,"1", SEVERITY.E);
+		initCheckPoint(context, VEHICLE_JOURNEY_2,"5", SEVERITY.E);
 		initCheckPoint(context, VEHICLE_JOURNEY_3, SEVERITY.W);
 		initCheckPoint(context, VEHICLE_JOURNEY_4, SEVERITY.W);
 		initCheckPoint(context, VEHICLE_JOURNEY_5, SEVERITY.E);
@@ -92,6 +93,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		prepareCheckPoint(context, VEHICLE_JOURNEY_1);
 		prepareCheckPoint(context, VEHICLE_JOURNEY_2);
 		prepareCheckPoint(context, VEHICLE_JOURNEY_2,"1");
+		prepareCheckPoint(context, VEHICLE_JOURNEY_2,"5");
 		prepareCheckPoint(context, VEHICLE_JOURNEY_4);
 		prepareCheckPoint(context, VEHICLE_JOURNEY_5);
 		prepareCheckPoint(context, VEHICLE_JOURNEY_5,"1");
@@ -301,13 +303,16 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 							reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, "2", source,
 	                                calculatedSpeed, Integer.toString((int) minSpeed), target1, target2);
 						} else if (speed > maxSpeed) {
+							// Set detail = 5 (ERROR) for violations with more than twice the allowed speed
+							String detail = speed > 2 * maxSpeed ? "5" : "3";
+
 							// trop rapide
 							DataLocation source = buildLocation(context, vj);
 							DataLocation target1 = buildLocation(context, vjas0.getStopPoint().getScheduledStopPoint().getContainedInStopAreaRef().getObject());
 							DataLocation target2 = buildLocation(context, vjas1.getStopPoint().getScheduledStopPoint().getContainedInStopAreaRef().getObject());
 	
 							ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-							reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, "3", source,
+							reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, detail, source,
 	                                calculatedSpeed, Integer.toString((int) maxSpeed), target1, target2);
 						}
 					}
