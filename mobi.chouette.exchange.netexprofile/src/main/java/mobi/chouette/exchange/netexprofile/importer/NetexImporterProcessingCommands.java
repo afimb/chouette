@@ -165,7 +165,6 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 			if (parameters.isValidateAgainstProfile()) {
 
 				ParallelExecutionCommand lineValidationCommands = (ParallelExecutionCommand) CommandFactory.create(initialContext, ParallelExecutionCommand.class.getName());
-				lineValidationCommands.setIgnored(parameters.isContinueOnLineErrors());
 				mainChain.add(lineValidationCommands);
 
 				// Compare by file size, largest first
