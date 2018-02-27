@@ -2,8 +2,10 @@ package mobi.chouette.exchange.validation.checkpoint;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -22,6 +24,8 @@ import mobi.chouette.model.type.BoardingPossibilityEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.TransportSubModeNameEnum;
 import mobi.chouette.model.util.NeptuneUtil;
+
+import static mobi.chouette.model.VehicleJourney_.journeyPattern;
 
 @Log4j
 public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern> implements Validator<JourneyPattern> {
@@ -100,7 +104,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 
 			for (int j = i + 1; j < beans.size(); j++) {
 				// 3-JourneyPatter-rutebanken-3 : check identical journey patterns
-				check3JourneyPatternRb3(context, i, jp, j, beans.get(j));
+				check3JourneyPatternRb3(context, jp, beans.get(j));
 			}
 
 		}
@@ -382,29 +386,48 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 	}
 
 
-	private void check3JourneyPatternRb3(Context context, int rank, JourneyPattern journeyPattern, int rank2, JourneyPattern journeyPattern2) {
+	void check3JourneyPatternRb3(Context context, JourneyPattern journeyPattern, JourneyPattern journeyPattern2) {
 		// 3-JourneyPattern-rutebanken-3 : check identical journey pattern
 		if (isEmpty(journeyPattern.getStopPoints()))
 			return;
 		prepareCheckPoint(context, JOURNEY_PATTERN_RB_3);
-		List<StopArea> areas = NeptuneUtil.getStopAreaOfJourneyPattern(journeyPattern);
-		if (isEmpty(journeyPattern2.getStopPoints()))
-			return;
 
-		List<StopArea> areas2 = NeptuneUtil.getStopAreaOfJourneyPattern(journeyPattern2);
-		// test can be passed if alternate journey pattern areas exist
-		if (!areas2.isEmpty()) {
-			if (areas.equals(areas2)) {
-				// Improvement encountered, add journey pattern 1
-				DataLocation location = buildLocation(context, journeyPattern);
-				DataLocation target = buildLocation(context, journeyPattern2);
-				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("journeyPatternId", journeyPattern2.getObjectId());
-				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-				reporter.addCheckPointReportError(context, JOURNEY_PATTERN_RB_3, location, null, null, target);
-			}
+		if (areIdentical(journeyPattern, journeyPattern2)) {
+			// Improvement encountered, add journey pattern 1
+			DataLocation location = buildLocation(context, journeyPattern);
+			DataLocation target = buildLocation(context, journeyPattern2);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("journeyPatternId", journeyPattern2.getObjectId());
+			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+			reporter.addCheckPointReportError(context, JOURNEY_PATTERN_RB_3, location, null, null, target);
 		}
 
+	}
+
+	private boolean areIdentical(JourneyPattern jp1, JourneyPattern jp2) {
+
+		if (jp1.getStopPoints().size() != jp2.getStopPoints().size()) {
+			return false;
+		}
+
+		Iterator<StopPoint> sp2Iterator = jp2.getStopPoints().iterator();
+		for (StopPoint sp1 : jp1.getStopPoints()) {
+			StopPoint sp2 = sp2Iterator.next();
+			if (!Objects.equals(sp1.getScheduledStopPoint().getContainedInStopAreaRef().getObjectId(), sp2.getScheduledStopPoint().getContainedInStopAreaRef().getObjectId())) {
+				return false;
+			}
+
+			if (!Objects.equals(sp1.getDestinationDisplay(), sp2.getDestinationDisplay())) {
+				return false;
+			}
+			if (!Objects.equals(sp1.getForBoarding(), sp2.getForBoarding())) {
+				return false;
+			}
+			if (!Objects.equals(sp1.getForAlighting(), sp2.getForAlighting())) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 
