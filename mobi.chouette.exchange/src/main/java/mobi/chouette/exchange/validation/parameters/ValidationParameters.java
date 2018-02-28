@@ -16,6 +16,7 @@ import lombok.Data;
 		"interStopAreaDistanceMin",
 		"parentStopAreaDistanceMax",
 		"interAccessPointDistanceMin",
+		"maxSpeedHardLimitFactor",
 		"interConnectionLinkDistanceMax",
 		"walkDefaultSpeedMax",
 		"walkOccasionalTravellerSpeedMax",
