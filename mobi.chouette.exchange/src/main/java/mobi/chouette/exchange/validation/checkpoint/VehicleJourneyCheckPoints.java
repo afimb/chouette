@@ -304,15 +304,15 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 	                                calculatedSpeed, Integer.toString((int) minSpeed), target1, target2);
 						} else if (speed > maxSpeed) {
 
-							double hardLimit = maxSpeed * 2;
 							// trop rapide
 							DataLocation source = buildLocation(context, vj);
 							DataLocation target1 = buildLocation(context, vjas0.getStopPoint().getScheduledStopPoint().getContainedInStopAreaRef().getObject());
 							DataLocation target2 = buildLocation(context, vjas1.getStopPoint().getScheduledStopPoint().getContainedInStopAreaRef().getObject());
 							ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-							if (speed > hardLimit) {
+							if (parameters.getMaxSpeedHardLimitFactor()!=null && speed > maxSpeed * parameters.getMaxSpeedHardLimitFactor() ) {
+								int hardLimit=(int)(maxSpeed * parameters.getMaxSpeedHardLimitFactor());
 								reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_RB_2, null, source,
-										calculatedSpeed, Integer.toString((int) hardLimit), target1, target2);
+										calculatedSpeed, Integer.toString(hardLimit), target1, target2);
 							} else {
 								reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, "3", source,
 										calculatedSpeed, Integer.toString((int) maxSpeed), target1, target2);
