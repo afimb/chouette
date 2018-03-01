@@ -129,7 +129,7 @@ public class TransferExportDataWriter implements Command, Constant {
 				lineDAO.create(line);
 				progression.execute(context);
 
-				if (i % FLUSH_SIZE == 0) {
+				if ((i + 1) % FLUSH_SIZE == 0) {
 					log.info("Intermediary flush");
 					lineDAO.flush();
 					// Remove most flushed objects from persistence context to ease garbage collection
