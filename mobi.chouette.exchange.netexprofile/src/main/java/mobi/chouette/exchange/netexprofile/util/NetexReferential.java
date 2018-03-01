@@ -47,7 +47,6 @@ public class NetexReferential implements Serializable {
 
 
     public void clear() {
-        directionTypes.clear();
         dayTypes.clear();
         dayTypeAssignments.clear();
         operatingPeriods.clear();
@@ -55,6 +54,7 @@ public class NetexReferential implements Serializable {
     }
 
     public void dispose() {
+		directionTypes.clear();
         groupOfLinesToNetwork.clear();
     }
 
