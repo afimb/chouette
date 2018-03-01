@@ -63,7 +63,6 @@ public class NetexReferential implements Serializable {
 
     public void clear() {
         stopPointsInJourneyPattern.clear();
-		directionTypes.clear();
         dayTypes.clear();
         dayTypeAssignments.clear();
         operatingPeriods.clear();
@@ -71,6 +70,7 @@ public class NetexReferential implements Serializable {
     }
 
     public void dispose() {
+        directionTypes.clear();
         sharedStopPlaces.clear();
         scheduledStopPointToQuay.clear();
         groupOfLinesToNetwork.clear();
