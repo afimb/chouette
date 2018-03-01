@@ -86,8 +86,8 @@ public class ValidationParameters {
 	@XmlElement(name = "inter_access_point_distance_min", defaultValue = "20")
 	private int  interAccessPointDistanceMin = 20;
 
-	@XmlElement(name = "max_speed_hard_limit_factor", defaultValue = "3.0")
-	private Double maxSpeedHardLimitFactor = 3.0;
+	@XmlElement(name = "max_speed_hard_limit_factor", defaultValue = "10.0")
+	private Double maxSpeedHardLimitFactor = 10.0;
 
 	@XmlElement(name = "inter_connection_link_distance_max")
 	private Integer interConnectionLinkDistanceMax;
