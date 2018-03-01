@@ -53,6 +53,7 @@ public class LineFilter {
 						}
 						
 						if(vehicleJourney.getTimetables().isEmpty()) {
+							log.info("Removing VJ with empty timetables: "+ vehicleJourney.getObjectId());
 							vjI.remove();
 						}
 					} else {
@@ -68,6 +69,7 @@ public class LineFilter {
 							}
 						}
 						if(vehicleJourney.getTimetables().isEmpty()) {
+							log.info("Removing VJ with no valid timetables: "+ vehicleJourney.getObjectId());
 							vjI.remove();
 						}
 					} // end vehiclejourney loop
