@@ -401,7 +401,7 @@ public class CommandManager implements Constant {
 		// This prints out some help
 		HelpFormatter formater = new HelpFormatter();
 
-		formater.printHelp("command_iev [options] inputFile", options);
+		formater.printHelp("[./chouette.sh|chouette.bat] [options] inputFile", options);
 		System.exit(0);
 	}
 

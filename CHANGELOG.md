@@ -1,3 +1,12 @@
+# Version 3.4.5 (02/03/2018)
+* Correction
+  * PR #45 : (Pull Request rejeté) suppression des tags XML sur les classes de rapport
+  * PR #46 : accepté
+  * PR #50 : accepté
+  * PR #54 : accepté
+  * Mantis 58071 : l'export GTFS gère mal la présence d'un changement heure d'hiver <-> heure d'été dans la transformation d'une période de calendrier en liste de dates
+  * Issue #12 : ajout d'exemples d'utilisation du mode commande 
+
 # Version 3.4.4 (08/02/2018)
 * Correction
   * Mantis 58049: Export GTFS : shape_id renseigné sur mission sans tracé
