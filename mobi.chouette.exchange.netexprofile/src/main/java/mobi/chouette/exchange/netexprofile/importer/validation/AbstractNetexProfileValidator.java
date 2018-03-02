@@ -138,7 +138,7 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 			validationReporter.reportSuccess(context, checkPointKey);
 		} else {
 			if (log.isDebugEnabled()) {
-				log.info("Checkpoint " + checkPointKey + " failed: " + expression + " did not return 1 node");
+				log.debug("Checkpoint " + checkPointKey + " failed: " + expression + " did not return 1 node");
 			}
 			validationReporter.addCheckPointReportError(context, checkPointKey, DataLocationHelper.findDataLocation(context, document));
 		}
@@ -378,7 +378,7 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		}
 	}
 
-	protected void verifyNoDuplicatesAcrossLineFiles(Context context, Set<IdVersion> localIds, Set<String> ignorableElementNames) {
+	protected void verifyNoDuplicatesAcrossLineFiles(Context context, Collection<IdVersion> localIds, Set<String> ignorableElementNames) {
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 
 		Set<IdVersion> alreadyFoundLocalIds = (Set<IdVersion>) context.get(Constant.NETEX_EXISTING_LINE_IDS);

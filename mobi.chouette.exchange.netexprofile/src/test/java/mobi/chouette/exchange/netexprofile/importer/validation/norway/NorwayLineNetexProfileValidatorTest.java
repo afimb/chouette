@@ -266,7 +266,7 @@ public class NorwayLineNetexProfileValidatorTest {
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_AVAILABILITYCONDITION_INCOMPLETE, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_AVAILABILITYCONDITION_TODATE_BEFORE_FROMDATE, NOK);
 
-
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_DUPLICATE_IDS_ACROSS_LINE_FILES, NOK);
 		// expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SCHEMA_VALIDATION_ERROR,UNCHECK);
 		// expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_UNKNOWN_PROFILE,UNCHECK);
 

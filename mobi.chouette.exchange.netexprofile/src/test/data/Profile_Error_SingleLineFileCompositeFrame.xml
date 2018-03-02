@@ -187,7 +187,7 @@
 
 
                         </Line>
-                        <Line version="1" id="AVI:Line:WF_TRD-MOL2">
+                        <Line version="1" id="AVI:Line:WF_TRD-MOL3">
                             <!--   <Name>Trondheim-Molde</Name>-->
                             <TransportMode>water</TransportMode>
                             <!--   <TransportSubmode>
@@ -273,11 +273,11 @@
                         <JourneyPattern version="1" id="AVI:JourneyPattern:DUPLICATE_DESTINATION_DISPLAYS">
                             <!-- <RouteRef ref="AVI:Route:12636280" version="1"/>-->
                             <pointsInSequence>
-                                <StopPointInJourneyPattern order="1" version="1" id="AVI:StopPointInJourneyPattern:1263628001">
+                                <StopPointInJourneyPattern order="1" version="1" id="AVI:StopPointInJourneyPattern:1263628001b">
                                     <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:83334" version="1"/>
                                     <DestinationDisplayRef ref="AVI:DestinationDisplay:12636280" version="1"/>
                                 </StopPointInJourneyPattern>
-                                <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:1263628002">
+                                <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:1263628002b">
                                     <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:76522" version="1"/>
                                     <DestinationDisplayRef ref="AVI:DestinationDisplay:12636280" version="1"/>
                                     
@@ -335,15 +335,15 @@
                         </ServiceJourney>
                         <ServiceJourney version="1" id="AVI:ServiceJourney:WF536-126360080"> </ServiceJourney>
 
-                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF536-126360080-1">
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF536-1263600801">
                             <TransportMode>air</TransportMode>
                         </ServiceJourney>
-                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF536-126360080-1">
+                        <ServiceJourney version="1" id="AVI:ServiceJourney:WF536-1263600801b">
                             <TransportSubmode>
                                 <AirSubmode>SchengenAreaFlight</AirSubmode>
                             </TransportSubmode>
                         </ServiceJourney>
-                        <ServiceJourney version="2" id="AVI:ServiceJourney:WF536-126360080-1">
+                        <ServiceJourney version="2" id="AVI:ServiceJourney:WF536-1263600801">
                             <TransportSubmode>
                                 <AirSubmode>SchengenAreaFlight</AirSubmode>
                             </TransportSubmode>
