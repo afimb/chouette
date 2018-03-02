@@ -111,7 +111,8 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 		@SuppressWarnings("unchecked")
 		Map<IdVersion, List<String>> commonIds = (Map<IdVersion, List<String>>) context.get(NETEX_COMMON_FILE_IDENTIFICATORS);
 
-		Set<IdVersion> localIds = new HashSet<>(NetexIdExtractorHelper.collectEntityIdentificators(context, xpath, dom, new HashSet<>(Arrays.asList("Codespace"))));
+		List<IdVersion> localIdList = NetexIdExtractorHelper.collectEntityIdentificators(context, xpath, dom, new HashSet<>(Arrays.asList("Codespace")));
+		Set<IdVersion> localIds = new HashSet<>(localIdList);
 		List<IdVersion> localRefs = NetexIdExtractorHelper.collectEntityReferences(context, xpath, dom, null);
 
 		for (IdVersion id : localIds) {
@@ -122,7 +123,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 		verifyIdStructure(context, localIds, ID_STRUCTURE_REGEXP, validCodespaces);
 		verifyNoDuplicatesWithCommonElements(context, localIds, commonIds);
 
-		verifyNoDuplicatesAcrossLineFiles(context, localIds,
+		verifyNoDuplicatesAcrossLineFiles(context, localIdList,
 				new HashSet<>(Arrays.asList("ResourceFrame", "SiteFrame", "CompsiteFrame", "TimetableFrame", "ServiceFrame", "ServiceCalendarFrame","RoutePoint","PointProjection","ScheduledStopPoint","PassengerStopAssignment","NoticeAssignment")));
 
 		verifyUseOfVersionOnLocalElements(context, localIds);
