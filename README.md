@@ -148,6 +148,10 @@ in the wildfly installation repository :
 bin/jboss-cli.sh --connect --command="deploy (path to ...)/chouette.ear"
 ```
 
+## Chouette command installation and usage
+
+see [chouette command examples](./doc/command/examples.md)
+
 ## More Information
  
 An exhaustive technical documentation in French is avalailable [here](http://www.chouette.mobi/developpeurs/)
