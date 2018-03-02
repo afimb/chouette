@@ -74,27 +74,29 @@ public class DataCollector {
 							validLine = true;
 						}
 					} else {
-						boolean isValid = false;
+						boolean isVehicleJourneyValid = false;
 						for (Timetable timetable : vehicleJourney.getTimetables()) {
+							boolean isTimetableValid = false;
 							if (collection.getTimetables().contains(timetable)) {
-								isValid = true;
+								isTimetableValid = true;
 							} else if (collection.getExcludedTimetables().contains(timetable)) {
-								isValid = false;
+								isTimetableValid = false;
 							} else {
 
 								if (startDate == null)
-									isValid = timetable.isActiveBefore(endDate);
+									isTimetableValid = timetable.isActiveBefore(endDate);
 								else if (endDate == null)
-									isValid = timetable.isActiveAfter(startDate);
+									isTimetableValid = timetable.isActiveAfter(startDate);
 								else
-									isValid = timetable.isActiveOnPeriod(startDate, endDate);
-								if (isValid)
+									isTimetableValid = timetable.isActiveOnPeriod(startDate, endDate);
+								if (isTimetableValid)
 									collection.getTimetables().add(timetable);
 								else
 									collection.getExcludedTimetables().add(timetable);
 							}
+							isVehicleJourneyValid |= isTimetableValid;
 						}
-						if (isValid) {
+						if (isVehicleJourneyValid) {
 							collection.getVehicleJourneys().add(vehicleJourney);
 							collectInterchanges(collection, vehicleJourney, skipNoCoordinate, followLinks);
 							collection.getFootnotes().addAll(vehicleJourney.getFootnotes());
