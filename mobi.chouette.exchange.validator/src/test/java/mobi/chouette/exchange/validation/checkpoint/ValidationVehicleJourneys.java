@@ -298,10 +298,10 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 
 	}
 
-	@Test(groups = { "vehicleJourney" }, description = "3-VehicleJourney-2",priority=4)
+	@Test(groups = { "vehicleJourney" }, description = "3-VehicleJourney-2-2",priority=4)
 	public void verifyTest3_2() throws Exception {
 		// 3-VehicleJourney-2 : check speed progression
-		log.info(Color.BLUE + "3-VehicleJourney-2" + Color.NORMAL);
+		log.info(Color.BLUE + "3-VehicleJourney-2-2" + Color.NORMAL);
 		Context context = initValidatorContext();
 		context.put(VALIDATION_REPORT, new ValidationReport());
 
@@ -340,16 +340,16 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 		
 
-		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-VehicleJourney-2");
-		Assert.assertNotNull(checkPointReport, "report must contain a 3-VehicleJourney-2 checkPoint");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-VehicleJourney-2-2");
+		Assert.assertNotNull(checkPointReport, "report must contain a 3-VehicleJourney-2-2 checkPoint");
 
 		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.INFO,
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on level warning");
 		
 		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 81, " checkPointReport must have 81 item");
-		String detailKey = "3-VehicleJourney-2".replaceAll("-", "_").toLowerCase();
-		List<CheckPointErrorReport> details = checkReportForTest(report,"3-VehicleJourney-2",-1);
+		String detailKey = "3-VehicleJourney-2-2".replaceAll("-", "_").toLowerCase();
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-VehicleJourney-2-2",-1);
 		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
@@ -357,6 +357,8 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		utx.rollback();
 
 	}
+
+	// TODO test vj2__1, vj2_3, vj2_4, vj2_5
 
 	@Test(groups = { "vehicleJourney" }, description = "3-VehicleJourney-3",priority=5)
 	public void verifyTest3_3() throws Exception {

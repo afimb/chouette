@@ -77,9 +77,11 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		boolean test4_2 = parameters.getCheckAllowedTransportModes() == 1;
 
 		initCheckPoint(context, VEHICLE_JOURNEY_1, SEVERITY.W);
-		initCheckPoint(context, VEHICLE_JOURNEY_2, SEVERITY.I);
-		initCheckPoint(context, VEHICLE_JOURNEY_RB_1, SEVERITY.E);
-		initCheckPoint(context, VEHICLE_JOURNEY_RB_2,SEVERITY.E);
+		initCheckPoint(context, VEHICLE_JOURNEY_2_1, SEVERITY.E);
+		initCheckPoint(context, VEHICLE_JOURNEY_2_2, SEVERITY.W);
+		initCheckPoint(context, VEHICLE_JOURNEY_2_3, SEVERITY.W);
+		initCheckPoint(context, VEHICLE_JOURNEY_2_4, SEVERITY.I);
+		initCheckPoint(context, VEHICLE_JOURNEY_2_5, SEVERITY.E);
 		initCheckPoint(context, VEHICLE_JOURNEY_3, SEVERITY.W);
 		initCheckPoint(context, VEHICLE_JOURNEY_4, SEVERITY.W);
 		initCheckPoint(context, VEHICLE_JOURNEY_5, SEVERITY.E);
@@ -91,9 +93,11 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 
 		// checkPoint is applicable
 		prepareCheckPoint(context, VEHICLE_JOURNEY_1);
-		prepareCheckPoint(context, VEHICLE_JOURNEY_2);
-		prepareCheckPoint(context, VEHICLE_JOURNEY_RB_1);
-		prepareCheckPoint(context, VEHICLE_JOURNEY_RB_2);
+		prepareCheckPoint(context, VEHICLE_JOURNEY_2_1);
+		prepareCheckPoint(context, VEHICLE_JOURNEY_2_2);
+		prepareCheckPoint(context, VEHICLE_JOURNEY_2_3);
+		prepareCheckPoint(context, VEHICLE_JOURNEY_2_4);
+		prepareCheckPoint(context, VEHICLE_JOURNEY_2_5);
 		prepareCheckPoint(context, VEHICLE_JOURNEY_4);
 		prepareCheckPoint(context, VEHICLE_JOURNEY_5);
 		prepareCheckPoint(context, VEHICLE_JOURNEY_5,"1");
@@ -267,7 +271,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 				DataLocation target2 = buildLocation(context, vjas1.getStopPoint().getScheduledStopPoint().getContainedInStopAreaRef().getObject());
 
 				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-				reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, "4", source,
+				reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2_4, null, source,
                         vjas0.getDepartureTime().toString("HH:mm"), null, target1, target2);
 
 			} else {
@@ -282,7 +286,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 					DataLocation target2 = buildLocation(context, vjas1.getStopPoint().getScheduledStopPoint().getContainedInStopAreaRef().getObject());
 	
 					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-					reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_RB_1, null, source, null, null, target1, target2);
+					reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2_1, null, source, null, null, target1, target2);
 				} else {
 					
 					double distance = getDistance(vjas0.getStopPoint().getScheduledStopPoint().getContainedInStopAreaRef().getObject(), vjas1.getStopPoint().getScheduledStopPoint()
@@ -300,7 +304,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 							DataLocation target2 = buildLocation(context, vjas1.getStopPoint().getScheduledStopPoint().getContainedInStopAreaRef().getObject());
 	
 							ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-							reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, "2", source,
+							reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2_2, null, source,
 	                                calculatedSpeed, Integer.toString((int) minSpeed), target1, target2);
 						} else if (speed > maxSpeed) {
 
@@ -311,10 +315,10 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 							ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 							if (parameters.getMaxSpeedHardLimitFactor()!=null && speed > maxSpeed * parameters.getMaxSpeedHardLimitFactor() ) {
 								int hardLimit=(int)(maxSpeed * parameters.getMaxSpeedHardLimitFactor());
-								reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_RB_2, null, source,
+								reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2_5, null, source,
 										calculatedSpeed, Integer.toString(hardLimit), target1, target2);
 							} else {
-								reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2, "3", source,
+								reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_2_3, null, source,
 										calculatedSpeed, Integer.toString((int) maxSpeed), target1, target2);
 							}
 
