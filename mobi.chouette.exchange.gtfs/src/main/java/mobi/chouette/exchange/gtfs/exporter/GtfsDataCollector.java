@@ -41,17 +41,17 @@ public class GtfsDataCollector extends DataCollector {
 	private void collectAgencyCompany(Line line, ExportableData collection) {
 		Company company = line.getCompany();
 
-		if (company != null) {
+		if (company == null || !OrganisationTypeEnum.Authority.equals(company.getOrganisationType())) {
 			// Use network->authority as agency if it is an authority
-			if (!OrganisationTypeEnum.Authority.equals(company.getOrganisationType())) {
-				Network network = line.getNetwork();
-				if (network != null && network.getCompany() != null) {
-					if (OrganisationTypeEnum.Authority.equals(network.getCompany().getOrganisationType())) {
-						company = network.getCompany();
-					}
+			Network network = line.getNetwork();
+			if (network != null && network.getCompany() != null) {
+				if (OrganisationTypeEnum.Authority.equals(network.getCompany().getOrganisationType())) {
+					company = network.getCompany();
 				}
 			}
-		} else {
+		}
+
+		if (company == null) {
 			log.info("line " + line.getObjectId() + " : missing company, using network instead");
 			company = new Company();
 			company.setObjectId(line.getNetwork().getObjectId());
