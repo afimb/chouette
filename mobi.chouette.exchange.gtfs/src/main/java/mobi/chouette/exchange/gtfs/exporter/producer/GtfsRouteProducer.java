@@ -38,19 +38,19 @@ public class GtfsRouteProducer extends AbstractProducer
       Company c = neptuneObject.getCompany();
 
        String agencyId;
+       if (c == null || !OrganisationTypeEnum.Authority.equals(c.getOrganisationType())) {
+           // Use network->authority as agency if it is an authority
+           Network network = neptuneObject.getNetwork();
+           if (network != null && network.getCompany() != null) {
+               if (OrganisationTypeEnum.Authority.equals(network.getCompany().getOrganisationType())) {
+                   c = network.getCompany();
+               }
+           }
+       }
+
        if (c == null) {
            agencyId = neptuneObject.getNetwork().getObjectId();
        } else {
-           // Use network->authority as agency if it is an authority
-           if (!OrganisationTypeEnum.Authority.equals(c.getOrganisationType())) {
-               Network network = neptuneObject.getNetwork();
-               if (network != null && network.getCompany() != null) {
-                   if (OrganisationTypeEnum.Authority.equals(network.getCompany().getOrganisationType())) {
-                       c = network.getCompany();
-                   }
-               }
-
-           }
            agencyId = c.getObjectId();
        }
        route.setAgencyId(toGtfsId(agencyId, prefix, keepOriginalId));
