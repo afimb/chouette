@@ -85,7 +85,7 @@ public class GtfsTransferProducer extends AbstractProducer {
       }
       catch (Exception e)
       {
-          log.error("fail to produce transfer "+e.getClass().getName()+" "+e.getMessage());
+          log.error("fail to produce transfer "+e.getClass().getName()+" "+e.getMessage(), e);
          return false;
       }
       return true;
