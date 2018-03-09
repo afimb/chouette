@@ -38,7 +38,7 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
 
 		for (JAXBElement<?> journeyPatternElement : journeyPatternStruct.getJourneyPattern_OrJourneyPatternView()) {
 			JourneyPattern_VersionStructure netexJourneyPattern = (org.rutebanken.netex.model.JourneyPattern_VersionStructure) journeyPatternElement.getValue();
-			
+
 			mobi.chouette.model.JourneyPattern chouetteJourneyPattern = ObjectFactory.getJourneyPattern(referential, netexJourneyPattern.getId());
 
 			chouetteJourneyPattern.setObjectVersion(NetexParserUtils.getVersion(netexJourneyPattern));
@@ -89,14 +89,18 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
 
 			if (pointInPattern.isForAlighting() != null && !pointInPattern.isForAlighting()) {
 				stopPoint.setForAlighting(AlightingPossibilityEnum.forbidden);
+			} else if (Boolean.TRUE.equals(pointInPattern.isRequestStop())) {
+				stopPoint.setForAlighting(AlightingPossibilityEnum.request_stop);
 			} else {
 				stopPoint.setForAlighting(AlightingPossibilityEnum.normal);
 			}
 
 			if (pointInPattern.isForBoarding() != null && !pointInPattern.isForBoarding()) {
 				stopPoint.setForBoarding(BoardingPossibilityEnum.forbidden);
-			} else {
+			} else if (Boolean.TRUE.equals(pointInPattern.isRequestStop())){
 				stopPoint.setForBoarding(BoardingPossibilityEnum.normal);
+			} else {
+				stopPoint.setForBoarding(BoardingPossibilityEnum.request_stop);
 			}
 
 			chouetteJourneyPattern.addStopPoint(stopPoint);
