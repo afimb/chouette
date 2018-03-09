@@ -118,9 +118,9 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
 			if (pointInPattern.isForBoarding() != null && !pointInPattern.isForBoarding()) {
 				stopPointInJourneyPattern.setForBoarding(BoardingPossibilityEnum.forbidden);
 			} else if (Boolean.TRUE.equals(pointInPattern.isRequestStop())){
-				stopPointInJourneyPattern.setForBoarding(BoardingPossibilityEnum.normal);
-			} else {
 				stopPointInJourneyPattern.setForBoarding(BoardingPossibilityEnum.request_stop);
+			} else {
+				stopPointInJourneyPattern.setForBoarding(BoardingPossibilityEnum.normal);
 			}
 
 			chouetteJourneyPattern.addStopPoint(stopPointInJourneyPattern);
