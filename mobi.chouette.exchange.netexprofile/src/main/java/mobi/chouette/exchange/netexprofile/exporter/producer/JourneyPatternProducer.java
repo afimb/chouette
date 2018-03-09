@@ -106,6 +106,10 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 					stopPointInJourneyPattern.setForBoarding(false);
 				}
 
+				if (BoardingPossibilityEnum.request_stop.equals(forBoarding) || AlightingPossibilityEnum.request_stop.equals(forAlighting)){
+					stopPointInJourneyPattern.setRequestStop(true);
+				}
+
 				stopPointInJourneyPattern.setOrder(BigInteger.valueOf(i + 1));
 
 				if (stopPoint.getDestinationDisplay() != null) {
