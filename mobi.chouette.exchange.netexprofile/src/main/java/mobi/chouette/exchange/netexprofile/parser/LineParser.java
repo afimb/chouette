@@ -1,12 +1,7 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
 import javax.xml.bind.JAXBElement;
-
-import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
-import org.rutebanken.netex.model.DataManagedObjectStructure;
-import org.rutebanken.netex.model.GroupOfLinesRefStructure;
-import org.rutebanken.netex.model.LinesInFrame_RelStructure;
-import org.rutebanken.netex.model.PrivateCodeStructure;
+import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -22,6 +17,13 @@ import mobi.chouette.model.Network;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+
+import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
+import org.rutebanken.netex.model.DataManagedObjectStructure;
+import org.rutebanken.netex.model.GroupOfLinesRefStructure;
+import org.rutebanken.netex.model.LinesInFrame_RelStructure;
+import org.rutebanken.netex.model.PresentationStructure;
+import org.rutebanken.netex.model.PrivateCodeStructure;
 
 @Log4j
 public class LineParser implements Parser, Constant {
@@ -79,6 +81,17 @@ public class LineParser implements Parser, Constant {
 				String operatorRefValue = netexLine.getOperatorRef().getRef();
 				Company company = ObjectFactory.getCompany(referential, operatorRefValue);
 				chouetteLine.setCompany(company);
+			}
+
+			if (netexLine.getPresentation() != null) {
+				PresentationStructure presentation = netexLine.getPresentation();
+				HexBinaryAdapter hexBinaryAdapter = new HexBinaryAdapter();
+				if (presentation.getColour() != null) {
+					chouetteLine.setColor(hexBinaryAdapter.marshal(presentation.getColour()));
+				}
+				if (presentation.getTextColour() != null) {
+					chouetteLine.setTextColor(hexBinaryAdapter.marshal(presentation.getTextColour()));
+				}
 			}
 
 			chouetteLine.setFilled(true);
