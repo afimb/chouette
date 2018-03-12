@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
+
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.GROUP_OF_LINES;
@@ -8,6 +10,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
 import org.rutebanken.netex.model.GroupOfLinesRefStructure;
 import org.rutebanken.netex.model.OperatorRefStructure;
+import org.rutebanken.netex.model.PresentationStructure;
 import org.rutebanken.netex.model.PrivateCodeStructure;
 
 import mobi.chouette.common.Context;
@@ -73,7 +76,20 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
 			NetexProducerUtils.populateReference(neptuneNetwork, groupOfLinesRefStruct, false);
 			netexLine.setRepresentedByGroupRef(groupOfLinesRefStruct);
 		}
-		
+
+		if (neptuneLine.getColor() != null || neptuneLine.getTextColor() != null) {
+			HexBinaryAdapter hexBinaryAdapter = new HexBinaryAdapter();
+			PresentationStructure presentation = new PresentationStructure();
+			if (neptuneLine.getColor() != null) {
+				presentation.setColour(hexBinaryAdapter.unmarshal(neptuneLine.getColor()));
+			}
+			if (neptuneLine.getTextColor() != null) {
+				presentation.setTextColour(hexBinaryAdapter.unmarshal(neptuneLine.getTextColor()));
+			}
+			netexLine.setPresentation(presentation);
+		}
+
+
 		NoticeProducer.addNoticeAndNoticeAssignments(context, exportableNetexData, exportableNetexData.getNoticeAssignmentsTimetableFrame(), neptuneLine.getFootnotes(), neptuneLine);
 
 		return netexLine;
