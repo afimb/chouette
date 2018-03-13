@@ -131,7 +131,7 @@ public class TransitDataStatisticsService {
 
 		ValidityCategory defaultCategory = new ValidityCategory(getCategoryName(minDaysValidityCategories, 0, "EXPIRING"), 0, new ArrayList<>());
 		ValidityCategory invalidCategory = new ValidityCategory(getCategoryName(minDaysValidityCategories, -1, "INVALID"), -1, new ArrayList<>());
-		List<ValidityCategory> validityCategories = new ArrayList<ValidityCategory>();
+		List<ValidityCategory> validityCategories = new ArrayList<>();
 
 		List<Integer> categories = new ArrayList<>(minDaysValidityCategories.keySet());
 		Collections.sort(categories);
@@ -184,15 +184,8 @@ public class TransitDataStatisticsService {
 
 	private boolean isValidAtLeastNumberOfDays(PublicLine pl, LocalDate startDateLocal, Integer numDays) {
 		if (pl.getEffectivePeriods().size() > 0) {
-			Period firstPeriod = pl.getEffectivePeriods().get(0);
-
-			LocalDate from = new LocalDate(firstPeriod.getFrom());
-			LocalDate to = new LocalDate(firstPeriod.getTo());
-			LocalDate limitDate = startDateLocal.plusDays(numDays);
-
-			if (!from.isAfter(startDateLocal) && to.isAfter(limitDate) || to.isEqual(limitDate)) {
-				return true;
-			}
+			Date limitDate = startDateLocal.plusDays(numDays).toDate();
+			return pl.getEffectivePeriods().stream().anyMatch(p -> !p.getFrom().after(startDateLocal.toDate()) && !p.getTo().before(limitDate));
 		}
 
 		return false;
