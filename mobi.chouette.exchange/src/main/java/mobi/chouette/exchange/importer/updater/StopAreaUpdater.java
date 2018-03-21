@@ -2,6 +2,7 @@ package mobi.chouette.exchange.importer.updater;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -142,8 +143,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			if (newValue.getAreaType() != null && !newValue.getAreaType().equals(oldValue.getAreaType())) {
 				oldValue.setAreaType(newValue.getAreaType());
 			}
-			if (newValue.getRegistrationNumber() != null
-					&& !newValue.getRegistrationNumber().equals(oldValue.getRegistrationNumber())) {
+			if (!Objects.equals(newValue.getRegistrationNumber(), oldValue.getRegistrationNumber())) {
 				oldValue.setRegistrationNumber(newValue.getRegistrationNumber());
 			}
 			if (newValue.getNearestTopicName() != null
