@@ -76,9 +76,6 @@ public class GtfsDataCollector extends DataCollector {
 			addConnectionLinks(collection, stopArea.getConnectionStartLinks(), skipNoCoordinates, followLinks);
 			addConnectionLinks(collection, stopArea.getConnectionEndLinks(), skipNoCoordinates, followLinks);
 		} else if (stopArea.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint)) {
-			if (stopArea.getParent() != null) {
-				collectStopAreas(collection, stopArea.getParent(), skipNoCoordinates, followLinks);
-			}
 			if (collection.getCommercialStops().contains(stopArea)) {
 				return;
 			}
