@@ -105,11 +105,11 @@
                             <PublicCode>DY121</PublicCode>
                             <LineRef ref="AVI:Line:DY121" version="1"/>
                             <passingTimes>
-                                <TimetabledPassingTime>
+                                <TimetabledPassingTime id="AVI:TimetabledPassingTime:1" version="1">
                                     <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:40203411" version="1"/>
                                     <DepartureTime>06:00:00Z</DepartureTime>
                                 </TimetabledPassingTime>
-                                <TimetabledPassingTime>
+                                <TimetabledPassingTime id="AVI:TimetabledPassingTime:2" version="1">
                                     <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:40203412" version="1"/>
                                     <ArrivalTime>06:40:00Z</ArrivalTime>
                                 </TimetabledPassingTime>
