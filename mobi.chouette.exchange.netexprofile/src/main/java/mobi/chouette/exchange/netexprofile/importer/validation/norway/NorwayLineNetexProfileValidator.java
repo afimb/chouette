@@ -290,6 +290,12 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 			validateElementNotPresent(context, xpath, subLevel, "//TimetabledPassingTime[DepartureTime = ArrivalTime]",
 					_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_SAME_VALUE);
 
+			validateElementNotPresent(context, xpath, subLevel, "//TimetabledPassingTime[not(@id)]",
+					_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_ID);
+			validateElementNotPresent(context, xpath, subLevel, "//TimetabledPassingTime[not(@version)]",
+					_1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIME_VERSION);
+
+
 			validateElementNotPresent(context, xpath, subLevel, "vehicleJourneys/ServiceJourney[not(JourneyPatternRef)]",
 					_1_NETEX_TIMETABLE_FRAME_SERVICEJOURNEY_JOURNEYPATTERN_REF);
 			validateElementNotPresent(context, xpath, subLevel, "vehicleJourneys/ServiceJourney[(TransportMode and not(TransportSubmode))  or (not(TransportMode) and TransportSubmode)]",

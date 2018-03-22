@@ -190,26 +190,28 @@
                             <PublicCode>WF739</PublicCode>
                             <LineRef ref="AVI:Line:WF739"/>
                             <passingTimes>
-                                <TimetabledPassingTime id="AVI:TimetabledPassingTime:12-93907-7391538-50259"
+                                <TimetabledPassingTime id="AVI:TimetabledPassingTime:12-93907-7391538-50256"
                                                        version="2018-02-21-073427">
                                     <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:WF739101001"
                                                                   version="any"/>
                                     <DepartureTime>03:29:00Z</DepartureTime>
                                 </TimetabledPassingTime>
-                                <TimetabledPassingTime id="AVI:TimetabledPassingTime:12-93907-7391538-50259"
+                                <TimetabledPassingTime id="AVI:TimetabledPassingTime:12-93907-7391538-50257"
                                                        version="2018-02-21-073427">
                                     <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:WF739101002"
                                                                   version="any"/>
                                     <ArrivalTime>04:12:00Z</ArrivalTime>
                                     <DepartureTime>04:29:00Z</DepartureTime>
                                 </TimetabledPassingTime>
-                                <TimetabledPassingTime>
+                                <TimetabledPassingTime id="AVI:TimetabledPassingTime:12-93907-7391538-50258"
+                                                       version="2018-02-21-073427">>
                                     <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:WF739101003"
                                                                   version="any"/>
                                     <ArrivalTime>05:05:00Z</ArrivalTime>
                                     <DepartureTime>05:20:00Z</DepartureTime>
                                 </TimetabledPassingTime>
-                                <TimetabledPassingTime>
+                                <TimetabledPassingTime id="AVI:TimetabledPassingTime:12-93907-7391538-50259"
+                                                       version="2018-02-21-073427">>
                                     <StopPointInJourneyPatternRef ref="AVI:StopPointInJourneyPattern:WF739101004"
                                                                   version="any"/>
                                     <ArrivalTime>05:50:00Z</ArrivalTime>
