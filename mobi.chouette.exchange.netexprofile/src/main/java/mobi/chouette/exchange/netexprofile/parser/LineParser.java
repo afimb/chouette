@@ -28,6 +28,8 @@ import org.rutebanken.netex.model.PrivateCodeStructure;
 @Log4j
 public class LineParser implements Parser, Constant {
 
+	private KeyValueParser keyValueParser = new KeyValueParser();
+
 	@Override
 	public void parse(Context context) throws Exception {
 		Referential referential = (Referential) context.get(REFERENTIAL);
@@ -93,6 +95,8 @@ public class LineParser implements Parser, Constant {
 					chouetteLine.setTextColor(hexBinaryAdapter.marshal(presentation.getTextColour()));
 				}
 			}
+
+			chouetteLine.setKeyValues(keyValueParser.parse(netexLine.getKeyList()));
 
 			chouetteLine.setFilled(true);
 		}

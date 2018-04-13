@@ -37,6 +37,8 @@ import org.rutebanken.netex.model.TimetabledPassingTime;
 @Log4j
 public class ServiceJourneyParser extends NetexParser implements Parser, Constant {
 
+	private KeyValueParser keyValueParser = new KeyValueParser();
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public void parse(Context context) throws Exception {
@@ -122,6 +124,8 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 			vehicleJourney.setTransportSubMode(NetexParserUtils.toTransportSubModeNameEnum(serviceJourney.getTransportSubmode()));
 
 			parseTimetabledPassingTimes(context, referential, serviceJourney, vehicleJourney);
+
+			vehicleJourney.setKeyValues(keyValueParser.parse(serviceJourney.getKeyList()));
 
 			vehicleJourney.setFilled(true);
 

@@ -1,8 +1,6 @@
 package mobi.chouette.exchange.importer.updater;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -105,6 +103,7 @@ public class LineUpdater implements Updater<Line> {
 			oldValue.setUrl(newValue.getUrl());
 			oldValue.setColor(newValue.getColor());
 			oldValue.setTextColor(newValue.getTextColor());
+			oldValue.setKeyValues(newValue.getKeyValues());
 			oldValue.setDetached(false);
 		} else {
 			twoDatabaseLineOneTest(validationReporter, context, oldValue, newValue, data);
@@ -162,10 +161,13 @@ public class LineUpdater implements Updater<Line> {
 			if (newValue.getTextColor() != null && !newValue.getTextColor().equals(oldValue.getTextColor())) {
 				oldValue.setTextColor(newValue.getTextColor());
 			}
+			if (newValue.getKeyValues() != null && !newValue.getKeyValues().equals(oldValue.getKeyValues())) {
+				oldValue.setKeyValues(newValue.getKeyValues());
+			}
 		}
-		
+
 		// PTNetwork
-		
+
 		if (newValue.getNetwork() == null) {
 			oldValue.setNetwork(null);
 		} else {
@@ -185,7 +187,7 @@ public class LineUpdater implements Updater<Line> {
 		}
 
 		// Company
-		
+
 		if (newValue.getCompany() == null) {
 			oldValue.setCompany(null);
 		} else {
@@ -201,7 +203,7 @@ public class LineUpdater implements Updater<Line> {
 				company = ObjectFactory.getCompany(cache, objectId);
 			}
 			oldValue.setCompany(company);
-			
+
 			companyUpdater.update(context, oldValue.getCompany(), newValue.getCompany());
 		}
 
@@ -262,7 +264,7 @@ public class LineUpdater implements Updater<Line> {
 			} else {
 				route.setLine(oldValue);
 			}
-			
+
 		}
 
 		Collection<Pair<Route, Route>> modifiedRoute = CollectionUtil.intersection(oldValue.getRoutes(),
@@ -306,7 +308,7 @@ public class LineUpdater implements Updater<Line> {
 		}
 
 		updateFootnotes(context, oldValue,newValue,cache);
-		
+
 //		monitor.stop();
 	}
 	
@@ -345,7 +347,7 @@ public class LineUpdater implements Updater<Line> {
 		}
 
 	}
-	
+
 	/**
 	 * Test 2-Line-1
 	 * @param validationReporter
@@ -359,7 +361,7 @@ public class LineUpdater implements Updater<Line> {
 		else
 			validationReporter.reportSuccess(context, DATABASE_LINE_1);
 	}
-	
+
 	/**
 	 * Test 2-Line-2
 	 * @param validationReporter
@@ -373,7 +375,7 @@ public class LineUpdater implements Updater<Line> {
 		else
 			validationReporter.reportSuccess(context, DATABASE_LINE_2);
 	}
-	
+
 	/**
 	 * Test 2-Route-1
 	 * @param validationReporter
