@@ -49,6 +49,7 @@
 		<class>mobi.chouette.model.GroupOfLine</class>
 		<class>mobi.chouette.model.JourneyFrequency</class>
 		<class>mobi.chouette.model.JourneyPattern</class>
+		<class>mobi.chouette.model.KeyValue</class>
 		<class>mobi.chouette.model.Line</class>
 		<class>mobi.chouette.model.Period</class>
 		<class>mobi.chouette.model.Network</class>

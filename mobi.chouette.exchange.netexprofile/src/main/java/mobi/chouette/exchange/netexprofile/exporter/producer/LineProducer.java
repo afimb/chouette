@@ -21,6 +21,8 @@ import mobi.chouette.model.GroupOfLine;
 
 public class LineProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Line, mobi.chouette.model.Line> {
 
+	private static KeyListStructureProducer keyListStructureProducer = new KeyListStructureProducer();
+
 	@Override
 	public org.rutebanken.netex.model.Line produce(Context context, mobi.chouette.model.Line neptuneLine) {
 		
@@ -89,7 +91,7 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
 			netexLine.setPresentation(presentation);
 		}
 
-
+		netexLine.setKeyList(keyListStructureProducer.produce(neptuneLine.getKeyValues()));
 		NoticeProducer.addNoticeAndNoticeAssignments(context, exportableNetexData, exportableNetexData.getNoticeAssignmentsTimetableFrame(), neptuneLine.getFootnotes(), neptuneLine);
 
 		return netexLine;

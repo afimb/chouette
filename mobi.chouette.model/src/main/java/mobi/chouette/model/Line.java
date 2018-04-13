@@ -11,10 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -411,6 +414,20 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	@JoinTable(name = "footnotes_lines", joinColumns = { @JoinColumn(name = "line_id") }, inverseJoinColumns = { @JoinColumn(name = "footnote_id") })
 	private List<Footnote> footnotes = new ArrayList<>(0);
 
+
+	/**
+	 * keyvalues
+	 *
+	 * @param keyvalue
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@ElementCollection(fetch = FetchType.LAZY)
+	@CollectionTable(name = "lines_key_values", joinColumns = @JoinColumn(name = "line_id"))
+	private List<KeyValue> keyValues = new ArrayList<>(0);
+
 	/**
 	 * groups of lines reverse reference
 	 * 
@@ -464,5 +481,4 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 		}
 
 	}
-
 }

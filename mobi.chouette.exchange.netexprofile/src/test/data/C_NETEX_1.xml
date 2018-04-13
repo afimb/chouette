@@ -163,6 +163,12 @@
                     </routes>
                     <lines>
                         <Line version="1" id="AVI:Line:WF_TRD-MOL">
+                            <keyList>
+                                <KeyValue>
+                                    <Key>tariffCode</Key>
+                                    <Value>normal</Value>
+                                </KeyValue>
+                            </keyList>
                             <Name>Trondheim-Molde</Name>
                             <TransportMode>air</TransportMode>
                             <PublicCode>TRD-MOL</PublicCode>
@@ -244,6 +250,16 @@
                 <TimetableFrame version="1" id="AVI:TimetableFrame:7653894">
                     <vehicleJourneys>
                         <ServiceJourney version="1" id="AVI:ServiceJourney:WF538-01-18696881">
+                            <keyList>
+                                <KeyValue>
+                                    <Key>tariffCode</Key>
+                                    <Value>nattTakst</Value>
+                                </KeyValue>
+                                <KeyValue typeOfKey="otherTypeOfKey">
+                                    <Key>otherKey</Key>
+                                    <Value>otherValue</Value>
+                                </KeyValue>
+                            </keyList>
                             <DepartureTime>06:55:00Z</DepartureTime>
                             <dayTypes>
                                 <DayTypeRef ref="AVI:DayType:1484071731-Feb_Mon_20" version="1"/>

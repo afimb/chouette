@@ -105,6 +105,7 @@ public class LineUpdater implements Updater<Line> {
 			oldValue.setUrl(newValue.getUrl());
 			oldValue.setColor(newValue.getColor());
 			oldValue.setTextColor(newValue.getTextColor());
+			oldValue.setKeyValues(newValue.getKeyValues());
 			oldValue.setDetached(false);
 		} else {
 			twoDatabaseLineOneTest(validationReporter, context, oldValue, newValue, data);
@@ -161,6 +162,9 @@ public class LineUpdater implements Updater<Line> {
 			}
 			if (newValue.getTextColor() != null && !newValue.getTextColor().equals(oldValue.getTextColor())) {
 				oldValue.setTextColor(newValue.getTextColor());
+			}
+			if (newValue.getKeyValues() != null && !newValue.getKeyValues().equals(oldValue.getKeyValues())) {
+				oldValue.setKeyValues(newValue.getKeyValues());
 			}
 		}
 
@@ -306,7 +310,7 @@ public class LineUpdater implements Updater<Line> {
 		}
 
 		updateFootnotes(context, oldValue,newValue,cache);
-		
+
 //		monitor.stop();
 	}
 	
@@ -345,6 +349,7 @@ public class LineUpdater implements Updater<Line> {
 		}
 
 	}
+
 	/**
 	 * Test 2-Line-1
 	 * @param validationReporter

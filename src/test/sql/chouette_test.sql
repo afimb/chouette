@@ -519,6 +519,28 @@ ALTER TABLE chouette_gui.footnotes_vehicle_journey_at_stops OWNER TO chouette;
 
 
 
+CREATE TABLE lines_key_values (
+    line_id bigint NOT NULL,
+    type_of_key character varying,
+    key character varying,
+    value character varying
+    );
+
+
+ALTER TABLE chouette_gui.lines_key_values OWNER TO chouette;
+
+
+CREATE TABLE vehicle_journeys_key_values (
+    vehicle_journey_id bigint NOT NULL,
+    type_of_key character varying,
+    key character varying,
+    value character varying
+    );
+
+
+ALTER TABLE chouette_gui.vehicle_journeys_key_values OWNER TO chouette;
+
+
 --
 -- TOC entry 194 (class 1259 OID 938931)
 -- Name: group_of_lines; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
@@ -2544,6 +2566,13 @@ ALTER TABLE ONLY time_tables_vehicle_journeys
 
 ALTER TABLE ONLY time_tables_vehicle_journeys
     ADD CONSTRAINT vjtm_vj_fkey FOREIGN KEY (vehicle_journey_id) REFERENCES vehicle_journeys(id) ON DELETE CASCADE;
+
+
+ALTER TABLE ONLY chouette_gui.lines_key_values
+    ADD CONSTRAINT lines_key_values_line_fkey FOREIGN KEY (line_id) REFERENCES chouette_gui.lines(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY chouette_gui.vehicle_journeys_key_values
+    ADD CONSTRAINT vehicle_journeys_key_values_vj_fkey FOREIGN KEY (vehicle_journey_id) REFERENCES chouette_gui.vehicle_journeys(id) ON DELETE CASCADE;
 
 
 --

@@ -34,6 +34,8 @@ import mobi.chouette.model.VehicleJourneyAtStop;
 
 public class ServiceJourneyProducer extends NetexProducer {
 
+	private static KeyListStructureProducer keyListStructureProducer = new KeyListStructureProducer();
+
 	public ServiceJourney produce(Context context, VehicleJourney vehicleJourney, Line line) {
         ExportableData exportableData = (ExportableData) context.get(Constant.EXPORTABLE_DATA);
         ExportableNetexData exportableNetexData = (ExportableNetexData) context.get(Constant.EXPORTABLE_NETEX_DATA);
@@ -130,6 +132,8 @@ public class ServiceJourneyProducer extends NetexProducer {
 
 			serviceJourney.setPassingTimes(passingTimesStruct);
 		}
+
+		serviceJourney.setKeyList(keyListStructureProducer.produce(vehicleJourney.getKeyValues()));
 
 		return serviceJourney;
 	}
