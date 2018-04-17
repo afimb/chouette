@@ -16,6 +16,7 @@ import org.rutebanken.netex.model.FunicularSubmodeEnumeration;
 import org.rutebanken.netex.model.MetroSubmodeEnumeration;
 import org.rutebanken.netex.model.OrganisationTypeEnumeration;
 import org.rutebanken.netex.model.RailSubmodeEnumeration;
+import org.rutebanken.netex.model.ServiceAlterationEnumeration;
 import org.rutebanken.netex.model.TelecabinSubmodeEnumeration;
 import org.rutebanken.netex.model.TramSubmodeEnumeration;
 import org.rutebanken.netex.model.TransportSubmodeStructure;
@@ -28,6 +29,7 @@ import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.type.OrganisationTypeEnum;
+import mobi.chouette.model.type.ServiceAlterationEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.TransportSubModeNameEnum;
 
@@ -197,6 +199,25 @@ public class NetexParserUtils extends ParserUtils {
 				}
 			}
 
+		}
+
+		return null;
+	}
+
+	public static ServiceAlterationEnum toServiceAlterationEum(ServiceAlterationEnumeration netexValue) {
+		if (netexValue==null) {
+			return null;
+		}
+
+		switch (netexValue) {
+			case PLANNED:
+				return ServiceAlterationEnum.Planned;
+			case CANCELLATION:
+				return ServiceAlterationEnum.Cancellation;
+			case EXTRA_JOURNEY:
+				return ServiceAlterationEnum.ExtraJourney;
+			default:
+				log.error("Unsupported NeTEx ServiceAlteration value: " + netexValue);
 		}
 
 		return null;

@@ -4,6 +4,20 @@ import java.math.BigInteger;
 import java.util.Comparator;
 import java.util.List;
 
+import mobi.chouette.common.Context;
+import mobi.chouette.common.TimeUtil;
+import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
+import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
+import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
+import mobi.chouette.exchange.netexprofile.importer.util.NetexTimeConversionUtil;
+import mobi.chouette.model.JourneyPattern;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.Timetable;
+import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.VehicleJourneyAtStop;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.LocalTime;
 import org.rutebanken.netex.model.DayTypeRefStructure;
@@ -16,21 +30,6 @@ import org.rutebanken.netex.model.ServiceJourney;
 import org.rutebanken.netex.model.StopPointInJourneyPatternRefStructure;
 import org.rutebanken.netex.model.TimetabledPassingTime;
 import org.rutebanken.netex.model.TimetabledPassingTimes_RelStructure;
-
-import mobi.chouette.common.Context;
-import mobi.chouette.common.TimeUtil;
-import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.ConversionUtil;
-import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
-import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
-import mobi.chouette.exchange.netexprofile.importer.util.NetexTimeConversionUtil;
-import mobi.chouette.model.Footnote;
-import mobi.chouette.model.JourneyPattern;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.Timetable;
-import mobi.chouette.model.VehicleJourney;
-import mobi.chouette.model.VehicleJourneyAtStop;
 
 public class ServiceJourneyProducer extends NetexProducer {
 
@@ -134,6 +133,7 @@ public class ServiceJourneyProducer extends NetexProducer {
 		}
 
 		serviceJourney.setKeyList(keyListStructureProducer.produce(vehicleJourney.getKeyValues()));
+		serviceJourney.setServiceAlteration(ConversionUtil.toServiceAlterationEnumeration(vehicleJourney.getServiceAlteration()));
 
 		return serviceJourney;
 	}

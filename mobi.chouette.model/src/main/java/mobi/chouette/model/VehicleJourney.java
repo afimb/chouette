@@ -26,6 +26,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.model.type.JourneyCategoryEnum;
+import mobi.chouette.model.type.ServiceAlterationEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.TransportSubModeNameEnum;
 
@@ -260,6 +261,19 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	@Setter
 	@Column(name = "flexible_service")
 	private Boolean flexibleService;
+
+	/**
+	 * Type of Service alteration. Default is planned.
+	 *
+	 * @param serviceAlteration
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@Enumerated(EnumType.STRING)
+	@Column(name = "service_alteration")
+	private ServiceAlterationEnum serviceAlteration;
 
 	/**
 	 * route reference
