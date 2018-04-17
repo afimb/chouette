@@ -32,7 +32,7 @@ public class ResourceFrameWriter extends AbstractNetexWriter {
 			writer.writeEndElement();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		}comp
+		}
 	}
 
 	private static void writeOrganisationsElement(XMLStreamWriter writer, ExportableNetexData exportableNetexData, Marshaller marshaller) {
