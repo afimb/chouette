@@ -74,6 +74,11 @@ public class OrganisationParser implements Parser, Constant {
 			}
 
 			company.setFilled(true);
+
+			if (organisationStruct.getBrandingRef() != null) {
+				mobi.chouette.model.Branding branding = ObjectFactory.getBranding(referential, organisation.getBrandingRef().getRef());
+				company.setBranding(branding);
+			}
 		}
 	}
 

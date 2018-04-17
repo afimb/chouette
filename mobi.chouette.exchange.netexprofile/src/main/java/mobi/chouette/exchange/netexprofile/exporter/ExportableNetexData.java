@@ -10,7 +10,10 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
+
+
 import org.rutebanken.netex.model.AvailabilityCondition;
+import org.rutebanken.netex.model.Branding;
 import org.rutebanken.netex.model.Codespace;
 import org.rutebanken.netex.model.DayType;
 import org.rutebanken.netex.model.DayTypeAssignment;
@@ -99,6 +102,10 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
+    private Map<String,Branding> sharedBrandings = new HashMap<>();
+
+    @Getter
+    @Setter
     private Set<NoticeAssignment> noticeAssignmentsTimetableFrame = new HashSet<>();
 
     @Getter
@@ -148,6 +155,7 @@ public class ExportableNetexData {
         sharedNotices.clear();
         sharedStopAssignments.clear();
         sharedScheduledStopPoints.clear();
+        sharedBrandings.clear();
     }
 
 }

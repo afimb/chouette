@@ -1,17 +1,18 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
-import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
+import mobi.chouette.model.Company;
+import mobi.chouette.model.type.OrganisationTypeEnum;
 
+import org.rutebanken.netex.model.BrandingRefStructure;
 import org.rutebanken.netex.model.ContactStructure;
 import org.rutebanken.netex.model.Operator;
 import org.rutebanken.netex.model.OrganisationTypeEnumeration;
 import org.rutebanken.netex.model.Organisation_VersionStructure;
 import org.rutebanken.netex.model.PrivateCodeStructure;
 
-import mobi.chouette.common.Context;
-import mobi.chouette.exchange.netexprofile.ConversionUtil;
-import mobi.chouette.model.Company;
-import mobi.chouette.model.type.OrganisationTypeEnum;
+import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 
 public class OrganisationProducer extends NetexProducer implements NetexEntityProducer<Organisation_VersionStructure, Company> {
 
@@ -60,6 +61,12 @@ public class OrganisationProducer extends NetexProducer implements NetexEntityPr
 			organisation.getOrganisationType().add(organisationTypeEnumeration);
 		} else {
 			organisation.getOrganisationType().add(OrganisationTypeEnumeration.OTHER);
+		}
+
+		if (isSet(company.getBranding())){
+			BrandingRefStructure brandingRefStructure = netexFactory.createBrandingRefStructure();
+			NetexProducerUtils.populateReference(company.getBranding(), brandingRefStructure, true);
+			organisation.setBrandingRef(brandingRefStructure);
 		}
 
 		return organisation;
