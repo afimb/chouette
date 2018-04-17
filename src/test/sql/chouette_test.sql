@@ -1542,7 +1542,7 @@ CREATE TABLE vehicle_journeys (
     flexible_service boolean,
     journey_category integer DEFAULT 0 NOT NULL,
     private_code character varying(255),
-    service_aleration character varying(255)
+    service_alteration character varying(255)
 );
 
 
