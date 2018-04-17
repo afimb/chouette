@@ -209,7 +209,8 @@ CREATE TABLE companies (
     public_phone character varying(255),
     registration_number character varying(255),
     url character varying(255),
-    time_zone character varying(255)
+    time_zone character varying(255),
+    branding_id bigint
 );
 
 
@@ -540,6 +541,50 @@ CREATE TABLE vehicle_journeys_key_values (
 
 ALTER TABLE chouette_gui.vehicle_journeys_key_values OWNER TO chouette;
 
+
+
+CREATE TABLE brandings (
+    id bigint NOT NULL,
+    name character varying,
+    description character varying,
+    url character varying,
+    image character varying,
+    creation_time timestamp without time zone,
+    objectid character varying COLLATE pg_catalog."default" NOT NULL,
+    object_version integer,
+    creator_id character varying COLLATE pg_catalog."default"
+    );
+
+
+ALTER TABLE chouette_gui.brandings OWNER TO chouette;
+
+CREATE UNIQUE INDEX brandings_objectid_idx
+    ON chouette_gui.brandings USING btree
+    (objectid COLLATE pg_catalog."default")
+    TABLESPACE pg_default;
+
+--
+-- TOC entry 192 (class 1259 OID 938926)
+-- Name: brandings_id_seq; Type: SEQUENCE; Schema: chouette_gui; Owner: chouette
+--
+
+CREATE SEQUENCE brandings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE chouette_gui.brandings_id_seq OWNER TO chouette;
+
+--
+-- TOC entry 4260 (class 0 OID 0)
+-- Dependencies: 192
+-- Name: brandings_id_seq; Type: SEQUENCE OWNED BY; Schema: chouette_gui; Owner: chouette
+--
+
+ALTER SEQUENCE brandings_id_seq OWNED BY brandings.id;
 
 --
 -- TOC entry 194 (class 1259 OID 938931)
@@ -2002,6 +2047,10 @@ ALTER TABLE ONLY vehicle_journeys
     ADD CONSTRAINT vehicle_journeys_pkey PRIMARY KEY (id);
 
 
+
+ALTER TABLE ONLY brandings
+    ADD CONSTRAINT brandings_pkey PRIMARY KEY (id);
+
 --
 -- TOC entry 3993 (class 1259 OID 939862)
 -- Name: access_links_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
@@ -2257,7 +2306,7 @@ CREATE UNIQUE INDEX scheduled_stop_points_objectid_key ON scheduled_stop_points 
 CREATE UNIQUE INDEX time_tables_objectid_key ON time_tables USING btree (objectid);
 
 
-
+CREATE UNIQUE INDEX brandings_objectid_key ON brandings USING btree (objectid);
 --
 -- TOC entry 4082 (class 1259 OID 939898)
 -- Name: vehicle_journeys_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
@@ -2573,6 +2622,11 @@ ALTER TABLE ONLY chouette_gui.lines_key_values
 
 ALTER TABLE ONLY chouette_gui.vehicle_journeys_key_values
     ADD CONSTRAINT vehicle_journeys_key_values_vj_fkey FOREIGN KEY (vehicle_journey_id) REFERENCES chouette_gui.vehicle_journeys(id) ON DELETE CASCADE;
+
+
+ALTER TABLE ONLY chouette_gui.companies
+    ADD CONSTRAINT companies_brandings_fkey FOREIGN KEY (branding_id) REFERENCES chouette_gui.brandings(id) ON DELETE CASCADE;
+
 
 
 --

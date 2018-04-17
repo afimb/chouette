@@ -376,4 +376,17 @@ public class Company extends NeptuneIdentifiedObject {
 	@OneToMany(mappedBy = "company")
 	private List<Line> lines = new ArrayList<Line>(0);
 
+	/**
+	 * branding
+	 *
+	 * @param branding
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@ManyToOne( cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinColumn(name = "branding_id")
+	private Branding branding;
+
 }

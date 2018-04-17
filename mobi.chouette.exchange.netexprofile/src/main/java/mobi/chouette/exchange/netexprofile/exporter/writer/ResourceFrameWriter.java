@@ -2,13 +2,13 @@ package mobi.chouette.exchange.netexprofile.exporter.writer;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DEFAULT_OBJECT_VERSION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.ORGANISATIONS;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.RESOURCE_FRAME;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
 import javax.xml.bind.Marshaller;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.rutebanken.netex.model.Authority;
+import org.rutebanken.netex.model.Branding;
 import org.rutebanken.netex.model.GeneralOrganisation;
 import org.rutebanken.netex.model.Operator;
 import org.rutebanken.netex.model.Organisation_VersionStructure;
@@ -27,11 +27,12 @@ public class ResourceFrameWriter extends AbstractNetexWriter {
 			writer.writeStartElement(RESOURCE_FRAME);
 			writer.writeAttribute(VERSION, NETEX_DEFAULT_OBJECT_VERSION);
 			writer.writeAttribute(ID, resourceFrameId);
+			writeTypesOfValueElement(writer, exportableNetexData, marshaller);
 			writeOrganisationsElement(writer, exportableNetexData, marshaller);
 			writer.writeEndElement();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		}
+		}comp
 	}
 
 	private static void writeOrganisationsElement(XMLStreamWriter writer, ExportableNetexData exportableNetexData, Marshaller marshaller) {
@@ -46,6 +47,20 @@ public class ResourceFrameWriter extends AbstractNetexWriter {
 					} else {
 						marshaller.marshal(netexFactory.createGeneralOrganisation((GeneralOrganisation) organisation), writer);
 					}
+				}
+				writer.writeEndElement();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static void writeTypesOfValueElement(XMLStreamWriter writer, ExportableNetexData exportableNetexData, Marshaller marshaller) {
+		try {
+			if (!exportableNetexData.getSharedBrandings().isEmpty()) {
+				writer.writeStartElement(TYPES_OF_VALUE);
+				for (Branding branding : exportableNetexData.getSharedBrandings().values()) {
+					marshaller.marshal(netexFactory.createBranding(branding), writer);
 				}
 				writer.writeEndElement();
 			}

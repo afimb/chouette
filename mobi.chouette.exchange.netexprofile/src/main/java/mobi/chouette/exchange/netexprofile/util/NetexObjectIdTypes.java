@@ -7,6 +7,7 @@ public final class NetexObjectIdTypes {
     public static final String PUBLICATION_DELIVERY = "PublicationDelivery";
     public static final String PUBLICATION_TIMESTAMP = "PublicationTimestamp";
     public static final String PARTICIPANT_REF = "ParticipantRef";
+    public static final String TYPES_OF_VALUE = "typesOfValue";
     public static final String DESCRIPTION = "Description";
     public static final String DATA_OBJECTS = "dataObjects";
     public static final String VALIDITY_CONDITIONS = "validityConditions";

@@ -29,6 +29,15 @@
             </FrameDefaults>
             <frames>
                 <ResourceFrame version="1" id="AVI:ResourceFrame:8356908">
+                    <typesOfValue>
+                    <!-- Setting Brand name (e.g. overriding Operator name) -->
+                    <Branding version="1" id="AVI:Branding:1">
+                        <Name>Brand name</Name>
+                        <Description>Brand short name</Description>
+                        <Image>Brand image url</Image>
+                        <Url>Brand url</Url>
+                    </Branding>
+                    </typesOfValue>
                     <organisations>
                         <Authority version="1" id="AVI:Authority:Avinor">
                             <CompanyNumber>985198292</CompanyNumber>
@@ -51,6 +60,7 @@
                             <OrganisationType>authority</OrganisationType>
                         </Authority>
                         <Operator version="1" id="AVI:Operator:WF">
+                            <BrandingRef ref="AVI:Branding:1" version="1"/>
                             <CompanyNumber>917330557</CompanyNumber>
                             <Name>Widerøe</Name>
                             <LegalName>WIDERØE'S FLYVESELSKAP AS</LegalName>

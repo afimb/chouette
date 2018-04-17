@@ -1,8 +1,6 @@
 package mobi.chouette.exchange.importer.updater;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.ejb.EJB;

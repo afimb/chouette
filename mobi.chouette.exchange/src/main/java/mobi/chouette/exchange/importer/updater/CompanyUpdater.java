@@ -1,26 +1,38 @@
 package mobi.chouette.exchange.importer.updater;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
+
+import mobi.chouette.common.Context;
+import mobi.chouette.dao.BrandingDAO;
+import mobi.chouette.model.Branding;
+import mobi.chouette.model.Company;
+import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
-
-import mobi.chouette.common.Context;
-import mobi.chouette.model.Company;
 
 @Stateless(name = CompanyUpdater.BEAN_NAME)
 public class CompanyUpdater implements Updater<Company> {
 
 	public static final String BEAN_NAME = "CompanyUpdater";
 
+	@EJB(beanName = BrandingUpdater.BEAN_NAME)
+	private Updater<Branding> brandingUpdater;
+
+	@EJB
+	private BrandingDAO brandingDAO;
+
 	@Override
-	public void update(Context context, Company oldValue, Company newValue) {
+	public void update(Context context, Company oldValue, Company newValue) throws Exception {
 
 		if (newValue.isSaved()) {
 			return;
 		}
 		newValue.setSaved(true);
 
+		Referential cache = (Referential) context.get(CACHE);
         Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
@@ -109,6 +121,28 @@ public class CompanyUpdater implements Updater<Company> {
 				&& !newValue.getOrganisationType().equals(oldValue.getOrganisationType())) {
 			oldValue.setOrganisationType(newValue.getOrganisationType());
 		}
+
+		// Branding
+
+		if (newValue.getBranding() == null) {
+			oldValue.setBranding(null);
+		} else {
+			String objectId = newValue.getBranding().getObjectId();
+			Branding branding = cache.getBrandings().get(objectId);
+			if (branding == null) {
+				branding = brandingDAO.findByObjectId(objectId);
+				if (branding != null) {
+					cache.getBrandings().put(objectId, branding);
+				}
+			}
+			if (branding == null) {
+				branding = ObjectFactory.getBranding(cache, objectId);
+			}
+			oldValue.setBranding(branding);
+
+			brandingUpdater.update(context, oldValue.getBranding(), newValue.getBranding());
+		}
+
 		
 		monitor.stop();
 	}

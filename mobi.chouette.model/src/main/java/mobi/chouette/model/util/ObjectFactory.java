@@ -2,6 +2,7 @@ package mobi.chouette.model.util;
 
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.Branding;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.DestinationDisplay;
@@ -213,6 +214,22 @@ public class ObjectFactory {
 		}
 		if (!referential.getFootnotes().containsKey(objectId)) {
 			referential.getFootnotes().put(objectId, result);
+		}
+
+		return result;
+	}
+
+	public static Branding getBranding(Referential referential,
+									   String objectId) {
+		Branding result = referential.getSharedBrandings().get(objectId);
+		if (result == null) {
+			result = new Branding();
+			result.setObjectId(objectId);
+			result.setDetached(true);
+			referential.getSharedBrandings().put(objectId, result);
+		}
+		if (!referential.getSharedBrandings().containsKey(objectId)) {
+			referential.getBrandings().put(objectId, result);
 		}
 
 		return result;

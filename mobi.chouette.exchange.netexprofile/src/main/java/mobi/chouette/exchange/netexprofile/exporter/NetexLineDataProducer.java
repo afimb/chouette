@@ -17,6 +17,7 @@ import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
+import mobi.chouette.exchange.netexprofile.exporter.producer.BrandingProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.JourneyPatternProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.LineProducer;
@@ -30,6 +31,7 @@ import mobi.chouette.exchange.netexprofile.exporter.producer.ServiceJourneyProdu
 import mobi.chouette.exchange.netexprofile.exporter.producer.StopPlaceProducer;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.model.Branding;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Interchange;
@@ -71,6 +73,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 	private static CalendarProducer calendarProducer = new CalendarProducer();
 	private static ServiceJourneyProducer serviceJourneyProducer = new ServiceJourneyProducer();
 	private static ServiceJourneyInterchangeProducer serviceJourneyInterchangeProducer = new ServiceJourneyInterchangeProducer();
+	private static BrandingProducer brandingProducer = new BrandingProducer();
 
 	public void produce(Context context) throws Exception {
 
@@ -176,6 +179,11 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 			if (!exportableNetexData.getSharedOrganisations().containsKey(company.getObjectId())) {
 				Organisation_VersionStructure organisation = organisationProducer.produce(context, company);
 				exportableNetexData.getSharedOrganisations().put(company.getObjectId(), organisation);
+
+				Branding branding = company.getBranding();
+				if (branding != null && !exportableNetexData.getSharedBrandings().containsKey(branding.getObjectId())) {
+					brandingProducer.addBranding(exportableNetexData, branding);
+				}
 			}
 		}
 

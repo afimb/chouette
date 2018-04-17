@@ -22,6 +22,8 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.rutebanken.netex.model.Branding;
+import org.rutebanken.netex.model.Branding_VersionStructure;
 import org.rutebanken.netex.model.Common_VersionFrameStructure;
 import org.rutebanken.netex.model.CompositeFrame;
 import org.rutebanken.netex.model.DataManagedObjectStructure;
@@ -46,6 +48,7 @@ import org.rutebanken.netex.model.SiteFrame;
 import org.rutebanken.netex.model.StopPlacesInFrame_RelStructure;
 import org.rutebanken.netex.model.TariffZonesInFrame_RelStructure;
 import org.rutebanken.netex.model.TimetableFrame;
+import org.rutebanken.netex.model.TypesOfValueInFrame_RelStructure;
 import org.rutebanken.netex.model.ValidBetween;
 
 @Log4j
@@ -224,6 +227,14 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 				OrganisationParser organisationParser = (OrganisationParser) ParserFactory.create(OrganisationParser.class.getName());
 				organisationParser.parse(context);
 			}
+			TypesOfValueInFrame_RelStructure typesOfValueInFrame = resourceFrame.getTypesOfValue();
+			if (typesOfValueInFrame != null) {
+				for (JAXBElement<? extends DataManagedObjectStructure> typeOfValue : typesOfValueInFrame.getValueSetOrTypeOfValue()) {
+					if (typeOfValue.getValue() instanceof Branding) {
+						parseBranding(context, (Branding) typeOfValue.getValue());
+					}
+				}
+			}
 		}
 	}
 
@@ -389,6 +400,20 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 		Footnote footnote = ObjectFactory.getFootnote(referential, notice.getId());
 		footnote.setLabel(ConversionUtil.getValue(notice.getText()));
 		footnote.setCode(notice.getPublicCode());
+	}
+
+	private void parseBranding(Context context, Branding netexBranding) {
+		Referential referential = (Referential) context.get(REFERENTIAL);
+
+		mobi.chouette.model.Branding chouetteBranding = ObjectFactory.getBranding(referential, netexBranding.getId());
+		if (netexBranding.getName() != null) {
+			chouetteBranding.setName(netexBranding.getName().getValue());
+		}
+		if (netexBranding.getDescription() != null) {
+			chouetteBranding.setDescription(netexBranding.getDescription().getValue());
+		}
+		chouetteBranding.setUrl(netexBranding.getUrl());
+		chouetteBranding.setImage(netexBranding.getImage());
 	}
 
 	private void parseValidityConditionsInFrame(Context context, Common_VersionFrameStructure frameStruct) throws Exception {

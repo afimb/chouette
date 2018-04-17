@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.Branding;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.DestinationDisplay;
@@ -98,6 +99,10 @@ public class Referential implements java.io.Serializable {
 
 	@Getter
 	@Setter
+	private Map<String, Branding> sharedBrandings = new HashMap<>();
+
+	@Getter
+	@Setter
 	private Map<String, RoutePoint> sharedRoutePoints = new HashMap<>();
 
 	@Getter
@@ -184,6 +189,11 @@ public class Referential implements java.io.Serializable {
 
 	@Getter
 	@Setter
+	private Map<String, Branding> brandings = new HashMap<>();
+
+
+	@Getter
+	@Setter
 	private Map<String, VehicleJourneyAtStop> vehicleJourneyAtStops = new HashMap<String, VehicleJourneyAtStop>();
 
 	public void clear(boolean cascade) {
@@ -259,6 +269,7 @@ public class Referential implements java.io.Serializable {
 		interchanges.clear();
 		footnotes.clear();
 		vehicleJourneyAtStops.clear();
+		brandings.clear();
 	}
 
 	public void dispose() {
@@ -277,6 +288,7 @@ public class Referential implements java.io.Serializable {
 		sharedDestinationDisplays.clear();
 		sharedInterchanges.clear();
 		sharedFootnotes.clear();
+		sharedBrandings.clear();
 		sharedRoutePoints.clear();
 	}
 
