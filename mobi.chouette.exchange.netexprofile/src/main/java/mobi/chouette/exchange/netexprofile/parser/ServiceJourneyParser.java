@@ -126,6 +126,7 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 			parseTimetabledPassingTimes(context, referential, serviceJourney, vehicleJourney);
 
 			vehicleJourney.setKeyValues(keyValueParser.parse(serviceJourney.getKeyList()));
+			vehicleJourney.setServiceAlteration(NetexParserUtils.toServiceAlterationEum(serviceJourney.getServiceAlteration()));
 
 			vehicleJourney.setFilled(true);
 

@@ -270,6 +270,7 @@
                                     <Value>otherValue</Value>
                                 </KeyValue>
                             </keyList>
+                            <serviceAlteration>planned</serviceAlteration>
                             <DepartureTime>06:55:00Z</DepartureTime>
                             <dayTypes>
                                 <DayTypeRef ref="AVI:DayType:1484071731-Feb_Mon_20" version="1"/>
@@ -294,6 +295,7 @@
                         </ServiceJourney>
                         <ServiceJourney version="1" id="AVI:ServiceJourney:WF537-01-12636280">
                             <DepartureTime>08:00:00Z</DepartureTime>
+                            <serviceAlteration>cancelled</serviceAlteration>
                             <dayTypes>
                                 <DayTypeRef ref="AVI:DayType:1484071731-Feb_Mon_20" version="1"/>
                                 <DayTypeRef ref="AVI:DayType:1484071731-Feb_Mon_27" version="1"/>

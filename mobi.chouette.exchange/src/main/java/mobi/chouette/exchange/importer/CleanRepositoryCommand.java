@@ -9,9 +9,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
@@ -19,6 +16,7 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.dao.AccessPointDAO;
+import mobi.chouette.dao.BrandingDAO;
 import mobi.chouette.dao.CompanyDAO;
 import mobi.chouette.dao.ConnectionLinkDAO;
 import mobi.chouette.dao.DestinationDisplayDAO;
@@ -39,6 +37,9 @@ import mobi.chouette.dao.TimebandDAO;
 import mobi.chouette.dao.TimetableDAO;
 import mobi.chouette.dao.VehicleJourneyAtStopDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
+
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 
 @Log4j
 @Stateless(name = CleanRepositoryCommand.COMMAND)
@@ -95,6 +96,9 @@ public class CleanRepositoryCommand implements Command {
 	private FootnoteDAO footnoteDAO;
 
 	@EJB
+	private BrandingDAO brandingDAO;
+
+	@EJB
 	private InterchangeDAO interchangeDAO;
 
 	@EJB
@@ -119,8 +123,7 @@ public class CleanRepositoryCommand implements Command {
 			networkDAO.truncate();
 			routeDAO.truncate();
 			routeSectionDAO.truncate();
-			footnoteDAO.truncate();
-
+			footnoteDAO.truncate();brandingDAO.truncate();
 			stopPointDAO.truncate();
 			scheduledStopPointDAO.truncate();
 			timetableDAO.truncate();
@@ -130,7 +133,6 @@ public class CleanRepositoryCommand implements Command {
 			destinationDisplayDAO.truncate();
 			interchangeDAO.truncate();
 			routePointDAO.truncate();
-
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error(e);
