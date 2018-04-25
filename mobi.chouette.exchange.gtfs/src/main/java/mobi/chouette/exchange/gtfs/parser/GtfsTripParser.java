@@ -1195,7 +1195,9 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			stopPoint.setForAlighting(toAlightingPossibility(wrapper.dropOff));
 			
 			if(wrapper.stopHeadsign != null) {
-				DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential, stopKey);
+				DestinationDisplay destinationDisplay = ObjectFactory.getDestinationDisplay(referential,
+						AbstractConverter.composeObjectId(configuration,
+								DestinationDisplay.DESTINATIONDISPLAY_KEY, stopKey, null));
 				destinationDisplay.setFrontText(wrapper.stopHeadsign);
 				destinationDisplay.setName(wrapper.stopHeadsign);
 					
