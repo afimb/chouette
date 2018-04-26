@@ -19,4 +19,5 @@ public interface PropertyNames {
 	String FILE_STORE_IMPLEMENTATION = ".file.store.impl";
     String GTFS_AGENCY_URL_DEFAULTS = "iev.gtfs.agency.url.defaults";
     String GTFS_AGENCY_PHONE_DEFAULTS = "iev.gtfs.agency.phone.defaults";
+    String OSRM_ROUTE_SECTIONS_BASE = "iev.osrm.endpoint.";
 }

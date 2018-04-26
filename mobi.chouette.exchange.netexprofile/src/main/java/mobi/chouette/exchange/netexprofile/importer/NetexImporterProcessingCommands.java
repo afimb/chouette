@@ -26,9 +26,11 @@ import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.importer.CleanRepositoryCommand;
 import mobi.chouette.exchange.importer.CopyCommand;
+import mobi.chouette.exchange.importer.GenerateRouteSectionsCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
+import mobi.chouette.exchange.parameters.AbstractImportParameter;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.ImportedLineValidatorCommand;
@@ -240,7 +242,7 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 	public List<? extends Command> getPostProcessingCommands(Context context, boolean withDao) {
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 		boolean level3validation = context.get(VALIDATION) != null;
-
+		AbstractImportParameter parameters = (AbstractImportParameter) context.get(CONFIGURATION);
 		List<Command> commands = new ArrayList<>();
 
 
@@ -250,7 +252,9 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 				// add shared data validation
 				commands.add(CommandFactory.create(initialContext, SharedDataValidatorCommand.class.getName()));
 			}
-
+			if (parameters.isGenerateMissingRouteSections()) {
+				commands.add(CommandFactory.create(initialContext, GenerateRouteSectionsCommand.class.getName()));
+			}
 		} catch (Exception e) {
 			log.error(e, e);
 			throw new RuntimeException("unable to call factories");

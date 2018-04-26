@@ -17,7 +17,8 @@ import org.apache.log4j.Logger;
 @NoArgsConstructor
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "noSave", "cleanRepository", "stopAreaRemoteIdMapping", "stopAreaImportMode", "keepObsoleteLines" }, name = "actionImportParameter")
+@XmlType(propOrder = { "noSave", "cleanRepository", "stopAreaRemoteIdMapping", "stopAreaImportMode", "keepObsoleteLines",
+		"generateMissingRouteSections" }, name = "actionImportParameter")
 public class AbstractImportParameter extends AbstractParameter {
 
 	@XmlElement(name = "no_save", defaultValue = "false")
@@ -51,6 +52,12 @@ public class AbstractImportParameter extends AbstractParameter {
 	@Getter
 	@Setter
 	private boolean keepObsoleteLines = true;
+
+	@XmlElement(name = "generate_missing_route_sections", defaultValue = "false")
+	@Getter
+	@Setter
+	private boolean generateMissingRouteSections = false;
+
 
 	public boolean isValid(Logger log) {
 		return super.isValid(log);

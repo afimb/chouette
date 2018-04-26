@@ -21,6 +21,7 @@ import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
 import mobi.chouette.exchange.importer.CleanRepositoryCommand;
 import mobi.chouette.exchange.importer.CopyCommand;
+import mobi.chouette.exchange.importer.GenerateRouteSectionsCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.StopAreaRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
@@ -154,7 +155,9 @@ public class GtfsImporterProcessingCommands implements ProcessingCommands, Const
 				// add shared data validation
 				commands.add(CommandFactory.create(initialContext, SharedDataValidatorCommand.class.getName()));
 			}
-
+			if (parameters.isGenerateMissingRouteSections()) {
+				commands.add(CommandFactory.create(initialContext, GenerateRouteSectionsCommand.class.getName()));
+			}
 		} catch (Exception e) {
 			log.error(e, e);
 			throw new RuntimeException("unable to call factories");

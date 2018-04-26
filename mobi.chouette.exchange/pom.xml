@@ -20,7 +20,16 @@
             <groupId>org.entur</groupId>
             <artifactId>netex-java-model</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <!-- Default Dependencies -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>

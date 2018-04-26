@@ -1,0 +1,135 @@
+{
+  "code": "Ok",
+  "routes": [
+    {
+      "legs": [
+        {
+          "summary": "",
+          "duration": 23.7,
+          "steps": [
+            {
+              "intersections": [
+                {
+                  "out": 0,
+                  "entry": [
+                    true
+                  ],
+                  "bearings": [
+                    81
+                  ],
+                  "location": [
+                    30.029559,
+                    69.725792
+                  ]
+                }
+              ],
+              "geometry": "eiqhLwchvDCq@?w@?{@@w@Dq@Dq@J_AFg@FWJe@Ja@L[NYHOJM|EaFLMNO",
+              "maneuver": {
+                "bearing_after": 81,
+                "bearing_before": 0,
+                "location": [
+                  30.029559,
+                  69.725792
+                ],
+                "type": "depart"
+              },
+              "mode": "route",
+              "duration": 21.1,
+              "name": "",
+              "distance": 293.7
+            },
+            {
+              "intersections": [
+                {
+                  "out": 0,
+                  "in": 2,
+                  "entry": [
+                    true,
+                    true,
+                    false
+                  ],
+                  "bearings": [
+                    150,
+                    165,
+                    345
+                  ],
+                  "location": [
+                    30.033867,
+                    69.723958
+                  ]
+                }
+              ],
+              "geometry": "w}phLu~hvDT]T[LS",
+              "maneuver": {
+                "bearing_after": 154,
+                "bearing_before": 161,
+                "location": [
+                  30.033867,
+                  69.723958
+                ],
+                "modifier": "slight left",
+                "type": "fork"
+              },
+              "mode": "route",
+              "duration": 2.6,
+              "name": "",
+              "distance": 35.5
+            },
+            {
+              "intersections": [
+                {
+                  "in": 0,
+                  "entry": [
+                    true
+                  ],
+                  "bearings": [
+                    335
+                  ],
+                  "location": [
+                    30.034255,
+                    69.723669
+                  ]
+                }
+              ],
+              "geometry": "}{phLcaivD",
+              "maneuver": {
+                "bearing_after": 0,
+                "bearing_before": 155,
+                "location": [
+                  30.033867,
+                  69.723958
+                ],
+                "type": "arrive"
+              },
+              "mode": "route",
+              "duration": 0,
+              "name": "",
+              "distance": 0
+            }
+          ],
+          "distance": 329.2
+        }
+      ],
+      "duration": 23.7,
+      "distance": 329.2
+    }
+  ],
+  "waypoints": [
+    {
+      "hint": "7RoAgLwuAIAAAAAABwAAAAAAAADMAAAAEQAAAA1rAAASawAANgAAgPc2ygFg7icEkb7FAUYyLQQRAAwME4ehAw==",
+      "name": "",
+      "location": [
+        30.029559,
+        69.725792
+      ]
+    },
+    {
+      "hint": "7xoAgPwaAIAAAAAAAAAAAAYAAAAaAAAASAAAAAtrAADDawAANgAAgE9JygEV5icErd3KAZf6JwQDAAwME4ehAw==",
+      "name": "",
+      "location": [
+        30.034255,
+        69.723669
+      ]
+    }
+  ]
+}
