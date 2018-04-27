@@ -96,6 +96,7 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 		routeSection.setFromScheduledStopPoint(from.getScheduledStopPoint());
 		routeSection.setToScheduledStopPoint(to.getScheduledStopPoint());
 		routeSection.setInputGeometry(lineString);
+		routeSection.setProcessedGeometry(lineString);
 		routeSection.setNoProcessing(true);
 		routeSection.setFilled(true);
 		routeSection.setDetached(true);
