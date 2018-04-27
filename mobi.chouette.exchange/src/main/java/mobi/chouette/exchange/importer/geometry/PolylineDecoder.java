@@ -49,7 +49,7 @@ public class PolylineDecoder {
 			int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
 			lng += dlng;
 
-			Coordinate c = new Coordinate((double) lat / precision, (double) lng / precision);
+			Coordinate c = new Coordinate((double) lng / precision,(double) lat / precision);
 			track.add(c);
 		}
 		return track;
