@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.importer;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import javax.ejb.EJB;
@@ -12,6 +13,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.GeometryUtil;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.JourneyPatternDAO;
@@ -76,7 +78,7 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 			if (from != null && to != null) {
 				LineString lineString = routeSectionGenerator.getRouteSection(from, to, transportMode);
 				if (lineString != null) {
-					RouteSection routeSection= createRouteSection(prev, sp, lineString);
+					RouteSection routeSection = createRouteSection(prev, sp, lineString);
 					routeSectionDAO.create(routeSection);
 					jp.getRouteSections().add(routeSection);
 				}
@@ -97,9 +99,7 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 		routeSection.setNoProcessing(true);
 		routeSection.setFilled(true);
 		routeSection.setDetached(true);
-
-		log.warn("TODO. Created RouteSection with objid: " + routeSection.getObjectId());
-
+		routeSection.setDistance(BigDecimal.valueOf(GeometryUtil.convertFromAngleDegreesToMeters(lineString.getLength())));
 		return routeSection;
 	}
 
