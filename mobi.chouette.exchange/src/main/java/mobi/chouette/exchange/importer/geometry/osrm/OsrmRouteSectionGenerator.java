@@ -51,7 +51,12 @@ public class OsrmRouteSectionGenerator implements RouteSectionGenerator {
 
 	@Override
 	public LineString getRouteSection(Coordinate from, Coordinate to, TransportModeNameEnum transportMode) {
-		return mapToLineString(invokeService(getUrl(from, to, transportMode)));
+		try {
+			return mapToLineString(invokeService(getUrl(from, to, transportMode)));
+		} catch (RuntimeException re) {
+			log.warn("Osrm route section generation failed: " + re.getMessage(), re);
+			return null;
+		}
 	}
 
 	private String getUrl(Coordinate from, Coordinate to, TransportModeNameEnum transportMode) {
@@ -102,7 +107,7 @@ public class OsrmRouteSectionGenerator implements RouteSectionGenerator {
 			String rsp = writer.toString();
 			return rsp;
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException("Osrm route section generation failed for url: " + urlString, e);
 		}
 	}
 
