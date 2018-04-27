@@ -122,7 +122,6 @@ public class OsrmRouteSectionGenerator implements RouteSectionGenerator {
 				}
 			}
 
-			urlPerTransportMode.put(TransportModeNameEnum.Bus, "http://localhost:5000");
 		}
 
 		return urlPerTransportMode;
