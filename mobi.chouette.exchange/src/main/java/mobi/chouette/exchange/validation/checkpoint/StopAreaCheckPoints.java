@@ -183,7 +183,7 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 					continue;
 				if (!stopArea2.getAreaType().equals(type))
 					continue;
-				if (stopArea.getName().equals(stopArea2.getName()))
+				if (Objects.equals(stopArea.getParent(),stopArea2.getParent()))
 					continue;
 				double distance = quickDistance(stopArea, stopArea2);
 				if (distance < distanceMin) {
