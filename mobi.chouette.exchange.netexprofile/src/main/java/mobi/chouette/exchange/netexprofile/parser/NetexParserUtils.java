@@ -156,6 +156,8 @@ public class NetexParserUtils extends ParserUtils {
 					return TransportSubModeNameEnum.RegionalRail;
 				case TOURIST_RAILWAY:
 					return TransportSubModeNameEnum.TouristRailway;
+				case AIRPORT_LINK_RAIL:
+					return TransportSubModeNameEnum.AirportLinkRail;
 				default:
 					log.error("Unsupported rail sub mode " + mode);
 				}
