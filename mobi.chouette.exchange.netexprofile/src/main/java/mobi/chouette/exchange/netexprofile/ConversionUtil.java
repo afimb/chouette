@@ -209,7 +209,8 @@ public class ConversionUtil {
 				return new TransportSubmodeStructure().withRailSubmode(RailSubmodeEnumeration.REGIONAL_RAIL);
 			case TouristRailway:
 				return new TransportSubmodeStructure().withRailSubmode(RailSubmodeEnumeration.TOURIST_RAILWAY);
-
+			case AirportLinkRail:
+				return new TransportSubmodeStructure().withRailSubmode(RailSubmodeEnumeration.AIRPORT_LINK_RAIL);
 				/**
 				 * Metro sub modes
 				 */
