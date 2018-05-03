@@ -41,7 +41,6 @@ public class OsrmRouteSectionGenerator implements RouteSectionGenerator {
 
 	public static final String BEAN_NAME = "OsrmRouteSectionGenerator";
 
-	private static final TransportModeNameEnum DEFAULT_MODE = TransportModeNameEnum.Bus;
 	private Map<TransportModeNameEnum, String> urlPerTransportMode;
 
 
@@ -52,21 +51,23 @@ public class OsrmRouteSectionGenerator implements RouteSectionGenerator {
 	@Override
 	public LineString getRouteSection(Coordinate from, Coordinate to, TransportModeNameEnum transportMode) {
 		try {
-			return mapToLineString(invokeService(getUrl(from, to, transportMode)));
+			String url=getUrl(from, to, transportMode);
+			if (url!=null) {
+				return mapToLineString(invokeService(url));
+			} else {
+				log.debug("Skipping route section generation as no osrm endpoint defined for transport mode: " + transportMode);
+			}
 		} catch (RuntimeException re) {
 			log.warn("Osrm route section generation failed: " + re.getMessage(), re);
-			return null;
 		}
+		return null;
 	}
 
 	private String getUrl(Coordinate from, Coordinate to, TransportModeNameEnum transportMode) {
 		String baseUrl = getUrlPerTransportMode().get(transportMode);
-		if (baseUrl == null) {
-			baseUrl = getUrlPerTransportMode().get(DEFAULT_MODE);
-		}
 
 		if (baseUrl == null) {
-			throw new RuntimeException("No osrm endpoint defined for default transport mode: " + DEFAULT_MODE);
+			return null;
 		}
 		return baseUrl + "/route/v1/driving/" + toUrlPath(from, to) + "?overview=false&steps=true&geometries=polyline";
 	}
