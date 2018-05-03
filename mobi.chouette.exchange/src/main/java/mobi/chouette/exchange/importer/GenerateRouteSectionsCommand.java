@@ -2,6 +2,8 @@ package mobi.chouette.exchange.importer;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.ejb.EJB;
@@ -71,6 +73,7 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 		TransportModeNameEnum transportMode = jp.getRoute().getLine().getTransportModeName();
 
 		StopPoint prev = null;
+		List<RouteSection> routeSections = new ArrayList<>();
 		for (StopPoint sp : jp.getStopPoints()) {
 
 			Coordinate from = getCoordinateFromStopPoint(prev);
@@ -78,13 +81,19 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 			if (from != null && to != null) {
 				LineString lineString = routeSectionGenerator.getRouteSection(from, to, transportMode);
 				if (lineString != null) {
-					RouteSection routeSection = createRouteSection(prev, sp, lineString);
-					routeSectionDAO.create(routeSection);
-					jp.getRouteSections().add(routeSection);
+					routeSections.add(createRouteSection(prev, sp, lineString));
+				} else {
+					log.warn("Ignored generation of route sections  as at least one section could not be generated. JourneyPattern: " + jp.getObjectId());
+					return;
 				}
 
 			}
 			prev = sp;
+		}
+
+		for (RouteSection routeSection : routeSections) {
+			routeSectionDAO.create(routeSection);
+			jp.getRouteSections().add(routeSection);
 		}
 		journeyPatternDAO.update(jp);
 	}
