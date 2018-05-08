@@ -82,6 +82,10 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_SCHEDULEDSTOPPOINTREF = "1-NETEXPROFILE-ServiceFrame-PassengerStopAssignment-ScheduledStopPointRef";
 	public static final String _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_QUAYREF = "1-NETEXPROFILE-ServiceFrame-PassengerStopAssignment-QuayRef";
 
+	public static final String _1_NETEX_SERVICE_FRAME_SERVICE_LINK_TOPOINTREF = "1-NETEXPROFILE-ServiceFrame-ServiceLink-ToPointRef";
+	public static final String _1_NETEX_SERVICE_FRAME_SERVICE_LINK_FROMPOINTREF = "1-NETEXPROFILE-ServiceFrame-ServiceLink-FromPointRef";
+	public static final String _1_NETEX_SERVICE_FRAME_SERVICE_LINK_PROJECTIONS = "1-NETEXPROFILE-ServiceFrame-ServiceLink-Projections";
+
 	public static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY = "1-NETEXPROFILE-TimetableFrame-ServiceJourney";
 	public static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_DAYTYPEREF = "1-NETEXPROFILE-TimetableFrame-ServiceJourney-DayTypeRef";
 	public static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_PASSING_TIMES = "1-NETEXPROFILE-TimetableFrame_ServiceJourney_TimetabledPassingTime";
@@ -184,6 +188,10 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_QUAYREF, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_INVALID_TRANSPORTMODE, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_INVALID_TRANSPORTSUBMODE, "E");
+
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_SERVICE_LINK_FROMPOINTREF, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_SERVICE_LINK_TOPOINTREF, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_SERVICE_LINK_PROJECTIONS, "E");
 
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY, "E");
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_SERVICEJOURNEY_JOURNEYPATTERN_REF, "E");
@@ -384,6 +392,10 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		validateElementNotPresent(context, xpath, subLevel, "timingPoints", _1_NETEX_SERVICE_FRAME_TIMING_POINTS);
 		validateElementNotPresent(context, xpath, subLevel, "stopAssignments/PassengerStopAssignment[not(ScheduledStopPointRef)]", _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_SCHEDULEDSTOPPOINTREF);
 		validateElementNotPresent(context, xpath, subLevel, "stopAssignments/PassengerStopAssignment[not(QuayRef)]", _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_QUAYREF);
+
+		validateElementNotPresent(context, xpath, subLevel, "serviceLinks/ServiceLink[not(FromPointRef)]", _1_NETEX_SERVICE_FRAME_SERVICE_LINK_FROMPOINTREF);
+		validateElementNotPresent(context, xpath, subLevel, "serviceLinks/ServiceLink[not(ToPointRef)]", _1_NETEX_SERVICE_FRAME_SERVICE_LINK_TOPOINTREF);
+		validateElementNotPresent(context, xpath, subLevel, "serviceLinks/ServiceLink[not(projections)]", _1_NETEX_SERVICE_FRAME_SERVICE_LINK_PROJECTIONS);
 	}
 
 	protected void validateCommonFrameConcepts(Context context, XPathCompiler xpath, XdmNode dom) throws XPathExpressionException, SaxonApiException {

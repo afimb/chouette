@@ -236,7 +236,22 @@
                             <Name>Trondheim Lufthavn</Name>
                             <ShortName>TRD</ShortName>
                         </ScheduledStopPoint>
+                        <ScheduledStopPoint version="1" id="AVI:ScheduledStopPoint:55555">
+                            <Name>Kautokeino Lufthavn</Name>
+                            <ShortName>KAU</ShortName>
+                        </ScheduledStopPoint>
                     </scheduledStopPoints>
+                    <serviceLinks>
+                        <ServiceLink version="1150000024347636" id="AVI:ServiceLink:14430001-14436790"
+                                     changed="2018-03-22T15:44:48Z">
+                            <Distance>990</Distance>
+                            <LineString d8p1:id="ServiceLinkPath_1150000024347636"
+                                        xmlns:d8p1="http://www.opengis.net/gml/3.2"
+                                        xmlns="http://www.opengis.net/gml/3.2">
+                                <d8p1:posList>58.551021 1.998284 58.547453 1.999217</d8p1:posList>
+                            </LineString>
+                        </ServiceLink>
+                    </serviceLinks>
                     <stopAssignments>
                         <PassengerStopAssignment order="26" version="1" id="AVI:PassengerStopAssignment:MOL">
                             <!--<ScheduledStopPointRef ref="AVI:ScheduledStopPoint:76522" version="1"/>-->
