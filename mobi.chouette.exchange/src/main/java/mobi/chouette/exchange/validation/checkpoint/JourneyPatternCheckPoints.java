@@ -80,7 +80,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 			// 3-JourneyPattern-2 : Check if journey section route count equals
 			// to journey stops count minus 1
 			if (!sourceFile) {
-				check3JourneyPattern2(context, jp);
+				// Disabled (some route sections are better than none) check3JourneyPattern2(context, jp);
 				check3JourneyPatternRb4(context, jp);
 			}
 			// 3-RouteSection-1 : Check if route section distance doesn't exceed
