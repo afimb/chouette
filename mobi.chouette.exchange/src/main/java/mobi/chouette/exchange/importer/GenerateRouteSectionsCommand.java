@@ -8,6 +8,8 @@ import java.util.UUID;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -51,6 +53,7 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 	private RouteSectionDAO routeSectionDAO;
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public boolean execute(Context context) throws Exception {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 		AbstractImportParameter configuration = (AbstractImportParameter) context.get(CONFIGURATION);
@@ -83,7 +86,7 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 				if (lineString != null) {
 					routeSections.add(createRouteSection(prev, sp, lineString));
 				} else {
-					log.warn("Ignored generation of route sections  as at least one section could not be generated. JourneyPattern: " + jp.getObjectId());
+					log.warn("Ignored generation of route sections as at least one section could not be generated. JourneyPattern: " + jp.getObjectId());
 					return;
 				}
 
