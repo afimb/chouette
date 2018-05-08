@@ -85,11 +85,7 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 				LineString lineString = routeSectionGenerator.getRouteSection(from, to, transportMode);
 				if (lineString != null) {
 					routeSections.add(createRouteSection(prev, sp, lineString));
-				} else {
-					log.warn("Ignored generation of route sections as at least one section could not be generated. JourneyPattern: " + jp.getObjectId());
-					return;
 				}
-
 			}
 			prev = sp;
 		}
