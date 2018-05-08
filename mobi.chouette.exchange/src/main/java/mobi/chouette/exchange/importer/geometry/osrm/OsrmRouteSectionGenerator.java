@@ -29,6 +29,7 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
 import static mobi.chouette.common.PropertyNames.OSRM_ROUTE_SECTIONS_BASE;
 
@@ -41,8 +42,9 @@ public class OsrmRouteSectionGenerator implements RouteSectionGenerator {
 
 	public static final String BEAN_NAME = "OsrmRouteSectionGenerator";
 
-	private Map<TransportModeNameEnum, String> urlPerTransportMode;
+	private static final int TIMEOUT_SECONDS = 10;
 
+	private Map<TransportModeNameEnum, String> urlPerTransportMode;
 
 	private ObjectMapper mapper = new ObjectMapper();
 	private PolylineDecoder polylineDecoder = new PolylineDecoder();
@@ -100,6 +102,7 @@ public class OsrmRouteSectionGenerator implements RouteSectionGenerator {
 			connection.setRequestMethod("GET");
 			connection.setUseCaches(false);
 			connection.setDoOutput(true);
+			connection.setConnectTimeout(TIMEOUT_SECONDS * (int) DateUtils.MILLIS_PER_SECOND);
 			connection.connect();
 
 			InputStream is = connection.getInputStream();
