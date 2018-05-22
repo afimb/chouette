@@ -120,6 +120,8 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 			Collections.sort(lvjas, VEHICLE_JOURNEY_AT_STOP_SORTER);
 		}
 
+		boolean sourceFile = context.get(SOURCE).equals(SOURCE_FILE);
+
 		for (int i = 0; i < beans.size(); i++) {
 			VehicleJourney vj = beans.get(i);
 
@@ -127,8 +129,10 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 			// stop
 			check3VehicleJourney1(context, vj, parameters);
 
-			// 3-VehicleJourney-2 : check speed progression
-			check3VehicleJourney2(context, vj, parameters);
+			if (!sourceFile) {
+				// 3-VehicleJourney-2 : check speed progression
+				check3VehicleJourney2(context, vj, parameters);
+			}
 
 //			// 3-VehicleJourney-3 : check if two journeys progress similarly
 //			check3VehicleJourney3(context, beans, i, vj, parameters);
