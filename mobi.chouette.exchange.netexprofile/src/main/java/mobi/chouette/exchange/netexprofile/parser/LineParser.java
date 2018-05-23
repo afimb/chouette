@@ -1,10 +1,13 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
+import java.util.stream.Collectors;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
@@ -12,6 +15,8 @@ import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes;
 import mobi.chouette.exchange.netexprofile.util.NetexReferential;
 import mobi.chouette.model.Company;
+import mobi.chouette.model.ContactStructure;
+import mobi.chouette.model.FlexibleLineProperties;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.type.TransportModeNameEnum;
@@ -20,6 +25,7 @@ import mobi.chouette.model.util.Referential;
 
 import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
 import org.rutebanken.netex.model.DataManagedObjectStructure;
+import org.rutebanken.netex.model.FlexibleLine;
 import org.rutebanken.netex.model.GroupOfLinesRefStructure;
 import org.rutebanken.netex.model.LinesInFrame_RelStructure;
 import org.rutebanken.netex.model.PresentationStructure;
@@ -30,6 +36,8 @@ public class LineParser implements Parser, Constant {
 
 	private KeyValueParser keyValueParser = new KeyValueParser();
 
+	private ContactStructureParser contactStructureParser = new ContactStructureParser();
+
 	@Override
 	public void parse(Context context) throws Exception {
 		Referential referential = (Referential) context.get(REFERENTIAL);
@@ -37,7 +45,7 @@ public class LineParser implements Parser, Constant {
 		LinesInFrame_RelStructure linesInFrameStruct = (LinesInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
 
 		for (JAXBElement<? extends DataManagedObjectStructure> lineElement : linesInFrameStruct.getLine_()) {
-			org.rutebanken.netex.model.Line netexLine = (org.rutebanken.netex.model.Line) lineElement.getValue();
+			org.rutebanken.netex.model.Line_VersionStructure netexLine = (org.rutebanken.netex.model.Line_VersionStructure) lineElement.getValue();
 			mobi.chouette.model.Line chouetteLine = ObjectFactory.getLine(referential, netexLine.getId());
 			chouetteLine.setObjectVersion(NetexParserUtils.getVersion(netexLine));
 
@@ -99,6 +107,42 @@ public class LineParser implements Parser, Constant {
 			chouetteLine.setKeyValues(keyValueParser.parse(netexLine.getKeyList()));
 
 			chouetteLine.setFilled(true);
+
+			if (netexLine instanceof FlexibleLine) {
+				chouetteLine.setFlexibleService(true);
+				FlexibleLine flexibleLine = (FlexibleLine) netexLine;
+				FlexibleLineProperties flexibleLineProperties = new FlexibleLineProperties();
+				if (flexibleLine.getBookingNote() != null) {
+					flexibleLineProperties.setBookingNote(flexibleLine.getBookingNote().getValue());
+				}
+				flexibleLineProperties.setFlexibleLineType(NetexParserUtils.toFlexibleLineType(flexibleLine.getFlexibleLineType()));
+				flexibleLineProperties.setBookingAccess(NetexParserUtils.toBookingAccess(flexibleLine.getBookingAccess()));
+				flexibleLineProperties.setBookWhen(NetexParserUtils.toPurchaseWhen(flexibleLine.getBookWhen()));
+				flexibleLineProperties.setBuyWhen(flexibleLine.getBuyWhen().stream().map(NetexParserUtils::toPurchaseMoment).collect(Collectors.toList()));
+				flexibleLineProperties.setBookingMethods(flexibleLine.getBookingMethods().stream().map(NetexParserUtils::toBookingMethod).collect(Collectors.toList()));
+				flexibleLineProperties.setLatestBookingTime(TimeUtil.toJodaLocalTime(flexibleLine.getLatestBookingTime()));
+				flexibleLineProperties.setMinimumBookingPeriod(TimeUtil.toJodaDuration(flexibleLine.getMinimumBookingPeriod()));
+
+				org.rutebanken.netex.model.ContactStructure netexBookingContact=flexibleLine.getBookingContact();
+				if(netexBookingContact!=null){
+					ContactStructure chouetteBookingContact=new ContactStructure();
+					if (netexBookingContact.getContactPerson()!=null) {
+						chouetteBookingContact.setContactPerson(netexBookingContact.getContactPerson().getValue());
+					}
+					if (netexBookingContact.getFurtherDetails()!=null) {
+						chouetteBookingContact.setFurtherDetails(netexBookingContact.getFurtherDetails().getValue());
+					}
+					chouetteBookingContact.setEmail(netexBookingContact.getEmail());
+					chouetteBookingContact.setFax(netexBookingContact.getFax());
+					chouetteBookingContact.setPhone(netexBookingContact.getPhone());
+					chouetteBookingContact.setUrl(netexBookingContact.getUrl());
+
+				}
+
+				flexibleLineProperties.setBookingContact(contactStructureParser.parse(flexibleLine.getBookingContact()));
+
+				chouetteLine.setFlexibleLineProperties(flexibleLineProperties);
+			}
 		}
 	}
 

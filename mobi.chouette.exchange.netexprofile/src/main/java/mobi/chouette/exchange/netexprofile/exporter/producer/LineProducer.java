@@ -1,34 +1,48 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import java.util.stream.Collectors;
+
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
+
+import mobi.chouette.common.Context;
+import mobi.chouette.common.TimeUtil;
+import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.exchange.netexprofile.ConversionUtil;
+import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
+import mobi.chouette.model.FlexibleLineProperties;
+import mobi.chouette.model.GroupOfLine;
+import mobi.chouette.model.Line;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
+import org.rutebanken.netex.model.FlexibleLine;
+import org.rutebanken.netex.model.GroupOfLinesRefStructure;
+import org.rutebanken.netex.model.MultilingualString;
+import org.rutebanken.netex.model.OperatorRefStructure;
+import org.rutebanken.netex.model.PresentationStructure;
+import org.rutebanken.netex.model.PrivateCodeStructure;
 
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.netexId;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.GROUP_OF_LINES;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
-import org.rutebanken.netex.model.GroupOfLinesRefStructure;
-import org.rutebanken.netex.model.OperatorRefStructure;
-import org.rutebanken.netex.model.PresentationStructure;
-import org.rutebanken.netex.model.PrivateCodeStructure;
-
-import mobi.chouette.common.Context;
-import mobi.chouette.exchange.netexprofile.Constant;
-import mobi.chouette.exchange.netexprofile.ConversionUtil;
-import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
-import mobi.chouette.model.GroupOfLine;
-
-public class LineProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Line, mobi.chouette.model.Line> {
+public class LineProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.Line_VersionStructure, mobi.chouette.model.Line> {
 
 	private static KeyListStructureProducer keyListStructureProducer = new KeyListStructureProducer();
 
+	private static ContactStructureProducer contactStructureProducer = new ContactStructureProducer();
+
 	@Override
-	public org.rutebanken.netex.model.Line produce(Context context, mobi.chouette.model.Line neptuneLine) {
-		
-        ExportableNetexData exportableNetexData = (ExportableNetexData) context.get(Constant.EXPORTABLE_NETEX_DATA);
-		
-		org.rutebanken.netex.model.Line netexLine = netexFactory.createLine();
+	public org.rutebanken.netex.model.Line_VersionStructure produce(Context context, mobi.chouette.model.Line neptuneLine) {
+
+		ExportableNetexData exportableNetexData = (ExportableNetexData) context.get(Constant.EXPORTABLE_NETEX_DATA);
+
+		org.rutebanken.netex.model.Line_VersionStructure netexLine;
+		if (Boolean.TRUE.equals(neptuneLine.getFlexibleService())) {
+			netexLine = createFlexibleLine(neptuneLine);
+		} else {
+			netexLine = netexFactory.createLine();
+		}
 
 		NetexProducerUtils.populateId(neptuneLine, netexLine);
 
@@ -72,7 +86,7 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
 			String groupOfLinesId = netexId(groupOfLine.objectIdPrefix(), GROUP_OF_LINES, groupOfLine.objectIdSuffix());
 			GroupOfLinesRefStructure groupOfLinesRefStruct = netexFactory.createGroupOfLinesRefStructure().withRef(groupOfLinesId);
 			netexLine.setRepresentedByGroupRef(groupOfLinesRefStruct);
-		} else if(neptuneLine.getNetwork() != null) {
+		} else if (neptuneLine.getNetwork() != null) {
 			mobi.chouette.model.Network neptuneNetwork = neptuneLine.getNetwork();
 			GroupOfLinesRefStructure groupOfLinesRefStruct = netexFactory.createGroupOfLinesRefStructure();
 			NetexProducerUtils.populateReference(neptuneNetwork, groupOfLinesRefStruct, false);
@@ -95,6 +109,30 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
 		NoticeProducer.addNoticeAndNoticeAssignments(context, exportableNetexData, exportableNetexData.getNoticeAssignmentsTimetableFrame(), neptuneLine.getFootnotes(), neptuneLine);
 
 		return netexLine;
+	}
+
+	FlexibleLine createFlexibleLine(Line neptuneLine) {
+		FlexibleLine flexibleLine = netexFactory.createFlexibleLine();
+		FlexibleLineProperties flexibleLineProperties=neptuneLine.getFlexibleLineProperties();
+		if (flexibleLineProperties != null) {
+			if (flexibleLineProperties.getBookingNote() != null) {
+				flexibleLine.setBookingNote(new MultilingualString().withValue(flexibleLineProperties.getBookingNote()));
+			}
+			flexibleLine.setFlexibleLineType(ConversionUtil.toFlexibleLineType(flexibleLineProperties.getFlexibleLineType()));
+			flexibleLine.setBookingAccess(ConversionUtil.toBookingAccess(flexibleLineProperties.getBookingAccess()));
+			flexibleLine.setBookWhen(ConversionUtil.toPurchaseWhen(flexibleLineProperties.getBookWhen()));
+			if (!CollectionUtils.isEmpty(flexibleLineProperties.getBuyWhen())) {
+				flexibleLine.withBuyWhen(flexibleLineProperties.getBuyWhen().stream().map(ConversionUtil::toPurchaseMoment).collect(Collectors.toList()));
+			}
+			if (!CollectionUtils.isEmpty(flexibleLineProperties.getBookingMethods())) {
+				flexibleLine.withBookingMethods(flexibleLineProperties.getBookingMethods().stream().map(ConversionUtil::toBookingMethod).collect(Collectors.toList()));
+			}
+			flexibleLine.setLatestBookingTime(TimeUtil.toLocalTimeFromJoda(flexibleLineProperties.getLatestBookingTime()));
+			flexibleLine.setMinimumBookingPeriod(TimeUtil.toDurationFromJodaDuration(flexibleLineProperties.getMinimumBookingPeriod()));
+
+			flexibleLine.setBookingContact(contactStructureProducer.produce(flexibleLineProperties.getBookingContact()));
+		}
+		return flexibleLine;
 	}
 
 }

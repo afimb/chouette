@@ -463,6 +463,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 		if (routingConstraint != null && !routingConstraints.contains(routingConstraint)) {
 			routingConstraints.add(routingConstraint);
 			routingConstraint.getRoutingConstraintLines().add(this);
+
 		}
 
 	}
@@ -479,4 +480,8 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 		}
 
 	}
+
+	@Getter
+	@Setter
+	private FlexibleLineProperties flexibleLineProperties;
 }

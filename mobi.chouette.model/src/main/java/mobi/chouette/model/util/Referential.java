@@ -92,10 +92,6 @@ public class Referential implements java.io.Serializable {
 
 	@Getter
 	@Setter
-	private Map<String, RoutePoint> sharedRoutePoints = new HashMap<>();
-
-	@Getter
-	@Setter
 	private Map<String, Route> routes = new HashMap<String, Route>();
 
 	@Getter
@@ -267,7 +263,6 @@ public class Referential implements java.io.Serializable {
 		sharedInterchanges.clear();
 		sharedFootnotes.clear();
 		sharedBrandings.clear();
-		sharedRoutePoints.clear();
 	}
 
 }

@@ -44,6 +44,13 @@ public class TimeUtil {
         return org.joda.time.Duration.millis(duration.toMillis());
     }
 
+    public static java.time.Duration toDurationFromJodaDuration(Duration jodaDuration) {
+        if (jodaDuration == null) {
+            return null;
+        }
+        return java.time.Duration.ofMillis(jodaDuration.getMillis());
+    }
+
     public static org.joda.time.LocalDate toJodaLocalDate(LocalDate localDate) {
         if (localDate == null) {
             return null;

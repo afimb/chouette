@@ -104,6 +104,8 @@ public class LineUpdater implements Updater<Line> {
 			oldValue.setColor(newValue.getColor());
 			oldValue.setTextColor(newValue.getTextColor());
 			oldValue.setKeyValues(newValue.getKeyValues());
+			oldValue.setFlexibleService(newValue.getFlexibleService());
+			oldValue.setFlexibleLineProperties(newValue.getFlexibleLineProperties());
 			oldValue.setDetached(false);
 		} else {
 			twoDatabaseLineOneTest(validationReporter, context, oldValue, newValue, data);
@@ -163,6 +165,12 @@ public class LineUpdater implements Updater<Line> {
 			}
 			if (newValue.getKeyValues() != null && !newValue.getKeyValues().equals(oldValue.getKeyValues())) {
 				oldValue.setKeyValues(newValue.getKeyValues());
+			}
+			if (newValue.getFlexibleService() != null && !newValue.getFlexibleService().equals(oldValue.getFlexibleService())) {
+				oldValue.setFlexibleService(newValue.getFlexibleService());
+			}
+			if (newValue.getFlexibleLineProperties() != null && !newValue.getFlexibleLineProperties().equals(oldValue.getFlexibleLineProperties())) {
+				oldValue.setFlexibleLineProperties(newValue.getFlexibleLineProperties());
 			}
 		}
 
