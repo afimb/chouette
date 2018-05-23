@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.Embeddable;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
@@ -220,7 +222,7 @@ public class HibernateDeproxynator<T> {
 						if (needToSetProperty) {
 							PropertyUtils.setProperty(ret, name, value);
 						}
-						if (isReferentialObject(value)) {
+						if (isReferentialObject(value) || isEmbeddable(value)) {
 							// Follow any Neptune data relations to discover
 							// more
 							// proxies
@@ -245,6 +247,10 @@ public class HibernateDeproxynator<T> {
 
 	private boolean isReferentialObject(Object ret) {
 		return ret instanceof NeptuneObject && !(ret instanceof StopArea || ret instanceof AccessLink || ret instanceof AccessPoint || ret instanceof ConnectionLink);
+	}
+
+	private boolean isEmbeddable(Object ret){
+		return ret!=null && ret.getClass().getAnnotation(Embeddable.class) != null;
 	}
 
 	private <T> T deepDeproxy(Object maybeProxy, Class<T> baseClass) throws ClassCastException {

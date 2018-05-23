@@ -16,7 +16,6 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.BrandingDAO;
 import mobi.chouette.dao.CompanyDAO;
-import mobi.chouette.dao.ConnectionLinkDAO;
 import mobi.chouette.dao.ContactStructureDAO;
 import mobi.chouette.dao.DestinationDisplayDAO;
 import mobi.chouette.dao.FootnoteDAO;

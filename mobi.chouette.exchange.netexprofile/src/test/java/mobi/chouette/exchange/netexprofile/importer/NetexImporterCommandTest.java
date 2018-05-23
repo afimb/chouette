@@ -242,7 +242,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 	@Test(enabled=true,groups = {"ImportLine"}, description = "Import Plugin should import file")
 	public void verifyImportFlexibleLine() throws Exception {
 
-		importFile( "C_NETEX_FLEXIBLE_LINE_1.xml");
+		importFile(StopAreaImportModeEnum.READ_ONLY, "C_NETEX_FLEXIBLE_LINE_1.xml");
 
 		utx.begin();
 		em.joinTransaction();
@@ -255,7 +255,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		utx.rollback();
 	}
 
-	private void importFile(String fileName) throws Exception {
+	private void importFile(StopAreaImportModeEnum importMode, String fileName) throws Exception {
 		Context context = initImportContext();
 		clearCodespaceRecords();
 
@@ -274,6 +274,7 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
+		configuration.setStopAreaImportMode(importMode);
 
 		try {
 			command.execute(context);
