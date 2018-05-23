@@ -114,7 +114,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 		AvailabilityCondition availabilityCondition = createAvailabilityCondition(context);
 		exportableNetexData.setLineCondition(availabilityCondition);
 
-		org.rutebanken.netex.model.Line netexLine = lineProducer.produce(context, neptuneLine);
+		org.rutebanken.netex.model.Line_VersionStructure netexLine = lineProducer.produce(context, neptuneLine);
 		exportableNetexData.setLine(netexLine);
 
 		for (mobi.chouette.model.Route neptuneRoute : exportableData.getRoutes()) {

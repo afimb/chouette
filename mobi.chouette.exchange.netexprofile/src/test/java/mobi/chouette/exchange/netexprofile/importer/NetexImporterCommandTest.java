@@ -239,6 +239,66 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		utx.rollback();
 	}
 
+	@Test(enabled=true,groups = {"ImportLine"}, description = "Import Plugin should import file")
+	public void verifyImportFlexibleLine() throws Exception {
+
+		importFile( "C_NETEX_FLEXIBLE_LINE_1.xml");
+
+		utx.begin();
+		em.joinTransaction();
+
+		Line line = lineDao.findByObjectId("AVI:FlexibleLine:WF_TRD-MOL");
+		assertNotNull(line, "Line not found");
+		assertNotNull(line.getFlexibleLineProperties());
+		assertNotNull(line.getFlexibleLineProperties().getBookingNote());
+
+		utx.rollback();
+	}
+
+	private void importFile(String fileName) throws Exception {
+		Context context = initImportContext();
+		clearCodespaceRecords();
+
+		insertCodespaceRecords(Arrays.asList(
+				createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+				createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
+		);
+
+		NetexTestUtils.copyFile(fileName);
+
+		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
+		jobData.setInputFilename(fileName);
+
+		NetexprofileImporterCommand command = (NetexprofileImporterCommand) CommandFactory.create(initialContext, NetexprofileImporterCommand.class.getName());
+
+		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
+		configuration.setNoSave(false);
+		configuration.setCleanRepository(true);
+
+		try {
+			command.execute(context);
+		} catch (Exception ex) {
+			log.error("test failed", ex);
+			throw ex;
+		}
+
+		ActionReport report = (ActionReport) context.get(REPORT);
+		Reporter.log("report :" + report.toString(), true);
+		dumpReports(context);
+
+		assertEquals(report.getResult(), STATUS_OK, "fileValidationResult");
+		assertEquals(report.getFiles().size(), 1, "file reported");
+		assertNotNull(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE), "line reported");
+		assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 1, "line reported");
+
+		for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+			Reporter.log("report line :" + info.toString(), true);
+			assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "line status");
+		}
+
+		NetexTestUtils.verifyValidationReport(context);
+	}
+
 	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file")
 	public void verifyImportLine() throws Exception {
 		stopAreaDAO.truncate();

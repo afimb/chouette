@@ -44,6 +44,7 @@
 		<class>mobi.chouette.model.CalendarDay</class>
 		<class>mobi.chouette.model.Codespace</class>
 		<class>mobi.chouette.model.Company</class>
+        <class>mobi.chouette.model.ContactStructure</class>
     	<class>mobi.chouette.model.DestinationDisplay</class>
         <class>mobi.chouette.model.Footnote</class>
 		<class>mobi.chouette.model.GroupOfLine</class>

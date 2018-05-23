@@ -518,7 +518,21 @@ CREATE TABLE footnotes_vehicle_journey_at_stops (
 
 ALTER TABLE chouette_gui.footnotes_vehicle_journey_at_stops OWNER TO chouette;
 
+CREATE TABLE lines_buy_when (
+    line_id bigint NOT NULL,
+    buy_when character varying(255)
+    );
 
+
+ALTER TABLE chouette_gui.lines_buy_when OWNER TO chouette;
+
+CREATE TABLE lines_booking_methods (
+    line_id bigint NOT NULL,
+    booking_method character varying(255)
+    );
+
+
+ALTER TABLE chouette_gui.lines_booking_methods OWNER TO chouette;
 
 CREATE TABLE lines_key_values (
     line_id bigint NOT NULL,
@@ -882,6 +896,33 @@ CREATE TABLE journey_patterns_stop_points (
 
 ALTER TABLE chouette_gui.journey_patterns_stop_points OWNER TO chouette;
 
+
+
+CREATE TABLE contact_structures (
+    id bigint NOT NULL,
+    contact_person CHARACTER VARYING,
+    email CHARACTER VARYING,
+    phone CHARACTER VARYING,
+    fax CHARACTER VARYING,
+    url CHARACTER VARYING,
+    further_details CHARACTER VARYING
+);
+
+ALTER TABLE chouette_gui.contact_structures OWNER TO chouette;
+
+
+CREATE SEQUENCE contact_structures_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE chouette_gui.contact_structures_id_seq OWNER TO chouette;
+
+ALTER SEQUENCE contact_structures_id_seq OWNED BY contact_structures.id;
+
 --
 -- TOC entry 200 (class 1259 OID 938954)
 -- Name: lines; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
@@ -908,7 +949,14 @@ CREATE TABLE lines (
     url character varying(255),
     color character varying(6),
     text_color character varying(6),
-    stable_id character varying(255)
+    stable_id character varying(255),
+    booking_contact_id bigint,
+    booking_note character varying,
+    flexible_line_type character varying,
+    booking_access character varying(255),
+    book_when character varying(255),
+    latest_booking_time  time without time zone,
+    minimum_booking_period  time without time zone
 );
 
 
@@ -1927,6 +1975,10 @@ ALTER TABLE ONLY journey_patterns
 -- Name: lines_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
+
+ALTER TABLE ONLY contact_structures
+    ADD CONSTRAINT contact_structures_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY lines
     ADD CONSTRAINT lines_pkey PRIMARY KEY (id);
 
@@ -2466,6 +2518,8 @@ ALTER TABLE ONLY routes_route_points
 ALTER TABLE ONLY lines
     ADD CONSTRAINT line_company_fkey FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY lines
+    ADD CONSTRAINT line_booking_contact_fkey FOREIGN KEY (booking_contact_id) REFERENCES contact_structures(id) ON DELETE SET NULL;
 
 --
 -- TOC entry 4110 (class 2606 OID 940041)
@@ -2616,6 +2670,14 @@ ALTER TABLE ONLY time_tables_vehicle_journeys
 
 ALTER TABLE ONLY time_tables_vehicle_journeys
     ADD CONSTRAINT vjtm_vj_fkey FOREIGN KEY (vehicle_journey_id) REFERENCES vehicle_journeys(id) ON DELETE CASCADE;
+
+
+ALTER TABLE ONLY chouette_gui.lines_buy_when
+    ADD CONSTRAINT lines_buy_when FOREIGN KEY (line_id) REFERENCES chouette_gui.lines(id) ON DELETE CASCADE;
+
+
+ALTER TABLE ONLY chouette_gui.lines_booking_methods
+    ADD CONSTRAINT lines_booking_methods FOREIGN KEY (line_id) REFERENCES chouette_gui.lines(id) ON DELETE CASCADE;
 
 
 ALTER TABLE ONLY chouette_gui.lines_key_values

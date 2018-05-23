@@ -132,7 +132,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 	private void preParseReferentialDependencies(Context context, Referential referential, List<ServiceFrame> serviceFrames,
 			List<TimetableFrame> timetableFrames, boolean isCommonDelivery) throws Exception {
 
-		org.rutebanken.netex.model.Line line = null;
+		org.rutebanken.netex.model.Line_VersionStructure line = null;
 
 		for (ServiceFrame serviceFrame : serviceFrames) {
 
@@ -152,7 +152,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 
 			if (!isCommonDelivery) {
 				if (line == null) {
-					line = (org.rutebanken.netex.model.Line) serviceFrame.getLines().getLine_().get(0).getValue();
+					line = (org.rutebanken.netex.model.Line_VersionStructure) serviceFrame.getLines().getLine_().get(0).getValue();
 					context.put(PARSING_CONTEXT_LINE_ID, line.getId());
 				}
 

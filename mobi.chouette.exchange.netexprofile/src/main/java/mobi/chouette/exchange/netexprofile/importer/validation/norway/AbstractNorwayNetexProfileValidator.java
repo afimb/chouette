@@ -67,7 +67,17 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_TIMETABLE_FRAME_VEHICLEJOURNEY_OPERATORREF_OR_LINE_OPREATORREF = "1-NETEXPROFILE-TimetableFrame-ServiceJourney-OperatorRef-Or-Line-OperatorRef";
 	public static final String _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN_ROUTE_REF = "1-NETEXPROFILE-ServiceFrame_JourneyPattern_RouteRef";
 	public static final String _1_NETEX_COMMON_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN_MISSING_DESTINATIONDISPLAY = "1-NETEXPROFILE-ServiceFrame_JourneyPattern_First_StopPointInJourneyPattern_DestinationDisplayRef";
-	
+
+	public static final String _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_FLEXIBLELINETYPE = "1-NETEXPROFILE-ServiceFrame_FlexibleLine_FlexibleLineType";
+	public static final String _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_FLEXIBLELINETYPE = "1-NETEXPROFILE-ServiceFrame_FlexibleLine_IllegalFlexibleLineType";
+	public static final String _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_BOOKINGCONTACT = "1-NETEXPROFILE-ServiceFrame_FlexibleLine_BookingContact";
+	public static final String _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_BOOKINGMETHODS = "1-NETEXPROFILE-ServiceFrame_FlexibleLine_BookingMethods";
+	public static final String _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_BOOKINGMETHODS = "1-NETEXPROFILE-ServiceFrame_FlexibleLine_IllegalBookingMethods";
+	public static final String _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_BOOKWHEN = "1-NETEXPROFILE-ServiceFrame_FlexibleLine_BookWhen";
+	public static final String _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_BOOKWHEN = "1-NETEXPROFILE-ServiceFrame_FlexibleLine_IllegalBookWhen";
+	public static final String _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_BOOKINGACCESS = "1-NETEXPROFILE-ServiceFrame_FlexibleLine_IllegalBookingAccess";
+	public static final String _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_BUYWHEN = "1-NETEXPROFILE-ServiceFrame_FlexibleLine_IllegalBuyWhen";
+
 	public static final String _1_NETEX_SERVICE_FRAME_LINE_TRANSPORTMODE = "1-NETEXPROFILE-ServiceFrame_Line_TransportMode";
 	public static final String _1_NETEX_SERVICE_FRAME_LINE_TRANSPORTSUBMODE = "1-NETEXPROFILE-ServiceFrame_Line_TransportSubmode";
 	public static final String _1_NETEX_SERVICE_FRAME_LINE_GROUPOFLINES_OR_NETWORK = "1-NETEXPROFILE-ServiceFrame_Line_GroupOfLinesNetwork";
@@ -166,6 +176,16 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK_AUTHORITY_REF, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK_GROUPOFLINE_NAME, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK_NAME, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_BOOKINGCONTACT, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_BOOKINGMETHODS, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_BOOKWHEN, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_FLEXIBLELINETYPE, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_BOOKINGACCESS, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_BOOKINGMETHODS, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_BOOKWHEN, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_BUYWHEN, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_FLEXIBLELINETYPE, "E");
+
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE, "W");
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_VEHICLEJOURNEY_OPERATORREF_OR_LINE_OPREATORREF, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_TRANSPORTMODE, "E");
@@ -345,6 +365,10 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		Set<String> serviceJourneyPatternRefSubstitutions = new HashSet<>();
 		serviceJourneyPatternRefSubstitutions.add("ServiceJourneyPattern");
 		allowedSubstitutions.put("JourneyPatternRef", serviceJourneyPatternRefSubstitutions);
+
+		Set<String> lineRefSubstitutions = new HashSet<>();
+		lineRefSubstitutions.add("FlexibleLine");
+		allowedSubstitutions.put("LineRef", lineRefSubstitutions);
 
 		boolean foundErrors = false;
 

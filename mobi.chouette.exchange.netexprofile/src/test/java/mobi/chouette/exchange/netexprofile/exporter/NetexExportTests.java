@@ -246,7 +246,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         lineDao.flush();
         stopAreaDao.deleteAll();
         stopAreaDao.flush();
-        
+
         utx.commit();
     }
 
@@ -262,6 +262,50 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         codespaceDao.flush();
         utx.commit();
         codespaceDao.clear();
+    }
+
+    @Test(enabled = true, groups = {"ExportLine"}, description = "Export Plugin should export file")
+    public void verifyExportFlexibleLine() throws Exception {
+        importLines("C_NETEX_FLEXIBLE_LINE_1.xml", 1, 1, Arrays.asList(
+                createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+                createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
+        );
+
+        Context context = initExportContext();
+        NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
+        configuration.setAddMetadata(false);
+        configuration.setReferencesType("line");
+        configuration.setExportStops(true);
+        configuration.setDefaultCodespacePrefix("AVI");
+
+        Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
+
+        try {
+            command.execute(context);
+        } catch (Exception ex) {
+            log.error("test failed", ex);
+            throw ex;
+        }
+
+        NetexTestUtils.verifyValidationReport(context);
+
+
+        ActionReport report = (ActionReport) context.get(REPORT);
+        Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+        Assert.assertEquals(report.getFiles().size(), 2, "file reported");
+
+        for (FileReport info : report.getFiles()) {
+            Reporter.log(info.toString(),true);
+        }
+
+        Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 1, "line reported");
+
+        for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+            Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "line status");
+            Reporter.log(info.toString(), true);
+        }
+
+        NetexTestUtils.verifyValidationReport(context);
     }
 
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")

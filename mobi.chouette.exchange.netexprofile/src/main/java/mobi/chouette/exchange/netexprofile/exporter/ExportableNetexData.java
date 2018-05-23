@@ -21,6 +21,7 @@ import org.rutebanken.netex.model.DestinationDisplay;
 import org.rutebanken.netex.model.GroupOfLines;
 import org.rutebanken.netex.model.JourneyPattern;
 import org.rutebanken.netex.model.Line;
+import org.rutebanken.netex.model.Line_VersionStructure;
 import org.rutebanken.netex.model.Network;
 import org.rutebanken.netex.model.Notice;
 import org.rutebanken.netex.model.NoticeAssignment;
@@ -59,7 +60,7 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private Line line;
+    private Line_VersionStructure line;
 
     @Getter
     @Setter

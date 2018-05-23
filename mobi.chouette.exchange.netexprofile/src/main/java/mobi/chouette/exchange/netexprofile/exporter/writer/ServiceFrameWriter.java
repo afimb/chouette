@@ -2,6 +2,7 @@ package mobi.chouette.exchange.netexprofile.exporter.writer;
 
 import java.util.Collection;
 
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -12,7 +13,10 @@ import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 
 import org.apache.commons.collections.MapUtils;
 import org.rutebanken.netex.model.DestinationDisplay;
+import org.rutebanken.netex.model.FlexibleLine;
 import org.rutebanken.netex.model.JourneyPattern;
+import org.rutebanken.netex.model.Line;
+import org.rutebanken.netex.model.Line_VersionStructure;
 import org.rutebanken.netex.model.Network;
 import org.rutebanken.netex.model.Notice;
 import org.rutebanken.netex.model.PassengerStopAssignment;
@@ -135,7 +139,14 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 	private static void writeLinesElement(XMLStreamWriter writer, ExportableNetexData exportableData, Marshaller marshaller) {
 		try {
 			writer.writeStartElement(LINES);
-			marshaller.marshal(netexFactory.createLine(exportableData.getLine()), writer);
+			Line_VersionStructure line = exportableData.getLine();
+			JAXBElement<? extends Line_VersionStructure> jaxbElement = null;
+			if (line instanceof Line) {
+				jaxbElement = netexFactory.createLine((Line) exportableData.getLine());
+			} else if (line instanceof FlexibleLine) {
+				jaxbElement = netexFactory.createFlexibleLine((FlexibleLine) exportableData.getLine());
+			}
+			marshaller.marshal(jaxbElement, writer);
 			writer.writeEndElement();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
