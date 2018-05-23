@@ -17,6 +17,9 @@ public class GtfsDataCollector extends DataCollector{
 		if (line.getCompany() == null) {
 			log.error("line " + line.getObjectId() + " : missing company");
 			return false;
+		} else if (Boolean.TRUE.equals(line.getFlexibleService())) {
+			log.info("Omitting flexible line from gtfs export: " + line.getObjectId());
+			return false;
 		}
 		return res;
 	}
