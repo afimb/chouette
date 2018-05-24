@@ -202,6 +202,8 @@ public class ConversionUtil {
 				 */
 				case LocalTram:
 					return new TransportSubmodeStructure().withTramSubmode(TramSubmodeEnumeration.LOCAL_TRAM);
+				case CityTram:
+					return new TransportSubmodeStructure().withTramSubmode(TramSubmodeEnumeration.CITY_TRAM);
 
 				/**
 				 * Rail sub modes

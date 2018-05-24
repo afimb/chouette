@@ -57,6 +57,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 			"touristCoach",
 			"airportLinkBus",
 			"localTram",
+			"cityTram",
 			"international",
 			"metro",
 			"domesticFlight",
