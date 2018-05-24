@@ -55,7 +55,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 
 		initCheckPoint(context, JOURNEY_PATTERN_RB_1, SEVERITY.W);
 		initCheckPoint(context, JOURNEY_PATTERN_RB_2, SEVERITY.W);
-		initCheckPoint(context, JOURNEY_PATTERN_RB_3, SEVERITY.W);
+		initCheckPoint(context, JOURNEY_PATTERN_RB_3, SEVERITY.I);
 		initCheckPoint(context, JOURNEY_PATTERN_RB_4, SEVERITY.E);
 
 		// 3-JourneyPattern-1 : check if two journey patterns use same stops

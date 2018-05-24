@@ -743,13 +743,13 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			testLevel3FileList.add(new TestDescription(3, ROUTE_8, "WARNING"));
 
 			testLevel3FileList.add(new TestDescription(3, ROUTE_RB_2, "WARNING"));
-			testLevel3FileList.add(new TestDescription(3, ROUTE_RB_3, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, ROUTE_RB_3, "INFO"));
 			testLevel3FileList.add(new TestDescription(3, ROUTE_RB_4, "WARNING"));
 			
 			testLevel3FileList.add(new TestDescription(3, JOURNEY_PATTERN_1, "WARNING"));
 			testLevel3FileList.add(new TestDescription(3, JOURNEY_PATTERN_RB_1, "WARNING"));
 			testLevel3FileList.add(new TestDescription(3, JOURNEY_PATTERN_RB_2, "WARNING"));
-			testLevel3FileList.add(new TestDescription(3, JOURNEY_PATTERN_RB_3, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, JOURNEY_PATTERN_RB_3, "INFO"));
 			testLevel3FileList.add(new TestDescription(3, JOURNEY_PATTERN_RB_4, "ERROR"));
 
 			testLevel3FileList.add(new TestDescription(3, VEHICLE_JOURNEY_1, "WARNING"));
@@ -826,14 +826,14 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_8, "WARNING"));
 
 			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_RB_2, "WARNING"));
-			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_RB_3, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_RB_3, "INFO"));
 			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_RB_4, "WARNING"));
 			
 			testLevel3DatabaseList.add(new TestDescription(3, JOURNEY_PATTERN_1, "WARNING"));
 			testLevel3DatabaseList.add(new TestDescription(3, JOURNEY_PATTERN_2, "ERROR"));
 			testLevel3DatabaseList.add(new TestDescription(3, JOURNEY_PATTERN_RB_1, "WARNING"));
 			testLevel3DatabaseList.add(new TestDescription(3, JOURNEY_PATTERN_RB_2, "WARNING"));
-			testLevel3DatabaseList.add(new TestDescription(3, JOURNEY_PATTERN_RB_3, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, JOURNEY_PATTERN_RB_3, "INFO"));
 			testLevel3DatabaseList.add(new TestDescription(3, JOURNEY_PATTERN_RB_4, "ERROR"));
 			
 			testLevel3DatabaseList.add(new TestDescription(3, VEHICLE_JOURNEY_1, "WARNING"));

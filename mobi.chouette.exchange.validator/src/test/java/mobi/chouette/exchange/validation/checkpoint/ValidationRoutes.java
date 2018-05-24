@@ -52,7 +52,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 	private Route bean2;
 	private List<Route> beansFor4 = new ArrayList<>();
 
-	@EJB 
+	@EJB
 	LineDAO lineDao;
 
 	@PersistenceContext(unitName = "referential")
@@ -70,43 +70,36 @@ public class ValidationRoutes extends AbstractTestValidation {
 		List<File> jars = new ArrayList<>();
 		List<JavaArchive> modules = new ArrayList<>();
 		for (File file : files) {
-			if (file.getName().startsWith("mobi.chouette.exchange"))
-			{
-				String name = file.getName().split("\\-")[0]+".jar";
+			if (file.getName().startsWith("mobi.chouette.exchange")) {
+				String name = file.getName().split("\\-")[0] + ".jar";
 				JavaArchive archive = ShrinkWrap
-						  .create(ZipImporter.class, name)
-						  .importFrom(file)
-						  .as(JavaArchive.class);
+						.create(ZipImporter.class, name)
+						.importFrom(file)
+						.as(JavaArchive.class);
 				modules.add(archive);
-			}
-			else
-			{
+			} else {
 				jars.add(file);
 			}
 		}
 		File[] filesDao = Maven.resolver().loadPomFromFile("pom.xml")
 				.resolve("mobi.chouette:mobi.chouette.dao").withTransitivity().asFile();
-		if (filesDao.length == 0) 
-		{
+		if (filesDao.length == 0) {
 			throw new NullPointerException("no dao");
 		}
 		for (File file : filesDao) {
-			if (file.getName().startsWith("mobi.chouette.dao"))
-			{
-				String name = file.getName().split("\\-")[0]+".jar";
-				
+			if (file.getName().startsWith("mobi.chouette.dao")) {
+				String name = file.getName().split("\\-")[0] + ".jar";
+
 				JavaArchive archive = ShrinkWrap
-						  .create(ZipImporter.class, name)
-						  .importFrom(file)
-						  .as(JavaArchive.class);
+						.create(ZipImporter.class, name)
+						.importFrom(file)
+						.as(JavaArchive.class);
 				modules.add(archive);
 				if (!modules.contains(archive))
-				   modules.add(archive);
-			}
-			else
-			{
+					modules.add(archive);
+			} else {
 				if (!jars.contains(file))
-				   jars.add(file);
+					jars.add(file);
 			}
 		}
 		final WebArchive testWar = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
@@ -114,7 +107,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 				.addClass(JobDataTest.class)
 				.addClass(AbstractTestValidation.class)
 				.addClass(ValidationRoutes.class);
-		
+
 		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
 				.addAsLibraries(jars.toArray(new File[0]))
 				.addAsModules(modules.toArray(new JavaArchive[0]))
@@ -123,7 +116,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		return result;
 	}
 
-	@BeforeGroups(groups = { "route" })
+	@BeforeGroups(groups = {"route"})
 	public void init() {
 		super.init();
 		long id = 1;
@@ -157,7 +150,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 	}
 
-	@Test(groups = { "route" }, description = "4-Route-1 no test", priority = 1)
+	@Test(groups = {"route"}, description = "4-Route-1 no test", priority = 1)
 	public void verifyTest4_1_notest() throws Exception {
 		// 4-Route-1 : check columns
 		log.info(Color.BLUE + "4-Route-1 no test" + Color.NORMAL);
@@ -187,7 +180,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 	}
 
-	@Test(groups = { "route" }, description = "4-Route-1 unicity", priority = 2)
+	@Test(groups = {"route"}, description = "4-Route-1 unicity", priority = 2)
 	public void verifyTest4_1_unique() throws Exception {
 		// 4-Route-1 : check columns
 		log.info(Color.BLUE + "4-Route-1 unicity" + Color.NORMAL);
@@ -217,7 +210,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 	}
 
 
-	@Test(groups = { "route" }, description = "3-Route-rutebanken-2", priority = 3)
+	@Test(groups = {"route"}, description = "3-Route-rutebanken-2", priority = 3)
 	public void verifyTest3_RB_2() throws Exception {
 		// 3-Route-rutebanken-2 : check if two successive route points are mapped to the same stop area
 		log.info(Color.BLUE + "3-Route-rutebanken-2" + Color.NORMAL);
@@ -237,12 +230,12 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Line line1 = beans.get(0);
 
 		Route route1 = line1.getRoutes().get(0);
-		RoutePoint rp1=new RoutePoint();
+		RoutePoint rp1 = new RoutePoint();
 		rp1.setObjectId("NINOXE:RoutePoint:1");
 		rp1.setScheduledStopPoint(route1.getStopPoints().get(0).getScheduledStopPoint());
 		route1.getRoutePoints().add(rp1);
 
-		RoutePoint rp2=new RoutePoint();
+		RoutePoint rp2 = new RoutePoint();
 		rp2.setScheduledStopPoint(route1.getStopPoints().get(1).getScheduledStopPoint());
 		rp2.getScheduledStopPoint().setContainedInStopAreaRef(rp1.getScheduledStopPoint().getContainedInStopAreaRef());
 		rp2.setObjectId("NINOXE:RoutePoint:2");
@@ -267,7 +260,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 
 		String detailKey = "3-Route-rutebanken-2".replaceAll("-", "_").toLowerCase();
-		List<CheckPointErrorReport> details = checkReportForTest(report,"3-Route-rutebanken-2",-1);
+		List<CheckPointErrorReport> details = checkReportForTest(report, "3-Route-rutebanken-2", -1);
 		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
@@ -280,7 +273,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		utx.rollback();
 	}
 
-	@Test(groups = { "route" }, description = "3-Route-2", priority = 4)
+	@Test(groups = {"route"}, description = "3-Route-2", priority = 4)
 	public void verifyTest3_2() throws Exception {
 		// 3-Route-2 : check if two wayback routes are actually waybacks
 		log.info(Color.BLUE + "3-Route-2" + Color.NORMAL);
@@ -329,7 +322,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 				" checkPointReport must be on level warning");
 		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 2, " checkPointReport must have 2 item");
 		String detailKey = "3-Route-2".replaceAll("-", "_").toLowerCase();
-		List<CheckPointErrorReport> details = checkReportForTest(report,"3-Route-2",-1);
+		List<CheckPointErrorReport> details = checkReportForTest(report, "3-Route-2", -1);
 		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
@@ -352,7 +345,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 	}
 
-	@Test(groups = { "route" }, description = "3-Route-rutebanken-3", priority = 6)
+	@Test(groups = {"route"}, description = "3-Route-rutebanken-3", priority = 6)
 	public void verifyTest3_RB_3() throws Exception {
 		// 3-Route-rutebanken-3 : check identical routes
 		log.info(Color.BLUE + "3-Route-rutebanken-3" + Color.NORMAL);
@@ -381,7 +374,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 			RoutePoint routePoint = new RoutePoint();
 			routePoint.setObjectId("NINOXE:RoutePoint:" + point.getPosition());
 
-			ScheduledStopPoint printScheduledStopPoint=new ScheduledStopPoint();
+			ScheduledStopPoint printScheduledStopPoint = new ScheduledStopPoint();
 			printScheduledStopPoint.setObjectId("NINOXE:ScheduledStopPoint:" + point.getPosition());
 			printScheduledStopPoint.setContainedInStopAreaRef(new SimpleObjectReference<>(point.getScheduledStopPoint().getContainedInStopAreaRef().getObject()));
 			routePoint.setScheduledStopPoint(printScheduledStopPoint);
@@ -403,12 +396,12 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-Route-rutebanken-3 checkPoint");
 
 		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.INFO,
 				" checkPointReport must be on level warning");
 		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 
 		String detailKey = "3-Route-rutebanken-3".replaceAll("-", "_").toLowerCase();
-		List<CheckPointErrorReport> details = checkReportForTest(report,"3-Route-rutebanken-3",-1);
+		List<CheckPointErrorReport> details = checkReportForTest(report, "3-Route-rutebanken-3", -1);
 		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
@@ -428,7 +421,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 	}
 
-	@Test(groups = { "route" }, description = "3-Route-5", priority = 7)
+	@Test(groups = {"route"}, description = "3-Route-5", priority = 7)
 	public void verifyTest3_5() throws Exception {
 		// 3-Route-5 : check for potentially waybacks
 		log.info(Color.BLUE + "3-Route-5" + Color.NORMAL);
@@ -472,7 +465,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 
 		String detailKey = "3-Route-5".replaceAll("-", "_").toLowerCase();
-		List<CheckPointErrorReport> details = checkReportForTest(report,"3-Route-5",-1);
+		List<CheckPointErrorReport> details = checkReportForTest(report, "3-Route-5", -1);
 		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
@@ -492,7 +485,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 	}
 
-	@Test(groups = { "route" }, description = "3-Route-rutebanken-4", priority = 8)
+	@Test(groups = {"route"}, description = "3-Route-rutebanken-4", priority = 8)
 	public void verifyTest3_RB_4() throws Exception {
 		// 3-Route-rutebanken-4 : check if route has minimum 2 RoutePoints
 		log.info(Color.BLUE + "3-Route-rutebanken-4" + Color.NORMAL);
@@ -536,7 +529,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 
 		String detailKey = "3-Route-rutebanken-4".replaceAll("-", "_").toLowerCase();
-		List<CheckPointErrorReport> details = checkReportForTest(report,"3-Route-rutebanken-4",-1);
+		List<CheckPointErrorReport> details = checkReportForTest(report, "3-Route-rutebanken-4", -1);
 		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
@@ -552,7 +545,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 	}
 
-	@Test(groups = { "route" }, description = "3-Route-7", priority = 9)
+	@Test(groups = {"route"}, description = "3-Route-7", priority = 9)
 	public void verifyTest3_7() throws Exception {
 		// 3-Route-7 : check if route has minimum 1 JourneyPattern
 		log.info(Color.BLUE + "3-Route-7" + Color.NORMAL);
@@ -594,7 +587,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 
 		String detailKey = "3-Route-7".replaceAll("-", "_").toLowerCase();
-		List<CheckPointErrorReport> details = checkReportForTest(report,"3-Route-7",-1);
+		List<CheckPointErrorReport> details = checkReportForTest(report, "3-Route-7", -1);
 		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
@@ -610,7 +603,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 	}
 
-	@Test(groups = { "route" }, description = "3-Route-8", priority = 10)
+	@Test(groups = {"route"}, description = "3-Route-8", priority = 10)
 	public void verifyTest3_8() throws Exception {
 		// 3-Route-8 : check if all stopPoints are used by journeyPatterns
 		log.info(Color.BLUE + "3-Route-8" + Color.NORMAL);
@@ -652,7 +645,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 
 		String detailKey = "3-Route-8".replaceAll("-", "_").toLowerCase();
-		List<CheckPointErrorReport> details = checkReportForTest(report,"3-Route-8",-1);
+		List<CheckPointErrorReport> details = checkReportForTest(report, "3-Route-8", -1);
 		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());

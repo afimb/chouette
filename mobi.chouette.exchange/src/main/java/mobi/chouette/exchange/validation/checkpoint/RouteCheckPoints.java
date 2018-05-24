@@ -48,7 +48,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		initCheckPoint(context, ROUTE_2, SEVERITY.W);
 		initCheckPoint(context, ROUTE_5, SEVERITY.I);
 		initCheckPoint(context, ROUTE_RB_2, SEVERITY.W);
-		initCheckPoint(context, ROUTE_RB_3, SEVERITY.W);
+		initCheckPoint(context, ROUTE_RB_3, SEVERITY.I);
 		if (!sourceFile) {
 			initCheckPoint(context, ROUTE_7, SEVERITY.E);
 			initCheckPoint(context, ROUTE_RB_4, SEVERITY.W);
