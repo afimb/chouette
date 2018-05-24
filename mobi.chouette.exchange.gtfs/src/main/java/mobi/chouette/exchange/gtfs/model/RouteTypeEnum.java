@@ -281,7 +281,18 @@ public enum RouteTypeEnum {
 		case TrolleyBus:
 			return TrolleybusService;
 		case Tram:
-			return TramService;
+			if (subMode == null) {
+				return RouteTypeEnum.TramService;
+			} else {
+				switch (subMode) {
+					case LocalTram:
+						return RouteTypeEnum.LocalTramService;
+					case CityTram:
+						return CityTramService;
+					default:
+						return RouteTypeEnum.TramService;
+				}
+			}
 		case Water:
 			if (subMode == null) {
 				return WaterTransportService;
