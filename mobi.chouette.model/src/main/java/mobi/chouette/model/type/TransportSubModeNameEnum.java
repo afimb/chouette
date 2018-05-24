@@ -21,6 +21,7 @@ public enum TransportSubModeNameEnum {
      * Tram sub modes
      */
     LocalTram,
+    CityTram,
 
     /**
      * Rail sub modes
@@ -130,6 +131,11 @@ public enum TransportSubModeNameEnum {
             TransportSubModeNameEnum.InternationalCoach,
             TransportSubModeNameEnum.NationalCoach,
             TransportSubModeNameEnum.TouristCoach
+    );
+
+    public static final EnumSet<TransportSubModeNameEnum> TRAM_SUB_MODES = EnumSet.of(
+            TransportSubModeNameEnum.LocalTram,
+            TransportSubModeNameEnum.CityTram
     );
 
 }

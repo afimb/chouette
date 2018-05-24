@@ -184,6 +184,8 @@ public class NetexParserUtils extends ParserUtils {
 				switch (mode) {
 					case LOCAL_TRAM:
 						return TransportSubModeNameEnum.LocalTram;
+					case CITY_TRAM:
+						return TransportSubModeNameEnum.CityTram;
 					default:
 						log.error("Unsupported tram sub mode " + mode);
 				}

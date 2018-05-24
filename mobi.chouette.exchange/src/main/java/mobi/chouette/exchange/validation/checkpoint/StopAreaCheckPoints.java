@@ -375,7 +375,7 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 				}
 				break;
 			case Tram:
-				if (!stopArea.getTransportSubMode().equals(TransportSubModeNameEnum.LocalTram)) {
+				if (!TransportSubModeNameEnum.TRAM_SUB_MODES.contains(stopArea.getTransportSubMode())) {
 					DataLocation location = buildLocation(context, stopArea);
 					reporter.addCheckPointReportError(context, STOP_AREA_7, location);
 				}
