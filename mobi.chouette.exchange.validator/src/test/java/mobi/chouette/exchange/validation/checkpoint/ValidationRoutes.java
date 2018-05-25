@@ -255,7 +255,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-Route-rutebanken-2 checkPoint");
 
 		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.INFO,
 				" checkPointReport must be on level warning");
 		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 
