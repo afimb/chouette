@@ -742,7 +742,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			testLevel3FileList.add(new TestDescription(3, ROUTE_5, "INFO"));
 			testLevel3FileList.add(new TestDescription(3, ROUTE_8, "WARNING"));
 
-			testLevel3FileList.add(new TestDescription(3, ROUTE_RB_2, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, ROUTE_RB_2, "INFO"));
 			testLevel3FileList.add(new TestDescription(3, ROUTE_RB_3, "INFO"));
 			testLevel3FileList.add(new TestDescription(3, ROUTE_RB_4, "WARNING"));
 			
@@ -825,7 +825,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_7, "ERROR"));
 			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_8, "WARNING"));
 
-			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_RB_2, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_RB_2, "INFO"));
 			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_RB_3, "INFO"));
 			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_RB_4, "WARNING"));
 			
