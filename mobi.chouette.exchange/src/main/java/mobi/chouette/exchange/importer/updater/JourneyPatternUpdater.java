@@ -114,14 +114,19 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		
 		// RouteSections
 		if (!newValue.getRouteSections().equals(oldValue.getRouteSections())) {
-			// List<RouteSection> sections =
-			// routeSectionDAO.findByObjectId(UpdaterUtils.getObjectIds(newValue.getRouteSections()));
-			// for (RouteSection object : sections) {
-			// cache.getRouteSections().put(object.getObjectId(), object);
-			// }
 			oldValue.getRouteSections().clear();
+			List<RouteSection> routeSections = null;
 			for (RouteSection item : newValue.getRouteSections()) {
 				RouteSection section = cache.getRouteSections().get(item.getObjectId());
+				if (section == null) {
+					if (routeSections == null) {
+						routeSections = routeSectionDAO.findByObjectId(UpdaterUtils.getObjectIds(newValue.getRouteSections()));
+						for (RouteSection object : routeSections) {
+							cache.getRouteSections().put(object.getObjectId(), object);
+						}
+					}
+					 section = cache.getRouteSections().get(item.getObjectId());
+				}
 				if (section == null) {
 					section = ObjectFactory.getRouteSection(cache, item.getObjectId());
 				}

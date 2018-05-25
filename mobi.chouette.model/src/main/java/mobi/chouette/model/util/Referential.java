@@ -107,6 +107,10 @@ public class Referential implements java.io.Serializable {
 
 	@Getter
 	@Setter
+	private Map<String, RouteSection> sharedRouteSections = new HashMap<String, RouteSection>();
+
+	@Getter
+	@Setter
 	private Map<String, Route> routes = new HashMap<String, Route>();
 
 	@Getter
@@ -217,6 +221,7 @@ public class Referential implements java.io.Serializable {
 				jp.getVehicleJourneys().clear();
 				jp.getRouteSections().clear();
 				jp.getFootnotes().clear();
+				jp.getRouteSections().clear();
 			}
 			for (VehicleJourney vj : vehicleJourneys.values()) {
 				for(VehicleJourneyAtStop vjas : vj.getVehicleJourneyAtStops()) {
@@ -290,6 +295,7 @@ public class Referential implements java.io.Serializable {
 		sharedFootnotes.clear();
 		sharedBrandings.clear();
 		sharedRoutePoints.clear();
+		sharedRouteSections.clear();
 	}
 
 }

@@ -302,11 +302,14 @@ public class ObjectFactory {
 
 
 	public static RouteSection getRouteSection(Referential referential, String objectId) {
-		RouteSection section = referential.getRouteSections().get(objectId);
+		RouteSection section = referential.getSharedRouteSections().get(objectId);
 		if (section == null) {
 			section = new RouteSection();
 			section.setObjectId(objectId);
 			section.setDetached(true);
+			referential.getSharedRouteSections().put(objectId, section);
+		}
+		if (!referential.getRouteSections().containsKey(objectId)) {
 			referential.getRouteSections().put(objectId, section);
 		}
 		return section;
