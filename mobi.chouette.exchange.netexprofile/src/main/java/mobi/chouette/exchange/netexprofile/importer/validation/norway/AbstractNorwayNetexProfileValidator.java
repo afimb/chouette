@@ -347,6 +347,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 		Set<String> noticedObjectRefSubstitutions = new HashSet<>();
 		noticedObjectRefSubstitutions.add("Line");
+		noticedObjectRefSubstitutions.add("FlexibleLine");
 		noticedObjectRefSubstitutions.add("ServiceJourney");
 		noticedObjectRefSubstitutions.add("JourneyPattern");
 		noticedObjectRefSubstitutions.add("ServiceJourneyPattern");
