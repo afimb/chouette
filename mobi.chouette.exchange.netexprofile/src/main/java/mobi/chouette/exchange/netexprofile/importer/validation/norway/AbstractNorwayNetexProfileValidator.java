@@ -28,7 +28,10 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String PROFILE_NORWAY_NETWORKTIMETABLE_104_11 = "1.04:NO-NeTEx-networktimetable:1.1";
 	public static final String PROFILE_NORWAY_NETWORKTIMETABLE_107_11 = "1.07:NO-NeTEx-networktimetable:1.1";
 	public static final String PROFILE_NORWAY_NETWORKTIMETABLE_108_11 = "1.08:NO-NeTEx-networktimetable:1.1";
-	public static final String EXPORT_PROFILE_ID = PROFILE_NORWAY_NETWORKTIMETABLE_108_11; // Update when new profile version is implemented
+	public static final String PROFILE_NORWAY_NETWORKTIMETABLE_108_12 = "1.08:NO-NeTEx-networktimetable:1.2";
+	public static final String PROFILE_NORWAY_NETWORKTIMETABLE_108_13 = "1.08:NO-NeTEx-networktimetable:1.3";
+
+	public static final String EXPORT_PROFILE_ID = PROFILE_NORWAY_NETWORKTIMETABLE_108_13; // Update when new profile version is implemented
 	
 	public static final String NSR_XMLNSURL = "http://www.rutebanken.org/ns/nsr";
 	public static final String NSR_XMLNS = "NSR";
@@ -322,7 +325,9 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	}
 
 	public Collection<String> getSupportedProfiles() {
-		return Arrays.asList(new String[] { PROFILE_NORWAY_NETWORKTIMETABLE_104_10,PROFILE_NORWAY_NETWORKTIMETABLE_104_11, PROFILE_NORWAY_NETWORKTIMETABLE_107_11, PROFILE_NORWAY_NETWORKTIMETABLE_108_11 });
+		return Arrays.asList(new String[] { PROFILE_NORWAY_NETWORKTIMETABLE_104_10,PROFILE_NORWAY_NETWORKTIMETABLE_104_11,
+				PROFILE_NORWAY_NETWORKTIMETABLE_107_11, PROFILE_NORWAY_NETWORKTIMETABLE_108_11,  PROFILE_NORWAY_NETWORKTIMETABLE_108_12,
+				PROFILE_NORWAY_NETWORKTIMETABLE_108_13});
 	}
 
 	protected void verifyReferencesToCorrectEntityTypes(Context context, List<IdVersion> localRefs) {
@@ -350,6 +355,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 		Set<String> noticedObjectRefSubstitutions = new HashSet<>();
 		noticedObjectRefSubstitutions.add("Line");
+		noticedObjectRefSubstitutions.add("FlexibleLine");
 		noticedObjectRefSubstitutions.add("ServiceJourney");
 		noticedObjectRefSubstitutions.add("JourneyPattern");
 		noticedObjectRefSubstitutions.add("ServiceJourneyPattern");
