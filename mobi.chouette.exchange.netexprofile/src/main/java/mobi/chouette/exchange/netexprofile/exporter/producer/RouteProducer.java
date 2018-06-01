@@ -44,12 +44,8 @@ public class RouteProducer extends NetexProducer implements NetexEntityProducer<
 			netexRoute.setKeyList(keyListStructure);
 		}
 
+		netexRoute.setLineRef(NetexProducerUtils.createLineRef(neptuneRoute.getLine(), netexFactory));
 
-		LineRefStructure lineRefStruct = netexFactory.createLineRefStructure();
-		NetexProducerUtils.populateReference(neptuneRoute.getLine(), lineRefStruct, true);
-		netexRoute.setLineRef(netexFactory.createLineRef(lineRefStruct));
-
-		
 		PointsOnRoute_RelStructure pointsOnRoute = netexFactory.createPointsOnRoute_RelStructure();
 
 		for (StopPoint stopPoint : neptuneRoute.getStopPoints()) {

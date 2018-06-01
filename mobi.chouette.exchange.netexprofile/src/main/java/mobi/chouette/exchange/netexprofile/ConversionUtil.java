@@ -14,6 +14,7 @@ import mobi.chouette.model.type.BookingAccessEnum;
 import mobi.chouette.model.type.BookingMethodEnum;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.type.FlexibleLineTypeEnum;
+import mobi.chouette.model.type.FlexibleServiceTypeEnum;
 import mobi.chouette.model.type.PurchaseMomentEnum;
 import mobi.chouette.model.type.PurchaseWhenEnum;
 import mobi.chouette.model.type.ServiceAlterationEnum;
@@ -29,6 +30,7 @@ import org.rutebanken.netex.model.BusSubmodeEnumeration;
 import org.rutebanken.netex.model.CoachSubmodeEnumeration;
 import org.rutebanken.netex.model.DayOfWeekEnumeration;
 import org.rutebanken.netex.model.FlexibleLineTypeEnumeration;
+import org.rutebanken.netex.model.FlexibleServiceEnumeration;
 import org.rutebanken.netex.model.MetroSubmodeEnumeration;
 import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.PurchaseMomentEnumeration;
@@ -414,6 +416,26 @@ public class ConversionUtil {
 		return null;
 	}
 
+
+	public static FlexibleServiceEnumeration toFlexibleServiceType(FlexibleServiceTypeEnum chouetteType) {
+		if (chouetteType == null) {
+			return null;
+		}
+
+		switch (chouetteType) {
+			case dynamicPassingTimes:
+				return FlexibleServiceEnumeration.DYNAMIC_PASSING_TIMES;
+			case fixedPassingTimes:
+				return FlexibleServiceEnumeration.FIXED_PASSING_TIMES;
+			case fixedHeadwayFrequency:
+				return FlexibleServiceEnumeration.FIXED_HEADWAY_FREQUENCY;
+			case notFlexible:
+				return FlexibleServiceEnumeration.NOT_FLEXIBLE;
+			case other:
+				return FlexibleServiceEnumeration.OTHER;
+		}
+		return null;
+	}
 
 	public static PurchaseMomentEnumeration toPurchaseMoment(PurchaseMomentEnum chouetteType) {
 		if (chouetteType == null) {

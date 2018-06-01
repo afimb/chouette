@@ -18,6 +18,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
@@ -423,5 +424,11 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	@Setter
 	@OneToMany(mappedBy = "consumerVehicleJourney", cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch = FetchType.LAZY)
 	private List<Interchange> consumerInterchanges = new ArrayList<>(0);
+
+	@Getter
+	@Setter
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "flexible_service_properties_id")
+	private FlexibleServiceProperties flexibleServiceProperties;
 
 }

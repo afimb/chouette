@@ -243,7 +243,8 @@ public class NetexImporterCommandTest extends Arquillian implements Constant, Re
 		Line line = lineDao.findByObjectId("AVI:FlexibleLine:WF_TRD-MOL");
 		assertNotNull(line, "Line not found");
 		assertNotNull(line.getFlexibleLineProperties());
-		assertNotNull(line.getFlexibleLineProperties().getBookingNote());
+		assertNotNull(line.getFlexibleLineProperties().getBookingArrangement());
+		assertNotNull(line.getFlexibleLineProperties().getBookingArrangement().getBookingNote());
 
 		utx.rollback();
 	}

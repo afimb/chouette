@@ -157,6 +157,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			oldValue.setJourneyCategory(newValue.getJourneyCategory());
 			oldValue.setKeyValues(newValue.getKeyValues());
 			oldValue.setServiceAlteration(newValue.getServiceAlteration());
+			oldValue.setFlexibleServiceProperties(newValue.getFlexibleServiceProperties());
 			oldValue.setDetached(false);
 		} else {
 			twoDatabaseVehicleJourneyTwoTest(validationReporter, context, oldValue.getCompany(), newValue.getCompany(), data);
@@ -220,6 +221,9 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			}
 			if (newValue.getServiceAlteration() != null && !newValue.getServiceAlteration().equals(oldValue.getServiceAlteration())) {
 				oldValue.setServiceAlteration(newValue.getServiceAlteration());
+			}
+			if (newValue.getFlexibleServiceProperties() != null && !newValue.getFlexibleServiceProperties().equals(oldValue.getFlexibleServiceProperties())) {
+				oldValue.setFlexibleServiceProperties(newValue.getFlexibleServiceProperties());
 			}
 		}
 

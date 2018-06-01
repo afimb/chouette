@@ -14,6 +14,7 @@ import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes;
 import mobi.chouette.exchange.netexprofile.util.NetexReferential;
+import mobi.chouette.model.BookingArrangement;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ContactStructure;
 import mobi.chouette.model.FlexibleLineProperties;
@@ -112,35 +113,22 @@ public class LineParser implements Parser, Constant {
 				chouetteLine.setFlexibleService(true);
 				FlexibleLine flexibleLine = (FlexibleLine) netexLine;
 				FlexibleLineProperties flexibleLineProperties = new FlexibleLineProperties();
-				if (flexibleLine.getBookingNote() != null) {
-					flexibleLineProperties.setBookingNote(flexibleLine.getBookingNote().getValue());
-				}
+
 				flexibleLineProperties.setFlexibleLineType(NetexParserUtils.toFlexibleLineType(flexibleLine.getFlexibleLineType()));
-				flexibleLineProperties.setBookingAccess(NetexParserUtils.toBookingAccess(flexibleLine.getBookingAccess()));
-				flexibleLineProperties.setBookWhen(NetexParserUtils.toPurchaseWhen(flexibleLine.getBookWhen()));
-				flexibleLineProperties.setBuyWhen(flexibleLine.getBuyWhen().stream().map(NetexParserUtils::toPurchaseMoment).collect(Collectors.toList()));
-				flexibleLineProperties.setBookingMethods(flexibleLine.getBookingMethods().stream().map(NetexParserUtils::toBookingMethod).collect(Collectors.toList()));
-				flexibleLineProperties.setLatestBookingTime(TimeUtil.toJodaLocalTime(flexibleLine.getLatestBookingTime()));
-				flexibleLineProperties.setMinimumBookingPeriod(TimeUtil.toJodaDuration(flexibleLine.getMinimumBookingPeriod()));
-
-				org.rutebanken.netex.model.ContactStructure netexBookingContact=flexibleLine.getBookingContact();
-				if(netexBookingContact!=null){
-					ContactStructure chouetteBookingContact=new ContactStructure();
-					if (netexBookingContact.getContactPerson()!=null) {
-						chouetteBookingContact.setContactPerson(netexBookingContact.getContactPerson().getValue());
-					}
-					if (netexBookingContact.getFurtherDetails()!=null) {
-						chouetteBookingContact.setFurtherDetails(netexBookingContact.getFurtherDetails().getValue());
-					}
-					chouetteBookingContact.setEmail(netexBookingContact.getEmail());
-					chouetteBookingContact.setFax(netexBookingContact.getFax());
-					chouetteBookingContact.setPhone(netexBookingContact.getPhone());
-					chouetteBookingContact.setUrl(netexBookingContact.getUrl());
-
+				BookingArrangement bookingArrangement=new BookingArrangement();
+				if (flexibleLine.getBookingNote() != null) {
+					bookingArrangement.setBookingNote(flexibleLine.getBookingNote().getValue());
 				}
+				bookingArrangement.setBookingAccess(NetexParserUtils.toBookingAccess(flexibleLine.getBookingAccess()));
+				bookingArrangement.setBookWhen(NetexParserUtils.toPurchaseWhen(flexibleLine.getBookWhen()));
+				bookingArrangement.setBuyWhen(flexibleLine.getBuyWhen().stream().map(NetexParserUtils::toPurchaseMoment).collect(Collectors.toList()));
+				bookingArrangement.setBookingMethods(flexibleLine.getBookingMethods().stream().map(NetexParserUtils::toBookingMethod).collect(Collectors.toList()));
+				bookingArrangement.setLatestBookingTime(TimeUtil.toJodaLocalTime(flexibleLine.getLatestBookingTime()));
+				bookingArrangement.setMinimumBookingPeriod(TimeUtil.toJodaDuration(flexibleLine.getMinimumBookingPeriod()));
 
-				flexibleLineProperties.setBookingContact(contactStructureParser.parse(flexibleLine.getBookingContact()));
+				bookingArrangement.setBookingContact(contactStructureParser.parse(flexibleLine.getBookingContact()));
 
+				flexibleLineProperties.setBookingArrangement(bookingArrangement);
 				chouetteLine.setFlexibleLineProperties(flexibleLineProperties);
 			}
 		}

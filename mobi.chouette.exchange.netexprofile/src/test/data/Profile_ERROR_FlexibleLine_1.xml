@@ -243,6 +243,12 @@
                                     <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:83334" version="1"/>
                                     <ForAlighting>false</ForAlighting>
                                     <DestinationDisplayRef ref="AVI:DestinationDisplay:12636280" version="1"/>
+                                    <BookingArrangements>
+                                        <BookingMethods>other</BookingMethods>
+                                        <BookingAccess>other</BookingAccess>
+                                        <BookWhen>other</BookWhen>
+                                        <BuyWhen>onReservation beforeBoarding other</BuyWhen>
+                                    </BookingArrangements>
                                 </StopPointInJourneyPattern>
                                 <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:1263628002">
                                     <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:76522" version="1"/>
@@ -301,6 +307,13 @@
                                     <ArrivalTime>07:40:00Z</ArrivalTime>
                                 </TimetabledPassingTime>
                             </passingTimes>
+                            <FlexibleServiceProperties>
+                                <FlexibleServiceType>other</FlexibleServiceType>
+                                <BookingMethods>other</BookingMethods>
+                                <BookingAccess>other</BookingAccess>
+                                <BookWhen>other</BookWhen>
+                                <BuyWhen>onReservation beforeBoarding other</BuyWhen>
+                            </FlexibleServiceProperties>
                         </ServiceJourney>
                         <ServiceJourney version="1" id="AVI:ServiceJourney:WF537-01-12636280">
                             <ServiceAlteration>cancellation</ServiceAlteration>

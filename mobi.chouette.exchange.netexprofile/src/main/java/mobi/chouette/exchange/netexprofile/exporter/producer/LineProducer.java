@@ -9,6 +9,7 @@ import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
+import mobi.chouette.model.BookingArrangement;
 import mobi.chouette.model.FlexibleLineProperties;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
@@ -115,22 +116,25 @@ public class LineProducer extends NetexProducer implements NetexEntityProducer<o
 		FlexibleLine flexibleLine = netexFactory.createFlexibleLine();
 		FlexibleLineProperties flexibleLineProperties=neptuneLine.getFlexibleLineProperties();
 		if (flexibleLineProperties != null) {
-			if (flexibleLineProperties.getBookingNote() != null) {
-				flexibleLine.setBookingNote(new MultilingualString().withValue(flexibleLineProperties.getBookingNote()));
-			}
+			BookingArrangement bookingArrangement= flexibleLineProperties.getBookingArrangement();
 			flexibleLine.setFlexibleLineType(ConversionUtil.toFlexibleLineType(flexibleLineProperties.getFlexibleLineType()));
-			flexibleLine.setBookingAccess(ConversionUtil.toBookingAccess(flexibleLineProperties.getBookingAccess()));
-			flexibleLine.setBookWhen(ConversionUtil.toPurchaseWhen(flexibleLineProperties.getBookWhen()));
-			if (!CollectionUtils.isEmpty(flexibleLineProperties.getBuyWhen())) {
-				flexibleLine.withBuyWhen(flexibleLineProperties.getBuyWhen().stream().map(ConversionUtil::toPurchaseMoment).collect(Collectors.toList()));
-			}
-			if (!CollectionUtils.isEmpty(flexibleLineProperties.getBookingMethods())) {
-				flexibleLine.withBookingMethods(flexibleLineProperties.getBookingMethods().stream().map(ConversionUtil::toBookingMethod).collect(Collectors.toList()));
-			}
-			flexibleLine.setLatestBookingTime(TimeUtil.toLocalTimeFromJoda(flexibleLineProperties.getLatestBookingTime()));
-			flexibleLine.setMinimumBookingPeriod(TimeUtil.toDurationFromJodaDuration(flexibleLineProperties.getMinimumBookingPeriod()));
+			if (bookingArrangement!=null) {
+				if (bookingArrangement.getBookingNote() != null) {
+					flexibleLine.setBookingNote(new MultilingualString().withValue(bookingArrangement.getBookingNote()));
+				}
+				flexibleLine.setBookingAccess(ConversionUtil.toBookingAccess(bookingArrangement.getBookingAccess()));
+				flexibleLine.setBookWhen(ConversionUtil.toPurchaseWhen(bookingArrangement.getBookWhen()));
+				if (!CollectionUtils.isEmpty(bookingArrangement.getBuyWhen())) {
+					flexibleLine.withBuyWhen(bookingArrangement.getBuyWhen().stream().map(ConversionUtil::toPurchaseMoment).collect(Collectors.toList()));
+				}
+				if (!CollectionUtils.isEmpty(bookingArrangement.getBookingMethods())) {
+					flexibleLine.withBookingMethods(bookingArrangement.getBookingMethods().stream().map(ConversionUtil::toBookingMethod).collect(Collectors.toList()));
+				}
+				flexibleLine.setLatestBookingTime(TimeUtil.toLocalTimeFromJoda(bookingArrangement.getLatestBookingTime()));
+				flexibleLine.setMinimumBookingPeriod(TimeUtil.toDurationFromJodaDuration(bookingArrangement.getMinimumBookingPeriod()));
 
-			flexibleLine.setBookingContact(contactStructureProducer.produce(flexibleLineProperties.getBookingContact()));
+				flexibleLine.setBookingContact(contactStructureProducer.produce(bookingArrangement.getBookingContact()));
+			}
 		}
 		return flexibleLine;
 	}

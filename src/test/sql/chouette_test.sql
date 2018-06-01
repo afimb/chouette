@@ -31,7 +31,7 @@ SET search_path = chouette_gui, pg_catalog;
 
 --
 -- TOC entry 174 (class 1259 OID 938851)
--- Name: access_links; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: access_links; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE access_links (
@@ -86,7 +86,7 @@ ALTER SEQUENCE access_links_id_seq OWNED BY access_links.id;
 
 --
 -- TOC entry 176 (class 1259 OID 938859)
--- Name: access_points; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: access_points; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE access_points (
@@ -180,7 +180,7 @@ ALTER SEQUENCE codespaces_id_seq OWNED BY codespaces.id;
 
 --
 -- TOC entry 180 (class 1259 OID 938875)
--- Name: companies; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: companies; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE companies (
@@ -350,7 +350,7 @@ CREATE INDEX index_destination_display_id_on_destination_display_via
 
 --
 -- TOC entry 188 (class 1259 OID 938909)
--- Name: facilities; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: facilities; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE facilities (
@@ -383,7 +383,7 @@ ALTER TABLE chouette_gui.facilities OWNER TO chouette;
 
 --
 -- TOC entry 189 (class 1259 OID 938915)
--- Name: facilities_features; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: facilities_features; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE facilities_features (
@@ -419,7 +419,7 @@ ALTER SEQUENCE facilities_id_seq OWNED BY facilities.id;
 
 --
 -- TOC entry 191 (class 1259 OID 938920)
--- Name: footnotes; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: footnotes; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 CREATE TABLE footnotes (
     id bigint NOT NULL,
@@ -469,7 +469,7 @@ ALTER SEQUENCE footnotes_id_seq OWNED BY footnotes.id;
 
 --
 -- TOC entry 193 (class 1259 OID 938928)
--- Name: footnotes_vehicle_journeys; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: footnotes_vehicle_journeys; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE footnotes_vehicle_journeys (
@@ -513,21 +513,21 @@ CREATE TABLE footnotes_vehicle_journey_at_stops (
 
 ALTER TABLE chouette_gui.footnotes_vehicle_journey_at_stops OWNER TO chouette;
 
-CREATE TABLE lines_buy_when (
-    line_id bigint NOT NULL,
+CREATE TABLE booking_arrangements_buy_when (
+    booking_arrangement_id bigint NOT NULL,
     buy_when character varying(255)
     );
 
 
-ALTER TABLE chouette_gui.lines_buy_when OWNER TO chouette;
+ALTER TABLE chouette_gui.booking_arrangements_buy_when OWNER TO chouette;
 
-CREATE TABLE lines_booking_methods (
-    line_id bigint NOT NULL,
+CREATE TABLE booking_arrangements_booking_methods (
+    booking_arrangement_id bigint NOT NULL,
     booking_method character varying(255)
     );
 
 
-ALTER TABLE chouette_gui.lines_booking_methods OWNER TO chouette;
+ALTER TABLE chouette_gui.booking_arrangements_booking_methods OWNER TO chouette;
 
 CREATE TABLE lines_key_values (
     line_id bigint NOT NULL,
@@ -597,7 +597,7 @@ ALTER SEQUENCE brandings_id_seq OWNED BY brandings.id;
 
 --
 -- TOC entry 194 (class 1259 OID 938931)
--- Name: group_of_lines; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: group_of_lines; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE group_of_lines (
@@ -640,7 +640,7 @@ ALTER SEQUENCE group_of_lines_id_seq OWNED BY group_of_lines.id;
 
 --
 -- TOC entry 196 (class 1259 OID 938940)
--- Name: group_of_lines_lines; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: group_of_lines_lines; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE group_of_lines_lines (
@@ -653,7 +653,7 @@ ALTER TABLE chouette_gui.group_of_lines_lines OWNER TO chouette;
 
 --
 -- TOC entry 378 (class 1259 OID 942346)
--- Name: journey_frequencies; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: journey_frequencies; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE journey_frequencies (
@@ -697,7 +697,7 @@ ALTER SEQUENCE journey_frequencies_id_seq OWNED BY journey_frequencies.id;
 
 --
 -- TOC entry 382 (class 1259 OID 942378)
--- Name: journey_pattern_sections; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: journey_pattern_sections; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE journey_pattern_sections (
@@ -832,7 +832,7 @@ CREATE INDEX interchanges_to_vehicle_journey_key
 
 --
 -- TOC entry 197 (class 1259 OID 938943)
--- Name: journey_patterns; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: journey_patterns; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE journey_patterns (
@@ -880,7 +880,7 @@ ALTER SEQUENCE journey_patterns_id_seq OWNED BY journey_patterns.id;
 
 --
 -- TOC entry 199 (class 1259 OID 938951)
--- Name: journey_patterns_stop_points; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: journey_patterns_stop_points; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE journey_patterns_stop_points (
@@ -918,9 +918,40 @@ ALTER TABLE chouette_gui.contact_structures_id_seq OWNER TO chouette;
 
 ALTER SEQUENCE contact_structures_id_seq OWNED BY contact_structures.id;
 
+CREATE TABLE booking_arrangements (
+    id bigint NOT NULL,
+    booking_contact_id bigint,
+    booking_note character varying,
+    booking_access character varying(255),
+    book_when character varying(255),
+    latest_booking_time  time without time zone,
+    minimum_booking_period  time without time zone
+);
+
+
+ALTER TABLE chouette_gui.booking_arrangements OWNER TO chouette;
+
+CREATE SEQUENCE booking_arrangements_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE chouette_gui.booking_arrangements_id_seq OWNER TO chouette;
+
+--
+-- TOC entry 4265 (class 0 OID 0)
+-- Dependencies: 201
+-- Name: lines_id_seq; Type: SEQUENCE OWNED BY; Schema: chouette_gui; Owner: chouette
+--
+
+ALTER SEQUENCE booking_arrangements_id_seq OWNED BY booking_arrangements.id;
+
 --
 -- TOC entry 200 (class 1259 OID 938954)
--- Name: lines; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: lines; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE lines (
@@ -945,13 +976,8 @@ CREATE TABLE lines (
     color character varying(6),
     text_color character varying(6),
     stable_id character varying(255),
-    booking_contact_id bigint,
-    booking_note character varying,
     flexible_line_type character varying,
-    booking_access character varying(255),
-    book_when character varying(255),
-    latest_booking_time  time without time zone,
-    minimum_booking_period  time without time zone
+    booking_arrangement_id bigint
 );
 
 
@@ -983,7 +1009,7 @@ ALTER SEQUENCE lines_id_seq OWNED BY lines.id;
 
 --
 -- TOC entry 202 (class 1259 OID 938962)
--- Name: networks; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: networks; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE networks (
@@ -1033,7 +1059,7 @@ ALTER SEQUENCE networks_id_seq OWNED BY networks.id;
 
 --
 -- TOC entry 206 (class 1259 OID 938979)
--- Name: pt_links; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: pt_links; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE pt_links (
@@ -1079,7 +1105,7 @@ ALTER SEQUENCE pt_links_id_seq OWNED BY pt_links.id;
 
 --
 -- TOC entry 208 (class 1259 OID 938987)
--- Name: referentials; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: referentials; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE referentials (
@@ -1102,7 +1128,7 @@ CREATE TABLE referentials (
 
 --
 -- TOC entry 376 (class 1259 OID 942335)
--- Name: route_sections; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: route_sections; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE route_sections (
@@ -1148,7 +1174,7 @@ ALTER SEQUENCE route_sections_id_seq OWNED BY route_sections.id;
 
 --
 -- TOC entry 210 (class 1259 OID 938995)
--- Name: routes; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: routes; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE routes (
@@ -1196,7 +1222,7 @@ ALTER SEQUENCE routes_id_seq OWNED BY routes.id;
 
 --
 -- TOC entry 212 (class 1259 OID 939003)
--- Name: routing_constraints_lines; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: routing_constraints_lines; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE routing_constraints_lines (
@@ -1210,7 +1236,7 @@ ALTER TABLE chouette_gui.routing_constraints_lines OWNER TO chouette;
 
 --
 -- TOC entry 216 (class 1259 OID 939017)
--- Name: stop_areas; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: stop_areas; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE stop_areas (
@@ -1273,7 +1299,7 @@ ALTER SEQUENCE stop_areas_id_seq OWNED BY stop_areas.id;
 
 --
 -- TOC entry 218 (class 1259 OID 939025)
--- Name: stop_areas_stop_areas; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: stop_areas_stop_areas; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE stop_areas_stop_areas (
@@ -1286,7 +1312,7 @@ ALTER TABLE chouette_gui.stop_areas_stop_areas OWNER TO chouette;
 
 --
 -- TOC entry 219 (class 1259 OID 939028)
--- Name: stop_points; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: stop_points; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE stop_points (
@@ -1300,7 +1326,8 @@ CREATE TABLE stop_points (
     creator_id character varying(255),
     "position" integer,
     for_boarding character varying(255),
-    for_alighting character varying(255)
+    for_alighting character varying(255),
+    booking_arrangement_id bigint
 );
 
 
@@ -1332,7 +1359,7 @@ ALTER SEQUENCE stop_points_id_seq OWNED BY stop_points.id;
 
 --
 -- TOC entry 225 (class 1259 OID 939058)
--- Name: time_table_dates; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: time_table_dates; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE time_table_dates (
@@ -1372,7 +1399,7 @@ ALTER SEQUENCE time_table_dates_id_seq OWNED BY time_table_dates.id;
 
 --
 -- TOC entry 227 (class 1259 OID 939063)
--- Name: time_table_periods; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: time_table_periods; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE time_table_periods (
@@ -1412,7 +1439,7 @@ ALTER SEQUENCE time_table_periods_id_seq OWNED BY time_table_periods.id;
 
 --
 -- TOC entry 229 (class 1259 OID 939068)
--- Name: time_tables; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: time_tables; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE time_tables (
@@ -1457,7 +1484,7 @@ ALTER SEQUENCE time_tables_id_seq OWNED BY time_tables.id;
 
 --
 -- TOC entry 231 (class 1259 OID 939078)
--- Name: time_tables_vehicle_journeys; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: time_tables_vehicle_journeys; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE time_tables_vehicle_journeys (
@@ -1470,7 +1497,7 @@ ALTER TABLE chouette_gui.time_tables_vehicle_journeys OWNER TO chouette;
 
 --
 -- TOC entry 380 (class 1259 OID 942366)
--- Name: timebands; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: timebands; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE timebands (
@@ -1515,7 +1542,7 @@ ALTER SEQUENCE timebands_id_seq OWNED BY timebands.id;
 
 --
 -- TOC entry 234 (class 1259 OID 939093)
--- Name: vehicle_journey_at_stops; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: vehicle_journey_at_stops; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE vehicle_journey_at_stops (
@@ -1562,10 +1589,36 @@ ALTER TABLE chouette_gui.vehicle_journey_at_stops_id_seq OWNER TO chouette;
 
 ALTER SEQUENCE vehicle_journey_at_stops_id_seq OWNED BY vehicle_journey_at_stops.id;
 
+CREATE TABLE flexible_service_properties (
+    id bigint NOT NULL,
+    objectid character varying(255) NOT NULL,
+    object_version integer,
+    creation_time timestamp without time zone,
+    creator_id character varying(255),
+    flexible_service_type character varying(255),
+    booking_arrangement_id bigint,
+    cancellation_possible boolean,
+    change_of_time_possible boolean
+    );
+
+ALTER TABLE chouette_gui.flexible_service_properties OWNER TO chouette;
+
+CREATE SEQUENCE flexible_service_properties_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE chouette_gui.flexible_service_properties_id_seq OWNER TO chouette;
+
+ALTER SEQUENCE flexible_service_properties_id_seq OWNED BY flexible_service_properties.id;
+
 
 --
 -- TOC entry 236 (class 1259 OID 939101)
--- Name: vehicle_journeys; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: vehicle_journeys; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE vehicle_journeys (
@@ -1590,7 +1643,8 @@ CREATE TABLE vehicle_journeys (
     flexible_service boolean,
     journey_category integer DEFAULT 0 NOT NULL,
     private_code character varying(255),
-    service_alteration character varying(255)
+    service_alteration character varying(255),
+    flexible_service_properties_id bigint
 );
 
 
@@ -1810,7 +1864,7 @@ ALTER TABLE ONLY vehicle_journeys ALTER COLUMN id SET DEFAULT nextval('vehicle_j
 
 --
 -- TOC entry 3995 (class 2606 OID 939693)
--- Name: access_links_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: access_links_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY access_links
@@ -1819,7 +1873,7 @@ ALTER TABLE ONLY access_links
 
 --
 -- TOC entry 3998 (class 2606 OID 939695)
--- Name: access_points_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: access_points_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY access_points
@@ -1829,7 +1883,7 @@ ALTER TABLE ONLY access_points
 
 --
 -- TOC entry 4003 (class 2606 OID 939699)
--- Name: companies_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: companies_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY companies
@@ -1838,7 +1892,7 @@ ALTER TABLE ONLY companies
 
 --
 -- TOC entry 4007 (class 2606 OID 939701)
--- Name: connection_links_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: connection_links_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY connection_links
@@ -1847,7 +1901,7 @@ ALTER TABLE ONLY connection_links
 
 --
 -- TOC entry 4016 (class 2606 OID 939707)
--- Name: facilities_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: facilities_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY facilities
@@ -1856,7 +1910,7 @@ ALTER TABLE ONLY facilities
 
 --
 -- TOC entry 4018 (class 2606 OID 939709)
--- Name: footnotes_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: footnotes_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY footnotes
@@ -1865,7 +1919,7 @@ ALTER TABLE ONLY footnotes
 
 --
 -- TOC entry 4021 (class 2606 OID 939711)
--- Name: group_of_lines_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: group_of_lines_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY group_of_lines
@@ -1874,7 +1928,7 @@ ALTER TABLE ONLY group_of_lines
 
 --
 -- TOC entry 4090 (class 2606 OID 942352)
--- Name: journey_frequencies_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: journey_frequencies_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY journey_frequencies
@@ -1883,7 +1937,7 @@ ALTER TABLE ONLY journey_frequencies
 
 --
 -- TOC entry 4097 (class 2606 OID 942383)
--- Name: journey_pattern_sections_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: journey_pattern_sections_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY journey_pattern_sections
@@ -1892,7 +1946,7 @@ ALTER TABLE ONLY journey_pattern_sections
 
 --
 -- TOC entry 4024 (class 2606 OID 939713)
--- Name: journey_patterns_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: journey_patterns_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY journey_patterns
@@ -1901,12 +1955,15 @@ ALTER TABLE ONLY journey_patterns
 
 --
 -- TOC entry 4028 (class 2606 OID 939715)
--- Name: lines_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: lines_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 
 ALTER TABLE ONLY contact_structures
     ADD CONSTRAINT contact_structures_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY booking_arrangements
+    ADD CONSTRAINT booking_arrangements_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY lines
     ADD CONSTRAINT lines_pkey PRIMARY KEY (id);
@@ -1914,7 +1971,7 @@ ALTER TABLE ONLY lines
 
 --
 -- TOC entry 4032 (class 2606 OID 939717)
--- Name: networks_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: networks_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY networks
@@ -1924,7 +1981,7 @@ ALTER TABLE ONLY networks
 
 --
 -- TOC entry 4038 (class 2606 OID 939721)
--- Name: pt_links_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: pt_links_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY pt_links
@@ -1934,7 +1991,7 @@ ALTER TABLE ONLY pt_links
 
 --
 -- TOC entry 4086 (class 2606 OID 942343)
--- Name: route_sections_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: route_sections_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY route_sections
@@ -1943,7 +2000,7 @@ ALTER TABLE ONLY route_sections
 
 --
 -- TOC entry 4043 (class 2606 OID 939725)
--- Name: routes_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: routes_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY routes
@@ -1952,7 +2009,7 @@ ALTER TABLE ONLY routes
 
 --
 -- TOC entry 4050 (class 2606 OID 939729)
--- Name: stop_areas_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: stop_areas_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY stop_areas
@@ -1961,7 +2018,7 @@ ALTER TABLE ONLY stop_areas
 
 --
 -- TOC entry 4053 (class 2606 OID 939731)
--- Name: stop_points_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: stop_points_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY stop_points
@@ -1971,7 +2028,7 @@ ALTER TABLE ONLY stop_points
 
 --
 -- TOC entry 4063 (class 2606 OID 939739)
--- Name: time_table_dates_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: time_table_dates_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY time_table_dates
@@ -1980,7 +2037,7 @@ ALTER TABLE ONLY time_table_dates
 
 --
 -- TOC entry 4066 (class 2606 OID 939741)
--- Name: time_table_periods_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: time_table_periods_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY time_table_periods
@@ -1989,7 +2046,7 @@ ALTER TABLE ONLY time_table_periods
 
 --
 -- TOC entry 4069 (class 2606 OID 939743)
--- Name: time_tables_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: time_tables_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY time_tables
@@ -1998,7 +2055,7 @@ ALTER TABLE ONLY time_tables
 
 --
 -- TOC entry 4092 (class 2606 OID 942374)
--- Name: timebands_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: timebands_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY timebands
@@ -2007,7 +2064,7 @@ ALTER TABLE ONLY timebands
 
 --
 -- TOC entry 4080 (class 2606 OID 939747)
--- Name: vehicle_journey_at_stops_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: vehicle_journey_at_stops_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 ALTER TABLE ONLY vehicle_journey_at_stops
@@ -2016,8 +2073,11 @@ ALTER TABLE ONLY vehicle_journey_at_stops
 
 --
 -- TOC entry 4084 (class 2606 OID 939749)
--- Name: vehicle_journeys_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: vehicle_journeys_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
+
+ALTER TABLE ONLY flexible_service_properties
+    ADD CONSTRAINT flexible_service_properties_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY vehicle_journeys
     ADD CONSTRAINT vehicle_journeys_pkey PRIMARY KEY (id);
@@ -2029,7 +2089,7 @@ ALTER TABLE ONLY brandings
 
 --
 -- TOC entry 3993 (class 1259 OID 939862)
--- Name: access_links_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: access_links_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE UNIQUE INDEX access_links_objectid_key ON access_links USING btree (objectid);
@@ -2037,7 +2097,7 @@ CREATE UNIQUE INDEX access_links_objectid_key ON access_links USING btree (objec
 
 --
 -- TOC entry 3996 (class 1259 OID 939863)
--- Name: access_points_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: access_points_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE UNIQUE INDEX access_points_objectid_key ON access_points USING btree (objectid);
@@ -2045,7 +2105,7 @@ CREATE UNIQUE INDEX access_points_objectid_key ON access_points USING btree (obj
 
 --
 -- TOC entry 4001 (class 1259 OID 939864)
--- Name: companies_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: companies_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE UNIQUE INDEX companies_objectid_key ON companies USING btree (objectid);
@@ -2053,7 +2113,7 @@ CREATE UNIQUE INDEX companies_objectid_key ON companies USING btree (objectid);
 
 --
 -- TOC entry 4004 (class 1259 OID 939865)
--- Name: companies_registration_number_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: companies_registration_number_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE INDEX companies_registration_number_key ON companies USING btree (registration_number);
@@ -2061,7 +2121,7 @@ CREATE INDEX companies_registration_number_key ON companies USING btree (registr
 
 --
 -- TOC entry 4005 (class 1259 OID 939866)
--- Name: connection_links_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: connection_links_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE UNIQUE INDEX connection_links_objectid_key ON connection_links USING btree (objectid);
@@ -2070,7 +2130,7 @@ CREATE UNIQUE INDEX connection_links_objectid_key ON connection_links USING btre
 
 --
 -- TOC entry 4014 (class 1259 OID 939868)
--- Name: facilities_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: facilities_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE UNIQUE INDEX facilities_objectid_key ON facilities USING btree (objectid);
@@ -2078,7 +2138,7 @@ CREATE UNIQUE INDEX facilities_objectid_key ON facilities USING btree (objectid)
 
 --
 -- TOC entry 4019 (class 1259 OID 939869)
--- Name: group_of_lines_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: group_of_lines_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE UNIQUE INDEX group_of_lines_objectid_key ON group_of_lines USING btree (objectid);
@@ -2087,7 +2147,7 @@ CREATE UNIQUE INDEX group_of_lines_objectid_key ON group_of_lines USING btree (o
 
 --
 -- TOC entry 4087 (class 1259 OID 942375)
--- Name: index_journey_frequencies_on_timeband_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: index_journey_frequencies_on_timeband_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE INDEX index_journey_frequencies_on_timeband_id ON journey_frequencies USING btree (timeband_id);
@@ -2095,7 +2155,7 @@ CREATE INDEX index_journey_frequencies_on_timeband_id ON journey_frequencies USI
 
 --
 -- TOC entry 4088 (class 1259 OID 942353)
--- Name: index_journey_frequencies_on_vehicle_journey_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: index_journey_frequencies_on_vehicle_journey_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE INDEX index_journey_frequencies_on_vehicle_journey_id ON journey_frequencies USING btree (vehicle_journey_id);
@@ -2103,7 +2163,7 @@ CREATE INDEX index_journey_frequencies_on_vehicle_journey_id ON journey_frequenc
 
 --
 -- TOC entry 4025 (class 1259 OID 939871)
--- Name: index_journey_pattern_id_on_journey_patterns_stop_points; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: index_journey_pattern_id_on_journey_patterns_stop_points; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE INDEX index_journey_pattern_id_on_journey_patterns_stop_points ON journey_patterns_stop_points USING btree (journey_pattern_id);
@@ -2111,7 +2171,7 @@ CREATE INDEX index_journey_pattern_id_on_journey_patterns_stop_points ON journey
 
 --
 -- TOC entry 4093 (class 1259 OID 942384)
--- Name: index_journey_pattern_sections_on_journey_pattern_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: index_journey_pattern_sections_on_journey_pattern_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE INDEX index_journey_pattern_sections_on_journey_pattern_id ON journey_pattern_sections USING btree (journey_pattern_id);
@@ -2119,7 +2179,7 @@ CREATE INDEX index_journey_pattern_sections_on_journey_pattern_id ON journey_pat
 
 --
 -- TOC entry 4094 (class 1259 OID 942385)
--- Name: index_journey_pattern_sections_on_route_section_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: index_journey_pattern_sections_on_route_section_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE INDEX index_journey_pattern_sections_on_route_section_id ON journey_pattern_sections USING btree (route_section_id);
@@ -2127,7 +2187,7 @@ CREATE INDEX index_journey_pattern_sections_on_route_section_id ON journey_patte
 
 --
 -- TOC entry 4095 (class 1259 OID 942396)
--- Name: index_jps_on_journey_pattern_id_and_route_section_id_and_rank; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: index_jps_on_journey_pattern_id_and_route_section_id_and_rank; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_jps_on_journey_pattern_id_and_route_section_id_and_rank ON journey_pattern_sections USING btree (journey_pattern_id, route_section_id, rank);
@@ -2135,7 +2195,7 @@ CREATE UNIQUE INDEX index_jps_on_journey_pattern_id_and_route_section_id_and_ran
 
 --
 -- TOC entry 4047 (class 1259 OID 939872)
--- Name: index_stop_areas_on_parent_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: index_stop_areas_on_parent_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE INDEX index_stop_areas_on_parent_id ON stop_areas USING btree (parent_id);
@@ -2144,7 +2204,7 @@ CREATE INDEX index_stop_areas_on_parent_id ON stop_areas USING btree (parent_id)
 
 --
 -- TOC entry 4061 (class 1259 OID 939875)
--- Name: index_time_table_dates_on_time_table_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: index_time_table_dates_on_time_table_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE INDEX index_time_table_dates_on_time_table_id ON time_table_dates USING btree (time_table_id);
@@ -2152,7 +2212,7 @@ CREATE INDEX index_time_table_dates_on_time_table_id ON time_table_dates USING b
 
 --
 -- TOC entry 4064 (class 1259 OID 939876)
--- Name: index_time_table_periods_on_time_table_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: index_time_table_periods_on_time_table_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE INDEX index_time_table_periods_on_time_table_id ON time_table_periods USING btree (time_table_id);
@@ -2160,7 +2220,7 @@ CREATE INDEX index_time_table_periods_on_time_table_id ON time_table_periods USI
 
 --
 -- TOC entry 4070 (class 1259 OID 939877)
--- Name: index_time_tables_vehicle_journeys_on_time_table_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: index_time_tables_vehicle_journeys_on_time_table_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE INDEX index_time_tables_vehicle_journeys_on_time_table_id ON time_tables_vehicle_journeys USING btree (time_table_id);
@@ -2168,7 +2228,7 @@ CREATE INDEX index_time_tables_vehicle_journeys_on_time_table_id ON time_tables_
 
 --
 -- TOC entry 4071 (class 1259 OID 939878)
--- Name: index_time_tables_vehicle_journeys_on_vehicle_journey_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: index_time_tables_vehicle_journeys_on_vehicle_journey_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE INDEX index_time_tables_vehicle_journeys_on_vehicle_journey_id ON time_tables_vehicle_journeys USING btree (vehicle_journey_id);
@@ -2176,7 +2236,7 @@ CREATE INDEX index_time_tables_vehicle_journeys_on_vehicle_journey_id ON time_ta
 
 --
 -- TOC entry 4077 (class 1259 OID 939882)
--- Name: index_vehicle_journey_at_stops_on_stop_pointid; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: index_vehicle_journey_at_stops_on_stop_pointid; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE INDEX index_vehicle_journey_at_stops_on_stop_pointid ON vehicle_journey_at_stops USING btree (stop_point_id);
@@ -2184,7 +2244,7 @@ CREATE INDEX index_vehicle_journey_at_stops_on_stop_pointid ON vehicle_journey_a
 
 --
 -- TOC entry 4078 (class 1259 OID 939883)
--- Name: index_vehicle_journey_at_stops_on_vehicle_journey_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: index_vehicle_journey_at_stops_on_vehicle_journey_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE INDEX index_vehicle_journey_at_stops_on_vehicle_journey_id ON vehicle_journey_at_stops USING btree (vehicle_journey_id);
@@ -2192,7 +2252,7 @@ CREATE INDEX index_vehicle_journey_at_stops_on_vehicle_journey_id ON vehicle_jou
 
 --
 -- TOC entry 4081 (class 1259 OID 939884)
--- Name: index_vehicle_journeys_on_route_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: index_vehicle_journeys_on_route_id; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE INDEX index_vehicle_journeys_on_route_id ON vehicle_journeys USING btree (route_id);
@@ -2200,7 +2260,7 @@ CREATE INDEX index_vehicle_journeys_on_route_id ON vehicle_journeys USING btree 
 
 --
 -- TOC entry 4022 (class 1259 OID 939885)
--- Name: journey_patterns_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: journey_patterns_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE UNIQUE INDEX journey_patterns_objectid_key ON journey_patterns USING btree (objectid);
@@ -2208,7 +2268,7 @@ CREATE UNIQUE INDEX journey_patterns_objectid_key ON journey_patterns USING btre
 
 --
 -- TOC entry 4026 (class 1259 OID 939886)
--- Name: lines_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: lines_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE UNIQUE INDEX lines_objectid_key ON lines USING btree (objectid);
@@ -2216,7 +2276,7 @@ CREATE UNIQUE INDEX lines_objectid_key ON lines USING btree (objectid);
 
 --
 -- TOC entry 4029 (class 1259 OID 939887)
--- Name: lines_registration_number_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: lines_registration_number_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE INDEX lines_registration_number_key ON lines USING btree (registration_number);
@@ -2224,7 +2284,7 @@ CREATE INDEX lines_registration_number_key ON lines USING btree (registration_nu
 
 --
 -- TOC entry 4030 (class 1259 OID 939888)
--- Name: networks_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: networks_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE UNIQUE INDEX networks_objectid_key ON networks USING btree (objectid);
@@ -2232,7 +2292,7 @@ CREATE UNIQUE INDEX networks_objectid_key ON networks USING btree (objectid);
 
 --
 -- TOC entry 4033 (class 1259 OID 939889)
--- Name: networks_registration_number_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: networks_registration_number_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE INDEX networks_registration_number_key ON networks USING btree (registration_number);
@@ -2240,7 +2300,7 @@ CREATE INDEX networks_registration_number_key ON networks USING btree (registrat
 
 --
 -- TOC entry 4036 (class 1259 OID 939890)
--- Name: pt_links_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: pt_links_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE UNIQUE INDEX pt_links_objectid_key ON pt_links USING btree (objectid);
@@ -2248,7 +2308,7 @@ CREATE UNIQUE INDEX pt_links_objectid_key ON pt_links USING btree (objectid);
 
 --
 -- TOC entry 4041 (class 1259 OID 939891)
--- Name: routes_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: routes_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE UNIQUE INDEX routes_objectid_key ON routes USING btree (objectid);
@@ -2256,7 +2316,7 @@ CREATE UNIQUE INDEX routes_objectid_key ON routes USING btree (objectid);
 
 --
 -- TOC entry 4048 (class 1259 OID 939892)
--- Name: stop_areas_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: stop_areas_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE UNIQUE INDEX stop_areas_objectid_key ON stop_areas USING btree (objectid);
@@ -2264,7 +2324,7 @@ CREATE UNIQUE INDEX stop_areas_objectid_key ON stop_areas USING btree (objectid)
 
 --
 -- TOC entry 4051 (class 1259 OID 939893)
--- Name: stop_points_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: stop_points_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE UNIQUE INDEX stop_points_objectid_key ON stop_points USING btree (objectid);
@@ -2272,7 +2332,7 @@ CREATE UNIQUE INDEX stop_points_objectid_key ON stop_points USING btree (objecti
 
 --
 -- TOC entry 4067 (class 1259 OID 939896)
--- Name: time_tables_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: time_tables_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE UNIQUE INDEX time_tables_objectid_key ON time_tables USING btree (objectid);
@@ -2281,7 +2341,7 @@ CREATE UNIQUE INDEX time_tables_objectid_key ON time_tables USING btree (objecti
 CREATE UNIQUE INDEX brandings_objectid_key ON brandings USING btree (objectid);
 --
 -- TOC entry 4082 (class 1259 OID 939898)
--- Name: vehicle_journeys_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: vehicle_journeys_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE UNIQUE INDEX vehicle_journeys_objectid_key ON vehicle_journeys USING btree (objectid);
@@ -2427,11 +2487,14 @@ ALTER TABLE ONLY journey_patterns_stop_points
 -- Name: line_company_fkey; Type: FK CONSTRAINT; Schema: chouette_gui; Owner: chouette
 --
 
+ALTER TABLE ONLY booking_arrangements
+    ADD CONSTRAINT booking_arrangement_booking_contact_fkey FOREIGN KEY (booking_contact_id) REFERENCES contact_structures(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY lines
     ADD CONSTRAINT line_company_fkey FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY lines
-    ADD CONSTRAINT line_booking_contact_fkey FOREIGN KEY (booking_contact_id) REFERENCES contact_structures(id) ON DELETE SET NULL;
+    ADD CONSTRAINT line_booking_arrangement_fkey FOREIGN KEY (booking_arrangement_id) REFERENCES booking_arrangements(id) ON DELETE SET NULL;
 
 --
 -- TOC entry 4110 (class 2606 OID 940041)
@@ -2513,6 +2576,8 @@ ALTER TABLE ONLY stop_points
 ALTER TABLE ONLY stop_points
     ADD CONSTRAINT stoppoint_route_fkey FOREIGN KEY (route_id) REFERENCES routes(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY stop_points
+    ADD CONSTRAINT stoppoint_booking_arrangement_fkey FOREIGN KEY (booking_arrangement_id) REFERENCES booking_arrangements(id);
 
 --
 -- TOC entry 4121 (class 2606 OID 940086)
@@ -2555,8 +2620,15 @@ ALTER TABLE ONLY vehicle_journeys
 -- Name: vj_route_fkey; Type: FK CONSTRAINT; Schema: chouette_gui; Owner: chouette
 --
 
+ALTER TABLE ONLY flexible_service_properties
+    ADD CONSTRAINT fsp_booking_arrangement_fkey FOREIGN KEY (booking_arrangement_id) REFERENCES booking_arrangements(id);
+
 ALTER TABLE ONLY vehicle_journeys
     ADD CONSTRAINT vj_route_fkey FOREIGN KEY (route_id) REFERENCES routes(id) ON DELETE CASCADE;
+
+
+ALTER TABLE ONLY vehicle_journeys
+    ADD CONSTRAINT vj_fsp_fkey FOREIGN KEY (flexible_service_properties_id) REFERENCES flexible_service_properties(id);
 
 
 --
@@ -2595,12 +2667,12 @@ ALTER TABLE ONLY time_tables_vehicle_journeys
     ADD CONSTRAINT vjtm_vj_fkey FOREIGN KEY (vehicle_journey_id) REFERENCES vehicle_journeys(id) ON DELETE CASCADE;
 
 
-ALTER TABLE ONLY chouette_gui.lines_buy_when
-    ADD CONSTRAINT lines_buy_when FOREIGN KEY (line_id) REFERENCES chouette_gui.lines(id) ON DELETE CASCADE;
+ALTER TABLE ONLY chouette_gui.booking_arrangements_buy_when
+    ADD CONSTRAINT booking_arrangement_buy_when FOREIGN KEY (booking_arrangement_id) REFERENCES chouette_gui.booking_arrangements(id) ON DELETE CASCADE;
 
 
-ALTER TABLE ONLY chouette_gui.lines_booking_methods
-    ADD CONSTRAINT lines_booking_methods FOREIGN KEY (line_id) REFERENCES chouette_gui.lines(id) ON DELETE CASCADE;
+ALTER TABLE ONLY chouette_gui.booking_arrangements_booking_methods
+    ADD CONSTRAINT booking_arrangements_booking_methods FOREIGN KEY (booking_arrangement_id) REFERENCES chouette_gui.booking_arrangements(id) ON DELETE CASCADE;
 
 
 ALTER TABLE ONLY chouette_gui.lines_key_values

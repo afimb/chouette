@@ -16,11 +16,13 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.dao.AccessPointDAO;
+import mobi.chouette.dao.BookingArrangementDAO;
 import mobi.chouette.dao.BrandingDAO;
 import mobi.chouette.dao.CompanyDAO;
 import mobi.chouette.dao.ConnectionLinkDAO;
 import mobi.chouette.dao.ContactStructureDAO;
 import mobi.chouette.dao.DestinationDisplayDAO;
+import mobi.chouette.dao.FlexibleServicePropertiesDAO;
 import mobi.chouette.dao.GroupOfLineDAO;
 import mobi.chouette.dao.InterchangeDAO;
 import mobi.chouette.dao.JourneyFrequencyDAO;
@@ -108,6 +110,11 @@ public class CleanRepositoryCommand implements Command {
 	@EJB
 	private ContactStructureDAO contactStructureDAO;
 
+	@EJB
+	private BookingArrangementDAO bookingArrangementDAO;
+
+	@EJB
+	private FlexibleServicePropertiesDAO flexibleServicePropertiesDAO;
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -138,7 +145,10 @@ public class CleanRepositoryCommand implements Command {
 			vehicleJourneyAtStopDAO.truncate();
 			destinationDisplayDAO.truncate();
 			interchangeDAO.truncate();
+			flexibleServicePropertiesDAO.truncate();
+			bookingArrangementDAO.truncate();
 			contactStructureDAO.truncate();
+
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error(e);

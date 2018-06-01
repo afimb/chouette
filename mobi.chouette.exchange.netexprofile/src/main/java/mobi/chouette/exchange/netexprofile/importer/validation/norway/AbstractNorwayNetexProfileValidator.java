@@ -92,6 +92,13 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_SERVICE_FRAME_DESTINATION_DISPLAY_VIA_DESTINATIONDISPLAYREF = "1-NETEXPROFILE-ServiceFrame-DestinationDisplay-Via-DestinationDisplayRef";
 	public static final String _1_NETEX_SERVICE_FRAME_STOP_WITHOUT_BOARDING_OR_ALIGHTING = "1-NETEXPROFILE-ServiceFrame-StopPointInJourneyPattern-NoBoardingNoAlighting";
 	public static final String _1_NETEX_SERVICE_FRAME_STOP_WITH_REPEATING_DESTINATIONDISPLAYREF = "1-NETEXPROFILE-ServiceFrame-StopPointInJourneyPattern-Repeating-DestinationDisplayRef";
+	public static final String _1_NETEX_SERVICE_FRAME_STOP_POINT_BOOKINGCONTACT = "1-NETEXPROFILE-ServiceFrame_StopPointInJourneyPattern_BookingContact";
+	public static final String _1_NETEX_SERVICE_FRAME_STOP_POINT_BOOKINGMETHODS = "1-NETEXPROFILE-ServiceFrame_StopPointInJourneyPattern_BookingMethods";
+	public static final String _1_NETEX_SERVICE_FRAME_STOP_POINT_ILLEGAL_BOOKINGMETHODS = "1-NETEXPROFILE-ServiceFrame_StopPointInJourneyPattern_IllegalBookingMethods";
+	public static final String _1_NETEX_SERVICE_FRAME_STOP_POINT_BOOKWHEN = "1-NETEXPROFILE-ServiceFrame_StopPointInJourneyPattern_BookWhen";
+	public static final String _1_NETEX_SERVICE_FRAME_STOP_POINT_ILLEGAL_BOOKWHEN = "1-NETEXPROFILE-ServiceFrame_StopPointInJourneyPattern_IllegalBookWhen";
+	public static final String _1_NETEX_SERVICE_FRAME_STOP_POINT_ILLEGAL_BOOKINGACCESS = "1-NETEXPROFILE-ServiceFrame_StopPointInJourneyPattern_IllegalBookingAccess";
+	public static final String _1_NETEX_SERVICE_FRAME_STOP_POINT_ILLEGAL_BUYWHEN = "1-NETEXPROFILE-ServiceFrame_StopPointInJourneyPattern_IllegalBuyWhen";
 	public static final String _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_SCHEDULEDSTOPPOINTREF = "1-NETEXPROFILE-ServiceFrame-PassengerStopAssignment-ScheduledStopPointRef";
 	public static final String _1_NETEX_SERVICE_FRAME_PASSENGER_STOP_ASSIGNMENT_QUAYREF = "1-NETEXPROFILE-ServiceFrame-PassengerStopAssignment-QuayRef";
 
@@ -109,6 +116,17 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_MISSING_PASSING_TIME = "1-NETEXPROFILE-TimetableFrame_ServiceJourney_MissingTimetabledPassingTime";
 	public static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_TRANSPORTMODE_OVERRIDE = "1-NETEXPROFILE-TimetableFrame_ServiceJourney_TransportModeOverride";
 	public static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_DUPLICATE_WITH_DIFFERENT_VERSION = "1-NETEXPROFILE-TimetableFrame_ServiceJourney_DuplicateWithDifferentVersion";
+
+	public static final String _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_BOOKINGCONTACT = "1-NETEXPROFILE-TimetableFrame_FlexibleServiceProperties_BookingContact";
+	public static final String _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_BOOKINGMETHODS = "1-NETEXPROFILE-TimetableFrame_FlexibleServiceProperties_BookingMethods";
+	public static final String _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ID = "1-NETEXPROFILE-TimetableFrame_FlexibleServiceProperties_Id";
+	public static final String _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_VERSION = "1-NETEXPROFILE-TimetableFrame_FlexibleServiceProperties_Version";
+	public static final String _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_BOOKINGMETHODS = "1-NETEXPROFILE-TimetableFrame_FlexibleServiceProperties_IllegalBookingMethods";
+	public static final String _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_BOOKWHEN = "1-NETEXPROFILE-TimetableFrame_FlexibleServiceProperties_BookWhen";
+	public static final String _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_BOOKWHEN = "1-NETEXPROFILE-TimetableFrame_FlexibleServiceProperties_IllegalBookWhen";
+	public static final String _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_BOOKINGACCESS = "1-NETEXPROFILE-TimetableFrame_FlexibleServiceProperties_IllegalBookingAccess";
+	public static final String _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_BUYWHEN = "1-NETEXPROFILE-TimetableFrame_FlexibleServiceProperties_IllegalBuyWhen";
+	public static final String _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_FLEXIBLESERVICETYPE = "1-NETEXPROFILE-TimetableFrame_FlexibleServiceProperties_IllegalFlexibleServiceType";
 
 	public static final String _1_NETEX_COMPOSITE_FRAME_VALIDITYCONDTITIONS = "1-NETEXPROFILE-CompositeFrame_ValidityConditions";
 	public static final String _1_NETEX_VALIDITYCONDITIONS_ON_FRAMES_INSIDE_COMPOSITEFRAME = "1-NETEXPROFILE-ValidityConditionsOnFramesInsideCompositeFrame";
@@ -184,6 +202,18 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_BOOKWHEN, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_BUYWHEN, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_FLEXIBLELINETYPE, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_STOP_POINT_ILLEGAL_BOOKINGACCESS, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_STOP_POINT_ILLEGAL_BOOKINGMETHODS, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_STOP_POINT_ILLEGAL_BOOKWHEN, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_STOP_POINT_ILLEGAL_BUYWHEN, "E");
+
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ID, "E");
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_VERSION, "E");
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_BOOKINGACCESS, "E");
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_BOOKINGMETHODS, "E");
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_BOOKWHEN, "E");
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_BUYWHEN, "E");
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_FLEXIBLESERVICETYPE, "E");
 
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE, "W");
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_VEHICLEJOURNEY_OPERATORREF_OR_LINE_OPREATORREF, "E");

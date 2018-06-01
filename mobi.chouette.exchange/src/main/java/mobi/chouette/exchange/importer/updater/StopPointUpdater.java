@@ -72,6 +72,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 			oldValue.setForAlighting(newValue.getForAlighting());
 			oldValue.setForBoarding(newValue.getForBoarding());
 			oldValue.setDestinationDisplay(newValue.getDestinationDisplay());
+			oldValue.setBookingArrangement(newValue.getBookingArrangement());
 			oldValue.setDetached(false);
 		} else {
 			twoDatabaseStopPointTwoTest(validationReporter, context, oldValue, newValue, data);
@@ -96,6 +97,10 @@ public class StopPointUpdater implements Updater<StopPoint> {
 
 			if (newValue.getForBoarding() != null && !newValue.getForBoarding().equals(oldValue.getForBoarding())) {
 				oldValue.setForBoarding(newValue.getForBoarding());
+			}
+
+			if (newValue.getBookingArrangement() != null && !newValue.getBookingArrangement().equals(oldValue.getBookingArrangement())) {
+				oldValue.setBookingArrangement(newValue.getBookingArrangement());
 			}
 		}
 
