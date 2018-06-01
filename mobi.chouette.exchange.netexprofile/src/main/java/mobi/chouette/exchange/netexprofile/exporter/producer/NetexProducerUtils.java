@@ -6,8 +6,13 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.xml.bind.JAXBElement;
+
 import org.rutebanken.netex.model.DayOfWeekEnumeration;
 import org.rutebanken.netex.model.EntityInVersionStructure;
+import org.rutebanken.netex.model.FlexibleLineRefStructure;
+import org.rutebanken.netex.model.LineRefStructure;
+import org.rutebanken.netex.model.ObjectFactory;
 import org.rutebanken.netex.model.OrganisationTypeEnumeration;
 import org.rutebanken.netex.model.VersionOfObjectRefStructure;
 
@@ -18,6 +23,7 @@ import mobi.chouette.exchange.netexprofile.exporter.NetexprofileExportParameters
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
+import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.NeptuneObject;
 import mobi.chouette.model.Network;
@@ -231,4 +237,16 @@ public class NetexProducerUtils {
 		}
 
 	}
+
+	public static JAXBElement<? extends LineRefStructure> createLineRef(Line neptuneLine, ObjectFactory netexFactory) {
+		if (Boolean.TRUE.equals(neptuneLine.getFlexibleService())) {
+			FlexibleLineRefStructure lineRefStruct = netexFactory.createFlexibleLineRefStructure();
+			NetexProducerUtils.populateReference(neptuneLine, lineRefStruct, true);
+			return netexFactory.createFlexibleLineRef(lineRefStruct);
+		}
+		LineRefStructure lineRefStruct = netexFactory.createLineRefStructure();
+		NetexProducerUtils.populateReference(neptuneLine, lineRefStruct, true);
+		return netexFactory.createLineRef(lineRefStruct);
+	}
+
 }

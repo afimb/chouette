@@ -3,16 +3,19 @@ package mobi.chouette.exchange.netexprofile.parser;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBElement;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexTimeConversionUtil;
+import mobi.chouette.model.BookingArrangement;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.JourneyPattern;
@@ -28,6 +31,8 @@ import mobi.chouette.model.util.Referential;
 import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
 import org.rutebanken.netex.model.DayTypeRefStructure;
 import org.rutebanken.netex.model.DayTypeRefs_RelStructure;
+import org.rutebanken.netex.model.FlexibleServiceProperties;
+import org.rutebanken.netex.model.FlexibleServicePropertiesInFrame_RelStructure;
 import org.rutebanken.netex.model.JourneyPatternRefStructure;
 import org.rutebanken.netex.model.Journey_VersionStructure;
 import org.rutebanken.netex.model.JourneysInFrame_RelStructure;
@@ -38,6 +43,8 @@ import org.rutebanken.netex.model.TimetabledPassingTime;
 public class ServiceJourneyParser extends NetexParser implements Parser, Constant {
 
 	private KeyValueParser keyValueParser = new KeyValueParser();
+
+	private ContactStructureParser contactStructureParser = new ContactStructureParser();
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -72,7 +79,7 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 
 			vehicleJourney.setPublishedJourneyIdentifier(serviceJourney.getPublicCode());
 
-			if (serviceJourney.getPrivateCode()!=null) {
+			if (serviceJourney.getPrivateCode() != null) {
 				vehicleJourney.setPrivateCode(serviceJourney.getPrivateCode().getValue());
 			}
 
@@ -86,9 +93,9 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 				vehicleJourney.setPublishedJourneyName(serviceJourney.getName().getValue());
 			} else {
 				JourneyPattern journeyPattern = vehicleJourney.getJourneyPattern();
-				if(journeyPattern.getDepartureStopPoint() != null) {
+				if (journeyPattern.getDepartureStopPoint() != null) {
 					DestinationDisplay dd = journeyPattern.getDepartureStopPoint().getDestinationDisplay();
-					if(dd != null) {
+					if (dd != null) {
 						vehicleJourney.setPublishedJourneyName(dd.getFrontText());
 					}
 				}
@@ -128,27 +135,55 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 			vehicleJourney.setKeyValues(keyValueParser.parse(serviceJourney.getKeyList()));
 			vehicleJourney.setServiceAlteration(NetexParserUtils.toServiceAlterationEum(serviceJourney.getServiceAlteration()));
 
+			if (serviceJourney.getFlexibleServiceProperties() != null) {
+				vehicleJourney.setFlexibleService(true);
+				mobi.chouette.model.FlexibleServiceProperties chouetteFSP = new mobi.chouette.model.FlexibleServiceProperties();
+				FlexibleServiceProperties netexFSP = serviceJourney.getFlexibleServiceProperties();
+
+				chouetteFSP.setObjectId(netexFSP.getId());
+				chouetteFSP.setObjectVersion(NetexParserUtils.getVersion(netexFSP));
+
+				chouetteFSP.setChangeOfTimePossible(netexFSP.isChangeOfTimePossible());
+				chouetteFSP.setCancellationPossible(netexFSP.isCancellationPossible());
+				chouetteFSP.setFlexibleServiceType(NetexParserUtils.toFlexibleServiceType(netexFSP.getFlexibleServiceType()));
+
+				BookingArrangement bookingArrangement = new BookingArrangement();
+				if (netexFSP.getBookingNote() != null) {
+					bookingArrangement.setBookingNote(netexFSP.getBookingNote().getValue());
+				}
+				bookingArrangement.setBookingAccess(NetexParserUtils.toBookingAccess(netexFSP.getBookingAccess()));
+				bookingArrangement.setBookWhen(NetexParserUtils.toPurchaseWhen(netexFSP.getBookWhen()));
+				bookingArrangement.setBuyWhen(netexFSP.getBuyWhen().stream().map(NetexParserUtils::toPurchaseMoment).collect(Collectors.toList()));
+				bookingArrangement.setBookingMethods(netexFSP.getBookingMethods().stream().map(NetexParserUtils::toBookingMethod).collect(Collectors.toList()));
+				bookingArrangement.setLatestBookingTime(TimeUtil.toJodaLocalTime(netexFSP.getLatestBookingTime()));
+				bookingArrangement.setMinimumBookingPeriod(TimeUtil.toJodaDuration(netexFSP.getMinimumBookingPeriod()));
+
+				bookingArrangement.setBookingContact(contactStructureParser.parse(netexFSP.getBookingContact()));
+
+				chouetteFSP.setBookingArrangement(bookingArrangement);
+				vehicleJourney.setFlexibleServiceProperties(chouetteFSP);
+			}
 			vehicleJourney.setFilled(true);
 
 		}
 	}
 
 	private void parseTimetabledPassingTimes(Context context, Referential referential, ServiceJourney serviceJourney, VehicleJourney vehicleJourney) {
-		
+
 		NetexprofileImportParameters configuration = (NetexprofileImportParameters) context.get(CONFIGURATION);
 
-		
-		for (int i=0; i<serviceJourney.getPassingTimes().getTimetabledPassingTime().size();i++) {
+
+		for (int i = 0; i < serviceJourney.getPassingTimes().getTimetabledPassingTime().size(); i++) {
 			TimetabledPassingTime passingTime = serviceJourney.getPassingTimes().getTimetabledPassingTime().get(i);
 			String passingTimeId = passingTime.getId();
-			
-			if(passingTimeId == null) {
+
+			if (passingTimeId == null) {
 				// TODO profile should prevent this from happening, creating bogus
 				passingTimeId = NetexParserUtils.netexId(configuration.getObjectIdPrefix(), ObjectIdTypes.VEHICLE_JOURNEY_AT_STOP_KEY, UUID.randomUUID().toString());
 			}
-			VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop(referential,passingTimeId );
+			VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop(referential, passingTimeId);
 			vehicleJourneyAtStop.setObjectVersion(NetexParserUtils.getVersion(passingTime));
-			
+
 			StopPoint stopPoint = ObjectFactory.getStopPoint(referential, passingTime.getPointInJourneyPatternRef().getValue().getRef());
 			vehicleJourneyAtStop.setStopPoint(stopPoint);
 

@@ -248,6 +248,18 @@
                                     <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:83334" version="1"/>
                                     <ForAlighting>false</ForAlighting>
                                     <DestinationDisplayRef ref="AVI:DestinationDisplay:12636280" version="1"/>
+                                    <BookingArrangements>
+                                        <BookingContact>
+                                            <Phone>2</Phone>
+                                        </BookingContact>
+                                        <BookingMethods>phoneAtStop</BookingMethods>
+                                        <BookWhen>untilPreviousDay</BookWhen>
+                                        <BuyWhen>onReservation beforeBoarding</BuyWhen>
+                                        <LatestBookingTime>16:00:00</LatestBookingTime>
+                                        <BookingNote>
+                                          StopPoint booking note
+                                        </BookingNote>
+                                    </BookingArrangements>
                                 </StopPointInJourneyPattern>
                                 <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:1263628002">
                                     <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:76522" version="1"/>
@@ -306,6 +318,18 @@
                                     <ArrivalTime>07:40:00Z</ArrivalTime>
                                 </TimetabledPassingTime>
                             </passingTimes>
+                            <flexibleServiceProperties>
+                                <BookingContact>
+                                    <Phone>04145</Phone>
+                                </BookingContact>
+                                <BookingMethods>callOffice</BookingMethods>
+                                <BookWhen>untilPreviousDay</BookWhen>
+                                <BuyWhen>onReservation beforeBoarding</BuyWhen>
+                                <LatestBookingTime>15:00:00</LatestBookingTime>
+                                <BookingNote>
+                                   ServiceJourney booking note
+                                </BookingNote>
+                            </flexibleServiceProperties>
                         </ServiceJourney>
                         <ServiceJourney version="1" id="AVI:ServiceJourney:WF537-01-12636280">
                             <ServiceAlteration>cancellation</ServiceAlteration>

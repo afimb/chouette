@@ -2,6 +2,7 @@ package mobi.chouette.exchange.netexprofile.parser;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBElement;
 
@@ -16,9 +17,11 @@ import org.rutebanken.netex.model.StopPointInJourneyPattern;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.Constant;
+import mobi.chouette.model.BookingArrangement;
 import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.ScheduledStopPoint;
@@ -28,8 +31,21 @@ import mobi.chouette.model.type.BoardingPossibilityEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.rutebanken.netex.model.BookingArrangementsStructure;
+import org.rutebanken.netex.model.JourneyPattern_VersionStructure;
+import org.rutebanken.netex.model.JourneyPatternsInFrame_RelStructure;
+import org.rutebanken.netex.model.LinkInLinkSequence_VersionedChildStructure;
+import org.rutebanken.netex.model.PointInLinkSequence_VersionedChildStructure;
+import org.rutebanken.netex.model.ScheduledStopPointRefStructure;
+import org.rutebanken.netex.model.ServiceLinkInJourneyPattern_VersionedChildStructure;
+import org.rutebanken.netex.model.StopPointInJourneyPattern;
+
 @Log4j
 public class JourneyPatternParser extends NetexParser implements Parser, Constant {
+
+
+	private ContactStructureParser contactStructureParser = new ContactStructureParser();
 
 	@Override
 	public void parse(Context context) throws Exception {
@@ -147,6 +163,24 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
 				} else {
 					stopPointInJourneyPattern.setDestinationDisplay(destinationDisplay);
 				}
+			}
+
+			if (pointInPattern.getBookingArrangements()!=null) {
+				BookingArrangementsStructure netexBookingArrangement = pointInPattern.getBookingArrangements();
+				BookingArrangement bookingArrangement = new BookingArrangement();
+				if (netexBookingArrangement.getBookingNote() != null) {
+					bookingArrangement.setBookingNote(netexBookingArrangement.getBookingNote().getValue());
+				}
+				bookingArrangement.setBookingAccess(NetexParserUtils.toBookingAccess(netexBookingArrangement.getBookingAccess()));
+				bookingArrangement.setBookWhen(NetexParserUtils.toPurchaseWhen(netexBookingArrangement.getBookWhen()));
+				bookingArrangement.setBuyWhen(netexBookingArrangement.getBuyWhen().stream().map(NetexParserUtils::toPurchaseMoment).collect(Collectors.toList()));
+				bookingArrangement.setBookingMethods(netexBookingArrangement.getBookingMethods().stream().map(NetexParserUtils::toBookingMethod).collect(Collectors.toList()));
+				bookingArrangement.setLatestBookingTime(TimeUtil.toJodaLocalTime(netexBookingArrangement.getLatestBookingTime()));
+				bookingArrangement.setMinimumBookingPeriod(TimeUtil.toJodaDuration(netexBookingArrangement.getMinimumBookingPeriod()));
+
+				bookingArrangement.setBookingContact(contactStructureParser.parse(netexBookingArrangement.getBookingContact()));
+
+				stopPointInJourneyPattern.setBookingArrangement(bookingArrangement);
 			}
 
 			chouetteJourneyPattern.addStopPoint(stopPointInJourneyPattern);

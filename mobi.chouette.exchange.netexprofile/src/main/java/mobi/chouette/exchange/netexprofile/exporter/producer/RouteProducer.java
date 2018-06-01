@@ -13,7 +13,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.DirectionTypeEnumeration;
 import org.rutebanken.netex.model.KeyListStructure;
 import org.rutebanken.netex.model.KeyValueStructure;
-import org.rutebanken.netex.model.LineRefStructure;
 import org.rutebanken.netex.model.PointOnRoute;
 import org.rutebanken.netex.model.PointsOnRoute_RelStructure;
 import org.rutebanken.netex.model.RoutePointRefStructure;
@@ -49,11 +48,7 @@ public class RouteProducer extends NetexProducer implements NetexEntityProducer<
 			netexRoute.setKeyList(keyListStructure);
 		}
 
-
-		LineRefStructure lineRefStruct = netexFactory.createLineRefStructure();
-		NetexProducerUtils.populateReference(neptuneRoute.getLine(), lineRefStruct, true);
-		netexRoute.setLineRef(netexFactory.createLineRef(lineRefStruct));
-
+		netexRoute.setLineRef(NetexProducerUtils.createLineRef(neptuneRoute.getLine(), netexFactory));
 
 		PointsOnRoute_RelStructure pointsOnRoute = netexFactory.createPointsOnRoute_RelStructure();
 

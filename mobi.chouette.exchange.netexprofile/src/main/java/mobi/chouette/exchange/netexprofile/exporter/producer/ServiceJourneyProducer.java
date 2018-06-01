@@ -3,6 +3,7 @@ package mobi.chouette.exchange.netexprofile.exporter.producer;
 import java.math.BigInteger;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.common.TimeUtil;
@@ -11,6 +12,7 @@ import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
 import mobi.chouette.exchange.netexprofile.importer.util.NetexTimeConversionUtil;
+import mobi.chouette.model.BookingArrangement;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopPoint;
@@ -22,8 +24,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.LocalTime;
 import org.rutebanken.netex.model.DayTypeRefStructure;
 import org.rutebanken.netex.model.DayTypeRefs_RelStructure;
+import org.rutebanken.netex.model.FlexibleServiceProperties;
 import org.rutebanken.netex.model.JourneyPatternRefStructure;
-import org.rutebanken.netex.model.LineRefStructure;
+import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.OperatorRefStructure;
 import org.rutebanken.netex.model.PrivateCodeStructure;
 import org.rutebanken.netex.model.ServiceJourney;
@@ -34,6 +37,8 @@ import org.rutebanken.netex.model.TimetabledPassingTimes_RelStructure;
 public class ServiceJourneyProducer extends NetexProducer {
 
 	private static KeyListStructureProducer keyListStructureProducer = new KeyListStructureProducer();
+
+	private static ContactStructureProducer contactStructureProducer = new ContactStructureProducer();
 
 	public ServiceJourney produce(Context context, VehicleJourney vehicleJourney, Line line) {
         ExportableData exportableData = (ExportableData) context.get(Constant.EXPORTABLE_DATA);
@@ -58,10 +63,8 @@ public class ServiceJourneyProducer extends NetexProducer {
 		NetexProducerUtils.populateReference(journeyPattern, journeyPatternRefStruct, true);
 		serviceJourney.setJourneyPatternRef(netexFactory.createJourneyPatternRef(journeyPatternRefStruct));
 
-		LineRefStructure lineRefStruct = netexFactory.createLineRefStructure();
-		NetexProducerUtils.populateReference(line, lineRefStruct, true);
-		serviceJourney.setLineRef(netexFactory.createLineRef(lineRefStruct));
-		
+		serviceJourney.setLineRef(NetexProducerUtils.createLineRef(line, netexFactory));
+
 		NoticeProducer.addNoticeAndNoticeAssignments(context, exportableNetexData, exportableNetexData.getNoticeAssignmentsTimetableFrame(), vehicleJourney.getFootnotes(), vehicleJourney);
 		
 		if (vehicleJourney.getCompany() != null) {
@@ -127,6 +130,35 @@ public class ServiceJourneyProducer extends NetexProducer {
 				passingTimesStruct.getTimetabledPassingTime().add(timetabledPassingTime);
 				
 				NoticeProducer.addNoticeAndNoticeAssignments(context, exportableNetexData, exportableNetexData.getNoticeAssignmentsTimetableFrame(), vehicleJourneyAtStop.getFootnotes(), vehicleJourneyAtStop);
+			}
+
+			mobi.chouette.model.FlexibleServiceProperties chouetteFSP = vehicleJourney.getFlexibleServiceProperties();
+			if (chouetteFSP!=null) {
+				FlexibleServiceProperties netexFSP = new FlexibleServiceProperties();
+				serviceJourney.setFlexibleServiceProperties(netexFSP);
+				NetexProducerUtils.populateId(chouetteFSP, netexFSP);
+				netexFSP.setFlexibleServiceType(ConversionUtil.toFlexibleServiceType(chouetteFSP.getFlexibleServiceType()));
+				netexFSP.setCancellationPossible(chouetteFSP.getCancellationPossible());
+				netexFSP.setChangeOfTimePossible(chouetteFSP.getChangeOfTimePossible());
+
+				BookingArrangement bookingArrangement = chouetteFSP.getBookingArrangement();
+				if (bookingArrangement != null) {
+					if (bookingArrangement.getBookingNote() != null) {
+						netexFSP.setBookingNote(new MultilingualString().withValue(bookingArrangement.getBookingNote()));
+					}
+					netexFSP.setBookingAccess(ConversionUtil.toBookingAccess(bookingArrangement.getBookingAccess()));
+					netexFSP.setBookWhen(ConversionUtil.toPurchaseWhen(bookingArrangement.getBookWhen()));
+					if (!CollectionUtils.isEmpty(bookingArrangement.getBuyWhen())) {
+						netexFSP.withBuyWhen(bookingArrangement.getBuyWhen().stream().map(ConversionUtil::toPurchaseMoment).collect(Collectors.toList()));
+					}
+					if (!CollectionUtils.isEmpty(bookingArrangement.getBookingMethods())) {
+						netexFSP.withBookingMethods(bookingArrangement.getBookingMethods().stream().map(ConversionUtil::toBookingMethod).collect(Collectors.toList()));
+					}
+					netexFSP.setLatestBookingTime(TimeUtil.toLocalTimeFromJoda(bookingArrangement.getLatestBookingTime()));
+					netexFSP.setMinimumBookingPeriod(TimeUtil.toDurationFromJodaDuration(bookingArrangement.getMinimumBookingPeriod()));
+
+					netexFSP.setBookingContact(contactStructureProducer.produce(bookingArrangement.getBookingContact()));
+				}
 			}
 
 			serviceJourney.setPassingTimes(passingTimesStruct);

@@ -40,12 +40,14 @@
 	<persistence-unit name="referential" transaction-type="JTA">
 
 		<jta-data-source>java:jboss/datasources/chouette</jta-data-source>
+        <class>mobi.chouette.model.BookingArrangement</class>
 		<class>mobi.chouette.model.Branding</class>
 		<class>mobi.chouette.model.CalendarDay</class>
 		<class>mobi.chouette.model.Codespace</class>
 		<class>mobi.chouette.model.Company</class>
         <class>mobi.chouette.model.ContactStructure</class>
     	<class>mobi.chouette.model.DestinationDisplay</class>
+        <class>mobi.chouette.model.FlexibleServiceProperties</class>
         <class>mobi.chouette.model.Footnote</class>
 		<class>mobi.chouette.model.GroupOfLine</class>
 		<class>mobi.chouette.model.JourneyFrequency</class>

@@ -16,6 +16,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -185,5 +186,9 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	@JoinTable(name = "footnotes_stop_points", joinColumns = { @JoinColumn(name = "stop_point_id") }, inverseJoinColumns = { @JoinColumn(name = "footnote_id") })
 	private List<Footnote> footnotes = new ArrayList<>(0);
 
-
+	@Getter
+	@Setter
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "booking_arrangement_id")
+	private BookingArrangement bookingArrangement;
 }
