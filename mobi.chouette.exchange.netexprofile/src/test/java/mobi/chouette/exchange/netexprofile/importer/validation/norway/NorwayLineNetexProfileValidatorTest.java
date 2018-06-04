@@ -213,9 +213,6 @@ public class NorwayLineNetexProfileValidatorTest {
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_BOOKWHEN, OK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_FLEXIBLELINETYPE, OK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_FLEXIBLELINETYPE, OK);
-		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_BOOKINGCONTACT, OK);
-		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_BOOKINGMETHODS, OK);
-		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_BOOKWHEN, OK);
 
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_ROUTE_INDIRECTION, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_ROUTE_NAME, NOK);
@@ -259,7 +256,9 @@ public class NorwayLineNetexProfileValidatorTest {
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_BOOKWHEN, OK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_BUYWHEN, OK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_FLEXIBLESERVICETYPE, OK);
-
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_BOOKINGMETHODS, OK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_BOOKWHEN, OK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_BOOKINGCONTACT, OK);
 
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_COMPOSITE_FRAME_VALIDITYCONDTITIONS, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_VALIDITYCONDITIONS_ON_FRAMES_INSIDE_COMPOSITEFRAME, NOK);
@@ -318,11 +317,8 @@ public class NorwayLineNetexProfileValidatorTest {
 		Set<String> errorLevelFailures = vr.getCheckPoints().stream().filter(cpr -> NOK.equals(cpr.getState()) && SEVERITY.ERROR.equals(cpr.getSeverity()))
 				.map(CheckPointReport::getName).collect(Collectors.toSet());
 
-		Assert.assertTrue(errorLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_BOOKINGCONTACT));
 		Assert.assertTrue(errorLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_FLEXIBLELINETYPE));
-		Assert.assertTrue(errorLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_BOOKINGMETHODS));
 		Assert.assertTrue(errorLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_BUYWHEN));
-		Assert.assertTrue(errorLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_BOOKWHEN));
 
 		Assert.assertTrue(errorLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_STOP_POINT_ILLEGAL_BOOKINGACCESS));
 		Assert.assertTrue(errorLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_STOP_POINT_ILLEGAL_BOOKINGMETHODS));
@@ -336,6 +332,9 @@ public class NorwayLineNetexProfileValidatorTest {
 		Assert.assertTrue(errorLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_BOOKWHEN));
 		Assert.assertTrue(errorLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_BUYWHEN));
 		Assert.assertTrue(errorLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_FLEXIBLESERVICETYPE));
+		Assert.assertTrue(errorLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_BOOKINGMETHODS));
+		Assert.assertTrue(errorLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_BOOKWHEN));
+		Assert.assertTrue(errorLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_BOOKINGCONTACT));
 
 		Assert.assertTrue(errorLevelFailures.isEmpty());
 	}
