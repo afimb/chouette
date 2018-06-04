@@ -73,10 +73,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 	public static final String _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_FLEXIBLELINETYPE = "1-NETEXPROFILE-ServiceFrame_FlexibleLine_FlexibleLineType";
 	public static final String _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_FLEXIBLELINETYPE = "1-NETEXPROFILE-ServiceFrame_FlexibleLine_IllegalFlexibleLineType";
-	public static final String _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_BOOKINGCONTACT = "1-NETEXPROFILE-ServiceFrame_FlexibleLine_BookingContact";
-	public static final String _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_BOOKINGMETHODS = "1-NETEXPROFILE-ServiceFrame_FlexibleLine_BookingMethods";
 	public static final String _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_BOOKINGMETHODS = "1-NETEXPROFILE-ServiceFrame_FlexibleLine_IllegalBookingMethods";
-	public static final String _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_BOOKWHEN = "1-NETEXPROFILE-ServiceFrame_FlexibleLine_BookWhen";
 	public static final String _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_BOOKWHEN = "1-NETEXPROFILE-ServiceFrame_FlexibleLine_IllegalBookWhen";
 	public static final String _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_BOOKINGACCESS = "1-NETEXPROFILE-ServiceFrame_FlexibleLine_IllegalBookingAccess";
 	public static final String _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_BUYWHEN = "1-NETEXPROFILE-ServiceFrame_FlexibleLine_IllegalBuyWhen";
@@ -92,10 +89,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_SERVICE_FRAME_DESTINATION_DISPLAY_VIA_DESTINATIONDISPLAYREF = "1-NETEXPROFILE-ServiceFrame-DestinationDisplay-Via-DestinationDisplayRef";
 	public static final String _1_NETEX_SERVICE_FRAME_STOP_WITHOUT_BOARDING_OR_ALIGHTING = "1-NETEXPROFILE-ServiceFrame-StopPointInJourneyPattern-NoBoardingNoAlighting";
 	public static final String _1_NETEX_SERVICE_FRAME_STOP_WITH_REPEATING_DESTINATIONDISPLAYREF = "1-NETEXPROFILE-ServiceFrame-StopPointInJourneyPattern-Repeating-DestinationDisplayRef";
-	public static final String _1_NETEX_SERVICE_FRAME_STOP_POINT_BOOKINGCONTACT = "1-NETEXPROFILE-ServiceFrame_StopPointInJourneyPattern_BookingContact";
-	public static final String _1_NETEX_SERVICE_FRAME_STOP_POINT_BOOKINGMETHODS = "1-NETEXPROFILE-ServiceFrame_StopPointInJourneyPattern_BookingMethods";
 	public static final String _1_NETEX_SERVICE_FRAME_STOP_POINT_ILLEGAL_BOOKINGMETHODS = "1-NETEXPROFILE-ServiceFrame_StopPointInJourneyPattern_IllegalBookingMethods";
-	public static final String _1_NETEX_SERVICE_FRAME_STOP_POINT_BOOKWHEN = "1-NETEXPROFILE-ServiceFrame_StopPointInJourneyPattern_BookWhen";
 	public static final String _1_NETEX_SERVICE_FRAME_STOP_POINT_ILLEGAL_BOOKWHEN = "1-NETEXPROFILE-ServiceFrame_StopPointInJourneyPattern_IllegalBookWhen";
 	public static final String _1_NETEX_SERVICE_FRAME_STOP_POINT_ILLEGAL_BOOKINGACCESS = "1-NETEXPROFILE-ServiceFrame_StopPointInJourneyPattern_IllegalBookingAccess";
 	public static final String _1_NETEX_SERVICE_FRAME_STOP_POINT_ILLEGAL_BUYWHEN = "1-NETEXPROFILE-ServiceFrame_StopPointInJourneyPattern_IllegalBuyWhen";
@@ -197,9 +191,6 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK_AUTHORITY_REF, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK_GROUPOFLINE_NAME, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK_NAME, "E");
-		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_BOOKINGCONTACT, "E");
-		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_BOOKINGMETHODS, "E");
-		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_BOOKWHEN, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_FLEXIBLELINETYPE, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_BOOKINGACCESS, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_BOOKINGMETHODS, "E");
@@ -213,6 +204,9 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ID, "E");
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_VERSION, "E");
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_BOOKWHEN, "E");
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_BOOKINGMETHODS, "E");
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_BOOKINGCONTACT, "E");
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_BOOKINGACCESS, "E");
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_BOOKINGMETHODS, "E");
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_BOOKWHEN, "E");

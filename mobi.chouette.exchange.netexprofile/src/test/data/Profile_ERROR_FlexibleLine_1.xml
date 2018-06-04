@@ -188,7 +188,6 @@
                                 <RouteRef ref="AVI:Route:12636280" version="1"/>
                             </routes>
                             <RepresentedByGroupRef ref="AVI:Network:WF" version="1"/>
-                            <BookingMethods>callOffice other phoneAtStop</BookingMethods>
                             <BuyWhen>other beforeBoarding</BuyWhen>
                             <LatestBookingTime>12:00:00</LatestBookingTime>
                             <BookingNote>
@@ -253,6 +252,9 @@
                                 <StopPointInJourneyPattern order="2" version="1" id="AVI:StopPointInJourneyPattern:1263628002">
                                     <ScheduledStopPointRef ref="AVI:ScheduledStopPoint:76522" version="1"/>
                                     <ForBoarding>false</ForBoarding>
+                                    <BookingArrangements>
+                                        <BuyWhen>onReservation beforeBoarding other</BuyWhen>
+                                    </BookingArrangements>
                                 </StopPointInJourneyPattern>
                             </pointsInSequence>
                         </JourneyPattern>

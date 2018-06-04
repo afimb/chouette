@@ -25,6 +25,7 @@ import mobi.chouette.exchange.netexprofile.importer.util.DataLocationHelper;
 import mobi.chouette.exchange.netexprofile.importer.util.IdVersion;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Codespace;
+
 import net.sf.saxon.s9api.Axis;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -125,6 +126,13 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		}
 
 		return objectContext;
+	}
+
+	protected boolean evaluationExpression(XPathCompiler xpath, XdmNode document, String expression) throws XPathExpressionException, SaxonApiException {
+		XPathSelector selector = xpath.compile(expression).load();
+		selector.setContextItem(document);
+
+		return selector.effectiveBooleanValue();
 	}
 
 	protected void validateElementPresent(Context context, XPathCompiler xpath, XdmNode document, String expression, String checkPointKey)
@@ -265,7 +273,7 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 	}
 
 	protected void verifyReferencesToCommonElements(Context context, List<IdVersion> localRefs, Set<IdVersion> localIds,
-			Map<IdVersion, List<String>> commonIds) {
+													Map<IdVersion, List<String>> commonIds) {
 		if (commonIds != null) {
 			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 
