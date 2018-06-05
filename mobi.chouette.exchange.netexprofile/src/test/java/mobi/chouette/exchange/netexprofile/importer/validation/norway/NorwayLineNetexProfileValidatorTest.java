@@ -202,6 +202,7 @@ public class NorwayLineNetexProfileValidatorTest {
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_VEHICLEJOURNEY_OPERATORREF_OR_LINE_OPREATORREF, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN_ROUTE_REF, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_COMMON_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN_MISSING_DESTINATIONDISPLAY, NOK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_COMMON_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN_DESTINATIONDISPLAY_ON_LAST_STOP, NOK);
 
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_LINE_TRANSPORTMODE, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_LINE_TRANSPORTSUBMODE, NOK);
