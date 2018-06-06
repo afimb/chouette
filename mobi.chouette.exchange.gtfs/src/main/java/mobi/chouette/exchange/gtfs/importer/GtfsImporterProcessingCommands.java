@@ -8,6 +8,7 @@ import javax.naming.InitialContext;
 
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Chain;
@@ -27,6 +28,8 @@ import mobi.chouette.exchange.importer.StopAreaRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.validation.ImportedLineValidatorCommand;
 import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
+
+import org.apache.commons.collections.CollectionUtils;
 
 @Data
 @Log4j
@@ -155,7 +158,7 @@ public class GtfsImporterProcessingCommands implements ProcessingCommands, Const
 				// add shared data validation
 				commands.add(CommandFactory.create(initialContext, SharedDataValidatorCommand.class.getName()));
 			}
-			if (parameters.isGenerateMissingRouteSections()) {
+			if (!CollectionUtils.isEmpty(parameters.getGenerateMissingRouteSectionsForModes())) {
 				commands.add(CommandFactory.create(initialContext, GenerateRouteSectionsCommand.class.getName()));
 			}
 		} catch (Exception e) {

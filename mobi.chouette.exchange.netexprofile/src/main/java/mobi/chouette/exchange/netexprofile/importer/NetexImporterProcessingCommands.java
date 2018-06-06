@@ -36,6 +36,8 @@ import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.ImportedLineValidatorCommand;
 import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import static mobi.chouette.exchange.netexprofile.Constant.NETEX_FILE_PATHS;
 
 @Data
@@ -252,7 +254,7 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 				// add shared data validation
 				commands.add(CommandFactory.create(initialContext, SharedDataValidatorCommand.class.getName()));
 			}
-			if (parameters.isGenerateMissingRouteSections()) {
+			if (!CollectionUtils.isEmpty(parameters.getGenerateMissingRouteSectionsForModes())) {
 				commands.add(CommandFactory.create(initialContext, GenerateRouteSectionsCommand.class.getName()));
 			}
 		} catch (Exception e) {

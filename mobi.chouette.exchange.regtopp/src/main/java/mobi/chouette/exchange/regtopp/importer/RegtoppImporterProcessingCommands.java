@@ -7,7 +7,6 @@ import static mobi.chouette.common.Constant.VALIDATION;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -32,6 +31,8 @@ import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
 import mobi.chouette.exchange.validation.ImportedLineValidatorCommand;
 import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
+
+import org.apache.commons.collections.CollectionUtils;
 
 @Data
 @Log4j
@@ -196,7 +197,7 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 				// add shared data validation
 				commands.add(CommandFactory.create(initialContext, SharedDataValidatorCommand.class.getName()));
 			}
-			if (parameters.isGenerateMissingRouteSections()) {
+			if (!CollectionUtils.isEmpty(parameters.getGenerateMissingRouteSectionsForModes())) {
 				commands.add(CommandFactory.create(initialContext, GenerateRouteSectionsCommand.class.getName()));
 			}
 		} catch (Exception e) {

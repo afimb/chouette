@@ -1,5 +1,8 @@
 package mobi.chouette.exchange.parameters;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -11,6 +14,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import mobi.chouette.model.type.StopAreaImportModeEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
 
 import org.apache.log4j.Logger;
 
@@ -18,7 +22,7 @@ import org.apache.log4j.Logger;
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "noSave", "cleanRepository", "stopAreaRemoteIdMapping", "stopAreaImportMode", "keepObsoleteLines",
-		"generateMissingRouteSections" }, name = "actionImportParameter")
+		"generateMissingRouteSectionsForModes" }, name = "actionImportParameter")
 public class AbstractImportParameter extends AbstractParameter {
 
 	@XmlElement(name = "no_save", defaultValue = "false")
@@ -53,10 +57,10 @@ public class AbstractImportParameter extends AbstractParameter {
 	@Setter
 	private boolean keepObsoleteLines = true;
 
-	@XmlElement(name = "generate_missing_route_sections", defaultValue = "false")
+	@XmlElement(name = "generate_missing_route_sections_for_modes")
 	@Getter
 	@Setter
-	private boolean generateMissingRouteSections = false;
+	private Set<TransportModeNameEnum> generateMissingRouteSectionsForModes = new HashSet<>();
 
 
 	public boolean isValid(Logger log) {
