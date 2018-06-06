@@ -58,7 +58,7 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 		AbstractImportParameter configuration = (AbstractImportParameter) context.get(CONFIGURATION);
 
-		log.info("Generating route sections for all journeyPatterns without route sections for " + configuration.getReferentialName());
+		log.info("Generating route sections for all journeyPatterns without route sections for " + configuration.getReferentialName() + " with transport modes: " + configuration.getGenerateMissingRouteSectionsForModes());
 
 		try {
 			journeyPatternDAO.findAll().stream().filter(jp -> CollectionUtils.isEmpty(jp.getRouteSections()))
