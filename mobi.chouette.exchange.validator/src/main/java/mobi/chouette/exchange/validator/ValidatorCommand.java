@@ -28,7 +28,10 @@ import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.exchange.validation.checkpoint.AbstractValidation;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
+import mobi.chouette.exchange.validation.report.DataLocation;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.NamingUtil;
 
@@ -40,6 +43,8 @@ import com.jamonapi.MonitorFactory;
 public class ValidatorCommand implements Command, Constant {
 
 	public static final String COMMAND = "ValidatorCommand";
+
+	private static final String VALIDATION_ERROR_NO_DATA = "3-No-Data";
 
 	@EJB DaoReader reader;
 
@@ -122,6 +127,7 @@ public class ValidatorCommand implements Command, Constant {
 			result = command.execute(context);
 			if (!result) {
 				reporter.setActionError(context, ActionReporter.ERROR_CODE.NO_DATA_FOUND,"no data selected");
+				reportNoDataValidationError(context);
 				progression.execute(context);
 				return ERROR;		
 			}
@@ -146,6 +152,7 @@ public class ValidatorCommand implements Command, Constant {
 		Set<Long> lines = reader.loadLines(type, ids);
 		if (lines.isEmpty()) {
 			reporter.setActionError(context, ActionReporter.ERROR_CODE.NO_DATA_FOUND,"no data selected");
+			reportNoDataValidationError(context);
 			return ERROR;
 
 		}
@@ -191,6 +198,7 @@ public class ValidatorCommand implements Command, Constant {
 		if (lineCount == 0) {
 			progression.terminate(context, 1);
 			reporter.setActionError(context, ActionReporter.ERROR_CODE.NO_DATA_PROCEEDED,"no data validated");
+			reportNoDataValidationError(context);
 			progression.execute(context);
 			return ERROR;		
 		}
@@ -202,6 +210,7 @@ public class ValidatorCommand implements Command, Constant {
 			if (!result) {
 				if (!reporter.hasActionError(context))
 				   reporter.setActionError(context, ActionReporter.ERROR_CODE.NO_DATA_PROCEEDED,"no data exported");
+				   reportNoDataValidationError(context);
 				return ERROR;
 			}
 			progression.execute(context);
@@ -221,6 +230,14 @@ public class ValidatorCommand implements Command, Constant {
 		reporter.addObjectReport(context, "merged", OBJECT_TYPE.TIMETABLE, "calendars", OBJECT_STATE.OK, IO_TYPE.INPUT);
 		reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.TIMETABLE, OBJECT_TYPE.TIMETABLE, data.getTimetables().size());
 		return result;
+	}
+
+
+	private void reportNoDataValidationError(Context context) {
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		validationReporter.prepareCheckPointReport(context, VALIDATION_ERROR_NO_DATA);
+		validationReporter.addItemToValidationReport(context, VALIDATION_ERROR_NO_DATA, AbstractValidation.SEVERITY.E.toString());
+		validationReporter.addCheckPointReportError(context, VALIDATION_ERROR_NO_DATA, new DataLocation("data"));
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {
