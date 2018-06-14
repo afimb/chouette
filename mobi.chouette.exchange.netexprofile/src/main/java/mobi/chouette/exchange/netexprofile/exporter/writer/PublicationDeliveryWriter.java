@@ -176,10 +176,6 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
 					SiteFrameWriter.write(writer, context, exportableNetexData, marshaller);
 				}
 
-				for (Network network : exportableNetexData.getSharedNetworks().values()) {
-					ServiceFrameWriter.write(writer, context, network, marshaller);
-				}
-
 				ServiceFrameWriter.write(writer, context, exportableNetexData, NetexFragmentMode.SHARED, marshaller);
 				ServiceCalendarFrameWriter.write(writer, context, exportableNetexData, marshaller);
 			}
