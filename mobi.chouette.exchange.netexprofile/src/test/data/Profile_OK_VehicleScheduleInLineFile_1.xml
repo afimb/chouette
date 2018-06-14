@@ -51,7 +51,6 @@
                             <journeys>
                                 <VehicleJourneyRef ref="AVI:ServiceJourney:WF538-01-18696881" version="1" />
                                 <DeadRunRef ref="AVI:DeadRun:3" version="1" />
-                                <VehicleJourneyRef ref="AVI:ServiceJourney:outside-file-ref"/>
                             </journeys>
                         </Block>
                     </blocks>
