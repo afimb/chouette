@@ -254,9 +254,13 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 
 			if (serviceFrame.getNetwork() != null) {
 				Network network = serviceFrame.getNetwork();
-				context.put(NETEX_LINE_DATA_CONTEXT, network);
-				NetworkParser networkParser = (NetworkParser) ParserFactory.create(NetworkParser.class.getName());
-				networkParser.parse(context);
+				parseNetwork(context, network);
+			}
+
+			if (serviceFrame.getAdditionalNetworks() != null && serviceFrame.getAdditionalNetworks().getNetwork() != null) {
+				for (Network network : serviceFrame.getAdditionalNetworks().getNetwork()) {
+					parseNetwork(context, network);
+				}
 			}
 
 			if (serviceFrame.getDestinationDisplays() != null) {
@@ -322,6 +326,12 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 				}
 			}
 		}
+	}
+
+	private void parseNetwork(Context context, Network network) throws Exception {
+		context.put(NETEX_LINE_DATA_CONTEXT, network);
+		NetworkParser networkParser = (NetworkParser) ParserFactory.create(NetworkParser.class.getName());
+		networkParser.parse(context);
 	}
 
 	private void parseServiceCalendarFrame(Context context, List<ServiceCalendarFrame> serviceCalendarFrames) throws Exception {
