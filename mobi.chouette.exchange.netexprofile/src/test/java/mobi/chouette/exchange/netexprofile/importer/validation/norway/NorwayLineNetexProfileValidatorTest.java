@@ -81,7 +81,6 @@ public class NorwayLineNetexProfileValidatorTest {
 	private NetexProfileValidator createNetexProfileValidator() {
 		NetexProfileValidator validator = new NorwayLineNetexProfileValidator();
 		validator.addExternalReferenceValidator(new ServiceJourneyInterchangeIgnorer());
-		validator.addExternalReferenceValidator(new BlockJourneyReferencesIgnorerer());
 		return validator;
 	}
 

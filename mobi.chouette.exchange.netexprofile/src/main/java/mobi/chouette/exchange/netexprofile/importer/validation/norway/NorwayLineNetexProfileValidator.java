@@ -482,7 +482,6 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 				}
 
 				instance.addExternalReferenceValidator(new ServiceJourneyInterchangeIgnorer());
-				instance.addExternalReferenceValidator(new BlockJourneyReferencesIgnorerer());
 				context.put(NAME, instance);
 			}
 			return instance;
