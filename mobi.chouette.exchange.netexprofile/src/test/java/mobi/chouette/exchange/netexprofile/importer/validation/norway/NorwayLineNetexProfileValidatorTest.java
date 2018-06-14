@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPathFactoryConfigurationException;
 
+import com.google.common.base.Joiner;
 import org.rutebanken.netex.model.PublicationDeliveryStructure;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -62,7 +63,7 @@ public class NorwayLineNetexProfileValidatorTest {
 		context.put(Constant.NETEX_DATA_JAVA, lineDeliveryStructure);
 		context.put(Constant.NETEX_DATA_DOM, dom);
 
-		NetexProfileValidator validator = new NorwayLineNetexProfileValidator();
+		NetexProfileValidator validator = createNetexProfileValidator();
 		validator.initializeCheckPoints(context);
 		validator.validate(context);
 		boolean valid = true;
@@ -75,6 +76,13 @@ public class NorwayLineNetexProfileValidatorTest {
 
 		// TODO add more checks here
 		Assert.assertFalse(valid);
+	}
+
+	private NetexProfileValidator createNetexProfileValidator() {
+		NetexProfileValidator validator = new NorwayLineNetexProfileValidator();
+		validator.addExternalReferenceValidator(new ServiceJourneyInterchangeIgnorer());
+		validator.addExternalReferenceValidator(new BlockJourneyReferencesIgnorerer());
+		return validator;
 	}
 
 	@Test
@@ -129,7 +137,7 @@ public class NorwayLineNetexProfileValidatorTest {
 		context.put(Constant.NETEX_DATA_JAVA, lineStructure);
 		context.put(Constant.NETEX_DATA_DOM, lineDom);
 
-		NetexProfileValidator validator = new NorwayLineNetexProfileValidator();
+		NetexProfileValidator validator = createNetexProfileValidator();
 		validator.addExternalReferenceValidator(new DummyStopReferentialIdValidator());
 		validator.initializeCheckPoints(context);
 		validator.validate(context);
@@ -166,7 +174,7 @@ public class NorwayLineNetexProfileValidatorTest {
 		context.put(Constant.NETEX_DATA_JAVA, lineDeliveryStructure);
 		context.put(Constant.NETEX_DATA_DOM, dom);
 
-		NetexProfileValidator validator = new NorwayLineNetexProfileValidator();
+		NetexProfileValidator validator = createNetexProfileValidator();
 		validator.initializeCheckPoints(context);
 		validator.validate(context);
 
@@ -299,15 +307,44 @@ public class NorwayLineNetexProfileValidatorTest {
 
 		//expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_DUPLICATE_IDS_ACROSS_COMMON_FILES,UNCHECK);
 
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_VEHICLE_SHCEDULE_FRAME_BLOCK, UNCHECK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_VEHICLE_SHCEDULE_FRAME_BLOCK_JOURNEYS, UNCHECK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_VEHICLE_SHCEDULE_FRAME_BLOCK_DAYTYPES, UNCHECK);
+
 		verifyAllCheckpointsCovered(vr, expectedResults);
 
+	}
+
+	private void assertNotError(ValidationReport vr) {
+		if (vr.getResult().equals(ValidationReporter.VALIDATION_RESULT.ERROR)) {
+			Assert.fail("Expected  nor ERROR level failures. Got: " + Joiner.on(",").join(getErrorLevelFailures(vr)));
+		}
+	}
+
+
+	@Test
+	public void testValidateSingleLineFileWithVehicleSchedule_noErrors() throws Exception {
+		ValidationReport vr = validateSingleFile("src/test/data/Profile_OK_VehicleScheduleInLineFile_1.xml");
+
+		assertNotError(vr);
+	}
+
+	@Test
+	public void testValidateSingleLineFileWithVehicleSchedule_withErrors() throws Exception {
+		ValidationReport vr = validateSingleFile("src/test/data/Profile_ERROR_VehicleScheduleInLineFile_1.xml");
+
+		Assert.assertEquals(vr.getResult(), ValidationReporter.VALIDATION_RESULT.ERROR);
+		Set<String> errorLevelFailures = getErrorLevelFailures(vr);
+
+		Assert.assertTrue(errorLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEX_VEHICLE_SHCEDULE_FRAME_BLOCK_DAYTYPES));
+		Assert.assertTrue(errorLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEX_VEHICLE_SHCEDULE_FRAME_BLOCK_JOURNEYS));
 	}
 
 	@Test
 	public void testValidateSingleFlexibleLineFile_noErrors() throws Exception {
 		ValidationReport vr = validateSingleFile("src/test/data/Profile_OK_FlexibleLine_1.xml");
 
-		Assert.assertNotEquals(vr.getResult(), ValidationReporter.VALIDATION_RESULT.ERROR);
+		assertNotError(vr);
 	}
 
 	@Test
@@ -315,8 +352,7 @@ public class NorwayLineNetexProfileValidatorTest {
 		ValidationReport vr = validateSingleFile("src/test/data/Profile_ERROR_FlexibleLine_1.xml");
 
 		Assert.assertEquals(vr.getResult(), ValidationReporter.VALIDATION_RESULT.ERROR);
-		Set<String> errorLevelFailures = vr.getCheckPoints().stream().filter(cpr -> NOK.equals(cpr.getState()) && SEVERITY.ERROR.equals(cpr.getSeverity()))
-				.map(CheckPointReport::getName).collect(Collectors.toSet());
+		Set<String> errorLevelFailures = getErrorLevelFailures(vr);
 
 		Assert.assertTrue(errorLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_FLEXIBLELINETYPE));
 		Assert.assertTrue(errorLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_ILLEGAL_BUYWHEN));
@@ -338,6 +374,11 @@ public class NorwayLineNetexProfileValidatorTest {
 		Assert.assertTrue(errorLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_BOOKINGCONTACT));
 
 		Assert.assertTrue(errorLevelFailures.isEmpty());
+	}
+
+	private Set<String> getErrorLevelFailures(ValidationReport vr) {
+		return vr.getCheckPoints().stream().filter(cpr -> NOK.equals(cpr.getState()) && SEVERITY.ERROR.equals(cpr.getSeverity()))
+					.map(CheckPointReport::getName).collect(Collectors.toSet());
 	}
 
 	private ValidationReport validateSingleFile(String fileName) throws Exception {
@@ -363,7 +404,7 @@ public class NorwayLineNetexProfileValidatorTest {
 		context.put(Constant.NETEX_DATA_JAVA, lineDeliveryStructure);
 		context.put(Constant.NETEX_DATA_DOM, dom);
 
-		NetexProfileValidator validator = new NorwayLineNetexProfileValidator();
+		NetexProfileValidator validator = createNetexProfileValidator();
 		validator.initializeCheckPoints(context);
 		validator.validate(context);
 		return vr;

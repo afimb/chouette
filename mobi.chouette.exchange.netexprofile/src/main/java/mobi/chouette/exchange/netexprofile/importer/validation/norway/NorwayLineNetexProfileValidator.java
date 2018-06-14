@@ -166,7 +166,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 		verifyNoDuplicatesWithCommonElements(context, localIds, commonIds);
 
 		verifyNoDuplicatesAcrossLineFiles(context, localIdList,
-				new HashSet<>(Arrays.asList("ResourceFrame", "SiteFrame", "CompsiteFrame", "TimetableFrame", "ServiceFrame", "ServiceCalendarFrame","RoutePoint","PointProjection","ScheduledStopPoint","PassengerStopAssignment","NoticeAssignment")));
+				new HashSet<>(Arrays.asList("ResourceFrame", "SiteFrame", "CompsiteFrame", "TimetableFrame", "ServiceFrame", "ServiceCalendarFrame","VehicleScheduleFrame", "Block", "RoutePoint","PointProjection","ScheduledStopPoint","PassengerStopAssignment","NoticeAssignment")));
 
 		verifyUseOfVersionOnLocalElements(context, localIds);
 		verifyUseOfVersionOnRefsToLocalElements(context, localIds, localRefs);
@@ -222,6 +222,8 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 				_1_NETEX_MULTIPLE_FRAMES_OF_SAME_TYPE_WITHOUT_VALIDITYCONDITIONS);
 		validateElementNotPresent(context, xpath, dom, "//TimetableFrame[not(validityConditions) and count(//TimetableFrame) > 1]",
 				_1_NETEX_MULTIPLE_FRAMES_OF_SAME_TYPE_WITHOUT_VALIDITYCONDITIONS);
+		validateElementNotPresent(context, xpath, dom, "//VehicleScheduleFrame[not(validityConditions) and count(//VehicleScheduleFrame) > 1]",
+				_1_NETEX_MULTIPLE_FRAMES_OF_SAME_TYPE_WITHOUT_VALIDITYCONDITIONS);
 
 	}
 
@@ -251,7 +253,26 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 			validateServiceCalendarFrame(context, xpath, (XdmNode) serviceCalendarFrame, null);
 		}
 
+		XdmValue vehicleScheduleFrames = selectNodeSet("frames/VehicleScheduleFrame", xpath, dom);
+		for (XdmItem vehicleScheduleFrame : vehicleScheduleFrames) {
+			validateVehicleScheduleFrame(context, xpath, (XdmNode) vehicleScheduleFrame, null);
+		}
+
 		validateElementNotPresent(context, xpath, dom, "frames/SiteFrame", _1_NETEX_SITE_FRAME);
+	}
+
+	protected void validateVehicleScheduleFrame(Context context, XPathCompiler xpath, XdmNode dom, String subLevelPath) throws XPathExpressionException, SaxonApiException {
+		XdmNode subLevel = dom;
+		if (subLevelPath != null) {
+			subLevel = (XdmNode) selectNode(subLevelPath, xpath, dom);
+		}
+
+		if (subLevel != null) {
+			validateAtLeastElementPresent(context, xpath, subLevel, "blocks/Block", 1, _1_NETEX_VEHICLE_SHCEDULE_FRAME_BLOCK);
+			validateElementNotPresent(context, xpath, subLevel, "blocks/Block[not(journeys)]", _1_NETEX_VEHICLE_SHCEDULE_FRAME_BLOCK_JOURNEYS);
+			validateElementNotPresent(context, xpath, subLevel, "blocks/Block[not(dayTypes)]", _1_NETEX_VEHICLE_SHCEDULE_FRAME_BLOCK_DAYTYPES);
+		}
+
 	}
 
 	private void validateServiceFrame(Context context, XPathCompiler xpath, XdmNode dom, String subLevelPath) throws XPathExpressionException, SaxonApiException {
@@ -461,7 +482,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 				}
 
 				instance.addExternalReferenceValidator(new ServiceJourneyInterchangeIgnorer());
-
+				instance.addExternalReferenceValidator(new BlockJourneyReferencesIgnorerer());
 				context.put(NAME, instance);
 			}
 			return instance;

@@ -49,11 +49,17 @@ public class NetexIdExtractorHelper {
 		for (XdmItem item : nodes) {
 			XdmNode n = (XdmNode)item;
 			String elementName = n.getNodeName().getLocalName();
-			
-			String id = n.getAttributeValue(new QName(attributeName));
-			String version = n.getAttributeValue(versionQName);;
 
-			ids.add(new IdVersion(id, version, elementName, filename,
+			List<String> parentElementNames = new ArrayList<>();
+			XdmNode p = n.getParent();
+			while (p != null && p.getNodeName() != null) {
+				parentElementNames.add(p.getNodeName().getLocalName());
+				p = p.getParent();
+			}
+			String id = n.getAttributeValue(new QName(attributeName));
+			String version = n.getAttributeValue(versionQName);
+
+			ids.add(new IdVersion(id, version, elementName, parentElementNames, filename,
 					n.getLineNumber(), n.getColumnNumber()));
 
 		}

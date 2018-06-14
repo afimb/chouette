@@ -139,6 +139,9 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_TODATE = "1-NETEXPROFILE-ServiceCalendarFrame-ServiceCalendar_ToDate";
 	public static final String _1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_FROMDATE_AFTER_TODATE = "1-NETEXPROFILE-ServiceCalendarFrame-ServiceCalendar_FromDateAfterToDate";
 
+	public static final String _1_NETEX_VEHICLE_SHCEDULE_FRAME_BLOCK = "1-NETEXPROFILE-VehicleScheduleFrame_Block";
+	public static final String _1_NETEX_VEHICLE_SHCEDULE_FRAME_BLOCK_JOURNEYS = "1-NETEXPROFILE-VehicleScheduleFrame_Block_journeys";
+	public static final String _1_NETEX_VEHICLE_SHCEDULE_FRAME_BLOCK_DAYTYPES = "1-NETEXPROFILE-VehicleScheduleFrame_Block_dayTypes";
 	
 	protected static final String ID_STRUCTURE_REGEXP = "^([A-Z]{3}):([A-Za-z]*):([0-9A-Za-z_\\-]*)$";
 	public static final String _1_NETEX_VALIDBETWEEN_INCOMPLETE = "1-NETEXPROFILE-ValidBetween_Incomplete";
@@ -271,6 +274,10 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME, "E");
 
+		addCheckpoints(context, _1_NETEX_VEHICLE_SHCEDULE_FRAME_BLOCK, "E");
+		addCheckpoints(context, _1_NETEX_VEHICLE_SHCEDULE_FRAME_BLOCK_JOURNEYS, "E");
+		addCheckpoints(context, _1_NETEX_VEHICLE_SHCEDULE_FRAME_BLOCK_DAYTYPES, "E");
+
 		// Common file specific checkpoints
 		addCheckpoints(context, _1_NETEX_COMMON_TIMETABLE_FRAME, "E");
 		addCheckpoints(context, _1_NETEX_COMMON_SERVICE_FRAME_LINE, "E");
@@ -334,13 +341,10 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 					_1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_FROMDATE);
 			validateElementNotPresent(context, xpath, subLevel, "//ServiceCalendar[FromDate and ToDate and ToDate < FromDate]",
 					_1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_FROMDATE_AFTER_TODATE);
-		
-
-			
-			
 		}
 
 	}
+
 
 	public Collection<String> getSupportedProfiles() {
 		return Arrays.asList(new String[] { PROFILE_NORWAY_NETWORKTIMETABLE_104_10,PROFILE_NORWAY_NETWORKTIMETABLE_104_11,
@@ -370,6 +374,8 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		allowedSubstitutions.put("ProjectedPointRef", projectedPointRefSubstitutions);
 		allowedSubstitutions.put("ToPointRef", projectedPointRefSubstitutions);
 		allowedSubstitutions.put("FromPointRef", projectedPointRefSubstitutions);
+		allowedSubstitutions.put("StartPointRef", projectedPointRefSubstitutions);
+		allowedSubstitutions.put("EndPointRef", projectedPointRefSubstitutions);
 
 		Set<String> noticedObjectRefSubstitutions = new HashSet<>();
 		noticedObjectRefSubstitutions.add("Line");
@@ -385,6 +391,11 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		toJourneyRefSubstitutions.add("ServiceJourney");
 		allowedSubstitutions.put("ToJourneyRef", toJourneyRefSubstitutions);
 		allowedSubstitutions.put("FromJourneyRef", toJourneyRefSubstitutions);
+
+		Set<String> vehicleScheduleJourneyRefSubstitutions = new HashSet<>(toJourneyRefSubstitutions);
+		vehicleScheduleJourneyRefSubstitutions.add("VehicleJourney");
+		vehicleScheduleJourneyRefSubstitutions.add("DeadRun");
+		allowedSubstitutions.put("VehicleJourneyRef", vehicleScheduleJourneyRefSubstitutions);
 
 		Set<String> serviceJourneyPatternRefSubstitutions = new HashSet<>();
 		serviceJourneyPatternRefSubstitutions.add("ServiceJourneyPattern");
