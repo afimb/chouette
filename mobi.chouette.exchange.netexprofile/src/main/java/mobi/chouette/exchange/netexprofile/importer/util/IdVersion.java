@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.netexprofile.importer.util;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,6 +17,8 @@ public class IdVersion {
 	String version;
 	@Getter
 	String elementName;
+	@Getter
+	List<String> parentElementNames;
 	@Getter
 	String filename;
 	@Getter

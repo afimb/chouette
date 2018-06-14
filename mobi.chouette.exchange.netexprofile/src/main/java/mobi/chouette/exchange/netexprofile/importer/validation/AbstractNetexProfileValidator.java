@@ -274,23 +274,23 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 
 	protected void verifyReferencesToCommonElements(Context context, List<IdVersion> localRefs, Set<IdVersion> localIds,
 													Map<IdVersion, List<String>> commonIds) {
+
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+
+		Set<String> nonVersionedLocalRefs = localRefs.stream().map(e -> e.getId()).collect(Collectors.toSet());
+		Set<String> nonVersionedLocalIds = localIds.stream().map(e -> e.getId()).collect(Collectors.toSet());
+
+		Set<String> unresolvedReferences = new HashSet<>(nonVersionedLocalRefs);
+		unresolvedReferences.removeAll(nonVersionedLocalIds);
+
+		// Dont report on references that are supposed to be validated externally
+		for (ExternalReferenceValidator v : externalReferenceValidators) {
+			Set<IdVersion> ofSupportedTypes = v.isOfSupportedTypes(new HashSet<>(localRefs));
+			unresolvedReferences.removeAll(ofSupportedTypes.stream().map(e -> e.getId()).collect(Collectors.toSet()));
+		}
+
 		if (commonIds != null) {
-			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-
-			Set<String> nonVersionedLocalRefs = localRefs.stream().map(e -> e.getId()).collect(Collectors.toSet());
-			Set<String> nonVersionedLocalIds = localIds.stream().map(e -> e.getId()).collect(Collectors.toSet());
-
-			Set<String> unresolvedReferences = new HashSet<>(nonVersionedLocalRefs);
-			unresolvedReferences.removeAll(nonVersionedLocalIds);
-
-			// Dont report on references that are supposed to be validated externally
-			for (ExternalReferenceValidator v : externalReferenceValidators) {
-				Set<IdVersion> ofSupportedTypes = v.isOfSupportedTypes(new HashSet<>(localRefs));
-				unresolvedReferences.removeAll(ofSupportedTypes.stream().map(e -> e.getId()).collect(Collectors.toSet()));
-			}
-
 			Set<String> commonIdsWithoutVersion = commonIds.keySet().stream().map(e -> e.getId()).collect(Collectors.toSet());
-
 			if (commonIdsWithoutVersion.size() > 0) {
 				for (String localRef : unresolvedReferences) {
 					if (!commonIdsWithoutVersion.contains(localRef)) {

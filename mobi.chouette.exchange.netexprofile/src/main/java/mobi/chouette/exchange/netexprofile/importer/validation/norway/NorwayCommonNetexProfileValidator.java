@@ -178,7 +178,7 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
 					instance.addExternalReferenceValidator(stopRegistryValidator);
 				}
 				instance.addExternalReferenceValidator(new ServiceJourneyInterchangeIgnorer());
-
+				instance.addExternalReferenceValidator(new BlockJourneyReferencesIgnorerer());
 				context.put(NAME, instance);
 			}
 			return instance;
