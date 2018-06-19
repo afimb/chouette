@@ -101,6 +101,10 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		else
 			newCheckPointError = new CheckPointErrorReport(checkPointName, checkPointName, detailLocation, value, refValue);
 
+		addCheckPointError(context, location, validationReport, checkPoint, newCheckPointError);
+	}
+
+	private synchronized void addCheckPointError(Context context, DataLocation location, ValidationReport validationReport, CheckPointReport checkPoint, CheckPointErrorReport newCheckPointError) {
 		int index = validationReport.getCheckPointErrors().size();
 		boolean checkPointAdded = checkPoint.addCheckPointError(index);
 
@@ -144,13 +148,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 			}
 		}
 
-		int index = validationReport.getCheckPointErrors().size();
-		boolean checkPointAdded = checkPoint.addCheckPointError(index);
-
-		boolean reportAdded = addReferencesToActionReport(context, location, index, checkPoint.getSeverity());
-
-		if (checkPointAdded || reportAdded)
-			validationReport.addCheckPointErrorReport(newCheckPointError);
+		addCheckPointError(context, location, validationReport, checkPoint, newCheckPointError);
 	}
 
 	private boolean addReferencesToActionReport(Context context, DataLocation location, int code, SEVERITY severity) {
@@ -212,13 +210,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 			checkPoint.setState(RESULT.NOK);
 
 			CheckPointErrorReport newCheckPointError = new CheckPointErrorReport(checkPointName, checkPointName, detailLocation, value);
-			int index = validationReport.getCheckPointErrors().size();
-			boolean checkPointAdded = checkPoint.addCheckPointError(index);
-
-			boolean reportAdded = addReferencesToActionReport(context, location, index, checkPoint.getSeverity());
-
-			if (checkPointAdded || reportAdded)
-				validationReport.addCheckPointErrorReport(newCheckPointError);
+			addCheckPointError(context, location, validationReport, checkPoint, newCheckPointError);
 		}
 
 	}
