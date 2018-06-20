@@ -37,6 +37,7 @@ import mobi.chouette.exchange.validation.ImportedLineValidatorCommand;
 import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 
 import static mobi.chouette.exchange.netexprofile.Constant.NETEX_FILE_PATHS;
 
@@ -44,11 +45,22 @@ import static mobi.chouette.exchange.netexprofile.Constant.NETEX_FILE_PATHS;
 @Log4j
 public class NetexImporterProcessingCommands implements ProcessingCommands, Constant {
 
+
+	private Integer lineValidationTimeoutSeconds;
+
 	public static class DefaultFactory extends ProcessingCommandsFactory {
 
 		@Override
 		protected ProcessingCommands create() throws IOException {
-			ProcessingCommands result = new NetexImporterProcessingCommands();
+			NetexImporterProcessingCommands result = new NetexImporterProcessingCommands();
+
+			String lineValidationTimeoutPropertyKey = "iev.netex.validation.line.parallel.execution.timeout.seconds";
+			String lineValidationTimeoutString = System.getProperty(lineValidationTimeoutPropertyKey);
+			if (StringUtils.isNotEmpty(lineValidationTimeoutString)) {
+				result.lineValidationTimeoutSeconds = Integer.parseInt(lineValidationTimeoutString);
+				log.info("Parallel execution line validation command configured with time out seconds: " + result.lineValidationTimeoutSeconds);
+			}
+
 			return result;
 		}
 	}
@@ -169,6 +181,9 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 			if (parameters.isValidateAgainstProfile()) {
 
 				ParallelExecutionCommand lineValidationCommands = (ParallelExecutionCommand) CommandFactory.create(initialContext, ParallelExecutionCommand.class.getName());
+				if (lineValidationTimeoutSeconds != null) {
+					lineValidationCommands.setTimeoutSeconds(lineValidationTimeoutSeconds);
+				}
 				mainChain.add(lineValidationCommands);
 
 				// Compare by file size, largest first
@@ -239,6 +254,8 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 
 		return commands;
 	}
+
+
 
 	@Override
 	public List<? extends Command> getPostProcessingCommands(Context context, boolean withDao) {

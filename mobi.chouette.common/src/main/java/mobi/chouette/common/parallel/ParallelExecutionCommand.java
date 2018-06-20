@@ -83,6 +83,7 @@ public class ParallelExecutionCommand implements Command {
 				}
 			} else {
 				log.warn(COMMAND + " failed to complete within " + timeoutSeconds + " seconds");
+				executor.shutdownNow();
 				result = ERROR;
 			}
 		} catch (Exception e) {
