@@ -311,6 +311,7 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 			validateElementNotPresent(context, xpath, subLevel, "routes/Route[not(Name) or normalize-space(Name) = '']", _1_NETEX_SERVICE_FRAME_ROUTE_NAME);
 			validateElementNotPresent(context, xpath, subLevel, "routes/Route[not(LineRef) and not(FlexibleLineRef)]", _1_NETEX_SERVICE_FRAME_ROUTE_LINEREF);
 			validateElementNotPresent(context, xpath, subLevel, "routes/Route[not(pointsInSequence)]", _1_NETEX_SERVICE_FRAME_ROUTE_POINTSINSEQUENCE);
+			validateElementPresent(context, xpath, subLevel, "routes/Route[not(DirectionRef)]", _1_NETEX_SERVICE_FRAME_ROUTE_DIRECTIONREF);
 
 			//		validateElementNotPresent(context, xpath, subLevel, "journeyPatterns/ServiceJourneyPattern", _1_NETEX_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN);
 			validateAtLeastElementPresent(context, xpath, subLevel, "journeyPatterns/JourneyPattern | journeyPatterns/ServiceJourneyPattern", 1,
