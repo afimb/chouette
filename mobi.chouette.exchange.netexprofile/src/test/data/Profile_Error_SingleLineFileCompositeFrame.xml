@@ -142,6 +142,7 @@
                     <routes>
                         <Route id="AVI:Route:12636280">
                             <Name>Trondheim-Molde</Name>
+                            <DirectionRef ref="AVI:Direction:1"/>
                             <!-- <LineRef ref="AVI:Line:WF_TRD-MOL" version="1"/>-->
                             <!-- <pointsInSequence>
                                 <PointOnRoute version="1" id="AVI:PointOnRoute:1263628001">
