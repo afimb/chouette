@@ -1,9 +1,11 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import mobi.chouette.common.Context;
@@ -60,6 +62,7 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 				writeJourneyPatternsElement(writer, exportableNetexData, marshaller);
 				ReusedConstructsWriter.writeNoticeAssignmentsElement(writer, exportableNetexData.getNoticeAssignmentsServiceFrame(), marshaller);
 			} else { // shared data
+				writeNetworks(writer, exportableNetexData, marshaller);
 				writeRoutePointsElement(writer, exportableNetexData, marshaller);
 				writeDestinationDisplaysElement(writer, exportableNetexData, marshaller);
 				writeScheduledStopPointsElement(writer, exportableNetexData, marshaller);
@@ -71,6 +74,21 @@ public class ServiceFrameWriter extends AbstractNetexWriter {
 			writer.writeEndElement();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	private static void writeNetworks(XMLStreamWriter writer, ExportableNetexData exportableNetexData, Marshaller marshaller) throws XMLStreamException {
+		if (!exportableNetexData.getSharedNetworks().isEmpty()) {
+			Iterator<Network> networkIterator=exportableNetexData.getSharedNetworks().values().iterator();
+			writeNetworkElement(writer, networkIterator.next(), marshaller);
+
+			if (networkIterator.hasNext()){
+				writer.writeStartElement(ADDITIONAL_NETWORKS);
+				while(networkIterator.hasNext()) {
+					writeNetworkElement(writer, networkIterator.next(), marshaller);
+				}
+				writer.writeEndElement();
+			}
 		}
 	}
 
