@@ -19,6 +19,7 @@ public final class NetexObjectIdTypes {
     public static final String DEFAULT_LANGUAGE = "DefaultLanguage";
     public static final String FRAMES = "frames";
     public static final String VEHICLE_JOURNEYS = "vehicleJourneys";
+    public static final String ADDITIONAL_NETWORKS = "additionalNetworks";
     public static final String NOTICES = "notices";
     public static final String NOTICE_ASSIGNMENTS = "noticeAssignments";
     public static final String ORGANISATIONS = "organisations";
