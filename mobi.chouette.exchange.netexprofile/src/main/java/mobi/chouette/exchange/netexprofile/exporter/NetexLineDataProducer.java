@@ -136,11 +136,10 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 		for (mobi.chouette.model.VehicleJourney vehicleJourney : exportableData.getVehicleJourneys()) {
 			ServiceJourney serviceJourney = serviceJourneyProducer.produce(context, vehicleJourney, exportableData.getLine());
 			exportableNetexData.getServiceJourneys().add(serviceJourney);
+		}
 
-			for (Interchange interchange : vehicleJourney.getConsumerInterchanges()) {
-				exportableNetexData.getServiceJourneyInterchanges().add(serviceJourneyInterchangeProducer.produce(context, interchange));
-			}
-
+		for (Interchange interchange : exportableData.getInterchanges()) {
+			exportableNetexData.getServiceJourneyInterchanges().add(serviceJourneyInterchangeProducer.produce(context, interchange));
 		}
 	}
 
