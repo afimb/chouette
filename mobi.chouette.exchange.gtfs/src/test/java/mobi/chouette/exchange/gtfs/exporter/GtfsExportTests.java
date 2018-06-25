@@ -62,19 +62,19 @@ import mobi.chouette.persistence.hibernate.ContextHolder;
 @Log4j
 public class GtfsExportTests extends Arquillian implements Constant, ReportConstant
 {
-	
-	
+
+
 	public void cleanDatabase() {
 		stopAreaDAO.truncate();
 		interchangeDAO.truncate();
 	}
-	
+
 	@EJB
 	private InterchangeDAO interchangeDAO;
-	
+
 	@EJB
 	private StopAreaDAO stopAreaDAO;
-	
+
 	@Deployment
 	public static EnterpriseArchive createDeployment() {
 
@@ -170,7 +170,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		context.put(INITIAL_CONTEXT, initialContext);
 		context.put(REPORT, new ActionReport());
 		context.put(VALIDATION_REPORT, new ValidationReport());
-		
+
 		configuration.setCleanRepository(true);
 		configuration.setNoSave(false);
 		context.put(CONFIGURATION, configuration);
@@ -382,8 +382,8 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
     @Test(groups = { "export" }, description = "test export GTFS Line")
     public void verifyImportExportLinesWithTransfers() throws Exception
     {
- 		
-    	
+
+
     	// save data
  		importGTFSLines("simple_line_with_transfers_gtfs.zip",9,2);
 
@@ -398,14 +398,14 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
  		Command command = (Command) CommandFactory.create(initialContext,
  				GtfsExporterCommand.class.getName());
 
- 		
+
  		try {
  			command.execute(context);
  		} catch (Exception ex) {
  			log.error("test failed", ex);
  			throw ex;
  		}
- 		
+
  		ActionReport report = (ActionReport) context.get(REPORT);
  		ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
  		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
@@ -419,7 +419,16 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
  		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 2, "line reported");
  		for (int i = 0; i < 2; i++) {
  			Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i).getStatus(), OBJECT_STATE.OK, "line status");
- 			Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i).getStats().get(OBJECT_TYPE.INTERCHANGE), new Integer(1), "interchange status");
+
+ 			// Interchange only expected for consumer side = LineB
+			int exptectedInterchanges;
+			if ("LineA".equals(report.getCollections().get(OBJECT_TYPE.LINE).getObjectReports().get(i).getDescription())) {
+				exptectedInterchanges = 0;
+			} else {
+				exptectedInterchanges = 1;
+			}
+
+ 			Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i).getStats().get(OBJECT_TYPE.INTERCHANGE), new Integer(exptectedInterchanges), "interchange status");
  		}
  		Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
  		Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
@@ -487,7 +496,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		ActionReport report = (ActionReport) context.get(REPORT);
 		Reporter.log(report.toString(),true);
 		ValidationReport valReport = (ValidationReport) context.get(VALIDATION_REPORT);
-		for (CheckPointReport cp : valReport.getCheckPoints()) 
+		for (CheckPointReport cp : valReport.getCheckPoints())
 		{
 			if (cp.getState().equals(RESULT.NOK))
 			{

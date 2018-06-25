@@ -7,6 +7,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ConnectionLink;
+import mobi.chouette.model.Interchange;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
@@ -64,7 +65,7 @@ public class DataCollector {
 						if (isValid) {
 							collection.getTimetables().addAll(vehicleJourney.getTimetables());
 							collection.getVehicleJourneys().add(vehicleJourney);
-							collectInterchanges(collection, vehicleJourney, skipNoCoordinate, followLinks);
+							collectInterchanges(collection, vehicleJourney, skipNoCoordinate, followLinks, startDate, endDate);
 							for(VehicleJourneyAtStop vjas : vehicleJourney.getVehicleJourneyAtStops()) {
 								collection.getFootnotes().addAll(vjas.getFootnotes());
 							}
@@ -98,7 +99,7 @@ public class DataCollector {
 						}
 						if (isVehicleJourneyValid) {
 							collection.getVehicleJourneys().add(vehicleJourney);
-							collectInterchanges(collection, vehicleJourney, skipNoCoordinate, followLinks);
+							collectInterchanges(collection, vehicleJourney, skipNoCoordinate, followLinks, startDate, endDate);
 							collection.getFootnotes().addAll(vehicleJourney.getFootnotes());
 							for(VehicleJourneyAtStop vjas : vehicleJourney.getVehicleJourneyAtStops()) {
 								collection.getFootnotes().addAll(vjas.getFootnotes());
@@ -136,8 +137,8 @@ public class DataCollector {
 			if(network != null) {
 				collection.getNetworks().add(network);
 				if(network.getCompany() != null) { // Authority
-					collection.getCompanies().add(network.getCompany()); 
-				} 
+					collection.getCompanies().add(network.getCompany());
+				}
 			}
 			if (line.getCompany() != null) { // Operator
 				collection.getCompanies().add(line.getCompany());
@@ -154,15 +155,18 @@ public class DataCollector {
 		return validLine;
 	}
 
-	private void collectInterchanges(ExportableData collection, VehicleJourney vehicleJourney, boolean skipNoCoordinate, boolean followLinks) {
-		collection.getInterchanges().addAll(vehicleJourney.getFeederInterchanges());
-		vehicleJourney.getFeederInterchanges().stream()
-				.filter(ci -> ci.getConsumerStopPoint()!=null && ci.getConsumerStopPoint().getContainedInStopAreaRef().getObject()!=null )
-				.forEach(ci -> collectStopAreas(collection, ci.getConsumerStopPoint().getContainedInStopAreaRef().getObject(),skipNoCoordinate,followLinks));
-		collection.getInterchanges().addAll(vehicleJourney.getConsumerInterchanges());
-		vehicleJourney.getConsumerInterchanges().stream()
-				.filter(ci -> ci.getFeederStopPoint()!=null && ci.getFeederStopPoint().getContainedInStopAreaRef().getObject()!=null )
-				.forEach(ci -> collectStopAreas(collection, ci.getFeederStopPoint().getContainedInStopAreaRef().getObject(),skipNoCoordinate,followLinks));
+	private void collectInterchanges(ExportableData collection, VehicleJourney vehicleJourney, boolean skipNoCoordinate, boolean followLinks, LocalDate startDate, LocalDate endDate) {
+		for (Interchange interchange : vehicleJourney.getConsumerInterchanges()) {
+			if (interchange.getFeederVehicleJourney() != null && !isVehicleJourneyValid(vehicleJourney, collection, startDate, endDate)) {
+				continue;
+			}
+
+			collection.getInterchanges().add(interchange);
+
+			if (interchange.getFeederStopPoint() !=null && interchange.getFeederStopPoint().getContainedInStopAreaRef().getObject() != null) {
+				collectStopAreas(collection, interchange.getFeederStopPoint().getContainedInStopAreaRef().getObject(), skipNoCoordinate, followLinks);
+			}
+		}
 	}
 
 	protected boolean collect(ExportableData collection, Collection<StopArea> stopAreas, boolean skipNoCoordinate,
@@ -174,7 +178,7 @@ public class DataCollector {
 		return !collection.getPhysicalStops().isEmpty();
 
 	}
-	
+
 	protected void completeSharedData(ExportableData collection) {
 		// force lazy dependencies to be loaded
 		for (ConnectionLink link : collection.getConnectionLinks()) {
@@ -251,6 +255,30 @@ public class DataCollector {
 			collection.getAccessPoints().add(point);
 		}
 
+	}
+
+	private boolean isVehicleJourneyValid(VehicleJourney vehicleJourney, ExportableData collection, LocalDate startDate, LocalDate endDate) {
+		for (Timetable timetable : vehicleJourney.getTimetables()) {
+			boolean isTimetableValid = false;
+			if (collection.getTimetables().contains(timetable)) {
+				isTimetableValid = true;
+			} else if (collection.getExcludedTimetables().contains(timetable)) {
+				isTimetableValid = false;
+			} else {
+
+				if (startDate == null)
+					isTimetableValid = timetable.isActiveBefore(endDate);
+				else if (endDate == null)
+					isTimetableValid = timetable.isActiveAfter(startDate);
+				else
+					isTimetableValid = timetable.isActiveOnPeriod(startDate, endDate);
+			}
+
+			if (isTimetableValid) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
