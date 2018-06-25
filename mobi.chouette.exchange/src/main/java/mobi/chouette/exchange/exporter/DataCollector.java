@@ -157,7 +157,7 @@ public class DataCollector {
 
 	private void collectInterchanges(ExportableData collection, VehicleJourney vehicleJourney, boolean skipNoCoordinate, boolean followLinks, LocalDate startDate, LocalDate endDate) {
 		for (Interchange interchange : vehicleJourney.getConsumerInterchanges()) {
-			if (interchange.getFeederVehicleJourney() != null && !isVehicleJourneyValid(vehicleJourney, collection, startDate, endDate)) {
+			if (interchange.getFeederVehicleJourney() != null && !isVehicleJourneyValid(interchange.getFeederVehicleJourney(), collection, startDate, endDate)) {
 				continue;
 			}
 
