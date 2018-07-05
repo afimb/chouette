@@ -82,6 +82,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 			Monitor monitor = MonitorFactory.start("ActionReport");
 			JobData jobData = (JobData) context.get(JOB_DATA);
 			Path path = Paths.get(jobData.getPathName(), REPORT_FILE);
+			log.info("Storing report to file name: " + path);
 			// pseudo pretty print
 			try {
 				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
