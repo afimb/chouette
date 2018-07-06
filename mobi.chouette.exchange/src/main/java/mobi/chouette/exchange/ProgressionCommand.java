@@ -89,12 +89,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 				PrintStream stream = new PrintStream(outputStream, false, "UTF-8");
 				report.print(stream);
 				stream.close();
-				byte[] bytes = outputStream.toByteArray();
-				if (bytes.length == 0) {
-					throw new IllegalArgumentException("Got empty content for action report : " + path);
-				}
-
-				FileStoreFactory.getFileStore().writeFile(path, new ByteArrayInputStream(bytes));
+				FileStoreFactory.getFileStore().writeFile(path, new ByteArrayInputStream(outputStream.toByteArray()));
 			} catch (Exception e) {
 				log.error("failed to save report", e);
 			}
