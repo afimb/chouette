@@ -1,5 +1,6 @@
 package mobi.chouette.service;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.file.Path;
 
@@ -13,7 +14,9 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.file.FileStore;
 
+import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Storage;
+import org.apache.commons.io.IOUtils;
 import org.rutebanken.helper.gcp.BlobStoreHelper;
 
 import static mobi.chouette.service.GoogleCloudFileStore.BEAN_NAME;
@@ -40,7 +43,7 @@ public class GoogleCloudFileStore implements FileStore {
 
 	@PostConstruct
 	public void init() {
-		baseFolder =  System.getProperty(checker.getContext() + ".directory");
+		baseFolder = System.getProperty(checker.getContext() + ".directory");
 		containerName = System.getProperty(checker.getContext() + ".blobstore.gcs.container.name");
 		String credentialPath = System.getProperty(checker.getContext() + ".blobstore.gcs.credential.path");
 		String projectId = System.getProperty(checker.getContext() + ".blobstore.gcs.project.id");
@@ -58,7 +61,21 @@ public class GoogleCloudFileStore implements FileStore {
 
 	@Override
 	public void writeFile(Path filePath, InputStream content) {
-		BlobStoreHelper.uploadBlob(storage, containerName, toGCSPath(filePath), content, false);
+		try {
+			byte[] bytes = IOUtils.toByteArray(content);
+			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+
+			Blob blob = BlobStoreHelper.uploadBlob(storage, containerName, toGCSPath(filePath), bis, false);
+			if (Long.valueOf(0).equals(blob.getSize()) && bytes.length > 0) {
+				log.warn("Blob upload created empty blob even though there was content in the stream. Retrying " + filePath);
+				bis.reset();
+
+				Blob blobRetry = BlobStoreHelper.uploadBlob(storage, containerName, toGCSPath(filePath), bis, false);
+				log.warn("Retry of fileupload for " + filePath + " resulted in blob with size: " + blobRetry.getSize());
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
