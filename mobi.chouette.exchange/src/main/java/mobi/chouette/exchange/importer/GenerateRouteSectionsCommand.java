@@ -80,14 +80,16 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 		List<RouteSection> routeSections = new ArrayList<>();
 		for (StopPoint sp : jp.getStopPoints()) {
 
-			Coordinate from = getCoordinateFromStopPoint(prev);
-			Coordinate to = getCoordinateFromStopPoint(sp);
-			LineString lineString = null;
-			if (from != null && to != null) {
-				lineString = routeSectionGenerator.getRouteSection(from, to, transportMode);
+			if (prev != null) {
+				Coordinate from = getCoordinateFromStopPoint(prev);
+				Coordinate to = getCoordinateFromStopPoint(sp);
+				LineString lineString = null;
+				if (from != null && to != null) {
+					lineString = routeSectionGenerator.getRouteSection(from, to, transportMode);
 
+				}
+				routeSections.add(createRouteSection(prev, sp, lineString));
 			}
-			routeSections.add(createRouteSection(prev, sp, lineString));
 			prev = sp;
 		}
 
