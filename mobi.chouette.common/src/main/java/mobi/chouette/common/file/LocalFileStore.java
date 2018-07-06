@@ -37,6 +37,13 @@ public class LocalFileStore implements FileStore {
 	@Override
 	public void writeFile(Path filePath, InputStream content) {
 		try {
+
+			// TODO remove if!
+			if (content.available()<5) {
+				log.warn("About to write less than 5 bytes to file: "+ filePath, new RuntimeException("DummyException to log stacktrace"));
+			}
+			// TODO end remove
+
 			FileUtils.copyInputStreamToFile(content, filePath.toFile());
 		} catch (IOException ioE) {
 			throw new FileServiceException("Failed to write to file: " + ioE.getMessage(), ioE);
