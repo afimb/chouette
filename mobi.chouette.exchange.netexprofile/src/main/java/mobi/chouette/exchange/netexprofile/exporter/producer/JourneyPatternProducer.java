@@ -196,12 +196,13 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 				geometry = routeSection.getProcessedGeometry();
 			}
 
-			LineStringType gmlLineString = JtsGmlConverter.fromJtsToGml(geometry, gmlId);
-			LinkSequenceProjection linkSequenceProjection = netexFactory.createLinkSequenceProjection().withLineString(gmlLineString);
-			linkSequenceProjection.withId(createUniqueId(context, LINK_SEQUENCE_PROJECTION)).withVersion(routeSectionVersion);
-			serviceLink.setProjections(netexFactory.createProjections_RelStructure()
-					.withProjectionRefOrProjection(netexFactory.createLinkSequenceProjection(linkSequenceProjection)));
-
+			if (geometry!=null) {
+				LineStringType gmlLineString = JtsGmlConverter.fromJtsToGml(geometry, gmlId);
+				LinkSequenceProjection linkSequenceProjection = netexFactory.createLinkSequenceProjection().withLineString(gmlLineString);
+				linkSequenceProjection.withId(createUniqueId(context, LINK_SEQUENCE_PROJECTION)).withVersion(routeSectionVersion);
+				serviceLink.setProjections(netexFactory.createProjections_RelStructure()
+						.withProjectionRefOrProjection(netexFactory.createLinkSequenceProjection(linkSequenceProjection)));
+			}
 			if (routeSection.getDistance() != null) {
 				serviceLink.setDistance(routeSection.getDistance().setScale(6, RoundingMode.HALF_UP));
 			}
