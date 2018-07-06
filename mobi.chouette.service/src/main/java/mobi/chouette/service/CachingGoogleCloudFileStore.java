@@ -137,7 +137,7 @@ public class CachingGoogleCloudFileStore implements FileStore {
 				log.warn("About to write less than 5 bytes to file: "+ filePath, new RuntimeException("DummyException to log stacktrace"));
 			}
 			// TODO end remove
-			log.info("Writing " + bis.available() + " bytes to " + filePath);
+
 			cloudFileStore.writeFile(filePath, bis);
 			bis.reset();
 			localFileStore.writeFile(filePath, bis);
