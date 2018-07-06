@@ -40,7 +40,9 @@ public class ServiceLinkParser extends NetexParser implements Parser, Constant {
 
 			routeSection.setDistance(serviceLink.getDistance());
 
-			if (serviceLink.getProjections() != null && serviceLink.getProjections().getProjectionRefOrProjection() != null) {
+			if (serviceLink.getProjections() == null || serviceLink.getProjections().getProjectionRefOrProjection() == null) {
+				log.warn("Ignore service link without projection: " + serviceLink);
+			} else {
 				for (JAXBElement<?> projectionElement : serviceLink.getProjections().getProjectionRefOrProjection()) {
 					Object projectionObj = projectionElement.getValue();
 					if (projectionObj instanceof LinkSequenceProjection_VersionStructure) {

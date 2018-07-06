@@ -82,12 +82,12 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 
 			Coordinate from = getCoordinateFromStopPoint(prev);
 			Coordinate to = getCoordinateFromStopPoint(sp);
-			LineString lineString = null;
 			if (from != null && to != null) {
-				lineString = routeSectionGenerator.getRouteSection(from, to, transportMode);
-
+				LineString lineString = routeSectionGenerator.getRouteSection(from, to, transportMode);
+				if (lineString != null) {
+					routeSections.add(createRouteSection(prev, sp, lineString));
+				}
 			}
-			routeSections.add(createRouteSection(prev, sp, lineString));
 			prev = sp;
 		}
 
@@ -109,9 +109,7 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 		routeSection.setNoProcessing(true);
 		routeSection.setFilled(true);
 		routeSection.setDetached(true);
-		if (lineString != null) {
-			routeSection.setDistance(BigDecimal.valueOf(GeometryUtil.convertFromAngleDegreesToMeters(lineString.getLength())));
-		}
+		routeSection.setDistance(BigDecimal.valueOf(GeometryUtil.convertFromAngleDegreesToMeters(lineString.getLength())));
 		return routeSection;
 	}
 

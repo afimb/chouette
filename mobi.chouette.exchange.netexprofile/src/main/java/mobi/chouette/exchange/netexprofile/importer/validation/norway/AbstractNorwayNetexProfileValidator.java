@@ -100,6 +100,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 	public static final String _1_NETEX_SERVICE_FRAME_SERVICE_LINK_TOPOINTREF = "1-NETEXPROFILE-ServiceFrame-ServiceLink-ToPointRef";
 	public static final String _1_NETEX_SERVICE_FRAME_SERVICE_LINK_FROMPOINTREF = "1-NETEXPROFILE-ServiceFrame-ServiceLink-FromPointRef";
+	public static final String _1_NETEX_SERVICE_FRAME_SERVICE_LINK_PROJECTIONS = "1-NETEXPROFILE-ServiceFrame-ServiceLink-Projections";
 
 	public static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY = "1-NETEXPROFILE-TimetableFrame-ServiceJourney";
 	public static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_DAYTYPEREF = "1-NETEXPROFILE-TimetableFrame-ServiceJourney-DayTypeRef";
@@ -244,6 +245,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_SERVICE_LINK_FROMPOINTREF, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_SERVICE_LINK_TOPOINTREF, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_SERVICE_LINK_PROJECTIONS, "E");
 
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY, "E");
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_SERVICEJOURNEY_JOURNEYPATTERN_REF, "E");
@@ -462,6 +464,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 		validateElementNotPresent(context, xpath, subLevel, "serviceLinks/ServiceLink[not(FromPointRef)]", _1_NETEX_SERVICE_FRAME_SERVICE_LINK_FROMPOINTREF);
 		validateElementNotPresent(context, xpath, subLevel, "serviceLinks/ServiceLink[not(ToPointRef)]", _1_NETEX_SERVICE_FRAME_SERVICE_LINK_TOPOINTREF);
+		validateElementNotPresent(context, xpath, subLevel, "serviceLinks/ServiceLink[not(projections)]", _1_NETEX_SERVICE_FRAME_SERVICE_LINK_PROJECTIONS);
 	}
 
 	protected void validateCommonFrameConcepts(Context context, XPathCompiler xpath, XdmNode dom) throws XPathExpressionException, SaxonApiException {

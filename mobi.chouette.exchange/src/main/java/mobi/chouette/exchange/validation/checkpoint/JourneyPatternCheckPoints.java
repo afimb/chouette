@@ -80,7 +80,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 			// 3-JourneyPattern-2 : Check if journey section route count equals
 			// to journey stops count minus 1
 			if (!sourceFile) {
-				check3JourneyPattern2(context, jp);
+				// Disabled (some route sections are better than none) check3JourneyPattern2(context, jp);
 				check3JourneyPatternRb4(context, jp);
 			}
 			// 3-RouteSection-1 : Check if route section distance doesn't exceed
@@ -208,18 +208,16 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 				continue;
 			}
 
-			if (rs.getNoProcessing() && rs.getInputGeometry() != null) {
+			if (rs.getNoProcessing()) {
 				plotFirstLong = rs.getInputGeometry().getStartPoint().getX();
 				plotFirstLat = rs.getInputGeometry().getStartPoint().getY();
 				plotLastLong = rs.getInputGeometry().getEndPoint().getX();
 				plotLastLat = rs.getInputGeometry().getEndPoint().getY();
-			} else if (rs.getProcessedGeometry() != null) {
+			} else {
 				plotFirstLong = rs.getProcessedGeometry().getStartPoint().getX();
 				plotFirstLat = rs.getProcessedGeometry().getStartPoint().getY();
 				plotLastLong = rs.getProcessedGeometry().getEndPoint().getX();
 				plotLastLat = rs.getProcessedGeometry().getEndPoint().getY();
-			} else {
-				continue;
 			}
 
 			// Departuredepart
