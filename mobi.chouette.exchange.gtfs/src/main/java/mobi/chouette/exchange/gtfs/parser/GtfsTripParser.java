@@ -528,6 +528,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 			// VehicleJourneyAtStop
 			boolean afterMidnight = true;
+			boolean hasShapeDistTraveled = true;
 
 			for (GtfsStopTime gtfsStopTime : importer.getStopTimeByTrip().values(gtfsTrip.getTripId())) {
 				VehicleJourneyAtStopWrapper vehicleJourneyAtStop = null;
@@ -540,6 +541,9 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 				if (gtfsStopTime.getDropOffType() != null)
 					aPE = convertGtfsDropOffTypeToAlightingPossibility(gtfsStopTime.getDropOffType());
+				
+				if (hasShapeDistTraveled && gtfsStopTime.getShapeDistTraveled() == null)
+					hasShapeDistTraveled = false;
 
 				vehicleJourneyAtStop = new VehicleJourneyAtStopWrapper(gtfsStopTime.getStopId(),
 						gtfsStopTime.getStopSequence(), gtfsStopTime.getShapeDistTraveled(), bPE, aPE);
@@ -558,8 +562,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			// check if VJ is all on demand (flexible service)
 			ajustOnDemand(vehicleJourney);
 
-			// if route with shape
-			if (gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty()
+			// Mantis 58964 : if trip with shape and shapeDistTraveled on all stopTimes
+			if (hasShapeDistTraveled && gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty()
 					&& importer.getShapeById().containsKey(gtfsTrip.getShapeId())) {
 				Collections.sort(vehicleJourney.getVehicleJourneyAtStops(), VEHICLE_JOURNEY_AT_STOP_SHAPE_COMPARATOR);
 			} else {
@@ -590,7 +594,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				lstShapeVjas.clear();
 
 			// if route with shape
-			if (gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty()
+			if (hasShapeDistTraveled && gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty()
 					&& importer.getShapeById().containsKey(gtfsTrip.getShapeId())) {
 				for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney.getVehicleJourneyAtStops()) {
 					float shapeValue = ((VehicleJourneyAtStopWrapper) vehicleJourneyAtStop).shapeDistTraveled;
@@ -620,7 +624,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			int length = journeyPattern.getStopPoints().size();
 
 			// if route with shape
-			if (gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty()
+			if (hasShapeDistTraveled && gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty()
 					&& importer.getShapeById().containsKey(gtfsTrip.getShapeId())) {
 				for (int i = 0; i < length; i++) {
 					VehicleJourneyAtStop vehicleJourneyAtStop = lstShapeVjas.get(i);

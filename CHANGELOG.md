@@ -1,3 +1,7 @@
+# Version 3.4.6 (13/07/2018)
+* Correction
+  * Mantis 58964 : l'import GTFS n'accepte pas la présence de shape sans l'information shape_dist_traveled 
+
 # Version 3.4.5 (02/03/2018)
 * Correction
   * PR #45 : (Pull Request rejeté) suppression des tags XML sur les classes de rapport
