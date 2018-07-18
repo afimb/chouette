@@ -1,5 +1,6 @@
 package mobi.chouette.dao.iev;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,10 +48,17 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		if(status.length != 0) {
 			 statusPredicate = root.get(Job_.status).in(Arrays.asList(status));
 		}
-		
-		Predicate referentialPredicate = builder.equal(root.get(Job_.referential),
-				referential);
-		criteria.where(builder.and( referentialPredicate, statusPredicate));
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(statusPredicate);
+
+		if (referential != null) {
+			Predicate referentialPredicate = builder.equal(root.get(Job_.referential),
+					referential);
+			predicates.add(referentialPredicate);
+		}
+
+		criteria.where(builder.and(predicates.toArray(new Predicate[predicates.size()])));
+
 		criteria.orderBy(builder.asc(root.get(Job_.created)));
 		TypedQuery<Job> query = em.createQuery(criteria);
 		result = query.getResultList();
@@ -71,15 +79,23 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		if(status.length != 0) {
 			 statusPredicate = root.get(Job_.status).in(Arrays.asList(status));
 		}
-		Predicate referentialPredicate = builder.equal(root.get(Job_.referential),
-				referential);
 
-		if(action.length != 0) {
-			Predicate actionPredicate = root.get(Job_.action).in(Arrays.asList(action)); 
-			criteria.where( builder.and(referentialPredicate, actionPredicate,statusPredicate ));
-		} else {
-			criteria.where( builder.and(referentialPredicate, statusPredicate ));
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(statusPredicate);
+
+		if (action.length != 0) {
+			Predicate actionPredicate = root.get(Job_.action).in(Arrays.asList(action));
+			predicates.add(actionPredicate);
 		}
+
+		if (referential != null) {
+			Predicate referentialPredicate = builder.equal(root.get(Job_.referential),
+					referential);
+			predicates.add(referentialPredicate);
+		}
+
+		criteria.where(builder.and(predicates.toArray(new Predicate[predicates.size()])));
+
 		criteria.orderBy(builder.asc(root.get(Job_.created)));
 		TypedQuery<Job> query = em.createQuery(criteria);
 		result = query.getResultList();
