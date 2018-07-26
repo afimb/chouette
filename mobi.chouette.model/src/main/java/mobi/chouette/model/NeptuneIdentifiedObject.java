@@ -53,7 +53,8 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject implements
 	protected String objectId;
 
 	public void setObjectId(String value) {
-		objectId = StringUtils.abbreviate(value, 255);
+		// Do not abbreviate objectIds, it causes information to be lost on ie exports and leads to duplicate data
+		objectId = value;
 	}
 
 	/**
