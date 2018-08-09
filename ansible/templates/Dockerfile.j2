@@ -25,14 +25,8 @@ COPY wildfly/iev.properties /etc/chouette/iev/
 RUN touch /opt/jboss/wildfly/build.log
 RUN chmod a+w /opt/jboss/wildfly/build.log
 
-# Wildfly container configurations, copy and execute
-COPY wildfly/*.cli /opt/jboss/wildfly/customization/
-COPY wildfly/execute.sh /opt/jboss/wildfly/customization/
-RUN /opt/jboss/wildfly/customization/execute.sh
-
 # TODO Consider to make password for chouette iev console configurable
 RUN /opt/jboss/wildfly/bin/add-user.sh admin pingu123 --silent
-
 
 # Overriding previously installed java version:
 RUN curl -L http://10.3.255.86/jdk-8u144-linux-x64.tar.gz > jdk.tgz
