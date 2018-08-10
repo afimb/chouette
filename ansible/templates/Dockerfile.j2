@@ -61,4 +61,4 @@ RUN chmod a+x /disk_usage_notifier.sh
 # This argument comes from https://github.com/jboss-dockerfiles/wildfly
 # It enables the admin interface.
 
-CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0", "--read-only-server-config", "standalone.xml"]
+CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0", "--read-only-server-config=standalone.xml"]
