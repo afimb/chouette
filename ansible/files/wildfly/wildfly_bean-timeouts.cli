@@ -1,0 +1,3 @@
+batch
+/subsystem=ejb3:write-attribute(name="default-singleton-bean-access-timeout", value=30000L)
+run-batch
