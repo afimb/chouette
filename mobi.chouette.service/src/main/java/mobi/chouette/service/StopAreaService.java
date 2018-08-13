@@ -43,7 +43,7 @@ public class StopAreaService {
             Context context = createContext();
             ContextHolder.clear();
             stopAreaUpdateService.createOrUpdateStopAreas(context, updateContext);
-
+            log.info("Updated " + changedStopCnt + " stop areas");
             updateStopAreaReferencesPerReferential(updateContext.getMergedQuays());
         } else {
             log.debug("Received update without any stop areas. Doing nothing");
@@ -56,7 +56,9 @@ public class StopAreaService {
         try {
             for (String referential : referentialDAO.getReferentials()) {
                 ContextHolder.setContext(referential);
+                log.info("Updating stop area references for " + updatedStopPointCnt + " stop points for referential " + referential);
                 updatedStopPointCnt += stopAreaUpdateService.updateStopAreaReferences(replacementMap);
+                log.info("Updated stop area references for " + updatedStopPointCnt + " stop points for referential " + referential);
             }
         } finally {
             ContextHolder.setContext(orgContext); // reset context
