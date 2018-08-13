@@ -49,10 +49,6 @@ RUN rm -rf /opt/jboss/wildfly/standalone/configuration/standalone_xml_history \
   && mkdir -p /opt/jboss/data \
   && chown jboss:jboss /opt/jboss/data
 
-#
-# The argument comes from chouette doc: https://github.com/afimb/chouette/blob/master/doc/install/wildfly.md
-#CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-c", "standalone-full.xml"]
-
 # Agent-bond setup largely copied from:
 # https://hub.docker.com/r/fabric8/java-jboss-openjdk8-jdk/~/dockerfile/
 RUN mkdir -p /opt/jboss/wildfly/agent-bond \
@@ -71,4 +67,4 @@ RUN chmod a+x /disk_usage_notifier.sh
 # This argument comes from https://github.com/jboss-dockerfiles/wildfly
 # It enables the admin interface.
 
-CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
+CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0", "--read-only-server-config=standalone.xml"]
