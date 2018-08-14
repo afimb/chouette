@@ -32,7 +32,6 @@
         <resource-root path="hibernate-entitymanager-4.3.7.Final.jar"/>
         <resource-root path="hibernate-infinispan-4.3.7.Final.jar"/>
         <resource-root path="jipijapa-hibernate4-3-1.0.1.Final.jar"/>
-        <resource-root path="postgres-socket-factory-1.0.10.jar"/>
     </resources>
 
     <dependencies>
@@ -59,6 +58,5 @@
         <module name="org.jboss.logging"/>
         <module name="org.jboss.vfs"/>
         <module name="org.hibernate.commons-annotations"/>
-        <module name="com.google.cloud.sql"/>
     </dependencies>
 </module>
