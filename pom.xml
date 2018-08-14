@@ -34,6 +34,7 @@
         sync, and fail fast if incompatibilities -->
 	  <netex-java-model.version>1.0.9-SNAPSHOT</netex-java-model.version>
 		<rutebanken.helpers.version>0.0.3-SNAPSHOT</rutebanken.helpers.version>
+		<postgres.socket-factory.version>1.0.10</postgres.socket-factory.version>
 	</properties>
 	<distributionManagement>
 		<snapshotRepository>
@@ -671,6 +672,11 @@
 				<groupId>net.postgis</groupId>
 				<artifactId>postgis-jdbc</artifactId>
 				<version>${postgis.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.cloud.sql</groupId>
+				<artifactId>postgres-socket-factory</artifactId>
+				<version>${postgres.socket-factory.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
