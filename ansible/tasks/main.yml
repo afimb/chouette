@@ -37,6 +37,7 @@
     - { path: "net/postgis/postgis-jdbc/2.1.7.2", filename: "postgis-jdbc-2.1.7.2.jar" }
     - { path: "org/postgresql/postgresql/42.2.4", filename: "postgresql-42.2.4.jar"}
     - { path: "com/google/cloud/sql/postgres-socket-factory/1.0.10", filename: "postgres-socket-factory-1.0.10.jar" }
+    - { path: "com/github/jnr/jnr-unixsocket/0.18", filename: "jnr-unixsocket-0.18.jar" }
     - { path: "com/vividsolutions/jts/1.13", filename: "jts-1.13.jar" }
     - { path: "com/sun/xml/bind/jaxb-impl/2.2.11", filename: "jaxb-impl-2.2.11.jar" }
     - { path: "com/sun/xml/bind/jaxb-core/2.2.11", filename: "jaxb-core-2.2.11.jar" }
