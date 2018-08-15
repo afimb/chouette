@@ -1,5 +1,5 @@
 batch
 
-module add --name=org.postgres --resources=/opt/jboss/wildfly/customization/postgresql-9.3-1103.jdbc41.jar:/opt/jboss/wildfly/customization/postgis-jdbc-2.1.7.2.jar --dependencies=javax.api,javax.transaction.api
+module add --name=org.postgres --resources=/opt/jboss/wildfly/customization/postgresql-9.3-1103.jdbc41.jar:/opt/jboss/wildfly/customization/postgis-jdbc-2.1.7.2.jar:/opt/jboss/wildfly/customization/postgres-socket-factory-1.0.10.jar --dependencies=javax.api,javax.transaction.api
 
 run-batch
