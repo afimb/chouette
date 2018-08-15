@@ -8,6 +8,8 @@ RUN mkdir /opt/jboss/wildfly/customization/
 COPY postgresql-42.2.4.jar /opt/jboss/wildfly/customization/postgresql-42.2.4.jar
 COPY postgres-socket-factory-1.0.10.jar /opt/jboss/wildfly/customization/postgres-socket-factory-1.0.10.jar
 COPY jnr-unixsocket-0.18.jar /opt/jboss/wildfly/customization/jnr-unixsocket-0.18.jar
+COPY guava-20.0.jar /opt/jboss/wildfly/customization/guava-20.0.jar
+COPY jdbc-socket-factory-core-1.0.10.jar /opt/jboss/wildfly/customization/jdbc-socket-factory-core-1.0.10.jar
 
 COPY hibernate-spatial-4.3.jar /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/hibernate-spatial-4.3.jar
 COPY jts-1.13.jar /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/jts-1.13.jar
