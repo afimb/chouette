@@ -1,9 +1,9 @@
 ---
-#- set_fact: build_home="/usr/src/jenkinsbuild/workspace/chouette"
-- set_fact: build_home="/home/en/git/rutebanken/chouette"
-- set_fact: build_log_directory="/tmp/fml"
+- set_fact: build_home="/usr/src/jenkinsbuild/workspace/chouette"
+#- set_fact: build_home="/home/en/git/rutebanken/chouette"
+- set_fact: build_log_directory="/usr/src/log"
 - set_fact: logfile="{{build_log_directory}}/chouette.log"
-- set_fact: group=cristoffer
+- set_fact: group=users
 - set_fact: jar_dir={{chouette_root}}/jar
 
 - name: Make log directory structure
@@ -23,6 +23,9 @@
 
 - name: Upload jxm exporter config
   copy: src=jmx_exporter_config.yml dest=/usr/src/chouette/jmx_exporter_config.yml
+
+- name: Copy the chouette sources to staging directory
+  command: rsync -ar {{ build_home }}/chouette_iev/target/chouette.ear {{chouette_root}}/chouette.ear
 
 - name: Move Dockerfile
   template: src=Dockerfile.j2 dest={{chouette_root}}/Dockerfile mode=0755
