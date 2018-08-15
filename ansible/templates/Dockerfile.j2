@@ -2,8 +2,12 @@ FROM jboss/wildfly:8.2.1.Final
 
 RUN mkdir /opt/jboss/wildfly/customization/
 
-COPY postgresql-9.3-1103.jdbc41.jar /opt/jboss/wildfly/customization/postgresql-9.3-1103.jdbc41.jar
-COPY postgis-jdbc-2.1.7.2.jar /opt/jboss/wildfly/customization/postgis-jdbc-2.1.7.2.jar
+# COPY postgresql-9.3-1103.jdbc41.jar /opt/jboss/wildfly/customization/postgresql-9.3-1103.jdbc41.jar
+# COPY postgis-jdbc-2.1.7.2.jar /opt/jboss/wildfly/customization/postgis-jdbc-2.1.7.2.jar
+
+COPY org.postgresql:postgresql:jar:42.2.4 /opt/jboss/wildfly/customization/org.postgresql:postgresql:jar:42.2.4
+COPY postgres-socket-factory-1.0.10.jar /opt/jboss/wildfly/customization/postgres-socket-factory-1.0.10.jar
+
 COPY hibernate-spatial-4.3.jar /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/hibernate-spatial-4.3.jar
 COPY jts-1.13.jar /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/jts-1.13.jar
 
@@ -19,7 +23,6 @@ COPY wildfly/jaxb_module.xml /opt/jboss/wildfly/modules/system/layers/base/com/s
 COPY xercesImpl-2.11.0.SP6-RB.jar /opt/jboss/wildfly/modules/system/layers/base/org/apache/xerces/main/xercesImpl-2.11.0.SP6-RB.jar
 COPY wildfly/xerces_module.xml /opt/jboss/wildfly/modules/system/layers/base/org/apache/xerces/main/module.xml
 
-COPY postgres-socket-factory-1.0.10.jar /opt/jboss/wildfly/customization/postgres-socket-factory-1.0.10.jar
 
 #Copy iev.properties
 COPY wildfly/iev.properties /etc/chouette/iev/
