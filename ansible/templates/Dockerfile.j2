@@ -5,7 +5,7 @@ RUN mkdir /opt/jboss/wildfly/customization/
 # COPY postgresql-9.3-1103.jdbc41.jar /opt/jboss/wildfly/customization/postgresql-9.3-1103.jdbc41.jar
 # COPY postgis-jdbc-2.1.7.2.jar /opt/jboss/wildfly/customization/postgis-jdbc-2.1.7.2.jar
 
-COPY org.postgresql:postgresql:jar:42.2.4 /opt/jboss/wildfly/customization/org.postgresql:postgresql:jar:42.2.4
+COPY postgresql-42.2.2.jar /opt/jboss/wildfly/customization/postgresql-42.2.2.jar
 COPY postgres-socket-factory-1.0.10.jar /opt/jboss/wildfly/customization/postgres-socket-factory-1.0.10.jar
 
 COPY hibernate-spatial-4.3.jar /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/hibernate-spatial-4.3.jar
