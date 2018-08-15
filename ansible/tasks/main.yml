@@ -52,6 +52,7 @@
     - { path: "org/apache/httpcomponents/httpcore/4.0.1", filename: "httpcore-4.0.1.jar" }
     - { path: "com/github/jnr/jnr-ffi/2.1.4", filename: "jnr-ffi-2.1.4.jar" }
     - { path: "com/github/jnr/jffi/1.2.15", filename: "jffi-1.2.15.jar" }
+    - { path: "com/github/jnr/jffi/1.2.15", filename: "jffi-1.2.15-native.jar"}
     - { path: "org/ow2/asm/asm/5.0.3", filename: "asm-5.0.3.jar" }
     - { path: "org/ow2/asm/asm-commons/5.0.3", filename: "asm-commons-5.0.3.jar" }
     - { path: "org/ow2/asm/asm-tree/5.0.3", filename: "asm-tree-5.0.3.jar" }
