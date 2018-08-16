@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import javax.ejb.ConcurrencyManagement;
+import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
@@ -28,6 +30,7 @@ import mobi.chouette.persistence.hibernate.ContextHolder;
 import com.google.common.collect.Lists;
 
 @Singleton(name = StopAreaUpdateService.BEAN_NAME)
+@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 @Log4j
 public class StopAreaUpdateService {
 
