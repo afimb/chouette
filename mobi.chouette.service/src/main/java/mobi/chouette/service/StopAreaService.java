@@ -13,6 +13,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.ejb.ConcurrencyManagement;
+import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 
@@ -20,7 +22,6 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.ReferentialDAO;
-import mobi.chouette.exchange.netexprofile.importer.NetexSchemaValidationCommand;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.stopplace.PublicationDeliveryStopPlaceParser;
 import mobi.chouette.exchange.stopplace.StopAreaUpdateContext;
@@ -30,6 +31,7 @@ import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 @Singleton(name = StopAreaService.BEAN_NAME)
+@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 @Log4j
 public class StopAreaService {
 
