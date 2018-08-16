@@ -79,20 +79,23 @@ public class StopAreaService {
 
 	private void updateStopAreaReferencesPerReferential(Map<String, Set<String>> replacementMap) {
 		int updatedStopPointCnt = 0;
-		List<Future<Integer>> futures = new ArrayList();
 
-		for (String referential : referentialDAO.getReferentials()) {
-			StopAreaUpdateTask updateTask = new StopAreaUpdateTask(referential, replacementMap);
-			futures.add(executor.submit(updateTask));
-		}
-		try {
-			for (Future<Integer> future : futures) {
-				updatedStopPointCnt += future.get();
+		if (!replacementMap.isEmpty()) {
+			List<Future<Integer>> futures = new ArrayList();
+
+			for (String referential : referentialDAO.getReferentials()) {
+				StopAreaUpdateTask updateTask = new StopAreaUpdateTask(referential, replacementMap);
+				futures.add(executor.submit(updateTask));
 			}
-		} catch (ExecutionException e) {
-			throw new RuntimeException("Exception while updating StopArea references: " + e.getMessage(), e);
-		} catch (InterruptedException ie) {
-			throw new RuntimeException("Interrupted while waiting for StopArea reference update", ie);
+			try {
+				for (Future<Integer> future : futures) {
+					updatedStopPointCnt += future.get();
+				}
+			} catch (ExecutionException e) {
+				throw new RuntimeException("Exception while updating StopArea references: " + e.getMessage(), e);
+			} catch (InterruptedException ie) {
+				throw new RuntimeException("Interrupted while waiting for StopArea reference update", ie);
+			}
 		}
 
 
