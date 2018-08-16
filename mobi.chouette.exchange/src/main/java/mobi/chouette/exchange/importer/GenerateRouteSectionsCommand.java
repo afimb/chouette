@@ -89,7 +89,13 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 				Coordinate to = getCoordinateFromStopPoint(sp);
 				LineString lineString = null;
 				if (from != null && to != null) {
-					lineString = sanityCheckedLineString(routeSectionGenerator.getRouteSection(from, to, transportMode), from, to);
+
+					lineString = routeSectionGenerator.getRouteSection(from, to, transportMode);
+					if (isLineStringGoodMatchForQuays(lineString, from, to)) {
+						log.info("Ignoring generated LineString because it is to far from stop at start and/or end of section." +
+								"JP: " + jp.getObjectId() + ", From: " + prev.getObjectId() + ", to: " + sp.getObjectId() + ", transportMode: " + transportMode);
+						lineString = null;
+					}
 
 				}
 				routeSections.add(createRouteSection(prev, sp, lineString));
@@ -104,7 +110,7 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 		journeyPatternDAO.update(jp);
 	}
 
-	protected LineString sanityCheckedLineString(LineString lineString, Coordinate from, Coordinate to) {
+	protected boolean isLineStringGoodMatchForQuays(LineString lineString, Coordinate from, Coordinate to) {
 
 		if (lineString != null && lineString.getCoordinates() != null && lineString.getCoordinates().length > 0) {
 
@@ -116,11 +122,10 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 
 			int maxMetersFromQuay = getMaxMetersFromQuay();
 			if (distanceFromStart > maxMetersFromQuay || distanceFromEnd > maxMetersFromQuay) {
-				log.info("Ignoring generated LineString because it is to far from stop at start and/or end of section.");
-				return null;
+				return false;
 			}
 		}
-		return lineString;
+		return true;
 	}
 
 	private RouteSection createRouteSection(StopPoint from, StopPoint to, LineString lineString) {
@@ -159,7 +164,7 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 				log.info("Using configured value for iev.route.section.generate.quay.distance.max.meters: " + maxMetersFromQuay);
 			} else {
 				maxMetersFromQuay = DEFAULT_MAX_METERS_FROM_QUAY;
-				log.info("No value configured iev.route.section.generate.quay.distance.max.meters, using default: "+ maxMetersFromQuay);
+				log.info("No value configured iev.route.section.generate.quay.distance.max.meters, using default: " + maxMetersFromQuay);
 			}
 		}
 		return maxMetersFromQuay;

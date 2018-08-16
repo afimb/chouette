@@ -21,23 +21,23 @@ public class GenerateRouteSectionsCommandTest {
 
 
 	@Test
-	public void sanityCheckLineString_whenLineStringIsNullReturnNull() {
-		Assert.assertNull(generateRouteSectionsCommand.sanityCheckedLineString(null, from, to));
+	public void isLineStringGoodMatchForQuays_whenLineStringIsNull_returnTrue() {
+		Assert.assertTrue(generateRouteSectionsCommand.isLineStringGoodMatchForQuays(null, from, to));
 	}
 
 
 	@Test
-	public void sanityCheckLineString_whenLineStringEndsAreCloseToFromAndTo_returnLineString() {
-		Assert.assertEquals(validLineString, generateRouteSectionsCommand.sanityCheckedLineString(validLineString, from, to));
+	public void isLineStringGoodMatchForQuays_whenLineStringEndsAreCloseToFromAndTo_returnsTrue() {
+		Assert.assertTrue(generateRouteSectionsCommand.isLineStringGoodMatchForQuays(validLineString, from, to));
 	}
 
 	@Test
-	public void sanityCheckLineString_whenLineStringStartIsTooFarFromFrom_returnNull() {
-		Assert.assertNull(generateRouteSectionsCommand.sanityCheckedLineString(validLineString, new Coordinate(10.22, 63.2), to));
+	public void isLineStringGoodMatchForQuays_whenLineStringStartIsTooFarFromFrom_returnFalse() {
+		Assert.assertFalse(generateRouteSectionsCommand.isLineStringGoodMatchForQuays(validLineString, new Coordinate(10.22, 63.2), to));
 	}
 
 	@Test
-	public void sanityCheckLineString_whenLineStringEndIsTooFarFromTo_returnNull() {
-		Assert.assertNull(generateRouteSectionsCommand.sanityCheckedLineString(validLineString, from, new Coordinate(10.22, 63.2)));
+	public void isLineStringGoodMatchForQuays_whenLineStringEndIsTooFarFromTo_returnFalse() {
+		Assert.assertFalse(generateRouteSectionsCommand.isLineStringGoodMatchForQuays(validLineString, from, new Coordinate(10.22, 63.2)));
 	}
 }
