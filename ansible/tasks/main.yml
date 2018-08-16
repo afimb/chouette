@@ -1,19 +1,14 @@
 ---
 - set_fact: build_home="/usr/src/jenkinsbuild/workspace/chouette"
-#- set_fact: build_home="/home/en/git/rutebanken/chouette"
+# - set_fact: build_home="/home/en/git/rutebanken/chouette"
 - set_fact: build_log_directory="/usr/src/log"
 - set_fact: logfile="{{build_log_directory}}/chouette.log"
-- set_fact: group=users
-- set_fact: jar_dir={{chouette_root}}/jar
 
 - name: Make log directory structure
-  file: path={{build_log_directory}} state=directory mode=0755 group={{group}}
+  file: path={{build_log_directory}} state=directory mode=0755 group=users
 
 - name: Make chouette target directory structure
-  file: path={{chouette_root}}/ state=directory mode=0755 group={{group}}
-
-- name: Make jar directory
-  file: path={{jar_dir}} state=directory mode=0755 group={{group}}
+  file: path={{chouette_root}}/ state=directory mode=0755 group=users
 
 - name: Upload the wildfly setup directory to the docker host
   synchronize: src=files/wildfly dest=/usr/src/chouette/.
@@ -35,38 +30,10 @@
            dest={{ chouette_root }}/postgresql-9.3-1103.jdbc41.jar
 
 - name: Download URLs
-  shell: curl -s --netrc https://nexus.rutebanken.org/content/groups/public/{{ item.path }}/{{ item.filename }} -o {{jar_dir}}/{{ item.filename }}
+  shell: curl -s --netrc https://nexus.rutebanken.org/content/groups/public/{{ item.path }}/{{ item.filename }} -o {{ chouette_root }}/{{ item.filename }}
   with_items:
     - { path: "org/hibernate/hibernate-spatial/4.3", filename: "hibernate-spatial-4.3.jar" }
     - { path: "net/postgis/postgis-jdbc/2.1.7.2", filename: "postgis-jdbc-2.1.7.2.jar" }
-    - { path: "org/postgresql/postgresql/42.2.4", filename: "postgresql-42.2.4.jar"}
-    - { path: "com/google/cloud/sql/postgres-socket-factory/1.0.10", filename: "postgres-socket-factory-1.0.10.jar" }
-    - { path: "com/google/cloud/sql/jdbc-socket-factory-core/1.0.10", filename: "jdbc-socket-factory-core-1.0.10.jar"}
-    - { path: "com/google/guava/guava/20.0", filename: "guava-20.0.jar"}
-    - { path: "com/github/jnr/jnr-unixsocket/0.18", filename: "jnr-unixsocket-0.18.jar" }
-    - { path: "com/google/apis/google-api-services-sqladmin/v1beta4-rev56-1.23.0", filename: "google-api-services-sqladmin-v1beta4-rev56-1.23.0.jar" }
-    - { path: "com/google/api-client/google-api-client/1.23.0", filename: "google-api-client-1.23.0.jar" }
-    - { path: "com/google/oauth-client/google-oauth-client/1.23.0", filename: "google-oauth-client-1.23.0.jar" }
-    - { path: "com/google/http-client/google-http-client/1.23.0", filename: "google-http-client-1.23.0.jar" }
-    - { path: "org/apache/httpcomponents/httpclient/4.0.1", filename: "httpclient-4.0.1.jar" }
-    - { path: "org/apache/httpcomponents/httpcore/4.0.1", filename: "httpcore-4.0.1.jar" }
-    - { path: "com/github/jnr/jnr-ffi/2.1.4", filename: "jnr-ffi-2.1.4.jar" }
-    - { path: "com/github/jnr/jffi/1.2.15", filename: "jffi-1.2.15.jar" }
-    - { path: "com/github/jnr/jffi/1.2.15", filename: "jffi-1.2.15-native.jar"}
-    - { path: "org/ow2/asm/asm/5.0.3", filename: "asm-5.0.3.jar" }
-    - { path: "org/ow2/asm/asm-commons/5.0.3", filename: "asm-commons-5.0.3.jar" }
-    - { path: "org/ow2/asm/asm-tree/5.0.3", filename: "asm-tree-5.0.3.jar" }
-    - { path: "org/ow2/asm/asm/5.0.3", filename: "asm-5.0.3.jar" }
-    - { path: "org/ow2/asm/asm-analysis/5.0.3", filename: "asm-analysis-5.0.3.jar" }
-    - { path: "org/ow2/asm/asm-util/5.0.3", filename: "asm-util-5.0.3.jar" }
-    - { path: "com/github/jnr/jnr-x86asm/1.0.2", filename: "jnr-x86asm-1.0.2.jar" }
-    - { path: "com/github/jnr/jnr-constants/0.9.8", filename: "jnr-constants-0.9.8.jar" }
-    - { path: "com/github/jnr/jnr-enxio/0.16", filename: "jnr-enxio-0.16.jar" }
-    - { path: "com/github/jnr/jnr-posix/3.0.35", filename: "jnr-posix-3.0.35.jar" }
-    - { path: "commons-logging/commons-logging/1.1.1", filename: "commons-logging-1.1.1.jar" }
-    - { path: "commons-codec/commons-codec/1.3", filename: "commons-codec-1.3.jar" }
-    - { path: "com/google/http-client/google-http-client-jackson2/1.23.0", filename: "google-http-client-jackson2-1.23.0.jar" }
-    - { path: "com/fasterxml/jackson/core/jackson-core/2.1.3", filename: "jackson-core-2.1.3.jar" }
     - { path: "com/vividsolutions/jts/1.13", filename: "jts-1.13.jar" }
     - { path: "com/sun/xml/bind/jaxb-impl/2.2.11", filename: "jaxb-impl-2.2.11.jar" }
     - { path: "com/sun/xml/bind/jaxb-core/2.2.11", filename: "jaxb-core-2.2.11.jar" }
