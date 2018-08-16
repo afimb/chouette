@@ -153,11 +153,13 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 
 	private int getMaxMetersFromQuay() {
 		if (maxMetersFromQuay == null) {
-			String maxAsString = System.getProperty("route.section.generate.quay.distance.meters.max");
+			String maxAsString = System.getProperty("iev.route.section.generate.quay.distance.max.meters");
 			if (maxAsString != null) {
 				maxMetersFromQuay = Integer.valueOf(maxAsString);
+				log.info("Using configured value for iev.route.section.generate.quay.distance.max.meters: " + maxMetersFromQuay);
 			} else {
 				maxMetersFromQuay = DEFAULT_MAX_METERS_FROM_QUAY;
+				log.info("No value configured iev.route.section.generate.quay.distance.max.meters, using default: "+ maxMetersFromQuay);
 			}
 		}
 		return maxMetersFromQuay;
