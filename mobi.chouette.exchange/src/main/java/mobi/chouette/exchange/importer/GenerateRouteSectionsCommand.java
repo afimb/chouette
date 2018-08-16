@@ -52,7 +52,9 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 	@EJB
 	private RouteSectionDAO routeSectionDAO;
 
-	private static final int MAX_METERS_FROM_QUAY = 500;
+	private Integer maxMetersFromQuay;
+
+	private static final int DEFAULT_MAX_METERS_FROM_QUAY = 500;
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -104,7 +106,6 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 
 	protected LineString sanityCheckedLineString(LineString lineString, Coordinate from, Coordinate to) {
 
-
 		if (lineString != null && lineString.getCoordinates() != null && lineString.getCoordinates().length > 0) {
 
 			Coordinate lineStart = lineString.getCoordinates()[0];
@@ -113,7 +114,8 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 			double distanceFromStart = GeometryUtil.calculateDistanceInMeters(from.x, from.y, lineStart.x, lineStart.y);
 			double distanceFromEnd = GeometryUtil.calculateDistanceInMeters(to.x, to.y, lineEnd.x, lineEnd.y);
 
-			if (distanceFromStart > MAX_METERS_FROM_QUAY || distanceFromEnd > MAX_METERS_FROM_QUAY) {
+			int maxMetersFromQuay = getMaxMetersFromQuay();
+			if (distanceFromStart > maxMetersFromQuay || distanceFromEnd > maxMetersFromQuay) {
 				log.info("Ignoring generated LineString because it is to far from stop at start and/or end of section.");
 				return null;
 			}
@@ -147,6 +149,18 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 			return null;
 		}
 		return new Coordinate(stopArea.getLongitude().doubleValue(), stopArea.getLatitude().doubleValue());
+	}
+
+	private int getMaxMetersFromQuay() {
+		if (maxMetersFromQuay == null) {
+			String maxAsString = System.getProperty("route.section.generate.quay.distance.meters.max");
+			if (maxAsString != null) {
+				maxMetersFromQuay = Integer.valueOf(maxAsString);
+			} else {
+				maxMetersFromQuay = DEFAULT_MAX_METERS_FROM_QUAY;
+			}
+		}
+		return maxMetersFromQuay;
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {
