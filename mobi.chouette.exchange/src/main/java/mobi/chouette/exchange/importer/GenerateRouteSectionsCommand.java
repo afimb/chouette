@@ -52,6 +52,8 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 	@EJB
 	private RouteSectionDAO routeSectionDAO;
 
+	private static final int MAX_METERS_FROM_QUAY = 500;
+
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public boolean execute(Context context) throws Exception {
@@ -85,7 +87,7 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 				Coordinate to = getCoordinateFromStopPoint(sp);
 				LineString lineString = null;
 				if (from != null && to != null) {
-					lineString = routeSectionGenerator.getRouteSection(from, to, transportMode);
+					lineString = sanityCheckedLineString(routeSectionGenerator.getRouteSection(from, to, transportMode), from, to);
 
 				}
 				routeSections.add(createRouteSection(prev, sp, lineString));
@@ -98,6 +100,25 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 			jp.getRouteSections().add(routeSection);
 		}
 		journeyPatternDAO.update(jp);
+	}
+
+	protected LineString sanityCheckedLineString(LineString lineString, Coordinate from, Coordinate to) {
+
+
+		if (lineString != null && lineString.getCoordinates() != null && lineString.getCoordinates().length > 0) {
+
+			Coordinate lineStart = lineString.getCoordinates()[0];
+			Coordinate lineEnd = lineString.getCoordinates()[lineString.getCoordinates().length - 1];
+
+			double distanceFromStart = GeometryUtil.calculateDistanceInMeters(from.x, from.y, lineStart.x, lineStart.y);
+			double distanceFromEnd = GeometryUtil.calculateDistanceInMeters(to.x, to.y, lineEnd.x, lineEnd.y);
+
+			if (distanceFromStart > MAX_METERS_FROM_QUAY || distanceFromEnd > MAX_METERS_FROM_QUAY) {
+				log.info("Ignoring generated LineString because it is to far from stop at start and/or end of section.");
+				return null;
+			}
+		}
+		return lineString;
 	}
 
 	private RouteSection createRouteSection(StopPoint from, StopPoint to, LineString lineString) {
