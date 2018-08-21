@@ -48,7 +48,7 @@ public class SharedLineCheckPoints extends AbstractValidation<Line> implements V
 	private void check3Line1(Context context,List<Line> beans,  int lineRank, Line line1) {
 		if (beans.size() <= 1)
 			return;
-		boolean error_1 = false; // if true, add detail for this line
+
 		if (line1.getNetwork() == null)
 			return;
 		prepareCheckPoint(context, LINE_1);
@@ -66,17 +66,9 @@ public class SharedLineCheckPoints extends AbstractValidation<Line> implements V
 					DataLocation line2Loc = buildLocation(context,line2);
 					reporter.addCheckPointReportError(context,LINE_1, line2Loc,null,null, line1Loc);
 
-					error_1 = true; // to add detail for line1
 				}
 			}
 
-		}
-		if (error_1) {
-			// failure encountered, add line 1
-			DataLocation location = buildLocation(context,line1);
-			DataLocation networkLocation = buildLocation(context,line1.getNetwork());
-
-			reporter.addCheckPointReportError(context,LINE_1, location, null,null,networkLocation);
 		}
 	}
 
