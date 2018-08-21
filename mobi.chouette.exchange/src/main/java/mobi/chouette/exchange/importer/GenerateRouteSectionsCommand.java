@@ -93,7 +93,8 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 					lineString = routeSectionGenerator.getRouteSection(from, to, transportMode);
 					if (!isLineStringGoodMatchForQuays(lineString, from, to)) {
 						log.info("Ignoring generated LineString because it is to far from stop at start and/or end of section." +
-								"JP: " + jp.getObjectId() + ", From: " + prev.getObjectId() + ", to: " + sp.getObjectId() + ", transportMode: " + transportMode);
+								"JP: " + jp.getObjectId() + ", From: " + prev.getScheduledStopPoint().getContainedInStopAreaRef().getObject() +
+								", to: " + sp.getScheduledStopPoint().getContainedInStopAreaRef().getObject() + ", transportMode: " + transportMode);
 						lineString = null;
 					}
 
