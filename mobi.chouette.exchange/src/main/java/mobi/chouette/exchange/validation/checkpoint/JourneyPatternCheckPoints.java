@@ -49,7 +49,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 			initCheckPoint(context, JOURNEY_PATTERN_2, SEVERITY.E);
 		initCheckPoint(context, ROUTE_SECTION_1, SEVERITY.W);
 		prepareCheckPoint(context, JOURNEY_PATTERN_3);
-		initCheckPoint(context, JOURNEY_PATTERN_3, SEVERITY.E);
+		initCheckPoint(context, JOURNEY_PATTERN_3, SEVERITY.W);
 		prepareCheckPoint(context, JOURNEY_PATTERN_4);
 		initCheckPoint(context, JOURNEY_PATTERN_4, SEVERITY.W);
 
