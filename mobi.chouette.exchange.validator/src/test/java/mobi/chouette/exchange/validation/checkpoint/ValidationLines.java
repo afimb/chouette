@@ -52,12 +52,12 @@ public class ValidationLines extends AbstractTestValidation
 	private Line bean2;
 	private Line bean3;
 
-	@EJB 
+	@EJB
 	LineDAO lineDao;
 
     @PersistenceContext (unitName = "referential")
     EntityManager em;
-    
+
     @Inject
     UserTransaction utx;
 
@@ -86,7 +86,7 @@ public class ValidationLines extends AbstractTestValidation
 		}
 		File[] filesDao = Maven.resolver().loadPomFromFile("pom.xml")
 				.resolve("mobi.chouette:mobi.chouette.dao").withTransitivity().asFile();
-		if (filesDao.length == 0) 
+		if (filesDao.length == 0)
 		{
 			throw new NullPointerException("no dao");
 		}
@@ -94,7 +94,7 @@ public class ValidationLines extends AbstractTestValidation
 			if (file.getName().startsWith("mobi.chouette.dao"))
 			{
 				String name = file.getName().split("\\-")[0]+".jar";
-				
+
 				JavaArchive archive = ShrinkWrap
 						  .create(ZipImporter.class, name)
 						  .importFrom(file)
@@ -114,7 +114,7 @@ public class ValidationLines extends AbstractTestValidation
 				.addClass(JobDataTest.class)
 				.addClass(AbstractTestValidation.class)
 				.addClass(ValidationLines.class);
-		
+
 		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
 				.addAsLibraries(jars.toArray(new File[0]))
 				.addAsModules(modules.toArray(new JavaArchive[0]))
@@ -148,7 +148,7 @@ public class ValidationLines extends AbstractTestValidation
 			bean3.setObjectId("test3:Line:1");
 			bean3.setName("test3");
 
-		} 
+		}
 		catch (Exception e)
 		{
 			fullparameters = null;
@@ -273,8 +273,8 @@ public class ValidationLines extends AbstractTestValidation
 		Assert.assertEquals(checkPointReport.getSeverity(),
 				CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on severity warning");
-		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 2,
-				" checkPointReport must have 2 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1,
+				" checkPointReport must have 1 item");
 
 		List<CheckPointErrorReport> details = checkReportForTest(report,"3-Line-1",-1);
 		for (CheckPointErrorReport detail : details) {
@@ -285,25 +285,11 @@ public class ValidationLines extends AbstractTestValidation
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
-		// check detail keys = line1 and line2 objectids
-		boolean line1objectIdFound = false;
-		boolean line2objectIdFound = false;
-		boolean line3objectIdFound = false;
-		for (CheckPointErrorReport detailReport : details)
-		{
-			if (detailReport.getSource().getObjectId().equals(bean1.getObjectId()))
-				line1objectIdFound = true;
-			if (detailReport.getSource().getObjectId().equals(bean2.getObjectId()))
-				line2objectIdFound = true;
-			if (detailReport.getSource().getObjectId().equals(bean3.getObjectId()))
-				line3objectIdFound = true;
-		}
-		Assert.assertTrue(line1objectIdFound,
-				"detail report must refer line 1");
-		Assert.assertTrue(line2objectIdFound,
-				"detail report must refer line 2");
-		Assert.assertFalse(line3objectIdFound,
-				"detail report must not refer line 3");
+
+		CheckPointErrorReport detail=details.get(0);
+		Assert.assertEquals(detail.getSource().getObjectId(),bean2.getObjectId(),"Detail should report on line 2");
+		Assert.assertEquals(detail.getTargets().get(0).getObjectId(),bean1.getObjectId(),"Detail should refer to line 1");
+
 	}
 
 	@Test(groups = { "line" }, description = "3-Line-2",priority=4)
@@ -321,7 +307,7 @@ public class ValidationLines extends AbstractTestValidation
 
 		utx.begin();
 	    em.joinTransaction();
-	    
+
 		List<Line> beans = lineDao.findAll();
 		Assert.assertFalse(beans.isEmpty(), "No data for test");
 		Line line1 = beans.get(0);
@@ -381,7 +367,7 @@ public class ValidationLines extends AbstractTestValidation
 
 		utx.begin();
 	    em.joinTransaction();
-	    
+
 		List<Line> beans = lineDao.findAll();
 		Assert.assertFalse(beans.isEmpty(), "No data for test");
 		Line line1 = beans.get(0);
@@ -411,7 +397,7 @@ public class ValidationLines extends AbstractTestValidation
 			context.put(VALIDATION,fullparameters);
 			checkPoint.validate(context, null);
 			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-			
+
 			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 			CheckPointReport checkPointReport = report.findCheckPointReportByName("4-Line-2");
@@ -424,9 +410,9 @@ public class ValidationLines extends AbstractTestValidation
 			fullparameters.getModeBus().setAllowedTransport(0);
 			context.put(VALIDATION,fullparameters);
 			checkPoint.validate(context, null);
-			
+
 			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-			
+
 			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 			CheckPointReport checkPointReport = report.findCheckPointReportByName("4-Line-2");
@@ -450,7 +436,7 @@ public class ValidationLines extends AbstractTestValidation
 		utx.rollback();
 
 	}
-	
+
 	@Test(groups = { "Line" }, description = "4-Line-3",priority=6)
 	public void verifyTest4_3() throws Exception
 	{
@@ -465,7 +451,7 @@ public class ValidationLines extends AbstractTestValidation
 
 		utx.begin();
 	    em.joinTransaction();
-	    
+
 		List<Line> beans = lineDao.findAll();
 		Assert.assertFalse(beans.isEmpty(), "No data for test");
 		Line line1 = beans.get(0);
@@ -475,7 +461,7 @@ public class ValidationLines extends AbstractTestValidation
 		ValidationData data = new ValidationData();
 		context.put(VALIDATION_DATA, data);
 		data.setCurrentLine(line1);
-		
+
 		{ // check test not required when check is false
 			context.put(VALIDATION_REPORT, new ValidationReport());
 			fullparameters.setCheckLinesInGroups(0);
@@ -538,7 +524,7 @@ public class ValidationLines extends AbstractTestValidation
 
 
 	}
-	
+
 	@Test(groups = { "Line" }, description = "4-Line-4",priority=7)
 	public void verifyTest4_4() throws Exception
 	{
@@ -553,7 +539,7 @@ public class ValidationLines extends AbstractTestValidation
 
 		utx.begin();
 	    em.joinTransaction();
-	    
+
 		List<Line> beans = lineDao.findAll();
 		Assert.assertFalse(beans.isEmpty(), "No data for test");
 		Line line1 = beans.get(0);
@@ -584,7 +570,7 @@ public class ValidationLines extends AbstractTestValidation
 			context.put(VALIDATION,fullparameters);
 			checkPoint.validate(context, null);
 			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-			
+
 			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 			CheckPointReport checkPointReport = report.findCheckPointReportByName("4-Line-4");
@@ -598,7 +584,7 @@ public class ValidationLines extends AbstractTestValidation
 			context.put(VALIDATION,fullparameters);
 			checkPoint.validate(context, null);
 			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-			
+
 			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 			CheckPointReport checkPointReport = report.findCheckPointReportByName("4-Line-4");
@@ -611,9 +597,9 @@ public class ValidationLines extends AbstractTestValidation
 			fullparameters.setCheckLineRoutes(1);
 			context.put(VALIDATION,fullparameters);
 			checkPoint.validate(context, null);
-			
+
 			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-			
+
 			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
 			CheckPointReport checkPointReport = report.findCheckPointReportByName("4-Line-4");
