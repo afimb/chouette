@@ -1,5 +1,6 @@
 package mobi.chouette.service;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.file.Path;
 
@@ -61,14 +62,19 @@ public class GoogleCloudFileStore implements FileStore {
 	@Override
 	public void writeFile(Path filePath, InputStream content) {
 		try {
-			byte[] bytes = IOUtils.toByteArray(content);
+			// TODO user BlobStoreHelper.uploadBlobWithRetry directly when proven to work (ie no retries logged)
 
-			Blob blob = BlobStoreHelper.uploadBlob(storage, containerName, toGCSPath(filePath), bytes, false);
+			byte[] bytes = IOUtils.toByteArray(content);
+			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+
+
+			Blob blob = BlobStoreHelper.uploadBlobWithRetry(storage, containerName, toGCSPath(filePath), bis, false);
 			// TODO this should not be necessary (but is). why? BlobStoreHelper not thread safe?
 			if (Long.valueOf(0).equals(blob.getSize()) && bytes.length > 0) {
 				log.info("Blob upload created empty blob even though there was content in the stream. Retrying " + filePath);
+				bis.reset();
 
-				Blob blobRetry = BlobStoreHelper.uploadBlob(storage, containerName, toGCSPath(filePath), bytes, false);
+				Blob blobRetry = BlobStoreHelper.uploadBlobWithRetry(storage, containerName, toGCSPath(filePath), bis, false);
 				log.info("Retry of fileupload for " + filePath + " resulted in blob with size: " + blobRetry.getSize());
 			}
 		} catch (Exception e) {

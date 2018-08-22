@@ -72,7 +72,7 @@
        <dependency>
            <groupId>org.entur.helpers</groupId>
            <artifactId>gcp-storage</artifactId>
-           <version>0.0.3-SNAPSHOT</version>
+           <version>${rutebanken.helpers.version}</version>
            <exclusions>
                <exclusion>
                    <groupId>javax.servlet</groupId>
