@@ -1,3 +1,7 @@
+# Version 3.4.7 (20/09/2018)
+* Correction
+  * Mantis 59749 : l'export GTFS propage les information de TAD sur les courses régulières 
+
 # Version 3.4.6 (13/07/2018)
 * Correction
   * Mantis 58964 : l'import GTFS n'accepte pas la présence de shape sans l'information shape_dist_traveled 
