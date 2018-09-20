@@ -155,6 +155,10 @@ public class GtfsTripProducer extends AbstractProducer {
 
 		boolean routeOnDemand = isTrue(l.getFlexibleService());
 		boolean tripOnDemand = false;
+		// 20/07/2018 : from forum : reset data
+		time.setPickupType(null);
+		time.setDropOffType(null);
+
 		if (routeOnDemand) {
 			// line is on demand, check if trip is not explicitly regular
 			tripOnDemand = vj.getFlexibleService() == null || vj.getFlexibleService();
