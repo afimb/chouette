@@ -20,7 +20,7 @@ public class ChouetteHazelcastService extends HazelCastService {
 	private static final String MAP_CONFIG_NAME_JOB_LOCKS = "JobLocks";
 
 
-	private static final int TTL_SECONDS = 7200;
+	private static final int TTL_SECONDS = 10800;
 
 	public ChouetteHazelcastService(KubernetesService kubernetesService, List<MembershipListener> listeners) {
 		super(kubernetesService);
