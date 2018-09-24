@@ -1,6 +1,5 @@
 package mobi.chouette.scheduler;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,8 +33,6 @@ import mobi.chouette.persistence.hibernate.ContextHolder;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import org.apache.commons.collections.CollectionUtils;
 
 /**
@@ -84,6 +81,7 @@ public class Scheduler {
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	@Timeout
 	public synchronized void schedule() {
+		interruptStartedJobsWithoutOwner();
 		int numActiveJobs = getActiveJobsCount();
 		if (numActiveJobs >= getMaxJobs()) {
 			log.info("Too many active jobs (" + numActiveJobs + "). Ignoring scheduling request");
@@ -155,19 +153,19 @@ public class Scheduler {
 	@PostConstruct
 	private void initialize() {
 		log.info("Initializing job scheduler");
-		List<JobService> list = jobManager.findAll();
 
+		interruptStartedJobsWithoutOwner();
+
+		 timerService.createTimer(10000 , getScheduleIntervalMs(), "Timed scheduler");
+
+	}
+
+	// Find jobs with status 'STARTED' that no nodes have active lock ownership claims for. These are probably not executing and need to be aborted or rescheduled
+	private void interruptStartedJobsWithoutOwner() {
 		ReferentialLockManager lockManager = ReferentialLockManagerFactory.getLockManager();
-
-
+		List<JobService> started = jobManager.findByStatus(STATUS.STARTED);
 		// abort started job
-		Collection<JobService> scheduled = Collections2.filter(list, new Predicate<JobService>() {
-			@Override
-			public boolean apply(JobService jobService) {
-				return jobService.getStatus() == STATUS.STARTED;
-			}
-		});
-		for (JobService jobService : scheduled) {
+		for (JobService jobService : started) {
 			// Lock job to make sure no other nodes are executing it.
 			if (lockManager.attemptAcquireJobLock(jobService.getId())) {
 				log.info("Processing interrupted job " + jobService.getId());
@@ -177,9 +175,6 @@ public class Scheduler {
 				log.info("Failed to acquire lock for started job, assuming job is executing on other node. JobId: " + jobService.getId());
 			}
 		}
-
-		 timerService.createTimer(10000 , getScheduleIntervalMs(), "Timed scheduler");
-
 	}
 
 

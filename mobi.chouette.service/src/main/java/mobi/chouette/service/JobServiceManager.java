@@ -458,15 +458,20 @@ public class JobServiceManager {
 
 	public List<JobService> findAll() {
 		List<Job> jobs = jobDAO.findAll();
-		List<JobService> jobServices = new ArrayList<>(jobs.size());
-		for (Job job : jobs) {
-			jobServices.add(new JobService(rootDirectory, job));
-		}
-		return jobServices;
+		return wrapAsJobServices(jobs);
+	}
+
+	public List<JobService> findByStatus(Job.STATUS status) {
+		List<Job> jobs = jobDAO.findByStatus(status);
+		return wrapAsJobServices(jobs);
 	}
 
 	public List<JobService> findAll(String referential) {
 		List<Job> jobs = jobDAO.findByReferential(referential);
+		return wrapAsJobServices(jobs);
+	}
+
+	private List<JobService> wrapAsJobServices(List<Job> jobs) {
 		List<JobService> jobServices = new ArrayList<>(jobs.size());
 		for (Job job : jobs) {
 			jobServices.add(new JobService(rootDirectory, job));
@@ -548,11 +553,7 @@ public class JobServiceManager {
 		jobs.addAll(jobDAO.findByStatus(Job.STATUS.SCHEDULED));
 		jobs.addAll(jobDAO.findByStatus(Job.STATUS.RESCHEDULED));
 
-		List<JobService> jobServices = new ArrayList<>(jobs.size());
-		for (Job job : jobs) {
-			jobServices.add(new JobService(rootDirectory, job));
-		}
-		return jobServices;
+		return wrapAsJobServices(jobs);
 	}
 
 	/**
