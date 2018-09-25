@@ -153,7 +153,6 @@ public class Scheduler {
 	@PostConstruct
 	private void initialize() {
 		log.info("Initializing job scheduler");
-
 		interruptStartedJobsWithoutOwner();
 
 		 timerService.createTimer(10000 , getScheduleIntervalMs(), "Timed scheduler");
@@ -162,8 +161,10 @@ public class Scheduler {
 
 	// Find jobs with status 'STARTED' that no nodes have active lock ownership claims for. These are probably not executing and need to be aborted or rescheduled
 	private void interruptStartedJobsWithoutOwner() {
-		ReferentialLockManager lockManager = ReferentialLockManagerFactory.getLockManager();
+		// Make sure jobManager is initialized before doing anything else as this service loads all system properties!!
 		List<JobService> started = jobManager.findByStatus(STATUS.STARTED);
+
+		ReferentialLockManager lockManager = ReferentialLockManagerFactory.getLockManager();
 		// abort started job
 		for (JobService jobService : started) {
 			// Lock job to make sure no other nodes are executing it.
