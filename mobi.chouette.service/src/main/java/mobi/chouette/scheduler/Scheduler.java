@@ -32,12 +32,12 @@ import mobi.chouette.model.iev.Job.STATUS;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
+import mobi.chouette.service.ServiceException;
 
 import org.apache.commons.collections.CollectionUtils;
 
 /**
  * @author michel
- *
  */
 @Singleton(name = Scheduler.BEAN_NAME)
 @Startup
@@ -56,10 +56,10 @@ public class Scheduler {
 	@EJB
 	JobServiceManager jobManager;
 
-  	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
+	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
 	ManagedExecutorService executor;
 
-	Map<Long,Future<STATUS>> startedFutures = new ConcurrentHashMap<>();
+	Map<Long, Future<STATUS>> startedFutures = new ConcurrentHashMap<>();
 	// Map<Long,Task> startedTasks = new ConcurrentHashMap<>();
 
 	private Integer maxJobs;
@@ -155,7 +155,7 @@ public class Scheduler {
 		log.info("Initializing job scheduler");
 		interruptStartedJobsWithoutOwner();
 
-		 timerService.createTimer(10000 , getScheduleIntervalMs(), "Timed scheduler");
+		timerService.createTimer(10000, getScheduleIntervalMs(), "Timed scheduler");
 
 	}
 
@@ -168,14 +168,37 @@ public class Scheduler {
 		// abort started job
 		for (JobService jobService : started) {
 			// Lock job to make sure no other nodes are executing it.
-			if (lockManager.attemptAcquireJobLock(jobService.getId())) {
-				log.info("Processing interrupted job " + jobService.getId());
-				jobManager.processInterrupted(jobService);
-				lockManager.releaseJobLock(jobService.getId());
-			} else {
-				log.info("Failed to acquire lock for started job, assuming job is executing on other node. JobId: " + jobService.getId());
+			boolean locked = false;
+			try {
+				locked = lockManager.attemptAcquireJobLock(jobService.getId());
+				if (locked) {
+					interruptJobIfStarted(jobService.getId());
+				} else {
+					log.info("Failed to acquire lock for started job, assuming job is executing on other node. JobId: " + jobService.getId());
+				}
+			} catch (RuntimeException e) {
+				if (locked) {
+					lockManager.releaseJobLock(jobService.getId());
+				}
 			}
 		}
+	}
+
+	private void interruptJobIfStarted(Long id) {
+
+		try {
+			// Update job to be sure we have the latest status
+			JobService job = jobManager.getJobService(id);
+			if (STATUS.STARTED.equals(job.getStatus())) {
+				log.info("Processing interrupted job " + job.getId());
+				jobManager.processInterrupted(job);
+			} else {
+				log.info("Unable to interrupt started job (" + job.getId() + ") as status has changed from STARTED to: " + job.getStatus());
+			}
+		} catch (ServiceException serviceException) {
+			log.warn("Exception while updating job information before interrupting job: " + serviceException.getMessage(), serviceException);
+		}
+
 	}
 
 
@@ -226,12 +249,11 @@ public class Scheduler {
 	public boolean cancel(JobService jobService) {
 
 		// remove prevents for multiple calls
-		log.info("try to cancel "+jobService.getId());
+		log.info("try to cancel " + jobService.getId());
 		Future<STATUS> future = startedFutures.remove(jobService.getId());
-	    if (future != null)
-	    {
-	    	log.info("cancel future");
-	    	future.cancel(false);
+		if (future != null) {
+			log.info("cancel future");
+			future.cancel(false);
 		}
 
 		if (isTransferJob(jobService)) {
@@ -242,17 +264,15 @@ public class Scheduler {
 	}
 
 
-
 	class TaskListener implements ManagedTaskListener {
 
 		@Override
 		public void taskAborted(Future<?> future, ManagedExecutorService executor, Object task, Throwable exception) {
 			log.info(Color.FAILURE + "task aborted : " + ContextHolder.getContext() + " -> " + task
 					+ Color.NORMAL);
-			if (task != null && task instanceof Task)
-			{
-		    	log.info("cancel task");
-				((Task)task).cancel();
+			if (task != null && task instanceof Task) {
+				log.info("cancel task");
+				((Task) task).cancel();
 			}
 			schedule((Task) task);
 		}
@@ -303,7 +323,7 @@ public class Scheduler {
 
 						scheduler.schedule();
 					} catch (Exception e) {
-						log.error(e.getMessage(),e);
+						log.error(e.getMessage(), e);
 					}
 				}
 			});
