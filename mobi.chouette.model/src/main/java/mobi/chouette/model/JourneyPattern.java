@@ -284,7 +284,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	 * Returns true if JourneyPattern has correct no of RouteSections and all of them have geometry defined.
 	 */
 	public boolean hasCompleteRouteSections() {
-		if (getRouteSections().size() == getStopPoints().size()) {
+		if (getRouteSections().size() == (getStopPoints().size() - 1)) {
 			return getRouteSections().stream().map(RouteSection::getInputGeometry).allMatch(Objects::nonNull);
 		}
 		return false;
