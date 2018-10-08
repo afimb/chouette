@@ -28,6 +28,7 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.type.SectionStatusEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectIdTypes;
 
@@ -108,6 +109,11 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 			routeSectionDAO.create(routeSection);
 			jp.getRouteSections().add(routeSection);
 		}
+
+		if (jp.hasCompleteRouteSections()) {
+			jp.setSectionStatus(SectionStatusEnum.Completed);
+		}
+
 		journeyPatternDAO.update(jp);
 	}
 

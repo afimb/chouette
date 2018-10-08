@@ -2,6 +2,7 @@ package mobi.chouette.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -279,5 +280,14 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	@JoinTable(name = "footnotes_journey_patterns", joinColumns = { @JoinColumn(name = "journey_pattern_id") }, inverseJoinColumns = { @JoinColumn(name = "footnote_id") })
 	private List<Footnote> footnotes = new ArrayList<>(0);
 
+	/**
+	 * Returns true if JourneyPattern has correct no of RouteSections and all of them have geometry defined.
+	 */
+	public boolean hasCompleteRouteSections() {
+		if (getRouteSections().size() == getStopPoints().size()) {
+			return getRouteSections().stream().map(RouteSection::getInputGeometry).allMatch(Objects::nonNull);
+		}
+		return false;
+	}
 
 }

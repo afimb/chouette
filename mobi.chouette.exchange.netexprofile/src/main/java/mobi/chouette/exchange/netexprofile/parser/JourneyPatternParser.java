@@ -28,6 +28,7 @@ import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
+import mobi.chouette.model.type.SectionStatusEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -102,6 +103,9 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
 
 		}
 
+		if (chouetteJourneyPattern.hasCompleteRouteSections()) {
+			chouetteJourneyPattern.setSectionStatus(SectionStatusEnum.Completed);
+		}
 
 	}
 
