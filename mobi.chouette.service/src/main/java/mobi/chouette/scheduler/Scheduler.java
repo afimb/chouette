@@ -176,7 +176,7 @@ public class Scheduler {
 				} else {
 					log.info("Failed to acquire lock for started job, assuming job is executing on other node. JobId: " + jobService.getId());
 				}
-			} catch (RuntimeException e) {
+			} finally {
 				if (locked) {
 					lockManager.releaseJobLock(jobService.getId());
 				}
