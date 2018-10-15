@@ -38,7 +38,7 @@ jobs:
       MAVEN_OPTS: -Xmx3G
     steps:
       - checkout
-      - *create-db
+      - run: *create-db
       - restore_cache:
           key: dep-cache-{{ checksum "pom.xml" }}
       - run: mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.0:go-offline -s /tools/m2/settings.xml
