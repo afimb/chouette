@@ -24,7 +24,7 @@ jobs:
         auth:
           username: _json_key
           password: $GCLOUD_SERVICE_KEY
-      - image: mdillon/postgis:9.6
+      - image: mdillon/postgis:9.4
         environment:
           TZ: Europe/Oslo
           POSTGRES_DB: chouette_test
