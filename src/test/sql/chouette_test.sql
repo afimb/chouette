@@ -20,17 +20,15 @@ SET default_tablespace = '';
 
 SET default_with_oids = false;
 
-CREATE SCHEMA IF NOT EXISTS shared_extensions;
-CREATE EXTENSION IF NOT EXISTS postgis SCHEMA shared_extensions;
-
 DROP SCHEMA IF EXISTS chouette_gui CASCADE;
-
 CREATE SCHEMA chouette_gui ;
 
 DROP SCHEMA IF EXISTS public CASCADE;
-
 CREATE SCHEMA public ;
 
+DROP EXTENSION IF EXISTS postgis;
+CREATE SCHEMA IF NOT EXISTS shared_extensions;
+CREATE EXTENSION postgis SCHEMA shared_extensions;
 
 SET search_path = chouette_gui, pg_catalog;
 
@@ -242,7 +240,7 @@ ALTER SEQUENCE companies_id_seq OWNED BY companies.id;
 
 --
 -- TOC entry 182 (class 1259 OID 938883)
--- Name: connection_links; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
+-- Name: connection_links; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
 --
 
 CREATE TABLE public.connection_links (
@@ -350,7 +348,7 @@ CREATE INDEX index_destination_display_id_on_destination_display_via
     ON destination_display_via USING btree
     (destination_display_id)
     TABLESPACE pg_default;
-    
+
 
 
 --
@@ -832,7 +830,7 @@ CREATE INDEX interchanges_to_vehicle_journey_key
     ON interchanges USING btree
     (objectid COLLATE pg_catalog."default")
     TABLESPACE pg_default;
-    
+
 
 
 --
