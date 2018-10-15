@@ -20,6 +20,8 @@ SET default_tablespace = '';
 
 SET default_with_oids = false;
 
+CREATE EXTENSION IF NOT EXISTS postgis;
+
 DROP SCHEMA IF EXISTS chouette_gui CASCADE;
 
 CREATE SCHEMA chouette_gui ;
@@ -28,7 +30,6 @@ DROP SCHEMA IF EXISTS public CASCADE;
 
 CREATE SCHEMA public ;
 
-CREATE EXTENSION IF NOT EXISTS postgis;
 
 SET search_path = chouette_gui, pg_catalog;
 
