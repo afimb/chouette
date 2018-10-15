@@ -17,16 +17,6 @@ aliases:
       echo 'export CIRCLE_SHA1="$CIRCLE_SHA1"' >> $BASH_ENV
       echo 'export BUILD_STATUS_API_KEY="$BUILD_STATUS_API_KEY"' >> $BASH_ENV
       /tools/build_notify.sh
-  - &create-db
-    name: Create database for testing chouette
-    command: |
-      echo "Starting the postgres service"
-      service postgresql start
-      echo "Changing to the postgres user"
-      su postgres
-      echo "Creating chouette test database"
-      createdb -h localhost --username chouette chouette_test
-      echo "Database made"
 jobs:
   build:
     docker:
@@ -34,11 +24,16 @@ jobs:
         auth:
           username: _json_key
           password: $GCLOUD_SERVICE_KEY
+      - image: mdillon/postgis:9.6
+        environment:
+          TZ: Europe/Oslo
+          POSTGRES_DB: chouette_test
+          POSTGRES_USER: chouette
+          POSTGRES_PASSWORD: chouette
     environment:
       MAVEN_OPTS: -Xmx3G
     steps:
       - checkout
-      - run: *create-db
       - restore_cache:
           key: dep-cache-{{ checksum "pom.xml" }}
       - run: mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.0:go-offline -s /tools/m2/settings.xml
