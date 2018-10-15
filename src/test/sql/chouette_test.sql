@@ -20,7 +20,8 @@ SET default_tablespace = '';
 
 SET default_with_oids = false;
 
-CREATE EXTENSION IF NOT EXISTS postgis;
+CREATE SCHEMA IF NOT EXISTS shared_extensions;
+CREATE EXTENSION IF NOT EXISTS postgis SCHEMA shared_extensions;
 
 DROP SCHEMA IF EXISTS chouette_gui CASCADE;
 
@@ -241,7 +242,7 @@ ALTER SEQUENCE companies_id_seq OWNED BY companies.id;
 
 --
 -- TOC entry 182 (class 1259 OID 938883)
--- Name: connection_links; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace:
+-- Name: connection_links; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
 --
 
 CREATE TABLE public.connection_links (
@@ -349,7 +350,7 @@ CREATE INDEX index_destination_display_id_on_destination_display_via
     ON destination_display_via USING btree
     (destination_display_id)
     TABLESPACE pg_default;
-
+    
 
 
 --
@@ -831,7 +832,7 @@ CREATE INDEX interchanges_to_vehicle_journey_key
     ON interchanges USING btree
     (objectid COLLATE pg_catalog."default")
     TABLESPACE pg_default;
-
+    
 
 
 --
@@ -1144,8 +1145,8 @@ CREATE TABLE route_sections (
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
-    input_geometry geometry(LineString,4326),
-    processed_geometry geometry(LineString,4326),
+    input_geometry shared_extensions.geometry(LineString,4326),
+    processed_geometry shared_extensions.geometry(LineString,4326),
     distance double precision,
     no_processing boolean
 );
