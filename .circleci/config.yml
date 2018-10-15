@@ -42,7 +42,7 @@ jobs:
             - ~/.m2
           key: dep-cache-{{ checksum "pom.xml" }}
       # Cannot use -o because of snapshot dependencies.
-      - run: mvn -DskipWildfly -DskipDelombok clean install -s /tools/m2/settings.xml
+      - run: mvn -DskipWildfly -DskipDelombok clean install -s /tools/m2/settings.xml --also-make-dependents
       - run:
           name: Save test results
           command: |
