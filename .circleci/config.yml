@@ -30,8 +30,6 @@ jobs:
           POSTGRES_DB: chouette_test
           POSTGRES_USER: chouette
           POSTGRES_PASSWORD: chouette
-    environment:
-      MAVEN_OPTS: -Xmx1G
     steps:
       - checkout
       - restore_cache:
