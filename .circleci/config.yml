@@ -83,6 +83,7 @@ jobs:
             - mobi.chouette.schema.checker
             - mobi.chouette.service
             - mobi.chouette.ws
+            - chouette_iev
   deploy-docker:
     docker:
       - image: eu.gcr.io/carbon-1287/circleci-toolbox-image
