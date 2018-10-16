@@ -58,6 +58,31 @@ jobs:
             - target
             - pom.xml
             - .circleci
+            - mobi.chouette.command
+            - mobi.chouette.common
+            - mobi.chouette.dao
+            - mobi.chouette.dao.iev
+            - mobi.chouette.exchange
+            - mobi.chouette.exchange.converter
+            - mobi.chouette.exchange.geojson
+            - mobi.chouette.exchange.gtfs
+            - mobi.chouette.exchange.hub
+            - mobi.chouette.exchange.kml
+            - mobi.chouette.exchange.neptune
+            - mobi.chouette.exchange.netex
+            - mobi.chouette.exchange.netexprofile
+            - mobi.chouette.exchange.regtopp
+            - mobi.chouette.exchange.sig
+            - mobi.chouette.exchange.stopplace
+            - mobi.chouette.exchange.transfer
+            - mobi.chouette.exchange.validator
+            - mobi.chouette.iml
+            - mobi.chouette.model
+            - mobi.chouette.model.iev
+            - mobi.chouette.persistence.hibernate
+            - mobi.chouette.schema.checker
+            - mobi.chouette.service
+            - mobi.chouette.ws
   deploy-docker:
     docker:
       - image: eu.gcr.io/carbon-1287/circleci-toolbox-image
