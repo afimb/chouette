@@ -10,6 +10,12 @@ aliases:
     command: |
       echo 'export GCLOUD_SERVICE_KEY="$GCLOUD_SERVICE_KEY"' >> $BASH_ENV
       /tools/docker_login.sh
+  - &docker-build-and-push
+    name: Docker build and push
+    command: |
+      echo 'export CIRCLE_PROJECT_REPONAME="$CIRCLE_PROJECT_REPONAME"' >> $BASH_ENV
+      echo 'export CIRCLE_SHA1="$CIRCLE_SHA1"' >> $BASH_ENV
+      /tools/docker_build_push.sh
   - &post-hook
     name: Notify about build and docker image pushed
     command: |
@@ -101,9 +107,7 @@ jobs:
           docker_layer_caching: true
       - run: *GCP-auth
       - run: *docker-login
-      - run:
-          name: Docker build and push
-          command: mvn docker:build docker:push -DskipWildfly -DskipDelombok -DskipTests -B -q -s /tools/m2/settings.xml
+      - run: *docker-build-and-push
       - run: *post-hook
 workflows:
   version: 2
