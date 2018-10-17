@@ -64,6 +64,8 @@ jobs:
             - target
             - pom.xml
             - .circleci
+            - Dockerfile
+            - docker
             - mobi.chouette.command
             - mobi.chouette.common
             - mobi.chouette.dao
