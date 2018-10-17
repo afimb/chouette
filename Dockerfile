@@ -48,10 +48,6 @@ COPY docker/files/wildfly/*.cli /opt/jboss/wildfly/customization/
 COPY docker/files/wildfly/execute.sh /opt/jboss/wildfly/customization/
 RUN /opt/jboss/wildfly/customization/execute.sh
 
-# TODO Consider to make password for chouette iev console configurable
-RUN /opt/jboss/wildfly/bin/add-user.sh admin pingu123 --silent
-
-
 # Overriding previously installed java version:
 RUN curl -L http://jump.rutebanken.org/jdk-8u144-linux-x64.tar.gz > jdk.tgz
 RUN tar xzf jdk.tgz
