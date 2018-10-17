@@ -43,8 +43,8 @@ jobs:
       - checkout
       - restore_cache:
           key: dep-cache-{{ checksum "pom.xml" }}
-      # Cannot use -o because of snapshot dependencies.
-      - run: mvn -DskipWildfly -DskipDelombok -B -q clean install -DskipTests -s /tools/m2/settings.xml
+      # Cannot use go offline and -o because of snapshot dependencies.
+      - run: mvn -DskipWildfly -DskipDelombok -B -q clean install -s /tools/m2/settings.xml
       - save_cache:
           paths:
             - ~/.m2
