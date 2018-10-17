@@ -8,6 +8,7 @@ RUN yum -y update && yum -y install wget && yum clean all
 USER jboss
 
 RUN mkdir /opt/jboss/wildfly/customization/
+RUN echo "Downloading with user ${NEXUS_USER}"
 
 RUN wget --http-user=${NEXUS_USER} --http-password=${NEXUS_PASS} https://nexus.rutebanken.org/content/groups/public/org/hibernate/hibernate-spatial/4.3/hibernate-spatial-4.3.jar   --directory-prefix /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/
 RUN wget --http-user=${NEXUS_USER} --http-password=${NEXUS_PASS} https://nexus.rutebanken.org/content/groups/public/com/vividsolutions/jts/1.13/jts-1.13.jar                        --directory-prefix /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/
