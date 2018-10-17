@@ -39,6 +39,7 @@ jobs:
           POSTGRES_PASSWORD: chouette
     environment:
       MAVEN_OPTS: -Xmx2G
+      _JAVA_OPTIONS: -Xmx2G
     steps:
       - checkout
       - restore_cache:
