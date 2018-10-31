@@ -1,6 +1,5 @@
 package mobi.chouette.service;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.file.Path;
 
@@ -14,9 +13,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.file.FileStore;
 
-import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Storage;
-import org.apache.commons.io.IOUtils;
 import org.rutebanken.helper.gcp.BlobStoreHelper;
 
 import static mobi.chouette.service.GoogleCloudFileStore.BEAN_NAME;
@@ -43,7 +40,7 @@ public class GoogleCloudFileStore implements FileStore {
 
 	@PostConstruct
 	public void init() {
-		baseFolder =  System.getProperty(checker.getContext() + ".directory");
+		baseFolder = System.getProperty(checker.getContext() + ".directory");
 		containerName = System.getProperty(checker.getContext() + ".blobstore.gcs.container.name");
 		String credentialPath = System.getProperty(checker.getContext() + ".blobstore.gcs.credential.path");
 		String projectId = System.getProperty(checker.getContext() + ".blobstore.gcs.project.id");
@@ -61,25 +58,7 @@ public class GoogleCloudFileStore implements FileStore {
 
 	@Override
 	public void writeFile(Path filePath, InputStream content) {
-		try {
-			// TODO user BlobStoreHelper.uploadBlobWithRetry directly when proven to work (ie no retries logged)
-
-			byte[] bytes = IOUtils.toByteArray(content);
-			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-
-
-			Blob blob = BlobStoreHelper.uploadBlobWithRetry(storage, containerName, toGCSPath(filePath), bis, false);
-			// TODO this should not be necessary (but is). why? BlobStoreHelper not thread safe?
-			if (Long.valueOf(0).equals(blob.getSize()) && bytes.length > 0) {
-				log.info("Blob upload created empty blob even though there was content in the stream. Retrying " + filePath);
-				bis.reset();
-
-				Blob blobRetry = BlobStoreHelper.uploadBlobWithRetry(storage, containerName, toGCSPath(filePath), bis, false);
-				log.info("Retry of fileupload for " + filePath + " resulted in blob with size: " + blobRetry.getSize());
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		BlobStoreHelper.uploadBlobWithRetry(storage, containerName, toGCSPath(filePath), content, false);
 	}
 
 	@Override
