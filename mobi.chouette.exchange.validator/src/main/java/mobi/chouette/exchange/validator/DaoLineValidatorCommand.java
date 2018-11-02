@@ -9,6 +9,7 @@
 package mobi.chouette.exchange.validator;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -18,6 +19,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import org.jboss.ejb3.annotation.TransactionTimeout;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
@@ -37,19 +40,20 @@ import com.jamonapi.MonitorFactory;
 /**
  *
  */
-@Log4j 
+@Log4j
 @Stateless(name = DaoLineValidatorCommand.COMMAND)
 public class DaoLineValidatorCommand implements Command, Constant {
 	public static final String COMMAND = "DaoLineValidatorCommand";
 
 	@Resource
 	private SessionContext daoContext;
-	
-	@EJB 
+
+	@EJB
 	private LineDAO lineDAO;
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionTimeout(value = 30, unit = TimeUnit.MINUTES)
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
@@ -61,19 +65,19 @@ public class DaoLineValidatorCommand implements Command, Constant {
 		}
 
 		try {
-			
+
 			Command lineValidatorCommand = CommandFactory.create(initialContext,
 					LineValidatorCommand.class.getName());
 
 			Long lineId = (Long) context.get(LINE_ID);
 			Line line = lineDAO.find(lineId);
-			
+
 			ValidationDataCollector collector = new ValidationDataCollector();
 			collector.collect(data, line);
 
 			result = lineValidatorCommand.execute(context);
 			// daoContext.setRollbackOnly();
-			
+
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
