@@ -10,12 +10,13 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.Line;
-
+import org.jboss.ejb3.annotation.TransactionTimeout;
 import javax.annotation.Resource;
 import javax.ejb.*;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 @Log4j
 @Stateless(name = DaoNetexLineProducerCommand.COMMAND)
@@ -31,6 +32,7 @@ public class DaoNetexLineProducerCommand implements Command, Constant {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    @TransactionTimeout(value = 30, unit = TimeUnit.MINUTES)
     public boolean execute(Context context) throws Exception {
         boolean result = ERROR;
         Monitor monitor = MonitorFactory.start(COMMAND);
