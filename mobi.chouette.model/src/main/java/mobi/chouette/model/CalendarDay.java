@@ -28,10 +28,14 @@ public class CalendarDay implements Serializable, Comparable<CalendarDay> {
 	 * @return The actual value
 	 */
 	@Getter
-	@Setter
 	@Column(name = "date")
 	private Date date;
 
+	public void setDate(Date d)
+	{
+		date=Timetable.toStableDate(d);
+	}
+	
 	/**
 	 * included or excluded date <br/>
 	 * <ul>
@@ -71,7 +75,7 @@ public class CalendarDay implements Serializable, Comparable<CalendarDay> {
 	 *            indicate if date is included or excluded on the timetable
 	 */
 	public CalendarDay(Date date, boolean included) {
-		this.date = date;
+		this.date = Timetable.toStableDate(date);
 		this.included = Boolean.valueOf(included);
 	}
 
@@ -122,7 +126,5 @@ public class CalendarDay implements Serializable, Comparable<CalendarDay> {
 		return true;
 	}
 
-	
-	
 
 }

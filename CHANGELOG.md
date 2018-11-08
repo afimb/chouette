@@ -1,3 +1,7 @@
+# Version 3.4.7 (08/11/2018)
+* Correction
+  * Mantis 59946 : l'export GTFS n'exporte pas les calendriers au dela de la date de changement d'heure si la période exportée est à cheval dessus 
+
 # Version 3.4.7 (20/09/2018)
 * Correction
   * Mantis 59749 : l'export GTFS propage les information de TAD sur les courses régulières 

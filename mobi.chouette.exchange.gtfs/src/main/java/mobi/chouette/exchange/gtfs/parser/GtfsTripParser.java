@@ -16,9 +16,6 @@ import java.util.TimeZone;
 import java.util.zip.Adler32;
 import java.util.zip.Checksum;
 
-import org.apache.commons.lang.StringUtils;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -63,6 +60,8 @@ import mobi.chouette.model.type.SectionStatusEnum;
 import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;

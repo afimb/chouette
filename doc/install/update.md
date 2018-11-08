@@ -21,7 +21,7 @@ rm /var/lib/chouette/iev/referentials/*
 ## from chouette 3.0.x or 3.1.x
 
 Postgres : 
-install postgis 2.1+ with: `sudo apt-get install postgresql-9.3-postgis-2.1`
+install postgis 2.2+ with: `sudo apt-get install postgresql-9.4-postgis-2.3`
 
 Rails (chouette2) launch the command below:
 
@@ -51,7 +51,7 @@ Step 2 : stop wildfly server
 
 Step 3 : download jars for postgres and hibernate modules in temporary folder (/tmp for following commands)
 
-[postgis version 2.1.7.2](http://mvnrepository.com/artifact/net.postgis/postgis-jdbc/2.1.7.2)
+[postgis version 2.2.1](http://mvnrepository.com/artifact/net.postgis/postgis-jdbc/2.2.1)
 
 [hibernate-spatial version 4.3](http://www.hibernatespatial.org/repository/org/hibernate/hibernate-spatial/4.3/)
 
@@ -72,7 +72,7 @@ start wildfly and follow commands above
 ```
 sudo bin/jboss-cli.sh
 connect
-module add --name=org.postgres --resources=/tmp/postgresql-9.3-1103-jdbc41.jar:/tmp/postgis-jdbc-2.1.7.2.jar --dependencies=javax.api,javax.transaction.api
+module add --name=org.postgres --resources=/tmp/postgresql-9.4-1206-jdbc41.jar:/tmp/postgis-jdbc-2.2.1.jar --dependencies=javax.api,javax.transaction.api
 /subsystem=datasources/jdbc-driver=postgresql:add(driver-name="postgresql",driver-module-name="org.postgres",driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource)
 data-source add --jndi-name=java:jboss/datasources/iev --name=iev --connection-url=jdbc:postgresql://localhost:5432/iev  --driver-name=postgresql --user-name=chouette --password=chouette
 data-source add --jndi-name=java:jboss/datasources/chouette --name=chouette --connection-url=jdbc:postgresql_postGIS://localhost:5432/chouette2 --driver-class=org.postgis.DriverWrapper --driver-name=postgresql --user-name=chouette --password=chouette --max-pool-size=30

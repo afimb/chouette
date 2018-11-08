@@ -45,7 +45,7 @@ import org.hibernate.annotations.Parameter;
 @ToString(callSuper = true, exclude = { "vehicleJourneys" })
 public class Timetable extends NeptuneIdentifiedObject {
 	private static final long serialVersionUID = -1598554061982685113L;
-	public static final long ONE_DAY = 3600000 * 24;
+	// public static final long ONE_DAY = 3600000 * 24;
 
 	@Getter
 	@Setter
@@ -430,14 +430,26 @@ public class Timetable extends NeptuneIdentifiedObject {
 		if(start == null || end == null) {
 			return false;
 		} else {
-			Date day = new Date(start.getTime());
-			while (day.before(end)) {
-				if (isActiveOn(day))
+			
+			Calendar day = Calendar.getInstance();
+			day.setTime(start);
+			day.set(Calendar.HOUR, 0);
+			day.set(Calendar.MINUTE, 0);
+			day.set(Calendar.SECOND, 0);
+			day.set(Calendar.MILLISECOND, 0);
+			// Date day = new Date(start.getTime());
+			Calendar endDay = Calendar.getInstance();
+			endDay.setTime(end);
+			endDay.set(Calendar.HOUR, 0);
+			endDay.set(Calendar.MINUTE, 0);
+			endDay.set(Calendar.SECOND, 0);
+			endDay.set(Calendar.MILLISECOND, 0);
+			while (day.before(endDay)) {
+				if (isActiveOn(new Date(day.getTimeInMillis())))
 					return true;
-				day.setTime(day.getTime() + ONE_DAY);
-	
+				day.add(Calendar.DATE,1);
 			}
-			return isActiveOn(end);
+			return isActiveOn(new Date(endDay.getTimeInMillis()));
 		}
 	}
 
@@ -549,6 +561,18 @@ public class Timetable extends NeptuneIdentifiedObject {
 
 		}
 		return dates;
+	}
+	
+	public static Date toStableDate(Date date)
+	{
+		if (date == null) return null;
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		c.set(Calendar.HOUR, 0);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.SECOND, 0);
+		c.set(Calendar.MILLISECOND, 0);
+		return new Date(c.getTimeInMillis());
 	}
 
 }

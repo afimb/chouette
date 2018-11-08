@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>mobi.chouette</groupId>
 	<artifactId>mobi.chouette</artifactId>
-	<version>3.4.7</version>
+	<version>3.4.8</version>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -19,8 +19,6 @@
 		<version.ejb.plugin>2.4</version.ejb.plugin>
 		<version.ear.plugin>2.9.1</version.ear.plugin>
 		<shrinkwrap.bom-version>2.1.1</shrinkwrap.bom-version>
-		<!-- <postgresql.version>9.3-1103-jdbc41</postgresql.version>
-		<postgis.version>2.1.7.2</postgis.version> -->
       <postgresql.version>9.4-1206-jdbc41</postgresql.version>
       <postgis.version>2.2.1</postgis.version>
 		<hibernate-spatial.version>4.3</hibernate-spatial.version>

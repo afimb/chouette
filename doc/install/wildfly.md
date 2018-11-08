@@ -3,15 +3,15 @@
 
 Download
 --------
-download Wildfly 8.2.0.Final from [http://wildfly.org/downloads/](http://wildfly.org/downloads/)
+download Wildfly 9.0.2.Final from [http://wildfly.org/downloads/](http://wildfly.org/downloads/)
 
 uncompress wildfly in installation directory (/opt for exemple)
 
 download in temporary folder (/tmp for following commands) : 
 
-[Postgresql jdbc driver version 9.3-1103](http://mvnrepository.com/artifact/org.postgresql/postgresql/9.3-1103-jdbc41)
+[Postgresql jdbc driver version 9.4-1206](http://mvnrepository.com/artifact/org.postgresql/postgresql/9.4-1206-jdbc41)
 
-[postgis version 2.1.7.2](http://mvnrepository.com/artifact/net.postgis/postgis-jdbc/2.1.7.2)
+[postgis version 9.4-1206-jdbc41](http://mvnrepository.com/artifact/net.postgis/postgis-jdbc/9.4-1206-jdbc41)
 
 [hibernate-spatial version 4.3](http://www.hibernatespatial.org/repository/org/hibernate/hibernate-spatial/4.3/)
 
@@ -21,7 +21,7 @@ download in temporary folder (/tmp for following commands) :
 Setup
 -----
 
-in installation directory (/opt/wildfly-8.2.0.Final)
+in installation directory (/opt/wildfly-9.0.2.Final)
 
 update hibernate module :
 ```
@@ -54,7 +54,7 @@ create database access :
 bin/jboss-cli.sh
 connect
 
-module add --name=org.postgres --resources=/tmp/postgresql-9.3-1103-jdbc41.jar:/tmp/postgis-jdbc-2.1.7.2.jar --dependencies=javax.api,javax.transaction.api
+module add --name=org.postgres --resources=/tmp/postgresql-9.4-1206-jdbc41.jar:/tmp/postgis-jdbc-2.2.1.jar --dependencies=javax.api,javax.transaction.api
 /subsystem=datasources/jdbc-driver=postgresql:add(driver-name="postgresql",driver-module-name="org.postgres",driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource)
 data-source add --jndi-name=java:jboss/datasources/iev --name=iev --connection-url=jdbc:postgresql://localhost:5432/iev  --driver-name=postgresql --user-name=chouette --password=chouette
 data-source add --jndi-name=java:jboss/datasources/chouette --name=chouette --connection-url=jdbc:postgresql_postGIS://localhost:5432/chouette2 --driver-class=org.postgis.DriverWrapper --driver-name=postgresql --user-name=chouette --password=chouette --max-pool-size=30

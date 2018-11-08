@@ -2,6 +2,7 @@ package mobi.chouette.exchange.gtfs.parser;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -327,15 +328,22 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 
 	private Period clonePeriodAfterMidnight(Period source) {
 		Period result = new Period();
-
-		result.setStartDate(new Date(source.getStartDate().getTime() + Timetable.ONE_DAY));
-		result.setEndDate(new Date(source.getEndDate().getTime() + Timetable.ONE_DAY));
+		result.setStartDate(getNextDate(source.getStartDate()));
+		result.setEndDate(getNextDate(source.getEndDate()));
 
 		return result;
 	}
 
 	private Date cloneDateAfterMidnight(Date source) {
-		return new Date(source.getTime() + Timetable.ONE_DAY);
+		return getNextDate(source);
+	}
+	
+	private Date getNextDate(Date date)
+	{
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		c.add(Calendar.DATE,1);
+		return new Date(c.getTimeInMillis());
 	}
 
 	private CalendarDay cloneDateAfterMidnight(CalendarDay source) {

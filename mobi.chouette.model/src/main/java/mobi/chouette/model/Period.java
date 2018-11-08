@@ -9,7 +9,6 @@ import javax.persistence.Embeddable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -31,9 +30,13 @@ public class Period implements Serializable, Comparable<Period> {
 	 * @return The actual value
 	 */
 	@Getter
-	@Setter
 	@Column(name = "period_start")
 	private Date startDate;
+	
+	public void setStartDate(Date date)
+	{
+		startDate=Timetable.toStableDate(date);
+	}
 
 	/**
 	 * last date of period
@@ -43,9 +46,14 @@ public class Period implements Serializable, Comparable<Period> {
 	 * @return The actual value
 	 */
 	@Getter
-	@Setter
 	@Column(name = "period_end")
 	private Date endDate;
+	
+	public void setEndDate(Date date)
+	{
+		endDate=Timetable.toStableDate(date);
+	}
+
 
 	/**
 	 * check if a date is included in period
@@ -53,7 +61,8 @@ public class Period implements Serializable, Comparable<Period> {
 	 * @param aDay
 	 * @return true if date is active in period
 	 */
-	public boolean contains(Date aDay) {
+	public boolean contains(Date date) {
+		Date aDay = Timetable.toStableDate(date);
 		if (startDate == null || endDate == null)
 			return false;
 		if (aDay.equals(startDate))
@@ -80,8 +89,8 @@ public class Period implements Serializable, Comparable<Period> {
 	}
 
 	public Period(Date startDate, Date endDate) {
-		this.startDate = new Date(startDate.getTime());
-		this.endDate = new Date(endDate.getTime());
+		this.startDate = Timetable.toStableDate(startDate);
+		this.endDate = Timetable.toStableDate(endDate);
 	}
 
 }

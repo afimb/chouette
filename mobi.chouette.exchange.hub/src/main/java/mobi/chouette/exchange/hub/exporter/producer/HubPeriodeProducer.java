@@ -10,6 +10,7 @@ package mobi.chouette.exchange.hub.exporter.producer;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.util.Calendar;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -42,12 +43,14 @@ public class HubPeriodeProducer extends AbstractProducer {
         hubObject.setDateDebut(neptuneObject.getStartOfPeriod());
         hubObject.setDateFin(neptuneObject.getEndOfPeriod());
 
-        Date d = new Date(neptuneObject.getStartOfPeriod().getTime());
-        Date f = neptuneObject.getEndOfPeriod();
+        Calendar d = Calendar.getInstance();
+        d.setTime(neptuneObject.getStartOfPeriod());
+        Calendar f = Calendar.getInstance();
+        f.setTime(neptuneObject.getEndOfPeriod());
         while (d.before(f) || d.equals(f))
         {
-        	hubObject.getCalendrier().add(Boolean.valueOf(neptuneObject.isActiveOn(d)));
-            d.setTime(d.getTime()+Timetable.ONE_DAY);
+        	hubObject.getCalendrier().add(Boolean.valueOf(neptuneObject.isActiveOn(new Date(d.getTimeInMillis()))));
+            d.add(Calendar.DATE,1);
         }
 		
 		hubObject.setIdentifiant(compteur++);
