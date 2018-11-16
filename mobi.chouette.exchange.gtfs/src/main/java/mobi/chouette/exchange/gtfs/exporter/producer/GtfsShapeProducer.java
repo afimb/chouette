@@ -44,7 +44,7 @@ public class GtfsShapeProducer extends AbstractProducer
 		   return false;
 	   int shapePtSequence = 0;
 	   int startIndex = 0;
-	   float distance = (float) 0.0;
+	   double distance = 0.0;
 
 	   for (RouteSection rs : neptuneObject.getRouteSections() ) {
 		   shape.setShapeId(toGtfsId(neptuneObject.getObjectId(), prefix, keepOriginalId));
@@ -70,10 +70,10 @@ public class GtfsShapeProducer extends AbstractProducer
 			   shape.setShapePtSequence(shapePtSequence++);
 			   if (i > 0)
 			   {
-				   distance += (float) computeDistance(prev,cs[i]);
+				   distance +=  computeDistance(prev,cs[i]);
 				   prev = cs[i];
 			   }
-			   shape.setShapeDistTraveled(Float.valueOf(distance));
+			   shape.setShapeDistTraveled(Float.valueOf((float)distance));
 			   try {
 				   getExporter().getShapeExporter().export(shape);
 			   } catch (Exception e) {

@@ -80,7 +80,7 @@ public class GtfsTripProducer extends AbstractProducer {
 
 		String tripId = toGtfsId(vj.getObjectId(), prefix, keepOriginalId);
 		time.setTripId(tripId);
-		float distance = (float) 0.0;
+		double distance = 0.0;
 		List<RouteSection> routeSections = vj.getJourneyPattern().getRouteSections();
 		int index = 0;
 		for (VehicleJourneyAtStop vjas : lvjas) {
@@ -123,13 +123,13 @@ public class GtfsTripProducer extends AbstractProducer {
 			addDropOffAndPickUpType(time, l, vj, vjas);
 
 			if (vj.getJourneyPattern().getSectionStatus() == SectionStatusEnum.Completed) {
-				Float shapeDistTraveled = new Float(distance);
+				Float shapeDistTraveled = Float.valueOf((float) distance);
 				time.setShapeDistTraveled(shapeDistTraveled);
 				while (index < routeSections.size() && routeSections.get(index) == null) {
 					index++;
 				}
 				if (index < routeSections.size()) {
-					distance += (float) computeDistance(routeSections.get(index));
+					distance += computeDistance(routeSections.get(index));
 				}
 				index++;
 			}
