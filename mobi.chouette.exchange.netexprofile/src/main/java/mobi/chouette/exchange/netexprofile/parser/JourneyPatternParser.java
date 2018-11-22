@@ -117,6 +117,10 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
 
 		for (int i = 0; i < pointsInLinkSequence.size(); i++) {
 			PointInLinkSequence_VersionedChildStructure pointInSequence = pointsInLinkSequence.get(i);
+			if (!(pointInSequence instanceof StopPointInJourneyPattern)) {
+				// Ignore points in link sequence besides StopPointInJourneyPattern.
+				continue;
+			}
 			StopPointInJourneyPattern pointInPattern = (StopPointInJourneyPattern) pointInSequence;
 
 			StopPoint stopPointInJourneyPattern = ObjectFactory.getStopPoint(referential, pointInPattern.getId());
