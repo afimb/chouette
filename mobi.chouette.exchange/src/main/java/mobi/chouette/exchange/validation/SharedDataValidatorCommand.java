@@ -21,6 +21,7 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.validation.checkpoint.AccessLinkCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.AccessPointCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.CompanyCheckPoints;
@@ -81,6 +82,8 @@ public class SharedDataValidatorCommand implements Command, Constant {
 
 			result = SUCCESS;
 		} catch (Exception e) {
+			ActionReporter reporter = ActionReporter.Factory.getInstance();
+			reporter.setActionError(context, ActionReporter.ERROR_CODE.INTERNAL_ERROR, "Validation of shared data failed: " + e);
 			log.error(e.getMessage(), e);
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
