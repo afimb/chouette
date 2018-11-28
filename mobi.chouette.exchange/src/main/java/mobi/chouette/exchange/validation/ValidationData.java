@@ -50,21 +50,20 @@ public class ValidationData {
 	private List<Route> routes = new ArrayList<>();
 	private List<StopPoint> stopPoints = new ArrayList<>();
 	private Line currentLine;
-	private Map<String,DataLocation> dataLocations = new HashMap<>();
-	private Map<String,Set<String>> linesOfStopAreas = new HashMap<>();
+	private Map<String, DataLocation> dataLocations = new HashMap<>();
+	private Map<String, Set<String>> linesOfStopAreas = new HashMap<>();
 	private Set<Interchange> interchanges = new HashSet<>();
-	
+
 
 	public void clear() {
-		vehicleJourneys.clear();
+	// Must keep all VehicleJourneys to be able to validate interchanges	vehicleJourneys.clear();
 		journeyPatterns.clear();
 		routes.clear();
 		stopPoints.clear();
 		currentLine = null;
 	}
-	
-	public void dispose()
-	{
+
+	public void dispose() {
 		clear();
 		networks.clear();
 		networkIds.clear();

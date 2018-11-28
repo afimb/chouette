@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -13,6 +16,7 @@ import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Interchange;
+import mobi.chouette.model.VehicleJourney;
 
 import com.google.common.base.Joiner;
 import org.apache.commons.lang3.tuple.Pair;
@@ -24,6 +28,7 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 	public void validate(Context context, Interchange target) {
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		List<Interchange> beans = new ArrayList<>(data.getInterchanges());
+		Map<String, VehicleJourney> vehicleJourneyMap = data.getVehicleJourneys().stream().collect(Collectors.toMap(VehicleJourney::getObjectId, Function.identity()));
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		if (isEmpty(beans))
 			return;
@@ -38,7 +43,10 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 		prepareCheckPoint(context, INTERCHANGE_4);
 		initCheckPoint(context, INTERCHANGE_5, SEVERITY.E);
 		prepareCheckPoint(context, INTERCHANGE_5);
-
+		initCheckPoint(context, INTERCHANGE_6_1, SEVERITY.E);
+		prepareCheckPoint(context, INTERCHANGE_6_1);
+		initCheckPoint(context, INTERCHANGE_6_2, SEVERITY.E);
+		prepareCheckPoint(context, INTERCHANGE_6_2);
 
 		boolean sourceFile = context.get(SOURCE).equals(SOURCE_FILE);
 
@@ -50,16 +58,15 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 		if (test4_1) {
 			initCheckPoint(context, L4_INTERCHANGE_1, SEVERITY.E);
 			prepareCheckPoint(context, L4_INTERCHANGE_1);
-		} else // no other tests for this object
-		{
-			return;
 		}
 
 		for (int i = 0; i < beans.size(); i++) {
 			Interchange bean = beans.get(i);
 
-			checkInterchangeMandatoryFields(context, bean, true);
-
+			if (!sourceFile) {
+				checkInterchangePossible(context,vehicleJourneyMap, bean);
+				checkInterchangeMandatoryFields(context, bean, true);
+			}
 			// 4-Interchange-1 : check columns constraints
 			if (test4_1) {
 				check4Generic1(context, bean, L4_INTERCHANGE_1, parameters, log);
@@ -68,6 +75,40 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 
 		}
 		return;
+	}
+
+	private void checkInterchangePossible(Context context,Map<String,VehicleJourney> vehicleJourneyMap, Interchange interchange) {
+		VehicleJourney consumerVJ=vehicleJourneyMap.get(interchange.getConsumerVehicleJourneyObjectid());
+		if (isScheduledStopPointMissingFromVehicleJourney(consumerVJ, interchange.getConsumerStopPointObjectid())) {
+			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+			DataLocation source = buildLocation(context, interchange);
+			DataLocation target0 = buildLocation(context, interchange.getConsumerStopPoint());
+			DataLocation target1 = buildLocation(context, consumerVJ);
+			reporter.addCheckPointReportError(context, INTERCHANGE_6_1, source, "", "", target0, target1);
+		}
+
+		VehicleJourney feederVJ=vehicleJourneyMap.get(interchange.getFeederVehicleJourneyObjectid());
+		if (isScheduledStopPointMissingFromVehicleJourney(feederVJ, interchange.getFeederStopPointObjectid())) {
+			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+			DataLocation source = buildLocation(context, interchange);
+			DataLocation target0 = buildLocation(context, interchange.getFeederStopPoint());
+			DataLocation target1 = buildLocation(context, feederVJ);
+			reporter.addCheckPointReportError(context, INTERCHANGE_6_2, source, "", "", target0, target1);
+		}
+	}
+
+
+
+	private boolean isScheduledStopPointMissingFromVehicleJourney(VehicleJourney vehicleJourney, String scheduledStopPointId) {
+
+		if (vehicleJourney == null) {
+			// Assuming vj in other referential, must accept without checking
+			return false;
+		}
+
+		return !vehicleJourney.getVehicleJourneyAtStops().stream()
+				.anyMatch(vjas -> Objects.equals(vjas.getStopPoint().getScheduledStopPoint().getObjectId(), scheduledStopPointId));
+
 	}
 
 	private void checkInterchangeMandatoryFields(Context context, Interchange interchange, boolean onlyWithinReferential) {
