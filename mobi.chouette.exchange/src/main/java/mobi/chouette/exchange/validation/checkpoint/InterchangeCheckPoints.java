@@ -36,7 +36,7 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 		prepareCheckPoint(context, INTERCHANGE_3);
 		initCheckPoint(context, INTERCHANGE_4, SEVERITY.E);
 		prepareCheckPoint(context, INTERCHANGE_4);
-		initCheckPoint(context, INTERCHANGE_5, SEVERITY.W);
+		initCheckPoint(context, INTERCHANGE_5, SEVERITY.E);
 		prepareCheckPoint(context, INTERCHANGE_5);
 
 
