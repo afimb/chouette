@@ -41,11 +41,11 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 		prepareCheckPoint(context, INTERCHANGE_3);
 		initCheckPoint(context, INTERCHANGE_4, SEVERITY.E);
 		prepareCheckPoint(context, INTERCHANGE_4);
-		initCheckPoint(context, INTERCHANGE_5, SEVERITY.E);
+		initCheckPoint(context, INTERCHANGE_5, SEVERITY.W);
 		prepareCheckPoint(context, INTERCHANGE_5);
-		initCheckPoint(context, INTERCHANGE_6_1, SEVERITY.E);
+		initCheckPoint(context, INTERCHANGE_6_1, SEVERITY.W);
 		prepareCheckPoint(context, INTERCHANGE_6_1);
-		initCheckPoint(context, INTERCHANGE_6_2, SEVERITY.E);
+		initCheckPoint(context, INTERCHANGE_6_2, SEVERITY.W);
 		prepareCheckPoint(context, INTERCHANGE_6_2);
 
 		boolean sourceFile = context.get(SOURCE).equals(SOURCE_FILE);
