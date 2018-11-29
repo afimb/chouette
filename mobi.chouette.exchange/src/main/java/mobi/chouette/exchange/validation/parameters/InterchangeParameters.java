@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
-import mobi.chouette.model.Company;
+import mobi.chouette.model.Interchange;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
@@ -20,7 +20,7 @@ public class InterchangeParameters {
 	public static String[] fields = { "ObjectId", "Name"} ;
 	
 	static {
-		ValidationParametersUtil.addFieldList(Company.class.getSimpleName(), Arrays.asList(fields));
+		ValidationParametersUtil.addFieldList(Interchange.class.getSimpleName(), Arrays.asList(fields));
 	}
 
 	@XmlElement(name = "objectid")
