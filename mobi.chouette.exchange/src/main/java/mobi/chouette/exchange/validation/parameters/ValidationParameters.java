@@ -70,7 +70,8 @@ import lombok.Data;
 		"checkVehicleJourney",
 		"vehicleJourney",
 		"checkInterchange",
-		"interchange"
+		"interchange",
+		"interchangeMaxDistance"
 })
 public class ValidationParameters {
 
@@ -251,4 +252,6 @@ public class ValidationParameters {
 	@XmlElement(name = "interchange")
 	private InterchangeParameters interchange;
 
+	@XmlElement(name = "interchange_max_distance", defaultValue="1000")
+	private int interchangeMaxDistance = 1000;
 }

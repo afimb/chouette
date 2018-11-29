@@ -16,6 +16,7 @@ import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Interchange;
+import mobi.chouette.model.StopArea;
 import mobi.chouette.model.VehicleJourney;
 
 import com.google.common.base.Joiner;
@@ -47,6 +48,14 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 		prepareCheckPoint(context, INTERCHANGE_6_1);
 		initCheckPoint(context, INTERCHANGE_6_2, SEVERITY.W);
 		prepareCheckPoint(context, INTERCHANGE_6_2);
+		initCheckPoint(context, INTERCHANGE_7_1, SEVERITY.E);
+		prepareCheckPoint(context, INTERCHANGE_7_1);
+		initCheckPoint(context, INTERCHANGE_7_2, SEVERITY.W);
+		prepareCheckPoint(context, INTERCHANGE_7_2);
+		initCheckPoint(context, INTERCHANGE_8_1, SEVERITY.E);
+		prepareCheckPoint(context, INTERCHANGE_8_1);
+		initCheckPoint(context, INTERCHANGE_8_2, SEVERITY.W);
+		prepareCheckPoint(context, INTERCHANGE_8_2);
 
 		boolean sourceFile = context.get(SOURCE).equals(SOURCE_FILE);
 
@@ -64,7 +73,7 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 			Interchange bean = beans.get(i);
 
 			if (!sourceFile) {
-				checkInterchangePossible(context,vehicleJourneyMap, bean);
+				checkInterchangePossible(context, parameters, vehicleJourneyMap, bean);
 				checkInterchangeMandatoryFields(context, bean, true);
 			}
 			// 4-Interchange-1 : check columns constraints
@@ -77,8 +86,8 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 		return;
 	}
 
-	private void checkInterchangePossible(Context context,Map<String,VehicleJourney> vehicleJourneyMap, Interchange interchange) {
-		VehicleJourney consumerVJ=vehicleJourneyMap.get(interchange.getConsumerVehicleJourneyObjectid());
+	private void checkInterchangePossible(Context context, ValidationParameters parameters, Map<String, VehicleJourney> vehicleJourneyMap, Interchange interchange) {
+		VehicleJourney consumerVJ = vehicleJourneyMap.get(interchange.getConsumerVehicleJourneyObjectid());
 		if (isScheduledStopPointMissingFromVehicleJourney(consumerVJ, interchange.getConsumerStopPointObjectid())) {
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 			DataLocation source = buildLocation(context, interchange);
@@ -87,7 +96,7 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 			reporter.addCheckPointReportError(context, INTERCHANGE_6_1, source, "", "", target0, target1);
 		}
 
-		VehicleJourney feederVJ=vehicleJourneyMap.get(interchange.getFeederVehicleJourneyObjectid());
+		VehicleJourney feederVJ = vehicleJourneyMap.get(interchange.getFeederVehicleJourneyObjectid());
 		if (isScheduledStopPointMissingFromVehicleJourney(feederVJ, interchange.getFeederStopPointObjectid())) {
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 			DataLocation source = buildLocation(context, interchange);
@@ -95,6 +104,36 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 			DataLocation target1 = buildLocation(context, feederVJ);
 			reporter.addCheckPointReportError(context, INTERCHANGE_6_2, source, "", "", target0, target1);
 		}
+
+
+		if (interchange.getFeederStopPoint() != null && interchange.getConsumerStopPoint() != null) {
+
+			StopArea fromArea = interchange.getFeederStopPoint().getContainedInStopAreaRef().getObject();
+			StopArea toArea = interchange.getConsumerStopPoint().getContainedInStopAreaRef().getObject();
+
+			if (fromArea != null && toArea != null) {
+				double distance = quickDistance(fromArea, toArea);
+				int warnDistance = parameters.getInterchangeMaxDistance();
+
+
+				if (warnDistance > 0 && distance > warnDistance) {
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					DataLocation source = buildLocation(context, interchange);
+					DataLocation target0 = buildLocation(context, fromArea);
+					DataLocation target1 = buildLocation(context, toArea);
+					String checkPointName = INTERCHANGE_7_2;
+					int refValue = warnDistance;
+
+					int errorDistance = 3 * warnDistance;
+					if (distance > errorDistance) {
+						checkPointName = INTERCHANGE_7_1;
+						refValue = errorDistance;
+					}
+					reporter.addCheckPointReportError(context, checkPointName, source, "" + distance, "" + refValue, target0, target1);
+				}
+			}
+		}
+
 	}
 
 
