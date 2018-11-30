@@ -105,7 +105,7 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 
 
 		VehicleJourney feederVJ = vehicleJourneyMap.get(interchange.getFeederVehicleJourneyObjectid());
-		VehicleJourneyAtStop feederVJAtStop = getVehicleJourneyAtStop(consumerVJ, interchange.getConsumerStopPointObjectid());
+		VehicleJourneyAtStop feederVJAtStop = getVehicleJourneyAtStop(consumerVJ, interchange.getFeederStopPointObjectid());
 
 
 		checkFeederStopInVehicleJourney(context, interchange, feederVJ, feederVJAtStop);
@@ -173,7 +173,7 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 
 	private void checkWaitTime(Context context, ValidationParameters parameters, Interchange interchange, VehicleJourneyAtStop consumerVJAtStop, VehicleJourneyAtStop feederVJAtStop) {
 		if (feederVJAtStop != null && consumerVJAtStop != null) {
-			long warnWaitMs = parameters.getInterchangeMaxWaitSeconds();
+			long warnWaitMs = parameters.getInterchangeMaxWaitSeconds() * 1000;
 			long errorWaitMs = 3 * warnWaitMs;
 			long refValueMs = warnWaitMs;
 			String checkPointName = INTERCHANGE_8_2;
