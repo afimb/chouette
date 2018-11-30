@@ -3,14 +3,28 @@ package mobi.chouette.exchange.validation.checkpoint;
 import java.util.Arrays;
 import java.util.List;
 
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Interchange;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.VehicleJourneyAtStop;
+import mobi.chouette.model.type.AlightingPossibilityEnum;
+import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
+import mobi.chouette.model.type.BoardingPossibilityEnum;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static mobi.chouette.common.Constant.VALIDATION_REPORT;
+import static mobi.chouette.exchange.validation.checkpoint.AbstractValidation.INTERCHANGE_9_1;
+import static mobi.chouette.exchange.validation.checkpoint.AbstractValidation.INTERCHANGE_9_2;
+
 public class InterchangeCheckPointsTest {
 
+	InterchangeCheckPoints interchangeCheckPoints = new InterchangeCheckPoints();
+
+	Interchange noRelationsInterchange = interchange("1", "fs1", "cs1", "fvj1", "cvj1");
 
 	@Test
 	public void testFindDuplicates() {
@@ -29,7 +43,8 @@ public class InterchangeCheckPointsTest {
 
 		List<Interchange> interchanges = Arrays.asList(org1, org2, notDup1, notDup2, notDup3, notDup4, org1dup1, org1dup2, org2dup);
 
-		List<Pair<Interchange, Interchange>> duplicates = new InterchangeCheckPoints().findDuplicates(interchanges);
+
+		List<Pair<Interchange, Interchange>> duplicates = interchangeCheckPoints.findDuplicates(interchanges);
 
 		Assert.assertEquals(3, duplicates.size());
 
@@ -40,6 +55,89 @@ public class InterchangeCheckPointsTest {
 	}
 
 
+	@Test
+	public void checkFeederAlighting_whenUnknownStop_thenIgnore() {
+		Context context = createContext();
+		interchangeCheckPoints.checkFeederAlighting(context, noRelationsInterchange, null);
+		assertNoErrors(context);
+	}
+
+	@Test
+	public void checkFeederAlighting_whenAlightingAllowed_thenIgnore() {
+		Context context = createContext();
+		VehicleJourneyAtStop vJAS = vehicleJourneyAtStop(AlightingPossibilityEnum.request_stop);
+		interchangeCheckPoints.checkFeederAlighting(context, noRelationsInterchange, vJAS);
+		assertNoErrors(context);
+	}
+
+	@Test
+	public void checkFeederAlighting_whenNoAlighting_thenAddError() {
+		Context context = createContext();
+		VehicleJourneyAtStop vJAS = vehicleJourneyAtStop(AlightingPossibilityEnum.forbidden);
+		interchangeCheckPoints.checkFeederAlighting(context, noRelationsInterchange, vJAS);
+		assertSingleError(context, INTERCHANGE_9_1);
+	}
+
+
+	@Test
+	public void checkConsumerBoarding_whenUnknownStop_thenIgnore() {
+		Context context = createContext();
+		interchangeCheckPoints.checkConsumerBoarding(context, noRelationsInterchange, null);
+		assertNoErrors(context);
+	}
+
+	@Test
+	public void checkConsumerBoarding_whenBoardingAllowed_thenIgnore() {
+		Context context = createContext();
+		VehicleJourneyAtStop vJAS = vehicleJourneyAtStop(BoardingPossibilityEnum.request_stop);
+		interchangeCheckPoints.checkConsumerBoarding(context, noRelationsInterchange, vJAS);
+		assertNoErrors(context);
+	}
+
+	@Test
+	public void checkConsumerBoarding_whenNoBoarding_thenAddError() {
+		Context context = createContext();
+		VehicleJourneyAtStop vJAS = vehicleJourneyAtStop(BoardingPossibilityEnum.forbidden);
+		interchangeCheckPoints.checkConsumerBoarding(context, noRelationsInterchange, vJAS);
+		assertSingleError(context, INTERCHANGE_9_2);
+	}
+
+
+	private Context createContext() {
+		Context context = new Context();
+		context.put(VALIDATION_REPORT, new ValidationReport());
+		interchangeCheckPoints.initCheckPoints(context);
+		return context;
+	}
+
+
+	private VehicleJourneyAtStop vehicleJourneyAtStop(BoardingPossibilityEnum boarding) {
+		VehicleJourneyAtStop vJAS = new VehicleJourneyAtStop();
+		StopPoint stopPoint = new StopPoint();
+		stopPoint.setForBoarding(boarding);
+		vJAS.setStopPoint(stopPoint);
+		return vJAS;
+	}
+
+	private VehicleJourneyAtStop vehicleJourneyAtStop(AlightingPossibilityEnum alighting) {
+		VehicleJourneyAtStop vJAS = new VehicleJourneyAtStop();
+		StopPoint stopPoint = new StopPoint();
+		stopPoint.setForAlighting(alighting);
+		vJAS.setStopPoint(stopPoint);
+		return vJAS;
+	}
+
+	private void assertNoErrors(Context context) {
+		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
+		Assert.assertTrue(validationReport.getCheckPointErrors().isEmpty());
+	}
+
+	private void assertSingleError(Context context, String checkPoint) {
+		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
+		Assert.assertEquals(1, validationReport.getCheckPointErrors().size());
+		Assert.assertEquals(checkPoint.replace("-", "_").toLowerCase(), validationReport.getCheckPointErrors().get(0).getKey());
+	}
+
 	private Interchange interchange(String objectId, String feederStopId, String consumerStopId, String feederJourneyId, String consumerJourneyId) {
 		Interchange interchange = new Interchange();
 		interchange.setObjectId(objectId);
@@ -49,4 +147,6 @@ public class InterchangeCheckPointsTest {
 		interchange.setConsumerVehicleJourneyObjectid(consumerJourneyId);
 		return interchange;
 	}
+
+
 }
