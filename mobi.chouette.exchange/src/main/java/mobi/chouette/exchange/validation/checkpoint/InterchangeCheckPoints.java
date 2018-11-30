@@ -100,17 +100,15 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 	}
 
 	void checkInterchangePossible(Context context, ValidationParameters parameters, Map<String, VehicleJourney> vehicleJourneyMap, Interchange interchange) {
+
+		VehicleJourney feederVJ = vehicleJourneyMap.get(interchange.getFeederVehicleJourneyObjectid());
+		VehicleJourneyAtStop feederVJAtStop = getVehicleJourneyAtStop(feederVJ, interchange.getFeederStopPointObjectid());
+
 		VehicleJourney consumerVJ = vehicleJourneyMap.get(interchange.getConsumerVehicleJourneyObjectid());
 		VehicleJourneyAtStop consumerVJAtStop = getVehicleJourneyAtStop(consumerVJ, interchange.getConsumerStopPointObjectid());
 
-
-		VehicleJourney feederVJ = vehicleJourneyMap.get(interchange.getFeederVehicleJourneyObjectid());
-		VehicleJourneyAtStop feederVJAtStop = getVehicleJourneyAtStop(consumerVJ, interchange.getFeederStopPointObjectid());
-
-
 		checkFeederStopInVehicleJourney(context, interchange, feederVJ, feederVJAtStop);
 		checkConsumerStopInVehicleJourney(context, interchange, consumerVJ, consumerVJAtStop);
-
 
 		checkDistance(context, parameters, interchange);
 
@@ -179,7 +177,7 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 			String checkPointName = INTERCHANGE_8_2;
 
 			int dayOffset = consumerVJAtStop.getDepartureDayOffset() - feederVJAtStop.getArrivalDayOffset();
-			long msWait = consumerVJAtStop.getDepartureTime().getMillisOfSecond() - feederVJAtStop.getArrivalTime().getMillisOfDay();
+			long msWait = consumerVJAtStop.getDepartureTime().getMillisOfDay() - feederVJAtStop.getArrivalTime().getMillisOfDay();
 			if (msWait < 0) {
 				msWait = DateUtils.MILLIS_PER_DAY - msWait;
 				dayOffset++;
