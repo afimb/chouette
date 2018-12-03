@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.SortedSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,7 @@ import mobi.chouette.model.type.BoardingPossibilityEnum;
 import com.google.common.base.Joiner;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.joda.time.LocalDate;
 
 @Log4j
 public class InterchangeCheckPoints extends AbstractValidation<Interchange> implements Validator<Interchange> {
@@ -97,6 +99,8 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 		prepareCheckPoint(context, INTERCHANGE_9_1);
 		initCheckPoint(context, INTERCHANGE_9_2, SEVERITY.W);
 		prepareCheckPoint(context, INTERCHANGE_9_2);
+		initCheckPoint(context, INTERCHANGE_10, SEVERITY.W);
+		prepareCheckPoint(context, INTERCHANGE_10);
 	}
 
 	void checkInterchangePossible(Context context, ValidationParameters parameters, Map<String, VehicleJourney> vehicleJourneyMap, Interchange interchange) {
@@ -169,43 +173,53 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 		}
 	}
 
+	/**
+	 * Verify that wait time is not above configured threshold.
+	 * <p>
+	 * Must check that the two vehicle journeys share at least one active date, or in the case of interchanges around midnight; consecutive dates.
+	 */
 	void checkWaitTime(Context context, ValidationParameters parameters, Interchange interchange, VehicleJourneyAtStop feederVJAtStop, VehicleJourneyAtStop consumerVJAtStop) {
 		if (feederVJAtStop != null && consumerVJAtStop != null) {
 			long warnWaitMs = parameters.getInterchangeMaxWaitSeconds() * 1000;
 			long errorWaitMs = 3 * warnWaitMs;
-			long refValueMs = warnWaitMs;
-			String checkPointName = INTERCHANGE_8_2;
 
-			int dayOffset = consumerVJAtStop.getDepartureDayOffset() - feederVJAtStop.getArrivalDayOffset();
+			int dayOffsetDiff = consumerVJAtStop.getDepartureDayOffset() - feederVJAtStop.getArrivalDayOffset();
 			long msWait = consumerVJAtStop.getDepartureTime().getMillisOfDay() - feederVJAtStop.getArrivalTime().getMillisOfDay();
 			if (msWait < 0) {
 				msWait = DateUtils.MILLIS_PER_DAY + msWait;
-				dayOffset++;
+				dayOffsetDiff--;
 			}
 
-
-			boolean accepted = false;
-			if (msWait <= errorWaitMs) {
-				//  TODO check dates
-				if (msWait <= warnWaitMs) {
-					accepted = true;
-				}
-
-			} else {
-				refValueMs = errorWaitMs;
-				checkPointName = INTERCHANGE_8_1;
-			}
-
-			if (!accepted) {
-				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+			if (!hasSharedActiveDate(feederVJAtStop, consumerVJAtStop, dayOffsetDiff)) {
+				DataLocation source = buildLocation(context, interchange);
+				DataLocation feederVJ = buildLocation(context, feederVJAtStop.getVehicleJourney());
+				DataLocation consumerVJ = buildLocation(context, consumerVJAtStop.getVehicleJourney());
+				reporter.addCheckPointReportError(context, INTERCHANGE_10, source, "", "", feederVJ, consumerVJ);
+			} else if (msWait > errorWaitMs) {
 				DataLocation source = buildLocation(context, interchange);
 				String waitSeconds = "" + (msWait / 1000);
-				String refValueSeconds = "" + (refValueMs / 1000);
-				reporter.addCheckPointReportError(context, checkPointName, source, waitSeconds, refValueSeconds);
-
+				String refValueSeconds = "" + (errorWaitMs / 1000);
+				reporter.addCheckPointReportError(context, INTERCHANGE_8_1, source, waitSeconds, refValueSeconds);
+			} else if (msWait > warnWaitMs) {
+				DataLocation source = buildLocation(context, interchange);
+				String waitSeconds = "" + (msWait / 1000);
+				String refValueSeconds = "" + (warnWaitMs / 1000);
+				reporter.addCheckPointReportError(context, INTERCHANGE_8_2, source, waitSeconds, refValueSeconds);
 			}
 
 		}
+	}
+
+	private boolean hasSharedActiveDate(VehicleJourneyAtStop feederVJAtStop, VehicleJourneyAtStop consumerVJAtStop, int dayOffsetDiff) {
+		SortedSet<LocalDate> feederActiveDates = feederVJAtStop.getVehicleJourney().getActiveDates();
+		for (LocalDate consumerActiveDate : consumerVJAtStop.getVehicleJourney().getActiveDates()) {
+			LocalDate matchingFeederDate = consumerActiveDate.plusDays(dayOffsetDiff);
+			if (feederActiveDates.contains(matchingFeederDate)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	void checkConsumerBoarding(Context context, Interchange interchange, VehicleJourneyAtStop consumerVJAtStop) {

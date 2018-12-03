@@ -2,6 +2,10 @@ package mobi.chouette.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -34,6 +38,7 @@ import mobi.chouette.model.type.TransportSubModeNameEnum;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.joda.time.LocalDate;
 
 /**
  * Chouette VehicleJourney
@@ -431,4 +436,12 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	@JoinColumn(name = "flexible_service_properties_id")
 	private FlexibleServiceProperties flexibleServiceProperties;
 
+	public SortedSet<LocalDate> getActiveDates() {
+		Set<LocalDate> includedDates = getTimetables().stream().map(Timetable::getEffectiveDates).flatMap(List::stream).collect(Collectors.toSet());
+
+		Set<LocalDate> excludedDates = getTimetables().stream().map(Timetable::getExcludedDates).flatMap(List::stream).collect(Collectors.toSet());
+
+		includedDates.removeAll(excludedDates);
+		return new TreeSet<>(includedDates);
+	}
 }

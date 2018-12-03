@@ -126,6 +126,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static final String INTERCHANGE_8_2 = "3-Interchange-8-2";
 	protected static final String INTERCHANGE_9_1 = "3-Interchange-9-1";
 	protected static final String INTERCHANGE_9_2 = "3-Interchange-9-2";
+	protected static final String INTERCHANGE_10 = "3-Interchange-10";
 
 	protected static final String L4_NETWORK_1 = "4-Network-1";
 	protected static final String L4_COMPANY_1 = "4-Company-1";
