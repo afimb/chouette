@@ -112,7 +112,7 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 
 		checkDistance(context, parameters, interchange);
 
-		checkWaitTime(context, parameters, interchange, consumerVJAtStop, feederVJAtStop);
+		checkWaitTime(context, parameters, interchange, feederVJAtStop, consumerVJAtStop);
 
 		checkFeederAlighting(context, interchange, feederVJAtStop);
 
@@ -169,7 +169,7 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 		}
 	}
 
-	private void checkWaitTime(Context context, ValidationParameters parameters, Interchange interchange, VehicleJourneyAtStop consumerVJAtStop, VehicleJourneyAtStop feederVJAtStop) {
+	void checkWaitTime(Context context, ValidationParameters parameters, Interchange interchange, VehicleJourneyAtStop feederVJAtStop, VehicleJourneyAtStop consumerVJAtStop) {
 		if (feederVJAtStop != null && consumerVJAtStop != null) {
 			long warnWaitMs = parameters.getInterchangeMaxWaitSeconds() * 1000;
 			long errorWaitMs = 3 * warnWaitMs;
@@ -179,7 +179,7 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 			int dayOffset = consumerVJAtStop.getDepartureDayOffset() - feederVJAtStop.getArrivalDayOffset();
 			long msWait = consumerVJAtStop.getDepartureTime().getMillisOfDay() - feederVJAtStop.getArrivalTime().getMillisOfDay();
 			if (msWait < 0) {
-				msWait = DateUtils.MILLIS_PER_DAY - msWait;
+				msWait = DateUtils.MILLIS_PER_DAY + msWait;
 				dayOffset++;
 			}
 

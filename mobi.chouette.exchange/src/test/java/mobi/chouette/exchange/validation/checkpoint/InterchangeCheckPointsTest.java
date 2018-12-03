@@ -4,21 +4,21 @@ import java.util.Arrays;
 import java.util.List;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Interchange;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
-import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.joda.time.LocalTime;
 import org.junit.Assert;
 import org.junit.Test;
 
 import static mobi.chouette.common.Constant.VALIDATION_REPORT;
-import static mobi.chouette.exchange.validation.checkpoint.AbstractValidation.INTERCHANGE_9_1;
-import static mobi.chouette.exchange.validation.checkpoint.AbstractValidation.INTERCHANGE_9_2;
+import static mobi.chouette.exchange.validation.checkpoint.AbstractValidation.*;
 
 public class InterchangeCheckPointsTest {
 
@@ -28,8 +28,6 @@ public class InterchangeCheckPointsTest {
 
 	@Test
 	public void testFindDuplicates() {
-
-
 		Interchange org1 = interchange("org1", "feederStop", "consumerStop", "feederJourney", "consumerJourney");
 		Interchange notDup1 = interchange("notDup1", "feederStop", "consumerStop", "feederJourney", "consumerJourneyOther");
 		Interchange notDup2 = interchange("notDup2", "feederStop", "consumerStop", "feederJourneyOther", "consumerJourney");
@@ -52,6 +50,19 @@ public class InterchangeCheckPointsTest {
 		Assert.assertTrue(duplicates.stream().anyMatch(d -> d.getLeft().equals(org1) && d.getRight().equals(org1dup1)));
 		Assert.assertTrue(duplicates.stream().anyMatch(d -> d.getLeft().equals(org1) && d.getRight().equals(org1dup2)));
 		Assert.assertTrue(duplicates.stream().anyMatch(d -> d.getLeft().equals(org2) && d.getRight().equals(org2dup)));
+	}
+
+	@Test
+	public void checkWaitTime_whenOutsideErrorLimit_thenAddError() {
+		VehicleJourneyAtStop feederPoint = vehicleJourneyAtStop(null, 0, new LocalTime(10, 00), 0);
+		VehicleJourneyAtStop consumerPoint = vehicleJourneyAtStop(new LocalTime(9, 59), 0, null, 0);
+
+		Context context = createContext();
+		ValidationParameters param = new ValidationParameters();
+		param.setInterchangeMaxWaitSeconds(3600);
+		interchangeCheckPoints.checkWaitTime(context, param, noRelationsInterchange, feederPoint, consumerPoint);
+		assertSingleError(context, INTERCHANGE_7_1);
+
 	}
 
 
@@ -110,6 +121,15 @@ public class InterchangeCheckPointsTest {
 		return context;
 	}
 
+
+	private VehicleJourneyAtStop vehicleJourneyAtStop(LocalTime departureTime, int departureDayOffset, LocalTime arrivalTime, int arrivalDayOffset) {
+		VehicleJourneyAtStop vJAS = new VehicleJourneyAtStop();
+		vJAS.setDepartureTime(departureTime);
+		vJAS.setDepartureDayOffset(departureDayOffset);
+		vJAS.setArrivalTime(arrivalTime);
+		vJAS.setArrivalDayOffset(arrivalDayOffset);
+		return vJAS;
+	}
 
 	private VehicleJourneyAtStop vehicleJourneyAtStop(BoardingPossibilityEnum boarding) {
 		VehicleJourneyAtStop vJAS = new VehicleJourneyAtStop();
