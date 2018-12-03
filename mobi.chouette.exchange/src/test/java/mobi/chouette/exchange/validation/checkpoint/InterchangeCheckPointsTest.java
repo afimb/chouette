@@ -61,7 +61,7 @@ public class InterchangeCheckPointsTest {
 		ValidationParameters param = new ValidationParameters();
 		param.setInterchangeMaxWaitSeconds(3600);
 		interchangeCheckPoints.checkWaitTime(context, param, noRelationsInterchange, feederPoint, consumerPoint);
-		assertSingleError(context, INTERCHANGE_7_1);
+		assertSingleError(context, INTERCHANGE_8_1);
 
 	}
 
