@@ -112,7 +112,7 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 		VehicleJourney consumerVJ = vehicleJourneyMap.get(interchange.getConsumerVehicleJourneyObjectid());
 		List<VehicleJourneyAtStop> potentialConsumerVJAtStops = getVehicleJourneyAtStop(consumerVJ, interchange.getConsumerStopPointObjectid());
 
-		if (potentialFeederVJAtStops.size()> 1 || potentialConsumerVJAtStops.size() > 1) {
+		if (potentialFeederVJAtStops.size() > 1 || potentialConsumerVJAtStops.size() > 1) {
 			// TODO should support JourneyPatterns with multiple stops at same ScheduledStopPoints. Need to find correct VJAS by looking at arrival/departure times.
 			// Currently skipping validation for these
 			return;
@@ -254,7 +254,7 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 	 * Return all vehicleJourneyAtStops for given scheduledStopPoint and vehicleJourney combination.
 	 */
 	private List<VehicleJourneyAtStop> getVehicleJourneyAtStop(VehicleJourney vehicleJourney, String scheduledStopPointId) {
-		if (vehicleJourney != null) {
+		if (vehicleJourney == null) {
 			return new ArrayList<>();
 		}
 
