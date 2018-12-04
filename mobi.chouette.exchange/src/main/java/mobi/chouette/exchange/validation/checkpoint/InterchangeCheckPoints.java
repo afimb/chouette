@@ -104,17 +104,26 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 	}
 
 	void checkInterchangePossible(Context context, ValidationParameters parameters, Map<String, VehicleJourney> vehicleJourneyMap, Interchange interchange) {
+		checkDistance(context, parameters, interchange);
 
 		VehicleJourney feederVJ = vehicleJourneyMap.get(interchange.getFeederVehicleJourneyObjectid());
-		VehicleJourneyAtStop feederVJAtStop = getVehicleJourneyAtStop(feederVJ, interchange.getFeederStopPointObjectid());
+		List<VehicleJourneyAtStop> potentialFeederVJAtStops = getVehicleJourneyAtStop(feederVJ, interchange.getFeederStopPointObjectid());
 
 		VehicleJourney consumerVJ = vehicleJourneyMap.get(interchange.getConsumerVehicleJourneyObjectid());
-		VehicleJourneyAtStop consumerVJAtStop = getVehicleJourneyAtStop(consumerVJ, interchange.getConsumerStopPointObjectid());
+		List<VehicleJourneyAtStop> potentialConsumerVJAtStops = getVehicleJourneyAtStop(consumerVJ, interchange.getConsumerStopPointObjectid());
+
+		if (potentialFeederVJAtStops.size()> 1 || potentialConsumerVJAtStops.size() > 1) {
+			// TODO should support JourneyPatterns with multiple stops at same ScheduledStopPoints. Need to find correct VJAS by looking at arrival/departure times.
+			// Currently skipping validation for these
+			return;
+		}
+
+		VehicleJourneyAtStop feederVJAtStop = potentialFeederVJAtStops.size() == 1 ? potentialFeederVJAtStops.get(0) : null;
+		VehicleJourneyAtStop consumerVJAtStop =  potentialConsumerVJAtStops.size() == 1 ? potentialConsumerVJAtStops.get(0) : null;
 
 		checkFeederStopInVehicleJourney(context, interchange, feederVJ, feederVJAtStop);
 		checkConsumerStopInVehicleJourney(context, interchange, consumerVJ, consumerVJAtStop);
 
-		checkDistance(context, parameters, interchange);
 
 		checkWaitTime(context, parameters, interchange, feederVJAtStop, consumerVJAtStop);
 
@@ -241,13 +250,16 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 	}
 
 
-	private VehicleJourneyAtStop getVehicleJourneyAtStop(VehicleJourney vehicleJourney, String scheduledStopPointId) {
-		if (vehicleJourney == null) {
-			return null;
+	/**
+	 * Return all vehicleJourneyAtStops for given scheduledStopPoint and vehicleJourney combination.
+	 */
+	private List<VehicleJourneyAtStop> getVehicleJourneyAtStop(VehicleJourney vehicleJourney, String scheduledStopPointId) {
+		if (vehicleJourney != null) {
+			return new ArrayList<>();
 		}
 
 		return vehicleJourney.getVehicleJourneyAtStops().stream()
-				.filter(vjas -> Objects.equals(vjas.getStopPoint().getScheduledStopPoint().getObjectId(), scheduledStopPointId)).findFirst().orElse(null);
+				.filter(vjas -> Objects.equals(vjas.getStopPoint().getScheduledStopPoint().getObjectId(), scheduledStopPointId)).collect(Collectors.toList());
 
 	}
 
