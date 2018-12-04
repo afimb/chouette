@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CollectionTable;
@@ -24,6 +27,7 @@ import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.model.type.DayTypeEnum;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -382,6 +386,23 @@ public class Timetable extends NeptuneIdentifiedObject {
 				ret.add(day.getDate());
 		}
 		return ret;
+	}
+
+	/**
+	 * Return sorted set of all dates this timetable is active.
+	 *
+	 * (Seems to be the same purpose as getEffectiveDates, but this does not behave like that and changing it seems risky.)
+	 *
+	 */
+	public SortedSet<LocalDate> getActiveDates(){
+		SortedSet<LocalDate> activeDates=new TreeSet<>();
+
+		activeDates.addAll(getPeriods().stream().map(this::toDates).flatMap(List::stream).collect(Collectors.toSet()));
+		activeDates.addAll(getCalendarDays().stream().filter(cd -> !Boolean.FALSE.equals(cd.getIncluded())).map(CalendarDay::getDate).collect(Collectors.toSet()));
+		activeDates.removeAll(getCalendarDays().stream().filter(cd -> Boolean.FALSE.equals(cd.getIncluded())).map(CalendarDay::getDate).collect(Collectors.toSet()));
+
+
+		return activeDates;
 	}
 
 	/**

@@ -23,7 +23,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -437,8 +436,9 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	private FlexibleServiceProperties flexibleServiceProperties;
 
 	public SortedSet<LocalDate> getActiveDates() {
-		Set<LocalDate> includedDates = getTimetables().stream().map(Timetable::getEffectiveDates).flatMap(List::stream).collect(Collectors.toSet());
+		Set<LocalDate> includedDates = getTimetables().stream().map(Timetable::getActiveDates).flatMap(Set::stream).collect(Collectors.toSet());
 
+		// Assuming exclusions across Timetables take precedent, so need to make sure all excluded dates are actually excluded
 		Set<LocalDate> excludedDates = getTimetables().stream().map(Timetable::getExcludedDates).flatMap(List::stream).collect(Collectors.toSet());
 
 		includedDates.removeAll(excludedDates);

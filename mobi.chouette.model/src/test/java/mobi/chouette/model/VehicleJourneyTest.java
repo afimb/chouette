@@ -26,7 +26,7 @@ public class VehicleJourneyTest {
 		Timetable excludedDates = new TimetableBuilder().withExcludedDate(mar1Sunday).withExcludedDate(mar2Monday).build();
 		Timetable includedDates = new TimetableBuilder().withIncludedDate(mar2Monday).withIncludedDate(mar3Tuesday).withIncludedDate(mar4Wednesday).build();
 		Timetable withWednesdaysAndThursdays = new TimetableBuilder().withDayTypes(DayTypeEnum.Wednesday, DayTypeEnum.Thursday).withPeriod(mar1Sunday, mar7Saturday).build();
-		Timetable withIncludedDatesAndExcludedDatesAndSaturdays = new TimetableBuilder().withDayTypes(DayTypeEnum.Saturday).withPeriod(mar1Sunday, mar7Saturday).withIncludedDate(mar5Thursday)
+		Timetable withIncludedDatesAndExcludedDatesAndSaturdays = new TimetableBuilder().withDayTypes(DayTypeEnum.Saturday).withPeriod(mar1Sunday, mar7Saturday).withIncludedDate(mar2Monday)
 				.withExcludedDate(mar6Friday).build();
 
 		VehicleJourney vehicleJourney = new VehicleJourney();
