@@ -134,6 +134,6 @@ public class ParallelExecutionCommand implements Command {
 
 	static {
 		CommandFactory.factories.put(ParallelExecutionCommand.class.getName(),
-				new DefaultCommandFactory());
+				new ParallelExecutionCommand.DefaultCommandFactory());
 	}
 }
