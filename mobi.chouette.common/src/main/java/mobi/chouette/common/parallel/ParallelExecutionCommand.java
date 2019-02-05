@@ -46,7 +46,10 @@ public class ParallelExecutionCommand implements Command {
 	public boolean execute(Context context) throws Exception {
 
 		if (context == null) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Context is null");
+		}
+		if (commands.size() == 0) {
+			throw new IllegalStateException("No command to execute");
 		}
 		boolean result = SUCCESS;
 		Monitor monitor = MonitorFactory.start(COMMAND);
@@ -131,6 +134,6 @@ public class ParallelExecutionCommand implements Command {
 
 	static {
 		CommandFactory.factories.put(ParallelExecutionCommand.class.getName(),
-				new ParallelExecutionCommand.DefaultCommandFactory());
+				new DefaultCommandFactory());
 	}
 }
