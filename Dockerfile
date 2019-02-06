@@ -10,33 +10,33 @@ USER jboss
 RUN mkdir /opt/jboss/wildfly/customization/
 RUN echo "Downloading with user ${JFROG_USER}"
 
-# Added depenedencies in docker/lib folder due to authentication issues with jforg
-
-# RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/list/libs-release-local/hibernate/hibernate-spatial/4.3/hibernate-spatial-4.3.jar      --directory-prefix /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/
-# RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/jcenter-cache/com/vividsolutions/jts/1.13/jts-1.13.jar                                 --directory-prefix /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/
-# RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/jcenter-cache/com/sun/xml/bind/jaxb-impl/2.2.11/jaxb-impl-2.2.11.jar                   --directory-prefix /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/
-# RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/jcenter-cache/com/sun/xml/bind/jaxb-core/2.2.11/jaxb-core-2.2.11.jar                   --directory-prefix /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/
-# RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/jcenter-cache/com/sun/xml/bind/jaxb-xjc/2.2.11/jaxb-xjc-2.2.11.jar                     --directory-prefix /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/
-# RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/libs-release-local/xerces/xercesImpl/2.11.0.SP6-RB/xercesImpl-2.11.0.SP6-RB.jar        --directory-prefix /opt/jboss/wildfly/modules/system/layers/base/org/apache/xerces/main/
-# RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/jcenter-cache/net/postgis/postgis-jdbc/2.1.7.2/postgis-jdbc-2.1.7.2.jar                --directory-prefix /opt/jboss/wildfly/customization/
-# RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/jcenter-cache/org/postgresql/postgresql/9.3-1103-jdbc41/postgresql-9.3-1103-jdbc41.jar --directory-prefix /opt/jboss/wildfly/customization/
 
 
-COPY docker/lib/postgresql-9.3-1103.jdbc41.jar /opt/jboss/wildfly/customization/postgresql-9.3-1103.jdbc41.jar
-COPY docker/lib/postgis-jdbc-2.1.7.2.jar /opt/jboss/wildfly/customization/postgis-jdbc-2.1.7.2.jar
-COPY docker/lib/hibernate-spatial-4.3.jar /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/hibernate-spatial-4.3.jar
-COPY docker/lib/jts-1.13.jar /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/jts-1.13.jar
+RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/list/libs-release-local/hibernate/hibernate-spatial/4.3/hibernate-spatial-4.3.jar      --directory-prefix /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/
+RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/jcenter-cache/com/vividsolutions/jts/1.13/jts-1.13.jar                                 --directory-prefix /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/
+RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/jcenter-cache/com/sun/xml/bind/jaxb-impl/2.2.11/jaxb-impl-2.2.11.jar                   --directory-prefix /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/
+RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/jcenter-cache/com/sun/xml/bind/jaxb-core/2.2.11/jaxb-core-2.2.11.jar                   --directory-prefix /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/
+RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/jcenter-cache/com/sun/xml/bind/jaxb-xjc/2.2.11/jaxb-xjc-2.2.11.jar                     --directory-prefix /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/
+RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/libs-release-local/xerces/xercesImpl/2.11.0.SP6-RB/xercesImpl-2.11.0.SP6-RB.jar        --directory-prefix /opt/jboss/wildfly/modules/system/layers/base/org/apache/xerces/main/
+RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/jcenter-cache/net/postgis/postgis-jdbc/2.1.7.2/postgis-jdbc-2.1.7.2.jar                --directory-prefix /opt/jboss/wildfly/customization/
+RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/jcenter-cache/org/postgresql/postgresql/9.3-1103-jdbc41/postgresql-9.3-1103-jdbc41.jar --directory-prefix /opt/jboss/wildfly/customization/
+
+
+# COPY postgresql-9.3-1103.jdbc41.jar /opt/jboss/wildfly/customization/postgresql-9.3-1103.jdbc41.jar
+# COPY postgis-jdbc-2.1.7.2.jar /opt/jboss/wildfly/customization/postgis-jdbc-2.1.7.2.jar
+# COPY hibernate-spatial-4.3.jar /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/hibernate-spatial-4.3.jar
+# COPY jts-1.13.jar /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/jts-1.13.jar
 
 # File where sed expression has been performed:
 COPY docker/files/wildfly/module.xml /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/module.xml
 
 # Updated JAXB implementation to work with Netex jaxb classes
-COPY docker/lib/jaxb-impl-2.2.11.jar /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/jaxb-impl-2.2.11.jar
-COPY docker/lib/jaxb-core-2.2.11.jar /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/jaxb-core-2.2.11.jar
-COPY docker/lib/jaxb-xjc-2.2.11.jar /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/jaxb-xjc-2.2.11.jar
+#COPY jaxb-impl-2.2.11.jar /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/jaxb-impl-2.2.11.jar
+#COPY jaxb-core-2.2.11.jar /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/jaxb-core-2.2.11.jar
+#COPY jaxb-xjc-2.2.11.jar /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/jaxb-xjc-2.2.11.jar
 COPY docker/files/wildfly/jaxb_module.xml /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/module.xml
 
-COPY docker/lib/xercesImpl-2.11.0.SP6-RB.jar /opt/jboss/wildfly/modules/system/layers/base/org/apache/xerces/main/xercesImpl-2.11.0.SP6-RB.jar
+#COPY xercesImpl-2.11.0.SP6-RB.jar /opt/jboss/wildfly/modules/system/layers/base/org/apache/xerces/main/xercesImpl-2.11.0.SP6-RB.jar
 #COPY files/wildfly/xerces_module.xml /opt/jboss/wildfly/modules/system/layers/base/org/apache/xerces/main/module.xml
 
 #Copy iev.properties
