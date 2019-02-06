@@ -12,7 +12,7 @@ RUN echo "Downloading with user ${JFROG_USER}"
 
 
 
-RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/list/libs-release-local/hibernate/hibernate-spatial/4.3/hibernate-spatial-4.3.jar      --directory-prefix /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/
+RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/libs-release-local/hibernate-spatial/hibernate-spatial/4.3/hibernate-spatial-4.3.jar      --directory-prefix /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/
 RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/jcenter-cache/com/vividsolutions/jts/1.13/jts-1.13.jar                                 --directory-prefix /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/
 RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/jcenter-cache/com/sun/xml/bind/jaxb-impl/2.2.11/jaxb-impl-2.2.11.jar                   --directory-prefix /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/
 RUN wget --http-user=${JFROG_USER} --http-password=${JFROG_PASS} https://entur2.jfrog.io/entur2/jcenter-cache/com/sun/xml/bind/jaxb-core/2.2.11/jaxb-core-2.2.11.jar                   --directory-prefix /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/
