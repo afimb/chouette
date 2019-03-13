@@ -166,7 +166,7 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 		if (consumerVJ != null && consumerVJAtStop == null) {
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 			DataLocation source = buildLocation(context, interchange);
-			DataLocation target0 = buildLocation(context, interchange.getConsumerStopPoint());
+			DataLocation target0 = new DataLocation(null, interchange.getConsumerVehicleJourneyObjectid());
 			DataLocation target1 = buildLocation(context, consumerVJ);
 			reporter.addCheckPointReportError(context, INTERCHANGE_6_1, source, "", "", target0, target1);
 		}
@@ -176,7 +176,7 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 		if (feederVJ != null && feederVJAtStop == null) {
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 			DataLocation source = buildLocation(context, interchange);
-			DataLocation target0 = buildLocation(context, interchange.getFeederStopPoint());
+			DataLocation target0 = new DataLocation(null, interchange.getFeederStopPointObjectid());
 			DataLocation target1 = buildLocation(context, feederVJ);
 			reporter.addCheckPointReportError(context, INTERCHANGE_6_2, source, "", "", target0, target1);
 		}
