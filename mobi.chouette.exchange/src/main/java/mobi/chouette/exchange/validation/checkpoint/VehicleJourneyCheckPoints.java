@@ -132,14 +132,14 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 			if (!sourceFile) {
 				// 3-VehicleJourney-2 : check speed progression
 				check3VehicleJourney2(context, vj, parameters);
+
+				// 3-VehicleJourney-4 : check if each journey has minimum one
+				// timetable
+				check3VehicleJourney4(context, vj);
 			}
 
 //			// 3-VehicleJourney-3 : check if two journeys progress similarly
 //			check3VehicleJourney3(context, beans, i, vj, parameters);
-
-			// 3-VehicleJourney-4 : check if each journey has minimum one
-			// timetable
-			check3VehicleJourney4(context, vj);
 
 			// 3-VehicleJourney-5 : check if time progress correctly with offset
 			// on each stop and between two stops
