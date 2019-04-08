@@ -300,8 +300,8 @@ public class ValidationRoutes extends AbstractTestValidation {
 			route2.setOppositeRoute(route1);
 		}
 
-		StopArea area1 = route1.getStopPoints().get(1).getScheduledStopPoint().getContainedInStopAreaRef().getObject().getParent();
-		StopArea area0 = route1.getStopPoints().get(0).getScheduledStopPoint().getContainedInStopAreaRef().getObject();
+		StopArea area1 = route1.getRoutePoints().get(1).getScheduledStopPoint().getContainedInStopAreaRef().getObject().getParent();
+		StopArea area0 = route1.getRoutePoints().get(0).getScheduledStopPoint().getContainedInStopAreaRef().getObject();
 		area0.setParent(area1);
 
 		ValidationData data = new ValidationData();
