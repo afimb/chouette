@@ -53,9 +53,10 @@ public class NorwayCommonNetexProfileValidator extends AbstractNorwayNetexProfil
             list.add(fileName);
 		}
 
-
 		@SuppressWarnings("unchecked")
 		Set<Codespace> validCodespaces = (Set<Codespace>) context.get(NETEX_VALID_CODESPACES);
+
+		verifyIdStructure(context, localIdsInCommonFile, ID_STRUCTURE_REGEXP, validCodespaces);
 
 		// Validate elements in common files
 		verifyAcceptedCodespaces(context, xpath, commonDom, validCodespaces);
