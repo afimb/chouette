@@ -126,7 +126,9 @@ public class ValidationNominal extends AbstractTestValidation {
 		unchecked.add("3-VehicleJourney-6");
 		unchecked.add("3-VehicleJourney-7");
 		unchecked.add("3-VehicleJourney-8");
-		
+		// no route points
+		unchecked.add("3-Route-2");
+
 		List<String> expectedErrors = new ArrayList<>();
 		expectedErrors.add("rutebanken_3-StopPoint-2");
 		expectedErrors.add("3-JourneyPattern-4");
@@ -144,6 +146,8 @@ public class ValidationNominal extends AbstractTestValidation {
 				bLine2 = true;
 			if (checkPoint.getName().equals("3-Route-7"))
 				bRoute7 = true;
+			if (checkPoint.getName().equals("3-Route-2"))
+				bLine2 = true;
 			if (unchecked.contains(checkPoint.getName())) {
 				Assert.assertEquals(checkPoint.getState(), ValidationReporter.RESULT.UNCHECK, "checkPoint "
 						+ checkPoint.getName() + " must not be on level " + checkPoint.getState());
