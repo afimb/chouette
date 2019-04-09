@@ -35,7 +35,7 @@ public class InterchangeCheckPoints extends AbstractValidation<Interchange> impl
 	public void validate(Context context, Interchange target) {
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		List<Interchange> beans = new ArrayList<>(data.getInterchanges());
-		Map<String, VehicleJourney> vehicleJourneyMap = data.getVehicleJourneys().stream().collect(Collectors.toMap(VehicleJourney::getObjectId, Function.identity()));
+		Map<String, VehicleJourney> vehicleJourneyMap = data.getAllVehicleJourneys().stream().collect(Collectors.toMap(VehicleJourney::getObjectId, Function.identity()));
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		if (isEmpty(beans))
 			return;

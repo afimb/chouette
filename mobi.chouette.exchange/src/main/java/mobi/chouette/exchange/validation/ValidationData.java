@@ -45,6 +45,7 @@ public class ValidationData {
 	private Set<String> accessPointIds = new HashSet<>();
 	private Set<Timetable> timetables = new HashSet<>();
 	private Set<String> timetableIds = new HashSet<>();
+	private Set<VehicleJourney> allVehicleJourneys = new HashSet<>();
 	private List<VehicleJourney> vehicleJourneys = new ArrayList<>();
 	private List<JourneyPattern> journeyPatterns = new ArrayList<>();
 	private List<Route> routes = new ArrayList<>();
@@ -56,7 +57,7 @@ public class ValidationData {
 
 
 	public void clear() {
-	// Must keep all VehicleJourneys to be able to validate interchanges	vehicleJourneys.clear();
+	    vehicleJourneys.clear();
 		journeyPatterns.clear();
 		routes.clear();
 		stopPoints.clear();
@@ -87,5 +88,11 @@ public class ValidationData {
 		dataLocations.clear();
 		linesOfStopAreas.clear();
 		interchanges.clear();
+		allVehicleJourneys.clear();
+	}
+
+	public void addVehicleJourney(VehicleJourney vehicleJourney) {
+		vehicleJourneys.add(vehicleJourney);
+		allVehicleJourneys.add(vehicleJourney);
 	}
 }

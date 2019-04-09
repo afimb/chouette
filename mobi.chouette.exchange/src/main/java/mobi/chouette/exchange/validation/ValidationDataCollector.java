@@ -38,7 +38,7 @@ public class ValidationDataCollector {
 						addAllTimeTables(collection, vehicleJourney.getTimetables(), cache);
 					}
 					updateId(vehicleJourney, cache.getVehicleJourneys());
-					collection.getVehicleJourneys().add(vehicleJourney);
+					collection.addVehicleJourney(vehicleJourney);
 					if (vehicleJourney.getCompany() != null) {
 						updateId(vehicleJourney.getCompany(), cache.getCompanies());
 						collection.getCompanyIds().add(vehicleJourney.getCompany().getObjectId());
