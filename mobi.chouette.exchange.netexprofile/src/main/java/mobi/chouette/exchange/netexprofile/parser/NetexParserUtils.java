@@ -232,6 +232,8 @@ public class NetexParserUtils extends ParserUtils {
 				return ServiceAlterationEnum.Cancellation;
 			case EXTRA_JOURNEY:
 				return ServiceAlterationEnum.ExtraJourney;
+			case REPLACED:
+				return ServiceAlterationEnum.Replaced;
 			default:
 				log.error("Unsupported NeTEx ServiceAlteration value: " + netexValue);
 		}

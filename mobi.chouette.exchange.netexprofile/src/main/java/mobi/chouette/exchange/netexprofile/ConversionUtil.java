@@ -293,6 +293,8 @@ public class ConversionUtil {
 				return ServiceAlterationEnumeration.CANCELLATION;
 			case ExtraJourney:
 				return ServiceAlterationEnumeration.EXTRA_JOURNEY;
+			case Replaced:
+				return ServiceAlterationEnumeration.REPLACED;
 			default:
 				log.error("Unsupported Chouette ServiceAlteration value: " + chouetteValue);
 		}
