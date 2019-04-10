@@ -157,7 +157,7 @@ public class JourneyPatternParser extends NetexParser implements Parser, Constan
 				// HACK TODO HACK
 				// Remove Line/PublicCode from DestinationDisplay if FrontText starts with it
 				String lineNumber = referential.getLines().values().iterator().next().getNumber();
-				if (destinationDisplay.getFrontText().startsWith(lineNumber + " ")) {
+				if (destinationDisplay.getFrontText() != null && destinationDisplay.getFrontText().startsWith(lineNumber + " ")) {
 					String modifiedDestinationDisplayId = destinationDisplayId + "-NOLINENUMBER";
 					DestinationDisplay modifiedDestinationDisplay = referential.getSharedDestinationDisplays().get(modifiedDestinationDisplayId);
 					if (modifiedDestinationDisplay == null) {
