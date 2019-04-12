@@ -150,8 +150,9 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 
 
 			for (Path file : commonFilePaths) {
-				Chain commonFileChain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
+				ChainCommand commonFileChain = (ChainCommand) CommandFactory.create(initialContext, ChainCommand.class.getName());
 				commonFileChains.add(commonFileChain);
+				commonFileChain.setIgnored(parameters.isContinueOnLineErrors());
 
 				// init referentials
 				NetexInitReferentialCommand initializer = (NetexInitReferentialCommand) CommandFactory.create(initialContext,
