@@ -1,31 +1,27 @@
 FROM jboss/wildfly:8.2.1.Final
 
-ARG JFROG_USER
-ARG JFROG_PASS
-
 USER root
 RUN yum -y update && yum -y install wget && yum clean all
 USER jboss
 
 RUN mkdir /opt/jboss/wildfly/customization/
-RUN echo "Downloading with user ${JFROG_USER}"
 
 # Added depenedencies in docker/lib folder due to authentication issues with jforg
 
 
 COPY docker/lib/postgresql-9.3-1103.jdbc41.jar /opt/jboss/wildfly/customization/postgresql-9.3-1103.jdbc41.jar
-COPY docker/lib/postgis-jdbc-2.1.7.2.jar /opt/jboss/wildfly/customization/postgis-jdbc-2.1.7.2.jar
-COPY docker/lib/hibernate-spatial-4.3.jar /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/hibernate-spatial-4.3.jar
-COPY docker/lib/jts-1.13.jar /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/jts-1.13.jar
+COPY docker/lib/postgis-jdbc-2.1.7.2.jar       /opt/jboss/wildfly/customization/postgis-jdbc-2.1.7.2.jar
+COPY docker/lib/hibernate-spatial-4.3.jar      /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/hibernate-spatial-4.3.jar
+COPY docker/lib/jts-1.13.jar                   /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/jts-1.13.jar
 
 # File where sed expression has been performed:
 COPY docker/files/wildfly/module.xml /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/module.xml
 
 # Updated JAXB implementation to work with Netex jaxb classes
-COPY docker/lib/jaxb-impl-2.2.11.jar /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/jaxb-impl-2.2.11.jar
-COPY docker/lib/jaxb-core-2.2.11.jar /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/jaxb-core-2.2.11.jar
-COPY docker/lib/jaxb-xjc-2.2.11.jar /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/jaxb-xjc-2.2.11.jar
-COPY docker/files/wildfly/jaxb_module.xml /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/module.xml
+COPY docker/lib/jaxb-impl-2.2.11.jar         /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/jaxb-impl-2.2.11.jar
+COPY docker/lib/jaxb-core-2.2.11.jar         /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/jaxb-core-2.2.11.jar
+COPY docker/lib/jaxb-xjc-2.2.11.jar          /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/jaxb-xjc-2.2.11.jar
+COPY docker/files/wildfly/jaxb_module.xml    /opt/jboss/wildfly/modules/system/layers/base/com/sun/xml/bind/main/module.xml
 
 COPY docker/lib/xercesImpl-2.11.0.SP6-RB.jar /opt/jboss/wildfly/modules/system/layers/base/org/apache/xerces/main/xercesImpl-2.11.0.SP6-RB.jar
 #COPY files/wildfly/xerces_module.xml /opt/jboss/wildfly/modules/system/layers/base/org/apache/xerces/main/module.xml
@@ -42,7 +38,7 @@ COPY docker/files/wildfly/execute.sh /opt/jboss/wildfly/customization/
 RUN /opt/jboss/wildfly/customization/execute.sh
 
 # Overriding previously installed java version:
-RUN curl -L http://jump.rutebanken.org/jdk-8u144-linux-x64.tar.gz > jdk.tgz
+RUN curl -L https://storage.googleapis.com/jdk8/jdk-8u144-linux-x64.tar > jdk.tgz
 RUN tar xzf jdk.tgz
 ENV JAVA_HOME /opt/jboss/jdk1.8.0_144/
 
