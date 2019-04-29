@@ -39,7 +39,7 @@ RUN /opt/jboss/wildfly/customization/execute.sh
 
 # Overriding previously installed java version:
 RUN curl -L https://storage.googleapis.com/jdk8/jdk-8u144-linux-x64.tar > jdk.tgz
-RUN tar xzf jdk.tgz
+RUN tar xvf jdk.tgz
 ENV JAVA_HOME /opt/jboss/jdk1.8.0_144/
 
 # Deploying by copying to deployment directory
