@@ -12,9 +12,9 @@ import mobi.chouette.exchange.validation.report.ValidationReporter.RESULT;
 
 
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 @ToString
-public class CheckPointReport extends AbstractReport{
+public class CheckPointReport extends AbstractReport {
 
 	public enum SEVERITY {
 		WARNING, ERROR, IMPROVMENT, INFO
@@ -60,8 +60,9 @@ public class CheckPointReport extends AbstractReport{
 	protected boolean addCheckPointError(int checkPointErrorId) {
 		boolean ret = false;
 		if (maxByFile) {
-			if (checkPointErrorCount < MAX_ERRORS_PER_CHECKPOINT) 
-			{
+
+
+			if (checkPointErrorCount < getMaxErrorCount()) {
 				checkPointErrorsKeys.add(new Integer(checkPointErrorId));
 				ret = true;
 			}
@@ -71,23 +72,31 @@ public class CheckPointReport extends AbstractReport{
 		return ret;
 	}
 
+	private int getMaxErrorCount() {
+		if (SEVERITY.INFO.equals(severity)) {
+			return MAX_INFOS_PER_CHECKPOINT;
+		} else if (SEVERITY.WARNING.equals(severity)) {
+			return MAX_WARNINGS_PER_CHECKPOINT;
+		}
+		return MAX_ERRORS_PER_CHECKPOINT;
+	}
 
 	@Override
-	public void print(PrintStream out, StringBuilder ret , int level, boolean first) {
+	public void print(PrintStream out, StringBuilder ret, int level, boolean first) {
 		ret.setLength(0);
-		out.print(addLevel(ret,level).append('{'));
-		out.print(toJsonString(ret,level+1,"test_id", name, true));
-		out.print(toJsonString(ret,level+1,"level", phase, false));
-		out.print(toJsonString(ret,level+1,"type", target, false));
-		out.print(toJsonString(ret,level+1,"rank", rank, false));
-		out.print(toJsonString(ret,level+1,"severity", severity, false));
-		out.print(toJsonString(ret,level+1,"result", state, false));
-		out.print(toJsonString(ret,level+1,"check_point_error_count", checkPointErrorCount, false));
+		out.print(addLevel(ret, level).append('{'));
+		out.print(toJsonString(ret, level + 1, "test_id", name, true));
+		out.print(toJsonString(ret, level + 1, "level", phase, false));
+		out.print(toJsonString(ret, level + 1, "type", target, false));
+		out.print(toJsonString(ret, level + 1, "rank", rank, false));
+		out.print(toJsonString(ret, level + 1, "severity", severity, false));
+		out.print(toJsonString(ret, level + 1, "result", state, false));
+		out.print(toJsonString(ret, level + 1, "check_point_error_count", checkPointErrorCount, false));
 		if (!checkPointErrorsKeys.isEmpty())
-			printIntArray(out,ret, level+1,"errors",checkPointErrorsKeys, false);
+			printIntArray(out, ret, level + 1, "errors", checkPointErrorsKeys, false);
 		ret.setLength(0);
-		out.print(addLevel(ret.append('\n'),level).append('}'));
-		
+		out.print(addLevel(ret.append('\n'), level).append('}'));
+
 	}
 
 }
