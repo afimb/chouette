@@ -26,6 +26,7 @@ import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.RouteSectionDAO;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.importer.CleanRepositoryCommand;
+import mobi.chouette.exchange.netexprofile.importer.UpdateReferentialLastUpdateTimestampCommand;
 import mobi.chouette.exchange.transfer.Constant;
 import mobi.chouette.model.Interchange;
 import mobi.chouette.model.JourneyPattern;
@@ -137,6 +138,10 @@ public class TransferExportDataWriter implements Command, Constant {
 					log.info("Intermediary flush completed");
 				}
 			}
+
+			log.info("Updating target referential last update timestamp");
+			Command updateReferentialLastUpdateTimestampCommand = CommandFactory.create(initialContext, UpdateReferentialLastUpdateTimestampCommand.class.getName());
+			updateReferentialLastUpdateTimestampCommand.execute(context);
 
 			log.info("Final flush");
 			lineDAO.flush();

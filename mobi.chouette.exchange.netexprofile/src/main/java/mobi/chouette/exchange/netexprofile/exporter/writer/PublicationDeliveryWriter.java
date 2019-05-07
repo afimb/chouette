@@ -21,11 +21,12 @@ import org.rutebanken.netex.model.Codespace;
 import org.rutebanken.netex.model.Network;
 
 import static mobi.chouette.common.Constant.CONFIGURATION;
+import static mobi.chouette.common.Constant.REFERENTIAL;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DEFAULT_OBJECT_VERSION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
 
-public class PublicationDeliveryWriter extends AbstractNetexWriter {
+public class PublicationDeliveryWriter extends AbstractNetexWriter{
 
 	public static void write(Context context, XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData,
 			NetexFragmentMode fragmentMode, Marshaller marshaller) {
@@ -75,16 +76,8 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter {
 		try {
 			writer.writeStartElement(COMPOSITE_FRAME);
 
-			if (fragmentMode.equals(NetexFragmentMode.LINE)) {
-				if (line.getNetwork().getVersionDate() != null) {
-					LocalDateTime createdDateTime = TimeUtil.toLocalDateFromJoda(line.getNetwork().getVersionDate()).atStartOfDay();
-					writer.writeAttribute(CREATED, formatter.format(createdDateTime));
-				} else {
-					writer.writeAttribute(CREATED, timestamp);
-				}
-			} else {
-				writer.writeAttribute(CREATED, timestamp);
-			}
+			LocalDateTime referentialLastUpdate = (LocalDateTime) context.get(REFERENTIAL_LAST_UPDATE_TIMESTAMP);
+			writer.writeAttribute(CREATED, formatter.format(referentialLastUpdate));
 
 			writer.writeAttribute(VERSION, NETEX_DEFAULT_OBJECT_VERSION);
 			writer.writeAttribute(ID, compositeFrameId);

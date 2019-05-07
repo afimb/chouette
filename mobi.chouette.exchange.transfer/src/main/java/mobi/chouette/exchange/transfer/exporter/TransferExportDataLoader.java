@@ -2,6 +2,7 @@ package mobi.chouette.exchange.transfer.exporter;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -15,6 +16,7 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import mobi.chouette.dao.ReferentialDAO;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
 import lombok.extern.log4j.Log4j;
@@ -34,6 +36,9 @@ public class TransferExportDataLoader implements Command, Constant {
 	@EJB
 	private LineDAO lineDAO;
 
+	@EJB
+	private ReferentialDAO referentialDAO;
+
 	@PersistenceContext(unitName = "referential")
 	private EntityManager em;
 
@@ -43,6 +48,8 @@ public class TransferExportDataLoader implements Command, Constant {
 
 		List<Line> lineToTransfer = prepareLines(context);
 		context.put(LINES, lineToTransfer);
+		LocalDateTime lastUpdateTimestamp = referentialDAO.getLastUpdateTimestamp();
+		context.put(REFERENTIAL_LAST_UPDATE_TIMESTAMP, lastUpdateTimestamp);
 	     
 		return true;
 	}

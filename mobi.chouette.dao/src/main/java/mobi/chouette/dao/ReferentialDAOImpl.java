@@ -4,9 +4,11 @@ import mobi.chouette.model.dto.ReferentialInfo;
 
 import javax.ejb.Stateless;
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
-@Stateless
+@Stateless(name="ReferentialDAO")
 public class ReferentialDAOImpl implements ReferentialDAO {
 
     private static final String SQL_SELECT_SLUG = "SELECT SLUG FROM PUBLIC.REFERENTIALS";
@@ -19,6 +21,9 @@ public class ReferentialDAOImpl implements ReferentialDAO {
     private static final String SQL_DELETE_REFERENTIAL = "DELETE FROM public.referentials WHERE slug=:dest_schema";
 
     private static final String SQL_DELETE_USERS = "DELETE FROM public.users WHERE email=:email";
+
+    private static final String SQL_SELECT_LAST_UPDATE_TIMESTAMP = "SELECT last_update_timestamp FROM referential_last_update";
+    private static final String SQL_UPDATE_LAST_UPDATE_TIMESTAMP = "UPDATE referential_last_update SET last_update_timestamp=:last_update_timestamp";
 
     @PersistenceContext(unitName = "public")
     private EntityManager em;
@@ -147,6 +152,22 @@ public class ReferentialDAOImpl implements ReferentialDAO {
 
         int nbModifiedRow = deleteReferentialQuery.executeUpdate();
         return nbModifiedRow != 0;
+    }
+
+    @Override
+    public LocalDateTime getLastUpdateTimestamp() {
+
+        Query lastUpdateQuery = em.createNativeQuery(SQL_SELECT_LAST_UPDATE_TIMESTAMP);
+        Timestamp timestamp = (Timestamp) lastUpdateQuery.getSingleResult();
+        return  timestamp.toLocalDateTime();
+
+    }
+
+    @Override
+    public void setLastUpdateTimestamp(LocalDateTime lastUpdateTimestamp) {
+        Query updateLastUpdateQuery = em.createNativeQuery(SQL_UPDATE_LAST_UPDATE_TIMESTAMP);
+        updateLastUpdateQuery.setParameter("last_update_timestamp",Timestamp.valueOf(lastUpdateTimestamp));
+        updateLastUpdateQuery.executeUpdate();
     }
 
 }

@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.importer;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -14,28 +15,7 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.BookingArrangementDAO;
-import mobi.chouette.dao.BrandingDAO;
-import mobi.chouette.dao.CompanyDAO;
-import mobi.chouette.dao.ContactStructureDAO;
-import mobi.chouette.dao.DestinationDisplayDAO;
-import mobi.chouette.dao.FlexibleServicePropertiesDAO;
-import mobi.chouette.dao.FootnoteDAO;
-import mobi.chouette.dao.GroupOfLineDAO;
-import mobi.chouette.dao.InterchangeDAO;
-import mobi.chouette.dao.JourneyFrequencyDAO;
-import mobi.chouette.dao.JourneyPatternDAO;
-import mobi.chouette.dao.LineDAO;
-import mobi.chouette.dao.NetworkDAO;
-import mobi.chouette.dao.RouteDAO;
-import mobi.chouette.dao.RoutePointDAO;
-import mobi.chouette.dao.RouteSectionDAO;
-import mobi.chouette.dao.ScheduledStopPointDAO;
-import mobi.chouette.dao.StopPointDAO;
-import mobi.chouette.dao.TimebandDAO;
-import mobi.chouette.dao.TimetableDAO;
-import mobi.chouette.dao.VehicleJourneyAtStopDAO;
-import mobi.chouette.dao.VehicleJourneyDAO;
+import mobi.chouette.dao.*;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -112,6 +92,9 @@ public class CleanRepositoryCommand implements Command {
 	@EJB
 	private FlexibleServicePropertiesDAO flexibleServicePropertiesDAO;
 
+	@EJB
+	private ReferentialDAO referentialDAO;
+
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public boolean execute(Context context) throws Exception {
@@ -144,6 +127,7 @@ public class CleanRepositoryCommand implements Command {
 			flexibleServicePropertiesDAO.truncate();
 			bookingArrangementDAO.truncate();
 			contactStructureDAO.truncate();
+			referentialDAO.setLastUpdateTimestamp(LocalDateTime.now());
 
 			result = SUCCESS;
 		} catch (Exception e) {

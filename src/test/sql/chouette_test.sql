@@ -2778,3 +2778,12 @@ GRANT ALL ON SCHEMA chouette_gui TO PUBLIC;
 --
 -- PostgreSQL database dump complete
 --
+
+create table referential_last_update
+(
+    id                    bigserial not null
+        constraint referential_last_update_pkey
+            primary key,
+    last_update_timestamp timestamp
+);
+insert into referential_last_update(last_update_timestamp) values(current_timestamp);

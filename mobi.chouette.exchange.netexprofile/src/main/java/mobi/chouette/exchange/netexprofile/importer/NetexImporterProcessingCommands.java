@@ -290,6 +290,9 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 			if (!CollectionUtils.isEmpty(parameters.getGenerateMissingRouteSectionsForModes())) {
 				commands.add(CommandFactory.create(initialContext, GenerateRouteSectionsCommand.class.getName()));
 			}
+
+			commands.add(CommandFactory.create(initialContext, UpdateReferentialLastUpdateTimestampCommand.class.getName()));
+
 		} catch (Exception e) {
 			log.error(e, e);
 			throw new RuntimeException("unable to call factories");
