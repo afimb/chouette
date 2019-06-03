@@ -55,7 +55,7 @@ public class GenerateRouteSectionsCommand implements Command, Constant {
 
 	private Integer maxMetersFromQuay;
 
-	private static final int DEFAULT_MAX_METERS_FROM_QUAY = 500;
+	private static final int DEFAULT_MAX_METERS_FROM_QUAY = 100;
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

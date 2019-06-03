@@ -49,9 +49,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 			initCheckPoint(context, JOURNEY_PATTERN_2, SEVERITY.E);
 		initCheckPoint(context, ROUTE_SECTION_1, SEVERITY.W);
 		initCheckPoint(context, ROUTE_SECTION_2_1, SEVERITY.W);
-		prepareCheckPoint(context, ROUTE_SECTION_2_1);
 		initCheckPoint(context, ROUTE_SECTION_2_2, SEVERITY.W);
-		prepareCheckPoint(context, ROUTE_SECTION_2_2);
 		prepareCheckPoint(context, JOURNEY_PATTERN_3);
 		initCheckPoint(context, JOURNEY_PATTERN_3, SEVERITY.W);
 		prepareCheckPoint(context, JOURNEY_PATTERN_4);
@@ -179,7 +177,8 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 	// parameter
 	private void check3RouteSection1(Context context, JourneyPattern jp, ValidationParameters parameters) {
 
-		prepareCheckPoint(context, ROUTE_SECTION_1);
+		prepareCheckPoint(context, ROUTE_SECTION_2_1);
+		prepareCheckPoint(context, ROUTE_SECTION_2_2);
 
 		String modeKey = jp.getRoute().getLine().getTransportModeName().toString();
 		TransportModeParameters mode = getModeParameters(parameters, modeKey, log);
