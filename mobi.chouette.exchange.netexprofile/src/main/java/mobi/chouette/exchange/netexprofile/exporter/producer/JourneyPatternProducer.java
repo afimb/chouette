@@ -1,6 +1,5 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
-import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Comparator;
@@ -15,8 +14,6 @@ import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
 import mobi.chouette.exchange.netexprofile.util.JtsGmlConverter;
-import mobi.chouette.exchange.validation.parameters.TransportModeParameters;
-import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.model.BookingArrangement;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
@@ -26,7 +23,6 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
-import mobi.chouette.model.type.TransportModeNameEnum;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineString;
@@ -46,7 +42,6 @@ import org.rutebanken.netex.model.ServiceLinkInJourneyPattern_VersionedChildStru
 import org.rutebanken.netex.model.ServiceLinkRefStructure;
 import org.rutebanken.netex.model.StopPointInJourneyPattern;
 
-import static mobi.chouette.common.Constant.VALIDATION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.createUniqueId;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.LINK_SEQUENCE_PROJECTION;
@@ -56,6 +51,9 @@ import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SERVIC
 public class JourneyPatternProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.JourneyPattern, mobi.chouette.model.JourneyPattern> {
 
 	private static ContactStructureProducer contactStructureProducer = new ContactStructureProducer();
+	private Integer maxMetersFromQuay;
+
+	private static final int DEFAULT_MAX_METERS_FROM_QUAY = 100;
 
 	@Override
 	public org.rutebanken.netex.model.JourneyPattern produce(Context context, mobi.chouette.model.JourneyPattern neptuneJourneyPattern) {
@@ -260,49 +258,15 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 
 			double distanceFromStart = GeometryUtil.calculateDistanceInMeters(from.x, from.y, lineStart.x, lineStart.y);
 			double distanceFromEnd = GeometryUtil.calculateDistanceInMeters(to.x, to.y, lineEnd.x, lineEnd.y);
-			Double maxMetersFromQuay = getMaxMetersFromQuay(context, fromSSP);
-			if (maxMetersFromQuay == null) {
-				return false;
+			int maxMetersFromQuay = getMaxMetersFromQuay();
+			if (maxMetersFromQuay < 0) {
+				return true;
 			}
 			if (distanceFromStart > maxMetersFromQuay || distanceFromEnd > maxMetersFromQuay) {
-
 				return false;
 			}
 		}
 		return true;
-	}
-
-	private static final Double DEFAULT_MIN_DISTANCE_FROM_QUAY = 100.0;
-
-	private Double getMaxMetersFromQuay(Context context, ScheduledStopPoint scheduledStopPoint) {
-		String modeKey = scheduledStopPoint.getContainedInStopAreaRef().getObject().getTransportModeName().toString();
-		TransportModeParameters mode = getModeParameters(context, modeKey);
-		double distanceMax = DEFAULT_MIN_DISTANCE_FROM_QUAY;
-		if (mode == null) {
-			mode = getModeParameters(context, TransportModeNameEnum.Other.toString());
-
-		}
-
-		if (mode != null && mode.getRouteSectionStopAreaDistanceMax() >= DEFAULT_MIN_DISTANCE_FROM_QUAY) {
-			distanceMax = mode.getRouteSectionStopAreaDistanceMax();
-		} else {
-			log.warn("Invalid");
-		}
-		return distanceMax;
-	}
-
-
-	public static TransportModeParameters getModeParameters(Context context, String mode) {
-		// find transportMode :
-		String modeKey = "getMode" + mode;
-		try {
-			ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
-			Method method = parameters.getClass().getMethod(modeKey);
-			return (TransportModeParameters) method.invoke(parameters);
-		} catch (Exception e) {
-			log.error("unknown mode " + mode, e);
-		}
-		return null; //modeDefault;
 	}
 
 	private Coordinate getCoordinateFromScheduledStopPoint(ScheduledStopPoint scheduledStopPoint) {
@@ -316,5 +280,18 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 		return new Coordinate(stopArea.getLongitude().doubleValue(), stopArea.getLatitude().doubleValue());
 	}
 
+	private int getMaxMetersFromQuay() {
+		if (maxMetersFromQuay == null) {
+			String maxAsString = System.getProperty("iev.route.section.netex.export.quay.distance.max.meters");
+			if (maxAsString != null) {
+				maxMetersFromQuay = Integer.valueOf(maxAsString);
+				log.info("Using configured value for iev.route.section.netex.export.quay.distance.max.meters: " + maxMetersFromQuay);
+			} else {
+				maxMetersFromQuay = DEFAULT_MAX_METERS_FROM_QUAY;
+				log.info("No value configured iev.route.section.generate.quay.distance.max.meters, using default: " + maxMetersFromQuay);
+			}
+		}
+		return maxMetersFromQuay;
+	}
 
 }
