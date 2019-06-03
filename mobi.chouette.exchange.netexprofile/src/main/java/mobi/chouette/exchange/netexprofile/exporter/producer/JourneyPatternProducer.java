@@ -1,26 +1,34 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
+import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.GeometryUtil;
 import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
 import mobi.chouette.exchange.netexprofile.util.JtsGmlConverter;
+import mobi.chouette.exchange.validation.parameters.TransportModeParameters;
+import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.model.BookingArrangement;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.ScheduledStopPoint;
+import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineString;
 import net.opengis.gml._3.LineStringType;
 import org.apache.commons.collections.CollectionUtils;
@@ -38,11 +46,13 @@ import org.rutebanken.netex.model.ServiceLinkInJourneyPattern_VersionedChildStru
 import org.rutebanken.netex.model.ServiceLinkRefStructure;
 import org.rutebanken.netex.model.StopPointInJourneyPattern;
 
+import static mobi.chouette.common.Constant.VALIDATION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.createUniqueId;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils.isSet;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.LINK_SEQUENCE_PROJECTION;
 import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SERVICE_LINK_IN_JOURNEY_PATTERN;
 
+@Log4j
 public class JourneyPatternProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.JourneyPattern, mobi.chouette.model.JourneyPattern> {
 
 	private static ContactStructureProducer contactStructureProducer = new ContactStructureProducer();
@@ -51,44 +61,43 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 	public org.rutebanken.netex.model.JourneyPattern produce(Context context, mobi.chouette.model.JourneyPattern neptuneJourneyPattern) {
 		org.rutebanken.netex.model.JourneyPattern netexJourneyPattern = netexFactory.createJourneyPattern();
 
-        ExportableNetexData exportableNetexData = (ExportableNetexData) context.get(Constant.EXPORTABLE_NETEX_DATA);
+		ExportableNetexData exportableNetexData = (ExportableNetexData) context.get(Constant.EXPORTABLE_NETEX_DATA);
 
-        NetexProducerUtils.populateId(neptuneJourneyPattern, netexJourneyPattern);
+		NetexProducerUtils.populateId(neptuneJourneyPattern, netexJourneyPattern);
 
-        if (isSet(neptuneJourneyPattern.getComment())) {
-            KeyValueStructure keyValueStruct = netexFactory.createKeyValueStructure()
-                    .withKey("Comment")
-                    .withValue(neptuneJourneyPattern.getComment());
-            netexJourneyPattern.setKeyList(netexFactory.createKeyListStructure().withKeyValue(keyValueStruct));
-        }
+		if (isSet(neptuneJourneyPattern.getComment())) {
+			KeyValueStructure keyValueStruct = netexFactory.createKeyValueStructure()
+					.withKey("Comment")
+					.withValue(neptuneJourneyPattern.getComment());
+			netexJourneyPattern.setKeyList(netexFactory.createKeyListStructure().withKeyValue(keyValueStruct));
+		}
 
-        if (isSet(neptuneJourneyPattern.getName())) {
-            netexJourneyPattern.setName(ConversionUtil.getMultiLingualString(neptuneJourneyPattern.getName()));
-        }
+		if (isSet(neptuneJourneyPattern.getName())) {
+			netexJourneyPattern.setName(ConversionUtil.getMultiLingualString(neptuneJourneyPattern.getName()));
+		}
 
-        if (isSet(neptuneJourneyPattern.getPublishedName())) {
-            netexJourneyPattern.setShortName(ConversionUtil.getMultiLingualString(neptuneJourneyPattern.getPublishedName()));
-        }
+		if (isSet(neptuneJourneyPattern.getPublishedName())) {
+			netexJourneyPattern.setShortName(ConversionUtil.getMultiLingualString(neptuneJourneyPattern.getPublishedName()));
+		}
 
-        if (isSet(neptuneJourneyPattern.getRegistrationNumber())) {
-            PrivateCodeStructure privateCodeStruct = netexFactory.createPrivateCodeStructure();
-            privateCodeStruct.setValue(neptuneJourneyPattern.getRegistrationNumber());
-            netexJourneyPattern.setPrivateCode(privateCodeStruct);
-        }
-        
+		if (isSet(neptuneJourneyPattern.getRegistrationNumber())) {
+			PrivateCodeStructure privateCodeStruct = netexFactory.createPrivateCodeStructure();
+			privateCodeStruct.setValue(neptuneJourneyPattern.getRegistrationNumber());
+			netexJourneyPattern.setPrivateCode(privateCodeStruct);
+		}
+
 		NoticeProducer.addNoticeAndNoticeAssignments(context, exportableNetexData, exportableNetexData.getNoticeAssignmentsServiceFrame(), neptuneJourneyPattern.getFootnotes(), neptuneJourneyPattern);
 
-        Route route = neptuneJourneyPattern.getRoute();
-        RouteRefStructure routeRefStruct = netexFactory.createRouteRefStructure();
-        NetexProducerUtils.populateReference(route, routeRefStruct, true);
+		Route route = neptuneJourneyPattern.getRoute();
+		RouteRefStructure routeRefStruct = netexFactory.createRouteRefStructure();
+		NetexProducerUtils.populateReference(route, routeRefStruct, true);
 
-        netexJourneyPattern.setRouteRef(routeRefStruct);
+		netexJourneyPattern.setRouteRef(routeRefStruct);
 
-        PointsInJourneyPattern_RelStructure pointsInJourneyPattern = netexFactory.createPointsInJourneyPattern_RelStructure();
-        List<StopPoint> stopPoints = neptuneJourneyPattern.getStopPoints();
-        stopPoints.sort(Comparator.comparingInt(StopPoint::getPosition));
-        
-       
+		PointsInJourneyPattern_RelStructure pointsInJourneyPattern = netexFactory.createPointsInJourneyPattern_RelStructure();
+		List<StopPoint> stopPoints = neptuneJourneyPattern.getStopPoints();
+		stopPoints.sort(Comparator.comparingInt(StopPoint::getPosition));
+
 
 		for (int i = 0; i < stopPoints.size(); i++) {
 			StopPoint stopPoint = stopPoints.get(i);
@@ -106,14 +115,14 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 				BoardingPossibilityEnum forBoarding = stopPoint.getForBoarding();
 				AlightingPossibilityEnum forAlighting = stopPoint.getForAlighting();
 
-				if (AlightingPossibilityEnum.forbidden.equals(forAlighting)){
+				if (AlightingPossibilityEnum.forbidden.equals(forAlighting)) {
 					stopPointInJourneyPattern.setForAlighting(false);
 				}
 				if (BoardingPossibilityEnum.forbidden.equals(forBoarding)) {
 					stopPointInJourneyPattern.setForBoarding(false);
 				}
 
-				if (BoardingPossibilityEnum.request_stop.equals(forBoarding) || AlightingPossibilityEnum.request_stop.equals(forAlighting)){
+				if (BoardingPossibilityEnum.request_stop.equals(forBoarding) || AlightingPossibilityEnum.request_stop.equals(forAlighting)) {
 					stopPointInJourneyPattern.setRequestStop(true);
 				}
 
@@ -125,9 +134,9 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 					stopPointInJourneyPattern.setDestinationDisplayRef(destinationDisplayRef);
 				}
 
-        		NoticeProducer.addNoticeAndNoticeAssignments(context, exportableNetexData, exportableNetexData.getNoticeAssignmentsServiceFrame(), stopPoint.getFootnotes(), stopPoint);
+				NoticeProducer.addNoticeAndNoticeAssignments(context, exportableNetexData, exportableNetexData.getNoticeAssignmentsServiceFrame(), stopPoint.getFootnotes(), stopPoint);
 
-                BookingArrangement bookingArrangement = stopPoint.getBookingArrangement();
+				BookingArrangement bookingArrangement = stopPoint.getBookingArrangement();
 				if (bookingArrangement != null) {
 					BookingArrangementsStructure netexBookingArrangement = new BookingArrangementsStructure();
 					if (bookingArrangement.getBookingNote() != null) {
@@ -146,14 +155,15 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 
 					netexBookingArrangement.setBookingContact(contactStructureProducer.produce(bookingArrangement.getBookingContact()));
 					stopPointInJourneyPattern.setBookingArrangements(netexBookingArrangement);
-				}pointsInJourneyPattern.getPointInJourneyPatternOrStopPointInJourneyPatternOrTimingPointInJourneyPattern().add(stopPointInJourneyPattern);
-            }
-        }
+				}
+				pointsInJourneyPattern.getPointInJourneyPatternOrStopPointInJourneyPatternOrTimingPointInJourneyPattern().add(stopPointInJourneyPattern);
+			}
+		}
 
 		addLinksInSequence(neptuneJourneyPattern, netexJourneyPattern, context);
-        netexJourneyPattern.setPointsInSequence(pointsInJourneyPattern);
-        return netexJourneyPattern;
-    }
+		netexJourneyPattern.setPointsInSequence(pointsInJourneyPattern);
+		return netexJourneyPattern;
+	}
 
 	private void addLinksInSequence(JourneyPattern neptuneJourneyPattern, org.rutebanken.netex.model.JourneyPattern netexJourneyPattern, Context context) {
 
@@ -187,7 +197,7 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 
 			String routeSectionVersion = routeSection.getObjectVersion() > 0 ? String.valueOf(routeSection.getObjectVersion()) : NETEX_DEFAULT_OBJECT_VERSION;
 			// Gml id must be unique, start with letter and not contain certain special characters.
-			String gmlId="LS_" + routeSection.getId();
+			String gmlId = "LS_" + routeSection.getId();
 
 			LineString geometry;
 			if (routeSection.getNoProcessing()) {
@@ -196,16 +206,7 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 				geometry = routeSection.getProcessedGeometry();
 			}
 
-			if (geometry!=null) {
-				LineStringType gmlLineString = JtsGmlConverter.fromJtsToGml(geometry, gmlId);
-				LinkSequenceProjection linkSequenceProjection = netexFactory.createLinkSequenceProjection().withLineString(gmlLineString);
-				linkSequenceProjection.withId(createUniqueId(context, LINK_SEQUENCE_PROJECTION)).withVersion(routeSectionVersion);
-				serviceLink.setProjections(netexFactory.createProjections_RelStructure()
-						.withProjectionRefOrProjection(netexFactory.createLinkSequenceProjection(linkSequenceProjection)));
-			}
-			if (routeSection.getDistance() != null) {
-				serviceLink.setDistance(routeSection.getDistance().setScale(6, RoundingMode.HALF_UP));
-			}
+
 			ScheduledStopPoint fromSSP = routeSection.getFromScheduledStopPoint();
 			if (fromSSP != null) {
 				ScheduledStopPointRefStructure fromPointRef = netexFactory.createScheduledStopPointRefStructure();
@@ -219,9 +220,101 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 				NetexProducerUtils.populateReference(toSSP, topPointRef, true);
 				serviceLink.setToPointRef(topPointRef);
 			}
+			if (geometry != null) {
 
+				// Only export geometry if route section is a reasonable match for stop areas in both ends. Mimics checks in validation phase which ideally
+				// should be ERROR level and halt further processing. This is currently not realistic because too many parties are sending too many faulty
+				// route sections and seem unable to fix or remove these without also removing valid ones.
+				if (isLineStringGoodMatchForQuays(context, geometry, fromSSP, toSSP)) {
+
+					LineStringType gmlLineString = JtsGmlConverter.fromJtsToGml(geometry, gmlId);
+					LinkSequenceProjection linkSequenceProjection = netexFactory.createLinkSequenceProjection().withLineString(gmlLineString);
+
+					linkSequenceProjection.withId(createUniqueId(context, LINK_SEQUENCE_PROJECTION)).withVersion(routeSectionVersion);
+					serviceLink.setProjections(netexFactory.createProjections_RelStructure()
+							.withProjectionRefOrProjection(netexFactory.createLinkSequenceProjection(linkSequenceProjection)));
+
+				} else {
+					log.info("Ignoring linestring for RouteSection with too great distance for from stop and/or to stop: " + routeSection.getObjectId());
+				}
+			}
+			if (routeSection.getDistance() != null) {
+				serviceLink.setDistance(routeSection.getDistance().setScale(6, RoundingMode.HALF_UP));
+			}
 			exportableNetexData.getSharedServiceLinks().put(serviceLink.getId(), serviceLink);
 		}
 
 	}
+
+	protected boolean isLineStringGoodMatchForQuays(Context context, LineString lineString, ScheduledStopPoint fromSSP, ScheduledStopPoint toSSP) {
+		if (lineString != null && lineString.getCoordinates() != null && lineString.getCoordinates().length > 0) {
+			Coordinate lineStart = lineString.getCoordinates()[0];
+			Coordinate lineEnd = lineString.getCoordinates()[lineString.getCoordinates().length - 1];
+
+			Coordinate from = getCoordinateFromScheduledStopPoint(fromSSP);
+			Coordinate to = getCoordinateFromScheduledStopPoint(toSSP);
+
+			if (from == null || to == null) {
+				return false;
+			}
+
+			double distanceFromStart = GeometryUtil.calculateDistanceInMeters(from.x, from.y, lineStart.x, lineStart.y);
+			double distanceFromEnd = GeometryUtil.calculateDistanceInMeters(to.x, to.y, lineEnd.x, lineEnd.y);
+			Double maxMetersFromQuay = getMaxMetersFromQuay(context, fromSSP);
+			if (maxMetersFromQuay == null) {
+				return false;
+			}
+			if (distanceFromStart > maxMetersFromQuay || distanceFromEnd > maxMetersFromQuay) {
+
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static final Double DEFAULT_MIN_DISTANCE_FROM_QUAY = 100.0;
+
+	private Double getMaxMetersFromQuay(Context context, ScheduledStopPoint scheduledStopPoint) {
+		String modeKey = scheduledStopPoint.getContainedInStopAreaRef().getObject().getTransportModeName().toString();
+		TransportModeParameters mode = getModeParameters(context, modeKey);
+		double distanceMax = DEFAULT_MIN_DISTANCE_FROM_QUAY;
+		if (mode == null) {
+			mode = getModeParameters(context, TransportModeNameEnum.Other.toString());
+
+		}
+
+		if (mode != null && mode.getRouteSectionStopAreaDistanceMax() >= DEFAULT_MIN_DISTANCE_FROM_QUAY) {
+			distanceMax = mode.getRouteSectionStopAreaDistanceMax();
+		} else {
+			log.warn("Invalid");
+		}
+		return distanceMax;
+	}
+
+
+	public static TransportModeParameters getModeParameters(Context context, String mode) {
+		// find transportMode :
+		String modeKey = "getMode" + mode;
+		try {
+			ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
+			Method method = parameters.getClass().getMethod(modeKey);
+			return (TransportModeParameters) method.invoke(parameters);
+		} catch (Exception e) {
+			log.error("unknown mode " + mode, e);
+		}
+		return null; //modeDefault;
+	}
+
+	private Coordinate getCoordinateFromScheduledStopPoint(ScheduledStopPoint scheduledStopPoint) {
+		if (scheduledStopPoint == null || scheduledStopPoint.getContainedInStopAreaRef() == null) {
+			return null;
+		}
+		StopArea stopArea = scheduledStopPoint.getContainedInStopAreaRef().getObject();
+		if (stopArea == null || stopArea.getLongitude() == null || stopArea.getLatitude() == null) {
+			return null;
+		}
+		return new Coordinate(stopArea.getLongitude().doubleValue(), stopArea.getLatitude().doubleValue());
+	}
+
+
 }

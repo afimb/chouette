@@ -221,7 +221,6 @@ public class Referential implements java.io.Serializable {
 				jp.getVehicleJourneys().clear();
 				jp.getRouteSections().clear();
 				jp.getFootnotes().clear();
-				jp.getRouteSections().clear();
 			}
 			for (VehicleJourney vj : vehicleJourneys.values()) {
 				for(VehicleJourneyAtStop vjas : vj.getVehicleJourneyAtStops()) {
