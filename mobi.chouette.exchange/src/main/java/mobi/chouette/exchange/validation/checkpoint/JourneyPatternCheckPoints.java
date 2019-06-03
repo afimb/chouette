@@ -48,6 +48,10 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 		if (!sourceFile)
 			initCheckPoint(context, JOURNEY_PATTERN_2, SEVERITY.E);
 		initCheckPoint(context, ROUTE_SECTION_1, SEVERITY.W);
+		initCheckPoint(context, ROUTE_SECTION_2_1, SEVERITY.W);
+		prepareCheckPoint(context, ROUTE_SECTION_2_1);
+		initCheckPoint(context, ROUTE_SECTION_2_2, SEVERITY.W);
+		prepareCheckPoint(context, ROUTE_SECTION_2_2);
 		prepareCheckPoint(context, JOURNEY_PATTERN_3);
 		initCheckPoint(context, JOURNEY_PATTERN_3, SEVERITY.W);
 		prepareCheckPoint(context, JOURNEY_PATTERN_4);
@@ -231,7 +235,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 				DataLocation targetLocation = buildLocation(context, fromStopArea);
 
 				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-				reporter.addCheckPointReportError(context, ROUTE_SECTION_1, location, String.valueOf(distance),
+				reporter.addCheckPointReportError(context, ROUTE_SECTION_2_1, location, String.valueOf(distance),
 						String.valueOf(distanceMax), targetLocation);
 			}
 
@@ -248,7 +252,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 				DataLocation targetLocation = buildLocation(context, fromStopArea);
 
 				ValidationReporter reporter = ValidationReporter.Factory.getInstance();
-				reporter.addCheckPointReportError(context, ROUTE_SECTION_1, location, String.valueOf(distance),
+				reporter.addCheckPointReportError(context, ROUTE_SECTION_2_2, location, String.valueOf(distance),
 						String.valueOf(distanceMax), targetLocation);
 			}
 		}

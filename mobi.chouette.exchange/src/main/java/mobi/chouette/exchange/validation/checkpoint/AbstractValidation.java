@@ -91,6 +91,8 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static final String ROUTE_RB_3 = "3-Route-rutebanken-3";
 	protected static final String ROUTE_RB_4 = "3-Route-rutebanken-4";
 	protected static final String ROUTE_SECTION_1 = "3-RouteSection-1";
+	protected static final String ROUTE_SECTION_2_1 = "3-RouteSection-2-1";
+	protected static final String ROUTE_SECTION_2_2 = "3-RouteSection-2-2";
 	protected static final String JOURNEY_PATTERN_1 = "3-JourneyPattern-1";
 	protected static final String JOURNEY_PATTERN_2 = "3-JourneyPattern-2";
 	protected static final String JOURNEY_PATTERN_3 = "3-JourneyPattern-3";
@@ -776,7 +778,9 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			testLevel3FileList.add(new TestDescription(3, VEHICLE_JOURNEY_8, "WARNING"));
 			
 			testLevel3FileList.add(new TestDescription(3, ROUTE_SECTION_1, "WARNING"));
-			
+			testLevel3FileList.add(new TestDescription(3, ROUTE_SECTION_2_1, "WARNING"));
+			testLevel3FileList.add(new TestDescription(3, ROUTE_SECTION_2_2, "WARNING"));
+
 //			testLevel3FileList.add(new TestDescription(3, FACILITY_1, "WARNING"));
 //			testLevel3FileList.add(new TestDescription(3, FACILITY_2, "WARNING"));
 
@@ -860,7 +864,9 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			testLevel3DatabaseList.add(new TestDescription(3, VEHICLE_JOURNEY_8, "WARNING"));
 			
 			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_SECTION_1, "WARNING"));
-			
+			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_SECTION_2_1, "WARNING"));
+			testLevel3DatabaseList.add(new TestDescription(3, ROUTE_SECTION_2_2, "WARNING"));
+
 //			testLevel3DatabaseList.add(new TestDescription(3, FACILITY_1, "WARNING"));
 //			testLevel3DatabaseList.add(new TestDescription(3, FACILITY_2, "WARNING"));
 			

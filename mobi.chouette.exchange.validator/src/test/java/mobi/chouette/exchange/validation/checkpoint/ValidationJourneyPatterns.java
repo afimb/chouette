@@ -411,8 +411,8 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 		
-		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-RouteSection-1");
-		Assert.assertNotNull(checkPointReport, "report must contain a 3-RouteSection-1 checkPoint");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-RouteSection-2-1");
+		Assert.assertNotNull(checkPointReport, "report must contain a 3-RouteSection-2-1 checkPoint");
 
 		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.OK, " checkPointReport must be ok");
 		
@@ -430,8 +430,8 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		ValidationReport report2 = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report2.getCheckPoints().size(), 0, " report must have items");
 		
-		CheckPointReport checkPointReport2 = report2.findCheckPointReportByName("3-RouteSection-1");
-		Assert.assertNotNull(checkPointReport2, "report must contain a 3-RouteSection-1 checkPoint");
+		CheckPointReport checkPointReport2 = report2.findCheckPointReportByName("3-RouteSection-2-2");
+		Assert.assertNotNull(checkPointReport2, "report must contain a 3-RouteSection-2-2 checkPoint");
 		
 		Assert.assertEquals(checkPointReport2.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
 		
