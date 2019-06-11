@@ -35,7 +35,7 @@ public class GtfsShapeProducer extends AbstractProducer {
 
 	public boolean save(JourneyPattern neptuneObject, String prefix, boolean keepOriginalId) {
 		boolean result = true;
-		if (neptuneObject.hasCompleteValidRouteSections())
+		if (!neptuneObject.hasCompleteValidRouteSections())
 			return false;
 		int shapePtSequence = 0;
 		int startIndex = 0;
@@ -53,7 +53,7 @@ public class GtfsShapeProducer extends AbstractProducer {
 
 			if (ls == null || !rs.isRouteSectionValid()) {
 				result = false;
-				log.warn("Discarding shape journeypattern with unexpected invalid RouteSection: " + rs);
+				log.warn("Discarding shape for journeypattern with unexpected invalid RouteSection: " + rs);
 				continue;
 			}
 			// CoordinateSequence cs = ls.getCoordinateSequence();
