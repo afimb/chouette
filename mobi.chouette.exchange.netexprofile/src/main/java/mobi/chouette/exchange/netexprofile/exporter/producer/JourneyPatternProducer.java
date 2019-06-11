@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.GeometryUtil;
 import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
@@ -19,12 +18,10 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.ScheduledStopPoint;
-import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineString;
 import net.opengis.gml._3.LineStringType;
 import org.apache.commons.collections.CollectionUtils;
@@ -51,9 +48,6 @@ import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.SERVIC
 public class JourneyPatternProducer extends NetexProducer implements NetexEntityProducer<org.rutebanken.netex.model.JourneyPattern, mobi.chouette.model.JourneyPattern> {
 
 	private static ContactStructureProducer contactStructureProducer = new ContactStructureProducer();
-	private Integer maxMetersFromQuay;
-
-	private static final int DEFAULT_MAX_METERS_FROM_QUAY = 100;
 
 	@Override
 	public org.rutebanken.netex.model.JourneyPattern produce(Context context, mobi.chouette.model.JourneyPattern neptuneJourneyPattern) {
@@ -223,7 +217,7 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 				// Only export geometry if route section is a reasonable match for stop areas in both ends. Mimics checks in validation phase which ideally
 				// should be ERROR level and halt further processing. This is currently not realistic because too many parties are sending too many faulty
 				// route sections and seem unable to fix or remove these without also removing valid ones.
-				if (isLineStringGoodMatchForQuays(geometry, fromSSP, toSSP)) {
+				if (routeSection.isRouteSectionValid()) {
 
 					LineStringType gmlLineString = JtsGmlConverter.fromJtsToGml(geometry, gmlId);
 					LinkSequenceProjection linkSequenceProjection = netexFactory.createLinkSequenceProjection().withLineString(gmlLineString);
@@ -242,56 +236,6 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 			exportableNetexData.getSharedServiceLinks().put(serviceLink.getId(), serviceLink);
 		}
 
-	}
-
-	protected boolean isLineStringGoodMatchForQuays(LineString lineString, ScheduledStopPoint fromSSP, ScheduledStopPoint toSSP) {
-		if (lineString != null && lineString.getCoordinates() != null && lineString.getCoordinates().length > 0) {
-			Coordinate lineStart = lineString.getCoordinates()[0];
-			Coordinate lineEnd = lineString.getCoordinates()[lineString.getCoordinates().length - 1];
-
-			Coordinate from = getCoordinateFromScheduledStopPoint(fromSSP);
-			Coordinate to = getCoordinateFromScheduledStopPoint(toSSP);
-
-			if (from == null || to == null) {
-				return false;
-			}
-
-			double distanceFromStart = GeometryUtil.calculateDistanceInMeters(from.x, from.y, lineStart.x, lineStart.y);
-			double distanceFromEnd = GeometryUtil.calculateDistanceInMeters(to.x, to.y, lineEnd.x, lineEnd.y);
-			int maxMetersFromQuay = getMaxMetersFromQuay();
-			if (maxMetersFromQuay < 0) {
-				return true;
-			}
-			if (distanceFromStart > maxMetersFromQuay || distanceFromEnd > maxMetersFromQuay) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	private Coordinate getCoordinateFromScheduledStopPoint(ScheduledStopPoint scheduledStopPoint) {
-		if (scheduledStopPoint == null || scheduledStopPoint.getContainedInStopAreaRef() == null) {
-			return null;
-		}
-		StopArea stopArea = scheduledStopPoint.getContainedInStopAreaRef().getObject();
-		if (stopArea == null || stopArea.getLongitude() == null || stopArea.getLatitude() == null) {
-			return null;
-		}
-		return new Coordinate(stopArea.getLongitude().doubleValue(), stopArea.getLatitude().doubleValue());
-	}
-
-	private int getMaxMetersFromQuay() {
-		if (maxMetersFromQuay == null) {
-			String maxAsString = System.getProperty("iev.route.section.export.stop.area.distance.max.meters");
-			if (maxAsString != null) {
-				maxMetersFromQuay = Integer.valueOf(maxAsString);
-				log.info("Using configured value for iev.route.section.export.stop.area.distance.max.meters: " + maxMetersFromQuay);
-			} else {
-				maxMetersFromQuay = DEFAULT_MAX_METERS_FROM_QUAY;
-				log.info("No value configured iev.route.section.export.stop.area.distance.max.meters, using default: " + maxMetersFromQuay);
-			}
-		}
-		return maxMetersFromQuay;
 	}
 
 }

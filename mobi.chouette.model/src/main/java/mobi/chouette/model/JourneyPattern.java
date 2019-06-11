@@ -36,7 +36,7 @@ import org.hibernate.annotations.Parameter;
  * <p/>
  * Neptune mapping : JourneyPattern <br/>
  * Gtfs mapping : none
- * 
+ *
  */
 @Entity
 @Table(name = "journey_patterns")
@@ -47,7 +47,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-	@GenericGenerator(name = "journey_patterns_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
+	@GenericGenerator(name = "journey_patterns_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator",
 		parameters = {
 			@Parameter(name = "sequence_name", value = "journey_patterns_id_seq"),
 			@Parameter(name = "increment_size", value = "20") })
@@ -55,10 +55,10 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	@Id
 	@Column(name = "id", nullable = false)
 	protected Long id;
-	
+
 	/**
 	 * name
-	 * 
+	 *
 	 * @return The actual value
 	 */
 	@Getter
@@ -68,7 +68,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	/**
 	 * set name <br/>
 	 * truncated to 255 characters if too long
-	 * 
+	 *
 	 * @param value
 	 *            New value
 	 */
@@ -78,7 +78,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 
 	/**
 	 * comment
-	 * 
+	 *
 	 * @return The actual value
 	 */
 	@Getter
@@ -88,7 +88,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	/**
 	 * set comment <br/>
 	 * truncated to 255 characters if too long
-	 * 
+	 *
 	 * @param value
 	 *            New value
 	 */
@@ -98,7 +98,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 
 	/**
 	 * registration number
-	 * 
+	 *
 	 * @return The actual value
 	 */
 	@Getter
@@ -108,7 +108,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	/**
 	 * set registration number <br/>
 	 * truncated to 255 characters if too long
-	 * 
+	 *
 	 * @param value
 	 *            New value
 	 */
@@ -118,7 +118,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 
 	/**
 	 * published name
-	 * 
+	 *
 	 * @return The actual value
 	 */
 	@Getter
@@ -128,7 +128,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	/**
 	 * set published name <br/>
 	 * truncated to 255 characters if too long
-	 * 
+	 *
 	 * @param value
 	 *            New value
 	 */
@@ -136,10 +136,10 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 		publishedName = StringUtils.abbreviate(value, 255);
 	}
 
-	
+
 	/**
 	 * Section status
-	 * 
+	 *
 	 * @param sectionStatus
 	 *            New value
 	 * @return The actual value
@@ -150,10 +150,10 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "section_status")
 	private SectionStatusEnum sectionStatus = SectionStatusEnum.Todo;
-	
+
 	/**
 	 * route reverse reference
-	 * 
+	 *
 	 * @return The actual value
 	 */
 	@Getter
@@ -163,7 +163,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 
 	/**
 	 * set route reverse reference
-	 * 
+	 *
 	 * @param route
 	 */
 	public void setRoute(Route route) {
@@ -178,7 +178,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 
 	/**
 	 * first stop
-	 * 
+	 *
 	 * @param departureStopPoint
 	 *            New value
 	 * @return The actual value
@@ -191,7 +191,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 
 	/**
 	 * last stop
-	 * 
+	 *
 	 * @param arrivalStopPoint
 	 *            New value
 	 * @return The actual value
@@ -204,7 +204,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 
 	/**
 	 * stop list
-	 * 
+	 *
 	 * @param stopPoints
 	 *            New value
 	 * @return The actual value
@@ -218,7 +218,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 
 	/**
 	 * vehicle journeys
-	 * 
+	 *
 	 * @param vehicleJourneys
 	 *            New value
 	 * @return The actual value
@@ -231,12 +231,12 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 
 	/**
 	 * route sections
-	 * 
+	 *
 	 * @param routeSections
 	 *            New value
 	 * @return The actual value
 	 * @since 3.2.0
-	 * 
+	 *
 	 */
 	@Getter
 	@Setter
@@ -244,10 +244,10 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	@OrderColumn(name="rank")
 	@JoinTable(name = "journey_pattern_sections", joinColumns = { @JoinColumn(name = "journey_pattern_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "route_section_id", nullable = false, updatable = false) })
 	private List<RouteSection> routeSections = new ArrayList<RouteSection>(0);
-	
+
 	/**
 	 * add a stop point if not already present
-	 * 
+	 *
 	 * @param stopPoint
 	 */
 	public void addStopPoint(StopPoint stopPoint) {
@@ -258,7 +258,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 
 	/**
 	 * remove a stop point
-	 * 
+	 *
 	 * @param stopPoint
 	 */
 	public void removeStopPoint(StopPoint stopPoint) {
@@ -266,10 +266,10 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 			stopPoints.remove(stopPoint);
 		}
 	}
-	
+
 	/**
 	 * footnotes refs
-	 * 
+	 *
 	 * @param footnotes
 	 *            New value
 	 * @return The actual value
@@ -286,6 +286,14 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	public boolean hasCompleteRouteSections() {
 		if (getRouteSections().size() == (getStopPoints().size() - 1)) {
 			return getRouteSections().stream().map(RouteSection::getInputGeometry).allMatch(Objects::nonNull);
+		}
+		return false;
+	}
+
+
+	public boolean hasCompleteValidRouteSections() {
+		if (getRouteSections().size() == (getStopPoints().size() - 1)) {
+			return getRouteSections().stream().map(rs -> rs.isRouteSectionValid()).allMatch(Boolean::booleanValue);
 		}
 		return false;
 	}
