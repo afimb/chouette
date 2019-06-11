@@ -191,7 +191,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 			}
 		}
 		double distanceMax = mode.getRouteSectionStopAreaDistanceMax();
-		if (distanceMax <=0 ){
+		if (distanceMax <= 0) {
 			// No use unless max distance has been specified
 			return;
 		}
@@ -206,7 +206,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 
 			StopArea fromStopArea = rs.getFromScheduledStopPoint().getContainedInStopAreaRef().getObject();
 			StopArea toStopArea = rs.getToScheduledStopPoint().getContainedInStopAreaRef().getObject();
-			if (fromStopArea == null) {
+			if (fromStopArea == null || fromStopArea.getLatitude() == null) {
 				continue;
 			}
 
@@ -238,7 +238,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 			}
 
 
-			if (toStopArea == null) {
+			if (toStopArea == null || toStopArea.getLatitude() == null) {
 				continue;
 			}
 			// Arrival
