@@ -130,7 +130,7 @@ public class RouteSection extends NeptuneIdentifiedObject {
 				log.info("Using configured value for iev.route.section.stop.area.distance.max.meters: " + maxMetersFromQuay);
 			} else {
 				maxMetersFromQuay = DEFAULT_MAX_METERS_FROM_QUAY;
-				log.info("No value configured iev.route.section.export.stop.area.distance.max.meters, using default: " + maxMetersFromQuay);
+				log.info("No value configured iev.route.section.stop.area.distance.max.meters, using default: " + maxMetersFromQuay);
 			}
 		}
 		return maxMetersFromQuay;
@@ -161,8 +161,8 @@ public class RouteSection extends NeptuneIdentifiedObject {
 			if (maxMeters < 0) {
 				return true;
 			}
-			if (distanceFromStart > maxMeters || distanceFromEnd > maxMeters) {
-				return false;
+			if (distanceFromStart <= maxMeters && distanceFromEnd <= maxMeters) {
+				return true;
 			}
 		}
 		return false;
