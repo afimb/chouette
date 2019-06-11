@@ -118,11 +118,11 @@ public class RouteSection extends NeptuneIdentifiedObject {
 	private ScheduledStopPoint toScheduledStopPoint;
 
 	@Transient
-	private Integer maxMetersFromQuay;
+	private static Integer maxMetersFromQuay;
 	private static final int DEFAULT_MAX_METERS_FROM_QUAY = 100;
 
 
-	private int getMaxMetersFromQuay() {
+	private static int getMaxMetersFromQuay() {
 		if (maxMetersFromQuay == null) {
 			String maxAsString = System.getProperty("iev.route.section.stop.area.distance.max.meters");
 			if (maxAsString != null) {
@@ -137,11 +137,9 @@ public class RouteSection extends NeptuneIdentifiedObject {
 	}
 
 	public boolean isRouteSectionValid() {
-		LineString geometry;
-		if (getNoProcessing()) {
+		LineString geometry = getProcessedGeometry();
+		if (Boolean.TRUE.equals(getNoProcessing()) || getProcessedGeometry() == null) {
 			geometry = getInputGeometry();
-		} else {
-			geometry = getProcessedGeometry();
 		}
 
 		if (geometry != null && geometry.getCoordinates() != null && geometry.getCoordinates().length > 0) {

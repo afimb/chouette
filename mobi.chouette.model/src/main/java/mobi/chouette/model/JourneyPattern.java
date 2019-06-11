@@ -293,7 +293,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 
 	public boolean hasCompleteValidRouteSections() {
 		if (getRouteSections().size() == (getStopPoints().size() - 1)) {
-			return getRouteSections().stream().map(rs -> rs.isRouteSectionValid()).allMatch(Boolean::booleanValue);
+			return getRouteSections().stream().allMatch(RouteSection::isRouteSectionValid);
 		}
 		return false;
 	}

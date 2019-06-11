@@ -53,6 +53,7 @@ public class GtfsShapeProducer extends AbstractProducer {
 
 			if (ls == null || !rs.isRouteSectionValid()) {
 				result = false;
+				log.warn("Discarding shape journeypattern with unexpected invalid RouteSection: " + rs);
 				continue;
 			}
 			// CoordinateSequence cs = ls.getCoordinateSequence();
