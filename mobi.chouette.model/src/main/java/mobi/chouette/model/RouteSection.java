@@ -165,7 +165,7 @@ public class RouteSection extends NeptuneIdentifiedObject {
 				return false;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	private Coordinate getCoordinateFromScheduledStopPoint(ScheduledStopPoint scheduledStopPoint) {
