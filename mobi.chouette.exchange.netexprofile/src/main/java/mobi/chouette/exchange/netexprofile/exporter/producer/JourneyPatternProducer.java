@@ -223,7 +223,7 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 				// Only export geometry if route section is a reasonable match for stop areas in both ends. Mimics checks in validation phase which ideally
 				// should be ERROR level and halt further processing. This is currently not realistic because too many parties are sending too many faulty
 				// route sections and seem unable to fix or remove these without also removing valid ones.
-				if (isLineStringGoodMatchForQuays(context, geometry, fromSSP, toSSP)) {
+				if (isLineStringGoodMatchForQuays(geometry, fromSSP, toSSP)) {
 
 					LineStringType gmlLineString = JtsGmlConverter.fromJtsToGml(geometry, gmlId);
 					LinkSequenceProjection linkSequenceProjection = netexFactory.createLinkSequenceProjection().withLineString(gmlLineString);
@@ -244,7 +244,7 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 
 	}
 
-	protected boolean isLineStringGoodMatchForQuays(Context context, LineString lineString, ScheduledStopPoint fromSSP, ScheduledStopPoint toSSP) {
+	protected boolean isLineStringGoodMatchForQuays(LineString lineString, ScheduledStopPoint fromSSP, ScheduledStopPoint toSSP) {
 		if (lineString != null && lineString.getCoordinates() != null && lineString.getCoordinates().length > 0) {
 			Coordinate lineStart = lineString.getCoordinates()[0];
 			Coordinate lineEnd = lineString.getCoordinates()[lineString.getCoordinates().length - 1];
@@ -282,13 +282,13 @@ public class JourneyPatternProducer extends NetexProducer implements NetexEntity
 
 	private int getMaxMetersFromQuay() {
 		if (maxMetersFromQuay == null) {
-			String maxAsString = System.getProperty("iev.route.section.netex.export.quay.distance.max.meters");
+			String maxAsString = System.getProperty("iev.route.section.export.stop.area.distance.max.meters");
 			if (maxAsString != null) {
 				maxMetersFromQuay = Integer.valueOf(maxAsString);
-				log.info("Using configured value for iev.route.section.netex.export.quay.distance.max.meters: " + maxMetersFromQuay);
+				log.info("Using configured value for iev.route.section.export.stop.area.distance.max.meters: " + maxMetersFromQuay);
 			} else {
 				maxMetersFromQuay = DEFAULT_MAX_METERS_FROM_QUAY;
-				log.info("No value configured iev.route.section.generate.quay.distance.max.meters, using default: " + maxMetersFromQuay);
+				log.info("No value configured iev.route.section.export.stop.area.distance.max.meters, using default: " + maxMetersFromQuay);
 			}
 		}
 		return maxMetersFromQuay;
