@@ -105,6 +105,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			oldValue.setZipCode(newValue.getZipCode());
 			oldValue.setCityName(newValue.getCityName());
 			oldValue.setStreetName(newValue.getStreetName());
+			oldValue.setCompassBearing(newValue.getCompassBearing());
 			oldValue.setDetached(false);
 		} else {
 			twoDatabaseStopAreaTwoTest(validationReporter, context, oldValue, newValue, data);
@@ -182,6 +183,9 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			}
 			if (newValue.getStreetName() != null && !newValue.getStreetName().equals(oldValue.getStreetName())) {
 				oldValue.setStreetName(newValue.getStreetName());
+			}
+			if (newValue.getCompassBearing() != null && !newValue.getCompassBearing().equals(oldValue.getCompassBearing())) {
+				oldValue.setCompassBearing(newValue.getCompassBearing());
 			}
 		}
 

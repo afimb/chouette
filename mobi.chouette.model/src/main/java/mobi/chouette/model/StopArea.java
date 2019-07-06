@@ -279,6 +279,20 @@ public class StopArea extends NeptuneLocalizedObject {
 	private Boolean stairsAvailable = false;
 
 	/**
+	 * general compass bearing of traffic to stoparea
+	 * 
+	 *
+	 * 
+	 * @param compassBearing in degrees from 1 to 360
+	 *           
+	
+	 */
+	@Getter
+	@Setter
+	@Column(name = "compass_bearing")
+	private Integer compassBearing;
+
+	/**
 	 * coded user needs as binary map<br/>
 	 * 
 	 * use following methods for easier access :
