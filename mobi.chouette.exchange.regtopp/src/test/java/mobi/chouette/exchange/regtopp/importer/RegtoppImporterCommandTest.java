@@ -324,7 +324,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		Assert.assertNotNull(line, "Line not found");
 
 		// Find vehicle journey
-		VehicleJourney vehicleJourney = vjDao.findByObjectId("TST:VehicleJourney:00760015-2016-01-18");
+		VehicleJourney vehicleJourney = vjDao.findByObjectId("TST:ServiceJourney:00760015-2016-01-18");
 		Assert.assertNotNull(vehicleJourney, "VehicleJourney not found");
 		List<Footnote> footnotes = vehicleJourney.getFootnotes();
 		Assert.assertNotNull(footnotes, "footnotes list null");
