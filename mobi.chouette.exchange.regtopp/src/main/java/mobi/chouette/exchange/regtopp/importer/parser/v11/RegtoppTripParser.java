@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.regtopp.importer.parser.v11;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
@@ -95,7 +94,7 @@ public class RegtoppTripParser extends LineSpecificParser {
 					String chouetteJourneyPatternId = ObjectIdCreator.createJourneyPatternId(configuration,routeKey);
 					JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, chouetteJourneyPatternId);
 
-					String chouetteVehicleJourneyId = ObjectIdCreator.createVehicleJourneyId(configuration, trip.getLineId(), trip.getTripId(), calendarStartDate);
+					String chouetteVehicleJourneyId = ObjectIdCreator.createServiceJourneyId(configuration, trip.getLineId(), trip.getTripId(), calendarStartDate);
 					VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, chouetteVehicleJourneyId);
 
 					// Add operator company

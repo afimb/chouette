@@ -78,7 +78,7 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 					String chouetteJourneyPatternId = ObjectIdCreator.createJourneyPatternId(configuration, routeKey);
 					JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, chouetteJourneyPatternId);
 
-					String chouetteVehicleJourneyId = ObjectIdCreator.createVehicleJourneyId(configuration, trip.getLineId(), trip.getTripId(),
+					String chouetteVehicleJourneyId = ObjectIdCreator.createServiceJourneyId(configuration, trip.getLineId(), trip.getTripId(),
 							calendarStartDate);
 					VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, chouetteVehicleJourneyId);
 

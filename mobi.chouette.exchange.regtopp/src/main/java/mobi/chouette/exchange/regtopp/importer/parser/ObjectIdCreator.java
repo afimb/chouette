@@ -96,8 +96,8 @@ public abstract class ObjectIdCreator {
 
 	}
 
-	public static String createVehicleJourneyId(RegtoppImportParameters configuration, String lineId, String tripId, String calendarStartDate) {
-		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.VEHICLEJOURNEY_KEY,
+	public static String createServiceJourneyId(RegtoppImportParameters configuration, String lineId, String tripId, String calendarStartDate) {
+		return ObjectIdCreator.composeGenericObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.SERVICEJOURNEY_KEY,
 				lineId + tripId +"-"+ calendarStartDate);
 	}
 

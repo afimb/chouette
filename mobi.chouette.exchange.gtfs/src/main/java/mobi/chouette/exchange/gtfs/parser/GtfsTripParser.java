@@ -525,7 +525,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				continue;
 
 			String objectId = AbstractConverter.composeObjectId(configuration,
-					VehicleJourney.VEHICLEJOURNEY_KEY, gtfsTrip.getTripId(), log);
+					VehicleJourney.SERVICEJOURNEY_KEY, gtfsTrip.getTripId(), log);
 			VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, objectId);
 			convert(context, gtfsTrip, vehicleJourney);
 

@@ -118,7 +118,7 @@ public class RegtoppLineParserTest {
 		jp.setArrivalStopPoint(jp.getStopPoints().get(jp.getStopPoints().size()-1));
 		
 		
-		VehicleJourney vj = ObjectFactory.getVehicleJourney(referential, ObjectIdCreator.composeGenericObjectId("XYZ", ObjectIdTypes.VEHICLEJOURNEY_KEY, id));
+		VehicleJourney vj = ObjectFactory.getVehicleJourney(referential, ObjectIdCreator.composeGenericObjectId("XYZ", ObjectIdTypes.SERVICEJOURNEY_KEY, id));
 	
 		vj.setRoute(route);
 		vj.setJourneyPattern(jp);

@@ -79,12 +79,12 @@ public class InterchangeDAOTest extends Arquillian {
 			interchange.setName("Test interchange");
 			interchange.setPriority(1);
 
-			interchange.setConsumerVehicleJourneyObjectid("TST:" + Interchange.VEHICLEJOURNEY_KEY + ":1");
+			interchange.setConsumerVehicleJourneyObjectid("TST:" + Interchange.SERVICEJOURNEY_KEY + ":1");
 			interchange.setConsumerStopPointObjectid("TST:" + ObjectIdTypes.SCHEDULED_STOP_POINT_KEY + ":1");
 			interchange.setConsumerVisitNumber(2);
 
 
-			interchange.setFeederVehicleJourneyObjectid("TST:" + Interchange.VEHICLEJOURNEY_KEY + ":2");
+			interchange.setFeederVehicleJourneyObjectid("TST:" + Interchange.SERVICEJOURNEY_KEY + ":2");
 			interchange.setFeederStopPointObjectid("TST:" + ObjectIdTypes.SCHEDULED_STOP_POINT_KEY + ":2");
 			interchange.setFeederVisitNumber(3);
 
@@ -154,11 +154,11 @@ public class InterchangeDAOTest extends Arquillian {
 			
 			
 			VehicleJourney j1 = new VehicleJourney();
-			j1.setObjectId("TST:"+VehicleJourney.VEHICLEJOURNEY_KEY+":1");
+			j1.setObjectId("TST:"+VehicleJourney.SERVICEJOURNEY_KEY+":1");
 			vehicleJourneyDao.create(j1);
 			
 			VehicleJourney j2 = new VehicleJourney();
-			j2.setObjectId("TST:"+VehicleJourney.VEHICLEJOURNEY_KEY+":2");
+			j2.setObjectId("TST:"+VehicleJourney.SERVICEJOURNEY_KEY+":2");
 			vehicleJourneyDao.create(j2);
 			
 			

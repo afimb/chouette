@@ -79,9 +79,9 @@ public interface ObjectIdTypes {
 	    */
 	   public static final String TIMEBAND_KEY = "Timeband";
 	   /**
-	    * default objectId type for vehicle journeys
+	    * default objectId type for service journeys
 	    */
-	   public static final String VEHICLEJOURNEY_KEY = "VehicleJourney";
+	   public static final String SERVICEJOURNEY_KEY = "ServiceJourney";
 
 	   /**
 	    * default objectId type for vehicle journeys 
