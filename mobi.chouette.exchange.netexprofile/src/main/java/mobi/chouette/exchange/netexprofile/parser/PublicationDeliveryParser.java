@@ -50,6 +50,7 @@ import org.rutebanken.netex.model.TariffZonesInFrame_RelStructure;
 import org.rutebanken.netex.model.TimetableFrame;
 import org.rutebanken.netex.model.TypesOfValueInFrame_RelStructure;
 import org.rutebanken.netex.model.ValidBetween;
+import org.rutebanken.netex.model.VehicleScheduleFrame;
 
 @Log4j
 public class PublicationDeliveryParser extends NetexParser implements Parser, Constant {
@@ -121,6 +122,11 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 
 			if (!isCommonDelivery) {
 				parseTimetableFrames(context, timetableFrames);
+			}
+
+			List<VehicleScheduleFrame> vehicleScheduleFrames = NetexObjectUtil.getFrames(VehicleScheduleFrame.class, dataObjectFrames);
+			if (!CollectionUtils.isEmpty(vehicleScheduleFrames)) {
+				log.info("Ignoring VehicleScheduleFrames for referential: "+ referential);
 			}
 		}
 
