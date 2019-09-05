@@ -94,7 +94,7 @@ public class NetexParserUtils extends ParserUtils {
 						return TransportSubModeNameEnum.DomesticFlight;
 					case HELICOPTER_SERVICE:
 						return TransportSubModeNameEnum.HelicopterService;
-					case INTERCONTINENTAL_FLIGHT:
+					case INTERNATIONAL_FLIGHT:
 						return TransportSubModeNameEnum.InternationalFlight;
 					default:
 						log.error("Unsupported air sub mode " + mode);
