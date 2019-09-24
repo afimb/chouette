@@ -1,5 +1,7 @@
 package mobi.chouette.service;
 
+import java.util.List;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.dao.ReferentialDAO;
 import mobi.chouette.model.dto.ReferentialInfo;
@@ -146,5 +148,9 @@ public class ReferentialService {
         }
 
         referentialDAO.deleteReferential(referentialInfo);
+    }
+
+    public List<String> getReferentialCodes() {
+        return referentialDAO.getReferentials();
     }
 }
