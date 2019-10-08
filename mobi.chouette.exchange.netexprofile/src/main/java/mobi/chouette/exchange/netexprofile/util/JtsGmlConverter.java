@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.netexprofile.util;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.log4j.Log4j;
@@ -12,6 +13,7 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import net.opengis.gml._3.DirectPositionListType;
+import net.opengis.gml._3.DirectPositionType;
 import net.opengis.gml._3.LineStringType;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -28,8 +30,28 @@ public class JtsGmlConverter {
 	private static GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), DEFAULT_SRID);
 
 	public static LineString fromGmlToJts(LineStringType gml) {
-		List<Double> values = gml.getPosList().getValue();
-		CoordinateSequence coordinateSequence = convert(values);
+		List<Double> coordinateList;
+		if (gml.getPosList() != null) {
+			coordinateList = gml.getPosList().getValue();
+		} else if (gml.getPosOrPointProperty() != null) {
+			coordinateList = new ArrayList<>();
+			for (Object o : gml.getPosOrPointProperty()) {
+				if (o instanceof DirectPositionType) {
+					DirectPositionType directPositionType = (DirectPositionType) o;
+					coordinateList.addAll(directPositionType.getValue());
+				} else {
+					// what else could this be?
+					log.warn("Got unrecognized class (" + o.getClass() + ") for PosOrPointProperty for gmlString: " + gml.getId());
+				}
+			}
+
+		} else {
+			log.warn("Got LineStringType without posList or PosOrPointProperty: " + gml.getId());
+			return null;
+		}
+
+
+		CoordinateSequence coordinateSequence = convert(coordinateList);
 		LineString jts = new LineString(coordinateSequence, geometryFactory);
 
 		if (!StringUtils.isEmpty(gml.getSrsName())) {
