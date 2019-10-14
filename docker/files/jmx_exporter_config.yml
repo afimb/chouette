@@ -1,28 +1,23 @@
+# Adapted from https://github.com/prometheus/jmx_exporter/blob/master/example_configs/wildfly-10.yaml
 ---
 lowercaseOutputName: true
 lowercaseOutputLabelNames: true
 whitelistObjectNames:
-  - 'org.apache.camel:*'
+  # Whitelist objects to be collected, for performance reason
+  # see https://github.com/prometheus/jmx_exporter/issues/246#issuecomment-367573931
+  # Each object in the rules below has to be added to whitelistObjectNames too !
+  # note that rules use regex (like "foo.*", whereas the whitelist use globbing expressions (like "foo*")
+  - "jboss.as:subsystem=datasources,data-source=*,statistics=*"
+  - "jboss.as:subsystem=datasources,xa-data-source=*,statistics=*"
+  - "jboss.as:subsystem=transactions*"
+  # - "java.lang:*"
 rules:
-  - pattern: '^org.apache.camel<context=(\w+), type=routes, name=\"(\S+)\"><>((?:Min|Mean|Max|Last|Delta)(?:ProcessingTime)):'
-    name: camel_routes_$3
+  - pattern: "^jboss.as<subsystem=datasources, (?:xa-)*data-source=(iev|chouette), statistics=(.+)><>(.+):"
+    attrNameSnakeCase: true
+    name: wildfly_datasource_$2_$3
     labels:
-      name: $2
-      context: $1
-  - pattern: '^org.apache.camel<context=(\w+), type=routes, name=\"(\S+)\"><>(TotalProcessingTime):'
-    type: COUNTER
-    name: camel_routes_$3
-    labels:
-      name: $2
-      context: $1
-  - pattern: '^org.apache.camel<context=(\w+), type=routes, name=\"(\S+)\"><>(ExchangesInflight|LastProcessingTime):'
-    name: camel_routes_$3
-    labels:
-      name: $2
-      context: $1
-  - pattern: '^org.apache.camel<context=(\w+), type=routes, name=\"(\S+)\"><>((?:Exchanges(?:Completed|Failed|Total))|FailuresHandled):'
-    type: COUNTER
-    name: camel_routes_$3
-    labels:
-      name: $2
-      context: $1
+      name: $1
+
+  - pattern: "^jboss.as<subsystem=transactions><>number_of_(.+):"
+    attrNameSnakeCase: true
+    name: wildfly_transaction_$1

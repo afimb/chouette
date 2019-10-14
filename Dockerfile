@@ -47,13 +47,11 @@ RUN rm -rf /opt/jboss/wildfly/standalone/configuration/standalone_xml_history \
   && mkdir -p /opt/jboss/data \
   && chown jboss:jboss /opt/jboss/data
 
-# Agent-bond setup largely copied from:
-# https://hub.docker.com/r/fabric8/java-jboss-openjdk8-jdk/~/dockerfile/
-RUN mkdir -p /opt/jboss/wildfly/agent-bond \
- && curl http://central.maven.org/maven2/io/fabric8/agent-bond-agent/1.0.2/agent-bond-agent-1.0.2.jar \
-          -o /opt/jboss/wildfly/agent-bond/agent-bond.jar \
- && chmod 444 /opt/jboss/wildfly/agent-bond/agent-bond.jar
-ADD docker/files/jmx_exporter_config.yml /opt/jboss/wildfly/agent-bond/
+# Configuration of Prometheus agent
+RUN  mkdir -p /opt/jboss/wildfly/prometheus && chown jboss:jboss /opt/jboss/wildfly/prometheus
+COPY docker/lib/jmx_prometheus_javaagent-0.12.0.jar /opt/jboss/wildfly/prometheus/jmx_prometheus_javaagent.jar
+COPY docker/files/jmx_exporter_config.yml /opt/jboss/wildfly/prometheus
+
 EXPOSE 8778 9779
 
 # Running as root, in order to get mounted volume writable:
