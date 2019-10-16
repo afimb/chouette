@@ -289,6 +289,8 @@ public class NorwayLineNetexProfileValidatorTest {
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_USE_OF_UNAPPROVED_CODESPACE, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_UNRESOLVED_EXTERNAL_REFERENCE, NOK);
 
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_NOTICE_TEXT, OK);
+
 		// Common file specific checkpoints (NOT CHECKED HERE)
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_DUPLICATE_IDS_ACROSS_LINE_FILES, OK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_COMMON_TIMETABLE_FRAME, UNCHECK);

@@ -38,6 +38,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String NSR_XMLNS = "NSR";
 
 	public static final String _1_NETEX_REFERENCE_TO_ILLEGAL_ELEMENT = "1-NETEXPROFILE-ReferenceToIllegalElement";
+	public static final String _1_NETEX_NOTICE_TEXT = "1-NETEXPROFILE-Notice-Text";
 
 	public static final String _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CUSTOMER_SERVICE_CONTACT_DETAILS = "1-NETEXPROFILE-ResourceFrame-Organisations-Operator-CustomerServiceContactDetails";
 	public static final String _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CUSTOMER_SERVICE_CONTACT_DETAILS_URL = "1-NETEXPROFILE-ResourceFrame-Organisations-Operator-CustomerServiceContactDetails-Url";
@@ -281,7 +282,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_TODATE, "W");
 		addCheckpoints(context, _1_NETEX_SERVICE_CALENDAR_FRAME_SERVICE_CALENDAR_FROMDATE_AFTER_TODATE, "E");
 		
-		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME, "E");
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME, "E");;
 
 		addCheckpoints(context, _1_NETEX_VEHICLE_SHCEDULE_FRAME_BLOCK, "E");
 		addCheckpoints(context, _1_NETEX_VEHICLE_SHCEDULE_FRAME_BLOCK_JOURNEYS, "E");
@@ -293,6 +294,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_COMMON_SERVICE_FRAME_ROUTE, "E");
 		addCheckpoints(context, _1_NETEX_COMMON_SERVICE_FRAME_SERVICE_JOURNEY_PATTERN, "E");
 
+		addCheckpoints(context, _1_NETEX_NOTICE_TEXT, "E");
 	}
 
 	private void addCheckpoints(Context context, String checkpointName, String error) {
@@ -330,6 +332,8 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS);
 			validateElementNotPresent(context, xpath, subLevel, "organisations/Authority/ContactDetails[(not(Email) or normalize-space(Email) = '') and (not(Phone) or normalize-space(Phone) = '') and (not(Url) or normalize-space(Url) = '')]",
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS_URL_OR_PHONE_OR_EMAIL);
+
+			validateNotices(context, xpath, subLevel);
 		}
 	}
 
@@ -463,6 +467,12 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 		validateElementNotPresent(context, xpath, subLevel, "serviceLinks/ServiceLink[not(FromPointRef)]", _1_NETEX_SERVICE_FRAME_SERVICE_LINK_FROMPOINTREF);
 		validateElementNotPresent(context, xpath, subLevel, "serviceLinks/ServiceLink[not(ToPointRef)]", _1_NETEX_SERVICE_FRAME_SERVICE_LINK_TOPOINTREF);
+
+		validateNotices(context, xpath, subLevel);
+	}
+
+	protected void validateNotices(Context context, XPathCompiler xpath, XdmNode subLevel) throws XPathExpressionException, SaxonApiException {
+		validateElementNotPresent(context, xpath, subLevel, "notices/Notice[not(Text)]", _1_NETEX_NOTICE_TEXT);
 	}
 
 	protected void validateCommonFrameConcepts(Context context, XPathCompiler xpath, XdmNode dom) throws XPathExpressionException, SaxonApiException {
