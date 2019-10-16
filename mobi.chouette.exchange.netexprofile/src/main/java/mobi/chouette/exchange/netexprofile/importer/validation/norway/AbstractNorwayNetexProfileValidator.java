@@ -468,7 +468,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	}
 
 	protected void validateNotices(Context context, XPathCompiler xpath, XdmNode subLevel) throws XPathExpressionException, SaxonApiException {
-		validateElementNotPresent(context, xpath, subLevel, "notices/Notice[not(Text)]", _1_NETEX_NOTICE_TEXT);
+		validateElementNotPresent(context, xpath, subLevel, "//notices/Notice[not(Text)]", _1_NETEX_NOTICE_TEXT);
 	}
 
 	protected void validateCommonFrameConcepts(Context context, XPathCompiler xpath, XdmNode dom) throws XPathExpressionException, SaxonApiException {
