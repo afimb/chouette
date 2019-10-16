@@ -332,8 +332,6 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS);
 			validateElementNotPresent(context, xpath, subLevel, "organisations/Authority/ContactDetails[(not(Email) or normalize-space(Email) = '') and (not(Phone) or normalize-space(Phone) = '') and (not(Url) or normalize-space(Url) = '')]",
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS_URL_OR_PHONE_OR_EMAIL);
-
-			validateNotices(context, xpath, subLevel);
 		}
 	}
 
@@ -467,8 +465,6 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 		validateElementNotPresent(context, xpath, subLevel, "serviceLinks/ServiceLink[not(FromPointRef)]", _1_NETEX_SERVICE_FRAME_SERVICE_LINK_FROMPOINTREF);
 		validateElementNotPresent(context, xpath, subLevel, "serviceLinks/ServiceLink[not(ToPointRef)]", _1_NETEX_SERVICE_FRAME_SERVICE_LINK_TOPOINTREF);
-
-		validateNotices(context, xpath, subLevel);
 	}
 
 	protected void validateNotices(Context context, XPathCompiler xpath, XdmNode subLevel) throws XPathExpressionException, SaxonApiException {
@@ -484,6 +480,8 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		validateElementNotPresent(context, xpath, dom, "//ValidBetween[FromDate and ToDate and ToDate < FromDate]", _1_NETEX_VALIDBETWEEN_TODATE_BEFORE_FROMDATE);
 		validateElementNotPresent(context, xpath, dom, "//AvailabilityCondition[not(FromDate) and not(ToDate)]", _1_NETEX_AVAILABILITYCONDITION_INCOMPLETE);
 		validateElementNotPresent(context, xpath, dom, "//AvailabilityCondition[FromDate and ToDate and ToDate < FromDate]", _1_NETEX_AVAILABILITYCONDITION_TODATE_BEFORE_FROMDATE);
+
+		validateNotices(context, xpath, dom);
 	}
 
 }

@@ -271,8 +271,6 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 			validateAtLeastElementPresent(context, xpath, subLevel, "blocks/Block", 1, _1_NETEX_VEHICLE_SHCEDULE_FRAME_BLOCK);
 			validateElementNotPresent(context, xpath, subLevel, "blocks/Block[not(journeys)]", _1_NETEX_VEHICLE_SHCEDULE_FRAME_BLOCK_JOURNEYS);
 			validateElementNotPresent(context, xpath, subLevel, "blocks/Block[not(dayTypes)]", _1_NETEX_VEHICLE_SHCEDULE_FRAME_BLOCK_DAYTYPES);
-
-			validateNotices(context, xpath, subLevel);
 		}
 
 	}
@@ -353,8 +351,6 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 					_1_NETEX_SERVICE_FRAME_INVALID_TRANSPORTMODE);
 			validateElementNotPresent(context, xpath, subLevel, "lines/*[self::Line or self::FlexibleLine]/TransportSubmode/*[not(. = (" + validTransportSubModeString + "))]",
 					_1_NETEX_SERVICE_FRAME_INVALID_TRANSPORTSUBMODE);
-
-			validateNotices(context, xpath, subLevel);
 		}
 	}
 
@@ -465,8 +461,6 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 					_1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_BOOKINGACCESS);
 			validateElementNotPresent(context, xpath, subLevel, "vehicleJourneys/ServiceJourney/FlexibleServiceProperties/FlexibleServiceType[not(. = (" + validFlexibleServiceTypeString + "))]",
 					_1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ILLEGAL_FLEXIBLESERVICETYPE);
-
-			validateNotices(context, xpath, subLevel);
 		}
 	}
 
