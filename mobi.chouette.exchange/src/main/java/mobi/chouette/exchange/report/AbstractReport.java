@@ -40,9 +40,14 @@ public abstract class AbstractReport {
 		ret.append('"');
 		
 		for (char car : value.toCharArray()) {
-			if (car == '\\' || car == '/' || car == '"' )
-				ret.append('\\');
-			ret.append(car);
+			if(car == '\n') {
+				ret.append("\\n");
+			} else {
+				if (car == '\\' || car == '/' || car == '"' ) {
+					ret.append('\\');
+				}
+				ret.append(car);
+			}
 		}
 		
 		return ret.append('"');
