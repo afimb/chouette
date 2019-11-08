@@ -238,7 +238,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 				}
 			}
 
-			if (rs.getFromScheduledStopPoint() != null) {
+			if (rs.getToScheduledStopPoint() != null) {
 				StopArea toStopArea = rs.getToScheduledStopPoint().getContainedInStopAreaRef().getObject();
 
 				if (toStopArea == null || toStopArea.getLatitude() == null) {
