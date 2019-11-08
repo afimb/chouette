@@ -7,6 +7,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.dao.ScheduledStopPointDAO;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.ScheduledStopPoint;
+import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -17,7 +18,11 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
 
 	public static final String BEAN_NAME = "RouteSectionUpdater";
 
-	@EJB 
+
+	@EJB(beanName = ScheduledStopPointUpdater.BEAN_NAME)
+	private Updater<ScheduledStopPoint> scheduledStopPointUpdater;
+
+	@EJB
 	private ScheduledStopPointDAO scheduledStopPointDAO;
 
 	@Override
@@ -26,22 +31,22 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
 			return;
 		}
 		newValue.setSaved(true);
-        Monitor monitor = MonitorFactory.start(BEAN_NAME);
+		Monitor monitor = MonitorFactory.start(BEAN_NAME);
 		Referential cache = (Referential) context.get(CACHE);
 
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
-			
+
 			oldValue.setObjectId(newValue.getObjectId());
 		}
 		if (newValue.getObjectVersion() != null
 				&& !newValue.getObjectVersion().equals(
-						oldValue.getObjectVersion())) {
+				oldValue.getObjectVersion())) {
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 		}
 		if (newValue.getCreationTime() != null
 				&& !newValue.getCreationTime().equals(
-						oldValue.getCreationTime())) {
+				oldValue.getCreationTime())) {
 			oldValue.setCreationTime(newValue.getCreationTime());
 		}
 		if (newValue.getCreatorId() != null
@@ -54,44 +59,52 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
 		}
 		if (newValue.getFromScheduledStopPoint() != null
 				&& !newValue.getFromScheduledStopPoint().equals(oldValue.getFromScheduledStopPoint())) {
-			String objectId = newValue.getFromScheduledStopPoint().getObjectId();
-			ScheduledStopPoint departure = cache.getSharedScheduledStopPoints().get(objectId);
-			if (departure == null) {
-				departure = scheduledStopPointDAO.findByObjectId(objectId);
-				if (departure != null) {
-					cache.getSharedScheduledStopPoints().put(objectId, departure);
+
+
+			String scheduledStopPointId = newValue.getFromScheduledStopPoint().getObjectId();
+			ScheduledStopPoint scheduledStopPoint = cache.getScheduledStopPoints().get(scheduledStopPointId);
+			if (scheduledStopPoint == null) {
+				scheduledStopPoint = scheduledStopPointDAO.findByObjectId(scheduledStopPointId);
+				if (scheduledStopPoint != null) {
+					cache.getScheduledStopPoints().put(scheduledStopPointId, scheduledStopPoint);
 				}
 			}
-
-			if (departure != null) {
-				oldValue.setFromScheduledStopPoint(departure);
+			if (scheduledStopPoint == null) {
+				scheduledStopPoint = ObjectFactory.getScheduledStopPoint(cache, scheduledStopPointId);
 			}
+			oldValue.setFromScheduledStopPoint(scheduledStopPoint);
+
+			scheduledStopPointUpdater.update(context, oldValue.getFromScheduledStopPoint(), newValue.getFromScheduledStopPoint());
+
 		}
 		if (newValue.getToScheduledStopPoint() != null
 				&& !newValue.getToScheduledStopPoint().equals(oldValue.getToScheduledStopPoint())) {
-			String objectId = newValue.getToScheduledStopPoint().getObjectId();
-			ScheduledStopPoint arrival = cache.getSharedScheduledStopPoints().get(objectId);
-			if (arrival == null) {
-				arrival = scheduledStopPointDAO.findByObjectId(objectId);
-				if (arrival != null) {
-					cache.getSharedScheduledStopPoints().put(objectId, arrival);
+
+			String scheduledStopPointId = newValue.getToScheduledStopPoint().getObjectId();
+			ScheduledStopPoint scheduledStopPoint = cache.getScheduledStopPoints().get(scheduledStopPointId);
+			if (scheduledStopPoint == null) {
+				scheduledStopPoint = scheduledStopPointDAO.findByObjectId(scheduledStopPointId);
+				if (scheduledStopPoint != null) {
+					cache.getScheduledStopPoints().put(scheduledStopPointId, scheduledStopPoint);
 				}
 			}
-
-			if (arrival != null) {
-				oldValue.setToScheduledStopPoint(arrival);
+			if (scheduledStopPoint == null) {
+				scheduledStopPoint = ObjectFactory.getScheduledStopPoint(cache, scheduledStopPointId);
 			}
+			oldValue.setToScheduledStopPoint(scheduledStopPoint);
+
+			scheduledStopPointUpdater.update(context, oldValue.getToScheduledStopPoint(), newValue.getToScheduledStopPoint());
 		}
 		if (newValue.getNoProcessing() != null
 				&& !newValue.getNoProcessing().equals(oldValue.getNoProcessing())) {
 			oldValue.setNoProcessing(newValue.getNoProcessing());
 		}
 		// Warning : JTS Geometry not protected from equals(null)
-		if (oldValue.getInputGeometry() == null || ( newValue.getInputGeometry() != null
+		if (oldValue.getInputGeometry() == null || (newValue.getInputGeometry() != null
 				&& !newValue.getInputGeometry().equals(oldValue.getInputGeometry()))) {
 			oldValue.setInputGeometry(newValue.getInputGeometry());
 		}
-		if (oldValue.getProcessedGeometry() == null || ( newValue.getProcessedGeometry() != null
+		if (oldValue.getProcessedGeometry() == null || (newValue.getProcessedGeometry() != null
 				&& !newValue.getProcessedGeometry().equals(oldValue.getProcessedGeometry()))) {
 			oldValue.setProcessedGeometry(newValue.getProcessedGeometry());
 		}
