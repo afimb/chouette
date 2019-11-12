@@ -4,5 +4,8 @@
         <exclusions>
             <module name="com.sun.xml.bind" />
         </exclusions>
+        <exclude-subsystems>
+            <subsystem name="logging" />
+        </exclude-subsystems>
     </deployment>
 </jboss-deployment-structure>

@@ -224,5 +224,15 @@
 			<type>war</type>
 			<version>${project.version}</version>
 		</dependency>
+        <dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>5.2</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
+		</dependency>
 	</dependencies>
 </project>
