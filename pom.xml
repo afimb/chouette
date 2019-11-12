@@ -11,7 +11,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
-		<wildfly.version>8.2.0.Final</wildfly.version>
+		<wildfly.version>8.2.1.Final</wildfly.version>
 		<version.wildfly.maven.plugin>1.0.2.Final</version.wildfly.maven.plugin>
 		<version.compiler.plugin>3.2</version.compiler.plugin>
 		<version.jaxb2.plugin>1.5</version.jaxb2.plugin>
@@ -28,6 +28,8 @@
 		<jaxb-version>2.2.11</jaxb-version>
 		<lombok-version>1.16.8</lombok-version>
 		<lombok-maven-plugin-version>1.16.8.0</lombok-maven-plugin-version>
+		<prometheus.agent.version>0.12.0</prometheus.agent.version>
+
 		<project.rootDir>${project.basedir}</project.rootDir>
 
     <!-- NB: Concious choice of using snapshot version. This is to keep in
@@ -162,13 +164,12 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>copy</id>
-						<phase>process-test-classes</phase>
+						<id>copy-customized-wildfly-modules-dependencies</id>
+						<phase>process-resources</phase>
 						<goals>
 							<goal>copy</goal>
 						</goals>
 						<configuration>
-							<skip>${skipTests}</skip>
 							<verbose>true</verbose>
 							<artifactItems>
 								<artifactItem>
@@ -176,14 +177,14 @@
 									<artifactId>postgresql</artifactId>
 									<version>${postgresql.version}</version>
 									<overWrite>false</overWrite>
-									<outputDirectory>${project.rootDir}/target/wildfly-${wildfly.version}/modules/org/postgres/main</outputDirectory>
+									<outputDirectory>${project.rootDir}/target/wildfly-customized-dependencies/modules/org/postgres/main</outputDirectory>
 								</artifactItem>
 								<artifactItem>
 									<groupId>net.postgis</groupId>
 									<artifactId>postgis-jdbc</artifactId>
 									<version>${postgis.version}</version>
 									<outputDirectory>
-										${project.rootDir}/target/wildfly-${wildfly.version}/modules/org/postgres/main
+										${project.rootDir}/target/wildfly-customized-dependencies/modules/org/postgres/main
 									</outputDirectory>
 								</artifactItem>
 								<artifactItem>
@@ -191,7 +192,7 @@
 									<artifactId>hibernate-spatial</artifactId>
 									<version>${hibernate-spatial.version}</version>
 									<outputDirectory>
-										${project.rootDir}/target/wildfly-${wildfly.version}/modules/system/layers/base/org/hibernate/main
+										${project.rootDir}/target/wildfly-customized-dependencies/modules/system/layers/base/org/hibernate/main
 									</outputDirectory>
 								</artifactItem>
 								<artifactItem>
@@ -199,7 +200,7 @@
 									<artifactId>jts</artifactId>
 									<version>${jts.version}</version>
 									<outputDirectory>
-										${project.rootDir}/target/wildfly-${wildfly.version}/modules/system/layers/base/org/hibernate/main
+										${project.rootDir}/target/wildfly-customized-dependencies/modules/system/layers/base/org/hibernate/main
 									</outputDirectory>
 								</artifactItem>
 								<artifactItem>
@@ -207,7 +208,7 @@
 									<artifactId>jaxb-impl</artifactId>
 									<version>${jaxb-version}</version>
 									<outputDirectory>
-										${project.rootDir}/target/wildfly-${wildfly.version}/modules/system/layers/base/com/sun/xml/bind/main
+										${project.rootDir}/target/wildfly-customized-dependencies/modules/system/layers/base/com/sun/xml/bind/main
 									</outputDirectory>
 								</artifactItem>
 								<artifactItem>
@@ -215,7 +216,7 @@
 									<artifactId>jaxb-core</artifactId>
 									<version>${jaxb-version}</version>
 									<outputDirectory>
-										${project.rootDir}/target/wildfly-${wildfly.version}/modules/system/layers/base/com/sun/xml/bind/main
+										${project.rootDir}/target/wildfly-customized-dependencies/modules/system/layers/base/com/sun/xml/bind/main
 									</outputDirectory>
 								</artifactItem>
 								<artifactItem>
@@ -223,20 +224,35 @@
 									<artifactId>jaxb-xjc</artifactId>
 									<version>${jaxb-version}</version>
 									<outputDirectory>
-										${project.rootDir}/target/wildfly-${wildfly.version}/modules/system/layers/base/com/sun/xml/bind/main
-									</outputDirectory>
-								</artifactItem>
-								<artifactItem>
-									<groupId>xerces</groupId>
-									<artifactId>xercesImpl</artifactId>
-									<version>2.11.0.SP6-RB</version>
-									<outputDirectory>
-										${project.rootDir}/target/wildfly-${wildfly.version}/modules/system/layers/base/org/apache/xerces/main
+										${project.rootDir}/target/wildfly-customized-dependencies/modules/system/layers/base/com/sun/xml/bind/main
 									</outputDirectory>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
 					</execution>
+
+					<execution>
+						<id>copy-prometheus-agent</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<verbose>true</verbose>
+							<artifactItems>
+								<artifactItem>
+									<groupId>io.prometheus.jmx</groupId>
+									<artifactId>jmx_prometheus_javaagent</artifactId>
+									<version>${prometheus.agent.version}</version>
+									<outputDirectory>
+										${project.rootDir}/target/docker/wildfly/prometheus
+									</outputDirectory>
+									<destFileName>jmx_prometheus_javaagent.jar</destFileName>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+
 				</executions>
 			</plugin>
 			<plugin>
@@ -245,7 +261,7 @@
 				<executions>
 					<!-- WildFly test configuration files copy -->
 					<execution>
-						<id>copy-wildfly-configuration</id>
+						<id>copy-wildfly-configuration-for-test</id>
 						<phase>process-test-resources</phase>
 						<goals>
 							<goal>copy-resources</goal>
@@ -256,8 +272,35 @@
 							<overwrite>true</overwrite>
 							<resources>
 								<resource>
+									<directory>${project.rootDir}/src/main/resources-wildfly-configuration</directory>
+									<filtering>true</filtering>
+								</resource>
+								<resource>
 									<directory>${project.rootDir}/src/test/resources-wildfly-configuration</directory>
 									<filtering>true</filtering>
+								</resource>
+								<resource>
+									<directory>${project.rootDir}/target/wildfly-customized-dependencies</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-wildfly-configuration-for-docker-packaging</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.rootDir}/target/docker/wildfly</outputDirectory>
+							<overwrite>true</overwrite>
+							<resources>
+								<resource>
+									<directory>${project.rootDir}/src/main/resources-wildfly-configuration</directory>
+									<filtering>true</filtering>
+								</resource>
+								<resource>
+									<directory>${project.rootDir}/target/wildfly-customized-dependencies</directory>
 								</resource>
 							</resources>
 						</configuration>
@@ -269,13 +312,13 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.17</version>
 				<configuration>
-					<argLine>-Djboss.socket.binding.port-offset=300
-						-XX:MaxPermSize=256m</argLine>
+					<argLine>-Djboss.socket.binding.port-offset=300</argLine>
 					<runOrder>alphabetical</runOrder>
 					<!-- Fork every test because it will launch a separate AS instance -->
 					<forkCount>1</forkCount>
 					<systemPropertyVariables>
 						<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+						<wildfly.version>${wildfly.version}</wildfly.version>
 						<!-- the maven dependency plugin will have already downloaded the server
 							on /target -->
 						<jboss.home>${project.rootDir}/target/wildfly-${wildfly.version}</jboss.home>
