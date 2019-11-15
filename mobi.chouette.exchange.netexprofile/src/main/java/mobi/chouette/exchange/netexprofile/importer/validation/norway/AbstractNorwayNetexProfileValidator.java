@@ -61,6 +61,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_SERVICE_FRAME_LINE = "1-NETEXPROFILE-ServiceFrame-Line";
 	public static final String _1_NETEX_SERVICE_FRAME_LINE_NAME = "1-NETEXPROFILE-ServiceFrame-Line-Name";
 	public static final String _1_NETEX_SERVICE_FRAME_NETWORK_AUTHORITY_REF = "1-NETEXPROFILE-ServiceFrame-Network-AutorityRef";
+	public static final String _1_NETEX_SERVICE_FRAME_ROUTEPOINT_PROJECTION = "1-NETEXPROFILE-ServiceFrame-RoutePoint-Projection";
 	public static final String _1_NETEX_SERVICE_FRAME_NETWORK_NAME = "1-NETEXPROFILE-ServiceFrame-Network-Name";
 	public static final String _1_NETEX_SERVICE_FRAME_NETWORK_GROUPOFLINE_NAME = "1-NETEXPROFILE-ServiceFrame-Network-GroupOfLine-Name";
 	public static final String _1_NETEX_SERVICE_FRAME_TIMING_POINTS = "1-NETEXPROFILE-ServiceFrame_TimingPoints";
@@ -195,6 +196,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_NAME, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_GROUPOFLINES_OUTSIDE_NETWORK, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK_AUTHORITY_REF, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_ROUTEPOINT_PROJECTION, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK_GROUPOFLINE_NAME, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_NETWORK_NAME, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_FLEXBIBLE_LINE_FLEXIBLELINETYPE, "E");
@@ -456,6 +458,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 	protected void validateServiceFrameCommonElements(Context context, XPathCompiler xpath, XdmNode subLevel) throws XPathExpressionException, SaxonApiException {
 		validateElementNotPresent(context, xpath, subLevel, "Network[not(AuthorityRef)]", _1_NETEX_SERVICE_FRAME_NETWORK_AUTHORITY_REF);
+		validateElementNotPresent(context, xpath, subLevel, "routePoints/RoutePoint[not(projections)]", _1_NETEX_SERVICE_FRAME_ROUTEPOINT_PROJECTION);
 		validateElementNotPresent(context, xpath, subLevel, "Network[not(Name) or normalize-space(Name) = '']", _1_NETEX_SERVICE_FRAME_NETWORK_NAME);
 		validateElementNotPresent(context, xpath, subLevel, "Network/groupsOfLines/GroupOfLines[not(Name)  or normalize-space(Name) = '']", _1_NETEX_SERVICE_FRAME_NETWORK_GROUPOFLINE_NAME);
 		validateElementNotPresent(context, xpath, subLevel, "groupsOfLines", _1_NETEX_SERVICE_FRAME_GROUPOFLINES_OUTSIDE_NETWORK);
