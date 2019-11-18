@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -18,6 +19,7 @@ import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.RouteSection;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
@@ -47,6 +49,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 			initCheckPoint(context, JOURNEY_PATTERN_2, SEVERITY.E);
 		initCheckPoint(context, ROUTE_SECTION_2_1, SEVERITY.W);
 		initCheckPoint(context, ROUTE_SECTION_2_2, SEVERITY.W);
+		initCheckPoint(context, ROUTE_SECTION_2_3, SEVERITY.W);
 		prepareCheckPoint(context, JOURNEY_PATTERN_3);
 		initCheckPoint(context, JOURNEY_PATTERN_3, SEVERITY.W);
 		prepareCheckPoint(context, JOURNEY_PATTERN_4);
@@ -85,6 +88,9 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 			// 3-RouteSection-1 : Check if route section distance doesn't exceed
 			// gap as parameter
 			check3RouteSection1(context, jp, parameters);
+
+            // 3-RouteSection-2 : Check if the scheduled stop points on the route section are part of the journey pattern
+			check3RouteSection2(context, jp, parameters);
 
 			// 3-JourneyPattern-3: Check that Line.TransportMode matches StopArea.TransportMode
 			check3JourneyPattern3(context, jp);
@@ -259,6 +265,31 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 			}
 		}
 
+	}
+
+	// 3-RouteSection-2 : Check if the scheduled stop points on the route section are part of the journey pattern
+	private void check3RouteSection2(Context context, JourneyPattern jp, ValidationParameters parameters) {
+
+		prepareCheckPoint(context, ROUTE_SECTION_2_3);
+
+		ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+		List<ScheduledStopPoint> scheduledStopPointsOnJourneyPattern = jp.getStopPoints().stream().map(e -> e.getScheduledStopPoint()).collect(Collectors.toList());
+
+		for (RouteSection rs : jp.getRouteSections()) {
+			DataLocation location = buildLocation(context, rs);
+
+			ScheduledStopPoint from = rs.getFromScheduledStopPoint();
+			if (from != null && !scheduledStopPointsOnJourneyPattern.contains(from)) {
+				DataLocation targetLocation = buildLocation(context, from);
+				reporter.addCheckPointReportError(context, ROUTE_SECTION_2_3, location, null, null, targetLocation);
+			}
+
+			ScheduledStopPoint to = rs.getToScheduledStopPoint();
+			if (to != null && !scheduledStopPointsOnJourneyPattern.contains(to)) {
+				DataLocation targetLocation = buildLocation(context, to);
+				reporter.addCheckPointReportError(context, ROUTE_SECTION_2_3, location, null, null, targetLocation);
+			}
+		}
 	}
 
 	public void check3JourneyPattern3(Context context, JourneyPattern vj) {
