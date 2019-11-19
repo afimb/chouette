@@ -32,10 +32,10 @@ public class JtsGmlConverter {
 	public static LineString fromGmlToJts(LineStringType gml) {
 		List<Double> coordinateList;
 		DirectPositionListType posList = gml.getPosList();
-		if (posList != null && posList.getValue().size() > 0) {
+		if (posList != null && !posList.getValue().isEmpty()) {
 			coordinateList = posList.getValue();
 		} else {
-			if (gml.getPosOrPointProperty() != null && gml.getPosOrPointProperty().size() > 0) {
+			if (gml.getPosOrPointProperty() != null && !gml.getPosOrPointProperty().isEmpty()) {
 				coordinateList = new ArrayList<>();
 				for (Object o : gml.getPosOrPointProperty()) {
 					if (o instanceof DirectPositionType) {
