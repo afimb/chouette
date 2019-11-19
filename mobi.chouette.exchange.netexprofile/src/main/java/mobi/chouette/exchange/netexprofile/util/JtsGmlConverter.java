@@ -31,23 +31,30 @@ public class JtsGmlConverter {
 
 	public static LineString fromGmlToJts(LineStringType gml) {
 		List<Double> coordinateList;
-		if (gml.getPosList() != null) {
-			coordinateList = gml.getPosList().getValue();
-		} else if (gml.getPosOrPointProperty() != null) {
-			coordinateList = new ArrayList<>();
-			for (Object o : gml.getPosOrPointProperty()) {
-				if (o instanceof DirectPositionType) {
-					DirectPositionType directPositionType = (DirectPositionType) o;
-					coordinateList.addAll(directPositionType.getValue());
-				} else {
-					// what else could this be?
-					log.warn("Got unrecognized class (" + o.getClass() + ") for PosOrPointProperty for gmlString: " + gml.getId());
-				}
-			}
-
+		DirectPositionListType posList = gml.getPosList();
+		if (posList != null && !posList.getValue().isEmpty()) {
+			coordinateList = posList.getValue();
 		} else {
-			log.warn("Got LineStringType without posList or PosOrPointProperty: " + gml.getId());
-			return null;
+			if (gml.getPosOrPointProperty() != null && !gml.getPosOrPointProperty().isEmpty()) {
+				coordinateList = new ArrayList<>();
+				for (Object o : gml.getPosOrPointProperty()) {
+					if (o instanceof DirectPositionType) {
+						DirectPositionType directPositionType = (DirectPositionType) o;
+						coordinateList.addAll(directPositionType.getValue());
+					} else {
+						// what else could this be?
+						log.warn("Got unrecognized class (" + o.getClass() + ") for PosOrPointProperty for gmlString: " + gml.getId());
+					}
+				}
+				if(coordinateList.isEmpty()) {
+					log.warn("No recognized class in PosOrPointProperty for gmlString: " + gml.getId());
+					return null;
+				}
+	
+			} else {
+				log.warn("Got LineStringType without posList or PosOrPointProperty: " + gml.getId());
+				return null;
+			}
 		}
 
 
