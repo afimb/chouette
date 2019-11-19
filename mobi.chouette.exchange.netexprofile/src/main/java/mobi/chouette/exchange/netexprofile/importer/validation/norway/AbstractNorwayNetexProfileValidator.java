@@ -103,6 +103,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 	public static final String _1_NETEX_SERVICE_FRAME_SERVICE_LINK_TOPOINTREF = "1-NETEXPROFILE-ServiceFrame-ServiceLink-ToPointRef";
 	public static final String _1_NETEX_SERVICE_FRAME_SERVICE_LINK_FROMPOINTREF = "1-NETEXPROFILE-ServiceFrame-ServiceLink-FromPointRef";
+	public static final String _1_NETEX_SERVICE_FRAME_SERVICE_LINK_MISSING_POSITION_COORDINATES = "1-NETEXPROFILE-ServiceFrame-ServiceLink-Missing-Position-Coordinates";
 
 	public static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY = "1-NETEXPROFILE-TimetableFrame-ServiceJourney";
 	public static final String _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY_DAYTYPEREF = "1-NETEXPROFILE-TimetableFrame-ServiceJourney-DayTypeRef";
@@ -248,6 +249,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_SERVICE_LINK_FROMPOINTREF, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_SERVICE_LINK_TOPOINTREF, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_SERVICE_LINK_MISSING_POSITION_COORDINATES, "E");
 
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_SERVICE_JOURNEY, "E");
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_SERVICEJOURNEY_JOURNEYPATTERN_REF, "E");
@@ -468,6 +470,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 		validateElementNotPresent(context, xpath, subLevel, "serviceLinks/ServiceLink[not(FromPointRef)]", _1_NETEX_SERVICE_FRAME_SERVICE_LINK_FROMPOINTREF);
 		validateElementNotPresent(context, xpath, subLevel, "serviceLinks/ServiceLink[not(ToPointRef)]", _1_NETEX_SERVICE_FRAME_SERVICE_LINK_TOPOINTREF);
+		validateElementNotPresent(context, xpath, subLevel, "serviceLinks/ServiceLink/projections/LinkSequenceProjection/g:LineString/g:posList[@count>0 and not(normalize-space(text()))]", _1_NETEX_SERVICE_FRAME_SERVICE_LINK_MISSING_POSITION_COORDINATES);
 	}
 
 	protected void validateNotices(Context context, XPathCompiler xpath, XdmNode subLevel) throws XPathExpressionException, SaxonApiException {
