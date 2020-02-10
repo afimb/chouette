@@ -1,0 +1,4 @@
+service:
+  http:
+    externalPort: 8080
+    internalPort: 8080

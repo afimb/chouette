@@ -1,0 +1,13 @@
+env: staging
+replicas: 2
+gcpProjectId: radon-1287
+gcpDatabaseInstance: radon-1287:europe-west1:chouette-db-1=tcp:5432
+gcpKeyName: chouette-radon-storage-key
+gcpBucketName: chouette-stage
+
+resources:
+  cpuLimit: "6"
+  memLimit: 14000Mi
+  cpuRequest: "2"
+  memRequest: 12000Mi
+  xmx: 11g
