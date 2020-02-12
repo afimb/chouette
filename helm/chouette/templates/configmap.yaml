@@ -16,6 +16,7 @@ data:
     iev.referential.lock.manager.impl=hazelcastReferentialsLockManager
     iev.osrm.endpoint.rail=http://osrm-rail.default:5000
     iev.kubernetes.enabled=true
+    iev.kubernetes.namespace={{ .Release.Namespace }}
     iev.blobstore.gcs.container.name={{ .Values.gcpBucketName }}
     iev.route.section.generate.quay.distance.max.meters=100
     iev.osrm.endpoint.coach=http://osrm-bus.default:5000

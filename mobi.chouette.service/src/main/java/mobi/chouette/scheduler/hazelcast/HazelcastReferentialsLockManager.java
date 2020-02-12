@@ -48,7 +48,7 @@ public class HazelcastReferentialsLockManager implements ReferentialLockManager 
 	@PostConstruct
 	public void init() {
 		if (BEAN_NAME.equals(System.getProperty(contenerChecker.getContext() + PropertyNames.REFERENTIAL_LOCK_MANAGER_IMPLEMENTATION))) {
-			hazelcastService = new ChouetteHazelcastService(new KubernetesService("default", isKubernetesEnabled()), Arrays.asList(new CleanUpAfterRemovedMembersListener()));
+			hazelcastService = new ChouetteHazelcastService(new KubernetesService(getKubernetesNamespace(), isKubernetesEnabled()), Arrays.asList(new CleanUpAfterRemovedMembersListener()));
 			locks = hazelcastService.getLocksMap();
 			jobsLocks = hazelcastService.getJobLocksMap();
 			log.info("Initialized hazelcast: " + hazelcastService.information());
@@ -113,6 +113,15 @@ public class HazelcastReferentialsLockManager implements ReferentialLockManager 
 		boolean enabled = prop != null && Boolean.valueOf(prop);
 		log.info("Starting Hazelcast referential map with kubernetes enabled=" + enabled + " (from prop value=" + prop + ")");
 		return enabled;
+	}
+
+	public final String getKubernetesNamespace() {
+		String namespace = System.getProperty(contenerChecker.getContext() + PropertyNames.KUBERNETES_NAMESPACE);
+		if(namespace == null) {
+			namespace = "default";
+		}
+		log.info("Hazelcast referential map configured in Kubernetes namespace " + namespace);
+		return namespace;
 	}
 
 	public boolean attemptAcquireLocks(Set<String> referentials) {

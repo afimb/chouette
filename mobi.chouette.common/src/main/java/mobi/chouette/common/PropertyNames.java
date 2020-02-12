@@ -16,6 +16,7 @@ public interface PropertyNames {
 
     String REFERENTIAL_LOCK_MANAGER_IMPLEMENTATION = ".referential.lock.manager.impl";
     String KUBERNETES_ENABLED = ".kubernetes.enabled";
+    String KUBERNETES_NAMESPACE = ".kubernetes.namespace";
 	String FILE_STORE_IMPLEMENTATION = ".file.store.impl";
     String GTFS_AGENCY_URL_DEFAULTS = "iev.gtfs.agency.url.defaults";
     String GTFS_AGENCY_PHONE_DEFAULTS = "iev.gtfs.agency.phone.defaults";
