@@ -25,16 +25,6 @@ RUN rm -rf /opt/jboss/wildfly/standalone/configuration/standalone_xml_history \
   && mkdir -p /opt/jboss/data \
   && chown jboss:jboss /opt/jboss/data
 
-
-
-# Running as root, in order to get mounted volume writable:
-USER root
-
-COPY docker/files/disk_usage_notifier.sh /disk_usage_notifier.sh
-RUN chmod a+x /disk_usage_notifier.sh
-
-COPY docker/files/disk_usage_notifier.sh /disk_usage_notifier.sh
-
 # This argument comes from https://github.com/jboss-dockerfiles/wildfly
 # It enables the admin interface.
 
