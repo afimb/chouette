@@ -70,11 +70,14 @@ jobs:
           path: ~/junit
       - store_artifacts:
           path: ~/junit
+      - run: *create-image-version
+      - run: *tag-git-version
       - persist_to_workspace:
           root: ~/project
           paths:
             - target
             - pom.xml
+            - version
             - .circleci
             - Dockerfile
             - docker
