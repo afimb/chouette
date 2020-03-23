@@ -4,7 +4,7 @@ data:
     iev.stop.place.register.mapping.stopplace=http://tiamat/services/stop_places/mapping/stop_place?recordsPerRoundTrip=220000&includeFuture=true
     iev.admin.key=rutebanken
     iev.stop.place.id.mapping=true
-    iev.blobstore.gcs.credential.path=/etc/exchange/chouette-blobstore-credentials.json
+    iev.blobstore.gcs.credential.path=/etc/chouette-service-account/credentials.json
     iev.stop.place.register.id.quay=http://tiamat/services/stop_places/id/quay?includeFuture=true
     iev.blobstore.gcs.project.id={{ .Values.gcpProjectId }}
     iev.file.store.impl=cachingGoogleCloudFileStore

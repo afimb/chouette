@@ -1,4 +1,14 @@
+image:
+  identifier: ${artifact.metadata.image}
+
 service:
   http:
     externalPort: 8080
     internalPort: 8080
+
+resources:
+  cpuLimit: "6"
+  memLimit: 14000Mi
+  cpuRequest: "2"
+  memRequest: 12000Mi
+  xmx: 11g

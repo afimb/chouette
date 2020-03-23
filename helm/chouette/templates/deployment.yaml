@@ -42,7 +42,7 @@ spec:
         - command:
             - /cloud_sql_proxy
             - -instances={{ .Values.gcpDatabaseInstance}}
-            - -credential_file=/etc/chouette-service-account/chouette-blobstore-credentials.json
+            - -credential_file=/etc/chouette-service-account/credentials.json
             - -log_debug_stdout
           image: gcr.io/cloudsql-docker/gce-proxy:1.15
           imagePullPolicy: IfNotPresent
@@ -62,7 +62,7 @@ spec:
           terminationMessagePolicy: File
           volumeMounts:
             - mountPath: /etc/chouette-service-account
-              name: chouette-key
+              name: chouette-service-account
         - env:
             - name: JAVA_OPTS
               value: -server -Xms2048m -Xmx{{ .Values.resources.xmx }} -Djava.net.preferIPv4Stack=true -Djava.awt.headless=true
@@ -75,34 +75,34 @@ spec:
             - name: CHOUETTE_DATABASE_USERNAME
               valueFrom:
                 secretKeyRef:
-                  key: username
-                  name: chouette-password
+                  key: chouette-db-username
+                  name: ror-chouette-secret
             - name: CHOUETTE_DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  key: password
-                  name: chouette-password
+                  key: chouette-db-password
+                  name: ror-chouette-secret
             - name: CHOUETTE_IEV_DATABASE_USERNAME
               valueFrom:
                 secretKeyRef:
-                  key: ievUsername
-                  name: chouette-password
+                  key: chouette-iev-db-username
+                  name: ror-chouette-secret
             - name: CHOUETTE_IEV_DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  key: ievPassword
-                  name: chouette-password
+                  key: chouette-iev-db-password
+                  name: ror-chouette-secret
             - name: IEV_REFERENTIAL_ADMIN_INITIAL_ENCRYPTED_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  key: admin-initial-encrypted-password
-                  name: chouette-referential-initial-password
+                  key: chouette-admin-initial-encrypted-password
+                  name: ror-chouette-secret
             - name: IEV_REFERENTIAL_USER_INITIAL_ENCRYPTED_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  key: user-initial-encrypted-password
-                  name: chouette-referential-initial-password
-          image: eu.gcr.io/entur-system-1287/chouette:{{ .Chart.AppVersion }}
+                  key: chouette-user-initial-encrypted-password
+                  name: ror-chouette-secret
+          image: {{ .Values.image.identifier }}
           imagePullPolicy: Always
           lifecycle:
             preStop:
@@ -149,8 +149,8 @@ spec:
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
-            - mountPath: /etc/exchange
-              name: chouette-key
+            - mountPath: /etc/chouette-service-account
+              name: chouette-service-account
             - mountPath: /opt/jboss/wildfly/standalone/configuration/standalone.xml
               name: chouette-config
               subPath: standalone.xml
@@ -159,17 +159,15 @@ spec:
               readOnly: true
               subPath: application.properties
       dnsPolicy: ClusterFirst
-      imagePullSecrets:
-        - name: rutebanken-registry-key
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 60
       volumes:
-        - name: chouette-key
+        - name: chouette-service-account
           secret:
             defaultMode: 420
-            secretName: {{ .Values.gcpKeyName}}
+            secretName: ror-chouette-sa-key
         - configMap:
             defaultMode: 420
             name: chouette-config

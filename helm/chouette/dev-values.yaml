@@ -2,12 +2,5 @@ env: dev
 replicas: 2
 gcpProjectId: carbon-1287
 gcpDatabaseInstance: carbon-1287:europe-west1:chouette-db-1=tcp:5432
-gcpKeyName: chouette-carbon-storage-key
 gcpBucketName: chouette-test
 
-resources:
-  cpuLimit: "6"
-  memLimit: 14000Mi
-  cpuRequest: "2"
-  memRequest: 12000Mi
-  xmx: 11g
