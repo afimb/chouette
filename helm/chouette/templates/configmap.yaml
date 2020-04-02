@@ -14,18 +14,18 @@ data:
     iev.directory=/opt/jboss/data
     iev.stop.place.register.mapping.quay=http://tiamat/services/stop_places/mapping/quay?recordsPerRoundTrip=500000&includeFuture=true
     iev.referential.lock.manager.impl=hazelcastReferentialsLockManager
-    iev.osrm.endpoint.rail=http://osrm-rail.default:5000
+    iev.osrm.endpoint.rail=http://osrm-rail:5000
     iev.kubernetes.enabled=true
     iev.kubernetes.namespace={{ .Release.Namespace }}
     iev.blobstore.gcs.container.name={{ .Values.gcpBucketName }}
     iev.route.section.generate.quay.distance.max.meters=100
-    iev.osrm.endpoint.coach=http://osrm-bus.default:5000
+    iev.osrm.endpoint.coach=http://osrm-bus:5000
     iev.stop.place.register.mapping.ttl.ms=600000
     iev.copy.by.import.max=1000
     iev.file.store.cache.update.seconds=300
-    iev.osrm.endpoint.bus=http://osrm-bus.default:5000
+    iev.osrm.endpoint.bus=http://osrm-bus:5000
     iev.file.store.cache.history.days=5
-    iev.osrm.endpoint.water=http://osrm-water.default:5000
+    iev.osrm.endpoint.water=http://osrm-water:5000
     iev.stop.place.register.id.stopplace=http://tiamat/services/stop_places/id/stop_place?includeFuture=true
     iev.netex.validation.line.parallel.execution.timeout.seconds=10800
     iev.started.transfer.jobs.max=1
