@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
@@ -12,6 +13,7 @@ import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.importer.NetexprofileImportParameters;
 import mobi.chouette.exchange.netexprofile.util.NetexObjectUtil;
+import mobi.chouette.model.FootNoteAlternativeText;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -22,6 +24,7 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.rutebanken.netex.model.AlternativeText;
 import org.rutebanken.netex.model.Branding;
 import org.rutebanken.netex.model.Branding_VersionStructure;
 import org.rutebanken.netex.model.Common_VersionFrameStructure;
@@ -416,6 +419,19 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 		Footnote footnote = ObjectFactory.getFootnote(referential, notice.getId());
 		footnote.setLabel(ConversionUtil.getValue(notice.getText()));
 		footnote.setCode(notice.getPublicCode());
+
+		if (notice.getAlternativeTexts() != null) {
+			for (AlternativeText alternativeText : notice.getAlternativeTexts().getAlternativeText()) {
+				FootNoteAlternativeText footNoteAlternativeText = ObjectFactory.getFootnoteAlternativeText(referential, alternativeText.getId());
+				footNoteAlternativeText.setFootnote(footnote);
+				if(alternativeText.getText() != null) {
+					footNoteAlternativeText.setText(alternativeText.getText().getValue());
+					footNoteAlternativeText.setLanguage(alternativeText.getText().getLang());
+				}
+				footnote.getAlternativeTexts().add(footNoteAlternativeText);
+			}
+		}
+
 	}
 
 	private void parseBranding(Context context, Branding netexBranding) {

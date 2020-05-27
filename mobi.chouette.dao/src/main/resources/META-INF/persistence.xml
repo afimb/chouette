@@ -49,6 +49,7 @@
     	<class>mobi.chouette.model.DestinationDisplay</class>
         <class>mobi.chouette.model.FlexibleServiceProperties</class>
         <class>mobi.chouette.model.Footnote</class>
+		<class>mobi.chouette.model.FootNoteAlternativeText</class>
 		<class>mobi.chouette.model.GroupOfLine</class>
 		<class>mobi.chouette.model.JourneyFrequency</class>
 		<class>mobi.chouette.model.JourneyPattern</class>

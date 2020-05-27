@@ -19,6 +19,7 @@ import mobi.chouette.dao.*;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+import mobi.chouette.model.FootNoteAlternativeText;
 
 @Log4j
 @Stateless(name = CleanRepositoryCommand.COMMAND)
@@ -75,6 +76,9 @@ public class CleanRepositoryCommand implements Command {
 	private FootnoteDAO footnoteDAO;
 
 	@EJB
+	private FootnoteAlternativeTextDAO footNoteAlternativeTextDAO;
+
+	@EJB
 	private BrandingDAO brandingDAO;
 
 	@EJB
@@ -113,6 +117,7 @@ public class CleanRepositoryCommand implements Command {
 			networkDAO.truncate();
 			routeDAO.truncate();
 			routeSectionDAO.truncate();
+			footNoteAlternativeTextDAO.truncate();
 			footnoteDAO.truncate();
 			brandingDAO.truncate();
 			stopPointDAO.truncate();

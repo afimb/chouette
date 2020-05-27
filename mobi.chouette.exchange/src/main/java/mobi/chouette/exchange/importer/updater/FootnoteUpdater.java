@@ -1,9 +1,12 @@
 package mobi.chouette.exchange.importer.updater;
 
-import javax.ejb.Stateless;
-
+import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
+import mobi.chouette.model.FootNoteAlternativeText;
 import mobi.chouette.model.Footnote;
+
+import javax.ejb.Stateless;
+import java.util.Collection;
 
 @Stateless(name = FootnoteUpdater.BEAN_NAME)
 public class FootnoteUpdater implements Updater<Footnote> {
@@ -45,6 +48,19 @@ public class FootnoteUpdater implements Updater<Footnote> {
 				&& !newValue.getLabel().equals(oldValue.getLabel())) {
 			oldValue.setLabel(newValue.getLabel());
 		}
+
+		if (!newValue.getAlternativeTexts().isEmpty()) {
+
+			Collection<FootNoteAlternativeText> addedAlternativeTexts = CollectionUtil.substract(
+					newValue.getAlternativeTexts(), oldValue.getAlternativeTexts(),
+					NeptuneIdentifiedObjectComparator.INSTANCE);
+
+			for (FootNoteAlternativeText footNoteAlternativeText : addedAlternativeTexts) {
+				footNoteAlternativeText.setFootnote(oldValue);
+				oldValue.getAlternativeTexts().add(footNoteAlternativeText);
+			}
+		}
+
 	}
 
 }

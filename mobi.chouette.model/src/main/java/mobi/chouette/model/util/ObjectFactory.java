@@ -6,6 +6,7 @@ import mobi.chouette.model.Branding;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.DestinationDisplay;
+import mobi.chouette.model.FootNoteAlternativeText;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Interchange;
@@ -217,6 +218,19 @@ public class ObjectFactory {
 		}
 
 		return result;
+	}
+
+	public static FootNoteAlternativeText getFootnoteAlternativeText(Referential referential, String objectId) {
+
+		FootNoteAlternativeText result = referential.getFootnoteAlternativeTexts().get(objectId);
+		if (result == null) {
+			result = new FootNoteAlternativeText();
+			result.setObjectId(objectId);
+			result.setDetached(true);
+			referential.getFootnoteAlternativeTexts().put(objectId, result);
+		}
+		return result;
+
 	}
 
 	public static Branding getBranding(Referential referential,

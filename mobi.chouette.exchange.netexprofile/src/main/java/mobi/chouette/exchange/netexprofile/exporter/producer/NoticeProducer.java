@@ -6,6 +6,11 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Set;
 
+import mobi.chouette.model.FootNoteAlternativeText;
+import org.rutebanken.netex.model.AlternativeText;
+import org.rutebanken.netex.model.AlternativeTextRefStructure;
+import org.rutebanken.netex.model.AlternativeTexts_RelStructure;
+import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.Notice;
 import org.rutebanken.netex.model.NoticeAssignment;
 import org.rutebanken.netex.model.NoticeRefStructure;
@@ -37,6 +42,20 @@ public class NoticeProducer extends NetexProducer {
 
 			VersionOfObjectRefStructure noticedObjectRef = netexFactory.createVersionOfObjectRefStructure();
 			NetexProducerUtils.populateReference(noticedObject, noticedObjectRef, true);
+
+			if (!footnote.getAlternativeTexts().isEmpty()) {
+				AlternativeTexts_RelStructure alternativeTextsRelStructure = netexFactory.createAlternativeTexts_RelStructure();
+				for (FootNoteAlternativeText footNoteAlternativeText : footnote.getAlternativeTexts()) {
+					AlternativeText alternativeText = netexFactory.createAlternativeText();
+					NetexProducerUtils.populateId(footNoteAlternativeText, alternativeText);
+					MultilingualString multilingualString = netexFactory.createMultilingualString();
+					multilingualString.setLang(footNoteAlternativeText.getLanguage());
+					multilingualString.setValue(footNoteAlternativeText.getText());
+					alternativeText.withText(multilingualString);
+					alternativeTextsRelStructure.getAlternativeText().add(alternativeText);
+				}
+				notice.withAlternativeTexts(alternativeTextsRelStructure);
+			}
 
 			String noticeAssignmentId = NetexProducerUtils.createUniqueId(context, NOTICE_ASSIGNMENT);
 			NoticeAssignment noticeAssignment = netexFactory.createNoticeAssignment().withVersion("1").withId(noticeAssignmentId)

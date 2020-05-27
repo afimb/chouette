@@ -292,6 +292,9 @@ public class NorwayLineNetexProfileValidatorTest {
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_UNRESOLVED_EXTERNAL_REFERENCE, NOK);
 
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_NOTICE_TEXT, OK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_NOTICE_ALTERNATIVE_TEXT_LANG, OK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_NOTICE_ALTERNATIVE_TEXT_DUPLICATE_LANG, OK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_NOTICE_ALTERNATIVE_TEXT_TEXT, OK);
 
 		// Common file specific checkpoints (NOT CHECKED HERE)
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEX_DUPLICATE_IDS_ACROSS_LINE_FILES, OK);
