@@ -14,12 +14,12 @@ provider "kubernetes" {
 resource "google_service_account" "chouette_service_account" {
   account_id   = "${var.labels.team}-${var.labels.app}-sa"
   display_name = "${var.labels.team}-${var.labels.app} service account"
-  project = var.gcp_project
+  project = var.gcp_resources_project
 }
 
 # add service account as member to the cloudsql client
 resource "google_project_iam_member" "cloudsql_iam_member" {
-  project = var.gcp_project
+  project = var.gcp_cloudsql_project
   role    = var.service_account_cloudsql_role
   member = "serviceAccount:${google_service_account.chouette_service_account.email}"
 }
