@@ -162,6 +162,7 @@ spec:
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}
+      serviceAccountName: chouette-service-account
       terminationGracePeriodSeconds: 60
       volumes:
         - name: chouette-service-account
