@@ -298,4 +298,8 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 		return false;
 	}
 
+	public boolean hasAtLeastTwoStops() {
+		return getStopPoints().size() >= 2;
+	}
+
 }

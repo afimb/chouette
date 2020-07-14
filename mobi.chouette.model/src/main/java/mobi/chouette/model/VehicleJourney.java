@@ -1,11 +1,18 @@
 package mobi.chouette.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.model.type.JourneyCategoryEnum;
+import mobi.chouette.model.type.ServiceAlterationEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.model.type.TransportSubModeNameEnum;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+import org.joda.time.LocalDate;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -24,20 +31,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import mobi.chouette.model.type.JourneyCategoryEnum;
-import mobi.chouette.model.type.ServiceAlterationEnum;
-import mobi.chouette.model.type.TransportModeNameEnum;
-import mobi.chouette.model.type.TransportSubModeNameEnum;
-
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-import org.joda.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * Chouette VehicleJourney
@@ -55,6 +54,7 @@ import org.joda.time.LocalDate;
 @Table(name = "vehicle_journeys")
 @NoArgsConstructor
 @ToString(callSuper = true, exclude = { "journeyPattern", "route", "timetables", "consumerInterchanges", "feederInterchanges" })
+@Log4j
 public class VehicleJourney extends NeptuneIdentifiedObject {
 
 	private static final long serialVersionUID = 304336286208135064L;
@@ -443,5 +443,84 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 
 		includedDates.removeAll(excludedDates);
 		return new TreeSet<>(includedDates);
+	}
+
+	public boolean hasStops() {
+		return !getVehicleJourneyAtStops().isEmpty();
+	}
+
+	public boolean hasTimetables() {
+		return !getTimetables().isEmpty();
+	}
+
+	/**
+	 * Return the day offset at the last stop.
+	 */
+	private int getDayOffSetAtLastStop() {
+		return getVehicleJourneyAtStops().stream().filter(vjas -> vjas.getArrivalTime() != null).map(VehicleJourneyAtStop::getArrivalDayOffset).max(Integer::compare).orElse(0);
+	}
+
+	/**
+	 * Return the day offset at the first stop.
+	 */
+	private int getDayOffSetAtFirstStop() {
+		return getVehicleJourneyAtStops().stream().filter(vjas -> vjas.getDepartureTime() != null).map(VehicleJourneyAtStop::getDepartureDayOffset).min(Integer::compare).orElse(0);
+	}
+
+	/**
+	 * Get the effective start date of a period, taking into account the day offset at last stop.
+	 *
+	 * @param startDate the start date of the period (inclusive).
+	 * @return the effective start date of the period, taking into account the day offset at last stop.
+	 */
+	private LocalDate getEffectiveStartDate(LocalDate startDate) {
+		final LocalDate effectiveStartDate;
+		if (startDate != null) {
+			int dayOffSetAtLastStop = getDayOffSetAtLastStop();
+			effectiveStartDate = startDate.minusDays(dayOffSetAtLastStop);
+			if (dayOffSetAtLastStop != 0 && log.isTraceEnabled()) {
+				log.trace("VJ " + getObjectId() + ": Day offset at last stop: " + dayOffSetAtLastStop + " day(s), shifting effective start date of active period: " + startDate + " --> " + effectiveStartDate);
+			}
+		} else {
+			effectiveStartDate = null;
+		}
+		return effectiveStartDate;
+	}
+
+	/**
+	 * Get the effective end date of a period, taking into account the day offset at first stop.
+	 *
+	 * @param endDate the end date of the period  (inclusive).
+	 * @return the effective end date of the period, taking into account the day offset at last stop.
+	 */
+	private LocalDate getEffectiveEndDate(LocalDate endDate) {
+		final LocalDate effectiveEndDate;
+		if (endDate != null) {
+			int dayOffSetAtFirstStop = getDayOffSetAtFirstStop();
+			effectiveEndDate = endDate.minusDays(dayOffSetAtFirstStop);
+			if (dayOffSetAtFirstStop != 0 && log.isTraceEnabled()) {
+				log.trace("VJ " + getObjectId() + ": Day offset at first stop: " + dayOffSetAtFirstStop + " day(s), shifting effective end date of active period: " + endDate + " --> " + effectiveEndDate);
+			}
+		} else {
+			effectiveEndDate = null;
+		}
+		return effectiveEndDate;
+	}
+
+	/**
+	 * Retrieve the list of active timetables on the period, taking into account the day offset at first stop and last stop.
+	 *
+	 * @param startDate the start date of the period (inclusive).
+	 * @param endDate   the end date of the period (inclusive).
+	 * @return the list of timetables active on the period, taking into account the day offset at first stop and last stop.
+	 */
+	public List<Timetable> getActiveTimetablesOnPeriod(LocalDate startDate, LocalDate endDate) {
+		final LocalDate effectiveStartDate = getEffectiveStartDate(startDate);
+		final LocalDate effectiveEndDate = getEffectiveEndDate(endDate);
+		return getTimetables().stream().filter(t -> t.isActiveOnPeriod(effectiveStartDate, effectiveEndDate)).collect(Collectors.toList());
+	}
+
+	public boolean hasActiveTimetablesOnPeriod(LocalDate startDate, LocalDate endDate) {
+		return !getActiveTimetablesOnPeriod(startDate, endDate).isEmpty();
 	}
 }

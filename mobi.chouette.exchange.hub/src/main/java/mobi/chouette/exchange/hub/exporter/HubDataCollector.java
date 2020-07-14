@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.exporter.DataCollector;
+import mobi.chouette.exchange.exporter.ExportableData;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
@@ -12,8 +13,15 @@ import org.joda.time.LocalDate;
 
 @Log4j
 public class HubDataCollector extends DataCollector {
-	public boolean collect(ExportableData collection, Line line, LocalDate startDate, LocalDate endDate) {
-		boolean res = collect(collection, line, startDate, endDate, false, false);
+
+
+	public HubDataCollector(ExportableData collection, Line line, org.joda.time.LocalDate startDate, org.joda.time.LocalDate endDate, boolean skipNoCoordinate, boolean followLinks) {
+		super(collection, line, startDate, endDate, false, false);
+	}
+
+	@Override
+	public boolean collect() {
+		boolean res = super.collect();
 		if (line.getNetwork() == null) {
 			log.error("line " + line.getObjectId() + " : missing network");
 			return false;

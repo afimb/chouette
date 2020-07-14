@@ -8,8 +8,13 @@ import org.joda.time.LocalDate;
 
 @Log4j
 public class NetexDataCollector extends DataCollector {
-	public boolean collect(ExportableData collection, Line line, LocalDate startDate, LocalDate endDate) {
-       boolean res =  collect(collection, line, startDate, endDate, false, false);
+	public NetexDataCollector(mobi.chouette.exchange.exporter.ExportableData collection, Line line, LocalDate startDate, LocalDate endDate) {
+		super(collection, line, startDate, endDate, false, false);
+	}
+
+	@Override
+	public boolean collect() {
+       boolean res =  super.collect();
 		if (line.getNetwork() == null) {
 			log.error("line " + line.getObjectId() + " : missing network");
 			return false;

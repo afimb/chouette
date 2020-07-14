@@ -8,6 +8,8 @@
 package mobi.chouette.model;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -32,14 +34,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.TransportSubModeNameEnum;
 import mobi.chouette.model.type.UserNeedEnum;
+import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectIdTypes;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.joda.time.LocalDate;
 
 /**
  * Chouette Line : a group of Routes which is generally known to the public by a
@@ -52,6 +57,7 @@ import org.hibernate.annotations.Parameter;
 @Table(name = "lines")
 @NoArgsConstructor
 @ToString(callSuper = true, exclude = { "routingConstraints" })
+@Log4j
 public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	private static final long serialVersionUID = -8086291270595894778L;
 
@@ -486,4 +492,66 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	@Getter
 	@Setter
 	private FlexibleLineProperties flexibleLineProperties;
+
+	/**
+	 * Recursively remove routes, journey patterns, vehicle journeys and timetables that are not active on the period.
+	 * @param startDate
+	 * @param endDate
+	 * @return true if there is at least one active route.
+	 */
+	public boolean filter(LocalDate startDate, LocalDate endDate) {
+		for (Iterator<Route> routeI = getRoutes().iterator(); routeI.hasNext(); ) {
+			Route route = routeI.next();
+			// filter out Routes with less than 2 stops
+			if (!route.hasAtLeastTwoStops()) {
+				routeI.remove();
+				continue;
+			}
+			for (Iterator<JourneyPattern> jpI = route.getJourneyPatterns().iterator(); jpI.hasNext(); ) {
+				JourneyPattern jp = jpI.next();
+				// filter out Journey Patterns with less than 2 stops
+				if (!jp.hasAtLeastTwoStops()) {
+					jpI.remove();
+					continue;
+				}
+				if (jp.getDepartureStopPoint() == null || jp.getArrivalStopPoint() == null) {
+					NeptuneUtil.refreshDepartureArrivals(jp);
+				}
+				for (Iterator<VehicleJourney> vjI = jp.getVehicleJourneys().iterator(); vjI.hasNext(); ) {
+					VehicleJourney vehicleJourney = vjI.next();
+					// filter out Vehicle Journeys without stops
+					if (!vehicleJourney.hasStops()) {
+						vjI.remove();
+						continue;
+					}
+					List<Timetable> activeTimetablesOnPeriod = vehicleJourney.getActiveTimetablesOnPeriod(startDate, endDate);
+					vehicleJourney.getTimetables().removeIf(timetable -> !activeTimetablesOnPeriod.contains(timetable));
+					// filter out Vehicle Journey without timetables
+					if (!vehicleJourney.hasTimetables()) {
+						log.info("Removing VJ with no valid timetables: " + vehicleJourney.getObjectId());
+						vjI.remove();
+					}
+				}
+				if(jp.getVehicleJourneys().isEmpty()) {
+					log.info("Removing JP with no valid service journey: " + jp.getObjectId());
+					jpI.remove();
+				}
+			}
+			if(route.getJourneyPatterns().isEmpty()) {
+				log.info("Removing route with no valid journey pattern: " + route.getObjectId());
+				routeI.remove();
+
+			}
+		}
+		return !getRoutes().isEmpty();
+	}
+
+	public boolean filter(Date startDate, Date endDate) {
+		LocalDate localStartDate = startDate == null ? null : new LocalDate((startDate));
+		LocalDate localEndDate = endDate == null ? null : new LocalDate((endDate));
+		return filter(localStartDate,localEndDate);
+	}
 }
+
+
+

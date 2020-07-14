@@ -86,8 +86,8 @@ public class GtfsLineProducerCommand implements Command, Constant {
 				endDate = new LocalDate(configuration.getEndDate());
 			}
 
-			GtfsDataCollector collector = new GtfsDataCollector();
-			boolean cont = collector.collect(collection, line, startDate, endDate);
+			GtfsDataCollector collector = new GtfsDataCollector(collection, line, startDate, endDate);
+			boolean cont = collector.collect();
 			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 0);
 			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
 					collection.getJourneyPatterns().size());

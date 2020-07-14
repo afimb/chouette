@@ -27,7 +27,6 @@ import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.model.type.DayTypeEnum;
 
-import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -406,12 +405,40 @@ public class Timetable extends NeptuneIdentifiedObject {
 	}
 
 	/**
-	 * check if a Timetable is active on a given date
-	 * 
-	 * @param aDay
-	 * @return true if timetable is active on given date
+	 * Check if the timetable is active on a given period.
+	 * The method returns false if there is no period nor calendar day.
+	 * The method return true if both startDate and endDate are null.
+	 * If either side of the interval is null, then the interval is considered unbounded on that side and the
+	 * method will return true if the timetable is active on any day after the start date (respectively any day before
+	 * the end date).
+	 * @param startDate start date of the interval (inclusive)
+	 * @param endDate end date of the interval (inclusive)
+	 * @return if the timetable is active on a given period.
 	 */
-	public boolean isActiveOn(final LocalDate aDay) {
+	public boolean isActiveOnPeriod(LocalDate startDate, LocalDate endDate) {
+		if (getPeriods().isEmpty() && getCalendarDays().isEmpty()) {
+			return false;
+		}
+		if(startDate == null && endDate == null) {
+			return true;
+		}
+		if (startDate == null) {
+			return isActiveBefore(new LocalDate(endDate));
+		} else {
+			if (endDate == null) {
+				return isActiveAfter(new LocalDate(startDate));
+			} else {
+				return isActiveBetween(new LocalDate(startDate), new LocalDate(endDate));
+			}
+		}
+	}
+
+	/**
+	 * check if the Timetable is active on a given date.
+	 * @param aDay the date to check.
+	 * @return true if timetable is active on the given date.
+	 */
+	private boolean isActiveOn(final LocalDate aDay) {
 		if (getCalendarDays() != null) {
 			CalendarDay includedDay = new CalendarDay(aDay, true);
 			if (getCalendarDays().contains(includedDay))
@@ -436,15 +463,32 @@ public class Timetable extends NeptuneIdentifiedObject {
 		return false;
 	}
 
-	public boolean isActiveBefore(final LocalDate aDay) {
-		return isActiveOnPeriod(getStartOfPeriod(), aDay);
+	/**
+	 * check if the Timetable is active before a given date, inclusive of the given date.
+	 * @param aDay the date to check.
+	 * @return true if the Timetable is active before a given date
+	 */
+	private boolean isActiveBefore(final LocalDate aDay) {
+		return isActiveBetween(getStartOfPeriod(), aDay);
 	}
 
-	public boolean isActiveAfter(final LocalDate aDay) {
-		return isActiveOnPeriod(aDay, getEndOfPeriod());
+	/**
+	 * check if the Timetable is active after a given date, inclusive of the given date.
+	 * @param aDay the date to check.
+	 * @return true if the Timetable is active after the given date.
+	 */
+	private boolean isActiveAfter(final LocalDate aDay) {
+		return isActiveBetween(aDay, getEndOfPeriod());
 	}
 
-	public boolean isActiveOnPeriod(final LocalDate start, final LocalDate end) {
+	/**
+	 * Check if the Timetable is active between a start date (inclusive) and an end date (inclusive).
+	 * The method returns false if either side of the interval is null.
+	 * @param start the start date of the interval.
+	 * @param end the end date of the interval
+	 * @return true if the Timetable is active between a start date (inclusive) and an end date (inclusive).
+	 */
+	private boolean isActiveBetween(final LocalDate start, final LocalDate end) {
 		if(start == null || end == null) {
 			return false;
 		} else {

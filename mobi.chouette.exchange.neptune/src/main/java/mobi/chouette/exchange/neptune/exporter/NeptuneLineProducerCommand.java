@@ -63,8 +63,8 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 				endDate = new LocalDate(configuration.getEndDate());
 			}
 
-			NeptuneDataCollector collector = new NeptuneDataCollector();
-			boolean cont = (collector.collect(collection, line, startDate, endDate));
+			NeptuneDataCollector collector = new NeptuneDataCollector(collection, line, startDate, endDate);
+			boolean cont = collector.collect();
 			reporter.addObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
 					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
 			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 0);

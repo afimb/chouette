@@ -276,4 +276,9 @@ public class Route extends NeptuneIdentifiedObject {
 	@JoinTable(name = "routes_route_points", joinColumns = {@JoinColumn(name = "route_id", nullable = false, updatable = false)}, inverseJoinColumns = {@JoinColumn(name = "route_point_id", nullable = false, updatable = false)})
 	private List<RoutePoint> routePoints = new ArrayList<>(0);
 
+
+	public boolean hasAtLeastTwoStops() {
+		return getStopPoints().size() >= 2;
+	}
+
 }
