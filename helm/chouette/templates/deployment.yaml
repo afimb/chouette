@@ -39,13 +39,13 @@ spec:
         {{- include "common.labels" . | indent 8 }}
     spec:
       containers:
-        - command:
+        - name: chouette-sql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:1.17-alpine
+          command:
             - /cloud_sql_proxy
             - -instances={{ .Values.gcpDatabaseInstance}}
             - -credential_file=/etc/chouette-service-account/credentials.json
             - -log_debug_stdout
-          image: gcr.io/cloudsql-docker/gce-proxy:1.17-alpine
-          imagePullPolicy: IfNotPresent
           lifecycle:
             preStop:
               exec:
@@ -53,17 +53,17 @@ spec:
                   - /bin/sh
                   - -c
                   - sleep 28
-          name: chouette-sql-proxy
           resources:
             requests:
               cpu: 50m
               memory: 40Mi
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
           volumeMounts:
             - mountPath: /etc/chouette-service-account
               name: chouette-service-account
-        - env:
+        - name: chouette
+          image: {{ .Values.image.identifier }}
+          imagePullPolicy: Always
+          env:
             - name: JAVA_OPTS
               value: -server -Xms2048m -Xmx{{ .Values.resources.xmx }} -Djava.net.preferIPv4Stack=true -Djava.awt.headless=true
                 -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconfig.location=/etc/application-config/application.properties
@@ -102,8 +102,6 @@ spec:
                 secretKeyRef:
                   key: chouette-user-initial-encrypted-password
                   name: ror-chouette-secret
-          image: {{ .Values.image.identifier }}
-          imagePullPolicy: Always
           lifecycle:
             preStop:
               exec:
@@ -111,17 +109,6 @@ spec:
                   - /bin/sh
                   - -c
                   - /opt/jboss/wildfly/bin/jboss-cli.sh -c --command=:shutdown
-          livenessProbe:
-            failureThreshold: 3
-            httpGet:
-              path: chouette_iev/health/live
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 120
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 30
-          name: chouette
           ports:
             - containerPort: 8080
               name: http
@@ -129,8 +116,17 @@ spec:
             - containerPort: 5005
               name: debug
               protocol: TCP
-          readinessProbe:
+          livenessProbe:
+            httpGet:
+              path: chouette_iev/health/live
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            successThreshold: 1
             failureThreshold: 3
+            timeoutSeconds: 30
+          readinessProbe:
             httpGet:
               path: chouette_iev/health/ready
               port: 8080
@@ -138,6 +134,7 @@ spec:
             initialDelaySeconds: 15
             periodSeconds: 10
             successThreshold: 1
+            failureThreshold: 3
             timeoutSeconds: 10
           resources:
             limits:
@@ -146,8 +143,6 @@ spec:
             requests:
               cpu: {{ .Values.resources.cpuRequest }}
               memory: {{ .Values.resources.memRequest }}
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
           volumeMounts:
             - mountPath: /etc/chouette-service-account
               name: chouette-service-account
