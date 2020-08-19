@@ -65,8 +65,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: JAVA_OPTS
-              value: -server -Xms512m -Xmx{{ .Values.resources.xmx }} -XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90
-                -XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=40 -Djava.net.preferIPv4Stack=true -Djava.awt.headless=true
+              value: -server -Xms2048m -Xmx{{ .Values.resources.xmx }} -Djava.net.preferIPv4Stack=true -Djava.awt.headless=true
                 -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconfig.location=/etc/application-config/application.properties
                 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/jboss/data/
             - name: LANG
