@@ -1,7 +1,7 @@
 env: production
 replicas: 2
 gcpProjectId: neon-1287
-gcpDatabaseInstance: neon-1287:europe-west1:chouette-db-1=tcp:5432
+gcpDatabaseInstance: entur-ror-prod:europe-west1:chouette-db-1=tcp:5432
 gcpBucketName: chouette-production
 
 
