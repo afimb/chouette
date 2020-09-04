@@ -10,6 +10,24 @@ provider "kubernetes" {
   load_config_file = var.load_config_file
 }
 
+# Create bucket
+resource "google_storage_bucket" "storage_bucket" {
+  name               = "${var.bucket_instance_prefix}-${var.bucket_instance_suffix}"
+  location           = var.location
+  project            = var.gcp_gcs_project
+  storage_class      = var.bucket_storage_class
+  labels             = var.labels
+
+  lifecycle_rule {
+    condition {
+      age = var.bucket_retention_period
+    }
+    action {
+      type = "Delete"
+    }
+  }
+}
+
 # create service account
 resource "google_service_account" "chouette_service_account" {
   account_id   = "${var.labels.team}-${var.labels.app}-sa"
@@ -24,9 +42,16 @@ resource "google_project_iam_member" "cloudsql_iam_member" {
   member = "serviceAccount:${google_service_account.chouette_service_account.email}"
 }
 
-# add service account as member to the storage bucket
-resource "google_storage_bucket_iam_member" "storage_bucket_iam_member" {
+# add service account as member to old storage bucket
+resource "google_storage_bucket_iam_member" "old_storage_bucket_iam_member" {
   bucket = var.bucket_chouette_instance_name
+  role   = var.service_account_bucket_role
+  member = "serviceAccount:${google_service_account.chouette_service_account.email}"
+}
+
+# add service account as member to storage bucket
+resource "google_storage_bucket_iam_member" "storage_bucket_iam_member" {
+  bucket = google_storage_bucket.storage_bucket.name
   role   = var.service_account_bucket_role
   member = "serviceAccount:${google_service_account.chouette_service_account.email}"
 }
@@ -43,7 +68,7 @@ resource "kubernetes_secret" "chouette_service_account_credentials" {
     namespace = var.kube_namespace
   }
   data = {
-    "credentials.json" = "${base64decode(google_service_account_key.chouette_service_account_key.private_key)}"
+    "credentials.json" = base64decode(google_service_account_key.chouette_service_account_key.private_key)
   }
 }
 
