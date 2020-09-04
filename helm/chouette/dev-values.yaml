@@ -1,6 +1,5 @@
 env: dev
 replicas: 2
-gcpProjectId: carbon-1287
+gcpProjectId: entur-ror-dev
 gcpDatabaseInstance: entur-ror-dev:europe-west1:chouette-db-1=tcp:5432
-gcpBucketName: chouette-test
-
+gcpBucketName: ror-chouette-dev
