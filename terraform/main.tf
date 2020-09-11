@@ -21,6 +21,7 @@ resource "google_storage_bucket" "storage_bucket" {
   lifecycle_rule {
     condition {
       age = var.bucket_retention_period
+      with_state = "ANY"
     }
     action {
       type = "Delete"
