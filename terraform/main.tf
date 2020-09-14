@@ -23,6 +23,7 @@ resource "google_storage_bucket" "storage_bucket" {
     condition {
       age = var.bucket_retention_period
       is_live = true
+      with_state = "ANY"
     }
     action {
       type = "Delete"
