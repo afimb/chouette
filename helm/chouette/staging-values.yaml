@@ -1,5 +1,5 @@
 env: staging
 replicas: 2
-gcpProjectId: radon-1287
+gcpProjectId: entur-ror-test
 gcpDatabaseInstance: entur-ror-test:europe-west1:chouette-db-1=tcp:5432
-gcpBucketName: chouette-stage
+gcpBucketName: ror-chouette-test
