@@ -319,6 +319,19 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	}
 
 	/**
+	 * datedServiceJourneys
+	 *
+	 * @param da
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@OneToMany(mappedBy = "vehicleJourney", cascade = { CascadeType.PERSIST})
+	private List<DatedServiceJourney> datedServiceJourneys = new ArrayList<DatedServiceJourney>(
+			0);
+
+	/**
 	 * company reference<br/>
 	 * if different from line company
 	 * 
@@ -435,14 +448,22 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	@JoinColumn(name = "flexible_service_properties_id")
 	private FlexibleServiceProperties flexibleServiceProperties;
 
+
 	public SortedSet<LocalDate> getActiveDates() {
-		Set<LocalDate> includedDates = getTimetables().stream().map(Timetable::getActiveDates).flatMap(Set::stream).collect(Collectors.toSet());
 
-		// Assuming exclusions across Timetables take precedent, so need to make sure all excluded dates are actually excluded
-		Set<LocalDate> excludedDates = getTimetables().stream().map(Timetable::getExcludedDates).flatMap(List::stream).collect(Collectors.toSet());
+		if (hasTimetables()) {
+			Set<LocalDate> includedDates = getTimetables().stream().map(Timetable::getActiveDates).flatMap(Set::stream).collect(Collectors.toSet());
 
-		includedDates.removeAll(excludedDates);
-		return new TreeSet<>(includedDates);
+			// Assuming exclusions across Timetables take precedent, so need to make sure all excluded dates are actually excluded
+			Set<LocalDate> excludedDates = getTimetables().stream().map(Timetable::getExcludedDates).flatMap(List::stream).collect(Collectors.toSet());
+
+			includedDates.removeAll(excludedDates);
+			return new TreeSet<>(includedDates);
+		} else if (hasDatedServiceJourneys()) {
+			return getDatedServiceJourneys().stream().filter(DatedServiceJourney::isActive).map(DatedServiceJourney::getOperatingDay).collect(Collectors.toCollection(TreeSet::new));
+		} else {
+			return new TreeSet<>();
+		}
 	}
 
 	public boolean hasStops() {
@@ -451,6 +472,11 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 
 	public boolean hasTimetables() {
 		return !getTimetables().isEmpty();
+	}
+
+
+	public boolean hasDatedServiceJourneys() {
+		return !getDatedServiceJourneys().isEmpty();
 	}
 
 	/**
@@ -522,5 +548,25 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 
 	public boolean hasActiveTimetablesOnPeriod(LocalDate startDate, LocalDate endDate) {
 		return !getActiveTimetablesOnPeriod(startDate, endDate).isEmpty();
+	}
+
+	/**
+	 * Retrieve the list of active dated service journeys on the period, taking into account the day offset at first stop and last stop.
+	 * @param startDate the start date of the period (inclusive).
+	 * @param endDate the end date of the period (exclusive).
+	 * @return the list of dated service journeys active on the period, taking into account the day offset at first stop and last stop.
+	 */
+	public List<DatedServiceJourney> getActiveDatedServiceJourneysOnPeriod(LocalDate startDate, LocalDate endDate) {
+		final LocalDate effectiveStartDate = getEffectiveStartDate(startDate);
+		final LocalDate effectiveEndDate = getEffectiveEndDate(endDate);
+		return getDatedServiceJourneys().stream().filter(dsj->dsj.isValidOnPeriod(effectiveStartDate, effectiveEndDate )).collect(Collectors.toList());
+	}
+
+	private boolean hasActiveDatedServiceJourneysOnPeriod(LocalDate startDate, LocalDate endDate) {
+		return !getActiveDatedServiceJourneysOnPeriod(startDate, endDate).isEmpty();
+	}
+
+	public boolean isActiveOnPeriod(LocalDate startDate, LocalDate endDate) {
+		return hasActiveTimetablesOnPeriod(startDate, endDate) || hasActiveDatedServiceJourneysOnPeriod(startDate, endDate);
 	}
 }

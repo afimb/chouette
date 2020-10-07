@@ -19,6 +19,7 @@ import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.exporter.producer.BrandingProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.CalendarProducer;
+import mobi.chouette.exchange.netexprofile.exporter.producer.DatedServiceJourneyProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.JourneyPatternProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.LineProducer;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer;
@@ -33,6 +34,7 @@ import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Branding;
 import mobi.chouette.model.Company;
+import mobi.chouette.model.DatedServiceJourney;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Interchange;
 import mobi.chouette.model.JourneyPattern;
@@ -72,6 +74,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 	private static JourneyPatternProducer journeyPatternProducer = new JourneyPatternProducer();
 	private static CalendarProducer calendarProducer = new CalendarProducer();
 	private static ServiceJourneyProducer serviceJourneyProducer = new ServiceJourneyProducer();
+	private static DatedServiceJourneyProducer datedServiceJourneyProducer = new DatedServiceJourneyProducer();
 	private static ServiceJourneyInterchangeProducer serviceJourneyInterchangeProducer = new ServiceJourneyInterchangeProducer();
 	private static BrandingProducer brandingProducer = new BrandingProducer();
 
@@ -136,6 +139,11 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 		for (mobi.chouette.model.VehicleJourney vehicleJourney : exportableData.getVehicleJourneys()) {
 			ServiceJourney serviceJourney = serviceJourneyProducer.produce(context, vehicleJourney, exportableData.getLine());
 			exportableNetexData.getServiceJourneys().add(serviceJourney);
+		}
+
+		for (DatedServiceJourney datedServiceJourney : exportableData.getDatedServiceJourneys()) {
+			 org.rutebanken.netex.model.DatedServiceJourney netexDatedServiceJourney = datedServiceJourneyProducer.produce(context, datedServiceJourney, exportableData.getLine());
+			exportableNetexData.getDatedServiceJourneys().add(netexDatedServiceJourney);
 		}
 
 		for (Interchange interchange : exportableData.getInterchanges()) {
