@@ -241,6 +241,7 @@ public class Referential implements java.io.Serializable {
 				vj.getTimetables().clear();
 				vj.getJourneyFrequencies().clear();
 				vj.getFootnotes().clear();
+				vj.getDatedServiceJourneys().clear();
 			}
 			for (Timetable timetable : timetables.values()) {
 				timetable.getVehicleJourneys().clear();
@@ -279,6 +280,7 @@ public class Referential implements java.io.Serializable {
 		timebands.clear();
 		timetables.clear();
 		vehicleJourneys.clear();
+		datedServiceJourneys.clear();
 		routeSections.clear();
 		destinationDisplays.clear();
 		interchanges.clear();
