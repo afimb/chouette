@@ -34,7 +34,7 @@
 
     <!-- NB: Concious choice of using snapshot version. This is to keep in
         sync, and fail fast if incompatibilities -->
-	  <netex-java-model.version>1.0.11</netex-java-model.version>
+	  <netex-java-model.version>1.0.10-SNAPSHOT</netex-java-model.version>
 		<rutebanken.helpers.version>0.0.4-SNAPSHOT</rutebanken.helpers.version>
 	</properties>
 	<distributionManagement>

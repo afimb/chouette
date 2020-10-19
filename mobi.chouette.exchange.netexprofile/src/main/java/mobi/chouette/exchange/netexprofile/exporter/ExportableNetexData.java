@@ -15,7 +15,6 @@ import mobi.chouette.model.RouteSection;
 import org.rutebanken.netex.model.AvailabilityCondition;
 import org.rutebanken.netex.model.Branding;
 import org.rutebanken.netex.model.Codespace;
-import org.rutebanken.netex.model.DatedServiceJourney;
 import org.rutebanken.netex.model.DayType;
 import org.rutebanken.netex.model.DayTypeAssignment;
 import org.rutebanken.netex.model.DestinationDisplay;
@@ -26,7 +25,6 @@ import org.rutebanken.netex.model.Line_VersionStructure;
 import org.rutebanken.netex.model.Network;
 import org.rutebanken.netex.model.Notice;
 import org.rutebanken.netex.model.NoticeAssignment;
-import org.rutebanken.netex.model.OperatingDay;
 import org.rutebanken.netex.model.OperatingPeriod;
 import org.rutebanken.netex.model.Organisation_VersionStructure;
 import org.rutebanken.netex.model.PassengerStopAssignment;
@@ -106,10 +104,6 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private List<DatedServiceJourney> datedServiceJourneys = new ArrayList<>();
-
-    @Getter
-    @Setter
     private Map<String,Notice> sharedNotices = new HashMap<>();
 
     @Getter
@@ -138,10 +132,6 @@ public class ExportableNetexData {
 
     @Getter
     @Setter
-    private Map<String, OperatingDay> sharedOperatingDays = new HashMap<>();
-
-    @Getter
-    @Setter
     private List<ServiceJourneyInterchange> serviceJourneyInterchanges = new ArrayList<>();
 
 
@@ -150,8 +140,7 @@ public class ExportableNetexData {
         line = null;
         routes.clear();
         journeyPatterns.clear();
-        serviceJourneys.clear();
-        datedServiceJourneys.clear();
+        serviceJourneys. clear();
         noticeAssignmentsServiceFrame.clear();
         noticeAssignmentsTimetableFrame.clear();
         serviceJourneyInterchanges.clear();
@@ -162,7 +151,6 @@ public class ExportableNetexData {
         sharedDayTypes.clear();
         sharedDayTypeAssignments.clear();
         sharedOperatingPeriods.clear();
-        sharedOperatingDays.clear();
         commonCondition = null;
         sharedCodespaces.clear();
         sharedNetworks.clear();

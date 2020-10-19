@@ -526,11 +526,9 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 					}
 					List<Timetable> activeTimetablesOnPeriod = vehicleJourney.getActiveTimetablesOnPeriod(startDate, endDate);
 					vehicleJourney.getTimetables().removeIf(timetable -> !activeTimetablesOnPeriod.contains(timetable));
-					List<DatedServiceJourney> activeDatedServiceJourneyOnPeriod = vehicleJourney.getActiveDatedServiceJourneysOnPeriod(startDate, endDate);
-					vehicleJourney.getDatedServiceJourneys().removeIf(dsj -> !activeDatedServiceJourneyOnPeriod.contains(dsj));
-					// filter out Vehicle Journey without timetables nor dated service journey
-					if(!vehicleJourney.hasTimetables() && !vehicleJourney.hasDatedServiceJourneys()) {
-						log.info("Removing VJ with no valid timetables nor valid dated service journeys: "+ vehicleJourney.getObjectId());
+					// filter out Vehicle Journey without timetables
+					if (!vehicleJourney.hasTimetables()) {
+						log.info("Removing VJ with no valid timetables: " + vehicleJourney.getObjectId());
 						vjI.remove();
 					}
 				}

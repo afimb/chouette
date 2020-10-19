@@ -34,7 +34,6 @@ import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.exchange.report.IO_TYPE;
-import mobi.chouette.model.DatedServiceJourney;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Timetable;
@@ -141,26 +140,16 @@ public class GtfsLineProducerCommand implements Command, Constant {
 		// utiliser la collection
 		if (!collection.getVehicleJourneys().isEmpty()) {
 			for (VehicleJourney vj : collection.getVehicleJourneys()) {
-
-				if (vj.hasTimetables()) {
-					String timeTableServiceId = calendarProducer.key(vj.getTimetables(), sharedPrefix, configuration.isKeepOriginalId());
-					if (timeTableServiceId != null) {
-						if (tripProducer.save(vj, timeTableServiceId, prefix, sharedPrefix, configuration.isKeepOriginalId())) {
-							hasVj = true;
-							jps.add(vj.getJourneyPattern());
-							if (!timetables.containsKey(timeTableServiceId)) {
-								timetables.put(timeTableServiceId, new ArrayList<Timetable>(vj.getTimetables()));
-							}
-						}
-					}
-				} else if(vj.hasDatedServiceJourneys()
-				   && vj.getDatedServiceJourneys().stream().anyMatch(DatedServiceJourney::isActive)) {
-					if (tripProducer.save(vj, vj.getObjectId(), prefix, sharedPrefix, configuration.isKeepOriginalId())) {
+				String tmKey = calendarProducer.key(vj.getTimetables(), sharedPrefix, configuration.isKeepOriginalId());
+				if (tmKey != null) {
+					if (tripProducer.save(vj, tmKey, prefix, sharedPrefix, configuration.isKeepOriginalId())) {
 						hasVj = true;
 						jps.add(vj.getJourneyPattern());
+						if (!timetables.containsKey(tmKey)) {
+							timetables.put(tmKey, new ArrayList<Timetable>(vj.getTimetables()));
+						}
 					}
 				}
-
 			} // vj loop
 			for (JourneyPattern jp : jps) {
 				shapeProducer.save(jp, prefix, configuration.isKeepOriginalId());

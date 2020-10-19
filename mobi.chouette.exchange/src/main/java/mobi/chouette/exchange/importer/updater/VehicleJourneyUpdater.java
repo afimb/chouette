@@ -8,8 +8,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import mobi.chouette.dao.DatedServiceJourneyDAO;
-import mobi.chouette.model.DatedServiceJourney;
 import org.apache.commons.beanutils.BeanUtils;
 
 import mobi.chouette.common.CollectionUtil;
@@ -102,10 +100,6 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	private LineDAO lineDAO;
 
 	@EJB
-	private DatedServiceJourneyDAO datedServiceJourneyDAO;
-
-
-	@EJB
 	private InterchangeDAO interchangeDAO;
 
 	@EJB(beanName = TimetableUpdater.BEAN_NAME)
@@ -125,9 +119,6 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 
 	@EJB(beanName = InterchangeUpdater.BEAN_NAME)
 	private Updater<Interchange> interchangeUpdater;
-
-	@EJB(beanName = DatedServiceJourneyUpdater.BEAN_NAME)
-	private Updater<DatedServiceJourney> datedServiceJourneyUpdater;
 
 
 	@Override
@@ -402,51 +393,12 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 				journeyFrequencyDAO.delete(journeyFrequency);
 			}
 		}
-
-		updateDatedServiceJourneys(context, oldValue, newValue, cache);
-
 		updateInterchanges(context, oldValue, newValue);
 		updateFootnotes(context,oldValue,newValue,cache);
 		updateInterchanges(context, oldValue, newValue);
 //		monitor.stop();
 	}
-
-	private void updateDatedServiceJourneys(Context context, VehicleJourney oldValue, VehicleJourney newValue, Referential cache) throws Exception {
-		Collection<DatedServiceJourney> addedDatedServiceJourney = CollectionUtil.substract(newValue.getDatedServiceJourneys(),
-				oldValue.getDatedServiceJourneys(), NeptuneIdentifiedObjectComparator.INSTANCE);
-
-		List<DatedServiceJourney> datedServiceJourneys = null;
-		for (DatedServiceJourney item : addedDatedServiceJourney) {
-
-			DatedServiceJourney datedServiceJourney = cache.getDatedServiceJourneys().get(item.getObjectId());
-			if (datedServiceJourney == null) {
-				if (datedServiceJourneys == null) {
-					datedServiceJourneys = datedServiceJourneyDAO.findByObjectId(UpdaterUtils.getObjectIds(addedDatedServiceJourney));
-					for (DatedServiceJourney object : datedServiceJourneys) {
-						cache.getDatedServiceJourneys().put(object.getObjectId(), object);
-					}
-				}
-				datedServiceJourney = cache.getDatedServiceJourneys().get(item.getObjectId());
-			}
-
-			if (datedServiceJourney == null) {
-				datedServiceJourney = ObjectFactory.getDatedServiceJourney(cache, item.getObjectId());
-			}
-			if(datedServiceJourney.getVehicleJourney() != null) {
-				//twoDatabaseVehicleJourneyOneTest(validationReporter, context, datedServiceJourney, item, data);
-			} else {
-				datedServiceJourney.setVehicleJourney(oldValue);
-			}
-		}
-
-		Collection<Pair<DatedServiceJourney, DatedServiceJourney>> modifiedDatedServiceJourney = CollectionUtil.intersection(
-				oldValue.getDatedServiceJourneys(), newValue.getDatedServiceJourneys(),
-				NeptuneIdentifiedObjectComparator.INSTANCE);
-		for (Pair<DatedServiceJourney, DatedServiceJourney> pair : modifiedDatedServiceJourney) {
-			datedServiceJourneyUpdater.update(context, pair.getLeft(), pair.getRight());
-		}
-	}
-
+	
 	private void updateFootnotes(Context context, VehicleJourney oldValue, VehicleJourney newValue, Referential cache) throws Exception {
 		Collection<Footnote> addedFootnote = CollectionUtil.substract(newValue.getFootnotes(),
 				oldValue.getFootnotes(), NeptuneIdentifiedObjectComparator.INSTANCE);

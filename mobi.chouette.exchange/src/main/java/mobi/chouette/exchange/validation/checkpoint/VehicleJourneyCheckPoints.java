@@ -489,8 +489,8 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 //	}
 
 	private void check3VehicleJourney4(Context context, VehicleJourney vj) {
-		// 3-VehicleJourney-4 : check if each journey has minimum one timetable or one dated service journey
-		if (isEmpty(vj.getTimetables()) && isEmpty(vj.getDatedServiceJourneys())) {
+		// 3-VehicleJourney-4 : check if each journey has minimum one timetable
+		if (isEmpty(vj.getTimetables())) {
 			DataLocation location = buildLocation(context, vj);
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 			reporter.addCheckPointReportError(context, VEHICLE_JOURNEY_4, location);

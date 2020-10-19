@@ -36,14 +36,11 @@ import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.exchange.report.IO_TYPE;
-import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
-import mobi.chouette.model.DatedServiceJourney;
 import mobi.chouette.model.Interchange;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.Timetable;
-import mobi.chouette.model.type.ServiceAlterationEnum;
 
 /**
  *
@@ -106,7 +103,6 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 		String sharedPrefix = prefix;
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 		Map<String, List<Timetable>> timetables = collection.getTimetableMap();
-		List<DatedServiceJourney> datedServiceJourneys = collection.getDatedServiceJourneys();
 		Set<StopArea> commercialStops = collection.getCommercialStops();
 		Set<StopArea> physicalStops = collection.getPhysicalStops();
 		Set<ConnectionLink> connectionLinks = collection.getConnectionLinks();
@@ -116,7 +112,7 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 		if (!companies.isEmpty()) {
 			agencyProducer = new GtfsAgencyProducer(exporter);
 		}
-		if (!timetables.isEmpty() || !datedServiceJourneys.isEmpty()) {
+		if (!timetables.isEmpty()) {
 			calendarProducer = new GtfsServiceProducer(exporter);
 		}
 
@@ -163,16 +159,6 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 				for (Timetable tm : tms) {
 					metadata.getTemporalCoverage().update(tm.getStartOfPeriod(), tm.getEndOfPeriod());
 				}
-			}
-		}
-
-		for (DatedServiceJourney datedServiceJourney : datedServiceJourneys) {
-			// replaced and cancelled services are excluded from the GTFS export.
-			if (datedServiceJourney.isActive()) {
-				CalendarDay calendarDay = new CalendarDay();
-				calendarDay.setDate(datedServiceJourney.getOperatingDay());
-				calendarDay.setIncluded(true);
-				calendarProducer.saveDay(datedServiceJourney.getVehicleJourney().getObjectId(), calendarDay);
 			}
 		}
 

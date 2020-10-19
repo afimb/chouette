@@ -12,7 +12,6 @@ import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Branding;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
-import mobi.chouette.model.DatedServiceJourney;
 import mobi.chouette.model.DestinationDisplay;
 import mobi.chouette.model.FootNoteAlternativeText;
 import mobi.chouette.model.Footnote;
@@ -199,11 +198,6 @@ public class Referential implements java.io.Serializable {
 
 	@Getter
 	@Setter
-	private Map<String, DatedServiceJourney> datedServiceJourneys = new HashMap<>();
-
-
-	@Getter
-	@Setter
 	private Map<String, Branding> brandings = new HashMap<>();
 
 
@@ -241,7 +235,6 @@ public class Referential implements java.io.Serializable {
 				vj.getTimetables().clear();
 				vj.getJourneyFrequencies().clear();
 				vj.getFootnotes().clear();
-				vj.getDatedServiceJourneys().clear();
 			}
 			for (Timetable timetable : timetables.values()) {
 				timetable.getVehicleJourneys().clear();
@@ -280,7 +273,6 @@ public class Referential implements java.io.Serializable {
 		timebands.clear();
 		timetables.clear();
 		vehicleJourneys.clear();
-		datedServiceJourneys.clear();
 		routeSections.clear();
 		destinationDisplays.clear();
 		interchanges.clear();
