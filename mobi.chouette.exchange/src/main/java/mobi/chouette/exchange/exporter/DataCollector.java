@@ -97,6 +97,7 @@ public class DataCollector {
 
 	private void collectVehicleJourney(VehicleJourney vehicleJourney) {
 		collection.getTimetables().addAll(vehicleJourney.getTimetables());
+		collection.getDatedServiceJourneys().addAll(vehicleJourney.getDatedServiceJourneys());
 		collection.getVehicleJourneys().add(vehicleJourney);
 		collectInterchanges(collection, vehicleJourney, skipNoCoordinate, followLinks, startDate, endDate);
 		collection.getFootnotes().addAll(vehicleJourney.getFootnotes());
@@ -110,7 +111,7 @@ public class DataCollector {
 
 	private void collectInterchanges(ExportableData collection, VehicleJourney vehicleJourney, boolean skipNoCoordinate, boolean followLinks, LocalDate startDate, LocalDate endDate) {
 		for (Interchange interchange : vehicleJourney.getConsumerInterchanges()) {
-			if (interchange.getFeederVehicleJourney() != null && !interchange.getFeederVehicleJourney().hasActiveTimetablesOnPeriod(startDate, endDate)) {
+			if (interchange.getFeederVehicleJourney() != null && !interchange.getFeederVehicleJourney().isActiveOnPeriod(startDate, endDate)) {
 				continue;
 			}
 

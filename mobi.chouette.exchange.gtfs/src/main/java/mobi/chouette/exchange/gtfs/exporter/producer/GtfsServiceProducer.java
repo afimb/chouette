@@ -164,7 +164,7 @@ AbstractProducer
       return reduced;
    }
 
-   private boolean saveDay(String serviceId,CalendarDay day)
+   public boolean saveDay(String serviceId,CalendarDay day)
    {
 
       calendarDate.setDate(day.getDate());

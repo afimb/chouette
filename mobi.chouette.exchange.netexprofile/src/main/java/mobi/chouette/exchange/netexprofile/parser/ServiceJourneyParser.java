@@ -51,7 +51,7 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 	public void parse(Context context) throws Exception {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		JourneysInFrame_RelStructure journeyStructs = (JourneysInFrame_RelStructure) context.get(NETEX_LINE_DATA_CONTEXT);
-		List<Journey_VersionStructure> serviceJourneys = journeyStructs.getDatedServiceJourneyOrDeadRunOrServiceJourney();
+		List<Journey_VersionStructure> serviceJourneys = journeyStructs.getVehicleJourneyOrDatedVehicleJourneyOrNormalDatedVehicleJourney();
 
 		for (Journey_VersionStructure journeyStruct : serviceJourneys) {
 			if (! (journeyStruct instanceof ServiceJourney)) {

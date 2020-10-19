@@ -41,6 +41,9 @@ import org.rutebanken.netex.model.TariffZoneRefs_RelStructure;
 import org.rutebanken.netex.model.TariffZonesInFrame_RelStructure;
 import org.rutebanken.netex.model.VehicleModeEnumeration;
 import org.rutebanken.netex.model.ZoneRefStructure;
+import org.rutebanken.netex.model.Zone_VersionStructure;
+
+import javax.xml.bind.JAXBElement;
 
 @Log4j
 public class StopPlaceParser implements Parser, Constant {
@@ -56,12 +59,12 @@ public class StopPlaceParser implements Parser, Constant {
             tariffZoneProperties = new HashMap<>();
 
             TariffZonesInFrame_RelStructure tariffZonesStruct = (TariffZonesInFrame_RelStructure) relationshipStruct;
-            List<TariffZone> tariffZones = tariffZonesStruct.getTariffZone();
+            List<JAXBElement<? extends Zone_VersionStructure>> tariffZones = tariffZonesStruct.getTariffZone();
 
-            for (TariffZone tariffZone : tariffZones) {
+            for (JAXBElement<? extends Zone_VersionStructure> tariffZone : tariffZones) {
                 Properties properties = new Properties();
-                properties.put(NAME, tariffZone.getName().getValue());
-                this.tariffZoneProperties.put(tariffZone.getId(), properties);
+                properties.put(NAME, tariffZone.getValue().getName().getValue());
+                this.tariffZoneProperties.put(tariffZone.getValue().getId(), properties);
             }
         } else if (relationshipStruct instanceof StopPlacesInFrame_RelStructure) {
             StopPlacesInFrame_RelStructure stopPlacesStruct = (StopPlacesInFrame_RelStructure) relationshipStruct;

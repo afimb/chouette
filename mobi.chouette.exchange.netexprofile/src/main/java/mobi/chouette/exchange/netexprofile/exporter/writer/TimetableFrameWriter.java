@@ -10,6 +10,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.rutebanken.netex.model.DatedServiceJourney;
 import org.rutebanken.netex.model.ServiceJourney;
 import org.rutebanken.netex.model.ServiceJourneyInterchange;
 
@@ -45,6 +46,9 @@ public class TimetableFrameWriter extends AbstractNetexWriter {
 			writer.writeStartElement(VEHICLE_JOURNEYS);
 			for (ServiceJourney serviceJourney : exportableData.getServiceJourneys()) {
 				marshaller.marshal(netexFactory.createServiceJourney(serviceJourney), writer);
+			}
+			for (DatedServiceJourney datedServiceJourney : exportableData.getDatedServiceJourneys()) {
+				marshaller.marshal(netexFactory.createDatedServiceJourney(datedServiceJourney), writer);
 			}
 			writer.writeEndElement();
 		} catch (Exception e) {
