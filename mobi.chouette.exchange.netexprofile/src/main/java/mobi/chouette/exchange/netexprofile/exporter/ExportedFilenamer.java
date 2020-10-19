@@ -1,16 +1,27 @@
 package mobi.chouette.exchange.netexprofile.exporter;
 
-import java.text.Normalizer;
-import java.text.StringCharacterIterator;
-
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.model.Line;
 
+import java.text.StringCharacterIterator;
+import java.util.regex.Pattern;
+
 public class ExportedFilenamer {
-	private static final String SPACE = " ";
+
 	private static final String UNDERSCORE = "_";
 	private static final String DASH = "-";
+
+	/**
+	 * Match occurrences of /  .  \  :  <  >  " ' | ? * ; and the space character.
+	 */
+	private static final Pattern PATTERN_INVALID_CHARACTERS_IN_FILE_NAME = Pattern.compile("[/.\\\\:<>\"'|?*; ]");
+
+	/**
+	 * Match occurrences of non-ASCII characters.
+	 */
+
+	private static final Pattern PATTERN_NON_ASCII_CHARACTERS = Pattern.compile("[^\\p{ASCII}]");
 
 	public static String createSharedDataFilename(Context context) {
 		NetexprofileExportParameters parameters = (NetexprofileExportParameters) context.get(Constant.CONFIGURATION);
@@ -29,7 +40,7 @@ public class ExportedFilenamer {
 		StringBuilder b = new StringBuilder();
 		b.append(parameters.getDefaultCodespacePrefix());
 		b.append(UNDERSCORE);
-		b.append(line.getObjectId().replaceAll(":", DASH));
+		b.append(line.getObjectId());
 		b.append(UNDERSCORE);
 		if (line.getNumber() != null) {
 			b.append(line.getNumber().replaceAll(UNDERSCORE, DASH));
@@ -41,12 +52,12 @@ public class ExportedFilenamer {
 			b.append(line.getPublishedName());
 		}
 
-		return utftoasci(b.toString()).replaceAll("/", DASH).replace(SPACE, DASH).replaceAll("\\.", DASH) + ".xml";
+		return replaceInvalidFileNameCharacters(removeNonASCIICharacters(replaceNationalCharactersWithASCIIEquivalent(b.toString()))) + ".xml";
 	}
 
-	// Convert string to ascii, replacing common non ascii chars with replacements (Å => A etc) and omitting the rest.
-	private static String utftoasci(String s) {
-		final StringBuffer sb = new StringBuffer(s.length() * 2);
+	// Convert string to ascii, replacing common non ascii chars with replacements (Å => A etc).
+	static String replaceNationalCharactersWithASCIIEquivalent(String s) {
+		final StringBuilder sb = new StringBuilder(s.length() * 2);
 
 		final StringCharacterIterator iterator = new StringCharacterIterator(s);
 
@@ -67,64 +78,60 @@ public class ExportedFilenamer {
 					sb.append("e");
 				} else if (Character.toString(ch).equals("è")) {
 					sb.append("e");
-				} else if (Character.toString(ch).equals("è")) {
-					sb.append("e");
 				} else if (Character.toString(ch).equals("Â")) {
-					sb.append("A");
-				} else if (Character.toString(ch).equals("ä")) {
-					sb.append("a");
+						sb.append("A");
 				} else if (Character.toString(ch).equals("ß")) {
-					sb.append("ss");
+						sb.append("ss");
 				} else if (Character.toString(ch).equals("Ç")) {
-					sb.append("C");
+						sb.append("C");
 				} else if (Character.toString(ch).equals("Ö")) {
-					sb.append("O");
-				} else if (Character.toString(ch).equals("º")) {
-					sb.append("");
+						sb.append("O");
 				} else if (Character.toString(ch).equals("Ó")) {
-					sb.append("O");
+						sb.append("O");
 				} else if (Character.toString(ch).equals("ª")) {
-					sb.append("");
+						sb.append("");
 				} else if (Character.toString(ch).equals("º")) {
-					sb.append("");
-				} else if (Character.toString(ch).equals("Ñ")) {
-					sb.append("N");
+						sb.append("");
 				} else if (Character.toString(ch).equals("É")) {
-					sb.append("E");
+						sb.append("E");
 				} else if (Character.toString(ch).equals("Ä")) {
-					sb.append("A");
+						sb.append("A");
 				} else if (Character.toString(ch).equals("Å")) {
-					sb.append("A");
+						sb.append("A");
 				} else if (Character.toString(ch).equals("å")) {
-					sb.append("a");
+						sb.append("a");
 				} else if (Character.toString(ch).equals("ä")) {
-					sb.append("a");
+						sb.append("a");
 				} else if (Character.toString(ch).equals("Ü")) {
-					sb.append("U");
+						sb.append("U");
 				} else if (Character.toString(ch).equals("ö")) {
-					sb.append("o");
+						sb.append("o");
 				} else if (Character.toString(ch).equals("ü")) {
-					sb.append("u");
+						sb.append("u");
 				} else if (Character.toString(ch).equals("á")) {
-					sb.append("a");
-				} else if (Character.toString(ch).equals("Ó")) {
-					sb.append("O");
-				} else if (Character.toString(ch).equals("É")) {
-					sb.append("E");
+						sb.append("a");
 				} else if (Character.toString(ch).equals("Æ")) {
 					sb.append("E");
 				} else if (Character.toString(ch).equals("æ")) {
-					sb.append("e");
+						sb.append("e");
 				} else if (Character.toString(ch).equals("Ø")) {
-					sb.append("O");
+						sb.append("O");
 				} else if (Character.toString(ch).equals("ø")) {
-					sb.append("o");
+						sb.append("o");
 				} else {
-					sb.append(ch);
+						sb.append(ch);
 				}
 			}
 			ch = iterator.next();
 		}
-		return sb.toString().replaceAll("[^\\p{ASCII}]", "");
+		return sb.toString();
+	}
+
+	static String replaceInvalidFileNameCharacters(String filename) {
+		return PATTERN_INVALID_CHARACTERS_IN_FILE_NAME.matcher(filename).replaceAll(DASH);
+	}
+
+	static String removeNonASCIICharacters(String filename) {
+		return PATTERN_NON_ASCII_CHARACTERS.matcher(filename).replaceAll("");
 	}
 }
