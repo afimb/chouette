@@ -42,6 +42,9 @@ jobs:
           username: _json_key
           password: $DOCKER_PASSWORD
       - image: mdillon/postgis:9.6
+        auth:
+          username: $DOCKERHUB_LOGIN
+          password: $DOCKERHUB_PASSWORD
         environment:
           TZ: Europe/Oslo
           POSTGRES_DB: chouette_test
