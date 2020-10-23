@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.importer.geometry.osrm;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
@@ -55,7 +56,12 @@ public class OsrmRouteSectionGenerator implements RouteSectionGenerator {
 		try {
 			String url=getUrl(from, to, transportMode);
 			if (url!=null) {
-				return mapToLineString(invokeService(url));
+				String osrmResponseString = invokeService(url);
+				if(osrmResponseString != null) {
+					return mapToLineString(osrmResponseString);
+				} else {
+					log.info("Skipping route section generation since no route was found for request : " + url);
+				}
 			} else {
 				log.debug("Skipping route section generation as no osrm endpoint defined for transport mode: " + transportMode);
 			}
@@ -94,6 +100,12 @@ public class OsrmRouteSectionGenerator implements RouteSectionGenerator {
 		return null;
 	}
 
+	/**
+	 * Return the LineString in JSON format corresponding to the routing request.
+	 * @param urlString the routing request.
+	 * @return the LineString in JSON format or null if no route is found.
+	 * @throws OsrmRouteSectionException if the service invocation fails.
+	 */
 	private String invokeService(String urlString) {
 		log.debug("Invoking osrm route generation: " + urlString);
 		try {
@@ -104,14 +116,19 @@ public class OsrmRouteSectionGenerator implements RouteSectionGenerator {
 			connection.setDoOutput(true);
 			connection.setConnectTimeout(TIMEOUT_SECONDS * (int) DateUtils.MILLIS_PER_SECOND);
 			connection.connect();
-
-			InputStream is = connection.getInputStream();
-			StringWriter writer = new StringWriter();
-			IOUtils.copy(is, writer);
-			String rsp = writer.toString();
-			return rsp;
-		} catch (Exception e) {
-			throw new RuntimeException("Osrm route section generation failed for url: " + urlString, e);
+			int httpResponseCode = connection.getResponseCode();
+			if(httpResponseCode == 200) {
+				InputStream is = connection.getInputStream();
+				StringWriter writer = new StringWriter();
+				IOUtils.copy(is, writer);
+				return writer.toString();
+			} else if(httpResponseCode == 400) {
+				return null;
+			} else {
+				throw new OsrmRouteSectionException("Osrm route section generation failed with response code " + httpResponseCode + " for url: " + urlString);
+			}
+		} catch (IOException e) {
+			throw new OsrmRouteSectionException("Osrm route section generation failed for url: " + urlString, e);
 		}
 	}
 
