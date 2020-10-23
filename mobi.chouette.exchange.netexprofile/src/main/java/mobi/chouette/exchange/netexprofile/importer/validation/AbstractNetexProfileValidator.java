@@ -258,7 +258,7 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 				// TODO add correct location
 				validationReporter.addCheckPointReportError(context, _1_NETEX_UNAPPROVED_CODESPACE_DEFINED, null,
 						DataLocationHelper.findDataLocation(context, (XdmNode) item), codespace.getXmlns() + "/" + codespace.getXmlnsUrl(), referenceValue);
-				log.error("Codespace " + codespace + " is not accepted for this validation");
+				log.info("Codespace " + codespace.getXmlns() + " is not accepted for this validation");
 				onlyAcceptedCodespaces = false;
 			}
 		}

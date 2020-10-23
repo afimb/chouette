@@ -35,7 +35,7 @@ public class NetexDisposeImportCommand extends AbstractDisposeImportCommand impl
 
 			NetexprofileImportParameters parameters = (NetexprofileImportParameters) context.get(CONFIGURATION);
 			if (parameters.isCleanOnErrors() && ActionReporter.Factory.getInstance().hasActionError(context)) {
-				log.warn("Cleaning data space after import command ended with error");
+				log.info("Cleaning data space after import command ended with error for referential " + parameters.getReferentialName());
 				InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 				CommandFactory.create(initialContext, CleanRepositoryCommand.class.getName()).execute(context);
 			}
