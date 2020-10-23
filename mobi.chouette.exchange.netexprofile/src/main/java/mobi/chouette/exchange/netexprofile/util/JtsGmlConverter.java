@@ -24,10 +24,12 @@ public class JtsGmlConverter {
 
 	private static final Logger logger = LoggerFactory.getLogger(JtsGmlConverter.class);
 
-	// 4324 = WGS84
-	private static final int DEFAULT_SRID = 4326;
+	private static final String DEFAULT_SRID_NAME = "WGS84";
+	private static final String DEFAULT_SRID_AS_STRING = "4326";
+	private static final int DEFAULT_SRID_AS_INT = 4326;
 
-	private static GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), DEFAULT_SRID);
+
+	private static GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), DEFAULT_SRID_AS_INT);
 
 	public static LineString fromGmlToJts(LineStringType gml) {
 		List<Double> coordinateList;
@@ -60,16 +62,29 @@ public class JtsGmlConverter {
 
 		CoordinateSequence coordinateSequence = convert(coordinateList);
 		LineString jts = new LineString(coordinateSequence, geometryFactory);
-
-		if (!StringUtils.isEmpty(gml.getSrsName())) {
-			try {
-				jts.setSRID(Integer.parseInt(gml.getSrsName()));
-			} catch (NumberFormatException nfe) {
-				log.warn("Failed to set SRID on linestring for illegal value: " + gml.getSrsName());
-			}
-		}
+		assignSRID(gml, jts);
 
 		return jts;
+	}
+
+	/**
+	 * Assign an SRID to the LineString based on the provided Spatial Reference System name.
+	 * The LineString is expected to be based on the WGS84 spatial reference system (SRID=4326).
+	 * If srsName is not set, the SRID defaults to 4326 (default value set by the {@link GeometryFactory}).
+	 * If srsName is set to either "4326" or "WGS84", the SRID defaults to 4326.
+	 * If srsName is set to another value, an attempt is made to parse it as a SRID.
+	 * If srsName is not parseable as a SRID, then the SRID defaults to 4326.
+	 **/
+	private static void assignSRID(LineStringType gml, LineString jts) {
+		String srsName = gml.getSrsName();
+		if (!StringUtils.isEmpty(srsName) && !DEFAULT_SRID_NAME.equals(srsName) && !DEFAULT_SRID_AS_STRING.equals(srsName)) {
+			log.warn("The LineString " + gml.getId() + " is not based on the WGS84 Spatial Reference System. SRID in use: " + srsName);
+			try {
+				jts.setSRID(Integer.parseInt(srsName));
+			} catch (NumberFormatException nfe) {
+				log.warn("Ignoring SRID on linestring" + gml.getId() + " for illegal value: " + srsName);
+			}
+		}
 	}
 
 
@@ -104,7 +119,7 @@ public class JtsGmlConverter {
 		gml.setPosList(directPositionListType);
 		gml.setId(id);
 		gml.setSrsDimension(BigInteger.valueOf(2L));
-		gml.setSrsName("" + DEFAULT_SRID);
+		gml.setSrsName(DEFAULT_SRID_AS_STRING);
 
 		return gml;
 	}
