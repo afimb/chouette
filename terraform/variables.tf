@@ -63,10 +63,6 @@ variable "service_account_bucket_role" {
   default     = "roles/storage.objectViewer"
 }
 
-variable "bucket_chouette_instance_name" {
-  description = "Main storage bucket name"
-}
-
 variable "ror-chouette-db-username" {
   description = "chouette database username"
 }
