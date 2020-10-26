@@ -218,7 +218,7 @@ public class StopPlaceParser implements Parser, Constant {
         try {
             return TransportSubModeNameEnum.valueOf(StringUtils.capitalize(netexValue));
         } catch (IllegalArgumentException iae) {
-            log.warn("Unable to map unknown TransportModeNameEnum value: " + netexValue);
+            log.warn("Unable to map unknown TransportSubModeNameEnum value: " + netexValue);
             return null;
         }
     }
