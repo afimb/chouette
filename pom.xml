@@ -32,10 +32,9 @@
 
 		<project.rootDir>${project.basedir}</project.rootDir>
 
-    <!-- NB: Concious choice of using snapshot version. This is to keep in
-        sync, and fail fast if incompatibilities -->
-	  <netex-java-model.version>1.0.11</netex-java-model.version>
-		<rutebanken.helpers.version>0.0.4-SNAPSHOT</rutebanken.helpers.version>
+ 	    <netex-java-model.version>1.0.11</netex-java-model.version>
+		<rutebanken.helpers.version>1.0.29</rutebanken.helpers.version>
+
 	</properties>
 	<distributionManagement>
 		<snapshotRepository>
@@ -62,6 +61,18 @@
 			<id>osgeo</id>
 			<name>Open Source Geospatial Foundation Repository</name>
 			<url>https://download.osgeo.org/webdav/geotools/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+
+		<!--Adding explicitly Maven Central so that Shrinkwrap can download artifacts
+		  (in the version of Shrinkwrap used by Chouette, the URL for Maven Central is hardcoded to http://. not https://)
+		  -->
+		<repository>
+			<id>maven-central-https</id>
+			<name>Maven Central HTTPS</name>
+			<url>https://repo1.maven.org/maven2/</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
