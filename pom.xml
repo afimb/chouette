@@ -29,6 +29,7 @@
 		<lombok-version>1.16.8</lombok-version>
 		<lombok-maven-plugin-version>1.16.8.0</lombok-maven-plugin-version>
 		<prometheus.agent.version>0.12.0</prometheus.agent.version>
+		<guava.version>30.0-jre</guava.version>
 
 		<project.rootDir>${project.basedir}</project.rootDir>
 
@@ -798,7 +799,7 @@
 			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
-				<version>25.1-jre</version>
+				<version>${guava.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-pool</groupId>
