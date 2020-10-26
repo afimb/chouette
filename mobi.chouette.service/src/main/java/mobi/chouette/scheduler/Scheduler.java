@@ -208,7 +208,7 @@ public class Scheduler {
 		if (System.getProperty(key) != null) {
 			scheduleFrequencyMs = Long.parseLong(System.getProperty(key));
 		} else {
-			log.warn("No value set for property: " + key + ", using default value: " + scheduleFrequencyMs);
+			log.info("No value set for property: " + key + ", using default value: " + scheduleFrequencyMs);
 		}
 
 		return scheduleFrequencyMs;
@@ -220,7 +220,7 @@ public class Scheduler {
 			if (System.getProperty(maxJobsKey) != null) {
 				maxJobs = Integer.parseInt(System.getProperty(maxJobsKey));
 			} else {
-				log.warn("No value set for property: " + maxJobsKey + ", using default value: " + MAX_JOBS_DEFAULT);
+				log.info("No value set for property: " + maxJobsKey + ", using default value: " + MAX_JOBS_DEFAULT);
 				return MAX_JOBS_DEFAULT;
 			}
 		}
@@ -233,7 +233,7 @@ public class Scheduler {
 			if (System.getProperty(maxTransfersKey) != null) {
 				maxTransfers = Integer.parseInt(System.getProperty(maxTransfersKey));
 			} else {
-				log.warn("No value set for property: " + maxTransfersKey + ", using default value: " + MAX_JOBS_DEFAULT);
+				log.info("No value set for property: " + maxTransfersKey + ", using default value: " + MAX_JOBS_DEFAULT);
 				return MAX_JOBS_DEFAULT;
 			}
 		}
