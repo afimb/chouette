@@ -650,6 +650,7 @@
 				<version>${project.version}</version>
 			</dependency>
 
+
 			<!-- Default Dependencies -->
 			<dependency>
 				<groupId>org.wildfly</groupId>
@@ -678,11 +679,20 @@
 				<version>${rutebanken.helpers.version}</version>
 			</dependency>
 
+
 			<dependency>
 				<groupId>org.entur.helpers</groupId>
 				<artifactId>hazelcast-helper</artifactId>
 				<version>${rutebanken.helpers.version}</version>
 			</dependency>
+			<!--kubernetes-client version that is compatible with jackson 2.4.1 provided by JBoss-->
+			<dependency>
+				<groupId>io.fabric8</groupId>
+				<artifactId>kubernetes-client</artifactId>
+				<version>2.2.7</version>
+				<scope>runtime</scope>
+			</dependency>
+
 			<dependency>
 				<groupId>org.jboss.resteasy</groupId>
 				<artifactId>resteasy-cache-core</artifactId>
