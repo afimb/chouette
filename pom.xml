@@ -36,6 +36,8 @@
  	    <netex-java-model.version>1.0.11</netex-java-model.version>
 		<rutebanken.helpers.version>1.0.29</rutebanken.helpers.version>
 
+		<owasp-dependency-check-plugin.version>6.0.1</owasp-dependency-check-plugin.version>
+
 	</properties>
 	<distributionManagement>
 		<snapshotRepository>
@@ -418,6 +420,18 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<version>${owasp-dependency-check-plugin.version}</version>
+				<configuration>
+					<failOnError>false</failOnError>
+					<assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
+					<suppressionFiles>
+					</suppressionFiles>
+				</configuration>
 			</plugin>
 
 		</plugins>
@@ -955,6 +969,30 @@
 				</plugins>
 			</build>
 		</profile>
+
+		<profile>
+			<id>sonar</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+
+			<properties>
+				<jdk.version>11</jdk.version>
+				<sonar-maven-plugin.version>3.7.0.1746</sonar-maven-plugin.version>
+			</properties>
+
+			<build>
+				<plugins>
+
+					<plugin>
+						<groupId>org.sonarsource.scanner.maven</groupId>
+						<artifactId>sonar-maven-plugin</artifactId>
+						<version>${sonar-maven-plugin.version}</version>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
 	</profiles>
 	<modules>
 		<module>mobi.chouette.common</module>
@@ -983,4 +1021,5 @@
 <!-- 		<module>mobi.chouette.command</module> -->
 		<module>chouette_iev</module>
 	</modules>
+
 </project>
