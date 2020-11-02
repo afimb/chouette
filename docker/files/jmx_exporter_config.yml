@@ -10,6 +10,7 @@ whitelistObjectNames:
   - "jboss.as:subsystem=datasources,data-source=*,statistics=*"
   - "jboss.as:subsystem=datasources,xa-data-source=*,statistics=*"
   - "jboss.as:subsystem=transactions*"
+  - "jboss.as:subsystem=undertow,server=*,http-listener=*"
   # - "java.lang:*"
 rules:
   - pattern: "^jboss.as<subsystem=datasources, (?:xa-)*data-source=(iev|chouette), statistics=(.+)><>(.+):"
@@ -21,3 +22,10 @@ rules:
   - pattern: "^jboss.as<subsystem=transactions><>number_of_(.+):"
     attrNameSnakeCase: true
     name: wildfly_transaction_$1
+
+  - pattern: "^jboss.as<subsystem=undertow, server=(.+), http-listener=(.+)><>(bytes_.+|error_count|processing_time|request_count):"
+    attrNameSnakeCase: true
+    name: wildfly_undertow_$3
+    labels:
+      server: $1
+      http_listener: $2
