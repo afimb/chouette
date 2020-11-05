@@ -356,7 +356,7 @@ public class JobServiceManager {
 				remove(deleteJob.getReferential(), deleteJob.getId());
 			}
 
-			jobsDeleted = deleteJobs.size();
+			jobsDeleted += deleteJobs.size();
 
 		}
 
