@@ -197,7 +197,7 @@ data:
                     </datasource>
                     <datasource jndi-name="java:jboss/datasources/chouette" pool-name="chouette" enabled="true">
                         <connection-url>jdbc:postgresql_postGIS://localhost:5432/chouette?preparedStatementCacheQueries=1024&amp;preparedStatementCacheSizeMiB=15</connection-url>
-                        <driver-class>org.postgis.DriverWrapper</driver-class>
+                        <driver-class>mobi.chouette.ChouettePostGisDriverWrapper</driver-class>
                         <driver>postgresql</driver>
                         <pool>
                             <min-pool-size>20</min-pool-size>
