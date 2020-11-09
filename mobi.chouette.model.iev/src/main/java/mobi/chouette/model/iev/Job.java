@@ -81,7 +81,9 @@ public class Job implements Serializable {
 	private String parametersAsString;
 
 	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name = "links", joinColumns = @JoinColumn(name = "job_id"))
+	@CollectionTable(name = "links", joinColumns = @JoinColumn(name = "job_id"),
+			indexes = {@Index(name = "i_links_job_id",  columnList="job_id", unique = false)}
+    )
 	private List<Link> links = new ArrayList<Link>();
 
 	public Job() {
