@@ -185,7 +185,7 @@ data:
                           <password>${env.CHOUETTE_IEV_DATABASE_PASSWORD}</password>
                         </security>
                         <validation>
-                            <check-valid-connection-sql>select version();</check-valid-connection-sql>
+                            <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"/>
                             <validate-on-match>false</validate-on-match>
                             <background-validation>true</background-validation>
                             <background-validation-millis>10000</background-validation-millis>
@@ -208,7 +208,7 @@ data:
                           <password>${env.CHOUETTE_DATABASE_PASSWORD}</password>
                         </security>
                         <validation>
-                            <check-valid-connection-sql>select version();</check-valid-connection-sql>
+                            <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"/>
                             <validate-on-match>false</validate-on-match>
                             <background-validation>true</background-validation>
                             <background-validation-millis>10000</background-validation-millis>
