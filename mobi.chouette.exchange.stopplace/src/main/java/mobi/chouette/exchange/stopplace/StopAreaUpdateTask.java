@@ -140,7 +140,7 @@ public class StopAreaUpdateTask {
 			new ArrayList<>(stopArea.getContainedStopAreas()).forEach(containedStopArea -> registerRemovedContainedStopArea(containedStopArea));
 			stopAreaDAO.delete(stopArea);
 		} else {
-			log.warn("Could not remove unknown stopArea: " + objectId);
+			log.info("StopArea not found (already deleted), ignoring deletion request for: " + objectId);
 		}
 
 	}
