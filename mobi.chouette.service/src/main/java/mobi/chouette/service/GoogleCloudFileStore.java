@@ -6,8 +6,11 @@ import java.nio.file.Path;
 import javax.annotation.PostConstruct;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
+import javax.ejb.DependsOn;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.inject.Named;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.ContenerChecker;
@@ -21,12 +24,14 @@ import static mobi.chouette.service.GoogleCloudFileStore.BEAN_NAME;
 /**
  * Store permanent files in Google Cloud Storage.
  */
-@Singleton(name = BEAN_NAME)
+@Singleton(name = GoogleCloudFileStore.BEAN_NAME)
+@Named
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
+@DependsOn(JobServiceManager.BEAN_NAME)
 @Log4j
 public class GoogleCloudFileStore implements FileStore {
 
-	public static final String BEAN_NAME = "GoogleCloudFileStore";
+	public static final String BEAN_NAME = "googleCloudFileStore";
 
 	@EJB
 	private ContenerChecker checker;
