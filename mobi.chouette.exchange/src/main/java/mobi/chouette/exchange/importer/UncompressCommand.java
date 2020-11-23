@@ -69,7 +69,7 @@ public class UncompressCommand implements Command, ReportConstant {
 				FileUtil.uncompress(tmpZip.getAbsolutePath(), target.toString());
 				result = SUCCESS;
 			} catch (Exception e) {
-				log.error(e.getMessage());
+				log.warn("Exception while uncompressing file " + filename.toString(), e);
 				reporter.addZipErrorInReport(context, file, ActionReporter.FILE_ERROR_CODE.READ_ERROR, e.getMessage());
 				reporter.setActionError(context, ActionReporter.ERROR_CODE.INVALID_PARAMETERS, "invalid_zip");
 			} finally {
