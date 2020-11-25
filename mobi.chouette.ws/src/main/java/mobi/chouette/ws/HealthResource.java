@@ -36,11 +36,7 @@ public class HealthResource {
 	@Path("/live")
 	public Response isLive() {
 		log.debug("Checking liveness...");
-		if (healthService.isLive()) {
-			return Response.ok().build();
-		} else {
-			return Response.serverError().build();
-		}
+		return Response.ok().build();
 	}
 
 	@GET
