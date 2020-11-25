@@ -169,7 +169,7 @@ workflows:
           requires:
             - build
       - deploy-docker:
-          context: org-carbon
+          context: global
           requires:
             - sonar
           filters:
