@@ -10,7 +10,7 @@ data:
     iev.file.store.impl=googleCloudFileStore
     iev.gtfs.agency.url.defaults=AKT=http://www.akt.no/,ATB=https://www.atb.no/en/,NRI=https://en-tur.no/,BRA=https://www.brakar.no/,TEL=https://farte.no/,FLT=http://flytoget.no/,HED=https://www.hedmark-trafikk.no/,KOL=https://www.kolumbus.no/,SOF=http://www.kringom.no/home.318872.en.html/,MOR=http://www.frammr.no/,NBE=http://www.nettbuss.no/,NSB=https://www.nsb.no/en/frontpage/,NTR=https://177nordtrondelag.no/,NBU=https://www.flybussen.no/?dir=to/,OPP=https://www.opplandstrafikk.no/,TRO=https://www.tromskortet.no,SKY=https://www.skyss.no/,FIN=http://www.177finnmark.no/,VKT=https://www.vkt.no/english/,OST=https://www.ostfold-kollektiv.no/,RUT=https://ruter.no,GJB=https://www.nsb.no,FLB=https://www.nsb.no
     iev.gtfs.agency.phone.defaults=SKY=+47 5555 9070,NSB=+47 61 05 19 10,GJB=+47 61 05 19 10,FLB=+47 61 05 19 10,RUT=+4722057070,ATB=+4747802820,BRA=+4732203090,FLT=+4723159000,KOL=+4751925200,NRT=177,OPP=+4761289000,OST=+4769125460
-    iev.started.jobs.max=2
+    iev.started.jobs.max=1
     iev.directory=/opt/jboss/data
     iev.stop.place.register.mapping.quay=http://tiamat/services/stop_places/mapping/quay?recordsPerRoundTrip=500000&includeFuture=true
     iev.referential.lock.manager.impl=hazelcastReferentialsLockManager
@@ -180,6 +180,10 @@ data:
                     <datasource jndi-name="java:jboss/datasources/iev" pool-name="iev" enabled="true">
                         <connection-url>jdbc:postgresql://localhost:5432/iev</connection-url>
                         <driver>postgresql</driver>
+                        <pool>
+                            <min-pool-size>5</min-pool-size>
+                            <max-pool-size>20</max-pool-size>
+                        </pool>
                         <security>
                           <user-name>${env.CHOUETTE_IEV_DATABASE_USERNAME}</user-name>
                           <password>${env.CHOUETTE_IEV_DATABASE_PASSWORD}</password>
@@ -200,8 +204,8 @@ data:
                         <driver-class>mobi.chouette.ChouettePostGisDriverWrapper</driver-class>
                         <driver>postgresql</driver>
                         <pool>
-                            <min-pool-size>20</min-pool-size>
-                            <max-pool-size>60</max-pool-size>
+                            <min-pool-size>5</min-pool-size>
+                            <max-pool-size>20</max-pool-size>
                         </pool>
                         <security>
                           <user-name>${env.CHOUETTE_DATABASE_USERNAME}</user-name>

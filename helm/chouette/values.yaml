@@ -1,3 +1,4 @@
+replicas: 4
 image:
   identifier: ${artifact.metadata.image}
 
@@ -7,8 +8,8 @@ service:
     internalPort: 8080
 
 resources:
-  cpuLimit: "6"
-  memLimit: 15000Mi
-  cpuRequest: "5"
-  memRequest: 14000Mi
-  xmx: 12g
+  cpuLimit: "4"
+  memLimit: 10000Mi
+  cpuRequest: "4"
+  memRequest: 9000Mi
+  xmx: 7g
