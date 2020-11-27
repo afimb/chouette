@@ -80,7 +80,7 @@ public class StopAreaRegisterCommand implements Command {
 					log.error(e.getMessage());
 					e = e.getCause();
 				}
-				if (e instanceof SQLException) {
+				if (e instanceof SQLException && ((SQLException) e).getNextException()!= null) {
 					e = ((SQLException) e).getNextException();
 					reporter.setActionError(context, ActionReporter.ERROR_CODE.INTERNAL_ERROR, e.getMessage());
 				} else {

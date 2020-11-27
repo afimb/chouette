@@ -150,7 +150,7 @@ public class LineRegisterCommand implements Command {
 						log.error(e.getMessage());
 						e = e.getCause();
 					}
-					if (e instanceof SQLException) {
+					if (e instanceof SQLException && ((SQLException) e).getNextException()!= null) {
 						e = ((SQLException) e).getNextException();
 						reporter.addErrorToObjectReport(context, newValue.getObjectId(), OBJECT_TYPE.LINE, ERROR_CODE.WRITE_ERROR,  e.getMessage());
 						reporter.setActionError(context, ActionReporter.ERROR_CODE.INTERNAL_ERROR, e.getMessage());

@@ -73,7 +73,7 @@ public class NetexprofileLineDeleteCommand implements Command {
 					log.error(e.getMessage());
 					e = e.getCause();
 				}
-				if (e instanceof SQLException) {
+				if (e instanceof SQLException && ((SQLException) e).getNextException()!= null) {
 					e = ((SQLException) e).getNextException();
 					actionReporter.addErrorToObjectReport(context, newLine.getObjectId(), OBJECT_TYPE.LINE, ERROR_CODE.WRITE_ERROR,  e.getMessage());
 
