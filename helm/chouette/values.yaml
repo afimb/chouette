@@ -1,4 +1,4 @@
-replicas: 4
+replicas: 3
 image:
   identifier: ${artifact.metadata.image}
 
@@ -9,7 +9,7 @@ service:
 
 resources:
   cpuLimit: "4"
-  memLimit: 10000Mi
+  memLimit: 14000Mi
   cpuRequest: "4"
-  memRequest: 9000Mi
-  xmx: 7g
+  memRequest: 13000Mi
+  xmx: 11g
