@@ -500,6 +500,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 * @return true if there is at least one active route.
 	 */
 	public boolean filter(LocalDate startDate, LocalDate endDate) {
+		log.info("Filtering line " + getObjectId() +  " for validity interval " + startDate + " to " + endDate);
 		for (Iterator<Route> routeI = getRoutes().iterator(); routeI.hasNext(); ) {
 			Route route = routeI.next();
 			// filter out Routes with less than 2 stops
@@ -530,21 +531,27 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 					vehicleJourney.getDatedServiceJourneys().removeIf(dsj -> !activeDatedServiceJourneyOnPeriod.contains(dsj));
 					// filter out Vehicle Journey without timetables nor dated service journey
 					if(!vehicleJourney.hasTimetables() && !vehicleJourney.hasDatedServiceJourneys()) {
-						log.info("Removing VJ with no valid timetables nor valid dated service journeys: "+ vehicleJourney.getObjectId());
+						if (log.isDebugEnabled()) {
+							log.debug("Removing VJ with no valid timetables nor valid dated service journeys: " + vehicleJourney.getObjectId());
+						}
 						vjI.remove();
 					}
 				}
 				if(jp.getVehicleJourneys().isEmpty()) {
-					log.info("Removing JP with no valid service journey: " + jp.getObjectId());
+					if(log.isDebugEnabled()) {
+						log.debug("Removing JP with no valid service journey: " + jp.getObjectId());
+					}
 					jpI.remove();
 				}
 			}
 			if(route.getJourneyPatterns().isEmpty()) {
-				log.info("Removing route with no valid journey pattern: " + route.getObjectId());
+				if(log.isDebugEnabled()) {
+					log.debug("Removing route with no valid journey pattern: " + route.getObjectId());
+				}
 				routeI.remove();
-
 			}
 		}
+		log.info("Filtered line " + getObjectId() +  " for validity interval " + startDate + " to " + endDate);
 		return !getRoutes().isEmpty();
 	}
 
