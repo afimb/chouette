@@ -125,7 +125,7 @@ public class TransferExportDataWriter implements Command, Constant {
 			
 			for (int i = 0; i < lineToTransfer.size(); i++) {
 				Line line = lineToTransfer.get(i);
-				log.info("Persisting line " + line.getObjectId() + " / " + line.getName());
+				log.info("Persisting transfered line " + line.getObjectId() + " / " + line.getName());
 
 				lineDAO.create(line);
 				progression.execute(context);

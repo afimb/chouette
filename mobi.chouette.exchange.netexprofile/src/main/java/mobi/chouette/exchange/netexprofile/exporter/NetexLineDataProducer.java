@@ -244,7 +244,11 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 						}
 					} else {
 						throw new RuntimeException(
-								"RoutePoint with id : " + neptuneRoutePoint.getObjectId() + " is not contained in a StopArea. Cannot produce RoutePoint.");
+								"RoutePoint " + neptuneRoutePoint.getObjectId()
+										+ " refers to a ScheduledStopPoint "
+										+ neptuneRoutePoint.getScheduledStopPoint().getObjectId()
+										+ " (" + neptuneRoutePoint.getScheduledStopPoint().getName()
+										+ ") that is not contained in a StopArea.");
 					}
 				}
 			}
