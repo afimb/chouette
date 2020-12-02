@@ -5,6 +5,11 @@ import java.util.EnumSet;
 public enum TransportSubModeNameEnum {
 
     /**
+     * Common sub modes
+     */
+    Unknown,
+
+    /**
      * Bus sub modes
      */
     AirportLinkBus,
@@ -82,7 +87,8 @@ public enum TransportSubModeNameEnum {
     public static final EnumSet<TransportSubModeNameEnum> AIR_SUB_MODES = EnumSet.of(
             TransportSubModeNameEnum.DomesticFlight,
             TransportSubModeNameEnum.HelicopterService,
-            TransportSubModeNameEnum.InternationalFlight
+            TransportSubModeNameEnum.InternationalFlight,
+            TransportSubModeNameEnum.Unknown
     );
 
     public static final EnumSet<TransportSubModeNameEnum> RAIL_SUB_MODES = EnumSet.of(
@@ -93,7 +99,8 @@ public enum TransportSubModeNameEnum {
             TransportSubModeNameEnum.NightRail,
             TransportSubModeNameEnum.RegionalRail,
             TransportSubModeNameEnum.TouristRailway,
-            TransportSubModeNameEnum.AirportLinkRail
+            TransportSubModeNameEnum.AirportLinkRail,
+            TransportSubModeNameEnum.Unknown
     );
 
     public static final EnumSet<TransportSubModeNameEnum> FERRY_SUB_MODES = EnumSet.of(
@@ -101,7 +108,8 @@ public enum TransportSubModeNameEnum {
             TransportSubModeNameEnum.InternationalPassengerFerry,
             TransportSubModeNameEnum.LocalCarFerry,
             TransportSubModeNameEnum.LocalPassengerFerry,
-            TransportSubModeNameEnum.NationalCarFerry
+            TransportSubModeNameEnum.NationalCarFerry,
+            TransportSubModeNameEnum.Unknown
     );
 
     public static final EnumSet<TransportSubModeNameEnum> WATER_SUB_MODES = EnumSet.of(
@@ -112,7 +120,8 @@ public enum TransportSubModeNameEnum {
             TransportSubModeNameEnum.LocalCarFerry,
             TransportSubModeNameEnum.LocalPassengerFerry,
             TransportSubModeNameEnum.NationalCarFerry,
-            TransportSubModeNameEnum.SightseeingService
+            TransportSubModeNameEnum.SightseeingService,
+            TransportSubModeNameEnum.Unknown
     );
 
     public static final EnumSet<TransportSubModeNameEnum> BUS_SUB_MODES = EnumSet.of(
@@ -124,18 +133,21 @@ public enum TransportSubModeNameEnum {
             TransportSubModeNameEnum.RegionalBus,
             TransportSubModeNameEnum.SchoolBus,
             TransportSubModeNameEnum.ShuttleBus,
-            TransportSubModeNameEnum.SightseeingBus
+            TransportSubModeNameEnum.SightseeingBus,
+            TransportSubModeNameEnum.Unknown
     );
 
     public static final EnumSet<TransportSubModeNameEnum> COACH_SUB_MODES = EnumSet.of(
             TransportSubModeNameEnum.InternationalCoach,
             TransportSubModeNameEnum.NationalCoach,
-            TransportSubModeNameEnum.TouristCoach
+            TransportSubModeNameEnum.TouristCoach,
+            TransportSubModeNameEnum.Unknown
     );
 
     public static final EnumSet<TransportSubModeNameEnum> TRAM_SUB_MODES = EnumSet.of(
             TransportSubModeNameEnum.LocalTram,
-            TransportSubModeNameEnum.CityTram
+            TransportSubModeNameEnum.CityTram,
+            TransportSubModeNameEnum.Unknown
     );
 
 }
