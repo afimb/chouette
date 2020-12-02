@@ -48,7 +48,7 @@ public class RestStatisticsService implements Constant {
 	public Response lineStats(@PathParam("ref") String referential, @QueryParam("startDate") Date startDate, @QueryParam("days") int days,
 							  @QueryParam("minDaysValidityCategory") String minDaysValidityCategories[]) {
 		try {
-			log.info(Color.CYAN + "Call lineStats referential = " + referential + Color.NORMAL);
+			log.info(Color.CYAN + "Calculating line statistics for referential " + referential + Color.NORMAL);
 
 
 			Map<Integer, String> minDaysValidityCategoryMap = parseCategoryMap(minDaysValidityCategories);
@@ -57,6 +57,7 @@ public class RestStatisticsService implements Constant {
 					minDaysValidityCategoryMap);
 			ResponseBuilder builder = Response.ok(lineStatistics);
 			builder.header(api_version_key, api_version);
+			log.info(Color.CYAN + "Calculated lineStats for referential " + referential + Color.NORMAL);
 			return builder.build();
 
 		} catch (Exception ex) {
@@ -71,7 +72,7 @@ public class RestStatisticsService implements Constant {
 	public Response lineStats(@QueryParam("startDate") Date startDate, @QueryParam("days") int days,
 							  @QueryParam("minDaysValidityCategory") String minDaysValidityCategories[], @QueryParam("referentials") String referentials) {
 		try {
-			log.info(Color.CYAN + "Call lineStats for referentials:" + referentials + Color.NORMAL);
+			log.info(Color.CYAN + "Calculating line statistics for referentials " + referentials + Color.NORMAL);
 
 			Map<Integer, String> minDaysValidityCategoryMap = parseCategoryMap(minDaysValidityCategories);
 
@@ -89,6 +90,7 @@ public class RestStatisticsService implements Constant {
 			}
 			ResponseBuilder builder = Response.ok(lineStatsPerReferential);
 			builder.header(api_version_key, api_version);
+			log.info(Color.CYAN + "Calculated line statistics for referentials " + referentials + Color.NORMAL);
 			return builder.build();
 
 		} catch (Exception ex) {
