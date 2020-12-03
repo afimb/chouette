@@ -33,7 +33,6 @@ import mobi.chouette.model.statistics.ValidityCategory;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateMidnight;
 import org.joda.time.LocalDate;
@@ -81,7 +80,7 @@ public class TransitDataStatisticsService {
 				+ " using startDate="
 				+ startDate
 				+ " and minDaysValidityCategories="
-				+ ToStringBuilder.reflectionToString(minDaysValidityCategories));
+				+ minDaysValidityCategories);
 
 		// Defaulting to today if not given
 		if (startDate == null) {
@@ -303,7 +302,9 @@ public class TransitDataStatisticsService {
 							// log.info("Adding timetable period " + period);
 							timetable.getPeriods().add(period);
 						} else {
-							log.debug("No from/to in timetable objectId=" + t.getObjectId() + " id=" + t.getId());
+							if(log.isTraceEnabled()) {
+								log.trace("No from/to in timetable objectId=" + t.getObjectId() + " id=" + t.getId());
+							}
 						}
 
 					}
