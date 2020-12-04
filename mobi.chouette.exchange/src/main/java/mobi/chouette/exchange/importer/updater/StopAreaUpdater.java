@@ -71,7 +71,9 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		setImportMode(context, oldValue, newValue);
 
 		if (oldValue.getId() != null && !oldValue.getImportMode().shouldUpdateStopAreas()) {
-			log.debug("Skip update of existing stop area: " + oldValue.getObjectId());
+			if(log.isDebugEnabled()) {
+				log.debug("Skip update of existing stop area: " + oldValue.getObjectId() + " with import mode " + oldValue.getImportMode());
+			}
 			return;
 		}
 

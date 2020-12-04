@@ -62,7 +62,9 @@ public class StopAreaUpdateTask {
 	}
 
 	private void updateExistingStopArea(StopArea stopArea, StopArea existing) throws Exception {
-		log.debug("Updating existing StopArea : " + stopArea);
+		if(log.isTraceEnabled()) {
+			log.trace("Updating existing StopArea : " + stopArea);
+		}
 
 		Map<String, StopArea> existingContainedStopAreas = existing.getContainedStopAreas().stream().collect(Collectors.toMap(StopArea::getObjectId,
 				Function.identity()));
@@ -80,7 +82,9 @@ public class StopAreaUpdateTask {
 				createOrMoveStopArea(existing, containedStopArea);
 
 			} else {
-				log.debug("Updating existing contained StopArea : " + stopArea);
+				if (log.isDebugEnabled()) {
+					log.debug("Updating existing contained StopArea : " + stopArea);
+				}
 				updateExistingStopArea(containedStopArea, existingContainedStopAreaForSameParent);
 			}
 		}
@@ -105,14 +109,18 @@ public class StopAreaUpdateTask {
 			existing.setDetached(true);
 			updateExistingStopArea(stopArea, existing);
 		} else {
-			log.debug("Creating new contained StopArea: " + stopArea);
+			if (log.isDebugEnabled()) {
+				log.debug("Creating new contained StopArea: " + stopArea);
+			}
 			stopArea.setParent(parent);
 			createNewStopArea(stopArea);
 		}
 	}
 
 	private void createNewStopArea(StopArea stopArea) throws Exception {
-		log.debug("Creating new StopArea : " + stopArea);
+		if (log.isTraceEnabled()) {
+			log.trace("Creating new StopArea : " + stopArea);
+		}
 
 		List<StopArea> containedStopAreas = new ArrayList<>();
 
@@ -133,20 +141,26 @@ public class StopAreaUpdateTask {
 	}
 
 	private void removeStopArea(String objectId) {
-		log.info("Deleting obsolete StopArea : " + objectId);
+		if (log.isTraceEnabled()) {
+			log.trace("Deleting obsolete StopArea : " + objectId);
+		}
 
 		StopArea stopArea = stopAreaDAO.findByObjectId(objectId);
 		if (stopArea != null) {
 			new ArrayList<>(stopArea.getContainedStopAreas()).forEach(containedStopArea -> registerRemovedContainedStopArea(containedStopArea));
 			stopAreaDAO.delete(stopArea);
 		} else {
-			log.info("StopArea not found (already deleted), ignoring deletion request for: " + objectId);
+			if (log.isDebugEnabled()) {
+				log.debug("StopArea not found (already deleted), ignoring deletion request for: " + objectId);
+			}
 		}
 
 	}
 
 	private void removeContainedStopArea(StopArea containedStopArea) {
-		log.info("Deleting obsolete contained StopArea: " + containedStopArea.getObjectId());
+		if (log.isTraceEnabled()) {
+			log.trace("Deleting obsolete contained StopArea: " + containedStopArea.getObjectId());
+		}
 		stopAreaDAO.delete(containedStopArea);
 		if (containedStopArea.getContainedStopAreas() != null) {
 			containedStopArea.getContainedStopAreas().forEach(grandChild -> removeContainedStopArea(grandChild));

@@ -373,8 +373,8 @@ public class NetexParserUtils extends ParserUtils {
 			try {
 				return Integer.parseInt(netexObjectVersion);
 			} catch (NumberFormatException e) {
-				if (log.isDebugEnabled()) {
-					log.debug("Unable to parse version " + netexObjectVersion + " for Entity " + obj.getId() + " to Integer as supported by Neptune, returning 0");
+				if (log.isTraceEnabled()) {
+					log.trace("Unable to parse version " + netexObjectVersion + " for Entity " + obj.getId() + " to Integer as supported by Neptune, returning 0");
 				}
 				return 0;
 			}

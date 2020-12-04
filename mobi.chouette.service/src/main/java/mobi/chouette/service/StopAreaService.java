@@ -137,9 +137,13 @@ public class StopAreaService {
 		@Override
 		public Integer call() throws Exception {
 			ContextHolder.setContext(referential);
-			log.debug("Updating stop area references for stop points for referential " + referential);
+			if(log.isDebugEnabled()) {
+				log.debug("Updating stop area references for stop points for referential " + referential);
+			}
 			int updatedCnt = stopAreaUpdateService.updateStopAreaReferences(replacementMap);
-			log.debug("Updated stop area references for " + updatedCnt + " stop points for referential " + referential);
+			if(log.isDebugEnabled()) {
+				log.debug("Updated stop area references for " + updatedCnt + " stop points for referential " + referential);
+			}
 			return updatedCnt;
 		}
 	}
