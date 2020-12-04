@@ -35,8 +35,12 @@ public class GtfsShapeProducer extends AbstractProducer {
 
 	public boolean save(JourneyPattern neptuneObject, String prefix, boolean keepOriginalId) {
 		boolean result = true;
-		if (!neptuneObject.hasCompleteValidRouteSections())
+		if (!neptuneObject.hasCompleteValidRouteSections()) {
+			if(log.isDebugEnabled()) {
+				log.debug("Skipping GTFS shape export for JourneyPattern with incomplete route sections: " + neptuneObject.getObjectId());
+			}
 			return false;
+		}
 		int shapePtSequence = 0;
 		int startIndex = 0;
 		double distance = 0.0;

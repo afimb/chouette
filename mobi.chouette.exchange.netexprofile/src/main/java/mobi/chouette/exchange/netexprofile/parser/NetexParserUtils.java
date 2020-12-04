@@ -358,14 +358,27 @@ public class NetexParserUtils extends ParserUtils {
 		return null;
 	}
 
+	/**
+	 * Convert the NeTEx object version to an Integer.
+	 * Version "any" and non-integer versions are mapped to 0.
+	 *
+	 * @param obj a versioned NeTEx object.
+	 * @return the NeTEx version as an Integer.
+	 */
 	public static Integer getVersion(EntityInVersionStructure obj) {
-		Integer version = 0;
-		try {
-			version = Integer.parseInt(obj.getVersion());
-		} catch (NumberFormatException e) {
-			log.debug("Unable to parse " + obj.getVersion() + " to Integer as supported by Neptune, returning 0");
+		String netexObjectVersion = obj.getVersion();
+		if ("any".equals(netexObjectVersion)) {
+			return 0;
+		} else {
+			try {
+				return Integer.parseInt(netexObjectVersion);
+			} catch (NumberFormatException e) {
+				if (log.isDebugEnabled()) {
+					log.debug("Unable to parse version " + netexObjectVersion + " for Entity " + obj.getId() + " to Integer as supported by Neptune, returning 0");
+				}
+				return 0;
+			}
 		}
-		return version;
 	}
 
 	public static Integer getVersion(String version) {

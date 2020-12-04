@@ -36,7 +36,9 @@ public class DatedServiceJourneyParser extends NetexParser implements Parser, Co
             if (journeyStruct instanceof DatedServiceJourney) {
                 parseDatedServiceJourney(context, referential, (DatedServiceJourney) journeyStruct);
             } else {
-                log.debug("Ignoring non-DatedServiceJourney with id: " + journeyStruct.getId());
+                if(log.isTraceEnabled()) {
+                    log.trace("Ignoring non-DatedServiceJourney with id: " + journeyStruct.getId());
+                }
             }
         }
     }

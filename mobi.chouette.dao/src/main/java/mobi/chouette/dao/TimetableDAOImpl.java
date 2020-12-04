@@ -101,7 +101,6 @@ public class TimetableDAOImpl extends GenericDAOImpl<Timetable>implements Timeta
 				"    where dsj.service_alteration is null or dsj.service_alteration not in ('Cancellation','Replaced') ");
 
 		List<Object[]> resultList = q.getResultList();
-		log.debug("Found " + resultList.size() + " DSJ operating days for referential " + ContextHolder.getContext());
 		Map<Long, Collection<LocalDate>> lineToDSJOperatingDaysMap = new HashMap<>();
 		for (Object[] lineOperatingDayPair : resultList) {
 			Long lineId = toLong(lineOperatingDayPair[0]);
