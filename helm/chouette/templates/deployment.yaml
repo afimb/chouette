@@ -68,7 +68,7 @@ spec:
               value: -server -Xms2048m -Xmx{{ .Values.resources.xmx }} -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90
                 -XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=40 -XX:ActiveProcessorCount={{ .Values.resources.cpuRequest }} -Djava.net.preferIPv4Stack=true -Djava.awt.headless=true
                 -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconfig.location=/etc/application-config/application.properties
-                -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/jboss/data/
+                -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/jboss/data/ -Dlogback.configurationFile=/etc/application-config/logback.xml
             - name: LANG
               value: en_US.UTF-8
             - name: TZ
@@ -154,6 +154,10 @@ spec:
               name: chouette-config
               readOnly: true
               subPath: application.properties
+            - mountPath: /etc/application-config/logback.xml
+              name: chouette-config
+              readOnly: true
+              subPath: logback.xml
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
