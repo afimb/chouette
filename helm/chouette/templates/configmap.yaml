@@ -416,7 +416,7 @@ data:
                 </core-environment>
                 <recovery-environment socket-binding="txn-recovery-environment" status-socket-binding="txn-status-manager"/>
             </subsystem>
-            <subsystem xmlns="urn:jboss:domain:undertow:1.2">
+        <subsystem xmlns="urn:jboss:domain:undertow:1.2" statistics-enabled="true">
                 <buffer-cache name="default"/>
                 <server name="default-server">
                     <http-listener name="default" socket-binding="http" max-post-size="200000000"/>
