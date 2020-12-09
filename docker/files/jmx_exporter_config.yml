@@ -10,7 +10,7 @@ whitelistObjectNames:
   - "jboss.as:subsystem=datasources,data-source=*,statistics=*"
   - "jboss.as:subsystem=datasources,xa-data-source=*,statistics=*"
   - "jboss.as:subsystem=transactions*"
-  - "jboss.as:subsystem=undertow,server=*,http-listener=*"
+  - "jboss.as:deployment=*,subdeployment=*,subsystem=*,servlet=*"
   # - "java.lang:*"
 rules:
   - pattern: "^jboss.as<subsystem=datasources, (?:xa-)*data-source=(iev|chouette), statistics=(.+)><>(.+):"
@@ -23,9 +23,11 @@ rules:
     attrNameSnakeCase: true
     name: wildfly_transaction_$1
 
-  - pattern: "^jboss.as<subsystem=undertow, server=(.+), http-listener=(.+)><>(bytes_.+|error_count|processing_time|request_count):"
+  - pattern: "^jboss.as<deployment=(.+), subdeployment=(.+), subsystem=undertow, servlet=(.+)><>(.+time|.+count):"
     attrNameSnakeCase: true
-    name: wildfly_undertow_$3
+    name: wildfly_servlet_$4
+    type: GAUGE
     labels:
-      server: $1
-      http_listener: $2
+      name: $3
+      deployment: $1
+      subdeployment: $2
