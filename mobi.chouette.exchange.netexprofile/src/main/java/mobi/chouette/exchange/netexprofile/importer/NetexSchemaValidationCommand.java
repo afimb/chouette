@@ -190,10 +190,9 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 								new DataLocation(fileName, exception.getLineNumber(), exception.getColumnNumber()), exception.getMessage());
 						String message = exception.getLineNumber() + ":" + exception.getColumnNumber() + " " + exception.getMessage();
 						actionReporter.addFileErrorInReport(context, fileName, ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, message);
-						//log.error(fileName + " has error at line:column " + message);
 						fileValidationResult = ERROR;
-						if(errorCount >= MAX_ERROR_COUNT) {
-							log.error(fileName + " has too many schema validation error (max is "+MAX_ERROR_COUNT+"). Aborting");
+						if (errorCount >= MAX_ERROR_COUNT) {
+							log.warn(fileName + " has too many schema validation errors (max is " + MAX_ERROR_COUNT + "). Additional errors will not be reported");
 							throw exception;
 						}
 					}
@@ -208,7 +207,7 @@ public class NetexSchemaValidationCommand implements Command, Constant {
 				log.info("Schema validation finished "+fileName+ " "+monitor.stop());
 
 			} catch (SAXException e) {
-				log.error(e);
+				log.warn(e);
 				fileValidationResult = ERROR;
 			} catch (IOException e) {
 				log.error(e);
