@@ -23,6 +23,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.model.statistics.LineStatistics;
+import mobi.chouette.service.JobServiceManager;
 import mobi.chouette.service.ReferentialService;
 import mobi.chouette.service.TransitDataStatisticsService;
 
@@ -40,6 +41,9 @@ public class RestStatisticsService implements Constant {
 	@Inject
 	ReferentialService referentialService;
 
+	@Inject
+	private JobServiceManager jobServiceManager;
+
 	private static final String PARAM_CATEGORY_SEPARATOR = ";";
 
 	@GET
@@ -48,6 +52,11 @@ public class RestStatisticsService implements Constant {
 	public Response lineStats(@PathParam("ref") String referential, @QueryParam("startDate") Date startDate, @QueryParam("days") int days,
 							  @QueryParam("minDaysValidityCategory") String minDaysValidityCategories[]) {
 		try {
+
+			if (existsActiveJobs()) {
+				return Response.status(423).entity("Cannot calculate line statistics while a job is active").build();
+			}
+
 			log.info(Color.CYAN + "Calculating line statistics for referential " + referential + Color.NORMAL);
 
 
@@ -72,6 +81,11 @@ public class RestStatisticsService implements Constant {
 	public Response lineStats(@QueryParam("startDate") Date startDate, @QueryParam("days") int days,
 							  @QueryParam("minDaysValidityCategory") String minDaysValidityCategories[], @QueryParam("referentials") String referentials) {
 		try {
+
+			if (existsActiveJobs()) {
+				return Response.status(423).entity("Cannot calculate line statistics while a job is active").build();
+			}
+
 			log.info(Color.CYAN + "Calculating line statistics for referentials " + referentials + Color.NORMAL);
 
 			Map<Integer, String> minDaysValidityCategoryMap = parseCategoryMap(minDaysValidityCategories);
@@ -116,6 +130,10 @@ public class RestStatisticsService implements Constant {
 			}
 		}
 		return minDaysValidityCategoryMap;
+	}
+
+	private boolean existsActiveJobs() {
+		return !jobServiceManager.activeJobs().isEmpty();
 	}
 
 
