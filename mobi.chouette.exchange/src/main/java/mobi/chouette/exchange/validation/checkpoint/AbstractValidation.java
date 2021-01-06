@@ -184,7 +184,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static final String MIN_SIZE = "min_size";
 	protected static final String MAX_SIZE = "max_size";
 
-	protected static final TransportModeParameters modeDefault = new TransportModeParameters(1, 300, 30000, 40, 10, 10, 20);
+	protected static final TransportModeParameters modeDefault = new TransportModeParameters(1, 300, 30000, 50, 40,10, 10, 20);
 
 	protected static final String DEFAULT_ENVELOPPE = "[[-5.2,42.25],[-5.2,51.1],[8.23,51.1],[8.23,42.25],[-5.2,42.25]]";
 	private GeometryFactory geometryFactory;

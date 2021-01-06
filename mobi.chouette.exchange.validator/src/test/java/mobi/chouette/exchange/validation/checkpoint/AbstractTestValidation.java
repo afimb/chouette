@@ -424,20 +424,20 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
         ret.setCheckStopParent(0);        
         ret.setCheckConnectionLinkOnPhysical(0);
         
-        ret.setModeCoach(new TransportModeParameters(1, 500, 10000, 90, 40, 20, 20));
-        ret.setModeAir(new TransportModeParameters(1, 200, 10000, 800, 700, 60, 1000));
-        ret.setModeWater(new TransportModeParameters(1, 200, 10000, 40, 5, 60, 20));
-        ret.setModeBus(new TransportModeParameters(1, 100, 40000, 1000, 5, 2000, 20));
-        ret.setModeFerry(new TransportModeParameters(1, 200, 10000, 40, 5, 60, 100));
-        ret.setModeWalk(new TransportModeParameters(1, 1, 10000, 6, 1, 10, 20));
-        ret.setModeMetro(new TransportModeParameters(1, 300 ,20000, 500, 25, 2000, 100));
-        ret.setModeTaxi(new TransportModeParameters(1, 500, 300000, 130, 20, 60, 20));
-        ret.setModeRail(new TransportModeParameters(1, 2000, 500000, 300, 20, 60, 100));
-        ret.setModeTram(new TransportModeParameters(1, 300,2000,50,20,30, 20));
-        ret.setModeTrolleyBus(new TransportModeParameters(1,  300,2000,50,20,30, 20));
-        ret.setModePrivateVehicle(new TransportModeParameters(1, 500, 300000, 130, 20, 60, 20));
-        ret.setModeBicycle(new TransportModeParameters(1, 300, 30000, 40, 10, 10, 20));
-        ret.setModeOther(new TransportModeParameters(1, 300, 30000, 40, 10, 10, 20));
+        ret.setModeCoach(new TransportModeParameters(1, 500, 10000, 90, 80,40, 20, 20));
+        ret.setModeAir(new TransportModeParameters(1, 200, 10000, 10000, 900, 700, 60, 1000));
+        ret.setModeWater(new TransportModeParameters(1, 200, 10000, 40, 30, 5, 60, 20));
+        ret.setModeBus(new TransportModeParameters(1, 100, 40000, 1000, 900,5, 2000, 20));
+        ret.setModeFerry(new TransportModeParameters(1, 200, 10000, 40, 30, 5, 60, 100));
+        ret.setModeWalk(new TransportModeParameters(1, 1, 10000, 6, 5, 1, 10, 20));
+        ret.setModeMetro(new TransportModeParameters(1, 300 ,20000, 500, 400, 25, 2000, 100));
+        ret.setModeTaxi(new TransportModeParameters(1, 500, 300000, 130, 110, 20, 60, 20));
+        ret.setModeRail(new TransportModeParameters(1, 2000, 500000, 300, 200, 20, 60, 100));
+        ret.setModeTram(new TransportModeParameters(1, 300,2000,50,40, 20,30, 20));
+        ret.setModeTrolleyBus(new TransportModeParameters(1,  300,2000,50,240, 0,30, 20));
+        ret.setModePrivateVehicle(new TransportModeParameters(1, 500, 300000, 130, 110, 20, 60, 20));
+        ret.setModeBicycle(new TransportModeParameters(1, 300, 30000, 40, 30, 10, 10, 20));
+        ret.setModeOther(new TransportModeParameters(1, 300, 30000, 40, 30, 10, 10, 20));
 
         return ret;
 	}
