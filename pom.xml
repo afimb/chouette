@@ -36,7 +36,7 @@
  	    <netex-java-model.version>1.0.11</netex-java-model.version>
 		<rutebanken.helpers.version>1.0.34</rutebanken.helpers.version>
 
-		<owasp-dependency-check-plugin.version>6.0.1</owasp-dependency-check-plugin.version>
+		<owasp-dependency-check-plugin.version>6.0.4</owasp-dependency-check-plugin.version>
 
 	</properties>
 	<distributionManagement>
@@ -833,7 +833,7 @@
 			<dependency>
 				<groupId>commons-collections</groupId>
 				<artifactId>commons-collections</artifactId>
-				<version>3.2.1</version> <!-- 4.0.0 not found -->
+				<version>3.2.2</version> <!-- 4.0.0 not found -->
 			</dependency>
 			<dependency>
 				<groupId>commons-lang</groupId>
@@ -843,7 +843,7 @@
 			<dependency>
 				<groupId>commons-beanutils</groupId>
 				<artifactId>commons-beanutils</artifactId>
-				<version>1.9.2</version>
+				<version>1.9.4</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-io</groupId>
@@ -853,7 +853,7 @@
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-compress</artifactId>
-				<version>1.9</version>
+				<version>1.20</version>
 			</dependency>
 
 			<dependency>
