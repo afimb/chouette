@@ -16,7 +16,9 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import mobi.chouette.dao.BlockDAO;
 import mobi.chouette.dao.ReferentialDAO;
+import mobi.chouette.model.Block;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
 import lombok.extern.log4j.Log4j;
@@ -34,6 +36,9 @@ public class TransferExportDataLoader implements Command, Constant {
 	public static final String COMMAND = "TransferExporterDataLoader";
 
 	@EJB
+	private BlockDAO blockDAO;
+
+	@EJB
 	private LineDAO lineDAO;
 
 	@EJB
@@ -46,12 +51,43 @@ public class TransferExportDataLoader implements Command, Constant {
 	@TransactionTimeout(value = 2, unit = TimeUnit.HOURS)
 	public boolean execute(Context context) throws Exception {
 
+		List<Block> blocksToTransfer = prepareBlocks(context);
+		context.put(BLOCKS, blocksToTransfer);
+
 		List<Line> lineToTransfer = prepareLines(context);
 		context.put(LINES, lineToTransfer);
+
+
+
 		LocalDateTime lastUpdateTimestamp = referentialDAO.getLastUpdateTimestamp();
 		context.put(REFERENTIAL_LAST_UPDATE_TIMESTAMP, lastUpdateTimestamp);
 	     
 		return true;
+	}
+
+	protected List<Block> prepareBlocks(Context context) {
+		if (!em.isJoinedToTransaction()) {
+			throw new RuntimeException("No transaction");
+		}
+
+		TransferExportParameters configuration = (TransferExportParameters) context.get(CONFIGURATION);
+
+		log.info("Loading all shared blocks...");
+		List<Block> allBlocks = blockDAO.findAll();
+		log.info("Filtering blocks");
+		List<Block> blocksToTransfer = allBlocks
+				.stream()
+				.filter(block -> block.filter(configuration.getStartDate(), configuration.getEndDate()))
+				.collect(Collectors.toList());
+		log.info("Filtering blocks completed");
+		log.info("Removing Hibernate proxies");
+		HibernateDeproxynator<?> deProxy = new HibernateDeproxynator<>();
+		blocksToTransfer = deProxy.deepDeproxy(blocksToTransfer);
+		log.info("Removing Hibernate proxies completed");
+
+
+		em.clear();
+		return blocksToTransfer;
 	}
 
 	protected List<Line> prepareLines(Context context) throws IllegalAccessException,

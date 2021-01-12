@@ -17,6 +17,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
 
+import mobi.chouette.dao.BlockDAO;
 import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.testng.Arquillian;
@@ -63,6 +64,9 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
     @EJB
     private CodespaceDAO codespaceDao;
+
+    @EJB
+    private BlockDAO blockDao;
 
     @EJB
     private LineDAO lineDao;
@@ -242,6 +246,7 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         log.info("Dumping old codespace records...");
         codespaceDao.deleteAll();
         codespaceDao.flush();
+        blockDao.deleteAll();
         lineDao.deleteAll();
         lineDao.flush();
         stopAreaDao.deleteAll();
@@ -606,6 +611,53 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
         }
 
     }
+
+    @Test(groups = {"ExportBlocks"}, description = "Export Plugin should export file")
+    public void exportLineWithCommonBlocks() throws Exception {
+        importLines("avinor_single_line_with_blocks.zip", 2, 1, Arrays.asList(
+                createCodespace(null, "NSR", "http://www.rutebanken.org/ns/nsr"),
+                createCodespace(null, "AVI", "http://www.rutebanken.org/ns/avi"))
+        );
+
+        log.info("*********IMPORT COMPLETE, STARTING EXPORT**********@");
+
+        Context context = initExportContext();
+        NetexprofileExportParameters configuration = (NetexprofileExportParameters) context.get(CONFIGURATION);
+        configuration.setValidateAfterExport(true);
+        configuration.setAddMetadata(false);
+        configuration.setReferencesType("line");
+        configuration.setExportStops(true);
+        configuration.setExportBlocks(true);
+        configuration.setDefaultCodespacePrefix("AVI");
+
+        Command command = CommandFactory.create(initialContext, NetexprofileExporterCommand.class.getName());
+
+        try {
+            command.execute(context);
+        } catch (Exception ex) {
+            log.error("test failed", ex);
+            throw ex;
+        }
+        NetexTestUtils.verifyValidationReport(context);
+
+        NetexTestUtils.verifyValidationReport(context);
+        ActionReport report = (ActionReport) context.get(REPORT);
+        Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+        Assert.assertEquals(report.getFiles().size(), 2, "file reported");
+
+        for (FileReport info : report.getFiles()) {
+            Reporter.log(info.toString(),true);
+        }
+
+        Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 1, "line reported");
+
+        for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+            Assert.assertEquals(info.getStatus(), ActionReporter.OBJECT_STATE.OK, "line status");
+            Reporter.log(info.toString(), true);
+        }
+
+    }
+
 
     @Test(groups = {"ExportLine"}, description = "Export Plugin should export file")
     public void exportLineWithSameLineInterchanges() throws Exception {

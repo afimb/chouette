@@ -2848,3 +2848,59 @@ create unique index  dated_service_journey_refs_original_dsj_id_derived_dsj_id_k
 create index  dated_service_journey_refs_derived_dsj_id_idx
     on   dated_service_journey_refs (derived_dsj_id);
 
+create table blocks
+(
+    id bigserial not null
+        constraint blocks_pkey
+            primary key,
+    objectid varchar not null,
+    object_version integer,
+    creation_time timestamp,
+    creator_id varchar(255),
+    private_code varchar,
+    name varchar,
+    description varchar
+);
+
+alter table blocks owner to chouette;
+
+create unique index blocks_objectid_key
+    on blocks (objectid);
+
+create table blocks_vehicle_journeys
+(
+    block_id integer
+        constraint blocks_vehicle_journeys_block_id_fkey
+            references blocks,
+    vehicle_journey_id integer
+        constraint blocks_vehicle_journeys_vehicle_journey_id_fkey
+            references vehicle_journeys,
+    position integer
+);
+
+alter table blocks_vehicle_journeys owner to chouette;
+
+create unique index blocks_vehicle_journeys_block_id_vehicle_journey_id_key
+    on blocks_vehicle_journeys (block_id, vehicle_journey_id);
+
+create index blocks_vehicle_journeys_vehicle_journey_id_idx
+    on blocks_vehicle_journeys (vehicle_journey_id);
+
+create table time_tables_blocks
+(
+    block_id integer
+        constraint time_tables_blocks_block_id_fkey
+            references blocks,
+    time_table_id integer
+        constraint time_tables_blocks_time_table_id_fkey
+            references time_tables
+);
+
+alter table time_tables_blocks owner to chouette;
+
+create unique index time_tables_blocks_block_id_time_table_id_key
+    on time_tables_blocks (time_table_id, block_id);
+
+create index time_tables_blocks_block_id_idx
+    on time_tables_blocks (block_id);
+

@@ -3,6 +3,7 @@ package mobi.chouette.exchange.exporter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.Block;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.Interchange;
 import mobi.chouette.model.JourneyPattern;
@@ -16,6 +17,7 @@ import mobi.chouette.model.VehicleJourneyAtStop;
 import org.joda.time.LocalDate;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Log4j
 public class DataCollector {
@@ -98,6 +100,8 @@ public class DataCollector {
 	private void collectVehicleJourney(VehicleJourney vehicleJourney) {
 		collection.getTimetables().addAll(vehicleJourney.getTimetables());
 		collection.getDatedServiceJourneys().addAll(vehicleJourney.getDatedServiceJourneys());
+		collection.getBlocks().addAll(vehicleJourney.getBlocks());
+		collection.getTimetables().addAll(vehicleJourney.getBlocks().stream().map(Block::getTimetables).flatMap(List::stream).collect(Collectors.toList()));
 		collection.getVehicleJourneys().add(vehicleJourney);
 		collectInterchanges(collection, vehicleJourney, skipNoCoordinate, followLinks, startDate, endDate);
 		collection.getFootnotes().addAll(vehicleJourney.getFootnotes());

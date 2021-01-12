@@ -24,6 +24,7 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.common.parallel.ParallelExecutionCommand;
 import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
+import mobi.chouette.exchange.importer.BlocksRegisterCommand;
 import mobi.chouette.exchange.importer.CleanRepositoryCommand;
 import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.GenerateRouteSectionsCommand;
@@ -255,6 +256,10 @@ public class NetexImporterProcessingCommands implements ProcessingCommands, Cons
 						lineChain.add(validate);
 					}
 				}
+
+				Command blocksRegister = CommandFactory.create(initialContext, BlocksRegisterCommand.class.getName());
+				mainChain.add(blocksRegister);
+
 			}
 
 		} catch (Exception e) {

@@ -332,6 +332,14 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 			0);
 
 	/**
+	 * Blocks referencing this .
+	 */
+
+	@Getter
+	@ManyToMany(mappedBy = "vehicleJourneys")
+	private List<Block> blocks = new ArrayList<>();
+
+	/**
 	 * company reference<br/>
 	 * if different from line company
 	 * 

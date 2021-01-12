@@ -1,13 +1,6 @@
 package mobi.chouette.exchange.netexprofile.exporter.writer;
 
-import java.time.LocalDateTime;
-
-import javax.xml.bind.Marshaller;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
-
 import mobi.chouette.common.Context;
-import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.netexprofile.Constant;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
@@ -15,16 +8,30 @@ import mobi.chouette.exchange.netexprofile.exporter.NetexFragmentMode;
 import mobi.chouette.exchange.netexprofile.exporter.NetexprofileExportParameters;
 import mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducerUtils;
 import mobi.chouette.model.util.NamingUtil;
-
 import org.rutebanken.netex.model.AvailabilityCondition;
 import org.rutebanken.netex.model.Codespace;
-import org.rutebanken.netex.model.Network;
 
-import static mobi.chouette.common.Constant.CONFIGURATION;
-import static mobi.chouette.common.Constant.REFERENTIAL;
+import javax.xml.bind.Marshaller;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+import java.time.LocalDateTime;
+
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.NETEX_DEFAULT_OBJECT_VERSION;
 import static mobi.chouette.exchange.netexprofile.exporter.producer.NetexProducer.netexFactory;
-import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.*;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.CODESPACE;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.CODESPACES;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.COMPOSITE_FRAME;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.DATA_OBJECTS;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.DEFAULT_LANGUAGE;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.DEFAULT_LOCALE;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.DESCRIPTION;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.FRAMES;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.FRAME_DEFAULTS;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.PARTICIPANT_REF;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.PUBLICATION_DELIVERY;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.PUBLICATION_TIMESTAMP;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.TIME_ZONE;
+import static mobi.chouette.exchange.netexprofile.util.NetexObjectIdTypes.VALIDITY_CONDITIONS;
 
 public class PublicationDeliveryWriter extends AbstractNetexWriter{
 
@@ -170,6 +177,7 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter{
 				}
 
 				ServiceFrameWriter.write(writer, context, exportableNetexData, NetexFragmentMode.SHARED, marshaller);
+				VehicleScheduleFrameWriter.write(writer, context, exportableNetexData, marshaller);
 				ServiceCalendarFrameWriter.write(writer, context, exportableNetexData, marshaller);
 			}
 

@@ -233,6 +233,18 @@ public class Timetable extends NeptuneIdentifiedObject {
 	private List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>(0);
 
 	/**
+	 * list of blocks
+	 *
+	 * @param vehicleJourneys
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@ManyToMany(mappedBy = "timetables", fetch = FetchType.LAZY)
+	private List<Block> blocks = new ArrayList<>(0);
+
+	/**
 	 * add a day if not already present
 	 * 
 	 * @param calendarDay
@@ -308,6 +320,22 @@ public class Timetable extends NeptuneIdentifiedObject {
 		getVehicleJourneys().remove(vehicleJourney);
 		vehicleJourney.getTimetables().remove(this);
 	}
+
+	/**
+	 * add a vehicle journey if not already present
+	 *
+	 * @param block
+	 */
+	public void addBlock(Block block) {
+		if (!getBlocks().contains(block)) {
+			getBlocks().add(block);
+		}
+		if (!block.getTimetables().contains(this)) {
+			block.getTimetables().add(this);
+		}
+	}
+
+
 
 	/**
 	 * build a bitwise dayType mask for filtering

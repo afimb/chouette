@@ -1,10 +1,5 @@
 package mobi.chouette.exchange.netexprofile.parser;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.JAXBElement;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
@@ -22,11 +17,10 @@ import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.AlternativeText;
+import org.rutebanken.netex.model.BlocksInFrame_RelStructure;
 import org.rutebanken.netex.model.Branding;
-import org.rutebanken.netex.model.Branding_VersionStructure;
 import org.rutebanken.netex.model.Common_VersionFrameStructure;
 import org.rutebanken.netex.model.CompositeFrame;
 import org.rutebanken.netex.model.DataManagedObjectStructure;
@@ -54,6 +48,9 @@ import org.rutebanken.netex.model.TimetableFrame;
 import org.rutebanken.netex.model.TypesOfValueInFrame_RelStructure;
 import org.rutebanken.netex.model.ValidBetween;
 import org.rutebanken.netex.model.VehicleScheduleFrame;
+
+import javax.xml.bind.JAXBElement;
+import java.util.List;
 
 @Log4j
 public class PublicationDeliveryParser extends NetexParser implements Parser, Constant {
@@ -86,6 +83,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 				List<SiteFrame> siteFrames = NetexObjectUtil.getFrames(SiteFrame.class, frames);
 				List<ServiceCalendarFrame> serviceCalendarFrames = NetexObjectUtil.getFrames(ServiceCalendarFrame.class, frames);
 				List<TimetableFrame> timetableFrames = NetexObjectUtil.getFrames(TimetableFrame.class, frames);
+				List<VehicleScheduleFrame> vehicleScheduleFrames = NetexObjectUtil.getFrames(VehicleScheduleFrame.class, frames);
 
 				// pre processing
 				preParseReferentialDependencies(context, referential, serviceFrames, timetableFrames, isCommonDelivery);
@@ -98,6 +96,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 				}
 				parseServiceFrames(context, serviceFrames, isCommonDelivery);
 				parseServiceCalendarFrame(context, serviceCalendarFrames);
+				parseVehicleScheduleFrames(context, vehicleScheduleFrames);
 
 				if (!isCommonDelivery) {
 					parseTimetableFrames(context, timetableFrames);
@@ -111,6 +110,7 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 			List<SiteFrame> siteFrames = NetexObjectUtil.getFrames(SiteFrame.class, dataObjectFrames);
 			List<ServiceCalendarFrame> serviceCalendarFrames = NetexObjectUtil.getFrames(ServiceCalendarFrame.class, dataObjectFrames);
 			List<TimetableFrame> timetableFrames = NetexObjectUtil.getFrames(TimetableFrame.class, dataObjectFrames);
+			List<VehicleScheduleFrame> vehicleScheduleFrames = NetexObjectUtil.getFrames(VehicleScheduleFrame.class, dataObjectFrames);
 
 			// pre processing
 			preParseReferentialDependencies(context, referential, serviceFrames, timetableFrames, isCommonDelivery);
@@ -127,10 +127,8 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 				parseTimetableFrames(context, timetableFrames);
 			}
 
-			List<VehicleScheduleFrame> vehicleScheduleFrames = NetexObjectUtil.getFrames(VehicleScheduleFrame.class, dataObjectFrames);
-			if (!CollectionUtils.isEmpty(vehicleScheduleFrames)) {
-				log.info("Ignoring VehicleScheduleFrames for referential: "+ referential);
-			}
+
+			parseVehicleScheduleFrames(context, vehicleScheduleFrames);
 		}
 
 		// post processing
@@ -388,6 +386,17 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 				serviceInterchangeParser.parse(context);
 			}
 
+		}
+	}
+
+	private void parseVehicleScheduleFrames(Context context, List<VehicleScheduleFrame> vehicleScheduleFrames) throws Exception {
+		for (VehicleScheduleFrame vehicleScheduleFrame : vehicleScheduleFrames) {
+			BlocksInFrame_RelStructure blocks = vehicleScheduleFrame.getBlocks();
+			if(blocks != null) {
+				context.put(NETEX_LINE_DATA_CONTEXT, blocks);
+				Parser blocKParser = ParserFactory.create(BlockParser.class.getName());
+				blocKParser.parse(context);
+			}
 		}
 	}
 

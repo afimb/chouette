@@ -37,12 +37,14 @@ public final class NetexObjectIdTypes {
     public static final String DESTINATION_DISPLAYS = "destinationDisplays";
     public static final String JOURNEY_INTERCHANGES = "journeyInterchanges";
     public static final String SERVICE_LINKS = "serviceLinks";
+    public static final String BLOCKS = "blocks";
 
     // frame id keys
     public static final String COMPOSITE_FRAME = "CompositeFrame";
     public static final String RESOURCE_FRAME = "ResourceFrame";
     public static final String SITE_FRAME = "SiteFrame";
     public static final String SERVICE_FRAME = "ServiceFrame";
+    public static final String VEHICLE_SCHEDULE_FRAME = "VehicleScheduleFrame";
     public static final String SERVICE_CALENDAR_FRAME = "ServiceCalendarFrame";
     public static final String TIMETABLE_FRAME = "TimetableFrame";
 

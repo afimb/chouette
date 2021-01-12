@@ -2,6 +2,7 @@ package mobi.chouette.model.util;
 
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.Block;
 import mobi.chouette.model.Branding;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
@@ -374,4 +375,20 @@ public class ObjectFactory {
 
 		return interchange;
 	}
+
+	public static Block getBlock(Referential referential,
+										   String objectId) {
+		Block result = referential.getSharedBlocks().get(objectId);
+		if (result == null) {
+			result = new Block();
+			result.setObjectId(objectId);
+			result.setDetached(true);
+			referential.getSharedBlocks().put(objectId, result);
+		}
+		if (!referential.getBlocks().containsKey(objectId)) {
+			referential.getBlocks().put(objectId, result);
+		}
+		return result;
+	}
+
 }

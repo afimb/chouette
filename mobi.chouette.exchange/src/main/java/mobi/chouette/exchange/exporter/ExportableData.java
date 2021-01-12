@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.Block;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.DatedServiceJourney;
@@ -86,6 +87,9 @@ public class ExportableData {
 	@Getter
 	@Setter
 	private List<DatedServiceJourney> datedServiceJourneys = new ArrayList<>();
+	@Getter
+	@Setter
+	private Set<Block> blocks = new HashSet<>();
 	@Getter
 	@Setter
 	private List<JourneyPattern> journeyPatterns = new ArrayList<>();
