@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface ReferentialDAO {
 
+    boolean hasReferential(String referentialName);
+
     List<String> getReferentials();
 
     void createReferential(ReferentialInfo referentialInfo);

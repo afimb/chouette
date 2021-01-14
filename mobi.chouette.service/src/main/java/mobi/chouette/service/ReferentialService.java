@@ -1,7 +1,5 @@
 package mobi.chouette.service;
 
-import java.util.List;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.dao.ReferentialDAO;
 import mobi.chouette.model.dto.ReferentialInfo;
@@ -11,6 +9,7 @@ import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
+import java.util.List;
 
 /**
  *
@@ -63,11 +62,16 @@ public class ReferentialService {
 
     }
 
-    public void createReferential(ReferentialInfo referentialInfo) throws ServiceException {
+    public boolean createReferential(ReferentialInfo referentialInfo) throws ServiceException {
 
         log.info("Creating referential for: " + referentialInfo);
 
         String schemaName = referentialInfo.getSchemaName();
+
+        if (referentialDAO.hasReferential(schemaName)) {
+            log.warn("The referential already exists: " + schemaName + ". Ignoring creation request");
+            return false;
+        }
 
         if (referentialInfo.getAdminUserName() == null) {
             referentialInfo.setAdminUserName(defaultReferentialAdminUserName);
@@ -103,6 +107,8 @@ public class ReferentialService {
             referentialInfo.setDataspacePrefix(schemaName.toUpperCase());
             referentialDAO.createReferential(referentialInfo);
         }
+
+        return true;
 
     }
 

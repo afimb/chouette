@@ -525,8 +525,13 @@ public class RestService implements Constant {
 	public Response create(ReferentialInfo referentialInfo) {
 		log.info("Creating referential " + referentialInfo.getDataspaceName());
 		try {
-			referentialService.createReferential(referentialInfo);
-			return Response.ok().header(api_version_key, api_version).build();
+			boolean created = referentialService.createReferential(referentialInfo);
+			if (created) {
+				return Response.ok().header(api_version_key, api_version).build();
+			} else {
+				return Response.status(Status.CONFLICT).header(api_version_key, api_version).build();
+			}
+
 		} catch (Exception ex) {
 			log.error(ex.getMessage(), ex);
 			throw new WebApplicationException("INTERNAL_ERROR: " + ex.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);

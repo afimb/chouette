@@ -1,15 +1,23 @@
 package mobi.chouette.dao;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.dto.ReferentialInfo;
 
 import javax.ejb.Stateless;
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.ParameterMode;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.StoredProcedureQuery;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Stateless(name="ReferentialDAO")
+@Log4j
 public class ReferentialDAOImpl implements ReferentialDAO {
+
+    private static final String SQL_SELECT_REFERENTIAL = "SELECT * FROM PUBLIC.REFERENTIALS WHERE slug=:dest_schema";
 
     private static final String SQL_SELECT_SLUG = "SELECT SLUG FROM PUBLIC.REFERENTIALS";
 
@@ -27,6 +35,13 @@ public class ReferentialDAOImpl implements ReferentialDAO {
 
     @PersistenceContext(unitName = "public")
     private EntityManager em;
+
+    @Override
+    public boolean hasReferential(String referentialName) {
+        Query query = em.createNativeQuery(SQL_SELECT_REFERENTIAL);
+        query.setParameter("dest_schema", referentialName);
+        return !query.getResultList().isEmpty();
+    }
 
     @Override
     public List<String> getReferentials() {
