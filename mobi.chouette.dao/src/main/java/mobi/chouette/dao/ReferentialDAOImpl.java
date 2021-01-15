@@ -52,7 +52,7 @@ public class ReferentialDAOImpl implements ReferentialDAO {
     @Override
     public void createReferential(ReferentialInfo referentialInfo) {
 
-        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("create_provider_schema");
+        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("public.create_provider_schema");
 
         procedureQuery.registerStoredProcedureParameter("dest_schema", String.class, ParameterMode.IN);
         procedureQuery.registerStoredProcedureParameter("dataspace_name", String.class, ParameterMode.IN);
@@ -94,7 +94,7 @@ public class ReferentialDAOImpl implements ReferentialDAO {
     @Override
     public void createMigratedReferential(ReferentialInfo referentialInfo) {
 
-        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("create_rutebanken_schema");
+        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("public.create_rutebanken_schema");
 
         procedureQuery.registerStoredProcedureParameter("dest_schema", String.class, ParameterMode.IN);
         procedureQuery.registerStoredProcedureParameter("dataspace_name", String.class, ParameterMode.IN);
