@@ -16,6 +16,8 @@ import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RoutePoint;
+import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.NeptuneUtil;
@@ -56,6 +58,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 			prepareCheckPoint(context, ROUTE_7);
 		}
 		initCheckPoint(context, ROUTE_8, SEVERITY.W);
+		initCheckPoint(context, ROUTE_10, SEVERITY.E);
 
 		boolean test4_1 = (parameters.getCheckRoute() != 0);
 		if (test4_1) {
@@ -84,6 +87,9 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 
 			// 3-Route-8 : check if all stopPoints are used by journeyPatterns
 			check3Route8(context, route);
+
+			// check that ScheduledStopPoint used in RoutePoint are defined in a stop area
+			check3Route10(context, route);
 
 			// 4-Route-1 : check columns constraints
 			if (test4_1)
@@ -258,6 +264,20 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 			reporter.addCheckPointReportError(context, ROUTE_8, location, Integer.toString(points.size()), null,
 					targets);
+		}
+	}
+
+	// check that ScheduledStopPoints used in RoutePoints are contained in a stop area
+	private void check3Route10(Context context, Route route) {
+		prepareCheckPoint(context, ROUTE_10);
+		ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+		for (RoutePoint routePoint : route.getRoutePoints()) {
+			ScheduledStopPoint scheduledStopPoint = routePoint.getScheduledStopPoint();
+			if (scheduledStopPoint != null && scheduledStopPoint.getContainedInStopAreaRef().getObject() == null) {
+				DataLocation location = buildLocation(context, routePoint);
+				DataLocation targetLocation = buildLocation(context, scheduledStopPoint);
+				reporter.addCheckPointReportError(context, ROUTE_10, location, null, null, targetLocation);
+			}
 		}
 	}
 
