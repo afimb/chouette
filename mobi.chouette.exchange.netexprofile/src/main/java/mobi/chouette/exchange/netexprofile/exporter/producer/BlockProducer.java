@@ -52,6 +52,12 @@ public class BlockProducer extends NetexProducer {
         JourneyRefs_RelStructure journeyRefsRelStructure = netexFactory.createJourneyRefs_RelStructure();
         netexBlock.setJourneys(journeyRefsRelStructure);
         for (VehicleJourney vehicleJourney : block.getVehicleJourneys()) {
+            if(vehicleJourney == null) {
+                // Hibernate does not properly reorder elements in the vehicleJourneys collection
+                // In case of a gap (due to the removal of an element), a null value is added in the collection.
+                // This null value should be ignored
+                continue;
+            }
             VehicleJourneyRefStructure vehicleJourneyRefStructure = netexFactory.createVehicleJourneyRefStructure();
             vehicleJourneyRefStructure.setRef(vehicleJourney.getObjectId());
             NetexProducerUtils.populateReference(vehicleJourney, vehicleJourneyRefStructure, false);
