@@ -500,7 +500,9 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 * @return true if there is at least one active route.
 	 */
 	public boolean filter(LocalDate startDate, LocalDate endDate) {
-		log.info("Filtering line " + getObjectId() +  " for validity interval " + startDate + " to " + endDate);
+		if(log.isDebugEnabled()) {
+			log.debug("Filtering line " + getObjectId() +  " for validity interval " + startDate + " to " + endDate);
+		}
 		for (Iterator<Route> routeI = getRoutes().iterator(); routeI.hasNext(); ) {
 			Route route = routeI.next();
 			// filter out Routes with less than 2 stops
@@ -551,7 +553,9 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 				routeI.remove();
 			}
 		}
-		log.info("Filtered line " + getObjectId() +  " for validity interval " + startDate + " to " + endDate);
+		if(log.isDebugEnabled()) {
+			log.debug("Filtered line " + getObjectId() +  " for validity interval " + startDate + " to " + endDate);
+		}
 		return !getRoutes().isEmpty();
 	}
 

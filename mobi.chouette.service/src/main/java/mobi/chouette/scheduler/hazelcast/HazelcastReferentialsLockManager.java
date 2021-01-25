@@ -84,7 +84,7 @@ public class HazelcastReferentialsLockManager implements ReferentialLockManager 
 			if (acquired) {
 				log.debug("Acquired lock: " + key);
 			} else {
-				log.info("Failed to acquire lock: " + key);
+				log.debug("Failed to acquire lock: " + key);
 
 			}
 			return acquired;
