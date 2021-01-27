@@ -81,7 +81,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		initCheckPoint(context, VEHICLE_JOURNEY_2_2, SEVERITY.W);
 		initCheckPoint(context, VEHICLE_JOURNEY_2_3, SEVERITY.W);
 		initCheckPoint(context, VEHICLE_JOURNEY_2_4, SEVERITY.I);
-		initCheckPoint(context, VEHICLE_JOURNEY_2_5, SEVERITY.W);
+		initCheckPoint(context, VEHICLE_JOURNEY_2_5, SEVERITY.E);
 		initCheckPoint(context, VEHICLE_JOURNEY_3, SEVERITY.W);
 		initCheckPoint(context, VEHICLE_JOURNEY_4, SEVERITY.W);
 		initCheckPoint(context, VEHICLE_JOURNEY_5, SEVERITY.E);
