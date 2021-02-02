@@ -1,5 +1,6 @@
 package mobi.chouette.dao;
 
+import mobi.chouette.dao.exception.ChouetteStatisticsTimeoutException;
 import mobi.chouette.model.DatedServiceJourney;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -21,7 +22,6 @@ import javax.ejb.EJB;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.util.Collection;
-import java.util.Map;
 import java.util.UUID;
 
 public class TimetableDaoTest extends Arquillian {
@@ -59,7 +59,7 @@ public class TimetableDaoTest extends Arquillian {
 
 	@Test(groups = "Statistics")
 	@Transactional
-	public void getAllTimetableForAllLines() {
+	public void getAllTimetableForAllLines() throws ChouetteStatisticsTimeoutException {
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
 
 		// Cleanup
@@ -106,7 +106,7 @@ public class TimetableDaoTest extends Arquillian {
 
 	@Test(groups = "Statistics")
 	@Transactional
-	public void getAllTimetableForAllLinesWithDSJ() {
+	public void getAllTimetableForAllLinesWithDSJ() throws ChouetteStatisticsTimeoutException {
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
 
 		// Cleanup||

@@ -22,6 +22,7 @@ import javax.ejb.TransactionAttributeType;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.TimetableDAO;
+import mobi.chouette.dao.exception.ChouetteStatisticsTimeoutException;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.statistics.Line;
 import mobi.chouette.model.statistics.LineAndTimetable;
@@ -66,10 +67,10 @@ public class TransitDataStatisticsService {
 	 *            organize lineNumbers into validity categories. First category
 	 *            is from 0 to lowest key value. Corresponding value in map is
 	 *            used as categegory name,
-	 * @return
-	 * @throws ServiceException
+	 * @return the line statistics
+	 * @throws RequestServiceException if the statistics cannot be calculated
 	 */
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public LineStatistics getLineStatisticsByLineNumber(String referential, Date startDate, int days,
 			Map<Integer, String> minDaysValidityCategories) throws ServiceException {
 
@@ -90,7 +91,11 @@ public class TransitDataStatisticsService {
 		Map<String, PublicLine> publicLines = new HashMap<String, PublicLine>();
 
 		// Convert Chouette internal model to the statistics model used
-		convertChouetteModelToStatisticsModel(startDate, publicLines);
+		try {
+			convertChouetteModelToStatisticsModel(startDate, publicLines);
+		} catch (ChouetteStatisticsTimeoutException e) {
+			throw new RequestServiceException(RequestExceptionCode.REFERENTIAL_BUSY, "Query timeout while calculating statistics for referential " + referential, e );
+		}
 
 		// If Line->Timetable->Period is empty, remove Line but keep publicLine
 		filterLinesWithEmptyTimetablePeriods(publicLines);
@@ -205,7 +210,7 @@ public class TransitDataStatisticsService {
 		}
 	}
 
-	protected void convertChouetteModelToStatisticsModel(Date startDate, Map<String, PublicLine> publicLines) {
+	protected void convertChouetteModelToStatisticsModel(Date startDate, Map<String, PublicLine> publicLines) throws ChouetteStatisticsTimeoutException {
 		// Load list of lineIds with corresponding Timetables
 		long now = System.currentTimeMillis();
 		Collection<LineAndTimetable> allTimetableForAllLines = timetableDAO.getAllTimetableForAllLines();

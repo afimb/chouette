@@ -35,10 +35,10 @@ public interface GenericDAO<T> {
 	void evictAll();
 
 	void flush();
-	
+
 	void clear();
 
 	void detach(Collection<?> list);
-	
+
 
 }
