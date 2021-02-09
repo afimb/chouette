@@ -85,6 +85,14 @@ public class Block extends NeptuneIdentifiedObject {
         }
     }
 
+    public void removeVehicleJourney(VehicleJourney vehicleJourney) {
+        if (vehicleJourney != null) {
+            vehicleJourney.getBlocks().remove(this);
+            vehicleJourneys.remove(vehicleJourney);
+        }
+    }
+
+
     public boolean hasActiveTimetablesOnPeriod(LocalDate startDate, LocalDate endDate) {
         return getTimetables().stream().anyMatch(t -> t.isActiveOnPeriod(startDate, endDate));
     }

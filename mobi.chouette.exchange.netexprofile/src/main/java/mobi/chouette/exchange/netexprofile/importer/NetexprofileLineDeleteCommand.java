@@ -56,6 +56,7 @@ public class NetexprofileLineDeleteCommand implements Command {
 			if (existingLine != null) {
 				log.info("Delete existing line before import: " + existingLine.getObjectId() + " "+existingLine.getName());
 				clearRouteSectionReferences(existingLine);
+				clearBlockReferences(existingLine);
 				lineDAO.delete(existingLine);
 				lineDAO.flush();
 			}
@@ -103,6 +104,13 @@ public class NetexprofileLineDeleteCommand implements Command {
 				journeyPattern.getRouteSections().clear();
 			}
 		}
+	}
+
+	private void clearBlockReferences(Line existingLine) {
+		existingLine.getRoutes().stream()
+				.flatMap(r -> r.getJourneyPatterns().stream())
+				.flatMap(jp -> jp.getVehicleJourneys().stream())
+				.forEach(vj -> vj.getBlocks().forEach(b -> b.removeVehicleJourney(vj)));
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {
