@@ -527,12 +527,16 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 						vjI.remove();
 						continue;
 					}
-					List<Timetable> activeTimetablesOnPeriod = vehicleJourney.getActiveTimetablesOnPeriod(startDate, endDate);
-					vehicleJourney.getTimetables().removeIf(timetable -> !activeTimetablesOnPeriod.contains(timetable));
+					// the dated service journeys that are not active in the period are removed
+					// but the timetables that are not active in the period are kept
+					// since they can represent exceptional dates where the vehicle journey does not operate.
+					// and thus override an active date defined in another timetable of this vehicle journey.
+					// example: a timetable that contains a single day with isAvailable=false is not active
+					// but represents a day where the vehicle journey does not operate
 					List<DatedServiceJourney> activeDatedServiceJourneyOnPeriod = vehicleJourney.getActiveDatedServiceJourneysOnPeriod(startDate, endDate);
 					vehicleJourney.getDatedServiceJourneys().removeIf(dsj -> !activeDatedServiceJourneyOnPeriod.contains(dsj));
 					// filter out Vehicle Journey without timetables nor dated service journey
-					if(!vehicleJourney.hasTimetables() && !vehicleJourney.hasDatedServiceJourneys()) {
+					if(!vehicleJourney.hasActiveTimetablesOnPeriod(startDate, endDate) && !vehicleJourney.hasDatedServiceJourneys()) {
 						if (log.isDebugEnabled()) {
 							log.debug("Removing VJ with no valid timetables nor valid dated service journeys: " + vehicleJourney.getObjectId());
 						}
