@@ -2,6 +2,9 @@ package mobi.chouette.exchange.netexprofile.importer;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -25,6 +28,7 @@ import mobi.chouette.exchange.report.ActionReporter.Factory;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.model.Block;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -110,7 +114,12 @@ public class NetexprofileLineDeleteCommand implements Command {
 		existingLine.getRoutes().stream()
 				.flatMap(r -> r.getJourneyPatterns().stream())
 				.flatMap(jp -> jp.getVehicleJourneys().stream())
-				.forEach(vj -> vj.getBlocks().forEach(b -> b.removeVehicleJourney(vj)));
+				.forEach(vj ->
+						{
+							// removing from a separate collection to prevent ConcurrentModificationException
+							Collection<Block> toRemove =  new ArrayList<>(vj.getBlocks());
+							toRemove.forEach(b -> b.removeVehicleJourney(vj));
+						});
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {
