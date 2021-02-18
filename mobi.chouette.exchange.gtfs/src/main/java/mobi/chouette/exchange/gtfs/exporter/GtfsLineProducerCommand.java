@@ -142,7 +142,7 @@ public class GtfsLineProducerCommand implements Command, Constant {
 		if (!collection.getVehicleJourneys().isEmpty()) {
 			for (VehicleJourney vj : collection.getVehicleJourneys()) {
 
-				if (vj.hasTimetables()) {
+				if (vj.hasTimetables() && vj.isNeitherCancelledNorReplaced()) {
 					String timeTableServiceId = calendarProducer.key(vj.getTimetables(), sharedPrefix, configuration.isKeepOriginalId());
 					if (timeTableServiceId != null) {
 						if (tripProducer.save(vj, timeTableServiceId, prefix, sharedPrefix, configuration.isKeepOriginalId())) {
@@ -154,7 +154,7 @@ public class GtfsLineProducerCommand implements Command, Constant {
 						}
 					}
 				} else if(vj.hasDatedServiceJourneys()
-				   && vj.getDatedServiceJourneys().stream().anyMatch(DatedServiceJourney::isActive)) {
+				   && vj.getDatedServiceJourneys().stream().anyMatch(DatedServiceJourney::isNeitherCancelledNorReplaced)) {
 					if (tripProducer.save(vj, vj.getObjectId(), prefix, sharedPrefix, configuration.isKeepOriginalId())) {
 						hasVj = true;
 						jps.add(vj.getJourneyPattern());

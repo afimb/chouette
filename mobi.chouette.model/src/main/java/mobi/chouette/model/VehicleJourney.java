@@ -468,7 +468,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 			includedDates.removeAll(excludedDates);
 			return new TreeSet<>(includedDates);
 		} else if (hasDatedServiceJourneys()) {
-			return getDatedServiceJourneys().stream().filter(DatedServiceJourney::isActive).map(DatedServiceJourney::getOperatingDay).collect(Collectors.toCollection(TreeSet::new));
+			return getDatedServiceJourneys().stream().filter(DatedServiceJourney::isNeitherCancelledNorReplaced).map(DatedServiceJourney::getOperatingDay).collect(Collectors.toCollection(TreeSet::new));
 		} else {
 			return new TreeSet<>();
 		}
@@ -576,5 +576,10 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 
 	public boolean isActiveOnPeriod(LocalDate startDate, LocalDate endDate) {
 		return hasActiveTimetablesOnPeriod(startDate, endDate) || hasActiveDatedServiceJourneysOnPeriod(startDate, endDate);
+	}
+
+	public boolean isNeitherCancelledNorReplaced() {
+		ServiceAlterationEnum serviceAlterationEnum = getServiceAlteration();
+		return ServiceAlterationEnum.Cancellation != serviceAlterationEnum && ServiceAlterationEnum.Replaced != serviceAlterationEnum;
 	}
 }

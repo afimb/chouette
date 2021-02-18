@@ -120,7 +120,7 @@ public class DatedServiceJourney extends NeptuneIdentifiedObject {
     /**
      * Return true if the DatedServiceJourney is neither cancelled nor replaced
      */
-    public boolean isActive() {
+    public boolean isNeitherCancelledNorReplaced() {
         ServiceAlterationEnum serviceAlterationEnum = getServiceAlteration();
         return ServiceAlterationEnum.Cancellation != serviceAlterationEnum && ServiceAlterationEnum.Replaced != serviceAlterationEnum;
     }

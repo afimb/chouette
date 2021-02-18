@@ -43,7 +43,6 @@ import mobi.chouette.model.DatedServiceJourney;
 import mobi.chouette.model.Interchange;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.Timetable;
-import mobi.chouette.model.type.ServiceAlterationEnum;
 
 /**
  *
@@ -168,7 +167,7 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 
 		for (DatedServiceJourney datedServiceJourney : datedServiceJourneys) {
 			// replaced and cancelled services are excluded from the GTFS export.
-			if (datedServiceJourney.isActive()) {
+			if (datedServiceJourney.isNeitherCancelledNorReplaced()) {
 				CalendarDay calendarDay = new CalendarDay();
 				calendarDay.setDate(datedServiceJourney.getOperatingDay());
 				calendarDay.setIncluded(true);
