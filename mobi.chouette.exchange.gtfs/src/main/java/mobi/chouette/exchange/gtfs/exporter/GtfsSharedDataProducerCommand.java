@@ -181,8 +181,12 @@ public class GtfsSharedDataProducerCommand implements Command, Constant {
 	 * Interchange relations are not enforced in db. Make sure they are valid before exporting.
 	 */
 	private boolean isInterchangeValid(Interchange interchange) {
-		return interchange.getConsumerVehicleJourney() != null && interchange.getFeederVehicleJourney() != null
-				&& interchange.getConsumerStopPoint() != null && interchange.getFeederStopPoint() != null;
+		return interchange.getConsumerVehicleJourney() != null
+				&& interchange.getFeederVehicleJourney() != null
+				&& interchange.getConsumerStopPoint() != null
+				&& interchange.getFeederStopPoint() != null
+				&& interchange.getConsumerVehicleJourney().isNeitherCancelledNorReplaced()
+				&& interchange.getFeederVehicleJourney().isNeitherCancelledNorReplaced();
 	}
 
 
