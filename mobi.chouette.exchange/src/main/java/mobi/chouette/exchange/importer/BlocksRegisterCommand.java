@@ -14,6 +14,7 @@ import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.model.Block;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
+import org.jboss.ejb3.annotation.TransactionTimeout;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -23,6 +24,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.concurrent.TimeUnit;
 
 import static mobi.chouette.exchange.importer.BlocksRegisterCommand.COMMAND;
 
@@ -40,6 +42,7 @@ public class BlocksRegisterCommand implements Command {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    @TransactionTimeout(value = 30, unit = TimeUnit.MINUTES)
     public boolean execute(Context context) throws Exception {
 
         boolean result = ERROR;
@@ -52,6 +55,8 @@ public class BlocksRegisterCommand implements Command {
         context.put(CACHE, cache);
 
         Referential referential = (Referential) context.get(REFERENTIAL);
+
+        log.info("Saving blocks");
 
         try {
 
@@ -67,7 +72,7 @@ public class BlocksRegisterCommand implements Command {
 
             result = SUCCESS;
         } catch (Exception ex) {
-            log.error("unable to save blocks " + ex.getMessage(), ex);
+            log.error("Unable to save blocks: " + ex.getMessage(), ex);
             ActionReporter reporter = ActionReporter.Factory.getInstance();
             if (ex.getCause() != null) {
                 Throwable e = ex.getCause();
