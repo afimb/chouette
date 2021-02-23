@@ -1,22 +1,5 @@
 package mobi.chouette.exchange.transfer.exporter;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
@@ -25,6 +8,7 @@ import mobi.chouette.dao.BlockDAO;
 import mobi.chouette.dao.InterchangeDAO;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.RouteSectionDAO;
+import mobi.chouette.dao.TimetableDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.importer.CleanRepositoryCommand;
@@ -37,11 +21,27 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.util.Referential;
-
 import org.jboss.ejb3.annotation.TransactionTimeout;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Log4j
 @Stateless(name = TransferExportDataWriter.COMMAND)
@@ -59,6 +59,9 @@ public class TransferExportDataWriter implements Command, Constant {
 
 	@EJB
 	private VehicleJourneyDAO vehicleJourneyDAO;
+
+	@EJB
+	private TimetableDAO timetableDAO;
 
 	@EJB
 	private RouteSectionDAO routeSectionDAO;
@@ -150,13 +153,29 @@ public class TransferExportDataWriter implements Command, Constant {
 				}
 			}
 
-
+			lineDAO.flush();
 			log.info("Starting to persist blocks");
-			for(Block block: blocksToTransfer) {
-				List<VehicleJourney> persistentVehicleJourneys = block.getVehicleJourneys().stream().map(vj -> vehicleJourneyDAO.findByObjectId(vj.getObjectId())).collect(Collectors.toList());
+			for (Block block : blocksToTransfer) {
+				if (log.isDebugEnabled()) {
+					log.debug("Preparing block " + block.getObjectId());
+				}
+
+				// persist only the vehicle journeys that were effectively transferred, ignoring the others.
+				List<VehicleJourney> persistentVehicleJourneys = vehicleJourneyDAO.findByObjectIdNoFlush(block.getVehicleJourneys().stream().map(vj -> vj.getObjectId()).collect(Collectors.toList()));
 				block.setVehicleJourneys(persistentVehicleJourneys);
-				blockDAO.create(block);
+
+				// reuse the timetables that were already created during the line transfer step,
+				// the other timetables are tied only to blocks and are not persisted yet.
+				List<Timetable> persistentTimetables = timetableDAO.findByObjectIdNoFlush(block.getTimetables().stream().map(tt -> tt.getObjectId()).collect(Collectors.toList()));
+				block.getTimetables().removeAll(persistentTimetables);
+				block.getTimetables().addAll(persistentTimetables);
+
 			}
+			log.info("Persisting blocks");
+			// Persisting all blocks at once, for performance (batched INSERT in DB)
+			blocksToTransfer.forEach(blockDAO::create);
+			log.info("Flushing blocks");
+			lineDAO.flush();
 
 			log.info("Updating target referential last update timestamp");
 			Command updateReferentialLastUpdateTimestampCommand = CommandFactory.create(initialContext, UpdateReferentialLastUpdateTimestampCommand.class.getName());
@@ -171,6 +190,7 @@ public class TransferExportDataWriter implements Command, Constant {
 			em.clear();
 			referential.clear(true);
 			lineToTransfer.clear();
+			blocksToTransfer.clear();
 		}
 	}
 

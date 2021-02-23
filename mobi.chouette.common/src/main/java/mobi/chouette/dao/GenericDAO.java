@@ -12,7 +12,20 @@ public interface GenericDAO<T> {
 
 	T findByObjectId(String id);
 
+	/**
+	 * Find entities by object ids.
+	 * @param objectIds
+	 * @return
+	 */
 	List<T> findByObjectId(Collection<String> objectIds);
+
+	/**
+	 * Find entities by object ids, without flushing the session first, for performance.
+	 * This assumes that there is no pending update in the persistence context.
+	 * @param objectIds
+	 * @return
+	 */
+	List<T> findByObjectIdNoFlush(Collection<String> objectIds);
 
 	List<T> findAll();
 
