@@ -132,6 +132,7 @@ public class ValidationNominal extends AbstractTestValidation {
 		List<String> expectedErrors = new ArrayList<>();
 		expectedErrors.add("rutebanken_3-StopPoint-2");
 		expectedErrors.add("3-JourneyPattern-4");
+		expectedErrors.add("3-JourneyPattern-5");
 
 		// no route points
 		unchecked.add("3-Route-rutebanken-3");

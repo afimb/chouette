@@ -22,6 +22,7 @@ import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.TransportSubModeNameEnum;
@@ -54,6 +55,8 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 		initCheckPoint(context, JOURNEY_PATTERN_3, SEVERITY.W);
 		prepareCheckPoint(context, JOURNEY_PATTERN_4);
 		initCheckPoint(context, JOURNEY_PATTERN_4, SEVERITY.E);
+		prepareCheckPoint(context, JOURNEY_PATTERN_5);
+		initCheckPoint(context, JOURNEY_PATTERN_5, SEVERITY.W);
 
 		initCheckPoint(context, JOURNEY_PATTERN_RB_1, SEVERITY.W);
 		initCheckPoint(context, JOURNEY_PATTERN_RB_2, SEVERITY.W);
@@ -100,6 +103,8 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 				check4Generic1(context, jp, L4_JOURNEY_PATTERN_1, parameters, log);
 
 			check3JourneyPattern4(context, jp);
+
+			check3JourneyPattern5(context, jp);
 
 			// 3-JourneyPattern-RB-1 : check distance between stops
 			check3JourneyPatternRb1(context, jp, parameters);
@@ -173,6 +178,18 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 			DataLocation location = buildLocation(context, jp);
 			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
 			reporter.addCheckPointReportError(context, JOURNEY_PATTERN_4, location);
+		}
+	}
+
+	// 3-JourneyPattern-5 : Check that last stop on journey pattern does not allow boarding
+	private void check3JourneyPattern5(Context context, JourneyPattern jp) {
+		if (jp.getDepartureStopPoint() == null) {
+			return;
+		}
+		if (!AlightingPossibilityEnum.forbidden.equals(jp.getDepartureStopPoint().getForAlighting())) {
+			DataLocation location = buildLocation(context, jp);
+			ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+			reporter.addCheckPointReportError(context, JOURNEY_PATTERN_5, location);
 		}
 	}
 
