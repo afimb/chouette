@@ -143,6 +143,8 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static final String L4_CONNECTION_LINK_1 = "4-ConnectionLink-1";
 	protected static final String L4_CONNECTION_LINK_2 = "4-ConnectionLink-2";
 	protected static final String L4_TIME_TABLE_1 = "4-Timetable-1";
+	protected static final String L4_TIME_TABLE_2= "4-Timetable-2";
+
 	protected static final String L4_LINE_1 = "4-Line-1";
 	protected static final String L4_LINE_2 = "4-Line-2";
 	protected static final String L4_LINE_3 = "4-Line-3";
