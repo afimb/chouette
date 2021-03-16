@@ -422,41 +422,40 @@ public abstract class AbstractNetexProfileValidator implements Constant, NetexPr
 		}
 	}
 
+	/**
+	 * Validate external id references.
+	 * References are valid if they refer to local ids, or if they refer to ids in the common files, or if they are
+	 * valid according to the external ids validators (example: NSR id validator).
+	 * @param context
+	 * @param externalRefs
+	 * @param localIds
+	 * @param commonIds
+	 */
 	protected void verifyExternalRefs(Context context, List<IdVersion> externalRefs, Set<IdVersion> localIds, Set<IdVersion> commonIds) {
-
-		Set<IdVersion> possibleExternalReferences = externalRefs.stream().filter(e -> !localIds.contains(e)).collect(Collectors.toSet());
-		Set<IdVersion> idsFoundInCommonFiles = new HashSet<>();
-		for (IdVersion possibleMissingReference : possibleExternalReferences) {
-			for (IdVersion commonId : commonIds) {
-				if (commonId.getId().equals(possibleMissingReference.getId())) {
-					idsFoundInCommonFiles.add(possibleMissingReference);
-				}
-			}
-		}
-
-		possibleExternalReferences.removeAll(idsFoundInCommonFiles);
-
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-		Set<IdVersion> verifiedExternalRefs = new HashSet<>();
-
-		for (ExternalReferenceValidator validator : externalReferenceValidators) {
-			verifiedExternalRefs.addAll(validator.validateReferenceIds(context, possibleExternalReferences));
-		}
-
-		possibleExternalReferences.removeAll(verifiedExternalRefs);
-
-		if (possibleExternalReferences.size() > 0) {
-			for (IdVersion id : possibleExternalReferences) {
-				if (log.isDebugEnabled()) {
-					log.debug("Unable to validate external reference " + id);
+		// Remove duplicates, that is: references that have the same id and version (see #IdVersion.equals)
+		Set<IdVersion> possibleExternalReferences = new HashSet<>(externalRefs);
+		// Remove references that are found in local ids, comparing by id and version
+		possibleExternalReferences.removeAll(localIds);
+		if (!possibleExternalReferences.isEmpty()) {
+			// Remove references that are found in the common files, comparing only by id, not by id and version
+			possibleExternalReferences.removeIf(ref -> commonIds.stream().anyMatch(commonId -> commonId.getId().equals(ref.getId())));
+			if (!possibleExternalReferences.isEmpty()) {
+				// Remove references that are valid according to the external id validators
+				externalReferenceValidators.forEach(validator -> possibleExternalReferences.removeAll(validator.validateReferenceIds(context, possibleExternalReferences)));
+				if (!possibleExternalReferences.isEmpty()) {
+					for (IdVersion id : possibleExternalReferences) {
+						if (log.isDebugEnabled()) {
+							log.debug("Unable to validate external reference " + id);
+						}
+						validationReporter.addCheckPointReportError(context, _1_NETEX_UNRESOLVED_EXTERNAL_REFERENCE, null, DataLocationHelper.findDataLocation(id),
+								id.getId());
+					}
+					return;
 				}
-				validationReporter.addCheckPointReportError(context, _1_NETEX_UNRESOLVED_EXTERNAL_REFERENCE, null, DataLocationHelper.findDataLocation(id),
-						id.getId());
 			}
-
-		} else {
-			validationReporter.reportSuccess(context, _1_NETEX_UNRESOLVED_EXTERNAL_REFERENCE);
 		}
+		validationReporter.reportSuccess(context, _1_NETEX_UNRESOLVED_EXTERNAL_REFERENCE);
 	}
 
 	protected void verifyIdStructure(Context context, Set<IdVersion> localIds, String regex, Set<Codespace> validCodespaces) {

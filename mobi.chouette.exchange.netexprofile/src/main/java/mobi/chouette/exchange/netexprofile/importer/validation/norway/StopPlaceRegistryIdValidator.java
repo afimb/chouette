@@ -112,7 +112,7 @@ public class StopPlaceRegistryIdValidator implements ExternalReferenceValidator 
 		}
 
 		if (log.isDebugEnabled()) {
-			log.info("Found " + validIds.size() + " ids valid");
+			log.debug("Found " + validIds.size() + " valid ids out of " + idsToCheck.size() + " external ids to check");
 		}
 		return validIds;
 	}
