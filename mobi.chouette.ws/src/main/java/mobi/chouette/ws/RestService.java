@@ -106,13 +106,13 @@ public class RestService implements Constant {
 			}
 			return builder.build();
 		} catch (RequestServiceException e) {
-			log.error("Request Service failed with code = " + e.getRequestCode() , e);
+			log.info("RequestCode = " + e.getRequestCode() + ", Message = " + e.getMessage());
 			throw toWebApplicationException(e);
 		} catch (ServiceException e) {
-			log.error("Service failed with code = " + e.getCode() , e);
+			log.error("Code = " + e.getCode() + ", Message = " + e.getMessage());
 			throw toWebApplicationException(e);
 		} catch (WebApplicationException e) {
-			log.error(e.getMessage(), e);
+			log.error(e.getMessage());
 			throw e;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -292,10 +292,10 @@ public class RestService implements Constant {
 			return result;
 
 		} catch (RequestServiceException e) {
-			log.error("Request Service failed with code = " + e.getRequestCode() , e);
+			log.info("RequestCode = " + e.getRequestCode() + ", Message = " + e.getMessage());
 			throw toWebApplicationException(e);
 		} catch (ServiceException e) {
-			log.error("Service failed with code = " + e.getCode() , e);
+			log.error("Code = " + e.getCode() + ", Message = " + e.getMessage());
 			throw toWebApplicationException(e);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -336,11 +336,11 @@ public class RestService implements Constant {
 			// builder.cacheControl(cc);
 
 			return builder.build();
-		} catch (RequestServiceException e) {
-			log.error("Request Service failed with code = " + e.getRequestCode() , e);
-			throw toWebApplicationException(e);
+		} catch (RequestServiceException ex) {
+			log.info("RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage(),ex);
+			throw toWebApplicationException(ex);
 		} catch (ServiceException e) {
-			log.error("Service failed with code = " + e.getCode() , e);
+			log.error("Code = " + e.getCode() + ", Message = " + e.getMessage());
 			throw toWebApplicationException(e);
 		} catch (Exception ex) {
 			log.error(ex.getMessage(), ex);
@@ -392,11 +392,11 @@ public class RestService implements Constant {
 			result = builder.build();
 			return result;
 
-		} catch (RequestServiceException e) {
-			log.error("Request Service failed with code = " + e.getRequestCode() , e);
-			throw toWebApplicationException(e);
+		} catch (RequestServiceException ex) {
+			log.info("RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
 		} catch (ServiceException e) {
-			log.error("Service failed with code = " + e.getCode() , e);
+			log.error("Code = " + e.getCode() + ", Message = " + e.getMessage());
 			throw toWebApplicationException(e);
 		} catch (Exception ex) {
 			log.error(ex.getMessage(), ex);
@@ -429,12 +429,12 @@ public class RestService implements Constant {
 			builder.header(api_version_key, api_version);
 
 			return result;
-		} catch (RequestServiceException e) {
-			log.error("Request Service failed with code = " + e.getRequestCode() , e);
-			throw toWebApplicationException(e);
-		} catch (ServiceException e) {
-			log.error("Service failed with code = " + e.getCode() , e);
-			throw toWebApplicationException(e);
+		} catch (RequestServiceException ex) {
+			log.info("RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
+		} catch (ServiceException ex) {
+			log.error("Code = " + ex.getCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
 		} catch (Exception ex) {
 			log.error(ex.getMessage(), ex);
 			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
@@ -471,12 +471,12 @@ public class RestService implements Constant {
 			builder.header(api_version_key, api_version);
 			return builder.build();
 
-		} catch (RequestServiceException e) {
-			log.error("Request Service failed with code = " + e.getRequestCode() , e);
-			throw toWebApplicationException(e);
-		} catch (ServiceException e) {
-			log.error("Service failed with code = " + e.getCode() , e);
-			throw toWebApplicationException(e);
+		} catch (RequestServiceException ex) {
+			log.info("RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
+		} catch (ServiceException ex) {
+			log.error("Code = " + ex.getCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
 		} catch (Exception ex) {
 			log.error(ex.getMessage(), ex);
 			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
@@ -506,12 +506,12 @@ public class RestService implements Constant {
 
 			return result;
 
-		} catch (RequestServiceException e) {
-			log.error("Request Service failed with code = " + e.getRequestCode() , e);
-			throw toWebApplicationException(e);
-		} catch (ServiceException e) {
-			log.error("Service failed with code = " + e.getCode() , e);
-			throw toWebApplicationException(e);
+		} catch (RequestServiceException ex) {
+			log.info("RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
+		} catch (ServiceException ex) {
+			log.error("Code = " + ex.getCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
 		} catch (Exception ex) {
 			log.error(ex.getMessage(), ex);
 			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
@@ -547,9 +547,9 @@ public class RestService implements Constant {
 		try {
 			referentialService.updateReferential(referentialInfo);
 			return Response.ok().header(api_version_key, api_version).build();
-		} catch (ServiceException e) {
-			log.error("Service failed with code = " + e.getCode() , e);
-			throw toWebApplicationException(e);
+		} catch (ServiceException ex) {
+			log.error("Code = " + ex.getCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
 		} catch (Exception ex) {
 			log.error(ex.getMessage(), ex);
 			throw new WebApplicationException("INTERNAL_ERROR: " + ex.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
@@ -566,9 +566,9 @@ public class RestService implements Constant {
 			referentialService.deleteReferential(referentialInfo);
 			jobServiceManager.drop(referentialInfo.getSchemaName());
 			return Response.ok().header(api_version_key, api_version).build();
-		} catch (ServiceException e) {
-			log.error("Service failed with code = " + e.getCode() , e);
-			throw toWebApplicationException(e);
+		} catch (ServiceException ex) {
+			log.error("Code = " + ex.getCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
 		} catch (Exception ex) {
 			log.error(ex.getMessage(), ex);
 			throw new WebApplicationException("INTERNAL_ERROR: " + ex.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
@@ -594,14 +594,14 @@ public class RestService implements Constant {
 			result = builder.build();
 
 			return result;
-		} catch (RequestServiceException e) {
-			log.error("Request Service failed with code = " + e.getRequestCode() , e);
-			throw toWebApplicationException(e);
-		} catch (ServiceException e) {
-			log.error("Service failed with code = " + e.getCode() , e);
-			throw toWebApplicationException(e);
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
+		} catch (RequestServiceException ex) {
+			log.info("RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
+		} catch (ServiceException ex) {
+			log.error("Code = " + ex.getCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
+		} catch (Exception ex) {
+			log.error(ex.getMessage(), ex);
 			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
 		}
 	}

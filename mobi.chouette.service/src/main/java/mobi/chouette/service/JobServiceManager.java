@@ -161,8 +161,10 @@ public class JobServiceManager {
 	public List<Stat> getMontlyStats() throws ServiceException {
 		try {
 			return statDAO.getCurrentYearStats();
+
 		} catch (Exception ex) {
-			throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, "Failed to read stats", ex);
+			log.info("fail to read stats ",ex);
+			throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, ex);
 		}
 	}
 
@@ -195,33 +197,29 @@ public class JobServiceManager {
 			return jobService;
 
 		} catch (RequestServiceException ex) {
+			log.warn("fail to create job ",ex);
 			deleteBadCreatedJob(jobService);
-			throw new RequestServiceException(ex.getRequestExceptionCode(), "Failed to create job ",ex);
+			throw ex;
 		} catch (Exception ex) {
+			log.warn("fail to create job " + ex.getMessage() + " " + ex.getClass().getName(),ex);
 			deleteBadCreatedJob(jobService);
-			throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, "Failed to create job", ex);
+			throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, ex);
 		}
 	}
 
 	private void deleteBadCreatedJob(JobService jobService) {
-		if (jobService == null || jobService.getJob() == null || jobService.getJob().getId() == null)
+		if (jobService == null || jobService.getJob().getId() == null)
 			return;
 		try {
 			// remove path if exists
-			if (jobService.getPath() != null) {
-				FileStoreFactory.getFileStore().deleteFolder(jobService.getPath());
-			}
-		} catch (Exception e) {
-			log.error("Failed to delete directory " + jobService.getPath(), e);
+			if (jobService.getPath() != null) FileStoreFactory.getFileStore().deleteFolder(jobService.getPath());
+		} catch (RuntimeException ex1) {
+			log.error("fail to delete directory " + jobService.getPath(), ex1);
 		}
-		try {
-			Job job = jobService.getJob();
-			if (job != null && job.getId() != null) {
-				log.info("deleting bad job " + job.getId());
-				jobDAO.deleteById(job.getId());
-			}
-		} catch (Exception e) {
-			log.error("Failed to delete job " + jobService.getJob().getId(), e);
+		Job job = jobService.getJob();
+		if (job != null && job.getId() != null) {
+			log.info("deleting bad job " + job.getId());
+			jobDAO.deleteById(job.getId());
 		}
 
 	}
@@ -244,7 +242,7 @@ public class JobServiceManager {
 
 		boolean result = checker.validateContener(referential);
 		if (!result) {
-			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_REFERENTIAL, "Unknown referential " + referential);
+			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_REFERENTIAL, "referential");
 		}
 
 		referentials.add(referential);
