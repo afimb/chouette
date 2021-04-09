@@ -1,12 +1,5 @@
 package mobi.chouette.exchange.validation.checkpoint;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.validation.ValidationData;
@@ -16,16 +9,23 @@ import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timeband;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.JourneyCategoryEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.TransportSubModeNameEnum;
-
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalTime;
 import org.joda.time.Seconds;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * check a group of coherent vehicle journeys (i.e. on the same journey pattern)
@@ -155,12 +155,19 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 			check3VehicleJourney8(context, vj, beans);
 
 			// 4-VehicleJourney-1 : (optionnal) check columns constraints
-			if (test4_1)
+			if (test4_1) {
 				check4Generic1(context, vj, L4_VEHICLE_JOURNEY_1, parameters, log);
+			}
 
 			// 4-VehicleJourney-2 : (optionnal) check transport modes
-			if (test4_2)
+			if (test4_2) {
 				check4VehicleJourney2(context, vj, parameters);
+			}
+
+			// 4-VehicleJourney-3 : check transport modes consistency with stops
+			initCheckPoint(context, L4_VEHICLE_JOURNEY_3, SEVERITY.W);
+			prepareCheckPoint(context, L4_VEHICLE_JOURNEY_3);
+			check4VehicleJourney3(context, vj);
 
 		}
 
@@ -730,4 +737,69 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		}
 	}
 
-}
+
+
+	public void check4VehicleJourney3(Context context, VehicleJourney vj) {
+
+		TransportModeNameEnum vehicleJourneyTransportMode = getTransportMode(vj);
+		TransportSubModeNameEnum vehicleJourneyTransportSubMode = getTransportSubMode(vj);
+
+		for (StopPoint sp : vj.getJourneyPattern().getStopPoints()) {
+
+			if (sp.getScheduledStopPoint().getContainedInStopAreaRef().getObject() != null) {
+				StopArea sa = sp.getScheduledStopPoint().getContainedInStopAreaRef().getObject();
+				TransportModeNameEnum stopMode = sa.getTransportModeName();
+				TransportSubModeNameEnum stopSubMode = sa.getTransportSubMode();
+
+				// Recurse to parent(s) if necessary
+				while (stopMode == null && sa.getParent() != null) {
+					sa = sa.getParent();
+					stopMode = sa.getTransportModeName();
+					stopSubMode = sa.getTransportSubMode();
+				}
+
+				boolean valid = validCombination(vehicleJourneyTransportMode, vehicleJourneyTransportSubMode, stopMode, stopSubMode);
+
+				if (!valid) {
+					DataLocation location = buildLocation(context, vj);
+					DataLocation targetLocation = buildLocation(context, sa);
+
+					String referenceValue = stopMode + (stopSubMode != null ? "/" + stopSubMode : "");
+					String errorValue = vehicleJourneyTransportMode + (vehicleJourneyTransportSubMode != null ? "/" + vehicleJourneyTransportSubMode : "");
+
+					ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+					reporter.addCheckPointReportError(context, L4_VEHICLE_JOURNEY_3, location, errorValue,
+							referenceValue, targetLocation);
+				}
+			}
+		}
+	}
+
+
+	private boolean validCombination(TransportModeNameEnum vehicleJourneyTransportMode, TransportSubModeNameEnum vehicleJourneyTransportSubMode, TransportModeNameEnum stopMode,
+									 TransportSubModeNameEnum stopSubMode) {
+		if (vehicleJourneyTransportMode == null || stopMode == null) {
+			return true;
+		} else if ((TransportModeNameEnum.Coach == vehicleJourneyTransportMode && TransportModeNameEnum.Bus == stopMode) ||
+				(TransportModeNameEnum.Bus == vehicleJourneyTransportMode && TransportModeNameEnum.Coach == stopMode)) {
+			// Coach and bus are interchangeable
+			return true;
+		} else if (vehicleJourneyTransportMode != stopMode) {
+			return false;
+		} else if (TransportSubModeNameEnum.RailReplacementBus == stopSubMode && vehicleJourneyTransportSubMode != null && TransportSubModeNameEnum.RailReplacementBus != vehicleJourneyTransportSubMode) {
+			// Only rail replacement bus service can visit rail replacement bus stops
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+
+	private TransportSubModeNameEnum getTransportSubMode(VehicleJourney vj) {
+		if (vj.getTransportSubMode() != null) {
+			return vj.getTransportSubMode();
+		} else return vj.getJourneyPattern().getRoute().getLine().getTransportSubModeName();
+	}
+
+
+	}
