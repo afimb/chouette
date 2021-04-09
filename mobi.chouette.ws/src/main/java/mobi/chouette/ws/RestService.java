@@ -106,7 +106,7 @@ public class RestService implements Constant {
 			}
 			return builder.build();
 		} catch (RequestServiceException e) {
-			log.error("Request Service failed with code = " + e.getRequestCode() , e);
+			log.warn("Request Service failed with code = " + e.getRequestCode() , e);
 			throw toWebApplicationException(e);
 		} catch (ServiceException e) {
 			log.error("Service failed with code = " + e.getCode() , e);
@@ -267,7 +267,7 @@ public class RestService implements Constant {
 				// Build response
 				InputStream content = FileStoreFactory.getFileStore().getFileContent(Paths.get(jobService.getPathName(), filename));
 				if (content == null){
-					throw new RequestServiceException(RequestExceptionCode.UNKNOWN_FILE, "");
+					throw new RequestServiceException(RequestExceptionCode.UNKNOWN_FILE, "The requested file does not exist: " + filename);
 				}
 				builder = Response.ok(content);
 				builder.header(HttpHeaders.CONTENT_DISPOSITION,
@@ -292,7 +292,7 @@ public class RestService implements Constant {
 			return result;
 
 		} catch (RequestServiceException e) {
-			log.error("Request Service failed with code = " + e.getRequestCode() , e);
+			log.warn("Request Service failed with code = " + e.getRequestCode() , e);
 			throw toWebApplicationException(e);
 		} catch (ServiceException e) {
 			log.error("Service failed with code = " + e.getCode() , e);
@@ -337,7 +337,7 @@ public class RestService implements Constant {
 
 			return builder.build();
 		} catch (RequestServiceException e) {
-			log.error("Request Service failed with code = " + e.getRequestCode() , e);
+			log.warn("Request Service failed with code = " + e.getRequestCode() , e);
 			throw toWebApplicationException(e);
 		} catch (ServiceException e) {
 			log.error("Service failed with code = " + e.getCode() , e);
@@ -393,7 +393,7 @@ public class RestService implements Constant {
 			return result;
 
 		} catch (RequestServiceException e) {
-			log.error("Request Service failed with code = " + e.getRequestCode() , e);
+			log.warn("Request Service failed with code = " + e.getRequestCode() , e);
 			throw toWebApplicationException(e);
 		} catch (ServiceException e) {
 			log.error("Service failed with code = " + e.getCode() , e);
@@ -430,7 +430,7 @@ public class RestService implements Constant {
 
 			return result;
 		} catch (RequestServiceException e) {
-			log.error("Request Service failed with code = " + e.getRequestCode() , e);
+			log.warn("Request Service failed with code = " + e.getRequestCode() , e);
 			throw toWebApplicationException(e);
 		} catch (ServiceException e) {
 			log.error("Service failed with code = " + e.getCode() , e);
@@ -472,7 +472,7 @@ public class RestService implements Constant {
 			return builder.build();
 
 		} catch (RequestServiceException e) {
-			log.error("Request Service failed with code = " + e.getRequestCode() , e);
+			log.warn("Request Service failed with code = " + e.getRequestCode() , e);
 			throw toWebApplicationException(e);
 		} catch (ServiceException e) {
 			log.error("Service failed with code = " + e.getCode() , e);
@@ -507,7 +507,7 @@ public class RestService implements Constant {
 			return result;
 
 		} catch (RequestServiceException e) {
-			log.error("Request Service failed with code = " + e.getRequestCode() , e);
+			log.warn("Request Service failed with code = " + e.getRequestCode() , e);
 			throw toWebApplicationException(e);
 		} catch (ServiceException e) {
 			log.error("Service failed with code = " + e.getCode() , e);
@@ -595,7 +595,7 @@ public class RestService implements Constant {
 
 			return result;
 		} catch (RequestServiceException e) {
-			log.error("Request Service failed with code = " + e.getRequestCode() , e);
+			log.warn("Request Service failed with code = " + e.getRequestCode() , e);
 			throw toWebApplicationException(e);
 		} catch (ServiceException e) {
 			log.error("Service failed with code = " + e.getCode() , e);
