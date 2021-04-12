@@ -57,7 +57,9 @@ public class TransitDataStatisticsService {
 
 	/**
 	 * Returns a list of Lines grouped by Line "number". Create merged timetable
-	 * periods. Not supporting frequency based yet
+	 * periods. Not supporting frequency based yet.
+	 * The transaction attribute is set to NEVER so that temporary modifications in Line objects
+	 * (creation of a line number if missing, ... ) are not persisted to the database
 	 *
 	 * @param referential
 	 * @param startDate
@@ -70,7 +72,7 @@ public class TransitDataStatisticsService {
 	 * @return the line statistics
 	 * @throws RequestServiceException if the statistics cannot be calculated
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@TransactionAttribute(TransactionAttributeType.NEVER)
 	public LineStatistics getLineStatisticsByLineNumber(String referential, Date startDate, int days,
 			Map<Integer, String> minDaysValidityCategories) throws ServiceException {
 
