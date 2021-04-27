@@ -165,7 +165,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 			}
 
 			// 4-VehicleJourney-3 : check transport modes consistency with stops
-			initCheckPoint(context, L4_VEHICLE_JOURNEY_3, SEVERITY.W);
+			initCheckPoint(context, L4_VEHICLE_JOURNEY_3, SEVERITY.E);
 			prepareCheckPoint(context, L4_VEHICLE_JOURNEY_3);
 			check4VehicleJourney3(context, vj);
 
