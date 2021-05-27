@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.netexprofile.exporter.producer;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.model.Interchange;
 import mobi.chouette.model.ScheduledStopPoint;
@@ -23,6 +24,8 @@ public class ServiceJourneyInterchangeProducer extends NetexProducer implements 
         netex.setAdvertised(interchange.getAdvertised());
         netex.setPlanned(interchange.getPlanned());
         netex.setGuaranteed(interchange.getGuaranteed());
+        netex.setMaximumWaitTime(TimeUtil.toDurationFromJodaDuration(interchange.getMaximumWaitTime()));
+        netex.setMinimumTransferTime(TimeUtil.toDurationFromJodaDuration(interchange.getMinimumTransferTime()));
 
         
         // Consumer stoppoint ref 
