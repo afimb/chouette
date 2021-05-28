@@ -32,6 +32,12 @@
 		<dependency>
 			<groupId>com.jamonapi</groupId>
 			<artifactId>jamon</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>com.hazelcast</groupId>
+					<artifactId>hazelcast-all</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>

@@ -96,9 +96,15 @@
       <scope>compile</scope>
    </dependency>
       <dependency>
-         <groupId>com.jamonapi</groupId>
-         <artifactId>jamon</artifactId>
-      <scope>compile</scope>
+          <groupId>com.jamonapi</groupId>
+          <artifactId>jamon</artifactId>
+          <scope>compile</scope>
+          <exclusions>
+              <exclusion>
+                  <groupId>com.hazelcast</groupId>
+                  <artifactId>hazelcast-all</artifactId>
+              </exclusion>
+          </exclusions>
       </dependency>
       <dependency>
           <groupId>org.slf4j</groupId>
