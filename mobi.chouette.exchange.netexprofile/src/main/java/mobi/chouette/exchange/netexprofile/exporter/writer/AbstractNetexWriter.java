@@ -21,11 +21,6 @@ public class AbstractNetexWriter  implements Constant {
     static final String CREATED = "created";
     static final String XMLNS = "Xmlns";
     static final String XMLNSURL = "XmlnsUrl";
-    
-    final static DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd'T'HH:mm:ss")
-            .optionalStart().appendFraction(ChronoField.MILLI_OF_SECOND, 0, 3, true).optionalEnd()
-            .optionalStart().appendPattern("XXXXX")
-            .optionalEnd().toFormatter();
 
     static void writeElement(XMLStreamWriter writer, String element, String value) {
         try {

@@ -1,5 +1,9 @@
 package mobi.chouette.exchange.netexprofile;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
+
 public interface Constant extends mobi.chouette.common.Constant {
 
 	String ID = "id";
@@ -29,4 +33,8 @@ public interface Constant extends mobi.chouette.common.Constant {
 	String SIRI_NAMESPACE = "http://www.siri.org.uk/siri";
 	String OPENGIS_NAMESPACE = "http://www.opengis.net/gml/3.2";
 
+	DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd'T'HH:mm:ss")
+			.optionalStart().appendFraction(ChronoField.MILLI_OF_SECOND, 0, 3, true).optionalEnd()
+			.optionalStart().appendPattern("XXXXX")
+			.optionalEnd().toFormatter();
 }

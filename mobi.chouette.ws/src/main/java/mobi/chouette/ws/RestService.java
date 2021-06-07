@@ -54,6 +54,8 @@ import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
+import static mobi.chouette.exchange.netexprofile.Constant.DATE_TIME_FORMATTER;
+
 @Path("/referentials")
 @Log4j
 @RequestScoped
@@ -342,6 +344,23 @@ public class RestService implements Constant {
 		} catch (ServiceException e) {
 			log.error("Service failed with code = " + e.getCode() , e);
 			throw toWebApplicationException(e);
+		} catch (Exception ex) {
+			log.error(ex.getMessage(), ex);
+			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	// jobs listing
+	@GET
+	@Path("/{ref}/last_update_date")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response lastUpdateDate(@PathParam("ref") String referential) {
+
+		try {
+			log.info(Color.CYAN + "Call last update date for " + referential + Color.NORMAL);
+			ResponseBuilder builder = Response.ok(DATE_TIME_FORMATTER.format(referentialService.getLastUpdateTimestamp()));
+			builder.header(api_version_key, api_version);
+			return builder.build();
 		} catch (Exception ex) {
 			log.error(ex.getMessage(), ex);
 			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);

@@ -38,7 +38,7 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter{
 	public static void write(Context context, XMLStreamWriter writer, ExportableData exportableData, ExportableNetexData exportableNetexData,
 			NetexFragmentMode fragmentMode, Marshaller marshaller) {
 		LocalDateTime timestamp = LocalDateTime.now();
-		String timestampFormatted = formatter.format(timestamp);
+		String timestampFormatted = Constant.DATE_TIME_FORMATTER.format(timestamp);
 
 		try {
 			writer.writeStartElement(PUBLICATION_DELIVERY);
@@ -84,7 +84,7 @@ public class PublicationDeliveryWriter extends AbstractNetexWriter{
 			writer.writeStartElement(COMPOSITE_FRAME);
 
 			LocalDateTime referentialLastUpdate = (LocalDateTime) context.get(REFERENTIAL_LAST_UPDATE_TIMESTAMP);
-			writer.writeAttribute(CREATED, formatter.format(referentialLastUpdate));
+			writer.writeAttribute(CREATED, Constant.DATE_TIME_FORMATTER.format(referentialLastUpdate));
 
 			writer.writeAttribute(VERSION, NETEX_DEFAULT_OBJECT_VERSION);
 			writer.writeAttribute(ID, compositeFrameId);

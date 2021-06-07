@@ -9,6 +9,7 @@ import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -158,5 +159,9 @@ public class ReferentialService {
 
     public List<String> getReferentialCodes() {
         return referentialDAO.getReferentials();
+    }
+
+    public LocalDateTime getLastUpdateTimestamp() {
+        return referentialDAO.getLastUpdateTimestamp();
     }
 }
