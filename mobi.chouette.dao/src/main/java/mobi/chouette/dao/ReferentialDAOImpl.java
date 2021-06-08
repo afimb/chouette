@@ -3,6 +3,7 @@ package mobi.chouette.dao;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.dto.ReferentialInfo;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.ParameterMode;
@@ -16,6 +17,9 @@ import java.util.List;
 @Stateless(name="ReferentialDAO")
 @Log4j
 public class ReferentialDAOImpl implements ReferentialDAO {
+
+    @EJB
+    SchemaDAO schemaDAO;
 
     private static final String SQL_SELECT_REFERENTIAL = "SELECT * FROM PUBLIC.REFERENTIALS WHERE slug=:dest_schema";
 
@@ -31,6 +35,8 @@ public class ReferentialDAOImpl implements ReferentialDAO {
     private static final String SQL_DELETE_USERS = "DELETE FROM public.users WHERE email=:email";
 
     private static final String SQL_SELECT_LAST_UPDATE_TIMESTAMP = "SELECT last_update_timestamp FROM referential_last_update";
+
+
     private static final String SQL_UPDATE_LAST_UPDATE_TIMESTAMP = "UPDATE referential_last_update SET last_update_timestamp=:last_update_timestamp";
 
     @PersistenceContext(unitName = "public")
@@ -175,6 +181,13 @@ public class ReferentialDAOImpl implements ReferentialDAO {
         Query lastUpdateQuery = em.createNativeQuery(SQL_SELECT_LAST_UPDATE_TIMESTAMP);
         Timestamp timestamp = (Timestamp) lastUpdateQuery.getSingleResult();
         return  timestamp.toLocalDateTime();
+
+    }
+
+    @Override
+    public LocalDateTime getLastUpdateTimestamp(String referential) {
+        schemaDAO.setCurrentSchema(referential);
+        return getLastUpdateTimestamp();
 
     }
 

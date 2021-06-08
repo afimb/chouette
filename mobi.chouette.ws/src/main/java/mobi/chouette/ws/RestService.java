@@ -358,9 +358,12 @@ public class RestService implements Constant {
 
 		try {
 			log.info(Color.CYAN + "Call last update date for " + referential + Color.NORMAL);
-			ResponseBuilder builder = Response.ok(DATE_TIME_FORMATTER.format(referentialService.getLastUpdateTimestamp()));
+			ResponseBuilder builder = Response.ok(DATE_TIME_FORMATTER.format(referentialService.getLastUpdateTimestamp(referential)));
 			builder.header(api_version_key, api_version);
 			return builder.build();
+		} catch (ServiceException e) {
+			log.error("Service failed with code = " + e.getCode() , e);
+			throw toWebApplicationException(e);
 		} catch (Exception ex) {
 			log.error(ex.getMessage(), ex);
 			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);

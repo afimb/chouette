@@ -161,7 +161,12 @@ public class ReferentialService {
         return referentialDAO.getReferentials();
     }
 
-    public LocalDateTime getLastUpdateTimestamp() {
-        return referentialDAO.getLastUpdateTimestamp();
+    public LocalDateTime getLastUpdateTimestamp(String referential) throws ServiceException {
+
+        if (!referentialDAO.getReferentials().contains(referential)) {
+            throw new ServiceException(ServiceExceptionCode.INVALID_REQUEST, "Cannot update referential: referential not found: " + referential);
+        }
+
+        return referentialDAO.getLastUpdateTimestamp(referential);
     }
 }
