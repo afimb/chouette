@@ -256,6 +256,6 @@ public class ValidationParameters {
 	@XmlElement(name = "interchange_max_distance", defaultValue="1000")
 	private int interchangeMaxDistance = 1000;
 
-	@XmlElement(name = "interchange_max_wait_seconds", defaultValue="7200")
-	private int interchangeMaxWaitSeconds = 7200;
+	@XmlElement(name = "interchange_max_wait_seconds", defaultValue="3600")
+	private int interchangeMaxWaitSeconds = 3600;
 }
