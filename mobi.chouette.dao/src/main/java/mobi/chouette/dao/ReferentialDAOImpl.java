@@ -21,6 +21,8 @@ public class ReferentialDAOImpl implements ReferentialDAO {
     @EJB
     SchemaDAO schemaDAO;
 
+    private static final String PUBLIC_SCHEMA = "public";
+
     private static final String SQL_SELECT_REFERENTIAL = "SELECT * FROM PUBLIC.REFERENTIALS WHERE slug=:dest_schema";
 
     private static final String SQL_SELECT_SLUG = "SELECT SLUG FROM PUBLIC.REFERENTIALS";
@@ -57,6 +59,8 @@ public class ReferentialDAOImpl implements ReferentialDAO {
 
     @Override
     public void createReferential(ReferentialInfo referentialInfo) {
+
+        schemaDAO.setCurrentSchema(PUBLIC_SCHEMA);
 
         StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("public.create_provider_schema");
 
@@ -99,6 +103,8 @@ public class ReferentialDAOImpl implements ReferentialDAO {
 
     @Override
     public void createMigratedReferential(ReferentialInfo referentialInfo) {
+
+        schemaDAO.setCurrentSchema(PUBLIC_SCHEMA);
 
         StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("public.create_rutebanken_schema");
 
