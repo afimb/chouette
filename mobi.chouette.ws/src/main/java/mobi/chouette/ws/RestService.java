@@ -358,7 +358,9 @@ public class RestService implements Constant {
 
 		try {
 			log.info(Color.CYAN + "Call last update date for " + referential + Color.NORMAL);
-			ResponseBuilder builder = Response.ok(DATE_TIME_FORMATTER.format(referentialService.getLastUpdateTimestamp(referential)));
+			String lastUpdateDate = DATE_TIME_FORMATTER.format(referentialService.getLastUpdateTimestamp(referential));
+			log.info(Color.CYAN + "Last update date for " + referential + " is "  + lastUpdateDate + Color.NORMAL);
+			ResponseBuilder builder = Response.ok(lastUpdateDate);
 			builder.header(api_version_key, api_version);
 			return builder.build();
 		} catch (ServiceException e) {
