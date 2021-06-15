@@ -22,6 +22,7 @@ import lombok.Setter;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
 
+import mobi.chouette.model.type.TimingPointStatusEnum;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -94,6 +95,12 @@ public class ScheduledStopPoint extends NeptuneIdentifiedObject {
 	@Setter
 	@OneToMany(mappedBy = "consumerStopPoint", fetch = FetchType.LAZY)
 	private List<Interchange> consumerInterchanges = new ArrayList<>(0);
+
+	@Getter
+	@Setter
+	@Enumerated(EnumType.STRING)
+	@Column(name = "timing_point_status")
+	private TimingPointStatusEnum timingPointStatus;
 
 	@Transient
 	public ObjectReference<StopArea> getContainedInStopAreaRef() {

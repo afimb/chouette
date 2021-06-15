@@ -18,6 +18,7 @@ import mobi.chouette.model.type.FlexibleServiceTypeEnum;
 import mobi.chouette.model.type.PurchaseMomentEnum;
 import mobi.chouette.model.type.PurchaseWhenEnum;
 import mobi.chouette.model.type.ServiceAlterationEnum;
+import mobi.chouette.model.type.TimingPointStatusEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.TransportSubModeNameEnum;
 
@@ -38,6 +39,7 @@ import org.rutebanken.netex.model.PurchaseWhenEnumeration;
 import org.rutebanken.netex.model.RailSubmodeEnumeration;
 import org.rutebanken.netex.model.ServiceAlterationEnumeration;
 import org.rutebanken.netex.model.TelecabinSubmodeEnumeration;
+import org.rutebanken.netex.model.TimingPointStatusEnumeration;
 import org.rutebanken.netex.model.TramSubmodeEnumeration;
 import org.rutebanken.netex.model.TransportSubmodeStructure;
 import org.rutebanken.netex.model.WaterSubmodeEnumeration;
@@ -457,6 +459,22 @@ public class ConversionUtil {
 				return PurchaseMomentEnumeration.ON_CHECK_OUT;
 			case other:
 				return PurchaseMomentEnumeration.OTHER;
+		}
+		return null;
+	}
+
+	public static TimingPointStatusEnumeration toTimingPointStatus(TimingPointStatusEnum chouetteType) {
+		if (chouetteType == null) {
+			return null;
+		}
+
+		switch (chouetteType) {
+			case notTimingPoint:
+				return TimingPointStatusEnumeration.NOT_TIMING_POINT;
+			case timingPoint:
+				return TimingPointStatusEnumeration.TIMING_POINT;
+			case secondaryTimingPoint:
+				return TimingPointStatusEnumeration.SECONDARY_TIMING_POINT;
 		}
 		return null;
 	}

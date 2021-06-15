@@ -1343,7 +1343,8 @@ CREATE TABLE scheduled_stop_points (
     objectid character varying(255) NOT NULL,
     object_version integer,
     creation_time timestamp without time zone,
-    creator_id character varying(255)
+    creator_id character varying(255),
+    timing_point_status varchar
 );
 
 

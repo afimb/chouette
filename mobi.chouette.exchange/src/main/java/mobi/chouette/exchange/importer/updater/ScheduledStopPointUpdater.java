@@ -51,6 +51,7 @@ public class ScheduledStopPointUpdater implements Updater<ScheduledStopPoint> {
 			oldValue.setCreationTime(newValue.getCreationTime());
 			oldValue.setCreatorId(newValue.getCreatorId());
 			oldValue.setName(newValue.getName());
+			oldValue.setTimingPointStatus(newValue.getTimingPointStatus());
 
 			oldValue.setDetached(false);
 		} else {
@@ -70,6 +71,9 @@ public class ScheduledStopPointUpdater implements Updater<ScheduledStopPoint> {
 			}
 			if (newValue.getName() != null && !newValue.getName().equals(oldValue.getName())) {
 				oldValue.setName(newValue.getName());
+			}
+			if (newValue.getTimingPointStatus() != null && newValue.getTimingPointStatus()!=oldValue.getTimingPointStatus()) {
+				oldValue.setTimingPointStatus(newValue.getTimingPointStatus());
 			}
 
 		}

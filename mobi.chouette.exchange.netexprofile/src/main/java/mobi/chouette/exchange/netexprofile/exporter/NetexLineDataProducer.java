@@ -310,6 +310,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 					ScheduledStopPoint scheduledStopPoint = netexFactory.createScheduledStopPoint();
 					NetexProducerUtils.populateId(chouetteScheduledStopPoint, scheduledStopPoint);
 					scheduledStopPoint.setName(ConversionUtil.getMultiLingualString(chouetteScheduledStopPoint.getName()));
+					scheduledStopPoint.setTimingPointStatus(ConversionUtil.toTimingPointStatus(chouetteScheduledStopPoint.getTimingPointStatus()));
 					exportableNetexData.getSharedScheduledStopPoints().put(scheduledStopPointId, scheduledStopPoint);
 				}
 			} else {
