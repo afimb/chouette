@@ -146,6 +146,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 	public static final String _1_NETEX_TIMETABLE_FRAME_INTERCHANGE_PLANNED_AND_ADVERTISED = "1-NETEXPROFILE-TimetableFrame_Interchange_PlannedAndAdvertised";
 	public static final String _1_NETEX_TIMETABLE_FRAME_INTERCHANGE_GUARANTEED_AND_MAX_WAIT_TIME_ZERO = "1-NETEXPROFILE-TimetableFrame_Interchange_GuaranteedAndMaxWaitTimeZero";
+	public static final String _1_NETEX_TIMETABLE_FRAME_INTERCHANGE_MAX_WAIT_TIME_TOO_LONG = "1-NETEXPROFILE-TimetableFrame_Interchange_MaxWaitTimeTooLong";
 
 	public static final String _1_NETEX_COMPOSITE_FRAME_VALIDITYCONDTITIONS = "1-NETEXPROFILE-CompositeFrame_ValidityConditions";
 	public static final String _1_NETEX_VALIDITYCONDITIONS_ON_FRAMES_INSIDE_COMPOSITEFRAME = "1-NETEXPROFILE-ValidityConditionsOnFramesInsideCompositeFrame";
@@ -240,6 +241,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_INTERCHANGE_PLANNED_AND_ADVERTISED, "W");
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_INTERCHANGE_GUARANTEED_AND_MAX_WAIT_TIME_ZERO, "W");
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_INTERCHANGE_MAX_WAIT_TIME_TOO_LONG, "W");
 
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_LINE_PUBLIC_CODE, "W");
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_VEHICLEJOURNEY_OPERATORREF_OR_LINE_OPREATORREF, "E");
