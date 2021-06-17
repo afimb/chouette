@@ -18,11 +18,6 @@ import java.util.List;
 @Log4j
 public class ReferentialDAOImpl implements ReferentialDAO {
 
-    @EJB
-    SchemaDAO schemaDAO;
-
-    private static final String PUBLIC_SCHEMA = "public";
-
     private static final String SQL_SELECT_REFERENTIAL = "SELECT * FROM PUBLIC.REFERENTIALS WHERE slug=:dest_schema";
 
     private static final String SQL_SELECT_SLUG = "SELECT SLUG FROM PUBLIC.REFERENTIALS";
@@ -59,8 +54,6 @@ public class ReferentialDAOImpl implements ReferentialDAO {
 
     @Override
     public void createReferential(ReferentialInfo referentialInfo) {
-
-        schemaDAO.setCurrentSchema(PUBLIC_SCHEMA);
 
         StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("public.create_provider_schema");
 
@@ -103,8 +96,6 @@ public class ReferentialDAOImpl implements ReferentialDAO {
 
     @Override
     public void createMigratedReferential(ReferentialInfo referentialInfo) {
-
-        schemaDAO.setCurrentSchema(PUBLIC_SCHEMA);
 
         StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("public.create_rutebanken_schema");
 
@@ -187,13 +178,6 @@ public class ReferentialDAOImpl implements ReferentialDAO {
         Query lastUpdateQuery = em.createNativeQuery(SQL_SELECT_LAST_UPDATE_TIMESTAMP);
         Timestamp timestamp = (Timestamp) lastUpdateQuery.getSingleResult();
         return  timestamp.toLocalDateTime();
-
-    }
-
-    @Override
-    public LocalDateTime getLastUpdateTimestamp(String referential) {
-        schemaDAO.setCurrentSchema(referential);
-        return getLastUpdateTimestamp();
 
     }
 

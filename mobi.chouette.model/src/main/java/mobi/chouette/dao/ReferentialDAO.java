@@ -25,8 +25,6 @@ public interface ReferentialDAO {
 
     LocalDateTime getLastUpdateTimestamp();
 
-    LocalDateTime getLastUpdateTimestamp(String referential);
-
     void setLastUpdateTimestamp(LocalDateTime lastUpdateTimestamp);
 
 
