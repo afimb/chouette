@@ -20,8 +20,9 @@
 		<version.ejb.plugin>2.4</version.ejb.plugin>
 		<version.ear.plugin>2.9.1</version.ear.plugin>
 		<shrinkwrap.bom-version>2.1.1</shrinkwrap.bom-version>
-		<postgresql.version>42.2.18</postgresql.version>
+		<postgresql.version>42.2.22</postgresql.version>
 		<postgis.version>2.4.0</postgis.version>
+		<hibernate.version>4.3.11.Final</hibernate.version>
 		<hibernate-spatial.version>4.3</hibernate-spatial.version>
 		<jts.version>1.13</jts.version>
 		<arquillian-version>1.1.11.Final</arquillian-version>
@@ -204,6 +205,40 @@
 										${project.rootDir}/target/wildfly-customized-dependencies/modules/system/layers/base/org/hibernate/main
 									</outputDirectory>
 								</artifactItem>
+
+								<artifactItem>
+									<groupId>org.hibernate</groupId>
+									<artifactId>hibernate-core</artifactId>
+									<version>${hibernate.version}</version>
+									<outputDirectory>
+										${project.rootDir}/target/wildfly-customized-dependencies/modules/system/layers/base/org/hibernate/main
+									</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.hibernate</groupId>
+									<artifactId>hibernate-envers</artifactId>
+									<version>${hibernate.version}</version>
+									<outputDirectory>
+										${project.rootDir}/target/wildfly-customized-dependencies/modules/system/layers/base/org/hibernate/main
+									</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.hibernate</groupId>
+									<artifactId>hibernate-entitymanager</artifactId>
+									<version>${hibernate.version}</version>
+									<outputDirectory>
+										${project.rootDir}/target/wildfly-customized-dependencies/modules/system/layers/base/org/hibernate/main
+									</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.hibernate</groupId>
+									<artifactId>hibernate-infinispan</artifactId>
+									<version>${hibernate.version}</version>
+									<outputDirectory>
+										${project.rootDir}/target/wildfly-customized-dependencies/modules/system/layers/base/org/hibernate/main
+									</outputDirectory>
+								</artifactItem>
+
 								<artifactItem>
 									<groupId>com.vividsolutions</groupId>
 									<artifactId>jts</artifactId>
