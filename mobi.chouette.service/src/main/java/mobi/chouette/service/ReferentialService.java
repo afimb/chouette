@@ -2,6 +2,7 @@ package mobi.chouette.service;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.dao.ReferentialDAO;
+import mobi.chouette.dao.ReferentialLastUpdateDAO;
 import mobi.chouette.model.dto.ReferentialInfo;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
@@ -22,12 +23,13 @@ import java.util.List;
 public class ReferentialService {
 
     private static final String MIGRATED_SCHEMA_PREFIX = "rb_";
-    private static final String PUBLIC_SCHEMA = "public";
-
     public static final String BEAN_NAME = "ReferentialService";
 
     @EJB
     ReferentialDAO referentialDAO;
+
+    @EJB
+    ReferentialLastUpdateDAO referentialLastUpdateDAO;
 
     private String defaultReferentialAdminUserName;
     private String defaultReferentialAdminEmailFormat;
@@ -103,25 +105,18 @@ public class ReferentialService {
         referentialInfo.setUserInitialEncryptedPassword(userInitialEncryptedPassword);
 
 
-        try {
+        if (schemaName.startsWith(MIGRATED_SCHEMA_PREFIX)) {
+            referentialInfo.setDataspacePrefix(schemaName.replace(MIGRATED_SCHEMA_PREFIX, "").toUpperCase());
+            referentialDAO.createMigratedReferential(referentialInfo);
 
-            ContextHolder.setContext(PUBLIC_SCHEMA);
-
-            if (schemaName.startsWith(MIGRATED_SCHEMA_PREFIX)) {
-                referentialInfo.setDataspacePrefix(schemaName.replace(MIGRATED_SCHEMA_PREFIX, "").toUpperCase());
-                referentialDAO.createMigratedReferential(referentialInfo);
-
-            } else {
-                referentialInfo.setDataspacePrefix(schemaName.toUpperCase());
-                referentialDAO.createReferential(referentialInfo);
-            }
-
-            log.info("Created referential for: " + referentialInfo);
-
-            return true;
-        } finally {
-            ContextHolder.setContext(null);
+        } else {
+            referentialInfo.setDataspacePrefix(schemaName.toUpperCase());
+            referentialDAO.createReferential(referentialInfo);
         }
+
+        log.info("Created referential for: " + referentialInfo);
+
+        return true;
 
     }
 
@@ -180,13 +175,9 @@ public class ReferentialService {
     public LocalDateTime getLastUpdateTimestamp(String referential) throws ServiceException {
 
         if (!referentialDAO.getReferentials().contains(referential)) {
-            throw new ServiceException(ServiceExceptionCode.INVALID_REQUEST, "Cannot update referential: referential not found: " + referential);
+            throw new ServiceException(ServiceExceptionCode.INVALID_REQUEST, "Cannot retrieve last update timestamp: referential not found: " + referential);
         }
-        try {
-            ContextHolder.setContext(referential);
-            return referentialDAO.getLastUpdateTimestamp();
-        } finally {
-            ContextHolder.setContext(null);
-        }
+        ContextHolder.setContext(referential);
+        return referentialLastUpdateDAO.getLastUpdateTimestamp();
     }
 }

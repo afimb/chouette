@@ -17,7 +17,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import mobi.chouette.dao.BlockDAO;
-import mobi.chouette.dao.ReferentialDAO;
+import mobi.chouette.dao.ReferentialLastUpdateDAO;
 import mobi.chouette.model.Block;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
@@ -42,7 +42,7 @@ public class TransferExportDataLoader implements Command, Constant {
 	private LineDAO lineDAO;
 
 	@EJB
-	private ReferentialDAO referentialDAO;
+	private ReferentialLastUpdateDAO referentialLastUpdateDAO;
 
 	@PersistenceContext(unitName = "referential")
 	private EntityManager em;
@@ -59,7 +59,7 @@ public class TransferExportDataLoader implements Command, Constant {
 
 
 
-		LocalDateTime lastUpdateTimestamp = referentialDAO.getLastUpdateTimestamp();
+		LocalDateTime lastUpdateTimestamp = referentialLastUpdateDAO.getLastUpdateTimestamp();
 		context.put(REFERENTIAL_LAST_UPDATE_TIMESTAMP, lastUpdateTimestamp);
 	     
 		return true;

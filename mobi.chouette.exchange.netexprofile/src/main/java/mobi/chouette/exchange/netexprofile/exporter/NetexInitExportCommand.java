@@ -19,7 +19,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import mobi.chouette.dao.ReferentialDAO;
+import mobi.chouette.dao.ReferentialLastUpdateDAO;
 import org.joda.time.LocalDateTime;
 
 import com.jamonapi.Monitor;
@@ -52,7 +52,7 @@ public class NetexInitExportCommand implements Command, Constant {
 	private CodespaceDAO codespaceDAO;
 
 	@EJB
-	private ReferentialDAO referentialDAO;
+	private ReferentialLastUpdateDAO referentialLastUpdateDAO;
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -100,7 +100,7 @@ public class NetexInitExportCommand implements Command, Constant {
 			NetexXMLProcessingHelperFactory netexXMLFactory = new NetexXMLProcessingHelperFactory();
 			context.put(MARSHALLER, netexXMLFactory.createFragmentMarshaller());
 
-			java.time.LocalDateTime lastUpdate = referentialDAO.getLastUpdateTimestamp();
+			java.time.LocalDateTime lastUpdate = referentialLastUpdateDAO.getLastUpdateTimestamp();
 			context.put(REFERENTIAL_LAST_UPDATE_TIMESTAMP, lastUpdate);
 
 			daoContext.setRollbackOnly();

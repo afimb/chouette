@@ -4,7 +4,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.ReferentialDAO;
+import mobi.chouette.dao.ReferentialLastUpdateDAO;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.report.ValidationReport;
@@ -28,7 +28,7 @@ public class UpdateReferentialLastUpdateTimestampCommand implements Command, Rep
     public static final String COMMAND = "UpdateReferentialLastUpdateTimestampCommand";
 
     @EJB
-    private ReferentialDAO referentialDAO;
+    private ReferentialLastUpdateDAO referentialLastUpdateDAO;
 
     @Override
     public boolean execute(Context context) throws Exception {
@@ -42,7 +42,7 @@ public class UpdateReferentialLastUpdateTimestampCommand implements Command, Rep
             if(lastUpdateTimestamp == null) {
                 lastUpdateTimestamp= LocalDateTime.now();
             }
-            referentialDAO.setLastUpdateTimestamp(lastUpdateTimestamp);
+            referentialLastUpdateDAO.setLastUpdateTimestamp(lastUpdateTimestamp);
         }
         return true;
     }
