@@ -34,7 +34,7 @@
 
 		<project.rootDir>${project.basedir}</project.rootDir>
 
- 	    <netex-java-model.version>1.0.11</netex-java-model.version>
+ 	    <netex-java-model.version>1.0.12</netex-java-model.version>
 		<rutebanken.helpers.version>1.0.42</rutebanken.helpers.version>
 
 		<owasp-dependency-check-plugin.version>6.1.6</owasp-dependency-check-plugin.version>
