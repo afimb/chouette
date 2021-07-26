@@ -133,6 +133,14 @@ public class DataCollector {
 			collectStopAreas(collection, link.getStartOfLink(), false, false);
 			collectStopAreas(collection, link.getEndOfLink(), false, false);
 		}
+		for(Block block: collection.getBlocks()) {
+			if(block.getStartPoint() != null &&  block.getStartPoint().getContainedInStopAreaRef().getObject() != null) {
+				collectStopAreas(collection, block.getStartPoint().getContainedInStopAreaRef().getObject(), false, false);
+			}
+			if(block.getEndPoint() != null && block.getEndPoint().getContainedInStopAreaRef().getObject() != null) {
+				collectStopAreas(collection, block.getEndPoint().getContainedInStopAreaRef().getObject(), false, false);
+			}
+		}
 	}
 
 	protected void collectStopAreas(ExportableData collection, StopArea stopArea, boolean skipNoCoordinate,

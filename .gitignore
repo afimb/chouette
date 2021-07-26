@@ -12,3 +12,6 @@ maven-eclipse.xml
 *~
 *.versionsBackup
 .classpath
+
+# Terraform
+/terraform/.terraform

@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,6 +19,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import java.util.ArrayList;
@@ -41,6 +43,24 @@ public class Block extends NeptuneIdentifiedObject {
     @Column(name = "id", nullable = false)
     protected Long id;
 
+
+    /**
+     * Name of the block.
+     */
+    @Getter
+    @Column(name = "name")
+    private String name;
+
+    /**
+     * set name code <br/>
+     * truncated to 255 characters if too long
+     *
+     * @param value New value
+     */
+    public void setName(String value) {
+        name = StringUtils.abbreviate(value, 255);
+    }
+
     /**
      * Identification of block, not intended for the public.
      */
@@ -58,6 +78,67 @@ public class Block extends NeptuneIdentifiedObject {
         privateCode = StringUtils.abbreviate(value, 255);
 
     }
+
+    /**
+     * Description of the block.
+     */
+    @Getter
+    @Column(name = "description")
+    private String description;
+
+    /**
+     * set description code <br/>
+     * truncated to 255 characters if too long
+     *
+     * @param value New value
+     */
+    public void setDescription(String value) {
+        description = StringUtils.abbreviate(value, 255);
+
+    }
+
+    /**
+     * Start time of the block.
+     */
+    @Getter
+    @Setter
+    @Column(name = "start_time")
+    private LocalTime startTime;
+
+    /**
+     * End time of the block.
+     */
+    @Getter
+    @Setter
+    @Column(name = "end_time")
+    private LocalTime endTime;
+
+    /**
+     * End time offset of the block.
+     */
+    @Getter
+    @Setter
+    @Column(name = "end_time_day_offset")
+    private Integer endTimeDayOffset;
+
+
+    /**
+     * Start point of the block.
+     */
+    @Getter
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "start_point_id")
+    private ScheduledStopPoint startPoint;
+
+    /**
+     * End point of the block.
+     */
+    @Getter
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "end_point_id")
+    private ScheduledStopPoint endPoint;
 
     /**
      * timetables
