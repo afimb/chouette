@@ -21,7 +21,7 @@
 		<version.ear.plugin>2.9.1</version.ear.plugin>
 		<shrinkwrap.bom-version>2.1.1</shrinkwrap.bom-version>
 		<postgresql.version>42.2.22</postgresql.version>
-		<postgis.version>2.4.0</postgis.version>
+		<postgis.version>2.5.0</postgis.version>
 		<hibernate.version>4.3.11.Final</hibernate.version>
 		<hibernate-spatial.version>4.3</hibernate-spatial.version>
 		<jts.version>1.13</jts.version>
@@ -192,6 +192,14 @@
 								<artifactItem>
 									<groupId>net.postgis</groupId>
 									<artifactId>postgis-jdbc</artifactId>
+									<version>${postgis.version}</version>
+									<outputDirectory>
+										${project.rootDir}/target/wildfly-customized-dependencies/modules/org/postgres/main
+									</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>net.postgis</groupId>
+									<artifactId>postgis-geometry</artifactId>
 									<version>${postgis.version}</version>
 									<outputDirectory>
 										${project.rootDir}/target/wildfly-customized-dependencies/modules/org/postgres/main

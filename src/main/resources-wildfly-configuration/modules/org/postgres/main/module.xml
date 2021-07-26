@@ -4,6 +4,7 @@
 <resources>
 <resource-root path="postgresql-${postgresql.version}.jar"/>
 <resource-root path="postgis-jdbc-${postgis.version}.jar"/>
+<resource-root path="postgis-geometry-${postgis.version}.jar"/>
 <resource-root path="mobi.chouette.jdbc-${project.version}.jar"/>
 </resources>
 <dependencies>

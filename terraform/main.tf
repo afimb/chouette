@@ -4,7 +4,7 @@ terraform {
 }
 
 provider "google" {
-  version = "~> 3.70.0"
+  version = "~> 3.74.0"
 }
 provider "kubernetes" {
   load_config_file = var.load_config_file
