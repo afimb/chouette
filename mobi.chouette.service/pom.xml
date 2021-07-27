@@ -138,7 +138,7 @@
        </dependency>
        <dependency>
            <groupId>org.entur.helpers</groupId>
-           <artifactId>hazelcast-helper</artifactId>
+           <artifactId>hazelcast4-helper</artifactId>
        </dependency>
       <!-- Modules -->
       <dependency>

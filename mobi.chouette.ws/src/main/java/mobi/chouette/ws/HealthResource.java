@@ -10,9 +10,6 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.scheduler.ReferentialLockManagerFactory;
 import mobi.chouette.service.HealthService;
 
-import org.springframework.stereotype.Component;
-
-@Component
 @Log4j
 @Produces("application/json")
 @Path("health")

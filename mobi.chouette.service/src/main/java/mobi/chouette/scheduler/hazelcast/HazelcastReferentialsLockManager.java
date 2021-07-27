@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -14,15 +13,14 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.inject.Named;
 
+import com.hazelcast.cluster.MembershipEvent;
+import com.hazelcast.cluster.MembershipListener;
+import com.hazelcast.map.IMap;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.PropertyNames;
 import mobi.chouette.scheduler.ReferentialLockManager;
 
-import com.hazelcast.core.IMap;
-import com.hazelcast.core.MemberAttributeEvent;
-import com.hazelcast.core.MembershipEvent;
-import com.hazelcast.core.MembershipListener;
 import org.rutebanken.hazelcasthelper.service.KubernetesService;
 
 import static mobi.chouette.scheduler.hazelcast.HazelcastReferentialsLockManager.BEAN_NAME;
@@ -193,7 +191,7 @@ public class HazelcastReferentialsLockManager implements ReferentialLockManager 
 
 		@Override
 		public void memberRemoved(MembershipEvent membershipEvent) {
-			String memberUUID = membershipEvent.getMember().getUuid();
+			String memberUUID = membershipEvent.getMember().getUuid().toString();
 			cleanUpLocksForMember(locks, memberUUID);
 			cleanUpLocksForMember(jobsLocks, memberUUID);
 			log.info("Cleaned up all locks for removed member: " + memberUUID);
@@ -204,9 +202,5 @@ public class HazelcastReferentialsLockManager implements ReferentialLockManager 
 
 		}
 
-		@Override
-		public void memberAttributeChanged(MemberAttributeEvent memberAttributeEvent) {
-
-		}
 	}
 }

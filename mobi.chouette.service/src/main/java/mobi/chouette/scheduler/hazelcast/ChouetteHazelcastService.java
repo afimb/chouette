@@ -2,11 +2,11 @@ package mobi.chouette.scheduler.hazelcast;
 
 import java.util.List;
 
+import com.hazelcast.cluster.MembershipListener;
+import com.hazelcast.map.IMap;
 import lombok.extern.log4j.Log4j;
 
 import com.hazelcast.config.MapConfig;
-import com.hazelcast.core.IMap;
-import com.hazelcast.core.MembershipListener;
 import org.rutebanken.hazelcasthelper.service.HazelCastService;
 import org.rutebanken.hazelcasthelper.service.KubernetesService;
 
@@ -62,7 +62,7 @@ public class ChouetteHazelcastService extends HazelCastService {
 	}
 
 	public String getLocalMemberId() {
-		return hazelcast.getCluster().getLocalMember().getUuid();
+		return hazelcast.getCluster().getLocalMember().getUuid().toString();
 	}
 
 
