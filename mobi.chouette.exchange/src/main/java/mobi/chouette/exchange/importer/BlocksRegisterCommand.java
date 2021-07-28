@@ -94,6 +94,8 @@ public class BlocksRegisterCommand implements Command {
             log.info(Color.LIGHT_GREEN + monitor.toString() + Color.NORMAL);
         }
 
+        log.info("Saved blocks");
+
         return result;
     }
 
