@@ -19,6 +19,7 @@ import org.rutebanken.netex.model.Codespace;
 import org.rutebanken.netex.model.DatedServiceJourney;
 import org.rutebanken.netex.model.DayType;
 import org.rutebanken.netex.model.DayTypeAssignment;
+import org.rutebanken.netex.model.DeadRun;
 import org.rutebanken.netex.model.DestinationDisplay;
 import org.rutebanken.netex.model.GroupOfLines;
 import org.rutebanken.netex.model.JourneyPattern;
@@ -104,6 +105,10 @@ public class ExportableNetexData {
     @Getter
     @Setter
     private List<ServiceJourney> serviceJourneys = new ArrayList<>();
+
+    @Getter
+    @Setter
+    private List<DeadRun> deadRuns = new ArrayList<>();
 
     @Getter
     @Setter

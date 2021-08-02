@@ -132,6 +132,9 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_TIMETABLE_FRAME_DATED_SERVICE_JOURNEY_MULTIPLE_SERVICEJOURNEYREF = "1-NETEXPROFILE-TimetableFrame-DatedServiceJourney-Multiple-ServiceJourneyRef";
 	public static final String _1_NETEX_TIMETABLE_FRAME_DATED_SERVICE_JOURNEY_DUPLICATE_WITH_DIFFERENT_VERSION = "1-NETEXPROFILE-TimetableFrame_DatedServiceJourney_DuplicateWithDifferentVersion" ;
 
+	public static final String _1_NETEX_TIMETABLE_FRAME_DEAD_RUN_PASSING_TIMES = "1-NETEXPROFILE-TimetableFrame_DeadRun_TimetabledPassingTime";
+	public static final String _1_NETEX_TIMETABLE_FRAME_DEAD_RUN_JOURNEYPATTERN_REF = "1-NETEXPROFILE-TimetableFrame_DeadRun_JourneyPatternRef";
+	public static final String _1_NETEX_TIMETABLE_FRAME_DEAD_RUN_DAYTYPE_REF = "1-NETEXPROFILE-TimetableFrame-DeadRun-DayTypeRef";
 
 
 	public static final String _1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_BOOKINGCONTACT = "1-NETEXPROFILE-TimetableFrame_FlexibleServiceProperties_BookingContact";
@@ -294,6 +297,10 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_DATED_SERVICE_JOURNEY_SERVICEJOURNEYREF, "E");
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_DATED_SERVICE_JOURNEY_MULTIPLE_SERVICEJOURNEYREF, "E");
 		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_DATED_SERVICE_JOURNEY_DUPLICATE_WITH_DIFFERENT_VERSION, "W");
+
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_DEAD_RUN_JOURNEYPATTERN_REF, "E");
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_DEAD_RUN_DAYTYPE_REF, "E");
+		addCheckpoints(context, _1_NETEX_TIMETABLE_FRAME_DEAD_RUN_PASSING_TIMES, "I");
 
 		addCheckpoints(context, _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_COMPANY_NUMBER, "I");
 		addCheckpoints(context, _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_NAME, "E");

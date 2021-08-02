@@ -5,6 +5,7 @@ import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Block;
 import mobi.chouette.model.ConnectionLink;
+import mobi.chouette.model.DeadRun;
 import mobi.chouette.model.Interchange;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -93,6 +94,7 @@ public class DataCollector {
 
 	private void collectJourneyPattern(JourneyPattern journeyPattern) {
 		journeyPattern.getVehicleJourneys().forEach(this::collectVehicleJourney);
+		journeyPattern.getDeadRuns().forEach(this::collectDeadRun);
 		collection.getJourneyPatterns().add(journeyPattern);
 		collection.getFootnotes().addAll(journeyPattern.getFootnotes());
 	}
@@ -111,6 +113,13 @@ public class DataCollector {
 		if (vehicleJourney.getCompany() != null) {
 			collection.getCompanies().add(vehicleJourney.getCompany());
 		}
+	}
+
+	private void collectDeadRun(DeadRun deadRun) {
+		collection.getTimetables().addAll(deadRun.getTimetables());
+		collection.getBlocks().addAll(deadRun.getBlocks());
+		collection.getTimetables().addAll(deadRun.getBlocks().stream().map(Block::getTimetables).flatMap(List::stream).collect(Collectors.toList()));
+		collection.getDeadRuns().add(deadRun);
 	}
 
 	private void collectInterchanges(ExportableData collection, VehicleJourney vehicleJourney, boolean skipNoCoordinate, boolean followLinks, LocalDate startDate, LocalDate endDate) {

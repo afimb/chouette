@@ -454,7 +454,9 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 			validateElementNotPresent(context, xpath, subLevel, "vehicleJourneys/DatedServiceJourney[count(ServiceJourneyRef) > 1]", _1_NETEX_TIMETABLE_FRAME_DATED_SERVICE_JOURNEY_MULTIPLE_SERVICEJOURNEYREF);
 			validateElementNotPresent(context, xpath, subLevel, "vehicleJourneys/DatedServiceJourney[@id = preceding-sibling::DatedServiceJourney/@id]", _1_NETEX_TIMETABLE_FRAME_DATED_SERVICE_JOURNEY_DUPLICATE_WITH_DIFFERENT_VERSION);
 
-
+			validateElementNotPresent(context, xpath, subLevel, "vehicleJourneys/DeadRun[not(passingTimes)]", _1_NETEX_TIMETABLE_FRAME_DEAD_RUN_PASSING_TIMES);
+			validateElementNotPresent(context, xpath, subLevel, "vehicleJourneys/DeadRun[not(JourneyPatternRef)]", _1_NETEX_TIMETABLE_FRAME_DEAD_RUN_JOURNEYPATTERN_REF);
+			validateElementNotPresent(context, xpath, subLevel, "vehicleJourneys/DeadRun[not(dayTypes/DayTypeRef)]", _1_NETEX_TIMETABLE_FRAME_DEAD_RUN_DAYTYPE_REF);
 
 			validateElementNotPresent(context, xpath, subLevel, "vehicleJourneys/ServiceJourney/FlexibleServiceProperties[not(@id)]",
 					_1_NETEX_TIMETABLE_FRAME_FLEXIBLE_SERVICE_PROPERTIES_ID);

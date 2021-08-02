@@ -7,6 +7,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.model.ScheduledStopPoint;
+import mobi.chouette.model.DeadRun;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -15,6 +16,7 @@ import org.rutebanken.netex.model.BlocksInFrame_RelStructure;
 import org.rutebanken.netex.model.DataManagedObjectStructure;
 import org.rutebanken.netex.model.DayTypeRefStructure;
 import org.rutebanken.netex.model.DayTypeRefs_RelStructure;
+import org.rutebanken.netex.model.DeadRunRefStructure;
 import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.PointRefStructure;
 import org.rutebanken.netex.model.PrivateCodeStructure;
@@ -100,18 +102,21 @@ public class BlockParser extends NetexParser implements Parser {
             }
         }
 
-        // vehicle journey
+        // dead runs and vehicle journeys
         for (JAXBElement<?> jaxbJourneyRef : netexBlock.getJourneys().getJourneyRefOrJourneyDesignatorOrServiceDesignator()) {
             Object reference = jaxbJourneyRef.getValue();
-            if (reference instanceof VehicleJourneyRefStructure) {
+            if (reference instanceof DeadRunRefStructure) {
+                DeadRunRefStructure deadRunRefStructure = (DeadRunRefStructure) reference;
+                DeadRun deadRun = ObjectFactory.getDeadRun(referential, deadRunRefStructure.getRef());
+                chouetteBlock.addDeadRun(deadRun);
+            } else if (reference instanceof VehicleJourneyRefStructure) {
                 VehicleJourneyRefStructure vehicleJourneyRefStructure = (VehicleJourneyRefStructure) reference;
                 mobi.chouette.model.VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, vehicleJourneyRefStructure.getRef());
                 chouetteBlock.addVehicleJourney(vehicleJourney);
             } else {
-                if(log.isDebugEnabled()) {
-                    log.debug("Ignoring non-VehicleJourneyRef element with id: " + reference);
+                if (log.isDebugEnabled()) {
+                    log.debug("Ignoring non-VehicleJourneyRef and non DeadRunRef element with id: " + reference);
                 }
-
             }
         }
     }

@@ -173,6 +173,30 @@ public class Block extends NeptuneIdentifiedObject {
         }
     }
 
+    /**
+     * Dead Runs.
+     */
+    @Getter
+    @Setter
+    @ManyToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @OrderColumn(name = "position")
+    @JoinTable(name = "blocks_dead_runs", joinColumns = {@JoinColumn(name = "block_id")}, inverseJoinColumns = {@JoinColumn(name = "dead_run_id")})
+    private List<DeadRun> deadRuns = new ArrayList<>();
+
+    public void addDeadRun(DeadRun deadRun) {
+        if (deadRun != null) {
+            deadRun.getBlocks().add(this);
+            deadRuns.add(deadRun);
+        }
+    }
+
+    public void removeDeadRun(DeadRun deadRun) {
+        if (deadRun != null) {
+            deadRun.getBlocks().remove(this);
+            deadRuns.remove(deadRun);
+        }
+    }
+
 
     public boolean hasActiveTimetablesOnPeriod(LocalDate startDate, LocalDate endDate) {
         return getTimetables().stream().anyMatch(t -> t.isActiveOnPeriod(startDate, endDate));

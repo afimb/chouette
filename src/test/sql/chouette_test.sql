@@ -2921,3 +2921,88 @@ create unique index time_tables_blocks_block_id_time_table_id_key
 create index time_tables_blocks_block_id_idx
     on time_tables_blocks (block_id);
 
+
+
+create table dead_runs
+(
+    id bigserial not null
+        constraint dead_runs_pkey
+            primary key,
+    journey_pattern_id bigint
+        constraint dead_runs_journey_patterns_id_fkey
+            references journey_patterns,
+    objectid varchar not null,
+    object_version integer,
+    creation_time timestamp,
+    creator_id varchar
+);
+
+alter table dead_runs owner to chouette;
+
+create unique index dead_runs_objectid_key
+    on dead_runs (objectid);
+
+
+
+create table if not exists blocks_dead_runs
+(
+    block_id integer
+        constraint blocks_dead_runs_block_id_fkey
+            references blocks,
+    dead_run_id integer
+        constraint blocks_dead_runs_dead_run_id_fkey
+            references dead_runs,
+    position integer
+);
+
+alter table blocks_dead_runs owner to chouette;
+
+create unique index if not exists blocks_dead_runs_block_id_dead_run_id_key
+    on blocks_dead_runs (block_id, dead_run_id);
+
+create index if not exists blocks_dead_runs_dead_run_id_idx
+    on blocks_dead_runs (dead_run_id);
+
+create table dead_run_at_stops
+(
+    id bigserial not null
+        constraint dead_run_at_stops_pkey
+            primary key,
+    dead_run_id bigint
+        constraint dead_run_at_stops_dead_runs_id_fkey
+            references dead_runs,
+    stop_point_id bigint
+        constraint dead_run_at_stops_stop_point_id_fkey
+            references stop_points,
+    arrival_time time,
+    departure_time time
+);
+
+alter table dead_run_at_stops owner to chouette;
+
+create index index_dead_run_at_stops_on_dead_run_id
+    on dead_run_at_stops (dead_run_id);
+
+create index index_dead_run_at_stops_on_stop_pointid
+    on dead_run_at_stops (stop_point_id);
+
+create table time_tables_dead_runs
+(
+    dead_run_id integer
+        constraint time_tables_dead_runs_dead_run_id_fkey
+            references dead_runs,
+    time_table_id integer
+        constraint time_tables_dead_runs_time_table_id_fkey
+            references time_tables
+);
+
+alter table time_tables_dead_runs owner to chouette;
+
+create unique index time_tables_dead_runs_dead_run_id_time_table_id_key
+    on time_tables_dead_runs (time_table_id, dead_run_id);
+
+create index time_tables_dead_runs_dead_run_id_idx
+    on time_tables_dead_runs (dead_run_id);
+
+
+

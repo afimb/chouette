@@ -233,6 +233,18 @@ public class Timetable extends NeptuneIdentifiedObject {
 	private List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>(0);
 
 	/**
+	 * list of deadRuns
+	 *
+	 * @param vehicleJourneys
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@ManyToMany(mappedBy = "timetables", fetch = FetchType.LAZY)
+	private List<DeadRun> deadRuns = new ArrayList<DeadRun>(0);
+
+	/**
 	 * list of blocks
 	 *
 	 * @param vehicleJourneys
@@ -314,15 +326,41 @@ public class Timetable extends NeptuneIdentifiedObject {
 	/**
 	 * remove a vehicle journey
 	 * 
-	 * @param vehicleJourney
+	 * @param deadRun
 	 */
-	public void removeVehicleJourney(VehicleJourney vehicleJourney) {
-		getVehicleJourneys().remove(vehicleJourney);
-		vehicleJourney.getTimetables().remove(this);
+	public void removeVehicleJourney(VehicleJourney deadRun) {
+		getVehicleJourneys().remove(deadRun);
+		deadRun.getTimetables().remove(this);
+	}
+
+
+	/**
+	 * add a dead run if not already present
+	 *
+	 * @param deadRun
+	 */
+	public void addDeadRun(DeadRun deadRun) {
+		if (!getDeadRuns().contains(deadRun)) {
+			getDeadRuns().add(deadRun);
+		}
+		if (!deadRun.getTimetables().contains(this)) {
+			deadRun.getTimetables().add(this);
+		}
 	}
 
 	/**
-	 * add a vehicle journey if not already present
+	 * remove a dead run
+	 *
+	 * @param deadRun
+	 */
+	public void removeDeadRun(DeadRun deadRun) {
+		getDeadRuns().remove(deadRun);
+		deadRun.getTimetables().remove(this);
+	}
+
+
+	/**
+	 * add a block if not already present
 	 *
 	 * @param block
 	 */

@@ -7,7 +7,9 @@ import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.model.DeadRunAtStop;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -40,13 +42,38 @@ public class StopPointCheckPoints extends AbstractValidation<StopPoint> implemen
     }
 
     private void validateStopPointIsContainedInStopArea(Context context, StopPoint stopPoint) {
-        if (stopPoint != null && stopPoint.getScheduledStopPoint() != null && stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject() == null) {
+        if (stopPoint != null && stopPoint.getScheduledStopPoint() != null && stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObject() == null && !isDeadRunStopPoint(context, stopPoint)) {
             log.info("Registering error for : " + stopPoint);
             ValidationReporter reporter = ValidationReporter.Factory.getInstance();
             DataLocation locationStopPoint = buildLocation(context, stopPoint);
             DataLocation locationRoute = buildLocation(context, stopPoint.getRoute());
            
             reporter.addCheckPointReportError(context, STOP_POINT_1, locationStopPoint,stopPoint.getScheduledStopPoint().getContainedInStopAreaRef().getObjectId(),null,locationRoute);
+        }
+    }
+
+    /**
+     * Return true if the stop point is used in at least one DeadRun and no VehicleJourney
+     * @param context
+     * @param currentStopPoint
+     * @return
+     */
+    private boolean isDeadRunStopPoint(Context context, StopPoint currentStopPoint) {
+        ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+        boolean isStopPointUsedInDeadRuns = data.getJourneyPatterns()
+                .stream()
+                .flatMap(journeyPattern -> journeyPattern.getDeadRuns().stream())
+                .flatMap(deadRun -> deadRun.getDeadRunAtStops().stream())
+                .map(DeadRunAtStop::getStopPoint).anyMatch(stopPoint -> stopPoint.getId().equals(currentStopPoint.getId()));
+        if (!isStopPointUsedInDeadRuns) {
+            return false;
+        } else {
+            boolean isStopPointUsedInVehicleJourney = data.getJourneyPatterns()
+                    .stream()
+                    .flatMap(journeyPattern -> journeyPattern.getVehicleJourneys().stream())
+                    .flatMap(vehicleJourney -> vehicleJourney.getVehicleJourneyAtStops().stream())
+                    .map(VehicleJourneyAtStop::getStopPoint).anyMatch(stopPoint -> stopPoint.getId().equals(currentStopPoint.getId()));
+            return !isStopPointUsedInVehicleJourney;
         }
     }
 

@@ -5,13 +5,13 @@ import java.math.BigInteger;
 import java.time.LocalTime;
 
 import mobi.chouette.common.TimeUtil;
-import mobi.chouette.model.VehicleJourneyAtStop;
+import mobi.chouette.model.JourneyAtStop;
 
 import org.rutebanken.netex.model.TimetabledPassingTime;
 
 public class NetexTimeConversionUtil {
 
-	public static void populatePassingTimeUtc(TimetabledPassingTime passingTime, boolean arrival, VehicleJourneyAtStop vj) {
+	public static void populatePassingTimeUtc(TimetabledPassingTime passingTime, boolean arrival, JourneyAtStop vj) {
 	    if((arrival && vj.getArrivalTime() == null || (!arrival && vj.getDepartureTime() == null))) {
 	    	return;
 	    }
@@ -32,7 +32,7 @@ public class NetexTimeConversionUtil {
 		}
 	}
 
-	public static void parsePassingTime(TimetabledPassingTime passingTime, boolean arrival, VehicleJourneyAtStop vj) {
+	public static void parsePassingTime(TimetabledPassingTime passingTime, boolean arrival, JourneyAtStop jas) {
 	    if((arrival && passingTime.getArrivalTime() == null || (!arrival && passingTime.getDepartureTime() == null))) {
 	    	return;
 	    }
@@ -45,16 +45,16 @@ public class NetexTimeConversionUtil {
 
 	    
 		if(arrival) {
-			vj.setArrivalTime(TimeUtil.toJodaLocalTime(localTime));
+			jas.setArrivalTime(TimeUtil.toJodaLocalTime(localTime));
 
 			if(!BigDecimal.ZERO.equals(dayOffset)) {
-				vj.setArrivalDayOffset(dayOffset.intValue());
+				jas.setArrivalDayOffset(dayOffset.intValue());
 			}
 		} else {
-			vj.setDepartureTime(TimeUtil.toJodaLocalTime(localTime));
+			jas.setDepartureTime(TimeUtil.toJodaLocalTime(localTime));
 
 			if(!BigDecimal.ZERO.equals(dayOffset)) {
-				vj.setDepartureDayOffset(dayOffset.intValue());
+				jas.setDepartureDayOffset(dayOffset.intValue());
 			}
 		}
 	}

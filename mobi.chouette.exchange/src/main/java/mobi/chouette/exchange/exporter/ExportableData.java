@@ -15,6 +15,7 @@ import mobi.chouette.model.Block;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.DatedServiceJourney;
+import mobi.chouette.model.DeadRun;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Interchange;
@@ -84,6 +85,9 @@ public class ExportableData {
 	@Getter
 	@Setter
 	private List<VehicleJourney> vehicleJourneys = new ArrayList<>();
+	@Getter
+	@Setter
+	private List<DeadRun> deadRuns = new ArrayList<>();
 	@Getter
 	@Setter
 	private List<DatedServiceJourney> datedServiceJourneys = new ArrayList<>();

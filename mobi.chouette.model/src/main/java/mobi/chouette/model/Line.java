@@ -539,9 +539,9 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 						vjI.remove();
 					}
 				}
-				if(jp.getVehicleJourneys().isEmpty()) {
+				if(jp.getVehicleJourneys().isEmpty() && jp.getDeadRuns().isEmpty()) {
 					if(log.isDebugEnabled()) {
-						log.debug("Removing JP with no valid service journey: " + jp.getObjectId());
+						log.debug("Removing JP with no valid service journey nor DeadRun: " + jp.getObjectId());
 					}
 					jpI.remove();
 				}

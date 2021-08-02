@@ -5,6 +5,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.BlockDAO;
+import mobi.chouette.dao.DeadRunDAO;
 import mobi.chouette.dao.InterchangeDAO;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.RouteSectionDAO;
@@ -16,6 +17,7 @@ import mobi.chouette.exchange.importer.CleanRepositoryCommand;
 import mobi.chouette.exchange.netexprofile.importer.UpdateReferentialLastUpdateTimestampCommand;
 import mobi.chouette.exchange.transfer.Constant;
 import mobi.chouette.model.Block;
+import mobi.chouette.model.DeadRun;
 import mobi.chouette.model.Interchange;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -60,6 +62,9 @@ public class TransferExportDataWriter implements Command, Constant {
 
 	@EJB
 	private VehicleJourneyDAO vehicleJourneyDAO;
+
+	@EJB
+	private DeadRunDAO deadRunDAO;
 
 	@EJB
 	private TimetableDAO timetableDAO;
@@ -176,6 +181,10 @@ public class TransferExportDataWriter implements Command, Constant {
 					block.setEndPoint(scheduledStopPointDAO.findByObjectId(block.getEndPoint().getObjectId()));
 				}
 
+
+				// persist only the deadRuns that were effectively transferred, ignoring the others.
+				List<DeadRun> persistentDeadRuns = deadRunDAO.findByObjectIdNoFlush(block.getDeadRuns().stream().map(vj -> vj.getObjectId()).collect(Collectors.toList()));
+				block.setDeadRuns(persistentDeadRuns);
 
 				// reuse the timetables that were already created during the line transfer step,
 				// the other timetables are tied only to blocks and are not persisted yet.

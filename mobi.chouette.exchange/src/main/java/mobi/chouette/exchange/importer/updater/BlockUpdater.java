@@ -3,10 +3,12 @@ package mobi.chouette.exchange.importer.updater;
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
+import mobi.chouette.dao.DeadRunDAO;
 import mobi.chouette.dao.ScheduledStopPointDAO;
 import mobi.chouette.dao.TimetableDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.model.Block;
+import mobi.chouette.model.DeadRun;
 import mobi.chouette.model.ScheduledStopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
@@ -28,6 +30,9 @@ public class BlockUpdater implements Updater<Block> {
 
     @EJB
     private VehicleJourneyDAO vehicleJourneyDAO;
+
+    @EJB
+    private DeadRunDAO deadRunDAO;
 
     @EJB
     private TimetableDAO timetableDAO;
@@ -169,6 +174,33 @@ public class BlockUpdater implements Updater<Block> {
             }
             oldValue.setEndPoint(scheduledStopPoint);
             scheduledStopPointUpdater.update(context, oldValue.getEndPoint(), newValue.getEndPoint());
+        }
+
+        // Dead Runs
+        Collection<DeadRun> addedDeadRuns = CollectionUtil.substract(newValue.getDeadRuns(),
+                oldValue.getDeadRuns(), NeptuneIdentifiedObjectComparator.INSTANCE);
+        List<DeadRun> deadRuns = null;
+        for (DeadRun item : addedDeadRuns) {
+            DeadRun deadRun = cache.getDeadRuns().get(item.getObjectId());
+            if (deadRun == null) {
+                if (deadRuns == null) {
+                    deadRuns = deadRunDAO.findByObjectId(UpdaterUtils.getObjectIds(addedDeadRuns));
+                    for (DeadRun object : deadRuns) {
+                        cache.getDeadRuns().put(object.getObjectId(), object);
+                    }
+                }
+                deadRun = cache.getDeadRuns().get(item.getObjectId());
+            }
+            if (deadRun == null) {
+                deadRun = ObjectFactory.getDeadRun(cache, item.getObjectId());
+            }
+            oldValue.getDeadRuns().add(deadRun);
+        }
+
+        Collection<DeadRun> removedDeadRun = CollectionUtil.substract(oldValue.getDeadRuns(),
+                newValue.getDeadRuns(), NeptuneIdentifiedObjectComparator.INSTANCE);
+        for (DeadRun deadRun : removedDeadRun) {
+            oldValue.getDeadRuns().remove(deadRun);
         }
 
 

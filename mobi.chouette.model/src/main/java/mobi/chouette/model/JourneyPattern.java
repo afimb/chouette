@@ -230,6 +230,19 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 			0);
 
 	/**
+	 * dead runs
+	 *
+	 * @param deadRuns
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@OneToMany(mappedBy = "journeyPattern", cascade = { CascadeType.PERSIST})
+	private List<DeadRun> deadRuns = new ArrayList<DeadRun>(
+			0);
+
+	/**
 	 * route sections
 	 *
 	 * @param routeSections
@@ -302,4 +315,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 		return getStopPoints().size() >= 2;
 	}
 
+	public boolean hasOnlyDeadRuns() {
+		return vehicleJourneys.isEmpty() && !deadRuns.isEmpty();
+	}
 }

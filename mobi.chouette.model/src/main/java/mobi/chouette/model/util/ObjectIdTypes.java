@@ -83,6 +83,11 @@ public interface ObjectIdTypes {
 	    */
 	   public static final String SERVICEJOURNEY_KEY = "ServiceJourney";
 
+		/**
+		 * default objectId type for service journeys
+		 */
+		public static final String DEADRUN_KEY = "ServiceJourney";
+
 	   /**
 	    * default objectId type for vehicle journeys 
 	    */

@@ -379,6 +379,9 @@ public class PublicationDeliveryParser extends NetexParser implements Parser, Co
 			Parser datedServiceJourneyParser = ParserFactory.create(DatedServiceJourneyParser.class.getName());
 			datedServiceJourneyParser.parse(context);
 
+			Parser deadRunParser = ParserFactory.create(DeadRunParser.class.getName());
+			deadRunParser.parse(context);
+
 			JourneyInterchangesInFrame_RelStructure journeyInterchangesStruct = timetableFrame.getJourneyInterchanges();
 			if (journeyInterchangesStruct != null) {
 				context.put(NETEX_LINE_DATA_CONTEXT, journeyInterchangesStruct);

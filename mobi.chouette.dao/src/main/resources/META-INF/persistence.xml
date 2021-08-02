@@ -68,6 +68,8 @@
 		<class>mobi.chouette.model.VehicleJourney</class>
 		<class>mobi.chouette.model.DatedServiceJourney</class>
 		<class>mobi.chouette.model.Block</class>
+		<class>mobi.chouette.model.DeadRun</class>
+		<class>mobi.chouette.model.DeadRunAtStop</class>
 		<class>mobi.chouette.model.Interchange</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<validation-mode>NONE</validation-mode>

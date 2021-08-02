@@ -7,10 +7,12 @@ import mobi.chouette.exchange.netexprofile.ConversionUtil;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableData;
 import mobi.chouette.exchange.netexprofile.exporter.ExportableNetexData;
 import mobi.chouette.model.Block;
+import mobi.chouette.model.DeadRun;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import org.rutebanken.netex.model.Block_VersionStructure;
 import org.rutebanken.netex.model.DayTypeRefStructure;
+import org.rutebanken.netex.model.DeadRunRefStructure;
 import org.rutebanken.netex.model.JourneyRefs_RelStructure;
 import org.rutebanken.netex.model.MultilingualString;
 import org.rutebanken.netex.model.PointRefStructure;
@@ -97,7 +99,7 @@ public class BlockProducer extends NetexProducer {
             throw new IllegalStateException("Missing timetable data for block " + block.getObjectId());
         }
 
-        // vehicle journeys
+        // vehicle journeys and dead runs
         JourneyRefs_RelStructure journeyRefsRelStructure = netexFactory.createJourneyRefs_RelStructure();
         netexBlock.setJourneys(journeyRefsRelStructure);
         for (VehicleJourney vehicleJourney : block.getVehicleJourneys()) {
@@ -113,6 +115,20 @@ public class BlockProducer extends NetexProducer {
             JAXBElement<?> vehicleJourneyRef = netexFactory.createVehicleJourneyRef(vehicleJourneyRefStructure);
             netexBlock.getJourneys().getJourneyRefOrJourneyDesignatorOrServiceDesignator().add(vehicleJourneyRef);
         }
+        for (DeadRun deadRun : block.getDeadRuns()) {
+            if(deadRun == null) {
+                // Hibernate does not properly reorder elements in the deadRuns collection
+                // In case of a gap (due to the removal of an element), a null value is added in the collection.
+                // This null value should be ignored
+                continue;
+            }
+            DeadRunRefStructure deadRunRefStructure = netexFactory.createDeadRunRefStructure();
+            deadRunRefStructure.setRef(deadRun.getObjectId());
+            NetexProducerUtils.populateReference(deadRun, deadRunRefStructure, false);
+            JAXBElement<?> deadRunRef = netexFactory.createDeadRunRef(deadRunRefStructure);
+            netexBlock.getJourneys().getJourneyRefOrJourneyDesignatorOrServiceDesignator().add(deadRunRef);
+        }
+
 
         return netexBlock;
 
