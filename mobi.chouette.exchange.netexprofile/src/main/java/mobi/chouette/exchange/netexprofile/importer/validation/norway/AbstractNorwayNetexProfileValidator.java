@@ -525,8 +525,8 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	}
 
 	protected void validateNotices(Context context, XPathCompiler xpath, XdmNode subLevel) throws XPathExpressionException, SaxonApiException {
-		validateElementNotPresent(context, xpath, subLevel, "//notices/Notice[not(Text)]", _1_NETEX_NOTICE_TEXT);
-		validateElementNotPresent(context, xpath, subLevel, "//notices/Notice/alternativeTexts/AlternativeText[not(Text) or normalize-space(Text) = '']",
+		validateElementNotPresent(context, xpath, subLevel, "//notices/Notice[not(Text) or normalize-space(Text/text()) = '']", _1_NETEX_NOTICE_TEXT);
+		validateElementNotPresent(context, xpath, subLevel, "//notices/Notice/alternativeTexts/AlternativeText[not(Text) or normalize-space(Text/text()) = '']",
 				_1_NETEX_NOTICE_ALTERNATIVE_TEXT_TEXT);
 		validateElementNotPresent(context, xpath, subLevel, "//notices/Notice/alternativeTexts/AlternativeText/Text[not(@lang)]",
 				_1_NETEX_NOTICE_ALTERNATIVE_TEXT_LANG);
