@@ -12,6 +12,7 @@ import java.util.Objects;
 
 import javax.ejb.Singleton;
 
+import com.fasterxml.jackson.databind.ObjectReader;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.importer.geometry.PolylineDecoder;
 import mobi.chouette.exchange.importer.geometry.RouteSectionGenerator;
@@ -47,12 +48,17 @@ public class OsrmRouteSectionGenerator implements RouteSectionGenerator {
 
 	private Map<TransportModeNameEnum, String> urlPerTransportMode;
 
-	private ObjectMapper mapper = new ObjectMapper();
+	private ObjectReader osrmResponseReader = new ObjectMapper().reader( OsrmResponse.class);
 	private PolylineDecoder polylineDecoder = new PolylineDecoder();
 	private GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), LongLatTypeEnum.WGS84.getValue());
 
 	@Override
-	public LineString getRouteSection(Coordinate from, Coordinate to, TransportModeNameEnum transportMode) {
+	public LineString getRouteSection(OsrmRouteSectionId osrmRouteSectionId) {
+
+		Coordinate from = osrmRouteSectionId.getFrom();
+		Coordinate to = osrmRouteSectionId.getTo();
+		TransportModeNameEnum transportMode = osrmRouteSectionId.getTransportMode();
+
 		try {
 			String url=getUrl(from, to, transportMode);
 			if (url!=null) {
@@ -87,7 +93,7 @@ public class OsrmRouteSectionGenerator implements RouteSectionGenerator {
 	LineString mapToLineString(String osrmResponseString) {
 
 		try {
-			OsrmResponse osrmResponse = mapper.readValue(osrmResponseString, OsrmResponse.class);
+			OsrmResponse osrmResponse = osrmResponseReader.readValue(osrmResponseString);
 			if (osrmResponse != null && !CollectionUtils.isEmpty(osrmResponse.routes)) {
 				Coordinate[] coordinates = osrmResponse.routes.stream().map(OsrmRoute::getLegs).filter(Objects::nonNull).flatMap(List::stream)
 						.map(OsrmLeg::getSteps).filter(Objects::nonNull).flatMap(List::stream).map(OsrmStep::getGeometry)
