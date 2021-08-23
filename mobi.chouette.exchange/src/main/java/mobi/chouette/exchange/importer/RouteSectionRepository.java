@@ -94,9 +94,9 @@ public class RouteSectionRepository {
      */
     private RouteSection createRouteSection(StopPoint from, StopPoint to, LineString lineString) {
 
-        String fromQuayId = from.getScheduledStopPoint().getContainedInStopAreaRef().getObjectId();
-        String toQuayId = to.getScheduledStopPoint().getContainedInStopAreaRef().getObjectId();
-        String uniqueRouteSectionId = fromQuayId.substring(fromQuayId.lastIndexOf(':') + 1) + '_' + toQuayId.substring(toQuayId.lastIndexOf(':') + 1) + '_' + (lineString == null ? "NULL" : String.valueOf(lineString.hashCode()));
+        String fromScheduledStopPointId = from.getScheduledStopPoint().getObjectId();
+        String toScheduledStopPointId = to.getScheduledStopPoint().getObjectId();
+        String uniqueRouteSectionId = fromScheduledStopPointId.substring(fromScheduledStopPointId.lastIndexOf(':') + 1) + '_' + toScheduledStopPointId.substring(toScheduledStopPointId.lastIndexOf(':') + 1) + '_' + (lineString == null ? "NULL" : String.valueOf(lineString.hashCode()));
 
         return routeSectionCache.computeIfAbsent(uniqueRouteSectionId, s -> {
             RouteSection routeSection = new RouteSection();
