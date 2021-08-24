@@ -46,6 +46,8 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_NOTICE_ALTERNATIVE_TEXT_LANG = "1-NETEXPROFILE-Notice-Alternative-Text-Lang";
 	public static final String _1_NETEX_NOTICE_ALTERNATIVE_TEXT_DUPLICATE_LANG = "1-NETEXPROFILE-Notice-Alternative-Text-Duplicate-Lang";
 
+	public static final String _1_NETEX_NOTICE_ASSIGNMENTS_DUPLICATE = "1-NETEXPROFILE-NoticeAssignment-Duplicate";
+
 	public static final String _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CUSTOMER_SERVICE_CONTACT_DETAILS = "1-NETEXPROFILE-ResourceFrame-Organisations-Operator-CustomerServiceContactDetails";
 	public static final String _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CUSTOMER_SERVICE_CONTACT_DETAILS_URL = "1-NETEXPROFILE-ResourceFrame-Organisations-Operator-CustomerServiceContactDetails-Url";
 	public static final String _1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_CONTACT_DETAILS = "1-NETEXPROFILE-ResourceFrame-Organisations-Operator-ContactDetails";
@@ -341,6 +343,8 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_NOTICE_ALTERNATIVE_TEXT_TEXT, "E");
 		addCheckpoints(context, _1_NETEX_NOTICE_ALTERNATIVE_TEXT_LANG, "E");
 		addCheckpoints(context, _1_NETEX_NOTICE_ALTERNATIVE_TEXT_DUPLICATE_LANG, "E");
+
+		addCheckpoints(context, _1_NETEX_NOTICE_ASSIGNMENTS_DUPLICATE, "W");
 	}
 
 	private void addCheckpoints(Context context, String checkpointName, String error) {

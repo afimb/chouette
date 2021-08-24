@@ -351,7 +351,14 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 					_1_NETEX_SERVICE_FRAME_INVALID_TRANSPORTMODE);
 			validateElementNotPresent(context, xpath, subLevel, "lines/*[self::Line or self::FlexibleLine]/TransportSubmode/*[not(. = (" + validTransportSubModeString + "))]",
 					_1_NETEX_SERVICE_FRAME_INVALID_TRANSPORTSUBMODE);
+
+			validateNoticeAssignments(context, xpath, subLevel);
 		}
+	}
+
+	private void validateNoticeAssignments(Context context, XPathCompiler xpath, XdmNode subLevel) throws XPathExpressionException, SaxonApiException {
+		validateElementNotPresent(context, xpath, subLevel, "noticeAssignments/NoticeAssignment[for $a in following-sibling::NoticeAssignment return if(NoticeRef/@ref= $a/NoticeRef/@ref and NoticedObjectRef/@ref= $a/NoticedObjectRef/@ref) then $a else ()]",
+				_1_NETEX_NOTICE_ASSIGNMENTS_DUPLICATE);
 	}
 
 	/**
@@ -481,6 +488,8 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 
 			validateElementNotPresent(context, xpath, subLevel, "journeyInterchanges/ServiceJourneyInterchange[MaximumWaitTime > xs:dayTimeDuration('PT1H')]",
 					_1_NETEX_TIMETABLE_FRAME_INTERCHANGE_MAX_WAIT_TIME_TOO_LONG);
+
+			validateNoticeAssignments(context, xpath, subLevel);
 
 		}
 	}
