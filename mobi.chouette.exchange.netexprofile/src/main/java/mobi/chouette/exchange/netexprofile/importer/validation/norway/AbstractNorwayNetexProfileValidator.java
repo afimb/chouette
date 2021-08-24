@@ -532,7 +532,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 
 		validateElementNotPresent(context, xpath, subLevel, "serviceLinks/ServiceLink[not(FromPointRef)]", _1_NETEX_SERVICE_FRAME_SERVICE_LINK_FROMPOINTREF);
 		validateElementNotPresent(context, xpath, subLevel, "serviceLinks/ServiceLink[not(ToPointRef)]", _1_NETEX_SERVICE_FRAME_SERVICE_LINK_TOPOINTREF);
-		validateElementNotPresent(context, xpath, subLevel, "serviceLinks/ServiceLink/projections/LinkSequenceProjection/g:LineString/g:posList[@count>0 and not(normalize-space(text()))]", _1_NETEX_SERVICE_FRAME_SERVICE_LINK_MISSING_POSITION_COORDINATES);
+		validateElementNotPresent(context, xpath, subLevel, "serviceLinks/ServiceLink/projections/LinkSequenceProjection/g:LineString/g:posList[not(normalize-space(text()))]", _1_NETEX_SERVICE_FRAME_SERVICE_LINK_MISSING_POSITION_COORDINATES);
 	}
 
 	protected void validateNotices(Context context, XPathCompiler xpath, XdmNode subLevel) throws XPathExpressionException, SaxonApiException {
