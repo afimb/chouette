@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.ejb.EJB;
 
+import mobi.chouette.model.ScheduledStopPoint;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.testng.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -52,7 +53,7 @@ public class DestinationDisplayDaoTest extends Arquillian {
 	public void checkDirectPersistDestinationDisplay() {
 		try {
 			ContextHolder.setContext("chouette_gui"); // set tenant schema
-			
+			stopPointDAO.deleteAll();
 			destinationDisplayDAO.deleteAll();
 			
 			DestinationDisplay parent = new DestinationDisplay();
@@ -124,9 +125,13 @@ public class DestinationDisplayDaoTest extends Arquillian {
 			parent.setFrontText("FrontText");
 			parent.setSideText("SideText");
 			parent.setObjectId("X:DestinationDisplay:1");
-			
+
+			ScheduledStopPoint scheduledStopPoint = new ScheduledStopPoint();
+			scheduledStopPoint.setObjectId("X:ScheduledStopPoint:1");
+
 			StopPoint sp = new StopPoint();
 			sp.setObjectId("X:StopPoint:1");
+			sp.setScheduledStopPoint(scheduledStopPoint);
 			sp.setDestinationDisplay(parent);
 			
 			stopPointDAO.create(sp);

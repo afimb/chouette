@@ -4,6 +4,7 @@ import static mobi.chouette.exchange.netexprofile.NetexTestUtils.createCodespace
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +19,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
 
 import mobi.chouette.dao.BlockDAO;
+import mobi.chouette.dao.JourneyFrequencyDAO;
 import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.testng.Arquillian;
@@ -73,6 +75,9 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
 
     @EJB
     private StopAreaDAO stopAreaDao;
+
+    @EJB
+    private JourneyFrequencyDAO journeyFrequencyDAO;
 
     @PersistenceContext(unitName = "referential")
     private EntityManager em;
@@ -241,18 +246,39 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
     }
 
     private void clearOldDatabaseRecords() throws Exception {
-        utx.begin();
-        em.joinTransaction();
-        log.info("Dumping old codespace records...");
-        codespaceDao.deleteAll();
-        codespaceDao.flush();
-        blockDao.deleteAll();
-        lineDao.deleteAll();
-        lineDao.flush();
-        stopAreaDao.deleteAll();
-        stopAreaDao.flush();
+        try {
+            utx.begin();
 
-        utx.commit();
+            em.joinTransaction();
+            log.info("Dumping old codespace records...");
+
+            codespaceDao.deleteAll();
+            codespaceDao.flush();
+
+            blockDao.deleteAll();
+            blockDao.flush();
+
+            journeyFrequencyDAO.deleteAll();
+            journeyFrequencyDAO.flush();
+
+            lineDao.deleteAll();
+            lineDao.flush();
+
+            stopAreaDao.deleteAll();
+            stopAreaDao.flush();
+
+            utx.commit();
+
+        } catch (RuntimeException ex) {
+            Throwable cause = ex.getCause();
+            while (cause != null) {
+                log.error(cause);
+                if (cause instanceof SQLException)
+                    traceSqlException((SQLException) cause);
+                cause = cause.getCause();
+            }
+            throw ex;
+        }
     }
 
     private void insertCodespaceRecords(List<Codespace> codespaces) throws Exception {
@@ -796,6 +822,14 @@ public class NetexExportTests extends Arquillian implements Constant, ReportCons
             if (cp.getState().equals(ValidationReporter.RESULT.NOK)) {
                 Reporter.log(cp.toString(), true);
             }
+        }
+    }
+
+
+    private void traceSqlException(SQLException ex) {
+        while (ex.getNextException() != null) {
+            ex = ex.getNextException();
+            log.error(ex);
         }
     }
 
