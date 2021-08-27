@@ -19,7 +19,13 @@
 		<properties>
 			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.format_sql" value="false" />
+
 			<property name="hibernate.jdbc.batch_size" value="100" />
+			<property name="hibernate.jdbc.batch_versioned_data" value="true" />
+			<property name="hibernate.order_inserts" value="true" />
+			<property name="hibernate.order_updates" value="true" />
+
+
 			<property name="hibernate.default_batch_fetch_size" value="100" />
 			<property name="hibernate.connection.datasource" value="java:jboss/datasources/chouette" />
 			<property name="hibernate.cache.use_second_level_cache"
@@ -77,7 +83,13 @@
 		<properties>
 			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.format_sql" value="false" />
+
 			<property name="hibernate.jdbc.batch_size" value="2000" />
+			<property name="hibernate.jdbc.batch_versioned_data" value="true" />
+			<property name="hibernate.order_inserts" value="true" />
+			<property name="hibernate.order_updates" value="true" />
+
+
 			<property name="hibernate.default_batch_fetch_size" value="2000" />
 			<property name="hibernate.multiTenancy" value="SCHEMA" />
 			<property name="hibernate.connection.datasource" value="java:jboss/datasources/chouette" />

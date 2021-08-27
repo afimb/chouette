@@ -178,7 +178,7 @@ data:
             <subsystem xmlns="urn:jboss:domain:datasources:2.0">
                 <datasources>
                     <datasource jndi-name="java:jboss/datasources/iev" pool-name="iev" enabled="true">
-                        <connection-url>jdbc:postgresql://localhost:5432/iev?ApplicationName=JBOSS-IEV</connection-url>
+                        <connection-url>jdbc:postgresql://localhost:5432/iev?ApplicationName=JBOSS-IEV&amp;reWriteBatchedInserts=true</connection-url>
                         <driver>postgresql</driver>
                         <pool>
                             <min-pool-size>5</min-pool-size>
@@ -200,7 +200,7 @@ data:
                         </statement>
                     </datasource>
                     <datasource jndi-name="java:jboss/datasources/chouette" pool-name="chouette" enabled="true">
-                        <connection-url>jdbc:postgresql_postGIS://localhost:5432/chouette?preparedStatementCacheQueries=1024&amp;preparedStatementCacheSizeMiB=15&amp;ApplicationName=JBOSS-CHOUETTE</connection-url>
+                        <connection-url>jdbc:postgresql_postGIS://localhost:5432/chouette?preparedStatementCacheQueries=1024&amp;preparedStatementCacheSizeMiB=15&amp;ApplicationName=JBOSS-CHOUETTE&amp;reWriteBatchedInserts=true</connection-url>
                         <driver-class>mobi.chouette.ChouettePostGisDriverWrapper</driver-class>
                         <driver>postgresql</driver>
                         <pool>
