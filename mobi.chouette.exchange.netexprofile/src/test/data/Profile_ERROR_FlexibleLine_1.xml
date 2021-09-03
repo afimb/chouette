@@ -243,7 +243,7 @@
                                     <ForAlighting>false</ForAlighting>
                                     <DestinationDisplayRef ref="AVI:DestinationDisplay:12636280" version="1"/>
                                     <BookingArrangements>
-                                        <BookingMethods>other</BookingMethods>
+                                        <BookingMethods>none</BookingMethods>
                                         <BookingAccess>other</BookingAccess>
                                         <BookWhen>other</BookWhen>
                                         <BuyWhen>onReservation beforeBoarding other</BuyWhen>
@@ -311,7 +311,7 @@
                             </passingTimes>
                             <FlexibleServiceProperties>
                                 <FlexibleServiceType>other</FlexibleServiceType>
-                                <BookingMethods>other</BookingMethods>
+                                <BookingMethods>none</BookingMethods>
                                 <BookingAccess>other</BookingAccess>
                                 <BookWhen>other</BookWhen>
                                 <BuyWhen>onReservation beforeBoarding other</BuyWhen>
