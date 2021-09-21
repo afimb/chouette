@@ -84,7 +84,8 @@
 			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.format_sql" value="false" />
 
-			<property name="hibernate.jdbc.batch_size" value="2000" />
+			<!-- PostgreSQL maximum batch size is 128-->
+			<property name="hibernate.jdbc.batch_size" value="128" />
 			<property name="hibernate.jdbc.batch_versioned_data" value="true" />
 			<property name="hibernate.order_inserts" value="true" />
 			<property name="hibernate.order_updates" value="true" />
