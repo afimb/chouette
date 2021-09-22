@@ -32,7 +32,6 @@ import org.rutebanken.netex.model.AllVehicleModesOfTransportEnumeration;
 import org.rutebanken.netex.model.DayTypeRefStructure;
 import org.rutebanken.netex.model.DayTypeRefs_RelStructure;
 import org.rutebanken.netex.model.FlexibleServiceProperties;
-import org.rutebanken.netex.model.FlexibleServicePropertiesInFrame_RelStructure;
 import org.rutebanken.netex.model.JourneyPatternRefStructure;
 import org.rutebanken.netex.model.Journey_VersionStructure;
 import org.rutebanken.netex.model.JourneysInFrame_RelStructure;
@@ -82,6 +81,8 @@ public class ServiceJourneyParser extends NetexParser implements Parser, Constan
 			}
 
 			vehicleJourney.setObjectVersion(NetexParserUtils.getVersion(serviceJourney));
+
+			vehicleJourney.setPublication(NetexParserUtils.toPublicationEnum(serviceJourney.getPublication()));
 
 			vehicleJourney.setPublishedJourneyIdentifier(serviceJourney.getPublicCode());
 

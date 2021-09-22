@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.type.JourneyCategoryEnum;
+import mobi.chouette.model.type.PublicationEnum;
 import mobi.chouette.model.type.ServiceAlterationEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.TransportSubModeNameEnum;
@@ -88,6 +89,20 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	public void setComment(String value) {
 		comment = StringUtils.abbreviate(value, 255);
 	}
+
+
+	/**
+	 * Transport mode when different from line transport mode
+	 *
+	 * @param transportMode
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@Enumerated(EnumType.STRING)
+	@Column(name = "publication")
+	private PublicationEnum publication;
 
 	/**
 	 * Transport mode when different from line transport mode

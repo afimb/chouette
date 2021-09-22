@@ -2408,7 +2408,8 @@ CREATE TABLE chouette_gui.vehicle_journeys (
                                                transport_submode_name character varying,
                                                private_code character varying,
                                                service_alteration character varying,
-                                               flexible_service_properties_id bigint
+                                               flexible_service_properties_id bigint,
+                                               publication varchar
 );
 
 
@@ -4704,7 +4705,8 @@ CREATE TABLE public.vehicle_journeys (
                                          transport_submode_name character varying,
                                          private_code character varying,
                                          service_alteration character varying,
-                                         flexible_service_properties_id bigint
+                                         flexible_service_properties_id bigint,
+                                         publication varchar
 );
 
 

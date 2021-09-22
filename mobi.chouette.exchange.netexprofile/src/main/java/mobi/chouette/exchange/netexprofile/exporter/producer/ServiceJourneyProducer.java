@@ -49,6 +49,7 @@ public class ServiceJourneyProducer extends NetexProducer {
 
 		serviceJourney.setName(ConversionUtil.getMultiLingualString(vehicleJourney.getPublishedJourneyName()));
 		serviceJourney.setPublicCode(vehicleJourney.getPublishedJourneyIdentifier());
+		serviceJourney.setPublication(ConversionUtil.toPublicationEnumeration(vehicleJourney.getPublication()));
 
 		if (vehicleJourney.getPrivateCode()!=null){
 			serviceJourney.setPrivateCode(new PrivateCodeStructure().withValue(vehicleJourney.getPrivateCode()));

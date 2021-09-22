@@ -15,6 +15,7 @@ import mobi.chouette.model.type.BookingMethodEnum;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.type.FlexibleLineTypeEnum;
 import mobi.chouette.model.type.FlexibleServiceTypeEnum;
+import mobi.chouette.model.type.PublicationEnum;
 import mobi.chouette.model.type.PurchaseMomentEnum;
 import mobi.chouette.model.type.PurchaseWhenEnum;
 import mobi.chouette.model.type.ServiceAlterationEnum;
@@ -34,6 +35,7 @@ import org.rutebanken.netex.model.FlexibleLineTypeEnumeration;
 import org.rutebanken.netex.model.FlexibleServiceEnumeration;
 import org.rutebanken.netex.model.MetroSubmodeEnumeration;
 import org.rutebanken.netex.model.MultilingualString;
+import org.rutebanken.netex.model.PublicationEnumeration;
 import org.rutebanken.netex.model.PurchaseMomentEnumeration;
 import org.rutebanken.netex.model.PurchaseWhenEnumeration;
 import org.rutebanken.netex.model.RailSubmodeEnumeration;
@@ -475,6 +477,28 @@ public class ConversionUtil {
 				return TimingPointStatusEnumeration.TIMING_POINT;
 			case secondaryTimingPoint:
 				return TimingPointStatusEnumeration.SECONDARY_TIMING_POINT;
+		}
+		return null;
+	}
+
+	public static PublicationEnumeration toPublicationEnumeration(PublicationEnum chouetteType) {
+		if (chouetteType == null) {
+			return null;
+		}
+
+		switch (chouetteType) {
+			case Public:
+				return PublicationEnumeration.PUBLIC;
+			case Authorised:
+				return PublicationEnumeration.AUTHORISED;
+			case Confidential:
+				return PublicationEnumeration.CONFIDENTIAL;
+			case Private:
+				return PublicationEnumeration.PRIVATE;
+			case Restricted:
+				return PublicationEnumeration.RESTRICTED;
+			case Test:
+				return PublicationEnumeration.TEST;
 		}
 		return null;
 	}

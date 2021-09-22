@@ -18,6 +18,7 @@ import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.type.FlexibleLineTypeEnum;
 import mobi.chouette.model.type.FlexibleServiceTypeEnum;
 import mobi.chouette.model.type.OrganisationTypeEnum;
+import mobi.chouette.model.type.PublicationEnum;
 import mobi.chouette.model.type.PurchaseMomentEnum;
 import mobi.chouette.model.type.PurchaseWhenEnum;
 import mobi.chouette.model.type.ServiceAlterationEnum;
@@ -36,6 +37,7 @@ import org.rutebanken.netex.model.FlexibleServiceEnumeration;
 import org.rutebanken.netex.model.FunicularSubmodeEnumeration;
 import org.rutebanken.netex.model.MetroSubmodeEnumeration;
 import org.rutebanken.netex.model.OrganisationTypeEnumeration;
+import org.rutebanken.netex.model.PublicationEnumeration;
 import org.rutebanken.netex.model.PurchaseMomentEnumeration;
 import org.rutebanken.netex.model.PurchaseWhenEnumeration;
 import org.rutebanken.netex.model.RailSubmodeEnumeration;
@@ -530,4 +532,27 @@ public class NetexParserUtils extends ParserUtils {
 		}
 		return null;
 	}
+
+	public static PublicationEnum toPublicationEnum(PublicationEnumeration netexType) {
+		if (netexType == null) {
+			return null;
+		}
+
+		switch (netexType) {
+			case PUBLIC:
+				return PublicationEnum.Public;
+			case AUTHORISED:
+				return PublicationEnum.Authorised;
+			case CONFIDENTIAL:
+				return PublicationEnum.Confidential;
+			case PRIVATE:
+				return PublicationEnum.Private;
+			case RESTRICTED:
+				return PublicationEnum.Restricted;
+			case TEST:
+				return PublicationEnum.Test;
+		}
+		return null;
+	}
+
 }
