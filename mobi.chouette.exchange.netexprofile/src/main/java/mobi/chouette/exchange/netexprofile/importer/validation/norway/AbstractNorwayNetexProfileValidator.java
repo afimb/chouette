@@ -345,7 +345,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_NOTICE_ALTERNATIVE_TEXT_LANG, "E");
 		addCheckpoints(context, _1_NETEX_NOTICE_ALTERNATIVE_TEXT_DUPLICATE_LANG, "E");
 
-		addCheckpoints(context, _1_NETEX_NOTICE_ASSIGNMENTS_DUPLICATE, "E");
+		addCheckpoints(context, _1_NETEX_NOTICE_ASSIGNMENTS_DUPLICATE, "W");
 	}
 
 	private void addCheckpoints(Context context, String checkpointName, String error) {
