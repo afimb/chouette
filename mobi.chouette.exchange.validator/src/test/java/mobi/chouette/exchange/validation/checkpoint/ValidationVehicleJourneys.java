@@ -115,7 +115,8 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 				.addClass(DummyChecker.class)
 				.addClass(JobDataTest.class)
 				.addClass(AbstractTestValidation.class)
-				.addClass(ValidationVehicleJourneys.class);
+				.addClass(ValidationVehicleJourneys.class)
+				.addClass(ValidationDatedServiceJourneys.class);
 		
 		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
 				.addAsLibraries(jars.toArray(new File[0]))

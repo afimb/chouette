@@ -25,8 +25,13 @@
       <classes>
          <class name="mobi.chouette.exchange.validation.checkpoint.ValidationVehicleJourneys" />
       </classes>
-   </test> 
-   <test name="Test_F_stop_areas" preserve-order="true">
+   </test>
+    <test name="Test_E_dated_service_journeys" preserve-order="true">
+        <classes>
+            <class name="mobi.chouette.exchange.validation.checkpoint.ValidationDatedServiceJourneys" />
+        </classes>
+    </test>
+    <test name="Test_F_stop_areas" preserve-order="true">
       <classes>
          <class name="mobi.chouette.exchange.validation.checkpoint.ValidationStopAreas" />
       </classes>

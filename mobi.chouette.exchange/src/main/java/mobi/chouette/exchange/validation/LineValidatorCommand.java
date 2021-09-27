@@ -18,6 +18,7 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.validation.checkpoint.DatedServiceJourneyCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.JourneyPatternCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.LineCheckPoints;
 import mobi.chouette.exchange.validation.checkpoint.RouteCheckPoints;
@@ -40,6 +41,7 @@ public class LineValidatorCommand implements Command, Constant
 	private RouteCheckPoints routeCheckPoints = new RouteCheckPoints();
 	private JourneyPatternCheckPoints journeyPatternCheckPoints = new JourneyPatternCheckPoints();
 	private VehicleJourneyCheckPoints vehicleJourneyCheckPoints = new VehicleJourneyCheckPoints();
+	private DatedServiceJourneyCheckPoints datedServiceJourneyCheckPointsCheckPoints = new DatedServiceJourneyCheckPoints();
 	private StopPointCheckPoints stopPointCheckPoints = new StopPointCheckPoints();
 
 	@Override
@@ -57,6 +59,7 @@ public class LineValidatorCommand implements Command, Constant
 			routeCheckPoints.validate(context, null);
 			journeyPatternCheckPoints.validate(context, null);
 			vehicleJourneyCheckPoints.validate(context, null);
+			datedServiceJourneyCheckPointsCheckPoints.validate(context, null);
 			stopPointCheckPoints.validate(context, null);
 
 			result = SUCCESS;

@@ -30,8 +30,6 @@ import mobi.chouette.model.util.NeptuneUtil;
 
 @Log4j
 public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern> implements Validator<JourneyPattern> {
-	@Setter
-	private VehicleJourneyCheckPoints vehicleJourneyCheckPoints;
 
 	@Override
 	public void validate(Context context, JourneyPattern target) {

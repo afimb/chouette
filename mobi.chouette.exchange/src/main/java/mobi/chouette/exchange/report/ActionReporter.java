@@ -19,6 +19,7 @@ public interface ActionReporter {
 		ROUTE_SECTION,
 		JOURNEY_PATTERN,
 		VEHICLE_JOURNEY,
+		DATED_SERVICE_JOURNEY,
 		INTERCHANGE
 	};
 	

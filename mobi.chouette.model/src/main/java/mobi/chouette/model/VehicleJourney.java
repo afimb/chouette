@@ -574,15 +574,16 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	}
 
 	/**
-	 * Retrieve the list of active dated service journeys on the period, taking into account the day offset at first stop and last stop.
+	 * Retrieve the list of active dated service journeys on the period.
+	 * Only the operating day is taken into account, not the actual calendar day implied by the day offset at first stop and last stop.
+	 * This ensures that references to other dated service journeys through {@link DatedServiceJourney#getOriginalDatedServiceJourneys()}
+	 * are not broken during the filtering process, even if the referenced DatedServiceJourneys start/end on a different calendar date.
 	 * @param startDate the start date of the period (inclusive).
 	 * @param endDate the end date of the period (exclusive).
-	 * @return the list of dated service journeys active on the period, taking into account the day offset at first stop and last stop.
+	 * @return the list of dated service journeys active on the period.
 	 */
 	public List<DatedServiceJourney> getActiveDatedServiceJourneysOnPeriod(LocalDate startDate, LocalDate endDate) {
-		final LocalDate effectiveStartDate = getEffectiveStartDate(startDate);
-		final LocalDate effectiveEndDate = getEffectiveEndDate(endDate);
-		return getDatedServiceJourneys().stream().filter(dsj->dsj.isValidOnPeriod(effectiveStartDate, effectiveEndDate )).collect(Collectors.toList());
+		return getDatedServiceJourneys().stream().filter(dsj->dsj.isValidOnPeriod(startDate, endDate )).collect(Collectors.toList());
 	}
 
 	private boolean hasActiveDatedServiceJourneysOnPeriod(LocalDate startDate, LocalDate endDate) {
