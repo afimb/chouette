@@ -9,10 +9,12 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import static mobi.chouette.exchange.netexprofile.parser.xml.XMLParserUtil.getSecureXmlInputFactory;
+
 public class SkippingXMLStreamReaderFactory {
 
 	public static XMLStreamReader newXMLStreamReader(final InputStream is, final Set<QName> elementsToSkip) throws XMLStreamException {
-		XMLInputFactory factory = XMLInputFactory.newInstance();
+		XMLInputFactory factory = getSecureXmlInputFactory();
 		XMLStreamReader xmlStreamReader = factory.createXMLStreamReader(is);
 		if (elementsToSkip.size() == 0) {
 			return xmlStreamReader;
