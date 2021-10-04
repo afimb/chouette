@@ -44,22 +44,23 @@ public class JtsGmlConverter {
 						DirectPositionType directPositionType = (DirectPositionType) o;
 						coordinateList.addAll(directPositionType.getValue());
 					} else {
-						// what else could this be?
-						log.warn("Got unrecognized class (" + o.getClass() + ") for PosOrPointProperty for gmlString: " + gml.getId());
+						log.warn("Unrecognized class (" + o.getClass() + ") for PosOrPointProperty for gmlString: " + gml.getId());
+						return null;
 					}
 				}
-				if(coordinateList.isEmpty()) {
-					log.warn("No recognized class in PosOrPointProperty for gmlString: " + gml.getId());
-					return null;
-				}
-	
 			} else {
-				log.warn("Got LineStringType without posList or PosOrPointProperty: " + gml.getId());
+				log.warn("LineString without posList or PosOrPointProperty: " + gml.getId());
 				return null;
 			}
 		}
-
-
+		if(coordinateList.isEmpty()) {
+			log.warn("LineString without coordinates: " + gml.getId());
+			return null;
+		}
+		if(coordinateList.size() < 4) {
+			log.warn("LineString with less than 2 pairs of coordinates (found " + coordinateList.size() + " individual coordinate values): " + gml.getId());
+			return null;
+		}
 		CoordinateSequence coordinateSequence = convert(coordinateList);
 		LineString jts = new LineString(coordinateSequence, geometryFactory);
 		assignSRID(gml, jts);
