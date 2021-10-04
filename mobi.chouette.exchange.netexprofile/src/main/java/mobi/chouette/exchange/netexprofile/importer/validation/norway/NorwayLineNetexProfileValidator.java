@@ -93,7 +93,8 @@ public class NorwayLineNetexProfileValidator extends AbstractNorwayNetexProfileV
 			"nationalCarFerry",
 			"shuttleBus",
 			"sightseeingService",
-			"sightseeingBus"
+			"sightseeingBus",
+			"unknown"
 	};
 
 	private String validTransportModeString;
