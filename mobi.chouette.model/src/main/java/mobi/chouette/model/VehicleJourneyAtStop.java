@@ -212,7 +212,7 @@ public class VehicleJourneyAtStop extends NeptuneIdentifiedObject implements Jou
 	 */
 	@Getter
 	@Setter
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
 	@JoinColumn(name = "stop_point_id")
 	private StopPoint stopPoint;
 	

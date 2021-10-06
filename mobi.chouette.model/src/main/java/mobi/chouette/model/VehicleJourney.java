@@ -414,10 +414,9 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY)
-	@JoinColumn(name = "vehicle_journey_id", updatable = false)
+	@OneToMany(mappedBy = "vehicleJourney", cascade = { CascadeType.ALL }, fetch = FetchType.LAZY)
 	private List<VehicleJourneyAtStop> vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>(0);
-	
+
 	/**
 	 * To distinguish the timesheets journeys and the frequencies ones. Defaults to Timesheet.
 	 * 
