@@ -9,7 +9,7 @@ import org.joda.time.LocalDate;
 @Log4j
 public class NetexDataCollector extends DataCollector {
 	public NetexDataCollector(mobi.chouette.exchange.exporter.ExportableData collection, Line line, LocalDate startDate, LocalDate endDate) {
-		super(collection, line, startDate, endDate, false, false);
+		super(collection, line, startDate, endDate, false, false, true);
 	}
 
 	@Override

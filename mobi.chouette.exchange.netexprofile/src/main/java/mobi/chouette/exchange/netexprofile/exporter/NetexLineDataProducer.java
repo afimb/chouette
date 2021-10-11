@@ -44,7 +44,6 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 
-import mobi.chouette.model.type.PublicationEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.rutebanken.netex.model.AvailabilityCondition;
 import org.rutebanken.netex.model.DeadRun;
@@ -142,7 +141,7 @@ public class NetexLineDataProducer extends NetexProducer implements Constant {
 		calendarProducer.produce(context, exportableData, exportableNetexData);
 
 		for (mobi.chouette.model.VehicleJourney vehicleJourney : exportableData.getVehicleJourneys()) {
-			if(configuration.isExportBlocks() || vehicleJourney.getPublication() == PublicationEnum.Public || vehicleJourney.getPublication() == null) {
+			if(configuration.isExportBlocks() || vehicleJourney.isPublic()) {
 				ServiceJourney serviceJourney = serviceJourneyProducer.produce(context, vehicleJourney, exportableData.getLine());
 				exportableNetexData.getServiceJourneys().add(serviceJourney);
 			}

@@ -13,7 +13,7 @@ import org.joda.time.LocalDate;
 @Log4j
 public class GtfsDataCollector extends DataCollector {
 	public GtfsDataCollector(ExportableData collection, Line line, LocalDate startDate, LocalDate endDate) {
-		super(collection, line, startDate, endDate, false, false);
+		super(collection, line, startDate, endDate, false, false, true);
 	}
 
 	@Override

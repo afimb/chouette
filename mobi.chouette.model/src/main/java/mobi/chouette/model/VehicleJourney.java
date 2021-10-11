@@ -597,4 +597,8 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 		ServiceAlterationEnum serviceAlterationEnum = getServiceAlteration();
 		return ServiceAlterationEnum.Cancellation != serviceAlterationEnum && ServiceAlterationEnum.Replaced != serviceAlterationEnum;
 	}
+
+	public boolean isPublic() {
+		return publication == PublicationEnum.Public || publication == null;
+	}
 }

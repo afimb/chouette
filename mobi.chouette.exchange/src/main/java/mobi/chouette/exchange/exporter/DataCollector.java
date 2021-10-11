@@ -27,16 +27,19 @@ public class DataCollector {
 	protected LocalDate endDate;
 	protected boolean skipNoCoordinate;
 	protected boolean followLinks;
+	protected boolean onlyPublicData;
+
 	protected ExportableData collection;
 	protected Line line;
 
-	public DataCollector(ExportableData collection, Line line, LocalDate startDate, LocalDate endDate, boolean skipNoCoordinate, boolean followLinks) {
+	public DataCollector(ExportableData collection, Line line, LocalDate startDate, LocalDate endDate, boolean skipNoCoordinate, boolean followLinks, boolean onlyPublicData) {
 		this.collection = collection;
 		this.line = line;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.skipNoCoordinate = skipNoCoordinate;
 		this.followLinks = followLinks;
+		this.onlyPublicData = onlyPublicData;
 	}
 
 	public boolean collect() {
@@ -47,7 +50,7 @@ public class DataCollector {
 		collection.getVehicleJourneys().clear();
 		collection.getFootnotes().clear();
 
-		boolean isValid = line.filter(startDate, endDate);
+		boolean isValid = line.filter(startDate, endDate, onlyPublicData);
 
 		if(isValid) {
 			collectLine();

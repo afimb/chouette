@@ -74,7 +74,7 @@ public class NetexLineProducerCommand implements Command, Constant {
                 endDate = new LocalDate(configuration.getEndDate());
             }
 
-            NetexDataCollector collector = new NetexDataCollector(collection, line, startDate, endDate);
+            NetexDataCollector collector = new NetexDataCollector(collection, line, startDate, endDate, !configuration.isExportBlocks());
             boolean cont = collector.collect();
 
             reporter.addObjectReport(context, line.getObjectId(), ActionReporter.OBJECT_TYPE.LINE, NamingUtil.getName(line), ActionReporter.OBJECT_STATE.OK, IO_TYPE.OUTPUT);

@@ -495,11 +495,12 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 
 	/**
 	 * Recursively remove routes, journey patterns, vehicle journeys and timetables that are not active on the period.
-	 * @param startDate
-	 * @param endDate
-	 * @return true if there is at least one active route.
+	 * @param startDate the start of the filtering period
+	 * @param endDate the end of the filtering period
+	 * @param onlyPublicData  filter out data marked with publication=restricted. #see {@link VehicleJourney#isPublic()}
+	 * @return true if there is at least one active route left after filtering.
 	 */
-	public boolean filter(LocalDate startDate, LocalDate endDate) {
+	public boolean filter(LocalDate startDate, LocalDate endDate, boolean onlyPublicData) {
 		if(log.isDebugEnabled()) {
 			log.debug("Filtering line " + getObjectId() +  " for validity interval " + startDate + " to " + endDate);
 		}
@@ -538,6 +539,12 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 						}
 						vjI.remove();
 					}
+					if(onlyPublicData && !vehicleJourney.isPublic()) {
+						if (log.isDebugEnabled()) {
+							log.debug("Removing vj with restricted publication since only public data are retained: " + vehicleJourney.getObjectId());
+						}
+						vjI.remove();
+					}
 				}
 				if(jp.getVehicleJourneys().isEmpty() && jp.getDeadRuns().isEmpty()) {
 					if(log.isDebugEnabled()) {
@@ -559,6 +566,24 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 		return !getRoutes().isEmpty();
 	}
 
+	/**
+	 * Recursively remove routes, journey patterns, vehicle journeys and timetables that are not active on the period.
+	 * By default elements with restricted publication are kept.
+	 * @param startDate start of the filtering period
+	 * @param endDate end of the filtering period
+	 * @return true if there is at least one active route left after filtering.
+	 */
+	public boolean filter(LocalDate startDate, LocalDate endDate) {
+		return filter(startDate, endDate, false);
+	}
+
+	/**
+	 * Recursively remove routes, journey patterns, vehicle journeys and timetables that are not active on the period.
+	 * By default elements with restricted publication are kept.
+	 * @param startDate start of the filtering period
+	 * @param endDate end of the filtering period
+	 * @return true if there is at least one active route left after filtering.
+	 */
 	public boolean filter(Date startDate, Date endDate) {
 		LocalDate localStartDate = startDate == null ? null : new LocalDate((startDate));
 		LocalDate localEndDate = endDate == null ? null : new LocalDate((endDate));
