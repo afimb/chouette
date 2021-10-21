@@ -99,6 +99,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 	public static final String _1_NETEX_SERVICE_FRAME_ROUTE_LINEREF = "1-NETEXPROFILE-ServiceFrame_Route_LineRef";
 	public static final String _1_NETEX_SERVICE_FRAME_ROUTE_DIRECTIONREF = "1-NETEXPROFILE-ServiceFrame_Route_DirectionRef";
 	public static final String _1_NETEX_SERVICE_FRAME_ROUTE_POINTSINSEQUENCE = "1-NETEXPROFILE-ServiceFrame_Route_PointsInSequence";
+	public static final String _1_NETEX_SERVICE_FRAME_ROUTE_POINTSINSEQUENCE_DUPLICATE_ORDER = "1-NETEXPROFILE-ServiceFrame_Route_PointsInSequence_Duplicate_Order";
 	public static final String _1_NETEX_SERVICE_FRAME_DESTINATION_DISPLAY_FRONTTEXT = "1-NETEXPROFILE-ServiceFrame-DestinationDisplay-FrontText";
 	public static final String _1_NETEX_SERVICE_FRAME_DESTINATION_DISPLAY_VIA_DESTINATIONDISPLAYREF = "1-NETEXPROFILE-ServiceFrame-DestinationDisplay-Via-DestinationDisplayRef";
 	public static final String _1_NETEX_SERVICE_FRAME_STOP_WITHOUT_BOARDING_OR_ALIGHTING = "1-NETEXPROFILE-ServiceFrame-StopPointInJourneyPattern-NoBoardingNoAlighting";
@@ -262,6 +263,8 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_ROUTE_LINEREF, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_ROUTE_DIRECTIONREF, "W");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_ROUTE_POINTSINSEQUENCE, "E");
+		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_ROUTE_POINTSINSEQUENCE_DUPLICATE_ORDER, "W");
+
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_TIMING_POINTS, "W");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN, "E");
 		addCheckpoints(context, _1_NETEX_SERVICE_FRAME_JOURNEY_PATTERN_ROUTE_REF, "E");
