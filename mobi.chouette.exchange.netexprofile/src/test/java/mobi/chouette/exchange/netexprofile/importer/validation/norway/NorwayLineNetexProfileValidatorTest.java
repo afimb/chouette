@@ -188,7 +188,7 @@ public class NorwayLineNetexProfileValidatorTest {
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_NAME, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_OPERATOR_COMPANY_NUMBER, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS, NOK);
-		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS_URL_OR_PHONE_OR_EMAIL, NOK);
+		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS_URL, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_LEGAL_NAME, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_NAME, NOK);
 		expectedResults.put(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_COMPANY_NUMBER, NOK);
@@ -350,6 +350,34 @@ public class NorwayLineNetexProfileValidatorTest {
 		}
 	}
 
+	@Test
+	public void testValidateAuthorityUrlOK_noErrors() throws Exception {
+		ValidationReport vr = validateSingleFile("src/test/data/norway_line_commonfile/_avinor_common_elements.xml");
+		Set<String> warningLevelFailures = getWarningLevelFailures(vr);
+		Assert.assertFalse(warningLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS_URL));
+	}
+
+	@Test
+	public void testValidateAuthorityUrlMissing_Errors() throws Exception {
+		ValidationReport vr = validateSingleFile("src/test/data/norway_line_commonfile/_avinor_common_elements_no_authority_url.xml");
+		Set<String> warningLevelFailures = getWarningLevelFailures(vr);
+		Assert.assertTrue(warningLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS_URL));
+	}
+
+	@Test
+	public void testValidateAuthorityUrlEmpty_Errors() throws Exception {
+		ValidationReport vr = validateSingleFile("src/test/data/norway_line_commonfile/_avinor_common_elements_empty_authority_url.xml");
+		Set<String> warningLevelFailures = getWarningLevelFailures(vr);
+		Assert.assertTrue(warningLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS_URL));
+	}
+
+	@Test
+	public void testValidateAuthorityUrlNotStartingWithHttp_Errors() throws Exception {
+		ValidationReport vr = validateSingleFile("src/test/data/norway_line_commonfile/_avinor_common_elements_authority_url_not_starting_with_http.xml");
+		Set<String> warningLevelFailures = getWarningLevelFailures(vr);
+		Assert.assertTrue(warningLevelFailures.remove(AbstractNorwayNetexProfileValidator._1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS_URL));
+	}
+
 
 	@Test
 	public void testValidateSingleLineFileWithVehicleSchedule_noErrors() throws Exception {
@@ -406,8 +434,16 @@ public class NorwayLineNetexProfileValidatorTest {
 	}
 
 	private Set<String> getErrorLevelFailures(ValidationReport vr) {
-		return vr.getCheckPoints().stream().filter(cpr -> NOK.equals(cpr.getState()) && SEVERITY.ERROR.equals(cpr.getSeverity()))
-					.map(CheckPointReport::getName).collect(Collectors.toSet());
+		return getFailuresForLevel(vr, SEVERITY.ERROR);
+	}
+
+	private Set<String> getWarningLevelFailures(ValidationReport vr) {
+		return getFailuresForLevel(vr, SEVERITY.WARNING);
+	}
+
+	private Set<String> getFailuresForLevel(ValidationReport vr, SEVERITY severity) {
+		return vr.getCheckPoints().stream().filter(cpr -> NOK.equals(cpr.getState()) && severity == cpr.getSeverity())
+				.map(CheckPointReport::getName).collect(Collectors.toSet());
 	}
 
 	private ValidationReport validateSingleFile(String fileName) throws Exception {
