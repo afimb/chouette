@@ -384,7 +384,7 @@ public abstract class AbstractNorwayNetexProfileValidator extends AbstractNetexP
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_LEGAL_NAME);
 			validateElementNotPresent(context, xpath, subLevel, "organisations/Authority[not(ContactDetails)]",
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS);
-			validateElementNotPresent(context, xpath, subLevel, "organisations/Authority/ContactDetails[not(Url) or not(starts-with(Url, 'http'))]",
+			validateElementNotPresent(context, xpath, subLevel, "organisations/Authority/ContactDetails[not(Url) or not(starts-with(Url, 'http://') or (starts-with(Url, 'https://')) )]",
 					_1_NETEXPROFILE_RESOURCE_FRAME_ORGANISATIONS_AUTHORITY_CONTACT_DETAILS_URL);
 		}
 	}
