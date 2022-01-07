@@ -34,6 +34,7 @@ aliases:
       echo "Image: ${IMAGE}"
       docker build -t $IMAGE .
       docker tag $IMAGE "${IMAGE}":"${VERSION}"
+      docker login -u _json_key --password-stdin https://eu.gcr.io < ${HOME}/account-auth.json
       docker push $IMAGE
 
   - &sonar-scan
@@ -50,7 +51,7 @@ aliases:
 jobs:
   build:
     docker:
-      - image:  cimg/openjdk:8.0
+      - image: cimg/openjdk:8.0
       - image: mdillon/postgis:9.6
         auth:
           username: $DOCKERHUB_LOGIN
@@ -128,7 +129,7 @@ jobs:
 
   sonar:
     docker:
-      - image:  cimg/openjdk:11.0
+      - image: cimg/openjdk:11.0
     environment:
       MAVEN_OPTS: -Xmx3G
     steps:
