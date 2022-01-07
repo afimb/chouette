@@ -37,6 +37,7 @@
  	    <netex-java-model.version>1.0.13</netex-java-model.version>
 		<rutebanken.helpers.version>1.0.55</rutebanken.helpers.version>
 
+
 		<owasp-dependency-check-plugin.version>6.1.6</owasp-dependency-check-plugin.version>
 
 	</properties>
